@@ -14,9 +14,9 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 #### Install and configure XAMPP (PHP, Apache, MySQL)
 
 1.  Find and install the latest XAMPP package for your platform at [https://www.apachefriends.org/download.html]
-2.  Copy the file in `dev/httpd.conf` to `<WHERE YOU INSTALLED XAMPP>/apache/conf/httpd.conf`.
+2.  Copy the file in `syadmin/dev/httpd.conf` to `<WHERE YOU INSTALLED XAMPP>/apache/conf/httpd.conf`.
 3.  Edit the `httpd.conf`, and replace `D:/Documents/Code/coursetable/web` with the path where your CourseTable `web` directory lives.
-4.  Copy `web/includes/Credentials.sample.php` to `web/includes/Credentials.php`
+4.  Copy `crawler/includes/Credentials.sample.php` to `crawler/includes/Credentials.php`
 5.  Open XAMPP Control (on Windows, this is at `<WHERE YOU INSTALLED XAMPP>/xampp-control.exe`) and start Apache and MySQL.
 6.  Make it easier for yourself to run PHP scripts by adding `php` to your `PATH` variable:
     - On Windows 10: https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/
