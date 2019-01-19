@@ -1,0 +1,12 @@
+[ignore]
+<PROJECT_ROOT>/server/public/.*
+<PROJECT_ROOT>/dist/.*
+<PROJECT_ROOT>/node_modules/.*/bower.json
+<PROJECT_ROOT>/node_modules/.*/broken.json
+
+[include]
+./server
+
+[libs]
+
+[options]

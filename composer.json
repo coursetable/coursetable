@@ -1,0 +1,7 @@
+{
+    "name": "coursetable",
+    "description": "Code to power https://coursetable.com",
+    "require-dev": {
+        "squizlabs/php_codesniffer": "3.*"
+    }
+}

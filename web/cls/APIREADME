@@ -1,0 +1,5 @@
+Changes:
+
+setColumns($arr): takes array instead of variable number of parameters
+addCond($column, $value, $operator, $group): operator now comes before broup
+hasResults()/resultsExist: now a member, hasResults

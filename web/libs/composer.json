@@ -1,0 +1,6 @@
+{
+    "require": {
+		"php-amqplib/php-amqplib": "2.6.*",
+        "facebook/graph-sdk": "^5.6"
+    }
+}

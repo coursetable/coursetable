@@ -1,0 +1,89 @@
+<%#
+	TextbooksTable.ejs
+	
+	Type: template component
+	Usage: tables for containing information about courses' textbooks
+
+	Variables:
+		textbooks: an array of the textbooks
+%>
+<table class="table">
+<%
+forEach(textbooks, function(course, books) {
+%>
+	<%
+	var allTypes = ['New', 'Used', 'eBook', 'Rent new', 'Rent used', 'Rent eBook'];
+	var typeUsed = {};
+	forEach(books, function(isbn, book) {
+		var priceSources = [book.offers, book.prices];
+		for (var i = 0; i < 2; i++) {
+			var prices = priceSources[i];
+			forEach(prices, function(priceType, price) {
+				typeUsed[priceType] = true;
+			});
+		}
+	});
+	var types = [];
+	for (var i = 0; i < allTypes.length; i++) {
+		var priceType = allTypes[i];
+		if (priceType in typeUsed) {
+			types.push(priceType);
+		}
+	}
+	%>
+	<tr>
+		<th>Image</th>
+		<th>Title</th>
+		<th>Author</th>
+		<% for (var i = 0; i < types.length; i++) { %>
+		<th><%= types[i] %></th>
+		<% } %>
+	</tr>
+	<% forEach(books, function(isbn, book) {
+		var offers = book.offers;
+		var prices = book.prices;
+		
+		var url = 'url' in book ? book.url : book.bookstoreUrl;
+	%>
+	<tr>
+		<td rowspan="2"><a href="<%= url %>"><img src="<%= book.imageUrl %>" alt="" /></a></td>
+		<td rowspan="2">
+			<a href="<%= url %>"><%= book.title %></a>
+			<span class="label<% if (book.required == 'Required' || book.required == 'Required Package' || book.required == 'Package Component') { %> label-important<% } %>">
+				<%= book.required %>
+			</span>
+		</td>
+		<td rowspan="2">
+		<% if (book.authors) {
+			for (var i = 0; i < book.authors.length; i++) {
+				var author = book.authors[i];
+		%>
+			<%= author %><% if (i != book.authors.length - 1) { %>, <% } %>
+			<% } %>
+		<% } %>
+		</td>
+		
+		<% for (var i = 0; i < types.length; i++) {
+			var offerType = types[i]; %>
+		<td>
+			<% if (offers && offers[offerType]) {
+				var offer = offers[offerType]; %>
+			<a href="<%= offer.url %>" class="btn btn-inverse btn-offer" target="_blank" title="from Amazon">$<%= round(offer.price, 2).toFixed(2) %></a>
+			<% } %>
+		</td>
+		<% } %>
+	</tr>
+	<tr>
+		<% for (var i = 0; i < types.length; i++) {
+			var offerType = types[i]; %>
+		<td>
+			<% if (prices && prices[offerType]) {
+				 var price = prices[offerType]; %>
+			<a href="<%= book.bookstoreUrl %>" class="btn btn-offer" target="_blank" title="from the Yale Bookstore">$<%= round(price, 2).toFixed(2) %></a>
+			<% } %>
+		</td>
+		<% } %>
+	</tr>
+	<% }); %>
+<% }); %>
+</table>
