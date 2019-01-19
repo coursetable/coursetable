@@ -45,9 +45,10 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 #### Build and generate data files
 
 1.  `cd web`, and then run `yarn install` to install needed Node.JS packages
-2.  Build other Javascript/CSS files at by running `php web/tools/Build.php`
-3.  Generate the needed data files by running `php crawler/RegenerateDataFiles.php`
-4.  Visit http://localhost/Table?debug=true. You should now see a working version of Coursetable!
+2.  In the `web` directory, run `yarn webpack` to build certain Javascript files
+3.  Build other Javascript/CSS files at by running `php web/tools/Build.php`
+4.  Generate the needed data files by running `php crawler/RegenerateDataFiles.php`
+5.  Visit http://localhost/Table?debug=true. You should now see a working version of Coursetable!
     - [/Table](http://localhost/Table) uses a minified version of Javascript, etc: you generally don't want to use this while developing Coursetable.
 
 ## Style
