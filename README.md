@@ -15,6 +15,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
 1.  Find and install the latest XAMPP package for your platform at https://www.apachefriends.org/download.html
     - If you're on a Mac, make sure you download the version that's **not XAMPP-VM**
+
 2.  Configure Apache for XAMPP:
     1. Open up the `httpd.conf` file
         - **On Windows**: Open the XAMPP Control Panel, then click *Config* > *Apache (httpd.conf)*
@@ -25,10 +26,14 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
           ![Screenshot for Mac](https://i.imgur.com/yn4YPIM.png)
 
-    2. Find the line that reads:
+    2. Find the lines that read:
        ```
+       # Windows
        DocumentRoot "C:/xampp/htdocs"
        <Directory "C:/xampp/htdocs">
+       # Mac
+       DocumentRoot "/Applications/XAMPP/xamppfiles/htdocs"
+       <Directory "/Applications/XAMPP/xamppfiles/htdocs">
        ```
        and change it to the `web` subdirectory where you cloned this Git repository:
        ```
@@ -42,7 +47,30 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
        RewriteRule ^([\d\w]+)(/[\d\w/]+)?$ /$1\.php$2 [L]
        ```
 
-3.  Start the Apache and MySQL services in XAMPP
+3. Configure PHP:
+    - On a **Mac**: open `/Applications/XAMPP/xamppfiles/etc/php.ini`
+    - On **Windows**: open `C:\xampp\php\php.ini`
+
+    Then, first search for `error_reporting`, and change the line:
+    ```
+    Before:
+    error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT
+
+    After:
+    error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_WARNING & E_NOTICE
+    ```
+
+    Then, search for `extension=sqlite` in the same file and uncomment the line by removing the leading `;`:
+
+    ```
+    Before:
+    ;extension=sqlite3
+
+    After:
+    extension=sqlite3
+    ```
+
+3.  Start the Apache and MySQL services in XAMPP (or restart them if you've done it already)
 4.  Make it easier for yourself to run PHP scripts by adding `php` to your `PATH` variable:
     - On Windows 10: https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/
       1. Search "Environment variables" in the Start menu
@@ -53,7 +81,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
     - On a Mac: (https://www.architectryan.com/2012/10/02/add-to-the-path-on-mac-os-x-mountain-lion/)
       1. Open Terminal
       2. Enter `sudo nano /etc/paths`
-      3. Add `<WHERE YOU INSTALLED XAMPP>/php` as a new line to the file
+      3. Add `/Applications/XAMPP/xamppfiles/htdocs/php` as a new line to the file
 
 #### Install other dependencies
 
@@ -69,9 +97,14 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
 #### Build and generate data files
 
-1.  `cd web`, and then run `yarn install` to install needed Node.JS packages
-2.  In the `web` directory, run `yarn webpack` to build certain Javascript files
-4.  Copy `crawler/includes/Credentials.sample.php` to `crawler/includes/Credentials.php`
+1.  In the folder where you cloned this Git repository, run:
+    ```
+    cd web
+    yarn install
+    yarn webpack
+    ```
+    to install needed Node.JS packages and build certain Javascript files
+2.  Copy `crawler/includes/Credentials.sample.php` to `crawler/includes/Credentials.php`
 3.  Build other Javascript/CSS files at by running `php web/tools/Build.php`
 4.  Generate the needed data files by running `php crawler/RegenerateDataFiles.php`
 5.  Visit http://localhost/Table?debug=true. You should now see a working version of Coursetable!
