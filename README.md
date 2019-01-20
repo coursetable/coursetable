@@ -60,15 +60,26 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
     error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_WARNING & E_NOTICE
     ```
 
-    Then, search for `extension=sqlite` in the same file and uncomment the line by removing the leading `;`:
+    Then:
 
-    ```
-    Before:
-    ;extension=sqlite3
+    * For Windows, search for `extension=sqlite` in the same file and uncomment the line by removing the leading `;`
 
-    After:
-    extension=sqlite3
-    ```
+      ```
+      Before (Windows):
+      ;extension=sqlite3
+
+      After (Windows):
+      extension=sqlite3
+      ```
+    * For Mac, search for `extension=php_sqlite3` in the file and uncomment the line by removing the leading `;`
+
+      ```
+      Before (Mac):
+      ;extension=php_sqlite3.dll
+
+      After (Mac):
+      extension=php_sqlite3.dll
+      ```
 
 3.  Start the Apache and MySQL services in XAMPP (or restart them if you've done it already)
 4.  Make it easier for yourself to run PHP scripts by adding `php` to your `PATH` variable:
@@ -81,7 +92,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
     - On a Mac: (https://www.architectryan.com/2012/10/02/add-to-the-path-on-mac-os-x-mountain-lion/)
       1. Open Terminal
       2. Enter `sudo nano /etc/paths`
-      3. Add `/Applications/XAMPP/xamppfiles/htdocs/php` as a new line to the file
+      3. Add `/Applications/XAMPP/xamppfiles/bin/php` as a new line to the file
 
 #### Install other dependencies
 
@@ -91,8 +102,19 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 #### Import the development database
 
 1.  Visit https://app.box.com/folder/64364397861 and download the `coursetable.sql` file
-2.  Open up terminal or the command line, and run `<WHERE YOU INSTALLED XAMPP>/mysql/bin/mysql -h 127.0.0.1 -u root < (where you downloaded)/coursetable.sql`
-3.  Wait a minute or two until the command finishes.
+2.  Open up terminal or the command line, and run:
+    - On Windows:
+
+      ```
+      C:\xampp\mysql\bin\mysql -h 127.0.0.1 -u root < (where you downloaded)/coursetable.sql
+      ```
+
+    - On Mac:
+      ```
+      /Applications/XAMPP/xamppfiles/bin/mysql -h 127.0.0.1 -u root < (where you downloaded)/coursetable.sql
+      ```
+
+3.  Wait a few seconds until the command finishes.
 4.  Visit http://localhost/phpmyadmin, where you should now see the `yaleplus` and `yale_advanced_oci` databases.
 
 #### Build and generate data files
