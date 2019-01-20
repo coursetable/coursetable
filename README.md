@@ -13,12 +13,37 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
 #### Install and configure XAMPP (PHP, Apache, MySQL)
 
-1.  Find and install the latest XAMPP package for your platform at [https://www.apachefriends.org/download.html]
-2.  Copy the file in `syadmin/dev/httpd.conf` to `<WHERE YOU INSTALLED XAMPP>/apache/conf/httpd.conf`.
-3.  Edit the `httpd.conf`, and replace `D:/Documents/Code/coursetable/web` with the path where your CourseTable `web` directory lives.
-4.  Copy `crawler/includes/Credentials.sample.php` to `crawler/includes/Credentials.php`
-5.  Open XAMPP Control (on Windows, this is at `<WHERE YOU INSTALLED XAMPP>/xampp-control.exe`) and start Apache and MySQL.
-6.  Make it easier for yourself to run PHP scripts by adding `php` to your `PATH` variable:
+1.  Find and install the latest XAMPP package for your platform at https://www.apachefriends.org/download.html
+    - If you're on a Mac, make sure you download the version that's **not XAMPP-VM**
+2.  Configure Apache for XAMPP:
+    1. Open up the `httpd.conf` file
+        - **On Windows**: Open the XAMPP Control Panel, then click *Config* > *Apache (httpd.conf)*
+
+          ![Screenshot for Windows](https://i.imgur.com/jBZhv7j.png)
+
+        - **On Mac**: Open up XAMPP, click *Configure* > *Manage servers* > *Apache Web Server* > *Open Conf File*, and press yes to the "Advanced users only" dialog that appears.
+
+          ![Screenshot for Mac](https://i.imgur.com/yn4YPIM.png)
+
+    2. Find the line that reads:
+       ```
+       DocumentRoot "C:/xampp/htdocs"
+       <Directory "C:/xampp/htdocs">
+       ```
+       and change it to the `web` subdirectory where you cloned this Git repository:
+       ```
+       DocumentRoot "<PATH_TO_YOUR_COURSETABLE>/web"
+       <Directory "<PATH_TO_YOUR_COURSETABLE>/web">
+       ```
+    3. Farther down in the file, just before the next `</Directory>`, add the following two lines:
+       ```
+       RewriteEngine On
+       # Change all requests without .php to .php
+       RewriteRule ^([\d\w]+)(/[\d\w/]+)?$ /$1\.php$2 [L]
+       ```
+
+3.  Start the Apache and MySQL services in XAMPP
+4.  Make it easier for yourself to run PHP scripts by adding `php` to your `PATH` variable:
     - On Windows 10: https://www.architectryan.com/2018/03/17/add-to-the-path-on-windows-10/
       1. Search "Environment variables" in the Start menu
       2. Click the "Environment variables" button in the dialog that appears
@@ -46,6 +71,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
 1.  `cd web`, and then run `yarn install` to install needed Node.JS packages
 2.  In the `web` directory, run `yarn webpack` to build certain Javascript files
+4.  Copy `crawler/includes/Credentials.sample.php` to `crawler/includes/Credentials.php`
 3.  Build other Javascript/CSS files at by running `php web/tools/Build.php`
 4.  Generate the needed data files by running `php crawler/RegenerateDataFiles.php`
 5.  Visit http://localhost/Table?debug=true. You should now see a working version of Coursetable!
