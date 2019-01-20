@@ -74,7 +74,7 @@ git clone git@gitlab.com:coursetable/coursetable.git
 
     Then:
 
-    * For Windows, search for `extension=sqlite` in the same file and uncomment the line by removing the leading `;`
+    * For Windows ONLY, search for `extension=sqlite` in the same file and uncomment the line by removing the leading `;`
 
       ```
       Before (Windows):
@@ -83,15 +83,7 @@ git clone git@gitlab.com:coursetable/coursetable.git
       After (Windows):
       extension=sqlite3
       ```
-    * For Mac, search for `extension=php_sqlite3` in the file and uncomment the line by removing the leading `;`
-
-      ```
-      Before (Mac):
-      ;extension=php_sqlite3.dll
-
-      After (Mac):
-      extension=php_sqlite3.dll
-      ```
+    * For Mac, skip this step! You already have sqlite3 enabled for running scripts.
 
 3.  Start the Apache and MySQL services in XAMPP (or restart them if you've done it already)
 4.  Make it easier for yourself to run PHP scripts by adding `php` to your `PATH` variable:
@@ -101,10 +93,7 @@ git clone git@gitlab.com:coursetable/coursetable.git
       3. Select "Path" in "User variables"
       4. Click "Edit"
       5. In the new dialog, click "New" and enter `<WHERE YOU INSTALLED XAMPP>\php`
-    - On a Mac: (https://www.architectryan.com/2012/10/02/add-to-the-path-on-mac-os-x-mountain-lion/)
-      1. Open Terminal
-      2. Enter `sudo nano /etc/paths`
-      3. Add `/Applications/XAMPP/xamppfiles/bin/php` as a new line to the file
+    - On a Mac, you don't need to do anything! Macs come with a built-in version of PHP that works well enough for most scripts.
 
 #### Install other dependencies
 
@@ -146,6 +135,7 @@ git clone git@gitlab.com:coursetable/coursetable.git
     ```
     chmod -R 777 web/gen
     ```
+
 5.  Visit http://localhost/Table?debug=true. You should now see a working version of Coursetable!
     - [/Table](http://localhost/Table) uses a minified version of Javascript, etc: you generally don't want to use this while developing Coursetable.
 
