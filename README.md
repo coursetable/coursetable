@@ -11,6 +11,18 @@ Coursetable is made of two big parts:
 
 To develop the web site, you’ll need to install a PHP-enabled web server locally. The easiest way to do this involves installing XAMPP:
 
+#### Before you start
+
+`git clone` this repository to somewhere on your local computer, and remember where you put it!
+
+```
+# On Mac: example
+cd /Users/<your username>
+git clone git@gitlab.com:coursetable/coursetable.git
+```
+
+**Note**: on Macs, if you clone it to within *Documents*, you'll need to run `chmod +x /Users/<your username>/Documents`.
+
 #### Install and configure XAMPP (PHP, Apache, MySQL)
 
 1.  Find and install the latest XAMPP package for your platform at https://www.apachefriends.org/download.html
@@ -22,7 +34,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
           ![Screenshot for Windows](https://i.imgur.com/jBZhv7j.png)
 
-        - **On Mac**: Open up XAMPP, click *Configure* > *Manage servers* > *Apache Web Server* > *Open Conf File*, and press yes to the "Advanced users only" dialog that appears.
+        - **On Mac**: Open up *XAMPP* and *manager-osx* in Applications, and click *Manage servers* > *Apache Web Server* > *Configure* > *Open Conf File*, and press yes to the "Advanced users only" dialog that appears.
 
           ![Screenshot for Mac](https://i.imgur.com/yn4YPIM.png)
 
@@ -57,7 +69,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
     error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT
 
     After:
-    error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_WARNING & E_NOTICE
+    error_reporting=E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_WARNING & ~E_NOTICE
     ```
 
     Then:
@@ -114,7 +126,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
       /Applications/XAMPP/xamppfiles/bin/mysql -h 127.0.0.1 -u root < (where you downloaded)/coursetable.sql
       ```
 
-3.  Wait a few seconds until the command finishes.
+3.  Wait up to a minute until the command finishes.
 4.  Visit http://localhost/phpmyadmin, where you should now see the `yaleplus` and `yale_advanced_oci` databases.
 
 #### Build and generate data files
@@ -129,6 +141,11 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 2.  Copy `crawler/includes/Credentials.sample.php` to `crawler/includes/Credentials.php`
 3.  Build other Javascript/CSS files at by running `php web/tools/Build.php`
 4.  Generate the needed data files by running `php crawler/RegenerateDataFiles.php`
+5.  (Macs only) Make sure that the server has the needed permissions: run:
+
+    ```
+    chmod -R 777 web/gen
+    ```
 5.  Visit http://localhost/Table?debug=true. You should now see a working version of Coursetable!
     - [/Table](http://localhost/Table) uses a minified version of Javascript, etc: you generally don't want to use this while developing Coursetable.
 
