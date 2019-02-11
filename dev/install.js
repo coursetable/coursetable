@@ -127,7 +127,7 @@ async function run() {
   await importCoursetableSql(mysqlClientPath, coursetableSqlPath);
   console.log('Done importing!');
 
-  const phpPath = path.resolve(xamppPath, defaults.phpPath);
+  const phpPath = isWindows ? path.resolve(xamppPath, defaults.phpPath) : 'php';
   await buildPhp(phpPath);
 
   console.log('We\'re complete done!');
