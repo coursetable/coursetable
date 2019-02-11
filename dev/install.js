@@ -88,7 +88,7 @@ async function run() {
 
   const mysqlClientPath = path.resolve(xamppPath, defaults.mysqlClientPath);
   const emptySqlPath = path.resolve(__dirname, 'empty.sql');
-  const mysqlCommand = `${mysqlClientPath} -u root < ${emptySqlPath}`;
+  const mysqlCommand = `${mysqlClientPath} -u root < "${emptySqlPath}"`;
 
   while (!(await returnsSuccessfully(mysqlCommand))) {
     console.log(`We tried running "${mysqlCommand}", but it failed.`);
@@ -209,7 +209,7 @@ async function replacePhpIni(xamppPath) {
 
 /** Step 3: execute the .sql file */
 async function importCoursetableSql(mysqlPath, sqlFilePath) {
-  const command = `${mysqlPath} -u root < ${sqlFilePath}`;
+  const command = `${mysqlPath} -u root < "${sqlFilePath}"`;
   await execAndPrint(command);
 }
 
@@ -218,18 +218,18 @@ async function buildPhp(phpPath) {
   const composerPath = path.resolve(coursetablePath, 'composer.phar');
   const webLibsPath = path.resolve(coursetablePath, 'web/libs');
   console.log('Using Composer (PHP) to install PHP packages');
-  await execAndPrint(`cd ${webLibsPath} && ${phpPath} ${composerPath} install`);
-  await execAndPrint(`${phpPath} ${composerPath} install`);
+  await execAndPrint(`cd "${webLibsPath}" && ${phpPath} "${composerPath}" install`);
+  await execAndPrint(`${phpPath} "${composerPath}" install`);
   console.log('Done installing packages using Composer');
 
   const buildScriptPath = path.resolve(coursetablePath, 'web/tools/Build.php');
   const regenerateScriptPath = path.resolve(coursetablePath, 'crawler/RegenerateDataFiles.php');
 
   console.log('Running build script');
-  await execAndPrint(`${phpPath} ${buildScriptPath}`);
+  await execAndPrint(`${phpPath} "${buildScriptPath}"`);
   console.log('Done build script');
   console.log('Running regenerate data files script');
-  await execAndPrint(`${phpPath} ${regenerateScriptPath}`);
+  await execAndPrint(`${phpPath} "${regenerateScriptPath}"`);
   console.log('Done running regenerate data files script');
 }
 
