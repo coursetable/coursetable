@@ -679,3 +679,5 @@ export default function initializeTableWithData(
     worksheetFilter: filterUi,
   };
 }
+
+console.log('hello I\'m Peter');
