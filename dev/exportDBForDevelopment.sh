@@ -56,6 +56,21 @@ for table in $EVALUATION_TABLES; do
   mysqldump --lock-all-tables --where="(SELECT season FROM evaluation_course_names cn WHERE cn.course_id = $table.course_id LIMIT 1) >= $FIRST_SEASON" yale_advanced_oci "$table" >> "$OUTPUT_FILE"
 done
 
+mysql <<END
+DROP TABLE IF EXISTS `evaluation_comments_for_export`;
+
+CREATE TABLE evaluation_comments_for_export LIKE evaluation_comments;
+INSERT INTO evaluation_comments_for_export SELECT * FROM evaluation_comments;
+UPDATE evaluation_comments_for_export SET comment = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.';
+
+
+DROP TABLE IF EXISTS `evaluation_ratings_for_export`;
+
+CREATE TABLE evaluation_ratings_for_export LIKE evaluation_ratings;
+INSERT INTO evaluation_ratings_for_export SELECT * FROM evaluation_ratings;
+UPDATE evaluation_ratings_for_export SET comment = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.';
+END
+
 mysqldump --lock-all-tables --where="id % 5 = 1 AND (SELECT season FROM evaluation_courses ec WHERE ec.id = evaluation_comments.course_id) >= $FIRST_SEASON" yale_advanced_oci evaluation_comments >> "$OUTPUT_FILE"
 
 # Dump only structure for student-tied and generated tables

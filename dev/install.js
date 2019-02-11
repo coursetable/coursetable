@@ -174,7 +174,7 @@ RewriteRule ^([\\d\\w]+)(/[\\d\\w/]+)?$ /$1\\.php$2 [L]
       part.indexOf(ourDocumentRootLine) !== -1 &&
       part.indexOf('/$1\\.php$2') === -1
     ) {
-      fileParts[i] = part + os.EOL + rewriteEngineDirective;
+      fileParts[i] = part + os.EOL + rewriteEngineDirective + os.EOL;
     }
   }
 
