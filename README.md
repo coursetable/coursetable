@@ -83,7 +83,7 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
 4.  If you're changing Javascript files, make sure you run:
     ```
-    npm run webpack --watch
+    npm run webpack -- --watch
     ```
     and leave it running. This will keep re-building/compiling your Javascript as your work.
 
