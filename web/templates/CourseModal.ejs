@@ -19,7 +19,7 @@ var coursesTakenPrompted;
 var course;
 var oci_id, extra_info, skills, areas, codes,
 	long_title, description, requirements, professors, times,
-	exam_timestamp, flags, evaluations, friends, syllabus_url,
+	flags, evaluations, friends, syllabus_url,
 	taken_before, season;
 
 if (course) {
@@ -33,7 +33,6 @@ if (course) {
 	requirements = course.requirements;
 	professors = course.professors;
 	times = course.times;
-	exam_timestamp = course.exam_timestamp;
 	flags = course.flags;
 	evaluations = course.evaluations;
 	syllabus_url = course.syllabus_url;
@@ -71,7 +70,6 @@ var textbookLink = 'http://yale.bncollege.com/webapp/wcs/stores/servlet/TBListVi
 var ociId = oci_id;
 var extraInfo = extra_info;
 var longTitle = long_title;
-var examTimestamp = exam_timestamp;
 %>
 <div class="course-modal modal" id="course-modal<%= ociId %>" tabindex="-1">
 	<div class="row-fluid">
@@ -113,16 +111,6 @@ var examTimestamp = exam_timestamp;
 				<tr>
 					<th>Meets</th>
 					<td><%= times.long_summary %></td>
-				</tr>
-				<tr>
-					<th>Exams</th>
-					<td>
-					<% if (examTimestamp) { %>
-						<%= moment(examTimestamp, 'YYYYMMDDHHmmss').format('MMM. D h:mma') %>
-					<% } else { %>
-						None
-					<% } %>
-					</td>
 				</tr>
 				<%
 				var flagTexts = [];
