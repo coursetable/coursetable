@@ -36,7 +36,7 @@ const defaults = isWindows
       phpIniPath: 'php/php.ini',
       phpPath: 'php/php.exe',
       mysqlClientPath: 'mysql/bin/mysql.exe',
-      downloadsPath: path.resolve(process.env.HOME, 'Downloads'),
+      downloadsPath: path.resolve(process.env.HOME || 'C:/', 'Downloads'),
     }
   : {
       xamppPath: '/Applications/XAMPP',
@@ -44,7 +44,7 @@ const defaults = isWindows
       phpIniPath: 'xamppfiles/etc/php.ini',
       phpPath: 'php',
       mysqlClientPath: 'xamppfiles/bin/mysql',
-      downloadsPath: path.resolve(process.env.HOME, 'Downloads'),
+      downloadsPath: path.resolve(process.env.HOME || '/Users/blahblah', 'Downloads'),
     };
 
 async function run() {
