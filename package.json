@@ -1,0 +1,26 @@
+{
+  "name": "coursetable",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "eslint": "eslint",
+    "lint": "eslint js jsNew",
+    "lintfix": "eslint --fix js jsNew",
+    "webpack": "webpack",
+    "prettier": "prettier **/*.{js,jsx}"
+  },
+  "devDependencies": {
+    "eslint": "4.9.0",
+    "eslint-config-airbnb": "^16.1.0",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-flowtype": "^2.35.0",
+    "eslint-plugin-import": "2.7.0",
+    "eslint-plugin-jest": "^21.17.0",
+    "eslint-plugin-jsx-a11y": "6.0.2",
+    "eslint-plugin-react": "7.7.0",
+    "prettier": "^1.14.0"
+  },
+  "dependencies": {
+    "babel-eslint": "^10.0.1"
+  }
+}
