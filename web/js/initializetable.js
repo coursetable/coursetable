@@ -107,7 +107,6 @@ export default function initializeTableWithData(
   tableHeaders = tableHeaders.concat([
     { field: 'professors', title: 'Professors' },
     { field: 'locations_summary', title: 'Location(s)' },
-    //{ field: 'exam_timestamp', title: 'Exam' },
   ]);
 
   const fixedHeaders = [
