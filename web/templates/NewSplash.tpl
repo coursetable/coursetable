@@ -34,15 +34,15 @@
 <link rel="stylesheet" href="/css/modals.css">
     {literal}
     <style>
-        body {
-            background-color: #000;
+        .splash-container {
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
+
         #fixed-center {
-            position: fixed;
-            left: 60%;
-            margin-left: -240px;
-            width: 400px;
-            top: 15%;
+            max-width: 400px;
             background-color: #fff;
             opacity: 0.9;
 
@@ -50,8 +50,9 @@
             -moz-border-radius: 10px;
             border-radius: 10px;
 
-            z-index: 2;
+            margin: 20px 10px;
         }
+
 		#fixed-center h1 {
 			font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman, serif;
 			color: #fff;
@@ -68,17 +69,19 @@
 			padding: 10px 20px 20px;
 		}
 
-        html, body, #background {
+        html, body {
             height: 100%;
+            min-height: 100%;
         }
 
-        #background {
+        body {
             background: url(/res/saybrook.jpg) no-repeat center center fixed;
             -webkit-background-size: cover;
             -moz-background-size: cover;
             -o-background-size: cover;
             background-size: cover;
         }
+
 
         .not-tester-alert, .continue-btn {
             display: none;
@@ -100,8 +103,6 @@
 {/block}
 
 {block name=content}
-<div id="background">
-</div>
 
 {capture name=buttons assign=buttons}
 	<button class="btn btn-primary facebook-login-btn {$loginButtonClass}"><i class="icon-facebook-sign"></i> <span>Log in to Facebook</span></button>
@@ -123,30 +124,32 @@
 	</div>
 </div>
 
-<div id="fixed-center">
-    <div class="alert alert-error not-tester-alert {$notTesterAlertClass}"><strong>The CourseTable isn't publicly launched yet. Please check back later!</strong></div>
-	<h1 class="splash-title">Course<span style="color: #92bcea">Table</span></h1>
-	<div id="fixed-center-inner">
-        {if $splashMessage}
-            <div class="alert alert-info">{$splashMessage}</div>
-        {/if}
+<div class="splash-container">
+    <div id="fixed-center">
+        <div class="alert alert-error not-tester-alert {$notTesterAlertClass}"><strong>The CourseTable isn't publicly launched yet. Please check back later!</strong></div>
+        <h1 class="splash-title">Course<span style="color: #92bcea">Table</span></h1>
+        <div id="fixed-center-inner">
+            {if $splashMessage}
+                <div class="alert alert-info">{$splashMessage}</div>
+            {/if}
 
-		{$emails = ['peter@coursetable.com', 'harry@coursetable.com']}
-		<p><strong>CourseTable</strong> is a course-data processor created by <strong>by Peter Xu (Yale MC 14) and Harry Yu (Yale SY 14)</strong>. It helps you find the courses at Yale where you'll learn and enjoy the most, and has returned after <a href="/Blog">Yale unceremoniously blocked it from campus networks</a>.</p>
-		<p>For questions, comments, bug reports, suggestions, or hate mail, please email {foreach $emails as $email}<a href="mailto:{$email}">{$email}</a>{if !$email@last} or {/if}{/foreach}.</p>
-		<p class="{$loginButtonClass}">Please log in to get started!</p>
-		<div>
-			{if $netId}
-				{if $showDisclaimer}
-					<a class="btn btn-success" role="button" href="#disclaimer-modal" data-toggle="modal">Continue</a>
-				{else}
-					{$buttons}
-				{/if}
-			{else}
-				<a class="btn btn-success" role="button" href="{$loginUrl}">Login on CAS</a>
-			{/if}
-		</div>
-	</div>
+            {$emails = ['peter@coursetable.com', 'harry@coursetable.com']}
+            <p><strong>CourseTable</strong> is a course-data processor created by <strong>by Peter Xu (Yale MC 14) and Harry Yu (Yale SY 14)</strong>. It helps you find the courses at Yale where you'll learn and enjoy the most, and has returned after <a href="/Blog">Yale unceremoniously blocked it from campus networks</a>.</p>
+            <p>For questions, comments, bug reports, suggestions, or hate mail, please email {foreach $emails as $email}<a href="mailto:{$email}">{$email}</a>{if !$email@last} or {/if}{/foreach}.</p>
+            <p class="{$loginButtonClass}">Please log in to get started!</p>
+            <div>
+                {if $netId}
+                    {if $showDisclaimer}
+                        <a class="btn btn-success" role="button" href="#disclaimer-modal" data-toggle="modal">Continue</a>
+                    {else}
+                        {$buttons}
+                    {/if}
+                {else}
+                    <a class="btn btn-success" role="button" href="{$loginUrl}">Login on CAS</a>
+                {/if}
+            </div>
+        </div>
+    </div>
 </div>
 {/block}
 
