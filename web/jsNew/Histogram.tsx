@@ -1,13 +1,12 @@
-// @flow
 import React from 'react';
 import Bar from './Bar';
 
 export default class Histogram extends React.PureComponent {
   props: {
-    data: Array<number>,
-    labels: Array<string>,
-    round?: number,
-    barClasses?: Array<string>,
+    data: Array<number>;
+    labels: Array<string>;
+    round?: number;
+    barClasses?: Array<string>;
   };
 
   static defaultProps = {
@@ -21,7 +20,7 @@ export default class Histogram extends React.PureComponent {
 
     return (
       <table style={{ width: '100%' }} className="chart">
-        <colgroup span="2">
+        <colgroup span={2}>
           <col width="100px" />
           <col />
         </colgroup>

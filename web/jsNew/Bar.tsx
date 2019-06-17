@@ -1,14 +1,13 @@
-// @flow
 import React from 'react';
 
-export default class Bar extends React.PureComponent {
-  props: {
-    digits?: number,
-    data?: number,
-    max: number,
-    barClasses?: string,
-  };
+interface Props {
+  digits?: number;
+  data: number;
+  max: number;
+  barClasses?: string;
+}
 
+export default class Bar extends React.PureComponent<Props> {
   static defaultProps = {
     data: 0,
     digits: 0,

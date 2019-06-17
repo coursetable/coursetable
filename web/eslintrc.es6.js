@@ -15,11 +15,10 @@ module.exports = {
     window: true,
   },
 
-  plugins: ['react', 'flowtype', 'jest'],
+  plugins: ['react', 'jest'],
 
   extends: [
     'plugin:react/recommended',
-    'plugin:flowtype/recommended',
     'airbnb',
   ],
 

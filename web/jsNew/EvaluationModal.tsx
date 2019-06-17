@@ -1,4 +1,3 @@
-// @flow
 import React, { PureComponent } from 'react';
 import _ from 'lodash';
 import { update, setState } from 'react-updaters';
@@ -6,6 +5,18 @@ import { update, setState } from 'react-updaters';
 import Tabs from './Tabs';
 import EvaluationComments from './EvaluationComments';
 import Histogram from './Histogram';
+import { CourseEvaluation } from './types';
+
+interface Props {
+  evaluation: CourseEvaluation;
+  onClose: () => unknown;
+}
+
+interface State {
+  selectedCommentType: string | null;
+  sortByLength: boolean;
+  showFullQuestion: boolean;
+}
 
 const questionTypes = [
   'rating',
@@ -125,43 +136,22 @@ const barClassesByType = {
   feedback: barClasses,
 };
 
-export default class EvaluationModal extends PureComponent {
-  props: {
-    evaluation: Object,
-    onClose: Function,
+export default class EvaluationModal extends PureComponent<Props, State> {
+  state: State = {
+    selectedCommentType: null,
+    sortByLength: false,
+    showFullQuestion: false,
   };
 
-  state: {
-    selectedCommentType: ?string,
-    sortByLength: boolean,
-    showFullQuestion: boolean,
-  };
-
-  constructor() {
-    super();
-    this.state = {
-      selectedCommentType: null,
-      sortByLength: false,
-      showFullQuestion: false,
-    };
-  }
-
-  loadData(props) {
-    const { comments } = props.evaluation;
+  selectedCommentType() {
+    const { comments } = this.props.evaluation;
     const { selectedCommentType } = this.state;
-    if (!comments[selectedCommentType]) {
-      this.setState({
-        selectedCommentType: commentTypes.filter(type => !!comments[type])[0],
-      });
+
+    if (!selectedCommentType || !comments[selectedCommentType]) {
+      return commentTypes.filter(type => !!comments[type])[0];
+    } else {
+      return selectedCommentType;
     }
-  }
-
-  componentWillMount() {
-    this.loadData(this.props);
-  }
-
-  componentWillReceiveProps(props) {
-    this.loadData(props);
   }
 
   render() {
@@ -174,7 +164,8 @@ export default class EvaluationModal extends PureComponent {
       comments,
       ratings,
     } = evaluation;
-    const { selectedCommentType, sortByLength, showFullQuestion } = this.state;
+    const { sortByLength, showFullQuestion } = this.state;
+    const selectedCommentType = this.selectedCommentType();
 
     const year = season.toString().substr(0, 4);
     const numericTerm = season.toString().substr(4, 2);
@@ -207,8 +198,7 @@ export default class EvaluationModal extends PureComponent {
               <span key={`${subject} ${number} ${section}`}>
                 {i !== 0 ? ' / ' : ''}
                 <span className="text-info">
-                  {subject} {number}{' '}
-                  {section !== 1 ? ('0' + section).substr(-2) : ''}
+                  {subject} {number} {('0' + section).substr(-2)}
                 </span>
               </span>
             ))}{' '}
@@ -238,18 +228,19 @@ export default class EvaluationModal extends PureComponent {
             <div className="course-info span7">
               {Object.keys(comments).length > 1 && (
                 <Tabs
-                  tabs={_.filter(
-                    commentTypes.map(type => {
+                  tabs={commentTypes
+                    .map(type => {
                       if (!comments[type]) return null;
                       return { value: type, label: commentTitles[type] };
                     })
-                  )}
+                    .filter(t => !!t)
+                    .map(t => t!)}
                   onChange={update(this, 'selectedCommentType')}
                   value={selectedCommentType}
                 />
               )}
 
-              {!_.isEmpty(comments) && (
+              {!_.isEmpty(comments) && selectedCommentType && (
                 <div className="comments">
                   <p>
                     <strong>{commentText[selectedCommentType]}</strong>

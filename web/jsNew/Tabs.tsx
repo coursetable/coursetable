@@ -1,22 +1,26 @@
-// @flow
 import React from 'react';
 import { callProp, preventDefault } from 'react-updaters';
-import { normalizeOptions, type OptionsProp } from './lib/Select';
+import { normalizeOptions, OptionsProp } from './lib/Select';
 
-export default class Tabs extends React.PureComponent {
-  props: {
-    tabs: OptionsProp,
-    value?: string | number | boolean,
-    onChange: Function,
-    disabledTabs?: Array | Object,
-    className?: string,
-  };
+interface Props {
+  tabs: OptionsProp;
+  value: string | number | boolean | null;
+  onChange: (value: string | number | boolean) => unknown;
+  disabledTabs?: string[] | { [tab: string]: boolean } | null;
+  className?: string;
+}
 
+export default class Tabs extends React.PureComponent<Props> {
   render() {
     const tabs = normalizeOptions(this.props.tabs);
     const activeTab = this.props.value;
     const className = this.props.className || 'nav nav-tabs';
-    const disabledTabs = this.props.disabledTabs;
+    let disabledTabs = this.props.disabledTabs;
+
+    const disabled: any[] =
+      disabledTabs instanceof Array
+        ? disabledTabs
+        : Object.keys(disabledTabs || {});
 
     return (
       <ul className={className} role="navigation">
@@ -26,13 +30,13 @@ export default class Tabs extends React.PureComponent {
 
           if (activeTab === value) {
             tabClassName = 'active';
-          } else if (disabledTabs && disabledTabs.indexOf(value) !== -1) {
+          } else if (disabled.indexOf(value) !== -1) {
             tabClassName = 'disabled';
             onClick = preventDefault;
           }
 
           return (
-            <li key={value} className={tabClassName}>
+            <li key={value.toString()} className={tabClassName || ''}>
               <a href={`#openTab${value}`} onClick={onClick}>
                 {label}
               </a>

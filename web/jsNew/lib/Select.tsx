@@ -1,17 +1,17 @@
-// @flow
+import React from 'react';
 import _ from 'lodash';
 
-type Label = string | React.Element<*>;
+type Label = React.ReactNode;
 type Value = string | boolean | number;
 
 type Option = {
-  label: Label,
-  value: Value,
+  label: Label;
+  value: Value;
 };
 
-export type OptionsProp = Array<Option> | { [string]: Label };
+export type OptionsProp = Array<Option> | { [value: string]: Label };
 
-export function normalizeOptions(options: OptionsInput): OptionsProp {
+export function normalizeOptions(options: OptionsProp): Array<Option> {
   return options instanceof Array
     ? options
     : _.map(options, (label, value) => ({ label, value }));

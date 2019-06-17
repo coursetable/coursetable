@@ -16,8 +16,17 @@
     "suppressImplicitAnyIndexErrors": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": {
+      "*": ["node_modules/*", "types/*"]
+    }
   },
-  "include": ["crawler/**/*.ts"],
+  "include": [
+    "crawler/**/*.ts",
+    "crawler/**/*.tsx",
+    "web/**/*.ts",
+    "web/**/*.tsx"
+  ],
   "types": ["chrome"]
 }

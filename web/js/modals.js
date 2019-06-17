@@ -343,7 +343,6 @@ export default function ModalsManager(
         (function(url, tplName) {
           return function(done) {
             const ejs = new EJS({ text: done, name: url });
-            console.log(tplName);
             if (tplName === 'CourseModal.ejs') {
               template = ejs;
             } else if (tplName === 'TextbookModal.ejs') {
