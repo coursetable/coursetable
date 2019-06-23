@@ -4,12 +4,15 @@
   "private": true,
   "scripts": {
     "prettier": "prettier **/*.{js,jsx,ts,tsx}",
-    "storybook": "start-storybook -p 9001 -s client -c .storybook"
+    "storybook": "start-storybook -p 9001 -s client -c .storybook",
+    "build-crawler": "babel --out-dir dist/crawler --extensions .ts,.tsx,.js,.jsx --copy-files crawler",
+    "watch-crawler": "babel --watch --out-dir dist/crawler --extensions .ts,.tsx,.js,.jsx --copy-files crawler"
   },
   "browserslist": "defaults",
   "devDependencies": {
     "@babel/cli": "^7.2.3",
     "@babel/core": "^7.2.2",
+    "@babel/node": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.3.1",
     "@babel/preset-react": "^7.0.0",
