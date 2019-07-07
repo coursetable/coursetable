@@ -24,6 +24,7 @@ $minSeason = ($year - 2) . '' . $month;
 $eval = new EvaluationCourse($ociMysqli);
 $eval->setColumns(['id', 'counts', 'subject', 'number', 'section', 'season', 'crn'])
     ->addCond('enrollment', 100, '>=')
+    ->addCond('number', '500', '<') // Only undergrad
     ->addCond('question_id', ['YC006', 'YC306', 'YC404'])
     ->addCond('season', $minSeason, '>=')
     ->addGroupBy('id')
