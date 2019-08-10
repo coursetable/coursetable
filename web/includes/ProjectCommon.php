@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../vendor/autoload.php'; // change path as needed
+
 $filePath = dirname(__DIR__);
 define('FILE_PATH', $filePath);
 $logPath = dirname($filePath) . '/bluebook-logs';
@@ -36,9 +38,7 @@ class ProjectCommon
 
     public static function createFacebook()
     {
-        require_once __DIR__ . '/../libs/facebook/facebook.php';
-
-        $facebook = new Facebook\Facebook([
+        $facebook = new \Facebook\Facebook([
             'app_id' => '185745958145518',
             'app_secret' => '2dfcaee59dd449e209913b7765e25c07'
         ]);
