@@ -66,7 +66,8 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
     ```
     cd web
     npm install
-    npm run webpack
+    cd ..
+    npx webpack
     ```
 
     to install needed Node.JS packages and build certain Javascript files

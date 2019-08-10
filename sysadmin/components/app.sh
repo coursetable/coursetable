@@ -18,3 +18,6 @@ ln -sf /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
 # Rebuild packed JS/CSS
 npm install -g uglify-js
 php "$DIR/../../web/tools/Build.php"
+
+mkdir -p "$DIR/../../bluebook-logs"
+chown web:web "$DIR/../../bluebook-logs"
