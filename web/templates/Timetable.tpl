@@ -80,7 +80,7 @@
 <div class="content">
 	{$days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']}
 	{$today = date('l')}
-	{while $today !== $days[0]}
+	{while $today !== $days[0] && $today !== 'Saturday' && $today !== 'Sunday'}
 		{$days[] = $days[0]}
 		{$blah = array_shift($days)}
 	{/while}
