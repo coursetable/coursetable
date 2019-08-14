@@ -579,11 +579,14 @@ export default function initializeTableWithData(
     const dayOfWeek = data.day_of_week;
     const direction = data.type; // Before or After
     const filterTime = data.time;
-
     return function(row) {
       const timesByDay = row.times.by_day;
-      if (!(dayOfWeek in timesByDay)) {
-        return false;
+      for (let i = 0; i < data.day_of_week.length; i++)
+      {
+        if (!(data.day_of_week[i] in timesByDay))
+        {
+          return false;
+        }
       }
 
       // Filter just by day; we're done!
@@ -678,3 +681,4 @@ export default function initializeTableWithData(
     worksheetFilter: filterUi,
   };
 }
+
