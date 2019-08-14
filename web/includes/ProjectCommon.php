@@ -1,5 +1,5 @@
 <?php
-require_once __DIR__ . '/../../web/libs/cas/CAS/Autoload.php'; // change path as needed
+require_once __DIR__ . '/../../vendor/autoload.php'; // change path as needed
 
 $filePath = dirname(__DIR__);
 define('FILE_PATH', $filePath);
@@ -81,17 +81,16 @@ class ProjectCommon
 
     public static function casAuthenticate($force = true)
     {
-        // if ($force) {
-        //     phpCAS::forceAuthentication();
-        // }
+        if ($force) {
+            phpCAS::forceAuthentication();
+        }
 
-        // $netId = null;
-        // if (phpCAS::isAuthenticated()) {
-        //     $netId = phpCAS::getUser();
-        // }
+        $netId = null;
+        if (phpCAS::isAuthenticated()) {
+            $netId = phpCAS::getUser();
+        }
 
-        // return $netId;
-        return 'mdl74';
+        return $netId;
     }
 
     public static function casLogout()
