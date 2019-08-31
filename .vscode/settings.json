@@ -1,0 +1,37 @@
+{
+  "editor.tabSize": 2,
+  "editor.detectIndentation": false,
+  "[javascript]": {
+    "editor.formatOnSave": true
+  },
+  "[javascriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.formatOnSave": true
+  },
+  "[scss]": {
+    "editor.formatOnSave": true
+  },
+  "[php]": {
+    "editor.tabSize": 4
+  },
+  "files.exclude": {
+    "dist": true,
+    "web/gen/**": true
+  },
+  "javascript.preferences.importModuleSpecifier": "relative",
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "editor.formatOnSave": true,
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "search.exclude": {
+    "dist/**": true,
+    "web/gen/**": true,
+    "**/node_modules": true,
+    "**/bower_components": true,
+    "**/docker/mysql/database.sql": true
+  }
+}
