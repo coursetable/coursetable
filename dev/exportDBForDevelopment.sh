@@ -75,8 +75,8 @@ node dist/crawler/ModifyDatabaseForExport.js
 
 cd "$PWD"
 
-mysqldump --lock-all-tables --where="(SELECT season FROM evaluation_course_names cn WHERE cn.course_id = $table.course_id LIMIT 1) >= $FIRST_SEASON" temp evaluation_ratings >> "$OUTPUT_FILE"
-mysqldump --lock-all-tables --where="id % 5 = 1 AND (SELECT season FROM evaluation_courses ec WHERE ec.id = evaluation_comments.course_id) >= $FIRST_SEASON" temp evaluation_comments >> "$OUTPUT_FILE"
+mysqldump --lock-all-tables temp evaluation_ratings >> "$OUTPUT_FILE"
+mysqldump --lock-all-tables temp evaluation_comments >> "$OUTPUT_FILE"
 
 # Dump only structure for student-tied and generated tables
 mysqldump -d yale_advanced_oci course_json worksheet_courses >> "$OUTPUT_FILE"
