@@ -1,0 +1,18 @@
+version: "3.2"
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+    volumes:
+      - ..:/usr/share/nginx/html
+      # Overwrite the default configuration. Our conf is based on it
+      - ../sysadmin/nginx/docker:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php-fpm
+    links:
+      - php-fpm
+  php-fpm:
+    build: ./php
+    volumes:
+      - ..:/usr/share/nginx/html
