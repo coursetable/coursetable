@@ -32,13 +32,11 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 
 2. Download the database dump from https://app.box.com/folder/64364397861
 
-#### Install dependencies (XAMPP, Node.js, Yarn)
+#### Install dependencies (Docker)
 
-1.  **XAMPP**: Visit https://www.apachefriends.org/download.html, and install the Windows/Mac version depending on your computer.
-    - If you're on a Mac, make sure you download the version that's **not XAMPP-VM**
-2.  **Node.js**: Visit https://nodejs.org/en/download/ and install the latest LTS version of Node.js for your machine. This also includes `npm`, the Node package manager.
+**Docker**: On Mac or Windows, download the version of Docker Desktop for your computer. Docker will run tiny environments that contain all of the dependencies needed for the website. Find it at https://www.docker.com/products/docker-desktop
 
-#### Configure XAMPP
+#### Configure Docker
 
 1.  Open up Terminal on Mac or a Command Prompt on Windows, and navigate to where you put Coursetable.
 
@@ -53,11 +51,11 @@ To develop the web site, you’ll need to install a PHP-enabled web server local
 2.  Run the install script:
 
     ```
-    npm install
-    node dev/install.js
+    cd docker
+    docker-compose up --build
     ```
 
-    It will prompt you to enter where you installed XAMPP, and then edit the configuration scripts and import the database.
+# The rest of this file needs to be updated
 
 #### Build certain files
 
