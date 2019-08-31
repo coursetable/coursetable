@@ -48,3 +48,25 @@ server {
     rewrite ^(.*)$ $1.php last;
   }
 }
+
+server {
+  listen       8081;
+  server_name  localhost;
+  root         /usr/src/phpmyadmin;
+
+  index index.php index.html index.htm;
+
+  # redirect server error pages to the static page /50x.html
+  #
+  error_page   500 502 503 504  /50x.html;
+
+  # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+  #
+  location ~ \.php$ {
+    fastcgi_pass   phpmyadmin:9000;
+    fastcgi_index  index.php;
+    include        fastcgi_params;
+    fastcgi_split_path_info   ^(.+?\.php)(/.*)$;
+    fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+  }
+}
