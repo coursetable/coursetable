@@ -1,4 +1,5 @@
 #!/bin/sh
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 #
 # This script helps export a version of all tables with somewhat fudged
@@ -7,6 +8,7 @@
 
 OUTPUT_FILE="$1"
 FIRST_SEASON="$2"
+PWD=`pwd`
 
 if [ -z "$OUTPUT_FILE" ] || [ -z "$FIRST_SEASON" ]; then
   echo 'Usage: bash exportDBForDevelopment.sh outputFile.sql 201701'
@@ -51,12 +53,30 @@ done
 mysqldump --lock-all-tables --where="season >= $FIRST_SEASON" yale_advanced_oci evaluation_courses >> "$OUTPUT_FILE"
 mysqldump --lock-all-tables --where="season >= $FIRST_SEASON" yale_advanced_oci evaluation_course_names >> "$OUTPUT_FILE"
 
-EVALUATION_TABLES="evaluation_ratings"
-for table in $EVALUATION_TABLES; do
-  mysqldump --lock-all-tables --where="(SELECT season FROM evaluation_course_names cn WHERE cn.course_id = $table.course_id LIMIT 1) >= $FIRST_SEASON" yale_advanced_oci "$table" >> "$OUTPUT_FILE"
-done
+# Modify the most sensitive tables (ratings and comments) before dumping
+mysql <<END
+DROP TABLE IF EXISTS temp.evaluation_ratings;
+DROP TABLE IF EXISTS temp.evaluation_comments;
 
-mysqldump --lock-all-tables --where="id % 5 = 1 AND (SELECT season FROM evaluation_courses ec WHERE ec.id = evaluation_comments.course_id) >= $FIRST_SEASON" yale_advanced_oci evaluation_comments >> "$OUTPUT_FILE"
+CREATE TABLE temp.evaluation_ratings LIKE yale_advanced_oci.evaluation_ratings;
+CREATE TABLE temp.evaluation_comments LIKE yale_advanced_oci.evaluation_comments;
+INSERT INTO temp.evaluation_ratings \
+  SELECT * FROM yale_advanced_oci.evaluation_ratings r WHERE
+  (SELECT season FROM yale_advanced_oci.evaluation_course_names cn WHERE cn.course_id = r.course_id LIMIT 1) >= $FIRST_SEASON;
+INSERT INTO temp.evaluation_comments \
+  SELECT * FROM yale_advanced_oci.evaluation_comments c WHERE
+  id % 5 = 1 AND (SELECT season FROM yale_advanced_oci.evaluation_courses ec WHERE ec.id = c.course_id) >= $FIRST_SEASON;
+END
+
+cd "$DIR/.."
+
+npm run build-crawler
+node dist/crawler/ModifyDatabaseForExport.js
+
+cd "$PWD"
+
+mysqldump --lock-all-tables --where="(SELECT season FROM evaluation_course_names cn WHERE cn.course_id = $table.course_id LIMIT 1) >= $FIRST_SEASON" temp evaluation_ratings >> "$OUTPUT_FILE"
+mysqldump --lock-all-tables --where="id % 5 = 1 AND (SELECT season FROM evaluation_courses ec WHERE ec.id = evaluation_comments.course_id) >= $FIRST_SEASON" temp evaluation_comments >> "$OUTPUT_FILE"
 
 # Dump only structure for student-tied and generated tables
 mysqldump -d yale_advanced_oci course_json worksheet_courses >> "$OUTPUT_FILE"
