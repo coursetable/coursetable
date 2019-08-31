@@ -79,4 +79,7 @@ mysqldump --lock-all-tables temp evaluation_ratings >> "$OUTPUT_FILE"
 mysqldump --lock-all-tables temp evaluation_comments >> "$OUTPUT_FILE"
 
 # Dump only structure for student-tied and generated tables
+# NOTE: worksheet_courses must come at the end of the .sql file, since we
+#       rely on it in our Dockerfile to see if database initialization is
+#       compelte
 mysqldump -d yale_advanced_oci course_json worksheet_courses >> "$OUTPUT_FILE"

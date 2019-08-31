@@ -12,7 +12,7 @@ $mysqli = ProjectCommon::createYalePlusMysqli();
 $sbs = new StudentBluebookSetting($mysqli);
 $sbs->retrieve('netId', $netId, ['evaluationsEnabled']);
 
-if ($sbs->info['evaluationsEnabled']) {
+if ($sbs->info['evaluationsEnabled'] || IS_DEVELOPMENT) {
     $dataFile = $filePath . '/gen/json/data_with_evals_' . $_GET['season'] . '.json';
     $mtime = filemtime($dataFile);
     $etag = md5($mtime . $netId);

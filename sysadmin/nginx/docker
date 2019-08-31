@@ -1,42 +1,50 @@
 server {
-    listen       80;
-    server_name  localhost;
+  listen       8080;
+  server_name  localhost;
+  # access_log /var/log/nginx/access.log main;
+  root         /usr/share/nginx/html/web;
 
-    #charset koi8-r;
-    #access_log  /var/log/nginx/host.access.log  main;
+  location / {
+    index index.php index.html index.htm;
 
-    root   /usr/share/nginx/html/web;
+    # PHP extension-less based on https://stackoverflow.com/a/21911610/309011
+    try_files $uri $uri/ @extensionless-php;
+  }
 
-    location / {
-        index  index.php index.html index.htm;
-    }
+  # error_page  404              /404.html;
 
-    #error_page  404              /404.html;
+  # redirect server error pages to the static page /50x.html
+  #
+  error_page   500 502 503 504  /50x.html;
 
-    # redirect server error pages to the static page /50x.html
-    #
-    error_page   500 502 503 504  /50x.html;
 
-    # proxy the PHP scripts to Apache listening on 127.0.0.1:80
-    #
-    #location ~ \.php$ {
-    #    proxy_pass   http://127.0.0.1;
-    #}
+  # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+  #
+  location ~ \.php$ {
+    fastcgi_pass   php-fpm:9000;
+    fastcgi_index  index.php;
+    include        fastcgi_params;
+    fastcgi_split_path_info   ^(.+?\.php)(/.*)$;
+    fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
+  }
 
-    # pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
-    #
-    location ~ \.php$ {
-        fastcgi_pass   php-fpm:9000;
-        fastcgi_index  index.php;
-        include        fastcgi_params;
-        fastcgi_split_path_info   ^(.+?\.php)(/.*)$;
-        fastcgi_param  SCRIPT_FILENAME   $document_root$fastcgi_script_name;
-    }
+  location /Table {
+    try_files $uri $uri/ /Table.php?$query_string;
+  }
 
-    # deny access to .htaccess files, if Apache's document root
-    # concurs with nginx's one
-    #
-    #location ~ /\.ht {
-    #    deny  all;
-    #}
+  location /Table.php {
+    try_files $uri $uri/ /Table.php?$query_string;
+  }
+
+  location /Timetable {
+    try_files $uri $uri/ /Timetable.php?$query_string;
+  }
+
+  location /Timetable.php {
+    try_files $uri $uri/ /Timetable.php?$query_string;
+  }
+
+  location @extensionless-php {
+    rewrite ^(.*)$ $1.php last;
+  }
 }

@@ -90,7 +90,7 @@ $smarty->assign('showNotice', $showNotice);
 $smarty->assign('availableSeasons', $availableSeasons);
 $smarty->assign('coursesTakenPrompted', $student->info['coursesTakenPrompted'] ?? false);
 $smarty->assign('netId', $netId);
-$smarty->assign('evaluationsEnabled', $sbs->info['evaluationsEnabled']);
+$smarty->assign('evaluationsEnabled', $sbs->info['evaluationsEnabled'] || IS_DEVELOPMENT);
 
 $forceFull = false;
 if (isset($_GET['forceFull']) || isset($_SESSION['forceFull'])) {
@@ -100,7 +100,7 @@ if (isset($_GET['forceFull']) || isset($_SESSION['forceFull'])) {
 }
 $smarty->assign('forceFull', $forceFull);
 
-if (isset($_GET['debug'])) {
+if (isset($_GET['debug']) || IS_DEVELOPMENT) {
     $smarty->display('BluebookPerUser.tpl');
 } else {
     $smarty->display('BluebookPerUserCompressed.tpl');

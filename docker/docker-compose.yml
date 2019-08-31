@@ -3,16 +3,60 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - "8080:80"
+      - "8080:8080"
     volumes:
       - ..:/usr/share/nginx/html
       # Overwrite the default configuration. Our conf is based on it
       - ../sysadmin/nginx/docker:/etc/nginx/conf.d/default.conf
     depends_on:
       - php-fpm
+      - mysql
     links:
       - php-fpm
+  
+  # Run a single script to make sure we have data files
+  php:
+    build: ./php
+    volumes:
+      - ..:/var/www/html
+    command: sh -c 'php composer.phar install && /wait-for mysql:3306 -t 300 -- php crawler/RegenerateDataFiles.php --dev'
+    working_dir: /var/www/html
+    depends_on:
+      - mysql
+  
   php-fpm:
     build: ./php
     volumes:
       - ..:/usr/share/nginx/html
+
+  mysql:
+    build: ./mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: GoCourseTab1eyayalpacas
+    ports:
+      - "3306:3306"
+    volumes:
+      # This will get used to initialize the database: see
+      # "Initializing a fresh instance"
+      # in https://hub.docker.com/_/mariadb
+      - ./mysql/database.sql:/docker-entrypoint-initdb.d/00-database.sql
+
+  phpmyadmin:
+    build: ./phpmyadmin
+    depends_on:
+      - mysql
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: GoCourseTab1eyayalpacas
+    ports:
+      - "8081:80"
+
+  nodejs:
+    image: node:lts-alpine
+    volumes:
+      - ..:/var/www/html
+    working_dir: /var/www/html
+    command: npm run install-and-watch

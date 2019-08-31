@@ -238,13 +238,13 @@ if (!class_exists('SQLTableBase')) {
                     $otherColumns = $otherTableJoinColumns[$key];
 
                     $columnStrings = array();
-                    if (count($columns) == 1) {
+                    if (!is_array($columns) || count($columns) == 1) {
                         // One-to-many relationship or one-to-one relationship
                         foreach ((array)$otherColumns as $otherColumn) {
                             $columnStrings[] = $this->tableName . '.' . $this->connObj->escapeIdent($columns) .
                                 ' = ' . $table . '.' . $this->connObj->escapeIdent($otherColumn);
                         }
-                    } elseif (count($otherColumns) == 1) {
+                    } elseif (!is_array($columns) || count($otherColumns) == 1) {
                         // Many-to-one relationship
                         foreach ((array)$columns as $column) {
                             $columnStrings[] = $this->tableName . '.' . $this->connObj->escapeIdent($column) .
