@@ -7,84 +7,13 @@ Coursetable is made of two big parts:
 
 ## How to develop
 
-### Website
+The latest development instructions are now maintained in a Google Doc called the [CourseTable development guide](https://docs.google.com/document/d/1M0Gp8Qtaik8roGYYknDDEzAAOwP3YBj0mX1pvCy-uOI/edit?usp=sharing).
 
-To develop the web site, you’ll need to install a PHP-enabled web server locally. The easiest way to do this involves installing XAMPP:
+The document includes instructions on how to:
 
-#### Before you start
-
-1. Open Terminal and `git clone` this repository to somewhere on your local computer, and remember where you put it!
-
-   ```
-   # On Mac: example
-   cd /Users/<your username>
-   git clone git@gitlab.com:coursetable/coursetable.git
-   ```
-
-   **Note**: on Macs, if you clone it to within _Documents_, _Downloads_, or another folder other than just `/Users/yourusername`, you'll need to run
-
-   ```
-   # Example: for Documents
-   chmod +x /Users/<your username>/Documents
-   # Example: for Downloads
-   chmod +x /Users/<your username>/Downloads
-   ```
-
-2. Download the database dump from https://app.box.com/folder/64364397861
-
-#### Install dependencies (Docker)
-
-**Docker**: On Mac or Windows, download the version of Docker Desktop for your computer. Docker will run tiny environments that contain all of the dependencies needed for the website. Find it at https://www.docker.com/products/docker-desktop
-
-#### Configure Docker
-
-1.  Open up Terminal on Mac or a Command Prompt on Windows, and navigate to where you put Coursetable.
-
-    ```
-    # On Macs
-    cd /Users/yourusername/coursetable
-
-    # On Windows
-    C:\Users\yourusername\Documents\coursetable
-    ```
-
-2.  Run the install script:
-
-    ```
-    cd docker
-    docker-compose up --build
-    ```
-
-# The rest of this file needs to be updated
-
-#### Build certain files
-
-1.  In the folder where you cloned this Git repository, run:
-
-    ```
-    cd web
-    npm install
-    cd ..
-    npx webpack
-    ```
-
-    to install needed Node.JS packages and build certain Javascript files
-
-2.  (Macs only) Make sure that the server has the needed permissions: run:
-
-    ```
-    chmod -R 777 web/gen
-    ```
-
-3.  Visit http://localhost/Table?debug=true. You should now see a working version of Coursetable!
-
-    - [/Table](http://localhost/Table) uses a minified version of Javascript, etc: you generally don't want to use this while developing Coursetable.
-
-4.  If you're changing Javascript files, make sure you run:
-    ```
-    npm run webpack -- --watch
-    ```
-    and leave it running. This will keep re-building/compiling your Javascript as your work.
+1.  Set up the dev environment
+2.  Learn about the code
+3.  Make your first changes
 
 ## Style
 
