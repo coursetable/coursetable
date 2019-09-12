@@ -17,7 +17,7 @@ The document includes instructions on how to:
 
 ## Workflow
 
-**Contributing code: **
+**Contributing code:**
 
 1. Create a branch for your feature
 2. *make changes*
@@ -25,7 +25,7 @@ The document includes instructions on how to:
 4. Create a merge request and wait for review
 5. When merging, choose the option to squash, and ensure that the pull request number is included in the commit title and issue numbers are included in the commit description
 
-**Issues: **
+**Issues:**
 
 We use GitLab issues to track bugs and feature requests: https://gitlab.com/coursetable/coursetable/issues.
 
