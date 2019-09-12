@@ -164,7 +164,7 @@
             FB.login(function(response) {
                 if (response.status !== 'connected') {
                     $friendWorksheetsButton.tooltip({
-                        title: 'You need to log into Facebook and authorize Yaleplus!',
+                        title: 'You need to log into Facebook and authorize CourseTable!',
                         placement: 'bottom',
                         trigger: 'manual'
                     });
