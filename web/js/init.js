@@ -309,7 +309,7 @@ function changeWorksheetSeason(season, friendWorksheetsRetrievedCallback) {
       () => {
         // Did not log in; prompt again
         $friendWorksheetsButton.tooltip({
-          title: 'You need to log into Facebook and authorize Yaleplus!',
+          title: 'You need to log into Facebook and authorize CourseTable!',
           placement: 'bottom',
           trigger: 'manual',
         });
