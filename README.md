@@ -48,7 +48,7 @@ For different languages:
 
 ## To rebuild JS on main site
 
-`cd web/tools` and run `php Build.php`
+Check out [How to deploy](docs/how-to-deploy.md)
 
 ## Steps for setting up debugging on Windows
 
