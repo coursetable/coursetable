@@ -1,9 +1,9 @@
-version: "3.2"
+version: '3.2'
 services:
   nginx:
     build: ./nginx
     ports:
-      - "8080:8080"
+      - '8080:8080'
     volumes:
       - ..:/usr/share/nginx/html
       # Overwrite the default configuration. Our conf is based on it
@@ -13,7 +13,7 @@ services:
       - mysql
     links:
       - php-fpm
-  
+
   # Run a single script to make sure we have data files
   php:
     build: ./php
@@ -23,7 +23,7 @@ services:
     working_dir: /var/www/html
     depends_on:
       - mysql
-  
+
   php-fpm:
     build: ./php
     volumes:
@@ -36,7 +36,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
-      - "3306:3306"
+      - '3306:3306'
     volumes:
       # This will get used to initialize the database: see
       # "Initializing a fresh instance"
@@ -52,7 +52,7 @@ services:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
-      - "8081:80"
+      - '8081:80'
 
   nodejs:
     image: node:lts-alpine
