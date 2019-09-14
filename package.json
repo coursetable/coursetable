@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "install-and-watch": "npm install --no-audit && npx webpack --watch",
+    "install-and-watch": "npm install --no-audit --loglevel verbose > nodeBuildLog.txt 2>&1 && npx webpack --watch >> nodeBuildLog.txt 2>&1",
     "prettier": "prettier **/*.{js,jsx,ts,tsx}",
     "storybook": "start-storybook -p 9001 -s client -c .storybook",
     "build-crawler": "babel --out-dir dist/crawler --extensions .ts,.tsx,.js,.jsx --copy-files crawler",
