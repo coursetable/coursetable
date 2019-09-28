@@ -133,7 +133,7 @@
                 <div class="alert alert-info">{$splashMessage}</div>
             {/if}
 
-            {$emails = ['peter@coursetable.com', 'harry@coursetable.com']}
+            {$emails = ['coursetable@elilists.yale.edu']}
             <p><strong>CourseTable</strong> is a course-data processor created by <strong>by Peter Xu (Yale MC 14) and Harry Yu (Yale SY 14)</strong>. It helps you find the courses at Yale where you'll learn and enjoy the most, and has returned after <a href="/Blog">Yale unceremoniously blocked it from campus networks</a>.</p>
             <p>For questions, comments, bug reports, suggestions, or hate mail, please email {foreach $emails as $email}<a href="mailto:{$email}">{$email}</a>{if !$email@last} or {/if}{/foreach}.</p>
             <p class="{$loginButtonClass}">Please log in to get started!</p>
