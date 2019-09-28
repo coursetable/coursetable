@@ -1,4 +1,4 @@
 #!/bin/sh
-22 3 * * * bash /home/web/app/crawler/RefreshCourses.sh
+22 3 * * * bash /home/web/coursetable-crawler/RefreshCourses.sh
 43 2 * * * bash /home/web/app/sysadmin/phpmyadmin/update.sh
 51 4 * * * letsencrypt renew && systemctl reload nginx

@@ -6,7 +6,7 @@ define('FILE_PATH', $filePath);
 $logPath = dirname($filePath) . '/bluebook-logs';
 set_include_path(".:{$filePath}:" . substr(get_include_path(), 2));
 
-require_once __DIR__ . '/../../crawler/includes/Credentials.php';
+require_once __DIR__ . '/Credentials.php';
 require_once __DIR__ . '/Config.php';
 
 // Used for seeing when Facebook should be updated by FetchFacebookData.php

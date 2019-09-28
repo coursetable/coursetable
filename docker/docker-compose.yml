@@ -19,7 +19,7 @@ services:
     build: ./php
     volumes:
       - ..:/var/www/html
-    command: sh -c 'php composer.phar install && /wait-for mysql:3306 -t 300 -- php crawler/RegenerateDataFiles.php --dev'
+    command: sh -c 'php composer.phar install && /wait-for mysql:3306 -t 300 -- php scripts/RegenerateDataFiles.php --dev'
     working_dir: /var/www/html
     depends_on:
       - mysql

@@ -1,1 +1,0 @@
-module.exports = require('../web/eslintrc.es6');
