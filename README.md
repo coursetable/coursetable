@@ -60,5 +60,5 @@ Check out [How to deploy](docs/how-to-deploy.md)
 
 ## Known Bugs
 
-`
-Fatal error: Uncaught SmartyException: unable to write file [...]`: execute `chmod -R 777 web/gen/smarty` in your terminal.
+`Fatal error: Uncaught SmartyException: unable to write file [...]`: execute `chmod -R 777 web/gen` in your terminal.
+
