@@ -57,3 +57,8 @@ Check out [How to deploy](docs/how-to-deploy.md)
 3.  In your php.ini, make sure cURL, MySQLi, SQLite3 are enabled
 4.  Run `php Build.php` in `web/tools`
 5.  Run `php RegenerateDataFiles.php` in `crawler` to either generate the JSON locally
+
+## Known Bugs
+
+`
+Fatal error: Uncaught SmartyException: unable to write file [...]`: execute `chmod -R 777 web/gen/smarty` in your terminal.
