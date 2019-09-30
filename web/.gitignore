@@ -3,3 +3,4 @@ tools/logs/*
 .dropbox
 /node_modules
 /gen
+.idea/
