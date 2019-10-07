@@ -7,6 +7,7 @@ services:
 
 before_install:
   - docker pull composer
+  - docker pull php
   - docker run -v `pwd`:/app composer /bin/sh -c "php composer.phar install"
 
 script:
