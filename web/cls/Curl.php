@@ -323,8 +323,8 @@ END;
     }
 
     /*
-	 * Standard base class functions.
-	 */
+     * Standard base class functions.
+     */
     public function __get($name)
     {
         if (in_array($name, (array) $this->readOnlyVars)) {
