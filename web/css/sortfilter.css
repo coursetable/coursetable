@@ -1,16 +1,14 @@
-
-
 .filterui-filter-active {
-    background-color: #d9edf7;
+  background-color: #d9edf7;
 }
 .filterui-filter-active {
-    background-color: #c4e3f3;
+  background-color: #c4e3f3;
 }
 
 /* Declared later for higher priority */
 .sortui-sort-active {
-    background-color: #dff0d8;
+  background-color: #dff0d8;
 }
 .sortui-sort-active:hover {
-    background-color: #d0e9c6;
+  background-color: #d0e9c6;
 }
