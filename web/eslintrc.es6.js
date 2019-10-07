@@ -17,10 +17,7 @@ module.exports = {
 
   plugins: ['react', 'jest'],
 
-  extends: [
-    'plugin:react/recommended',
-    'airbnb',
-  ],
+  extends: ['plugin:react/recommended', 'airbnb'],
 
   rules: {
     'react/require-extension': 0,
