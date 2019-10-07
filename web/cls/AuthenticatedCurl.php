@@ -5,8 +5,8 @@ abstract class AuthenticatedCurl extends Curl
 {
     private $readOnlyVars = array('autoLoginUsername', 'autoLoginPassword');
     /*
-	 * Read-only variables code and declaration
-	 */
+     * Read-only variables code and declaration
+     */
     public function __get($name)
     {
         if (in_array($name, (array) $this->readOnlyVars)) {

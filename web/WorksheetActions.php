@@ -62,7 +62,7 @@ function checkCourseExists($ociId)
         $log->write("Add {$ociId} non-existent", E_WARNING, 0);
         return false;
     }
-	*/
+    */
     return true;
 }
 
