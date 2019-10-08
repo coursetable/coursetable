@@ -2,7 +2,7 @@ export default function CustomPopover($) {
   // jshint ;_;
 
   /* CUSTOM POPOVER PUBLIC CLASS DEFINITION
-    * =============================== */
+   * =============================== */
 
   const CustomPopover = function(element, options) {
     this.init('popover', element, options);
@@ -48,7 +48,7 @@ export default function CustomPopover($) {
   });
 
   /* POPOVER PLUGIN DEFINITION
-    * ======================= */
+   * ======================= */
 
   const old = $.fn.customPopover;
 
@@ -69,7 +69,7 @@ export default function CustomPopover($) {
   $.fn.customPopover.defaults = $.fn.popover.defaults;
 
   /* CUSTOM POPOVER NO CONFLICT
-    * =================== */
+   * =================== */
 
   $.fn.customPopover.noConflict = function() {
     $.fn.customPopover = old;
