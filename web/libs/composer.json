@@ -1,9 +1,0 @@
-
-{
-    "name": "coursetable/coursetable-web",
-    "description": "Code to power the web interface for https://coursetable.com",
-    "require": {
-		"php-amqplib/php-amqplib": "2.6.*",
-        "facebook/graph-sdk": "^5.6"
-    }
-}
