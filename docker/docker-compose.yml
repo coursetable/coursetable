@@ -25,6 +25,7 @@ services:
       - mysql
 
   php-fpm:
+    env_file: ../crawler/facebook.env
     build: ./php
     volumes:
       - ..:/usr/share/nginx/html

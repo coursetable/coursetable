@@ -40,8 +40,8 @@ class ProjectCommon
     public static function createFacebook()
     {
         $facebook = new \Facebook\Facebook([
-            'app_id' => '185745958145518',
-            'app_secret' => '2dfcaee59dd449e209913b7765e25c07'
+            'app_id' => getenv('FACEBOOK_APP_ID'),
+            'app_secret' => getenv('FACEBOOK_APP_SECRET')
         ]);
 
         return $facebook;
