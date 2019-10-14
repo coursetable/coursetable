@@ -9,6 +9,8 @@ before_install:
   - docker pull composer
   - docker pull php
   - docker run -v `pwd`:/app composer /bin/sh -c "php composer.phar install"
+  - npm install --global prettier
 
 script:
   - docker run -v `pwd`:/app -w /app php /bin/sh -c "./phpcs.sh"
+  - cd web && prettier -l '**/*.js' '**/*.ts' '**/*.tsx' '**/*.html' '**/*.css'

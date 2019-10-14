@@ -110,8 +110,8 @@ export default function Table(data, elem, fixedElem, topOffset, leftOffset) {
   });
 
   /*
-     * Populate table body.
-     */
+   * Populate table body.
+   */
   this.$elem.empty();
   this.$elem
     .append(this.$colgroup)

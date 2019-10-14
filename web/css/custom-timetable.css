@@ -1,55 +1,55 @@
 /* Custom styles */
 .mtt-event {
-	-webkit-border-radius: 5px;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	
-	border: 1px solid #000;
-	background-color: rgba(255, 255, 255, 0.5);
-	
-	cursor: pointer;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+
+  border: 1px solid #000;
+  background-color: rgba(255, 255, 255, 0.5);
+
+  cursor: pointer;
 }
 
 .mtt-content {
-	line-height: normal;
-	padding: 5px;
-	font-size: 11px;
+  line-height: normal;
+  padding: 5px;
+  font-size: 11px;
 }
 
 /* Colours from bootstrap */
 .course1 {
-	background-color: #f1dbda; /* rgba(185, 74, 72, 0.2); #b94a48 */
-	border-color: #b94a48;
+  background-color: #f1dbda; /* rgba(185, 74, 72, 0.2); #b94a48 */
+  border-color: #b94a48;
 }
 .course2 {
-	background-color: #feeacd; /* rgba(248, 148, 6, 0.2); #f89406 */
-	border-color: #f89406;
+  background-color: #feeacd; /* rgba(248, 148, 6, 0.2); #f89406 */
+  border-color: #f89406;
 }
 .course3 {
-	background-color: #dae7da; /* rgba(70, 136, 71, 0.2); #468847 */
-	border-color: #468847;
+  background-color: #dae7da; /* rgba(70, 136, 71, 0.2); #468847 */
+  border-color: #468847;
 }
 .course4 {
-	background-color: #d8e7ef; /* rgba(58, 135, 173, 0.2); #3a87ad */
-	border-color: #3a87ad;
+  background-color: #d8e7ef; /* rgba(58, 135, 173, 0.2); #3a87ad */
+  border-color: #3a87ad;
 }
 .course5 {
-	background-color: #d6d6d6; /* rgba(51, 51, 51, 0.2); #333333 */
-	border-color: #333333;
+  background-color: #d6d6d6; /* rgba(51, 51, 51, 0.2); #333333 */
+  border-color: #333333;
 }
 
 .course1:hover {
-	background-color: #e3b7b6; /* rgba(185, 74, 72, 0.4); */
+  background-color: #e3b7b6; /* rgba(185, 74, 72, 0.4); */
 }
 .course2:hover {
-	background-color: #fcd49b; /* rgba(248, 148, 6, 0.4); */
+  background-color: #fcd49b; /* rgba(248, 148, 6, 0.4); */
 }
 .course3:hover {
-	background-color: #b5cfb4; /* rgba(70, 136, 71, 0.4); */
+  background-color: #b5cfb4; /* rgba(70, 136, 71, 0.4); */
 }
 .course4:hover {
-	background-color: #b0cfde; /* rgba(58, 135, 173, 0.4); */
+  background-color: #b0cfde; /* rgba(58, 135, 173, 0.4); */
 }
 .course5:hover {
-	background-color: #adadad;
+  background-color: #adadad;
 }

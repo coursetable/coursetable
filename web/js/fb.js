@@ -6,7 +6,7 @@ window.fbAsyncInit = function() {
     status: true, // check the login status upon init?
     cookie: true, // set sessions cookies to allow your server to access the session?
     xfbml: true, // parse XFBML tags on this page?
-    version: 'v3.3'
+    version: 'v3.3',
   });
 
   // Additional initialization code such as adding Event Listeners goes here
