@@ -128,5 +128,5 @@ const subjectTable = {
 };
 
 export function subjectLookup(key) {
-  return subjectTable[key] || 'Not in table';
+  return subjectTable[key] || 'Unknown Subject';
 }
