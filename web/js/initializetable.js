@@ -136,7 +136,7 @@ export default function initializeTableWithData(
    * @param field     string; The field containing the rating in a number
    * @return {String}   HTML of rating
    */
-  const floatHtmlConverter = function (rowData, field) {
+  const floatHtmlConverter = function(rowData, field) {
     const data = _.get(rowData, field);
     if (data == null) {
       return '';
@@ -145,7 +145,7 @@ export default function initializeTableWithData(
   };
 
   table.htmlConverters = {
-    title: function (rowData /* , field */) {
+    title: function(rowData /* , field */) {
       return (
         '<a rel="popover" href="#" data-content="' +
         escapeHtml(rowData.description) +
@@ -154,7 +154,7 @@ export default function initializeTableWithData(
         '</a>'
       );
     },
-    subject: function (rowData /*, field */) {
+    subject: function(rowData /*, field */) {
       return (
         '<a rel="popover" href="#" data-content="' +
         escapeHtml(subjectLookup(rowData.subject)) +
@@ -163,10 +163,10 @@ export default function initializeTableWithData(
         '</a>'
       );
     },
-    times: function (rowData, field) {
+    times: function(rowData, field) {
       return escapeHtml(rowData[field].summary);
     },
-    num_students: function (rowData /* , field */) {
+    num_students: function(rowData /* , field */) {
       const numStudents = rowData.num_students;
       if (numStudents == null) {
         return '';
@@ -182,7 +182,7 @@ export default function initializeTableWithData(
         return html;
       }
     },
-    num_friends: function (rowData, field) {
+    num_friends: function(rowData, field) {
       if (rowData[field] === 0) {
         return '';
       } else {
@@ -200,7 +200,7 @@ export default function initializeTableWithData(
         );
       }
     },
-    exam_timestamp: function (rowData /* , field */) {
+    exam_timestamp: function(rowData /* , field */) {
       const examGroup = parseInt(rowData.exam_group, 10);
       if (examGroup === 0) {
         return '';
@@ -230,7 +230,7 @@ export default function initializeTableWithData(
   ];
   const courseModalLinkClasses = ['subject', 'number', 'section', 'title'];
 
-  table.rowCallback = function ($tr, rowNum, rowData) {
+  table.rowCallback = function($tr, rowNum, rowData) {
     // Rating column highlighting
     for (let i = 0; i < ratingColumnClasses.length; i++) {
       const ratingColumnClass = ratingColumnClasses[i];
@@ -287,7 +287,7 @@ export default function initializeTableWithData(
     });
   };
 
-  table.postDisplayCallback = function () {
+  table.postDisplayCallback = function() {
     $('a[rel=tooltip]')
       .tooltip()
       .click(event => {
@@ -407,7 +407,7 @@ export default function initializeTableWithData(
   filterCategories = getCategoriesInColumn(data, 'areas');
   filterCategories.push(null);
   filterUi.setSelectValues(filterCategories);
-  $('.areas-filter input[type=checkbox]').change(filterUi, function (event) {
+  $('.areas-filter input[type=checkbox]').change(filterUi, function(event) {
     const simpleMode = !this.checked;
     event.data.setUseSelect2(simpleMode);
   });
@@ -417,7 +417,7 @@ export default function initializeTableWithData(
   filterCategories = getCategoriesInColumn(data, 'skills');
   filterCategories.push(null);
   filterUi.setSelectValues(filterCategories);
-  $('.skills-filter input[type=checkbox]').change(filterUi, function (event) {
+  $('.skills-filter input[type=checkbox]').change(filterUi, function(event) {
     const simpleMode = !this.checked;
     event.data.setUseSelect2(simpleMode);
   });
@@ -439,13 +439,13 @@ export default function initializeTableWithData(
     SortUi,
     CategoryFilterUi
   ).filterUi;
-  $('.subject-filter input[type=checkbox]').change(filterUi, function (event) {
+  $('.subject-filter input[type=checkbox]').change(filterUi, function(event) {
     const simpleMode = !this.checked;
     event.data.setUseSelect2(simpleMode);
   });
   filterUi.setSelectValues(getCategoriesInColumn(data, 'subject'));
   sortManager.registerSortComparatorGenerator('subject', (sortName, data) => {
-    return function (rowA, rowB) {
+    return function(rowA, rowB) {
       const multiplier = data === 'ASC' ? 1 : -1;
       if (rowA.subject < rowB.subject) {
         return -1 * multiplier;
@@ -472,7 +472,7 @@ export default function initializeTableWithData(
   initializeSortFilter('title', '.title', SortUi, TextFilterUi);
   filterManager.registerFilterGenerator('title', (filterName, data) => {
     const filter = filterManager.valueFilterGenerators.text(data);
-    return function (row) {
+    return function(row) {
       return filter(row.title) || filter(row.long_title);
     };
   });
@@ -542,7 +542,7 @@ export default function initializeTableWithData(
   );
   initializeSortFilter('times', '.times', TimeSortUi, TimeFilterUi);
   sortManager.registerSortComparatorGenerator('times', (sortName, data) => {
-    return function (rowA, rowB) {
+    return function(rowA, rowB) {
       const multiplier = data.order === 'ASC' ? 1 : -1;
 
       const dayOfWeek = data.day_of_week;
@@ -590,7 +590,7 @@ export default function initializeTableWithData(
     const direction = data.type; // Before or After
     const filterTime = data.time;
 
-    return function (row) {
+    return function(row) {
       const timesByDay = row.times.by_day;
       if (!(dayOfWeek in timesByDay)) {
         return false;
@@ -625,7 +625,7 @@ export default function initializeTableWithData(
     const noSpaceFilter = filterManager.valueFilterGenerators.text(
       data.replace(/[\s*]+/, '')
     );
-    return function (row) {
+    return function(row) {
       return (
         noSpaceFilter(row.subject + row.number + row.section) ||
         filter(row.title) ||
@@ -672,7 +672,7 @@ export default function initializeTableWithData(
   filterManager.registerFilterGenerator(
     'worksheet_only',
     (/* filterName, data */) => {
-      return function (row) {
+      return function(row) {
         return worksheetManager.isCourseInWorksheet(row.oci_id);
       };
     }
