@@ -1,12 +1,10 @@
-const logg = console.log;
+// const logg = console.log;
 
 // const client = algoliasearch('ALGOLIACODEGOESHERE'); // todo
 // const index = client.initIndex('spring_classes');
 
-const moment = require('moment');
-const ical = require('ical-generator');
-
-//TODO: Change code to utilize React instead of VueJS 
+var moment = import("moment");
+var ical = import("ical-generator");
 
 function run() {
   var thevue = new Vue({
@@ -73,27 +71,27 @@ function run() {
         }
 
         cal.createEvent({
-          start: moment('2019-01-18'),
-          summary: 'Monday Classes',
+          start: moment('2019-08-28'),
+          summary: 'First Day of Classes',
           allDay: true
         });
         cal.createEvent({
-          start: moment('2019-03-09'),
-          summary: 'Spring Recess Begins',
+          start: moment('2019-11-22'),
+          summary: 'November Recess Begins',
           allDay: true
         });
         cal.createEvent({
-          start: moment('2019-03-24'),
-          summary: 'Spring Recess Ends',
+          start: moment('2019-12-2'),
+          summary: 'November Recess Ends',
           allDay: true
         });
         cal.createEvent({
-          start: moment('2019-04-26'),
+          start: moment('2019-12-6'),
           summary: 'Last Day of Classes',
           allDay: true
         });
         cal.createEvent({
-          start: moment('2019-05-08'),
+          start: moment('2019-12-18'),
           summary: 'Last Day of Exams',
           allDay: true
         });

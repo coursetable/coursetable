@@ -128,6 +128,17 @@ export default function WorksheetManager() {
         $('body').append($iframe);
       });
 
+    $('.download-ics-btn')
+      .off('click')
+      .on('click', () => {
+        ociIds = worksheetOciIds.join(',');
+        const $iframe = $('<iframe style="width: 0; height: 0"></iframe>').attr(
+          'src',
+          '/GenerateCsv.php?ociIds=' + ociIds + '&season=' + season
+        );
+        $('body').append($iframe);
+      });
+
     if (getTable() != null) {
       getTable().forceRedraw();
     }
@@ -195,11 +206,11 @@ export default function WorksheetManager() {
   }
 
   function showWorksheetButtons() {
-    $('.list-table-btn, .download-csv-btn').show();
+    $('.list-table-btn, .download-csv-btn, .download-ics.btn').show();
   }
 
   function hideWorksheetButtons() {
-    $('.list-table-btn, .download-csv-btn').hide();
+    $('.list-table-btn, .download-csv-btn, .download-ics.btn').hide();
   }
 
   function retrieveOwnWorksheet() {
