@@ -15,6 +15,7 @@ import {
 } from './filterui';
 import { SortUi, TimeSortUi, SortManager } from './sortui';
 import Table from './tabletools';
+import { subjectLookup } from './subjectlookup.js';
 
 // The original popover HTML is saved into here on first load to not mess with
 // jQuery selectors that end unexpectedly find two elements
@@ -150,6 +151,15 @@ export default function initializeTableWithData(
         escapeHtml(rowData.description) +
         '">' +
         escapeHtml(rowData.title) +
+        '</a>'
+      );
+    },
+    subject: function(rowData /*, field */) {
+      return (
+        '<a rel="popover" href="#" data-content="' +
+        escapeHtml(subjectLookup(rowData.subject)) +
+        '">' +
+        escapeHtml(rowData.subject) +
         '</a>'
       );
     },
