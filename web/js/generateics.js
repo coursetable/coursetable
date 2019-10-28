@@ -1,5 +1,3 @@
-// const logg = console.log;
-
 // const client = algoliasearch('ALGOLIACODEGOESHERE'); // todo
 // const index = client.initIndex('spring_classes');
 
