@@ -134,12 +134,10 @@ export default function WorksheetManager() {
         ociIds = worksheetOciIds.join(',');
         const $iframe = $('<iframe istyle="width: 0; height: 0" id="icslink"></iframe>').attr(
           'src',
-          '/GenerateCsv.php?ociIds=' + ociIds + '&season=' + season
+          '/GenerateIcs.php?ociIds=' + ociIds + '&season=' + season
         );
-        console.log(worksheetOciIds);
         $('body').append($iframe);
         document.getElementById('icslink').click();
-
       });
 
     if (getTable() != null) {
