@@ -1,8 +1,5 @@
-// const client = algoliasearch('ALGOLIACODEGOESHERE'); // todo
-// const index = client.initIndex('spring_classes');
-
-var moment = import("moment");
-var ical = import("ical-generator");
+import moment from 'moment';
+import * as ical from 'ical-generator';
 
 function run() {
   var thevue = new Vue({
