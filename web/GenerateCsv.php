@@ -8,7 +8,7 @@ require_once 'includes/ProjectCommon.php';
  * @param $fieldRenderers   array of function; renderers to transform data to a single string
  * @param $outputStream     resource; handle to file to write to
  */
-function renderRowFromData(&$rowData, &$tableHeaders, &$fieldRenderers, &$outputStream)
+function renderRowFromData(&$rowData, &$tableHeaders, &$fieldRenderers, &$season, &$outputStream)
 {
     $rowFields = array();
     foreach ($tableHeaders as &$tableHeader) {
@@ -22,8 +22,7 @@ function renderRowFromData(&$rowData, &$tableHeaders, &$fieldRenderers, &$output
         }
         $rowFields[] = (string) $value;
     }
-    $rowFields[] = "http://coursetable.com/Table/course/" .
-        "{$rowData['subject']}_{$rowData['number']}_{$rowData['section']}";
+    $rowFields[] = "http://coursetable.com/Table/" . "{$season}/" . "course/" . "{$rowData['subject']}_{$rowData['number']}_{$rowData['section']}";
     fputcsv($outputStream, $rowFields);
 }
 
@@ -35,7 +34,7 @@ function renderRowFromData(&$rowData, &$tableHeaders, &$fieldRenderers, &$output
  * @param $fieldRenderers   array of function; renderers to transform data to a single string
  * @param $outputStream     resource; handle to file to write to
  */
-function renderCsvTable(&$ociIds, &$ociIdData, &$tableHeaders, &$fieldRenderers, &$outputStream)
+function renderCsvTable(&$ociIds, &$ociIdData, &$tableHeaders, &$fieldRenderers, &$season, &$outputStream)
 {
     $headers = array();
     foreach ($tableHeaders as &$tableHeader) {
@@ -48,7 +47,7 @@ function renderCsvTable(&$ociIds, &$ociIdData, &$tableHeaders, &$fieldRenderers,
         if (!isset($ociIdData[$ociId])) {
             continue;
         }
-        renderRowFromData($ociIdData[$ociId], $tableHeaders, $fieldRenderers, $outputStream);
+        renderRowFromData($ociIdData[$ociId], $tableHeaders, $fieldRenderers, $season, $outputStream);
     }
 }
 
@@ -133,4 +132,4 @@ if (!isset($_GET['debug'])) {
 }
 
 $outputStream = fopen('php://output', 'w');
-renderCsvTable($ociIds, $ociIdData, $tableHeaders, $fieldRenderers, $outputStream);
+renderCsvTable($ociIds, $ociIdData, $tableHeaders, $fieldRenderers, $season, $outputStream);
