@@ -49,7 +49,6 @@
     "babel-eslint": "^10.0.1",
     "jquery": "^3.4.1",
     "lodash": "^4.17.15",
-    "ical-generator": "^1.4.3",
     "moment": "^2.24.0",
     "mysql2": "^1.6.5",
     "rainbowvis.js": "^1.0.1",
