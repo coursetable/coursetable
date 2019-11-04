@@ -1,11 +1,12 @@
 {
-    "name": "coursetable/coursetable",
-    "description": "Code to power https://coursetable.com",
-    "require-dev": {
-        "squizlabs/php_codesniffer": "3.*"
-    },
-    "require": {
-        "querypath/querypath": "^3.0",
-        "facebook/graph-sdk": "^5.7"
-    }
+  "name": "coursetable/coursetable",
+  "description": "Code to power https://coursetable.com",
+  "require-dev": {
+    "squizlabs/php_codesniffer": "3.*"
+  },
+  "require": {
+    "querypath/querypath": "^3.0",
+    "facebook/graph-sdk": "^5.7",
+    "markuspoerschke/iCal": "^0.15.1"
+  }
 }
