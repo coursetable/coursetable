@@ -1,9 +1,24 @@
 version: '3.2'
 services:
+  reverse-proxy:
+    # The official v2.0 Traefik docker image
+    image: traefik:v2.0
+    # Enables the web UI and tells Traefik to listen to docker
+    command: --log.level=DEBUG --api.insecure=true --providers.docker --entrypoints.web.address=:80 --entrypoints.websecure.address=:443
+    ports:
+      # The HTTP port
+      - "8078:80"
+      # The HTTPS port
+      - "8080:443"
+      # The Web UI (enabled by --api.insecure=true)
+      - "8090:8080"
+    volumes:
+      # So that Traefik can listen to the Docker events
+      - /var/run/docker.sock:/var/run/docker.sock
   nginx:
     build: ./nginx
     ports:
-      - '8080:8080'
+      - '8079:8080'
     volumes:
       - ..:/usr/share/nginx/html
       # Overwrite the default configuration. Our conf is based on it
@@ -13,6 +28,12 @@ services:
       - mysql
     links:
       - php-fpm
+    labels:
+      traefik.enable: 'true'
+      traefik.http.routers.coursetable-main.rule: HostRegexp(`{catchall:.*}`)
+      traefik.http.routers.coursetable-main-ssl.tls: 'true'
+      traefik.http.routers.coursetable-main-ssl.rule: HostRegexp(`{catchall:.*}`)
+      traefik.http.services.coursetable-nginx.loadbalancer.server.port: '8080'
 
   # Run a single script to make sure we have data files
   php:
