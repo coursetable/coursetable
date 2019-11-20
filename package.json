@@ -54,6 +54,6 @@
     "rainbowvis.js": "^1.0.1",
     "react-updaters": "^2.1.3",
     "sequelize": "^4.44.3",
-    "sqlite3": "^4.0.6"
+    "sqlite3": "^4.1.0"
   }
 }

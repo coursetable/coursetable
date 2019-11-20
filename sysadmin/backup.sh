@@ -1,37 +1,11 @@
 #!/bin/sh
-mysqldump yale_advanced_oci \
-  barnes_noble_sections \
-  course_areas \
-  course_flags \
-  course_json \
-  course_names \
-  course_professors \
-  course_sessions \
-  course_skills \
-  courses \
-  evaluation_comments \
-  evaluation_course_names \
-  evaluation_courses \
-  evaluation_questions \
-  evaluation_ratings \
-  exam_groups \
-  key_value_store \
-  oci_seasons \
-  textbook_amazon_cache \
-  textbook_asin \
-  textbook_courses \
-  textbook_prices \
-  textbooks \
-  worksheet_courses > yale_advanced_oci.sql
+mysqldump yale_advanced_oci > yale_advanced_oci.sql
+mysqldump yaleplus --ignore-table=yaleplus.BluebookEvents > yaleplus1.sql
+mysqldump yaleplus BluebookEvents --no-data > yaleplus2.sql
 
-mysqldump yaleplus \
-  StudentBluebookSettings \
-  StudentCoursesTaken \
-  StudentFacebookFriends \
-  StudentPetitions \
-  Students > yaleplus1.sql
+ALL_FILES="yale_advanced_oci.sql yaleplus1.sql yaleplus2.sql"
 
-mysqldump --no-data yaleplus \
-  BluebookEvents > yaleplus2.sql
-
-tar -czf backups.tar.gz yale_advanced_oci.sql yaleplus1.sql yaleplus2.sql
+# ALL_FILES is intentionally not put in double quotes because we want the 3
+# files to be 3 arguments, not 1 argument
+tar -czf backups.tar.gz $ALL_FILES
+rm -f $ALL_FILES
