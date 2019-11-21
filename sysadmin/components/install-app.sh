@@ -34,9 +34,11 @@ git clone git@github.com:hsheth2/coursetable-crawler.git crawler
 cd "$DIR/../../web/includes"
 cp -f CredentialsOverride.sample.php CredentialsOverride.php
 sed -i "s@'MYSQL_HOST', '[^']*'@'MYSQL_HOST', 'localhost'@g" CredentialsOverride.php
+sed -i "s@'MYSQL_USERNAME', '[^']*'@'MYSQL_USERNAME', 'coursetable'@g" CredentialsOverride.php
 sed -i "s@'MYSQL_PASSWORD', '[^']*'@'MYSQL_PASSWORD', '$MYSQL_PASSWORD'@g" CredentialsOverride.php
 
 cd "$DIR/../../crawler/includes"
 cp -f CredentialsOverride.sample.php CredentialsOverride.php
 sed -i "s@'MYSQL_HOST', '[^']*'@'MYSQL_HOST', 'localhost'@g" CredentialsOverride.php
+sed -i "s@'MYSQL_USERNAME', '[^']*'@'MYSQL_USERNAME', 'coursetable'@g" CredentialsOverride.php
 sed -i "s@'MYSQL_PASSWORD', '[^']*'@'MYSQL_PASSWORD', '$MYSQL_PASSWORD'@g" CredentialsOverride.php

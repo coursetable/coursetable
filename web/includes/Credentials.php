@@ -5,8 +5,11 @@ if (file_exists(__DIR__ . '/CredentialsOverride.php')) {
 }
 
 /** Only define if the variable hasn't been set */
-function maybe_define($name, $value) {
-    if (defined($name)) return;
+function maybe_define($name, $value)
+{
+    if (defined($name)) {
+        return;
+    }
     define($name, $value);
 }
 
