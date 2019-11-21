@@ -9,10 +9,6 @@ su web -c 'composer install'
 npm install
 node_modules/.bin/webpack
 
-# Ensure the crawler has PHP modules initialized
-cd "$DIR/../../crawler"
-chown -R web:web .
-su web -c 'composer install'
-
 # Regenerate files
+cd "$DIR/../../crawler"
 php RegenerateDataFiles.php
