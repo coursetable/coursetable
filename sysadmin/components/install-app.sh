@@ -27,14 +27,14 @@ ssh-keyscan github.com >> /tmp/githubKey
 cat /root/.ssh/known_hosts /tmp/githubKey > /root/.ssh/known_hosts
 
 # Clone the crawler
-cd "$DIR/../../.." # /home/web
-git clone git@github.com:hsheth2/coursetable-crawler.git coursetable-crawler
+cd "$DIR/../.." # /home/web
+git clone git@github.com:hsheth2/coursetable-crawler.git crawler
 
 # Set the main server MySQL server to itself
 cd "$DIR/../.."
 sed -i "s@'MYSQL_HOST', '[^']*'@'MYSQL_HOST', 'localhost'@g" web/includes/Credentials.php
 sed -i "s@'MYSQL_PASSWORD', '[^']*'@'MYSQL_PASSWORD', '$MYSQL_PASSWORD'@g" web/includes/Credentials.php
 
-cd "$DIR/../../../coursetable-crawler"
+cd "$DIR/../../crawler"
 sed -i "s@'MYSQL_HOST', '[^']*'@'MYSQL_HOST', 'localhost'@g" includes/Constants.php
 sed -i "s@'MYSQL_PASSWORD', '[^']*'@'MYSQL_PASSWORD', '$MYSQL_PASSWORD'@g" includes/Constants.php

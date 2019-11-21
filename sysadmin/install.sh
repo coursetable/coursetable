@@ -1,4 +1,5 @@
 #!/bin/sh
+# Installs the server for the first time
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 #

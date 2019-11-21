@@ -10,7 +10,7 @@ npm install
 node_modules/.bin/webpack
 
 # Ensure the crawler has PHP modules initialized
-cd "$DIR/../../../coursetable-crawler"
+cd "$DIR/../../crawler"
 chown -R web:web .
 su web -c 'composer install'
 
