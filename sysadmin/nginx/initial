@@ -1,0 +1,13 @@
+server {
+	listen 80 default_server;
+
+	root /home/web/nginx;
+
+	location ~ /.well-known {
+		allow all;
+	}
+
+	location ~ /.deployment-keys {
+		allow all;
+	}
+}
