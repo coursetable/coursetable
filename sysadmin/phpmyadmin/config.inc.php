@@ -12,9 +12,14 @@
 
 /**
  * This is needed for cookie based authentication to encrypt password in
- * cookie. Note that it's OK for this to be embedded in this doc in clear-text:
+ * cookie.
+ * 
+ * Note that it's OK for this to be embedded in this doc in clear-text:
  * it's used to encrypt cookies at rest. Using the secret requires someone to
- * have also accessed the database and a user's cookies.
+ * have also accessed the database and a user's cookies. Per phpMyAdmin docs,
+ * it's fine to just fill this in in the file rather than using an environment
+ * variable:
+ * https://docs.phpmyadmin.net/en/latest/setup.html#manually-creating-the-file
  */
 $cfg['blowfish_secret'] = 'ThisISPhpMyADMINforCourseTable\'SNOTREALLY'; /* YOU MUST FILL IN THIS FOR COOKIE AUTH! */
 
