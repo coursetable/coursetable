@@ -1,25 +1,40 @@
 <?php
 require_once 'includes/ProjectCommon.php';
 
-function addEventToCalendar()
+function createEvent()
 {
-    
-}
-
-function addImportantEvents()
-{
-
-}
-
-function createIcsFile($ociIds, $ociIdData, $outputStream)
-{
-    $calendar = new \Eluceo\iCal\Component\Calendar('https://coursetable.com');
     $event = new \Eluceo\iCal\Component\Event();
     $event->setDtStart(new \DateTime('2019-11-18'));
     $event->setDtEnd(new \DateTime('2019-11-18'));
     $event->setNoTime(true);
     $event->setSummary('Christmas');
-    $calendar->addComponent($event);
+}
+
+function addImportantEvents()
+{
+}
+
+/**
+ * Renders the ICS file to stdout from OCI IDs array
+ * @param $ociIds           array; values are course IDs to include
+ * @param $ociIdData        array; associative linking oci_id to data
+ * @param $outputStream     resource; handle to file to write to
+ */
+function createIcsFile($ociIds, $ociIdData, $outputStream)
+{
+    // Set timezone
+    date_default_timezone_set();
+
+    // Make calendar
+    $calendar = new \Eluceo\iCal\Component\Calendar('https://coursetable.com');
+
+    // Populate calendar with each event corresponding to each class
+    foreach ($ociIds as $ociId) {
+        $event = createEvent();
+        $calendar->addComponent($event);
+    }
+
+    // Output calendar to stdout
     echo $calendar->render();
 }
 
@@ -53,4 +68,4 @@ if (!isset($_GET['debug'])) {
 }
 
 $outputStream = fopen('php://output', 'w');
-renderIcsFile($ociIds, $ociIdData, $season, $outputStream);
+renderIcsFile($ociIds, $ociIdData, $outputStream);
