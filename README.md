@@ -3,7 +3,7 @@
 Coursetable is made of two big parts:
 
 1.  **Website**: this is the site you see when you go to [coursetable.com](https://coursetable.com). The code for this is in the `web` directory.
-2.  **Crawler**: these are the scripts behind the scenes that actually get all the data from Yale’s websites. The code for this is in the `crawler` directory.
+2.  **Crawler**: these are the scripts behind the scenes that actually get all the data from Yale’s websites. The code for this is in the `crawler` directory, which is currently included via a Git submodule.
 
 ## How to develop
 
@@ -19,15 +19,15 @@ The document includes instructions on how to:
 
 **Contributing code:**
 
-1. Create a branch for your feature
-2. *make changes*
-3. Create some commits and push your changes to the origin
-4. Create a merge request and wait for review
-5. When merging, choose the option to squash, and ensure that the pull request number is included in the commit title and issue numbers are included in the commit description
+1. Create a branch for your feature. This can usually be done with `git checkout -b <username>/<feature_name>`
+2. *make changes.*
+3. Create some commits and push your changes to the origin.
+4. Create a pull request and add a few reviewers. In the pull request, be sure to reference any relevant issue numbers.
+5. Once the pull request has been approved, merge it into the master branch.
 
 **Issues:**
 
-We use GitLab issues to track bugs and feature requests: https://gitlab.com/coursetable/coursetable/issues.
+We use GitHub issues to track bugs and feature requests: https://github.com/coursetable/coursetable/issues.
 
 ## Style
 
@@ -35,6 +35,8 @@ For different languages:
 
 - Javascript: We use `prettier` to automatically format the code. Make sure you use your editor's integration!
 - PHP: We use PHP CodeSniffer to maintain coding standards; generally, it's 4 spaces for tabs, camelCase for variables, and follow whatever else that's in use right now.
+
+We have automated checks set up that will run for every commit and pull request.
 
 ## (Mostly for Peter and Harry) Steps for rolling out a new server
 
@@ -58,7 +60,7 @@ Check out [How to deploy](docs/how-to-deploy.md)
 4.  Run `php Build.php` in `web/tools`
 5.  Run `php RegenerateDataFiles.php` in `crawler` to either generate the JSON locally
 
-## Known Bugs
+## Debugging Tips
 
 `Fatal error: Uncaught SmartyException: unable to write file [...]`: execute `chmod -R 777 web/gen` in your terminal.
 
