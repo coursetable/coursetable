@@ -10,10 +10,26 @@ if (isset($_GET['logout'])) {
 
 $netId = ProjectCommon::casAuthenticate();
 
+
 $log = ProjectCommon::createLog('NetIds.txt');
 
 $yalePlusMysqli = ProjectCommon::createYalePlusMysqli();
 $yaleAdvancedOciMysqli = ProjectCommon::createYaleAdvancedOciMysqli();
+
+// Disconnect Facebook if requested
+if (isset($_GET['disconnect_facebook'])) {
+    $student = new Student($yalePlusMysqli);
+    $student->setInfoArray(
+        array(
+            'netId' => $netId,
+            'facebookId' => 0,
+            'facebookDataJson' => ''
+        )
+    );
+    if (!$student->commit()) {
+        $log->write("facebook disconnect failed for {$netid} on: {$student->lastquery}", e_error, 0);
+    }
+}
 
 if (ProjectCommon::getStudentAuthorizationState($netId, $yalePlusMysqli) !== 'authorized' &&
     !isset($_GET['noFacebook'])) {
