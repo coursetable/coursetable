@@ -19,3 +19,6 @@ maybe_define('MYSQL_HOST', 'mysql'); // e.g. define('MYSQL_HOST', 'example.com')
 maybe_define('MYSQL_USERNAME', 'root');
 maybe_define('MYSQL_PASSWORD', 'GoCourseTable');
 maybe_define('MYSQL_DATABASE', 'yale_advanced_oci');
+
+maybe_define('FACEBOOK_APP_ID', getenv('FACEBOOK_APP_ID'));
+maybe_define('FACEBOOK_APP_SECRET', getenv('FACEBOOK_APP_SECRET'));
