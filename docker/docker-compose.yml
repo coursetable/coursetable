@@ -4,7 +4,7 @@ services:
     # The official v2.0 Traefik docker image
     image: traefik:v2.0
     # Enables the web UI and tells Traefik to listen to docker
-    command: --log.level=DEBUG --api.insecure=true --providers.docker --entrypoints.web.address=:80 --entrypoints.websecure.address=:443
+    command: --log.level=INFO --api.insecure=true --providers.docker --entrypoints.web.address=:80 --entrypoints.websecure.address=:443
     ports:
       # The HTTP port
       - "8078:80"

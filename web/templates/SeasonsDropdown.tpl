@@ -11,7 +11,7 @@
 			Defaults to '#'
 *}
 
-{if !$href}
+{if ! isset($href) || !$href}
 	{$href = '#'}
 {/if}
 
