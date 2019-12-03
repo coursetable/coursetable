@@ -172,7 +172,6 @@ $log = ProjectCommon::createLog('WorksheetAddRemove');
 $mysqli = ProjectCommon::createYaleAdvancedOciMysqli();
 
 $netId = ProjectCommon::casAuthenticate(false);
-$ociId = (string) $_GET['ociId'];
 $action = (string) $_GET['action'];
 $season = $_GET['season'];
 
@@ -181,8 +180,10 @@ $success = checkArguments($netId, $ociId, $action, $season)
 
 if ($success) {
     if ($action === 'add') {
+        $ociId = (string) $_GET['ociId'];
         addToWorksheet($netId, $ociId, $season);
     } elseif ($action === 'remove') {
+        $ociId = (string) $_GET['ociId'];
         removeFromWorksheet($netId, $ociId, $season);
     } else {
         retrieveWorksheetOciIdsJson($netId, $season);
