@@ -220,6 +220,7 @@ for compressibility purposes by tools/build.php
 					<li>
 						<a tabindex="-1" href="/EnableEvaluations">Enable evaluations</a>
 						<a tabindex="-1" href="/Blog">Events of 2014 Spring</a>
+                        <a tabindex="-1" href="?disconnect_facebook">Disconnect Facebook</a>
 						<a tabindex="-1" href="?logout">Sign out</a>
 					</li>
 				</ul>
