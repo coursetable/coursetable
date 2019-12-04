@@ -175,15 +175,14 @@ $netId = ProjectCommon::casAuthenticate(false);
 $action = (string) $_GET['action'];
 $season = $_GET['season'];
 
+$ociId = isset($_GET['ociId']) ? (string) $_GET['ociId'] : "";
 $success = checkArguments($netId, $ociId, $action, $season)
     && ($action == 'get' || checkCourseExists($ociId));
 
 if ($success) {
     if ($action === 'add') {
-        $ociId = (string) $_GET['ociId'];
         addToWorksheet($netId, $ociId, $season);
     } elseif ($action === 'remove') {
-        $ociId = (string) $_GET['ociId'];
         removeFromWorksheet($netId, $ociId, $season);
     } else {
         retrieveWorksheetOciIdsJson($netId, $season);
