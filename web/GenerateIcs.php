@@ -18,6 +18,7 @@ const FIRST_WEEK_OF_CLASSES = [
 ];
 
 /**
+ * Creates rule to determine when to repeat class
  * @param $meetingTimes   array:        associative array linking the day class
  *                                      meets with time on that day
  */
@@ -72,6 +73,7 @@ function createRecurrenceRule($meetingTimes)
 }
 
 /**
+ * Parses json data to separate start/end hour+min
  * @param $meetingSummary   string:     days then times
  */
 function parseStartAndEndTimes($meetingSummary)
@@ -92,6 +94,7 @@ function parseStartAndEndTimes($meetingSummary)
 }
 
 /**
+ * Determines date of first time class meets
  * @param $meetingTimes   array:        associative array linking the day class
  *                                      meets with time on that day
  */
