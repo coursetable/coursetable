@@ -44,35 +44,35 @@ function createRecurrenceRule($meetingTimes)
     foreach ($meetingTimes as $day => $time) {
         switch ($day) {
             case "Sunday":
-                $dayClassMeets = $dayClassMeets . 
+                $dayClassMeets = $dayClassMeets .
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SUNDAY . ',';
                 break;
             case "Monday":
-                $dayClassMeets = $dayClassMeets . 
+                $dayClassMeets = $dayClassMeets .
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_MONDAY . ',';
                 break;
             case "Tuesday":
-                $dayClassMeets = $dayClassMeets . 
+                $dayClassMeets = $dayClassMeets .
                     Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_TUESDAY . ',';
                 break;
             case "Wednesday":
-                $dayClassMeets = $dayClassMeets . 
+                $dayClassMeets = $dayClassMeets .
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_WEDNESDAY . ',';
                 break;
             case "Thursday":
-                $dayClassMeets = $dayClassMeets . 
+                $dayClassMeets = $dayClassMeets .
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_THURSDAY . ',';
                 break;
             case "Friday":
-                $dayClassMeets = $dayClassMeets . 
+                $dayClassMeets = $dayClassMeets .
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_FRIDAY . ',';
                 break;
             case "Saturday":
-                $dayClassMeets = $dayClassMeets .   
+                $dayClassMeets = $dayClassMeets .  
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SATURDAY . ',';
                 break;
             case "Sunday":
-                $dayClassMeets = $dayClassMeets . 
+                $dayClassMeets = $dayClassMeets .
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SUNDAY . ',';
                 break;
         }
@@ -117,7 +117,7 @@ function determineFirstDayClassMeets($meetingTimes)
 
 /**
  * Creates calendar event from class data
- * @param $classData        array:      json data for single class 
+ * @param $classData        array:      json data for single class
  * @param $season           integer:    value for current academic season
  */
 function createEvent($classData, $season)
@@ -129,23 +129,22 @@ function createEvent($classData, $season)
     $classTimes = parseStartAndEndTimes($classData['times']['long_summary']);
     $firstClassDay = determineFirstDayClassMeets($classData['times']['by_day']);
 
-    $event->setDtStart(new DateTime($firstClassDay . ' ' 
+    $event->setDtStart(new DateTime($firstClassDay . ' '
         . $classTimes['startHour'] . ':' . $classTimes['startMin']));
-    $event->setDtEnd(new DateTime($firstClassDay . ' ' 
+    $event->setDtEnd(new DateTime($firstClassDay . ' '
         . $classTimes['endHour'] . ':' . $classTimes['endMin']));
 
     $event->setSummary("{$classData['subject']} {$classData['number']} {$classData['section']}");
-    $event->setDescription("{$classData['long_title']}" . "\n" . 
+    $event->setDescription("{$classData['long_title']}" . "\n" .
         "http://coursetable.com/Table/" . "{$season}/" . "course/" .
-        "{$classData['subject']}_{$classData['number']}_{$classData['section']}" . 
+        "{$classData['subject']}_{$classData['number']}_{$classData['section']}" .
         "\n\n" . "{$classData['description']}");
 
     $recurrenceRule = createRecurrenceRule($classData['times']['by_day']);
     $event->setRecurrenceRule($recurrenceRule);
 
     // Remove classes that occur during holiday / break
-    foreach (HOLIDAYS_AND_BREAKS as $holiday)
-    {
+    foreach (HOLIDAYS_AND_BREAKS as $holiday) {
         $event->addExDate(new DateTime($holiday . ' ' . $classTimes['startHour'] .
             ':' . $classTimes['startMin']));
     }
