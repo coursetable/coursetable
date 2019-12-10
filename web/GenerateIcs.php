@@ -7,6 +7,16 @@ const FIRST_SEM_DAY_START_TIME = '08:20';
 const LAST_SEM_DAY_END_TIME = '17:30';
 const HOLIDAYS_AND_BREAKS = "";
 
+const FIRST_WEEK_OF_CLASSES = [
+    'Monday' => '2020-01-13',
+    'Tuesday' => '2020-01-14',
+    'Wednesday' => '2020-01-15',
+    'Thursday' => '2020-01-16',
+    'Friday' => '2020-01-17',
+    'Saturday' => '2020-01-18',
+    'Sunday' => '2020-01-19'
+];
+
 /**
  * @param $meetingTimes   array:        associative array linking the day class
  *                                      meets with time on that day
@@ -16,34 +26,42 @@ function createRecurrenceRule($meetingTimes)
     $recurrenceRule = new \Eluceo\iCal\Property\Event\RecurrenceRule();
     $recurrenceRule->setFreq(\Eluceo\iCal\Property\Event\RecurrenceRule::FREQ_WEEKLY);
     $recurrenceRule->setInterval(1);
-    $recurrenceRule->setUntil(new DateTime(LAST_SEM_DAY . ' ' . LAST_SEM_DAY_END_TIME));
+    $recurrenceRule->setUntil(new DateTime(LAST_SEM_DAY));
 
     $dayClassMeets = "";
     foreach ($meetingTimes as $day => $time) {
         switch ($day) {
             case "Sunday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SUNDAY . ',';
+                $dayClassMeets = $dayClassMeets . 
+                    \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SUNDAY . ',';
                 break;
             case "Monday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_MONDAY . ',';
+                $dayClassMeets = $dayClassMeets . 
+                    \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_MONDAY . ',';
                 break;
             case "Tuesday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_TUESDAY . ',';
+                $dayClassMeets = $dayClassMeets . 
+                    Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_TUESDAY . ',';
                 break;
             case "Wednesday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_WEDNESDAY . ',';
+                $dayClassMeets = $dayClassMeets . 
+                    \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_WEDNESDAY . ',';
                 break;
             case "Thursday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_THURSDAY . ',';
+                $dayClassMeets = $dayClassMeets . 
+                    \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_THURSDAY . ',';
                 break;
             case "Friday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_FRIDAY . ',';
+                $dayClassMeets = $dayClassMeets . 
+                    \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_FRIDAY . ',';
                 break;
             case "Saturday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SATURDAY . ',';
+                $dayClassMeets = $dayClassMeets .   
+                    \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SATURDAY . ',';
                 break;
             case "Sunday":
-                $dayClassMeets = $dayClassMeets . \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SUNDAY . ',';
+                $dayClassMeets = $dayClassMeets . 
+                    \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SUNDAY . ',';
                 break;
         }
     }
@@ -60,8 +78,8 @@ function parseStartAndEndTimes($meetingSummary)
 {
     $explodedSummary = explode(' ', $meetingSummary);
     $explodedTimes = explode('-', $explodedSummary[1]);
-    $startTime = explode(':', $explodedTimes[0]);
-    $endTime = explode(':', $explodedTimes[1]);
+    $startTime = explode('.', $explodedTimes[0]);
+    $endTime = explode('.', $explodedTimes[1]);
     
     $classTimes = [
         'startHour' => $startTime[0],
@@ -74,6 +92,16 @@ function parseStartAndEndTimes($meetingSummary)
 }
 
 /**
+ * @param $meetingTimes   array:        associative array linking the day class
+ *                                      meets with time on that day
+ */
+function determineFirstDayClassMeets($meetingTimes)
+{
+    $firstDay = array_key_first($meetingTimes);
+    return FIRST_WEEK_OF_CLASSES[$firstDay];
+}
+
+/**
  * Creates calendar event from class data
  * @param $classData        array:      json data for single class 
  * @param $season           integer:    value for current academic season
@@ -81,16 +109,23 @@ function parseStartAndEndTimes($meetingSummary)
 function createEvent($classData, $season)
 {
     $event = new \Eluceo\iCal\Component\Event();
+    $event->setUseTimezone(true);
+    $event->setTimezoneString('America/New_York');
 
     $classTimes = parseStartAndEndTimes($classData['times']['long_summary']);
+    $firstClassDay = determineFirstDayClassMeets($classData['times']['by_day']);
 
-    $event->setDtStart(new DateTime(FIRST_SEM_DAY . ' ' . $classTimes['startHour'] . ':' . $classTimes['startMin']));
-    $event->setDtEnd(new DateTime(LAST_SEM_DAY . ' ' . $classTimes['endHour'] . ':' . $classTimes['endMin']));
+    $event->setDtStart(new DateTime($firstClassDay . ' ' 
+        . $classTimes['startHour'] . ':' . $classTimes['startMin']));
+    $event->setDtEnd(new DateTime($firstClassDay . ' ' 
+        . $classTimes['endHour'] . ':' . $classTimes['endMin']));
 
-    $event->setSummary("{$classData['subject']} {$classData['number']} {$classData['section']}");
-    $event->setDescription("{$classData['long_title']}" . "\n" . "http://coursetable.com/Table/" . "{$season}/" . "course/" .
-    "{$classData['subject']}_{$classData['number']}_{$classData['section']}" . 
-    "\n\n" . "{$classData['description']}");
+    $event->setSummary("{$classData['subject']} {$classData['number']} 
+        {$classData['section']}");
+    $event->setDescription("{$classData['long_title']}" . "\n" . 
+        "http://coursetable.com/Table/" . "{$season}/" . "course/" .
+        "{$classData['subject']}_{$classData['number']}_{$classData['section']}" . 
+        "\n\n" . "{$classData['description']}");
 
     $recurrenceRule = createRecurrenceRule($classData['times']['by_day']);
     $event->setRecurrenceRule($recurrenceRule);
@@ -109,9 +144,6 @@ function createIcsFile($ociIds, $ociIdData, $season, $outputStream)
 {
     // Make calendar
     $calendar = new \Eluceo\iCal\Component\Calendar('https://coursetable.com');
-
-    // Set Timezone
-    date_default_timezone_get('America/New_York');
 
     // Populate calendar with each class
     foreach ($ociIds as $ociId) {
@@ -153,4 +185,4 @@ if (!isset($_GET['debug'])) {
 }
 
 $outputStream = fopen('php://output', 'w');
-renderIcsFile($ociIds, $ociIdData, $season, $outputStream);
+createIcsFile($ociIds, $ociIdData, $season, $outputStream);
