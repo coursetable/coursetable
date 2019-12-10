@@ -132,7 +132,9 @@ export default function WorksheetManager() {
       .off('click')
       .on('click', () => {
         ociIds = worksheetOciIds.join(',');
-        const $iframe = $('<iframe istyle="width: 0; height: 0" id="icslink"></iframe>').attr(
+        const $iframe = $(
+          '<iframe istyle="width: 0; height: 0" id="icslink"></iframe>'
+        ).attr(
           'src',
           '/GenerateIcs.php?ociIds=' + ociIds + '&season=' + season
         );
