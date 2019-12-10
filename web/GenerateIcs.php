@@ -68,7 +68,7 @@ function createRecurrenceRule($meetingTimes)
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_FRIDAY . ',';
                 break;
             case "Saturday":
-                $dayClassMeets = $dayClassMeets .  
+                $dayClassMeets = $dayClassMeets .
                     \Eluceo\iCal\Property\Event\RecurrenceRule::WEEKDAY_SATURDAY . ',';
                 break;
             case "Sunday":
