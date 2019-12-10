@@ -3,9 +3,20 @@ require_once 'includes/ProjectCommon.php';
 
 const FIRST_SEM_DAY =  '2020-01-13';
 const LAST_SEM_DAY = '2020-04-24';
-const FIRST_SEM_DAY_START_TIME = '08:20';
-const LAST_SEM_DAY_END_TIME = '17:30';
-const HOLIDAYS_AND_BREAKS = "";
+
+const HOLIDAYS_AND_BREAKS = [
+    '20200120',
+    '20200309',
+    '20200310',
+    '20200311',
+    '20200312',
+    '20200313',
+    '20200316',
+    '20200317',
+    '20200318',
+    '20200319',
+    '20200320'
+];
 
 const FIRST_WEEK_OF_CLASSES = [
     'Monday' => '2020-01-13',
@@ -18,7 +29,7 @@ const FIRST_WEEK_OF_CLASSES = [
 ];
 
 /**
- * Creates rule to determine when to repeat class
+ * Creates rule to determine when/how to repeat class event
  * @param $meetingTimes   array:        associative array linking the day class
  *                                      meets with time on that day
  */
@@ -123,8 +134,7 @@ function createEvent($classData, $season)
     $event->setDtEnd(new DateTime($firstClassDay . ' ' 
         . $classTimes['endHour'] . ':' . $classTimes['endMin']));
 
-    $event->setSummary("{$classData['subject']} {$classData['number']} 
-        {$classData['section']}");
+    $event->setSummary("{$classData['subject']} {$classData['number']} {$classData['section']}");
     $event->setDescription("{$classData['long_title']}" . "\n" . 
         "http://coursetable.com/Table/" . "{$season}/" . "course/" .
         "{$classData['subject']}_{$classData['number']}_{$classData['section']}" . 
@@ -132,6 +142,13 @@ function createEvent($classData, $season)
 
     $recurrenceRule = createRecurrenceRule($classData['times']['by_day']);
     $event->setRecurrenceRule($recurrenceRule);
+
+    // Remove classes that occur during holiday / break
+    foreach (HOLIDAYS_AND_BREAKS as $holiday)
+    {
+        $event->addExDate(new DateTime($holiday . ' ' . $classTimes['startHour'] .
+            ':' . $classTimes['startMin']));
+    }
 
     return $event;
 }
