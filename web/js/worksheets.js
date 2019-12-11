@@ -132,13 +132,13 @@ export default function WorksheetManager() {
       .off('click')
       .on('click', () => {
         ociIds = worksheetOciIds.join(',');
-        const $iframe = $(
-          '<iframe istyle="width: 0; height: 0" id="icslink"></iframe>'
+        const $alink = $(
+          '<a style="width: 0; height: 0" id="icslink"></a>'
         ).attr(
-          'src',
+          'href',
           '/GenerateIcs.php?ociIds=' + ociIds + '&season=' + season
         );
-        $('body').append($iframe);
+        $('body').append($alink);
         document.getElementById('icslink').click();
       });
 
@@ -209,7 +209,12 @@ export default function WorksheetManager() {
   }
 
   function showWorksheetButtons() {
-    $('.list-table-btn, .download-csv-btn, .download-ics-btn').show();
+    if (season === 202001) {
+      $('.list-table-btn, .download-csv-btn, .download-ics-btn').show();
+    }
+    else {
+      $('.list-table-btn, .download-csv-btn').show();
+    }
   }
 
   function hideWorksheetButtons() {

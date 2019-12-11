@@ -160,11 +160,11 @@ function loadData(season, callback) {
 
         // Add show as timetable/show as worksheet stuff
         const worksheetFilter = tableData.worksheetFilter;
-        worksheetFilter.onCallback = function() {
+        worksheetFilter.onCallback = function () {
           worksheetManager.showWorksheetButtons();
           toggleTimetable('refresh');
         };
-        worksheetFilter.offCallback = function() {
+        worksheetFilter.offCallback = function () {
           worksheetManager.hideWorksheetButtons();
           toggleTimetable(false);
         };
@@ -177,11 +177,11 @@ function loadData(season, callback) {
           '.friend-worksheets-select',
           filterManager
         );
-        friendFilterUi.onCallback = function() {
+        friendFilterUi.onCallback = function () {
           worksheetManager.showWorksheetButtons();
           toggleTimetable('refresh');
         };
-        friendFilterUi.offCallback = function() {
+        friendFilterUi.offCallback = function () {
           worksheetManager.hideWorksheetButtons();
           toggleTimetable(false);
         };
@@ -189,7 +189,7 @@ function loadData(season, callback) {
         filterManager.registerFilterGenerator(
           'friend_worksheets',
           (filterName, data) => {
-            return function(row) {
+            return function (row) {
               return worksheetManager.isCourseInFriendWorksheet(
                 data,
                 row.oci_id
@@ -263,7 +263,7 @@ function changeWorksheetSeason(season, friendWorksheetsRetrievedCallback) {
    * @param force: whether to force a refresh, even if we've recently retrieved Facebook friends in the last few days
    * @param successCallback: callback to be called on successful login
    */
-  const attemptLoginAndFetch = function(force, successCallback) {
+  const attemptLoginAndFetch = function (force, successCallback) {
     if (typeof force === 'undefined') force = false;
 
     const $friendWorksheetsButton = $('.friend-worksheets-btn');
@@ -422,7 +422,7 @@ $(document).ready(() => {
     $('#notice').hide();
   }
 
-  $('.tutorial-button').click(function() {
+  $('.tutorial-button').click(function () {
     const curIndex = parseInt(
       $(this)
         .attr('id')
@@ -462,7 +462,7 @@ $(document).ready(() => {
   });
 
   $('.download-ics-btn').tooltip({
-    title: 'Download ICS File',
+    title: 'Download file for calendars',
     placement: 'bottom',
     container: 'body',
   });
@@ -486,7 +486,7 @@ $(document).ready(() => {
     }
   });
 
-  $('.season-link').on('click', function(e) {
+  $('.season-link').on('click', function (e) {
     e.preventDefault();
     const season = $(this).attr('data-season');
     changeSeason(season);
