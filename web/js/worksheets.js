@@ -133,7 +133,7 @@ export default function WorksheetManager() {
       .on('click', () => {
         ociIds = worksheetOciIds.join(',');
         const $alink = $(
-          '<a style="width: 0; height: 0" id="icslink"></a>'
+          '<a style="display: block; width: 0; height: 0" id="icslink"></a>'
         ).attr(
           'href',
           '/GenerateIcs.php?ociIds=' + ociIds + '&season=' + season
@@ -209,11 +209,9 @@ export default function WorksheetManager() {
   }
 
   function showWorksheetButtons() {
-    if (season === 202001) {
-      $('.list-table-btn, .download-csv-btn, .download-ics-btn').show();
-    }
-    else {
-      $('.list-table-btn, .download-csv-btn').show();
+    $('.list-table-btn, .download-csv-btn, .download-ics-btn').show();
+    if (season.toString() !== '202001') {
+      $('.download-ics-btn').hide();
     }
   }
 
