@@ -460,6 +460,13 @@ $(document).ready(() => {
     placement: 'bottom',
     container: 'body',
   });
+
+  $('.download-ics-btn').tooltip({
+    title: 'Download file for calendars',
+    placement: 'bottom',
+    container: 'body',
+  });
+
   toggleTimetable(false);
 
   const $searchBox = $('#search-box');

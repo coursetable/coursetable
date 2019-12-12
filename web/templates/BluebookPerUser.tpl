@@ -242,6 +242,7 @@ for compressibility purposes by tools/build.php
 					<span class="btn-group">
 						<button class="btn list-table-btn hide"><i class="icon-th"></i></button>
 						<button class="btn download-csv-btn hide"><i class="icon-download-alt"></i></button>
+            <button class="btn download-ics-btn hide"><i class="icon-calendar"></i></button>
 					</span>
 
 					<span class="input-append" id="search-container">
