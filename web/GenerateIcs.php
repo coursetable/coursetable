@@ -104,6 +104,17 @@ function parseStartAndEndTimes($meetingSummary)
     return $classTimes;
 }
 
+// Polyfill array_key_first
+// see https://www.php.net/manual/en/function.array-key-first.php
+if (!function_exists('array_key_first')) {
+    function array_key_first(array $arr) {
+        foreach($arr as $key => $unused) {
+            return $key;
+        }
+        return NULL;
+    }
+}
+
 /**
  * Determines date of first time class meets
  * @param $meetingTimes   array:        associative array linking the day class
