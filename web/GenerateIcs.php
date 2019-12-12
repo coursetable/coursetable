@@ -89,17 +89,26 @@ function createRecurrenceRule($meetingTimes)
  */
 function parseStartAndEndTimes($meetingSummary)
 {
-    $explodedSummary = explode(' ', $meetingSummary);
-    $explodedTimes = explode('-', $explodedSummary[1]);
-    $startTime = explode('.', $explodedTimes[0]);
-    $endTime = explode('.', $explodedTimes[1]);
-    
     $classTimes = [
-        'startHour' => $startTime[0],
-        'startMin' => $startTime[1],
-        'endHour' => $endTime[0],
-        'endMin' => $endTime[1]
+        'startHour' => 0,
+        'startMin' => 0,
+        'endHour' => 0,
+        'endMin' => 0,
     ];
+
+    $explodedSummary = explode(' ', $meetingSummary);
+    if ($explodedSummary[1] != 'HTBA') {
+        $explodedTimes = explode('-', $explodedSummary[1]);
+        $startTime = explode('.', $explodedTimes[0]);
+        $endTime = explode('.', $explodedTimes[1]);
+        $classTimes = [
+            'startHour' => $startTime[0],
+            'startMin' => $startTime[1],
+            'endHour' => $endTime[0],
+            'endMin' => $endTime[1]
+        ];
+    }
+    
 
     return $classTimes;
 }
@@ -166,8 +175,11 @@ function createIcsFile($ociIds, $ociIdData, $season, $outputStream)
 
     // Populate calendar with each class
     foreach ($ociIds as $ociId) {
-        $event = createEvent($ociIdData[$ociId], $season);
-        $calendar->addComponent($event);
+        $classData = $ociIdData[$ociId];
+        if (!strpos($classData['times']['summary'], 'HTBA')) {
+            $event = createEvent($ociIdData[$ociId], $season);
+            $calendar->addComponent($event);
+        }
     }
 
     // Output calendar to stdout
