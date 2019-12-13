@@ -108,7 +108,8 @@ function parseStartAndEndTimes($meetingSummary)
  * @param $meetingTimes   array:        associative array linking the day class
  *                                      meets with time on that day
  */
-function determineFirstDayClassMeets($meetingTimes) {
+function determineFirstDayClassMeets($meetingTimes) 
+{
     $firstDay = array_key_first($meetingTimes);
     return FIRST_WEEK_OF_CLASSES[$firstDay];
 }
