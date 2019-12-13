@@ -93,7 +93,6 @@ function parseStartAndEndTimes($meetingSummary)
     $explodedTimes = explode('-', $explodedSummary[1]);
     $startTime = explode('.', $explodedTimes[0]);
     $endTime = explode('.', $explodedTimes[1]);
-    
     $classTimes = [
         'startHour' => $startTime[0],
         'startMin' => $startTime[1],
@@ -107,11 +106,12 @@ function parseStartAndEndTimes($meetingSummary)
 // Polyfill array_key_first
 // see https://www.php.net/manual/en/function.array-key-first.php
 if (!function_exists('array_key_first')) {
-    function array_key_first(array $arr) {
-        foreach($arr as $key => $unused) {
+    function array_key_first(array $arr)
+    {
+        foreach ($arr as $key => $unused) {
             return $key;
         }
-        return NULL;
+        return null;
     }
 }
 
@@ -177,8 +177,11 @@ function createIcsFile($ociIds, $ociIdData, $season, $outputStream)
 
     // Populate calendar with each class
     foreach ($ociIds as $ociId) {
-        $event = createEvent($ociIdData[$ociId], $season);
-        $calendar->addComponent($event);
+        $classData = $ociIdData[$ociId];
+        if (!strpos($classData['times']['summary'], 'HTBA')) {
+            $event = createEvent($ociIdData[$ociId], $season);
+            $calendar->addComponent($event);
+        }
     }
 
     // Output calendar to stdout
