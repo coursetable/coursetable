@@ -105,9 +105,9 @@ function parseStartAndEndTimes($meetingSummary)
 
 // Polyfill array_key_first
 // see https://www.php.net/manual/en/function.array-key-first.php
-if (!function_exists('array_key_first')) 
+if (!function_exists('array_key_first') )
 {
-    function array_key_first(array $arr) 
+    function array_key_first(array $arr)    
     {
         foreach ($arr as $key => $unused) {
             return $key;
