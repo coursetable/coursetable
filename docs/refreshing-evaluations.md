@@ -82,7 +82,7 @@ To other developers: ask Peter or Harry to do this part!
    ```
 3. Import the SQLite file:
    ```sh
-   node dist/crawler/ImportSQLiteEvaluations.js 201903.sqlite
+   node dist/crawler/ImportSQLiteEvaluations.js crawler/201903.sqlite
    ```
 4. Regenerate all data files:
    ```sh
