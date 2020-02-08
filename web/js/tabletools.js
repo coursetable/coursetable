@@ -317,6 +317,7 @@ export default function Table(data, elem, fixedElem, topOffset, leftOffset) {
           '</td>';
       } else {
         // The row numbers are always the displayed row numbers
+        /*
         html =
           '<td class="' +
           tdClasses.join(' ') +
@@ -326,6 +327,7 @@ export default function Table(data, elem, fixedElem, topOffset, leftOffset) {
             field
           ) +
           '</td>';
+        */
       }
 
       rowHtml += html;

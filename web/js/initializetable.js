@@ -111,7 +111,7 @@ export default function initializeTableWithData(
   ]);
 
   const fixedHeaders = [
-    { field: 'row', title: 'Row' }, // Note that this is a hack: the row # displayed is always set sequentially (see tabletools generateRowHtml)
+    /*{ field: 'row', title: 'Row' },*/ // Note that this is a hack: the row # displayed is always set sequentially (see tabletools generateRowHtml)
     {
       field: 'worksheet',
       title: 'WS',
