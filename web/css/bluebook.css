@@ -26,6 +26,9 @@ body {
   white-space: normal;
   overflow: visible;
 }
+.dataTable td._worksheet {
+    text-align: center;
+}
 
 .dataTable td.lastfixed {
   border-right: 2px solid #eee;
