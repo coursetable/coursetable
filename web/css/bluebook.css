@@ -21,6 +21,7 @@ body {
 .dataTable td {
   white-space: nowrap;
   overflow: hidden;
+  border-top: none;
 }
 .dataTable td td {
   white-space: normal;
