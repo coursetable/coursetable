@@ -145,6 +145,14 @@ function createEvent($classData, $season)
     $event->setDtEnd(new DateTime($firstClassDay . ' '
         . $classTimes['endHour'] . ':' . $classTimes['endMin']));
 
+    $classLocation = $classData['locations_summary'];
+    if ($classLocation == "") {
+        $event->setLocation('TBD');
+    }
+    else {
+        $event->setLocation($classLocation);
+    }
+
     $event->setSummary("{$classData['subject']} {$classData['number']} {$classData['section']}");
     $event->setDescription("{$classData['long_title']}" . "\n" .
         "http://coursetable.com/Table/" . "{$season}/" . "course/" .
