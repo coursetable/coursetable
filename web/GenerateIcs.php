@@ -148,8 +148,7 @@ function createEvent($classData, $season)
     $classLocation = $classData['locations_summary'];
     if ($classLocation == "") {
         $event->setLocation('TBD');
-    }
-    else {
+    } else {
         $event->setLocation($classLocation);
     }
 
