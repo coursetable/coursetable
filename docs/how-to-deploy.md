@@ -7,6 +7,7 @@
 ```sh
 git pull # Get changes onto server
 cd web
+yarn # Install packages
 yarn webpack # Builds newer Javascript
 php tools/Build.php # Builds older Javascript
 ```

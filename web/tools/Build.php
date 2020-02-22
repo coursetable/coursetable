@@ -5,7 +5,7 @@ $templates = array(
     'BluebookPerUser.tpl' => 'BluebookPerUserCompressed.tpl'
 );
 
-$scriptsDir = __DIR__ . '/../node_modules/.bin';
+$scriptsDir = __DIR__ . '/../../node_modules/.bin';
 
 foreach ($templates as $file => $compressed) {
     $templateFile = $filePath . '/templates/' . $file;
@@ -62,7 +62,7 @@ foreach ($templates as $file => $compressed) {
     $template = preg_replace($jsPattern, '', $template);
     $jsString = <<<END
 <script>
-console.log = function() {};
+//console.log = function() {};
 </script>
 <script src="{$allJsFileWithHash}"></script>
 END;
