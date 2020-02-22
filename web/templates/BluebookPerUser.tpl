@@ -218,7 +218,9 @@ for compressibility purposes by tools/build.php
 				<ul class="dropdown-menu" role="menu" aria-labelledby="drop1">
 					{include file='SeasonsDropdown.tpl' availableSeasons=$availableSeasons season=$season}
 					<li>
-						<a tabindex="-1" href="/EnableEvaluations">Enable evaluations</a>
+            {if !$evaluationsEnabled}
+              <a tabindex="-1" href="/EnableEvaluations">Enable evaluations</a>
+            {/if}
 						<a tabindex="-1" href="/Blog">Events of 2014 Spring</a>
                         <a tabindex="-1" href="?disconnect_facebook">Disconnect Facebook</a>
 						<a tabindex="-1" href="?logout">Sign out</a>
