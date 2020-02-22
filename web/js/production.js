@@ -1,2 +1,2 @@
 //console.log = function() {};
-console.log("Coursetable.");
+console.log('Coursetable.');
