@@ -6,6 +6,7 @@
 
 ```sh
 git pull # Get changes onto server
+npm install # Install packages
 cd web
 yarn webpack # Builds newer Javascript
 php tools/Build.php # Builds older Javascript

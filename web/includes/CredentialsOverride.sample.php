@@ -10,3 +10,5 @@ define('MYSQL_DATABASE', 'yale_advanced_oci');
 
 define('FACEBOOK_APP_ID', '<facebook_app_id>');
 define('FACEBOOK_APP_SECRET', '<facebook_app_secret>');
+
+define('IS_DEVELOPMENT', true);
