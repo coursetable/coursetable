@@ -86,6 +86,9 @@ function toggleTimetable(visible) {
 }
 
 function loadData(season, callback) {
+  worksheetManager.hideWorksheetButtons(); // Hides 3 worksheet buttons at top of screen
+  toggleTimetable(false); // Turns off timetable view if you were in it
+  $('.worksheet-only-btn').text("Worksheet"); // Change "All courses" button to "Worksheet"
   $('.loading').show();
   $('#extra-loading').text('');
 
@@ -202,9 +205,6 @@ function loadData(season, callback) {
       'json'
     );
   });
-  worksheetManager.hideWorksheetButtons(); // Hides 3 worksheet buttons at top of screen
-  toggleTimetable(false); // Turns off timetable view if you were in it
-  $('.worksheet-only-btn').text("Worksheet"); // Change "All courses" button to "Worksheet"
 }
 
 /**
