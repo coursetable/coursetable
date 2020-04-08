@@ -95,6 +95,7 @@ unset($_SESSION['forceFull']);
 $smarty->assign('season', $season);
 $smarty->assign('courses', $coursesByDay);
 $smarty->assign('availableSeasons', $allSeasons);
+$smarty->assign('netId', $netId);
 
 // while ($cj->nextItem()) {
     // print_r($cj->info);
