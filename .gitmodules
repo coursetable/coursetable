@@ -1,3 +1,0 @@
-[submodule "crawler"]
-	path = crawler
-	url = https://github.com/hsheth2/coursetable-crawler

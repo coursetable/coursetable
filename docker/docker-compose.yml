@@ -1,24 +1,33 @@
 version: '3.2'
 services:
-  reverse-proxy:
-    # The official v2.0 Traefik docker image
-    image: traefik:v2.0
-    # Enables the web UI and tells Traefik to listen to docker
-    command: --log.level=INFO --api.insecure=true --providers.docker --entrypoints.web.address=:80 --entrypoints.websecure.address=:443
+  proxy:
+    image: node:latest
     ports:
-      # The HTTP port
-      - "8078:80"
-      # The HTTPS port
-      - "8080:443"
-      # The Web UI (enabled by --api.insecure=true)
-      - "8090:8080"
+      - '8080:8080'
     volumes:
-      # So that Traefik can listen to the Docker events
-      - /var/run/docker.sock:/var/run/docker.sock
+      - ../dev_proxy:/app
+    command: sh -c 'cd /app && yarn && node proxy.js'
+    links:
+      - frontend
+      - nginx
+
+  frontend:
+    image: node:latest
+    ports:
+      - '3000:3000'
+    expose: 
+      - '3000'
+    volumes:
+      - ../frontend:/app
+    command: sh -c 'cd /app && yarn && yarn start'
+    tty: true  # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+
   nginx:
     build: ./nginx
     ports:
       - '8079:8080'
+    expose: 
+      - '8080'
     volumes:
       - ..:/usr/share/nginx/html
       # Overwrite the default configuration. Our conf is based on it
@@ -28,25 +37,17 @@ services:
       - mysql
     links:
       - php-fpm
-    labels:
-      traefik.enable: 'true'
-      traefik.http.routers.coursetable-main.rule: HostRegexp(`{catchall:.*}`)
-      traefik.http.routers.coursetable-main-ssl.tls: 'true'
-      traefik.http.routers.coursetable-main-ssl.rule: HostRegexp(`{catchall:.*}`)
-      traefik.http.services.coursetable-nginx.loadbalancer.server.port: '8080'
 
-  # Run a single script to make sure we have data files
+  # Ensure php deps are installed
   php:
     build: ./php
     volumes:
       - ..:/var/www/html
-    command: sh -c 'php composer.phar install && /wait-for mysql:3306 -t 300 -- php scripts/RegenerateDataFiles.php --dev'
+    command: sh -c 'php composer.phar install'
     working_dir: /var/www/html
-    depends_on:
-      - mysql
 
   php-fpm:
-    env_file: ../crawler/facebook.env
+    env_file: ../facebook.env
     build: ./php
     volumes:
       - ..:/usr/share/nginx/html
@@ -75,10 +76,3 @@ services:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
       - '8081:80'
-
-  nodejs:
-    image: node:lts-alpine
-    volumes:
-      - ..:/var/www/html
-    working_dir: /var/www/html
-    command: npm run install-and-watch
