@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,25 +6,16 @@ import {
   Redirect,
 } from "react-router-dom";
 import Login from './pages/Login';
-import axios from 'axios';
+import { useUser } from './user';
 
 function App() {
-  const [worksheet, setWorksheet] = useState(null);
-
-  const fetchUserInfo = async () => {
-    const res = await axios.get('/legacy_api/WorksheetActions.php?action=get&season=202001');
-    if (!res.data.success) {
-      throw res.data;
-    }
-
-    const worksheet = res.data.data;
-    console.log(worksheet);
-    setWorksheet(worksheet);
-  }
+  const { user, userRefresh } = useUser();
 
   useEffect(() => {
-    fetchUserInfo();
-  }, [])
+    userRefresh();
+  }, []);
+
+  const isLoggedIn = Boolean(user.worksheet !== null);
 
   return (
     <Router>
@@ -41,7 +32,7 @@ function App() {
             */}
             <Redirect to="/" />
           </Route>
-          {worksheet ? <>
+          {isLoggedIn ? <>
             <Route exact path="/">
               <p>hi this is some content</p>
             </Route>
