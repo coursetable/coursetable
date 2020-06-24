@@ -21,8 +21,21 @@ function App() {
     <Router>
       <div>
         <Switch>
+          {/* Public Routes */}
+          <Route exact path="/">
+            <p>this is a home page</p>
+          </Route>
+          <Route exact path="/about">
+            <p>this is an about page</p>
+          </Route>
+
+          {/* Auth Wall */}
           <Route exact path="/login">
-            <Login />
+            {isLoggedIn ?
+              <Redirect to="/" />
+              :
+              <Login />
+            }
           </Route>
           <Route exact path="/Table">
             {/*
@@ -32,17 +45,21 @@ function App() {
             */}
             <Redirect to="/" />
           </Route>
-          {isLoggedIn ? <>
+
+          {/* Private Routes */}
+          {isLoggedIn && <>
             <Route exact path="/">
               <p>hi this is some content</p>
             </Route>
-            <Route path="/">
+          </>
+          }
+
+          {/* Catch-all Route */}
+          <Route path="/">
+            {isLoggedIn ?
               <p>404 page not found</p>
-            </Route>
-          </> : <>
-              {/* Redirect to login page if not currently logged in */}
-              < Route path="/"><Redirect to="/login" /></Route>
-            </>}
+              : <Redirect to="/login" />}
+          </Route>
         </Switch>
       </div>
     </Router >
