@@ -15,6 +15,7 @@ app.use('/legacy_api', createProxyMiddleware({
 
 app.use('/', createProxyMiddleware({
   target: 'http://frontend:3000',
+  ws: true,
 }));
 
 // Serve with SSL.

@@ -6,6 +6,7 @@ services:
       - '8080:8080'
     volumes:
       - ../dev_proxy:/app
+    user: $USER
     command: sh -c 'cd /app && yarn && node proxy.js'
     links:
       - frontend
@@ -19,6 +20,7 @@ services:
       - '3000'
     volumes:
       - ../frontend:/app
+    user: $USER
     command: sh -c 'cd /app && yarn && yarn start'
     tty: true  # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
 
