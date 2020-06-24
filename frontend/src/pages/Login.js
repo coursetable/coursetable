@@ -1,15 +1,9 @@
 import React from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link
-} from "react-router-dom";
 
 function App() {
   return (
     <p>
-      this is the login page
+      <a href="/legacy_api/index.php?forcelogin=1">Click here to log in</a>
     </p>
   );
 }
