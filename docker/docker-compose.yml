@@ -6,7 +6,7 @@ services:
       - '8080:8080'
     volumes:
       - ../dev_proxy:/app
-    user: $USER
+    user: '1000'
     command: sh -c 'cd /app && yarn && node proxy.js'
     links:
       - frontend
@@ -16,19 +16,19 @@ services:
     image: node:latest
     ports:
       - '3000:3000'
-    expose: 
+    expose:
       - '3000'
     volumes:
       - ../frontend:/app
-    user: $USER
+    user: '1000'
     command: sh -c 'cd /app && yarn && yarn start'
-    tty: true  # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+    tty: true # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
 
   nginx:
     build: ./nginx
     ports:
       - '8079:8080'
-    expose: 
+    expose:
       - '8080'
     volumes:
       - ..:/usr/share/nginx/html

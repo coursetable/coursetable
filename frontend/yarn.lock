@@ -8830,7 +8830,16 @@ react-scripts@3.4.1:
   optionalDependencies:
     fsevents "2.1.2"
 
-react-transition-group@^4.0.0:
+react-toastify@^6.0.6:
+  version "6.0.6"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-6.0.6.tgz#7409ef8e89d12492308a8e561317031b5d90615e"
+  integrity sha512-NdHiMhj76Z877kZlXuelVfJONslvpmDTL95FVAoBy2kkU75hiqR5+pu1GdJZfRWPhen9ecdb58d3HmefaJ06Yw==
+  dependencies:
+    classnames "^2.2.6"
+    prop-types "^15.7.2"
+    react-transition-group "^4.4.1"
+
+react-transition-group@^4.0.0, react-transition-group@^4.4.1:
   version "4.4.1"
   resolved "https://registry.yarnpkg.com/react-transition-group/-/react-transition-group-4.4.1.tgz#63868f9325a38ea5ee9535d828327f85773345c9"
   integrity sha512-Djqr7OQ2aPUiYurhPalTrVy9ddmFCCzwhqQmtN+J3+3DzLO209Fdr70QrN8Z3DsglWql6iY1lDWAfpFiBtuKGw==

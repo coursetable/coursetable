@@ -22,9 +22,6 @@ function App() {
       <div>
         <Switch>
           {/* Public Routes */}
-          <Route exact path="/">
-            <p>this is a home page</p>
-          </Route>
           <Route exact path="/about">
             <p>this is an about page</p>
           </Route>
