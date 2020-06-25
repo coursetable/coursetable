@@ -4,7 +4,7 @@ import {
   Switch,
   Route,
   Redirect,
-} from "react-router-dom";
+} from 'react-router-dom';
 import Login from './pages/Login';
 import { useUser } from './user';
 
@@ -13,7 +13,7 @@ function App() {
 
   useEffect(() => {
     userRefresh();
-  }, []);
+  }, [userRefresh]);
 
   const isLoggedIn = Boolean(user.worksheet !== null);
 
@@ -31,11 +31,7 @@ function App() {
 
           {/* Auth Wall */}
           <Route exact path="/login">
-            {isLoggedIn ?
-              <Redirect to="/" />
-              :
-              <Login />
-            }
+            {isLoggedIn ? <Redirect to="/" /> : <Login />}
           </Route>
           <Route exact path="/Table">
             {/*
@@ -47,22 +43,21 @@ function App() {
           </Route>
 
           {/* Private Routes */}
-          {isLoggedIn && <>
-            <Route exact path="/">
-              <p>hi this is some content</p>
-            </Route>
-          </>
-          }
+          {isLoggedIn && (
+            <>
+              <Route exact path="/">
+                <p>hi this is some content</p>
+              </Route>
+            </>
+          )}
 
           {/* Catch-all Route */}
           <Route path="/">
-            {isLoggedIn ?
-              <p>404 page not found</p>
-              : <Redirect to="/login" />}
+            {isLoggedIn ? <p>404 page not found</p> : <Redirect to="/login" />}
           </Route>
         </Switch>
       </div>
-    </Router >
+    </Router>
   );
 }
 
