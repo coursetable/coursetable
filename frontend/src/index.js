@@ -10,11 +10,21 @@ import { UserProvider } from './user';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
+
+const client = new ApolloClient({
+  uri: '/ferry/v1/graphql',
+  // TODO: add apollo in memory cache
+});
+
 ReactDOM.render(
   <React.StrictMode>
-    <UserProvider>
-      <App />
-    </UserProvider>
+    <ApolloProvider client={client}>
+      <UserProvider>
+        <App />
+      </UserProvider>
+    </ApolloProvider>
     {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
     <ToastContainer />
   </React.StrictMode>,
