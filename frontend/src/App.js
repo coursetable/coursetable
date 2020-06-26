@@ -6,6 +6,7 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Login from './pages/Login';
+import Navbar from './components/Navbar'
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -44,6 +45,7 @@ function App() {
   return (
     <Router>
       <div>
+        {isLoggedIn ? <Navbar /> : <Login />}
         <Switch>
           {/* Public Routes */}
           <MyRoute exact path="/about">
