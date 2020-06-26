@@ -11,7 +11,7 @@ export const UserProvider = ({ children }) => {
   const userRefresh = useCallback(
     async (suppressError = false) => {
       const res = await axios.get(
-        '/legacy_api/WorksheetActions.php?action=get&season=202001'
+        '/legacy_api/WorksheetActions.php?action=get&season=all'
       );
       if (!res.data.success) {
         setWorksheet(null);

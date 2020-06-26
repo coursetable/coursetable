@@ -75,20 +75,34 @@ function retrieveWorksheetOciIds($netId, $season = null)
 {
     global $mysqli;
     $worksheet = new MysqlTable($mysqli, 'worksheet_courses');
-    $worksheet->setColumns(array('oci_id'));
-    $worksheet->addCond('net_id', $netId);
-    if (isset($season)) {
-        $worksheet->addCond('season', $season);
-    }
-    $worksheet->addOrderBy('oci_id', 'ASC');
-    $worksheet->select();
+    if ($season === 'all') {
+        $worksheet->setColumns(array('season', 'oci_id'));
+        $worksheet->addCond('net_id', $netId);
+        $worksheet->addOrderBy('oci_id', 'ASC');
+        $worksheet->select();
 
-    $worksheetData = array();
-    while ($worksheet->nextItem()) {
-        $worksheetData[] = $worksheet->info['oci_id'];
-    }
+        $worksheetData = array();
+        while ($worksheet->nextItem()) {
+            $worksheetData[] = array($worksheet->info['season'], $worksheet->info['oci_id']);
+        }
 
-    return $worksheetData;
+        return $worksheetData;
+    } else {
+        $worksheet->setColumns(array('oci_id'));
+        $worksheet->addCond('net_id', $netId);
+        if (isset($season)) {
+            $worksheet->addCond('season', $season);
+        }
+        $worksheet->addOrderBy('oci_id', 'ASC');
+        $worksheet->select();
+
+        $worksheetData = array();
+        while ($worksheet->nextItem()) {
+            $worksheetData[] = $worksheet->info['oci_id'];
+        }
+
+        return $worksheetData;
+    }
 }
 
 /**
@@ -184,6 +198,8 @@ if ($success) {
         addToWorksheet($netId, $ociId, $season);
     } elseif ($action === 'remove') {
         removeFromWorksheet($netId, $ociId, $season);
+    } elseif ($action === 'get' && $season === 'all') {
+        retrieveWorksheetOciIdsJson($netId, 'all');
     } else {
         retrieveWorksheetOciIdsJson($netId, $season);
     }
