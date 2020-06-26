@@ -1,0 +1,22 @@
+.navbar {
+  background: #445;
+}
+
+.coursetable_logo {
+  font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman, serif;
+  font-size: 1.25rem !important;
+  color:white;
+  padding: 0.3125rem 0rem !important;
+  margin-right: 1rem !important;
+}
+
+.navbar_links {
+  color:white !important; 
+  padding: 8px 15px !important;
+  transition:0.5s ease;
+}
+
+.navbar_links:hover{
+  background-color:rgb(30, 115, 184) !important;
+  text-decoration: none !important;
+}
