@@ -18,6 +18,17 @@ app.use(
 );
 
 app.use(
+  '/ferry',
+  createProxyMiddleware({
+    target: 'http://graphql-engine:8080',
+    pathRewrite: {
+      '^/ferry': '/', // remove base path
+    },
+    ws: true,
+  })
+);
+
+app.use(
   '/',
   createProxyMiddleware({
     target: 'http://frontend:3000',
