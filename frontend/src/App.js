@@ -14,7 +14,7 @@ function App() {
   const { user, userRefresh } = useUser();
 
   useEffect(() => {
-    userRefresh(true).finally(() => setLoading(true));
+    userRefresh(true).finally(() => setLoading(false));
   }, [userRefresh]);
 
   const isLoggedIn = Boolean(user.worksheet !== null);

@@ -1,0 +1,18 @@
+.container {
+  height: 100vh;
+}
+
+.coursetable_window{
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-radius: 25px !important;
+  background-color: #445 !important;
+  padding: 32px !important;
+  color: white;
+}
+
+.coursetable_logo {
+  font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman, serif;
+}
