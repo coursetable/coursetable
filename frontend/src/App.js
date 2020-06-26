@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -7,51 +7,71 @@ import {
 } from 'react-router-dom';
 import Login from './pages/Login';
 import { useUser } from './user';
+import Spinner from 'react-bootstrap/Spinner';
 
 function App() {
+  const [loading, setLoading] = useState(true);
   const { user, userRefresh } = useUser();
 
   useEffect(() => {
-    userRefresh();
+    userRefresh(true).finally(() => setLoading(true));
   }, [userRefresh]);
 
   const isLoggedIn = Boolean(user.worksheet !== null);
+
+  const MyRoute = useCallback(
+    ({ children, isRoutePrivate, ...rest }) => {
+      let contents;
+      if (isRoutePrivate && !isLoggedIn) {
+        contents = <Redirect to="/login" />;
+      } else {
+        contents = children;
+      }
+
+      return <Route {...rest}>{contents}</Route>;
+    },
+    [isLoggedIn]
+  );
+
+  if (loading) {
+    return (
+      <Spinner animation="border" role="status">
+        <span className="sr-only">Loading...</span>
+      </Spinner>
+    );
+  }
 
   return (
     <Router>
       <div>
         <Switch>
           {/* Public Routes */}
-          <Route exact path="/about">
+          <MyRoute exact path="/about">
             <p>this is an about page</p>
-          </Route>
+          </MyRoute>
 
-          {/* Auth Wall */}
-          <Route exact path="/login">
+          {/* Auth */}
+          <MyRoute exact path="/login">
             {isLoggedIn ? <Redirect to="/" /> : <Login />}
-          </Route>
-          <Route exact path="/Table">
+          </MyRoute>
+          <MyRoute exact path="/Table">
             {/*
               This route exists for compatability with the old authentication system.
               The PHP code will redirect to /Table upon a successful login.
               Once the PHP-based auth system is removed, this route can also be removed.
             */}
             <Redirect to="/" />
-          </Route>
+          </MyRoute>
 
           {/* Private Routes */}
-          {isLoggedIn && (
-            <>
-              <Route exact path="/">
-                <p>hi this is some content</p>
-              </Route>
-            </>
-          )}
+          <MyRoute isRoutePrivate={true} exact path="/">
+            <p>hi this is some content</p>
+          </MyRoute>
 
           {/* Catch-all Route */}
-          <Route path="/">
-            {isLoggedIn ? <p>404 page not found</p> : <Redirect to="/login" />}
-          </Route>
+          <MyRoute path="/">
+            <p>404 page not found</p>
+          </MyRoute>
         </Switch>
       </div>
     </Router>
