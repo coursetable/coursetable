@@ -13,6 +13,7 @@ function App() {
         </NavLink>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
+
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav >
             <NavLink to='/table' className={styles.navbar_links}>Courses</NavLink>

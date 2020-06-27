@@ -6,7 +6,8 @@ import {
   Redirect,
 } from 'react-router-dom';
 import Login from './pages/Login';
-import Navbar from './components/Navbar'
+import Navbar from './components/Navbar';
+import About from './pages/About';
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -49,7 +50,7 @@ function App() {
         <Switch>
           {/* Public Routes */}
           <MyRoute exact path="/about">
-            <p>this is an about page</p>
+            <About />
           </MyRoute>
 
           {/* Auth */}
