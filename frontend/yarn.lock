@@ -5002,7 +5002,7 @@ graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2, graceful-fs@^4.1.6
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.4.tgz#2256bde14d3632958c465ebc96dc467ca07a29fb"
   integrity sha512-WjKPNJF79dtJAVniUlGGWHYGz2jWxT6VhN/4m1NdkbZ2nOsEF+cI1Edgql5zCRhs/VsQYRvrXctxktVXZUkixw==
 
-graphql-tag@^2.4.2:
+graphql-tag@^2.10.3, graphql-tag@^2.4.2:
   version "2.10.3"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.10.3.tgz#ea1baba5eb8fc6339e4c4cf049dabe522b0edf03"
   integrity sha512-4FOv3ZKfA4WdOKJeHdz6B3F/vxBLSgmBcGeAFPf4n1F64ltJUvOOerNj0rsJxONQGdhUMynQIvd6LzB+1J5oKA==
@@ -5367,6 +5367,11 @@ immer@1.10.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/immer/-/immer-1.10.0.tgz#bad67605ba9c810275d91e1c2a47d4582e98286d"
   integrity sha512-O3sR1/opvCDGLEVcvrGTMtLac8GJ5IwZC4puPrLuRj3l7ICKvkmA0vGuU9OW8mV9WIBRnaxp5GJh9IEAaNOoYg==
+
+immutable@3.8.2:
+  version "3.8.2"
+  resolved "https://registry.yarnpkg.com/immutable/-/immutable-3.8.2.tgz#c2439951455bb39913daf281376f1530e104adf3"
+  integrity sha1-wkOZUUVbs5kT2vKBN28VMOEErfM=
 
 import-cwd@^2.0.0:
   version "2.1.0"
@@ -8760,6 +8765,16 @@ react-bootstrap@^1.0.1:
     react-transition-group "^4.0.0"
     uncontrollable "^7.0.0"
     warning "^4.0.3"
+
+react-data-grid-addons@5.0.4:
+  version "5.0.4"
+  resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-5.0.4.tgz#2e07b891bbdb241cae7c9337554e1a59628a9978"
+  integrity sha512-bH7d+R04k8D2E9mx12Sm0CsoraDbFQgiRPp8rsF8E8FDCjhw6R1VF1Q2rpmDKfiguz9ol9IXd8Hpo+Bov8OQ8Q==
+
+react-data-grid@5.0.1:
+  version "5.0.1"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-5.0.1.tgz#c9c5313f667f5571a46a2a8292701bad5affcf1c"
+  integrity sha512-6P5PHm4GHSAtiJ7k9lZwIGdql4ZUqGx9ExOc0EHwQjktIp5SIgEPm35Tj+mPWY7ICBC7v73l/7Hu1QbayCul6g==
 
 react-dev-utils@^10.2.1:
   version "10.2.1"

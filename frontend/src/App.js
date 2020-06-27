@@ -8,6 +8,8 @@ import {
 import Login from './pages/Login';
 import Navbar from './components/Navbar';
 import About from './pages/About';
+import Courses from './pages/Courses';
+
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
 
@@ -51,6 +53,10 @@ function App() {
           {/* Public Routes */}
           <MyRoute exact path="/about">
             <About />
+          </MyRoute>
+
+          <MyRoute exact path="/courses">
+            <Courses />
           </MyRoute>
 
           {/* Auth */}
