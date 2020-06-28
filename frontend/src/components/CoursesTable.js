@@ -3,6 +3,10 @@ import React, { Component, useState } from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data, Filters } from 'react-data-grid-addons';
 
+import { AutoSizer, List } from 'react-virtualized';
+
+import styles from './CoursesTable.module.css';
+
 export default class CoursesTable extends React.Component {
 	constructor(props) {
 		super(props);
@@ -46,12 +50,18 @@ export default class CoursesTable extends React.Component {
 		} = Filters;
 		const columns = [
 			{
-			  key: 'subject',
-			  name: 'Subject',
+				key: 'subject',
+				name: 'Subject',
+				width: 80,
 			},
 			{
 				key: 'number',
 				name: 'Number',
+				width: 80,
+			},
+			{
+				key: 'course.title',
+				name: 'Title',
 			},
 		].map(c => ({ ...c, ...defaultColumnProperties }));
 
@@ -81,23 +91,30 @@ export default class CoursesTable extends React.Component {
 			const [filters, setFilters] = useState({});
 			const filteredRows = getRows(rows, filters);
 			return (
-				<ReactDataGrid
-					columns={columns}
-					rowGetter={i => filteredRows[i]}
-					rowsCount={filteredRows.length}
-					minHeight={500}
-					toolbar={<Toolbar enableFilter={true} />}
-					onAddFilter={filter => setFilters(handleFilterChange(filter))}
-					onClearFilters={() => setFilters({})}
-					getValidFilterValues={columnKey =>
-						getValidFilterValues(rows, columnKey)
-					}
-				/>
+				<div style={{ flex: '1 1 auto', height:"100%" }}>
+				<AutoSizer>
+					{({ height, width }) => (
+						<ReactDataGrid
+							columns={columns}
+							rowGetter={i => filteredRows[i]}
+							rowsCount={filteredRows.length}
+							toolbar={<Toolbar enableFilter={true} />}
+							onAddFilter={filter => setFilters(handleFilterChange(filter))}
+							onClearFilters={() => setFilters({})}
+							getValidFilterValues={columnKey =>
+								getValidFilterValues(rows, columnKey)
+							}
+							minWidth={width}
+							minHeight={height - 64}
+						/>
+					)}
+				</AutoSizer>
+				</div>
 			);
 		}
 
 		return (
-			<div>
+			<div className={styles.table}>
 				{this.props.courses ? (
 					<CoursesDataGrid rows={this.props.courses} />
 				) : (

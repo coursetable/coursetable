@@ -5,6 +5,7 @@ import CoursesTable from '../components/CoursesTable'
 
 import styles from './Courses.module.css';
 
+import flatten from '../utilities'
 
 function App() {
 
@@ -12,9 +13,7 @@ function App() {
 
   if (loading | error) return <div>Loading...</div>;
 
-  console.log(data);
-
-  return <CoursesTable courses={data.listings}/>;
+  return <CoursesTable courses={data.listings.map((x)=>{return flatten(x)})}/>;
 }
 
 export default App;

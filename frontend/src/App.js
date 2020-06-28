@@ -47,7 +47,7 @@ function App() {
 
   return (
     <Router>
-      <div>
+      <div id="base">
         {isLoggedIn ? <Navbar /> : <Login />}
         <Switch>
           {/* Public Routes */}

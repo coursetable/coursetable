@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 
 function App() {
   return (
-    <div className={styles.container}>
+    <div className={styles.navbar}>
       <Navbar sticky="top" expand="lg" className={styles.navbar}>
         <NavLink to='/' activeStyle={{ textDecoration: 'none' }}>
           <span className={styles.coursetable_logo}>Course<span style={{ color: '#92bcea' }}>Table</span></span>
