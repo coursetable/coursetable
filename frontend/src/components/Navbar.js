@@ -1,6 +1,7 @@
 import React from 'react';
 
 import styles from './Navbar.module.css';
+import common_styles from '../styles/common.module.css';
 import { Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 
@@ -9,7 +10,7 @@ function App() {
     <div className={styles.navbar}>
       <Navbar sticky="top" expand="lg" className={styles.navbar}>
         <NavLink to='/' activeStyle={{ textDecoration: 'none' }}>
-          <span className={styles.coursetable_logo}>Course<span style={{ color: '#92bcea' }}>Table</span></span>
+          <span className={common_styles.coursetable_logo}>Course<span style={{ color: '#92bcea' }}>Table</span></span>
         </NavLink>
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />

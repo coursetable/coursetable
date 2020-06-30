@@ -60,6 +60,11 @@ export default class CoursesTable extends React.Component {
 				width: 80,
 			},
 			{
+				key: 'section',
+				name: 'Section',
+				width: 40,
+			},
+			{
 				key: 'course.title',
 				name: 'Title',
 			},

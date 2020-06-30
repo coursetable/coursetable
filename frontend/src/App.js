@@ -7,6 +7,8 @@ import {
 } from 'react-router-dom';
 import Login from './pages/Login';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
+
 import About from './pages/About';
 import Courses from './pages/Courses';
 
@@ -48,7 +50,7 @@ function App() {
   return (
     <Router>
       <div id="base">
-        {isLoggedIn ? <Navbar /> : <Login />}
+        <Navbar />
         <Switch>
           {/* Public Routes */}
           <MyRoute exact path="/about">
@@ -63,14 +65,6 @@ function App() {
           <MyRoute exact path="/login">
             {isLoggedIn ? <Redirect to="/" /> : <Login />}
           </MyRoute>
-          <MyRoute exact path="/Table">
-            {/*
-              This route exists for compatability with the old authentication system.
-              The PHP code will redirect to /Table upon a successful login.
-              Once the PHP-based auth system is removed, this route can also be removed.
-            */}
-            <Redirect to="/" />
-          </MyRoute>
 
           {/* Private Routes */}
           <MyRoute isRoutePrivate={true} exact path="/">
@@ -82,6 +76,7 @@ function App() {
             <p>404 page not found</p>
           </MyRoute>
         </Switch>
+        <Footer />
       </div>
     </Router>
   );
