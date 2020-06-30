@@ -68,6 +68,8 @@ const QUERY_LISTINGS_WITH_EVALS = gql`
 `;
 
 function preprocess_courses(listing) {
+
+	// trim decimal points in ratings floats
 	const RATINGS_PRECISION = 1;
 
 	if ('course.skills' in listing) {
@@ -106,13 +108,14 @@ function preprocess_courses(listing) {
 		'course.course_professors' in listing &&
 		listing['course.course_professors'].length > 0
 	) {
-		
+
 		listing['professors'] = listing['course.course_professors']
 			.map(x => {
 				return x['professor']['name'];
 			})
 			.join(', ');
 
+		// for the average professor rating, take the first professor
 		const professor = listing['course.course_professors'][0]['professor'];
 
 		if ('average_rating' in professor && professor['average_rating'] !== null) {

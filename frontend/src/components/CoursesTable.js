@@ -17,37 +17,15 @@ export default class CoursesTable extends React.Component {
 			filterable: true,
 		};
 
-		const test_courses = [
-			{
-				id: 1,
-				subject: 'CPSC',
-				number: '223',
-				section: '1',
-				title: 'Data Structures and Programming Techniques',
-			},
-			{
-				id: 2,
-				subject: 'MATH',
-				number: '230',
-				section: '1',
-				title: 'Vector Calculus and Linear Algebra I',
-			},
-			{
-				id: 3,
-				subject: 'PLSC',
-				number: '257',
-				section: '1',
-				title: 'Bioethics and Law',
-			},
-		];
-
 		const selectors = Data.Selectors;
+
 		const {
 			NumericFilter,
 			AutoCompleteFilter,
 			MultiSelectFilter,
 			SingleSelectFilter,
 		} = Filters;
+
 		const columns = [
 			{
 				key: 'subject',
@@ -142,24 +120,24 @@ export default class CoursesTable extends React.Component {
 			const [filters, setFilters] = useState({});
 			const filteredRows = getRows(rows, filters);
 			return (
-				<div style={{ flex: '1 1 auto', height:"100%" }}>
-				<AutoSizer>
-					{({ height, width }) => (
-						<ReactDataGrid
-							columns={columns}
-							rowGetter={i => filteredRows[i]}
-							rowsCount={filteredRows.length}
-							toolbar={<Toolbar enableFilter={true} />}
-							onAddFilter={filter => setFilters(handleFilterChange(filter))}
-							onClearFilters={() => setFilters({})}
-							getValidFilterValues={columnKey =>
-								getValidFilterValues(rows, columnKey)
-							}
-							minWidth={width}
-							minHeight={height - 64}
-						/>
-					)}
-				</AutoSizer>
+				<div style={{ flex: '1 1 auto', height: '100%' }}>
+					<AutoSizer>
+						{({ height, width }) => (
+							<ReactDataGrid
+								columns={columns}
+								rowGetter={i => filteredRows[i]}
+								rowsCount={filteredRows.length}
+								toolbar={<Toolbar enableFilter={true} />}
+								onAddFilter={filter => setFilters(handleFilterChange(filter))}
+								onClearFilters={() => setFilters({})}
+								getValidFilterValues={columnKey =>
+									getValidFilterValues(rows, columnKey)
+								}
+								minWidth={width}
+								minHeight={height - 64}
+							/>
+						)}
+					</AutoSizer>
 				</div>
 			);
 		}

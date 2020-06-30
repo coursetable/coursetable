@@ -47,7 +47,7 @@ function App() {
               <NavLink to='/joinus' className='text-light'>Join us</NavLink>
             </li>
             <li>
-              <NavLink to='/team' className='text-light'>GitHub</NavLink>
+              <a href='https://github.com/coursetable' className='text-light'>GitHub</a>
             </li>
           </ul>
         </div>
