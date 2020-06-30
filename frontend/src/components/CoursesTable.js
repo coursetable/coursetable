@@ -62,11 +62,57 @@ export default class CoursesTable extends React.Component {
 			{
 				key: 'section',
 				name: 'Section',
+				width: 80,
+			},
+			{
+				key: 'course.short_title',
+				name: 'Name',
+				width: 280,
+			},
+			{
+				key: 'course.times_summary',
+				name: 'Times',
+				width: 240,
+			},
+			{
+				key: 'enrolled',
+				name: '#',
 				width: 40,
 			},
 			{
-				key: 'course.title',
-				name: 'Title',
+				key: 'avg_rating',
+				name: 'Rated (class)',
+				width: 120,
+			},
+			{
+				key: 'professor_avg_rating',
+				name: 'Rated (prof)',
+				width: 120,
+			},
+			{
+				key: 'skills',
+				name: 'Skills',
+				width: 80,
+			},
+			{
+				key: 'areas',
+				name: 'Areas',
+				width: 80,
+			},
+			{
+				key: 'avg_workload',
+				name: 'Work',
+				width: 80,
+			},
+			{
+				key: 'professors',
+				name: 'Professor(s)',
+				width: 160,
+			},
+			{
+				key: 'course.locations_summary',
+				name: 'Location(s)',
+				width: 120,
 			},
 		].map(c => ({ ...c, ...defaultColumnProperties }));
 

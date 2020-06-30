@@ -5,15 +5,13 @@ import CoursesTable from '../components/CoursesTable'
 
 import styles from './Courses.module.css';
 
-import flatten from '../utilities'
-
 function App() {
 
-  const {loading, error, data} = FetchListings("201902")
+  const {loading, error, data} = FetchListings("201901")
 
-  if (loading | error) return <div>Loading...</div>;
+  if (loading || error) return <div>Loading...</div>;
 
-  return <CoursesTable courses={data.listings.map((x)=>{return flatten(x)})}/>;
+  return <CoursesTable courses={data}/>;
 }
 
 export default App;
