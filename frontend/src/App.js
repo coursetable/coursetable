@@ -5,12 +5,14 @@ import {
   Route,
   Redirect,
 } from 'react-router-dom';
-import Login from './pages/Login';
+
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+import Login from './pages/Login';
 import About from './pages/About';
 import Courses from './pages/Courses';
+import Worksheet from './pages/Worksheet';
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -64,6 +66,11 @@ function App() {
           {/* Auth */}
           <MyRoute exact path="/login">
             {isLoggedIn ? <Redirect to="/" /> : <Login />}
+          </MyRoute>
+
+          {/* Worksheet */}
+          <MyRoute exact path="/worksheet">
+            <Worksheet />
           </MyRoute>
 
           {/* Private Routes */}
