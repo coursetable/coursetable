@@ -3,10 +3,26 @@ import React, { useState } from 'react';
 import styles from './Search.module.css';
 import { Container, Row } from 'react-bootstrap';
 
-import { Form, FormControl, InputGroup, Button } from 'react-bootstrap';
+import {
+  Form,
+  FormControl,
+  FormCheck,
+  InputGroup,
+  Button,
+} from 'react-bootstrap';
 import Select from 'react-select';
 
 function App() {
+  var searchText = React.createRef();
+
+  var searchSort = React.createRef();
+  var searchSeasons = React.useState();
+  var searchSkillsAreas = React.useState();
+  var searchCredits = React.useState();
+
+  var [HideGraduate, setHideGraduate] = React.useState(true);
+  var [HideCancelled, setHideCancelled] = React.useState(true);
+
   const sorting = [
     { label: 'Course name (alphabetical)', value: 'course_name' },
     { label: 'Course subject', value: 'subject' },
@@ -79,17 +95,33 @@ function App() {
     </div>
   );
 
+  const handleSubmit = event => {
+    event.preventDefault();
+
+    console.log(searchText.value);
+    console.log(searchSort.select.props.value);
+    console.log(searchSeasons.select.props.value);
+    console.log(searchSkillsAreas.select.props.value);
+    console.log(searchCredits.select.props.value);
+    console.log(HideGraduate);
+    console.log(HideCancelled);
+    // code you want to do
+  };
+
   return (
     <div className={'py-5 ' + styles.search_base}>
       <Container className="col-md-6">
         <Row className="row-centered">
-          <Form className={styles.search_container}>
+          <Form className={styles.search_container} onSubmit={handleSubmit}>
             <div className={styles.search_bar}>
               <InputGroup className={styles.search_input}>
                 <FormControl
                   type="text"
                   placeholder="Find a class..."
                   size="lg"
+                  ref={ref => {
+                    searchText = ref;
+                  }}
                 />
               </InputGroup>
             </div>
@@ -101,26 +133,68 @@ function App() {
             >
               <div className="row py-2">
                 <div className="col-md-4">
-                  Sort by <Select defaultValue={sorting[0]} options={sorting} />
+                  Sort by{' '}
+                  <Select
+                    defaultValue={sorting[0]}
+                    options={sorting}
+                    ref={ref => {
+                      searchSort = ref;
+                    }}
+                  />
                 </div>
                 <div className="col-md-8">
                   Semesters{' '}
-                  <Select isMulti defaultValue={seasons[0]} options={seasons} />
+                  <Select
+                    isMulti
+                    defaultValue={[seasons[0]]}
+                    options={seasons}
+                    ref={ref => {
+                      searchSeasons = ref;
+                    }}
+                  />
                 </div>
               </div>
               <div className="row py-2">
                 <div className="col-md-8">
                   Skills and areas
-                  <Select isMulti options={skills_areas} placeholder="Any" />
+                  <Select
+                    isMulti
+                    options={skills_areas}
+                    placeholder="Any"
+                    ref={ref => {
+                      searchSkillsAreas = ref;
+                    }}
+                  />
                 </div>
                 <div className="col-md-4">
                   Number of credits
-                  <Select isMulti options={credits} placeholder="Any" />
+                  <Select
+                    isMulti
+                    options={credits}
+                    placeholder="Any"
+                    ref={ref => {
+                      searchCredits = ref;
+                    }}
+                  />
                 </div>
               </div>
               <div className="row px-3 py-2">
-                <Form.Check inline label="Hide graduate courses" />
-                <Form.Check inline label="Hide cancelled courses" />
+                <FormCheck type="switch" className={styles.toggle_option}>
+                  <FormCheck.Input checked={HideGraduate} />
+                  <FormCheck.Label
+                    onClick={() => setHideGraduate(!HideGraduate)}
+                  >
+                    Hide graduate courses
+                  </FormCheck.Label>
+                </FormCheck>
+                <Form.Check type="switch" className={styles.toggle_option}>
+                  <Form.Check.Input checked={HideCancelled} />
+                  <Form.Check.Label
+                    onClick={() => setHideCancelled(!HideCancelled)}
+                  >
+                    Hide cancelled courses
+                  </Form.Check.Label>
+                </Form.Check>
               </div>
               <div className="text-right">
                 <Button
