@@ -9,6 +9,7 @@ import {
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
+import Search from './pages/Search';
 import Login from './pages/Login';
 import About from './pages/About';
 import Courses from './pages/Courses';
@@ -57,6 +58,10 @@ function App() {
           {/* Public Routes */}
           <MyRoute exact path="/about">
             <About />
+          </MyRoute>
+
+          <MyRoute exact path="/search">
+            <Search />
           </MyRoute>
 
           <MyRoute exact path="/courses">

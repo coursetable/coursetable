@@ -1,0 +1,30 @@
+.search_base{
+	background-color: #F1F4F8;
+
+}
+
+.search_container{
+	width:100%;
+	border-radius: 8px;
+	border-radius: 0.5rem;
+	background-color: white;
+}
+
+.search_input input{
+	border: none;
+	border-radius: 0.5rem;
+	z-index:0;
+	margin: 0.5rem;
+	background-color: #F3F5F8;
+}
+
+.primary_submit{
+	margin: 0.5rem;
+	margin-left: 0rem;
+	border-radius: 1rem !important;
+	z-index:1;
+}
+
+.secondary_submit{
+	background-color: #2A6DC1 !important;
+}
