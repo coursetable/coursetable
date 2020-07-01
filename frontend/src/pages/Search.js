@@ -3,6 +3,11 @@ import React, { useState } from 'react';
 import styles from './Search.module.css';
 import { Container, Row } from 'react-bootstrap';
 
+import {SEARCH_COURSES} from '../queries/QueryStrings';
+import SearchResults from '../components/SearchResults';
+
+import { useLazyQuery } from '@apollo/react-hooks';
+
 import {
   Form,
   FormControl,
@@ -13,18 +18,20 @@ import {
 import Select from 'react-select';
 
 function App() {
-  var searchText = React.createRef();
+  var search_text = React.createRef();
 
-  var searchSort = React.createRef();
-  var searchSeasons = React.useState();
-  var searchSkillsAreas = React.useState();
-  var searchCredits = React.useState();
+  var sortby = React.createRef();
+  var seasons = React.useState();
+  var skills_areas = React.useState();
+  var credits = React.useState();
 
   var [HideGraduate, setHideGraduate] = React.useState(true);
   var [HideCancelled, setHideCancelled] = React.useState(true);
 
-  const sorting = [
-    { label: 'Course name (alphabetical)', value: 'course_name' },
+  var [submitted, setSubmitted] = React.useState(false);
+
+  const sortby_options = [
+    { label: 'Course name', value: 'course_name' },
     { label: 'Course subject', value: 'subject' },
     { label: 'Course number', value: 'number' },
     { label: 'Rating (same professor)', value: 'rating_same' },
@@ -33,14 +40,14 @@ function App() {
     { label: 'Enrollment', value: 'enrollment' },
   ];
 
-  const seasons = [
+  const seasons_options = [
     { label: 'Fall 2020', value: '202003' },
     { label: 'Summer 2020', value: '202002' },
     { label: 'Spring 2020', value: '202001' },
     { label: 'Fall 2019', value: '201903' },
   ];
 
-  const skills_areas = [
+  const skills_areas_options = [
     { label: 'Humanities', value: 'HU' },
     { label: 'Social sciences', value: 'SO' },
     { label: 'Quantitative reasoning', value: 'QR' },
@@ -54,59 +61,33 @@ function App() {
     { label: 'Language: L5', value: 'L5' },
   ];
 
-  const credits = [
+  const credits_options = [
     { label: '0.5', value: '0.5' },
     { label: '1', value: '1' },
     { label: '1.5', value: '1.5' },
     { label: '2', value: '2' },
   ];
 
-  const sorting_selector = (
-    <div className="row">
-      <div className="col-md-6">
-        Sort by <Select defaultValue={sorting[0]} options={sorting} />
-      </div>
-    </div>
-  );
-
-  const season_selector = (
-    <div className="row">
-      <div className="col-md-6">
-        Semesters <Select isMulti defaultValue={seasons[0]} options={seasons} />
-      </div>
-    </div>
-  );
-
-  const skills_areas_selector = (
-    <div className="row">
-      <div className="col-md-6">
-        Skills and areas
-        <Select isMulti options={skills_areas} placeholder="Any" />
-      </div>
-    </div>
-  );
-
-  const credits_selector = (
-    <div className="row">
-      <div className="col-md-6">
-        Number of credits
-        <Select isMulti options={credits} placeholder="Any" />
-      </div>
-    </div>
-  );
+  var [executeSearch, { called, loading, data }] = useLazyQuery(SEARCH_COURSES);
 
   const handleSubmit = event => {
     event.preventDefault();
 
-    console.log(searchText.value);
-    console.log(searchSort.select.props.value);
-    console.log(searchSeasons.select.props.value);
-    console.log(searchSkillsAreas.select.props.value);
-    console.log(searchCredits.select.props.value);
+    console.log(search_text.value);
+    console.log(sortby.select.props.value);
+    console.log(seasons.select.props.value);
+    console.log(skills_areas.select.props.value);
+    console.log(credits.select.props.value);
     console.log(HideGraduate);
     console.log(HideCancelled);
-    // code you want to do
+
+    executeSearch({ variables: { search_text: 'PLSC', seasons: '201903'} });
   };
+
+  if (data) {
+    console.log('Data:');
+    console.log(data);
+  }
 
   return (
     <div className={'py-5 ' + styles.search_base}>
@@ -120,7 +101,7 @@ function App() {
                   placeholder="Find a class..."
                   size="lg"
                   ref={ref => {
-                    searchText = ref;
+                    search_text = ref;
                   }}
                 />
               </InputGroup>
@@ -135,10 +116,10 @@ function App() {
                 <div className="col-md-4">
                   Sort by{' '}
                   <Select
-                    defaultValue={sorting[0]}
-                    options={sorting}
+                    defaultValue={sortby_options[0]}
+                    options={sortby_options}
                     ref={ref => {
-                      searchSort = ref;
+                      sortby = ref;
                     }}
                   />
                 </div>
@@ -146,10 +127,10 @@ function App() {
                   Semesters{' '}
                   <Select
                     isMulti
-                    defaultValue={[seasons[0]]}
-                    options={seasons}
+                    defaultValue={[seasons_options[0]]}
+                    options={seasons_options}
                     ref={ref => {
-                      searchSeasons = ref;
+                      seasons = ref;
                     }}
                   />
                 </div>
@@ -159,10 +140,10 @@ function App() {
                   Skills and areas
                   <Select
                     isMulti
-                    options={skills_areas}
+                    options={skills_areas_options}
                     placeholder="Any"
                     ref={ref => {
-                      searchSkillsAreas = ref;
+                      skills_areas = ref;
                     }}
                   />
                 </div>
@@ -170,10 +151,10 @@ function App() {
                   Number of credits
                   <Select
                     isMulti
-                    options={credits}
+                    options={credits_options}
                     placeholder="Any"
                     ref={ref => {
-                      searchCredits = ref;
+                      credits = ref;
                     }}
                   />
                 </div>
