@@ -3,8 +3,10 @@ import React, { useState } from 'react';
 import styles from './Search.module.css';
 import { Container, Row } from 'react-bootstrap';
 
-import {SEARCH_COURSES} from '../queries/QueryStrings';
-import SearchResults from '../components/SearchResults';
+import {
+  SEARCH_COURSES,
+  SEARCH_COURSES_TEXTLESS,
+} from '../queries/QueryStrings';
 
 import { useLazyQuery } from '@apollo/react-hooks';
 
@@ -31,6 +33,7 @@ function App() {
   var [submitted, setSubmitted] = React.useState(false);
 
   const sortby_options = [
+    { label: 'Relevance', value: 'text' },
     { label: 'Course name', value: 'course_name' },
     { label: 'Course subject', value: 'subject' },
     { label: 'Course number', value: 'number' },
@@ -68,20 +71,49 @@ function App() {
     { label: '2', value: '2' },
   ];
 
-  var [executeSearch, { called, loading, data }] = useLazyQuery(SEARCH_COURSES);
+  var [executeTextlessSearch, { called, loading, data }] = useLazyQuery(
+    SEARCH_COURSES_TEXTLESS
+  );
+  var [executeTextSearch, { called, loading, data }] = useLazyQuery(
+    SEARCH_COURSES
+  );
 
   const handleSubmit = event => {
     event.preventDefault();
 
-    console.log(search_text.value);
-    console.log(sortby.select.props.value);
-    console.log(seasons.select.props.value);
-    console.log(skills_areas.select.props.value);
-    console.log(credits.select.props.value);
-    console.log(HideGraduate);
-    console.log(HideCancelled);
+    // TODO:
+    //  - sorting
+    //  - filter by skills and areas
+    //  - filter by credit count
+    //  - hide grad and cancelled
 
-    executeSearch({ variables: { search_text: 'PLSC', seasons: '201903'} });
+    var processed_seasons = seasons.select.props.value;
+    if (processed_seasons != null) {
+      processed_seasons = processed_seasons.map(x => {
+        return x.value;
+      });
+    }
+
+    console.log(search_text.value);
+    console.log(processed_seasons);
+    console.log(processed_skills_areas);
+
+    if (search_text.value === '') {
+      executeTextlessSearch({
+        variables: {
+          seasons: processed_seasons,
+          skills_areas: processed_skills_areas,
+        },
+      });
+    } else {
+      executeTextSearch({
+        variables: {
+          search_text: search_text.value,
+          seasons: processed_seasons,
+          skills_areas: processed_skills_areas,
+        },
+      });
+    }
   };
 
   if (data) {
@@ -132,6 +164,7 @@ function App() {
                     ref={ref => {
                       seasons = ref;
                     }}
+                    placeholder="All"
                   />
                 </div>
               </div>
