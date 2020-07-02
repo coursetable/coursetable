@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import FetchListings from '../queries/ListingsBySeason';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import CoursesTable from '../components/CoursesTable';
 import WeekSchedule from '../components/WeekSchedule';
 import axios from 'axios';
@@ -14,15 +14,21 @@ function App() {
   const [listings, addListing] = useState([]);
   const [indx, incrementIndx] = useState(0);
   const [view, setView] = useState('table');
+  const [season, setSeason] = useState('all');
 
   const addCourse = courseListing => {
     addListing([...listings, courseListing[0]]);
     incrementIndx(indx + 1);
   };
 
-  const handleSelect = e => {
+  const handleView = e => {
     console.log(e);
     setView(e);
+  };
+
+  const handleSeason = e => {
+    console.log(e);
+    setSeason(e);
   };
 
   const { user } = useUser();
@@ -38,7 +44,7 @@ function App() {
   //     // console.log(response.data);
   //   });
 
-  if (user.worksheet.length == 0)
+  if (user.worksheet.length === 0)
     return <div>Please add courses to your worksheet</div>;
 
   const { loading, error, data } = FetchListings(
@@ -52,14 +58,28 @@ function App() {
     addCourse(data);
   }
 
-  // return <CoursesTable courses={listings} />;
-  // return <WeekSchedule courses={listings} />;
   return (
     <div className={styles.container}>
-      <DropdownButton title="Worksheet View" onSelect={handleSelect}>
-        <Dropdown.Item eventKey="table">Table</Dropdown.Item>
-        <Dropdown.Item eventKey="calendar">Calendar</Dropdown.Item>
-      </DropdownButton>
+      <Row className="mx-1">
+        <DropdownButton
+          variant="primary"
+          title="Worksheet View"
+          onSelect={handleView}
+        >
+          <Dropdown.Item eventKey="table">Table</Dropdown.Item>
+          <Dropdown.Item eventKey="calendar">Calendar</Dropdown.Item>
+        </DropdownButton>
+
+        <DropdownButton
+          variant="success"
+          title="Season"
+          onSelect={handleSeason}
+        >
+          <Dropdown.Item eventKey="all">All Seasons</Dropdown.Item>
+          <Dropdown.Item eventKey="202001">2020 Spring</Dropdown.Item>
+          <Dropdown.Item eventKey="201903">2019 Fall</Dropdown.Item>
+        </DropdownButton>
+      </Row>
       {view === 'table' ? (
         <CoursesTable courses={listings} />
       ) : (

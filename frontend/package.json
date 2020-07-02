@@ -12,6 +12,7 @@
     "immutable": "3.8.2",
     "moment": "^2.27.0",
     "react": "^16.13.1",
+    "react-big-calendar": "^0.26.0",
     "react-bootstrap": "^1.0.1",
     "react-data-grid": "5.0.1",
     "react-data-grid-addons": "5.0.4",
@@ -21,8 +22,7 @@
     "react-select": "^3.1.0",
     "react-toastify": "^6.0.6",
     "react-virtualized": "^9.21.2",
-    "react-virtualized-auto-sizer": "^1.0.2",
-    "react-week-calendar": "^0.1.3"
+    "react-virtualized-auto-sizer": "^1.0.2"
   },
   "scripts": {
     "start": "react-scripts start",

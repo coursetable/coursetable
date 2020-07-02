@@ -1,9 +1,8 @@
 import React from 'react';
 import moment from 'moment';
-import WeekCalendar from 'react-week-calendar';
-import Event from './ScheduleEvent';
-import 'react-week-calendar/dist/style.css';
 import styles from './WeekSchedule.js';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
+import 'react-big-calendar/lib/css/react-big-calendar.css';
 
 export default class WeekSchedule extends React.Component {
   constructor(props) {
@@ -25,77 +24,32 @@ export default class WeekSchedule extends React.Component {
           if (end.get('hour') < 8) end.add('h', 12);
           const value = course.course_code;
           parsedCourses[parsedCourses.length] = {
-            value: value,
-            start: start,
-            end: end,
+            title: value,
+            start: start.toDate(),
+            end: end.toDate(),
           };
           if (start.get('hours') < earliest.get('hours')) earliest = start;
           if (end.get('hours') > latest.get('hours')) latest = end;
         }
       }
     });
+    earliest.set({ minute: 0 });
+    latest.set({ minute: 0 });
     return [earliest, latest, parsedCourses];
-  };
-
-  handleEventRemove = event => {
-    const { selectedIntervals } = this.state;
-    const index = selectedIntervals.findIndex(
-      interval => interval.uid === event.uid
-    );
-    if (index > -1) {
-      selectedIntervals.splice(index, 1);
-      this.setState({ selectedIntervals });
-    }
-  };
-
-  handleEventUpdate = event => {
-    const { selectedIntervals } = this.state;
-    const index = selectedIntervals.findIndex(
-      interval => interval.uid === event.uid
-    );
-    if (index > -1) {
-      selectedIntervals[index] = event;
-      this.setState({ selectedIntervals });
-    }
-  };
-
-  handleSelect = newIntervals => {
-    const { lastUid, selectedIntervals } = this.state;
-    const intervals = newIntervals.map((interval, index) => {
-      return {
-        ...interval,
-        uid: lastUid + index,
-      };
-    });
-
-    this.setState({
-      selectedIntervals: selectedIntervals.concat(intervals),
-      lastUid: lastUid + newIntervals.length,
-    });
   };
 
   render() {
     var ret_values = this.parseListings(this.props.courses);
-    console.log(ret_values);
+    const localizer = momentLocalizer(moment);
     return (
-      <WeekCalendar
-        firstDay={moment().day(1)}
-        startTime={moment({
-          h: ret_values[0].get('hours') - 1,
-          m: ret_values[0].get('minutes'),
-        })}
-        endTime={moment({
-          h: ret_values[1].get('hours') + 1,
-          m: ret_values[1].get('minutes'),
-        })}
-        numberOfDays={5}
-        selectedIntervals={ret_values[2]}
-        onIntervalSelect={this.handleSelect}
-        onIntervalUpdate={this.handleEventUpdate}
-        onIntervalRemove={this.handleEventRemove}
-        eventSpacing={15}
-        scaleUnit={30}
-        eventComponent={Event}
+      <Calendar
+        defaultView={'work_week'}
+        views={'work_week'}
+        events={ret_values[2]}
+        min={ret_values[0].subtract(0, 'hours').toDate()}
+        max={ret_values[1].add(1, 'hours').toDate()}
+        localizer={localizer}
+        toolbar={false}
       />
     );
   }
