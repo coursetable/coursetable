@@ -96,13 +96,11 @@ function App() {
 
     console.log(search_text.value);
     console.log(processed_seasons);
-    console.log(processed_skills_areas);
 
     if (search_text.value === '') {
       executeTextlessSearch({
         variables: {
           seasons: processed_seasons,
-          skills_areas: processed_skills_areas,
         },
       });
     } else {
@@ -110,7 +108,6 @@ function App() {
         variables: {
           search_text: search_text.value,
           seasons: processed_seasons,
-          skills_areas: processed_skills_areas,
         },
       });
     }
