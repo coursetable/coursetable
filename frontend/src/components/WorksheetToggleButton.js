@@ -41,7 +41,14 @@ const App = props => {
     console.log('toggle ', props.crn + ' ' + props.season_code);
     window.location.reload();
   }
-  return <Button onClick={toggleWorkSheet}>{inWorksheet ? '-' : '+'}</Button>;
+  return (
+    <Button
+      variant={inWorksheet ? 'danger' : 'success'}
+      onClick={toggleWorkSheet}
+    >
+      {inWorksheet ? '-' : '+'}
+    </Button>
+  );
 };
 
 export default App;

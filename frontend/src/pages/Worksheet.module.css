@@ -3,3 +3,12 @@
   height: 100%;
   margin-bottom: 40px;
 }
+
+.calendar {
+  height: 76vh;
+  padding-left: 0 !important;
+}
+
+.table {
+  padding-right: 0 !important;
+}

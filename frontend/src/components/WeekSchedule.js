@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import styles from './WeekSchedule.js';
+import styles from './WeekSchedule.module.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -44,7 +44,7 @@ export default class WeekSchedule extends React.Component {
     return (
       <Calendar
         defaultView={'work_week'}
-        views={'work_week'}
+        views={['work_week']}
         events={ret_values[2]}
         min={ret_values[0].subtract(0, 'hours').toDate()}
         max={ret_values[1].add(1, 'hours').toDate()}

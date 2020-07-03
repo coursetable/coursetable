@@ -1,44 +1,40 @@
 import React, { useState } from 'react';
 
 import FetchListings from '../queries/ListingsBySeason';
-import { Dropdown, DropdownButton, Row } from 'react-bootstrap';
-import CoursesTable from '../components/CoursesTable';
+import { Row, Col } from 'react-bootstrap';
+import SeasonDropdown from '../components/SeasonDropdown';
 import WeekSchedule from '../components/WeekSchedule';
-import FetchSeasonCodes from '../queries/GetSeasonCodes';
-import axios from 'axios';
+import WorksheetList from '../components/WorksheetList';
 
 import styles from './Worksheet.module.css';
 
 import { useUser } from '../user';
 
 function App() {
+  const { user } = useUser();
+  let recentSeason = '200903';
+  let season_codes = [];
+  if (user.worksheet) {
+    user.worksheet.forEach(szn => {
+      if (szn[0] > recentSeason) recentSeason = szn[0];
+      if (season_codes.indexOf(szn[0]) === -1) season_codes.push(szn[0]);
+    });
+  }
   const [listings, addListing] = useState([]);
   const [indx, incrementIndx] = useState(0);
-  const [view, setView] = useState('table');
-  const [season, setSeason] = useState('all');
+  const [season, setSeason] = useState(recentSeason);
+
+  if (user.worksheet == null) return <div>Please Login</div>;
 
   const addCourse = courseListing => {
     addListing([...listings, courseListing[0]]);
     incrementIndx(indx + 1);
   };
 
-  const handleView = e => {
-    console.log(e);
-    setView(e);
+  const changeSeason = season_code => {
+    setSeason(season_code);
+    console.log(season_code);
   };
-
-  const handleSeason = e => {
-    console.log(e);
-    setSeason(e);
-  };
-
-  const { user } = useUser();
-  if (user.worksheet == null) return <div>Please Login</div>;
-  // console.log(user.worksheet);
-
-  // const { loading_szn, error_szn, data_szn } = FetchSeasonCodes();
-  // if (loading_szn || error_szn) return <div>Loading...</div>;
-  // console.log(loading_szn);
 
   if (user.worksheet.length === 0)
     return <div>Please add courses to your worksheet</div>;
@@ -48,39 +44,37 @@ function App() {
     parseInt(user.worksheet[Math.min(indx, user.worksheet.length - 1)][1])
   );
   if (loading || error) return <div>Loading...</div>;
-  if (data === undefined) return <div>Error with Query</div>;
-
+  if (data === undefined || !data.length) return <div>Error with Query</div>;
   if (indx < user.worksheet.length) {
     addCourse(data);
   }
+
+  let season_listings = [];
+  listings.forEach(listing => {
+    if (listing.season_code === season) season_listings.push(listing);
+  });
+
   // console.log(listings);
   return (
     <div className={styles.container}>
-      <Row className="mx-1">
-        <DropdownButton
-          variant="primary"
-          title="Worksheet View"
-          onSelect={handleView}
-        >
-          <Dropdown.Item eventKey="table">Table</Dropdown.Item>
-          <Dropdown.Item eventKey="calendar">Calendar</Dropdown.Item>
-        </DropdownButton>
-
-        <DropdownButton
-          variant="success"
-          title="Season"
-          onSelect={handleSeason}
-        >
-          <Dropdown.Item eventKey="all">All Seasons</Dropdown.Item>
-          <Dropdown.Item eventKey="202001">2020 Spring</Dropdown.Item>
-          <Dropdown.Item eventKey="201903">2019 Fall</Dropdown.Item>
-        </DropdownButton>
+      <Row>
+        <Col sm={4} className={styles.table}>
+          <WorksheetList
+            onSeasonChange={changeSeason}
+            courses={listings}
+            season_codes={season_codes}
+            cur_season={season}
+          />
+        </Col>
+        <Col sm={8} className={styles.calendar}>
+          <SeasonDropdown
+            onSeasonChange={changeSeason}
+            cur_season={season}
+            season_codes={season_codes}
+          />
+          <WeekSchedule courses={season_listings} />
+        </Col>
       </Row>
-      {view === 'table' ? (
-        <CoursesTable courses={listings} />
-      ) : (
-        <WeekSchedule courses={listings} />
-      )}
     </div>
   );
 }
