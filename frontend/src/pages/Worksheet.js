@@ -4,6 +4,7 @@ import FetchListings from '../queries/ListingsBySeason';
 import { Dropdown, DropdownButton, Row } from 'react-bootstrap';
 import CoursesTable from '../components/CoursesTable';
 import WeekSchedule from '../components/WeekSchedule';
+import FetchSeasonCodes from '../queries/GetSeasonCodes';
 import axios from 'axios';
 
 import styles from './Worksheet.module.css';
@@ -33,16 +34,11 @@ function App() {
 
   const { user } = useUser();
   if (user.worksheet == null) return <div>Please Login</div>;
+  // console.log(user.worksheet);
 
-  // Manually ADD/REMOVE Courses from Worksheet
-
-  // axios
-  //   .get(
-  //     '/legacy_api/WorksheetActions.php?action=add&season=202001&ociId=27976'
-  //   )
-  //   .then(response => {
-  //     // console.log(response.data);
-  //   });
+  // const { loading_szn, error_szn, data_szn } = FetchSeasonCodes();
+  // if (loading_szn || error_szn) return <div>Loading...</div>;
+  // console.log(loading_szn);
 
   if (user.worksheet.length === 0)
     return <div>Please add courses to your worksheet</div>;
@@ -57,7 +53,7 @@ function App() {
   if (indx < user.worksheet.length) {
     addCourse(data);
   }
-
+  // console.log(listings);
   return (
     <div className={styles.container}>
       <Row className="mx-1">

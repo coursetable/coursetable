@@ -1,14 +1,14 @@
-.footer{
-	background: #445;
-	min-width:100%;
-	margin: 0;
-	color: white;
+.footer {
+  background: #445;
+  min-width: 100%;
+  margin: 0;
+  color: white;
 }
 
-.footer_link{
-	color: white;
+.footer_link {
+  color: white;
 }
 
-.footer_link:hover{
-	color: ;
+.footer_link:hover {
+  color: ;
 }

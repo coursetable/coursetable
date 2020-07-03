@@ -55,6 +55,7 @@ const QUERY_LISTINGS_WITH_EVALS = gql`
             average_rating
           }
         }
+        times_by_day
         short_title
         title
         times_summary
@@ -127,8 +128,6 @@ function preprocess_courses(listing) {
       );
     }
   }
-
-  listing['in_worksheet'] = false;
 
   return listing;
 }
