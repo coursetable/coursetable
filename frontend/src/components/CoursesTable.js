@@ -3,9 +3,18 @@ import React, { Component, useState } from 'react';
 import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data, Filters } from 'react-data-grid-addons';
 
+import { Button } from 'react-bootstrap';
+
 import { AutoSizer, List } from 'react-virtualized';
 
 import styles from './CoursesTable.module.css';
+import WorksheetToggleButton from './WorksheetToggleButton';
+
+function handleWorksheetAdd(e) {
+	e.preventDefault();
+
+	console.log();
+}
 
 export default class CoursesTable extends React.Component {
 	constructor(props) {
@@ -26,7 +35,22 @@ export default class CoursesTable extends React.Component {
 			SingleSelectFilter,
 		} = Filters;
 
+		const WorkSheetFormatter = ({ row, value }) => {
+			return (
+				<WorksheetToggleButton
+					in_worksheet={row.in_worksheet}
+					course_id={row.course_id}
+				/>
+			);
+		};
+
 		const columns = [
+			{
+				key: 'in_worksheet',
+				name: 'WS',
+				width: 60,
+				formatter: WorkSheetFormatter,
+			},
 			{
 				key: 'subject',
 				name: 'Subject',

@@ -5,70 +5,74 @@ import flatten from '../utilities';
 
 const QUERY_LISTINGS = gql`
   query fetch_course($season: String, $crn_code: Int) {
-    listings(where: { season_code: { _eq: $season }, crn: {_eq: $crn_code} }) {
-			course_code
-			course_id
-			crn
-			listing_id
-			number
-			season_code
-			section
-			subject
-			course {
-				course_professors {
-					professor {
-						name
-					}
-				}
-				short_title
-				title
-				times_summary
-				location_times
-				locations_summary
-				skills
-				areas
-			}
-		}
-	}
+    listings(
+      where: { season_code: { _eq: $season }, crn: { _eq: $crn_code } }
+    ) {
+      course_code
+      course_id
+      crn
+      listing_id
+      number
+      season_code
+      section
+      subject
+      course {
+        course_professors {
+          professor {
+            name
+          }
+        }
+        short_title
+        title
+        times_summary
+        location_times
+        locations_summary
+        skills
+        areas
+      }
+    }
+  }
 `;
 
 const QUERY_LISTINGS_WITH_EVALS = gql`
   query fetch_course($season: String, $crn_code: Int) {
-    listings(where: { season_code: { _eq: $season }, crn: {_eq: $crn_code} }) {
-			course_code
-			course_id
-			crn
-			listing_id
-			number
-			season_code
-			section
-			subject
-			course {
-				course_professors {
-					professor {
-						name
-						average_rating
-					}
-				}
-				short_title
-				title
-				times_summary
-				location_times
-				locations_summary
-				skills
-				areas
-				evaluation_statistics {
-					avg_rating
-					avg_workload
-					enrollment
-				}
-			}
-		}
-	}
+    listings(
+      where: { season_code: { _eq: $season }, crn: { _eq: $crn_code } }
+      limit: 50
+    ) {
+      course_code
+      course_id
+      crn
+      listing_id
+      number
+      season_code
+      section
+      subject
+      course {
+        course_professors {
+          professor {
+            name
+            average_rating
+          }
+        }
+        short_title
+        title
+        times_summary
+        location_times
+        locations_summary
+        skills
+        areas
+        evaluation_statistics {
+          avg_rating
+          avg_workload
+          enrollment
+        }
+      }
+    }
+  }
 `;
 
 function preprocess_courses(listing) {
-
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -108,7 +112,6 @@ function preprocess_courses(listing) {
     'course.course_professors' in listing &&
     listing['course.course_professors'].length > 0
   ) {
-
     listing['professors'] = listing['course.course_professors']
       .map(x => {
         return x['professor']['name'];
@@ -125,12 +128,14 @@ function preprocess_courses(listing) {
     }
   }
 
+  listing['in_worksheet'] = false;
+
   return listing;
 }
 
 const FetchListings = (season, crn_code = null) => {
   var { loading, error, data } = useQuery(QUERY_LISTINGS_WITH_EVALS, {
-    variables: { season: season, crn_code: crn_code }
+    variables: { season: season, crn_code: crn_code },
   });
 
   if (!(loading || error)) {
