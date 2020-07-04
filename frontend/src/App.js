@@ -4,10 +4,12 @@ import {
   Switch,
   Route,
   Redirect,
+  useLocation,
 } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import WindowDimensionsProvider from './components/WindowDimensionsProvider'
 
 import Search from './pages/Search';
 import Login from './pages/Login';
@@ -52,6 +54,7 @@ function App() {
 
   return (
     <Router>
+      <WindowDimensionsProvider>
       <div id="base">
         <Navbar />
         <Switch>
@@ -88,8 +91,9 @@ function App() {
             <p>404 page not found</p>
           </MyRoute>
         </Switch>
-        <Footer />
+       {window.location.pathname !== '/search' && <Footer />}
       </div>
+      </WindowDimensionsProvider>
     </Router>
   );
 }

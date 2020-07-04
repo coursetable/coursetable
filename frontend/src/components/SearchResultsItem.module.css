@@ -1,0 +1,100 @@
+.search_result_item {
+  background-color: white;
+  border-bottom: 1px solid rgba(1, 1, 1, 0.1);
+}
+
+.search_result_item:first-child {
+  border-radius: 8px 8px 0px 0px;
+}
+
+.search_result_item:last-child {
+  border-radius: 0px 0px 8px 8px;
+}
+
+.search_result_item:hover {
+  cursor: pointer;
+}
+
+.search_result_item:hover .course_header {
+  text-decoration: underline;
+}
+
+.course_code {
+  font-weight: bold;
+  display: inline;
+}
+
+.dot {
+  display: inline;
+}
+
+.course_section {
+  display: inline;
+  color: rgba(1, 1, 1, 0.4);
+}
+
+.overall_rating {
+  font-weight: bold;
+}
+
+.workload_rating {
+  font-weight: bold;
+}
+
+.tag {
+  margin: 1px;
+  padding: 4px;
+  border-radius: 6px;
+}
+
+.So {
+  background-color: #0779e4 !important;
+}
+
+.Hu {
+  background-color: #4cbbb9 !important;
+}
+
+.Sc {
+  background-color: #77d8d8 !important;
+}
+
+.WR {
+  background-color: #438a5e !important;
+}
+
+.QR {
+  background-color: #9bdeac !important;
+}
+
+.L1,
+.L2,
+.L3,
+.L4,
+.L5 {
+  background-color: #a8df65 !important;
+}
+
+.friends_count {
+  display: flex;
+  align-items: center;
+}
+
+.toggle_worksheet {
+  background-color: white !important;
+  color: rgba(1, 1, 1, 0.6) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-weight: bold !important;
+  font-size: 1.5rem !important;
+}
+
+.toggle_worksheet:hover {
+  background-color: rgba(1, 1, 1, 0.1);
+  color: black;
+}
+
+.toggle_worksheet_mobile {
+  border-radius: 8px;
+  font-size: 1rem;
+}

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import styles from './Search.module.css';
-import { Container, Row } from 'react-bootstrap';
+import { Col, Container, Row } from 'react-bootstrap';
 
 import {
   SEARCH_COURSES,
@@ -19,18 +19,20 @@ import {
 } from 'react-bootstrap';
 import Select from 'react-select';
 
+import SearchResults from '../components/SearchResults';
+
 function App() {
-  var search_text = React.createRef();
+  var searchText = React.createRef();
+
+  var [searchType, setSearchType] = React.useState();
 
   var sortby = React.createRef();
-  var seasons = React.useState();
-  var skills_areas = React.useState();
-  var credits = React.useState();
+  var seasons = React.createRef();
+  var skillsAreas = React.createRef();
+  var credits = React.createRef();
 
   var [HideGraduate, setHideGraduate] = React.useState(true);
   var [HideCancelled, setHideCancelled] = React.useState(true);
-
-  var [submitted, setSubmitted] = React.useState(false);
 
   const sortby_options = [
     { label: 'Relevance', value: 'text' },
@@ -71,12 +73,17 @@ function App() {
     { label: '2', value: '2' },
   ];
 
-  var [executeTextlessSearch, { called, loading, data }] = useLazyQuery(
-    SEARCH_COURSES_TEXTLESS
-  );
-  var [executeTextSearch, { called, loading, data }] = useLazyQuery(
-    SEARCH_COURSES
-  );
+  var [
+    executeTextlessSearch,
+    { called: textlessCalled, loading: textlessLoading, data: textlessData },
+  ] = useLazyQuery(SEARCH_COURSES_TEXTLESS);
+
+  var [
+    executeTextSearch,
+    { called: textCalled, loading: textLoading, data: textData },
+  ] = useLazyQuery(SEARCH_COURSES);
+
+  var search_type;
 
   const handleSubmit = event => {
     event.preventDefault();
@@ -94,131 +101,155 @@ function App() {
       });
     }
 
-    console.log(search_text.value);
-    console.log(processed_seasons);
-
-    if (search_text.value === '') {
+    if (searchText.value === '') {
+      setSearchType('TEXTLESS');
       executeTextlessSearch({
         variables: {
           seasons: processed_seasons,
         },
       });
     } else {
+      setSearchType('TEXT');
       executeTextSearch({
         variables: {
-          search_text: search_text.value,
+          search_text: searchText.value,
           seasons: processed_seasons,
         },
       });
     }
   };
 
-  if (data) {
-    console.log('Data:');
-    console.log(data);
+  var results;
+
+  if (searchType === 'TEXTLESS') {
+    if (textlessCalled) {
+      if (textlessLoading) {
+        results = <div>Loading...</div>;
+      } else {
+        if (textlessData) {
+          // if(search_type === 'TEXTLESS'){
+          //   data = data.
+          // }
+
+          results = <SearchResults data={textlessData.courses} />;
+        }
+      }
+    }
+  } else if (searchType === 'TEXT') {
+    if (textCalled) {
+      if (textLoading) {
+        results = <div>Loading...</div>;
+      } else {
+        if (textData) {
+          results = <SearchResults data={textData.search_course_info} />;
+        }
+      }
+    }
   }
 
   return (
-    <div className={'py-5 ' + styles.search_base}>
-      <Container className="col-md-6">
-        <Row className="row-centered">
-          <Form className={styles.search_container} onSubmit={handleSubmit}>
-            <div className={styles.search_bar}>
-              <InputGroup className={styles.search_input}>
-                <FormControl
-                  type="text"
-                  placeholder="Find a class..."
-                  size="lg"
-                  ref={ref => {
-                    search_text = ref;
-                  }}
-                />
-              </InputGroup>
-            </div>
+    <div className={styles.search_base}>
+      <Row className={styles.nopad + " " +styles.nomargin}>
+        <Col md={4} className={"m-0 px-4 py-4 " + styles.search_col}>
+            <Form className={styles.search_container} onSubmit={handleSubmit}>
+              <div className={styles.search_bar}>
+                <InputGroup className={styles.search_input}>
+                  <FormControl
+                    type="text"
+                    placeholder="Find a class..."
+                    ref={ref => {
+                      searchText = ref;
+                    }}
+                  />
+                </InputGroup>
+              </div>
 
-            <div
-              className={
-                'container px-4 py-4 ' + styles.search_options_container
-              }
-            >
-              <div className="row py-2">
-                <div className="col-md-4">
-                  Sort by{' '}
-                  <Select
-                    defaultValue={sortby_options[0]}
-                    options={sortby_options}
-                    ref={ref => {
-                      sortby = ref;
-                    }}
-                  />
+              <div
+                className={
+                  'container ' + styles.search_options_container
+                }
+              >
+                <div className="row py-2">
+                  <div className={"col-md-4 " +styles.nopad}>
+                    Sort by{' '}
+                    <Select
+                      defaultValue={sortby_options[0]}
+                      options={sortby_options}
+                      ref={ref => {
+                        sortby = ref;
+                      }}
+                    />
+                  </div>
+                  <div className={"col-md-8 " +styles.nopad}>
+                    Semesters{' '}
+                    <Select
+                      isMulti
+                      defaultValue={[seasons_options[0]]}
+                      options={seasons_options}
+                      ref={ref => {
+                        seasons = ref;
+                      }}
+                      placeholder="All"
+                    />
+                  </div>
                 </div>
-                <div className="col-md-8">
-                  Semesters{' '}
-                  <Select
-                    isMulti
-                    defaultValue={[seasons_options[0]]}
-                    options={seasons_options}
-                    ref={ref => {
-                      seasons = ref;
-                    }}
-                    placeholder="All"
-                  />
+                <div className="row py-2">
+                  <div className={"col-md-8 "+ styles.nopad}>
+                    Skills and areas
+                    <Select
+                      isMulti
+                      options={skills_areas_options}
+                      placeholder="Any"
+                      ref={ref => {
+                        skillsAreas = ref;
+                      }}
+                    />
+                  </div>
+                  <div className={"col-md-4 "+ styles.nopad}>
+                    Credits
+                    <Select
+                      isMulti
+                      options={credits_options}
+                      placeholder="Any"
+                      ref={ref => {
+                        credits = ref;
+                      }}
+                    />
+                  </div>
                 </div>
-              </div>
-              <div className="row py-2">
-                <div className="col-md-8">
-                  Skills and areas
-                  <Select
-                    isMulti
-                    options={skills_areas_options}
-                    placeholder="Any"
-                    ref={ref => {
-                      skills_areas = ref;
-                    }}
-                  />
+                <div className="row px-3 py-2">
+                  <FormCheck type="switch" className={styles.toggle_option}>
+                    <FormCheck.Input checked={HideGraduate} />
+                    <FormCheck.Label
+                      onClick={() => setHideGraduate(!HideGraduate)}
+                    >
+                      Hide graduate courses
+                    </FormCheck.Label>
+                  </FormCheck>
+                  <Form.Check type="switch" className={styles.toggle_option}>
+                    <Form.Check.Input checked={HideCancelled} />
+                    <Form.Check.Label
+                      onClick={() => setHideCancelled(!HideCancelled)}
+                    >
+                      Hide cancelled courses
+                    </Form.Check.Label>
+                  </Form.Check>
                 </div>
-                <div className="col-md-4">
-                  Number of credits
-                  <Select
-                    isMulti
-                    options={credits_options}
-                    placeholder="Any"
-                    ref={ref => {
-                      credits = ref;
-                    }}
-                  />
-                </div>
-              </div>
-              <div className="row px-3 py-2">
-                <FormCheck type="switch" className={styles.toggle_option}>
-                  <FormCheck.Input checked={HideGraduate} />
-                  <FormCheck.Label
-                    onClick={() => setHideGraduate(!HideGraduate)}
+                <div className="text-right">
+                  <Button
+                    type="submit"
+                    className={'pull-right ' + styles.secondary_submit}
                   >
-                    Hide graduate courses
-                  </FormCheck.Label>
-                </FormCheck>
-                <Form.Check type="switch" className={styles.toggle_option}>
-                  <Form.Check.Input checked={HideCancelled} />
-                  <Form.Check.Label
-                    onClick={() => setHideCancelled(!HideCancelled)}
-                  >
-                    Hide cancelled courses
-                  </Form.Check.Label>
-                </Form.Check>
+                    Search
+                  </Button>
+                </div>
               </div>
-              <div className="text-right">
-                <Button
-                  type="submit"
-                  className={'pull-right ' + styles.secondary_submit}
-                >
-                  Search
-                </Button>
-              </div>
-            </div>
-          </Form>
-        </Row>
-      </Container>
+            </Form>
+        </Col>
+        <Col md={8} className={"m-0 p-0 "+styles.results_col}>
+          {results}
+        </Col>
+      </Row>
     </div>
   );
 }
