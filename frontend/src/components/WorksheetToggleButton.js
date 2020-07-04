@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 const WorksheetToggleButton = (props) => {
   var [inWorksheet, setInWorksheet] = useState(false);
   const { user, userRefresh } = useUser();
-  if (user.worksheet === undefined) return <div>Signin</div>;
+  if (user.worksheet === null) return <div>Signin</div>;
   if (!inWorksheet) {
     for (let i = 0; i < user.worksheet.length; i++) {
       if (
