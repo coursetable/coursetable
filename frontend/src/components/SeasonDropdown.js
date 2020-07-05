@@ -3,7 +3,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import styles from './SeasonDropdown.module.css';
 
-function App(props) {
+function SeasonDropdown(props) {
   const setSeason = season_code => {
     props.onSeasonChange(season_code);
   };
@@ -19,14 +19,16 @@ function App(props) {
 
   props.season_codes.forEach(season => {
     seasons_html.push(
-      <Dropdown.Item eventKey={season}>{toSeasonString(season)}</Dropdown.Item>
+      <Dropdown.Item key={season} eventKey={season}>
+        {toSeasonString(season)}
+      </Dropdown.Item>
     );
   });
 
   return (
     <div className={styles.container}>
       <DropdownButton
-        variant="success"
+        variant="outline-dark"
         title={toSeasonString(props.cur_season)}
         onSelect={setSeason}
       >
@@ -36,4 +38,4 @@ function App(props) {
   );
 }
 
-export default App;
+export default SeasonDropdown;

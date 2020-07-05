@@ -1,5 +1,6 @@
 .table {
-  height: 80vh;
+  height: 93vh;
   overflow: hidden;
   overflow-y: scroll;
+  border-radius: 0px !important;
 }

@@ -4,6 +4,8 @@ import styles from './WeekSchedule.module.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
+// Allow users to change color of courses in calendar?
+
 export default class WeekSchedule extends React.Component {
   constructor(props) {
     super(props);

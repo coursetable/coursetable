@@ -1,0 +1,22 @@
+.btn-toggle {
+  background-color: transparent;
+  border-width: 0;
+  transition: 0.3s !important;
+}
+
+.btn-toggle:hover {
+  transform: scale(1.3);
+}
+
+.btn-toggle:active,
+.btn-toggle:focus {
+  box-shadow: none !important;
+}
+
+.redColor {
+  color: red !important;
+}
+
+.greenColor {
+  color: green !important;
+}

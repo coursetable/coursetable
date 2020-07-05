@@ -1,14 +1,11 @@
 .container {
-  max-height: calc(100% - 64px);
-  height: 100%;
-  margin-bottom: 40px;
+  height: 93vh;
+  margin-bottom: 0px;
 }
 
 .calendar {
-  height: 76vh;
-  padding-left: 0 !important;
+  height: 93vh;
 }
 
 .table {
-  padding-right: 0 !important;
 }

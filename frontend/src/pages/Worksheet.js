@@ -10,7 +10,7 @@ import styles from './Worksheet.module.css';
 
 import { useUser } from '../user';
 
-function App() {
+function Worksheet() {
   const { user } = useUser();
   let recentSeason = '200903';
   let season_codes = [];
@@ -58,7 +58,7 @@ function App() {
   return (
     <div className={styles.container}>
       <Row>
-        <Col sm={4} className={styles.table}>
+        <Col sm={4} className={styles.table + ' pr-0'}>
           <WorksheetList
             onSeasonChange={changeSeason}
             courses={listings}
@@ -66,12 +66,12 @@ function App() {
             cur_season={season}
           />
         </Col>
-        <Col sm={8} className={styles.calendar}>
-          <SeasonDropdown
+        <Col sm={8} className={styles.calendar + ' pl-0'}>
+          {/* <SeasonDropdown
             onSeasonChange={changeSeason}
             cur_season={season}
             season_codes={season_codes}
-          />
+          /> */}
           <WeekSchedule courses={season_listings} />
         </Col>
       </Row>
@@ -79,4 +79,4 @@ function App() {
   );
 }
 
-export default App;
+export default Worksheet;
