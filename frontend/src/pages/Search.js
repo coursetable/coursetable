@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 import styles from './Search.module.css';
+import './Search.css';
 import { Col, Container, Row } from 'react-bootstrap';
 
 import {
@@ -71,11 +72,14 @@ function App() {
     { label: 'Fall 2019', value: '201903' },
   ];
 
+  const areas = ['Hu', 'So', 'Sc'];
+  const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
+
   const skills_areas_options = [
-    { label: 'Humanities', value: 'HU' },
-    { label: 'Social sciences', value: 'SO' },
+    { label: 'Humanities', value: 'Hu' },
+    { label: 'Social sciences', value: 'So' },
+    { label: 'Sciences', value: 'Sc' },
     { label: 'Quantitative reasoning', value: 'QR' },
-    { label: 'Sciences', value: 'SC' },
     { label: 'Writing', value: 'WR' },
     { label: 'Language: any', value: 'L' },
     { label: 'Language: L1', value: 'L1' },
@@ -107,18 +111,48 @@ function App() {
 
     // TODO:
     //  - sorting
-    //  - filter by skills and areas
     //  - filter by credit count
     //  - hide grad and cancelled
     //  - filter by rating and workload
 
     // - work on textless capabilities
 
-    var processed_seasons = seasons.select.props.value;
-    if (processed_seasons != null) {
-      processed_seasons = processed_seasons.map(x => {
+    var processedSeasons = seasons.select.props.value;
+    if (processedSeasons != null) {
+      processedSeasons = processedSeasons.map(x => {
         return x.value;
       });
+    }
+
+    var processedSkillsAreas = skillsAreas.select.props.value;
+    if (processedSkillsAreas != null) {
+      processedSkillsAreas = processedSkillsAreas.map(x => {
+        return x.value;
+      });
+
+      // match all languages
+      if (processedSkillsAreas.includes('L')) {
+        processedSkillsAreas = processedSkillsAreas.concat([
+          'L1',
+          'L2',
+          'L3',
+          'L4',
+          'L5',
+        ]);
+      }
+
+      var processedSkills = processedSkillsAreas.filter(x =>
+        skills.includes(x)
+      );
+      var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
+
+      if (processedSkills.length === 0) {
+        processedSkills = null;
+      }
+
+      if (processedAreas.length === 0) {
+        processedAreas = null;
+      }
     }
 
     // if the bounds are unaltered, we need to set them to null
@@ -127,13 +161,11 @@ function App() {
     var include_all_workloads =
       workloadBounds[0] === 0 && workloadBounds[1] === 5;
 
-    console.log(include_all_ratings, include_all_workloads);
-
     if (searchText.value === '') {
       setSearchType('TEXTLESS');
       executeTextlessSearch({
         variables: {
-          seasons: processed_seasons,
+          seasons: processedSeasons,
         },
       });
     } else {
@@ -141,7 +173,9 @@ function App() {
       executeTextSearch({
         variables: {
           search_text: searchText.value,
-          seasons: processed_seasons,
+          seasons: processedSeasons,
+          areas: processedAreas,
+          skills: processedSkills,
           min_rating: include_all_ratings ? null : ratingBounds[0],
           max_rating: include_all_ratings ? null : ratingBounds[1],
           min_workload: include_all_workloads ? null : workloadBounds[0],
@@ -233,6 +267,10 @@ function App() {
                     ref={ref => {
                       skillsAreas = ref;
                     }}
+
+                    // prevent overlap with tooltips
+                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                    menuPortalTarget={document.body}
                   />
                 </div>
                 <div className={'col-md-4 ' + styles.nopad}>
@@ -244,6 +282,10 @@ function App() {
                     ref={ref => {
                       credits = ref;
                     }}
+
+                    // prevent overlap with tooltips
+                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                    menuPortalTarget={document.body}
                   />
                 </div>
               </Row>

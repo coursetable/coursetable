@@ -4,7 +4,8 @@ export const SEARCH_COURSES = gql`
 	query SearchCourses(
 		$search_text: String
 		$seasons: [String!]
-		$skills_areas: [json!]
+		$areas: [String!]
+		$skills: [String!]
 		$min_rating: float8
 		$max_rating: float8
 		$min_workload: float8
@@ -14,9 +15,9 @@ export const SEARCH_COURSES = gql`
 			args: { query: $search_text }
 			where: {
 				season_code: { _in: $seasons }
-				course: {
-					areas: { _in: $skills_areas }
-					skills: { _in: $skills_areas }
+				_or: {
+					areas: {_has_keys_any: $areas}
+					skills: {_has_keys_any: $skills}
 				}
 				average_rating: { _gte: $min_rating, _lte: $max_rating }
 				average_workload: { _gte: $min_workload, _lte: $max_workload }
