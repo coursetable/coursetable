@@ -3,6 +3,7 @@ import gql from 'graphql-tag';
 export const SEARCH_COURSES = gql`
 	query SearchCourses(
 		$search_text: String
+		$ordering: [computed_course_info_order_by!]
 		$seasons: [String!]
 		$schools: [String!]
 		$areas: [String!]
@@ -26,7 +27,7 @@ export const SEARCH_COURSES = gql`
 				credits: { _in: $credits }
 				school: { _in: $schools }
 			}
-			order_by: {}
+			order_by: $ordering
 			limit: 100
 		) {
 			title

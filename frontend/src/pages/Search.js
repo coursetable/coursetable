@@ -57,13 +57,17 @@ function App() {
   const sortby_options = [
     { label: 'Relevance', value: 'text' },
     { label: 'Course name', value: 'course_name' },
-    { label: 'Course subject', value: 'subject' },
-    { label: 'Course number', value: 'number' },
-    { label: 'Rating (same professor)', value: 'rating_same' },
-    { label: 'Rating (any professor)', value: 'rating_any' },
+    { label: 'Rating', value: 'rating' },
     { label: 'Workload', value: 'workload' },
-    { label: 'Enrollment', value: 'enrollment' },
+    // { label: 'Enrollment', value: 'enrollment' },
   ];
+
+  var sortbyQueries = {
+    text: null,
+    course_name: { title: 'asc' },
+    rating: { average_rating: 'asc' },
+    workload: { average_workload: 'asc' },
+  };
 
   const seasons_options = [
     { label: 'Fall 2020', value: '202003' },
@@ -110,11 +114,13 @@ function App() {
     event.preventDefault();
 
     // TODO:
-    //  - sorting
     //  - hide cancelled
-    //  - filter by rating and workload
 
     // - work on textless capabilities
+
+    var sortParams = sortby.select.props.value.value;
+
+    var ordering = sortbyQueries[sortParams];
 
     var processedSeasons = seasons.select.props.value;
     if (processedSeasons != null) {
@@ -163,10 +169,9 @@ function App() {
 
     var allowedSchools = null;
 
-    if(HideGraduate){
-      allowedSchools = ['YC']
+    if (HideGraduate) {
+      allowedSchools = ['YC'];
     }
-
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
@@ -186,6 +191,7 @@ function App() {
       executeTextSearch({
         variables: {
           search_text: searchText.value,
+          ordering: ordering,
           seasons: processedSeasons,
           areas: processedAreas,
           skills: processedSkills,
