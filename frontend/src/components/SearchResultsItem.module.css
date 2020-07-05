@@ -1,16 +1,3 @@
-.search_result_item {
-  background-color: white;
-  border-bottom: 1px solid rgba(1, 1, 1, 0.1);
-}
-
-.search_result_item:first-child {
-  border-radius: 8px 8px 0px 0px;
-}
-
-.search_result_item:last-child {
-  border-radius: 0px 0px 8px 8px;
-}
-
 .search_result_item:hover {
   cursor: pointer;
 }

@@ -30,6 +30,7 @@ export const SEARCH_COURSES = gql`
 			order_by: $ordering
 			limit: 100
 		) {
+			course_id
 			title
 			description
 			professor_names

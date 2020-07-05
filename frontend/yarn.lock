@@ -1099,14 +1099,14 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
+"@babel/runtime@^7.0.0", "@babel/runtime@^7.1.2", "@babel/runtime@^7.3.4", "@babel/runtime@^7.4.5", "@babel/runtime@^7.5.5", "@babel/runtime@^7.6.3", "@babel/runtime@^7.7.2", "@babel/runtime@^7.8.4", "@babel/runtime@^7.8.7":
   version "7.10.3"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.3.tgz#670d002655a7c366540c67f6fd3342cd09500364"
   integrity sha512-RzGO0RLSdokm9Ipe/YD+7ww8X2Ro79qiXZF3HU9ljrM+qnJmH1Vqth+hbiQZy761LnMJTMitHDuKVYTk3k4dLw==
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@^7.1.5", "@babel/runtime@^7.4.4":
+"@babel/runtime@^7.1.5", "@babel/runtime@^7.4.2", "@babel/runtime@^7.4.4":
   version "7.10.4"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.10.4.tgz#a6724f1a6b8d2f6ea5236dbfe58c7d7ea9c5eb99"
   integrity sha512-UpTN5yUJr9b4EX2CnGNWIvER7Ab83ibv0pcvvHc4UOdrBI5jb8bj+32cCwPX6xu0mt2daFNjYhoi+X7beH0RSw==
@@ -1444,9 +1444,9 @@
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
 "@popperjs/core@^2.0.0":
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.4.2.tgz#7c6dc4ecef16149fd7a736710baa1b811017fdca"
-  integrity sha512-JlGTGRYHC2QK+DDbePyXdBdooxFq2+noLfWpRqJtkxcb/oYWzOF0kcbfvvbWrwevCC1l6hLUg1wHYT+ona5BWQ==
+  version "2.4.4"
+  resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.4.4.tgz#11d5db19bd178936ec89cd84519c4de439574398"
+  integrity sha512-1oO6+dN5kdIA3sKPZhRGJTfGVP4SWV6KqlMOwry4J3HfyD68sl/3KmG7DeYUzvN+RbhXDnv/D8vNNB8168tAMg==
 
 "@restart/context@^2.1.4":
   version "2.1.4"

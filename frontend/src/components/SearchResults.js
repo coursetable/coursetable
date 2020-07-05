@@ -7,7 +7,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResults.module.css';
 
-import { Container } from 'react-bootstrap';
+import { Container, Accordion } from 'react-bootstrap';
 
 const App = ({ data }) => {
 	const { width } = useWindowDimensions();
@@ -15,11 +15,11 @@ const App = ({ data }) => {
 	const isMobile = width < 768;
 
 	return (
-		<div>
+		<Accordion>
 			{data.map(course => (
 				<SearchResultsItem course={flatten(course)} isMobile={isMobile} />
 			))}
-		</div>
+		</Accordion>
 	);
 };
 
