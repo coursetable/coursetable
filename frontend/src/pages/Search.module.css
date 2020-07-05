@@ -58,3 +58,7 @@
 	overflow: scroll;
 	z-index:0;
 }
+
+.results_col_mobile {
+	z-index:0;
+}

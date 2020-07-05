@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 import styles from './Search.module.css';
 import './Search.css';
@@ -28,8 +28,6 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
-
-import { debounce } from 'lodash';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
@@ -261,8 +259,8 @@ function App() {
             <div className={styles.search_bar}>
               <InputGroup className={styles.search_input}>
                 <FormControl
-                  type="text"
-                  placeholder="Find a class..."
+                  type='text'
+                  placeholder='Find a class...'
                   ref={ref => {
                     searchText = ref;
                   }}
@@ -271,7 +269,7 @@ function App() {
             </div>
 
             <div className={'container ' + styles.search_options_container}>
-              <Row className="py-2">
+              <Row className='py-2'>
                 <div className={'col-md-4 ' + styles.nopad}>
                   Sort by{' '}
                   <Select
@@ -294,20 +292,20 @@ function App() {
                     ref={ref => {
                       seasons = ref;
                     }}
-                    placeholder="All"
+                    placeholder='All'
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
                   />
                 </div>
               </Row>
-              <Row className="py-2">
+              <Row className='py-2'>
                 <div className={'col-md-8 ' + styles.nopad}>
                   Skills and areas
                   <Select
                     isMulti
                     options={skills_areas_options}
-                    placeholder="Any"
+                    placeholder='Any'
                     ref={ref => {
                       skillsAreas = ref;
                     }}
@@ -321,7 +319,7 @@ function App() {
                   <Select
                     isMulti
                     options={credits_options}
-                    placeholder="Any"
+                    placeholder='Any'
                     ref={ref => {
                       credits = ref;
                     }}
@@ -331,8 +329,8 @@ function App() {
                   />
                 </div>
               </Row>
-              <Row className="py-2">
-                <FormCheck type="switch" className={styles.toggle_option}>
+              <Row className='py-2'>
+                <FormCheck type='switch' className={styles.toggle_option}>
                   <FormCheck.Input checked={HideGraduate} />
                   <FormCheck.Label
                     onClick={() => setHideGraduate(!HideGraduate)}
@@ -340,7 +338,7 @@ function App() {
                     Hide graduate courses
                   </FormCheck.Label>
                 </FormCheck>
-                <Form.Check type="switch" className={styles.toggle_option}>
+                <Form.Check type='switch' className={styles.toggle_option}>
                   <Form.Check.Input checked={HideCancelled} />
                   <Form.Check.Label
                     onClick={() => setHideCancelled(!HideCancelled)}
@@ -372,7 +370,7 @@ function App() {
                   <Range
                     min={0}
                     max={5}
-                    step={0.1}
+                    step={0.01}
                     defaultValue={workloadBounds}
                     onChange={value => {
                       setWorkloadBounds(value);
@@ -385,9 +383,9 @@ function App() {
                   />
                 </Container>
               </Row>
-              <Row className="pt-3 text-right flex-row-reverse">
+              <Row className='pt-3 text-right flex-row-reverse'>
                 <Button
-                  type="submit"
+                  type='submit'
                   className={'pull-right ' + styles.secondary_submit}
                 >
                   Search
@@ -396,7 +394,7 @@ function App() {
             </div>
           </Form>
         </Col>
-        <Col md={8} className={'m-0 p-0 ' + styles.results_col}>
+        <Col md={8} className={'m-0 p-0 ' + (isMobile ? styles.results_col_mobile : styles.results_col)}>
           {results}
         </Col>
       </Row>

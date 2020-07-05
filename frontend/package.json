@@ -10,7 +10,6 @@
     "graphql": "^15.1.0",
     "graphql-tag": "^2.10.3",
     "immutable": "3.8.2",
-    "lodash": "^4.17.15",
     "moment": "^2.27.0",
     "rc-slider": "8.6.1",
     "react": "^16.13.1",

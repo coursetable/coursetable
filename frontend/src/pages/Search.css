@@ -1,3 +1,7 @@
 .rc-slider-tooltip{
 	z-index:2;
 }
+
+.rc-slider-tooltip:hover{
+	cursor:pointer;
+}
