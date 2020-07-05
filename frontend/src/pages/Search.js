@@ -19,9 +19,12 @@ import {
 } from 'react-bootstrap';
 
 import {
+  GET_SEASON_CODES,
   SEARCH_COURSES,
   SEARCH_COURSES_TEXTLESS,
 } from '../queries/QueryStrings';
+
+import FetchSeasonCodes from '../queries/GetSeasonCodes.js';
 
 import { useLazyQuery } from '@apollo/react-hooks';
 
@@ -47,6 +50,17 @@ function App() {
 
   const isMobile = width < 768;
 
+  var [
+    executeGetSeasons,
+    { called: seasonsCalled, loading: seasonsLoading, data: seasonsData },
+  ] = useLazyQuery(GET_SEASON_CODES);
+
+  React.useEffect(() => {
+    // get the seasons options on load
+
+    executeGetSeasons();
+  }, []);
+
   var searchText = React.createRef();
 
   var [searchType, setSearchType] = React.useState();
@@ -66,7 +80,7 @@ function App() {
   // parent state and avoid tooltip errors
   var [selected, setSelected] = React.useState(false);
 
-  const sortby_options = [
+  const sortbyOptions = [
     { label: 'Relevance', value: 'text' },
     { label: 'Course name', value: 'course_name' },
     { label: 'Rating', value: 'rating' },
@@ -81,28 +95,21 @@ function App() {
     workload: { average_workload: 'asc' },
   };
 
-  const seasons_options = [
-    { label: 'Fall 2020', value: '202003' },
-    { label: 'Summer 2020', value: '202002' },
-    { label: 'Spring 2020', value: '202001' },
-    { label: 'Fall 2019', value: '201903' },
-  ];
-
   const areas = ['Hu', 'So', 'Sc'];
   const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
 
-  const skills_areas_options = [
+  const skillsAreasOptions = [
     { label: 'HU', value: 'Hu', color: '#9970AB' },
     { label: 'SO', value: 'So', color: '#4393C3' },
     { label: 'SC', value: 'Sc', color: '#5AAE61' },
     { label: 'QR', value: 'QR', color: '#CC3311' },
     { label: 'WR', value: 'WR', color: '#EC7014' },
     { label: 'L (all)', value: 'L', color: '#000000' },
-    { label: 'L1', value: 'L1', color: '#A0A0A0' },
-    { label: 'L2', value: 'L2', color: '#A0A0A0' },
-    { label: 'L3', value: 'L3', color: '#A0A0A0' },
-    { label: 'L4', value: 'L4', color: '#A0A0A0' },
-    { label: 'L5', value: 'L5', color: '#A0A0A0' },
+    { label: 'L1', value: 'L1', color: '#888888' },
+    { label: 'L2', value: 'L2', color: '#888888' },
+    { label: 'L3', value: 'L3', color: '#888888' },
+    { label: 'L4', value: 'L4', color: '#888888' },
+    { label: 'L5', value: 'L5', color: '#888888' },
   ];
 
   const colourStyles = {
@@ -111,6 +118,7 @@ function App() {
       const color = chroma(data.color);
       return {
         ...styles,
+        fontWeight: 'bold',
         backgroundColor: isDisabled
           ? null
           : isSelected
@@ -144,7 +152,7 @@ function App() {
     multiValueLabel: (styles, { data }) => ({
       ...styles,
       color: data.color,
-      fontWeight: 'bold'
+      fontWeight: 'bold',
     }),
     multiValueRemove: (styles, { data }) => ({
       ...styles,
@@ -169,7 +177,7 @@ function App() {
     }),
   };
 
-  const credits_options = [
+  const creditOptions = [
     { label: '0.5', value: '0.5' },
     { label: '1', value: '1' },
     { label: '1.5', value: '1.5' },
@@ -310,6 +318,18 @@ function App() {
     }
   }
 
+  var seasonsOptions;
+
+  if (seasonsData) {
+    console.log(seasonsData);
+    seasonsOptions = seasonsData.seasons.map(x => {
+      return {
+        value: x.season_code,
+        label: x.term.charAt(0).toUpperCase() + x.term.slice(1) + ' ' + x.year,
+      };
+    });
+  }
+
   return (
     <div className={styles.search_base}>
       <Row className={styles.nopad + ' ' + styles.nomargin}>
@@ -338,8 +358,8 @@ function App() {
                 <div className={'col-xl-4 col-md-12 ' + styles.nopad}>
                   Sort by{' '}
                   <Select
-                    defaultValue={sortby_options[0]}
-                    options={sortby_options}
+                    defaultValue={sortbyOptions[0]}
+                    options={sortbyOptions}
                     ref={ref => {
                       sortby = ref;
                     }}
@@ -351,19 +371,21 @@ function App() {
                 </div>
                 <div className={'col-xl-8 col-md-12 ' + styles.nopad}>
                   Semesters{' '}
-                  <Select
-                    isMulti
-                    defaultValue={[seasons_options[0]]}
-                    options={seasons_options}
-                    ref={ref => {
-                      seasons = ref;
-                    }}
-                    placeholder="All"
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
-                  />
+                  {seasonsOptions && (
+                    <Select
+                      isMulti
+                      defaultValue={[seasonsOptions[0]]}
+                      options={seasonsOptions}
+                      ref={ref => {
+                        seasons = ref;
+                      }}
+                      placeholder="All"
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={() => setSelected(!selected)}
+                    />
+                  )}
                 </div>
               </Row>
               <Row className="py-2">
@@ -371,7 +393,7 @@ function App() {
                   Skills and areas
                   <Select
                     isMulti
-                    options={skills_areas_options}
+                    options={skillsAreasOptions}
                     placeholder="Any"
                     ref={ref => {
                       skillsAreas = ref;
@@ -387,7 +409,7 @@ function App() {
                   Credits
                   <Select
                     isMulti
-                    options={credits_options}
+                    options={creditOptions}
                     placeholder="Any"
                     ref={ref => {
                       credits = ref;

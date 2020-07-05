@@ -5,6 +5,7 @@ const FETCH_SEASON_CODES = gql`
   query MyQuery {
     seasons {
       season_code
+      term
       year
     }
   }

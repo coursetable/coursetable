@@ -1,5 +1,18 @@
 import gql from 'graphql-tag';
 
+export const GET_SEASON_CODES = gql`
+	query GetSeasonCodes {
+		# it's a lucky coincidence that
+		# 'spring', 'summer', and 'fall' are
+		# in alphabetical order
+		seasons(order_by: { year: desc, season_code: desc }) {
+			season_code
+			term
+			year
+		}
+	}
+`;
+
 export const SEARCH_COURSES = gql`
 	query SearchCourses(
 		$search_text: String
@@ -19,8 +32,8 @@ export const SEARCH_COURSES = gql`
 			where: {
 				season_code: { _in: $seasons }
 				_or: {
-					areas: {_has_keys_any: $areas}
-					skills: {_has_keys_any: $skills}
+					areas: { _has_keys_any: $areas }
+					skills: { _has_keys_any: $skills }
 				}
 				average_rating: { _gte: $min_rating, _lte: $max_rating }
 				average_workload: { _gte: $min_workload, _lte: $max_workload }
@@ -66,8 +79,8 @@ export const SEARCH_COURSES_TEXTLESS = gql`
 			where: {
 				season_code: { _in: $seasons }
 				_or: {
-					areas: {_has_keys_any: $areas}
-					skills: {_has_keys_any: $skills}
+					areas: { _has_keys_any: $areas }
+					skills: { _has_keys_any: $skills }
 				}
 				average_rating: { _gte: $min_rating, _lte: $max_rating }
 				average_workload: { _gte: $min_workload, _lte: $max_workload }
