@@ -183,7 +183,16 @@ function App() {
       setSearchType('TEXTLESS');
       executeTextlessSearch({
         variables: {
+          ordering: ordering,
           seasons: processedSeasons,
+          areas: processedAreas,
+          skills: processedSkills,
+          credits: processedCredits,
+          schools: allowedSchools,
+          min_rating: include_all_ratings ? null : ratingBounds[0],
+          max_rating: include_all_ratings ? null : ratingBounds[1],
+          min_workload: include_all_workloads ? null : workloadBounds[0],
+          max_workload: include_all_workloads ? null : workloadBounds[1],
         },
       });
     } else {
@@ -214,7 +223,7 @@ function App() {
         results = <div>Loading...</div>;
       } else {
         if (textlessData) {
-          results = <SearchResults data={textlessData.courses} />;
+          results = <SearchResults data={textlessData.computed_course_info} />;
         }
       }
     }
