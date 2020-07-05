@@ -4,6 +4,7 @@ export const SEARCH_COURSES = gql`
 	query SearchCourses(
 		$search_text: String
 		$seasons: [String!]
+		$schools: [String!]
 		$areas: [String!]
 		$credits: [float8!]
 		$skills: [String!]
@@ -23,6 +24,7 @@ export const SEARCH_COURSES = gql`
 				average_rating: { _gte: $min_rating, _lte: $max_rating }
 				average_workload: { _gte: $min_workload, _lte: $max_workload }
 				credits: { _in: $credits }
+				school: { _in: $schools }
 			}
 			order_by: {}
 			limit: 100
@@ -39,6 +41,8 @@ export const SEARCH_COURSES = gql`
 			areas
 			credits
 			course_codes
+			school
+			requirements
 		}
 	}
 `;

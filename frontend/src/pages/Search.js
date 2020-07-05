@@ -48,7 +48,7 @@ function App() {
   var skillsAreas = React.createRef();
   var credits = React.createRef();
 
-  var [HideGraduate, setHideGraduate] = React.useState(true);
+  var [HideGraduate, setHideGraduate] = React.useState(false);
   var [HideCancelled, setHideCancelled] = React.useState(true);
 
   var [ratingBounds, setRatingBounds] = React.useState([0, 5]);
@@ -111,8 +111,7 @@ function App() {
 
     // TODO:
     //  - sorting
-    //  - filter by credit count
-    //  - hide grad and cancelled
+    //  - hide cancelled
     //  - filter by rating and workload
 
     // - work on textless capabilities
@@ -162,6 +161,12 @@ function App() {
       });
     }
 
+    var allowedSchools = null;
+
+    if(HideGraduate){
+      allowedSchools = ['YC']
+    }
+
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
@@ -185,6 +190,7 @@ function App() {
           areas: processedAreas,
           skills: processedSkills,
           credits: processedCredits,
+          schools: allowedSchools,
           min_rating: include_all_ratings ? null : ratingBounds[0],
           max_rating: include_all_ratings ? null : ratingBounds[1],
           min_workload: include_all_workloads ? null : workloadBounds[0],
