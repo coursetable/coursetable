@@ -19,7 +19,7 @@ const App = ({ course, isMobile }) => {
 						{course.course_codes ? course.course_codes.join(' • ') : ''}
 					</div>
 					<div className={Styles.dot}> • </div>
-					<div className={Styles.course_section}>X credits</div>
+					<div className={Styles.course_section}>{course.credits} credits</div>
 					<div>
 						{course.title.length > 32
 							? course.title.slice(0, 29) + '...'

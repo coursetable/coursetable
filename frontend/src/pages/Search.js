@@ -155,6 +155,14 @@ function App() {
       }
     }
 
+    var processedCredits = credits.select.props.value;
+    if (processedCredits != null) {
+      processedCredits = processedCredits.map(x => {
+        return x.value;
+      });
+    }
+
+
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
     var include_all_ratings = ratingBounds[0] === 0 && ratingBounds[1] === 5;
@@ -176,6 +184,7 @@ function App() {
           seasons: processedSeasons,
           areas: processedAreas,
           skills: processedSkills,
+          credits: processedCredits,
           min_rating: include_all_ratings ? null : ratingBounds[0],
           max_rating: include_all_ratings ? null : ratingBounds[1],
           min_workload: include_all_workloads ? null : workloadBounds[0],
@@ -208,6 +217,14 @@ function App() {
       }
     }
   }
+
+  const selectStyles = {
+    menuPortal: base => ({ ...base, zIndex: 9999 }),
+    menu: base => ({
+      ...base,
+      marginTop: 0,
+    }),
+  };
 
   return (
     <div className={styles.search_base}>
@@ -242,6 +259,9 @@ function App() {
                     ref={ref => {
                       sortby = ref;
                     }}
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
                   />
                 </div>
                 <div className={'col-md-8 ' + styles.nopad}>
@@ -254,6 +274,9 @@ function App() {
                       seasons = ref;
                     }}
                     placeholder="All"
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
                   />
                 </div>
               </Row>
@@ -267,9 +290,8 @@ function App() {
                     ref={ref => {
                       skillsAreas = ref;
                     }}
-
                     // prevent overlap with tooltips
-                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                    styles={selectStyles}
                     menuPortalTarget={document.body}
                   />
                 </div>
@@ -282,9 +304,8 @@ function App() {
                     ref={ref => {
                       credits = ref;
                     }}
-
                     // prevent overlap with tooltips
-                    styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }}
+                    styles={selectStyles}
                     menuPortalTarget={document.body}
                   />
                 </div>

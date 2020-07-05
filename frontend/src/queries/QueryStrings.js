@@ -5,6 +5,7 @@ export const SEARCH_COURSES = gql`
 		$search_text: String
 		$seasons: [String!]
 		$areas: [String!]
+		$credits: [float8!]
 		$skills: [String!]
 		$min_rating: float8
 		$max_rating: float8
@@ -21,6 +22,7 @@ export const SEARCH_COURSES = gql`
 				}
 				average_rating: { _gte: $min_rating, _lte: $max_rating }
 				average_workload: { _gte: $min_workload, _lte: $max_workload }
+				credits: { _in: $credits }
 			}
 			order_by: {}
 			limit: 100
@@ -35,6 +37,7 @@ export const SEARCH_COURSES = gql`
 			locations_summary
 			skills
 			areas
+			credits
 			course_codes
 		}
 	}
