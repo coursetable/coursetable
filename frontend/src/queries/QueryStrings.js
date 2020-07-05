@@ -5,6 +5,10 @@ export const SEARCH_COURSES = gql`
 		$search_text: String
 		$seasons: [String!]
 		$skills_areas: [json!]
+		$min_rating: float8
+		$max_rating: float8
+		$min_workload: float8
+		$max_workload: float8
 	) {
 		search_course_info(
 			args: { query: $search_text }
@@ -14,6 +18,8 @@ export const SEARCH_COURSES = gql`
 					areas: { _in: $skills_areas }
 					skills: { _in: $skills_areas }
 				}
+				average_rating: { _gte: $min_rating, _lte: $max_rating }
+				average_workload: { _gte: $min_workload, _lte: $max_workload }
 			}
 			order_by: {}
 			limit: 100

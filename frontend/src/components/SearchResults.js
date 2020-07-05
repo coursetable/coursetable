@@ -7,9 +7,9 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResults.module.css';
 
-import {Container} from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 
-const App = ({data}) => {
+const App = ({ data }) => {
 	const { width } = useWindowDimensions();
 
 	const isMobile = width < 768;

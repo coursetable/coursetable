@@ -5,11 +5,8 @@ import { Container, Button, Row, Col, Badge } from 'react-bootstrap';
 import { BsBookmarkPlus } from 'react-icons/bs';
 
 import Styles from './SearchResultsItem.module.css';
-import { useMediaQuery } from 'react-responsive';
 
 const App = ({ course, isMobile }) => {
-	// 	const isMobile = useMediaQuery({ maxWidth: 768 });
-
 	const RATINGS_PRECISION = 1;
 
 	return (

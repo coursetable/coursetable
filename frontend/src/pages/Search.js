@@ -4,24 +4,40 @@ import styles from './Search.module.css';
 import { Col, Container, Row } from 'react-bootstrap';
 
 import {
-  SEARCH_COURSES,
-  SEARCH_COURSES_TEXTLESS,
-} from '../queries/QueryStrings';
-
-import { useLazyQuery } from '@apollo/react-hooks';
-
-import {
   Form,
   FormControl,
   FormCheck,
   InputGroup,
   Button,
 } from 'react-bootstrap';
+
+import {
+  SEARCH_COURSES,
+  SEARCH_COURSES_TEXTLESS,
+} from '../queries/QueryStrings';
+
+import { useLazyQuery } from '@apollo/react-hooks';
+
 import Select from 'react-select';
 
 import SearchResults from '../components/SearchResults';
 
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+
+import Slider from 'rc-slider';
+import 'rc-slider/assets/index.css';
+import 'rc-tooltip/assets/bootstrap.css';
+
+import { debounce } from 'lodash';
+
+const createSliderWithTooltip = Slider.createSliderWithTooltip;
+const Range = createSliderWithTooltip(Slider.Range);
+
 function App() {
+  const { width } = useWindowDimensions();
+
+  const isMobile = width < 768;
+
   var searchText = React.createRef();
 
   var [searchType, setSearchType] = React.useState();
@@ -33,6 +49,9 @@ function App() {
 
   var [HideGraduate, setHideGraduate] = React.useState(true);
   var [HideCancelled, setHideCancelled] = React.useState(true);
+
+  var [ratingBounds, setRatingBounds] = React.useState([0, 5]);
+  var [workloadBounds, setWorkloadBounds] = React.useState([0, 5]);
 
   const sortby_options = [
     { label: 'Relevance', value: 'text' },
@@ -83,8 +102,6 @@ function App() {
     { called: textCalled, loading: textLoading, data: textData },
   ] = useLazyQuery(SEARCH_COURSES);
 
-  var search_type;
-
   const handleSubmit = event => {
     event.preventDefault();
 
@@ -93,6 +110,9 @@ function App() {
     //  - filter by skills and areas
     //  - filter by credit count
     //  - hide grad and cancelled
+    //  - filter by rating and workload
+
+    // - work on textless capabilities
 
     var processed_seasons = seasons.select.props.value;
     if (processed_seasons != null) {
@@ -100,6 +120,14 @@ function App() {
         return x.value;
       });
     }
+
+    // if the bounds are unaltered, we need to set them to null
+    // to include unrated courses
+    var include_all_ratings = ratingBounds[0] === 0 && ratingBounds[1] === 5;
+    var include_all_workloads =
+      workloadBounds[0] === 0 && workloadBounds[1] === 5;
+
+    console.log(include_all_ratings, include_all_workloads);
 
     if (searchText.value === '') {
       setSearchType('TEXTLESS');
@@ -114,6 +142,10 @@ function App() {
         variables: {
           search_text: searchText.value,
           seasons: processed_seasons,
+          min_rating: include_all_ratings ? null : ratingBounds[0],
+          max_rating: include_all_ratings ? null : ratingBounds[1],
+          min_workload: include_all_workloads ? null : workloadBounds[0],
+          max_workload: include_all_workloads ? null : workloadBounds[1],
         },
       });
     }
@@ -127,10 +159,6 @@ function App() {
         results = <div>Loading...</div>;
       } else {
         if (textlessData) {
-          // if(search_type === 'TEXTLESS'){
-          //   data = data.
-          // }
-
           results = <SearchResults data={textlessData.courses} />;
         }
       }
@@ -149,104 +177,142 @@ function App() {
 
   return (
     <div className={styles.search_base}>
-      <Row className={styles.nopad + " " +styles.nomargin}>
-        <Col md={4} className={"m-0 px-4 py-4 " + styles.search_col}>
-            <Form className={styles.search_container} onSubmit={handleSubmit}>
-              <div className={styles.search_bar}>
-                <InputGroup className={styles.search_input}>
-                  <FormControl
-                    type="text"
-                    placeholder="Find a class..."
+      <Row className={styles.nopad + ' ' + styles.nomargin}>
+        <Col
+          md={4}
+          className={
+            'm-0 px-4 py-4 ' +
+            (isMobile ? styles.search_col_mobile : styles.search_col)
+          }
+        >
+          <Form className={styles.search_container} onSubmit={handleSubmit}>
+            <div className={styles.search_bar}>
+              <InputGroup className={styles.search_input}>
+                <FormControl
+                  type="text"
+                  placeholder="Find a class..."
+                  ref={ref => {
+                    searchText = ref;
+                  }}
+                />
+              </InputGroup>
+            </div>
+
+            <div className={'container ' + styles.search_options_container}>
+              <Row className="py-2">
+                <div className={'col-md-4 ' + styles.nopad}>
+                  Sort by{' '}
+                  <Select
+                    defaultValue={sortby_options[0]}
+                    options={sortby_options}
                     ref={ref => {
-                      searchText = ref;
+                      sortby = ref;
                     }}
                   />
-                </InputGroup>
-              </div>
-
-              <div
-                className={
-                  'container ' + styles.search_options_container
-                }
-              >
-                <div className="row py-2">
-                  <div className={"col-md-4 " +styles.nopad}>
-                    Sort by{' '}
-                    <Select
-                      defaultValue={sortby_options[0]}
-                      options={sortby_options}
-                      ref={ref => {
-                        sortby = ref;
-                      }}
-                    />
-                  </div>
-                  <div className={"col-md-8 " +styles.nopad}>
-                    Semesters{' '}
-                    <Select
-                      isMulti
-                      defaultValue={[seasons_options[0]]}
-                      options={seasons_options}
-                      ref={ref => {
-                        seasons = ref;
-                      }}
-                      placeholder="All"
-                    />
-                  </div>
                 </div>
-                <div className="row py-2">
-                  <div className={"col-md-8 "+ styles.nopad}>
-                    Skills and areas
-                    <Select
-                      isMulti
-                      options={skills_areas_options}
-                      placeholder="Any"
-                      ref={ref => {
-                        skillsAreas = ref;
-                      }}
-                    />
-                  </div>
-                  <div className={"col-md-4 "+ styles.nopad}>
-                    Credits
-                    <Select
-                      isMulti
-                      options={credits_options}
-                      placeholder="Any"
-                      ref={ref => {
-                        credits = ref;
-                      }}
-                    />
-                  </div>
+                <div className={'col-md-8 ' + styles.nopad}>
+                  Semesters{' '}
+                  <Select
+                    isMulti
+                    defaultValue={[seasons_options[0]]}
+                    options={seasons_options}
+                    ref={ref => {
+                      seasons = ref;
+                    }}
+                    placeholder="All"
+                  />
                 </div>
-                <div className="row px-3 py-2">
-                  <FormCheck type="switch" className={styles.toggle_option}>
-                    <FormCheck.Input checked={HideGraduate} />
-                    <FormCheck.Label
-                      onClick={() => setHideGraduate(!HideGraduate)}
-                    >
-                      Hide graduate courses
-                    </FormCheck.Label>
-                  </FormCheck>
-                  <Form.Check type="switch" className={styles.toggle_option}>
-                    <Form.Check.Input checked={HideCancelled} />
-                    <Form.Check.Label
-                      onClick={() => setHideCancelled(!HideCancelled)}
-                    >
-                      Hide cancelled courses
-                    </Form.Check.Label>
-                  </Form.Check>
+              </Row>
+              <Row className="py-2">
+                <div className={'col-md-8 ' + styles.nopad}>
+                  Skills and areas
+                  <Select
+                    isMulti
+                    options={skills_areas_options}
+                    placeholder="Any"
+                    ref={ref => {
+                      skillsAreas = ref;
+                    }}
+                  />
                 </div>
-                <div className="text-right">
-                  <Button
-                    type="submit"
-                    className={'pull-right ' + styles.secondary_submit}
+                <div className={'col-md-4 ' + styles.nopad}>
+                  Credits
+                  <Select
+                    isMulti
+                    options={credits_options}
+                    placeholder="Any"
+                    ref={ref => {
+                      credits = ref;
+                    }}
+                  />
+                </div>
+              </Row>
+              <Row className="py-2">
+                <FormCheck type="switch" className={styles.toggle_option}>
+                  <FormCheck.Input checked={HideGraduate} />
+                  <FormCheck.Label
+                    onClick={() => setHideGraduate(!HideGraduate)}
                   >
-                    Search
-                  </Button>
-                </div>
-              </div>
-            </Form>
+                    Hide graduate courses
+                  </FormCheck.Label>
+                </FormCheck>
+                <Form.Check type="switch" className={styles.toggle_option}>
+                  <Form.Check.Input checked={HideCancelled} />
+                  <Form.Check.Label
+                    onClick={() => setHideCancelled(!HideCancelled)}
+                  >
+                    Hide cancelled courses
+                  </Form.Check.Label>
+                </Form.Check>
+              </Row>
+              <Row className={styles.sliders}>
+                Overall ratings
+                <Container>
+                  <Range
+                    min={0}
+                    max={5}
+                    step={0.1}
+                    defaultValue={ratingBounds}
+                    onChange={value => {
+                      setRatingBounds(value);
+                    }}
+                    tipProps={{
+                      visible: true,
+                      align: { offset: [0, 4] },
+                    }}
+                    className={styles.slider}
+                  />
+                </Container>
+                Workload
+                <Container>
+                  <Range
+                    min={0}
+                    max={5}
+                    step={0.1}
+                    defaultValue={workloadBounds}
+                    onChange={value => {
+                      setWorkloadBounds(value);
+                    }}
+                    tipProps={{
+                      visible: true,
+                      align: { offset: [0, 4] },
+                    }}
+                    className={styles.slider}
+                  />
+                </Container>
+              </Row>
+              <Row className="pt-3 text-right flex-row-reverse">
+                <Button
+                  type="submit"
+                  className={'pull-right ' + styles.secondary_submit}
+                >
+                  Search
+                </Button>
+              </Row>
+            </div>
+          </Form>
         </Col>
-        <Col md={8} className={"m-0 p-0 "+styles.results_col}>
+        <Col md={8} className={'m-0 p-0 ' + styles.results_col}>
           {results}
         </Col>
       </Row>
