@@ -2,9 +2,15 @@ import React from 'react';
 
 import styles from './Search.module.css';
 import './Search.css';
-import { Col, Container, Row } from 'react-bootstrap';
+
+import chroma from 'chroma-js';
+
+import SearchResults from '../components/SearchResults';
 
 import {
+  Col,
+  Container,
+  Row,
   Form,
   FormControl,
   FormCheck,
@@ -21,9 +27,9 @@ import { useLazyQuery } from '@apollo/react-hooks';
 
 import Select from 'react-select';
 
-import SearchResults from '../components/SearchResults';
-
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+
+import { debounce } from 'lodash';
 
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -31,6 +37,10 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 const createSliderWithTooltip = Slider.createSliderWithTooltip;
 const Range = createSliderWithTooltip(Slider.Range);
+
+// TODO:
+//  - hide cancelled
+//  - pagination
 
 function App() {
   const { width } = useWindowDimensions();
@@ -51,6 +61,10 @@ function App() {
 
   var [ratingBounds, setRatingBounds] = React.useState([0, 5]);
   var [workloadBounds, setWorkloadBounds] = React.useState([0, 5]);
+
+  // dummy variable to make selectors update
+  // parent state and avoid tooltip errors
+  var [selected, setSelected] = React.useState(false);
 
   const sortby_options = [
     { label: 'Relevance', value: 'text' },
@@ -78,18 +92,82 @@ function App() {
   const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
 
   const skills_areas_options = [
-    { label: 'Humanities', value: 'Hu' },
-    { label: 'Social sciences', value: 'So' },
-    { label: 'Sciences', value: 'Sc' },
-    { label: 'Quantitative reasoning', value: 'QR' },
-    { label: 'Writing', value: 'WR' },
-    { label: 'Language: any', value: 'L' },
-    { label: 'Language: L1', value: 'L1' },
-    { label: 'Language: L2', value: 'L2' },
-    { label: 'Language: L3', value: 'L3' },
-    { label: 'Language: L4', value: 'L4' },
-    { label: 'Language: L5', value: 'L5' },
+    { label: 'HU', value: 'Hu', color: '#9970AB' },
+    { label: 'SO', value: 'So', color: '#4393C3' },
+    { label: 'SC', value: 'Sc', color: '#5AAE61' },
+    { label: 'QR', value: 'QR', color: '#CC3311' },
+    { label: 'WR', value: 'WR', color: '#EC7014' },
+    { label: 'L (all)', value: 'L', color: '#000000' },
+    { label: 'L1', value: 'L1', color: '#A0A0A0' },
+    { label: 'L2', value: 'L2', color: '#A0A0A0' },
+    { label: 'L3', value: 'L3', color: '#A0A0A0' },
+    { label: 'L4', value: 'L4', color: '#A0A0A0' },
+    { label: 'L5', value: 'L5', color: '#A0A0A0' },
   ];
+
+  const colourStyles = {
+    control: styles => ({ ...styles, backgroundColor: 'white' }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      const color = chroma(data.color);
+      return {
+        ...styles,
+        backgroundColor: isDisabled
+          ? null
+          : isSelected
+          ? data.color
+          : isFocused
+          ? color.alpha(0.1).css()
+          : null,
+        color: isDisabled
+          ? '#ccc'
+          : isSelected
+          ? chroma.contrast(color, 'white') > 2
+            ? 'white'
+            : 'black'
+          : data.color,
+        cursor: isDisabled ? 'not-allowed' : 'default',
+
+        ':active': {
+          ...styles[':active'],
+          backgroundColor:
+            !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
+        },
+      };
+    },
+    multiValue: (styles, { data }) => {
+      const color = chroma(data.color);
+      return {
+        ...styles,
+        backgroundColor: color.alpha(0.25).css(),
+      };
+    },
+    multiValueLabel: (styles, { data }) => ({
+      ...styles,
+      color: data.color,
+      fontWeight: 'bold'
+    }),
+    multiValueRemove: (styles, { data }) => ({
+      ...styles,
+      color: data.color,
+      ':hover': {
+        backgroundColor: data.color,
+        color: 'white',
+      },
+    }),
+    menuPortal: base => ({ ...base, zIndex: 9999 }),
+    menu: base => ({
+      ...base,
+      marginTop: 0,
+    }),
+  };
+
+  const selectStyles = {
+    menuPortal: base => ({ ...base, zIndex: 9999 }),
+    menu: base => ({
+      ...base,
+      marginTop: 0,
+    }),
+  };
 
   const credits_options = [
     { label: '0.5', value: '0.5' },
@@ -110,11 +188,6 @@ function App() {
 
   const handleSubmit = event => {
     event.preventDefault();
-
-    // TODO:
-    //  - hide cancelled
-
-    // - work on textless capabilities
 
     var sortParams = sortby.select.props.value.value;
 
@@ -237,14 +310,6 @@ function App() {
     }
   }
 
-  const selectStyles = {
-    menuPortal: base => ({ ...base, zIndex: 9999 }),
-    menu: base => ({
-      ...base,
-      marginTop: 0,
-    }),
-  };
-
   return (
     <div className={styles.search_base}>
       <Row className={styles.nopad + ' ' + styles.nomargin}>
@@ -259,8 +324,8 @@ function App() {
             <div className={styles.search_bar}>
               <InputGroup className={styles.search_input}>
                 <FormControl
-                  type='text'
-                  placeholder='Find a class...'
+                  type="text"
+                  placeholder="Find a class..."
                   ref={ref => {
                     searchText = ref;
                   }}
@@ -269,8 +334,8 @@ function App() {
             </div>
 
             <div className={'container ' + styles.search_options_container}>
-              <Row className='py-2'>
-                <div className={'col-md-4 ' + styles.nopad}>
+              <Row className="py-2">
+                <div className={'col-xl-4 col-md-12 ' + styles.nopad}>
                   Sort by{' '}
                   <Select
                     defaultValue={sortby_options[0]}
@@ -281,9 +346,10 @@ function App() {
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
                   />
                 </div>
-                <div className={'col-md-8 ' + styles.nopad}>
+                <div className={'col-xl-8 col-md-12 ' + styles.nopad}>
                   Semesters{' '}
                   <Select
                     isMulti
@@ -292,45 +358,49 @@ function App() {
                     ref={ref => {
                       seasons = ref;
                     }}
-                    placeholder='All'
+                    placeholder="All"
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
                   />
                 </div>
               </Row>
-              <Row className='py-2'>
-                <div className={'col-md-8 ' + styles.nopad}>
+              <Row className="py-2">
+                <div className={'col-xl-8 col-sm-12 ' + styles.nopad}>
                   Skills and areas
                   <Select
                     isMulti
                     options={skills_areas_options}
-                    placeholder='Any'
+                    placeholder="Any"
                     ref={ref => {
                       skillsAreas = ref;
                     }}
+                    // colors
+                    styles={colourStyles}
                     // prevent overlap with tooltips
-                    styles={selectStyles}
                     menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
                   />
                 </div>
-                <div className={'col-md-4 ' + styles.nopad}>
+                <div className={'col-xl-4 col-sm-12 ' + styles.nopad}>
                   Credits
                   <Select
                     isMulti
                     options={credits_options}
-                    placeholder='Any'
+                    placeholder="Any"
                     ref={ref => {
                       credits = ref;
                     }}
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
                   />
                 </div>
               </Row>
-              <Row className='py-2'>
-                <FormCheck type='switch' className={styles.toggle_option}>
+              <Row className="py-2">
+                <FormCheck type="switch" className={styles.toggle_option}>
                   <FormCheck.Input checked={HideGraduate} />
                   <FormCheck.Label
                     onClick={() => setHideGraduate(!HideGraduate)}
@@ -338,7 +408,7 @@ function App() {
                     Hide graduate courses
                   </FormCheck.Label>
                 </FormCheck>
-                <Form.Check type='switch' className={styles.toggle_option}>
+                <Form.Check type="switch" className={styles.toggle_option}>
                   <Form.Check.Input checked={HideCancelled} />
                   <Form.Check.Label
                     onClick={() => setHideCancelled(!HideCancelled)}
@@ -348,16 +418,16 @@ function App() {
                 </Form.Check>
               </Row>
               <Row className={styles.sliders}>
-                Overall ratings
+                Overall rating
                 <Container>
                   <Range
                     min={0}
                     max={5}
                     step={0.1}
                     defaultValue={ratingBounds}
-                    onChange={value => {
+                    onChange={debounce(value => {
                       setRatingBounds(value);
-                    }}
+                    }, 250)}
                     tipProps={{
                       visible: true,
                       align: { offset: [0, 4] },
@@ -370,11 +440,11 @@ function App() {
                   <Range
                     min={0}
                     max={5}
-                    step={0.01}
+                    step={0.1}
                     defaultValue={workloadBounds}
-                    onChange={value => {
+                    onChange={debounce(value => {
                       setWorkloadBounds(value);
-                    }}
+                    }, 250)}
                     tipProps={{
                       visible: true,
                       align: { offset: [0, 4] },
@@ -383,9 +453,9 @@ function App() {
                   />
                 </Container>
               </Row>
-              <Row className='pt-3 text-right flex-row-reverse'>
+              <Row className="pt-3 text-right flex-row-reverse">
                 <Button
-                  type='submit'
+                  type="submit"
                   className={'pull-right ' + styles.secondary_submit}
                 >
                   Search
@@ -394,7 +464,13 @@ function App() {
             </div>
           </Form>
         </Col>
-        <Col md={8} className={'m-0 p-0 ' + (isMobile ? styles.results_col_mobile : styles.results_col)}>
+        <Col
+          md={8}
+          className={
+            'm-0 p-0 ' +
+            (isMobile ? styles.results_col_mobile : styles.results_col)
+          }
+        >
           {results}
         </Col>
       </Row>

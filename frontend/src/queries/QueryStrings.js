@@ -77,6 +77,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
 			order_by: $ordering
 			limit: 100
 		) {
+			course_id
 			title
 			description
 			professor_names

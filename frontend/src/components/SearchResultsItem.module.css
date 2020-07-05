@@ -34,24 +34,24 @@
   border-radius: 6px;
 }
 
-.So {
-  background-color: #0779e4 !important;
+.Hu {
+  background-color: #9970AB !important;
 }
 
-.Hu {
-  background-color: #4cbbb9 !important;
+.So {
+  background-color: #4393C3 !important;
 }
 
 .Sc {
-  background-color: #77d8d8 !important;
-}
-
-.WR {
-  background-color: #438a5e !important;
+  background-color: #5AAE61 !important;
 }
 
 .QR {
-  background-color: #9bdeac !important;
+  background-color: #CC3311 !important;
+}
+
+.WR {
+  background-color: #EC7014 !important;
 }
 
 .L1,
@@ -59,7 +59,7 @@
 .L3,
 .L4,
 .L5 {
-  background-color: #a8df65 !important;
+  background-color: #000000 !important;
 }
 
 .friends_count {
