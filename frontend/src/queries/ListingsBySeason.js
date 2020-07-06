@@ -1,7 +1,7 @@
 import { useQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 
-import flatten from '../utilities';
+import { flatten } from '../utilities';
 
 const QUERY_LISTINGS = gql`
   query fetch_course($season: String, $crn_code: Int) {

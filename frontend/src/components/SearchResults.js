@@ -1,7 +1,7 @@
 import React from 'react';
 
 import SearchResultsItem from './SearchResultsItem';
-import flatten from '../utilities';
+import { flatten } from '../utilities';
 
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
