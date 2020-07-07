@@ -4,3 +4,8 @@
   overflow-y: scroll;
   border-radius: 0px !important;
 }
+
+.clickable:hover {
+  cursor: pointer;
+  text-decoration: underline;
+}

@@ -37,7 +37,11 @@ export default class CoursesTable extends React.Component {
 
     const WorkSheetFormatter = ({ row, value }) => {
       return (
-        <WorksheetToggleButton crn={row.crn} season_code={row.season_code} />
+        <WorksheetToggleButton
+          alwaysRed={false}
+          crn={row.crn}
+          season_code={row.season_code}
+        />
       );
     };
 

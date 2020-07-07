@@ -2,15 +2,30 @@ import React from 'react';
 import styles from './WorksheetList.module.css';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
+import CourseModal from './CourseModal';
 import { parse } from 'graphql';
 
 export default class WeekSchedule extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      course_info: [false],
+    };
+    this.modalElement = React.createRef();
   }
 
   setSeason = season_code => {
     this.props.onSeasonChange(season_code);
+  };
+
+  showModal = listing => {
+    // console.log('show modal ' + listing.season_code + ' ' + listing.crn);
+    this.setState({ course_info: [true, listing] });
+  };
+
+  hideModal = () => {
+    // console.log('hide modal');
+    this.setState({ course_info: [false] });
   };
 
   parseListings = (listings, season_codes) => {
@@ -20,11 +35,7 @@ export default class WeekSchedule extends React.Component {
     });
     listings.forEach(listing => {
       if (parsed_courses[listing['season_code']] === undefined) return;
-      parsed_courses[listing['season_code']].push({
-        course_code: listing['course_code'],
-        course_title: listing['course.title'],
-        crn: listing['crn'],
-      });
+      parsed_courses[listing['season_code']].push(listing);
     });
     return parsed_courses;
   };
@@ -56,12 +67,19 @@ export default class WeekSchedule extends React.Component {
           <ListGroup.Item key={id++}>
             <Row>
               <Col xs="auto" className="px-0">
-                <WorksheetToggleButton crn={course.crn} season_code={season} />
+                <WorksheetToggleButton
+                  alwaysRed={true}
+                  crn={course.crn}
+                  season_code={season}
+                />
               </Col>
-              <Col className="px-0">
-                <strong>{course.course_code}</strong>
+              <Col
+                className={styles.clickable + ' px-0'}
+                onClick={() => this.showModal(course)}
+              >
+                <strong>{course['course_code']}</strong>
                 <br />
-                {course.course_title}
+                {course['course.title']}
               </Col>
             </Row>
           </ListGroup.Item>
@@ -81,9 +99,19 @@ export default class WeekSchedule extends React.Component {
       parsed_courses,
       this.props.cur_season
     );
+    // console.log(this.state.course_info);
     return (
       <div className={styles.container}>
         <ListGroup className={styles.table}>{items}</ListGroup>
+        <div>
+          {this.state.course_info[0] && (
+            <CourseModal
+              ref={this.modalElement}
+              hideModal={this.hideModal}
+              listing={this.state.course_info[1]}
+            />
+          )}
+        </div>
       </div>
     );
   }

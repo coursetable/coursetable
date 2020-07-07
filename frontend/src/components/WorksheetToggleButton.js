@@ -29,7 +29,7 @@ const WorksheetToggleButton = props => {
           toast.error('Failed to update worksheet');
           console.error(err);
         });
-        setInWorksheet(!inWorksheet);
+        if (!props.alwaysRed) setInWorksheet(!inWorksheet);
       });
   }
 

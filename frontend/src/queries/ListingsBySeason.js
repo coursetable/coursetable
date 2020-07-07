@@ -56,6 +56,7 @@ const QUERY_LISTINGS_WITH_EVALS = gql`
           }
         }
         times_by_day
+        description
         short_title
         title
         times_summary
