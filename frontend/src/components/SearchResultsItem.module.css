@@ -1,9 +1,16 @@
-.search_result_item:hover {
-  cursor: pointer;
+.search_result {
+  border: 0px !important;
+  border-radius: 8px !important;
+  background-color: white !important;
 }
 
-.search_result_item:hover .course_header {
-  text-decoration: underline;
+.search_result:hover {
+  cursor: pointer;
+  background-color: #E1EDFF !important;
+}
+
+.card_header{
+  background-color: transparent !important;
 }
 
 .course_code {
@@ -84,4 +91,8 @@
 .toggle_worksheet_mobile {
   border-radius: 8px;
   font-size: 1rem;
+}
+
+.expanded_card {
+  background-color: white;
 }

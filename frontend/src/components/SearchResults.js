@@ -15,7 +15,7 @@ const App = ({ data }) => {
 	const isMobile = width < 768;
 
 	return (
-		<Accordion>
+		<Accordion className={Styles.results_container}>
 			{data.map(course => (
 				<SearchResultsItem course={flatten(course)} isMobile={isMobile} />
 			))}

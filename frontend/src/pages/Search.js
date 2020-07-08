@@ -43,7 +43,7 @@ const Range = createSliderWithTooltip(Slider.Range);
 
 // TODO:
 //  - hide cancelled
-//  - pagination
+//  - pagination/infinite scrolling
 
 function App() {
   const { width } = useWindowDimensions();
@@ -336,11 +336,15 @@ function App() {
         <Col
           md={4}
           className={
-            'm-0 px-4 py-4 ' +
-            (isMobile ? styles.search_col_mobile : styles.search_col)
+            isMobile
+              ? 'p-3 ' + styles.search_col_mobile
+              : 'pr-2 py-3 pl-3 ' + styles.search_col
           }
         >
-          <Form className={styles.search_container} onSubmit={handleSubmit}>
+          <Form
+            className={'px-4 py-4 ' + styles.search_container}
+            onSubmit={handleSubmit}
+          >
             <div className={styles.search_bar}>
               <InputGroup className={styles.search_input}>
                 <FormControl
@@ -489,8 +493,10 @@ function App() {
         <Col
           md={8}
           className={
-            'm-0 p-0 ' +
-            (isMobile ? styles.results_col_mobile : styles.results_col)
+            'm-0 ' +
+            (isMobile
+              ? 'p-3 ' + styles.results_col_mobile
+              : 'pl-2 py-3 pr-3 ' + styles.results_col)
           }
         >
           {results}
