@@ -13,8 +13,11 @@
   background-color: transparent !important;
 }
 
-.course_code {
+.course_name{
   font-weight: bold;
+}
+
+.course_code {
   display: inline;
 }
 

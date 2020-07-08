@@ -335,6 +335,7 @@ function App() {
       <Row className={styles.nopad + ' ' + styles.nomargin}>
         <Col
           md={4}
+          lg={3}
           className={
             isMobile
               ? 'p-3 ' + styles.search_col_mobile
@@ -492,6 +493,7 @@ function App() {
         </Col>
         <Col
           md={8}
+          lg={9}
           className={
             'm-0 ' +
             (isMobile
