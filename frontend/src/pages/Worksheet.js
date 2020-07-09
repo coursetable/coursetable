@@ -5,6 +5,7 @@ import { Row, Col } from 'react-bootstrap';
 import SeasonDropdown from '../components/SeasonDropdown';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
+import CourseModal from '../components/CourseModal';
 
 import styles from './Worksheet.module.css';
 
@@ -25,6 +26,7 @@ function Worksheet() {
   const indx = courses_info[0];
   const listings = courses_info[1];
   const [season, setSeason] = useState(recentSeason);
+  const [course_info, setCourseInfo] = useState([false]);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -35,6 +37,16 @@ function Worksheet() {
   const changeSeason = season_code => {
     setSeason(season_code);
     console.log(season_code);
+  };
+
+  const showModal = listing => {
+    // console.log(listing);
+    setCourseInfo([true, listing]);
+  };
+
+  const hideModal = () => {
+    // console.log('hide modal');
+    setCourseInfo([false]);
   };
 
   if (user.worksheet.length === 0)
@@ -69,6 +81,7 @@ function Worksheet() {
         <Col sm={4} className={styles.table + ' pr-0'}>
           <WorksheetList
             onSeasonChange={changeSeason}
+            showModal={showModal}
             courses={filtered_listings}
             season_codes={season_codes}
             cur_season={season}
@@ -80,9 +93,14 @@ function Worksheet() {
             cur_season={season}
             season_codes={season_codes}
           /> */}
-          <WeekSchedule courses={season_listings} />
+          <WeekSchedule showModal={showModal} courses={season_listings} />
         </Col>
       </Row>
+      <div>
+        {course_info[0] && (
+          <CourseModal hideModal={hideModal} listing={course_info[1]} />
+        )}
+      </div>
     </div>
   );
 }

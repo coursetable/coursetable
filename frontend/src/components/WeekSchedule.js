@@ -11,6 +11,10 @@ export default class WeekSchedule extends React.Component {
     super(props);
   }
 
+  showModal = listing => {
+    this.props.showModal(listing);
+  };
+
   parseListings = listings => {
     let earliest = moment().hour(20);
     let latest = moment().hour(0);
@@ -29,6 +33,7 @@ export default class WeekSchedule extends React.Component {
             title: value,
             start: start.toDate(),
             end: end.toDate(),
+            listing: course,
           };
           if (start.get('hours') < earliest.get('hours')) earliest = start;
           if (end.get('hours') > latest.get('hours')) latest = end;
@@ -52,6 +57,7 @@ export default class WeekSchedule extends React.Component {
         max={ret_values[1].add(1, 'hours').toDate()}
         localizer={localizer}
         toolbar={false}
+        onSelectEvent={(event, e) => this.showModal(event.listing)}
       />
     );
   }

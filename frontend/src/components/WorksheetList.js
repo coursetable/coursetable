@@ -8,10 +8,6 @@ import { parse } from 'graphql';
 export default class WeekSchedule extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {
-      course_info: [false],
-    };
-    this.modalElement = React.createRef();
   }
 
   setSeason = season_code => {
@@ -19,13 +15,7 @@ export default class WeekSchedule extends React.Component {
   };
 
   showModal = listing => {
-    // console.log('show modal ' + listing.season_code + ' ' + listing.crn);
-    this.setState({ course_info: [true, listing] });
-  };
-
-  hideModal = () => {
-    // console.log('hide modal');
-    this.setState({ course_info: [false] });
+    this.props.showModal(listing);
   };
 
   parseListings = (listings, season_codes) => {
@@ -103,15 +93,6 @@ export default class WeekSchedule extends React.Component {
     return (
       <div className={styles.container}>
         <ListGroup className={styles.table}>{items}</ListGroup>
-        <div>
-          {this.state.course_info[0] && (
-            <CourseModal
-              ref={this.modalElement}
-              hideModal={this.hideModal}
-              listing={this.state.course_info[1]}
-            />
-          )}
-        </div>
       </div>
     );
   }
