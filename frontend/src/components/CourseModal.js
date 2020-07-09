@@ -17,7 +17,7 @@ const CourseModal = props => {
   return (
     <div>
       <Modal
-        show={true}
+        show={props.show}
         scrollable={true}
         onHide={props.hideModal}
         centered

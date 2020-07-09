@@ -26,7 +26,7 @@ function Worksheet() {
   const indx = courses_info[0];
   const listings = courses_info[1];
   const [season, setSeason] = useState(recentSeason);
-  const [course_info, setCourseInfo] = useState([false]);
+  const [course_info, setCourseInfo] = useState([false, '']);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -46,7 +46,7 @@ function Worksheet() {
 
   const hideModal = () => {
     // console.log('hide modal');
-    setCourseInfo([false]);
+    setCourseInfo([false, '']);
   };
 
   if (user.worksheet.length === 0)
@@ -96,11 +96,11 @@ function Worksheet() {
           <WeekSchedule showModal={showModal} courses={season_listings} />
         </Col>
       </Row>
-      <div>
-        {course_info[0] && (
-          <CourseModal hideModal={hideModal} listing={course_info[1]} />
-        )}
-      </div>
+      <CourseModal
+        hideModal={hideModal}
+        show={course_info[0]}
+        listing={course_info[1]}
+      />
     </div>
   );
 }

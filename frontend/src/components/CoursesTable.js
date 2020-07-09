@@ -21,12 +21,12 @@ export default class CoursesTable extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      course_info: [false],
+      course_info: [false, ''],
     };
   }
 
   hideModal = () => {
-    this.setState({ course_info: [false] });
+    this.setState({ course_info: [false, ''] });
   };
 
   render() {
@@ -191,15 +191,11 @@ export default class CoursesTable extends React.Component {
         ) : (
           <div>Loading...</div>
         )}
-        <div>
-          {this.state.course_info[0] && (
-            <CourseModal
-              ref={this.modalElement}
-              hideModal={this.hideModal}
-              listing={this.state.course_info[1]}
-            />
-          )}
-        </div>
+        <CourseModal
+          hideModal={this.hideModal}
+          show={this.state.course_info[0]}
+          listing={this.state.course_info[1]}
+        />
       </div>
     );
   }
