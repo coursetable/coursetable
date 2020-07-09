@@ -9,6 +9,7 @@ import { AutoSizer, List } from 'react-virtualized';
 
 import styles from './CoursesTable.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
+import CourseModal from './CourseModal';
 
 function handleWorksheetAdd(e) {
   e.preventDefault();
@@ -19,7 +20,14 @@ function handleWorksheetAdd(e) {
 export default class CoursesTable extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      course_info: [false],
+    };
   }
+
+  hideModal = () => {
+    this.setState({ course_info: [false] });
+  };
 
   render() {
     const defaultColumnProperties = {
@@ -43,6 +51,10 @@ export default class CoursesTable extends React.Component {
           season_code={row.season_code}
         />
       );
+    };
+
+    const showModal = listing => {
+      this.setState({ course_info: [true, listing] });
     };
 
     const columns = [
@@ -160,6 +172,11 @@ export default class CoursesTable extends React.Component {
                 }
                 minWidth={width}
                 minHeight={height - 64}
+                enableCellSelect={false}
+                enableCellAutoFocus={false}
+                onCellSelected={event =>
+                  event['idx'] ? showModal(filteredRows[event['rowIdx']]) : ''
+                }
               />
             )}
           </AutoSizer>
@@ -174,6 +191,15 @@ export default class CoursesTable extends React.Component {
         ) : (
           <div>Loading...</div>
         )}
+        <div>
+          {this.state.course_info[0] && (
+            <CourseModal
+              ref={this.modalElement}
+              hideModal={this.hideModal}
+              listing={this.state.course_info[1]}
+            />
+          )}
+        </div>
       </div>
     );
   }

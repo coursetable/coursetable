@@ -55,6 +55,8 @@ const QUERY_LISTINGS_WITH_EVALS = gql`
             average_rating
           }
         }
+        syllabus_url
+        credits
         times_by_day
         description
         short_title

@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './WorksheetList.module.css';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
-import CourseModal from './CourseModal';
 import { parse } from 'graphql';
 
 export default class WeekSchedule extends React.Component {
