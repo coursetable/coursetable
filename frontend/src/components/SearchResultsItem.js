@@ -10,6 +10,8 @@ import {
 	Badge,
 } from 'react-bootstrap';
 
+import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+
 import { BsBookmarkPlus } from 'react-icons/bs';
 
 import './SearchResultsItem.css';
@@ -41,14 +43,28 @@ const App = ({ course, isMobile }) => {
 						</div>
 					</Col>
 					<Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-						<div className={Styles.overall_rating}>
+						<div
+							className={Styles.overall_rating}
+							style={
+								course.average_rating && {
+									color: ratingColormap(course.average_rating),
+								}
+							}
+						>
 							{course.average_rating
 								? course.average_rating.toFixed(RATINGS_PRECISION)
 								: ''}
 						</div>
 					</Col>
 					<Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-						<div className={Styles.workload_rating}>
+						<div
+							className={Styles.workload_rating}
+							style={
+								course.average_workload && {
+									color: workloadColormap(course.average_workload),
+								}
+							}
+						>
 							{course.average_workload
 								? course.average_workload.toFixed(RATINGS_PRECISION)
 								: ''}

@@ -11,7 +11,7 @@ export const sortbyOptions = [
 export const sortbyQueries = {
 	text: null,
 	course_name: { title: 'asc' },
-	rating: { average_rating: 'asc' },
+	rating: { average_rating: 'desc' },
 	workload: { average_workload: 'asc' },
 };
 
@@ -103,3 +103,6 @@ export const creditOptions = [
 	{ label: '1.5', value: '1.5' },
 	{ label: '2', value: '2' },
 ];
+
+export const ratingColormap = chroma.bezier(['#d32626','#f6d743','#79d70f']).scale().domain([1,5])
+export const workloadColormap = chroma.bezier(['#79d70f','#f6d743','#d32626']).scale().domain([1,5])

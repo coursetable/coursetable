@@ -32,7 +32,7 @@ import {
   colorOptionStyles,
   selectStyles,
   creditOptions,
-} from '../queries/Constants'
+} from '../queries/Constants';
 
 import { useLazyQuery } from '@apollo/react-hooks';
 
