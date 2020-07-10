@@ -23,6 +23,17 @@ import {
   SEARCH_COURSES_TEXTLESS,
 } from '../queries/QueryStrings';
 
+import {
+  sortbyOptions,
+  sortbyQueries,
+  areas,
+  skills,
+  skillsAreasOptions,
+  colorOptionStyles,
+  selectStyles,
+  creditOptions,
+} from '../queries/Constants'
+
 import { useLazyQuery } from '@apollo/react-hooks';
 
 import Select from 'react-select';
@@ -68,14 +79,6 @@ function App() {
   // parent state and avoid tooltip errors
   var [selected, setSelected] = React.useState(false);
 
-  const sortbyOptions = [
-    { label: 'Relevance', value: 'text' },
-    { label: 'Course name', value: 'course_name' },
-    { label: 'Rating', value: 'rating' },
-    { label: 'Workload', value: 'workload' },
-    // { label: 'Enrollment', value: 'enrollment' },
-  ];
-
   var seasonsOptions;
 
   if (seasonsData && seasonsData.seasons) {
@@ -86,102 +89,6 @@ function App() {
       };
     });
   }
-
-  var sortbyQueries = {
-    text: null,
-    course_name: { title: 'asc' },
-    rating: { average_rating: 'asc' },
-    workload: { average_workload: 'asc' },
-  };
-
-  const areas = ['Hu', 'So', 'Sc'];
-  const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
-
-  const skillsAreasOptions = [
-    { label: 'HU', value: 'Hu', color: '#9970AB' },
-    { label: 'SO', value: 'So', color: '#4393C3' },
-    { label: 'SC', value: 'Sc', color: '#5AAE61' },
-    { label: 'QR', value: 'QR', color: '#CC3311' },
-    { label: 'WR', value: 'WR', color: '#EC7014' },
-    { label: 'L (all)', value: 'L', color: '#000000' },
-    { label: 'L1', value: 'L1', color: '#888888' },
-    { label: 'L2', value: 'L2', color: '#888888' },
-    { label: 'L3', value: 'L3', color: '#888888' },
-    { label: 'L4', value: 'L4', color: '#888888' },
-    { label: 'L5', value: 'L5', color: '#888888' },
-  ];
-
-  const colourStyles = {
-    control: styles => ({ ...styles, backgroundColor: 'white' }),
-    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-      const color = chroma(data.color);
-      return {
-        ...styles,
-        fontWeight: 'bold',
-        backgroundColor: isDisabled
-          ? null
-          : isSelected
-          ? data.color
-          : isFocused
-          ? color.alpha(0.1).css()
-          : null,
-        color: isDisabled
-          ? '#ccc'
-          : isSelected
-          ? chroma.contrast(color, 'white') > 2
-            ? 'white'
-            : 'black'
-          : data.color,
-        cursor: isDisabled ? 'not-allowed' : 'default',
-
-        ':active': {
-          ...styles[':active'],
-          backgroundColor:
-            !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
-        },
-      };
-    },
-    multiValue: (styles, { data }) => {
-      const color = chroma(data.color);
-      return {
-        ...styles,
-        backgroundColor: color.alpha(0.25).css(),
-      };
-    },
-    multiValueLabel: (styles, { data }) => ({
-      ...styles,
-      color: data.color,
-      fontWeight: 'bold',
-    }),
-    multiValueRemove: (styles, { data }) => ({
-      ...styles,
-      color: data.color,
-      ':hover': {
-        backgroundColor: data.color,
-        color: 'white',
-      },
-    }),
-    menuPortal: base => ({ ...base, zIndex: 9999 }),
-    menu: base => ({
-      ...base,
-      marginTop: 0,
-    }),
-  };
-
-  const selectStyles = {
-    menuPortal: base => ({ ...base, zIndex: 9999 }),
-    menu: base => ({
-      ...base,
-      marginTop: 0,
-    }),
-  };
-
-  const creditOptions = [
-    { label: '0.5', value: '0.5' },
-    { label: '1', value: '1' },
-    { label: '1.5', value: '1.5' },
-    { label: '2', value: '2' },
-  ];
 
   var [
     executeTextlessSearch,
@@ -391,7 +298,7 @@ function App() {
                       skillsAreas = ref;
                     }}
                     // colors
-                    styles={colourStyles}
+                    styles={colorOptionStyles}
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={() => setSelected(!selected)}
