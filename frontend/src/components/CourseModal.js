@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Container, Col, Row, Table, Modal } from 'react-bootstrap';
+import React from 'react';
+import { Col, Table, Modal } from 'react-bootstrap';
 
 const CourseModal = props => {
   const listing = props.listing;
@@ -30,64 +30,60 @@ const CourseModal = props => {
         <Modal.Body>
           {/* COURSE DESCRIPTION */}
           {listing['course.description']}
-
           <Col sm={6} className="px-0 my-2">
             <Table size="sm">
               <tbody>
                 {/* PROFESSORS */}
-                {listing['professors'] ? (
+                {listing['professors'] && (
                   <tr>
                     <td>
                       <strong>Professor</strong>
                     </td>
                     <td>{listing['professors']}</td>
                   </tr>
-                ) : (
-                  ''
                 )}
-
                 {/* TIMES SUMMARY */}
-                {listing['course.times_summary'] !== 'TBA' ? (
+                {listing['course.times_summary'] !== 'TBA' && (
                   <tr>
                     <td>
                       <strong>Meets</strong>
                     </td>
                     <td>{listing['course.times_summary']}</td>
                   </tr>
-                ) : (
-                  ''
                 )}
-
                 {/* LOCATION URL */}
-                {location_url !== '' ? (
+                {location_url !== '' && (
                   <tr>
                     <td>
                       <strong>Location</strong>
                     </td>
                     <td>
-                      <a target="_blank" href={location_url}>
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={location_url}
+                      >
                         {location_name}
                       </a>
                     </td>
                   </tr>
-                ) : (
-                  ''
                 )}
-
                 {/* SYLLABUS URL */}
-                {listing['course.syllabus_url'] ? (
+                {listing['course.syllabus_url'] && (
                   <tr>
                     <td>
                       <strong>Syllabus</strong>
                     </td>
                     <td>
-                      <a target="_blank" href={listing['course.syllabus_url']}>
+                      <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={listing['course.syllabus_url']}
+                      >
                         {listing['course_code']}
                       </a>
                     </td>
                   </tr>
-                ) : (
-                  ''
                 )}
               </tbody>
             </Table>

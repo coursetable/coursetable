@@ -1,11 +1,17 @@
-.table {
-  height: 93vh;
+.container {
+  border-radius: 8px !important;
+  height: 90vh;
   overflow: hidden;
   overflow-y: scroll;
-  border-radius: 0px !important;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
 .clickable:hover {
   cursor: pointer;
   text-decoration: underline;
+}
+
+.seasonHeader:focus {
+  border: none;
+  outline: none;
 }

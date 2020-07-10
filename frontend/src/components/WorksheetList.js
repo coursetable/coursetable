@@ -2,7 +2,6 @@ import React from 'react';
 import styles from './WorksheetList.module.css';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
-import { parse } from 'graphql';
 
 export default class WeekSchedule extends React.Component {
   constructor(props) {
@@ -39,10 +38,11 @@ export default class WeekSchedule extends React.Component {
       items.push(
         <ListGroup.Item
           key={id++}
-          active={cur_season === season}
-          variant="primary"
+          // active={cur_season === season}
+          variant={cur_season === season ? 'primary' : 'dark'}
           action
           onClick={() => this.setSeason(season)}
+          className={styles.seasonHeader}
         >
           <h4 className="mb-0">
             <strong>
@@ -55,20 +55,20 @@ export default class WeekSchedule extends React.Component {
         items.push(
           <ListGroup.Item key={id++}>
             <Row>
-              <Col xs="auto" className="px-0">
-                <WorksheetToggleButton
-                  alwaysRed={true}
-                  crn={course.crn}
-                  season_code={season}
-                />
-              </Col>
               <Col
-                className={styles.clickable + ' px-0'}
+                className={styles.clickable + ' pr-0 pl-1'}
                 onClick={() => this.showModal(course)}
               >
                 <strong>{course['course_code']}</strong>
                 <br />
                 {course['course.title']}
+              </Col>
+              <Col xs="auto" className="px-0 my-auto">
+                <WorksheetToggleButton
+                  alwaysRed={true}
+                  crn={course.crn}
+                  season_code={season}
+                />
               </Col>
             </Row>
           </ListGroup.Item>
@@ -91,7 +91,9 @@ export default class WeekSchedule extends React.Component {
     // console.log(this.state.course_info);
     return (
       <div className={styles.container}>
-        <ListGroup className={styles.table}>{items}</ListGroup>
+        <ListGroup variant="flush" className={styles.table}>
+          {items}
+        </ListGroup>
       </div>
     );
   }

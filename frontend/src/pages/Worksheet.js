@@ -77,8 +77,20 @@ function Worksheet() {
 
   return (
     <div className={styles.container}>
-      <Row>
-        <Col sm={4} className={styles.table + ' pr-0'}>
+      <Row className="ml-4 mr-3 my-3">
+        <Col sm={8} className={styles.calendar + ' p-0 mx-0'}>
+          {/* <SeasonDropdown
+            onSeasonChange={changeSeason}
+            cur_season={season}
+            season_codes={season_codes}
+          /> */}
+          <WeekSchedule
+            className=""
+            showModal={showModal}
+            courses={season_listings}
+          />
+        </Col>
+        <Col sm={4} className={styles.table + ' pl-4 pr-3'}>
           <WorksheetList
             onSeasonChange={changeSeason}
             showModal={showModal}
@@ -86,14 +98,6 @@ function Worksheet() {
             season_codes={season_codes}
             cur_season={season}
           />
-        </Col>
-        <Col sm={8} className={styles.calendar + ' pl-0'}>
-          {/* <SeasonDropdown
-            onSeasonChange={changeSeason}
-            cur_season={season}
-            season_codes={season_codes}
-          /> */}
-          <WeekSchedule showModal={showModal} courses={season_listings} />
         </Col>
       </Row>
       <CourseModal

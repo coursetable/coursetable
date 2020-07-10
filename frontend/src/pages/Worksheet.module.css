@@ -1,11 +1,13 @@
 .container {
   height: 93vh;
   margin-bottom: 0px;
+  border: none;
+  background-color: #f6f6f6;
 }
 
 .calendar {
-  height: 93vh;
-}
-
-.table {
+  height: 90vh;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+  /* border-radius: 8px !important; */
+  background-color: white;
 }
