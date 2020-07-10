@@ -72,8 +72,8 @@ function App() {
   var [HideGraduate, setHideGraduate] = React.useState(false);
   var [HideCancelled, setHideCancelled] = React.useState(true);
 
-  var [ratingBounds, setRatingBounds] = React.useState([0, 5]);
-  var [workloadBounds, setWorkloadBounds] = React.useState([0, 5]);
+  var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
+  var [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
 
   // dummy variable to make selectors update
   // parent state and avoid tooltip errors
@@ -160,9 +160,17 @@ function App() {
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    var include_all_ratings = ratingBounds[0] === 0 && ratingBounds[1] === 5;
-    var include_all_workloads =
-      workloadBounds[0] === 0 && workloadBounds[1] === 5;
+    var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+
+    var include_all_workloads = workloadBounds[0] === 1 && workloadBounds[1] === 5;
+
+    // override when we want to sort
+    if(ordering && ordering.average_rating){
+      include_all_ratings = false
+    }
+    if(ordering && ordering.average_workload){
+      include_all_workloads = false
+    }
 
     if (searchText.value === '') {
       setSearchType('TEXTLESS');
@@ -342,7 +350,7 @@ function App() {
                 Overall rating
                 <Container>
                   <Range
-                    min={0}
+                    min={1}
                     max={5}
                     step={0.1}
                     defaultValue={ratingBounds}
@@ -359,7 +367,7 @@ function App() {
                 Workload
                 <Container>
                   <Range
-                    min={0}
+                    min={1}
                     max={5}
                     step={0.1}
                     defaultValue={workloadBounds}
