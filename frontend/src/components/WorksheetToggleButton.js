@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import styles from './WorksheetToggleButton.css';
+import './WorksheetToggleButton.css';
 import { BsPlusCircle, BsXCircle } from 'react-icons/bs';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';

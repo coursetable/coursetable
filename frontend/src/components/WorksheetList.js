@@ -39,7 +39,7 @@ export default class WeekSchedule extends React.Component {
         <ListGroup.Item
           key={id++}
           // active={cur_season === season}
-          variant={cur_season === season ? 'primary' : 'dark'}
+          variant={cur_season === season ? 'primary' : 'secondary'}
           action
           onClick={() => this.setSeason(season)}
           className={styles.seasonHeader}

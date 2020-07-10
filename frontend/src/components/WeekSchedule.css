@@ -1,0 +1,28 @@
+.rbc-events-container {
+  border: none !important;
+  margin: 0 3px !important;
+}
+
+.rbc-allday-cell {
+  height: 0 !important;
+  border: none !important;
+}
+
+.rbc-today,
+.rbc-current-time-indicator {
+  background-color: transparent !important;
+}
+
+.rbc-header {
+  border-bottom: none !important;
+}
+
+.rbc-header a:hover {
+  color: black !important;
+  text-decoration: none !important;
+  cursor: default;
+}
+
+.rbc-time-view {
+  border: none !important;
+}

@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment';
-import styles from './WeekSchedule.module.css';
+import './WeekSchedule.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 
@@ -50,7 +50,7 @@ export default class WeekSchedule extends React.Component {
 
   customEvent = event => {
     return (
-      <div className={styles.event}>
+      <div>
         <strong>{event.title}</strong>
       </div>
     );
@@ -58,17 +58,20 @@ export default class WeekSchedule extends React.Component {
 
   eventStyleGetter = event => {
     const colors = [
-      '007ea7',
-      '9c89b8',
-      '90be6d',
-      'f9c74f',
-      'f28482',
-      'f3722c',
-      'f8961e',
+      'rgba(0, 126, 167, ',
+      'rgba(156, 137, 184, ',
+      'rgba(144, 190, 109, ',
+      'rgba(249, 199, 79, ',
+      'rgba(242, 132, 130, ',
+      'rgba(243, 114, 44, ',
+      'rgba(248, 150, 30, ',
     ];
+    const border = '1)';
+    const background = '.9)';
     let style = {
-      backgroundColor: '#' + colors[event.id % colors.length],
-      opacity: 1,
+      backgroundColor: colors[event.id % colors.length].concat(background),
+      borderColor: colors[event.id % colors.length].concat(border),
+      borderWidth: '2px',
     };
     return {
       style: style,
@@ -92,6 +95,9 @@ export default class WeekSchedule extends React.Component {
           event: this.customEvent,
         }}
         eventPropGetter={event => this.eventStyleGetter(event)}
+        formats={{
+          dayFormat: 'ddd',
+        }}
       />
     );
   }

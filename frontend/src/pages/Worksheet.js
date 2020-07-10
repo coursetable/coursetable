@@ -77,7 +77,7 @@ function Worksheet() {
 
   return (
     <div className={styles.container}>
-      <Row className="ml-4 mr-3 my-3">
+      <Row className="ml-4 mr-4 py-4">
         <Col sm={8} className={styles.calendar + ' p-0 mx-0'}>
           {/* <SeasonDropdown
             onSeasonChange={changeSeason}
@@ -90,7 +90,7 @@ function Worksheet() {
             courses={season_listings}
           />
         </Col>
-        <Col sm={4} className={styles.table + ' pl-4 pr-3'}>
+        <Col sm={4} className={styles.table + ' pl-4 pr-0'}>
           <WorksheetList
             onSeasonChange={changeSeason}
             showModal={showModal}
