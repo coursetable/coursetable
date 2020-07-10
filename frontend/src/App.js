@@ -10,6 +10,7 @@ import {
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WindowDimensionsProvider from './components/WindowDimensionsProvider'
+import SeasonsProvider from './components/SeasonsProvider'
 
 import Search from './pages/Search';
 import Login from './pages/Login';
@@ -55,6 +56,7 @@ function App() {
   return (
     <Router>
       <WindowDimensionsProvider>
+      <SeasonsProvider>
       <div id="base">
         <Navbar />
         <Switch>
@@ -93,6 +95,7 @@ function App() {
         </Switch>
        {window.location.pathname !== '/search' && <Footer />}
       </div>
+      </SeasonsProvider>
       </WindowDimensionsProvider>
     </Router>
   );

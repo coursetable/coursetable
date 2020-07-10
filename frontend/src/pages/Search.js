@@ -19,18 +19,16 @@ import {
 } from 'react-bootstrap';
 
 import {
-  GET_SEASON_CODES,
   SEARCH_COURSES,
   SEARCH_COURSES_TEXTLESS,
 } from '../queries/QueryStrings';
-
-import FetchSeasonCodes from '../queries/GetSeasonCodes.js';
 
 import { useLazyQuery } from '@apollo/react-hooks';
 
 import Select from 'react-select';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { useSeasons } from '../components/SeasonsProvider';
 
 import { debounce } from 'lodash';
 
@@ -47,19 +45,9 @@ const Range = createSliderWithTooltip(Slider.Range);
 
 function App() {
   const { width } = useWindowDimensions();
+  const seasonsData = useSeasons();
 
   const isMobile = width < 768;
-
-  var [
-    executeGetSeasons,
-    { called: seasonsCalled, loading: seasonsLoading, data: seasonsData },
-  ] = useLazyQuery(GET_SEASON_CODES);
-
-  React.useEffect(() => {
-    // get the seasons options on load
-
-    executeGetSeasons();
-  }, []);
 
   var searchText = React.createRef();
 
@@ -87,6 +75,17 @@ function App() {
     { label: 'Workload', value: 'workload' },
     // { label: 'Enrollment', value: 'enrollment' },
   ];
+
+  var seasonsOptions;
+
+  if (seasonsData && seasonsData.seasons) {
+    seasonsOptions = seasonsData.seasons.map(x => {
+      return {
+        value: x.season_code,
+        label: x.term.charAt(0).toUpperCase() + x.term.slice(1) + ' ' + x.year,
+      };
+    });
+  }
 
   var sortbyQueries = {
     text: null,
@@ -316,18 +315,6 @@ function App() {
         }
       }
     }
-  }
-
-  var seasonsOptions;
-
-  if (seasonsData) {
-    console.log(seasonsData);
-    seasonsOptions = seasonsData.seasons.map(x => {
-      return {
-        value: x.season_code,
-        label: x.term.charAt(0).toUpperCase() + x.term.slice(1) + ' ' + x.year,
-      };
-    });
   }
 
   return (
