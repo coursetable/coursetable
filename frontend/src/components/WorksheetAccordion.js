@@ -58,7 +58,10 @@ export default class WorksheetAccordion extends React.Component {
     let id = 100;
     for (let i = today - 1; indx < 5; i = (i + 1) % 5) {
       const day = parsed_courses[i];
-      if (day.length === 0) return;
+      if (day.length === 0) {
+        indx++;
+        continue;
+      }
       items.push(
         <h5 className={styles.day_header} key={++id}>
           {this.weekDays[i]}
