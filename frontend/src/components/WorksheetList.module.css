@@ -1,6 +1,7 @@
 .container {
-  border-radius: 8px !important;
-  height: 90vh;
+  border-radius: 8px;
+  background-color: white;
+  height: 88vh;
   overflow: hidden;
   overflow-y: scroll;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);

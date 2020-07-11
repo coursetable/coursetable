@@ -44,7 +44,6 @@ export default class WeekSchedule extends React.Component {
       id = id + 1;
     });
     earliest.set({ minute: 0 });
-    latest.set({ minute: 0 });
     return [earliest, latest, parsedCourses];
   };
 
@@ -86,8 +85,8 @@ export default class WeekSchedule extends React.Component {
         defaultView={'work_week'}
         views={['work_week']}
         events={ret_values[2]}
-        min={ret_values[0].subtract(0, 'hours').toDate()}
-        max={ret_values[1].add(1, 'hours').toDate()}
+        min={ret_values[0].toDate()}
+        max={ret_values[1].toDate()}
         localizer={localizer}
         toolbar={false}
         onSelectEvent={event => this.showModal(event.listing)}

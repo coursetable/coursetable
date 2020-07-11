@@ -3,7 +3,7 @@ import styles from './WorksheetList.module.css';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
 
-export default class WeekSchedule extends React.Component {
+export default class WorksheetList extends React.Component {
   constructor(props) {
     super(props);
   }
@@ -55,20 +55,20 @@ export default class WeekSchedule extends React.Component {
         items.push(
           <ListGroup.Item key={id++}>
             <Row>
-              <Col
-                className={styles.clickable + ' pr-0 pl-1'}
-                onClick={() => this.showModal(course)}
-              >
-                <strong>{course['course_code']}</strong>
-                <br />
-                {course['course.title']}
-              </Col>
               <Col xs="auto" className="px-0 my-auto">
                 <WorksheetToggleButton
                   alwaysRed={true}
                   crn={course.crn}
                   season_code={season}
                 />
+              </Col>
+              <Col
+                className={styles.clickable + ' pr-3 pl-0'}
+                onClick={() => this.showModal(course)}
+              >
+                <strong>{course['course_code']}</strong>
+                <br />
+                {course['course.title']}
               </Col>
             </Row>
           </ListGroup.Item>

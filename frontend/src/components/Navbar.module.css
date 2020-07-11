@@ -1,15 +1,16 @@
 .navbar {
   background: #445;
+  height: 6vh;
   /*height: 64px;*/
 }
 
 .navbar_links {
-  color:white !important; 
+  color: white !important;
   padding: 8px 15px !important;
-  transition:0.5s ease;
+  transition: 0.5s ease;
 }
 
-.navbar_links:hover{
-  background-color:rgb(30, 115, 184) !important;
+.navbar_links:hover {
+  background-color: rgb(30, 115, 184) !important;
   text-decoration: none !important;
 }
