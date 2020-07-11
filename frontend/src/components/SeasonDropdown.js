@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
-import styles from './SeasonDropdown.module.css';
+import './DropdownShared.css';
 
 function SeasonDropdown(props) {
   const setSeason = season_code => {
@@ -26,9 +26,9 @@ function SeasonDropdown(props) {
   });
 
   return (
-    <div className={styles.container}>
+    <div className="container p-0 m-0">
       <DropdownButton
-        variant="outline-dark"
+        variant="success"
         title={toSeasonString(props.cur_season)}
         onSelect={setSeason}
       >

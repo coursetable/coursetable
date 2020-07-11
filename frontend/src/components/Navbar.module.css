@@ -1,6 +1,6 @@
 .navbar {
   background: #445;
-  height: 6vh;
+  min-height: 6vh;
   /*height: 64px;*/
 }
 

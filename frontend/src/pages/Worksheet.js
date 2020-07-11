@@ -26,6 +26,8 @@ function Worksheet() {
       if (season_codes.indexOf(szn[0]) === -1) season_codes.push(szn[0]);
     });
   }
+  season_codes.sort();
+  season_codes.reverse();
   const [courses_info, setInfo] = useState([0, []]);
   const indx = courses_info[0];
   const listings = courses_info[1];
@@ -102,12 +104,17 @@ function Worksheet() {
         </Row>
       )}
       {isMobile && (
-        <Row className={styles.accordion + ' m-0 p-2'}>
+        <Row className={styles.accordion + ' m-0 p-3'}>
           {/* <Col sm={4} className={styles.accordion + ' p-0'}>
           <WorksheetAccordion courses={season_listings} />
         </Col> */}
           <Col className="p-0">
-            <WorksheetAccordion courses={season_listings} />
+            <WorksheetAccordion
+              onSeasonChange={changeSeason}
+              cur_season={season}
+              season_codes={season_codes}
+              courses={season_listings}
+            />
           </Col>
         </Row>
       )}
