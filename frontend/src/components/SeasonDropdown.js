@@ -11,7 +11,7 @@ function SeasonDropdown(props) {
   const toSeasonString = season_code => {
     const seasons = ['', 'Spring', 'Summer', 'Fall'];
     return (
-      season_code.substring(0, 4) + ' - ' + seasons[parseInt(season_code[5])]
+      season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])]
     );
   };
 

@@ -1,5 +1,4 @@
 .container {
-  height: 94vh;
   margin-bottom: 0px;
   border: none;
   background-color: #f6f6f6;
@@ -14,5 +13,4 @@
 
 .accordion {
   width: 100vw;
-  margin: 0;
 }

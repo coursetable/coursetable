@@ -9,8 +9,8 @@ import {
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import WindowDimensionsProvider from './components/WindowDimensionsProvider'
-import SeasonsProvider from './components/SeasonsProvider'
+import WindowDimensionsProvider from './components/WindowDimensionsProvider';
+import SeasonsProvider from './components/SeasonsProvider';
 
 import Search from './pages/Search';
 import Login from './pages/Login';
@@ -52,50 +52,50 @@ function App() {
       </Spinner>
     );
   }
-
+  console.log(isLoggedIn);
   return (
     <Router>
       <WindowDimensionsProvider>
-      <SeasonsProvider>
-      <div id="base">
-        <Navbar />
-        <Switch>
-          {/* Public Routes */}
-          <MyRoute exact path="/about">
-            <About />
-          </MyRoute>
+        <SeasonsProvider>
+          <div id="base">
+            <Navbar />
+            <Switch>
+              {/* Public Routes */}
+              <MyRoute exact path="/about">
+                <About />
+              </MyRoute>
 
-          <MyRoute exact path="/search">
-            <Search />
-          </MyRoute>
+              <MyRoute exact path="/search">
+                <Search />
+              </MyRoute>
 
-          <MyRoute exact path="/courses">
-            <Courses />
-          </MyRoute>
+              <MyRoute exact path="/courses">
+                <Courses />
+              </MyRoute>
 
-          {/* Auth */}
-          <MyRoute exact path="/login">
-            {isLoggedIn ? <Redirect to="/" /> : <Login />}
-          </MyRoute>
+              {/* Auth */}
+              <MyRoute exact path="/login">
+                {isLoggedIn ? <Redirect to="/" /> : <Login />}
+              </MyRoute>
 
-          {/* Worksheet */}
-          <MyRoute exact path="/worksheet">
-            <Worksheet />
-          </MyRoute>
+              {/* Worksheet */}
+              <MyRoute exact path="/worksheet">
+                {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
+              </MyRoute>
 
-          {/* Private Routes */}
-          <MyRoute isRoutePrivate={true} exact path="/">
-            <p>hi this is some content</p>
-          </MyRoute>
+              {/* Private Routes */}
+              <MyRoute isRoutePrivate={true} exact path="/">
+                <p>hi this is some content</p>
+              </MyRoute>
 
-          {/* Catch-all Route */}
-          <MyRoute path="/">
-            <p>404 page not found</p>
-          </MyRoute>
-        </Switch>
-       {window.location.pathname !== '/search' && <Footer />}
-      </div>
-      </SeasonsProvider>
+              {/* Catch-all Route */}
+              <MyRoute path="/">
+                <p>404 page not found</p>
+              </MyRoute>
+            </Switch>
+            {window.location.pathname !== '/search' && <Footer />}
+          </div>
+        </SeasonsProvider>
       </WindowDimensionsProvider>
     </Router>
   );

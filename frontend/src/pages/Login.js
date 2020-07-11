@@ -1,30 +1,63 @@
 import React from 'react';
+import { BsChevronDoubleDown } from 'react-icons/bs';
+import { Button, Row, Col } from 'react-bootstrap';
+import { Link, Element, animateScroll as scroll, scroller } from 'react-scroll';
 
 import styles from './Login.module.css';
-import { Jumbotron, Button } from 'react-bootstrap';
 
 function App() {
+  const scrollTo = () => {
+    console.log('scroll');
+    scroller.scrollTo('featurepage', {
+      smooth: true,
+      duration: 500,
+    });
+  };
+
   return (
     <div className={styles.container}>
-      <Jumbotron className={styles.coursetable_window}>
-        <h1>
-          Welcome to&nbsp;
-          <span className={styles.coursetable_logo}>
-            Course<span style={{ color: '#92bcea' }}>Table</span>
-          </span>
-        </h1>
-        <p>
-          <b>CourseTable</b> was a course-data processor created by{' '}
-          <b>Peter Xu (Yale MC '14) and Harry Yu (Yale SY '14)</b> and is
-          continuing to be developed by <b>Yale Computer Society</b>. It helps
-          you find the courses at Yale where you'll learn and enjoy the most.
-        </p>
-        <p>
-          <Button href="/legacy_api/index.php?forcelogin=1" variant="primary">
-            Login with Yale CAS
-          </Button>
-        </p>
-      </Jumbotron>
+      <Element name="splashpage">
+        <div className={styles.splashpage}>
+          <div className={styles.coursetable_window}>
+            <h1 className={styles.title}>CourseTable</h1>
+            <p className={styles.description}>
+              The best place to shop for classes at Yale.
+            </p>
+            <Col className="mt-4">
+              <Row className={styles.btn_container}>
+                <Col md={4} className="p-0 mx-2">
+                  <Button
+                    href="/legacy_api/index.php?forcelogin=1"
+                    variant="primary"
+                    className={styles.btns}
+                    size="lg"
+                  >
+                    Login
+                  </Button>
+                </Col>
+                <Col md={4} className="p-0 mx-2">
+                  <Button
+                    size="lg"
+                    className={styles.btns}
+                    variant="dark"
+                    onClick={scrollTo}
+                  >
+                    Features
+                  </Button>
+                </Col>
+              </Row>
+            </Col>
+          </div>
+          <div onClick={scrollTo} className={styles.chevron}>
+            <BsChevronDoubleDown size={30} />
+          </div>
+        </div>
+      </Element>
+      <Element name="featurepage">
+        <div className={styles.feature_page}>
+          <h1 className={styles.whyCourseTable}>Why CourseTable?</h1>
+        </div>
+      </Element>
     </div>
   );
 }

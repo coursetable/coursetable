@@ -84,7 +84,7 @@ function Worksheet() {
   return (
     <div className={styles.container}>
       {!isMobile && (
-        <Row className="ml-4 mr-4 py-4">
+        <Row className="mx-4 py-4">
           <Col sm={8} className={styles.calendar + ' p-0 mx-0'}>
             <WeekSchedule
               className=""
