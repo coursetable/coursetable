@@ -2,6 +2,8 @@
   background-color: transparent;
   border-width: 0;
   transition: 0.3s !important;
+  padding-top: 2px !important;
+  /* padding: 2px 0 0 0 !important; */
 }
 
 .btn-toggle:hover {
@@ -11,12 +13,4 @@
 .btn-toggle:active,
 .btn-toggle:focus {
   box-shadow: none !important;
-}
-
-.redColor {
-  color: red !important;
-}
-
-.greenColor {
-  color: green !important;
 }

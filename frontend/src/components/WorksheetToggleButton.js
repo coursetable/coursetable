@@ -1,13 +1,19 @@
 import React, { useState } from 'react';
 import './WorksheetToggleButton.css';
-import { BsPlusCircle, BsXCircle } from 'react-icons/bs';
+import {
+  BsPlusCircle,
+  BsXCircle,
+  BsBookmark,
+  BsBookmarkFill,
+  BsBookmarkDash,
+} from 'react-icons/bs';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
 
-const WorksheetToggleButton = props => {
+const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();
   var [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
@@ -19,13 +25,11 @@ const WorksheetToggleButton = props => {
     inWorksheet ? (add_remove = 'remove') : (add_remove = 'add');
     axios
       .get(
-        `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${
-          props.season_code
-        }&ociId=${props.crn}`
+        `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${props.season_code}&ociId=${props.crn}`
       )
-      .then(response => {
+      .then((response) => {
         console.log(response.data);
-        userRefresh().catch(err => {
+        userRefresh().catch((err) => {
           toast.error('Failed to update worksheet');
           console.error(err);
         });
@@ -39,12 +43,18 @@ const WorksheetToggleButton = props => {
     console.log('toggle ', props.crn + ' ' + props.season_code);
   }
   return (
-    <Button
-      variant="toggle"
-      onClick={toggleWorkSheet}
-      className={inWorksheet ? 'redColor' : 'greenColor'}
-    >
-      {inWorksheet ? <BsXCircle /> : <BsPlusCircle />}
+    <Button variant="toggle" onClick={toggleWorkSheet}>
+      {props.bookmark ? (
+        inWorksheet ? (
+          <BsBookmarkFill color="red" size={25} />
+        ) : (
+          <BsBookmark color="#3087ff" size={25} />
+        )
+      ) : inWorksheet ? (
+        <BsBookmarkDash color="red" size={20} />
+      ) : (
+        <BsPlusCircle color="green" />
+      )}
     </Button>
   );
 };

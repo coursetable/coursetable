@@ -8,20 +8,20 @@ export default class WorksheetList extends React.Component {
     super(props);
   }
 
-  setSeason = season_code => {
+  setSeason = (season_code) => {
     this.props.onSeasonChange(season_code);
   };
 
-  showModal = listing => {
+  showModal = (listing) => {
     this.props.showModal(listing);
   };
 
   parseListings = (listings, season_codes) => {
     let parsed_courses = {};
-    season_codes.forEach(season_code => {
+    season_codes.forEach((season_code) => {
       parsed_courses[season_code] = [];
     });
-    listings.forEach(listing => {
+    listings.forEach((listing) => {
       if (parsed_courses[listing['season_code']] === undefined) return;
       parsed_courses[listing['season_code']].push(listing);
     });
@@ -34,7 +34,7 @@ export default class WorksheetList extends React.Component {
     season_codes.reverse();
     const seasons = ['', 'Spring', 'Summer', 'Fall'];
     let id = 0;
-    season_codes.forEach(season => {
+    season_codes.forEach((season) => {
       items.push(
         <ListGroup.Item
           key={id++}
@@ -51,7 +51,7 @@ export default class WorksheetList extends React.Component {
           </h4>
         </ListGroup.Item>
       );
-      parsed_courses[season].forEach(course => {
+      parsed_courses[season].forEach((course) => {
         items.push(
           <ListGroup.Item key={id++}>
             <Row>
@@ -60,6 +60,7 @@ export default class WorksheetList extends React.Component {
                   alwaysRed={true}
                   crn={course.crn}
                   season_code={season}
+                  bookmark={false}
                 />
               </Col>
               <Col
