@@ -5,7 +5,6 @@ import tagStyles from './SearchResultsItem.module.css';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
 import SeasonDropdown from './SeasonDropdown';
 import FBDropdown from './FBDropdown';
-import WorksheetToggleButton from './WorksheetToggleButton';
 
 export default class WorksheetAccordion extends React.Component {
   constructor(props) {
@@ -20,10 +19,10 @@ export default class WorksheetAccordion extends React.Component {
     return 0;
   };
 
-  parseListings = listings => {
+  parseListings = (listings) => {
     let parsed_courses = [[], [], [], [], []];
     // const this.weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    listings.forEach(course => {
+    listings.forEach((course) => {
       for (let indx = 0; indx < 5; indx++) {
         const info = course['course.times_by_day.' + this.weekDays[indx]];
         if (info !== undefined) {
@@ -36,26 +35,26 @@ export default class WorksheetAccordion extends React.Component {
         }
       }
     });
-    parsed_courses.forEach(day => {
+    parsed_courses.forEach((day) => {
       day.sort(this.chronologicalOrder);
     });
     return parsed_courses;
   };
 
-  trim = time_string => {
+  trim = (time_string) => {
     for (let i = 0; i < time_string.length; i++) {
       if (time_string[i] >= '0' && time_string[i] <= '9')
         return time_string.substr(i, time_string.length - i);
     }
   };
 
-  buildHtml = parsed_courses => {
+  buildHtml = (parsed_courses) => {
     let today = new Date().getDay();
     if (today === 0 || today === 6) today = 1;
     let items = [];
     // const this.weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     let indx = 0;
-    let id = 100;
+    let id1 = 100;
     for (let i = today - 1; indx < 5; i = (i + 1) % 5) {
       const day = parsed_courses[i];
       if (day.length === 0) {
@@ -63,15 +62,16 @@ export default class WorksheetAccordion extends React.Component {
         continue;
       }
       items.push(
-        <h5 className={styles.day_header} key={++id}>
+        <h5 className={styles.day_header} key={++id1}>
           {this.weekDays[i]}
         </h5>
       );
-      let key = 0;
+      let key = 5;
       let accordion_items = [];
-      day.forEach(course => {
+      let id2 = 100;
+      day.forEach((course) => {
         accordion_items.push(
-          <Card key={++id} className={styles.card + ' px-1'}>
+          <Card key={++id2} className={styles.card + ' px-1'}>
             <Accordion.Toggle
               as={Card.Header}
               className={styles.toggle}
@@ -137,11 +137,7 @@ export default class WorksheetAccordion extends React.Component {
         );
         key++;
       });
-      items.push(
-        <Accordion key={indx} className={styles.accordion}>
-          {accordion_items}
-        </Accordion>
-      );
+      items.push(<Accordion key={indx}>{accordion_items}</Accordion>);
       indx++;
     }
     return items;
@@ -164,7 +160,7 @@ export default class WorksheetAccordion extends React.Component {
             <FBDropdown />
           </Col>
         </Row>
-        {items}
+        <div className={styles.accordion_list}>{items}</div>
       </div>
     );
   }

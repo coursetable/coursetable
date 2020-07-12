@@ -52,7 +52,6 @@ function App() {
       </Spinner>
     );
   }
-  console.log(isLoggedIn);
   return (
     <Router>
       <WindowDimensionsProvider>

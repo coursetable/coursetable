@@ -3,7 +3,6 @@
   background-color: white;
   height: 88vh;
   overflow: hidden;
-  overflow-y: scroll;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
@@ -11,8 +10,16 @@
   justify-content: space-between;
 }
 
+.accordion_list {
+  overflow: hidden;
+  overflow-y: scroll;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  height: calc(88vh - 38px);
+}
+
 .day_header {
-  background-color: rgb(228, 227, 227);
+  background-color: rgb(206, 206, 206);
   margin: 0;
   text-align: center;
   font-weight: bold;
@@ -24,4 +31,9 @@
 
 .card {
   border-radius: 0 !important;
+}
+
+.dropdowns {
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
