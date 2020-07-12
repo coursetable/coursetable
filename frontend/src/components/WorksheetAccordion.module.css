@@ -1,7 +1,7 @@
 .container {
   border-radius: 8px;
   background-color: white;
-  height: 88vh;
+  min-height: 88vh;
   overflow: hidden;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
@@ -11,11 +11,8 @@
 }
 
 .accordion_list {
-  overflow: hidden;
-  overflow-y: scroll;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  height: calc(88vh - 38px);
 }
 
 .day_header {
