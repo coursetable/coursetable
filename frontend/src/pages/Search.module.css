@@ -1,6 +1,6 @@
 .search_base {
 	background-color: #F6F6F6;
-	height: 100vh;
+	min-height: 100vh;
 	width: 100vw;
 }
 
@@ -62,8 +62,6 @@
 
 .results_col {
 	background-color: transparent;
-	max-height: 100vh;
-	overflow: scroll;
 	z-index: 0;
 }
 

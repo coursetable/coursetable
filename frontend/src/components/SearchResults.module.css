@@ -2,8 +2,6 @@
 	border-radius: 8px;
 	background: white;
 	box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-	max-height: 100%;
-	overflow: scroll;
 }
 
 .results_header {
