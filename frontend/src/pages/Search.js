@@ -1,5 +1,7 @@
 import React from 'react';
 
+import { HotKeys } from 'react-hotkeys';
+
 import styles from './Search.module.css';
 import './Search.css';
 
@@ -60,14 +62,14 @@ function App() {
 
   const isMobile = width < 768;
 
-  var searchText = React.createRef();
+  var searchText = React.useRef();
 
   var [searchType, setSearchType] = React.useState();
 
-  var sortby = React.createRef();
-  var seasons = React.createRef();
-  var skillsAreas = React.createRef();
-  var credits = React.createRef();
+  var sortby = React.useRef();
+  var seasons = React.useRef();
+  var skillsAreas = React.useRef();
+  var credits = React.useRef();
 
   var [HideGraduate, setHideGraduate] = React.useState(false);
   var [HideCancelled, setHideCancelled] = React.useState(true);
@@ -162,15 +164,18 @@ function App() {
     // to include unrated courses
     var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
 
-    var include_all_workloads = workloadBounds[0] === 1 && workloadBounds[1] === 5;
+    var include_all_workloads =
+      workloadBounds[0] === 1 && workloadBounds[1] === 5;
 
     // override when we want to sort
-    if(ordering && ordering.average_rating){
-      include_all_ratings = false
+    if (ordering && ordering.average_rating) {
+      include_all_ratings = false;
     }
-    if(ordering && ordering.average_workload){
-      include_all_workloads = false
+    if (ordering && ordering.average_workload) {
+      include_all_workloads = false;
     }
+
+    console.log(searchText)
 
     if (searchText.value === '') {
       setSearchType('TEXTLESS');
@@ -232,8 +237,26 @@ function App() {
     }
   }
 
+  // ctrl/cmd-f search hotkey
+  const focusSearch = (e) => {
+    e.preventDefault();
+    console.log('focus!');
+    console.log(e)
+    console.log(searchText)
+    searchText.focus();
+  };
+
+  const keyMap = {
+    FOCUS_SEARCH: ['ctrl+f', 'command+f'],
+  };
+
+  const handlers = {
+    FOCUS_SEARCH: focusSearch,
+  };
+
   return (
     <div className={styles.search_base}>
+      <HotKeys keyMap={keyMap} handlers={handlers}>
       <Row className={styles.nopad + ' ' + styles.nomargin}>
         <Col
           md={4}
@@ -253,9 +276,7 @@ function App() {
                 <FormControl
                   type="text"
                   placeholder="Find a class..."
-                  ref={ref => {
-                    searchText = ref;
-                  }}
+                  ref={ref => (searchText = ref)}
                 />
               </InputGroup>
             </div>
@@ -406,6 +427,7 @@ function App() {
           {results}
         </Col>
       </Row>
+      </HotKeys>
     </div>
   );
 }
