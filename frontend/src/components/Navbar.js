@@ -4,16 +4,13 @@ import styles from './Navbar.module.css';
 import common_styles from '../styles/common.module.css';
 import { Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import Logo from "./Logo"
 
 function CourseTableNavbar() {
   return (
-    <div className={styles.navbar}>
+    <div className={`shadow-sm ${styles.navbar}`}>
       <Navbar sticky="top" expand="lg" className={styles.navbar}>
-        <NavLink to="/" activeStyle={{ textDecoration: 'none' }}>
-          <span className={common_styles.coursetable_logo}>
-            Course<span style={{ color: '#92bcea' }}>Table</span>
-          </span>
-        </NavLink>
+        <Logo />
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 

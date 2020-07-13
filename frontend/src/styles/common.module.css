@@ -1,7 +1,10 @@
 .coursetable_logo {
   font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman, serif;
-  font-size: 1.25rem !important;
+  font-size: 1.5rem !important;
   color:white;
-  padding: 0.3125rem 0rem !important;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
   margin-right: 1rem !important;
+  display: inline-block;
+  line-height: 1rem;
 }

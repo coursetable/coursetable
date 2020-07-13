@@ -1,14 +1,10 @@
 .footer {
-  background: #445;
+  background: rgba(1,1,1,0.05);
   min-width: 100%;
   margin: 0;
-  color: white;
+  color: black;
 }
 
-.footer_link {
-  color: white;
-}
-
-.footer_link:hover {
-  color: ;
+.footer :global a{
+	color: rgba(1,1,1,0.7) !important;
 }

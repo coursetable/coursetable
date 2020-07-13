@@ -1,16 +1,19 @@
 .navbar {
-  background: #445;
-  min-height: 6vh;
-  /*height: 64px;*/
+	background: white;
 }
 
 .navbar_links {
-  color: white !important;
-  padding: 8px 15px !important;
-  transition: 0.5s ease;
+	padding: 0.5rem 1rem !important;
+	transition: 0.33s ease-out;
+	color: rgba(1, 1, 1, 0.6);
+	font-weight:500;
+}
+
+:global .active{
+	color: #007bff;
 }
 
 .navbar_links:hover {
-  background-color: rgb(30, 115, 184) !important;
-  text-decoration: none !important;
+	text-decoration: none !important;
+	color: #007bff;
 }

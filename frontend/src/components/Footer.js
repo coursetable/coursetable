@@ -3,23 +3,24 @@ import React from 'react';
 import styles from './Footer.module.css';
 import common_styles from '../styles/common.module.css';
 import { NavLink } from 'react-router-dom';
+import Logo from "./Logo"
 
 function App() {
   return (
-    <footer className={'container py-5 px-5 text-light '+styles.footer}>
+    <footer className={'container py-5 px-5 '+styles.footer}>
       <div className='row'>
         <div className='col-12 col-md'>
-          <span className={common_styles.coursetable_logo}>Course<span style={{ color: '#92bcea' }}>Table</span></span>
+          <Logo/>
           <small className='d-block mb-3'>&copy; 2020</small>
         </div>
         <div className='col-6 col-md'>
           <h5>Explore courses</h5>
           <ul className='list-unstyled text-small'>
             <li>
-              <NavLink to='/catalog' className='text-light'>Catalog</NavLink>
+              <NavLink to='/catalog'>Catalog</NavLink>
             </li>
             <li>
-              <NavLink to='/worksheet' className='text-light'>Worksheet</NavLink>
+              <NavLink to='/worksheet'>Worksheet</NavLink>
             </li>
           </ul>
         </div>
@@ -27,13 +28,13 @@ function App() {
           <h5>Support</h5>
           <ul className='list-unstyled text-small'>
             <li>
-              <NavLink to='/faq' className='text-light'>FAQ</NavLink>
+              <NavLink to='/faq'>FAQ</NavLink>
             </li>
             <li>
-              <NavLink to='/changelog' className='text-light'>Changelog</NavLink>
+              <NavLink to='/changelog'>Changelog</NavLink>
             </li>
             <li>
-              <NavLink to='/feedback' className='text-light'>Feedback</NavLink>
+              <NavLink to='/feedback'>Feedback</NavLink>
             </li>
           </ul>
         </div>
@@ -41,13 +42,13 @@ function App() {
           <h5>About</h5>
           <ul className='list-unstyled text-small'>
             <li>
-              <NavLink to='/about' className='text-light'>Team</NavLink>
+              <NavLink to='/about'>Team</NavLink>
             </li>
             <li>
-              <NavLink to='/joinus' className='text-light'>Join us</NavLink>
+              <NavLink to='/joinus'>Join us</NavLink>
             </li>
             <li>
-              <a href='https://github.com/coursetable' className='text-light'>GitHub</a>
+              <a href='https://github.com/coursetable'>GitHub</a>
             </li>
           </ul>
         </div>
