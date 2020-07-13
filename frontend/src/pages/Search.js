@@ -3,7 +3,6 @@ import React from 'react';
 import { HotKeys } from 'react-hotkeys';
 
 import styles from './Search.module.css';
-import './Search.css';
 
 import chroma from 'chroma-js';
 

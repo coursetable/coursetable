@@ -71,3 +71,11 @@
 	background-color: transparent;
 	z-index: 0;
 }
+
+:global .rc-slider-tooltip{
+	z-index:2;
+}
+
+:global .rc-slider-tooltip:hover{
+	cursor:pointer;
+}
