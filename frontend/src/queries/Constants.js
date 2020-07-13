@@ -104,5 +104,27 @@ export const creditOptions = [
 	{ label: '2', value: '2' },
 ];
 
+
+// to get a list of abbreviations, run
+// a distinct_on:school query over computed_course_info
+
+// school labels were filled in manually
+export const schoolOptions = [
+	{ label: 'Yale College', value: 'YC' },
+	{ label: 'Architecture', value: 'AC' },
+	{ label: 'Art', value: 'AT' },
+	{ label: 'Divinity', value: 'DI' },
+	{ label: 'Drama', value: 'DR' },
+	{ label: 'Forestry', value: 'FS' },
+	{ label: 'Graduate', value: 'GS' },
+	{ label: 'Law', value: 'LW' },
+	{ label: 'Medicine', value: 'MD' },
+	{ label: 'Management', value: 'MG' },
+	{ label: 'Music', value: 'MU' },
+	{ label: 'Nursing', value: 'NR' },
+	{ label: 'Physician Associate', value: 'PA' },
+	{ label: 'Summer Session', value: 'SU' },
+];
+
 export const ratingColormap = chroma.bezier(['#d32626','#f6d743','#79d70f']).scale().domain([1,5])
 export const workloadColormap = chroma.bezier(['#79d70f','#f6d743','#d32626']).scale().domain([1,5])

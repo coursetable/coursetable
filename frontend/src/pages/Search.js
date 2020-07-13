@@ -34,6 +34,7 @@ import {
   colorOptionStyles,
   selectStyles,
   creditOptions,
+  schoolOptions
 } from '../queries/Constants';
 
 import { useLazyQuery } from '@apollo/react-hooks';
@@ -70,8 +71,8 @@ function App() {
   var seasons = React.useRef();
   var skillsAreas = React.useRef();
   var credits = React.useRef();
+  var schools = React.useRef();
 
-  var [HideGraduate, setHideGraduate] = React.useState(false);
   var [HideCancelled, setHideCancelled] = React.useState(true);
 
   var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
@@ -154,10 +155,11 @@ function App() {
       });
     }
 
-    var allowedSchools = null;
-
-    if (HideGraduate) {
-      allowedSchools = ['YC'];
+    var processedSchools = schools.select.props.value;
+    if (processedSchools != null) {
+      processedSchools = processedSchools.map(x => {
+        return x.value;
+      });
     }
 
     // if the bounds are unaltered, we need to set them to null
@@ -175,8 +177,6 @@ function App() {
       include_all_workloads = false;
     }
 
-    console.log(searchText)
-
     if (searchText.value === '') {
       setSearchType('TEXTLESS');
       executeTextlessSearch({
@@ -186,7 +186,7 @@ function App() {
           areas: processedAreas,
           skills: processedSkills,
           credits: processedCredits,
-          schools: allowedSchools,
+          schools: processedSchools,
           min_rating: include_all_ratings ? null : ratingBounds[0],
           max_rating: include_all_ratings ? null : ratingBounds[1],
           min_workload: include_all_workloads ? null : workloadBounds[0],
@@ -203,7 +203,7 @@ function App() {
           areas: processedAreas,
           skills: processedSkills,
           credits: processedCredits,
-          schools: allowedSchools,
+          schools: processedSchools,
           min_rating: include_all_ratings ? null : ratingBounds[0],
           max_rating: include_all_ratings ? null : ratingBounds[1],
           min_workload: include_all_workloads ? null : workloadBounds[0],
@@ -350,14 +350,24 @@ function App() {
                 </div>
               </Row>
               <Row className="py-2">
-                <FormCheck type="switch" className={styles.toggle_option}>
-                  <FormCheck.Input checked={HideGraduate} />
-                  <FormCheck.Label
-                    onClick={() => setHideGraduate(!HideGraduate)}
-                  >
-                    Hide graduate courses
-                  </FormCheck.Label>
-                </FormCheck>
+                <div className={'col-xl-12 col-sm-12 ' + styles.nopad}>
+                  Schools
+                  <Select
+                    isMulti
+                    defaultValue={[schoolOptions[0]]}
+                    options={schoolOptions}
+                    placeholder="Any"
+                    ref={ref => {
+                      schools = ref;
+                    }}
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
+                  />
+                </div>
+              </Row>
+              <Row className="py-2">
                 <Form.Check type="switch" className={styles.toggle_option}>
                   <Form.Check.Input checked={HideCancelled} />
                   <Form.Check.Label
