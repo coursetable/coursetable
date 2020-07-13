@@ -92,7 +92,9 @@ function App() {
                 <p>404 page not found</p>
               </MyRoute>
             </Switch>
-            {window.location.pathname !== '/catalog' && <Footer />}
+             <Route render={({ location }) => {
+                 return !['/catalog','/worksheet'].includes(location.pathname) && <Footer />
+              }} />
           </div>
         </SeasonsProvider>
       </WindowDimensionsProvider>
