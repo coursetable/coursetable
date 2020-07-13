@@ -15,7 +15,6 @@ import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import { BsBookmarkPlus } from 'react-icons/bs';
 import WorksheetToggleButton from './WorksheetToggleButton';
 
-import './SearchResultsItem.css';
 import Styles from './SearchResultsItem.module.css';
 
 const App = ({ course, isMobile }) => {
