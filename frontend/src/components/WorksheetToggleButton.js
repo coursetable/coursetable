@@ -39,6 +39,7 @@ const WorksheetToggleButton = (props) => {
 
   function toggleWorkSheet(e) {
     e.preventDefault();
+    e.stopPropagation();
     add_remove_course();
     console.log('toggle ', props.crn + ' ' + props.season_code);
   }

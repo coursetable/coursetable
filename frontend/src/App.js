@@ -92,7 +92,7 @@ function App() {
                 <p>404 page not found</p>
               </MyRoute>
             </Switch>
-            {window.location.pathname !== '/search' && <Footer />}
+            {window.location.pathname !== '/catalog' && <Footer />}
           </div>
         </SeasonsProvider>
       </WindowDimensionsProvider>
