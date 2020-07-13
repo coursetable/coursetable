@@ -19,14 +19,8 @@ function CourseTableNavbar() {
 
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav>
-            <NavLink to="/search" className={styles.navbar_links}>
-              Search
-            </NavLink>
-            <NavLink to="/courses" className={styles.navbar_links}>
-              Courses
-            </NavLink>
-            <NavLink to="/historical" className={styles.navbar_links}>
-              Historical
+            <NavLink to="/catalog" className={styles.navbar_links}>
+              Catalog
             </NavLink>
             <NavLink to="/worksheet" className={styles.navbar_links}>
               Worksheet

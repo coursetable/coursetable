@@ -64,7 +64,7 @@ function App() {
                 <About />
               </MyRoute>
 
-              <MyRoute exact path="/search">
+              <MyRoute exact path="/catalog">
                 <Search />
               </MyRoute>
 

@@ -16,10 +16,10 @@ function App() {
           <h5>Explore courses</h5>
           <ul className='list-unstyled text-small'>
             <li>
-              <NavLink to='/courses' className='text-light'>Current</NavLink>
+              <NavLink to='/catalog' className='text-light'>Catalog</NavLink>
             </li>
             <li>
-              <NavLink to='/historical' className='text-light'>Historical</NavLink>
+              <NavLink to='/worksheet' className='text-light'>Worksheet</NavLink>
             </li>
           </ul>
         </div>
