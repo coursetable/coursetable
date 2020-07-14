@@ -34,20 +34,25 @@ const CourseModal = (props) => {
   });
   if (loading || error) return <div>Loading...</div>;
 
-  console.log(data);
   let evaluations = {};
   let items = [];
 
   if (data) {
     data.computed_course_info.forEach((season) => {
       evaluations[season.season_code] = [
-        season.average_rating,
-        season.average_workload,
+        season.course.evaluation_statistics[0]
+          ? season.course.evaluation_statistics[0].avg_rating
+          : -1,
+        season.course.evaluation_statistics[0]
+          ? season.course.evaluation_statistics[0].avg_workload
+          : -1,
       ];
     });
 
     for (let season in evaluations) {
       // console.log(evaluations[season]);
+      if (evaluations[season][0] === -1 && evaluations[season][1] === -1)
+        continue;
       items.push(
         <Row className="m-auto py-1 justify-content-center">
           <Col
@@ -67,7 +72,10 @@ const CourseModal = (props) => {
             }
             className="px-0 d-flex justify-content-center"
           >
-            <strong>{evaluations[season][0].toFixed(1)}</strong>
+            <strong>
+              {evaluations[season][0] != -1 &&
+                evaluations[season][0].toFixed(1)}
+            </strong>
           </Col>
           <Col
             sm={2}
@@ -78,7 +86,10 @@ const CourseModal = (props) => {
             }
             className="px-0 d-flex justify-content-center"
           >
-            <strong>{evaluations[season][1].toFixed(1)}</strong>
+            <strong>
+              {evaluations[season][1] != -1 &&
+                evaluations[season][1].toFixed(1)}
+            </strong>
           </Col>
         </Row>
       );

@@ -4,5 +4,6 @@
 }
 
 .modal-content {
-  height: 80% !important;
+  max-height: 80% !important;
+  min-height: none !important;
 }
