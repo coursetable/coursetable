@@ -1,5 +1,5 @@
 .search_base {
-	background-color: #F6F6F6;
+	background-color: #f6f6f6;
 	min-height: 100vh;
 	width: 100vw;
 }
@@ -27,7 +27,7 @@
 }
 
 .search_container {
-	background-color:white;
+	background-color: white;
 	box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 	width: 100%;
 	border-radius: 0.5rem;
@@ -36,7 +36,7 @@
 .search_input input {
 	border: none;
 	border-radius: 0.5rem;
-	background-color: #F4F4F4;
+	background-color: #f4f4f4;
 }
 
 .slider {
@@ -45,7 +45,7 @@
 }
 
 .secondary_submit {
-	background-color: #2D87F3 !important;
+	background-color: #2d87f3 !important;
 	font-weight: 600 !important;
 	width: 100%;
 }
@@ -56,7 +56,7 @@
 	cursor: pointer !important;
 }
 
-.toggle_option label{
+.toggle_option label {
 	cursor: pointer;
 }
 
@@ -70,10 +70,30 @@
 	z-index: 0;
 }
 
-:global .rc-slider-tooltip{
-	z-index:2;
+:global .handle_tooltip {
+	font-size: 0.75rem;
+	width: 1.5rem;
+	background-color: #555;
+	color: #fff;
+	text-align: center;
+	padding: 5px 0;
+	border-radius: 6px;
+
+	position: absolute;
+	z-index: 1;
+	bottom: 125%;
+	left: 50%;
+	margin-left: -0.75rem;
 }
 
-:global .rc-slider-tooltip:hover{
-	cursor:pointer;
+/* arrow */
+:global .handle_tooltip::after {
+	content: '';
+	position: absolute;
+	top: 100%;
+	left: 50%;
+	margin-left: -5px;
+	border-width: 5px;
+	border-style: solid;
+	border-color: #555 transparent transparent transparent;
 }

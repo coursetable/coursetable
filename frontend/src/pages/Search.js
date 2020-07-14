@@ -17,6 +17,8 @@ import {
   FormCheck,
   InputGroup,
   Button,
+  Overlay,
+  Tooltip,
 } from 'react-bootstrap';
 
 import {
@@ -33,7 +35,7 @@ import {
   colorOptionStyles,
   selectStyles,
   creditOptions,
-  schoolOptions
+  schoolOptions,
 } from '../queries/Constants';
 
 import { useLazyQuery } from '@apollo/react-hooks';
@@ -45,12 +47,11 @@ import { useSeasons } from '../components/SeasonsProvider';
 
 import { debounce } from 'lodash';
 
-import Slider from 'rc-slider';
+import Sticky from 'react-sticky-el';
+
+import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
-
-const createSliderWithTooltip = Slider.createSliderWithTooltip;
-const Range = createSliderWithTooltip(Slider.Range);
 
 // TODO:
 //  - hide cancelled
@@ -237,11 +238,11 @@ function App() {
   }
 
   // ctrl/cmd-f search hotkey
-  const focusSearch = (e) => {
+  const focusSearch = e => {
     e.preventDefault();
     console.log('focus!');
-    console.log(e)
-    console.log(searchText)
+    console.log(e);
+    console.log(searchText);
     searchText.focus();
   };
 
@@ -253,189 +254,196 @@ function App() {
     FOCUS_SEARCH: focusSearch,
   };
 
+  const { Handle } = Slider;
+
+  const sliderHandle = e => {
+    const { value } = e;
+    return (
+      <Handle {...e}>
+        <div className="handle_tooltip">{value}</div>
+      </Handle>
+    );
+  };
+
   return (
     <div className={styles.search_base}>
       <HotKeys keyMap={keyMap} handlers={handlers}>
-      <Row className={styles.nopad + ' ' + styles.nomargin}>
-        <Col
-          md={4}
-          lg={3}
-          className={
-            isMobile
-              ? 'p-3 ' + styles.search_col_mobile
-              : 'pr-2 py-3 pl-3 ' + styles.search_col
-          }
-        >
-          <Form
-            className={'px-4 py-4 ' + styles.search_container}
-            onSubmit={handleSubmit}
+        <Row className={styles.nopad + ' ' + styles.nomargin}>
+          <Col
+            md={4}
+            lg={3}
+            className={
+              isMobile
+                ? 'p-3 ' + styles.search_col_mobile
+                : 'pr-2 py-3 pl-3 ' + styles.search_col
+            }
           >
-            <div className={styles.search_bar}>
-              <InputGroup className={styles.search_input}>
-                <FormControl
-                  type="text"
-                  placeholder="Find a class..."
-                  ref={ref => (searchText = ref)}
-                />
-              </InputGroup>
-            </div>
-
-            <div className={'container ' + styles.search_options_container}>
-              <Row className="py-2">
-                <div className={'col-xl-4 col-md-12 ' + styles.nopad}>
-                  Sort by{' '}
-                  <Select
-                    defaultValue={sortbyOptions[0]}
-                    options={sortbyOptions}
-                    ref={ref => {
-                      sortby = ref;
-                    }}
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
-                  />
-                </div>
-                <div className={'col-xl-8 col-md-12 ' + styles.nopad}>
-                  Semesters{' '}
-                  {seasonsOptions && (
-                    <Select
-                      isMulti
-                      defaultValue={[seasonsOptions[0]]}
-                      options={seasonsOptions}
-                      ref={ref => {
-                        seasons = ref;
-                      }}
-                      placeholder="All"
-                      // prevent overlap with tooltips
-                      styles={selectStyles}
-                      menuPortalTarget={document.body}
-                      onChange={() => setSelected(!selected)}
+            <Sticky disabled={isMobile}>
+              <Form
+                className={'px-4 py-4 ' + styles.search_container}
+                onSubmit={handleSubmit}
+              >
+                <div className={styles.search_bar}>
+                  <InputGroup className={styles.search_input}>
+                    <FormControl
+                      type="text"
+                      placeholder="Find a class..."
+                      ref={ref => (searchText = ref)}
                     />
-                  )}
+                  </InputGroup>
                 </div>
-              </Row>
-              <Row className="py-2">
-                <div className={'col-xl-8 col-sm-12 ' + styles.nopad}>
-                  Skills and areas
-                  <Select
-                    isMulti
-                    options={skillsAreasOptions}
-                    placeholder="Any"
-                    ref={ref => {
-                      skillsAreas = ref;
-                    }}
-                    // colors
-                    styles={colorOptionStyles}
-                    // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
-                  />
+
+                <div className={'container ' + styles.search_options_container}>
+                  <Row className="py-2">
+                    <div className={'col-xl-4 col-md-12 ' + styles.nopad}>
+                      Sort by{' '}
+                      <Select
+                        defaultValue={sortbyOptions[0]}
+                        options={sortbyOptions}
+                        ref={ref => {
+                          sortby = ref;
+                        }}
+                        // prevent overlap with tooltips
+                        styles={selectStyles}
+                        menuPortalTarget={document.body}
+                        onChange={() => setSelected(!selected)}
+                      />
+                    </div>
+                    <div className={'col-xl-8 col-md-12 ' + styles.nopad}>
+                      Semesters{' '}
+                      {seasonsOptions && (
+                        <Select
+                          isMulti
+                          defaultValue={[seasonsOptions[0]]}
+                          options={seasonsOptions}
+                          ref={ref => {
+                            seasons = ref;
+                          }}
+                          placeholder="All"
+                          // prevent overlap with tooltips
+                          styles={selectStyles}
+                          menuPortalTarget={document.body}
+                          onChange={() => setSelected(!selected)}
+                        />
+                      )}
+                    </div>
+                  </Row>
+                  <Row className="py-2">
+                    <div className={'col-xl-8 col-sm-12 ' + styles.nopad}>
+                      Skills and areas
+                      <Select
+                        isMulti
+                        options={skillsAreasOptions}
+                        placeholder="Any"
+                        ref={ref => {
+                          skillsAreas = ref;
+                        }}
+                        // colors
+                        styles={colorOptionStyles}
+                        // prevent overlap with tooltips
+                        menuPortalTarget={document.body}
+                        onChange={() => setSelected(!selected)}
+                      />
+                    </div>
+                    <div className={'col-xl-4 col-sm-12 ' + styles.nopad}>
+                      Credits
+                      <Select
+                        isMulti
+                        options={creditOptions}
+                        placeholder="Any"
+                        ref={ref => {
+                          credits = ref;
+                        }}
+                        // prevent overlap with tooltips
+                        styles={selectStyles}
+                        menuPortalTarget={document.body}
+                        onChange={() => setSelected(!selected)}
+                      />
+                    </div>
+                  </Row>
+                  <Row className="py-2">
+                    <div className={'col-xl-12 col-sm-12 ' + styles.nopad}>
+                      Schools
+                      <Select
+                        isMulti
+                        defaultValue={[schoolOptions[0]]}
+                        options={schoolOptions}
+                        placeholder="Any"
+                        ref={ref => {
+                          schools = ref;
+                        }}
+                        // prevent overlap with tooltips
+                        styles={selectStyles}
+                        menuPortalTarget={document.body}
+                        onChange={() => setSelected(!selected)}
+                      />
+                    </div>
+                  </Row>
+                  <Row className="py-2">
+                    <Form.Check type="switch" className={styles.toggle_option}>
+                      <Form.Check.Input checked={HideCancelled} />
+                      <Form.Check.Label
+                        onClick={() => setHideCancelled(!HideCancelled)}
+                      >
+                        Hide cancelled courses
+                      </Form.Check.Label>
+                    </Form.Check>
+                  </Row>
+                  <Row className={styles.sliders}>
+                    Overall rating
+                    <Container>
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        defaultValue={ratingBounds}
+                        onChange={debounce(value => {
+                          setRatingBounds(value);
+                        }, 250)}
+                        handle={sliderHandle}
+                        className={styles.slider}
+                      />
+                    </Container>
+                    Workload
+                    <Container>
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        defaultValue={workloadBounds}
+                        onChange={debounce(value => {
+                          setWorkloadBounds(value);
+                        }, 250)}
+                        handle={sliderHandle}
+                        className={styles.slider}
+                      />
+                    </Container>
+                  </Row>
+                  <Row className="pt-3 text-right flex-row-reverse">
+                    <Button
+                      type="submit"
+                      className={'pull-right ' + styles.secondary_submit}
+                    >
+                      Search
+                    </Button>
+                  </Row>
                 </div>
-                <div className={'col-xl-4 col-sm-12 ' + styles.nopad}>
-                  Credits
-                  <Select
-                    isMulti
-                    options={creditOptions}
-                    placeholder="Any"
-                    ref={ref => {
-                      credits = ref;
-                    }}
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
-                  />
-                </div>
-              </Row>
-              <Row className="py-2">
-                <div className={'col-xl-12 col-sm-12 ' + styles.nopad}>
-                  Schools
-                  <Select
-                    isMulti
-                    defaultValue={[schoolOptions[0]]}
-                    options={schoolOptions}
-                    placeholder="Any"
-                    ref={ref => {
-                      schools = ref;
-                    }}
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
-                  />
-                </div>
-              </Row>
-              <Row className="py-2">
-                <Form.Check type="switch" className={styles.toggle_option}>
-                  <Form.Check.Input checked={HideCancelled} />
-                  <Form.Check.Label
-                    onClick={() => setHideCancelled(!HideCancelled)}
-                  >
-                    Hide cancelled courses
-                  </Form.Check.Label>
-                </Form.Check>
-              </Row>
-              <Row className={styles.sliders}>
-                Overall rating
-                <Container>
-                  <Range
-                    min={1}
-                    max={5}
-                    step={0.1}
-                    defaultValue={ratingBounds}
-                    onChange={debounce(value => {
-                      setRatingBounds(value);
-                    }, 250)}
-                    tipProps={{
-                      visible: true,
-                      align: { offset: [0, 4] },
-                    }}
-                    className={styles.slider}
-                  />
-                </Container>
-                Workload
-                <Container>
-                  <Range
-                    min={1}
-                    max={5}
-                    step={0.1}
-                    defaultValue={workloadBounds}
-                    onChange={debounce(value => {
-                      setWorkloadBounds(value);
-                    }, 250)}
-                    tipProps={{
-                      visible: true,
-                      align: { offset: [0, 4] },
-                    }}
-                    className={styles.slider}
-                  />
-                </Container>
-              </Row>
-              <Row className="pt-3 text-right flex-row-reverse">
-                <Button
-                  type="submit"
-                  className={'pull-right ' + styles.secondary_submit}
-                >
-                  Search
-                </Button>
-              </Row>
-            </div>
-          </Form>
-        </Col>
-        <Col
-          md={8}
-          lg={9}
-          className={
-            'm-0 ' +
-            (isMobile
-              ? 'p-3 ' + styles.results_col_mobile
-              : 'pl-2 py-3 pr-3 ' + styles.results_col)
-          }
-        >
-          {results}
-        </Col>
-      </Row>
+              </Form>
+            </Sticky>
+          </Col>
+          <Col
+            md={8}
+            lg={9}
+            className={
+              'm-0 ' +
+              (isMobile
+                ? 'p-3 ' + styles.results_col_mobile
+                : 'pl-2 py-3 pr-3 ' + styles.results_col)
+            }
+          >
+            {results}
+          </Col>
+        </Row>
       </HotKeys>
     </div>
   );
