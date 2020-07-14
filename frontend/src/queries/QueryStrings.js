@@ -120,3 +120,13 @@ export const SEARCH_COURSES_TEXTLESS = gql`
     }
   }
 `;
+
+export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
+  query SearchAverageAcrossSeasons($course_code: String) {
+    computed_course_info(where: { course_codes: { _has_key: $course_code } }) {
+      average_rating
+      average_workload
+      season_code
+    }
+  }
+`;

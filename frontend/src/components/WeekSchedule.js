@@ -11,16 +11,16 @@ export default class WeekSchedule extends React.Component {
     super(props);
   }
 
-  showModal = listing => {
+  showModal = (listing) => {
     this.props.showModal(listing);
   };
 
-  parseListings = listings => {
+  parseListings = (listings) => {
     let earliest = moment().hour(20);
     let latest = moment().hour(0);
     let parsedCourses = [];
     let id = 0;
-    listings.forEach(course => {
+    listings.forEach((course) => {
       const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       for (var indx = 0; indx < 5; indx++) {
         const info = course['course.times_by_day.' + weekDays[indx]];
@@ -47,23 +47,27 @@ export default class WeekSchedule extends React.Component {
     return [earliest, latest, parsedCourses];
   };
 
-  customEvent = event => {
+  customEvent = (event) => {
     return (
       <div>
         <strong>{event.title}</strong>
+        <br />
+        <small className="location_text">
+          {event.event.listing['course.locations_summary']}
+        </small>
       </div>
     );
   };
 
-  eventStyleGetter = event => {
+  eventStyleGetter = (event) => {
     const colors = [
-      'rgba(0, 126, 167, ',
+      'rgba(92, 164, 169,',
       'rgba(156, 137, 184, ',
       'rgba(144, 190, 109, ',
-      'rgba(249, 199, 79, ',
+      'rgba(157, 2, 8, ',
       'rgba(242, 132, 130, ',
       'rgba(243, 114, 44, ',
-      'rgba(248, 150, 30, ',
+      'rgba(2, 62, 138, ',
     ];
     const border = '1)';
     const background = '.9)';
@@ -89,11 +93,11 @@ export default class WeekSchedule extends React.Component {
         max={ret_values[1].toDate()}
         localizer={localizer}
         toolbar={false}
-        onSelectEvent={event => this.showModal(event.listing)}
+        onSelectEvent={(event) => this.showModal(event.listing)}
         components={{
           event: this.customEvent,
         }}
-        eventPropGetter={event => this.eventStyleGetter(event)}
+        eventPropGetter={(event) => this.eventStyleGetter(event)}
         formats={{
           dayFormat: 'ddd',
         }}

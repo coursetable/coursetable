@@ -1,11 +1,10 @@
 import React, { useState } from 'react';
 import './WorksheetToggleButton.css';
 import {
-  BsPlusCircle,
-  BsXCircle,
   BsBookmark,
   BsBookmarkFill,
   BsBookmarkDash,
+  BsBookmarkPlus,
 } from 'react-icons/bs';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
@@ -54,7 +53,7 @@ const WorksheetToggleButton = (props) => {
       ) : inWorksheet ? (
         <BsBookmarkDash color="red" size={20} />
       ) : (
-        <BsPlusCircle color="green" />
+        <BsBookmarkPlus color="green" size={20} />
       )}
     </Button>
   );

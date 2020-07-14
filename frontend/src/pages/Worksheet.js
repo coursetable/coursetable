@@ -21,7 +21,7 @@ function Worksheet() {
   let recentSeason = '200903';
   let season_codes = [];
   if (user.worksheet) {
-    user.worksheet.forEach(szn => {
+    user.worksheet.forEach((szn) => {
       if (szn[0] > recentSeason) recentSeason = szn[0];
       if (season_codes.indexOf(szn[0]) === -1) season_codes.push(szn[0]);
     });
@@ -36,16 +36,16 @@ function Worksheet() {
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
-  const addCourse = courseListing => {
+  const addCourse = (courseListing) => {
     setInfo([courses_info[0] + 1, [...courses_info[1], courseListing[0]]]);
   };
 
-  const changeSeason = season_code => {
+  const changeSeason = (season_code) => {
     setSeason(season_code);
     console.log(season_code);
   };
 
-  const showModal = listing => {
+  const showModal = (listing) => {
     // console.log(listing);
     setCourseInfo([true, listing]);
   };
@@ -53,6 +53,11 @@ function Worksheet() {
   const hideModal = () => {
     // console.log('hide modal');
     setCourseInfo([false, '']);
+  };
+
+  const sortByCourseCode = (a, b) => {
+    if (a.course_code < b.course_code) return -1;
+    return 1;
   };
 
   if (user.worksheet.length === 0)
@@ -68,8 +73,10 @@ function Worksheet() {
     addCourse(data);
   }
 
+  listings.sort(sortByCourseCode);
+
   let filtered_listings = [];
-  listings.forEach(listing => {
+  listings.forEach((listing) => {
     if (
       isInWorksheet(listing.season_code, listing.crn.toString(), user.worksheet)
     )
@@ -77,7 +84,7 @@ function Worksheet() {
   });
 
   let season_listings = [];
-  filtered_listings.forEach(listing => {
+  filtered_listings.forEach((listing) => {
     if (listing.season_code === season) season_listings.push(listing);
   });
 
