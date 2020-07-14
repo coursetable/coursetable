@@ -46,5 +46,8 @@ https
     app
   )
   .listen(port, () => {
-    console.log(`Dev proxy listening on port ${port}`);
+    console.log(`Secure dev proxy listening on port ${port}`);
   });
+app.listen(3001, () => {
+  console.log(`insecure dev proxy listening on port 3001`);
+});

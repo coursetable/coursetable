@@ -4,6 +4,7 @@ services:
     image: node:latest
     ports:
       - '8080:8080'
+      - '3001:3001'
     volumes:
       - ../dev_proxy:/app
     user: '1000'
