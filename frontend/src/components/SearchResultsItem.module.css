@@ -9,6 +9,14 @@
   background-color: #E1EDFF !important;
 }
 
+:global .card{
+  position: static !important;
+}
+
+:global .card :global .card-header{
+  border: solid 0px !important;
+}
+
 .card_header{
   background-color: transparent !important;
 }
