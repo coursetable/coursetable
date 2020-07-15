@@ -10,3 +10,11 @@
   color: #007bff;
   cursor: pointer;
 }
+
+.sticky {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: -16px;
+  background-color: white;
+  height: 42px;
+}

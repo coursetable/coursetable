@@ -10,7 +10,7 @@ const RatingsGraph = (props) => {
     max_val = Math.max(rating, max_val);
   });
 
-  const colors = ['#f54242', '#f5a142', '#f5f542', '#9ef542', '#42f578'];
+  const colors = ['#f54242', '#f5a142', '#f5f542', '#aeed1a', '#00e800'];
   if (props.reverse) colors.reverse();
 
   let columns = [];
@@ -36,7 +36,7 @@ const RatingsGraph = (props) => {
 
   return (
     <Row
-      className={styles.container + ' mx-auto pl-2 pr-4 mb-4 align-items-end'}
+      className={styles.container + ' mx-auto pl-3 pr-3 mb-4 align-items-end'}
       onMouseEnter={() => setShow(!show)}
       onMouseLeave={() => setShow(!show)}
     >

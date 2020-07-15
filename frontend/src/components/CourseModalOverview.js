@@ -59,7 +59,7 @@ const CourseModalOverview = (props) => {
       if (evaluations[season][0] === -1 && evaluations[season][1] === -1)
         continue;
       items.push(
-        <Row key={id++} className="m-auto py-1 justify-content-center">
+        <Row key={id++} className="m-auto py-1 justify-content-end">
           <Col
             sm={5}
             className={
@@ -76,7 +76,7 @@ const CourseModalOverview = (props) => {
                 color: ratingColormap(evaluations[season][0]),
               }
             }
-            className="px-0 d-flex justify-content-center"
+            className="px-0 ml-3 d-flex justify-content-center"
           >
             <strong>
               {evaluations[season][0] !== -1 &&
@@ -90,7 +90,7 @@ const CourseModalOverview = (props) => {
                 color: workloadColormap(evaluations[season][1]),
               }
             }
-            className="px-0 d-flex justify-content-center"
+            className="px-0 ml-3 d-flex justify-content-center"
           >
             <strong>
               {evaluations[season][1] !== -1 &&
@@ -106,7 +106,7 @@ const CourseModalOverview = (props) => {
   return (
     <Modal.Body>
       <Row className="m-auto">
-        <Col sm={6} className="px-0 my-0">
+        <Col sm={7} className="px-0 my-0">
           {/* COURSE DESCRIPTION */}
           <Row className="m-auto pb-3">{listing['course.description']}</Row>
           {listing['professors'] && (
@@ -183,18 +183,18 @@ const CourseModalOverview = (props) => {
             </Row>
           )}
         </Col>
-        <Col sm={6} className="px-0 my-0">
+        <Col sm={5} className="px-0 my-0">
           {/* <Row className="m-auto justify-content-center">
                 <strong>Evaluations</strong>
               </Row> */}
-          <Row className="m-auto pb-1 justify-content-center">
+          <Row className="m-auto pb-1 justify-content-end">
             <Col sm={5} className="d-flex justify-content-center px-0 mr-3">
               <span className={styles.evaluation_header}>Season</span>
             </Col>
-            <Col sm={2} className="d-flex justify-content-center px-0">
+            <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
               <span className={styles.evaluation_header}>R</span>
             </Col>
-            <Col sm={2} className="d-flex justify-content-center px-0">
+            <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
               <span className={styles.evaluation_header}>W</span>
             </Col>
           </Row>
