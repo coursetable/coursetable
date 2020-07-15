@@ -134,3 +134,28 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
     }
   }
 `;
+
+export const SEARCH_EVALUATION_NARRATIVES = gql`
+  query SearchEvaluationNarratives($season_code: String, $course_code: String) {
+    computed_course_info(
+      where: {
+        season_code: { _eq: $season_code }
+        course_codes: { _has_key: $course_code }
+      }
+    ) {
+      course {
+        listings {
+          section
+        }
+        evaluation_narratives_aggregate {
+          nodes {
+            comment
+            evaluation_question {
+              question_text
+            }
+          }
+        }
+      }
+    }
+  }
+`;

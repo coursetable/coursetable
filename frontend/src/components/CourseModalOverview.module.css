@@ -11,10 +11,11 @@
 .rating_bubble {
   background-color: rgb(190, 221, 255);
   border-radius: 8px;
+  transition: 0.3s;
 }
 
 .rating_bubble:hover {
-  background-color: rgb(90, 157, 228);
+  background-color: rgb(92, 168, 250);
   cursor: pointer;
 }
 

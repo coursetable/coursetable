@@ -92,14 +92,14 @@ function Worksheet() {
     <div className={styles.container}>
       {!isMobile && (
         <Row className="mx-4 py-4">
-          <Col sm={8} className={styles.calendar + ' p-0 mx-0'}>
+          <Col md={8} className={styles.calendar + ' p-0 mx-0'}>
             <WeekSchedule
               className=""
               showModal={showModal}
               courses={season_listings}
             />
           </Col>
-          <Col sm={4} className={styles.table + ' pl-4 pr-0'}>
+          <Col md={4} className={styles.table + ' pl-4 pr-0'}>
             <WorksheetList
               onSeasonChange={changeSeason}
               showModal={showModal}
@@ -112,9 +112,6 @@ function Worksheet() {
       )}
       {isMobile && (
         <Row className={styles.accordion + ' m-0 p-3'}>
-          {/* <Col sm={4} className={styles.accordion + ' p-0'}>
-          <WorksheetAccordion courses={season_listings} />
-        </Col> */}
           <Col className="p-0">
             <WorksheetAccordion
               onSeasonChange={changeSeason}

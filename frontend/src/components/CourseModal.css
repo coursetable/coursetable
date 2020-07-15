@@ -4,6 +4,30 @@
 }
 
 .modal-content {
-  max-height: 80% !important;
-  min-height: none !important;
+  /* max-height: 80% !important;
+  min-height: 80% !important; */
+  height: 80% !important;
+}
+
+.modal-title {
+  font-weight: 550;
+}
+
+.nav-link.active {
+  color: #007bff !important;
+}
+
+.nav-link.active:hover {
+  background-color: white !important;
+}
+
+.nav-link {
+  color: rgba(1, 1, 1, 0.6) !important;
+  font-weight: 500 !important;
+  transition: 0.3s !important;
+}
+
+.nav-link:hover {
+  color: #007bff !important;
+  background-color: rgb(233, 233, 233) !important;
 }
