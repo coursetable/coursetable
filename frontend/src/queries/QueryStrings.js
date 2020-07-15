@@ -155,6 +155,12 @@ export const SEARCH_EVALUATION_NARRATIVES = gql`
             }
           }
         }
+        evaluation_ratings {
+          rating
+          evaluation_question {
+            question_text
+          }
+        }
       }
     }
   }

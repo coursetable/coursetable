@@ -1,19 +1,9 @@
 import React from 'react';
-import { Tabs, Tab, Row, Col, ListGroup } from 'react-bootstrap';
-import { SEARCH_EVALUATION_NARRATIVES } from '../queries/QueryStrings';
-import { useQuery } from '@apollo/react-hooks';
+import { Tabs, Tab, Row, Col } from 'react-bootstrap';
 import styles from './EvaluationResponses.module.css';
 
 const CourseModalEvaluations = (props) => {
-  const { loading, error, data } = useQuery(SEARCH_EVALUATION_NARRATIVES, {
-    variables: {
-      season_code: props.season_code,
-      course_code: props.course_code ? props.course_code : 'bruh',
-    },
-  });
-  if (loading || error) return <div>Loading...</div>;
-
-  const info = data.computed_course_info;
+  const info = props.info;
   let responses = {};
   info.forEach((section) => {
     const nodes = section.course.evaluation_narratives_aggregate.nodes;

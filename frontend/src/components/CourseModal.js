@@ -9,7 +9,7 @@ const CourseModal = (props) => {
   const [view, setView] = useState('overview');
 
   const setSeason = (season_code) => {
-    console.log(season_code);
+    // console.log(season_code);
     setView(season_code);
   };
 

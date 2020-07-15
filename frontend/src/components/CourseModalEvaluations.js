@@ -5,13 +5,21 @@ import { useQuery } from '@apollo/react-hooks';
 import styles from './CourseModalEvaluations.module.css';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import EvaluationResponses from './EvaluationResponses';
+import EvaluationRatings from './EvaluationRatings';
 
 const CourseModalEvaluations = (props) => {
-  // console.log(props);
-
   const goBack = () => {
     props.setSeason('overview');
   };
+
+  const { loading, error, data } = useQuery(SEARCH_EVALUATION_NARRATIVES, {
+    variables: {
+      season_code: props.season_code,
+      course_code: props.course_code ? props.course_code : 'bruh',
+    },
+  });
+  if (loading || error) return <Modal.Body>Loading...</Modal.Body>;
+  const info = data.computed_course_info;
 
   return (
     <Modal.Body>
@@ -22,14 +30,11 @@ const CourseModalEvaluations = (props) => {
               <IoMdArrowRoundBack size={30} />
             </div>
           </Row>
-          Charts
+          <EvaluationRatings info={info} />
         </Col>
 
         <Col sm={7} className="px-0 my-0">
-          <EvaluationResponses
-            season_code={props.season_code}
-            course_code={props.course_code}
-          />
+          <EvaluationResponses info={info} />
         </Col>
       </Row>
     </Modal.Body>

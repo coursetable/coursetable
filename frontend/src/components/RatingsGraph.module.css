@@ -1,0 +1,19 @@
+.container {
+  height: 130px;
+}
+
+.bar {
+  text-align: center;
+}
+
+.column {
+  width: 15px;
+  border-radius: 10px;
+}
+
+.value {
+  font-size: 13px;
+  font-weight: 450;
+  color: rgb(143, 140, 140);
+  height: 18px;
+}
