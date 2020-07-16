@@ -1,71 +1,36 @@
-.container {
-  height: 194vh;
-  width: 100vw;
-  background-color: #f6f6f6;
+.login_background {
+	background-color: #bbe1fa;
 }
 
-.splashpage {
-  height: 94vh;
+.login_outer {
+	background-color: white;
+	border-radius: 8px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: 8rem auto 12rem auto;
+	height: max-content;
 }
 
-.coursetable_window {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  text-align: center;
+.login_header {
+	font-size: 2rem;
 }
 
-.coursetable_logo {
-  font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman,
-    serif;
+.go_back {
+	cursor: pointer;
+	color: rgba(1, 1, 1, 0.6);
+	transition: all 0.25s ease-in;
+	width: max-content;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 0.5rem 0.75rem;
+	border-radius: 4px;
 }
 
-.btn_container {
-  justify-content: center;
-  margin: auto;
-}
-
-.title {
-  font-size: calc(20px + 8vw);
-}
-
-.description {
-  font-size: calc(10px + 3vw);
-  line-height: 90%;
-}
-
-.btns {
-  width: 150px;
-}
-
-.chevron {
-  position: absolute;
-  left: 50%;
-  top: 95%;
-  transform: translate(-50%, 0);
-  color: rgb(187, 187, 187);
-  transition: 0.3s ease;
-}
-
-.chevron:hover {
-  color: rgb(102, 102, 102);
-}
-
-.feature_page {
-  height: 100vh;
-  width: 100vw;
-  position: absolute;
-  top: 200%;
-  left: 50%;
-  transform: translate(-50%, -100%);
-  text-align: center;
-  border-top: solid;
-  border-width: 1px;
-  border-color: rgb(197, 196, 196);
-}
-
-.whyCourseTable {
-  margin-top: 8vh;
-  font-size: calc(15px + 5vw);
+.go_back:hover {
+	text-decoration:none;
+	color: black;
+	background-color: rgba(1, 1, 1, 0.1);
 }

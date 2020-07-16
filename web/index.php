@@ -11,7 +11,7 @@ $yaleAdvancedOciMysqli = ProjectCommon::createYaleAdvancedOciMysqli();
 // If we got here and it's forcelogin, take it straight to the Bluebook
 $authorizationState = ProjectCommon::getStudentAuthorizationState($netId, $yalePlusMysqli);
 if ($netId && $authorizationState == 'authorized') {
-    header('Location: /Table');
+    header('Location: /catalog');
 }
 
 $sbs = new StudentBluebookSetting($yalePlusMysqli);

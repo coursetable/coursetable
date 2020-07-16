@@ -12,8 +12,10 @@ import Footer from './components/Footer';
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import SeasonsProvider from './components/SeasonsProvider';
 
-import Search from './pages/Search';
+import Landing from './pages/Landing';
 import Login from './pages/Login';
+
+import Search from './pages/Search';
 import About from './pages/About';
 import Courses from './pages/Courses';
 import Worksheet from './pages/Worksheet';
@@ -60,6 +62,10 @@ function App() {
             <Navbar />
             <Switch>
               {/* Public Routes */}
+              <MyRoute exact path="/">
+                <Landing />
+              </MyRoute>
+
               <MyRoute exact path="/about">
                 <About />
               </MyRoute>
@@ -92,9 +98,15 @@ function App() {
                 <p>404 page not found</p>
               </MyRoute>
             </Switch>
-             <Route render={({ location }) => {
-                 return !['/catalog','/worksheet'].includes(location.pathname) && <Footer />
-              }} />
+            <Route
+              render={({ location }) => {
+                return (
+                  !['/catalog', '/worksheet'].includes(location.pathname) && (
+                    <Footer />
+                  )
+                );
+              }}
+            />
           </div>
         </SeasonsProvider>
       </WindowDimensionsProvider>
