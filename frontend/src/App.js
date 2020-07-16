@@ -63,7 +63,7 @@ function App() {
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">
-                <Landing />
+                <Landing isLoggedIn={isLoggedIn} />
               </MyRoute>
 
               <MyRoute exact path="/about">

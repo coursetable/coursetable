@@ -5,7 +5,7 @@ import { Link, Element, animateScroll as scroll, scroller } from 'react-scroll';
 
 import styles from './Landing.module.css';
 
-function App() {
+function Landing(props) {
   const scrollTo = () => {
     console.log('scroll');
     scroller.scrollTo('featurepage', {
@@ -27,16 +27,18 @@ function App() {
             </p>
             <Col className="mt-4">
               <Row className={styles.btn_container}>
-                <Col md={4} className="p-0 mx-2">
-                  <Button
-                    href="/legacy_api/index.php?forcelogin=1"
-                    variant="primary"
-                    className={styles.btns}
-                    size="lg"
-                  >
-                    Login
-                  </Button>
-                </Col>
+                {!props.isLoggedIn && (
+                  <Col md={4} className="p-0 mx-2">
+                    <Button
+                      href="/legacy_api/index.php?forcelogin=1"
+                      variant="primary"
+                      className={styles.btns}
+                      size="lg"
+                    >
+                      Login
+                    </Button>
+                  </Col>
+                )}
                 <Col md={4} className="p-0 mx-2">
                   <Button
                     size="lg"
@@ -64,4 +66,4 @@ function App() {
   );
 }
 
-export default App;
+export default Landing;
