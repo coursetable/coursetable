@@ -1,9 +1,7 @@
 .back_arrow {
   color: rgb(190, 221, 255);
-  /* padding: 6px;
-  border-radius: 5px;
-  background-color: rgb(223, 223, 223); */
   transition: 0.3s;
+  height: 30px;
 }
 
 .back_arrow:hover {

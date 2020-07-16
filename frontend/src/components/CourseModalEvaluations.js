@@ -25,7 +25,7 @@ const CourseModalEvaluations = (props) => {
     <Modal.Body>
       <Row className="m-auto">
         <Col sm={5} className="px-0 my-0">
-          <Row className={styles.sticky + ' mx-auto mb-2'}>
+          <Row className={styles.sticky + ' mx-auto mb-2 align-items-center'}>
             <div onClick={() => goBack()} className={styles.back_arrow}>
               <IoMdArrowRoundBack size={30} />
             </div>
