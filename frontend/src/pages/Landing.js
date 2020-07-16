@@ -19,7 +19,9 @@ function App() {
       <Element name="splashpage">
         <div className={styles.splashpage}>
           <div className={styles.coursetable_window}>
-            <h1 className={styles.title}>CourseTable</h1>
+            <h1 className={styles.title + ' ' + styles.coursetable_logo}>
+              Course<span style={{ color: '#92bcea' }}>Table</span>
+            </h1>
             <p className={styles.description}>
               The best place to shop for classes at Yale.
             </p>

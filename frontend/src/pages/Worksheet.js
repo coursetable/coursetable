@@ -90,11 +90,11 @@ function Worksheet() {
   if (data === undefined || !data.length) return <div>Error with Query</div>;
   const colors = [
     'rgba(74, 211, 94, ',
-    'rgba(218, 83, 68, ',
+    'rgba(202, 95, 83, ',
     'rgba(49, 164, 212, ',
     'rgba(223, 134, 83, ',
     'rgba(38, 186, 154, ',
-    'rgba(223, 120, 146, ',
+    'rgba(186, 120, 129, ',
   ];
   if (indx < user.worksheet.length) {
     data[0]['color'] = colors[indx % colors.length];
