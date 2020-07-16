@@ -2,6 +2,7 @@ import React from 'react';
 import styles from './WorksheetList.module.css';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
+import WorksheetHideButton from './WorksheetHideButton';
 
 export default class WorksheetList extends React.Component {
   constructor(props) {
@@ -14,6 +15,10 @@ export default class WorksheetList extends React.Component {
 
   showModal = (listing) => {
     this.props.showModal(listing);
+  };
+
+  toggleCourse = (season_code, crn, hidden) => {
+    this.props.toggleCourse(season_code, crn, hidden);
   };
 
   parseListings = (listings, season_codes) => {
@@ -54,14 +59,23 @@ export default class WorksheetList extends React.Component {
       parsed_courses[season].forEach((course) => {
         items.push(
           <ListGroup.Item key={id++}>
-            <Row>
+            <Row className="align-items-center">
               <Col xs="auto" className="px-0 my-auto">
-                <WorksheetToggleButton
-                  alwaysRed={true}
-                  crn={course.crn}
-                  season_code={season}
-                  bookmark={false}
-                />
+                <Row className="m-auto">
+                  <WorksheetToggleButton
+                    alwaysRed={true}
+                    crn={course.crn}
+                    season_code={season}
+                    bookmark={false}
+                  />
+                </Row>
+                <Row className="m-auto">
+                  <WorksheetHideButton
+                    toggleCourse={this.props.toggleCourse}
+                    crn={course.crn}
+                    season_code={season}
+                  />
+                </Row>
               </Col>
               <Col
                 className={styles.clickable + ' pr-3 pl-0'}

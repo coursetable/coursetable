@@ -32,7 +32,8 @@ function Worksheet() {
   const indx = courses_info[0];
   const listings = courses_info[1];
   const [season, setSeason] = useState(recentSeason);
-  const [course_info, setCourseInfo] = useState([false, '']);
+  const [course_modal, setCourseModal] = useState([false, '']);
+  const [hidden_courses, setHiddenCourses] = useState([]);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -47,12 +48,30 @@ function Worksheet() {
 
   const showModal = (listing) => {
     // console.log(listing);
-    setCourseInfo([true, listing]);
+    setCourseModal([true, listing]);
   };
 
   const hideModal = () => {
     // console.log('hide modal');
-    setCourseInfo([false, '']);
+    setCourseModal([false, '']);
+  };
+
+  const isHidden = (season_code, crn) => {
+    for (let i = 0; i < hidden_courses.length; i++) {
+      if (hidden_courses[i][0] === season_code && hidden_courses[i][1] === crn)
+        return i;
+    }
+    return -1;
+  };
+
+  const toggleCourse = (season_code, crn, hidden) => {
+    if (!hidden) {
+      setHiddenCourses([...hidden_courses, [season_code, crn]]);
+    } else {
+      let temp = [...hidden_courses];
+      temp.splice(isHidden(season_code, crn), 1);
+      setHiddenCourses(temp);
+    }
   };
 
   const sortByCourseCode = (a, b) => {
@@ -69,7 +88,16 @@ function Worksheet() {
   );
   if (loading || error) return <div>Loading...</div>;
   if (data === undefined || !data.length) return <div>Error with Query</div>;
+  const colors = [
+    'rgba(74, 211, 94, ',
+    'rgba(218, 83, 68, ',
+    'rgba(49, 164, 212, ',
+    'rgba(223, 134, 83, ',
+    'rgba(38, 186, 154, ',
+    'rgba(223, 120, 146, ',
+  ];
   if (indx < user.worksheet.length) {
+    data[0]['color'] = colors[indx % colors.length];
     addCourse(data);
   }
 
@@ -85,23 +113,28 @@ function Worksheet() {
 
   let season_listings = [];
   filtered_listings.forEach((listing) => {
-    if (listing.season_code === season) season_listings.push(listing);
+    if (
+      listing.season_code === season &&
+      isHidden(listing.season_code, listing.crn) === -1
+    )
+      season_listings.push(listing);
   });
 
   return (
     <div className={styles.container}>
       {!isMobile && (
         <Row className="mx-4 py-4">
-          <Col md={8} className={styles.calendar + ' p-0 mx-0'}>
+          <Col md={9} className={styles.calendar + ' p-0 mx-0'}>
             <WeekSchedule
               className=""
               showModal={showModal}
               courses={season_listings}
             />
           </Col>
-          <Col md={4} className={styles.table + ' pl-4 pr-0'}>
+          <Col md={3} className={styles.table + ' pl-4 pr-0'}>
             <WorksheetList
               onSeasonChange={changeSeason}
+              toggleCourse={toggleCourse}
               showModal={showModal}
               courses={filtered_listings}
               season_codes={season_codes}
@@ -124,19 +157,11 @@ function Worksheet() {
       )}
       <CourseModal
         hideModal={hideModal}
-        show={course_info[0]}
-        listing={course_info[1]}
+        show={course_modal[0]}
+        listing={course_modal[1]}
       />
     </div>
   );
 }
 
 export default Worksheet;
-
-{
-  /* <SeasonDropdown
-            onSeasonChange={changeSeason}
-            cur_season={season}
-            season_codes={season_codes}
-          /> */
-}

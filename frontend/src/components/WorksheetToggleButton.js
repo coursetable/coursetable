@@ -27,7 +27,7 @@ const WorksheetToggleButton = (props) => {
         `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${props.season_code}&ociId=${props.crn}`
       )
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
         userRefresh().catch((err) => {
           toast.error('Failed to update worksheet');
           console.error(err);
@@ -40,7 +40,7 @@ const WorksheetToggleButton = (props) => {
     e.preventDefault();
     e.stopPropagation();
     add_remove_course();
-    console.log('toggle ', props.crn + ' ' + props.season_code);
+    // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
   return (
     <Button variant="toggle" onClick={toggleWorkSheet}>

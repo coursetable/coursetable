@@ -60,20 +60,20 @@ export default class WeekSchedule extends React.Component {
   };
 
   eventStyleGetter = (event) => {
-    const colors = [
-      'rgba(92, 164, 169,',
-      'rgba(156, 137, 184, ',
-      'rgba(144, 190, 109, ',
-      'rgba(157, 2, 8, ',
-      'rgba(242, 132, 130, ',
-      'rgba(243, 114, 44, ',
-      'rgba(2, 62, 138, ',
-    ];
+    // const colors = [
+    //   'rgba(92, 164, 169,',
+    //   'rgba(156, 137, 184, ',
+    //   'rgba(144, 190, 109, ',
+    //   'rgba(157, 2, 8, ',
+    //   'rgba(242, 132, 130, ',
+    //   'rgba(243, 114, 44, ',
+    //   'rgba(2, 62, 138, ',
+    // ];
     const border = '1)';
     const background = '.9)';
     let style = {
-      backgroundColor: colors[event.id % colors.length].concat(background),
-      borderColor: colors[event.id % colors.length].concat(border),
+      backgroundColor: event.listing.color.concat(background),
+      borderColor: event.listing.color.concat(border),
       borderWidth: '2px',
     };
     return {
