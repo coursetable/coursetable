@@ -56,10 +56,10 @@ const EvaluationRatings = (props) => {
       {num_questions === 3 ? (
         <div>
           <Row className="m-auto pl-1">
-            <strong>Relevant to Major</strong>
+            <strong>Taking for Major?</strong>
           </Row>
 
-          <RatingsGraph ratings={major} reverse={false} />
+          <RatingsGraph ratings={major} reverse={true} />
         </div>
       ) : (
         <div>

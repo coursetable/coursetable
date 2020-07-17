@@ -89,7 +89,7 @@ function Worksheet() {
   if (loading || error) return <div>Loading...</div>;
   if (data === undefined || !data.length) return <div>Error with Query</div>;
   const colors = [
-    'rgba(74, 211, 94, ',
+    'rgba(108, 194, 111, ',
     'rgba(202, 95, 83, ',
     'rgba(49, 164, 212, ',
     'rgba(223, 134, 83, ',

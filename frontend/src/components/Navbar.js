@@ -1,21 +1,29 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import styles from './Navbar.module.css';
 import common_styles from '../styles/common.module.css';
 import { Nav, Navbar } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
-import Logo from "./Logo"
+import Logo from './Logo';
 
 function CourseTableNavbar() {
+  const [nav_expanded, setExpand] = useState(false);
+
   return (
     <div className={`shadow-sm ${styles.navbar}`}>
-      <Navbar sticky="top" expand="lg" className={styles.navbar}>
+      <Navbar
+        expanded={nav_expanded}
+        onToggle={(expanded) => setExpand(expanded)}
+        sticky="top"
+        expand="md"
+        className={styles.navbar}
+      >
         <Logo />
 
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
         <Navbar.Collapse id="basic-navbar-nav">
-          <Nav>
+          <Nav onClick={() => setExpand(false)}>
             <NavLink to="/catalog" className={styles.navbar_links}>
               Catalog
             </NavLink>
