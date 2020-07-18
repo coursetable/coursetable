@@ -21,7 +21,11 @@ const App = ({ course, isMobile }) => {
   const RATINGS_PRECISION = 1;
 
   return (
-    <Card key={course.course_id} className={'m-3 ' + Styles.search_result}>
+    <Card
+      key={course.course_id}
+      className={`m-3 ${Styles.search_result} ${course['course.extra_info'] !==
+        'ACTIVE' && Styles.inactive}`}
+    >
       <Accordion.Toggle
         as={Card.Header}
         eventKey={course.course_id}
@@ -41,8 +45,11 @@ const App = ({ course, isMobile }) => {
             <div className={Styles.course_code}>
               {course.course_codes ? course.course_codes.join(' • ') : ''}
             </div>
+            {course['course.extra_info'] !== 'ACTIVE' && (
+              <div className={Styles.extra_info}>CANCELLED</div>
+            )}
           </Col>
-          <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
+          <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
             <div
               className={Styles.overall_rating}
               style={
@@ -56,7 +63,7 @@ const App = ({ course, isMobile }) => {
                 : ''}
             </div>
           </Col>
-          <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
+          <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
             <div
               className={Styles.workload_rating}
               style={
@@ -72,7 +79,7 @@ const App = ({ course, isMobile }) => {
           </Col>
           <Col md={2} xs={8} className={Styles.skills_areas}>
             <div className={Styles.skills_areas}>
-              {course.skills.map((skill) => (
+              {course.skills.map(skill => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag + ' ' + Styles[skill]}
@@ -80,7 +87,7 @@ const App = ({ course, isMobile }) => {
                   {skill}
                 </Badge>
               ))}
-              {course.areas.map((area) => (
+              {course.areas.map(area => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag + ' ' + Styles[area]}

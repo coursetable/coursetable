@@ -28,8 +28,9 @@ const App = ({ data }) => {
 							<Card.Header className={Styles.results_header_inner}>
 								<Row className={'px-0 justify-content-between'}>
 									<Col md={4}>Description</Col>
-									<Col md={2}>Rating</Col>
-									<Col md={2}>Workload</Col>
+									<Col md={2}>Status</Col>
+									<Col md={1}>Rating</Col>
+									<Col md={1}>Workload</Col>
 									<Col md={2}>Areas</Col>
 									<Col md={2}></Col>
 								</Row>

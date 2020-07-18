@@ -6,22 +6,22 @@
 
 .search_result:hover {
   cursor: pointer;
-  background-color: #E1EDFF !important;
+  background-color: #e1edff !important;
 }
 
-:global .card{
+:global .card {
   position: static !important;
 }
 
-:global .card :global .card-header{
+:global .card :global .card-header {
   border: solid 0px !important;
 }
 
-.card_header{
+.card_header {
   background-color: transparent !important;
 }
 
-.course_name{
+.course_name {
   font-weight: bold;
 }
 
@@ -36,6 +36,16 @@
 .course_section {
   display: inline;
   color: rgba(1, 1, 1, 0.4);
+}
+
+.extra_info {
+  background-color: #e23e57;
+  color: white;
+  border-radius: 4px;
+  width: max-content;
+  padding: 0.2rem 0.4rem;
+  font-weight: 600;
+  font-size: 0.75rem;
 }
 
 .overall_rating {

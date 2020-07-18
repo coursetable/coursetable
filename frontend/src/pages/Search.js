@@ -54,7 +54,6 @@ import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
 // TODO:
-//  - hide cancelled
 //  - pagination/infinite scrolling
 
 function App() {
@@ -73,7 +72,7 @@ function App() {
   var credits = React.useRef();
   var schools = React.useRef();
 
-  var [HideCancelled, setHideCancelled] = React.useState(true);
+  var [hideCancelled, setHideCancelled] = React.useState(true);
 
   var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
   var [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
@@ -191,6 +190,7 @@ function App() {
           max_rating: include_all_ratings ? null : ratingBounds[1],
           min_workload: include_all_workloads ? null : workloadBounds[0],
           max_workload: include_all_workloads ? null : workloadBounds[1],
+          extra_info: hideCancelled ? 'ACTIVE' : null,
         },
       });
     } else {
@@ -208,6 +208,7 @@ function App() {
           max_rating: include_all_ratings ? null : ratingBounds[1],
           min_workload: include_all_workloads ? null : workloadBounds[0],
           max_workload: include_all_workloads ? null : workloadBounds[1],
+          extra_info: hideCancelled ? 'ACTIVE' : null,
         },
       });
     }
@@ -381,9 +382,9 @@ function App() {
                   </Row>
                   <Row className="py-2">
                     <Form.Check type="switch" className={styles.toggle_option}>
-                      <Form.Check.Input checked={HideCancelled} />
+                      <Form.Check.Input checked={hideCancelled} />
                       <Form.Check.Label
-                        onClick={() => setHideCancelled(!HideCancelled)}
+                        onClick={() => setHideCancelled(!hideCancelled)}
                       >
                         Hide cancelled courses
                       </Form.Check.Label>

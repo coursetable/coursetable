@@ -26,6 +26,7 @@ export const SEARCH_COURSES = gql`
     $max_rating: float8
     $min_workload: float8
     $max_workload: float8
+    $extra_info: String
   ) {
     search_course_info(
       args: { query: $search_text }
@@ -39,6 +40,7 @@ export const SEARCH_COURSES = gql`
         average_workload: { _gte: $min_workload, _lte: $max_workload }
         credits: { _in: $credits }
         school: { _in: $schools }
+        course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering
       limit: 100
@@ -63,6 +65,7 @@ export const SEARCH_COURSES = gql`
         listings {
           crn
         }
+        extra_info
       }
     }
   }
@@ -80,6 +83,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
     $max_rating: float8
     $min_workload: float8
     $max_workload: float8
+    $extra_info: String
   ) {
     computed_course_info(
       where: {
@@ -92,6 +96,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
         average_workload: { _gte: $min_workload, _lte: $max_workload }
         credits: { _in: $credits }
         school: { _in: $schools }
+        course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering
       limit: 100
@@ -116,6 +121,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
         listings {
           crn
         }
+        extra_info
       }
     }
   }
