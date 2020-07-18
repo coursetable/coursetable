@@ -58,8 +58,8 @@ import 'rc-tooltip/assets/bootstrap.css';
 // TODO:
 //  - pagination/infinite scrolling
 
-function App() {
-  const { width } = useWindowDimensions();
+function Search() {
+  const { height, width } = useWindowDimensions();
   const seasonsData = useSeasons();
 
   const isMobile = width < 768;
@@ -243,9 +243,6 @@ function App() {
   // ctrl/cmd-f search hotkey
   const focusSearch = e => {
     e.preventDefault();
-    console.log('focus!');
-    console.log(e);
-    console.log(searchText);
     searchText.focus();
   };
 
@@ -262,9 +259,7 @@ function App() {
   const ratingSliderHandle = e => {
     const { value } = e;
     return (
-      <Handle
-        {...e}
-      >
+      <Handle {...e}>
         <div className={`shadow ${styles.rating_tooltip}`}>{value}</div>
       </Handle>
     );
@@ -273,13 +268,21 @@ function App() {
   const workloadSliderHandle = e => {
     const { value } = e;
     return (
-      <Handle
-        {...e}
-      >
+      <Handle {...e}>
         <div className={`shadow ${styles.workload_tooltip}`}>{value}</div>
       </Handle>
     );
   };
+
+
+  var searchCol = React.useRef();
+  var searchColHeight;
+  var [tooTall, setTooTall] = React.useState(true);
+
+  React.useEffect(() => {
+    searchColHeight = searchCol.clientHeight;
+    setTooTall(searchColHeight > height);
+  });
 
   return (
     <div className={styles.search_base}>
@@ -295,157 +298,162 @@ function App() {
                 : `pr-2 py-3 pl-3 ${styles.search_col}`
             }
           >
-            <Sticky disabled={isMobile}>
+            <Sticky disabled={isMobile || tooTall}>
               <Form
-                className={`shadow-sm ${styles.search_container}`}
+                className={`shadow-sm px-3 ${styles.search_container}`}
                 onSubmit={handleSubmit}
+                ref={ref => {
+                  searchCol = ref;
+                }}
               >
-                <Container className={styles.search_options_container}>
-                  <Row className="p-4 pb-0">
-                    <div className={styles.search_bar}>
-                      <InputGroup className={styles.search_input}>
-                        <FormControl
-                          type="text"
-                          placeholder="Find a class..."
-                          ref={ref => (searchText = ref)}
-                        />
-                      </InputGroup>
-                    </div>
-                  </Row>
-                  <Row className="pt-0 pb-2 px-4">
-                    <div className={`col-md-12 p-0 ${styles.selector_container}`}>
-                      Sort by{' '}
+                <Row className="p-4 pb-0">
+                  <div className={styles.search_bar}>
+                    <InputGroup className={styles.search_input}>
+                      <FormControl
+                        type="text"
+                        placeholder="Find a class..."
+                        ref={ref => (searchText = ref)}
+                      />
+                    </InputGroup>
+                  </div>
+                </Row>
+                <Row className="pt-0 pb-2 px-4">
+                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                    Sort by{' '}
+                    <Select
+                      defaultValue={sortbyOptions[0]}
+                      options={sortbyOptions}
+                      ref={ref => {
+                        sortby = ref;
+                      }}
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={() => setSelected(!selected)}
+                    />
+                  </div>
+                  <div
+                    className={`col-md-12 p-0  ${styles.selector_container}`}
+                  >
+                    Semesters{' '}
+                    {seasonsOptions && (
                       <Select
-                        defaultValue={sortbyOptions[0]}
-                        options={sortbyOptions}
+                        isMulti
+                        defaultValue={[seasonsOptions[0]]}
+                        options={seasonsOptions}
                         ref={ref => {
-                          sortby = ref;
+                          seasons = ref;
                         }}
+                        placeholder="All"
                         // prevent overlap with tooltips
                         styles={selectStyles}
                         menuPortalTarget={document.body}
                         onChange={() => setSelected(!selected)}
                       />
-                    </div>
-                    <div className={`col-md-12 p-0  ${styles.selector_container}`}>
-                      Semesters{' '}
-                      {seasonsOptions && (
-                        <Select
-                          isMulti
-                          defaultValue={[seasonsOptions[0]]}
-                          options={seasonsOptions}
-                          ref={ref => {
-                            seasons = ref;
-                          }}
-                          placeholder="All"
-                          // prevent overlap with tooltips
-                          styles={selectStyles}
-                          menuPortalTarget={document.body}
-                          onChange={() => setSelected(!selected)}
-                        />
-                      )}
-                    </div>
-                  </Row>
-                  <Row className="py-3 px-4">
-                    <div className={`col-md-12 p-0  ${styles.selector_container}`}>
-                      Skills and areas
-                      <Select
-                        isMulti
-                        options={skillsAreasOptions}
-                        placeholder="Any"
-                        ref={ref => {
-                          skillsAreas = ref;
-                        }}
-                        // colors
-                        styles={colorOptionStyles}
-                        // prevent overlap with tooltips
-                        menuPortalTarget={document.body}
-                        onChange={() => setSelected(!selected)}
-                      />
-                    </div>
-                    <div className={`col-md-12 p-0 ${styles.selector_container}`}>
-                      Credits
-                      <Select
-                        isMulti
-                        options={creditOptions}
-                        placeholder="Any"
-                        ref={ref => {
-                          credits = ref;
-                        }}
-                        // prevent overlap with tooltips
-                        styles={selectStyles}
-                        menuPortalTarget={document.body}
-                        onChange={() => setSelected(!selected)}
-                      />
-                    </div>
-                  </Row>
-                  <Row className="py-0 px-4">
-                    <div className={`col-md-12 p-0 ${styles.selector_container}`}>
-                      Schools
-                      <Select
-                        isMulti
-                        defaultValue={[schoolOptions[0]]}
-                        options={schoolOptions}
-                        placeholder="Any"
-                        ref={ref => {
-                          schools = ref;
-                        }}
-                        // prevent overlap with tooltips
-                        styles={selectStyles}
-                        menuPortalTarget={document.body}
-                        onChange={() => setSelected(!selected)}
-                      />
-                    </div>
-                  </Row>
-                  <Row className={`py-3 px-4 ${styles.sliders}`}>
-                    Overall rating
-                    <Container>
-                      <Range
-                        min={1}
-                        max={5}
-                        step={0.1}
-                        defaultValue={ratingBounds}
-                        onChange={debounce(value => {
-                          setRatingBounds(value);
-                        }, 250)}
-                        handle={ratingSliderHandle}
-                        className={styles.slider}
-                      />
-                    </Container>
-                    Workload
-                    <Container>
-                      <Range
-                        min={1}
-                        max={5}
-                        step={0.1}
-                        defaultValue={workloadBounds}
-                        onChange={debounce(value => {
-                          setWorkloadBounds(value);
-                        }, 250)}
-                        handle={workloadSliderHandle}
-                        className={styles.slider}
-                      />
-                    </Container>
-                  </Row>
-                  <Row className="py-2 px-4">
-                    <Form.Check type="switch" className={styles.toggle_option}>
-                      <Form.Check.Input checked={hideCancelled} />
-                      <Form.Check.Label
-                        onClick={() => setHideCancelled(!hideCancelled)}
-                      >
-                        Hide cancelled courses
-                      </Form.Check.Label>
-                    </Form.Check>
-                  </Row>
-                  <Row className="flex-row-reverse">
-                    <Button
-                      type="submit"
-                      className={'pull-right ' + styles.secondary_submit}
+                    )}
+                  </div>
+                </Row>
+                <Row className="py-3 px-4">
+                  <div
+                    className={`col-md-12 p-0  ${styles.selector_container}`}
+                  >
+                    Skills and areas
+                    <Select
+                      isMulti
+                      options={skillsAreasOptions}
+                      placeholder="Any"
+                      ref={ref => {
+                        skillsAreas = ref;
+                      }}
+                      // colors
+                      styles={colorOptionStyles}
+                      // prevent overlap with tooltips
+                      menuPortalTarget={document.body}
+                      onChange={() => setSelected(!selected)}
+                    />
+                  </div>
+                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                    Credits
+                    <Select
+                      isMulti
+                      options={creditOptions}
+                      placeholder="Any"
+                      ref={ref => {
+                        credits = ref;
+                      }}
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={() => setSelected(!selected)}
+                    />
+                  </div>
+                </Row>
+                <Row className="py-0 px-4">
+                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                    Schools
+                    <Select
+                      isMulti
+                      defaultValue={[schoolOptions[0]]}
+                      options={schoolOptions}
+                      placeholder="Any"
+                      ref={ref => {
+                        schools = ref;
+                      }}
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={() => setSelected(!selected)}
+                    />
+                  </div>
+                </Row>
+                <Row className={`py-3 px-4 ${styles.sliders}`}>
+                  Overall rating
+                  <Container>
+                    <Range
+                      min={1}
+                      max={5}
+                      step={0.1}
+                      defaultValue={ratingBounds}
+                      onChange={debounce(value => {
+                        setRatingBounds(value);
+                      }, 250)}
+                      handle={ratingSliderHandle}
+                      className={styles.slider}
+                    />
+                  </Container>
+                  Workload
+                  <Container>
+                    <Range
+                      min={1}
+                      max={5}
+                      step={0.1}
+                      defaultValue={workloadBounds}
+                      onChange={debounce(value => {
+                        setWorkloadBounds(value);
+                      }, 250)}
+                      handle={workloadSliderHandle}
+                      className={styles.slider}
+                    />
+                  </Container>
+                </Row>
+                <Row className="py-2 px-4">
+                  <Form.Check type="switch" className={styles.toggle_option}>
+                    <Form.Check.Input checked={hideCancelled} />
+                    <Form.Check.Label
+                      onClick={() => setHideCancelled(!hideCancelled)}
                     >
-                      Search courses
-                    </Button>
-                  </Row>
-                </Container>
+                      Hide cancelled courses
+                    </Form.Check.Label>
+                  </Form.Check>
+                </Row>
+                <Row className="flex-row-reverse">
+                  <Button
+                    type="submit"
+                    className={'pull-right ' + styles.secondary_submit}
+                  >
+                    Search courses
+                  </Button>
+                </Row>
               </Form>
             </Sticky>
           </Col>
@@ -468,4 +476,4 @@ function App() {
   );
 }
 
-export default App;
+export default Search;
