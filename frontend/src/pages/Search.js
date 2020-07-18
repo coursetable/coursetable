@@ -268,7 +268,7 @@ function App() {
 
   return (
     <div className={styles.search_base}>
-      <HotKeys keyMap={keyMap} handlers={handlers}>
+      <HotKeys keyMap={keyMap} handlers={handlers} style={{outline:"none"}}>
         <Row className={styles.nopad + ' ' + styles.nomargin}>
           <Col
             md={4}
