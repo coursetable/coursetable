@@ -2,7 +2,7 @@ import React from 'react';
 
 import { HotKeys } from 'react-hotkeys';
 
-import styles from './Search.module.css';
+import Styles from './Search.module.css';
 
 import chroma from 'chroma-js';
 
@@ -260,7 +260,7 @@ function Search() {
     const { value } = e;
     return (
       <Handle {...e}>
-        <div className={`shadow ${styles.rating_tooltip}`}>{value}</div>
+        <div className={`shadow ${Styles.rating_tooltip}`}>{value}</div>
       </Handle>
     );
   };
@@ -269,7 +269,7 @@ function Search() {
     const { value } = e;
     return (
       <Handle {...e}>
-        <div className={`shadow ${styles.workload_tooltip}`}>{value}</div>
+        <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
       </Handle>
     );
   };
@@ -285,7 +285,7 @@ function Search() {
   });
 
   return (
-    <div className={styles.search_base}>
+    <div className={Styles.search_base}>
       <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
         <Row className="p-0 m-0">
           <Col
@@ -294,21 +294,21 @@ function Search() {
             xl={3}
             className={
               isMobile
-                ? `p-3 ${styles.search_col_mobile}`
-                : `pr-2 py-3 pl-3 ${styles.search_col}`
+                ? `p-3 ${Styles.search_col_mobile}`
+                : `pr-2 py-3 pl-3 ${Styles.search_col}`
             }
           >
             <Sticky disabled={isMobile || tooTall}>
               <Form
-                className={`shadow-sm px-3 ${styles.search_container}`}
+                className={`shadow-sm px-3 ${Styles.search_container}`}
                 onSubmit={handleSubmit}
                 ref={ref => {
                   searchCol = ref;
                 }}
               >
-                <Row className="p-4 pb-0">
-                  <div className={styles.search_bar}>
-                    <InputGroup className={styles.search_input}>
+                <Row className="pt-4 px-4 pb-2">
+                  <div className={Styles.search_bar}>
+                    <InputGroup className={Styles.search_input}>
                       <FormControl
                         type="text"
                         placeholder="Find a class..."
@@ -317,8 +317,8 @@ function Search() {
                     </InputGroup>
                   </div>
                 </Row>
-                <Row className="pt-0 pb-2 px-4">
-                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                <Row className={`pt-3 pb-0 px-4 ${Styles.sort_container}`}>
+                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     Sort by{' '}
                     <Select
                       defaultValue={sortbyOptions[0]}
@@ -332,8 +332,11 @@ function Search() {
                       onChange={() => setSelected(!selected)}
                     />
                   </div>
+                </Row>
+                <hr />
+                <Row className={`py-0 px-4 ${Styles.multi_selects}`}>
                   <div
-                    className={`col-md-12 p-0  ${styles.selector_container}`}
+                    className={`col-md-12 p-0 ${Styles.selector_container}`}
                   >
                     Semesters{' '}
                     {seasonsOptions && (
@@ -352,10 +355,8 @@ function Search() {
                       />
                     )}
                   </div>
-                </Row>
-                <Row className="py-3 px-4">
                   <div
-                    className={`col-md-12 p-0  ${styles.selector_container}`}
+                    className={`col-md-12 p-0  ${Styles.selector_container}`}
                   >
                     Skills and areas
                     <Select
@@ -372,7 +373,7 @@ function Search() {
                       onChange={() => setSelected(!selected)}
                     />
                   </div>
-                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     Credits
                     <Select
                       isMulti
@@ -387,9 +388,7 @@ function Search() {
                       onChange={() => setSelected(!selected)}
                     />
                   </div>
-                </Row>
-                <Row className="py-0 px-4">
-                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     Schools
                     <Select
                       isMulti
@@ -406,8 +405,9 @@ function Search() {
                     />
                   </div>
                 </Row>
-                <Row className={`py-3 px-4 ${styles.sliders}`}>
-                  Overall rating
+                <hr />
+                <Row className={`pt-0 pb-3 px-4 ${Styles.sliders}`}>
+                  <div>Overall rating</div>
                   <Container>
                     <Range
                       min={1}
@@ -418,10 +418,10 @@ function Search() {
                         setRatingBounds(value);
                       }, 250)}
                       handle={ratingSliderHandle}
-                      className={styles.slider}
+                      className={Styles.slider}
                     />
                   </Container>
-                  Workload
+                  <div>Workload</div>
                   <Container>
                     <Range
                       min={1}
@@ -432,12 +432,12 @@ function Search() {
                         setWorkloadBounds(value);
                       }, 250)}
                       handle={workloadSliderHandle}
-                      className={styles.slider}
+                      className={Styles.slider}
                     />
                   </Container>
                 </Row>
-                <Row className="py-2 px-4">
-                  <Form.Check type="switch" className={styles.toggle_option}>
+                <Row className={`pt-3 pb-3 px-5 ${Styles.light_bg} ${Styles.toggle_row}`}>
+                  <Form.Check type="switch" className={Styles.toggle_option}>
                     <Form.Check.Input checked={hideCancelled} />
                     <Form.Check.Label
                       onClick={() => setHideCancelled(!hideCancelled)}
@@ -449,7 +449,7 @@ function Search() {
                 <Row className="flex-row-reverse">
                   <Button
                     type="submit"
-                    className={'pull-right ' + styles.secondary_submit}
+                    className={'pull-right ' + Styles.secondary_submit}
                   >
                     Search courses
                   </Button>
@@ -464,8 +464,8 @@ function Search() {
             className={
               'm-0 ' +
               (isMobile
-                ? 'p-3 ' + styles.results_col_mobile
-                : 'pl-2 py-3 pr-3 ' + styles.results_col)
+                ? 'p-3 ' + Styles.results_col_mobile
+                : 'pl-2 py-3 pr-3 ' + Styles.results_col)
             }
           >
             {results}

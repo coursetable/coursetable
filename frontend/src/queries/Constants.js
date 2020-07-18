@@ -33,7 +33,13 @@ export const skillsAreasOptions = [
 ];
 
 export const colorOptionStyles = {
-	control: styles => ({ ...styles, backgroundColor: 'white' }),
+	control: styles => ({
+		...styles,
+		backgroundColor: 'white',
+		borderRadius: '8px',
+		cursor: 'pointer',
+		border: 'solid 2px rgba(0,0,0,0.1)',
+	}),
 	option: (styles, { data, isDisabled, isFocused, isSelected }) => {
 		const color = chroma(data.color);
 		return {
@@ -82,18 +88,42 @@ export const colorOptionStyles = {
 			color: 'white',
 		},
 	}),
-	menuPortal: base => ({ ...base, zIndex: 9999 }),
+	menuPortal: base => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
 	menu: base => ({
 		...base,
+		paddingTop: 0,
 		marginTop: 0,
+		borderRadius: '8px',
+		boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+	}),
+	menuList: base => ({
+		...base,
+		paddingTop: 0,
+		paddingBottom: 0,
+		borderRadius: '8px',
 	}),
 };
 
 export const selectStyles = {
-	menuPortal: base => ({ ...base, zIndex: 9999 }),
+	control: base => ({
+		...base,
+		borderRadius: '8px',
+		cursor: 'pointer',
+		border: 'solid 2px rgba(0,0,0,0.1)',
+	}),
+	menuPortal: base => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
 	menu: base => ({
 		...base,
+		paddingTop: 0,
 		marginTop: 0,
+		borderRadius: '8px',
+		boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+	}),
+	menuList: base => ({
+		...base,
+		paddingTop: 0,
+		paddingBottom: 0,
+		borderRadius: '8px',
 	}),
 };
 
@@ -103,7 +133,6 @@ export const creditOptions = [
 	{ label: '1.5', value: '1.5' },
 	{ label: '2', value: '2' },
 ];
-
 
 // to get a list of abbreviations, run
 // a distinct_on:school query over computed_course_info
@@ -126,5 +155,11 @@ export const schoolOptions = [
 	{ label: 'Summer Session', value: 'SU' },
 ];
 
-export const ratingColormap = chroma.bezier(['#d32626','#f6d743','#79d70f']).scale().domain([1,5])
-export const workloadColormap = chroma.bezier(['#79d70f','#f6d743','#d32626']).scale().domain([1,5])
+export const ratingColormap = chroma
+	.bezier(['#d32626', '#f6d743', '#79d70f'])
+	.scale()
+	.domain([1, 5]);
+export const workloadColormap = chroma
+	.bezier(['#79d70f', '#f6d743', '#d32626'])
+	.scale()
+	.domain([1, 5]);
