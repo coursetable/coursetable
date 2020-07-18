@@ -1,6 +1,5 @@
 .container {
   height: 194vh;
-  width: 100vw;
   background-color: #f6f6f6;
 }
 
@@ -54,7 +53,6 @@
 
 .feature_page {
   height: 100vh;
-  width: 100vw;
   position: absolute;
   top: 200%;
   left: 50%;
