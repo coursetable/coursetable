@@ -2,12 +2,10 @@ import React, { useState } from 'react';
 
 import FetchListings from '../queries/ListingsBySeason';
 import { Row, Col } from 'react-bootstrap';
-import SeasonDropdown from '../components/SeasonDropdown';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
 import CourseModal from '../components/CourseModal';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 import styles from './Worksheet.module.css';
 
@@ -15,8 +13,6 @@ import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 
 function Worksheet() {
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
   const { user } = useUser();
   let recentSeason = '200903';
   let season_codes = [];
@@ -122,7 +118,8 @@ function Worksheet() {
 
   return (
     <div className={styles.container}>
-      {!isMobile && (
+      {/* Desktop View */}
+      <div className="d-none d-md-block">
         <Row className="mx-4 py-4">
           <Col md={9} className={styles.calendar + ' p-0 mx-0'}>
             <WeekSchedule
@@ -142,8 +139,9 @@ function Worksheet() {
             />
           </Col>
         </Row>
-      )}
-      {isMobile && (
+      </div>
+      {/* Mobile View */}
+      <div className="d-md-none">
         <Row className={styles.accordion + ' m-0 p-3'}>
           <Col className="p-0">
             <WorksheetAccordion
@@ -154,7 +152,7 @@ function Worksheet() {
             />
           </Col>
         </Row>
-      )}
+      </div>
       <CourseModal
         hideModal={hideModal}
         show={course_modal[0]}
