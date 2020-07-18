@@ -49,7 +49,7 @@ const App = ({ course, isMobile }) => {
               <div className={Styles.extra_info}>CANCELLED</div>
             )}
           </Col>
-          <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
+          <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
             <div
               className={Styles.overall_rating}
               style={
@@ -63,7 +63,7 @@ const App = ({ course, isMobile }) => {
                 : ''}
             </div>
           </Col>
-          <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
+          <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
             <div
               className={Styles.workload_rating}
               style={

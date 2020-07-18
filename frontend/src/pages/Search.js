@@ -36,6 +36,8 @@ import {
   selectStyles,
   creditOptions,
   schoolOptions,
+  ratingColormap,
+  workloadColormap,
 } from '../queries/Constants';
 
 import { useLazyQuery } from '@apollo/react-hooks';
@@ -257,46 +259,61 @@ function App() {
 
   const { Handle } = Slider;
 
-  const sliderHandle = e => {
+  const ratingSliderHandle = e => {
     const { value } = e;
     return (
-      <Handle {...e}>
-        <div className="handle_tooltip">{value}</div>
+      <Handle
+        {...e}
+      >
+        <div className={`shadow ${styles.rating_tooltip}`}>{value}</div>
+      </Handle>
+    );
+  };
+
+  const workloadSliderHandle = e => {
+    const { value } = e;
+    return (
+      <Handle
+        {...e}
+      >
+        <div className={`shadow ${styles.workload_tooltip}`}>{value}</div>
       </Handle>
     );
   };
 
   return (
     <div className={styles.search_base}>
-      <HotKeys keyMap={keyMap} handlers={handlers} style={{outline:"none"}}>
-        <Row className={styles.nopad + ' ' + styles.nomargin}>
+      <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
+        <Row className="p-0 m-0">
           <Col
             md={4}
-            lg={3}
+            lg={4}
+            xl={3}
             className={
               isMobile
-                ? 'p-3 ' + styles.search_col_mobile
-                : 'pr-2 py-3 pl-3 ' + styles.search_col
+                ? `p-3 ${styles.search_col_mobile}`
+                : `pr-2 py-3 pl-3 ${styles.search_col}`
             }
           >
             <Sticky disabled={isMobile}>
               <Form
-                className={'px-4 py-4 ' + styles.search_container}
+                className={`shadow-sm ${styles.search_container}`}
                 onSubmit={handleSubmit}
               >
-                <div className={styles.search_bar}>
-                  <InputGroup className={styles.search_input}>
-                    <FormControl
-                      type="text"
-                      placeholder="Find a class..."
-                      ref={ref => (searchText = ref)}
-                    />
-                  </InputGroup>
-                </div>
-
-                <div className={'container ' + styles.search_options_container}>
-                  <Row className="py-2">
-                    <div className={'col-xl-4 col-md-12 ' + styles.nopad}>
+                <Container className={styles.search_options_container}>
+                  <Row className="p-4 pb-0">
+                    <div className={styles.search_bar}>
+                      <InputGroup className={styles.search_input}>
+                        <FormControl
+                          type="text"
+                          placeholder="Find a class..."
+                          ref={ref => (searchText = ref)}
+                        />
+                      </InputGroup>
+                    </div>
+                  </Row>
+                  <Row className="pt-0 pb-2 px-4">
+                    <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                       Sort by{' '}
                       <Select
                         defaultValue={sortbyOptions[0]}
@@ -310,7 +327,7 @@ function App() {
                         onChange={() => setSelected(!selected)}
                       />
                     </div>
-                    <div className={'col-xl-8 col-md-12 ' + styles.nopad}>
+                    <div className={`col-md-12 p-0  ${styles.selector_container}`}>
                       Semesters{' '}
                       {seasonsOptions && (
                         <Select
@@ -329,8 +346,8 @@ function App() {
                       )}
                     </div>
                   </Row>
-                  <Row className="py-2">
-                    <div className={'col-xl-8 col-sm-12 ' + styles.nopad}>
+                  <Row className="py-3 px-4">
+                    <div className={`col-md-12 p-0  ${styles.selector_container}`}>
                       Skills and areas
                       <Select
                         isMulti
@@ -346,7 +363,7 @@ function App() {
                         onChange={() => setSelected(!selected)}
                       />
                     </div>
-                    <div className={'col-xl-4 col-sm-12 ' + styles.nopad}>
+                    <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                       Credits
                       <Select
                         isMulti
@@ -362,8 +379,8 @@ function App() {
                       />
                     </div>
                   </Row>
-                  <Row className="py-2">
-                    <div className={'col-xl-12 col-sm-12 ' + styles.nopad}>
+                  <Row className="py-0 px-4">
+                    <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                       Schools
                       <Select
                         isMulti
@@ -380,17 +397,7 @@ function App() {
                       />
                     </div>
                   </Row>
-                  <Row className="py-2">
-                    <Form.Check type="switch" className={styles.toggle_option}>
-                      <Form.Check.Input checked={hideCancelled} />
-                      <Form.Check.Label
-                        onClick={() => setHideCancelled(!hideCancelled)}
-                      >
-                        Hide cancelled courses
-                      </Form.Check.Label>
-                    </Form.Check>
-                  </Row>
-                  <Row className={styles.sliders}>
+                  <Row className={`py-3 px-4 ${styles.sliders}`}>
                     Overall rating
                     <Container>
                       <Range
@@ -401,7 +408,7 @@ function App() {
                         onChange={debounce(value => {
                           setRatingBounds(value);
                         }, 250)}
-                        handle={sliderHandle}
+                        handle={ratingSliderHandle}
                         className={styles.slider}
                       />
                     </Container>
@@ -415,26 +422,37 @@ function App() {
                         onChange={debounce(value => {
                           setWorkloadBounds(value);
                         }, 250)}
-                        handle={sliderHandle}
+                        handle={workloadSliderHandle}
                         className={styles.slider}
                       />
                     </Container>
                   </Row>
-                  <Row className="pt-3 text-right flex-row-reverse">
+                  <Row className="py-2 px-4">
+                    <Form.Check type="switch" className={styles.toggle_option}>
+                      <Form.Check.Input checked={hideCancelled} />
+                      <Form.Check.Label
+                        onClick={() => setHideCancelled(!hideCancelled)}
+                      >
+                        Hide cancelled courses
+                      </Form.Check.Label>
+                    </Form.Check>
+                  </Row>
+                  <Row className="flex-row-reverse">
                     <Button
                       type="submit"
                       className={'pull-right ' + styles.secondary_submit}
                     >
-                      Search
+                      Search courses
                     </Button>
                   </Row>
-                </div>
+                </Container>
               </Form>
             </Sticky>
           </Col>
           <Col
             md={8}
-            lg={9}
+            lg={8}
+            xl={9}
             className={
               'm-0 ' +
               (isMobile
