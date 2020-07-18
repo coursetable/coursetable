@@ -8,7 +8,7 @@ services:
     volumes:
       - ../dev_proxy:/app
     user: '1000'
-    command: sh -c 'cd /app && yarn && node proxy.js'
+    command: sh -c 'cd /app && yarn && yarn start'
     links:
       - frontend
       - nginx
