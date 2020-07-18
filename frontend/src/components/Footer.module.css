@@ -1,10 +1,11 @@
 .footer {
-  background: rgba(1,1,1,0.05);
-  min-width: 100%;
-  margin: 0;
   color: black;
 }
 
-.footer :global a{
-	color: rgba(1,1,1,0.7) !important;
+.footer_logo {
+  font-size: 1.5rem;
+}
+
+.footer :global a {
+  color: rgba(1, 1, 1, 0.7) !important;
 }
