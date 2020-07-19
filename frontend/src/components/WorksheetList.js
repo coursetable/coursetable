@@ -75,6 +75,7 @@ export default class WorksheetList extends React.Component {
                     crn={course.crn}
                     season_code={season}
                     bookmark={false}
+                    hasSeason={this.props.hasSeason}
                   />
                 </Row>
                 <Row className="m-auto">

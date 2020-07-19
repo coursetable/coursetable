@@ -46,7 +46,7 @@ const CourseModal = (props) => {
                         <IoMdArrowRoundBack size={30} />
                       </div>
                       <span className="modal-title ml-3">
-                        Student Evaluations
+                        {/*listing.course_code + ' '*/} Student Evaluations
                         <span className="text-muted">
                           {' (' +
                             toSeasonString(view)[2] +
