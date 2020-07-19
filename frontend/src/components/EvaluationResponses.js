@@ -6,6 +6,8 @@ const CourseModalEvaluations = (props) => {
   const info = props.info;
   let responses = {};
   info.forEach((section) => {
+    const section_num = section.course.listings[0].section;
+    if (section_num !== props.section.toString()) return;
     const nodes = section.course.evaluation_narratives_aggregate.nodes;
     if (!nodes.length) return;
     nodes.forEach((node) => {

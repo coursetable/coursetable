@@ -31,8 +31,6 @@ const CourseModal = (props) => {
     props.hideModal();
   };
 
-  console.log(listing);
-
   return (
     <div className="d-flex justify-content-center">
       <Modal
@@ -106,6 +104,7 @@ const CourseModal = (props) => {
           <CourseModalEvaluations
             season_code={view}
             course_code={listing.course_code}
+            section={listing.section}
             setSeason={setSeason}
           />
         )}

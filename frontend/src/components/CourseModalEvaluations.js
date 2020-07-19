@@ -23,11 +23,11 @@ const CourseModalEvaluations = (props) => {
     <Modal.Body>
       <Row className="m-auto">
         <Col sm={5} className="px-0 my-0">
-          <EvaluationRatings info={info} />
+          <EvaluationRatings section={props.section} info={info} />
         </Col>
 
         <Col sm={7} className="px-0 my-0">
-          <EvaluationResponses info={info} />
+          <EvaluationResponses section={props.section} info={info} />
         </Col>
       </Row>
     </Modal.Body>

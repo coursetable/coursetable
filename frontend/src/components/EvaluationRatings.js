@@ -7,21 +7,16 @@ const EvaluationRatings = (props) => {
   const info = props.info;
   let ratings = [];
   info.forEach((section) => {
+    const section_num = section.course.listings[0].section;
+    if (section_num !== props.section.toString()) return;
     const temp = section.course.evaluation_ratings;
     for (let i = 0; i < temp.length; i++) {
-      if (!ratings[i])
-        ratings.push({
-          question: temp[i].evaluation_question.question_text,
-          values: [],
-        });
-      if (!ratings[i].values.length) {
-        for (let j = 0; j < temp[i].rating.length; j++) {
-          ratings[i].values.push(temp[i].rating[j]);
-        }
-      } else {
-        for (let j = 0; j < ratings[i].values.length; j++) {
-          ratings[i].values[j] += temp[i].rating[j];
-        }
+      ratings.push({
+        question: temp[i].evaluation_question.question_text,
+        values: [],
+      });
+      for (let j = 0; j < temp[i].rating.length; j++) {
+        ratings[i].values.push(temp[i].rating[j]);
       }
     }
   });
