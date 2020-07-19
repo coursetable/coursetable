@@ -59,12 +59,7 @@ const CourseModalEvaluations = (props) => {
   return (
     <div>
       {num_questions === 3 && (
-        <Tabs
-          className={styles.tabs}
-          variant="tabs"
-          defaultActiveKey="recommended"
-          transition={false}
-        >
+        <Tabs variant="tabs" defaultActiveKey="recommended" transition={false}>
           <Tab eventKey="recommended" title="Recommendations">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               Would you recommend this course to another student? Please
@@ -89,7 +84,7 @@ const CourseModalEvaluations = (props) => {
         </Tabs>
       )}
       {num_questions === 1 && (
-        <Tabs className={styles.tabs} variant="tabs" defaultActiveKey="summary">
+        <Tabs variant="tabs" defaultActiveKey="summary">
           <Tab eventKey="summary" title="Summary">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               How would you summarize this course? Would you recommend it to

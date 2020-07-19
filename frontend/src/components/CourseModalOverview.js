@@ -1,20 +1,14 @@
 import React from 'react';
-import { Badge, Row, Col, Modal } from 'react-bootstrap';
+import { Row, Col, Modal } from 'react-bootstrap';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
-import tagStyles from './SearchResultsItem.module.css';
 import styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+import { toSeasonString } from '../utilities';
 
 const CourseModalOverview = (props) => {
   const listing = props.listing;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  const toSeasonString = (season_code) => {
-    const seasons = ['', 'Spring', 'Summer', 'Fall'];
-    return (
-      season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])]
-    );
-  };
 
   const setSeason = (season_code) => {
     props.setSeason(season_code);
@@ -115,31 +109,6 @@ const CourseModalOverview = (props) => {
                 <strong className={styles.lable_bubble}>Professor</strong>
               </Col>
               <Col sm={8}>{listing.professors}</Col>
-            </Row>
-          )}
-          {(listing.skills || listing.areas) && (
-            <Row className="m-auto py-2">
-              <Col sm={4} className="px-0">
-                <strong className={styles.lable_bubble}>Skills/Areas</strong>
-              </Col>
-              <Col sm={8}>
-                {!listing.skills || (
-                  <Badge
-                    variant="secondary"
-                    className={tagStyles.tag + ' ' + tagStyles[listing.skills]}
-                  >
-                    {listing.skills}
-                  </Badge>
-                )}
-                {!listing.areas || (
-                  <Badge
-                    variant="secondary"
-                    className={tagStyles.tag + ' ' + tagStyles[listing.areas]}
-                  >
-                    {listing.areas}
-                  </Badge>
-                )}
-              </Col>
             </Row>
           )}
           {listing['course.times_summary'] !== 'TBA' && (

@@ -11,6 +11,12 @@
 
 .modal-title {
   font-weight: 550;
+  line-height: 1.2 !important;
+}
+
+.modal-header {
+  display: flex !important;
+  padding: 1rem 1rem 0.5rem 1rem !important;
 }
 
 .nav-link.active {

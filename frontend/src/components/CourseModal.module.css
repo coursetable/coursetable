@@ -9,10 +9,7 @@
   cursor: pointer;
 }
 
-.sticky {
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: -16px;
-  background-color: white;
-  height: 42px;
-}
+/* .badges {
+  height: 30px;
+  font-size: 20px;
+} */

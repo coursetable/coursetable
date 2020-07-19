@@ -2,17 +2,11 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import './DropdownShared.css';
+import { toSeasonString } from '../utilities';
 
 function SeasonDropdown(props) {
   const setSeason = (season_code) => {
     props.onSeasonChange(season_code);
-  };
-
-  const toSeasonString = (season_code) => {
-    const seasons = ['', 'Spring', 'Summer', 'Fall'];
-    return (
-      season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])]
-    );
   };
 
   let seasons_html = [];

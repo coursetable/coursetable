@@ -1,8 +1,12 @@
 import React, { useState } from 'react';
-import { Modal } from 'react-bootstrap';
+import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 import './CourseModal.css';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
+import tagStyles from './SearchResultsItem.module.css';
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import styles from './CourseModal.module.css';
+import { toSeasonString } from '../utilities';
 
 const CourseModal = (props) => {
   const listing = props.listing;
@@ -29,9 +33,55 @@ const CourseModal = (props) => {
         centered
       >
         <Modal.Header closeButton>
-          <Modal.Title>
-            <span className="modal-title">{listing['course.title']}</span>
-          </Modal.Title>
+          <Container className="p-0">
+            <Row className="m-auto">
+              <Modal.Title>
+                <span className="modal-title">
+                  {listing['course.title']}
+                  {view !== 'overview' ? (
+                    <span className="text-muted">
+                      {' (' + toSeasonString(view) + ')'}
+                    </span>
+                  ) : (
+                    ''
+                  )}
+                </span>
+              </Modal.Title>
+            </Row>
+            {view === 'overview' ? (
+              (listing.skills || listing.areas) && (
+                <Row className={styles.badges + ' mx-auto mt-1'}>
+                  {!listing.skills || (
+                    <Badge
+                      variant="secondary"
+                      className={
+                        tagStyles.tag + ' ' + tagStyles[listing.skills]
+                      }
+                    >
+                      {listing.skills}
+                    </Badge>
+                  )}
+                  {!listing.areas || (
+                    <Badge
+                      variant="secondary"
+                      className={tagStyles.tag + ' ' + tagStyles[listing.areas]}
+                    >
+                      {listing.areas}
+                    </Badge>
+                  )}
+                </Row>
+              )
+            ) : (
+              <Row className={'mx-auto mt-1 align-items-center'}>
+                <div
+                  onClick={() => setSeason('overview')}
+                  className={styles.back_arrow}
+                >
+                  <IoMdArrowRoundBack size={30} />
+                </div>
+              </Row>
+            )}
+          </Container>
         </Modal.Header>
         {view === 'overview' ? (
           <CourseModalOverview setSeason={setSeason} listing={listing} />

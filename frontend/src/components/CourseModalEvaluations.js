@@ -1,9 +1,7 @@
 import React from 'react';
-import { Tabs, Tab, Row, Col, Modal } from 'react-bootstrap';
+import { Row, Col, Modal } from 'react-bootstrap';
 import { SEARCH_EVALUATION_NARRATIVES } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
-import styles from './CourseModalEvaluations.module.css';
-import { IoMdArrowRoundBack } from 'react-icons/io';
 import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
 
@@ -25,11 +23,6 @@ const CourseModalEvaluations = (props) => {
     <Modal.Body>
       <Row className="m-auto">
         <Col sm={5} className="px-0 my-0">
-          <Row className={styles.sticky + ' mx-auto mb-2 align-items-center'}>
-            <div onClick={() => goBack()} className={styles.back_arrow}>
-              <IoMdArrowRoundBack size={30} />
-            </div>
-          </Row>
           <EvaluationRatings info={info} />
         </Col>
 
