@@ -33,52 +33,55 @@ const CourseModal = (props) => {
         centered
       >
         <Modal.Header closeButton>
-          <Container className="p-0">
+          <Container className="p-0" fluid>
             <Row className="m-auto">
               <Modal.Title>
-                <span className="modal-title">
-                  {listing['course.title']}
+                <Row className={'mx-auto mt-1 align-items-center'}>
                   {view !== 'overview' ? (
-                    <span className="text-muted">
-                      {' (' + toSeasonString(view) + ')'}
-                    </span>
+                    <Row className="mx-auto mb-1">
+                      <div
+                        onClick={() => setSeason('overview')}
+                        className={styles.back_arrow}
+                      >
+                        <IoMdArrowRoundBack size={30} />
+                      </div>
+                      <span className="modal-title ml-3">
+                        Student Evaluations
+                        <span className="text-muted">
+                          {' (' +
+                            toSeasonString(view)[2] +
+                            ' ' +
+                            toSeasonString(view)[1] +
+                            ')'}
+                        </span>
+                      </span>
+                    </Row>
                   ) : (
-                    ''
-                  )}
-                </span>
-              </Modal.Title>
-            </Row>
-            {view === 'overview' ? (
-              (listing.skills || listing.areas) && (
-                <Row className={styles.badges + ' mx-auto mt-1'}>
-                  {!listing.skills || (
-                    <Badge
-                      variant="secondary"
-                      className={
-                        tagStyles.tag + ' ' + tagStyles[listing.skills]
-                      }
-                    >
-                      {listing.skills}
-                    </Badge>
-                  )}
-                  {!listing.areas || (
-                    <Badge
-                      variant="secondary"
-                      className={tagStyles.tag + ' ' + tagStyles[listing.areas]}
-                    >
-                      {listing.areas}
-                    </Badge>
+                    <span className="modal-title">
+                      {listing['course.title']}
+                    </span>
                   )}
                 </Row>
-              )
-            ) : (
-              <Row className={'mx-auto mt-1 align-items-center'}>
-                <div
-                  onClick={() => setSeason('overview')}
-                  className={styles.back_arrow}
-                >
-                  <IoMdArrowRoundBack size={30} />
-                </div>
+              </Modal.Title>
+            </Row>
+            {view === 'overview' && (listing.skills || listing.areas) && (
+              <Row className={styles.badges + ' mx-auto mt-1'}>
+                {!listing.skills || (
+                  <Badge
+                    variant="secondary"
+                    className={tagStyles.tag + ' ' + tagStyles[listing.skills]}
+                  >
+                    {listing.skills}
+                  </Badge>
+                )}
+                {!listing.areas || (
+                  <Badge
+                    variant="secondary"
+                    className={tagStyles.tag + ' ' + tagStyles[listing.areas]}
+                  >
+                    {listing.areas}
+                  </Badge>
+                )}
               </Row>
             )}
           </Container>

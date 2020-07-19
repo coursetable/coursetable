@@ -14,7 +14,7 @@ function SeasonDropdown(props) {
   props.season_codes.forEach((season) => {
     seasons_html.push(
       <Dropdown.Item key={season} eventKey={season}>
-        {toSeasonString(season)}
+        {toSeasonString(season)[0]}
       </Dropdown.Item>
     );
   });
@@ -23,7 +23,7 @@ function SeasonDropdown(props) {
     <div className="container p-0 m-0">
       <DropdownButton
         variant="success"
-        title={toSeasonString(props.cur_season)}
+        title={toSeasonString(props.cur_season)[0]}
         onSelect={setSeason}
       >
         {seasons_html}

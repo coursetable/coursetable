@@ -61,7 +61,7 @@ const CourseModalOverview = (props) => {
             }
             onClick={(event) => setSeason(season)}
           >
-            <strong>{toSeasonString(season)}</strong>
+            <strong>{toSeasonString(season)[0]}</strong>
           </Col>
           <Col
             sm={2}
