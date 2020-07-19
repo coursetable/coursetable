@@ -10,7 +10,12 @@
   cursor: pointer;
 }
 
-/* .badges {
-  height: 30px;
-  font-size: 20px;
-} */
+.badges {
+  height: 20px;
+}
+
+.course_codes {
+  height: 20px;
+  font-size: 16px;
+  line-height: 20px;
+}

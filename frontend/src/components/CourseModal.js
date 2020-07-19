@@ -11,6 +11,15 @@ import { toSeasonString } from '../utilities';
 const CourseModal = (props) => {
   const listing = props.listing;
   const [view, setView] = useState('overview');
+  let course_codes, course_codes_str;
+  if (listing) {
+    course_codes = listing['course.computed_course_infos'][0].course_codes;
+    course_codes_str = '';
+    for (let i = 0; i < course_codes.length; i++) {
+      if (i) course_codes_str += ' | ';
+      course_codes_str += course_codes[i];
+    }
+  }
 
   const setSeason = (season_code) => {
     // console.log(season_code);
@@ -21,6 +30,8 @@ const CourseModal = (props) => {
     setView('overview');
     props.hideModal();
   };
+
+  console.log(listing);
 
   return (
     <div className="d-flex justify-content-center">
@@ -65,7 +76,10 @@ const CourseModal = (props) => {
               </Modal.Title>
             </Row>
             {view === 'overview' && (listing.skills || listing.areas) && (
-              <Row className={styles.badges + ' mx-auto mt-1'}>
+              <Row className={styles.badges + ' mx-auto mt-1 '}>
+                <p className={styles.course_codes + ' text-muted m-0 pr-2'}>
+                  {course_codes_str}
+                </p>
                 {!listing.skills || (
                   <Badge
                     variant="secondary"
