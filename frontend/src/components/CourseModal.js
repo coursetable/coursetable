@@ -38,7 +38,7 @@ const CourseModal = (props) => {
               <Modal.Title>
                 <Row className={'mx-auto mt-1 align-items-center'}>
                   {view !== 'overview' ? (
-                    <Row className="mx-auto mb-1">
+                    <Row className="mx-auto mb-2">
                       <div
                         onClick={() => setSeason('overview')}
                         className={styles.back_arrow}

@@ -20,7 +20,13 @@ const RatingsGraph = (props) => {
     if (indx === 1 && ratings.length === 2) indx = 4;
     columns.push(
       <div className={styles.bar}>
-        <p className={styles.value + ' m-0'}>{!show ? '' : rating}</p>
+        <p
+          className={
+            styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
+          }
+        >
+          {rating}
+        </p>
         <div
           key={indx}
           className={styles.column + ' px-1 mx-3'}

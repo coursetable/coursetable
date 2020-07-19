@@ -119,6 +119,14 @@ const CourseModalOverview = (props) => {
               <Col sm={8}>{listing['course.times_summary']}</Col>
             </Row>
           )}
+          {listing['section'] && (
+            <Row className="m-auto py-2">
+              <Col sm={4} className="px-0">
+                <strong className={styles.lable_bubble}>Section</strong>
+              </Col>
+              <Col sm={8}>{listing.section}</Col>
+            </Row>
+          )}
           {location_url !== '' && (
             <Row className="m-auto py-2">
               <Col sm={4} className="px-0">
