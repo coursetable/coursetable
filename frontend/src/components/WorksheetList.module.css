@@ -16,3 +16,7 @@
   border: none;
   outline: none;
 }
+
+.hidden {
+  color: #b9b8b8;
+}

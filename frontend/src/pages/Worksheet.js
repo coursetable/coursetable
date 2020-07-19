@@ -136,6 +136,7 @@ function Worksheet() {
               courses={filtered_listings}
               season_codes={season_codes}
               cur_season={season}
+              hidden_courses={hidden_courses}
             />
           </Col>
         </Row>
