@@ -1,10 +1,7 @@
 import React, { useState } from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
-import {
-  SEARCH_AVERAGE_ACROSS_SEASONS,
-  SEARCH_PROFESSOR_COURSES,
-} from '../queries/QueryStrings';
+import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
 import styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
@@ -19,10 +16,14 @@ const CourseModalOverview = (props) => {
     { displayName: 'Both', value: 'both' },
     { displayName: 'Professor', value: 'professor' },
   ];
-  const [filter, setFilter] = useState('both');
+  const filter = props.filter;
 
   const setSeason = (evaluation) => {
     props.setSeason(evaluation);
+  };
+
+  const setFilter = (val) => {
+    props.setFilter(val);
   };
 
   const sortEvals = (a, b) => {

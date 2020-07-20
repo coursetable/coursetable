@@ -155,28 +155,6 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
   }
 `;
 
-export const SEARCH_PROFESSOR_COURSES = gql`
-  query SearchAverageAcrossSeasons($professor_name: String) {
-    computed_course_info(
-      where: { professor_names: { _has_key: $professor_name } }
-    ) {
-      professor_names
-      season_code
-      course {
-        evaluation_statistics {
-          avg_rating
-          avg_workload
-        }
-        listings {
-          section
-          crn
-          course_code
-        }
-      }
-    }
-  }
-`;
-
 export const SEARCH_EVALUATION_NARRATIVES = gql`
   query SearchEvaluationNarratives($season_code: String, $course_code: String) {
     computed_course_info(
