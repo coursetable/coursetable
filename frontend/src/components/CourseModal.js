@@ -54,37 +54,33 @@ const CourseModal = (props) => {
                     </Row>
                   </Modal.Title>
                 </Row>
-                {(listing.skills || listing.areas) && (
-                  <Row className={styles.badges + ' mx-auto mt-1 '}>
-                    <p className={styles.course_codes + ' text-muted m-0 pr-2'}>
-                      {course_codes_str}
-                    </p>
-                    {!listing.skills || (
-                      <Badge
-                        variant="secondary"
-                        className={
-                          tagStyles.tag + ' ' + tagStyles[listing.skills]
-                        }
-                      >
-                        {listing.skills}
-                      </Badge>
-                    )}
-                    {!listing.areas || (
-                      <Badge
-                        variant="secondary"
-                        className={
-                          tagStyles.tag + ' ' + tagStyles[listing.areas]
-                        }
-                      >
-                        {listing.areas}
-                      </Badge>
-                    )}
-                  </Row>
-                )}
+                <Row className={styles.badges + ' mx-auto mt-1 '}>
+                  <p className={styles.course_codes + ' text-muted m-0 pr-2'}>
+                    {course_codes_str}
+                  </p>
+                  {!listing.skills || (
+                    <Badge
+                      variant="secondary"
+                      className={
+                        tagStyles.tag + ' ' + tagStyles[listing.skills]
+                      }
+                    >
+                      {listing.skills}
+                    </Badge>
+                  )}
+                  {!listing.areas || (
+                    <Badge
+                      variant="secondary"
+                      className={tagStyles.tag + ' ' + tagStyles[listing.areas]}
+                    >
+                      {listing.areas}
+                    </Badge>
+                  )}
+                </Row>
               </div>
             ) : (
               <div>
-                <Row className="mx-auto mb-1">
+                <Row className="m-auto">
                   <Col xs="auto" className="my-auto p-0">
                     <div
                       onClick={() => setView(['overview', null])}
@@ -94,31 +90,26 @@ const CourseModal = (props) => {
                     </div>
                   </Col>
                   <Col className="p-0">
-                    <Row className="m-auto">
-                      <Modal.Title>
-                        <Row className={'mx-auto mt-1 align-items-center'}>
-                          <Row className="mx-auto mb-0">
-                            <span className="modal-title ml-3">
-                              {view[1].course_code + ' '} Evaluations
-                              <span className="text-muted">
-                                {' (' +
-                                  toSeasonString(view[0])[2] +
-                                  ' ' +
-                                  toSeasonString(view[0])[1] +
-                                  ')'}
-                              </span>
-                            </span>
-                          </Row>
-                        </Row>
-                      </Modal.Title>
-                    </Row>
+                    <Modal.Title>
+                      <Row className={'mx-auto mt-1 align-items-center'}>
+                        <span className="modal-title ml-3">
+                          {view[1].course_code + ' '} Evaluations
+                          <span className="text-muted">
+                            {' (' +
+                              toSeasonString(view[0])[2] +
+                              ' ' +
+                              toSeasonString(view[0])[1] +
+                              ')'}
+                          </span>
+                        </span>
+                      </Row>
+                    </Modal.Title>
+
                     {view[1].professor !== '' && (
-                      <Row
-                        className={styles.professor_section + ' mx-auto my-0 '}
-                      >
+                      <Row className={styles.badges + ' mx-auto mt-1 '}>
                         <p
                           className={
-                            styles.professor_section + ' ml-3 text-muted'
+                            styles.course_codes + ' ml-3 my-0 text-muted'
                           }
                         >
                           {view[1].professor + ' | Section ' + view[1].section}
