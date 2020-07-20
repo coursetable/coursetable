@@ -10,7 +10,7 @@ import { toSeasonString } from '../utilities';
 
 const CourseModal = (props) => {
   const listing = props.listing;
-  const [view, setView] = useState('overview');
+  const [view, setView] = useState(['overview', null]);
   let course_codes, course_codes_str;
   if (listing) {
     course_codes = listing['course.computed_course_infos'][0].course_codes;
@@ -21,13 +21,12 @@ const CourseModal = (props) => {
     }
   }
 
-  const setSeason = (season_code) => {
-    // console.log(season_code);
-    setView(season_code);
+  const setSeason = (evaluation) => {
+    setView([evaluation.season_code, evaluation]);
   };
 
   const hideModal = () => {
-    setView('overview');
+    setView(['overview', null]);
     props.hideModal();
   };
 
@@ -46,21 +45,21 @@ const CourseModal = (props) => {
             <Row className="m-auto">
               <Modal.Title>
                 <Row className={'mx-auto mt-1 align-items-center'}>
-                  {view !== 'overview' ? (
-                    <Row className="mx-auto mb-2">
+                  {view[0] !== 'overview' ? (
+                    <Row className="mx-auto mb-0">
                       <div
-                        onClick={() => setSeason('overview')}
+                        onClick={() => setView(['overview', null])}
                         className={styles.back_arrow}
                       >
                         <IoMdArrowRoundBack size={30} />
                       </div>
                       <span className="modal-title ml-3">
-                        {/*listing.course_code + ' '*/} Student Evaluations
+                        {view[1].course_code + ' '} Evaluations
                         <span className="text-muted">
                           {' (' +
-                            toSeasonString(view)[2] +
+                            toSeasonString(view[0])[2] +
                             ' ' +
-                            toSeasonString(view)[1] +
+                            toSeasonString(view[0])[1] +
                             ')'}
                         </span>
                       </span>
@@ -73,7 +72,7 @@ const CourseModal = (props) => {
                 </Row>
               </Modal.Title>
             </Row>
-            {view === 'overview' && (listing.skills || listing.areas) && (
+            {view[0] === 'overview' && (listing.skills || listing.areas) && (
               <Row className={styles.badges + ' mx-auto mt-1 '}>
                 <p className={styles.course_codes + ' text-muted m-0 pr-2'}>
                   {course_codes_str}
@@ -96,15 +95,23 @@ const CourseModal = (props) => {
                 )}
               </Row>
             )}
+            {view[0] !== 'overview' && view[1].professor !== '' && (
+              <Row className={styles.badges + ' mx-auto my-0 '}>
+                <div style={{ width: '32px' }}></div>
+                <p className={styles.course_codes + ' text-muted ml-3'}>
+                  {view[1].professor + ' | Section ' + view[1].section}
+                </p>
+              </Row>
+            )}
           </Container>
         </Modal.Header>
-        {view === 'overview' ? (
+        {view[0] === 'overview' ? (
           <CourseModalOverview setSeason={setSeason} listing={listing} />
         ) : (
           <CourseModalEvaluations
-            season_code={view}
-            course_code={listing.course_code}
-            section={listing.section}
+            season_code={view[0]}
+            crn={view[1].crn}
+            course_code={view[1].course_code}
             setSeason={setSeason}
           />
         )}

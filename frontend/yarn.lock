@@ -9185,6 +9185,14 @@ react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
+react-multi-toggle@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-multi-toggle/-/react-multi-toggle-1.1.0.tgz#0d97f5e281194c7ecaaf9f0a073ee7eecda1da4a"
+  integrity sha1-DZf14oEZTH7Kr58KBz7n7s2h2ko=
+  dependencies:
+    classnames "^2.2.5"
+    prop-types "^15.6.0"
+
 react-overlays@^2.0.0-0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/react-overlays/-/react-overlays-2.1.1.tgz#ffe2090c4a10da6b8947a1c7b1a67d0457648a0d"

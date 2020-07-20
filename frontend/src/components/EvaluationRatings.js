@@ -7,8 +7,8 @@ const EvaluationRatings = (props) => {
   const info = props.info;
   let ratings = [];
   info.forEach((section) => {
-    const section_num = section.course.listings[0].section;
-    if (section_num !== props.section.toString()) return;
+    const crn_code = section.course.listings[0].crn;
+    if (crn_code !== props.crn) return;
     const temp = section.course.evaluation_ratings;
     for (let i = 0; i < temp.length; i++) {
       ratings.push({
