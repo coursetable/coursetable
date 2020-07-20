@@ -1,6 +1,6 @@
 .modal-custom-width {
-  width: 700px !important;
-  max-width: none !important;
+  max-width: 700px !important;
+  /* max-width: none !important; */
 }
 
 .modal-content {

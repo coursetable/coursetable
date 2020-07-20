@@ -8,7 +8,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
 
-const CourseModal = props => {
+const CourseModal = (props) => {
   const listing = props.listing;
   const [view, setView] = useState(['overview', null]);
   const [filter, setFilter] = useState('both');
@@ -22,7 +22,7 @@ const CourseModal = props => {
     }
   }
 
-  const setSeason = evaluation => {
+  const setSeason = (evaluation) => {
     setView([evaluation.season_code, evaluation]);
   };
 
@@ -85,7 +85,7 @@ const CourseModal = props => {
             ) : (
               <div>
                 <Row className="mx-auto mb-1">
-                  <Col md="auto" className="my-auto p-0">
+                  <Col xs="auto" className="my-auto p-0">
                     <div
                       onClick={() => setView(['overview', null])}
                       className={styles.back_arrow}
@@ -113,8 +113,14 @@ const CourseModal = props => {
                       </Modal.Title>
                     </Row>
                     {view[1].professor !== '' && (
-                      <Row className={styles.badges + ' mx-auto my-0 '}>
-                        <p className={styles.course_codes + ' ml-3 text-muted'}>
+                      <Row
+                        className={styles.professor_section + ' mx-auto my-0 '}
+                      >
+                        <p
+                          className={
+                            styles.professor_section + ' ml-3 text-muted'
+                          }
+                        >
                           {view[1].professor + ' | Section ' + view[1].section}
                         </p>
                       </Row>

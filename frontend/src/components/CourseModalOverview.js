@@ -121,7 +121,7 @@ const CourseModalOverview = (props) => {
       items.push(
         <Row key={id++} className="m-auto py-1 justify-content-center">
           <Col
-            sm={5}
+            xs={5}
             className={styles.rating_bubble + '  px-0 mr-3'}
             onClick={() => setSeason(evaluations[i])}
             onMouseEnter={() =>
@@ -154,7 +154,7 @@ const CourseModalOverview = (props) => {
               )} */}
           </Col>
           <Col
-            sm={2}
+            xs={2}
             style={
               evaluations[i].rating && {
                 color: ratingColormap(evaluations[i].rating),
@@ -167,7 +167,7 @@ const CourseModalOverview = (props) => {
             </strong>
           </Col>
           <Col
-            sm={2}
+            xs={2}
             style={
               evaluations[i].workload && {
                 color: workloadColormap(evaluations[i].workload),
@@ -188,39 +188,39 @@ const CourseModalOverview = (props) => {
   return (
     <Modal.Body>
       <Row className="m-auto">
-        <Col sm={6} className="px-0 my-0">
+        <Col md={6} className="px-0 mt-0 mb-2">
           {/* COURSE DESCRIPTION */}
           <Row className="m-auto pb-3">{listing['course.description']}</Row>
           {listing['professors'] && (
             <Row className="m-auto py-2">
-              <Col sm={4} className="px-0">
+              <Col xs={4} className="px-0">
                 <strong className={styles.lable_bubble}>Professor</strong>
               </Col>
-              <Col sm={8}>{listing.professors}</Col>
+              <Col xs={8}>{listing.professors}</Col>
             </Row>
           )}
           {listing['course.times_summary'] !== 'TBA' && (
             <Row className="m-auto py-2">
-              <Col sm={4} className="px-0">
+              <Col xs={4} className="px-0">
                 <strong className={styles.lable_bubble}>Meets</strong>
               </Col>
-              <Col sm={8}>{listing['course.times_summary']}</Col>
+              <Col xs={8}>{listing['course.times_summary']}</Col>
             </Row>
           )}
           {listing['section'] && (
             <Row className="m-auto py-2">
-              <Col sm={4} className="px-0">
+              <Col xs={4} className="px-0">
                 <strong className={styles.lable_bubble}>Section</strong>
               </Col>
-              <Col sm={8}>{listing.section}</Col>
+              <Col xs={8}>{listing.section}</Col>
             </Row>
           )}
           {location_url !== '' && (
             <Row className="m-auto py-2">
-              <Col sm={4} className="px-0">
+              <Col xs={4} className="px-0">
                 <strong className={styles.lable_bubble}>Location</strong>
               </Col>
-              <Col sm={8}>
+              <Col xs={8}>
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -233,10 +233,10 @@ const CourseModalOverview = (props) => {
           )}
           {listing['course.syllabus_url'] && (
             <Row className="m-auto py-2">
-              <Col sm={4} className="px-0">
+              <Col xs={4} className="px-0">
                 <strong className={styles.lable_bubble}>Syllabus</strong>
               </Col>
-              <Col sm={8}>
+              <Col xs={8}>
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -248,7 +248,7 @@ const CourseModalOverview = (props) => {
             </Row>
           )}
         </Col>
-        <Col sm={6} className="px-0 my-0">
+        <Col md={6} className="px-0 my-0">
           {/* <Row className="m-auto justify-content-center">
                 <strong>Evaluations</strong>
               </Row> */}
@@ -262,13 +262,13 @@ const CourseModalOverview = (props) => {
           </Row>
           {items.length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
-              <Col sm={5} className="d-flex justify-content-center px-0 mr-3">
+              <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
                 <span className={styles.evaluation_header}>Season</span>
               </Col>
-              <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
+              <Col xs={2} className="d-flex ml-3 justify-content-center px-0">
                 <span className={styles.evaluation_header}>R</span>
               </Col>
-              <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
+              <Col xs={2} className="d-flex ml-3 justify-content-center px-0">
                 <span className={styles.evaluation_header}>W</span>
               </Col>
             </Row>
