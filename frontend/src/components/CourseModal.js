@@ -142,7 +142,6 @@ const CourseModal = (props) => {
             />
           ))}
       </Modal>
-      )
     </div>
   );
 };
