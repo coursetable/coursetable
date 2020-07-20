@@ -8,7 +8,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
 
-const CourseModal = (props) => {
+const CourseModal = props => {
   const listing = props.listing;
   const [view, setView] = useState(['overview', null]);
   const [filter, setFilter] = useState('both');
@@ -22,7 +22,7 @@ const CourseModal = (props) => {
     }
   }
 
-  const setSeason = (evaluation) => {
+  const setSeason = evaluation => {
     setView([evaluation.season_code, evaluation]);
   };
 

@@ -17,12 +17,28 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 
 import Styles from './SearchResultsItem.module.css';
 
-const App = ({ course, isMobile }) => {
+const SearchResultsItem = ({
+  course,
+  isMobile,
+  setModalCalled,
+  executeGetCourseModal,
+}) => {
   const RATINGS_PRECISION = 1;
 
   return (
     <Row
-      className={'px-2 py-2 justify-content-between ' + Styles.search_result_item}
+      className={
+        'px-2 py-2 justify-content-between ' + Styles.search_result_item
+      }
+      onClick={() => {
+        setModalCalled(true);
+        executeGetCourseModal({
+          variables: {
+            crn: course['course.listings'][0]['crn'],
+            season_code: course['season_code'],
+          },
+        });
+      }}
     >
       <Col md={4} xs={8} className={Styles.course_header}>
         <div className={Styles.course_name}>
@@ -107,4 +123,4 @@ const App = ({ course, isMobile }) => {
   );
 };
 
-export default App;
+export default SearchResultsItem;
