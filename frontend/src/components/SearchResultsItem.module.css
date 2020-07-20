@@ -1,24 +1,12 @@
-.search_result {
+.search_result_item {
   border: 0px !important;
   border-radius: 8px !important;
   background-color: white !important;
 }
 
-.search_result:hover {
+.search_result_item:hover {
   cursor: pointer;
   background-color: #e1edff !important;
-}
-
-:global .card {
-  position: static !important;
-}
-
-:global .card :global .card-header {
-  border: solid 0px !important;
-}
-
-.card_header {
-  background-color: transparent !important;
 }
 
 .course_name {
