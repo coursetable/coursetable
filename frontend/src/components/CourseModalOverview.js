@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
@@ -17,6 +17,7 @@ const CourseModalOverview = (props) => {
     { displayName: 'Professor', value: 'professor' },
   ];
   const filter = props.filter;
+  const [enlarged, setEnlarged] = useState(['', -1]);
 
   const setSeason = (evaluation) => {
     let temp = { ...evaluation };
@@ -75,8 +76,10 @@ const CourseModalOverview = (props) => {
             ? season.course.evaluation_statistics[0].avg_workload
             : -1,
         season_code: season.season_code,
-        professor: season.professor_names ? season.professor_names : ['TBA'],
-        course_code: season.course_codes ? season.course_codes : ['TBA'],
+        professor: season.professor_names.length
+          ? season.professor_names
+          : ['TBA'],
+        course_code: season.course_codes.length ? season.course_codes : ['TBA'],
         crn: season.course.listings[0].crn,
         section: season.course.listings[0].section,
       });
@@ -119,12 +122,36 @@ const CourseModalOverview = (props) => {
         <Row key={id++} className="m-auto py-1 justify-content-center">
           <Col
             sm={5}
-            className={
-              styles.rating_bubble + ' d-flex justify-content-center px-0 mr-3'
+            className={styles.rating_bubble + '  px-0 mr-3'}
+            onClick={() => setSeason(evaluations[i])}
+            onMouseEnter={() =>
+              setEnlarged([evaluations[i].season_code, evaluations[i].crn])
             }
-            onClick={(event) => setSeason(evaluations[i])}
+            onMouseLeave={() => setEnlarged(['', -1])}
           >
-            <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+            <Row className="m-auto justify-content-center">
+              <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+            </Row>
+            <Row
+              className={
+                (enlarged[0] === evaluations[i].season_code &&
+                enlarged[1] === evaluations[i].crn
+                  ? styles.shown
+                  : styles.hidden) + ' m-auto justify-content-center'
+              }
+            >
+              {filter === 'professor'
+                ? evaluations[i].course_code[0]
+                : filter === 'both'
+                ? 'Section ' + evaluations[i].section
+                : evaluations[i].professor[0].length <= 15
+                ? evaluations[i].professor[0]
+                : evaluations[i].professor[0].substr(0, 12) + '...'}
+            </Row>
+            {/* {enlarged[0] === evaluations[i].season_code &&
+              enlarged[1] === evaluations[i].crn && (
+                
+              )} */}
           </Col>
           <Col
             sm={2}
@@ -133,7 +160,7 @@ const CourseModalOverview = (props) => {
                 color: ratingColormap(evaluations[i].rating),
               }
             }
-            className="px-0 ml-3 d-flex justify-content-center"
+            className="px-0 my-auto ml-3 d-flex justify-content-center"
           >
             <strong>
               {evaluations[i].rating !== -1 && evaluations[i].rating.toFixed(1)}
@@ -146,7 +173,7 @@ const CourseModalOverview = (props) => {
                 color: workloadColormap(evaluations[i].workload),
               }
             }
-            className="px-0 ml-3 d-flex justify-content-center"
+            className="px-0 my-auto ml-3 d-flex justify-content-center"
           >
             <strong>
               {evaluations[i].workload !== -1 &&

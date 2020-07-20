@@ -11,12 +11,16 @@
 .rating_bubble {
   background-color: rgb(190, 221, 255);
   border-radius: 8px;
-  transition: 0.3s;
+  max-height: 24px;
+  transition: background-color 0.3s;
+  transition: max-height 0.2s ease-out;
 }
 
 .rating_bubble:hover {
   background-color: rgb(92, 168, 250);
+  max-height: 50px;
   cursor: pointer;
+  transition: max-height 0.2s ease-in;
 }
 
 .evaluation_header {
@@ -24,7 +28,14 @@
   color: grey;
 }
 
-/* .evaluations_filter {
-  font-size: 13px;
-  width: 100%;
-} */
+.hidden {
+  opacity: 0;
+  transition: 0.1s;
+}
+
+.shown {
+  opacity: 1;
+  transition: 0.2s;
+  transition-delay: 0.2s;
+  font-weight: 500;
+}
