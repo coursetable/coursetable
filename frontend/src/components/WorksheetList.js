@@ -33,6 +33,14 @@ export default class WorksheetList extends React.Component {
     return parsed_courses;
   };
 
+  isHidden = (season_code, crn) => {
+    for (let i = 0; i < this.props.hidden_courses.length; i++) {
+      let course = this.props.hidden_courses[i];
+      if (course[0] === season_code && course[1] === crn) return true;
+    }
+    return false;
+  };
+
   buildHtml = (season_codes, parsed_courses, cur_season) => {
     let items = [];
     season_codes.sort();
@@ -67,6 +75,7 @@ export default class WorksheetList extends React.Component {
                     crn={course.crn}
                     season_code={season}
                     bookmark={false}
+                    hasSeason={this.props.hasSeason}
                   />
                 </Row>
                 <Row className="m-auto">
@@ -78,7 +87,13 @@ export default class WorksheetList extends React.Component {
                 </Row>
               </Col>
               <Col
-                className={styles.clickable + ' pr-3 pl-0'}
+                className={
+                  (this.isHidden(season, course.crn)
+                    ? styles.hidden + ' '
+                    : '') +
+                  styles.clickable +
+                  ' pr-3 pl-0'
+                }
                 onClick={() => this.showModal(course)}
               >
                 <strong>{course['course_code']}</strong>

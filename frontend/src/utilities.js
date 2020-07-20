@@ -1,4 +1,4 @@
-export const flatten = ob => {
+export const flatten = (ob) => {
   var toReturn = {};
 
   for (var i in ob) {
@@ -24,4 +24,13 @@ export const isInWorksheet = (season_code, crn, worksheet) => {
     if (worksheet[i][0] === season_code && worksheet[i][1] === crn) return true;
   }
   return false;
+};
+
+export const toSeasonString = (season_code) => {
+  const seasons = ['', 'Spring', 'Summer', 'Fall'];
+  return [
+    season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])],
+    season_code.substring(0, 4),
+    seasons[parseInt(season_code[5])],
+  ];
 };

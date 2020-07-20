@@ -55,6 +55,9 @@ const QUERY_LISTINGS_WITH_EVALS = gql`
             average_rating
           }
         }
+        computed_course_infos {
+          course_codes
+        }
         syllabus_url
         credits
         times_by_day
@@ -117,7 +120,7 @@ function preprocess_courses(listing) {
     listing['course.course_professors'].length > 0
   ) {
     listing['professors'] = listing['course.course_professors']
-      .map(x => {
+      .map((x) => {
         return x['professor']['name'];
       })
       .join(', ');
@@ -141,11 +144,11 @@ const FetchListings = (season, crn_code = null) => {
   });
 
   if (!(loading || error)) {
-    data = data.listings.map(x => {
+    data = data.listings.map((x) => {
       return flatten(x);
     });
 
-    data = data.map(x => {
+    data = data.map((x) => {
       return preprocess_courses(x);
     });
   }

@@ -32,6 +32,8 @@ const WorksheetToggleButton = (props) => {
           toast.error('Failed to update worksheet');
           console.error(err);
         });
+        if (props.hasSeason && add_remove === 'remove')
+          props.hasSeason(props.season_code, props.crn);
         if (!props.alwaysRed) setInWorksheet(!inWorksheet);
       });
   }

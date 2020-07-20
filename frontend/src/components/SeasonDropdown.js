@@ -2,17 +2,11 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import './DropdownShared.css';
+import { toSeasonString } from '../utilities';
 
 function SeasonDropdown(props) {
   const setSeason = (season_code) => {
     props.onSeasonChange(season_code);
-  };
-
-  const toSeasonString = (season_code) => {
-    const seasons = ['', 'Spring', 'Summer', 'Fall'];
-    return (
-      season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])]
-    );
   };
 
   let seasons_html = [];
@@ -20,7 +14,7 @@ function SeasonDropdown(props) {
   props.season_codes.forEach((season) => {
     seasons_html.push(
       <Dropdown.Item key={season} eventKey={season}>
-        {toSeasonString(season)}
+        {toSeasonString(season)[0]}
       </Dropdown.Item>
     );
   });
@@ -29,7 +23,7 @@ function SeasonDropdown(props) {
     <div className="container p-0 m-0">
       <DropdownButton
         variant="success"
-        title={toSeasonString(props.cur_season)}
+        title={toSeasonString(props.cur_season)[0]}
         onSelect={setSeason}
       >
         {seasons_html}

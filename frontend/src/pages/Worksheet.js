@@ -14,32 +14,49 @@ import { isInWorksheet } from '../utilities';
 
 function Worksheet() {
   const { user } = useUser();
-  let recentSeason = '200903';
   let season_codes = [];
-  if (user.worksheet) {
-    user.worksheet.forEach((szn) => {
-      if (szn[0] > recentSeason) recentSeason = szn[0];
-      if (season_codes.indexOf(szn[0]) === -1) season_codes.push(szn[0]);
-    });
-  }
+  const updateRecentSeason = (populate_season_codes, season_code = null) => {
+    let recentSeason = '200903';
+    if (user.worksheet) {
+      user.worksheet.forEach((szn) => {
+        if (szn[0] !== season_code && szn[0] > recentSeason)
+          recentSeason = szn[0];
+        if (populate_season_codes && season_codes.indexOf(szn[0]) === -1)
+          season_codes.push(szn[0]);
+      });
+    }
+    return recentSeason;
+  };
   season_codes.sort();
   season_codes.reverse();
   const [courses_info, setInfo] = useState([0, []]);
   const indx = courses_info[0];
   const listings = courses_info[1];
-  const [season, setSeason] = useState(recentSeason);
+  const [season, setSeason] = useState(updateRecentSeason(true));
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
-  const addCourse = (courseListing) => {
-    setInfo([courses_info[0] + 1, [...courses_info[1], courseListing[0]]]);
-  };
-
   const changeSeason = (season_code) => {
     setSeason(season_code);
-    console.log(season_code);
+    // console.log(season_code);
+  };
+
+  const hasSeason = (season_code, crn) => {
+    if (season_code !== season) return;
+    for (let i = 0; i < user.worksheet.length; i++) {
+      if (
+        user.worksheet[i][0] === season &&
+        user.worksheet[i][1] !== crn.toString()
+      )
+        return;
+    }
+    changeSeason(updateRecentSeason(false, season_code));
+  };
+
+  const addCourse = (courseListing) => {
+    setInfo([courses_info[0] + 1, [...courses_info[1], courseListing[0]]]);
   };
 
   const showModal = (listing) => {
@@ -136,6 +153,8 @@ function Worksheet() {
               courses={filtered_listings}
               season_codes={season_codes}
               cur_season={season}
+              hidden_courses={hidden_courses}
+              hasSeason={hasSeason}
             />
           </Col>
         </Row>

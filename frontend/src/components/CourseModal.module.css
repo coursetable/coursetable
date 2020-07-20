@@ -2,6 +2,7 @@
   color: rgb(190, 221, 255);
   transition: 0.3s;
   height: 30px;
+  display: flex;
 }
 
 .back_arrow:hover {
@@ -9,10 +10,12 @@
   cursor: pointer;
 }
 
-.sticky {
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: -16px;
-  background-color: white;
-  height: 42px;
+.badges {
+  height: 20px;
+}
+
+.course_codes {
+  height: 20px;
+  font-size: 16px;
+  line-height: 20px;
 }
