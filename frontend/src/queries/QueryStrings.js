@@ -134,12 +134,15 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
   ) {
     computed_course_info(
       where: {
-        course_codes: { _has_key: $course_code }
-        professor_names: { _has_key: $professor_name }
+        _or: [
+          { course_codes: { _has_key: $course_code } }
+          { professor_names: { _has_key: $professor_name } }
+        ]
       }
     ) {
       professor_names
       season_code
+      course_codes
       course {
         evaluation_statistics {
           avg_rating

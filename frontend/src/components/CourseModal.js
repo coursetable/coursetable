@@ -7,8 +7,6 @@ import tagStyles from './SearchResultsItem.module.css';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
-import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
-import { useQuery } from '@apollo/react-hooks';
 
 const CourseModal = (props) => {
   const listing = props.listing;
@@ -34,20 +32,6 @@ const CourseModal = (props) => {
     props.hideModal();
   };
 
-  // CACHE PROFESSOR COURSES
-  // const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
-  //   variables: {
-  //     course_code: null,
-  //     professor_name: listing.professors,
-  //   },
-  // });
-  // if (loading || error)
-  //   return (
-  //     <Modal>
-  //       <Modal.Body>Loading..</Modal.Body>
-  //     </Modal>
-  //   );
-
   return (
     <div className="d-flex justify-content-center">
       <Modal
@@ -55,7 +39,6 @@ const CourseModal = (props) => {
         scrollable={true}
         onHide={hideModal}
         dialogClassName="modal-custom-width"
-        // size="lg"
         centered
       >
         <Modal.Header closeButton>
@@ -142,22 +125,24 @@ const CourseModal = (props) => {
             )}
           </Container>
         </Modal.Header>
-        {view[0] === 'overview' ? (
-          <CourseModalOverview
-            setFilter={setFilter}
-            filter={filter}
-            setSeason={setSeason}
-            listing={listing}
-          />
-        ) : (
-          <CourseModalEvaluations
-            season_code={view[0]}
-            crn={view[1].crn}
-            course_code={view[1].course_code}
-            setSeason={setSeason}
-          />
-        )}
+        {props.show &&
+          (view[0] === 'overview' ? (
+            <CourseModalOverview
+              setFilter={setFilter}
+              filter={filter}
+              setSeason={setSeason}
+              listing={listing}
+            />
+          ) : (
+            <CourseModalEvaluations
+              season_code={view[0]}
+              crn={view[1].crn}
+              course_code={view[1].course_code}
+              setSeason={setSeason}
+            />
+          ))}
       </Modal>
+      )
     </div>
   );
 };

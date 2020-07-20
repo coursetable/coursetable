@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
@@ -19,7 +19,15 @@ const CourseModalOverview = (props) => {
   const filter = props.filter;
 
   const setSeason = (evaluation) => {
-    props.setSeason(evaluation);
+    let temp = { ...evaluation };
+    if (filter === 'professor') {
+      temp.professor = listing.professors;
+      temp.course_code = evaluation.course_code[0];
+    } else {
+      temp.course_code = listing.course_code;
+      temp.professor = evaluation.professor[0];
+    }
+    props.setSeason(temp);
   };
 
   const setFilter = (val) => {
@@ -45,13 +53,8 @@ const CourseModalOverview = (props) => {
 
   const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
     variables: {
-      course_code:
-        filter === 'professor'
-          ? null
-          : listing.course_code
-          ? listing.course_code
-          : 'bruh',
-      professor_name: filter === 'professor' ? listing.professors : null,
+      course_code: listing.course_code ? listing.course_code : 'bruh',
+      professor_name: listing.professors,
     },
   });
   if (loading || error) return <Modal.Body>Loading...</Modal.Body>;
@@ -72,40 +75,46 @@ const CourseModalOverview = (props) => {
             ? season.course.evaluation_statistics[0].avg_workload
             : -1,
         season_code: season.season_code,
-        professor: season.professor_names.length
-          ? filter === 'professor'
-            ? listing.professors
-            : season.professor_names[0]
-          : '',
+        professor: season.professor_names ? season.professor_names : ['TBA'],
+        course_code: season.course_codes ? season.course_codes : ['TBA'],
         crn: season.course.listings[0].crn,
         section: season.course.listings[0].section,
-        course_code:
-          filter === 'professor'
-            ? season.course.listings[0].course_code
-            : listing.course_code,
       });
     });
     evaluations.sort(sortEvals);
 
     let id = 0;
     for (let i = 0; i < evaluations.length; i++) {
-      // console.log(evaluations[season]);
       if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
         continue;
-      if (filter === 'both' && evaluations[i].professor !== listing.professors)
-        continue;
 
-      if (
-        filter === 'course' &&
-        evaluations[i].professor === listing.professors
-      )
-        continue;
+      if (filter === 'both') {
+        if (
+          evaluations[i].course_code.includes(listing.course_code) &&
+          !evaluations[i].professor.includes(listing.professors)
+        )
+          continue;
+        if (!evaluations[i].course_code.includes(listing.course_code)) continue;
+      }
 
-      if (
-        filter === 'professor' &&
-        evaluations[i].course_code === listing.course_code
-      )
-        continue;
+      if (filter === 'course') {
+        if (
+          evaluations[i].course_code.includes(listing.course_code) &&
+          evaluations[i].professor.includes(listing.professors)
+        )
+          continue;
+        if (!evaluations[i].course_code.includes(listing.course_code)) continue;
+      }
+
+      if (filter === 'professor') {
+        if (
+          evaluations[i].course_code.includes(listing.course_code) &&
+          evaluations[i].professor.includes(listing.professors)
+        )
+          continue;
+        if (!evaluations[i].professor.includes(listing.professors)) continue;
+      }
+
       items.push(
         <Row key={id++} className="m-auto py-1 justify-content-center">
           <Col
