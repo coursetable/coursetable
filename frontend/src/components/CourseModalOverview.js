@@ -55,7 +55,7 @@ const CourseModalOverview = (props) => {
   const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
     variables: {
       course_code: listing.course_code ? listing.course_code : 'bruh',
-      professor_name: listing.professors,
+      professor_name: listing.professors ? listing.professors : 'bruh',
     },
   });
   if (loading || error) return <Modal.Body>Loading...</Modal.Body>;
@@ -260,17 +260,19 @@ const CourseModalOverview = (props) => {
               className={styles.evaluations_filter + ' mb-2'}
             />
           </Row>
-          <Row className="m-auto pb-1 justify-content-center">
-            <Col sm={5} className="d-flex justify-content-center px-0 mr-3">
-              <span className={styles.evaluation_header}>Season</span>
-            </Col>
-            <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
-              <span className={styles.evaluation_header}>R</span>
-            </Col>
-            <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
-              <span className={styles.evaluation_header}>W</span>
-            </Col>
-          </Row>
+          {items.length !== 0 && (
+            <Row className="m-auto pb-1 justify-content-center">
+              <Col sm={5} className="d-flex justify-content-center px-0 mr-3">
+                <span className={styles.evaluation_header}>Season</span>
+              </Col>
+              <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
+                <span className={styles.evaluation_header}>R</span>
+              </Col>
+              <Col sm={2} className="d-flex ml-3 justify-content-center px-0">
+                <span className={styles.evaluation_header}>W</span>
+              </Col>
+            </Row>
+          )}
           {items.length !== 0 && items}
 
           {items.length === 0 && (
