@@ -10,6 +10,7 @@ import './MultiToggle.css';
 
 const CourseModalOverview = (props) => {
   const listing = props.listing;
+  console.log(listing);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const options = [
     { displayName: 'Course', value: 'course' },
@@ -25,9 +26,12 @@ const CourseModalOverview = (props) => {
     if (filter === 'professor') {
       temp.professor = listing.professors;
       temp.course_code = evaluation.course_code[0];
-    } else {
+    } else if (filter === 'course') {
       temp.course_code = listing.course_code;
       temp.professor = evaluation.professor[0];
+    } else {
+      temp.course_code = listing.course_code;
+      temp.professor = listing.professors;
     }
     props.setSeason(temp);
   };
