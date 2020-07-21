@@ -18,11 +18,11 @@ const CourseModalEvaluations = (props) => {
   return (
     <Modal.Body>
       <Row className="m-auto">
-        <Col sm={5} className="px-0 my-0">
+        <Col md={5} className="px-0 my-0">
           <EvaluationRatings crn={props.crn} info={info} />
         </Col>
 
-        <Col sm={7} className="px-0 my-0">
+        <Col md={7} className="px-0 my-0">
           <EvaluationResponses crn={props.crn} info={info} />
         </Col>
       </Row>

@@ -76,7 +76,7 @@ const CourseModalEvaluations = (props) => {
             </Row>
             {skills}
           </Tab>
-          <Tab eventKey="strengths/weaknesses" title="Strengths">
+          <Tab eventKey="strengths/weaknesses" title="Pros/Cons">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               What are the strengths and weaknesses of this course and how could
               it be improved?

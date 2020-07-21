@@ -40,15 +40,23 @@ const EvaluationRatings = (props) => {
 
   return (
     <div>
-      <Row className="m-auto pl-1">
-        <strong>Overall</strong>
-      </Row>
-      <RatingsGraph ratings={assessment} reverse={false} />
-      <Row className="m-auto pl-1">
-        <strong>Workload</strong>
-      </Row>
-      <RatingsGraph ratings={workload} reverse={true} />
-      {num_questions === 3 ? (
+      {assessment.length > 0 && (
+        <div>
+          <Row className="m-auto pl-1">
+            <strong>Overall</strong>
+          </Row>
+          <RatingsGraph ratings={assessment} reverse={false} />
+        </div>
+      )}
+      {workload.length > 0 && (
+        <div>
+          <Row className="m-auto pl-1">
+            <strong>Workload</strong>
+          </Row>
+          <RatingsGraph ratings={workload} reverse={false} />
+        </div>
+      )}
+      {major.length > 0 && (
         <div>
           <Row className="m-auto pl-1">
             <strong>Taking for Major?</strong>
@@ -56,20 +64,33 @@ const EvaluationRatings = (props) => {
 
           <RatingsGraph ratings={major} reverse={true} />
         </div>
-      ) : (
+      )}
+      {engagement.length > 0 && (
         <div>
           <Row className="m-auto pl-1">
             <strong>Engagement</strong>
           </Row>
           <RatingsGraph ratings={engagement} reverse={false} />
+        </div>
+      )}
+      {organized.length > 0 && (
+        <div>
           <Row className="m-auto pl-1">
             <strong>Organization</strong>
           </Row>
           <RatingsGraph ratings={organized} reverse={false} />
+        </div>
+      )}
+      {feedback.length > 0 && (
+        <div>
           <Row className="m-auto pl-1">
             <strong>Feedback Clarity</strong>
           </Row>
           <RatingsGraph ratings={feedback} reverse={false} />
+        </div>
+      )}
+      {challenge.length > 0 && (
+        <div>
           <Row className="m-auto pl-1">
             <strong>Intellectual Challenge</strong>
           </Row>
