@@ -1,7 +1,6 @@
 import React from 'react';
 
 import SearchResultsItem from './SearchResultsItem';
-import { flatten } from '../utilities';
 
 import CourseModal from '../components/CourseModal';
 
@@ -13,34 +12,41 @@ import { Container, Card, Col, Row } from 'react-bootstrap';
 
 import Sticky from 'react-sticky-el';
 
-import GetCourseModal from '../queries/GetCourseModal';
+import { useLazyQuery } from '@apollo/react-hooks';
+import { GET_COURSE_MODAL } from '../queries/QueryStrings';
+import { preprocess_courses, flatten } from '../utilities';
 
 const SearchResults = ({ data }) => {
 	const { width } = useWindowDimensions();
 
 	const isMobile = width < 768;
 
-	const [courseModal, setCourseModal] = React.useState([false, '']);
-	const [modalCalled, setModalCalled] = React.useState(false);
+	const [showModal, setShowModal] = React.useState(false);
+	// const [modalCalled, setModalCalled] = React.useState(false);
 
-	var {
+	var [
 		executeGetCourseModal,
-		called: _,
-		loading: modalLoading,
-		data: modalData,
-	} = GetCourseModal();
+		{ called: modalCalled, loading: modalLoading, data: modalData },
+	] = useLazyQuery(GET_COURSE_MODAL);
 
 	const hideModal = () => {
-		setCourseModal([false, '']);
+		setShowModal(false);
 	};
+
+	var modal;
 
 	if (modalCalled) {
 		if (modalLoading) {
-			// setCourseModal([false, '']);
+			modal = <div>Loading...</div>;
 		} else {
 			if (modalData) {
-				setCourseModal([true, modalData[0]]);
-				setModalCalled(false);
+				modal = (
+					<CourseModal
+						hideModal={hideModal}
+						show={showModal}
+						listing={preprocess_courses(flatten(modalData.listings[0]))}
+					/>
+				);
 			}
 		}
 	}
@@ -66,17 +72,13 @@ const SearchResults = ({ data }) => {
 						<SearchResultsItem
 							course={flatten(course)}
 							isMobile={isMobile}
-							setModalCalled={setModalCalled}
+							setShowModal={setShowModal}
 							executeGetCourseModal={executeGetCourseModal}
 						/>
 					))}
 				</div>
 			</Container>
-			<CourseModal
-				hideModal={hideModal}
-				show={courseModal[0]}
-				listing={courseModal[1]}
-			/>
+			{modal}
 		</div>
 	);
 };

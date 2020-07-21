@@ -20,7 +20,7 @@ import Styles from './SearchResultsItem.module.css';
 const SearchResultsItem = ({
   course,
   isMobile,
-  setModalCalled,
+  setShowModal,
   executeGetCourseModal,
 }) => {
   const RATINGS_PRECISION = 1;
@@ -31,13 +31,13 @@ const SearchResultsItem = ({
         'px-2 py-2 justify-content-between ' + Styles.search_result_item
       }
       onClick={() => {
-        setModalCalled(true);
         executeGetCourseModal({
           variables: {
             crn: course['course.listings'][0]['crn'],
             season_code: course['season_code'],
           },
         });
+        setShowModal(true);
       }}
     >
       <Col md={4} xs={8} className={Styles.course_header}>
