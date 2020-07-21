@@ -147,6 +147,12 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
         evaluation_statistics {
           avg_rating
           avg_workload
+          enrollment
+        }
+        course_professors {
+          professor {
+            average_rating
+          }
         }
         listings {
           section

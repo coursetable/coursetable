@@ -18,6 +18,7 @@ const CourseModalOverview = (props) => {
   ];
   const filter = props.filter;
   const [enlarged, setEnlarged] = useState(['', -1]);
+  let enrollment = -1;
 
   const setSeason = (evaluation) => {
     let temp = { ...evaluation };
@@ -75,6 +76,15 @@ const CourseModalOverview = (props) => {
           season.course.evaluation_statistics[0].avg_workload != null
             ? season.course.evaluation_statistics[0].avg_workload
             : -1,
+        professor_rating:
+          season.course.course_professors[0] &&
+          season.course.course_professors[0].professor.average_rating != null
+            ? season.course.course_professors[0].professor.average_rating
+            : -1,
+        enrollment:
+          season.course.evaluation_statistics[0].enrollment != null
+            ? season.course.evaluation_statistics[0].enrollment.enrolled
+            : -1,
         season_code: season.season_code,
         professor: season.professor_names.length
           ? season.professor_names
@@ -88,6 +98,14 @@ const CourseModalOverview = (props) => {
 
     let id = 0;
     for (let i = 0; i < evaluations.length; i++) {
+      if (
+        enrollment === -1 &&
+        evaluations[i].course_code.includes(listing.course_code) &&
+        evaluations[i].section === listing.section
+      ) {
+        enrollment = evaluations[i].enrollment;
+      }
+
       if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
         continue;
 
@@ -160,10 +178,24 @@ const CourseModalOverview = (props) => {
                 color: ratingColormap(evaluations[i].rating),
               }
             }
-            className="px-0 my-auto ml-3 d-flex justify-content-center"
+            className="px-0 my-auto ml-0 d-flex justify-content-center"
           >
             <strong>
               {evaluations[i].rating !== -1 && evaluations[i].rating.toFixed(1)}
+            </strong>
+          </Col>
+          <Col
+            xs={2}
+            style={
+              evaluations[i].professor_rating && {
+                color: ratingColormap(evaluations[i].professor_rating),
+              }
+            }
+            className="px-0 my-auto ml-0 d-flex justify-content-center"
+          >
+            <strong>
+              {evaluations[i].professor_rating !== -1 &&
+                evaluations[i].professor_rating.toFixed(1)}
             </strong>
           </Col>
           <Col
@@ -173,7 +205,7 @@ const CourseModalOverview = (props) => {
                 color: workloadColormap(evaluations[i].workload),
               }
             }
-            className="px-0 my-auto ml-3 d-flex justify-content-center"
+            className="px-0 my-auto ml-0 d-flex justify-content-center"
           >
             <strong>
               {evaluations[i].workload !== -1 &&
@@ -213,6 +245,27 @@ const CourseModalOverview = (props) => {
                 <strong className={styles.lable_bubble}>Section</strong>
               </Col>
               <Col xs={8}>{listing.section}</Col>
+            </Row>
+          )}
+          {listing['course.evaluation_statistics'] &&
+          listing['course.evaluation_statistics'][0] &&
+          listing['course.evaluation_statistics'][0].enrollment ? (
+            <Row className="m-auto py-2">
+              <Col xs={4} className="px-0">
+                <strong className={styles.lable_bubble}>Enrollment</strong>
+              </Col>
+              <Col xs={8}>
+                {listing['course.evaluation_statistics'][0].enrollment.enrolled}
+              </Col>
+            </Row>
+          ) : enrollment === -1 ? (
+            <div />
+          ) : (
+            <Row className="m-auto py-2">
+              <Col xs={4} className="px-0">
+                <strong className={styles.lable_bubble}>Enrollment</strong>
+              </Col>
+              <Col xs={8}>{'~' + enrollment}</Col>
             </Row>
           )}
           {location_url !== '' && (
@@ -265,11 +318,14 @@ const CourseModalOverview = (props) => {
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
                 <span className={styles.evaluation_header}>Season</span>
               </Col>
-              <Col xs={2} className="d-flex ml-3 justify-content-center px-0">
-                <span className={styles.evaluation_header}>R</span>
+              <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+                <span className={styles.evaluation_header}>Class</span>
               </Col>
-              <Col xs={2} className="d-flex ml-3 justify-content-center px-0">
-                <span className={styles.evaluation_header}>W</span>
+              <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+                <span className={styles.evaluation_header}>Prof</span>
+              </Col>
+              <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
+                <span className={styles.evaluation_header}>Work</span>
               </Col>
             </Row>
           )}
