@@ -59,10 +59,10 @@ const CourseModal = (props) => {
                       />
                     )}
                   </Col>
-                  <Col className="p-0">
+                  <Col className="p-0 ml-3">
                     <Modal.Title>
                       <Row className={'mx-auto mt-1 align-items-center'}>
-                        <span className="modal-title ml-3">
+                        <span className="modal-title ">
                           {listing['course.title']}
                         </span>
                       </Row>
@@ -71,7 +71,7 @@ const CourseModal = (props) => {
                     <Row className={styles.badges + ' mx-auto mt-1 '}>
                       <p
                         className={
-                          styles.course_codes + ' text-muted ml-3 my-0 pr-2'
+                          styles.course_codes + ' text-muted my-0 pr-2'
                         }
                       >
                         {course_codes_str}
@@ -111,10 +111,10 @@ const CourseModal = (props) => {
                       <IoMdArrowRoundBack size={30} />
                     </div>
                   </Col>
-                  <Col className="p-0">
+                  <Col className="p-0 ml-3">
                     <Modal.Title>
                       <Row className={'mx-auto mt-1 align-items-center'}>
-                        <span className="modal-title ml-3">
+                        <span className="modal-title ">
                           {view[1].course_code + ' '} Evaluations
                           <span className="text-muted">
                             {' (' +
@@ -130,9 +130,7 @@ const CourseModal = (props) => {
                     {view[1].professor !== '' && (
                       <Row className={styles.badges + ' mx-auto mt-1 '}>
                         <p
-                          className={
-                            styles.course_codes + ' ml-3 my-0 text-muted'
-                          }
+                          className={styles.course_codes + '  my-0 text-muted'}
                         >
                           {view[1].professor + ' | Section ' + view[1].section}
                         </p>

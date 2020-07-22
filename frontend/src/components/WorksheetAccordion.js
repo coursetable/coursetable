@@ -5,11 +5,23 @@ import tagStyles from './SearchResultsItem.module.css';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
 import SeasonDropdown from './SeasonDropdown';
 import FBDropdown from './FBDropdown';
+import CourseModal from '../components/CourseModal';
 
 export default class WorksheetAccordion extends React.Component {
   constructor(props) {
     super(props);
+    this.state = {
+      course_modal: [false, ''],
+    };
   }
+
+  showModal = (listing) => {
+    this.setState({ course_modal: [true, listing] });
+  };
+
+  hideModal = () => {
+    this.setState({ course_modal: [false, ''] });
+  };
 
   weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -81,15 +93,16 @@ export default class WorksheetAccordion extends React.Component {
                 <Col xs="auto" style={{ fontWeight: 500 }}>
                   <Row>{course.course_code}</Row>
                   <Row>
-                    <small>
-                      <a
+                    <small className="text-muted">
+                      {/* <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={course['location_url']}
                         className={styles.location_url + ' text-muted'}
                       >
                         {course['course.locations_summary']}
-                      </a>
+                      </a> */}
+                      {course['course.locations_summary']}
                     </small>
                   </Row>
                 </Col>
@@ -131,6 +144,14 @@ export default class WorksheetAccordion extends React.Component {
                   {course.professors}
                 </Row>
                 <Row>{course['course.description']}</Row>
+                <Row>
+                  <strong
+                    onClick={() => this.showModal(course)}
+                    className={styles.more_info + ' mt-2'}
+                  >
+                    More Info
+                  </strong>
+                </Row>
               </Card.Body>
             </Accordion.Collapse>
           </Card>
@@ -161,6 +182,12 @@ export default class WorksheetAccordion extends React.Component {
           </Col>
         </Row>
         <div className={styles.accordion_list}>{items}</div>
+        <CourseModal
+          hideModal={this.hideModal}
+          show={this.state.course_modal[0]}
+          listing={this.state.course_modal[1]}
+          hasSeason={this.props.hasSeason}
+        />
       </div>
     );
   }

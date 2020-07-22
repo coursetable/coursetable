@@ -162,6 +162,7 @@ function Worksheet() {
               cur_season={season}
               season_codes={season_codes}
               courses={season_listings}
+              hasSeason={hasSeason}
             />
           </Col>
         </Row>

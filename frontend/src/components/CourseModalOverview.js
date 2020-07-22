@@ -219,7 +219,7 @@ const CourseModalOverview = (props) => {
   return (
     <Modal.Body>
       <Row className="m-auto">
-        <Col md={6} className="px-0 mt-0 mb-2">
+        <Col md={6} className="px-0 mt-0 mb-3">
           {/* COURSE DESCRIPTION */}
           <Row className="m-auto pb-3">{listing['course.description']}</Row>
           {listing['professors'] && (
