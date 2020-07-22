@@ -7,6 +7,7 @@ import tagStyles from './SearchResultsItem.module.css';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
+import WorksheetToggleButton from './WorksheetToggleButton';
 
 const CourseModal = (props) => {
   const listing = props.listing;
@@ -46,36 +47,57 @@ const CourseModal = (props) => {
             {view[0] === 'overview' ? (
               <div>
                 <Row className="m-auto">
-                  <Modal.Title>
-                    <Row className={'mx-auto mt-1 align-items-center'}>
-                      <span className="modal-title">
-                        {listing['course.title']}
-                      </span>
+                  <Col xs="auto" className="my-auto p-0">
+                    {listing && (
+                      <WorksheetToggleButton
+                        alwaysRed={false}
+                        crn={listing.crn}
+                        season_code={listing.season_code}
+                        bookmark={true}
+                        hasSeason={props.hasSeason}
+                        className="p-0"
+                      />
+                    )}
+                  </Col>
+                  <Col className="p-0">
+                    <Modal.Title>
+                      <Row className={'mx-auto mt-1 align-items-center'}>
+                        <span className="modal-title ml-3">
+                          {listing['course.title']}
+                        </span>
+                      </Row>
+                    </Modal.Title>
+
+                    <Row className={styles.badges + ' mx-auto mt-1 '}>
+                      <p
+                        className={
+                          styles.course_codes + ' text-muted ml-3 my-0 pr-2'
+                        }
+                      >
+                        {course_codes_str}
+                      </p>
+                      {!listing.skills || (
+                        <Badge
+                          variant="secondary"
+                          className={
+                            tagStyles.tag + ' ' + tagStyles[listing.skills]
+                          }
+                        >
+                          {listing.skills}
+                        </Badge>
+                      )}
+                      {!listing.areas || (
+                        <Badge
+                          variant="secondary"
+                          className={
+                            tagStyles.tag + ' ' + tagStyles[listing.areas]
+                          }
+                        >
+                          {listing.areas}
+                        </Badge>
+                      )}
                     </Row>
-                  </Modal.Title>
-                </Row>
-                <Row className={styles.badges + ' mx-auto mt-1 '}>
-                  <p className={styles.course_codes + ' text-muted m-0 pr-2'}>
-                    {course_codes_str}
-                  </p>
-                  {!listing.skills || (
-                    <Badge
-                      variant="secondary"
-                      className={
-                        tagStyles.tag + ' ' + tagStyles[listing.skills]
-                      }
-                    >
-                      {listing.skills}
-                    </Badge>
-                  )}
-                  {!listing.areas || (
-                    <Badge
-                      variant="secondary"
-                      className={tagStyles.tag + ' ' + tagStyles[listing.areas]}
-                    >
-                      {listing.areas}
-                    </Badge>
-                  )}
+                  </Col>
                 </Row>
               </div>
             ) : (

@@ -10,7 +10,6 @@ import './MultiToggle.css';
 
 const CourseModalOverview = (props) => {
   const listing = props.listing;
-  console.log(listing);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const options = [
     { displayName: 'Course', value: 'course' },
@@ -170,10 +169,6 @@ const CourseModalOverview = (props) => {
                 ? evaluations[i].professor[0]
                 : evaluations[i].professor[0].substr(0, 12) + '...'}
             </Row>
-            {/* {enlarged[0] === evaluations[i].season_code &&
-              enlarged[1] === evaluations[i].crn && (
-                
-              )} */}
           </Col>
           <Col
             xs={2}

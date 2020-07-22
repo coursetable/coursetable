@@ -34,6 +34,24 @@ const RatingsGraph = (props) => {
             height: height.toString() + 'px',
           }}
         />
+        {ratings.length === 2 &&
+          (indx === 0 ? (
+            <p
+              className={
+                styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
+              }
+            >
+              yes
+            </p>
+          ) : (
+            <p
+              className={
+                styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
+              }
+            >
+              no
+            </p>
+          ))}
       </div>
     );
     indx++;

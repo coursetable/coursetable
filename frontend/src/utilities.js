@@ -1,4 +1,4 @@
-export const preprocess_courses = listing => {
+export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -39,7 +39,7 @@ export const preprocess_courses = listing => {
     listing['course.course_professors'].length > 0
   ) {
     listing['professors'] = listing['course.course_professors']
-      .map(x => {
+      .map((x) => {
         return x['professor']['name'];
       })
       .join(', ');
@@ -57,7 +57,7 @@ export const preprocess_courses = listing => {
   return listing;
 };
 
-export const flatten = ob => {
+export const flatten = (ob) => {
   var toReturn = {};
 
   for (var i in ob) {
@@ -85,7 +85,7 @@ export const isInWorksheet = (season_code, crn, worksheet) => {
   return false;
 };
 
-export const toSeasonString = season_code => {
+export const toSeasonString = (season_code) => {
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
     season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])],

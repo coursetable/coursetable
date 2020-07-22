@@ -83,7 +83,7 @@ const SearchResultsItem = ({
       </Col>
       <Col md={2} xs={8} className={Styles.skills_areas}>
         <div className={Styles.skills_areas}>
-          {course.skills.map(skill => (
+          {course.skills.map((skill) => (
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[skill]}
@@ -91,7 +91,7 @@ const SearchResultsItem = ({
               {skill}
             </Badge>
           ))}
-          {course.areas.map(area => (
+          {course.areas.map((area) => (
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[area]}

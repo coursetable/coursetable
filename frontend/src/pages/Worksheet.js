@@ -170,6 +170,7 @@ function Worksheet() {
         hideModal={hideModal}
         show={course_modal[0]}
         listing={course_modal[1]}
+        hasSeason={hasSeason}
       />
     </div>
   );

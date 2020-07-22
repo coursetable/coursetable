@@ -17,6 +17,12 @@ const WorksheetToggleButton = (props) => {
   var [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
   );
+  const update = isInWorksheet(
+    props.season_code,
+    props.crn.toString(),
+    user.worksheet
+  );
+  if (inWorksheet !== update) setInWorksheet(update);
   if (user.worksheet === null) return <div>Signin</div>;
 
   function add_remove_course() {
@@ -34,6 +40,7 @@ const WorksheetToggleButton = (props) => {
         });
         if (props.hasSeason && add_remove === 'remove')
           props.hasSeason(props.season_code, props.crn);
+        if (props.setUpdate) props.setUpdate(add_remove);
         if (!props.alwaysRed) setInWorksheet(!inWorksheet);
       });
   }
@@ -45,7 +52,11 @@ const WorksheetToggleButton = (props) => {
     // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
   return (
-    <Button variant="toggle" onClick={toggleWorkSheet}>
+    <Button
+      variant="toggle"
+      className={props.bookmark ? 'p-0' : ''}
+      onClick={toggleWorkSheet}
+    >
       {props.bookmark ? (
         inWorksheet ? (
           <BsBookmarkFill color="red" size={25} />
