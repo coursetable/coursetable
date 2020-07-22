@@ -58,7 +58,7 @@ function App() {
       <WindowDimensionsProvider>
         <SeasonsProvider>
           <div id="base">
-            <Navbar />
+            <Navbar isLoggedIn={isLoggedIn}/>
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">

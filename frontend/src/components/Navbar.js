@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 
 import styles from './Navbar.module.css';
-import { Nav, Navbar, Container } from 'react-bootstrap';
+import { Nav, Navbar, Container, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
+import FBLoginButton from './FBLoginButton';
 
-function CourseTableNavbar() {
+function CourseTableNavbar(props) {
   const [nav_expanded, setExpand] = useState(false);
 
   return (
@@ -48,6 +49,8 @@ function CourseTableNavbar() {
               </NavLink>
             </Nav>
           </Navbar.Collapse>
+
+          <FBLoginButton isLoggedIn={props.isLoggedIn} pullRight/>
         </Navbar>
       </Container>
     </div>

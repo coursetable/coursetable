@@ -41,18 +41,6 @@ function Landing(props) {
                       </Button>
                     </Col>
                   )}
-                  {props.isLoggedIn && (
-                    <Col md={4} className="p-0 mx-2">
-                      <Button
-                        href="/legacy_api/FacebookChannel.php"
-                        variant="primary"
-                        className={styles.btns}
-                        size="lg"
-                      >
-                        Connect to Facebook
-                      </Button>
-                    </Col>
-                  )}
                   <Col md={4} className="p-0 mx-2">
                     <Button
                       size="lg"
