@@ -81,7 +81,7 @@ function FBLoginButton(props) {
 //         const params = force ? { force: true } : null;
 
 //         $.get(
-//           '/FetchFacebookData.php',
+//           '/legacy_api/FetchFacebookData.php',
 //           params,
 //           data => {
 //             $friendWorksheetsButton
