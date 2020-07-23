@@ -1,12 +1,14 @@
 import React, { Component, useState } from 'react';
 import { Button } from 'react-bootstrap';
-// import '../fb';
 // import styles from './FBLoginButton.module.css';
 
 // const FB = window.FB;
 
 // A lot of code from https://github.com/Jerryg6j3/react-fbsdk-example
 class FBLoginButton extends Component {
+  // constructor(props){
+  //   super(props);
+  // }
 
   componentDidMount() {
 	  window.fbAsyncInit = function() {
@@ -83,7 +85,7 @@ class FBLoginButton extends Component {
   //   window.FB.login(loginState);
   // }
 
-  /**
+/**
  * Checks whether we are logged into Facebook and have
  * the user_friends Facebook permission, and calls the success
  * and fail callbacks correspondingly
@@ -138,44 +140,44 @@ class FBLoginButton extends Component {
    * @param force: whether to force a refresh, even if we've recently retrieved Facebook friends in the last few days
    * @param successCallback: callback to be called on successful login
    */
-  attemptLoginAndFetch = function(force, successCallback) {
+  attemptLoginAndFetch(force) {
     if (typeof force === 'undefined') force = false;
 
-    const $ = window.$;
+    // const $ = window.$;
 
-    const $friendWorksheetsButton = $('.friend-worksheets-btn');
+    // const $friendWorksheetsButton = $('.friend-worksheets-btn');
 
     this.ensureFacebookPermissions(
       window.FB.login,
       () => {
         // Logged in; fetch Facebook data
-        $friendWorksheetsButton.children('span').text('Loading');
+        this.children('span').text('Loading');
         const params = force ? { force: true } : null;
 
-        $.get(
+        this.get(
           '/legacy_api/FetchFacebookData.php',
           params,
           data => {
-            $friendWorksheetsButton
+            this
               .children('span')
               .text("See friends' worksheets");
-            $friendWorksheetsButton.removeAttr('disabled');
+            this.removeAttr('disabled');
             if (data.success) {
-              $friendWorksheetsButton.hide();
+              this.hide();
               // worksheetManager.retrieveFriendWorksheets();
 
-              if (successCallback) {
-                successCallback();
-              }
+              // if (successCallback) {
+              //   successCallback();
+              // }
             } else {
-              $friendWorksheetsButton.tooltip({
+              this.tooltip({
                 title: "Something went wrong! We'll look into it soon",
                 placement: 'bottom',
                 trigger: 'manual',
               });
-              $friendWorksheetsButton.tooltip('show');
+              this.tooltip('show');
               setTimeout(() => {
-                $friendWorksheetsButton.tooltip('hide');
+                this.tooltip('hide');
               }, 5000);
             }
           },
@@ -185,19 +187,23 @@ class FBLoginButton extends Component {
 
       () => {
         // Did not log in; prompt again
-        $friendWorksheetsButton.tooltip({
+        this.tooltip({
           title: 'You need to log into Facebook and authorize CourseTable!',
           placement: 'bottom',
           trigger: 'manual',
         });
-        $friendWorksheetsButton.tooltip('show');
+        this.tooltip('show');
         setTimeout(() => {
-          $friendWorksheetsButton.tooltip('hide');
+          this.tooltip('hide');
         }, 5000);
-        $friendWorksheetsButton.removeAttr('disabled');
+        this.removeAttr('disabled');
       }
     );
-  };
+  }
+
+  handleClick(e) {
+    this.attemptLoginAndFetch(true);
+  }
 
   render() {
     return (
@@ -208,7 +214,7 @@ class FBLoginButton extends Component {
           <Button 
             className="btn friend-worksheets-btn"
             // href="/legacy_api/index.php?forcelogin=1"
-            onClick={this.attemptLoginAndFetch}
+            onClick={this.handleClick}
             // style="display: inline-block;"
           >
             {/* TODO: Style FB icon so it's not so ugly lol */}
