@@ -151,7 +151,7 @@ class FBLoginButton extends Component {
       window.FB.login,
       () => {
         // Logged in; fetch Facebook data
-        this.children('span').text('Loading');
+        // this.children('span').text('Loading');
         const params = force ? { force: true } : null;
 
         this.get(
@@ -214,7 +214,7 @@ class FBLoginButton extends Component {
           <Button 
             className="btn friend-worksheets-btn"
             // href="/legacy_api/index.php?forcelogin=1"
-            onClick={this.handleClick}
+            onClick={this.handleClick.bind(this)}
             // style="display: inline-block;"
           >
             {/* TODO: Style FB icon so it's not so ugly lol */}
