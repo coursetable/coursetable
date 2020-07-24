@@ -6,10 +6,6 @@ import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
 
 const CourseModalEvaluations = (props) => {
-  const goBack = () => {
-    props.setSeason('overview');
-  };
-
   const { loading, error, data } = useQuery(SEARCH_EVALUATION_NARRATIVES, {
     variables: {
       season_code: props.season_code,
@@ -22,12 +18,12 @@ const CourseModalEvaluations = (props) => {
   return (
     <Modal.Body>
       <Row className="m-auto">
-        <Col sm={5} className="px-0 my-0">
-          <EvaluationRatings section={props.section} info={info} />
+        <Col md={5} className="px-0 my-0">
+          <EvaluationRatings crn={props.crn} info={info} />
         </Col>
 
-        <Col sm={7} className="px-0 my-0">
-          <EvaluationResponses section={props.section} info={info} />
+        <Col md={7} className="px-0 my-0">
+          <EvaluationResponses crn={props.crn} info={info} />
         </Col>
       </Row>
     </Modal.Body>

@@ -1,4 +1,51 @@
-export const preprocess_courses = (listing) => {
+import { useQuery } from '@apollo/react-hooks';
+import gql from 'graphql-tag';
+import { flatten } from '../utilities';
+
+const buildQuery = (worksheet) => {
+  let listings = '';
+  for (let i = 0; i < worksheet.length; i++) {
+    const season_code = worksheet[i][0];
+    const crn = worksheet[i][1];
+    listings += `{ season_code: { _eq: "${season_code}" }, crn: { _eq: ${crn} }},`;
+  }
+  return `query fetch_course {
+    listings(where: {_or: [${listings}]}) {
+      course_code
+      crn
+      season_code
+      section
+      course {
+        course_professors {
+          professor {
+            name
+            average_rating
+          }
+        }
+        computed_course_infos {
+          course_codes
+        }
+        location_times
+        locations_summary
+        syllabus_url
+        skills
+        areas
+        evaluation_statistics {
+          avg_rating
+          avg_workload
+          enrollment
+        }
+        short_title
+        title
+        times_summary
+        times_by_day
+        description
+      }
+    }
+  }`;
+};
+
+function preprocess_courses(listing) {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -55,41 +102,23 @@ export const preprocess_courses = (listing) => {
   }
 
   return listing;
-};
+}
 
-export const flatten = (ob) => {
-  var toReturn = {};
+const FetchWorksheet = (worksheet) => {
+  const builtQuery = buildQuery(worksheet);
+  var { loading, error, data } = useQuery(gql(builtQuery));
 
-  for (var i in ob) {
-    if (!ob.hasOwnProperty(i)) continue;
+  if (!(loading || error)) {
+    data = data.listings.map((x) => {
+      return flatten(x);
+    });
 
-    if (typeof ob[i] == 'object' && ob[i] !== null && !Array.isArray(ob[i])) {
-      var flatObject = flatten(ob[i]);
-      for (var x in flatObject) {
-        if (!flatObject.hasOwnProperty(x)) continue;
-
-        toReturn[i + '.' + x] = flatObject[x];
-      }
-    } else {
-      toReturn[i] = ob[i];
-    }
+    data = data.map((x) => {
+      return preprocess_courses(x);
+    });
   }
-  return toReturn;
+
+  return { loading, error, data };
 };
 
-export const isInWorksheet = (season_code, crn, worksheet) => {
-  if (worksheet === null) return false;
-  for (let i = 0; i < worksheet.length; i++) {
-    if (worksheet[i][0] === season_code && worksheet[i][1] === crn) return true;
-  }
-  return false;
-};
-
-export const toSeasonString = (season_code) => {
-  const seasons = ['', 'Spring', 'Summer', 'Fall'];
-  return [
-    season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])],
-    season_code.substring(0, 4),
-    seasons[parseInt(season_code[5])],
-  ];
-};
+export default FetchWorksheet;

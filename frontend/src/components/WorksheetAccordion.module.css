@@ -34,3 +34,9 @@
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }
+
+.more_info {
+  background-color: rgb(223, 223, 223);
+  padding: 6px;
+  border-radius: 10px;
+}

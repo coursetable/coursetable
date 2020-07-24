@@ -1,50 +1,86 @@
 import React from 'react';
 
 import SearchResultsItem from './SearchResultsItem';
-import { flatten } from '../utilities';
+
+import CourseModal from '../components/CourseModal';
 
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResults.module.css';
 
-import { Accordion, Card, Col, Row } from 'react-bootstrap';
+import { Container, Card, Col, Row } from 'react-bootstrap';
 
 import Sticky from 'react-sticky-el';
 
-const App = ({ data }) => {
+import { useLazyQuery } from '@apollo/react-hooks';
+import { GET_COURSE_MODAL } from '../queries/QueryStrings';
+import { preprocess_courses, flatten } from '../utilities';
+
+const SearchResults = ({ data }) => {
 	const { width } = useWindowDimensions();
 
 	const isMobile = width < 768;
 
+	const [showModal, setShowModal] = React.useState(false);
+	// const [modalCalled, setModalCalled] = React.useState(false);
+
+	var [
+		executeGetCourseModal,
+		{ called: modalCalled, loading: modalLoading, data: modalData },
+	] = useLazyQuery(GET_COURSE_MODAL);
+
+	const hideModal = () => {
+		setShowModal(false);
+	};
+
+	var modal;
+
+	if (modalCalled) {
+		if (modalLoading) {
+			modal = <div>Loading...</div>;
+		} else {
+			if (modalData) {
+				modal = (
+					<CourseModal
+						hideModal={hideModal}
+						show={showModal}
+						listing={preprocess_courses(flatten(modalData.listings[0]))}
+					/>
+				);
+			}
+		}
+	}
+
 	return (
-		<Accordion className={`shadow-sm ${Styles.results_container}`}>
-			{!isMobile && (
-				<Sticky>
-					<div className={'m-0 ' + Styles.results_header}>
-						<Card
-							key={-1}
-							className={'pl-3 pr-3 shadow-sm ' + Styles.results_header_card}
+		<div>
+			<Container className={`shadow-sm ${Styles.results_container}`}>
+				{!isMobile && (
+					<Sticky>
+						<Row
+							className={`px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
 						>
-							<Card.Header className={Styles.results_header_inner}>
-								<Row className={'px-0 justify-content-between'}>
-									<Col md={4}>Description</Col>
-									<Col md={2}>Rating</Col>
-									<Col md={2}>Workload</Col>
-									<Col md={2}>Areas</Col>
-									<Col md={2}></Col>
-								</Row>
-							</Card.Header>
-						</Card>
-					</div>
-				</Sticky>
-			)}
-			<div>
-				{data.map(course => (
-					<SearchResultsItem course={flatten(course)} isMobile={isMobile} />
-				))}
-			</div>
-		</Accordion>
+							<Col md={4}>Description</Col>
+							<Col md={2}>Rating</Col>
+							<Col md={2}>Workload</Col>
+							<Col md={2}>Areas</Col>
+							<Col md={2}></Col>
+						</Row>
+					</Sticky>
+				)}
+				<div className="px-2">
+					{data.map(course => (
+						<SearchResultsItem
+							course={flatten(course)}
+							isMobile={isMobile}
+							setShowModal={setShowModal}
+							executeGetCourseModal={executeGetCourseModal}
+						/>
+					))}
+				</div>
+			</Container>
+			{modal}
+		</div>
 	);
 };
 
-export default App;
+export default SearchResults;

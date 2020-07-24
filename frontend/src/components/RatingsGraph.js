@@ -34,6 +34,24 @@ const RatingsGraph = (props) => {
             height: height.toString() + 'px',
           }}
         />
+        {ratings.length === 2 &&
+          (indx === 0 ? (
+            <p
+              className={
+                styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
+              }
+            >
+              yes
+            </p>
+          ) : (
+            <p
+              className={
+                styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
+              }
+            >
+              no
+            </p>
+          ))}
       </div>
     );
     indx++;
@@ -41,7 +59,10 @@ const RatingsGraph = (props) => {
 
   return (
     <Row
-      className={styles.container + ' mx-auto pl-3 pr-3 mb-4 align-items-end'}
+      className={
+        styles.container +
+        ' mx-auto pl-3 pr-3 mb-4 justify-content-center align-items-end'
+      }
       onMouseEnter={() => setShow(!show)}
       onMouseLeave={() => setShow(!show)}
     >

@@ -11,11 +11,11 @@
 }
 
 .badges {
-  height: 20px;
+  height: auto;
 }
 
 .course_codes {
-  height: 20px;
+  height: auto;
   font-size: 16px;
   line-height: 20px;
 }

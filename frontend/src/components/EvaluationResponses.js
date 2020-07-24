@@ -6,8 +6,8 @@ const CourseModalEvaluations = (props) => {
   const info = props.info;
   let responses = {};
   info.forEach((section) => {
-    const section_num = section.course.listings[0].section;
-    if (section_num !== props.section.toString()) return;
+    const crn_code = section.course.listings[0].crn;
+    if (crn_code !== props.crn) return;
     const nodes = section.course.evaluation_narratives_aggregate.nodes;
     if (!nodes.length) return;
     nodes.forEach((node) => {
@@ -76,7 +76,7 @@ const CourseModalEvaluations = (props) => {
             </Row>
             {skills}
           </Tab>
-          <Tab eventKey="strengths/weaknesses" title="Strengths">
+          <Tab eventKey="strengths/weaknesses" title="Pros/Cons">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               What are the strengths and weaknesses of this course and how could
               it be improved?

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-import FetchListings from '../queries/ListingsBySeason';
+import FetchWorksheet from '../queries/GetWorksheetListings';
 import { Row, Col } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
@@ -29,10 +29,9 @@ function Worksheet() {
   };
   season_codes.sort();
   season_codes.reverse();
-  const [courses_info, setInfo] = useState([0, []]);
-  const indx = courses_info[0];
-  const listings = courses_info[1];
   const [season, setSeason] = useState(updateRecentSeason(true));
+  const [listings, setListings] = useState([]);
+  const [worksheet_init, setWorksheetInit] = useState(user.worksheet);
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
 
@@ -40,7 +39,6 @@ function Worksheet() {
 
   const changeSeason = (season_code) => {
     setSeason(season_code);
-    // console.log(season_code);
   };
 
   const hasSeason = (season_code, crn) => {
@@ -55,17 +53,11 @@ function Worksheet() {
     changeSeason(updateRecentSeason(false, season_code));
   };
 
-  const addCourse = (courseListing) => {
-    setInfo([courses_info[0] + 1, [...courses_info[1], courseListing[0]]]);
-  };
-
   const showModal = (listing) => {
-    // console.log(listing);
     setCourseModal([true, listing]);
   };
 
   const hideModal = () => {
-    // console.log('hide modal');
     setCourseModal([false, '']);
   };
 
@@ -95,9 +87,8 @@ function Worksheet() {
   if (user.worksheet.length === 0)
     return <div>Please add courses to your worksheet</div>;
 
-  const { loading, error, data } = FetchListings(
-    user.worksheet[Math.min(indx, user.worksheet.length - 1)][0],
-    parseInt(user.worksheet[Math.min(indx, user.worksheet.length - 1)][1])
+  const { loading, error, data } = FetchWorksheet(
+    listings.length ? worksheet_init : user.worksheet
   );
   if (loading || error) return <div>Loading...</div>;
   if (data === undefined || !data.length) return <div>Error with Query</div>;
@@ -109,12 +100,15 @@ function Worksheet() {
     'rgba(38, 186, 154, ',
     'rgba(186, 120, 129, ',
   ];
-  if (indx < user.worksheet.length) {
-    data[0]['color'] = colors[indx % colors.length];
-    addCourse(data);
-  }
 
-  listings.sort(sortByCourseCode);
+  if (!listings.length) {
+    let temp = [...data];
+    for (let i = 0; i < data.length; i++) {
+      temp[i].color = colors[i % colors.length];
+    }
+    temp.sort(sortByCourseCode);
+    setListings(temp);
+  }
 
   let filtered_listings = [];
   listings.forEach((listing) => {
@@ -168,6 +162,7 @@ function Worksheet() {
               cur_season={season}
               season_codes={season_codes}
               courses={season_listings}
+              hasSeason={hasSeason}
             />
           </Col>
         </Row>
@@ -176,6 +171,7 @@ function Worksheet() {
         hideModal={hideModal}
         show={course_modal[0]}
         listing={course_modal[1]}
+        hasSeason={hasSeason}
       />
     </div>
   );
