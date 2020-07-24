@@ -4,7 +4,7 @@
 }
 
 .splashpage {
-  height: 94vh;
+  height: calc(100vh - 62px);
 }
 
 .coursetable_window {
@@ -54,16 +54,42 @@
 .feature_page {
   height: 100vh;
   position: absolute;
-  top: 200%;
+  top: 200vh;
   left: 50%;
   transform: translate(-50%, -100%);
   text-align: center;
+}
+
+.page_separator {
   border-top: solid;
   border-width: 1px;
+  width: 50vw;
   border-color: rgb(197, 196, 196);
 }
 
 .whyCourseTable {
-  margin-top: 8vh;
-  font-size: calc(15px + 5vw);
+  margin-top: 6vh;
+  margin-bottom: 8vh;
+  font-size: calc(15px + 4vw);
+  width: 100vw;
+}
+
+.feature_row {
+  width: 100vw;
+}
+
+.feature {
+  height: 150px;
+  width: 250px;
+  background-color: rgb(216, 237, 253);
+  border-radius: 50px;
+}
+
+.feature_header {
+  font-weight: 600;
+  font-size: 25px;
+}
+
+.get_started_row {
+  margin-top: 30vh;
 }

@@ -1,10 +1,12 @@
 import React from 'react';
 import { BsChevronDoubleDown } from 'react-icons/bs';
+import { FaFacebookSquare } from 'react-icons/fa';
 import { Button, Row, Col, Container } from 'react-bootstrap';
 import { Element, animateScroll as scroll, scroller } from 'react-scroll';
+import { Link } from 'react-router-dom';
 
-import styles from './Landing.module.css';
 import Logo from '../components/Logo';
+import styles from './Landing.module.css';
 
 function Landing(props) {
   const scrollTo = () => {
@@ -29,27 +31,32 @@ function Landing(props) {
               </p>
               <Col className="mt-4">
                 <Row className={styles.btn_container}>
-                  {!props.isLoggedIn && (
+                  {!props.isLoggedIn ? (
                     <Col md={4} className="p-0 mx-2">
                       <Button
                         href="/legacy_api/index.php?forcelogin=1"
                         variant="primary"
-                        className={styles.btns}
+                        className={styles.btns + ' mb-2'}
                         size="lg"
                       >
                         Login
                       </Button>
                     </Col>
-                  )}
-                  {props.isLoggedIn && (
+                  ) : (
                     <Col md={4} className="p-0 mx-2">
                       <Button
                         href="/legacy_api/FacebookChannel.php"
                         variant="primary"
-                        className={styles.btns}
+                        className={styles.btns + ' mb-2'}
                         size="lg"
                       >
-                        Connect to Facebook
+                        <Row className="justify-content-center">
+                          Connect{' '}
+                          <FaFacebookSquare
+                            className="ml-1 my-auto"
+                            size={25}
+                          />
+                        </Row>
                       </Button>
                     </Col>
                   )}
@@ -73,7 +80,44 @@ function Landing(props) {
         </Element>
         <Element name="featurepage">
           <div className={styles.feature_page}>
+            <div className={styles.page_separator + ' mx-auto'} />
             <h1 className={styles.whyCourseTable}>Why CourseTable?</h1>
+            <Row
+              className={styles.feature_row + ' mx-auto justify-content-center'}
+            >
+              <Col lg={3} className={' mb-2 mx-2 p-0'}>
+                <div className={styles.feature + ' mx-auto'}>
+                  <p className={styles.feature_header + ' m-0 pt-2'}>
+                    Feature 1
+                  </p>
+                </div>
+              </Col>
+              <Col lg={3} className={' mb-2 mx-2 p-0'}>
+                <div className={styles.feature + ' mx-auto'}>
+                  <p className={styles.feature_header + ' m-0 pt-2'}>
+                    Feature 2
+                  </p>
+                </div>
+              </Col>
+              <Col lg={3} className={' mb-2 mx-2 p-0'}>
+                <div className={styles.feature + ' mx-auto'}>
+                  <p className={styles.feature_header + ' m-0 pt-2'}>
+                    Feature 3
+                  </p>
+                </div>
+              </Col>
+            </Row>
+            <Row
+              className={
+                styles.get_started_row + ' mx-auto justify-content-center'
+              }
+            >
+              <Link to="/catalog">
+                <Button variant="success" size="lg" className={styles.btns}>
+                  Get Started
+                </Button>
+              </Link>
+            </Row>
           </div>
         </Element>
       </Container>
