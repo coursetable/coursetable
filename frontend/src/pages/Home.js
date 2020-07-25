@@ -61,20 +61,20 @@ function Home() {
           <CardDeck className={styles.carddeck_container + ' mx-auto'}>
             <Card border="primary">
               <Card.Body>
-                <Card.Title>Popular</Card.Title>
-                <Card.Text>Popular Courses</Card.Text>
+                <Card.Title>Most Popular</Card.Title>
+                <Card.Text>Definitely not CPSC 323</Card.Text>
               </Card.Body>
             </Card>
             <Card border="success">
               <Card.Body>
-                <Card.Title>New</Card.Title>
-                <Card.Text>New Stuff</Card.Text>
+                <Card.Title>What's New?</Card.Title>
+                <Card.Text>Literally Everything.</Card.Text>
               </Card.Body>
             </Card>
             <Card border="dark">
               <Card.Body>
-                <Card.Title>Random</Card.Title>
-                <Card.Text>I'm Feelin Lucky</Card.Text>
+                <Card.Title>Surprise Me</Card.Title>
+                <Card.Text>A humanities course for a change</Card.Text>
               </Card.Body>
             </Card>
           </CardDeck>

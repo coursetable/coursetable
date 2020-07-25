@@ -23,3 +23,25 @@
   text-decoration: none !important;
   color: #007bff;
 }
+
+.navbar_me {
+  padding-left: 1rem;
+  height: 40px;
+  display: flex;
+}
+
+.icon_circle {
+  background-color: rgba(1, 1, 1, 0.1);
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  transition: 0.3s;
+  color: rgba(1, 1, 1, 0.6);
+}
+
+.icon_circle:hover {
+  color: #007bff;
+  background-color: rgba(1, 1, 1, 0.05);
+  cursor: pointer;
+}

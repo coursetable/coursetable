@@ -86,9 +86,9 @@
   transition: 0.3s;
 }
 
-.feature:hover {
+/* .feature:hover {
   transform: scale(1.1);
-}
+} */
 
 .feature_header {
   font-weight: 600;
@@ -97,4 +97,8 @@
 
 .get_started_row {
   margin-top: 30vh;
+}
+
+.get_started_row_mobile {
+  margin-top: 8vh;
 }

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 
 import Logo from '../components/Logo';
 import styles from './Landing.module.css';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 function Landing() {
   const scrollTo = () => {
@@ -85,21 +86,21 @@ function Landing() {
             <Row
               className={styles.feature_row + ' mx-auto justify-content-center'}
             >
-              <Col lg={3} className={' mb-2 mx-2 p-0'}>
+              <Col lg={3} className={' mb-3 mx-2 p-0'}>
                 <div className={styles.feature + ' mx-auto'}>
                   <p className={styles.feature_header + ' m-0 pt-2'}>
                     Feature 1
                   </p>
                 </div>
               </Col>
-              <Col lg={3} className={' mb-2 mx-2 p-0'}>
+              <Col lg={3} className={' mb-3 mx-2 p-0'}>
                 <div className={styles.feature + ' mx-auto'}>
                   <p className={styles.feature_header + ' m-0 pt-2'}>
                     Feature 2
                   </p>
                 </div>
               </Col>
-              <Col lg={3} className={' mb-2 mx-2 p-0'}>
+              <Col lg={3} className={' mb-3 mx-2 p-0'}>
                 <div className={styles.feature + ' mx-auto'}>
                   <p className={styles.feature_header + ' m-0 pt-2'}>
                     Feature 3
@@ -109,7 +110,9 @@ function Landing() {
             </Row>
             <Row
               className={
-                styles.get_started_row + ' mx-auto justify-content-center'
+                (isMobile
+                  ? styles.get_started_row_mobile
+                  : styles.get_started_row) + ' mx-auto justify-content-center'
               }
             >
               <Link to="/catalog">
