@@ -63,7 +63,7 @@ function App() {
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">
-                {!isLoggedIn ? <Landing isLoggedIn={isLoggedIn} /> : <Home />}
+                {isLoggedIn ? <Home /> : <Redirect to="/login" />}
               </MyRoute>
 
               <MyRoute exact path="/about">
@@ -86,7 +86,11 @@ function App() {
 
               {/* Auth */}
               <MyRoute exact path="/login">
-                {isLoggedIn ? <Redirect to="/" /> : <Login />}
+                {isLoggedIn ? (
+                  <Redirect to="/" />
+                ) : (
+                  <Landing isLoggedIn={isLoggedIn} />
+                )}
               </MyRoute>
 
               {/* Worksheet */}

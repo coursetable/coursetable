@@ -8,13 +8,16 @@ import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
 import styles from './Landing.module.css';
 
-function Landing(props) {
+function Landing() {
   const scrollTo = () => {
-    console.log('scroll');
     scroller.scrollTo('featurepage', {
       smooth: true,
       duration: 500,
     });
+  };
+
+  const scrollTop = () => {
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -31,19 +34,17 @@ function Landing(props) {
               </p>
               <Col className="mt-4">
                 <Row className={styles.btn_container}>
-                  {!props.isLoggedIn ? (
-                    <Col md={4} className="p-0 mx-2">
-                      <Button
-                        href="/legacy_api/index.php?forcelogin=1"
-                        variant="primary"
-                        className={styles.btns + ' mb-2'}
-                        size="lg"
-                      >
-                        Login
-                      </Button>
-                    </Col>
-                  ) : (
-                    <Col md={4} className="p-0 mx-2">
+                  <Col md={4} className="p-0 mx-2">
+                    <Button
+                      href="/legacy_api/index.php?forcelogin=1"
+                      variant="primary"
+                      className={styles.btns + ' mb-2'}
+                      size="lg"
+                    >
+                      Login
+                    </Button>
+                  </Col>
+                  {/* <Col md={4} className="p-0 mx-2">
                       <Button
                         href="/legacy_api/FacebookChannel.php"
                         variant="primary"
@@ -58,8 +59,7 @@ function Landing(props) {
                           />
                         </Row>
                       </Button>
-                    </Col>
-                  )}
+                    </Col> */}
                   <Col md={4} className="p-0 mx-2">
                     <Button
                       size="lg"
@@ -113,8 +113,13 @@ function Landing(props) {
               }
             >
               <Link to="/catalog">
-                <Button variant="success" size="lg" className={styles.btns}>
-                  Get Started
+                <Button
+                  variant="success"
+                  size="lg"
+                  className={styles.btns}
+                  onClick={scrollTop}
+                >
+                  See Catalog
                 </Button>
               </Link>
             </Row>

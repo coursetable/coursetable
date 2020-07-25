@@ -19,7 +19,7 @@
 }
 
 .search_bar_container {
-  width: 60vw;
+  width: calc(120px + 50vw);
   margin-left: auto;
   margin-right: auto;
   margin-top: 5vh;

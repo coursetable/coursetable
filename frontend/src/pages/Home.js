@@ -22,6 +22,9 @@ function Home() {
     // console.log(input.current.value);
     setValue(input.current.value);
   };
+  if (value) {
+    window.scrollTo(0, 0);
+  }
 
   return value ? (
     <Redirect to={{ pathname: '/catalog', state: { search_val: value } }} />
