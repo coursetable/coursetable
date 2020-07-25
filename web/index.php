@@ -3,6 +3,12 @@ require_once 'includes/ProjectCommon.php';
 
 $smarty = ProjectCommon::createSmarty();
 $forceLogin = isset($_GET['forcelogin']);
+$logout  = isset($_GET['logout']);
+
+// Logout
+if($logout) {
+    ProjectCommon::casLogout();
+}
 
 $netId = ProjectCommon::casAuthenticate($forceLogin);
 $yalePlusMysqli = ProjectCommon::createYalePlusMysqli();

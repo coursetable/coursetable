@@ -17,4 +17,5 @@
 .collapse_text:hover {
   color: #007bff;
   cursor: pointer;
+  text-decoration: none !important;
 }

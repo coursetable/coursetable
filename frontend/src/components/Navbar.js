@@ -8,7 +8,7 @@ import MeDropdown from './MeDropdown';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
 
-function CourseTableNavbar() {
+function CourseTableNavbar(props) {
   const [nav_expanded, setExpand] = useState(false);
   const {
     ref,
@@ -81,6 +81,7 @@ function CourseTableNavbar() {
         <MeDropdown
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
+          isLoggedIn={props.isLoggedIn}
         />
       </div>
     </div>
