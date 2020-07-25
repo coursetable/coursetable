@@ -1,6 +1,6 @@
 .container {
   height: 194vh;
-  background-color: #f6f6f6;
+  /* background-color: #f6f6f6; */
 }
 
 .splashpage {
@@ -83,6 +83,11 @@
   width: 250px;
   background-color: rgb(216, 237, 253);
   border-radius: 50px;
+  transition: 0.3s;
+}
+
+.feature:hover {
+  transform: scale(1.1);
 }
 
 .feature_header {

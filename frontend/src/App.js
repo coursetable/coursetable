@@ -13,6 +13,7 @@ import SeasonsProvider from './components/SeasonsProvider';
 
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import Home from './pages/Home';
 
 import Search from './pages/Search';
 import About from './pages/About';
@@ -62,7 +63,7 @@ function App() {
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">
-                <Landing isLoggedIn={isLoggedIn} />
+                {!isLoggedIn ? <Landing isLoggedIn={isLoggedIn} /> : <Home />}
               </MyRoute>
 
               <MyRoute exact path="/about">
@@ -72,6 +73,12 @@ function App() {
               <MyRoute exact path="/catalog">
                 <Search />
               </MyRoute>
+
+              {/* <MyRoute
+                exact
+                path="/catalog"
+                render={(props) => <Search {...props} />}
+              /> */}
 
               <MyRoute exact path="/courses">
                 <Courses />
@@ -83,7 +90,7 @@ function App() {
               </MyRoute>
 
               {/* Worksheet */}
-              <MyRoute exact path="/worksheet">
+              <MyRoute isRoutePrivate={true} exact path="/worksheet">
                 {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
               </MyRoute>
 
