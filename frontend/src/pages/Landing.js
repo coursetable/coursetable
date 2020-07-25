@@ -10,6 +10,9 @@ import styles from './Landing.module.css';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 function Landing() {
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
   const scrollTo = () => {
     scroller.scrollTo('featurepage', {
       smooth: true,
