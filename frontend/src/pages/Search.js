@@ -58,13 +58,17 @@ import 'rc-tooltip/assets/bootstrap.css';
 // TODO:
 //  - pagination/infinite scrolling
 
-function Search() {
+function Search(props) {
   const { height, width } = useWindowDimensions();
   const seasonsData = useSeasons();
 
   const isMobile = width < 768;
 
-  var searchText = React.useRef();
+  var searchText = React.useRef(
+    props.location && props.location.state
+      ? props.location.state.search_val
+      : null
+  );
 
   var [searchType, setSearchType] = React.useState();
 
@@ -86,7 +90,7 @@ function Search() {
   var seasonsOptions;
 
   if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map(x => {
+    seasonsOptions = seasonsData.seasons.map((x) => {
       return {
         value: x.season_code,
         label: x.term.charAt(0).toUpperCase() + x.term.slice(1) + ' ' + x.year,
@@ -104,7 +108,14 @@ function Search() {
     { called: textCalled, loading: textLoading, data: textData },
   ] = useLazyQuery(SEARCH_COURSES);
 
-  const handleSubmit = event => {
+  const handleChange = () => {
+    if (!props.location.state) return;
+    //Reset searchText
+    const { location, history } = props;
+    history.replace();
+  };
+
+  const handleSubmit = (event) => {
     event.preventDefault();
 
     var sortParams = sortby.select.props.value.value;
@@ -113,14 +124,14 @@ function Search() {
 
     var processedSeasons = seasons.select.props.value;
     if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map(x => {
+      processedSeasons = processedSeasons.map((x) => {
         return x.value;
       });
     }
 
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map(x => {
+      processedSkillsAreas = processedSkillsAreas.map((x) => {
         return x.value;
       });
 
@@ -135,10 +146,12 @@ function Search() {
         ]);
       }
 
-      var processedSkills = processedSkillsAreas.filter(x =>
+      var processedSkills = processedSkillsAreas.filter((x) =>
         skills.includes(x)
       );
-      var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
+      var processedAreas = processedSkillsAreas.filter((x) =>
+        areas.includes(x)
+      );
 
       if (processedSkills.length === 0) {
         processedSkills = null;
@@ -151,14 +164,14 @@ function Search() {
 
     var processedCredits = credits.select.props.value;
     if (processedCredits != null) {
-      processedCredits = processedCredits.map(x => {
+      processedCredits = processedCredits.map((x) => {
         return x.value;
       });
     }
 
     var processedSchools = schools.select.props.value;
     if (processedSchools != null) {
-      processedSchools = processedSchools.map(x => {
+      processedSchools = processedSchools.map((x) => {
         return x.value;
       });
     }
@@ -241,7 +254,7 @@ function Search() {
   }
 
   // ctrl/cmd-f search hotkey
-  const focusSearch = e => {
+  const focusSearch = (e) => {
     e.preventDefault();
     searchText.focus();
   };
@@ -256,7 +269,7 @@ function Search() {
 
   const { Handle } = Slider;
 
-  const ratingSliderHandle = e => {
+  const ratingSliderHandle = (e) => {
     const { value } = e;
     return (
       <Handle {...e}>
@@ -265,7 +278,7 @@ function Search() {
     );
   };
 
-  const workloadSliderHandle = e => {
+  const workloadSliderHandle = (e) => {
     const { value } = e;
     return (
       <Handle {...e}>
@@ -273,7 +286,6 @@ function Search() {
       </Handle>
     );
   };
-
 
   var searchCol = React.useRef();
   var searchColHeight;
@@ -302,7 +314,7 @@ function Search() {
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
                 onSubmit={handleSubmit}
-                ref={ref => {
+                ref={(ref) => {
                   searchCol = ref;
                 }}
               >
@@ -311,8 +323,14 @@ function Search() {
                     <InputGroup className={Styles.search_input}>
                       <FormControl
                         type="text"
+                        defaultValue={
+                          searchText.current !== ''
+                            ? searchText.current
+                            : undefined
+                        }
+                        onChange={handleChange}
                         placeholder="Find a class..."
-                        ref={ref => (searchText = ref)}
+                        ref={(ref) => (searchText = ref)}
                       />
                     </InputGroup>
                   </div>
@@ -323,7 +341,7 @@ function Search() {
                     <Select
                       defaultValue={sortbyOptions[0]}
                       options={sortbyOptions}
-                      ref={ref => {
+                      ref={(ref) => {
                         sortby = ref;
                       }}
                       // prevent overlap with tooltips
@@ -335,16 +353,14 @@ function Search() {
                 </Row>
                 <hr />
                 <Row className={`py-0 px-4 ${Styles.multi_selects}`}>
-                  <div
-                    className={`col-md-12 p-0 ${Styles.selector_container}`}
-                  >
+                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     Semesters{' '}
                     {seasonsOptions && (
                       <Select
                         isMulti
                         defaultValue={[seasonsOptions[0]]}
                         options={seasonsOptions}
-                        ref={ref => {
+                        ref={(ref) => {
                           seasons = ref;
                         }}
                         placeholder="All"
@@ -363,7 +379,7 @@ function Search() {
                       isMulti
                       options={skillsAreasOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         skillsAreas = ref;
                       }}
                       // colors
@@ -379,7 +395,7 @@ function Search() {
                       isMulti
                       options={creditOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         credits = ref;
                       }}
                       // prevent overlap with tooltips
@@ -395,7 +411,7 @@ function Search() {
                       defaultValue={[schoolOptions[0]]}
                       options={schoolOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         schools = ref;
                       }}
                       // prevent overlap with tooltips
@@ -414,7 +430,7 @@ function Search() {
                       max={5}
                       step={0.1}
                       defaultValue={ratingBounds}
-                      onChange={debounce(value => {
+                      onChange={debounce((value) => {
                         setRatingBounds(value);
                       }, 250)}
                       handle={ratingSliderHandle}
@@ -428,7 +444,7 @@ function Search() {
                       max={5}
                       step={0.1}
                       defaultValue={workloadBounds}
-                      onChange={debounce(value => {
+                      onChange={debounce((value) => {
                         setWorkloadBounds(value);
                       }, 250)}
                       handle={workloadSliderHandle}
@@ -436,7 +452,9 @@ function Search() {
                     />
                   </Container>
                 </Row>
-                <Row className={`pt-3 pb-3 px-5 ${Styles.light_bg} ${Styles.toggle_row}`}>
+                <Row
+                  className={`pt-3 pb-3 px-5 ${Styles.light_bg} ${Styles.toggle_row}`}
+                >
                   <Form.Check type="switch" className={Styles.toggle_option}>
                     <Form.Check.Input checked={hideCancelled} />
                     <Form.Check.Label

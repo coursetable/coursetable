@@ -70,15 +70,15 @@ function App() {
                 <About />
               </MyRoute>
 
-              <MyRoute exact path="/catalog">
+              {/* <MyRoute exact path="/catalog">
                 <Search />
-              </MyRoute>
+              </MyRoute> */}
 
-              {/* <MyRoute
+              <MyRoute
                 exact
                 path="/catalog"
                 render={(props) => <Search {...props} />}
-              /> */}
+              />
 
               <MyRoute exact path="/courses">
                 <Courses />
