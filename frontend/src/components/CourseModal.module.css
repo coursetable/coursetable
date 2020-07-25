@@ -19,3 +19,13 @@
   font-size: 16px;
   line-height: 20px;
 }
+
+.more_info {
+  transition: 0.3s;
+}
+
+.more_info:hover {
+  text-decoration: underline;
+  cursor: pointer;
+  color: #007bff;
+}

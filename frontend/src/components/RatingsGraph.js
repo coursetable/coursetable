@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import styles from './RatingsGraph.module.css';
 
 const RatingsGraph = (props) => {
   const ratings = props.ratings;
   const [show, setShow] = useState(false);
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
   let max_val = 0;
   ratings.forEach((rating) => {
     max_val = Math.max(rating, max_val);
@@ -22,7 +25,13 @@ const RatingsGraph = (props) => {
       <div key={indx} className={styles.bar}>
         <p
           className={
-            styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
+            styles.value +
+            ' m-0 ' +
+            (!isMobile
+              ? show
+                ? styles.fadeIn
+                : styles.fadeOut
+              : styles.fadeIn)
           }
         >
           {rating}
@@ -34,24 +43,21 @@ const RatingsGraph = (props) => {
             height: height.toString() + 'px',
           }}
         />
-        {ratings.length === 2 &&
-          (indx === 0 ? (
-            <p
-              className={
-                styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
-              }
-            >
-              yes
-            </p>
-          ) : (
-            <p
-              className={
-                styles.value + ' m-0 ' + (show ? styles.fadeIn : styles.fadeOut)
-              }
-            >
-              no
-            </p>
-          ))}
+        {ratings.length === 2 && (
+          <p
+            className={
+              styles.value +
+              ' m-0 ' +
+              (!isMobile
+                ? show
+                  ? styles.fadeIn
+                  : styles.fadeOut
+                : styles.fadeIn)
+            }
+          >
+            {indx === 0 ? 'yes' : 'no'}
+          </p>
+        )}
       </div>
     );
     indx++;

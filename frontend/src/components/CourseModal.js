@@ -8,9 +8,12 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
 import WorksheetToggleButton from './WorksheetToggleButton';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 const CourseModal = (props) => {
   const listing = props.listing;
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
   const [view, setView] = useState(['overview', null]);
   const [filter, setFilter] = useState('both');
   let course_codes, course_codes_str;
@@ -62,7 +65,11 @@ const CourseModal = (props) => {
                   <Col className="p-0 ml-3">
                     <Modal.Title>
                       <Row className={'mx-auto mt-1 align-items-center'}>
-                        <span className="modal-title ">
+                        <span
+                          className={
+                            isMobile ? 'modal-title-mobile' : 'modal-title'
+                          }
+                        >
                           {listing['course.title']}
                         </span>
                       </Row>
@@ -114,7 +121,11 @@ const CourseModal = (props) => {
                   <Col className="p-0 ml-3">
                     <Modal.Title>
                       <Row className={'mx-auto mt-1 align-items-center'}>
-                        <span className="modal-title ">
+                        <span
+                          className={
+                            isMobile ? 'modal-title-mobile' : 'modal-title'
+                          }
+                        >
                           {view[1].course_code + ' '} Evaluations
                           <span className="text-muted">
                             {' (' +
