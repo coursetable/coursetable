@@ -5,8 +5,10 @@ import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
+import Searchbar from '../components/Searchbar';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 function CourseTableNavbar(props) {
   const [nav_expanded, setExpand] = useState(false);
@@ -16,7 +18,10 @@ function CourseTableNavbar(props) {
     setIsComponentVisible,
   } = useComponentVisible(false);
 
-  const condensed = useLocation().pathname === '/';
+  const pathname = useLocation().pathname;
+  const { width } = useWindowDimensions();
+  const is_relative = width < 1230;
+
   return (
     <div>
       <div className={`shadow-sm ${styles.navbar}`}>
@@ -38,7 +43,7 @@ function CourseTableNavbar(props) {
                 }}
               >
                 <span className={styles.nav_logo}>
-                  <Logo condensed={condensed} />
+                  <Logo condensed={pathname === '/'} />
                 </span>
               </NavLink>
             </Navbar.Brand>
@@ -50,6 +55,19 @@ function CourseTableNavbar(props) {
               className="justify-content-end"
             >
               <Nav onClick={() => setExpand(false)}>
+                {pathname !== '/catalog' && pathname !== '/' && (
+                  <div
+                    className={
+                      'd-none d-md-block ' +
+                      (is_relative
+                        ? styles.search_bar_relative
+                        : styles.search_bar_mid)
+                    }
+                  >
+                    <Searchbar bar_size="md" />
+                  </div>
+                )}
+
                 <NavLink to="/catalog" className={styles.navbar_links}>
                   Catalog
                 </NavLink>

@@ -41,14 +41,6 @@ function Worksheet({ parent_listings, setParentListings }) {
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
-  const arr_equals = (a, b) => {
-    if (a.length !== b.length) return false;
-    for (let i = 0; i < a.length; i++) {
-      if (a[i][0] !== b[i][0] || a[i][1] !== b[i][1]) return false;
-    }
-    return true;
-  };
-
   const changeSeason = (season_code) => {
     setSeason(season_code);
   };

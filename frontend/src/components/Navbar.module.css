@@ -45,3 +45,16 @@
   background-color: rgba(1, 1, 1, 0.05);
   cursor: pointer;
 }
+
+.search_bar_mid {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0%);
+  width: calc(120px + 30vw);
+}
+
+.search_bar_relative {
+  margin: 0 1rem;
+  /* width: 30vw;  */
+  width: 26vw;
+}
