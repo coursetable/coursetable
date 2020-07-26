@@ -12,7 +12,7 @@ import styles from './Worksheet.module.css';
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 
-function Worksheet() {
+function Worksheet({ parent_listings, setParentListings }) {
   const { user } = useUser();
   let season_codes = [];
   const updateRecentSeason = (populate_season_codes, season_code = null) => {
@@ -36,6 +36,14 @@ function Worksheet() {
   const [hidden_courses, setHiddenCourses] = useState([]);
 
   if (user.worksheet == null) return <div>Please Login</div>;
+
+  const arr_equals = (a, b) => {
+    if (a.length !== b.length) return false;
+    for (let i = 0; i < a.length; i++) {
+      if (a[i][0] !== b[i][0] || a[i][1] !== b[i][1]) return false;
+    }
+    return true;
+  };
 
   const changeSeason = (season_code) => {
     setSeason(season_code);
@@ -117,6 +125,10 @@ function Worksheet() {
     )
       filtered_listings.push(listing);
   });
+
+  if (!arr_equals(filtered_listings, parent_listings)) {
+    setParentListings(filtered_listings);
+  }
 
   let season_listings = [];
   filtered_listings.forEach((listing) => {

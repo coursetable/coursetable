@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-
+import { useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
@@ -16,6 +16,7 @@ function CourseTableNavbar(props) {
     setIsComponentVisible,
   } = useComponentVisible(false);
 
+  const condensed = useLocation().pathname === '/';
   return (
     <div>
       <div className={`shadow-sm ${styles.navbar}`}>
@@ -37,7 +38,7 @@ function CourseTableNavbar(props) {
                 }}
               >
                 <span className={styles.nav_logo}>
-                  <Logo />
+                  <Logo condensed={condensed} />
                 </span>
               </NavLink>
             </Navbar.Brand>
@@ -68,6 +69,7 @@ function CourseTableNavbar(props) {
                       <BsFillPersonFill
                         className={styles.me_icon + ' m-auto'}
                         size={20}
+                        color={isComponentVisible && '#007bff'}
                       />
                     </div>
                   </div>
@@ -82,6 +84,7 @@ function CourseTableNavbar(props) {
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={props.isLoggedIn}
+          listings={props.listings}
         />
       </div>
     </div>

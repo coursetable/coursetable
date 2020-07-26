@@ -5,6 +5,8 @@ import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { generateICS } from './GenerateICS';
+import { toast } from 'react-toastify';
 
 function MeDropdown(props) {
   const handleFBClick = () => {
@@ -13,6 +15,11 @@ function MeDropdown(props) {
 
   const handleExportClick = () => {
     // EXPORT WORKSHEET TO ICS FILE
+    if (!props.listings.length) {
+      toast.error('Worksheet is empty');
+      return;
+    }
+    generateICS(props.listings);
   };
 
   const handleLogoutClick = () => {

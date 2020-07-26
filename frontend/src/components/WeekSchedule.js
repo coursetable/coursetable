@@ -27,8 +27,8 @@ export default class WeekSchedule extends React.Component {
         if (info !== undefined) {
           const start = moment(info[0][0], 'HH:mm').day(1 + indx);
           const end = moment(info[0][1], 'HH:mm').day(1 + indx);
-          if (start.get('hour') < 8) start.add('h', 12);
-          if (end.get('hour') < 8) end.add('h', 12);
+          if (start.get('hour') < 8) start.add(12, 'h');
+          if (end.get('hour') < 8) end.add(12, 'h');
           const value = course.course_code;
           parsedCourses[parsedCourses.length] = {
             title: value,
