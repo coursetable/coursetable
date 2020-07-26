@@ -88,6 +88,7 @@ export const isInWorksheet = (season_code, crn, worksheet) => {
 };
 
 export const toSeasonString = (season_code) => {
+  if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
     season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])],

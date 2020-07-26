@@ -117,17 +117,41 @@ function Search(props) {
 
   const defaults = {
     ordering: sortbyQueries[[sortbyOptions[0].value]],
-    seasons: seasonsOptions ? [seasonsOptions[0]].map((x) => x.value) : null,
+    seasons: seasonsOptions
+      ? [seasonsOptions[0]].map((x) => x.value)
+      : ['202003'],
     areas: null,
     skills: null,
     credits: null,
     schools: [schoolOptions[0]].map((x) => x.value),
-    min_rating: ratingBounds[0],
-    max_rating: ratingBounds[1],
-    min_workload: workloadBounds[0],
-    max_workload: workloadBounds[1],
+    min_rating: null,
+    max_rating: null,
+    min_workload: null,
+    max_workload: null,
     extra_info: 'ACTIVE',
   };
+
+  useEffect(() => {
+    if (default_search) {
+      if (searchText.value) {
+        const search_variables = Object.assign(
+          { search_text: searchText.value },
+          defaults
+        );
+        setSearchType('TEXT');
+        executeTextSearch({
+          variables: search_variables,
+        });
+      } else {
+        console.log(defaults);
+        setSearchType('TEXTLESS');
+        executeTextlessSearch({
+          variables: defaults,
+        });
+      }
+      setDefaultSearch(false);
+    }
+  }, []);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -204,65 +228,34 @@ function Search(props) {
     if (ordering && ordering.average_workload) {
       include_all_workloads = false;
     }
+    const search_variables = {
+      ordering: ordering,
+      seasons: processedSeasons,
+      areas: processedAreas,
+      skills: processedSkills,
+      credits: processedCredits,
+      schools: processedSchools,
+      min_rating: include_all_ratings ? null : ratingBounds[0],
+      max_rating: include_all_ratings ? null : ratingBounds[1],
+      min_workload: include_all_workloads ? null : workloadBounds[0],
+      max_workload: include_all_workloads ? null : workloadBounds[1],
+      extra_info: hideCancelled ? 'ACTIVE' : null,
+    };
 
     if (searchText.value === '') {
       setSearchType('TEXTLESS');
       executeTextlessSearch({
-        variables: {
-          ordering: ordering,
-          seasons: processedSeasons,
-          areas: processedAreas,
-          skills: processedSkills,
-          credits: processedCredits,
-          schools: processedSchools,
-          min_rating: include_all_ratings ? null : ratingBounds[0],
-          max_rating: include_all_ratings ? null : ratingBounds[1],
-          min_workload: include_all_workloads ? null : workloadBounds[0],
-          max_workload: include_all_workloads ? null : workloadBounds[1],
-          extra_info: hideCancelled ? 'ACTIVE' : null,
-        },
+        variables: search_variables,
       });
     } else {
       setSearchType('TEXT');
       executeTextSearch({
-        variables: {
+        variables: Object.assign(search_variables, {
           search_text: searchText.value,
-          ordering: ordering,
-          seasons: processedSeasons,
-          areas: processedAreas,
-          skills: processedSkills,
-          credits: processedCredits,
-          schools: processedSchools,
-          min_rating: include_all_ratings ? null : ratingBounds[0],
-          max_rating: include_all_ratings ? null : ratingBounds[1],
-          min_workload: include_all_workloads ? null : workloadBounds[0],
-          max_workload: include_all_workloads ? null : workloadBounds[1],
-          extra_info: hideCancelled ? 'ACTIVE' : null,
-        },
+        }),
       });
     }
   };
-
-  useEffect(() => {
-    if (default_search) {
-      if (searchText.value) {
-        const search_variables = Object.assign(
-          { search_text: searchText.value },
-          defaults
-        );
-        setSearchType('TEXT');
-        executeTextSearch({
-          variables: search_variables,
-        });
-      } else {
-        setSearchType('TEXTLESS');
-        executeTextlessSearch({
-          variables: defaults,
-        });
-      }
-      setDefaultSearch(false);
-    }
-  }, []);
 
   var results;
 
