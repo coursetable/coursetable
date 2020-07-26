@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { HotKeys } from 'react-hotkeys';
 
@@ -63,7 +63,7 @@ function Search(props) {
   const seasonsData = useSeasons();
 
   const isMobile = width < 768;
-
+  const [default_search, setDefaultSearch] = useState(true);
   var searchText = React.useRef(
     props.location && props.location.state
       ? props.location.state.search_val
@@ -113,6 +113,20 @@ function Search(props) {
     //Reset searchText
     const { location, history } = props;
     history.replace();
+  };
+
+  const defaults = {
+    ordering: sortbyQueries[[sortbyOptions[0].value]],
+    seasons: seasonsOptions ? [seasonsOptions[0]].map((x) => x.value) : null,
+    areas: null,
+    skills: null,
+    credits: null,
+    schools: [schoolOptions[0]].map((x) => x.value),
+    min_rating: ratingBounds[0],
+    max_rating: ratingBounds[1],
+    min_workload: workloadBounds[0],
+    max_workload: workloadBounds[1],
+    extra_info: 'ACTIVE',
   };
 
   const handleSubmit = (event) => {
@@ -229,6 +243,27 @@ function Search(props) {
     }
   };
 
+  useEffect(() => {
+    if (default_search) {
+      if (searchText.value) {
+        const search_variables = Object.assign(
+          { search_text: searchText.value },
+          defaults
+        );
+        setSearchType('TEXT');
+        executeTextSearch({
+          variables: search_variables,
+        });
+      } else {
+        setSearchType('TEXTLESS');
+        executeTextlessSearch({
+          variables: defaults,
+        });
+      }
+      setDefaultSearch(false);
+    }
+  }, []);
+
   var results;
 
   if (searchType === 'TEXTLESS') {
@@ -291,7 +326,7 @@ function Search(props) {
   var searchColHeight;
   var [tooTall, setTooTall] = React.useState(true);
 
-  React.useEffect(() => {
+  useEffect(() => {
     searchColHeight = searchCol.clientHeight;
     setTooTall(searchColHeight > height);
   });
