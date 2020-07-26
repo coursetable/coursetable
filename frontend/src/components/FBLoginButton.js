@@ -1,10 +1,17 @@
 import React, { Component, useState } from 'react';
-import { Button } from 'react-bootstrap';
+// import { useUser } from '../user';
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 
 // A lot of code from https://github.com/Jerryg6j3/react-fbsdk-example
 class FBLoginButton extends Component {
+  constructor(props) {
+    super(props)
+    this.state = {
+      // TODO: Change this so that fbConnected persists (rather than being reset to false every time)
+      fbConnected: false
+    };
+  }
 
   // This gets called when the component mounts
   componentDidMount() {
@@ -47,12 +54,15 @@ statusChangeCallback(response) {
   if (response.status === 'connected') {
     // Logged into your app and Facebook.
     this.testAPI();
+    this.state.fbConnected = true
   } else if (response.status === 'not_authorized') {
     // The person is logged into Facebook, but not your app.
+    this.state.fbConnected = false
     console.log("FB not authorized")
   } else {
     // The person is not logged into Facebook, so we're not sure if
     // they are logged into this app or not.
+    this.state.fbConnected = false
     console.log("Not logged into FB")
   }
 }
@@ -75,12 +85,24 @@ handleClick() {
 
   render() {
     return (
-      <span 
-        onClick={this.handleClick.bind(this)}
-        className={styles.collapse_text}
-      >
-        Connect to FB
-      </span>
+      <div>
+        {!this.state.fbConnected && (
+          <span 
+            onClick={this.handleClick.bind(this)}
+            className={styles.collapse_text}
+          >
+            Connect to FB
+          </span>
+        )}
+        {this.state.fbConnected && (
+          <span 
+            // onClick={this.handleClick.bind(this)}
+            className={styles.collapse_text}
+          >
+            Disconnect FB
+          </span>
+        )}
+      </div>
     );
   }
 }
