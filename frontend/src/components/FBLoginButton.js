@@ -1,5 +1,6 @@
 import React, { Component, useState } from 'react';
 import { Button } from 'react-bootstrap';
+import styles from './MeDropdown.module.css';
 import axios from 'axios';
 
 // A lot of code from https://github.com/Jerryg6j3/react-fbsdk-example
@@ -74,20 +75,12 @@ handleClick() {
 
   render() {
     return (
-      <div>
-        {/* <link href="/libs/fontawesome/css/font-awesome.css" rel="stylesheet"></link> */}
-        {/* See https://developers.facebook.com/apps/185745958145518/fb-login/quickstart/ */}
-        {this.props.isLoggedIn && !this.fbConnected && (
-          <Button 
-            className="btn friend-worksheets-btn"
-            onClick={this.handleClick.bind(this)}
-          >
-            {/* TODO: Style FB icon so it's not so ugly lol */}
-            <i className="icon-facebook-sign"></i>
-            <span>See friends' worksheets</span>
-          </Button>
-        )}
-      </div>
+      <span 
+        onClick={this.handleClick.bind(this)}
+        className={styles.collapse_text}
+      >
+        Connect to FB
+      </span>
     );
   }
 }

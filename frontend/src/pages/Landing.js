@@ -1,6 +1,5 @@
 import React from 'react';
 import { BsChevronDoubleDown } from 'react-icons/bs';
-import { FaFacebookSquare } from 'react-icons/fa';
 import { Button, Row, Col, Container } from 'react-bootstrap';
 import { Element, animateScroll as scroll, scroller } from 'react-scroll';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ import Logo from '../components/Logo';
 import styles from './Landing.module.css';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
-function Landing() {
+function Landing(props) {
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
 

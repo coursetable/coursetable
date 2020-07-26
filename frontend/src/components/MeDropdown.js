@@ -4,6 +4,7 @@ import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
+import FBLoginButton from './FBLoginButton'
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 function MeDropdown(props) {
@@ -41,9 +42,10 @@ function MeDropdown(props) {
               size={20}
               color="#007bff"
             />
-            <span onClick={handleFBClick} className={styles.collapse_text}>
-              Connect to FB
-            </span>
+            <FBLoginButton
+              className={styles.collapse_text}
+            >
+            </FBLoginButton>
           </Row>
           <Row className=" pb-3 m-auto">
             {props.isLoggedIn ? (
