@@ -69,7 +69,7 @@ function CourseTableNavbar(props) {
                       <BsFillPersonFill
                         className={styles.me_icon + ' m-auto'}
                         size={20}
-                        color={isComponentVisible && '#007bff'}
+                        color={isComponentVisible ? '#007bff' : undefined}
                       />
                     </div>
                   </div>

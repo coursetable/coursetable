@@ -21,6 +21,7 @@ const onBreak = (day) => {
 };
 
 export const generateICS = (listings_all) => {
+  // console.log(listings_all);
   const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const cur_season = '202003';
   // Spring 2020 period
@@ -31,6 +32,11 @@ export const generateICS = (listings_all) => {
 
   let listings = [];
   listings_all.forEach((listing) => {
+    if (
+      !listing['course.times_summary'] ||
+      listing['course.times_summary'] === 'TBA'
+    )
+      return;
     if (listing.season_code === cur_season) listings.push(listing);
   });
   const season_string = toSeasonString(cur_season);
@@ -82,6 +88,9 @@ export const generateICS = (listings_all) => {
       return;
     }
     let blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, 'worksheet.ics');
+    FileSaver.saveAs(
+      blob,
+      `${moment().format('YYYY-MM-DD--hh-mma')}_worksheet.ics`
+    );
   });
 };

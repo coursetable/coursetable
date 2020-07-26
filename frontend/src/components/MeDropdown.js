@@ -7,8 +7,11 @@ import { FcCalendar } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { toast } from 'react-toastify';
+import { useUser } from '../user';
+import { isInWorksheet } from '../utilities';
 
 function MeDropdown(props) {
+  const { user } = useUser();
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK
   };
@@ -19,7 +22,18 @@ function MeDropdown(props) {
       toast.error('Worksheet is empty');
       return;
     }
-    generateICS(props.listings);
+    let filtered_listings = [];
+    props.listings.forEach((listing) => {
+      if (
+        isInWorksheet(
+          listing.season_code,
+          listing.crn.toString(),
+          user.worksheet
+        )
+      )
+        filtered_listings.push(listing);
+    });
+    generateICS(filtered_listings);
   };
 
   const handleLogoutClick = () => {

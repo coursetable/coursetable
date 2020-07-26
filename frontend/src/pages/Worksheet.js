@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import FetchWorksheet from '../queries/GetWorksheetListings';
 import { Row, Col } from 'react-bootstrap';
@@ -34,6 +34,10 @@ function Worksheet({ parent_listings, setParentListings }) {
   const [worksheet_init, setWorksheetInit] = useState(user.worksheet);
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
+
+  useEffect(() => {
+    setParentListings(listings);
+  }, [listings]);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -125,10 +129,6 @@ function Worksheet({ parent_listings, setParentListings }) {
     )
       filtered_listings.push(listing);
   });
-
-  if (!arr_equals(filtered_listings, parent_listings)) {
-    setParentListings(filtered_listings);
-  }
 
   let season_listings = [];
   filtered_listings.forEach((listing) => {
