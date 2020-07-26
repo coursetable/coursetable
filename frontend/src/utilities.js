@@ -1,3 +1,5 @@
+import { useState, useEffect, useRef } from 'react';
+
 export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
@@ -92,4 +94,26 @@ export const toSeasonString = (season_code) => {
     season_code.substring(0, 4),
     seasons[parseInt(season_code[5])],
   ];
+};
+
+export const useComponentVisible = (initialIsVisible) => {
+  const [isComponentVisible, setIsComponentVisible] = useState(
+    initialIsVisible
+  );
+  const ref = useRef(null);
+
+  const handleClickOutside = (event) => {
+    if (ref.current && !ref.current.contains(event.target)) {
+      setIsComponentVisible(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  });
+
+  return { ref, isComponentVisible, setIsComponentVisible };
 };

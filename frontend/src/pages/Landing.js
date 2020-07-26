@@ -1,18 +1,27 @@
 import React from 'react';
 import { BsChevronDoubleDown } from 'react-icons/bs';
+import { FaFacebookSquare } from 'react-icons/fa';
 import { Button, Row, Col, Container } from 'react-bootstrap';
 import { Element, animateScroll as scroll, scroller } from 'react-scroll';
+import { Link } from 'react-router-dom';
 
-import styles from './Landing.module.css';
 import Logo from '../components/Logo';
+import styles from './Landing.module.css';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
-function Landing(props) {
+function Landing() {
+  const { width } = useWindowDimensions();
+  const isMobile = width < 768;
+
   const scrollTo = () => {
-    console.log('scroll');
     scroller.scrollTo('featurepage', {
       smooth: true,
       duration: 500,
     });
+  };
+
+  const scrollTop = () => {
+    window.scrollTo(0, 0);
   };
 
   return (
@@ -61,7 +70,51 @@ function Landing(props) {
         </Element>
         <Element name="featurepage">
           <div className={styles.feature_page}>
+            <div className={styles.page_separator + ' mx-auto'} />
             <h1 className={styles.whyCourseTable}>Why CourseTable?</h1>
+            <Row
+              className={styles.feature_row + ' mx-auto justify-content-center'}
+            >
+              <Col lg={3} className={' mb-3 mx-2 p-0'}>
+                <div className={styles.feature + ' mx-auto'}>
+                  <p className={styles.feature_header + ' m-0 pt-2'}>
+                    Feature 1
+                  </p>
+                </div>
+              </Col>
+              <Col lg={3} className={' mb-3 mx-2 p-0'}>
+                <div className={styles.feature + ' mx-auto'}>
+                  <p className={styles.feature_header + ' m-0 pt-2'}>
+                    Feature 2
+                  </p>
+                </div>
+              </Col>
+              <Col lg={3} className={' mb-3 mx-2 p-0'}>
+                <div className={styles.feature + ' mx-auto'}>
+                  <p className={styles.feature_header + ' m-0 pt-2'}>
+                    Feature 3
+                  </p>
+                </div>
+              </Col>
+            </Row>
+            <Row
+              className={
+                (isMobile
+                  ? styles.get_started_row_mobile
+                  : styles.get_started_row) + ' mx-auto justify-content-center'
+              }
+            >
+              <Link to="/catalog">
+                <Button
+                  variant="success"
+                  size="lg"
+                  className={styles.btns}
+                  onClick={scrollTop}
+                >
+                  See Catalog
+                </Button>
+              </Link>
+            </Row>
           </div>
         </Element>
       </Container>

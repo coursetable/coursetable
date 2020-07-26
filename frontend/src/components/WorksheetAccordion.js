@@ -63,31 +63,28 @@ export default class WorksheetAccordion extends React.Component {
   buildHtml = (parsed_courses) => {
     let today = new Date().getDay();
     if (today === 0 || today === 6) today = 1;
-    let items = [];
-    // const this.weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-    let indx = 0;
-    let id1 = 100;
+    let indx = 0; // Day of the week counter
+    let id = 0; // Unique id for each array item
+    let accordion_items = [];
     for (let i = today - 1; indx < 5; i = (i + 1) % 5) {
       const day = parsed_courses[i];
       if (day.length === 0) {
         indx++;
         continue;
       }
-      items.push(
-        <h5 className={styles.day_header} key={++id1}>
+
+      accordion_items.push(
+        <h5 className={styles.day_header} key={++id}>
           {this.weekDays[i]}
         </h5>
       );
-      let key = 5;
-      let accordion_items = [];
-      let id2 = 100;
       day.forEach((course) => {
         accordion_items.push(
-          <Card key={++id2} className={styles.card + ' px-1'}>
+          <Card key={++id} className={styles.card + ' px-1'}>
             <Accordion.Toggle
               as={Card.Header}
               className={styles.toggle}
-              eventKey={key}
+              eventKey={++id}
             >
               <Row className={styles.header}>
                 <Col xs="auto" style={{ fontWeight: 500 }}>
@@ -111,7 +108,7 @@ export default class WorksheetAccordion extends React.Component {
                 </Col>
               </Row>
             </Accordion.Toggle>
-            <Accordion.Collapse eventKey={key}>
+            <Accordion.Collapse eventKey={id}>
               <Card.Body>
                 <Row>
                   <Col className="p-0">
@@ -156,12 +153,10 @@ export default class WorksheetAccordion extends React.Component {
             </Accordion.Collapse>
           </Card>
         );
-        key++;
       });
-      items.push(<Accordion key={indx}>{accordion_items}</Accordion>);
       indx++;
     }
-    return items;
+    return <Accordion>{accordion_items}</Accordion>;
   };
 
   render() {

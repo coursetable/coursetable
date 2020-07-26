@@ -14,6 +14,11 @@
   line-height: 1.2 !important;
 }
 
+.modal-title-mobile {
+  font-weight: 550;
+  font-size: 18px !important;
+}
+
 .modal-header {
   display: flex !important;
   padding: 1rem 1rem 0.5rem 1rem !important;

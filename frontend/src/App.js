@@ -13,6 +13,7 @@ import SeasonsProvider from './components/SeasonsProvider';
 
 import Landing from './pages/Landing';
 import Login from './pages/Login';
+import Home from './pages/Home';
 
 import Search from './pages/Search';
 import About from './pages/About';
@@ -58,20 +59,26 @@ function App() {
       <WindowDimensionsProvider>
         <SeasonsProvider>
           <div id="base">
-            <Navbar isLoggedIn={isLoggedIn}/>
+            <Navbar isLoggedIn={isLoggedIn} />
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">
-                <Landing isLoggedIn={isLoggedIn} />
+                {isLoggedIn ? <Home /> : <Redirect to="/login" />}
               </MyRoute>
 
               <MyRoute exact path="/about">
                 <About />
               </MyRoute>
 
-              <MyRoute exact path="/catalog">
+              {/* <MyRoute exact path="/catalog">
                 <Search />
-              </MyRoute>
+              </MyRoute> */}
+
+              <MyRoute
+                exact
+                path="/catalog"
+                render={(props) => <Search {...props} />}
+              />
 
               <MyRoute exact path="/courses">
                 <Courses />
@@ -79,11 +86,15 @@ function App() {
 
               {/* Auth */}
               <MyRoute exact path="/login">
-                {isLoggedIn ? <Redirect to="/" /> : <Login />}
+                {isLoggedIn ? (
+                  <Redirect to="/" />
+                ) : (
+                  <Landing isLoggedIn={isLoggedIn} />
+                )}
               </MyRoute>
 
               {/* Worksheet */}
-              <MyRoute exact path="/worksheet">
+              <MyRoute isRoutePrivate={true} exact path="/worksheet">
                 {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
               </MyRoute>
 

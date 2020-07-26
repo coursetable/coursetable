@@ -42,7 +42,7 @@ const EvaluationRatings = (props) => {
     <div>
       {assessment.length > 0 && (
         <div>
-          <Row className="m-auto pl-1">
+          <Row className="mx-auto mb-1 pl-1">
             <strong>Overall</strong>
           </Row>
           <RatingsGraph ratings={assessment} reverse={false} />
@@ -50,15 +50,15 @@ const EvaluationRatings = (props) => {
       )}
       {workload.length > 0 && (
         <div>
-          <Row className="m-auto pl-1">
+          <Row className="mx-auto mb-1 pl-1">
             <strong>Workload</strong>
           </Row>
-          <RatingsGraph ratings={workload} reverse={false} />
+          <RatingsGraph ratings={workload} reverse={true} />
         </div>
       )}
       {major.length > 0 && (
         <div>
-          <Row className="m-auto pl-1">
+          <Row className="mx-auto mb-1 pl-1">
             <strong>Taking for Major?</strong>
           </Row>
 
@@ -67,7 +67,7 @@ const EvaluationRatings = (props) => {
       )}
       {engagement.length > 0 && (
         <div>
-          <Row className="m-auto pl-1">
+          <Row className="mx-auto mb-1 pl-1">
             <strong>Engagement</strong>
           </Row>
           <RatingsGraph ratings={engagement} reverse={false} />
@@ -75,7 +75,7 @@ const EvaluationRatings = (props) => {
       )}
       {organized.length > 0 && (
         <div>
-          <Row className="m-auto pl-1">
+          <Row className="mx-auto mb-1 pl-1">
             <strong>Organization</strong>
           </Row>
           <RatingsGraph ratings={organized} reverse={false} />
@@ -83,7 +83,7 @@ const EvaluationRatings = (props) => {
       )}
       {feedback.length > 0 && (
         <div>
-          <Row className="m-auto pl-1">
+          <Row className="mx-auto mb-1 pl-1">
             <strong>Feedback Clarity</strong>
           </Row>
           <RatingsGraph ratings={feedback} reverse={false} />
@@ -91,7 +91,7 @@ const EvaluationRatings = (props) => {
       )}
       {challenge.length > 0 && (
         <div>
-          <Row className="m-auto pl-1">
+          <Row className="mx-auto mb-1 pl-1">
             <strong>Intellectual Challenge</strong>
           </Row>
           <RatingsGraph ratings={challenge} reverse={false} />

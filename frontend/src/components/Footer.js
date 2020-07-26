@@ -52,7 +52,9 @@ function App() {
                 <NavLink to="/joinus">Join us</NavLink>
               </li>
               <li>
-                <a href="https://github.com/coursetable">GitHub</a>
+                <a href="https://github.com/coursetable" target="_blank">
+                  GitHub
+                </a>
               </li>
             </ul>
           </div>

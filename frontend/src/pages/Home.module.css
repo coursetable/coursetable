@@ -1,0 +1,52 @@
+.container {
+  height: 100vh;
+  /* background-color: #f6f6f6; */
+}
+
+.homepage {
+  height: calc(100vh - 62px);
+}
+
+.coursetable_logo {
+  padding-top: 10vh;
+  font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman,
+    serif;
+  text-align: center;
+}
+
+.title {
+  font-size: calc(20px + 8vw);
+}
+
+.search_bar_container {
+  width: calc(120px + 50vw);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5vh;
+}
+
+.search_bar {
+  border-top-left-radius: 24px !important;
+  border-bottom-left-radius: 24px !important;
+}
+
+.search_btn {
+  border-top-right-radius: 24px !important;
+  border-bottom-right-radius: 24px !important;
+  border-color: #ced4da !important;
+}
+
+.search_bar:active,
+.search_bar:focus,
+.search_btn:active,
+.search_btn:focus {
+  box-shadow: none !important;
+  outline: none !important;
+  border-color: #ced4da !important;
+}
+
+.carddeck_container {
+  width: 70vw;
+  height: 30vh;
+  margin-top: 10vh;
+}
