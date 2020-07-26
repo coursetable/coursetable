@@ -36,16 +36,15 @@ function MeDropdown(props) {
               Export Worksheet
             </span>
           </Row>
+          {/* TODO: Add FB logged in state var so we can conditionally display whether to connect or disconnect */}
+          {/* See Context in React (example in user.js) */}
           <Row className=" pb-3 m-auto">
             <FaFacebookSquare
               className="mr-2 my-auto"
               size={20}
               color="#007bff"
             />
-            <FBLoginButton
-              className={styles.collapse_text}
-            >
-            </FBLoginButton>
+            <FBLoginButton></FBLoginButton>
           </Row>
           <Row className=" pb-3 m-auto">
             {props.isLoggedIn ? (
