@@ -6,6 +6,9 @@ import Logo from './Logo';
 import { Container } from 'react-bootstrap';
 
 function App() {
+  const scroll_top = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
   return (
     <Container fluid>
       <hr />
@@ -32,17 +35,14 @@ function App() {
             <h5>Support</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink
-                  to="/faq"
-                  onClick={() => {
-                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-                  }}
-                >
+                <NavLink to="/faq" onClick={scroll_top}>
                   FAQ
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/changelog">Changelog</NavLink>
+                <NavLink to="/changelog" onClick={scroll_top}>
+                  Changelog
+                </NavLink>
               </li>
               <li>
                 <NavLink to="/feedback">Feedback</NavLink>
