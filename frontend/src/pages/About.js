@@ -4,7 +4,7 @@ import styles from './About.module.css';
 import { Card, CardDeck, Button, Container } from 'react-bootstrap';
 import pic from '../images/default_pfp.png';
 
-function App() {
+function About() {
   return (
     <Container>
       <p>About CourseTable description...</p>
@@ -88,4 +88,4 @@ function App() {
   );
 }
 
-export default App;
+export default About;

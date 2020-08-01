@@ -1,0 +1,4 @@
+.was-validated .form-control:valid {
+  border-color: hsl(0, 0%, 80%) !important;
+  background-image: none !important;
+}

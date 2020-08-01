@@ -21,6 +21,7 @@ import Courses from './pages/Courses';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
 import Changelog from './pages/Changelog';
+import Feedback from './pages/Feedback';
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -73,14 +74,6 @@ function App() {
                 <About />
               </MyRoute>
 
-              <MyRoute exact path="/faq">
-                <FAQ />
-              </MyRoute>
-
-              <MyRoute exact path="/changelog">
-                <Changelog />
-              </MyRoute>
-
               <MyRoute
                 exact
                 path="/catalog"
@@ -115,6 +108,20 @@ function App() {
               {/* Private Routes */}
               <MyRoute isRoutePrivate={true} exact path="/">
                 <p>hi this is some content</p>
+              </MyRoute>
+
+              {/* Footer Links */}
+
+              <MyRoute exact path="/faq">
+                <FAQ />
+              </MyRoute>
+
+              <MyRoute exact path="/changelog">
+                <Changelog />
+              </MyRoute>
+
+              <MyRoute exact path="/feedback">
+                <Feedback />
               </MyRoute>
 
               {/* Catch-all Route */}
