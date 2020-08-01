@@ -32,7 +32,14 @@ function App() {
             <h5>Support</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink to="/faq">FAQ</NavLink>
+                <NavLink
+                  to="/faq"
+                  onClick={() => {
+                    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+                  }}
+                >
+                  FAQ
+                </NavLink>
               </li>
               <li>
                 <NavLink to="/changelog">Changelog</NavLink>

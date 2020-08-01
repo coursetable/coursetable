@@ -28,7 +28,7 @@ function Searchbar({ bar_size }) {
           placeholder="Find a class..."
           ref={input}
         />
-        <InputGroup.Append>
+        <InputGroup.Append className={styles.search_btn_container}>
           <Button
             type="submit"
             variant="outline-secondary"

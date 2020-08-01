@@ -37,6 +37,12 @@ function ContextAwareToggle({ eventKey, callback, question }) {
 }
 
 function FAQ() {
+  const filler_text =
+    'This is an example response to a frequently asked question. ' +
+    "I'm taking up multiple lines so it looks better when demo'd. " +
+    "I can't decide if I like black or muted text more, so let me " +
+    'know if you have any preferences.';
+
   return (
     <div className={styles.container}>
       <div className={styles.accordion_container + ' mx-auto'}>
@@ -49,7 +55,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="0" question="Question 1" />
             </div>
             <Accordion.Collapse eventKey="0">
-              <Card.Body className="text-muted py-3">Answer 1</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
           <Card className={styles.accordion_card}>
@@ -57,7 +63,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="1" question="Question 2" />
             </div>
             <Accordion.Collapse eventKey="1">
-              <Card.Body className="text-muted py-3">Answer 2</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
           <Card className={styles.accordion_card}>
@@ -65,7 +71,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="2" question="Question 3" />
             </div>
             <Accordion.Collapse eventKey="2">
-              <Card.Body className="text-muted py-3">Answer 3</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
           <Card className={styles.accordion_card}>
@@ -73,7 +79,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="3" question="Question 4" />
             </div>
             <Accordion.Collapse eventKey="3">
-              <Card.Body className="text-muted py-3">Answer 4</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
           <Card className={styles.accordion_card}>
@@ -81,7 +87,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="4" question="Question 5" />
             </div>
             <Accordion.Collapse eventKey="4">
-              <Card.Body className="text-muted py-3">Answer 5</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
           <Card className={styles.accordion_card}>
@@ -89,7 +95,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="5" question="Question 6" />
             </div>
             <Accordion.Collapse eventKey="5">
-              <Card.Body className="text-muted py-3">Answer 6</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
           <Card className={styles.accordion_card}>
@@ -97,7 +103,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="6" question="Question 7" />
             </div>
             <Accordion.Collapse eventKey="6">
-              <Card.Body className="text-muted py-3">Answer 7</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
           <Card className={styles.accordion_card}>
@@ -105,7 +111,7 @@ function FAQ() {
               <ContextAwareToggle eventKey="7" question="Question 8" />
             </div>
             <Accordion.Collapse eventKey="7">
-              <Card.Body className="text-muted py-3">Answer 8</Card.Body>
+              <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
             </Accordion.Collapse>
           </Card>
         </Accordion>
