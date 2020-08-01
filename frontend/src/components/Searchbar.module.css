@@ -17,3 +17,7 @@
   outline: none !important;
   border-color: #ced4da !important;
 }
+
+.search_btn:hover {
+  background-color: #92bcea !important;
+}

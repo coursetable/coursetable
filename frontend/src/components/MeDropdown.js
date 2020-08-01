@@ -63,7 +63,7 @@ function MeDropdown(props) {
               color="#007bff"
             />
             <span onClick={handleFBClick} className={styles.collapse_text}>
-              Connect to FB
+              Connect FB
             </span>
           </Row>
           <Row className=" pb-3 m-auto">

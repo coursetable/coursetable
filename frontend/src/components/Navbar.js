@@ -55,7 +55,7 @@ function CourseTableNavbar(props) {
               className="justify-content-end"
             >
               <Nav onClick={() => setExpand(false)}>
-                {pathname !== '/catalog' && pathname !== '/' && (
+                {pathname == '/worksheet' && (
                   <div
                     className={
                       'd-none d-md-block ' +

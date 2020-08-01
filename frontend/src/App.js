@@ -19,6 +19,7 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Courses from './pages/Courses';
 import Worksheet from './pages/Worksheet';
+import FAQ from './pages/FAQ';
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -71,9 +72,9 @@ function App() {
                 <About />
               </MyRoute>
 
-              {/* <MyRoute exact path="/catalog">
-                <Search />
-              </MyRoute> */}
+              <MyRoute exact path="/faq">
+                <FAQ />
+              </MyRoute>
 
               <MyRoute
                 exact
