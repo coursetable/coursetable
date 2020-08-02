@@ -6,6 +6,9 @@ import Logo from './Logo';
 import { Container } from 'react-bootstrap';
 
 function App() {
+  const scroll_top = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
   return (
     <Container fluid>
       <hr />
@@ -21,10 +24,14 @@ function App() {
             <h5>Explore courses</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink to="/catalog">Catalog</NavLink>
+                <NavLink to="/catalog" onClick={scroll_top}>
+                  Catalog
+                </NavLink>
               </li>
               <li>
-                <NavLink to="/worksheet">Worksheet</NavLink>
+                <NavLink to="/worksheet" onClick={scroll_top}>
+                  Worksheet
+                </NavLink>
               </li>
             </ul>
           </div>
@@ -32,13 +39,19 @@ function App() {
             <h5>Support</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink to="/faq">FAQ</NavLink>
+                <NavLink to="/faq" onClick={scroll_top}>
+                  FAQ
+                </NavLink>
               </li>
               <li>
-                <NavLink to="/changelog">Changelog</NavLink>
+                <NavLink to="/changelog" onClick={scroll_top}>
+                  Changelog
+                </NavLink>
               </li>
               <li>
-                <NavLink to="/feedback">Feedback</NavLink>
+                <NavLink to="/feedback" onClick={scroll_top}>
+                  Feedback
+                </NavLink>
               </li>
             </ul>
           </div>
@@ -46,10 +59,14 @@ function App() {
             <h5>About</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink to="/about">Team</NavLink>
+                <NavLink to="/about" onClick={scroll_top}>
+                  Team
+                </NavLink>
               </li>
               <li>
-                <NavLink to="/joinus">Join us</NavLink>
+                <NavLink to="/joinus" onClick={scroll_top}>
+                  Join us
+                </NavLink>
               </li>
               <li>
                 <a href="https://github.com/coursetable" target="_blank">

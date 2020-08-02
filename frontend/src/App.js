@@ -19,6 +19,10 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Courses from './pages/Courses';
 import Worksheet from './pages/Worksheet';
+import FAQ from './pages/FAQ';
+import Changelog from './pages/Changelog';
+import Feedback from './pages/Feedback';
+import Join from './pages/Join';
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -26,6 +30,7 @@ import Spinner from 'react-bootstrap/Spinner';
 function App() {
   const [loading, setLoading] = useState(true);
   const { user, userRefresh } = useUser();
+  const [parent_listings, setParentListings] = useState([]);
 
   useEffect(() => {
     userRefresh(true).finally(() => setLoading(false));
@@ -59,7 +64,7 @@ function App() {
       <WindowDimensionsProvider>
         <SeasonsProvider>
           <div id="base">
-            <Navbar isLoggedIn={isLoggedIn} />
+            <Navbar isLoggedIn={isLoggedIn} listings={parent_listings} />
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">
@@ -69,10 +74,6 @@ function App() {
               <MyRoute exact path="/about">
                 <About />
               </MyRoute>
-
-              {/* <MyRoute exact path="/catalog">
-                <Search />
-              </MyRoute> */}
 
               <MyRoute
                 exact
@@ -95,12 +96,37 @@ function App() {
 
               {/* Worksheet */}
               <MyRoute isRoutePrivate={true} exact path="/worksheet">
-                {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
+                {isLoggedIn ? (
+                  <Worksheet
+                    parent_listings={parent_listings}
+                    setParentListings={setParentListings}
+                  />
+                ) : (
+                  <Redirect to="/login" />
+                )}
               </MyRoute>
 
               {/* Private Routes */}
               <MyRoute isRoutePrivate={true} exact path="/">
                 <p>hi this is some content</p>
+              </MyRoute>
+
+              {/* Footer Links */}
+
+              <MyRoute exact path="/faq">
+                <FAQ />
+              </MyRoute>
+
+              <MyRoute exact path="/changelog">
+                <Changelog />
+              </MyRoute>
+
+              <MyRoute exact path="/feedback">
+                <Feedback />
+              </MyRoute>
+
+              <MyRoute exact path="/joinus">
+                <Join />
               </MyRoute>
 
               {/* Catch-all Route */}

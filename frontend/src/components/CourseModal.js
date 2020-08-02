@@ -71,6 +71,13 @@ const CourseModal = (props) => {
                           }
                         >
                           {listing['course.title']}
+                          <span className="text-muted">
+                            {' (' +
+                              toSeasonString(listing.season_code)[2] +
+                              ' ' +
+                              toSeasonString(listing.season_code)[1] +
+                              ')'}
+                          </span>
                         </span>
                       </Row>
                     </Modal.Title>

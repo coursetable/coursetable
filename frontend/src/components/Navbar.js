@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-
+import { useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
 import { Nav, Navbar, Container, Button } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import FBLoginButton from './FBLoginButton';
 import MeDropdown from './MeDropdown';
+import Searchbar from '../components/Searchbar';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 function CourseTableNavbar(props) {
   const [nav_expanded, setExpand] = useState(false);
@@ -16,6 +18,10 @@ function CourseTableNavbar(props) {
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisible(false);
+
+  const pathname = useLocation().pathname;
+  const { width } = useWindowDimensions();
+  const is_relative = width < 1230;
 
   return (
     <div>
@@ -38,7 +44,7 @@ function CourseTableNavbar(props) {
                 }}
               >
                 <span className={styles.nav_logo}>
-                  <Logo />
+                  <Logo condensed={pathname === '/'} />
                 </span>
               </NavLink>
             </Navbar.Brand>
@@ -50,6 +56,19 @@ function CourseTableNavbar(props) {
               className="justify-content-end"
             >
               <Nav onClick={() => setExpand(false)}>
+                {pathname == '/worksheet' && (
+                  <div
+                    className={
+                      'd-none d-md-block ' +
+                      (is_relative
+                        ? styles.search_bar_relative
+                        : styles.search_bar_mid)
+                    }
+                  >
+                    <Searchbar bar_size="md" />
+                  </div>
+                )}
+
                 <NavLink to="/catalog" className={styles.navbar_links}>
                   Catalog
                 </NavLink>
@@ -69,6 +88,7 @@ function CourseTableNavbar(props) {
                       <BsFillPersonFill
                         className={styles.me_icon + ' m-auto'}
                         size={20}
+                        color={isComponentVisible ? '#007bff' : undefined}
                       />
                     </div>
                   </div>
@@ -83,6 +103,7 @@ function CourseTableNavbar(props) {
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={props.isLoggedIn}
+          listings={props.listings}
         />
       </div>
     </div>

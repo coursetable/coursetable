@@ -8,7 +8,7 @@ const RatingsGraph = (props) => {
   const [show, setShow] = useState(false);
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
-  let max_val = 0;
+  let max_val = 1;
   ratings.forEach((rating) => {
     max_val = Math.max(rating, max_val);
   });

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import FetchWorksheet from '../queries/GetWorksheetListings';
 import { Row, Col } from 'react-bootstrap';
@@ -12,7 +12,7 @@ import styles from './Worksheet.module.css';
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 
-function Worksheet() {
+function Worksheet({ parent_listings, setParentListings }) {
   const { user } = useUser();
   let season_codes = [];
   const updateRecentSeason = (populate_season_codes, season_code = null) => {
@@ -34,6 +34,10 @@ function Worksheet() {
   const [worksheet_init, setWorksheetInit] = useState(user.worksheet);
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
+
+  useEffect(() => {
+    setParentListings(listings);
+  }, [listings]);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 

@@ -1,0 +1,62 @@
+.container {
+  height: auto;
+  width: 600px;
+  margin-bottom: 3rem;
+}
+
+.changelog_header {
+  font-weight: 600;
+  font-size: 25px;
+  text-align: center;
+}
+
+.date_header {
+  font-weight: 500;
+  font-size: 20px;
+  text-align: center;
+}
+
+.col_header {
+  font-size: 20px;
+  font-weight: 550;
+}
+
+.list_item {
+  transition: 0.3s;
+}
+.list_item:hover {
+  transform: scale(1.02);
+}
+
+.bug_fix_bullet_point {
+  line-height: 1.35;
+}
+
+.new_feature_bullet_point {
+  line-height: 1.4;
+}
+
+.coming_soon_bullet_point {
+  line-height: 1.35;
+}
+
+.list_item_text {
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 80vw;
+  }
+  .list_item:hover {
+    transform: scale(1);
+  }
+}
+
+@media (max-width: 425px) {
+  .container {
+    width: 90vw;
+  }
+}

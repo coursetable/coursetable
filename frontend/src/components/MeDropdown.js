@@ -6,14 +6,35 @@ import { FaFacebookSquare } from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton'
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { generateICS } from './GenerateICS';
+import { toast } from 'react-toastify';
+import { useUser } from '../user';
+import { isInWorksheet } from '../utilities';
 
 function MeDropdown(props) {
+  const { user } = useUser();
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK
   };
 
   const handleExportClick = () => {
     // EXPORT WORKSHEET TO ICS FILE
+    if (!props.listings.length) {
+      toast.error('Worksheet is empty');
+      return;
+    }
+    let filtered_listings = [];
+    props.listings.forEach((listing) => {
+      if (
+        isInWorksheet(
+          listing.season_code,
+          listing.crn.toString(),
+          user.worksheet
+        )
+      )
+        filtered_listings.push(listing);
+    });
+    generateICS(filtered_listings);
   };
 
   const handleLogoutClick = () => {
@@ -44,7 +65,9 @@ function MeDropdown(props) {
               size={20}
               color="#007bff"
             />
-            <FBLoginButton></FBLoginButton>
+            <span onClick={handleFBClick} className={styles.collapse_text}>
+              Connect FB
+            </span>
           </Row>
           <Row className=" pb-3 m-auto">
             {props.isLoggedIn ? (

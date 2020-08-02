@@ -17,6 +17,7 @@ const CourseModalEvaluations = (props) => {
     });
   });
   const num_questions = Object.keys(responses).length;
+  console.log(num_questions);
   let recommend = [];
   let skills = [];
   let strengths = [];
@@ -60,8 +61,8 @@ const CourseModalEvaluations = (props) => {
 
   return (
     <div>
-      {num_questions === 3 && (
-        <Tabs variant="tabs" defaultActiveKey="recommended" transition={false}>
+      <Tabs variant="tabs" transition={false}>
+        {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommendations">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               Would you recommend this course to another student? Please
@@ -69,6 +70,8 @@ const CourseModalEvaluations = (props) => {
             </Row>
             {recommend}
           </Tab>
+        )}
+        {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               What knowledge, skills, and insights did you develop by taking
@@ -76,6 +79,8 @@ const CourseModalEvaluations = (props) => {
             </Row>
             {skills}
           </Tab>
+        )}
+        {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Pros/Cons">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               What are the strengths and weaknesses of this course and how could
@@ -83,10 +88,8 @@ const CourseModalEvaluations = (props) => {
             </Row>
             {strengths}
           </Tab>
-        </Tabs>
-      )}
-      {num_questions === 1 && (
-        <Tabs variant="tabs" defaultActiveKey="summary">
+        )}
+        {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               How would you summarize this course? Would you recommend it to
@@ -94,8 +97,9 @@ const CourseModalEvaluations = (props) => {
             </Row>
             {summary}
           </Tab>
-        </Tabs>
-      )}
+        )}
+      </Tabs>
+      {!num_questions && <strong>No comments for this course</strong>}
     </div>
   );
 };
