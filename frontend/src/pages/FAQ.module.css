@@ -1,5 +1,6 @@
 .container {
-  height: auto;
+  width: 600px;
+  margin-bottom: 3rem;
 }
 
 .faq_header {
@@ -8,9 +9,10 @@
   text-align: center;
 }
 
-.accordion_container {
-  width: 600px;
-  margin-bottom: 3rem;
+.faq_description {
+  font-weight: 500;
+  font-size: 15px;
+  text-align: center;
 }
 
 .accordion_card {
@@ -52,13 +54,13 @@
 }
 
 @media (max-width: 768px) {
-  .accordion_container {
+  .container {
     width: 80vw;
   }
 }
 
 @media (max-width: 425px) {
-  .accordion_container {
+  .container {
     width: 95vw;
   }
 }

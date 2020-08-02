@@ -22,6 +22,7 @@ import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
 import Changelog from './pages/Changelog';
 import Feedback from './pages/Feedback';
+import Join from './pages/Join';
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -122,6 +123,10 @@ function App() {
 
               <MyRoute exact path="/feedback">
                 <Feedback />
+              </MyRoute>
+
+              <MyRoute exact path="/joinus">
+                <Join />
               </MyRoute>
 
               {/* Catch-all Route */}

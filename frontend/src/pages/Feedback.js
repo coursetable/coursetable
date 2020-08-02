@@ -21,8 +21,6 @@ function Feedback() {
     setValidated(true);
   };
 
-  console.log(isBug);
-
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.feedback_header + ' mt-5 mb-1'}>Feedback Form</h1>
@@ -90,9 +88,8 @@ function Feedback() {
                 options={[
                   { value: 'chrome', label: 'Chrome' },
                   { value: 'safari', label: 'Safari' },
-                  { value: 'firefox', label: 'Firefox' },
-                  { value: 'opera', label: 'Opera' },
                   { value: 'ie', label: 'Internet Explorer/Microsoft Edge' },
+                  { value: 'firefox', label: 'Firefox' },
                   { value: 'mac', label: 'MacOS' },
                   { value: 'idevice', label: 'iPhone/iPad' },
                   { value: 'windows', label: 'Windows' },
