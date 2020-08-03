@@ -52,17 +52,19 @@ const WorksheetToggleButton = (props) => {
     // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
   return (
-    <Button variant="toggle" className="p-0" onClick={toggleWorkSheet}>
-      {props.bookmark ? (
-        inWorksheet ? (
-          <BsBookmarkFill color="#ff6969" size={25} />
-        ) : (
-          <BsBookmark color="#3087ff" size={25} />
-        )
-      ) : inWorksheet ? (
-        <BsBookmarkFill color="#ff6969" size={20} />
+    <Button
+      variant="toggle"
+      className={'p-0 ' + (props.bookmark ? '' : 'bookmark_fill')}
+      onClick={toggleWorkSheet}
+    >
+      {inWorksheet ? (
+        <BsBookmarkFill
+          className={props.bookmark ? '' : 'bookmark_fill'}
+          color="#ff6969"
+          size={25}
+        />
       ) : (
-        <BsBookmarkPlus color="green" size={20} />
+        <BsBookmark color="#3087ff" size={25} />
       )}
     </Button>
   );
