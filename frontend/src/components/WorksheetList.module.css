@@ -1,22 +1,42 @@
 .container {
   border-radius: 8px;
   background-color: white;
-  height: 88vh;
+  max-height: 86vh;
   overflow: hidden;
   overflow-y: scroll;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
-.clickable:hover {
-  cursor: pointer;
-  text-decoration: underline;
+.clickable {
+  transition: 0.3s;
 }
 
+.clickable:hover {
+  cursor: pointer;
+  background-color: rgba(220, 236, 255, 0.5);
+}
+
+.seasonHeader,
 .seasonHeader:focus {
-  border: none;
+  border: none !important;
   outline: none;
 }
 
 .hidden {
   color: #b9b8b8;
+}
+
+.course_title {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.bookmark {
+  position: absolute;
+  right: 0%;
+  top: -5%;
+  z-index: 420;
 }
