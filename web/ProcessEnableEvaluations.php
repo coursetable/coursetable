@@ -13,8 +13,8 @@ if ($sbs->info['challengeTries'] >= 10) {
     echo json_encode(
         array(
         'success' => false,
-        'messages' => array('You\'ve tried the challenges too many times! Please wait a week ' .
-            'or <a href="mailto:peter@yaleplus.com">email us</a>')
+        'messages' => array('You\'ve tried the challenges too many times! Please send us' .
+            '<a href="mailto:coursetable@elilists.yale.edu">an email</a> with your netId.')
         )
     );
     exit;
@@ -47,7 +47,8 @@ if (Challenge::checkAnswer($ratings, $_POST['salt'], $_POST['answer'])) {
     echo json_encode(
         array(
         'success' => false,
-        'messages' => array('Your answers weren\'t correct! Please try again. You have a limited number of tries.')
+        'messages' => array('Your answers weren\'t correct! Please try again. You have a limited number of tries.' .
+            '(Note as of 2020F - we\'ve gotten a couple reports that this isn\'t working correctly, so please send us an email if you\'re having issues).')
         )
     );
 
