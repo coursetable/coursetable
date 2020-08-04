@@ -20,7 +20,7 @@ const SearchResultsGridItem = ({
   return (
     <Col
       md={col_width}
-      className="px-2 pt-0 pb-3"
+      className={styles.container + ' px-2 pt-0 pb-3'}
       style={{ overflow: 'hidden' }}
     >
       <div

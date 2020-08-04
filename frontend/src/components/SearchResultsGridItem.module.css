@@ -1,14 +1,26 @@
+.container {
+  transition: 0.3s;
+}
+
+.container:hover {
+  transform: scale(1.03);
+  cursor: pointer;
+}
+
+.container:hover .item_container {
+  background-color: rgba(220, 236, 255, 0.5);
+}
+
 .item_container {
   background-color: rgb(245, 245, 245);
   border-radius: 8px;
   transition: 0.3s;
 }
 
-.item_container:hover {
+/* .item_container:hover {
   background-color: rgba(220, 236, 255, 0.5);
-  /* transform: scale(1.05); */
   cursor: pointer;
-}
+} */
 
 .course_codes {
   font-weight: 500;
@@ -42,4 +54,18 @@
 
 .worksheet_btn:hover {
   transform: translateY(6px);
+}
+
+@media (hover: none) {
+  .worksheet_btn {
+    top: -6px;
+  }
+
+  .worksheet_btn:hover {
+    transform: none;
+  }
+
+  .container:hover {
+    transform: none;
+  }
 }

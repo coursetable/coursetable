@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import SearchResultsItem from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
@@ -10,16 +10,26 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResults.module.css';
 
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import Sticky from 'react-sticky-el';
 
 import { useLazyQuery } from '@apollo/react-hooks';
 import { GET_COURSE_MODAL } from '../queries/QueryStrings';
 import { preprocess_courses, flatten } from '../utilities';
+import { isSelectionNode } from 'graphql';
 
-const SearchResults = ({ data, isList, setView }) => {
-  const { width } = useWindowDimensions();
+const SearchResults = ({
+  data,
+  isList,
+  setView,
+  fetch_more,
+  setFetchMore,
+  offset,
+  setOffset,
+  setEnd,
+}) => {
+  const { height, width } = useWindowDimensions();
 
   const isMobile = width < 768;
 
@@ -54,6 +64,39 @@ const SearchResults = ({ data, isList, setView }) => {
       }
     }
   }
+
+  const renderTooltip = (props) => (
+    <Tooltip disable={width < 1024} id="button-tooltip" {...props}>
+      <small style={{ fontWeight: 600 }}>
+        {isList ? 'Grid View' : 'List View'}
+      </small>
+    </Tooltip>
+  );
+
+  // Determine if at end or not. Update Offset value
+  useEffect(() => {
+    if (data.length !== offset) {
+      if (data.length % 40 === 0) {
+        setOffset(data.length);
+        setEnd(false);
+      } else setEnd(true);
+    }
+  }, [data]);
+
+  // Fetch more courses if scroll down 80% of the page
+  useEffect(() => {
+    const results_element = document.getElementById('results_container');
+    if (!results_element) return;
+    window.onscroll = () => {
+      if (
+        !fetch_more &&
+        window.pageYOffset + height > 0.8 * results_element.clientHeight
+      ) {
+        setFetchMore(true);
+      }
+    };
+  }, []);
+
   const num_cols = width < 1024 ? 2 : 3;
   let grid_html = [];
   if (!isList) {
@@ -78,17 +121,13 @@ const SearchResults = ({ data, isList, setView }) => {
   return (
     <div>
       <Container
-        className={
-          `shadow-sm ${Styles.results_container}` + (isList ? '' : ' px-0')
-        }
+        id="results_container"
+        className={`px-0 shadow-sm ${Styles.results_container}`}
       >
         {!isMobile && (
           <Sticky>
             <Row
-              className={
-                `px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}` +
-                (isList ? '' : ' mx-auto')
-              }
+              className={`mx-auto px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
             >
               {isList ? (
                 <>
@@ -115,12 +154,20 @@ const SearchResults = ({ data, isList, setView }) => {
                 </Col>
               )}
               <Col md={2} style={{ lineHeight: '30px' }} className="d-flex">
-                <ListGridToggle isList={isList} setView={setView} />
+                <OverlayTrigger
+                  placement="left"
+                  delay={{ show: 1000, hide: 200 }}
+                  overlay={renderTooltip}
+                >
+                  <div className="d-flex ml-auto my-auto">
+                    <ListGridToggle isList={isList} setView={setView} />
+                  </div>
+                </OverlayTrigger>
               </Col>
             </Row>
           </Sticky>
         )}
-        <div className="px-2">
+        <div className={isList ? 'px-0' : 'px-2'}>
           {isList ? (
             data.map((course) => (
               <SearchResultsItem

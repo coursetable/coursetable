@@ -28,7 +28,7 @@ const SearchResultsItem = ({
   return (
     <Row
       className={
-        'px-2 py-2 justify-content-between ' + Styles.search_result_item
+        'mx-auto px-2 py-2 justify-content-between ' + Styles.search_result_item
       }
       onClick={() => {
         executeGetCourseModal({

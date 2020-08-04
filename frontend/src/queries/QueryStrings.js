@@ -17,6 +17,7 @@ export const SEARCH_COURSES = gql`
   query SearchCourses(
     $search_text: String
     $ordering: [computed_course_info_order_by!]
+    $offset: Int
     $seasons: [String!]
     $schools: [String!]
     $areas: [String!]
@@ -43,7 +44,8 @@ export const SEARCH_COURSES = gql`
         course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering
-      limit: 100
+      limit: 40
+      offset: $offset
     ) {
       course_id
       title
@@ -74,6 +76,7 @@ export const SEARCH_COURSES = gql`
 export const SEARCH_COURSES_TEXTLESS = gql`
   query SearchCoursesTextless(
     $ordering: [computed_course_info_order_by!]
+    $offset: Int
     $seasons: [String!]
     $schools: [String!]
     $areas: [String!]
@@ -99,7 +102,8 @@ export const SEARCH_COURSES_TEXTLESS = gql`
         course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering
-      limit: 100
+      limit: 40
+      offset: $offset
     ) {
       course_id
       title

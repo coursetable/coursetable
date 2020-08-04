@@ -25,7 +25,7 @@ function Searchbar({ bar_size }) {
           className={styles.search_bar}
           size={bar_size}
           type="text"
-          placeholder="Find a class..."
+          placeholder="Search Catalog..."
           ref={input}
         />
         <InputGroup.Append className={styles.search_btn_container}>
