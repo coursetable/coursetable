@@ -9,6 +9,7 @@
 
 .clickable {
   transition: 0.3s;
+  overflow: hidden;
 }
 
 .clickable:hover {
@@ -36,14 +37,13 @@
 
 .bookmark {
   position: absolute;
-  right: -5px;
-  top: -5%;
+  top: -12px;
+  right: 0%;
   z-index: 420;
-  transform: rotateZ(90deg);
   transition: 0.3s;
   justify-content: end;
 }
 
 .bookmark:hover {
-  transform: translateX(7px) rotateZ(90deg);
+  transform: translateY(6px);
 }
