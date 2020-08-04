@@ -55,8 +55,9 @@ import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-// TODO:
-//  - pagination/infinite scrolling
+// Multi-Select Animations
+import makeAnimated from 'react-select/animated';
+const animatedComponents = makeAnimated();
 
 function Search(props) {
   const { height, width } = useWindowDimensions();
@@ -76,6 +77,9 @@ function Search(props) {
   const [old_data, setOldData] = useState([]);
   const [replaced, setReplaced] = useState(true);
   const [end, setEnd] = useState(false);
+
+  //State used to rebuild DOM and reset form
+  const [form_key, setFormKey] = useState(0);
 
   var [searchType, setSearchType] = React.useState();
   const [isList, setView] = useState(true);
@@ -387,8 +391,6 @@ function Search(props) {
     }
   }
 
-  const resetForm = () => {};
-
   // ctrl/cmd-f search hotkey
   const focusSearch = (e) => {
     if (e && searchText) {
@@ -434,6 +436,13 @@ function Search(props) {
     setTooTall(searchColHeight > height);
   });
 
+  const handleResetFilters = () => {
+    setHideCancelled(true);
+    setRatingBounds([1, 5]);
+    setWorkloadBounds([1, 5]);
+    setFormKey(form_key + 1);
+  };
+
   return (
     <div className={Styles.search_base}>
       <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
@@ -455,8 +464,17 @@ function Search(props) {
                 ref={(ref) => {
                   searchCol = ref;
                 }}
+                key={form_key}
               >
-                <Row className="pt-4 px-4 pb-2">
+                <Row className="pt-2 px-4">
+                  <small
+                    className={Styles.reset_filters_btn + ' pl-1'}
+                    onClick={handleResetFilters}
+                  >
+                    Reset Filters
+                  </small>
+                </Row>
+                <Row className="pt-1 px-4 pb-2">
                   <div className={Styles.search_bar}>
                     <InputGroup className={Styles.search_input}>
                       <FormControl
@@ -473,7 +491,7 @@ function Search(props) {
                     </InputGroup>
                   </div>
                 </Row>
-                <Row className={`pt-3 pb-0 px-4 ${Styles.sort_container}`}>
+                <Row className={`py-0 px-4 ${Styles.sort_container}`}>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     Sort by{' '}
                     <Select
@@ -490,9 +508,6 @@ function Search(props) {
                   </div>
                 </Row>
                 <hr />
-                <Row className="py-0 px-4">
-                  <small onClick={resetForm}>Reset Filters</small>
-                </Row>
                 <Row className={`py-0 px-4 ${Styles.multi_selects}`}>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     Semesters{' '}
@@ -509,6 +524,7 @@ function Search(props) {
                         styles={selectStyles}
                         menuPortalTarget={document.body}
                         onChange={() => setSelected(!selected)}
+                        components={animatedComponents}
                       />
                     )}
                   </div>
@@ -528,6 +544,7 @@ function Search(props) {
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={() => setSelected(!selected)}
+                      components={animatedComponents}
                     />
                   </div>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
@@ -543,6 +560,7 @@ function Search(props) {
                       styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={() => setSelected(!selected)}
+                      components={animatedComponents}
                     />
                   </div>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
@@ -559,6 +577,7 @@ function Search(props) {
                       styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={() => setSelected(!selected)}
+                      components={animatedComponents}
                     />
                   </div>
                 </Row>

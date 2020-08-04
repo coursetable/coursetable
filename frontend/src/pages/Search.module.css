@@ -123,4 +123,14 @@
 	border-width: 5px;
 	border-style: solid;
 	border-color: #2d87f3 transparent transparent transparent;
+.reset_filters_btn {
+  color: #2d87f3;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.reset_filters_btn:hover {
+  cursor: pointer;
+  color: #2363b1;
+  /* text-decoration: underline; */
 }
