@@ -4,6 +4,8 @@ import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
+import { FcRating, FcReading } from 'react-icons/fc';
+import { AiFillStar } from 'react-icons/ai';
 
 const SearchResultsGridItem = ({
   course,
@@ -53,7 +55,7 @@ const SearchResultsGridItem = ({
           </span>
         </Row>
         <Row className="m-auto justify-content-between">
-          <Col xs="auto" className="p-0">
+          <Col xs={7} className="p-0">
             <Row className="m-auto">
               <small className={styles.one_line + ' ' + styles.small_text}>
                 {course.times_summary === 'TBA'
@@ -68,59 +70,69 @@ const SearchResultsGridItem = ({
                   : course.locations_summary}
               </small>
             </Row>
+            <Row className="m-auto">
+              <div className={tag_styles.skills_areas}>
+                {course.skills.map((skill) => (
+                  <Badge
+                    variant="secondary"
+                    className={tag_styles.tag + ' ' + tag_styles[skill]}
+                  >
+                    {skill}
+                  </Badge>
+                ))}
+                {course.areas.map((area) => (
+                  <Badge
+                    variant="secondary"
+                    className={tag_styles.tag + ' ' + tag_styles[area]}
+                  >
+                    {area}
+                  </Badge>
+                ))}
+                {course.skills.length === 0 && course.areas.length === 0 && (
+                  <Badge
+                    variant="secondary"
+                    className={tag_styles.tag + ' ' + tag_styles.none}
+                  >
+                    N/A
+                  </Badge>
+                )}
+              </div>
+            </Row>
           </Col>
-        </Row>
-        <Row className="m-auto justify-content-between">
-          <Col xs="auto" className="p-0">
-            <div className={tag_styles.skills_areas}>
-              {course.skills.map((skill) => (
-                <Badge
-                  variant="secondary"
-                  className={tag_styles.tag + ' ' + tag_styles[skill]}
+          <Col xs="auto" className="p-0 d-flex align-items-end">
+            <div>
+              <Row className="m-auto justify-content-end">
+                <div
+                  className={tag_styles.overall_rating + ' mr-1'}
+                  style={{
+                    color: course.average_rating
+                      ? ratingColormap(course.average_rating)
+                      : 'black',
+                  }}
                 >
-                  {skill}
-                </Badge>
-              ))}
-              {course.areas.map((area) => (
-                <Badge
-                  variant="secondary"
-                  className={tag_styles.tag + ' ' + tag_styles[area]}
+                  {course.average_rating
+                    ? course.average_rating.toFixed(RATINGS_PRECISION)
+                    : 'TBA'}
+                </div>
+                <AiFillStar color="#fac000" className="my-auto" />
+              </Row>
+              <Row className="m-auto justify-content-end">
+                <div
+                  className={tag_styles.workload_rating + ' mr-1'}
+                  style={{
+                    color: course.average_workload
+                      ? workloadColormap(course.average_workload)
+                      : 'black',
+                  }}
                 >
-                  {area}
-                </Badge>
-              ))}
+                  {course.average_workload
+                    ? course.average_workload.toFixed(RATINGS_PRECISION)
+                    : 'TBA'}
+                </div>
+                <FcReading className="my-auto" />
+              </Row>
             </div>
           </Col>
-          <Row className="mr-0">
-            <Col xs="auto" className="p-0">
-              <div
-                className={tag_styles.overall_rating}
-                style={
-                  course.average_rating && {
-                    color: ratingColormap(course.average_rating),
-                  }
-                }
-              >
-                {course.average_rating
-                  ? course.average_rating.toFixed(RATINGS_PRECISION)
-                  : 'TBA'}
-              </div>
-            </Col>
-            <Col xs="auto" className="pl-4 pr-0">
-              <div
-                className={tag_styles.workload_rating}
-                style={
-                  course.average_workload && {
-                    color: workloadColormap(course.average_workload),
-                  }
-                }
-              >
-                {course.average_workload
-                  ? course.average_workload.toFixed(RATINGS_PRECISION)
-                  : 'TBA'}
-              </div>
-            </Col>
-          </Row>
         </Row>
       </div>
       <div className={styles.worksheet_btn}>

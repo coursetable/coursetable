@@ -78,6 +78,10 @@
   background-color: #000000 !important;
 }
 
+.none {
+  background-color: rgb(102, 102, 102) !important;
+}
+
 .friends_count {
   display: flex;
   align-items: center;

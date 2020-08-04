@@ -57,7 +57,6 @@ const SearchResults = ({ data, isList, setView }) => {
   const num_cols = width < 1024 ? 2 : 3;
   let grid_html = [];
   if (!isList) {
-    console.log(data);
     const len = data.length;
     for (let i = 0; i < len; i += num_cols) {
       let row_elements = [];
@@ -85,7 +84,11 @@ const SearchResults = ({ data, isList, setView }) => {
               className={`px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
             >
               <Col md={4} style={{ lineHeight: '30px' }}>
-                <strong>{isList ? 'Description' : 'Search Results'}</strong>
+                <strong>
+                  {isList
+                    ? 'Description'
+                    : `Showing ${data.length} Search Results...`}
+                </strong>
               </Col>
               <Col md={2} style={{ lineHeight: '30px' }}>
                 <strong>{isList ? 'Rating' : ''}</strong>
