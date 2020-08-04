@@ -143,7 +143,7 @@ function Search(props) {
           variables: search_variables,
         });
       } else {
-        console.log(defaults);
+        // console.log(defaults);
         setSearchType('TEXTLESS');
         executeTextlessSearch({
           variables: defaults,
