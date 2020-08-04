@@ -10,7 +10,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResults.module.css';
 
-import { Container, Card, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row } from 'react-bootstrap';
 
 import Sticky from 'react-sticky-el';
 
@@ -23,7 +23,7 @@ const SearchResults = ({ data, isList, setView }) => {
 
   const isMobile = width < 768;
 
-  if (isMobile && !isList) setView(true);
+  if (isMobile && isList) setView(false);
 
   const [showModal, setShowModal] = React.useState(false);
   // const [modalCalled, setModalCalled] = React.useState(false);
@@ -77,28 +77,43 @@ const SearchResults = ({ data, isList, setView }) => {
 
   return (
     <div>
-      <Container className={`shadow-sm ${Styles.results_container}`}>
+      <Container
+        className={
+          `shadow-sm ${Styles.results_container}` + (isList ? '' : ' px-0')
+        }
+      >
         {!isMobile && (
           <Sticky>
             <Row
-              className={`px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
+              className={
+                `px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}` +
+                (isList ? '' : ' mx-auto')
+              }
             >
-              <Col md={4} style={{ lineHeight: '30px' }}>
-                <strong>
-                  {isList
-                    ? 'Description'
-                    : `Showing ${data.length} Search Results...`}
-                </strong>
-              </Col>
-              <Col md={2} style={{ lineHeight: '30px' }}>
-                <strong>{isList ? 'Rating' : ''}</strong>
-              </Col>
-              <Col md={2} style={{ lineHeight: '30px' }}>
-                <strong>{isList ? 'Workload' : ''}</strong>
-              </Col>
-              <Col md={2} style={{ lineHeight: '30px' }}>
-                <strong>{isList ? 'Areas' : ''}</strong>
-              </Col>
+              {isList ? (
+                <>
+                  <Col md={4} style={{ lineHeight: '30px' }}>
+                    <strong>{'Description'}</strong>
+                  </Col>
+                  <Col md={2} style={{ lineHeight: '30px' }}>
+                    <strong>{'Rating'}</strong>
+                  </Col>
+                  <Col md={2} style={{ lineHeight: '30px' }}>
+                    <strong>{'Workload'}</strong>
+                  </Col>
+                  <Col md={2} style={{ lineHeight: '30px' }}>
+                    <strong>{'Areas'}</strong>
+                  </Col>
+                </>
+              ) : (
+                <Col md={10} style={{ lineHeight: '30px' }}>
+                  <strong>
+                    {`Showing ${data.length} Search Result${
+                      data.length === 1 ? '' : 's'
+                    }...`}
+                  </strong>
+                </Col>
+              )}
               <Col md={2} style={{ lineHeight: '30px' }} className="d-flex">
                 <ListGridToggle isList={isList} setView={setView} />
               </Col>
@@ -116,7 +131,7 @@ const SearchResults = ({ data, isList, setView }) => {
               />
             ))
           ) : (
-            <div className="mt-3">{grid_html}</div>
+            <div className="pt-3">{grid_html}</div>
           )}
         </div>
       </Container>

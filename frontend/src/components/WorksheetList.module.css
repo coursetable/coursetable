@@ -37,7 +37,7 @@
 
 .bookmark {
   position: absolute;
-  top: -12px;
+  top: -16px;
   right: 0%;
   z-index: 420;
   transition: 0.3s;
@@ -45,5 +45,5 @@
 }
 
 .bookmark:hover {
-  transform: translateY(6px);
+  transform: translateY(10px);
 }
