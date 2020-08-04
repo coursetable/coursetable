@@ -56,7 +56,7 @@ const CourseModal = (props) => {
                         alwaysRed={false}
                         crn={listing.crn}
                         season_code={listing.season_code}
-                        bookmark={true}
+                        modal={true}
                         hasSeason={props.hasSeason}
                         className="p-0"
                       />

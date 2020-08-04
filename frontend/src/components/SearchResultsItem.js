@@ -115,7 +115,7 @@ const SearchResultsItem = ({
           alwaysRed={false}
           crn={course['course.listings'][0].crn}
           season_code={course.season_code}
-          bookmark={true}
+          modal={true}
           isMobile={isMobile}
         />
       </Col>

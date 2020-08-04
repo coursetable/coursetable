@@ -75,7 +75,7 @@ export default class WorksheetList extends React.Component {
                 alwaysRed={true}
                 crn={course.crn}
                 season_code={season}
-                bookmark={false}
+                modal={false}
                 hasSeason={this.props.hasSeason}
               />
             </div>

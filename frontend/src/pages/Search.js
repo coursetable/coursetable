@@ -71,6 +71,7 @@ function Search(props) {
   );
 
   var [searchType, setSearchType] = React.useState();
+  const [isList, setView] = useState(true);
 
   var sortby = React.useRef();
   var seasons = React.useRef();
@@ -265,7 +266,13 @@ function Search(props) {
         results = <div>Loading...</div>;
       } else {
         if (textlessData) {
-          results = <SearchResults data={textlessData.computed_course_info} />;
+          results = (
+            <SearchResults
+              data={textlessData.computed_course_info}
+              isList={isList}
+              setView={setView}
+            />
+          );
         }
       }
     }
@@ -275,7 +282,13 @@ function Search(props) {
         results = <div>Loading...</div>;
       } else {
         if (textData) {
-          results = <SearchResults data={textData.search_course_info} />;
+          results = (
+            <SearchResults
+              data={textData.search_course_info}
+              isList={isList}
+              setView={setView}
+            />
+          );
         }
       }
     }
