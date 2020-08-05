@@ -28,6 +28,7 @@ const SearchResults = ({
   offset,
   setOffset,
   setEnd,
+  setScroll,
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -85,9 +86,9 @@ const SearchResults = ({
   // Fetch more courses if scroll down 80% of the page
   useEffect(() => {
     const results_element = document.getElementById('results_container');
-    setFetchMore(true); // Initial Search
     if (!results_element) return;
     window.onscroll = () => {
+      setScroll(window.pageYOffset);
       if (
         !fetch_more &&
         window.pageYOffset + height > 0.8 * results_element.clientHeight

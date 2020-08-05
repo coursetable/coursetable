@@ -75,8 +75,9 @@ function Search(props) {
   const [fetch_more, setFetchMore] = useState(false);
   const [offset, setOffset] = useState(0);
   const [old_data, setOldData] = useState([]);
-  const [replaced, setReplaced] = useState(true);
+  const [replaced, setReplaced] = useState(false); // Initial search
   const [end, setEnd] = useState(false);
+  const [scroll_pos, setScroll] = useState(0); // Scroll pos
 
   //State used to rebuild DOM and reset form
   const [form_key, setFormKey] = useState(0);
@@ -179,6 +180,8 @@ function Search(props) {
     if (event) {
       event.preventDefault();
       //Reset states when making a new search
+      window.scrollTo({ top: scroll_pos + 1, left: 0, behavior: 'smooth' });
+      window.scrollTo({ top: scroll_pos - 1, left: 0, behavior: 'smooth' });
       setOffset(0);
       setEnd(false);
       setOldData([]);
@@ -599,6 +602,7 @@ function Search(props) {
                 offset={offset}
                 setOffset={setOffset}
                 setEnd={setEnd}
+                setScroll={setScroll}
               />
             )}
           </Col>
