@@ -13,6 +13,8 @@ import { isInWorksheet } from '../utilities';
 
 function MeDropdown(props) {
   const { user } = useUser();
+  console.log("USER:");
+  console.log(user);
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK
   };
@@ -65,9 +67,7 @@ function MeDropdown(props) {
               size={20}
               color="#007bff"
             />
-            <span onClick={handleFBClick} className={styles.collapse_text}>
-              Connect FB
-            </span>
+            <FBLoginButton/>
           </Row>
           <Row className=" pb-3 m-auto">
             {props.isLoggedIn ? (

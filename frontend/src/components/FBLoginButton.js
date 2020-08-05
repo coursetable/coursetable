@@ -1,5 +1,4 @@
 import React, { Component, useState } from 'react';
-// import { useUser } from '../user';
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 
