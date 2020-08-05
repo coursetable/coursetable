@@ -25,7 +25,7 @@ function Searchbar({ bar_size }) {
           className={styles.search_bar}
           size={bar_size}
           type="text"
-          placeholder="Find a class..."
+          placeholder="Search Catalog..."
           ref={input}
         />
         <InputGroup.Append className={styles.search_btn_container}>
@@ -33,10 +33,10 @@ function Searchbar({ bar_size }) {
             type="submit"
             variant="outline-secondary"
             className={styles.search_btn + ' p-0'}
-            style={{ width: bar_size === 'lg' ? '50px' : '35px' }}
+            style={{ width: bar_size === 'lg' ? '50px' : '38px' }}
           >
             <Row className="m-auto justify-content-center">
-              <BsSearch size={bar_size === 'lg' ? 20 : 15} className="m-auto" />
+              <BsSearch size={bar_size === 'lg' ? 20 : 16} className="m-auto" />
             </Row>
           </Button>
         </InputGroup.Append>

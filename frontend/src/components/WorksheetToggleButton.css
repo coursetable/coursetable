@@ -2,8 +2,6 @@
   background-color: transparent;
   border-width: 0;
   transition: 0.3s !important;
-  padding-top: 2px !important;
-  /* padding: 2px 0 0 0 !important; */
 }
 
 .btn-toggle:hover {
@@ -13,4 +11,13 @@
 .btn-toggle:active,
 .btn-toggle:focus {
   box-shadow: none !important;
+}
+
+.bookmark_fill {
+  transition: 0.3s;
+}
+
+.bookmark_fill:hover {
+  transform: scale(1) !important;
+  color: rgb(250, 183, 183) !important;
 }

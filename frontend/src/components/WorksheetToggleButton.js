@@ -54,19 +54,17 @@ const WorksheetToggleButton = (props) => {
   return (
     <Button
       variant="toggle"
-      className={props.bookmark ? 'p-0' : ''}
+      className={'p-0 ' + (props.modal ? '' : 'bookmark_fill')}
       onClick={toggleWorkSheet}
     >
-      {props.bookmark ? (
-        inWorksheet ? (
-          <BsBookmarkFill color="red" size={25} />
-        ) : (
-          <BsBookmark color="#3087ff" size={25} />
-        )
-      ) : inWorksheet ? (
-        <BsBookmarkDash color="red" size={20} />
+      {inWorksheet ? (
+        <BsBookmarkFill
+          className={props.modal ? '' : 'bookmark_fill'}
+          color="#ff6969"
+          size={25}
+        />
       ) : (
-        <BsBookmarkPlus color="green" size={20} />
+        <BsBookmark color="#ff6969" size={25} />
       )}
     </Button>
   );

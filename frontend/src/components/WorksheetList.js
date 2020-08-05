@@ -66,18 +66,21 @@ export default class WorksheetList extends React.Component {
       );
       parsed_courses[season].forEach((course) => {
         items.push(
-          <ListGroup.Item key={id++}>
-            <Row className="align-items-center">
-              <Col xs="auto" className="px-0 my-auto">
-                <Row className="m-auto">
-                  <WorksheetToggleButton
-                    alwaysRed={true}
-                    crn={course.crn}
-                    season_code={season}
-                    bookmark={false}
-                    hasSeason={this.props.hasSeason}
-                  />
-                </Row>
+          <ListGroup.Item
+            key={id++}
+            className={styles.clickable + ' py-1 px-2'}
+          >
+            <div className={styles.bookmark}>
+              <WorksheetToggleButton
+                alwaysRed={true}
+                crn={course.crn}
+                season_code={season}
+                modal={false}
+                hasSeason={this.props.hasSeason}
+              />
+            </div>
+            <Row className="align-items-center mx-auto">
+              <Col xs="auto" className="pl-0 pr-2 my-auto">
                 <Row className="m-auto">
                   <WorksheetHideButton
                     toggleCourse={this.props.toggleCourse}
@@ -91,14 +94,16 @@ export default class WorksheetList extends React.Component {
                   (this.isHidden(season, course.crn)
                     ? styles.hidden + ' '
                     : '') +
-                  styles.clickable +
-                  ' pr-3 pl-0'
+                  // styles.clickable +
+                  ' px-0'
                 }
                 onClick={() => this.showModal(course)}
               >
                 <strong>{course['course_code']}</strong>
                 <br />
-                {course['course.title']}
+                <span className={styles.course_title}>
+                  {course['course.title']}
+                </span>
               </Col>
             </Row>
           </ListGroup.Item>

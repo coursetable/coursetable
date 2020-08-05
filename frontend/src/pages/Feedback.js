@@ -10,6 +10,8 @@ const animatedComponents = makeAnimated();
 function Feedback() {
   const [validated, setValidated] = useState(false);
   const [isBug, setIsBug] = useState(true);
+  const submission_endpoint =
+    'https://api.formcake.com/api/form/aaa0fe2f-df06-457d-8510-ef386265d48d/submission';
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
@@ -27,19 +29,26 @@ function Feedback() {
       <p className={styles.feedback_description + ' mb-3 text-muted'}>
         Feedback Form Description
       </p>
-      <Form noValidate validated={validated} onSubmit={handleSubmit}>
+      <Form
+        noValidate
+        validated={validated}
+        onSubmit={handleSubmit}
+        method="POST"
+        action={submission_endpoint}
+      >
         <Form.Group className={styles.form_group}>
           <Form.Label className={styles.form_label}>
             Feedback Type<span style={{ color: '#ff5e5e' }}>{' *'}</span>
           </Form.Label>
           <Select
-            defaultValue={{ value: 'bug', label: 'Bug Report' }}
+            defaultValue={{ value: 'bug report', label: 'Bug Report' }}
             options={[
-              { value: 'bug', label: 'Bug Report' },
-              { value: 'feature', label: 'Feature Request' },
-              { value: 'other', label: 'Other Comments for the Team' },
+              { value: 'Bug Report', label: 'Bug Report' },
+              { value: 'Feature Request', label: 'Feature Request' },
+              { value: 'Other', label: 'Other Comments for the Team' },
             ]}
             onChange={(option) => setIsBug(option.value === 'bug')}
+            name="feedback_type"
           />
         </Form.Group>
 
@@ -52,6 +61,7 @@ function Feedback() {
               </Form.Label>
               <Form.Control
                 type="text"
+                name="course"
                 placeholder="e.g. CPSC 323 Spring, 2020"
               />
             </Form.Group>
@@ -62,18 +72,19 @@ function Feedback() {
               </Form.Label>
               <Select
                 isMulti
+                name="page[]"
                 components={animatedComponents}
                 options={[
-                  { value: 'login', label: 'Login' },
-                  { value: 'home', label: 'Home' },
-                  { value: 'catalog', label: 'Catalog' },
-                  { value: 'worksheet', label: 'Worksheet' },
-                  { value: 'about', label: 'About' },
-                  { value: 'faq', label: 'FAQ' },
-                  { value: 'changelog', label: 'Changelog' },
-                  { value: 'feedback', label: 'Feedback' },
-                  { value: 'join', label: 'Join Us' },
-                  { value: 'other', label: 'Other (Describe Below)' },
+                  { value: 'Login', label: 'Login' },
+                  { value: 'Home', label: 'Home' },
+                  { value: 'Catalog', label: 'Catalog' },
+                  { value: 'Worksheet', label: 'Worksheet' },
+                  { value: 'About', label: 'About' },
+                  { value: 'Faq', label: 'FAQ' },
+                  { value: 'Changelog', label: 'Changelog' },
+                  { value: 'Feedback', label: 'Feedback' },
+                  { value: 'Join', label: 'Join Us' },
+                  { value: 'Other', label: 'Other (Describe Below)' },
                 ]}
               />
             </Form.Group>
@@ -84,18 +95,22 @@ function Feedback() {
               </Form.Label>
               <Select
                 isMulti
+                name="system[]"
                 components={animatedComponents}
                 options={[
-                  { value: 'chrome', label: 'Chrome' },
-                  { value: 'safari', label: 'Safari' },
-                  { value: 'ie', label: 'Internet Explorer/Microsoft Edge' },
-                  { value: 'firefox', label: 'Firefox' },
-                  { value: 'mac', label: 'MacOS' },
-                  { value: 'idevice', label: 'iPhone/iPad' },
-                  { value: 'windows', label: 'Windows' },
-                  { value: 'linux', label: 'Linux' },
-                  { value: 'android', label: 'Android phone/tablet' },
-                  { value: 'other', label: 'Other (Describe Below)' },
+                  { value: 'Chrome', label: 'Chrome' },
+                  { value: 'Safari', label: 'Safari' },
+                  {
+                    value: 'IE/Edge',
+                    label: 'Internet Explorer/Microsoft Edge',
+                  },
+                  { value: 'Firefox', label: 'Firefox' },
+                  { value: 'Mac', label: 'MacOS' },
+                  { value: 'iPhone/iPad', label: 'iPhone/iPad' },
+                  { value: 'Windows', label: 'Windows' },
+                  { value: 'Linux', label: 'Linux' },
+                  { value: 'Android', label: 'Android phone/tablet' },
+                  { value: 'Other', label: 'Other (Describe Below)' },
                 ]}
               />
             </Form.Group>
@@ -108,7 +123,11 @@ function Feedback() {
                   We may contact you if further details are required
                 </span>
               </Form.Label>
-              <Form.Control type="email" placeholder="name@yale.edu" />
+              <Form.Control
+                type="email"
+                name="email"
+                placeholder="name@yale.edu"
+              />
             </Form.Group>
           </div>
         </Collapse>
@@ -126,6 +145,7 @@ function Feedback() {
           <Form.Control
             required
             as="textarea"
+            name="description"
             rows="4"
             placeholder="What's Up?"
           />

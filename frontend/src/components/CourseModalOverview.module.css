@@ -39,3 +39,10 @@
   transition-delay: 0.2s;
   font-weight: 500;
 }
+
+@media (hover: none) {
+  .rating_bubble:hover {
+    max-height: 24px;
+    transition: max-height 0s;
+  }
+}

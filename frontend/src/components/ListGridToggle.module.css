@@ -1,0 +1,19 @@
+.btn_container {
+  padding: 7.5px;
+  border-radius: 15px;
+  transition: background-color 0.3s;
+}
+
+.btn_container:hover {
+  cursor: pointer;
+  background-color: rgb(243, 243, 243);
+}
+
+.btn_container:hover .btn {
+  color: #007bff;
+}
+
+.btn {
+  color: rgba(1, 1, 1, 0.6);
+  transition: color 0.3s;
+}

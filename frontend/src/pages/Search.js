@@ -55,8 +55,9 @@ import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-// TODO:
-//  - pagination/infinite scrolling
+// Multi-Select Animations
+import makeAnimated from 'react-select/animated';
+const animatedComponents = makeAnimated();
 
 function Search(props) {
   const { height, width } = useWindowDimensions();
@@ -70,7 +71,18 @@ function Search(props) {
       : null
   );
 
+  // States involved in infinite scroll
+  const [fetch_more, setFetchMore] = useState(false);
+  const [offset, setOffset] = useState(0);
+  const [old_data, setOldData] = useState([]);
+  const [replaced, setReplaced] = useState(true);
+  const [end, setEnd] = useState(false);
+
+  //State used to rebuild DOM and reset form
+  const [form_key, setFormKey] = useState(0);
+
   var [searchType, setSearchType] = React.useState();
+  const [isList, setView] = useState(true);
 
   var sortby = React.useRef();
   var seasons = React.useRef();
@@ -117,6 +129,7 @@ function Search(props) {
 
   const defaults = {
     ordering: sortbyQueries[[sortbyOptions[0].value]],
+    offset: 0, // Always 0 when searching from home or worksheet
     seasons: seasonsOptions
       ? [seasonsOptions[0]].map((x) => x.value)
       : ['202003'],
@@ -132,6 +145,14 @@ function Search(props) {
   };
 
   useEffect(() => {
+    // Fetch more courses if scroll to bottom and there are still courses
+    if (fetch_more && !end) {
+      setReplaced(false); // Haven't stored old courses yet
+      handleSubmit(); // Perform query
+    }
+  }, [fetch_more]);
+
+  useEffect(() => {
     if (default_search) {
       if (searchText.value) {
         const search_variables = Object.assign(
@@ -143,7 +164,7 @@ function Search(props) {
           variables: search_variables,
         });
       } else {
-        console.log(defaults);
+        // console.log(defaults);
         setSearchType('TEXTLESS');
         executeTextlessSearch({
           variables: defaults,
@@ -154,7 +175,17 @@ function Search(props) {
   }, []);
 
   const handleSubmit = (event) => {
-    event.preventDefault();
+    let offset2 = -1;
+    if (event) {
+      event.preventDefault();
+      //Reset states when making a new search
+      setOffset(0);
+      setEnd(false);
+      setOldData([]);
+      setReplaced(true);
+      setFetchMore(false);
+      offset2 = 0; // Account for reset state lag
+    }
 
     var sortParams = sortby.select.props.value.value;
 
@@ -230,6 +261,7 @@ function Search(props) {
     }
     const search_variables = {
       ordering: ordering,
+      offset: offset2 === -1 ? offset : offset2,
       seasons: processedSeasons,
       areas: processedAreas,
       skills: processedSkills,
@@ -262,20 +294,98 @@ function Search(props) {
   if (searchType === 'TEXTLESS') {
     if (textlessCalled) {
       if (textlessLoading) {
-        results = <div>Loading...</div>;
+        if (!offset) results = <div>Loading...</div>;
+        // Keep old courses until new courses are fetched
+        else
+          results = (
+            <SearchResults
+              data={old_data}
+              isList={isList}
+              setView={setView}
+              fetch_more={fetch_more}
+              setFetchMore={setFetchMore}
+              offset={offset}
+              setOffset={setOffset}
+              replaced={replaced}
+              setReplaced={setReplaced}
+              setEnd={setEnd}
+            />
+          );
       } else {
         if (textlessData) {
-          results = <SearchResults data={textlessData.computed_course_info} />;
+          // Combine old courses with new fetched courses
+          let new_data = [...old_data].concat(
+            textlessData.computed_course_info
+          );
+          // Replace old with new
+          if (!replaced) {
+            setOldData(new_data);
+            setReplaced(true);
+            setFetchMore(false); // Don't fetch more until new courses are loaded
+          }
+          // Load new courses
+          results = (
+            <SearchResults
+              data={new_data}
+              isList={isList}
+              setView={setView}
+              fetch_more={fetch_more}
+              setFetchMore={setFetchMore}
+              offset={offset}
+              setOffset={setOffset}
+              replaced={replaced}
+              setReplaced={setReplaced}
+              setEnd={setEnd}
+            />
+          );
         }
       }
     }
   } else if (searchType === 'TEXT') {
     if (textCalled) {
       if (textLoading) {
-        results = <div>Loading...</div>;
+        if (!offset) results = <div>Loading...</div>;
+        // Keep old courses until new courses are fetched
+        else
+          results = (
+            <SearchResults
+              data={old_data}
+              isList={isList}
+              setView={setView}
+              fetch_more={fetch_more}
+              setFetchMore={setFetchMore}
+              offset={offset}
+              setOffset={setOffset}
+              replaced={replaced}
+              setReplaced={setReplaced}
+              setEnd={setEnd}
+            />
+          );
       } else {
         if (textData) {
-          results = <SearchResults data={textData.search_course_info} />;
+          // Combine old courses with new fetched courses
+          let new_data = [...old_data].concat(textData.search_course_info);
+          // Replace old with new
+          if (!replaced) {
+            setOldData(new_data);
+            setReplaced(true);
+            setFetchMore(false); // Don't fetch more until new courses are loaded
+          }
+          // Load new courses
+          results = (
+            <SearchResults
+              data={new_data}
+              isList={isList}
+              setView={setView}
+              fetch_more={fetch_more}
+              setFetchMore={setFetchMore}
+              offset={offset}
+              setOffset={setOffset}
+              replaced={replaced}
+              setReplaced={setReplaced}
+              setEnd={setEnd}
+            />
+          );
         }
       }
     }
@@ -283,8 +393,10 @@ function Search(props) {
 
   // ctrl/cmd-f search hotkey
   const focusSearch = (e) => {
-    e.preventDefault();
-    searchText.focus();
+    if (e && searchText) {
+      e.preventDefault();
+      searchText.focus();
+    }
   };
 
   const keyMap = {
@@ -324,6 +436,13 @@ function Search(props) {
     setTooTall(searchColHeight > height);
   });
 
+  const handleResetFilters = () => {
+    setHideCancelled(true);
+    setRatingBounds([1, 5]);
+    setWorkloadBounds([1, 5]);
+    setFormKey(form_key + 1);
+  };
+
   return (
     <div className={Styles.search_base}>
       <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
@@ -345,8 +464,17 @@ function Search(props) {
                 ref={(ref) => {
                   searchCol = ref;
                 }}
+                key={form_key}
               >
-                <Row className="pt-4 px-4 pb-2">
+                <Row className="pt-2 px-4">
+                  <small
+                    className={Styles.reset_filters_btn + ' pl-1'}
+                    onClick={handleResetFilters}
+                  >
+                    Reset Filters
+                  </small>
+                </Row>
+                <Row className="pt-1 px-4 pb-2">
                   <div className={Styles.search_bar}>
                     <InputGroup className={Styles.search_input}>
                       <FormControl
@@ -363,7 +491,7 @@ function Search(props) {
                     </InputGroup>
                   </div>
                 </Row>
-                <Row className={`pt-3 pb-0 px-4 ${Styles.sort_container}`}>
+                <Row className={`py-0 px-4 ${Styles.sort_container}`}>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     Sort by{' '}
                     <Select
@@ -396,6 +524,7 @@ function Search(props) {
                         styles={selectStyles}
                         menuPortalTarget={document.body}
                         onChange={() => setSelected(!selected)}
+                        components={animatedComponents}
                       />
                     )}
                   </div>
@@ -415,6 +544,7 @@ function Search(props) {
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={() => setSelected(!selected)}
+                      components={animatedComponents}
                     />
                   </div>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
@@ -430,6 +560,7 @@ function Search(props) {
                       styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={() => setSelected(!selected)}
+                      components={animatedComponents}
                     />
                   </div>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
@@ -446,6 +577,7 @@ function Search(props) {
                       styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={() => setSelected(!selected)}
+                      components={animatedComponents}
                     />
                   </div>
                 </Row>

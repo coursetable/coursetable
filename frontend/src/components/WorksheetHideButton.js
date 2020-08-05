@@ -14,7 +14,7 @@ const WorksheetHideButton = (props) => {
   }
   const button_size = 20;
   return (
-    <Button variant="toggle" onClick={toggleWorkSheet}>
+    <Button variant="toggle" onClick={toggleWorkSheet} className="p-0">
       {hidden ? (
         <FiSquare color="#d6d6d6" size={button_size} />
       ) : (
