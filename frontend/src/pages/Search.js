@@ -191,7 +191,9 @@ function Search(props) {
 
     var ordering = sortbyQueries[sortParams];
 
-    var processedSeasons = seasons.select.props.value;
+    var processedSeasons = seasons.select
+      ? seasons.select.props.value
+      : ['201803'];
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
         return x.value;
@@ -296,21 +298,6 @@ function Search(props) {
       if (textlessLoading) {
         if (!offset) results = <div>Loading...</div>;
         // Keep old courses until new courses are fetched
-        else
-          results = (
-            <SearchResults
-              data={old_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
       } else {
         if (textlessData) {
           // Combine old courses with new fetched courses
@@ -323,21 +310,6 @@ function Search(props) {
             setReplaced(true);
             setFetchMore(false); // Don't fetch more until new courses are loaded
           }
-          // Load new courses
-          results = (
-            <SearchResults
-              data={new_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
         }
       }
     }
@@ -345,22 +317,6 @@ function Search(props) {
     if (textCalled) {
       if (textLoading) {
         if (!offset) results = <div>Loading...</div>;
-        // Keep old courses until new courses are fetched
-        else
-          results = (
-            <SearchResults
-              data={old_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
       } else {
         if (textData) {
           // Combine old courses with new fetched courses
@@ -371,21 +327,6 @@ function Search(props) {
             setReplaced(true);
             setFetchMore(false); // Don't fetch more until new courses are loaded
           }
-          // Load new courses
-          results = (
-            <SearchResults
-              data={new_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
         }
       }
     }
@@ -646,7 +587,20 @@ function Search(props) {
                 : 'pl-2 py-3 pr-3 ' + Styles.results_col)
             }
           >
-            {results}
+            {results ? (
+              results
+            ) : (
+              <SearchResults
+                data={old_data}
+                isList={isList}
+                setView={setView}
+                fetch_more={fetch_more}
+                setFetchMore={setFetchMore}
+                offset={offset}
+                setOffset={setOffset}
+                setEnd={setEnd}
+              />
+            )}
           </Col>
         </Row>
       </HotKeys>

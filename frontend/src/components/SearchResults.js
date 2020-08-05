@@ -75,17 +75,17 @@ const SearchResults = ({
 
   // Determine if at end or not. Update Offset value
   useEffect(() => {
-    if (data.length !== offset) {
-      if (data.length % 40 === 0) {
-        setOffset(data.length);
-        setEnd(false);
-      } else setEnd(true);
+    if (data.length !== offset && data.length % 40 === 0) {
+      setOffset(data.length);
     }
+    if (data.length % 40 === 0) setEnd(false);
+    else setEnd(true);
   }, [data]);
 
   // Fetch more courses if scroll down 80% of the page
   useEffect(() => {
     const results_element = document.getElementById('results_container');
+    setFetchMore(true); // Initial Search
     if (!results_element) return;
     window.onscroll = () => {
       if (
