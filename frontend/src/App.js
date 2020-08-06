@@ -12,7 +12,6 @@ import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import SeasonsProvider from './components/SeasonsProvider';
 
 import Landing from './pages/Landing';
-import Login from './pages/Login';
 import Home from './pages/Home';
 
 import Search from './pages/Search';
@@ -104,11 +103,6 @@ function App() {
                 ) : (
                   <Redirect to="/login" />
                 )}
-              </MyRoute>
-
-              {/* Private Routes */}
-              <MyRoute isRoutePrivate={true} exact path="/">
-                <p>hi this is some content</p>
               </MyRoute>
 
               {/* Footer Links */}

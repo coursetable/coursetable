@@ -85,7 +85,7 @@ const SearchResults = ({
     }
     if (data.length % 40 === 0) setEnd(false);
     else setEnd(true);
-  }, [data]);
+  }, [data, setOffset, setEnd]);
 
   // Fetch more courses if scroll down 80% of the page
   useEffect(() => {
