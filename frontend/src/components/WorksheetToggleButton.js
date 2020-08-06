@@ -1,11 +1,6 @@
 import React, { useState } from 'react';
 import './WorksheetToggleButton.css';
-import {
-  BsBookmark,
-  BsBookmarkFill,
-  BsBookmarkDash,
-  BsBookmarkPlus,
-} from 'react-icons/bs';
+import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useUser } from '../user';

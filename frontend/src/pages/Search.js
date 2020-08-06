@@ -4,8 +4,6 @@ import { HotKeys } from 'react-hotkeys';
 
 import Styles from './Search.module.css';
 
-import chroma from 'chroma-js';
-
 import SearchResults from '../components/SearchResults';
 
 import {

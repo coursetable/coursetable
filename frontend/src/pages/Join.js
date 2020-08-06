@@ -54,6 +54,7 @@ function Join() {
               { value: 'Frontend', label: 'Front-end Developer' },
               { value: 'Backend', label: 'Back-end Developer' },
               { value: 'Design', label: 'Designer' },
+              { value: 'Other', label: 'Other' },
             ]}
             placeholder={'Role(s) of Interest'}
           />

@@ -1,6 +1,5 @@
 import React from 'react';
 import { BsChevronDoubleDown } from 'react-icons/bs';
-import { FaFacebookSquare } from 'react-icons/fa';
 import { Button, Row, Col, Container } from 'react-bootstrap';
 import { Element, animateScroll as scroll, scroller } from 'react-scroll';
 import { Link } from 'react-router-dom';

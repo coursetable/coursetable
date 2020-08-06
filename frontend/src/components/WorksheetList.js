@@ -5,10 +5,6 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 
 export default class WorksheetList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   setSeason = (season_code) => {
     this.props.onSeasonChange(season_code);
   };

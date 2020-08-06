@@ -1,18 +1,9 @@
 import React from 'react';
 
-import {
-  Accordion,
-  Card,
-  Container,
-  Button,
-  Row,
-  Col,
-  Badge,
-} from 'react-bootstrap';
+import { Row, Col, Badge } from 'react-bootstrap';
 
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 
-import { BsBookmarkPlus } from 'react-icons/bs';
 import WorksheetToggleButton from './WorksheetToggleButton';
 
 import Styles from './SearchResultsItem.module.css';
