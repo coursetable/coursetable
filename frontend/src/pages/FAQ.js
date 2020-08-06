@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Accordion, Row, Col, Card } from 'react-bootstrap';
+import { Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import styles from './FAQ.module.css';

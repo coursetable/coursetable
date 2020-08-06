@@ -90,7 +90,7 @@ export default class WorksheetList extends React.Component {
                   (this.isHidden(season, course.crn)
                     ? styles.hidden + ' '
                     : '') +
-                  // styles.clickable +
+                  styles.clickable +
                   ' px-0'
                 }
                 onClick={() => this.showModal(course)}

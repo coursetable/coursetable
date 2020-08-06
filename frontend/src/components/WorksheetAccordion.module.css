@@ -23,7 +23,12 @@
 }
 
 .toggle {
-  background-color: white !important;
+  background-color: white;
+  transition: 0.3s;
+}
+
+.accordion_hover_header_active {
+  background-color: rgb(239, 245, 255);
 }
 
 .card {

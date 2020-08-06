@@ -184,9 +184,10 @@ function Search(props) {
     let offset2 = -1;
     if (event) {
       event.preventDefault();
-      //Reset states when making a new search
+      // Scroll to trigger search results load...wack
       window.scrollTo({ top: scroll_pos + 1, left: 0, behavior: 'smooth' });
       window.scrollTo({ top: scroll_pos - 1, left: 0, behavior: 'smooth' });
+      //Reset states when making a new search
       setOffset(0);
       setEnd(false);
       setOldData([]);

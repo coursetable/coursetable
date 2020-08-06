@@ -1,11 +1,64 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import moment from 'moment';
 import styles from './WorksheetAccordion.module.css';
 import tagStyles from './SearchResultsItem.module.css';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
+import AccordionContext from 'react-bootstrap/AccordionContext';
+import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import SeasonDropdown from './SeasonDropdown';
 import FBDropdown from './FBDropdown';
 import CourseModal from '../components/CourseModal';
+
+function ContextAwareToggle({ eventKey, callback, course }) {
+  const currentEventKey = useContext(AccordionContext);
+
+  const decoratedOnClick = useAccordionToggle(
+    eventKey,
+    () => callback && callback(eventKey)
+  );
+
+  const isCurrentEventKey = currentEventKey === eventKey;
+
+  const trim = (time_string) => {
+    for (let i = 0; i < time_string.length; i++) {
+      if (time_string[i] >= '0' && time_string[i] <= '9')
+        return time_string.substr(i, time_string.length - i);
+    }
+  };
+
+  return (
+    <div
+      className={
+        styles.toggle +
+        ' ' +
+        (!isCurrentEventKey ? '' : styles.accordion_hover_header_active)
+      }
+      onClick={decoratedOnClick}
+    >
+      <Row className={styles.header + ' p-2 mx-auto'}>
+        <Col xs="auto" style={{ fontWeight: 500 }}>
+          <Row>{course.course_code}</Row>
+          <Row>
+            <small className="text-muted">
+              {/* <a
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        href={course['location_url']}
+                        className={styles.location_url + ' text-muted'}
+                      >
+                        {course['course.locations_summary']}
+                      </a> */}
+              {course['course.locations_summary']}
+            </small>
+          </Row>
+        </Col>
+        <Col xs="auto" className="p-0 text-muted">
+          {trim(course['course.times_summary'])}
+        </Col>
+      </Row>
+    </div>
+  );
+}
 
 export default class WorksheetAccordion extends React.Component {
   constructor(props) {
@@ -53,13 +106,6 @@ export default class WorksheetAccordion extends React.Component {
     return parsed_courses;
   };
 
-  trim = (time_string) => {
-    for (let i = 0; i < time_string.length; i++) {
-      if (time_string[i] >= '0' && time_string[i] <= '9')
-        return time_string.substr(i, time_string.length - i);
-    }
-  };
-
   buildHtml = (parsed_courses) => {
     let today = new Date().getDay();
     if (today === 0 || today === 6) today = 1;
@@ -80,37 +126,11 @@ export default class WorksheetAccordion extends React.Component {
       );
       day.forEach((course) => {
         accordion_items.push(
-          <Card key={++id} className={styles.card + ' px-1'}>
-            <Accordion.Toggle
-              as={Card.Header}
-              className={styles.toggle}
-              eventKey={++id}
-            >
-              <Row className={styles.header}>
-                <Col xs="auto" style={{ fontWeight: 500 }}>
-                  <Row>{course.course_code}</Row>
-                  <Row>
-                    <small className="text-muted">
-                      {/* <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={course['location_url']}
-                        className={styles.location_url + ' text-muted'}
-                      >
-                        {course['course.locations_summary']}
-                      </a> */}
-                      {course['course.locations_summary']}
-                    </small>
-                  </Row>
-                </Col>
-                <Col xs="auto" className="p-0 text-muted">
-                  {this.trim(course['course.times_summary'])}
-                </Col>
-              </Row>
-            </Accordion.Toggle>
+          <Card key={++id} className={styles.card + ' px-0'}>
+            <ContextAwareToggle eventKey={++id} course={course} />
             <Accordion.Collapse eventKey={id}>
-              <Card.Body>
-                <Row>
+              <Card.Body className="px-2 pt-2 pb-3">
+                <Row className="m-auto">
                   <Col className="p-0">
                     <strong>{course['course.title']}</strong>
                   </Col>
@@ -137,11 +157,14 @@ export default class WorksheetAccordion extends React.Component {
                     )}
                   </Col>
                 </Row>
-                <Row className="pb-2 text-muted" style={{ fontWeight: 500 }}>
+                <Row
+                  className="mx-auto pb-2 text-muted"
+                  style={{ fontWeight: 500 }}
+                >
                   {course.professors}
                 </Row>
-                <Row>{course['course.description']}</Row>
-                <Row>
+                <Row className="m-auto">{course['course.description']}</Row>
+                <Row className="m-auto">
                   <strong
                     onClick={() => this.showModal(course)}
                     className={styles.more_info + ' mt-2'}
