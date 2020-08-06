@@ -65,6 +65,11 @@
   width: 100%;
   border-radius: 0px 0px 8px 8px !important;
   padding: 0.5rem !important;
+  transition: 0.3s;
+}
+
+.secondary_submit:hover {
+  background-color: #2670ca !important;
 }
 
 .toggle_row {
@@ -139,8 +144,7 @@
 
 .reset_filters_btn:hover {
   cursor: pointer;
-  color: #002ca7f5;
-  /* text-decoration: underline; */
+  color: #2670ca;
 }
 
 .up_btn {

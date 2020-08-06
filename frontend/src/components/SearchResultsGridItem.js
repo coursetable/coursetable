@@ -4,8 +4,10 @@ import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
-import { FcRating, FcReading } from 'react-icons/fc';
+import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
+import { IoMdSunny } from 'react-icons/io';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
 
 const SearchResultsGridItem = ({
   course,
@@ -16,6 +18,23 @@ const SearchResultsGridItem = ({
 }) => {
   const RATINGS_PRECISION = 1;
   const col_width = 12 / num_cols;
+  const season_code = course.season_code;
+  const season = season_code[5];
+  const year = season_code.substr(2, 2);
+  const icon_size = 13;
+  const seasons = ['spring', 'summer', 'fall'];
+  const icon =
+    season === '1' ? (
+      <FcCloseUpMode className="my-auto" size={icon_size} />
+    ) : season === '2' ? (
+      <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
+    ) : (
+      <FaCanadianMapleLeaf
+        color="#9c0000"
+        className="my-auto"
+        size={icon_size}
+      />
+    );
 
   return (
     <Col
@@ -33,12 +52,32 @@ const SearchResultsGridItem = ({
           });
           setShowModal(true);
         }}
-        className={styles.one_line + ' ' + styles.item_container + ' p-3'}
+        className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
       >
         <Row className="m-auto">
-          <small className={styles.one_line + ' ' + styles.course_codes}>
-            {course.course_codes ? course.course_codes.join(' • ') : ''}
-          </small>
+          <Col xs={8} className="p-0">
+            <Row className="mx-auto mt-3">
+              <small className={styles.one_line + ' ' + styles.course_codes}>
+                {course.course_codes ? course.course_codes.join(' • ') : ''}
+              </small>
+            </Row>
+          </Col>
+          <Col xs={4} className="p-0">
+            <Row className="m-auto">
+              <div
+                className={
+                  styles.season_tag +
+                  ' ml-auto px-1 pb-0 ' +
+                  styles[seasons[parseInt(season) - 1]]
+                }
+              >
+                <Row className="m-auto">
+                  {icon}
+                  <small style={{ fontWeight: 550 }}>&nbsp;{"'" + year}</small>
+                </Row>
+              </div>
+            </Row>
+          </Col>
         </Row>
         <Row className="m-auto">
           <strong className={styles.one_line}>
@@ -112,7 +151,7 @@ const SearchResultsGridItem = ({
                 >
                   {course.average_rating
                     ? course.average_rating.toFixed(RATINGS_PRECISION)
-                    : 'TBA'}
+                    : 'N/A'}
                 </div>
                 <AiFillStar color="#fac000" className="my-auto" />
               </Row>
@@ -127,7 +166,7 @@ const SearchResultsGridItem = ({
                 >
                   {course.average_workload
                     ? course.average_workload.toFixed(RATINGS_PRECISION)
-                    : 'TBA'}
+                    : 'N/A'}
                 </div>
                 <FcReading className="my-auto" />
               </Row>

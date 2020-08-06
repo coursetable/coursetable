@@ -1,7 +1,7 @@
 .search_result_item {
   border: 0px !important;
-  border-radius: 8px !important;
   background-color: white !important;
+  transition: 0.3s;
 }
 
 .search_result_item:hover {

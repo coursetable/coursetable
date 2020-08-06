@@ -18,7 +18,7 @@ const WorksheetToggleButton = (props) => {
     user.worksheet
   );
   if (inWorksheet !== update) setInWorksheet(update);
-  if (user.worksheet === null) return <div>Signin</div>;
+  if (user.worksheet === null) return <div className="mt-1">N/A</div>;
 
   function add_remove_course() {
     let add_remove;

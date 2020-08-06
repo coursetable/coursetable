@@ -102,7 +102,7 @@ const SearchResults = ({
     };
   }, []);
 
-  const num_cols = width < 1024 ? 2 : 3;
+  const num_cols = width < 1100 ? 2 : 3;
   let grid_html = [];
   if (!isList) {
     const len = data.length;
