@@ -12,7 +12,7 @@ const WorksheetHideButton = (props) => {
     props.toggleCourse(props.season_code, props.crn, temp);
     // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
-  const button_size = 20;
+  const button_size = 18;
   return (
     <Button variant="toggle" onClick={toggleWorkSheet} className="p-0">
       {hidden ? (

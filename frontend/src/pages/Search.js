@@ -401,7 +401,7 @@ function Search(props) {
                 : `pr-2 py-3 pl-3 ${Styles.search_col}`
             }
           >
-            <Sticky disabled={isMobile || tooTall}>
+            <div className={!isMobile && !tooTall ? Styles.sticky : ''}>
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
                 onSubmit={handleSubmit}
@@ -410,7 +410,7 @@ function Search(props) {
                 }}
                 key={form_key}
               >
-                <Row className="pt-2 px-4">
+                <Row className="pt-3 px-4">
                   <small
                     className={Styles.reset_filters_btn + ' pl-1'}
                     onClick={handleResetFilters}
@@ -418,7 +418,7 @@ function Search(props) {
                     Reset Filters
                   </small>
                 </Row>
-                <Row className="pt-1 px-4 pb-2">
+                <Row className="pt-2 px-4 pb-2">
                   <div className={Styles.search_bar}>
                     <InputGroup className={Styles.search_input}>
                       <FormControl
@@ -577,7 +577,7 @@ function Search(props) {
                   </Button>
                 </Row>
               </Form>
-            </Sticky>
+            </div>
           </Col>
           <Col
             md={8}

@@ -1,26 +1,32 @@
 .results_container {
-	border-radius: 8px;
-	background: white;
+  border-radius: 8px;
+  background: white;
 }
 
 .results_header {
-	background-color: white;
-	border-radius:8px;
-	left: 0;
-	right: 0;
-	z-index: 1000;
+  background-color: white;
+  border-radius: 8px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+}
+
+.sticky_header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100;
 }
 
 .results_header_row {
-	border: 0px !important;
-	background-color: white !important;
-	border-radius: 8px 8px 0px 0px !important;
+  border: 0px !important;
+  background-color: white !important;
+  border-radius: 8px 8px 0px 0px !important;
 }
 
 .results_header_inner {
-	background-color: white !important;
+  background-color: white !important;
 }
 
-:global .sticky{
-	z-index: 1;
-};
+:global .sticky {
+  z-index: 1;
+}

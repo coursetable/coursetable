@@ -35,6 +35,7 @@ const SearchResults = ({
   const isMobile = width < 768;
 
   if (isMobile && isList) setView(false);
+  var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   const [showModal, setShowModal] = React.useState(false);
   // const [modalCalled, setModalCalled] = React.useState(false);
@@ -66,13 +67,16 @@ const SearchResults = ({
     }
   }
 
-  const renderTooltip = (props) => (
-    <Tooltip disable={width < 1024} id="button-tooltip" {...props}>
-      <small style={{ fontWeight: 600 }}>
-        {isList ? 'Grid View' : 'List View'}
-      </small>
-    </Tooltip>
-  );
+  const renderTooltip = (props) =>
+    !isTouch ? (
+      <Tooltip disable={width < 1024} id="button-tooltip" {...props}>
+        <small style={{ fontWeight: 600 }}>
+          {isList ? 'Grid View' : 'List View'}
+        </small>
+      </Tooltip>
+    ) : (
+      <div />
+    );
 
   // Determine if at end or not. Update Offset value
   useEffect(() => {
@@ -126,7 +130,7 @@ const SearchResults = ({
         className={`px-0 shadow-sm ${Styles.results_container}`}
       >
         {!isMobile && (
-          <Sticky>
+          <div className={Styles.sticky_header}>
             <Row
               className={`mx-auto px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
             >
@@ -166,7 +170,7 @@ const SearchResults = ({
                 </OverlayTrigger>
               </Col>
             </Row>
-          </Sticky>
+          </div>
         )}
         <div className={isList ? 'px-0' : 'px-2'}>
           {isList ? (
