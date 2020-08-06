@@ -12,8 +12,6 @@ import Styles from './SearchResults.module.css';
 
 import { Container, Col, Row, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
-import Sticky from 'react-sticky-el';
-
 import { useLazyQuery } from '@apollo/react-hooks';
 import { GET_COURSE_MODAL } from '../queries/QueryStrings';
 import { preprocess_courses, flatten } from '../utilities';

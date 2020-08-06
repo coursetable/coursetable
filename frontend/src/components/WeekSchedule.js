@@ -80,8 +80,16 @@ export default class WeekSchedule extends React.Component {
         defaultView={'work_week'}
         views={['work_week']}
         events={ret_values[2]}
-        min={ret_values[0].toDate()}
-        max={ret_values[1].toDate()}
+        min={
+          ret_values[0].get('hours') !== 20
+            ? ret_values[0].toDate()
+            : moment().hour(8).minute(0).toDate()
+        }
+        max={
+          ret_values[1].get('hours') !== 0
+            ? ret_values[1].toDate()
+            : moment().hour(18).minute(0).toDate()
+        }
         localizer={localizer}
         toolbar={false}
         onSelectEvent={(event) => this.showModal(event.listing)}
