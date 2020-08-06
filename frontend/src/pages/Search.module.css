@@ -18,7 +18,7 @@
 .sticky {
   position: sticky !important;
   top: 0 !important;
-  z-index: 100;
+  z-index: 420;
 }
 
 .search_container {
@@ -141,4 +141,19 @@
   cursor: pointer;
   color: #002ca7f5;
   /* text-decoration: underline; */
+}
+
+.up_btn {
+  position: fixed;
+  z-index: 420;
+  bottom: 20px;
+  right: 20px;
+  transition: 0.3s !important;
+  color: rgb(206, 206, 206);
+}
+
+.up_btn:hover {
+  cursor: pointer;
+  color: rgb(180, 180, 180);
+  transform: scale(1.1);
 }

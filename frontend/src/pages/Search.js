@@ -19,6 +19,7 @@ import {
   Button,
   Overlay,
   Tooltip,
+  Fade,
 } from 'react-bootstrap';
 
 import {
@@ -54,6 +55,8 @@ import Sticky from 'react-sticky-el';
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
+
+import { FaArrowCircleUp } from 'react-icons/fa';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -387,6 +390,11 @@ function Search(props) {
     setFormKey(form_key + 1);
   };
 
+  // Scroll to top button
+  const scroll_top = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
   return (
     <div className={Styles.search_base}>
       <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
@@ -608,6 +616,11 @@ function Search(props) {
           </Col>
         </Row>
       </HotKeys>
+      <Fade in={scroll_pos > 3 * height}>
+        <div className={Styles.up_btn}>
+          <FaArrowCircleUp timeout={1000} onClick={scroll_top} size={30} />
+        </div>
+      </Fade>
     </div>
   );
 }
