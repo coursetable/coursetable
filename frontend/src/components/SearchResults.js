@@ -29,6 +29,7 @@ const SearchResults = ({
   setOffset,
   setEnd,
   setScroll,
+  multi_seasons,
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -116,6 +117,7 @@ const SearchResults = ({
             setShowModal={setShowModal}
             executeGetCourseModal={executeGetCourseModal}
             num_cols={num_cols}
+            multi_seasons={multi_seasons}
           />
         );
       }

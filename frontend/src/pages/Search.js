@@ -80,7 +80,10 @@ function Search(props) {
   const [end, setEnd] = useState(false);
   const [scroll_pos, setScroll] = useState(0); // Scroll pos
 
-  //State used to rebuild DOM and reset form
+  // State used to determine whether or not to show season tags
+  const [multi_seasons, setMultiSeasons] = useState(false);
+
+  //State used to rebuild form DOM to reset it
   const [form_key, setFormKey] = useState(0);
 
   var [searchType, setSearchType] = React.useState();
@@ -172,6 +175,7 @@ function Search(props) {
           variables: defaults,
         });
       }
+      setMultiSeasons(false);
       setDefaultSearch(false);
     }
   }, []);
@@ -203,6 +207,11 @@ function Search(props) {
         return x.value;
       });
     }
+    const temp_multi_seasons = processedSeasons
+      ? processedSeasons.length > 1
+      : false;
+    if (temp_multi_seasons !== multi_seasons)
+      setMultiSeasons(temp_multi_seasons);
 
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
@@ -609,6 +618,7 @@ function Search(props) {
                 setOffset={setOffset}
                 setEnd={setEnd}
                 setScroll={setScroll}
+                multi_seasons={multi_seasons}
               />
             )}
           </Col>

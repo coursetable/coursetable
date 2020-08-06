@@ -15,6 +15,7 @@ const SearchResultsGridItem = ({
   setShowModal,
   executeGetCourseModal,
   num_cols,
+  multi_seasons,
 }) => {
   const RATINGS_PRECISION = 1;
   const col_width = 12 / num_cols;
@@ -55,29 +56,33 @@ const SearchResultsGridItem = ({
         className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
       >
         <Row className="m-auto">
-          <Col xs={8} className="p-0">
+          <Col xs={multi_seasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.one_line + ' ' + styles.course_codes}>
                 {course.course_codes ? course.course_codes.join(' • ') : ''}
               </small>
             </Row>
           </Col>
-          <Col xs={4} className="p-0">
-            <Row className="m-auto">
-              <div
-                className={
-                  styles.season_tag +
-                  ' ml-auto px-1 pb-0 ' +
-                  styles[seasons[parseInt(season) - 1]]
-                }
-              >
-                <Row className="m-auto">
-                  {icon}
-                  <small style={{ fontWeight: 550 }}>&nbsp;{"'" + year}</small>
-                </Row>
-              </div>
-            </Row>
-          </Col>
+          {multi_seasons && (
+            <Col xs={4} className="p-0">
+              <Row className="m-auto">
+                <div
+                  className={
+                    styles.season_tag +
+                    ' ml-auto px-1 pb-0 ' +
+                    styles[seasons[parseInt(season) - 1]]
+                  }
+                >
+                  <Row className="m-auto">
+                    {icon}
+                    <small style={{ fontWeight: 550 }}>
+                      &nbsp;{"'" + year}
+                    </small>
+                  </Row>
+                </div>
+              </Row>
+            </Col>
+          )}
         </Row>
         <Row className="m-auto">
           <strong className={styles.one_line}>
