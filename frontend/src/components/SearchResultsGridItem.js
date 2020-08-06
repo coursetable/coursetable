@@ -13,6 +13,7 @@ const SearchResultsGridItem = ({
   course,
   isMobile,
   setShowModal,
+  setModalCourse,
   executeGetCourseModal,
   num_cols,
   multi_seasons,
@@ -52,6 +53,7 @@ const SearchResultsGridItem = ({
             },
           });
           setShowModal(true);
+          setModalCourse(course);
         }}
         className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
       >

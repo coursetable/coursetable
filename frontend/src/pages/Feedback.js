@@ -47,7 +47,7 @@ function Feedback() {
               { value: 'Feature Request', label: 'Feature Request' },
               { value: 'Other', label: 'Other Comments for the Team' },
             ]}
-            onChange={(option) => setIsBug(option.value === 'bug')}
+            onChange={(option) => setIsBug(option.value === 'Bug Report')}
             name="feedback_type"
           />
         </Form.Group>

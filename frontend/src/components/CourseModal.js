@@ -11,14 +11,17 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 const CourseModal = (props) => {
-  const listing = props.listing;
+  const is_partial = props.listing === null;
+  const listing = !is_partial ? props.listing : props.partial_listing;
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const [view, setView] = useState(['overview', null]);
   const [filter, setFilter] = useState('both');
   let course_codes, course_codes_str;
   if (listing) {
-    course_codes = listing['course.computed_course_infos'][0].course_codes;
+    course_codes = is_partial
+      ? listing.course_codes
+      : listing['course.computed_course_infos'][0].course_codes;
     course_codes_str = '';
     for (let i = 0; i < course_codes.length; i++) {
       if (i) course_codes_str += ' | ';
@@ -54,7 +57,7 @@ const CourseModal = (props) => {
                     {listing && (
                       <WorksheetToggleButton
                         alwaysRed={false}
-                        crn={listing.crn}
+                        crn={is_partial ? 69420 : listing.crn}
                         season_code={listing.season_code}
                         modal={true}
                         hasSeason={props.hasSeason}
@@ -70,7 +73,7 @@ const CourseModal = (props) => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
-                          {listing['course.title']}
+                          {is_partial ? listing.title : listing['course.title']}
                           <span className="text-muted">
                             {' (' +
                               toSeasonString(listing.season_code)[2] +
@@ -162,12 +165,16 @@ const CourseModal = (props) => {
         </Modal.Header>
         {props.show &&
           (view[0] === 'overview' ? (
-            <CourseModalOverview
-              setFilter={setFilter}
-              filter={filter}
-              setSeason={setSeason}
-              listing={listing}
-            />
+            is_partial ? (
+              <Modal.Body>Loading..</Modal.Body>
+            ) : (
+              <CourseModalOverview
+                setFilter={setFilter}
+                filter={filter}
+                setSeason={setSeason}
+                listing={listing}
+              />
+            )
           ) : (
             <CourseModalEvaluations
               season_code={view[0]}

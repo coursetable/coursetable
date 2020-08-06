@@ -12,6 +12,7 @@ const SearchResultsItem = ({
   course,
   isMobile,
   setShowModal,
+  setModalCourse,
   executeGetCourseModal,
 }) => {
   const RATINGS_PRECISION = 1;
@@ -28,6 +29,7 @@ const SearchResultsItem = ({
             season_code: course['season_code'],
           },
         });
+        setModalCourse(course);
         setShowModal(true);
       }}
     >

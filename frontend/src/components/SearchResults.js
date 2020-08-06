@@ -38,7 +38,8 @@ const SearchResults = ({
   if (isMobile && isList) setView(false);
   var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
-  const [showModal, setShowModal] = React.useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modal_course, setModalCourse] = useState();
   // const [modalCalled, setModalCalled] = React.useState(false);
 
   var [
@@ -54,7 +55,14 @@ const SearchResults = ({
 
   if (modalCalled) {
     if (modalLoading) {
-      modal = <div>Loading...</div>;
+      modal = (
+        <CourseModal
+          hideModal={hideModal}
+          show={showModal}
+          listing={null}
+          partial_listing={modal_course}
+        />
+      );
     } else {
       if (modalData) {
         modal = (
@@ -115,6 +123,7 @@ const SearchResults = ({
             course={flatten(data[j])}
             isMobile={isMobile}
             setShowModal={setShowModal}
+            setModalCourse={setModalCourse}
             executeGetCourseModal={executeGetCourseModal}
             num_cols={num_cols}
             multi_seasons={multi_seasons}
@@ -181,6 +190,7 @@ const SearchResults = ({
                 course={flatten(course)}
                 isMobile={isMobile}
                 setShowModal={setShowModal}
+                setModalCourse={setModalCourse}
                 executeGetCourseModal={executeGetCourseModal}
               />
             ))
