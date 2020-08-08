@@ -9,6 +9,12 @@
   background-color: #e1edff !important;
 }
 
+.search_result_item:focus,
+.search_result_item:active {
+  border: none;
+  outline: none;
+}
+
 .course_name {
   font-weight: bold;
 }

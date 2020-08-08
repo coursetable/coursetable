@@ -56,6 +56,7 @@ const SearchResultsGridItem = ({
           setModalCourse(course);
         }}
         className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
+        tabindex="0"
       >
         <Row className="m-auto">
           <Col xs={multi_seasons ? 8 : 12} className="p-0">

@@ -32,6 +32,7 @@ const SearchResultsItem = ({
         setModalCourse(course);
         setShowModal(true);
       }}
+      tabindex="0"
     >
       <Col md={4} xs={8} className={Styles.course_header}>
         <div className={Styles.course_name}>

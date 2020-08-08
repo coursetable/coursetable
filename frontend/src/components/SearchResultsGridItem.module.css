@@ -11,6 +11,12 @@
   background-color: rgba(220, 236, 255, 0.5);
 }
 
+.item_container:focus,
+.item_container:active {
+  border: none;
+  outline: none;
+}
+
 .item_container {
   background-color: rgb(245, 245, 245);
   border-radius: 8px;
