@@ -28,6 +28,7 @@ const SearchResults = ({
   setEnd,
   setScroll,
   multi_seasons,
+  query_size,
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -87,10 +88,14 @@ const SearchResults = ({
 
   // Determine if at end or not. Update Offset value
   useEffect(() => {
-    if (data.length !== offset && data.length % 40 === 0) {
+    if (
+      data.length > 0 &&
+      data.length !== offset &&
+      data.length % query_size === 0
+    ) {
       setOffset(data.length);
     }
-    if (data.length % 40 === 0) setEnd(false);
+    if (data.length % query_size === 0) setEnd(false);
     else setEnd(true);
   }, [data, setOffset, setEnd]);
 
