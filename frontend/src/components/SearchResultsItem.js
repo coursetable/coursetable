@@ -3,6 +3,7 @@ import React from 'react';
 import { Row, Col, Badge } from 'react-bootstrap';
 
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+import { unflattenTimes } from '../utilities';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 
@@ -111,6 +112,7 @@ const SearchResultsItem = ({
           season_code={course.season_code}
           modal={true}
           isMobile={isMobile}
+          times={unflattenTimes(course)}
         />
       </Col>
     </Row>

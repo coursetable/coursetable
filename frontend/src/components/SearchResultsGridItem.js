@@ -8,6 +8,7 @@ import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { unflattenTimes } from '../utilities';
 
 const SearchResultsGridItem = ({
   course,
@@ -189,6 +190,7 @@ const SearchResultsGridItem = ({
           season_code={course.season_code}
           modal={false}
           isMobile={isMobile}
+          times={unflattenTimes(course)}
         />
       </div>
     </Col>

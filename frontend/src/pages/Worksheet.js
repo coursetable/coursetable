@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import FetchWorksheet from '../queries/GetWorksheetListings';
+import { FetchWorksheet } from '../queries/GetWorksheetListings';
 import { Row, Col } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';

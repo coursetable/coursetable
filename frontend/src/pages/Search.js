@@ -202,7 +202,7 @@ function Search(props) {
 
     var processedSeasons = seasons.select
       ? seasons.select.props.value
-      : ['201803'];
+      : ['202003'];
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
         return x.value;

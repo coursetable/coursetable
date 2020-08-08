@@ -55,6 +55,7 @@ export const SEARCH_COURSES = gql`
       average_workload
       title
       times_summary
+      times_by_day
       locations_summary
       skills
       areas
@@ -113,6 +114,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
       average_workload
       title
       times_summary
+      times_by_day
       locations_summary
       skills
       areas
