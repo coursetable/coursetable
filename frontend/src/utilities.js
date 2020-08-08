@@ -120,12 +120,26 @@ export const useComponentVisible = (initialIsVisible) => {
 };
 
 export const unflattenTimes = (course) => {
+  if (!course) return undefined;
   if (course.times_summary === 'TBA') return 'TBA';
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   let times_by_day = [];
   days.forEach((day) => {
     if (!course[`times_by_day.${day}`]) times_by_day.push(['', '', '', '']);
     else times_by_day.push(course[`times_by_day.${day}`][0]);
+  });
+  return times_by_day;
+};
+
+export const unflattenTimesModal = (listing) => {
+  if (!listing) return undefined;
+  if (listing['course.times_summary'] === 'TBA') return 'TBA';
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  let times_by_day = [];
+  days.forEach((day) => {
+    if (!listing[`course.times_by_day.${day}`])
+      times_by_day.push(['', '', '', '']);
+    else times_by_day.push(listing[`course.times_by_day.${day}`][0]);
   });
   return times_by_day;
 };
