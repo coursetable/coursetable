@@ -38,6 +38,7 @@ const SearchResultsGridItem = ({
         size={icon_size}
       />
     );
+  let key = 0;
 
   return (
     <Col
@@ -124,6 +125,7 @@ const SearchResultsGridItem = ({
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag + ' ' + tag_styles[skill]}
+                    key={key++}
                   >
                     {skill}
                   </Badge>
@@ -132,6 +134,7 @@ const SearchResultsGridItem = ({
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag + ' ' + tag_styles[area]}
+                    key={key++}
                   >
                     {area}
                   </Badge>
@@ -140,6 +143,7 @@ const SearchResultsGridItem = ({
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag + ' ' + tag_styles.none}
+                    key={key++}
                   >
                     N/A
                   </Badge>

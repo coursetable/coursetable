@@ -17,6 +17,7 @@ const SearchResultsItem = ({
   executeGetCourseModal,
 }) => {
   const RATINGS_PRECISION = 1;
+  let key = 1;
 
   return (
     <Row
@@ -82,6 +83,7 @@ const SearchResultsItem = ({
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[skill]}
+              key={key++}
             >
               {skill}
             </Badge>
@@ -90,6 +92,7 @@ const SearchResultsItem = ({
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[area]}
+              key={key++}
             >
               {area}
             </Badge>

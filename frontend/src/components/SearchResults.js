@@ -39,6 +39,8 @@ const SearchResults = ({
 
   const [showModal, setShowModal] = useState(false);
   const [modal_course, setModalCourse] = useState();
+  const [show_tooltip, setShowTooltip] = useState(false);
+  let key = 0;
   // const [modalCalled, setModalCalled] = React.useState(false);
 
   var [
@@ -74,17 +76,6 @@ const SearchResults = ({
       }
     }
   }
-
-  const renderTooltip = (props) =>
-    !isTouch ? (
-      <Tooltip disable={width < 1024} id="button-tooltip" {...props}>
-        <small style={{ fontWeight: 600 }}>
-          {isList ? 'Grid View' : 'List View'}
-        </small>
-      </Tooltip>
-    ) : (
-      <div />
-    );
 
   // Determine if at end or not. Update Offset value
   useEffect(() => {
@@ -130,10 +121,16 @@ const SearchResults = ({
             executeGetCourseModal={executeGetCourseModal}
             num_cols={num_cols}
             multi_seasons={multi_seasons}
+            key_num={key++}
+            key={key++}
           />
         );
       }
-      grid_html.push(<Row className="mx-auto">{row_elements}</Row>);
+      grid_html.push(
+        <Row className="mx-auto" key={key++}>
+          {row_elements}
+        </Row>
+      );
     }
   }
 
@@ -173,15 +170,9 @@ const SearchResults = ({
                 </Col>
               )}
               <Col md={2} style={{ lineHeight: '30px' }} className="d-flex">
-                <OverlayTrigger
-                  placement="left"
-                  delay={{ show: 1000, hide: 200 }}
-                  overlay={renderTooltip}
-                >
-                  <div className="d-flex ml-auto my-auto">
-                    <ListGridToggle isList={isList} setView={setView} />
-                  </div>
-                </OverlayTrigger>
+                <div className="d-flex ml-auto my-auto">
+                  <ListGridToggle isList={isList} setView={setView} />
+                </div>
               </Col>
             </Row>
           </div>
@@ -195,6 +186,7 @@ const SearchResults = ({
                 setShowModal={setShowModal}
                 setModalCourse={setModalCourse}
                 executeGetCourseModal={executeGetCourseModal}
+                key={key++}
               />
             ))
           ) : (
