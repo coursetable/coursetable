@@ -13,7 +13,6 @@
 	box-shadow: none !important;
 }
 
-.bookmark_move,
 .bookmark_fill {
 	transition: 0.3s;
 }
@@ -21,6 +20,7 @@
 .bookmark_fill:hover {
 	transform: scale(1) !important;
 	color: rgb(250, 183, 183) !important;
+}
 
 .disabled-button {
 	cursor: not-allowed !important;
