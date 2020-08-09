@@ -131,6 +131,8 @@ function Worksheet() {
       season_listings.push(listing);
   });
 
+  const expand_btn_size = 18;
+
   return (
     <div className={styles.container}>
       {/* Desktop View */}
@@ -157,14 +159,16 @@ function Worksheet() {
                 {cur_expand === 'none' ? (
                   <FaExpandAlt
                     className={styles.expand_btn + ' ' + styles.top_right}
+                    size={expand_btn_size}
                     onClick={() => setCurExpand('calendar')}
                   />
                 ) : (
                   <FaCompressAlt
                     className={styles.expand_btn + ' ' + styles.top_right}
+                    size={expand_btn_size}
                     onClick={() => {
                       setCurExpand('none');
-                      setHoverExpand('none');
+                      setHoverExpand('list');
                     }}
                   />
                 )}
@@ -199,14 +203,16 @@ function Worksheet() {
                 {cur_expand === 'none' ? (
                   <FaExpandAlt
                     className={styles.expand_btn + ' ' + styles.top_left}
+                    size={expand_btn_size}
                     onClick={() => setCurExpand('list')}
                   />
                 ) : (
                   <FaCompressAlt
                     className={styles.expand_btn + ' ' + styles.top_left}
+                    size={expand_btn_size}
                     onClick={() => {
                       setCurExpand('none');
-                      setHoverExpand('none');
+                      setHoverExpand('calendar');
                     }}
                   />
                 )}

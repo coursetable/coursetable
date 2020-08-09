@@ -142,7 +142,6 @@ const SearchResults = ({
               executeGetCourseModal={executeGetCourseModal}
               num_cols={num_cols}
               multi_seasons={multi_seasons}
-              key_num={key++}
               key={key++}
             />
           );

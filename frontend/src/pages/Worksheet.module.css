@@ -37,20 +37,32 @@
   top: 0%;
   z-index: 420;
   color: rgb(179, 179, 179);
+  padding: 3px;
+  background-color: rgb(238, 238, 238);
+  border-radius: 6px;
   transition: 0.3s;
 }
 
 .expand_btn:hover {
   color: rgb(102, 101, 101);
+  background-color: rgb(200, 200, 200);
   cursor: pointer;
 }
 
 .top_left {
   left: 0%;
-  transform: rotateZ(90deg) translate(-40%, -100%);
+  transform: rotateZ(90deg) translate(-40%, -85%);
+}
+
+.top_left:hover {
+  transform: rotateZ(90deg) translate(-40%, -85%) scale(1.1);
 }
 
 .top_right {
   right: 0%;
   transform: translate(50%, -40%);
+}
+
+.top_right:hover {
+  transform: translate(50%, -40%) scale(1.1);
 }

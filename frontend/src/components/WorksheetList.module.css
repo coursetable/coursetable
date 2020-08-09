@@ -23,13 +23,13 @@
   outline: none;
 }
 
-.list_text {
-  /* Transition color change when toggling hide button */
-  transition: 0.3s;
-}
-
 .hidden {
   color: #b9b8b8;
+}
+
+.list_text {
+  overflow: hidden;
+  transition: 0.3s;
 }
 
 .course_title {

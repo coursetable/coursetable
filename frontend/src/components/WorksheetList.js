@@ -92,18 +92,16 @@ export default class WorksheetList extends React.Component {
                   (this.isHidden(season, course.crn)
                     ? styles.hidden + ' '
                     : '') +
-                  styles.clickable +
+                  styles.list_text +
                   ' px-0'
                 }
                 onClick={() => this.showModal(course)}
               >
-                <div className={styles.list_text}>
-                  <strong>{course['course_code']}</strong>
-                  <br />
-                  <span className={styles.course_title}>
-                    {course['course.title']}
-                  </span>
-                </div>
+                <strong>{course['course_code']}</strong>
+                <br />
+                <span className={styles.course_title}>
+                  {course['course.title']}
+                </span>
               </Col>
             </Row>
           </ListGroup.Item>

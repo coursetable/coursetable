@@ -64,6 +64,10 @@
   text-overflow: ellipsis;
 }
 
+.rating {
+  font-weight: bold;
+}
+
 .worksheet_btn {
   position: absolute;
   top: -16px;

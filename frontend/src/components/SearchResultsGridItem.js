@@ -155,7 +155,7 @@ const SearchResultsGridItem = ({
             <div>
               <Row className="m-auto justify-content-end">
                 <div
-                  className={tag_styles.overall_rating + ' mr-1'}
+                  className={styles.rating + ' mr-1'}
                   style={{
                     color: course.average_rating
                       ? ratingColormap(course.average_rating)
@@ -170,7 +170,7 @@ const SearchResultsGridItem = ({
               </Row>
               <Row className="m-auto justify-content-end">
                 <div
-                  className={tag_styles.workload_rating + ' mr-1'}
+                  className={styles.rating + ' mr-1'}
                   style={{
                     color: course.average_workload
                       ? workloadColormap(course.average_workload)
