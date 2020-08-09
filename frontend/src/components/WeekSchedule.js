@@ -61,11 +61,16 @@ export default class WeekSchedule extends React.Component {
 
   eventStyleGetter = (event) => {
     const border = '1)';
-    const background = '.9)';
+    const background = '.85)';
     let style = {
       backgroundColor: event.listing.color.concat(background),
       borderColor: event.listing.color.concat(border),
       borderWidth: '2px',
+      filter:
+        this.props.hover_course &&
+        this.props.hover_course.crn === event.listing.crn
+          ? 'brightness(80%)'
+          : 'brightness(100%)',
     };
     return {
       style: style,

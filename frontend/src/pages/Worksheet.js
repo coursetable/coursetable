@@ -34,6 +34,7 @@ function Worksheet() {
   const [worksheet_init, setWorksheetInit] = useState(user.worksheet);
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
+  const [hover_course, setHoverCourse] = useState();
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -137,6 +138,7 @@ function Worksheet() {
               className=""
               showModal={showModal}
               courses={season_listings}
+              hover_course={hover_course}
             />
           </Col>
           <Col md={3} className={styles.table + ' pl-4 pr-0'}>
@@ -149,6 +151,7 @@ function Worksheet() {
               cur_season={season}
               hidden_courses={hidden_courses}
               hasSeason={hasSeason}
+              setHoverCourse={setHoverCourse}
             />
           </Col>
         </Row>

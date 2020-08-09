@@ -65,6 +65,8 @@ export default class WorksheetList extends React.Component {
           <ListGroup.Item
             key={id++}
             className={styles.clickable + ' py-1 px-2'}
+            onMouseEnter={() => this.props.setHoverCourse(course)}
+            onMouseLeave={() => this.props.setHoverCourse(null)}
           >
             <div className={styles.bookmark}>
               <WorksheetToggleButton
