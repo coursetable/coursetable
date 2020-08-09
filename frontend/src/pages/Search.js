@@ -58,6 +58,7 @@ function Search(props) {
   const seasonsData = useSeasons();
 
   const isMobile = width < 768;
+  const [default_search, setDefaultSearch] = useState(true);
   var searchText = React.useRef(
     props.location && props.location.state
       ? props.location.state.search_val
@@ -119,12 +120,27 @@ function Search(props) {
     executeTextSearch,
     { called: textCalled, loading: textLoading, data: textData },
   ] = useLazyQuery(SEARCH_COURSES, { fetchPolicy: 'no-cache' });
+
   const handleChange = () => {
     if (!props.location.state) return;
     //Reset searchText
-    const { history } = props;
+    const { location, history } = props;
     history.replace();
   };
+
+  useEffect(() => {
+    if (default_search) {
+      handleSubmit();
+      setDefaultSearch(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    // Fetch more courses if scroll to bottom and there are still courses
+    if (fetch_more && !end) {
+      handleSubmit(); // Perform query
+    }
+  }, [fetch_more]);
 
   const handleSubmit = event => {
     let offset2 = -1;
@@ -251,22 +267,6 @@ function Search(props) {
     }
   };
 
-  const [default_search, setDefaultSearch] = useState(true);  
-
-  useEffect(() => {
-    if (default_search) {
-      handleSubmit();
-      setDefaultSearch(false);
-    }
-  }, [default_search, handleSubmit]);
-
-  useEffect(() => {
-    // Fetch more courses if scroll to bottom and there are still courses
-    if (fetch_more && !end) {
-      handleSubmit(); // Perform query
-    }
-  }, [fetch_more, end, handleSubmit]);
-
   var results;
 
   if (searchType === 'TEXTLESS') {
@@ -341,12 +341,13 @@ function Search(props) {
   };
 
   var searchCol = React.useRef();
+  var searchColHeight;
   var [tooTall, setTooTall] = React.useState(true);
 
   useEffect(() => {
-    var searchColHeight = searchCol.clientHeight;
+    searchColHeight = searchCol.clientHeight;
     setTooTall(searchColHeight > height);
-  }, [height]);
+  });
 
   const handleResetFilters = () => {
     setHideCancelled(true);
@@ -514,7 +515,6 @@ function Search(props) {
                       className={Styles.slider}
                     />
                   </Container>
-                  <hr />
                   <div>Workload</div>
                   <Container>
                     <Range
