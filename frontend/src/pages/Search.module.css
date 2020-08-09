@@ -26,6 +26,8 @@
   background-color: white;
   width: 100%;
   border-radius: 0.5rem;
+  max-height: 100vh;
+  overflow: scroll;
 }
 
 .search_bar {
@@ -163,4 +165,10 @@
   cursor: pointer;
   color: rgb(180, 180, 180);
   transform: scale(1.1);
+}
+
+@media (hover: none) {
+  .search_container {
+    max-height: none;
+  }
 }
