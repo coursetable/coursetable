@@ -102,7 +102,6 @@ function CourseTableNavbar(props) {
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={props.isLoggedIn}
-          listings={props.listings}
         />
       </div>
     </div>

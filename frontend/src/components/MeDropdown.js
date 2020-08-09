@@ -61,23 +61,31 @@ function MeDropdown(props) {
     <div className={styles.collapse_container} onClick={handleDropdownClick}>
       <Collapse in={props.profile_expanded}>
         <Col className={styles.collapse_col + ' px-3'}>
-          <Row className=" py-3 m-auto">
-            <FcCalendar className="mr-2 my-auto" size={20} />
-            <span onClick={handleExportClick} className={styles.collapse_text}>
-              Export Worksheet
-            </span>
-          </Row>
-          <Row className=" pb-3 m-auto">
-            <FaFacebookSquare
-              className="mr-2 my-auto"
-              size={20}
-              color="#007bff"
-            />
-            <span onClick={handleFBClick} className={styles.collapse_text}>
-              Connect FB
-            </span>
-          </Row>
-          <Row className=" pb-3 m-auto">
+          {props.isLoggedIn && (
+            <>
+              <Row className=" py-3 m-auto">
+                <FcCalendar className="mr-2 my-auto" size={20} />
+                <span
+                  onClick={handleExportClick}
+                  className={styles.collapse_text}
+                >
+                  Export Worksheet
+                </span>
+              </Row>
+
+              <Row className=" pb-3 m-auto">
+                <FaFacebookSquare
+                  className="mr-2 my-auto"
+                  size={20}
+                  color="#007bff"
+                />
+                <span onClick={handleFBClick} className={styles.collapse_text}>
+                  Connect FB
+                </span>
+              </Row>
+            </>
+          )}
+          <Row className={' pb-3 m-auto ' + (!props.isLoggedIn ? 'pt-3' : '')}>
             {props.isLoggedIn ? (
               <>
                 <FaSignOutAlt

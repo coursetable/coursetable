@@ -29,7 +29,6 @@ import Spinner from 'react-bootstrap/Spinner';
 function App() {
   const [loading, setLoading] = useState(true);
   const { user, userRefresh } = useUser();
-  const [parent_listings, setParentListings] = useState([]);
 
   useEffect(() => {
     userRefresh(true).finally(() => setLoading(false));
@@ -63,7 +62,7 @@ function App() {
       <WindowDimensionsProvider>
         <SeasonsProvider>
           <div id="base">
-            <Navbar isLoggedIn={isLoggedIn} listings={parent_listings} />
+            <Navbar isLoggedIn={isLoggedIn} />
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">
@@ -95,14 +94,7 @@ function App() {
 
               {/* Worksheet */}
               <MyRoute isRoutePrivate={true} exact path="/worksheet">
-                {isLoggedIn ? (
-                  <Worksheet
-                    parent_listings={parent_listings}
-                    setParentListings={setParentListings}
-                  />
-                ) : (
-                  <Redirect to="/login" />
-                )}
+                {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
               </MyRoute>
 
               {/* Footer Links */}
