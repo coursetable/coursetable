@@ -1,14 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
-import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
 import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
 import moment from 'moment';
-import { FaCalendarDay } from 'react-icons/fa';
 
 const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();

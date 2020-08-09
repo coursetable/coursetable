@@ -8,9 +8,37 @@
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   border-radius: 8px !important;
   background-color: white;
+  /* transition: 0.3s; */
+}
+
+.table {
+  /* transition: 0.3s; */
 }
 
 .accordion {
   width: 100vw;
   min-height: 100vh;
+}
+
+.expand_btn {
+  position: absolute;
+  top: 0%;
+  z-index: 420;
+  color: rgb(179, 179, 179);
+  transition: 0.3s;
+}
+
+.expand_btn:hover {
+  color: rgb(102, 101, 101);
+  cursor: pointer;
+}
+
+.top_left {
+  left: 0%;
+  transform: rotateZ(90deg) translate(-40%, -100%);
+}
+
+.top_right {
+  right: 0%;
+  transform: translate(50%, -40%);
 }
