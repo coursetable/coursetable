@@ -380,7 +380,9 @@ function Search(props) {
           >
             <div
               className={
-                !isTouch ? Styles.sticky : !tooTall ? Styles.sticky : ''
+                // only make the filters sticky if not on mobile and 
+                // tall enough
+                (!isTouch && !tooTall) ? Styles.sticky : ''
               }
             >
               <Form
