@@ -1,23 +1,39 @@
 .btn-toggle {
-  background-color: transparent;
-  border-width: 0;
-  transition: 0.3s !important;
+	background-color: transparent;
+	border-width: 0;
+	transition: 0.3s !important;
 }
 
 .btn-toggle:hover {
-  transform: scale(1.15);
+	transform: scale(1.15);
 }
 
 .btn-toggle:active,
 .btn-toggle:focus {
-  box-shadow: none !important;
+	box-shadow: none !important;
 }
 
 .bookmark_fill {
-  transition: 0.3s;
+	transition: 0.3s;
 }
 
 .bookmark_fill:hover {
-  transform: scale(1) !important;
-  color: rgb(250, 183, 183) !important;
+	transform: scale(1) !important;
+	color: rgb(250, 183, 183) !important;
+}
+
+.disabled-button {
+	cursor: not-allowed !important;
+	background-color: transparent !important;
+	border-width: 0 !important;
+}
+
+.disabled-button-icon{
+	color: rgba(0, 0, 0, 0.5);
+
+}
+
+.disabled-button:active,
+.disabled-button:focus {
+	box-shadow: none !important;
 }
