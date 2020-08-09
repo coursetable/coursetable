@@ -42,12 +42,24 @@
   font-size: 0.75rem;
 }
 
-.overall_rating {
-  font-weight: bold;
+.icon_ratings {
+  font-size: 0.75rem;
 }
 
-.workload_rating {
-  font-weight: bold;
+.workload_icon_empty, .workload_icon_full{
+  padding: 1px;
+}
+
+.workload_icon_empty{
+  color: #e8e8e8;
+}
+
+.rating_icon_empty, .rating_icon_full{
+  padding: 1px;
+}
+
+.rating_icon_empty{
+  color: #e8e8e8;
 }
 
 .tag {

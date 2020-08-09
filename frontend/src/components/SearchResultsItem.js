@@ -9,6 +9,9 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 
 import Styles from './SearchResultsItem.module.css';
 
+import ReactRating from 'react-rating';
+import { BsSquareFill, BsSquare } from 'react-icons/bs';
+
 const SearchResultsItem = ({
   course,
   isMobile,
@@ -50,36 +53,42 @@ const SearchResultsItem = ({
         )}
       </Col>
       <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-        <div
-          className={Styles.overall_rating}
-          style={
-            course.average_rating && {
-              color: ratingColormap(course.average_rating),
+        {course.average_rating && (
+          <ReactRating
+            initialRating={course.average_rating}
+            readonly
+            emptySymbol={<BsSquareFill className={Styles.rating_icon_empty} />}
+            fullSymbol={
+              <BsSquareFill
+                className={Styles.rating_icon_full}
+                style={{ color: ratingColormap(course.average_rating) }}
+              />
             }
-          }
-        >
-          {course.average_rating
-            ? course.average_rating.toFixed(RATINGS_PRECISION)
-            : ''}
-        </div>
+            className={Styles.icon_ratings}
+          />
+        )}
       </Col>
       <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-        <div
-          className={Styles.workload_rating}
-          style={
-            course.average_workload && {
-              color: workloadColormap(course.average_workload),
+        {course.average_workload && (
+          <ReactRating
+            initialRating={course.average_workload}
+            readonly
+            emptySymbol={
+              <BsSquareFill className={Styles.workload_icon_empty} />
             }
-          }
-        >
-          {course.average_workload
-            ? course.average_workload.toFixed(RATINGS_PRECISION)
-            : ''}
-        </div>
+            fullSymbol={
+              <BsSquareFill
+                className={Styles.workload_icon_full}
+                style={{ color: workloadColormap(course.average_workload) }}
+              />
+            }
+            className={Styles.icon_ratings}
+          />
+        )}
       </Col>
       <Col md={2} xs={8} className={Styles.skills_areas}>
         <div className={Styles.skills_areas}>
-          {course.skills.map((skill) => (
+          {course.skills.map(skill => (
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[skill]}
@@ -88,7 +97,7 @@ const SearchResultsItem = ({
               {skill}
             </Badge>
           ))}
-          {course.areas.map((area) => (
+          {course.areas.map(area => (
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[area]}
