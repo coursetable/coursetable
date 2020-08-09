@@ -220,51 +220,32 @@ const CourseModalOverview = (props) => {
     <Modal.Body>
       <Row className="m-auto">
         <Col md={6} className="px-0 mt-0 mb-3">
-          {/* COURSE DESCRIPTION */}
-          <Row className="m-auto pb-3">{listing['course.description']}</Row>
           {listing['professors'] && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
-                <strong className={styles.lable_bubble}>Professor</strong>
-              </Col>
-              <Col xs={8}>{listing.professors}</Col>
+              Taught by&nbsp;<div className="font-weight-bold">{listing.professors}</div>
             </Row>
           )}
           {listing['course.times_summary'] !== 'TBA' && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
-                <strong className={styles.lable_bubble}>Meets</strong>
-              </Col>
-              <Col xs={8}>{listing['course.times_summary']}</Col>
+              Meets&nbsp;<div className="font-weight-bold">{listing['course.times_summary']}</div>
             </Row>
           )}
           {listing['section'] && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
-                <strong className={styles.lable_bubble}>Section</strong>
-              </Col>
-              <Col xs={8}>{listing.section}</Col>
+              Section&nbsp;<div className="font-weight-bold">{listing.section}</div>
             </Row>
           )}
           {listing['course.evaluation_statistics'] &&
           listing['course.evaluation_statistics'][0] &&
           listing['course.evaluation_statistics'][0].enrollment ? (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
-                <strong className={styles.lable_bubble}>Enrollment</strong>
-              </Col>
-              <Col xs={8}>
-                {listing['course.evaluation_statistics'][0].enrollment.enrolled}
-              </Col>
+                <div className="font-weight-bold">{listing['course.evaluation_statistics'][0].enrollment.enrolled}&nbsp;enrolled</div>
             </Row>
           ) : enrollment === -1 ? (
             <div />
           ) : (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
-                <strong className={styles.lable_bubble}>Enrollment</strong>
-              </Col>
-              <Col xs={8}>{'~' + enrollment}</Col>
+              <div className="font-weight-bold">{enrollment}&nbsp;enrolled</div>
             </Row>
           )}
           {location_url !== '' && (
@@ -299,6 +280,8 @@ const CourseModalOverview = (props) => {
               </Col>
             </Row>
           )}
+          {/* COURSE DESCRIPTION */}
+          <Row className="m-auto pb-3">{listing['course.description']}</Row>
         </Col>
         <Col md={6} className="px-0 my-0">
           {/* <Row className="m-auto justify-content-center">

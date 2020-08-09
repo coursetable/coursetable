@@ -200,7 +200,7 @@ const SearchResults = ({
               ) : (
                 <Col md={10} style={{ lineHeight: '30px' }}>
                   <strong>
-                    {`Showing ${data.length} Search Result${
+                    {`Showing ${data.length} course${
                       data.length === 1 ? '' : 's'
                     }...`}
                   </strong>
