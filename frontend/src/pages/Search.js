@@ -345,6 +345,7 @@ function Search(props) {
   var searchCol = React.useRef();
   var searchColHeight;
   var [tooTall, setTooTall] = React.useState(true);
+  var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   useEffect(() => {
     searchColHeight = searchCol.clientHeight;
@@ -377,7 +378,11 @@ function Search(props) {
                 : `pr-2 py-3 pl-3 ${Styles.search_col}`
             }
           >
-            <div className={!isMobile && !tooTall ? Styles.sticky : ''}>
+            <div
+              className={
+                !isTouch ? Styles.sticky : !tooTall ? Styles.sticky : ''
+              }
+            >
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
                 onSubmit={handleSubmit}
