@@ -128,7 +128,7 @@ const SearchResultsGridItem = ({
             </Row>
             <Row className="m-auto">
               <div className={tag_styles.skills_areas}>
-                {course.skills.map(skill => (
+                {course.skills.map((skill) => (
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag}
@@ -145,7 +145,7 @@ const SearchResultsGridItem = ({
                     {skill}
                   </Badge>
                 ))}
-                {course.areas.map(area => (
+                {course.areas.map((area) => (
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag}
@@ -162,6 +162,22 @@ const SearchResultsGridItem = ({
                     {area}
                   </Badge>
                 ))}
+                {course.skills.length === 0 && course.areas.length === 0 && (
+                  <Badge
+                    variant="secondary"
+                    className={tag_styles.tag}
+                    key={key++}
+                    style={{
+                      color: skillsAreasColors['HU'],
+                      backgroundColor: chroma(skillsAreasColors['HU'])
+                        .alpha(0.16)
+                        .css(),
+                      opacity: 0,
+                    }}
+                  >
+                    {'HU'}
+                  </Badge>
+                )}
               </div>
             </Row>
           </Col>
