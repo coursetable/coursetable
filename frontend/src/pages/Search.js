@@ -76,9 +76,12 @@ function Search(props) {
   const [fetch_more, setFetchMore] = useState(false);
   const [offset, setOffset] = useState(0);
   const [old_data, setOldData] = useState([]);
-  const [replaced, setReplaced] = useState(false); // Initial search
+  const [searching, setSearching] = useState(false);
   const [end, setEnd] = useState(false);
   const [scroll_pos, setScroll] = useState(0); // Scroll pos
+
+  // Size of Query constant
+  const query_size = 20;
 
   // State used to determine whether or not to show season tags
   const [multi_seasons, setMultiSeasons] = useState(false);
@@ -118,12 +121,12 @@ function Search(props) {
   var [
     executeTextlessSearch,
     { called: textlessCalled, loading: textlessLoading, data: textlessData },
-  ] = useLazyQuery(SEARCH_COURSES_TEXTLESS);
+  ] = useLazyQuery(SEARCH_COURSES_TEXTLESS, { fetchPolicy: 'no-cache' });
 
   var [
     executeTextSearch,
     { called: textCalled, loading: textLoading, data: textData },
-  ] = useLazyQuery(SEARCH_COURSES);
+  ] = useLazyQuery(SEARCH_COURSES, { fetchPolicy: 'no-cache' });
 
   const handleChange = () => {
     if (!props.location.state) return;
@@ -132,66 +135,29 @@ function Search(props) {
     history.replace();
   };
 
-  const defaults = {
-    ordering: sortbyQueries[[sortbyOptions[0].value]],
-    offset: 0, // Always 0 when searching from home or worksheet
-    seasons: seasonsOptions
-      ? [seasonsOptions[0]].map((x) => x.value)
-      : ['202003'],
-    areas: null,
-    skills: null,
-    credits: null,
-    schools: [schoolOptions[0]].map((x) => x.value),
-    min_rating: null,
-    max_rating: null,
-    min_workload: null,
-    max_workload: null,
-    extra_info: 'ACTIVE',
-  };
+  useEffect(() => {
+    if (default_search) {
+      handleSubmit();
+      setDefaultSearch(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Fetch more courses if scroll to bottom and there are still courses
     if (fetch_more && !end) {
-      setReplaced(false); // Haven't stored old courses yet
       handleSubmit(); // Perform query
     }
   }, [fetch_more]);
-
-  useEffect(() => {
-    if (default_search) {
-      if (searchText.value) {
-        const search_variables = Object.assign(
-          { search_text: searchText.value },
-          defaults
-        );
-        setSearchType('TEXT');
-        executeTextSearch({
-          variables: search_variables,
-        });
-      } else {
-        // console.log(defaults);
-        setSearchType('TEXTLESS');
-        executeTextlessSearch({
-          variables: defaults,
-        });
-      }
-      setMultiSeasons(false);
-      setDefaultSearch(false);
-    }
-  }, []);
 
   const handleSubmit = (event) => {
     let offset2 = -1;
     if (event) {
       event.preventDefault();
-      // Scroll to trigger search results load...wack
-      window.scrollTo({ top: scroll_pos + 1, left: 0, behavior: 'smooth' });
-      window.scrollTo({ top: scroll_pos - 1, left: 0, behavior: 'smooth' });
+      window.scrollTo({ top: scroll_pos < 78 ? scroll_pos : 78, left: 0 });
       //Reset states when making a new search
       setOffset(0);
       setEnd(false);
       setOldData([]);
-      setReplaced(true);
       setFetchMore(false);
       offset2 = 0; // Account for reset state lag
     }
@@ -202,7 +168,7 @@ function Search(props) {
 
     var processedSeasons = seasons.select
       ? seasons.select.props.value
-      : ['201803'];
+      : ['202003'];
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
         return x.value;
@@ -239,11 +205,11 @@ function Search(props) {
       );
 
       if (processedSkills.length === 0) {
-        processedSkills = null;
+        processedSkills = skills;
       }
 
       if (processedAreas.length === 0) {
-        processedAreas = null;
+        processedAreas = areas;
       }
     }
 
@@ -278,6 +244,7 @@ function Search(props) {
     const search_variables = {
       ordering: ordering,
       offset: offset2 === -1 ? offset : offset2,
+      limit: query_size,
       seasons: processedSeasons,
       areas: processedAreas,
       skills: processedSkills,
@@ -310,37 +277,33 @@ function Search(props) {
   if (searchType === 'TEXTLESS') {
     if (textlessCalled) {
       if (textlessLoading) {
+        if (!searching) setSearching(true); // Set searching after loading starts
         if (!offset) results = <div>Loading...</div>;
         // Keep old courses until new courses are fetched
       } else {
-        if (textlessData) {
+        if (textlessData && searching) {
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(
             textlessData.computed_course_info
           );
-          // Replace old with new
-          if (!replaced) {
-            setOldData(new_data);
-            setReplaced(true);
-            setFetchMore(false); // Don't fetch more until new courses are loaded
-          }
+          setOldData(new_data); // Replace old with new
+          setSearching(false); // Not searching
+          setFetchMore(false); // Don't fetch more until new courses are loaded
         }
       }
     }
   } else if (searchType === 'TEXT') {
     if (textCalled) {
       if (textLoading) {
+        if (!searching) setSearching(true); // Set searching after loading starts
         if (!offset) results = <div>Loading...</div>;
       } else {
-        if (textData) {
+        if (textData && searching) {
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(textData.search_course_info);
-          // Replace old with new
-          if (!replaced) {
-            setOldData(new_data);
-            setReplaced(true);
-            setFetchMore(false); // Don't fetch more until new courses are loaded
-          }
+          setOldData(new_data); // Replace old with new
+          setSearching(false); // Not searching
+          setFetchMore(false); // Don't fetch more until new courses are loaded
         }
       }
     }
@@ -620,6 +583,7 @@ function Search(props) {
                 setEnd={setEnd}
                 setScroll={setScroll}
                 multi_seasons={multi_seasons}
+                query_size={query_size}
               />
             )}
           </Col>

@@ -9,6 +9,7 @@ import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { unflattenTimesModal } from '../utilities';
 
 const CourseModal = (props) => {
   const is_partial = props.listing === null;
@@ -62,6 +63,7 @@ const CourseModal = (props) => {
                         modal={true}
                         hasSeason={props.hasSeason}
                         className="p-0"
+                        times={unflattenTimesModal(props.listing)}
                       />
                     )}
                   </Col>

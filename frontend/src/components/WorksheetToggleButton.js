@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { Button } from 'react-bootstrap';
@@ -6,12 +6,53 @@ import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
+import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
+import moment from 'moment';
+import { FaCalendarDay } from 'react-icons/fa';
 
 const WorksheetToggleButton = props => {
   const { user, userRefresh } = useUser();
-  var [inWorksheet, setInWorksheet] = useState(
+  const [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
+    user.worksheet
+  );
+  const [show, setShow] = useState(false);
+  const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
   );
+  const [conflict, setConflict] = useState(false);
+
+  useEffect(() => {
+    if (!data || !props.times) return;
+    if (props.times === 'TBA') {
+      setConflict(true);
+      return;
+    }
+    const listings = data.listings;
+    for (let i = 0; i < listings.length; i++) {
+      if (listings[i].season_code !== props.season_code) continue;
+      const listing = listings[i];
+      const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+      for (let day = 0; day < 5; day++) {
+        const info = listing.course.times_by_day[weekdays[day]];
+        if (info === undefined) continue;
+        let listing_start = moment(info[0][0], 'HH:mm');
+        let listing_end = moment(info[0][1], 'HH:mm');
+        if (listing_start.hour() < 8) listing_start.add(12, 'h');
+        if (listing_end.hour() < 8) listing_end.add(12, 'h');
+        if (props.times[day][0] === '') continue;
+        let cur_start = moment(props.times[day][0], 'HH:mm');
+        let cur_end = moment(props.times[day][1], 'HH:mm');
+        if (!(listing_start > cur_end || cur_start > listing_end)) {
+          setConflict(true);
+          return;
+        }
+      }
+    }
+  }, [data ? data : [], show]);
+
+  useEffect(() => {
+    if (inWorksheet) setShow(false);
+  }, [inWorksheet]);
   const update = isInWorksheet(
     props.season_code,
     props.crn.toString(),
@@ -52,20 +93,44 @@ const WorksheetToggleButton = props => {
     // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
 
+  const handleMouseEnter = () => {
+    if (!inWorksheet) {
+      fetchWorksheetListings();
+      setShow(true);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    setShow(false);
+    setConflict(false);
+  };
+
   return (
     <Button
       variant="toggle"
-      className={'p-0 ' + (props.modal ? '' : 'bookmark_fill')}
+      className={'p-0 bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
       onClick={toggleWorkSheet}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
     >
       {inWorksheet ? (
         <BsBookmarkFill
-          className={props.modal ? '' : 'bookmark_fill'}
+          className={'bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
           color="#ff6969"
           size={25}
         />
       ) : (
-        <BsBookmark color="#ff6969" size={25} />
+        <BsBookmark
+          color={
+            props.times && show && data
+              ? !conflict
+                ? '#00e800' // No conflicts
+                : '#d40000' // Conflicts
+              : '#ff6969'
+          }
+          size={25}
+          style={{ transition: '0.3s' }}
+        />
       )}
     </Button>
   );

@@ -3,6 +3,7 @@ import React from 'react';
 import { Row, Col, Badge } from 'react-bootstrap';
 
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+import { unflattenTimes } from '../utilities';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 
@@ -16,6 +17,7 @@ const SearchResultsItem = ({
   executeGetCourseModal,
 }) => {
   const RATINGS_PRECISION = 1;
+  let key = 1;
 
   return (
     <Row
@@ -32,7 +34,7 @@ const SearchResultsItem = ({
         setModalCourse(course);
         setShowModal(true);
       }}
-      tabindex="0"
+      tabIndex="0"
     >
       <Col md={4} xs={8} className={Styles.course_header}>
         <div className={Styles.course_name}>
@@ -81,6 +83,7 @@ const SearchResultsItem = ({
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[skill]}
+              key={key++}
             >
               {skill}
             </Badge>
@@ -89,6 +92,7 @@ const SearchResultsItem = ({
             <Badge
               variant="secondary"
               className={Styles.tag + ' ' + Styles[area]}
+              key={key++}
             >
               {area}
             </Badge>
@@ -111,6 +115,7 @@ const SearchResultsItem = ({
           season_code={course.season_code}
           modal={true}
           isMobile={isMobile}
+          times={unflattenTimes(course)}
         />
       </Col>
     </Row>

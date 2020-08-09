@@ -8,6 +8,7 @@ import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { unflattenTimes } from '../utilities';
 
 const SearchResultsGridItem = ({
   course,
@@ -37,6 +38,7 @@ const SearchResultsGridItem = ({
         size={icon_size}
       />
     );
+  let key = 0;
 
   return (
     <Col
@@ -56,7 +58,7 @@ const SearchResultsGridItem = ({
           setModalCourse(course);
         }}
         className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
-        tabindex="0"
+        tabIndex="0"
       >
         <Row className="m-auto">
           <Col xs={multi_seasons ? 8 : 12} className="p-0">
@@ -123,6 +125,7 @@ const SearchResultsGridItem = ({
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag + ' ' + tag_styles[skill]}
+                    key={key++}
                   >
                     {skill}
                   </Badge>
@@ -131,6 +134,7 @@ const SearchResultsGridItem = ({
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag + ' ' + tag_styles[area]}
+                    key={key++}
                   >
                     {area}
                   </Badge>
@@ -139,6 +143,7 @@ const SearchResultsGridItem = ({
                   <Badge
                     variant="secondary"
                     className={tag_styles.tag + ' ' + tag_styles.none}
+                    key={key++}
                   >
                     N/A
                   </Badge>
@@ -189,6 +194,7 @@ const SearchResultsGridItem = ({
           season_code={course.season_code}
           modal={false}
           isMobile={isMobile}
+          times={unflattenTimes(course)}
         />
       </div>
     </Col>
