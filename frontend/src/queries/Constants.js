@@ -73,7 +73,7 @@ export const colorOptionStyles = {
 					? 'white'
 					: 'black'
 				: data.color,
-			cursor: isDisabled ? 'not-allowed' : 'default',
+			cursor: isDisabled ? 'not-allowed' : 'pointer',
 
 			':active': {
 				...styles[':active'],
@@ -87,7 +87,7 @@ export const colorOptionStyles = {
 		return {
 			...styles,
 			backgroundColor: color.alpha(0.16).css(),
-			borderRadius: '6px'
+			borderRadius: '6px',
 		};
 	},
 	multiValueLabel: (styles, { data }) => ({
@@ -121,10 +121,10 @@ export const colorOptionStyles = {
 };
 
 export const selectStyles = {
-	multiValue: (styles) => {
+	multiValue: styles => {
 		return {
 			...styles,
-			borderRadius: '6px'
+			borderRadius: '6px',
 		};
 	},
 	control: base => ({
@@ -147,6 +147,10 @@ export const selectStyles = {
 		paddingTop: 0,
 		paddingBottom: 0,
 		borderRadius: '8px',
+	}),
+	option: base => ({
+		...base,
+		cursor: 'pointer',
 	}),
 };
 

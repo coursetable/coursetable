@@ -388,6 +388,7 @@ function Search(props) {
                   <small
                     className={Styles.reset_filters_btn + ' pl-1'}
                     onClick={handleResetFilters}
+                    style={{color: '#e23e57'}}
                   >
                     Reset Filters
                   </small>
