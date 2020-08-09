@@ -10,7 +10,7 @@ import './MultiToggle.css';
 
 import CourseModalLoading from './CourseModalLoading';
 
-const CourseModalOverview = (props) => {
+const CourseModalOverview = props => {
   const listing = props.listing;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const options = [
@@ -22,7 +22,7 @@ const CourseModalOverview = (props) => {
   const [enlarged, setEnlarged] = useState(['', -1]);
   let enrollment = -1;
 
-  const setSeason = (evaluation) => {
+  const setSeason = evaluation => {
     let temp = { ...evaluation };
     if (filter === 'professor') {
       temp.professor = listing.professors;
@@ -37,7 +37,7 @@ const CourseModalOverview = (props) => {
     props.setSeason(temp);
   };
 
-  const setFilter = (val) => {
+  const setFilter = val => {
     props.setFilter(val);
   };
 
@@ -70,7 +70,7 @@ const CourseModalOverview = (props) => {
   let items = [];
 
   if (data) {
-    data.computed_course_info.forEach((season) => {
+    data.computed_course_info.forEach(season => {
       if (!season.course.evaluation_statistics[0]) return;
       evaluations.push({
         rating:
@@ -224,24 +224,32 @@ const CourseModalOverview = (props) => {
         <Col md={6} className="px-0 mt-0 mb-3">
           {listing['professors'] && (
             <Row className="m-auto py-2">
-              Taught by&nbsp;<div className="font-weight-bold">{listing.professors}</div>
+              Taught by&nbsp;
+              <div className="font-weight-bold">{listing.professors}</div>
             </Row>
           )}
           {listing['course.times_summary'] !== 'TBA' && (
             <Row className="m-auto py-2">
-              Meets&nbsp;<div className="font-weight-bold">{listing['course.times_summary']}</div>
+              Meets&nbsp;
+              <div className="font-weight-bold">
+                {listing['course.times_summary']}
+              </div>
             </Row>
           )}
           {listing['section'] && (
             <Row className="m-auto py-2">
-              Section&nbsp;<div className="font-weight-bold">{listing.section}</div>
+              Section&nbsp;
+              <div className="font-weight-bold">{listing.section}</div>
             </Row>
           )}
           {listing['course.evaluation_statistics'] &&
           listing['course.evaluation_statistics'][0] &&
           listing['course.evaluation_statistics'][0].enrollment ? (
             <Row className="m-auto py-2">
-                <div className="font-weight-bold">{listing['course.evaluation_statistics'][0].enrollment.enrolled}&nbsp;enrolled</div>
+              <div className="font-weight-bold">
+                {listing['course.evaluation_statistics'][0].enrollment.enrolled}
+                &nbsp;enrolled
+              </div>
             </Row>
           ) : enrollment === -1 ? (
             <div />
@@ -252,34 +260,21 @@ const CourseModalOverview = (props) => {
           )}
           {location_url !== '' && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
-                <strong className={styles.lable_bubble}>Location</strong>
-              </Col>
-              <Col xs={8}>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={location_url}
-                >
-                  {location_name}
-                </a>
-              </Col>
+              Taught in&nbsp;
+              <a target="_blank" rel="noopener noreferrer" href={location_url}>
+                {location_name}
+              </a>
             </Row>
           )}
           {listing['course.syllabus_url'] && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
-                <strong className={styles.lable_bubble}>Syllabus</strong>
-              </Col>
-              <Col xs={8}>
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={listing['course.syllabus_url']}
-                >
-                  {listing['course_code']}
-                </a>
-              </Col>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href={listing['course.syllabus_url']}
+              >
+                Link to syllabus
+              </a>
             </Row>
           )}
           {/* COURSE DESCRIPTION */}
@@ -293,7 +288,7 @@ const CourseModalOverview = (props) => {
             <MultiToggle
               options={options}
               selectedOption={filter}
-              onSelectOption={(val) => setFilter(val)}
+              onSelectOption={val => setFilter(val)}
               className={styles.evaluations_filter + ' mb-2'}
             />
           </Row>
