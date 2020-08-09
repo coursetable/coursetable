@@ -8,6 +8,8 @@ import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import { toSeasonString } from '../utilities';
 import './MultiToggle.css';
 
+import CourseModalLoading from './CourseModalLoading';
+
 const CourseModalOverview = (props) => {
   const listing = props.listing;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -62,7 +64,7 @@ const CourseModalOverview = (props) => {
       professor_name: listing.professors ? listing.professors : 'bruh',
     },
   });
-  if (loading || error) return <Modal.Body>Loading...</Modal.Body>;
+  if (loading || error) return <CourseModalLoading />;
 
   let evaluations = [];
   let items = [];

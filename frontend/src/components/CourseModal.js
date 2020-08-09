@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
-import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
+import { Badge, Col, Container, Row, Modal, Spinner } from 'react-bootstrap';
+
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
+import CourseModalLoading from './CourseModalLoading';
+
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { unflattenTimesModal } from '../utilities';
 
+import styles from './CourseModal.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
@@ -97,38 +100,40 @@ const CourseModal = props => {
                       >
                         {course_codes_str}
                       </p>
-                      {listing.['course.skills'] && listing.['course.skills'].map(skill => (
-                        <Badge
-                          variant="secondary"
-                          className={tag_styles.tag}
-                          style={{
-                            color: skillsAreasColors[skill.toUpperCase()],
-                            backgroundColor: chroma(
-                              skillsAreasColors[skill.toUpperCase()]
-                            )
-                              .alpha(0.16)
-                              .css(),
-                          }}
-                        >
-                          {skill}
-                        </Badge>
-                      ))}
-                      {listing.['course.areas'] && listing.['course.areas'].map(area => (
-                        <Badge
-                          variant="secondary"
-                          className={tag_styles.tag}
-                          style={{
-                            color: skillsAreasColors[area.toUpperCase()],
-                            backgroundColor: chroma(
-                              skillsAreasColors[area.toUpperCase()]
-                            )
-                              .alpha(0.16)
-                              .css(),
-                          }}
-                        >
-                          {area}
-                        </Badge>
-                      ))}
+                      {listing['course.skills'] &&
+                        listing['course.skills'].map(skill => (
+                          <Badge
+                            variant="secondary"
+                            className={tag_styles.tag}
+                            style={{
+                              color: skillsAreasColors[skill.toUpperCase()],
+                              backgroundColor: chroma(
+                                skillsAreasColors[skill.toUpperCase()]
+                              )
+                                .alpha(0.16)
+                                .css(),
+                            }}
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      {listing['course.areas'] &&
+                        listing['course.areas'].map(area => (
+                          <Badge
+                            variant="secondary"
+                            className={tag_styles.tag}
+                            style={{
+                              color: skillsAreasColors[area.toUpperCase()],
+                              backgroundColor: chroma(
+                                skillsAreasColors[area.toUpperCase()]
+                              )
+                                .alpha(0.16)
+                                .css(),
+                            }}
+                          >
+                            {area}
+                          </Badge>
+                        ))}
                     </Row>
                   </Col>
                 </Row>
@@ -182,7 +187,7 @@ const CourseModal = props => {
         {props.show &&
           (view[0] === 'overview' ? (
             is_partial ? (
-              <Modal.Body>Loading..</Modal.Body>
+              <CourseModalLoading/>
             ) : (
               <CourseModalOverview
                 setFilter={setFilter}
