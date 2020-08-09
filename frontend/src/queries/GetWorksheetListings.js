@@ -45,7 +45,7 @@ const buildQuery = (worksheet) => {
   }`;
 };
 
-function preprocess_courses(listing) {
+export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -102,7 +102,7 @@ function preprocess_courses(listing) {
   }
 
   return listing;
-}
+};
 
 export const FetchWorksheet = (worksheet) => {
   const builtQuery = buildQuery(worksheet);
