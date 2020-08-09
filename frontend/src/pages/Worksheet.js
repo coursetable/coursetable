@@ -147,6 +147,10 @@ function Worksheet() {
             className={
               styles.calendar +
               ' m-0 p-0 ' +
+              (rev_flex_direction
+                ? styles.calendar_hidden
+                : styles.calendar_expand) +
+              ' ' +
               (cur_expand === 'list' ? styles.hidden + ' ' : '') +
               (cur_expand === 'calendar' ? styles.delay : '')
             }
@@ -189,6 +193,8 @@ function Worksheet() {
             className={
               styles.table +
               ' pl-4 ml-auto ' +
+              (rev_flex_direction ? styles.table_expand : styles.table_hidden) +
+              ' ' +
               (cur_expand === 'list' ? styles.delay + ' pr-4 ' : 'pr-0 ') +
               (cur_expand === 'calendar' ? styles.hidden : '')
             }

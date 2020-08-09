@@ -14,20 +14,31 @@
 
 /* ALLOW TRANSITION ANIMATIONS */
 
-.calendar {
-  transition: 0.3s;
+.calendar_expand {
+  transition: 0.5s;
 }
 
-.table {
-  transition: 0.3s;
+.table_hidden {
+  transition: transform 0.5s;
+  transition-delay: 0.5s;
+}
+
+.table_expand {
+  transition: 0.5s;
+}
+
+.calendar_hidden {
+  transition: transform 0.5s;
+  transition-delay: 0.5s;
 }
 
 .hidden {
+  transition-delay: 0s !important;
   transform: translateY(100vh);
 }
 
 .delay {
-  transition-delay: 0.3s;
+  transition-delay: 0.5s;
 }
 
 /* DISABLE TRANSITION ANIMATIONS */
