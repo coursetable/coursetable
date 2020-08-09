@@ -168,7 +168,8 @@ function Search(props) {
 
     var processedSeasons = seasons.select
       ? seasons.select.props.value
-      : ['202003'];
+      : [{ value: '202003' }];
+
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
         return x.value;
@@ -205,11 +206,11 @@ function Search(props) {
       );
 
       if (processedSkills.length === 0) {
-        processedSkills = skills;
+        processedSkills = null;
       }
 
       if (processedAreas.length === 0) {
-        processedAreas = areas;
+        processedAreas = null;
       }
     }
 

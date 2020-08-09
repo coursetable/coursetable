@@ -119,7 +119,7 @@ const WorksheetToggleButton = (props) => {
       {inWorksheet ? (
         <BsBookmarkFill
           className={'bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
-          color="#007bff"
+          color="#3396ff"
           size={25}
         />
       ) : (
@@ -129,7 +129,7 @@ const WorksheetToggleButton = (props) => {
               ? !conflict
                 ? '#00d962' // No conflicts
                 : '#ff6969' // Conflicts
-              : '#007bff'
+              : '#3396ff'
           }
           size={25}
           style={{ transition: '0.3s' }}
