@@ -38,6 +38,7 @@ function Worksheet() {
   const [hover_course, setHoverCourse] = useState();
   const [hover_expand, setHoverExpand] = useState('none');
   const [cur_expand, setCurExpand] = useState('none');
+  const [rev_flex_direction, setRevFlexDirection] = useState(false);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -63,6 +64,7 @@ function Worksheet() {
 
   const hideModal = () => {
     setCourseModal([false, '']);
+    setHoverExpand(cur_expand);
   };
 
   const isHidden = (season_code, crn) => {
@@ -137,13 +139,16 @@ function Worksheet() {
     <div className={styles.container}>
       {/* Desktop View */}
       <div className="d-none d-md-block">
-        <Row className="m-4">
+        <Row
+          className={'m-4 ' + (rev_flex_direction ? 'flex-wrap-reverse' : '')}
+        >
           <Col
             md={cur_expand === 'calendar' ? 12 : 9}
             className={
               styles.calendar +
               ' m-0 p-0 ' +
-              (cur_expand === 'list' ? styles.hidden : '')
+              (cur_expand === 'list' ? styles.hidden + ' ' : '') +
+              (cur_expand === 'calendar' ? styles.delay : '')
             }
             onMouseEnter={() => setHoverExpand('calendar')}
             onMouseLeave={() => setHoverExpand('none')}
@@ -160,7 +165,10 @@ function Worksheet() {
                   <FaExpandAlt
                     className={styles.expand_btn + ' ' + styles.top_right}
                     size={expand_btn_size}
-                    onClick={() => setCurExpand('calendar')}
+                    onClick={() => {
+                      setCurExpand('calendar');
+                      setRevFlexDirection(false);
+                    }}
                   />
                 ) : (
                   <FaCompressAlt
@@ -181,7 +189,7 @@ function Worksheet() {
             className={
               styles.table +
               ' pl-4 ml-auto ' +
-              (cur_expand === 'list' ? 'pr-4 ' : 'pr-0 ') +
+              (cur_expand === 'list' ? styles.delay + ' pr-4 ' : 'pr-0 ') +
               (cur_expand === 'calendar' ? styles.hidden : '')
             }
             onMouseEnter={() => setHoverExpand('list')}
@@ -204,7 +212,10 @@ function Worksheet() {
                   <FaExpandAlt
                     className={styles.expand_btn + ' ' + styles.top_left}
                     size={expand_btn_size}
-                    onClick={() => setCurExpand('list')}
+                    onClick={() => {
+                      setCurExpand('list');
+                      setRevFlexDirection(true);
+                    }}
                   />
                 ) : (
                   <FaCompressAlt

@@ -1,6 +1,8 @@
 .container {
   margin-bottom: 0px;
   border: none;
+  max-height: 93vh;
+  overflow: hidden;
 }
 
 .calendar {
@@ -8,24 +10,33 @@
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   border-radius: 8px !important;
   background-color: white;
-  /* transition: 0.3s; */
-  /* position: absolute !important;
-  left: 0%; */
-  /* top: 0%; */
+}
+
+/* ALLOW TRANSITION ANIMATIONS */
+
+.calendar {
+  transition: 0.3s;
 }
 
 .table {
-  /* position: absolute !important;
-  right: 0%; */
-  /* top: 0%; */
-  /* transition: 0.3s; */
+  transition: 0.3s;
 }
 
 .hidden {
-  /* opacity: 0;
-  transition-delay: opacity 0.3s; */
-  display: none;
+  transform: translateY(100vh);
 }
+
+.delay {
+  transition-delay: 0.3s;
+}
+
+/* DISABLE TRANSITION ANIMATIONS */
+
+/* .hidden {
+  display: none;
+} */
+
+/* ----------------------------- */
 
 .accordion {
   width: 100vw;
@@ -65,4 +76,10 @@
 
 .top_right:hover {
   transform: translate(50%, -40%) scale(1.1);
+}
+
+@media (hover: none) {
+  .container {
+    max-height: none !important;
+  }
 }
