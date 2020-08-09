@@ -1,21 +1,13 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 
 import ReactDataGrid from 'react-data-grid';
 import { Toolbar, Data, Filters } from 'react-data-grid-addons';
 
-import { Button } from 'react-bootstrap';
-
-import { AutoSizer, List } from 'react-virtualized';
+import { AutoSizer } from 'react-virtualized';
 
 import styles from './CoursesTable.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseModal from './CourseModal';
-
-function handleWorksheetAdd(e) {
-  e.preventDefault();
-
-  console.log();
-}
 
 export default class CoursesTable extends React.Component {
   constructor(props) {
@@ -35,13 +27,6 @@ export default class CoursesTable extends React.Component {
     };
 
     const selectors = Data.Selectors;
-
-    const {
-      NumericFilter,
-      AutoCompleteFilter,
-      MultiSelectFilter,
-      SingleSelectFilter,
-    } = Filters;
 
     const WorkSheetFormatter = ({ row, value }) => {
       return (

@@ -10,7 +10,7 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import Styles from './SearchResultsItem.module.css';
 
 import ReactRating from 'react-rating';
-import { BsSquareFill, BsSquare } from 'react-icons/bs';
+import { BsSquareFill } from 'react-icons/bs';
 
 const SearchResultsItem = ({
   course,
@@ -19,7 +19,6 @@ const SearchResultsItem = ({
   setModalCourse,
   executeGetCourseModal,
 }) => {
-  const RATINGS_PRECISION = 1;
   let key = 1;
 
   return (

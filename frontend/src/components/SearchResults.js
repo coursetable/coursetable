@@ -15,7 +15,6 @@ import { Container, Col, Row } from 'react-bootstrap';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { GET_COURSE_MODAL } from '../queries/QueryStrings';
 import { preprocess_courses, flatten } from '../utilities';
-import { isSelectionNode } from 'graphql';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
 
@@ -37,11 +36,11 @@ const SearchResults = ({
   const isMobile = width < 768;
 
   if (isMobile && isList) setView(false);
-  var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
+  // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   const [showModal, setShowModal] = useState(false);
   const [modal_course, setModalCourse] = useState();
-  const [show_tooltip, setShowTooltip] = useState(false);
+  // const [show_tooltip, setShowTooltip] = useState(false);
   let key = 0;
   // const [modalCalled, setModalCalled] = React.useState(false);
 
@@ -90,7 +89,7 @@ const SearchResults = ({
     }
     if (data.length % query_size === 0) setEnd(false);
     else setEnd(true);
-  }, [data, setOffset, setEnd]);
+  }, [data, setOffset, setEnd, offset, query_size]);
 
   // Fetch more courses if scroll down 80% of the page
   useEffect(() => {
@@ -106,7 +105,7 @@ const SearchResults = ({
         setFetchMore(true);
       }
     };
-  }, []);
+  }, [data.length, fetch_more, height, setFetchMore, setScroll]);
 
   const num_cols = width < 1100 ? 2 : 3;
   let grid_html = [];
@@ -118,6 +117,7 @@ const SearchResults = ({
     resultsListing = (
       <div className="text-center py-5">
         <img
+          alt="No courses found."
           className="py-5"
           src={NoCoursesFound}
           style={{ width: '25%' }}
