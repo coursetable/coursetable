@@ -17,6 +17,8 @@ import { GET_COURSE_MODAL } from '../queries/QueryStrings';
 import { preprocess_courses, flatten } from '../utilities';
 import { isSelectionNode } from 'graphql';
 
+import NoCoursesFound from '../images/no_courses_found.svg';
+
 const SearchResults = ({
   data,
   isList,
@@ -107,30 +109,65 @@ const SearchResults = ({
 
   const num_cols = width < 1100 ? 2 : 3;
   let grid_html = [];
-  if (!isList) {
-    const len = data.length;
-    for (let i = 0; i < len; i += num_cols) {
-      let row_elements = [];
-      for (let j = i; j < len && j < i + num_cols; j++) {
-        row_elements.push(
-          <SearchResultsGridItem
-            course={flatten(data[j])}
-            isMobile={isMobile}
-            setShowModal={setShowModal}
-            setModalCourse={setModalCourse}
-            executeGetCourseModal={executeGetCourseModal}
-            num_cols={num_cols}
-            multi_seasons={multi_seasons}
-            key_num={key++}
-            key={key++}
-          />
+
+  var resultsListing;
+
+  // if no courses found, render the empty state
+  if (data.length === 0) {
+    resultsListing = (
+      <div className="text-center py-5">
+        <img
+          className="py-5"
+          src={NoCoursesFound}
+          style={{ width: '25%' }}
+        ></img>
+        <h3>No courses found</h3>
+        <div>We couldn't find any courses matching your search.</div>
+      </div>
+    );
+  } else {
+    // if not list view, prepare the grid
+    if (!isList) {
+      const len = data.length;
+      for (let i = 0; i < len; i += num_cols) {
+        let row_elements = [];
+        for (let j = i; j < len && j < i + num_cols; j++) {
+          row_elements.push(
+            <SearchResultsGridItem
+              course={flatten(data[j])}
+              isMobile={isMobile}
+              setShowModal={setShowModal}
+              setModalCourse={setModalCourse}
+              executeGetCourseModal={executeGetCourseModal}
+              num_cols={num_cols}
+              multi_seasons={multi_seasons}
+              key_num={key++}
+              key={key++}
+            />
+          );
+        }
+        grid_html.push(
+          <Row className="mx-auto" key={key++}>
+            {row_elements}
+          </Row>
         );
       }
-      grid_html.push(
-        <Row className="mx-auto" key={key++}>
-          {row_elements}
-        </Row>
-      );
+
+      resultsListing = <div className="pt-3">{grid_html}</div>;
+    }
+
+    // otherwise, prepare the listing
+    else {
+      resultsListing = data.map(course => (
+        <SearchResultsItem
+          course={flatten(course)}
+          isMobile={isMobile}
+          setShowModal={setShowModal}
+          setModalCourse={setModalCourse}
+          executeGetCourseModal={executeGetCourseModal}
+          key={key++}
+        />
+      ));
     }
   }
 
@@ -177,22 +214,7 @@ const SearchResults = ({
             </Row>
           </div>
         )}
-        <div className={isList ? 'px-0' : 'px-2'}>
-          {isList ? (
-            data.map((course) => (
-              <SearchResultsItem
-                course={flatten(course)}
-                isMobile={isMobile}
-                setShowModal={setShowModal}
-                setModalCourse={setModalCourse}
-                executeGetCourseModal={executeGetCourseModal}
-                key={key++}
-              />
-            ))
-          ) : (
-            <div className="pt-3">{grid_html}</div>
-          )}
-        </div>
+        {resultsListing}
       </Container>
       {modal}
     </div>
