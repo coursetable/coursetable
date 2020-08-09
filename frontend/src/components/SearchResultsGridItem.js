@@ -89,14 +89,16 @@ const SearchResultsGridItem = ({
     setConflict(false);
   }, [data ? data : []]);
 
-  const renderTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small style={{ fontWeight: 500 }}>
-        {times === 'TBA' ? 'Invalid Course Time' : 'Scheduling Conflict'}
-      </small>
-    </Tooltip>
-  );
-
+  const renderTooltip = (props) =>
+    !inWorksheet && conflict ? (
+      <Tooltip id="button-tooltip" {...props}>
+        <small style={{ fontWeight: 500 }}>
+          {times === 'TBA' ? 'Invalid Course Time' : 'Scheduling Conflict'}
+        </small>
+      </Tooltip>
+    ) : (
+      <div />
+    );
   return (
     <Col
       md={col_width}
