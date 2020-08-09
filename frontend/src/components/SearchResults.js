@@ -99,6 +99,7 @@ const SearchResults = ({
     window.onscroll = () => {
       setScroll(Math.min(78, window.pageYOffset));
       if (
+        data.length > 0 &&
         !fetch_more &&
         window.pageYOffset + height > 0.8 * results_element.clientHeight
       ) {
@@ -158,7 +159,7 @@ const SearchResults = ({
 
     // otherwise, prepare the listing
     else {
-      resultsListing = data.map(course => (
+      resultsListing = data.map((course) => (
         <SearchResultsItem
           course={flatten(course)}
           isMobile={isMobile}

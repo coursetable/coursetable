@@ -135,82 +135,84 @@ function Worksheet() {
     <div className={styles.container}>
       {/* Desktop View */}
       <div className="d-none d-md-block">
-        <Row className="mx-4 py-4">
-          {cur_expand !== 'list' && (
-            <Col
-              md={cur_expand === 'calendar' ? 12 : 9}
-              className={styles.calendar + ' p-0 mx-0'}
-              onMouseEnter={() => setHoverExpand('calendar')}
-              onMouseLeave={() => setHoverExpand('none')}
-            >
-              <WeekSchedule
-                className=""
-                showModal={showModal}
-                courses={season_listings}
-                hover_course={hover_course}
-              />
-              <Fade in={hover_expand === 'calendar'}>
-                <div style={{ zIndex: 420 }}>
-                  {cur_expand === 'none' ? (
-                    <FaExpandAlt
-                      className={styles.expand_btn + ' ' + styles.top_right}
-                      onClick={() => setCurExpand('calendar')}
-                    />
-                  ) : (
-                    <FaCompressAlt
-                      className={styles.expand_btn + ' ' + styles.top_right}
-                      onClick={() => {
-                        setCurExpand('none');
-                        setHoverExpand('none');
-                      }}
-                    />
-                  )}
-                </div>
-              </Fade>
-            </Col>
-          )}
-          {cur_expand !== 'calendar' && (
-            <Col
-              md={cur_expand === 'list' ? 12 : 3}
-              className={
-                styles.table +
-                ' pl-4 ' +
-                (cur_expand === 'list' ? 'pr-4' : 'pr-0')
-              }
-              onMouseEnter={() => setHoverExpand('list')}
-              onMouseLeave={() => setHoverExpand('none')}
-            >
-              <WorksheetList
-                onSeasonChange={changeSeason}
-                toggleCourse={toggleCourse}
-                showModal={showModal}
-                courses={filtered_listings}
-                season_codes={season_codes}
-                cur_season={season}
-                hidden_courses={hidden_courses}
-                hasSeason={hasSeason}
-                setHoverCourse={setHoverCourse}
-              />
-              <Fade in={hover_expand === 'list'}>
-                <div style={{ zIndex: 420 }}>
-                  {cur_expand === 'none' ? (
-                    <FaExpandAlt
-                      className={styles.expand_btn + ' ' + styles.top_left}
-                      onClick={() => setCurExpand('list')}
-                    />
-                  ) : (
-                    <FaCompressAlt
-                      className={styles.expand_btn + ' ' + styles.top_left}
-                      onClick={() => {
-                        setCurExpand('none');
-                        setHoverExpand('none');
-                      }}
-                    />
-                  )}
-                </div>
-              </Fade>
-            </Col>
-          )}
+        <Row className="m-4">
+          <Col
+            md={cur_expand === 'calendar' ? 12 : 9}
+            className={
+              styles.calendar +
+              ' m-0 p-0 ' +
+              (cur_expand === 'list' ? styles.hidden : '')
+            }
+            onMouseEnter={() => setHoverExpand('calendar')}
+            onMouseLeave={() => setHoverExpand('none')}
+          >
+            <WeekSchedule
+              className=""
+              showModal={showModal}
+              courses={season_listings}
+              hover_course={hover_course}
+            />
+            <Fade in={hover_expand === 'calendar'}>
+              <div style={{ zIndex: 420 }}>
+                {cur_expand === 'none' ? (
+                  <FaExpandAlt
+                    className={styles.expand_btn + ' ' + styles.top_right}
+                    onClick={() => setCurExpand('calendar')}
+                  />
+                ) : (
+                  <FaCompressAlt
+                    className={styles.expand_btn + ' ' + styles.top_right}
+                    onClick={() => {
+                      setCurExpand('none');
+                      setHoverExpand('none');
+                    }}
+                  />
+                )}
+              </div>
+            </Fade>
+          </Col>
+
+          <Col
+            md={cur_expand === 'list' ? 12 : 3}
+            className={
+              styles.table +
+              ' pl-4 ml-auto ' +
+              (cur_expand === 'list' ? 'pr-4 ' : 'pr-0 ') +
+              (cur_expand === 'calendar' ? styles.hidden : '')
+            }
+            onMouseEnter={() => setHoverExpand('list')}
+            onMouseLeave={() => setHoverExpand('none')}
+          >
+            <WorksheetList
+              onSeasonChange={changeSeason}
+              toggleCourse={toggleCourse}
+              showModal={showModal}
+              courses={filtered_listings}
+              season_codes={season_codes}
+              cur_season={season}
+              hidden_courses={hidden_courses}
+              hasSeason={hasSeason}
+              setHoverCourse={setHoverCourse}
+            />
+            <Fade in={hover_expand === 'list'}>
+              <div style={{ zIndex: 420 }}>
+                {cur_expand === 'none' ? (
+                  <FaExpandAlt
+                    className={styles.expand_btn + ' ' + styles.top_left}
+                    onClick={() => setCurExpand('list')}
+                  />
+                ) : (
+                  <FaCompressAlt
+                    className={styles.expand_btn + ' ' + styles.top_left}
+                    onClick={() => {
+                      setCurExpand('none');
+                      setHoverExpand('none');
+                    }}
+                  />
+                )}
+              </div>
+            </Fade>
+          </Col>
         </Row>
       </div>
       {/* Mobile View */}

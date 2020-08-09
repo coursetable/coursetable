@@ -9,10 +9,22 @@
   border-radius: 8px !important;
   background-color: white;
   /* transition: 0.3s; */
+  /* position: absolute !important;
+  left: 0%; */
+  /* top: 0%; */
 }
 
 .table {
+  /* position: absolute !important;
+  right: 0%; */
+  /* top: 0%; */
   /* transition: 0.3s; */
+}
+
+.hidden {
+  /* opacity: 0;
+  transition-delay: opacity 0.3s; */
+  display: none;
 }
 
 .accordion {
