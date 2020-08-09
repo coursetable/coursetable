@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
-import './CourseModal.css';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 import { IoMdArrowRoundBack } from 'react-icons/io';
