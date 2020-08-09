@@ -3,7 +3,6 @@ import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 import './CourseModal.css';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
-import tagStyles from './SearchResultsItem.module.css';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import styles from './CourseModal.module.css';
 import { toSeasonString } from '../utilities';
@@ -11,7 +10,11 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { unflattenTimesModal } from '../utilities';
 
-const CourseModal = (props) => {
+import tag_styles from './SearchResultsItem.module.css';
+import { skillsAreasColors } from '../queries/Constants.js';
+import chroma from 'chroma-js';
+
+const CourseModal = props => {
   const is_partial = props.listing === null;
   const listing = !is_partial ? props.listing : props.partial_listing;
   const { width } = useWindowDimensions();
@@ -30,7 +33,7 @@ const CourseModal = (props) => {
     }
   }
 
-  const setSeason = (evaluation) => {
+  const setSeason = evaluation => {
     setView([evaluation.season_code, evaluation]);
   };
 
@@ -95,26 +98,38 @@ const CourseModal = (props) => {
                       >
                         {course_codes_str}
                       </p>
-                      {!listing.skills || (
+                      {listing.['course.skills'] && listing.['course.skills'].map(skill => (
                         <Badge
                           variant="secondary"
-                          className={
-                            tagStyles.tag + ' ' + tagStyles[listing.skills]
-                          }
+                          className={tag_styles.tag}
+                          style={{
+                            color: skillsAreasColors[skill.toUpperCase()],
+                            backgroundColor: chroma(
+                              skillsAreasColors[skill.toUpperCase()]
+                            )
+                              .alpha(0.16)
+                              .css(),
+                          }}
                         >
-                          {listing.skills}
+                          {skill}
                         </Badge>
-                      )}
-                      {!listing.areas || (
+                      ))}
+                      {listing.['course.areas'] && listing.['course.areas'].map(area => (
                         <Badge
                           variant="secondary"
-                          className={
-                            tagStyles.tag + ' ' + tagStyles[listing.areas]
-                          }
+                          className={tag_styles.tag}
+                          style={{
+                            color: skillsAreasColors[area.toUpperCase()],
+                            backgroundColor: chroma(
+                              skillsAreasColors[area.toUpperCase()]
+                            )
+                              .alpha(0.16)
+                              .css(),
+                          }}
                         >
-                          {listing.areas}
+                          {area}
                         </Badge>
-                      )}
+                      ))}
                     </Row>
                   </Col>
                 </Row>

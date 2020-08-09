@@ -126,15 +126,6 @@ const SearchResultsItem = ({
         </div>
       </Col>
       <Col md={2}>
-        {/* <Button
-              className={
-                isMobile
-                  ? Styles.toggle_worksheet_mobile
-                  : Styles.toggle_worksheet
-              }
-            >
-              {isMobile ? 'Add to worksheet' : <BsBookmarkPlus />}
-            </Button> */}
         <WorksheetToggleButton
           alwaysRed={false}
           crn={course['course.listings'][0].crn}
