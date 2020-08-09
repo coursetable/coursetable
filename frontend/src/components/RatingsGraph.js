@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col } from 'react-bootstrap';
+import { Row } from 'react-bootstrap';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import styles from './RatingsGraph.module.css';
 

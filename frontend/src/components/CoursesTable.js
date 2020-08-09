@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import ReactDataGrid from 'react-data-grid';
-import { Toolbar, Data, Filters } from 'react-data-grid-addons';
+import { Toolbar, Data } from 'react-data-grid-addons';
 
 import { AutoSizer } from 'react-virtualized';
 

@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import styles from './EvaluationRatings.module.css';
+import { Row } from 'react-bootstrap';
+// import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
 
 const EvaluationRatings = (props) => {
@@ -20,7 +20,7 @@ const EvaluationRatings = (props) => {
       }
     }
   });
-  const num_questions = ratings.length;
+  // const num_questions = ratings.length;
   let assessment = [];
   let workload = [];
   let engagement = [];

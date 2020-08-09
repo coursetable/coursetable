@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Form, Button } from 'react-bootstrap';
 import styles from './Join.module.css';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';

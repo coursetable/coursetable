@@ -124,7 +124,7 @@ function Search(props) {
   const handleChange = () => {
     if (!props.location.state) return;
     //Reset searchText
-    const { location, history } = props;
+    const { history } = props;
     history.replace();
   };
 

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Form, Button, Collapse } from 'react-bootstrap';
+import { Form, Button, Collapse } from 'react-bootstrap';
 import styles from './Feedback.module.css';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';

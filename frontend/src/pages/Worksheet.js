@@ -6,7 +6,7 @@ import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
 import CourseModal from '../components/CourseModal';
-import { FaCompressAlt, FaExpandAlt, FaColumns } from 'react-icons/fa';
+import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 
 import styles from './Worksheet.module.css';
 

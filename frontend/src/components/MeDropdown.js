@@ -6,9 +6,7 @@ import { FaFacebookSquare } from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
-import { toast } from 'react-toastify';
 import { useUser } from '../user';
-import { isInWorksheet } from '../utilities';
 import { flatten } from '../utilities';
 import {
   FetchWorksheetLazy,
@@ -20,7 +18,7 @@ function MeDropdown(props) {
   const [export_ics, setExport] = useState(false);
 
   if (user.worksheet) {
-    var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
+    var [fetchWorksheetListings, { data }] = FetchWorksheetLazy(
       user.worksheet,
       props.season_code
     );
