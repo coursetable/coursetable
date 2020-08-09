@@ -74,7 +74,7 @@ function Search(props) {
   const [scroll_pos, setScroll] = useState(0); // Scroll pos
 
   // Size of Query constant
-  const query_size = 20;
+  const QUERY_SIZE = 100;
 
   // State used to determine whether or not to show season tags
   const [multi_seasons, setMultiSeasons] = useState(false);
@@ -241,7 +241,7 @@ function Search(props) {
     const search_variables = {
       ordering: ordering,
       offset: offset2 === -1 ? offset : offset2,
-      limit: query_size,
+      limit: QUERY_SIZE,
       seasons: processedSeasons,
       areas: processedAreas,
       skills: processedSkills,
@@ -590,7 +590,7 @@ function Search(props) {
                 setEnd={setEnd}
                 setScroll={setScroll}
                 multi_seasons={multi_seasons}
-                query_size={query_size}
+                QUERY_SIZE={QUERY_SIZE}
               />
             )}
           </Col>
