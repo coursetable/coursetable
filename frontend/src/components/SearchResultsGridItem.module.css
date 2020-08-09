@@ -79,6 +79,13 @@
   transform: translateY(10px);
 }
 
+.conflict_error {
+  position: absolute;
+  top: -6px;
+  left: 0px;
+  transform: translate(50%, 0%);
+}
+
 @media (hover: none) {
   .worksheet_btn {
     top: -6px;
