@@ -1,6 +1,13 @@
 import React from 'react';
 import { Row, Col, Badge } from 'react-bootstrap';
-import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+
+import {
+  ratingColormap,
+  workloadColormap,
+  skillsAreasColors,
+} from '../queries/Constants.js';
+import chroma from 'chroma-js';
+
 import WorksheetToggleButton from './WorksheetToggleButton';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
@@ -121,33 +128,40 @@ const SearchResultsGridItem = ({
             </Row>
             <Row className="m-auto">
               <div className={tag_styles.skills_areas}>
-                {course.skills.map((skill) => (
+                {course.skills.map(skill => (
                   <Badge
                     variant="secondary"
-                    className={tag_styles.tag + ' ' + tag_styles[skill]}
+                    className={tag_styles.tag}
                     key={key++}
+                    style={{
+                      color: skillsAreasColors[skill.toUpperCase()],
+                      backgroundColor: chroma(
+                        skillsAreasColors[skill.toUpperCase()]
+                      )
+                        .alpha(0.16)
+                        .css(),
+                    }}
                   >
                     {skill}
                   </Badge>
                 ))}
-                {course.areas.map((area) => (
+                {course.areas.map(area => (
                   <Badge
                     variant="secondary"
-                    className={tag_styles.tag + ' ' + tag_styles[area]}
+                    className={tag_styles.tag}
                     key={key++}
+                    style={{
+                      color: skillsAreasColors[area.toUpperCase()],
+                      backgroundColor: chroma(
+                        skillsAreasColors[area.toUpperCase()]
+                      )
+                        .alpha(0.16)
+                        .css(),
+                    }}
                   >
                     {area}
                   </Badge>
                 ))}
-                {course.skills.length === 0 && course.areas.length === 0 && (
-                  <Badge
-                    variant="secondary"
-                    className={tag_styles.tag + ' ' + tag_styles.none}
-                    key={key++}
-                  >
-                    N/A
-                  </Badge>
-                )}
               </div>
             </Row>
           </Col>
