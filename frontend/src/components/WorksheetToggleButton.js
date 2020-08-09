@@ -14,7 +14,8 @@ const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();
   if (user.worksheet) {
     var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
-      user.worksheet
+      user.worksheet,
+      props.season_code
     );
   }
   const [show, setShow] = useState(false);

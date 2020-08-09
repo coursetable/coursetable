@@ -21,7 +21,8 @@ function MeDropdown(props) {
 
   if (user.worksheet) {
     var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
-      user.worksheet
+      user.worksheet,
+      props.season_code
     );
   }
 

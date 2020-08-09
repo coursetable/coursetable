@@ -121,8 +121,12 @@ export const FetchWorksheet = (worksheet) => {
   return { loading, error, data };
 };
 
-export const FetchWorksheetLazy = (worksheet) => {
-  const builtQuery = buildQuery(worksheet);
+export const FetchWorksheetLazy = (worksheet, season_code) => {
+  let filtered_worksheet = [];
+  worksheet.forEach((course) => {
+    if (course[0] === season_code) filtered_worksheet.push(course);
+  });
+  const builtQuery = buildQuery(filtered_worksheet);
   const [fetchWorksheetListings, { loading, data }] = useLazyQuery(
     gql(builtQuery)
   );
