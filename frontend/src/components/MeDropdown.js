@@ -19,9 +19,11 @@ function MeDropdown(props) {
   const { user } = useUser();
   const [export_ics, setExport] = useState(false);
 
-  let [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
-    user.worksheet
-  );
+  if (user.worksheet) {
+    var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
+      user.worksheet
+    );
+  }
 
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK

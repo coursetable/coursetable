@@ -25,3 +25,18 @@
 .bookmark_fill:hover {
   color: #7cbbff !important;
 }
+
+.disabled-button {
+  cursor: not-allowed !important;
+  background-color: transparent !important;
+  border-width: 0 !important;
+}
+
+.disabled-button-icon {
+  color: rgba(0, 0, 0, 0.5);
+}
+
+.disabled-button:active,
+.disabled-button:focus {
+  box-shadow: none !important;
+}

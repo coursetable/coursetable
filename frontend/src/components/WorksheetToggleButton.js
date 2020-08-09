@@ -12,9 +12,11 @@ import { FaCalendarDay } from 'react-icons/fa';
 
 const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();
-  const [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
-    user.worksheet
-  );
+  if (user.worksheet) {
+    var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
+      user.worksheet
+    );
+  }
   const [show, setShow] = useState(false);
   const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
@@ -53,13 +55,19 @@ const WorksheetToggleButton = (props) => {
   useEffect(() => {
     if (inWorksheet) setShow(false);
   }, [inWorksheet]);
+
   const update = isInWorksheet(
     props.season_code,
     props.crn.toString(),
     user.worksheet
   );
   if (inWorksheet !== update) setInWorksheet(update);
-  if (user.worksheet === null) return <div className="mt-1">N/A</div>;
+  if (user.worksheet === null)
+    return (
+      <Button onClick={toggleWorkSheet} className="disabled-button">
+        <BsBookmark size={25} className="disabled-button-icon" />
+      </Button>
+    );
 
   function add_remove_course() {
     let add_remove;
