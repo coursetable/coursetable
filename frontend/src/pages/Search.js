@@ -103,7 +103,7 @@ function Search(props) {
   var seasonsOptions;
 
   if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map(x => {
+    seasonsOptions = seasonsData.seasons.map((x) => {
       return {
         value: x.season_code,
         label: x.term.charAt(0).toUpperCase() + x.term.slice(1) + ' ' + x.year,
@@ -142,7 +142,7 @@ function Search(props) {
     }
   }, [fetch_more]);
 
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     let offset2 = -1;
     if (event) {
       event.preventDefault();
@@ -167,7 +167,7 @@ function Search(props) {
         : [{ value: '202003' }];
 
     if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map(x => {
+      processedSeasons = processedSeasons.map((x) => {
         return x.value;
       });
     }
@@ -179,7 +179,7 @@ function Search(props) {
 
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map(x => {
+      processedSkillsAreas = processedSkillsAreas.map((x) => {
         return x.value;
       });
 
@@ -194,10 +194,12 @@ function Search(props) {
         ]);
       }
 
-      var processedSkills = processedSkillsAreas.filter(x =>
+      var processedSkills = processedSkillsAreas.filter((x) =>
         skills.includes(x)
       );
-      var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
+      var processedAreas = processedSkillsAreas.filter((x) =>
+        areas.includes(x)
+      );
 
       if (processedSkills.length === 0) {
         processedSkills = null;
@@ -210,14 +212,14 @@ function Search(props) {
 
     var processedCredits = credits.select.props.value;
     if (processedCredits != null) {
-      processedCredits = processedCredits.map(x => {
+      processedCredits = processedCredits.map((x) => {
         return x.value;
       });
     }
 
     var processedSchools = schools.select.props.value;
     if (processedSchools != null) {
-      processedSchools = processedSchools.map(x => {
+      processedSchools = processedSchools.map((x) => {
         return x.value;
       });
     }
@@ -305,7 +307,7 @@ function Search(props) {
   }
 
   // ctrl/cmd-f search hotkey
-  const focusSearch = e => {
+  const focusSearch = (e) => {
     if (e && searchText) {
       e.preventDefault();
       searchText.focus();
@@ -322,7 +324,7 @@ function Search(props) {
 
   const { Handle } = Slider;
 
-  const ratingSliderHandle = e => {
+  const ratingSliderHandle = (e) => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -331,7 +333,7 @@ function Search(props) {
     );
   };
 
-  const workloadSliderHandle = e => {
+  const workloadSliderHandle = (e) => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -379,7 +381,7 @@ function Search(props) {
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
                 onSubmit={handleSubmit}
-                ref={ref => {
+                ref={(ref) => {
                   searchCol = ref;
                 }}
                 key={form_key}
@@ -388,7 +390,6 @@ function Search(props) {
                   <small
                     className={Styles.reset_filters_btn + ' pl-1'}
                     onClick={handleResetFilters}
-                    style={{color: '#e23e57'}}
                   >
                     Reset Filters
                   </small>
@@ -405,7 +406,7 @@ function Search(props) {
                         }
                         onChange={handleChange}
                         placeholder="Find a class..."
-                        ref={ref => (searchText = ref)}
+                        ref={(ref) => (searchText = ref)}
                       />
                     </InputGroup>
                   </div>
@@ -416,7 +417,7 @@ function Search(props) {
                     <Select
                       defaultValue={sortbyOptions[0]}
                       options={sortbyOptions}
-                      ref={ref => {
+                      ref={(ref) => {
                         sortby = ref;
                       }}
                       // prevent overlap with tooltips
@@ -435,7 +436,7 @@ function Search(props) {
                         isMulti
                         defaultValue={[seasonsOptions[0]]}
                         options={seasonsOptions}
-                        ref={ref => {
+                        ref={(ref) => {
                           seasons = ref;
                         }}
                         placeholder="All"
@@ -455,7 +456,7 @@ function Search(props) {
                       isMulti
                       options={skillsAreasOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         skillsAreas = ref;
                       }}
                       // colors
@@ -472,7 +473,7 @@ function Search(props) {
                       isMulti
                       options={creditOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         credits = ref;
                       }}
                       // prevent overlap with tooltips
@@ -489,7 +490,7 @@ function Search(props) {
                       defaultValue={[schoolOptions[0]]}
                       options={schoolOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         schools = ref;
                       }}
                       // prevent overlap with tooltips
@@ -509,7 +510,7 @@ function Search(props) {
                       max={5}
                       step={0.1}
                       defaultValue={ratingBounds}
-                      onChange={debounce(value => {
+                      onChange={debounce((value) => {
                         setRatingBounds(value);
                       }, 250)}
                       handle={ratingSliderHandle}
@@ -523,7 +524,7 @@ function Search(props) {
                       max={5}
                       step={0.1}
                       defaultValue={workloadBounds}
-                      onChange={debounce(value => {
+                      onChange={debounce((value) => {
                         setWorkloadBounds(value);
                       }, 250)}
                       handle={workloadSliderHandle}
@@ -537,7 +538,7 @@ function Search(props) {
                   <Form.Check type="switch" className={Styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideCancelled}
-                      onChange={e => {}} // dummy handler to remove warning
+                      onChange={(e) => {}} // dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => setHideCancelled(!hideCancelled)}

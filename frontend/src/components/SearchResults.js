@@ -96,7 +96,7 @@ const SearchResults = ({
     const results_element = document.getElementById('results_container');
     if (!results_element) return;
     window.onscroll = () => {
-      setScroll(Math.min(78, window.pageYOffset));
+      setScroll(window.pageYOffset);
       if (
         data.length > 0 &&
         !fetch_more &&

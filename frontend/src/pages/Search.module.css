@@ -140,14 +140,14 @@
 }
 
 .reset_filters_btn {
-  color: #2d87f3;
+  color: #e23e57;
   font-weight: 500;
   transition: 0.3s;
 }
 
 .reset_filters_btn:hover {
   cursor: pointer;
-  color: #2670ca;
+  color: #a82f41;
 }
 
 .up_btn {
