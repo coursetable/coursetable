@@ -86,7 +86,8 @@ export const colorOptionStyles = {
 		const color = chroma(data.color);
 		return {
 			...styles,
-			backgroundColor: color.alpha(0.25).css(),
+			backgroundColor: color.alpha(0.16).css(),
+			borderRadius: '6px'
 		};
 	},
 	multiValueLabel: (styles, { data }) => ({
@@ -120,6 +121,12 @@ export const colorOptionStyles = {
 };
 
 export const selectStyles = {
+	multiValue: (styles) => {
+		return {
+			...styles,
+			borderRadius: '6px'
+		};
+	},
 	control: base => ({
 		...base,
 		borderRadius: '8px',

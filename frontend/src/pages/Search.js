@@ -514,6 +514,7 @@ function Search(props) {
                       className={Styles.slider}
                     />
                   </Container>
+                  <hr />
                   <div>Workload</div>
                   <Container>
                     <Range
