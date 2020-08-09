@@ -18,18 +18,32 @@ export const sortbyQueries = {
 export const areas = ['Hu', 'So', 'Sc'];
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
 
+export const skillsAreasColors = {
+	HU: '#9970AB',
+	SO: '#4393C3',
+	SC: '#5AAE61',
+	QR: '#CC3311',
+	WR: '#EC7014',
+	L: '#000000',
+	L1: '#888888',
+	L2: '#888888',
+	L3: '#888888',
+	L4: '#888888',
+	L5: '#888888',
+};
+
 export const skillsAreasOptions = [
-	{ label: 'HU', value: 'Hu', color: '#9970AB' },
-	{ label: 'SO', value: 'So', color: '#4393C3' },
-	{ label: 'SC', value: 'Sc', color: '#5AAE61' },
-	{ label: 'QR', value: 'QR', color: '#CC3311' },
-	{ label: 'WR', value: 'WR', color: '#EC7014' },
-	{ label: 'L (all)', value: 'L', color: '#000000' },
-	{ label: 'L1', value: 'L1', color: '#888888' },
-	{ label: 'L2', value: 'L2', color: '#888888' },
-	{ label: 'L3', value: 'L3', color: '#888888' },
-	{ label: 'L4', value: 'L4', color: '#888888' },
-	{ label: 'L5', value: 'L5', color: '#888888' },
+	{ label: 'HU', value: 'Hu', color: skillsAreasColors['HU'] },
+	{ label: 'SO', value: 'So', color: skillsAreasColors['SO'] },
+	{ label: 'SC', value: 'Sc', color: skillsAreasColors['SC'] },
+	{ label: 'QR', value: 'QR', color: skillsAreasColors['QR'] },
+	{ label: 'WR', value: 'WR', color: skillsAreasColors['WR'] },
+	{ label: 'L (all)', value: 'L', color: skillsAreasColors['L'] },
+	{ label: 'L1', value: 'L1', color: skillsAreasColors['L1'] },
+	{ label: 'L2', value: 'L2', color: skillsAreasColors['L2'] },
+	{ label: 'L3', value: 'L3', color: skillsAreasColors['L3'] },
+	{ label: 'L4', value: 'L4', color: skillsAreasColors['L4'] },
+	{ label: 'L5', value: 'L5', color: skillsAreasColors['L5'] },
 ];
 
 export const colorOptionStyles = {
@@ -94,7 +108,8 @@ export const colorOptionStyles = {
 		paddingTop: 0,
 		marginTop: 0,
 		borderRadius: '8px',
-		boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+		boxShadow:
+			'0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
 	}),
 	menuList: base => ({
 		...base,
@@ -117,7 +132,8 @@ export const selectStyles = {
 		paddingTop: 0,
 		marginTop: 0,
 		borderRadius: '8px',
-		boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+		boxShadow:
+			'0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
 	}),
 	menuList: base => ({
 		...base,

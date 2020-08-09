@@ -64,36 +64,10 @@
 
 .tag {
   margin: 1px;
-  padding: 4px;
-  border-radius: 6px;
-}
-
-.Hu {
-  background-color: #9970ab !important;
-}
-
-.So {
-  background-color: #4393c3 !important;
-}
-
-.Sc {
-  background-color: #5aae61 !important;
-}
-
-.QR {
-  background-color: #cc3311 !important;
-}
-
-.WR {
-  background-color: #ec7014 !important;
-}
-
-.L1,
-.L2,
-.L3,
-.L4,
-.L5 {
-  background-color: #000000 !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 4px 6px !important;
+  border-radius: 6px !important;
 }
 
 .none {

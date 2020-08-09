@@ -2,8 +2,14 @@ import React from 'react';
 
 import { Row, Col, Badge } from 'react-bootstrap';
 
-import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+import {
+  ratingColormap,
+  workloadColormap,
+  skillsAreasColors,
+} from '../queries/Constants.js';
 import { unflattenTimes } from '../utilities';
+
+import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 
@@ -90,8 +96,14 @@ const SearchResultsItem = ({
           {course.skills.map(skill => (
             <Badge
               variant="secondary"
-              className={Styles.tag + ' ' + Styles[skill]}
+              className={Styles.tag}
               key={key++}
+              style={{
+                color: skillsAreasColors[skill.toUpperCase()],
+                backgroundColor: chroma(skillsAreasColors[skill.toUpperCase()])
+                  .alpha(0.16)
+                  .css(),
+              }}
             >
               {skill}
             </Badge>
@@ -99,8 +111,14 @@ const SearchResultsItem = ({
           {course.areas.map(area => (
             <Badge
               variant="secondary"
-              className={Styles.tag + ' ' + Styles[area]}
+              className={Styles.tag}
               key={key++}
+              style={{
+                color: skillsAreasColors[area.toUpperCase()],
+                backgroundColor: chroma(skillsAreasColors[area.toUpperCase()])
+                  .alpha(0.16)
+                  .css(),
+              }}
             >
               {area}
             </Badge>
