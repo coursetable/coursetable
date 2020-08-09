@@ -166,9 +166,12 @@ function Search(props) {
 
     var ordering = sortbyQueries[sortParams];
 
-    var processedSeasons = seasons.select
-      ? seasons.select.props.value
-      : [{ value: '202003' }];
+    var processedSeasons =
+      seasons.select && seasons.select.props.value.length > 0
+        ? seasons.select.props.value
+        : seasonsOptions
+        ? seasonsOptions
+        : [{ value: '202003' }];
 
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
