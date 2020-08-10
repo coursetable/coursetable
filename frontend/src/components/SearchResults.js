@@ -29,7 +29,7 @@ const SearchResults = ({
   setEnd,
   setScroll,
   multi_seasons,
-  query_size,
+  QUERY_SIZE,
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -83,13 +83,13 @@ const SearchResults = ({
     if (
       data.length > 0 &&
       data.length !== offset &&
-      data.length % query_size === 0
+      data.length % QUERY_SIZE === 0
     ) {
       setOffset(data.length);
     }
-    if (data.length % query_size === 0) setEnd(false);
+    if (data.length % QUERY_SIZE === 0) setEnd(false);
     else setEnd(true);
-  }, [data, setOffset, setEnd, offset, query_size]);
+  }, [data, setOffset, setEnd, offset, QUERY_SIZE]);
 
   // Fetch more courses if scroll down 80% of the page
   useEffect(() => {
@@ -105,7 +105,7 @@ const SearchResults = ({
         setFetchMore(true);
       }
     };
-  }, [data.length, fetch_more, height, setFetchMore, setScroll]);
+  }, []);
 
   const num_cols = width < 1100 ? 2 : 3;
   let grid_html = [];
@@ -196,7 +196,7 @@ const SearchResults = ({
                   <Col md={2} style={{ lineHeight: '30px' }}>
                     <strong>{'Workload'}</strong>
                   </Col>
-                  </>
+                </>
               ) : (
                 <Col md={10} style={{ lineHeight: '30px' }}>
                   <strong>
