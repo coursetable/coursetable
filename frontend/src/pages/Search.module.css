@@ -38,6 +38,16 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
+.filter_title{
+  font-size: 0.9rem;
+  color: rgba(0,0,0,0.75);
+}
+
+:global hr{
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
 .multi_selects {
   border-radius: 8px;
 }
@@ -54,7 +64,6 @@
 
 .sliders {
   font-weight: 500;
-  display: block !important;
 }
 
 .slider {

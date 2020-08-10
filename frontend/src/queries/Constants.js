@@ -1,10 +1,10 @@
 import chroma from 'chroma-js';
 
 export const sortbyOptions = [
-	{ label: 'Relevance', value: 'text' },
-	{ label: 'Course name', value: 'course_name' },
-	{ label: 'Rating', value: 'rating' },
-	{ label: 'Workload', value: 'workload' },
+	{ label: 'Sort by relevance', value: 'text' },
+	{ label: 'Sort by course name', value: 'course_name' },
+	{ label: 'Sort by rating', value: 'rating' },
+	{ label: 'Sort by workload', value: 'workload' },
 	// { label: 'Enrollment', value: 'enrollment' },
 ];
 
@@ -98,6 +98,7 @@ export const colorOptionStyles = {
 	multiValueRemove: (styles, { data }) => ({
 		...styles,
 		color: data.color,
+		borderRadius: '6px',
 		':hover': {
 			backgroundColor: data.color,
 			color: 'white',
@@ -122,6 +123,12 @@ export const colorOptionStyles = {
 
 export const selectStyles = {
 	multiValue: styles => {
+		return {
+			...styles,
+			borderRadius: '6px',
+		};
+	},
+	multiValueRemove: styles => {
 		return {
 			...styles,
 			borderRadius: '6px',
