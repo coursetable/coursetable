@@ -60,8 +60,8 @@ const SearchResultsItem = ({
               className={Styles.tag}
               key={key++}
               style={{
-                color: skillsAreasColors[skill.toUpperCase()],
-                backgroundColor: chroma(skillsAreasColors[skill.toUpperCase()])
+                color: skillsAreasColors[skill],
+                backgroundColor: chroma(skillsAreasColors[skill])
                   .alpha(0.16)
                   .css(),
               }}
@@ -75,8 +75,8 @@ const SearchResultsItem = ({
               className={Styles.tag}
               key={key++}
               style={{
-                color: skillsAreasColors[area.toUpperCase()],
-                backgroundColor: chroma(skillsAreasColors[area.toUpperCase()])
+                color: skillsAreasColors[area],
+                backgroundColor: chroma(skillsAreasColors[area])
                   .alpha(0.16)
                   .css(),
               }}
@@ -128,7 +128,7 @@ const SearchResultsItem = ({
           />
         )}
       </Col>
-      <Col md={1}>
+      <Col md={1} className="text-center">
         <WorksheetToggleButton
           alwaysRed={false}
           crn={course['course.listings'][0].crn}

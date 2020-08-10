@@ -178,9 +178,9 @@ const SearchResults = ({
         className={`px-0 shadow-sm ${Styles.results_container}`}
       >
         {!isMobile && (
-          <div className={Styles.sticky_header}>
+          <div className={`${Styles.sticky_header}`}>
             <Row
-              className={`mx-auto px-0 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
+              className={`mx-auto px-2 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
             >
               {isList ? (
                 <>
@@ -207,7 +207,7 @@ const SearchResults = ({
                 </Col>
               )}
               <Col md={1} style={{ lineHeight: '30px' }} className="d-flex">
-                <div className="d-flex ml-auto my-auto">
+                <div className="d-flex mx-auto my-auto">
                   <ListGridToggle isList={isList} setView={setView} />
                 </div>
               </Col>

@@ -25,7 +25,7 @@ function Join() {
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.join_header + ' mt-5 mb-1'}>Join Us!</h1>
       <p className={styles.join_description + ' mb-3 text-muted'}>
-        Join Us Description
+        We'll be in touch.
       </p>
       <Form
         noValidate

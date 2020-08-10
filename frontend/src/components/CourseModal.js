@@ -106,9 +106,9 @@ const CourseModal = props => {
                             variant="secondary"
                             className={tag_styles.tag}
                             style={{
-                              color: skillsAreasColors[skill.toUpperCase()],
+                              color: skillsAreasColors[skill],
                               backgroundColor: chroma(
-                                skillsAreasColors[skill.toUpperCase()]
+                                skillsAreasColors[skill]
                               )
                                 .alpha(0.16)
                                 .css(),
@@ -123,9 +123,9 @@ const CourseModal = props => {
                             variant="secondary"
                             className={tag_styles.tag}
                             style={{
-                              color: skillsAreasColors[area.toUpperCase()],
+                              color: skillsAreasColors[area],
                               backgroundColor: chroma(
-                                skillsAreasColors[area.toUpperCase()]
+                                skillsAreasColors[area]
                               )
                                 .alpha(0.16)
                                 .css(),

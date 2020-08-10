@@ -186,9 +186,9 @@ const SearchResultsGridItem = ({
                     className={tag_styles.tag}
                     key={key++}
                     style={{
-                      color: skillsAreasColors[skill.toUpperCase()],
+                      color: skillsAreasColors[skill],
                       backgroundColor: chroma(
-                        skillsAreasColors[skill.toUpperCase()]
+                        skillsAreasColors[skill]
                       )
                         .alpha(0.16)
                         .css(),
@@ -203,9 +203,9 @@ const SearchResultsGridItem = ({
                     className={tag_styles.tag}
                     key={key++}
                     style={{
-                      color: skillsAreasColors[area.toUpperCase()],
+                      color: skillsAreasColors[area],
                       backgroundColor: chroma(
-                        skillsAreasColors[area.toUpperCase()]
+                        skillsAreasColors[area]
                       )
                         .alpha(0.16)
                         .css(),
@@ -220,14 +220,14 @@ const SearchResultsGridItem = ({
                     className={tag_styles.tag}
                     key={key++}
                     style={{
-                      color: skillsAreasColors['HU'],
-                      backgroundColor: chroma(skillsAreasColors['HU'])
+                      color: skillsAreasColors['Hu'],
+                      backgroundColor: chroma(skillsAreasColors['Hu'])
                         .alpha(0.16)
                         .css(),
                       opacity: 0,
                     }}
                   >
-                    {'HU'}
+                    {'Hu'}
                   </Badge>
                 )}
               </div>

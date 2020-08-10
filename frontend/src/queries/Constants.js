@@ -19,9 +19,9 @@ export const areas = ['Hu', 'So', 'Sc'];
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
 
 export const skillsAreasColors = {
-	HU: '#9970AB',
-	SO: '#4393C3',
-	SC: '#5AAE61',
+	Hu: '#9970AB',
+	So: '#4393C3',
+	Sc: '#5AAE61',
 	QR: '#CC3311',
 	WR: '#EC7014',
 	L: '#000000',
@@ -33,9 +33,9 @@ export const skillsAreasColors = {
 };
 
 export const skillsAreasOptions = [
-	{ label: 'HU', value: 'Hu', color: skillsAreasColors['HU'] },
-	{ label: 'SO', value: 'So', color: skillsAreasColors['SO'] },
-	{ label: 'SC', value: 'Sc', color: skillsAreasColors['SC'] },
+	{ label: 'Hu', value: 'Hu', color: skillsAreasColors['Hu'] },
+	{ label: 'So', value: 'So', color: skillsAreasColors['So'] },
+	{ label: 'Sc', value: 'Sc', color: skillsAreasColors['Sc'] },
 	{ label: 'QR', value: 'QR', color: skillsAreasColors['QR'] },
 	{ label: 'WR', value: 'WR', color: skillsAreasColors['WR'] },
 	{ label: 'L (all)', value: 'L', color: skillsAreasColors['L'] },
