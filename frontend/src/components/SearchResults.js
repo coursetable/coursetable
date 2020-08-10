@@ -187,16 +187,16 @@ const SearchResults = ({
                   <Col md={4} style={{ lineHeight: '30px' }}>
                     <strong>{'Description'}</strong>
                   </Col>
+                  <Col md={3} style={{ lineHeight: '30px' }}>
+                    <strong>{'Meets'}</strong>
+                  </Col>
                   <Col md={2} style={{ lineHeight: '30px' }}>
                     <strong>{'Rating'}</strong>
                   </Col>
                   <Col md={2} style={{ lineHeight: '30px' }}>
                     <strong>{'Workload'}</strong>
                   </Col>
-                  <Col md={2} style={{ lineHeight: '30px' }}>
-                    <strong>{'Areas'}</strong>
-                  </Col>
-                </>
+                  </>
               ) : (
                 <Col md={10} style={{ lineHeight: '30px' }}>
                   <strong>
@@ -206,7 +206,7 @@ const SearchResults = ({
                   </strong>
                 </Col>
               )}
-              <Col md={2} style={{ lineHeight: '30px' }} className="d-flex">
+              <Col md={1} style={{ lineHeight: '30px' }} className="d-flex">
                 <div className="d-flex ml-auto my-auto">
                   <ListGridToggle isList={isList} setView={setView} />
                 </div>

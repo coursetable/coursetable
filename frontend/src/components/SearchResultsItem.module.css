@@ -22,9 +22,14 @@
 .course_code {
   display: inline;
   color: rgba(0,0,0,0.5);
+  margin-right: 0.5rem;
 }
 
 .dot {
+  display: inline;
+}
+
+.skills_areas{
   display: inline;
 }
 

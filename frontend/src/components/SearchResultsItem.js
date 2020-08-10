@@ -53,9 +53,46 @@ const SearchResultsItem = ({
         <div className={Styles.course_code}>
           {course.course_codes ? course.course_codes.join(' • ') : ''}
         </div>
+        <div className={Styles.skills_areas}>
+          {course.skills.map(skill => (
+            <Badge
+              variant="secondary"
+              className={Styles.tag}
+              key={key++}
+              style={{
+                color: skillsAreasColors[skill.toUpperCase()],
+                backgroundColor: chroma(skillsAreasColors[skill.toUpperCase()])
+                  .alpha(0.16)
+                  .css(),
+              }}
+            >
+              {skill}
+            </Badge>
+          ))}
+          {course.areas.map(area => (
+            <Badge
+              variant="secondary"
+              className={Styles.tag}
+              key={key++}
+              style={{
+                color: skillsAreasColors[area.toUpperCase()],
+                backgroundColor: chroma(skillsAreasColors[area.toUpperCase()])
+                  .alpha(0.16)
+                  .css(),
+              }}
+            >
+              {area}
+            </Badge>
+          ))}
+        </div>
         {course['course.extra_info'] !== 'ACTIVE' && (
           <div className={Styles.extra_info}>CANCELLED</div>
         )}
+      </Col>
+      <Col md={3} xs={8} className={Styles.course_header}>
+        {course.times_summary == 'TBA' ? '' : course.times_summary}
+        <br />
+        {course.locations_summary == 'TBA' ? '' : course.locations_summary}
       </Col>
       <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
         {course.average_rating && (
@@ -91,41 +128,7 @@ const SearchResultsItem = ({
           />
         )}
       </Col>
-      <Col md={2} xs={8} className={Styles.skills_areas}>
-        <div className={Styles.skills_areas}>
-          {course.skills.map(skill => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[skill.toUpperCase()],
-                backgroundColor: chroma(skillsAreasColors[skill.toUpperCase()])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {skill}
-            </Badge>
-          ))}
-          {course.areas.map(area => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[area.toUpperCase()],
-                backgroundColor: chroma(skillsAreasColors[area.toUpperCase()])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {area}
-            </Badge>
-          ))}
-        </div>
-      </Col>
-      <Col md={2}>
+      <Col md={1}>
         <WorksheetToggleButton
           alwaysRed={false}
           crn={course['course.listings'][0].crn}
