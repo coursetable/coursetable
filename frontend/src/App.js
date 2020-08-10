@@ -22,6 +22,7 @@ import FAQ from './pages/FAQ';
 import Changelog from './pages/Changelog';
 import Feedback from './pages/Feedback';
 import Join from './pages/Join';
+import NotFound from './pages/NotFound';
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -117,7 +118,7 @@ function App() {
 
               {/* Catch-all Route */}
               <MyRoute path="/">
-                <p>404 page not found</p>
+                <NotFound />
               </MyRoute>
             </Switch>
             <Route
