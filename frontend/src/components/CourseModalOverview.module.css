@@ -11,23 +11,27 @@
 .rating_bubble {
   background-color: rgb(190, 221, 255);
   border-radius: 6px;
-  max-height: 24px;
+  height: 1.5em;
   transition: background-color 0.3s;
-  transition: max-height 0.2s ease-out;
+  overflow: hidden;
+  transition: height 0.2s ease-out;
 }
 
 .rating_bubble:hover {
   background-color: rgb(92, 168, 250);
-  max-height: 50px;
   cursor: pointer;
-  transition: max-height 0.2s ease-in;
+  transition: height 0.2s ease-in;
+  height: 3rem;
 }
 
-.rating_cell{
-  width:100%;
+.rating_cell {
+  width: 100%;
   text-align: center;
   font-weight: bold;
   border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .evaluation_header {
@@ -36,12 +40,12 @@
 }
 
 .hidden {
-  opacity: 0;
+  display: none !important;
   transition: 0.1s;
 }
 
 .shown {
-  opacity: 1;
+  display: block;
   transition: 0.2s;
   transition-delay: 0.2s;
   font-weight: 500;
@@ -49,7 +53,7 @@
 
 @media (hover: none) {
   .rating_bubble:hover {
-    max-height: 24px;
-    transition: max-height 0s;
+    height: 1.5rem;
+    transition: height 0s ease-in;
   }
 }

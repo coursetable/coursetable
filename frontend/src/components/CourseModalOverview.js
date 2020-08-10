@@ -143,28 +143,24 @@ const CourseModalOverview = props => {
         if (!evaluations[i].professor.includes(listing.professors)) continue;
       }
 
+      let expanded =
+        enlarged[0] === evaluations[i].season_code &&
+        enlarged[1] === evaluations[i].crn;
+
       items.push(
         <Row key={id++} className="m-auto py-1 justify-content-center">
           <Col
             xs={5}
-            className={Styles.rating_bubble + '  px-0 mr-3'}
+            className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
             onClick={() => setSeason(evaluations[i])}
             onMouseEnter={() =>
               setEnlarged([evaluations[i].season_code, evaluations[i].crn])
             }
             onMouseLeave={() => setEnlarged(['', -1])}
+            style={{ flex: 'none' }}
           >
-            <Row className="m-auto justify-content-center">
-              <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
-            </Row>
-            <Row
-              className={
-                (enlarged[0] === evaluations[i].season_code &&
-                enlarged[1] === evaluations[i].crn
-                  ? Styles.shown
-                  : Styles.hidden) + ' m-auto justify-content-center'
-              }
-            >
+            <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+            <div className={expanded ? Styles.shown : Styles.hidden}>
               {filter === 'professor'
                 ? evaluations[i].course_code[0]
                 : filter === 'both'
@@ -172,11 +168,11 @@ const CourseModalOverview = props => {
                 : evaluations[i].professor[0].length <= 15
                 ? evaluations[i].professor[0]
                 : evaluations[i].professor[0].substr(0, 12) + '...'}
-            </Row>
+            </div>
           </Col>
           <Col
             xs={2}
-            className={`px-1 my-auto ml-0 d-flex justify-content-center text-center`}
+            className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
             <div
               style={
@@ -189,14 +185,16 @@ const CourseModalOverview = props => {
                     .css(),
                 }
               }
-              className={Styles.rating_cell}
+              className={`${Styles.rating_cell} ${
+                expanded ? Styles.expanded_ratings : ''
+              }`}
             >
               {evaluations[i].rating !== -1 && evaluations[i].rating.toFixed(1)}
             </div>
           </Col>
           <Col
             xs={2}
-            className={`px-1 my-auto ml-0 d-flex justify-content-center text-center`}
+            className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
             <div
               style={
@@ -219,7 +217,7 @@ const CourseModalOverview = props => {
           </Col>
           <Col
             xs={2}
-            className={`px-1 my-auto ml-0 d-flex justify-content-center text-center`}
+            className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
             <div
               style={
