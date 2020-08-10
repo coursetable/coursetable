@@ -190,10 +190,10 @@ export const schoolOptions = [
 ];
 
 export const ratingColormap = chroma
-	.bezier(['#d32626', '#f6d743', '#79d70f'])
+	.bezier(['#e84a5f', '#fdffab', '#1fab89'])
 	.scale()
 	.domain([1, 5]);
 export const workloadColormap = chroma
-	.bezier(['#79d70f', '#f6d743', '#d32626'])
+	.bezier(['#e84a5f', '#fdffab', '#1fab89'])
 	.scale()
 	.domain([1, 5]);

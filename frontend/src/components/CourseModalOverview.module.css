@@ -10,7 +10,7 @@
 
 .rating_bubble {
   background-color: rgb(190, 221, 255);
-  border-radius: 8px;
+  border-radius: 6px;
   max-height: 24px;
   transition: background-color 0.3s;
   transition: max-height 0.2s ease-out;
@@ -21,6 +21,13 @@
   max-height: 50px;
   cursor: pointer;
   transition: max-height 0.2s ease-in;
+}
+
+.rating_cell{
+  width:100%;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 6px;
 }
 
 .evaluation_header {

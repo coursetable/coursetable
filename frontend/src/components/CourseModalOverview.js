@@ -3,10 +3,12 @@ import { Row, Col, Modal } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
-import styles from './CourseModalOverview.module.css';
+import Styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import { toSeasonString } from '../utilities';
 import './MultiToggle.css';
+
+import chroma from 'chroma-js';
 
 import CourseModalLoading from './CourseModalLoading';
 
@@ -145,7 +147,7 @@ const CourseModalOverview = props => {
         <Row key={id++} className="m-auto py-1 justify-content-center">
           <Col
             xs={5}
-            className={styles.rating_bubble + '  px-0 mr-3'}
+            className={Styles.rating_bubble + '  px-0 mr-3'}
             onClick={() => setSeason(evaluations[i])}
             onMouseEnter={() =>
               setEnlarged([evaluations[i].season_code, evaluations[i].crn])
@@ -159,8 +161,8 @@ const CourseModalOverview = props => {
               className={
                 (enlarged[0] === evaluations[i].season_code &&
                 enlarged[1] === evaluations[i].crn
-                  ? styles.shown
-                  : styles.hidden) + ' m-auto justify-content-center'
+                  ? Styles.shown
+                  : Styles.hidden) + ' m-auto justify-content-center'
               }
             >
               {filter === 'professor'
@@ -174,44 +176,69 @@ const CourseModalOverview = props => {
           </Col>
           <Col
             xs={2}
-            style={
-              evaluations[i].rating && {
-                color: ratingColormap(evaluations[i].rating),
-              }
-            }
-            className="px-0 my-auto ml-0 d-flex justify-content-center"
+            className={`px-1 my-auto ml-0 d-flex justify-content-center text-center`}
           >
-            <strong>
+            <div
+              style={
+                evaluations[i].rating && {
+                  color: ratingColormap(evaluations[i].rating)
+                    .darken(2)
+                    .css(),
+                  backgroundColor: chroma(ratingColormap(evaluations[i].rating))
+                    .alpha(0.33)
+                    .css(),
+                }
+              }
+              className={Styles.rating_cell}
+            >
               {evaluations[i].rating !== -1 && evaluations[i].rating.toFixed(1)}
-            </strong>
+            </div>
           </Col>
           <Col
             xs={2}
-            style={
-              evaluations[i].professor_rating && {
-                color: ratingColormap(evaluations[i].professor_rating),
-              }
-            }
-            className="px-0 my-auto ml-0 d-flex justify-content-center"
+            className={`px-1 my-auto ml-0 d-flex justify-content-center text-center`}
           >
-            <strong>
+            <div
+              style={
+                evaluations[i].professor_rating && {
+                  color: ratingColormap(evaluations[i].professor_rating)
+                    .darken(2)
+                    .css(),
+                  backgroundColor: chroma(
+                    ratingColormap(evaluations[i].professor_rating)
+                  )
+                    .alpha(0.33)
+                    .css(),
+                }
+              }
+              className={Styles.rating_cell}
+            >
               {evaluations[i].professor_rating !== -1 &&
                 evaluations[i].professor_rating.toFixed(1)}
-            </strong>
+            </div>
           </Col>
           <Col
             xs={2}
-            style={
-              evaluations[i].workload && {
-                color: workloadColormap(evaluations[i].workload),
-              }
-            }
-            className="px-0 my-auto ml-0 d-flex justify-content-center"
+            className={`px-1 my-auto ml-0 d-flex justify-content-center text-center`}
           >
-            <strong>
+            <div
+              style={
+                evaluations[i].workload && {
+                  color: ratingColormap(evaluations[i].workload)
+                    .darken(2)
+                    .css(),
+                  backgroundColor: chroma(
+                    ratingColormap(evaluations[i].workload)
+                  )
+                    .alpha(0.33)
+                    .css(),
+                }
+              }
+              className={Styles.rating_cell}
+            >
               {evaluations[i].workload !== -1 &&
                 evaluations[i].workload.toFixed(1)}
-            </strong>
+            </div>
           </Col>
         </Row>
       );
@@ -289,22 +316,22 @@ const CourseModalOverview = props => {
               options={options}
               selectedOption={filter}
               onSelectOption={val => setFilter(val)}
-              className={styles.evaluations_filter + ' mb-2'}
+              className={Styles.evaluations_filter + ' mb-2'}
             />
           </Row>
           {items.length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
-                <span className={styles.evaluation_header}>Season</span>
+                <span className={Styles.evaluation_header}>Season</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluation_header}>Class</span>
+                <span className={Styles.evaluation_header}>Class</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluation_header}>Prof</span>
+                <span className={Styles.evaluation_header}>Prof</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={styles.evaluation_header}>Work</span>
+                <span className={Styles.evaluation_header}>Work</span>
               </Col>
             </Row>
           )}
