@@ -15,6 +15,7 @@ import { Container, Col, Row } from 'react-bootstrap';
 import { useLazyQuery } from '@apollo/react-hooks';
 import { GET_COURSE_MODAL } from '../queries/QueryStrings';
 import { preprocess_courses, flatten } from '../utilities';
+import { InfiniteLoader, List, WindowScroller } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
 
@@ -27,6 +28,9 @@ const SearchResults = ({
   offset,
   setOffset,
   setEnd,
+  loading,
+  // Load more function for InfiniteLoader
+  // loadMore,
   setScroll,
   multi_seasons,
   QUERY_SIZE,
@@ -112,6 +116,25 @@ const SearchResults = ({
 
   var resultsListing;
 
+  // Render functions for React Virtualized List:
+
+  // const renderGridRow = ({ index, key }) => {
+  //   return <div className={key}>{grid_html[index]}</div>;
+  // };
+
+  // const renderListRow = ({ index, key }) => {
+  //   return (
+  //     <SearchResultsItem
+  //       course={flatten(data[index])}
+  //       isMobile={isMobile}
+  //       setShowModal={setShowModal}
+  //       setModalCourse={setModalCourse}
+  //       executeGetCourseModal={executeGetCourseModal}
+  //       key={key}
+  //     />
+  //   );
+  // };
+
   // if no courses found, render the empty state
   if (data.length === 0) {
     resultsListing = (
@@ -154,6 +177,38 @@ const SearchResults = ({
       }
 
       resultsListing = <div className="pt-3">{grid_html}</div>;
+
+      // Attemp at InfiniteLoader. Problem was it kept fetching new rows despite not scrolling all the way thru current rows
+      // Dummy height and width values for testing
+
+      // resultsListing = (
+      //   <InfiniteLoader
+      //     isRowLoaded={(index) => {
+      //       index < grid_html.length ? true : false;
+      //     }}
+      //     loadMoreRows={loading ? () => {} : loadMore}
+      //     rowCount={grid_html.length}
+      //   >
+      //     {({ onRowsRendered, registerChild }) => (
+      //       // <WindowScroller>
+      //       //   {({ height, isScrolling, onChildScroll, scrollTop }) => (
+      //       <List
+      //         width={500}
+      //         height={1000}
+      //         onRowsRendered={onRowsRendered}
+      //         ref={registerChild}
+      //         // isScrolling={isScrolling}
+      //         // onScroll={onChildScroll}
+      //         // scrollTop={scrollTop}
+      //         rowCount={grid_html.length}
+      //         rowHeight={178}
+      //         rowRenderer={renderGridRow}
+      //       />
+      //       //   )}
+      //       // </WindowScroller>
+      //     )}
+      //   </InfiniteLoader>
+      // );
     }
 
     // otherwise, prepare the listing
@@ -168,6 +223,38 @@ const SearchResults = ({
           key={key++}
         />
       ));
+
+      // Attemp at InfiniteLoader. Problem was it kept fetching new rows despite not scrolling all the way thru current rows
+      // Dummy height and width values for testing
+
+      // resultsListing = (
+      //   <InfiniteLoader
+      //     isRowLoaded={(index) => {
+      //       index < data.length ? true : false;
+      //     }}
+      //     loadMoreRows={loading ? () => {} : loadMore}
+      //     rowCount={data.length}
+      //   >
+      //     {({ onRowsRendered, registerChild }) => (
+      //       // <WindowScroller>
+      //       //   {({ height, isScrolling, onChildScroll, scrollTop }) => (
+      //       <List
+      //         width={500}
+      //         height={1000}
+      //         onRowsRendered={onRowsRendered}
+      //         ref={registerChild}
+      //         // isScrolling={isScrolling}
+      //         // onScroll={onChildScroll}
+      //         // scrollTop={scrollTop}
+      //         rowCount={data.length}
+      //         rowHeight={178}
+      //         rowRenderer={renderListRow}
+      //       />
+      //       //   )}
+      //       // </WindowScroller>
+      //     )}
+      //   </InfiniteLoader>
+      // );
     }
   }
 
@@ -214,7 +301,15 @@ const SearchResults = ({
             </Row>
           </div>
         )}
-        {resultsListing}
+        <div className={!isList ? 'px-1' : ''}>
+          {resultsListing}
+          {/* Render a loading row while performing next query */}
+          {loading && (
+            <Row className="m-auto py-2">
+              <strong className="mx-auto">Loading...</strong>
+            </Row>
+          )}
+        </div>
       </Container>
       {modal}
     </div>
