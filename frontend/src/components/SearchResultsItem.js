@@ -54,7 +54,7 @@ const SearchResultsItem = ({
           {course.course_codes ? course.course_codes.join(' • ') : ''}
         </div>
         <div className={Styles.skills_areas}>
-          {course.skills.map(skill => (
+          {course.skills.map((skill) => (
             <Badge
               variant="secondary"
               className={Styles.tag}
@@ -69,7 +69,7 @@ const SearchResultsItem = ({
               {skill}
             </Badge>
           ))}
-          {course.areas.map(area => (
+          {course.areas.map((area) => (
             <Badge
               variant="secondary"
               className={Styles.tag}

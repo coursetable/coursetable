@@ -66,16 +66,14 @@ function Search(props) {
   );
 
   // States involved in infinite scroll
-  const [fetch_more, setFetchMore] = useState(false); // Call handleSubmit when true. Prevents double query
   const [offset, setOffset] = useState(0); // How many courses to skip in query
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
-  const [end, setEnd] = useState(false); // Have fetched all courses for this search
   const [scroll_pos, setScroll] = useState(0); // Scroll pos
   // const [search_query, setSearchQuery] = useState({}); // Stores the search query
 
   // Size of Query constant
-  const QUERY_SIZE = 40; // At 40 for now because even 100 hinders performance
+  const QUERY_SIZE = 5; // At 40 for now because even 100 hinders performance
 
   // State used to determine whether or not to show season tags
   const [multi_seasons, setMultiSeasons] = useState(false);
@@ -84,7 +82,7 @@ function Search(props) {
   const [form_key, setFormKey] = useState(0);
 
   var [searchType, setSearchType] = React.useState();
-  const [isList, setView] = useState(true);
+  const [isList, setView] = useState(isMobile ? false : true);
 
   var sortby = React.useRef();
   var seasons = React.useRef();
@@ -114,69 +112,19 @@ function Search(props) {
 
   var [
     executeTextlessSearch,
-    {
-      called: textlessCalled,
-      loading: textlessLoading,
-      data: textlessData,
-      // fetchMore: textlessFetchMore, // Another way to fetch more queries when trying to implement InfiniteLoader
-    },
+    { called: textlessCalled, loading: textlessLoading, data: textlessData },
   ] = useLazyQuery(
     SEARCH_COURSES_TEXTLESS,
     { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
   );
 
-  // TEXTLESS LOADMORE FUNCTION
-
-  // const textlessLoadMore = () => {
-  //   return textlessFetchMore({
-  //     query: SEARCH_COURSES_TEXTLESS,
-  // notifyOnNetworkStatusChange: true,
-  //     variables: Object.assign(search_query, { offset: offset }), // Use same search variables as last search
-  //     updateQuery: (prev, { fetchMoreResult }) => {
-  //       if (!fetchMoreResult) return prev;
-  //       // For some reason, this never updated TextlessData with the combined results
-  //       return Object.assign({}, prev, {
-  //         computed_course_info: [
-  //            ...prev.computed_course_info,
-  //            ...fetchMoreResult.computed_course_info,
-  //         ],
-  //       });
-  //     },
-  //   });
-  // };
-
   var [
     executeTextSearch,
-    {
-      called: textCalled,
-      loading: textLoading,
-      data: textData,
-      // fetchMore: textFetchMore, // Another way to fetch more queries when trying to implement InfiniteLoader
-    },
+    { called: textCalled, loading: textLoading, data: textData },
   ] = useLazyQuery(
     SEARCH_COURSES,
     { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
   );
-
-  // TEXT LOADMORE FUNCTION
-
-  // const textLoadMore = () => {
-  //   return textFetchMore({
-  //     query: SEARCH_COURSES,
-  //     notifyOnNetworkStatusChange: true,
-  //     variables: Object.assign(search_query, { offset: offset }), // Use same search variables as last search
-  //     updateQuery: (prev, { fetchMoreResult }) => {
-  //       if (!fetchMoreResult) return prev;
-  //       // For some reason, this never updated TextlessData with the combined results
-  //       return Object.assign({}, prev, {
-  //         search_course_info: [
-  //           ...prev.search_course_info,
-  //           ...fetchMoreResult.search_course_info,
-  //         ],
-  //       });
-  //     },
-  //   });
-  // };
 
   const handleChange = () => {
     if (!props.location.state) return;
@@ -193,27 +141,20 @@ function Search(props) {
     }
   }, []);
 
-  useEffect(() => {
-    // Fetch more courses if scroll to bottom and there are still courses
-    if (fetch_more && !end) {
-      handleSubmit(); // Perform query
+  const handleSetView = (isList) => {
+    setView(isList);
+    handleSubmit(null, true);
+  };
 
-      // Call loadmore functions instead of handleSubmit
-      // if (searchText.value === '') textlessLoadMore();
-      // else textLoadMore();
-    }
-  }, [fetch_more]);
-
-  const handleSubmit = (event) => {
+  const handleSubmit = (event, search = false) => {
     let offset2 = -1;
-    if (event) {
-      event.preventDefault();
+    if (event && search) event.preventDefault();
+
+    if (search) {
       window.scrollTo({ top: scroll_pos < 78 ? scroll_pos : 78, left: 0 });
       //Reset states when making a new search
       setOffset(0);
-      setEnd(false);
       setOldData([]);
-      setFetchMore(false);
       offset2 = 0; // Account for reset state lag
     }
 
@@ -302,7 +243,7 @@ function Search(props) {
     }
     const search_variables = {
       ordering: ordering,
-      offset: offset2 === -1 ? offset : offset2,
+      offset: offset2 === -1 ? old_data.length : offset2,
       limit: QUERY_SIZE,
       seasons: processedSeasons,
       areas: processedAreas,
@@ -315,7 +256,6 @@ function Search(props) {
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
     };
-    // setSearchQuery(search_variables); // Stores search variables for loadmore
 
     if (searchText.value === '') {
       setSearchType('TEXTLESS');
@@ -348,7 +288,6 @@ function Search(props) {
           );
           setOldData(new_data); // Replace old with new
           setSearching(false); // Not searching
-          setFetchMore(false); // Don't fetch more until new courses are loaded
         }
       }
     }
@@ -364,7 +303,6 @@ function Search(props) {
           let new_data = [...old_data].concat(textData.search_course_info);
           setOldData(new_data); // Replace old with new
           setSearching(false); // Not searching
-          setFetchMore(false); // Don't fetch more until new courses are loaded
         }
       }
     }
@@ -451,7 +389,9 @@ function Search(props) {
             >
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
-                onSubmit={handleSubmit}
+                onSubmit={(event) => {
+                  handleSubmit(event, true);
+                }}
                 ref={(ref) => {
                   searchCol = ref;
                 }}
@@ -652,21 +592,12 @@ function Search(props) {
             ) : (
               <SearchResults
                 data={old_data}
-                // data={
-                //   searchType === 'TEXT'
-                //     ? textData.search_course_info
-                //     : textlessData.computed_course_info
-                // }
                 isList={isList}
-                setView={setView}
-                fetch_more={fetch_more}
-                setFetchMore={setFetchMore}
+                setView={handleSetView}
                 offset={offset}
                 setOffset={setOffset}
-                setEnd={setEnd}
                 loading={searchType === 'TEXT' ? textLoading : textlessLoading}
-                // Load more function for InfiniteLoader to use
-                // loadMore={searchType === 'TEXT' ? textLoadMore : textlessLoadMore}
+                loadMore={handleSubmit}
                 setScroll={setScroll}
                 multi_seasons={multi_seasons}
                 QUERY_SIZE={QUERY_SIZE}

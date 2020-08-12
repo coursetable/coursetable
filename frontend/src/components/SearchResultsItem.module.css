@@ -21,7 +21,7 @@
 
 .course_code {
   display: inline;
-  color: rgba(0,0,0,0.5);
+  color: rgba(0, 0, 0, 0.5);
   margin-right: 0.5rem;
 }
 
@@ -29,7 +29,7 @@
   display: inline;
 }
 
-.skills_areas{
+.skills_areas {
   display: inline;
 }
 
@@ -52,19 +52,21 @@
   font-size: 0.75rem;
 }
 
-.workload_icon_empty, .workload_icon_full{
+.workload_icon_empty,
+.workload_icon_full {
   padding: 1px;
 }
 
-.workload_icon_empty{
+.workload_icon_empty {
   color: #e8e8e8;
 }
 
-.rating_icon_empty, .rating_icon_full{
+.rating_icon_empty,
+.rating_icon_full {
   padding: 1px;
 }
 
-.rating_icon_empty{
+.rating_icon_empty {
   color: #e8e8e8;
 }
 

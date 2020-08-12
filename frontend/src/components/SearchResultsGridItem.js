@@ -99,6 +99,7 @@ const SearchResultsGridItem = ({
     ) : (
       <div />
     );
+
   return (
     <Col
       md={col_width}
@@ -187,9 +188,7 @@ const SearchResultsGridItem = ({
                     key={key++}
                     style={{
                       color: skillsAreasColors[skill],
-                      backgroundColor: chroma(
-                        skillsAreasColors[skill]
-                      )
+                      backgroundColor: chroma(skillsAreasColors[skill])
                         .alpha(0.16)
                         .css(),
                     }}
@@ -204,9 +203,7 @@ const SearchResultsGridItem = ({
                     key={key++}
                     style={{
                       color: skillsAreasColors[area],
-                      backgroundColor: chroma(
-                        skillsAreasColors[area]
-                      )
+                      backgroundColor: chroma(skillsAreasColors[area])
                         .alpha(0.16)
                         .css(),
                     }}

@@ -9,28 +9,38 @@ import ListGridToggle from './ListGridToggle';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResults.module.css';
+import './SearchResults.css';
 
 import { Container, Col, Row } from 'react-bootstrap';
 
 import { useLazyQuery } from '@apollo/react-hooks';
 import { GET_COURSE_MODAL } from '../queries/QueryStrings';
 import { preprocess_courses, flatten } from '../utilities';
-import { InfiniteLoader, List, WindowScroller } from 'react-virtualized';
+import {
+  InfiniteLoader,
+  List,
+  WindowScroller,
+  AutoSizer,
+  CellMeasurer,
+  CellMeasurerCache,
+} from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
+
+const cache = new CellMeasurerCache({
+  fixedWidth: true,
+  defaultHeight: 50,
+});
 
 const SearchResults = ({
   data,
   isList,
   setView,
-  fetch_more,
-  setFetchMore,
   offset,
   setOffset,
-  setEnd,
   loading,
   // Load more function for InfiniteLoader
-  // loadMore,
+  loadMore,
   setScroll,
   multi_seasons,
   QUERY_SIZE,
@@ -39,7 +49,6 @@ const SearchResults = ({
 
   const isMobile = width < 768;
 
-  if (isMobile && isList) setView(false);
   // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   const [showModal, setShowModal] = useState(false);
@@ -91,23 +100,12 @@ const SearchResults = ({
     ) {
       setOffset(data.length);
     }
-    if (data.length % QUERY_SIZE === 0) setEnd(false);
-    else setEnd(true);
-  }, [data, setOffset, setEnd, offset, QUERY_SIZE]);
+  }, [data, setOffset, offset, QUERY_SIZE]);
 
   // Fetch more courses if scroll down 80% of the page
   useEffect(() => {
-    const results_element = document.getElementById('results_container');
-    if (!results_element) return;
     window.onscroll = () => {
       setScroll(window.pageYOffset);
-      if (
-        data.length > 0 &&
-        !fetch_more &&
-        window.pageYOffset + height > 0.8 * results_element.clientHeight
-      ) {
-        setFetchMore(true);
-      }
     };
   }, []);
 
@@ -118,22 +116,35 @@ const SearchResults = ({
 
   // Render functions for React Virtualized List:
 
-  // const renderGridRow = ({ index, key }) => {
-  //   return <div className={key}>{grid_html[index]}</div>;
-  // };
+  const renderGridRow = ({ index, key, style }) => {
+    return (
+      <div key={key} style={style}>
+        {grid_html[index]}
+      </div>
+    );
+  };
 
-  // const renderListRow = ({ index, key }) => {
-  //   return (
-  //     <SearchResultsItem
-  //       course={flatten(data[index])}
-  //       isMobile={isMobile}
-  //       setShowModal={setShowModal}
-  //       setModalCourse={setModalCourse}
-  //       executeGetCourseModal={executeGetCourseModal}
-  //       key={key}
-  //     />
-  //   );
-  // };
+  const renderListRow = ({ index, key, style, parent }) => {
+    return (
+      <CellMeasurer
+        key={key}
+        cache={cache}
+        parent={parent}
+        columnIndex={0}
+        rowIndex={index}
+      >
+        <div style={style}>
+          <SearchResultsItem
+            course={flatten(data[index])}
+            isMobile={isMobile}
+            setShowModal={setShowModal}
+            setModalCourse={setModalCourse}
+            executeGetCourseModal={executeGetCourseModal}
+          />
+        </div>
+      </CellMeasurer>
+    );
+  };
 
   // if no courses found, render the empty state
   if (data.length === 0) {
@@ -176,85 +187,73 @@ const SearchResults = ({
         );
       }
 
-      resultsListing = <div className="pt-3">{grid_html}</div>;
-
-      // Attemp at InfiniteLoader. Problem was it kept fetching new rows despite not scrolling all the way thru current rows
-      // Dummy height and width values for testing
-
-      // resultsListing = (
-      //   <InfiniteLoader
-      //     isRowLoaded={(index) => {
-      //       index < grid_html.length ? true : false;
-      //     }}
-      //     loadMoreRows={loading ? () => {} : loadMore}
-      //     rowCount={grid_html.length}
-      //   >
-      //     {({ onRowsRendered, registerChild }) => (
-      //       // <WindowScroller>
-      //       //   {({ height, isScrolling, onChildScroll, scrollTop }) => (
-      //       <List
-      //         width={500}
-      //         height={1000}
-      //         onRowsRendered={onRowsRendered}
-      //         ref={registerChild}
-      //         // isScrolling={isScrolling}
-      //         // onScroll={onChildScroll}
-      //         // scrollTop={scrollTop}
-      //         rowCount={grid_html.length}
-      //         rowHeight={178}
-      //         rowRenderer={renderGridRow}
-      //       />
-      //       //   )}
-      //       // </WindowScroller>
-      //     )}
-      //   </InfiniteLoader>
-      // );
+      resultsListing = (
+        <InfiniteLoader
+          isRowLoaded={(index) => !!grid_html[index]}
+          loadMoreRows={loading ? () => {} : loadMore}
+          rowCount={grid_html.length}
+        >
+          {({ onRowsRendered, registerChild }) => (
+            <WindowScroller>
+              {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                <AutoSizer disableHeight>
+                  {({ width }) => (
+                    <List
+                      autoHeight
+                      width={width}
+                      height={height}
+                      onRowsRendered={onRowsRendered}
+                      ref={registerChild}
+                      isScrolling={isScrolling}
+                      onScroll={onChildScroll}
+                      scrollTop={scrollTop}
+                      rowCount={grid_html.length}
+                      rowHeight={178}
+                      rowRenderer={renderGridRow}
+                    />
+                  )}
+                </AutoSizer>
+              )}
+            </WindowScroller>
+          )}
+        </InfiniteLoader>
+      );
     }
 
     // otherwise, prepare the listing
     else {
-      resultsListing = data.map((course) => (
-        <SearchResultsItem
-          course={flatten(course)}
-          isMobile={isMobile}
-          setShowModal={setShowModal}
-          setModalCourse={setModalCourse}
-          executeGetCourseModal={executeGetCourseModal}
-          key={key++}
-        />
-      ));
-
-      // Attemp at InfiniteLoader. Problem was it kept fetching new rows despite not scrolling all the way thru current rows
-      // Dummy height and width values for testing
-
-      // resultsListing = (
-      //   <InfiniteLoader
-      //     isRowLoaded={(index) => {
-      //       index < data.length ? true : false;
-      //     }}
-      //     loadMoreRows={loading ? () => {} : loadMore}
-      //     rowCount={data.length}
-      //   >
-      //     {({ onRowsRendered, registerChild }) => (
-      //       // <WindowScroller>
-      //       //   {({ height, isScrolling, onChildScroll, scrollTop }) => (
-      //       <List
-      //         width={500}
-      //         height={1000}
-      //         onRowsRendered={onRowsRendered}
-      //         ref={registerChild}
-      //         // isScrolling={isScrolling}
-      //         // onScroll={onChildScroll}
-      //         // scrollTop={scrollTop}
-      //         rowCount={data.length}
-      //         rowHeight={178}
-      //         rowRenderer={renderListRow}
-      //       />
-      //       //   )}
-      //       // </WindowScroller>
-      //     )}
-      //   </InfiniteLoader>
-      // );
+      resultsListing = (
+        <InfiniteLoader
+          isRowLoaded={(index) => !!data[index]}
+          loadMoreRows={loading ? () => {} : loadMore}
+          rowCount={data.length}
+        >
+          {({ onRowsRendered, registerChild }) => (
+            <WindowScroller>
+              {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                <AutoSizer disableHeight>
+                  {({ width }) => (
+                    <List
+                      autoHeight
+                      width={width}
+                      height={height}
+                      onRowsRendered={onRowsRendered}
+                      ref={registerChild}
+                      isScrolling={isScrolling}
+                      onScroll={onChildScroll}
+                      scrollTop={scrollTop}
+                      rowCount={data.length}
+                      rowRenderer={renderListRow}
+                      deferredMeasurementCache={cache}
+                      rowHeight={cache.rowHeight}
+                    />
+                  )}
+                </AutoSizer>
+              )}
+            </WindowScroller>
+          )}
+        </InfiniteLoader>
+      );
     }
   }
 
@@ -301,11 +300,11 @@ const SearchResults = ({
             </Row>
           </div>
         )}
-        <div className={!isList ? 'px-1' : ''}>
+        <div className={!isList ? 'px-1 pt-3' : ''}>
           {resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
-            <Row className="m-auto py-2">
+            <Row className="m-auto pt-0 pb-2">
               <strong className="mx-auto">Loading...</strong>
             </Row>
           )}
