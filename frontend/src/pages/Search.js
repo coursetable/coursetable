@@ -70,10 +70,11 @@ function Search(props) {
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
   const [scroll_pos, setScroll] = useState(0); // Scroll pos
+  const [end, setEnd] = useState(false); // True when we've fetched all courses
   // const [search_query, setSearchQuery] = useState({}); // Stores the search query
 
   // Size of Query constant
-  const QUERY_SIZE = 5; // At 40 for now because even 100 hinders performance
+  const QUERY_SIZE = 10;
 
   // State used to determine whether or not to show season tags
   const [multi_seasons, setMultiSeasons] = useState(false);
@@ -136,7 +137,7 @@ function Search(props) {
   useEffect(() => {
     if (default_search) {
       // Default search when first landing on catalog page
-      handleSubmit();
+      handleSubmit(null, true);
       setDefaultSearch(false);
     }
   }, []);
@@ -149,14 +150,14 @@ function Search(props) {
   const handleSubmit = (event, search = false) => {
     let offset2 = -1;
     if (event && search) event.preventDefault();
-
     if (search) {
       window.scrollTo({ top: scroll_pos < 78 ? scroll_pos : 78, left: 0 });
       //Reset states when making a new search
       setOffset(0);
       setOldData([]);
+      setEnd(false);
       offset2 = 0; // Account for reset state lag
-    }
+    } else if (end) return;
 
     var sortParams = sortby.select.props.value.value;
 
@@ -282,6 +283,8 @@ function Search(props) {
       } else {
         // Keep old courses until new courses are fetched
         if (textlessData && searching) {
+          if (textlessData.computed_course_info.length < QUERY_SIZE)
+            setEnd(true);
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(
             textlessData.computed_course_info
@@ -299,6 +302,7 @@ function Search(props) {
       } else {
         // Keep old courses until new courses are fetched
         if (textData && searching) {
+          if (textData.search_course_info.length < QUERY_SIZE) setEnd(true);
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(textData.search_course_info);
           setOldData(new_data); // Replace old with new
