@@ -12,7 +12,7 @@ import chroma from 'chroma-js';
 
 import CourseModalLoading from './CourseModalLoading';
 
-const CourseModalOverview = props => {
+const CourseModalOverview = (props) => {
   const listing = props.listing;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const options = [
@@ -24,7 +24,7 @@ const CourseModalOverview = props => {
   const [enlarged, setEnlarged] = useState(['', -1]);
   let enrollment = -1;
 
-  const setSeason = evaluation => {
+  const setSeason = (evaluation) => {
     let temp = { ...evaluation };
     if (filter === 'professor') {
       temp.professor = listing.professors;
@@ -39,7 +39,7 @@ const CourseModalOverview = props => {
     props.setSeason(temp);
   };
 
-  const setFilter = val => {
+  const setFilter = (val) => {
     props.setFilter(val);
   };
 
@@ -72,7 +72,7 @@ const CourseModalOverview = props => {
   let items = [];
 
   if (data) {
-    data.computed_course_info.forEach(season => {
+    data.computed_course_info.forEach((season) => {
       if (!season.course.evaluation_statistics[0]) return;
       evaluations.push({
         rating:
@@ -103,6 +103,7 @@ const CourseModalOverview = props => {
     });
     evaluations.sort(sortEvals);
 
+    var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
     let id = 0;
     for (let i = 0; i < evaluations.length; i++) {
       if (
@@ -147,6 +148,8 @@ const CourseModalOverview = props => {
         enlarged[0] === evaluations[i].season_code &&
         enlarged[1] === evaluations[i].crn;
 
+      if (isTouch) expanded = true;
+
       items.push(
         <Row key={id++} className="m-auto py-1 justify-content-center">
           <Col
@@ -177,9 +180,7 @@ const CourseModalOverview = props => {
             <div
               style={
                 evaluations[i].rating && {
-                  color: ratingColormap(evaluations[i].rating)
-                    .darken(2)
-                    .css(),
+                  color: ratingColormap(evaluations[i].rating).darken(2).css(),
                   backgroundColor: chroma(ratingColormap(evaluations[i].rating))
                     .alpha(0.33)
                     .css(),
@@ -313,7 +314,7 @@ const CourseModalOverview = props => {
             <MultiToggle
               options={options}
               selectedOption={filter}
-              onSelectOption={val => setFilter(val)}
+              onSelectOption={(val) => setFilter(val)}
               className={Styles.evaluations_filter + ' mb-2'}
             />
           </Row>

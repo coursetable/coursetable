@@ -52,8 +52,11 @@
 }
 
 @media (hover: none) {
+  .rating_bubble {
+    height: 3rem !important;
+  }
   .rating_bubble:hover {
-    height: 1.5rem;
+    height: 3rem !important;
     transition: height 0s ease-in;
   }
 }
