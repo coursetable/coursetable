@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import moment from 'moment';
 
 export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
@@ -117,4 +118,52 @@ export const useComponentVisible = (initialIsVisible) => {
   });
 
   return { ref, isComponentVisible, setIsComponentVisible };
+};
+
+export const unflattenTimes = (course) => {
+  if (!course) return undefined;
+  if (course.times_summary === 'TBA') return 'TBA';
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  let times_by_day = [];
+  days.forEach((day) => {
+    if (!course[`times_by_day.${day}`]) times_by_day.push(['', '', '', '']);
+    else times_by_day.push(course[`times_by_day.${day}`][0]);
+  });
+  return times_by_day;
+};
+
+export const unflattenTimesModal = (listing) => {
+  if (!listing) return undefined;
+  if (listing['course.times_summary'] === 'TBA') return 'TBA';
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  let times_by_day = [];
+  days.forEach((day) => {
+    if (!listing[`course.times_by_day.${day}`])
+      times_by_day.push(['', '', '', '']);
+    else times_by_day.push(listing[`course.times_by_day.${day}`][0]);
+  });
+  return times_by_day;
+};
+
+export const checkConflict = (listings, course, times) => {
+  for (let i = 0; i < listings.length; i++) {
+    if (listings[i].season_code !== course.season_code) continue;
+    const listing = listings[i];
+    const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+    for (let day = 0; day < 5; day++) {
+      const info = listing['course.times_by_day.' + [weekdays[day]]];
+      if (info === undefined) continue;
+      let listing_start = moment(info[0][0], 'HH:mm');
+      let listing_end = moment(info[0][1], 'HH:mm');
+      if (listing_start.hour() < 8) listing_start.add(12, 'h');
+      if (listing_end.hour() < 8) listing_end.add(12, 'h');
+      if (times[day][0] === '') continue;
+      let cur_start = moment(times[day][0], 'HH:mm');
+      let cur_end = moment(times[day][1], 'HH:mm');
+      if (!(listing_start > cur_end || cur_start > listing_end)) {
+        return true;
+      }
+    }
+  }
+  return false;
 };

@@ -5,10 +5,6 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 
 export default class WorksheetList extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   setSeason = (season_code) => {
     this.props.onSeasonChange(season_code);
   };
@@ -69,6 +65,8 @@ export default class WorksheetList extends React.Component {
           <ListGroup.Item
             key={id++}
             className={styles.clickable + ' py-1 px-2'}
+            onMouseEnter={() => this.props.setHoverCourse(course)}
+            onMouseLeave={() => this.props.setHoverCourse(null)}
           >
             <div className={styles.bookmark}>
               <WorksheetToggleButton
@@ -94,7 +92,7 @@ export default class WorksheetList extends React.Component {
                   (this.isHidden(season, course.crn)
                     ? styles.hidden + ' '
                     : '') +
-                  // styles.clickable +
+                  styles.list_text +
                   ' px-0'
                 }
                 onClick={() => this.showModal(course)}

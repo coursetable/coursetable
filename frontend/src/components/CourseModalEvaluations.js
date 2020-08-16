@@ -5,6 +5,8 @@ import { useQuery } from '@apollo/react-hooks';
 import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
 
+import CourseModalLoading from './CourseModalLoading';
+
 const CourseModalEvaluations = (props) => {
   const { loading, error, data } = useQuery(SEARCH_EVALUATION_NARRATIVES, {
     variables: {
@@ -12,7 +14,7 @@ const CourseModalEvaluations = (props) => {
       course_code: props.course_code ? props.course_code : 'bruh',
     },
   });
-  if (loading || error) return <Modal.Body>Loading...</Modal.Body>;
+  if (loading || error) return <CourseModalLoading />;
   const info = data.computed_course_info;
 
   return (

@@ -56,7 +56,7 @@ function CourseTableNavbar(props) {
               className="justify-content-end"
             >
               <Nav onClick={() => setExpand(false)}>
-                {pathname == '/worksheet' && (
+                {pathname === '/worksheet' && (
                   <div
                     className={
                       'd-none d-md-block ' +
@@ -103,7 +103,6 @@ function CourseTableNavbar(props) {
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={props.isLoggedIn}
-          listings={props.listings}
         />
       </div>
     </div>

@@ -18,10 +18,12 @@ function App() {
             <span className={styles.footer_logo}>
               <Logo />
             </span>
-            <small className="d-block mb-3">&copy; 2020</small>
+            <small className="d-block mb-3">
+              &copy; {new Date().getFullYear()}
+            </small>
           </div>
           <div className="col-6 col-md">
-            <h5>Explore courses</h5>
+            <h5>Explore</h5>
             <ul className="list-unstyled text-small">
               <li>
                 <NavLink to="/catalog" onClick={scroll_top}>
@@ -69,7 +71,11 @@ function App() {
                 </NavLink>
               </li>
               <li>
-                <a href="https://github.com/coursetable" target="_blank">
+                <a
+                  href="https://github.com/coursetable"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   GitHub
                 </a>
               </li>

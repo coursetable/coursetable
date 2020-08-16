@@ -1,5 +1,5 @@
 import React from 'react';
-import { Dropdown, DropdownButton } from 'react-bootstrap';
+import { DropdownButton } from 'react-bootstrap';
 
 import './DropdownShared.css';
 

@@ -11,16 +11,35 @@
   background-color: rgba(220, 236, 255, 0.5);
 }
 
+.item_container:focus,
+.item_container:active {
+  border: none;
+  outline: none;
+}
+
 .item_container {
   background-color: rgb(245, 245, 245);
   border-radius: 8px;
   transition: 0.3s;
 }
 
-/* .item_container:hover {
-  background-color: rgba(220, 236, 255, 0.5);
-  cursor: pointer;
-} */
+.season_tag {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-right: 16px;
+}
+
+.spring {
+  background-color: rgb(184, 223, 187);
+}
+
+.summer {
+  background-color: rgb(235, 221, 175);
+}
+
+.fall {
+  background-color: rgb(255, 212, 209);
+}
 
 .course_codes {
   font-weight: 500;
@@ -45,15 +64,26 @@
   text-overflow: ellipsis;
 }
 
+.rating {
+  font-weight: bold;
+}
+
 .worksheet_btn {
   position: absolute;
-  top: -12px;
+  top: -16px;
   right: 3%;
   transition: 0.3s;
 }
 
 .worksheet_btn:hover {
-  transform: translateY(6px);
+  transform: translateY(10px);
+}
+
+.conflict_error {
+  position: absolute;
+  top: -6px;
+  left: 0px;
+  transform: translate(50%, 0%);
 }
 
 @media (hover: none) {

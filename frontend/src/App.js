@@ -12,7 +12,6 @@ import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import SeasonsProvider from './components/SeasonsProvider';
 
 import Landing from './pages/Landing';
-import Login from './pages/Login';
 import Home from './pages/Home';
 
 import Search from './pages/Search';
@@ -23,6 +22,7 @@ import FAQ from './pages/FAQ';
 import Changelog from './pages/Changelog';
 import Feedback from './pages/Feedback';
 import Join from './pages/Join';
+import NotFound from './pages/NotFound';
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -30,7 +30,6 @@ import Spinner from 'react-bootstrap/Spinner';
 function App() {
   const [loading, setLoading] = useState(true);
   const { user, userRefresh } = useUser();
-  const [parent_listings, setParentListings] = useState([]);
 
   useEffect(() => {
     userRefresh(true).finally(() => setLoading(false));
@@ -64,7 +63,7 @@ function App() {
       <WindowDimensionsProvider>
         <SeasonsProvider>
           <div id="base">
-            <Navbar isLoggedIn={isLoggedIn} listings={parent_listings} />
+            <Navbar isLoggedIn={isLoggedIn} />
             <Switch>
               {/* Public Routes */}
               <MyRoute exact path="/">
@@ -96,19 +95,7 @@ function App() {
 
               {/* Worksheet */}
               <MyRoute isRoutePrivate={true} exact path="/worksheet">
-                {isLoggedIn ? (
-                  <Worksheet
-                    parent_listings={parent_listings}
-                    setParentListings={setParentListings}
-                  />
-                ) : (
-                  <Redirect to="/login" />
-                )}
-              </MyRoute>
-
-              {/* Private Routes */}
-              <MyRoute isRoutePrivate={true} exact path="/">
-                <p>hi this is some content</p>
+                {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
               </MyRoute>
 
               {/* Footer Links */}
@@ -131,7 +118,7 @@ function App() {
 
               {/* Catch-all Route */}
               <MyRoute path="/">
-                <p>404 page not found</p>
+                <NotFound />
               </MyRoute>
             </Switch>
             <Route

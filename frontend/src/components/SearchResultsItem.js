@@ -1,29 +1,31 @@
 import React from 'react';
 
+import { Row, Col, Badge } from 'react-bootstrap';
+
 import {
-  Accordion,
-  Card,
-  Container,
-  Button,
-  Row,
-  Col,
-  Badge,
-} from 'react-bootstrap';
+  ratingColormap,
+  workloadColormap,
+  skillsAreasColors,
+} from '../queries/Constants.js';
+import { unflattenTimes } from '../utilities';
 
-import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+import chroma from 'chroma-js';
 
-import { BsBookmarkPlus } from 'react-icons/bs';
 import WorksheetToggleButton from './WorksheetToggleButton';
 
 import Styles from './SearchResultsItem.module.css';
+
+import ReactRating from 'react-rating';
+import { BsSquareFill } from 'react-icons/bs';
 
 const SearchResultsItem = ({
   course,
   isMobile,
   setShowModal,
+  setModalCourse,
   executeGetCourseModal,
 }) => {
-  const RATINGS_PRECISION = 1;
+  let key = 1;
 
   return (
     <Row
@@ -37,8 +39,10 @@ const SearchResultsItem = ({
             season_code: course['season_code'],
           },
         });
+        setModalCourse(course);
         setShowModal(true);
       }}
+      tabIndex="0"
     >
       <Col md={4} xs={8} className={Styles.course_header}>
         <div className={Styles.course_name}>
@@ -49,44 +53,18 @@ const SearchResultsItem = ({
         <div className={Styles.course_code}>
           {course.course_codes ? course.course_codes.join(' • ') : ''}
         </div>
-        {course['course.extra_info'] !== 'ACTIVE' && (
-          <div className={Styles.extra_info}>CANCELLED</div>
-        )}
-      </Col>
-      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-        <div
-          className={Styles.overall_rating}
-          style={
-            course.average_rating && {
-              color: ratingColormap(course.average_rating),
-            }
-          }
-        >
-          {course.average_rating
-            ? course.average_rating.toFixed(RATINGS_PRECISION)
-            : ''}
-        </div>
-      </Col>
-      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-        <div
-          className={Styles.workload_rating}
-          style={
-            course.average_workload && {
-              color: workloadColormap(course.average_workload),
-            }
-          }
-        >
-          {course.average_workload
-            ? course.average_workload.toFixed(RATINGS_PRECISION)
-            : ''}
-        </div>
-      </Col>
-      <Col md={2} xs={8} className={Styles.skills_areas}>
         <div className={Styles.skills_areas}>
           {course.skills.map((skill) => (
             <Badge
               variant="secondary"
-              className={Styles.tag + ' ' + Styles[skill]}
+              className={Styles.tag}
+              key={key++}
+              style={{
+                color: skillsAreasColors[skill],
+                backgroundColor: chroma(skillsAreasColors[skill])
+                  .alpha(0.16)
+                  .css(),
+              }}
             >
               {skill}
             </Badge>
@@ -94,29 +72,70 @@ const SearchResultsItem = ({
           {course.areas.map((area) => (
             <Badge
               variant="secondary"
-              className={Styles.tag + ' ' + Styles[area]}
+              className={Styles.tag}
+              key={key++}
+              style={{
+                color: skillsAreasColors[area],
+                backgroundColor: chroma(skillsAreasColors[area])
+                  .alpha(0.16)
+                  .css(),
+              }}
             >
               {area}
             </Badge>
           ))}
         </div>
+        {course['course.extra_info'] !== 'ACTIVE' && (
+          <div className={Styles.extra_info}>CANCELLED</div>
+        )}
       </Col>
-      <Col md={2}>
-        {/* <Button
-              className={
-                isMobile
-                  ? Styles.toggle_worksheet_mobile
-                  : Styles.toggle_worksheet
-              }
-            >
-              {isMobile ? 'Add to worksheet' : <BsBookmarkPlus />}
-            </Button> */}
+      <Col md={3} xs={8} className={Styles.course_header}>
+        {course.times_summary == 'TBA' ? '' : course.times_summary}
+        <br />
+        {course.locations_summary == 'TBA' ? '' : course.locations_summary}
+      </Col>
+      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
+        {course.average_rating && (
+          <ReactRating
+            initialRating={course.average_rating}
+            readonly
+            emptySymbol={<BsSquareFill className={Styles.rating_icon_empty} />}
+            fullSymbol={
+              <BsSquareFill
+                className={Styles.rating_icon_full}
+                style={{ color: ratingColormap(course.average_rating) }}
+              />
+            }
+            className={Styles.icon_ratings}
+          />
+        )}
+      </Col>
+      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
+        {course.average_workload && (
+          <ReactRating
+            initialRating={course.average_workload}
+            readonly
+            emptySymbol={
+              <BsSquareFill className={Styles.workload_icon_empty} />
+            }
+            fullSymbol={
+              <BsSquareFill
+                className={Styles.workload_icon_full}
+                style={{ color: workloadColormap(course.average_workload) }}
+              />
+            }
+            className={Styles.icon_ratings}
+          />
+        )}
+      </Col>
+      <Col md={1} className="text-center">
         <WorksheetToggleButton
           alwaysRed={false}
           crn={course['course.listings'][0].crn}
           season_code={course.season_code}
           modal={true}
           isMobile={isMobile}
+          times={unflattenTimes(course)}
         />
       </Col>
     </Row>

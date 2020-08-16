@@ -1,12 +1,18 @@
 .search_result_item {
   border: 0px !important;
-  border-radius: 8px !important;
   background-color: white !important;
+  transition: 0.3s;
 }
 
 .search_result_item:hover {
   cursor: pointer;
   background-color: #e1edff !important;
+}
+
+.search_result_item:focus,
+.search_result_item:active {
+  border: none;
+  outline: none;
 }
 
 .course_name {
@@ -15,9 +21,15 @@
 
 .course_code {
   display: inline;
+  color: rgba(0, 0, 0, 0.5);
+  margin-right: 0.5rem;
 }
 
 .dot {
+  display: inline;
+}
+
+.skills_areas {
   display: inline;
 }
 
@@ -36,46 +48,34 @@
   font-size: 0.75rem;
 }
 
-.overall_rating {
-  font-weight: bold;
+.icon_ratings {
+  font-size: 0.75rem;
 }
 
-.workload_rating {
-  font-weight: bold;
+.workload_icon_empty,
+.workload_icon_full {
+  padding: 1px;
+}
+
+.workload_icon_empty {
+  color: #e8e8e8;
+}
+
+.rating_icon_empty,
+.rating_icon_full {
+  padding: 1px;
+}
+
+.rating_icon_empty {
+  color: #e8e8e8;
 }
 
 .tag {
   margin: 1px;
-  padding: 4px;
-  border-radius: 6px;
-}
-
-.Hu {
-  background-color: #9970ab !important;
-}
-
-.So {
-  background-color: #4393c3 !important;
-}
-
-.Sc {
-  background-color: #5aae61 !important;
-}
-
-.QR {
-  background-color: #cc3311 !important;
-}
-
-.WR {
-  background-color: #ec7014 !important;
-}
-
-.L1,
-.L2,
-.L3,
-.L4,
-.L5 {
-  background-color: #000000 !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 4px 6px !important;
+  border-radius: 6px !important;
 }
 
 .none {

@@ -4,8 +4,6 @@ import { HotKeys } from 'react-hotkeys';
 
 import Styles from './Search.module.css';
 
-import chroma from 'chroma-js';
-
 import SearchResults from '../components/SearchResults';
 
 import {
@@ -14,11 +12,9 @@ import {
   Row,
   Form,
   FormControl,
-  FormCheck,
   InputGroup,
   Button,
-  Overlay,
-  Tooltip,
+  Fade,
 } from 'react-bootstrap';
 
 import {
@@ -36,8 +32,6 @@ import {
   selectStyles,
   creditOptions,
   schoolOptions,
-  ratingColormap,
-  workloadColormap,
 } from '../queries/Constants';
 
 import { useLazyQuery } from '@apollo/react-hooks';
@@ -49,11 +43,11 @@ import { useSeasons } from '../components/SeasonsProvider';
 
 import { debounce } from 'lodash';
 
-import Sticky from 'react-sticky-el';
-
 import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
+
+import { FaArrowCircleUp } from 'react-icons/fa';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -72,17 +66,24 @@ function Search(props) {
   );
 
   // States involved in infinite scroll
-  const [fetch_more, setFetchMore] = useState(false);
-  const [offset, setOffset] = useState(0);
-  const [old_data, setOldData] = useState([]);
-  const [replaced, setReplaced] = useState(true);
-  const [end, setEnd] = useState(false);
+  const [offset, setOffset] = useState(0); // How many courses to skip in query
+  const [old_data, setOldData] = useState([]); // Holds the combined list of courses
+  const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
+  const [scroll_pos, setScroll] = useState(0); // Scroll pos
+  const [end, setEnd] = useState(false); // True when we've fetched all courses
+  // const [search_query, setSearchQuery] = useState({}); // Stores the search query
 
-  //State used to rebuild DOM and reset form
+  // Size of Query constant
+  const QUERY_SIZE = 10;
+
+  // State used to determine whether or not to show season tags
+  const [multi_seasons, setMultiSeasons] = useState(false);
+
+  //State used to rebuild form DOM to reset it
   const [form_key, setFormKey] = useState(0);
 
   var [searchType, setSearchType] = React.useState();
-  const [isList, setView] = useState(true);
+  const [isList, setView] = useState(isMobile ? false : true);
 
   var sortby = React.useRef();
   var seasons = React.useRef();
@@ -113,90 +114,72 @@ function Search(props) {
   var [
     executeTextlessSearch,
     { called: textlessCalled, loading: textlessLoading, data: textlessData },
-  ] = useLazyQuery(SEARCH_COURSES_TEXTLESS);
+  ] = useLazyQuery(
+    SEARCH_COURSES_TEXTLESS,
+    { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
+  );
 
   var [
     executeTextSearch,
     { called: textCalled, loading: textLoading, data: textData },
-  ] = useLazyQuery(SEARCH_COURSES);
+  ] = useLazyQuery(
+    SEARCH_COURSES,
+    { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
+  );
 
   const handleChange = () => {
     if (!props.location.state) return;
     //Reset searchText
-    const { location, history } = props;
+    const { history } = props;
     history.replace();
   };
 
-  const defaults = {
-    ordering: sortbyQueries[[sortbyOptions[0].value]],
-    offset: 0, // Always 0 when searching from home or worksheet
-    seasons: seasonsOptions
-      ? [seasonsOptions[0]].map((x) => x.value)
-      : ['202003'],
-    areas: null,
-    skills: null,
-    credits: null,
-    schools: [schoolOptions[0]].map((x) => x.value),
-    min_rating: null,
-    max_rating: null,
-    min_workload: null,
-    max_workload: null,
-    extra_info: 'ACTIVE',
-  };
-
-  useEffect(() => {
-    // Fetch more courses if scroll to bottom and there are still courses
-    if (fetch_more && !end) {
-      setReplaced(false); // Haven't stored old courses yet
-      handleSubmit(); // Perform query
-    }
-  }, [fetch_more]);
-
   useEffect(() => {
     if (default_search) {
-      if (searchText.value) {
-        const search_variables = Object.assign(
-          { search_text: searchText.value },
-          defaults
-        );
-        setSearchType('TEXT');
-        executeTextSearch({
-          variables: search_variables,
-        });
-      } else {
-        // console.log(defaults);
-        setSearchType('TEXTLESS');
-        executeTextlessSearch({
-          variables: defaults,
-        });
-      }
+      // Default search when first landing on catalog page
+      handleSubmit(null, true);
       setDefaultSearch(false);
     }
   }, []);
 
-  const handleSubmit = (event) => {
+  const handleSetView = (isList) => {
+    setView(isList);
+    handleSubmit(null, true);
+  };
+
+  const handleSubmit = (event, search = false) => {
     let offset2 = -1;
-    if (event) {
-      event.preventDefault();
+    if (event && search) event.preventDefault();
+    if (search) {
+      window.scrollTo({ top: scroll_pos < 78 ? scroll_pos : 78, left: 0 });
       //Reset states when making a new search
       setOffset(0);
-      setEnd(false);
       setOldData([]);
-      setReplaced(true);
-      setFetchMore(false);
+      setEnd(false);
       offset2 = 0; // Account for reset state lag
-    }
+    } else if (end) return;
 
     var sortParams = sortby.select.props.value.value;
 
     var ordering = sortbyQueries[sortParams];
 
-    var processedSeasons = seasons.select.props.value;
+    var processedSeasons =
+      seasons.select && seasons.select.props.value.length > 0
+        ? seasons.select.props.value
+        : seasonsOptions
+        ? seasonsOptions
+        : [{ value: '202003' }];
+
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
         return x.value;
       });
     }
+    const temp_multi_seasons = processedSeasons
+      ? processedSeasons.length > 1
+      : false;
+    if (temp_multi_seasons !== multi_seasons)
+      setMultiSeasons(temp_multi_seasons);
 
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
@@ -261,7 +244,8 @@ function Search(props) {
     }
     const search_variables = {
       ordering: ordering,
-      offset: offset2 === -1 ? offset : offset2,
+      offset: offset2 === -1 ? old_data.length : offset2,
+      limit: QUERY_SIZE,
       seasons: processedSeasons,
       areas: processedAreas,
       skills: processedSkills,
@@ -294,98 +278,35 @@ function Search(props) {
   if (searchType === 'TEXTLESS') {
     if (textlessCalled) {
       if (textlessLoading) {
+        if (!searching) setSearching(true); // Set searching after loading starts
         if (!offset) results = <div>Loading...</div>;
-        // Keep old courses until new courses are fetched
-        else
-          results = (
-            <SearchResults
-              data={old_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
       } else {
-        if (textlessData) {
+        // Keep old courses until new courses are fetched
+        if (textlessData && searching) {
+          if (textlessData.computed_course_info.length < QUERY_SIZE)
+            setEnd(true);
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(
             textlessData.computed_course_info
           );
-          // Replace old with new
-          if (!replaced) {
-            setOldData(new_data);
-            setReplaced(true);
-            setFetchMore(false); // Don't fetch more until new courses are loaded
-          }
-          // Load new courses
-          results = (
-            <SearchResults
-              data={new_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
+          setOldData(new_data); // Replace old with new
+          setSearching(false); // Not searching
         }
       }
     }
   } else if (searchType === 'TEXT') {
     if (textCalled) {
       if (textLoading) {
+        if (!searching) setSearching(true); // Set searching after loading starts
         if (!offset) results = <div>Loading...</div>;
-        // Keep old courses until new courses are fetched
-        else
-          results = (
-            <SearchResults
-              data={old_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
       } else {
-        if (textData) {
+        // Keep old courses until new courses are fetched
+        if (textData && searching) {
+          if (textData.search_course_info.length < QUERY_SIZE) setEnd(true);
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(textData.search_course_info);
-          // Replace old with new
-          if (!replaced) {
-            setOldData(new_data);
-            setReplaced(true);
-            setFetchMore(false); // Don't fetch more until new courses are loaded
-          }
-          // Load new courses
-          results = (
-            <SearchResults
-              data={new_data}
-              isList={isList}
-              setView={setView}
-              fetch_more={fetch_more}
-              setFetchMore={setFetchMore}
-              offset={offset}
-              setOffset={setOffset}
-              replaced={replaced}
-              setReplaced={setReplaced}
-              setEnd={setEnd}
-            />
-          );
+          setOldData(new_data); // Replace old with new
+          setSearching(false); // Not searching
         }
       }
     }
@@ -410,18 +331,18 @@ function Search(props) {
   const { Handle } = Slider;
 
   const ratingSliderHandle = (e) => {
-    const { value } = e;
+    const { value, className } = e;
     return (
-      <Handle {...e}>
+      <Handle {...e} key={className}>
         <div className={`shadow ${Styles.rating_tooltip}`}>{value}</div>
       </Handle>
     );
   };
 
   const workloadSliderHandle = (e) => {
-    const { value } = e;
+    const { value, className } = e;
     return (
-      <Handle {...e}>
+      <Handle {...e} key={className}>
         <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
       </Handle>
     );
@@ -430,6 +351,7 @@ function Search(props) {
   var searchCol = React.useRef();
   var searchColHeight;
   var [tooTall, setTooTall] = React.useState(true);
+  var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   useEffect(() => {
     searchColHeight = searchCol.clientHeight;
@@ -441,6 +363,11 @@ function Search(props) {
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
     setFormKey(form_key + 1);
+  };
+
+  // Scroll to top button
+  const scroll_top = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   return (
@@ -457,16 +384,24 @@ function Search(props) {
                 : `pr-2 py-3 pl-3 ${Styles.search_col}`
             }
           >
-            <Sticky disabled={isMobile || tooTall}>
+            <div
+              className={
+                // only make the filters sticky if not on mobile and
+                // tall enough
+                !isTouch && !tooTall ? Styles.sticky : ''
+              }
+            >
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
-                onSubmit={handleSubmit}
+                onSubmit={(event) => {
+                  handleSubmit(event, true);
+                }}
                 ref={(ref) => {
                   searchCol = ref;
                 }}
                 key={form_key}
               >
-                <Row className="pt-2 px-4">
+                <Row className="pt-3 px-4">
                   <small
                     className={Styles.reset_filters_btn + ' pl-1'}
                     onClick={handleResetFilters}
@@ -474,7 +409,7 @@ function Search(props) {
                     Reset Filters
                   </small>
                 </Row>
-                <Row className="pt-1 px-4 pb-2">
+                <Row className="pt-2 px-4 pb-2">
                   <div className={Styles.search_bar}>
                     <InputGroup className={Styles.search_input}>
                       <FormControl
@@ -493,7 +428,6 @@ function Search(props) {
                 </Row>
                 <Row className={`py-0 px-4 ${Styles.sort_container}`}>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    Sort by{' '}
                     <Select
                       defaultValue={sortbyOptions[0]}
                       options={sortbyOptions}
@@ -510,7 +444,7 @@ function Search(props) {
                 <hr />
                 <Row className={`py-0 px-4 ${Styles.multi_selects}`}>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    Semesters{' '}
+                    <div className={Styles.filter_title}>Semesters</div>
                     {seasonsOptions && (
                       <Select
                         isMulti
@@ -531,7 +465,7 @@ function Search(props) {
                   <div
                     className={`col-md-12 p-0  ${Styles.selector_container}`}
                   >
-                    Skills and areas
+                    <div className={Styles.filter_title}>Skills and areas</div>
                     <Select
                       isMulti
                       options={skillsAreasOptions}
@@ -548,7 +482,7 @@ function Search(props) {
                     />
                   </div>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    Credits
+                    <div className={Styles.filter_title}>Credits</div>
                     <Select
                       isMulti
                       options={creditOptions}
@@ -564,7 +498,7 @@ function Search(props) {
                     />
                   </div>
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    Schools
+                    <div className={Styles.filter_title}>Schools</div>
                     <Select
                       isMulti
                       defaultValue={[schoolOptions[0]]}
@@ -582,45 +516,56 @@ function Search(props) {
                   </div>
                 </Row>
                 <hr />
-                <Row className={`pt-0 pb-3 px-4 ${Styles.sliders}`}>
-                  <div>Overall rating</div>
-                  <Container>
-                    <Range
-                      min={1}
-                      max={5}
-                      step={0.1}
-                      defaultValue={ratingBounds}
-                      onChange={debounce((value) => {
-                        setRatingBounds(value);
-                      }, 250)}
-                      handle={ratingSliderHandle}
-                      className={Styles.slider}
-                    />
-                  </Container>
-                  <div>Workload</div>
-                  <Container>
-                    <Range
-                      min={1}
-                      max={5}
-                      step={0.1}
-                      defaultValue={workloadBounds}
-                      onChange={debounce((value) => {
-                        setWorkloadBounds(value);
-                      }, 250)}
-                      handle={workloadSliderHandle}
-                      className={Styles.slider}
-                    />
-                  </Container>
+                <Row className={`pt-0 pb-2 px-2 ${Styles.sliders}`}>
+                  <Col>
+                    <Container style={{ paddingTop: '1px' }}>
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        defaultValue={ratingBounds}
+                        onChange={debounce((value) => {
+                          setRatingBounds(value);
+                        }, 250)}
+                        handle={ratingSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Overall rating
+                    </div>
+                  </Col>
+                  <Col>
+                    <Container>
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        defaultValue={workloadBounds}
+                        onChange={debounce((value) => {
+                          setWorkloadBounds(value);
+                        }, 250)}
+                        handle={workloadSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Workload
+                    </div>
+                  </Col>
                 </Row>
                 <Row
-                  className={`pt-3 pb-3 px-5 ${Styles.light_bg} ${Styles.toggle_row}`}
+                  className={`pt-2 pb-2 px-5 ${Styles.light_bg} ${Styles.toggle_row}`}
                 >
                   <Form.Check type="switch" className={Styles.toggle_option}>
-                    <Form.Check.Input checked={hideCancelled} />
+                    <Form.Check.Input
+                      checked={hideCancelled}
+                      onChange={(e) => {}} // dummy handler to remove warning
+                    />
                     <Form.Check.Label
                       onClick={() => setHideCancelled(!hideCancelled)}
                     >
-                      Hide cancelled courses
+                      Hide cancelled
                     </Form.Check.Label>
                   </Form.Check>
                 </Row>
@@ -633,7 +578,7 @@ function Search(props) {
                   </Button>
                 </Row>
               </Form>
-            </Sticky>
+            </div>
           </Col>
           <Col
             md={8}
@@ -646,10 +591,30 @@ function Search(props) {
                 : 'pl-2 py-3 pr-3 ' + Styles.results_col)
             }
           >
-            {results}
+            {results ? (
+              results
+            ) : (
+              <SearchResults
+                data={old_data}
+                isList={isList}
+                setView={handleSetView}
+                offset={offset}
+                setOffset={setOffset}
+                loading={searchType === 'TEXT' ? textLoading : textlessLoading}
+                loadMore={handleSubmit}
+                setScroll={setScroll}
+                multi_seasons={multi_seasons}
+                QUERY_SIZE={QUERY_SIZE}
+              />
+            )}
           </Col>
         </Row>
       </HotKeys>
+      <Fade in={scroll_pos > 3 * height}>
+        <div className={Styles.up_btn}>
+          <FaArrowCircleUp timeout={1000} onClick={scroll_top} size={30} />
+        </div>
+      </Fade>
     </div>
   );
 }

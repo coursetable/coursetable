@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
@@ -7,35 +7,45 @@ import { FcCalendar } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton'
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
-import { toast } from 'react-toastify';
 import { useUser } from '../user';
-import { isInWorksheet } from '../utilities';
+import { flatten } from '../utilities';
+import {
+  FetchWorksheetLazy,
+  preprocess_courses,
+} from '../queries/GetWorksheetListings';
 
 function MeDropdown(props) {
   const { user } = useUser();
+  const [export_ics, setExport] = useState(false);
+
+  if (user.worksheet) {
+    var [fetchWorksheetListings, { data }] = FetchWorksheetLazy(
+      user.worksheet,
+      props.season_code
+    );
+  }
+
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK
   };
 
   const handleExportClick = () => {
-    // EXPORT WORKSHEET TO ICS FILE
-    if (!props.listings.length) {
-      toast.error('Worksheet is empty');
-      return;
-    }
-    let filtered_listings = [];
-    props.listings.forEach((listing) => {
-      if (
-        isInWorksheet(
-          listing.season_code,
-          listing.crn.toString(),
-          user.worksheet
-        )
-      )
-        filtered_listings.push(listing);
-    });
-    generateICS(filtered_listings);
+    fetchWorksheetListings();
+    setExport(true);
   };
+
+  useEffect(() => {
+    if (!data || !export_ics) return;
+    data = data.listings.map((x) => {
+      return flatten(x);
+    });
+    data = data.map((x) => {
+      return preprocess_courses(x);
+    });
+    // EXPORT WORKSHEET TO ICS FILE
+    generateICS(data);
+    setExport(false);
+  }, [data ? data : [], export_ics]);
 
   const handleLogoutClick = () => {
     // Sign Out

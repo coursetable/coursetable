@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Form, Button } from 'react-bootstrap';
+import { Row, Form, Button } from 'react-bootstrap';
 import styles from './Join.module.css';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -25,7 +25,7 @@ function Join() {
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.join_header + ' mt-5 mb-1'}>Join Us!</h1>
       <p className={styles.join_description + ' mb-3 text-muted'}>
-        Join Us Description
+        We'll be in touch.
       </p>
       <Form
         noValidate
@@ -54,6 +54,7 @@ function Join() {
               { value: 'Frontend', label: 'Front-end Developer' },
               { value: 'Backend', label: 'Back-end Developer' },
               { value: 'Design', label: 'Designer' },
+              { value: 'Other', label: 'Other' },
             ]}
             placeholder={'Role(s) of Interest'}
           />

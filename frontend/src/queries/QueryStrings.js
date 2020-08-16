@@ -18,6 +18,7 @@ export const SEARCH_COURSES = gql`
     $search_text: String
     $ordering: [computed_course_info_order_by!]
     $offset: Int
+    $limit: Int
     $seasons: [String!]
     $schools: [String!]
     $areas: [String!]
@@ -44,7 +45,7 @@ export const SEARCH_COURSES = gql`
         course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering
-      limit: 40
+      limit: $limit
       offset: $offset
     ) {
       course_id
@@ -55,6 +56,7 @@ export const SEARCH_COURSES = gql`
       average_workload
       title
       times_summary
+      times_by_day
       locations_summary
       skills
       areas
@@ -77,6 +79,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
   query SearchCoursesTextless(
     $ordering: [computed_course_info_order_by!]
     $offset: Int
+    $limit: Int
     $seasons: [String!]
     $schools: [String!]
     $areas: [String!]
@@ -102,7 +105,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
         course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering
-      limit: 40
+      limit: $limit
       offset: $offset
     ) {
       course_id
@@ -113,6 +116,7 @@ export const SEARCH_COURSES_TEXTLESS = gql`
       average_workload
       title
       times_summary
+      times_by_day
       locations_summary
       skills
       areas

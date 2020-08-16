@@ -1,21 +1,104 @@
-import React from 'react';
-import { Row, Col, Badge } from 'react-bootstrap';
-import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+import React, { useState, useEffect } from 'react';
+import {
+  Row,
+  Col,
+  Badge,
+  OverlayTrigger,
+  Tooltip,
+  Fade,
+} from 'react-bootstrap';
+
+import {
+  ratingColormap,
+  workloadColormap,
+  skillsAreasColors,
+} from '../queries/Constants.js';
+import chroma from 'chroma-js';
+
 import WorksheetToggleButton from './WorksheetToggleButton';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
-import { FcRating, FcReading } from 'react-icons/fc';
+import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
+import { IoMdSunny } from 'react-icons/io';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { MdErrorOutline } from 'react-icons/md';
+import { useUser } from '../user';
+import { FetchWorksheet } from '../queries/GetWorksheetListings';
+import { isInWorksheet, checkConflict, unflattenTimes } from '../utilities';
 
 const SearchResultsGridItem = ({
   course,
   isMobile,
   setShowModal,
+  setModalCourse,
   executeGetCourseModal,
   num_cols,
+  multi_seasons,
 }) => {
   const RATINGS_PRECISION = 1;
   const col_width = 12 / num_cols;
+  const season_code = course.season_code;
+  const season = season_code[5];
+  const year = season_code.substr(2, 2);
+  const icon_size = 13;
+  const seasons = ['spring', 'summer', 'fall'];
+  const icon =
+    season === '1' ? (
+      <FcCloseUpMode className="my-auto" size={icon_size} />
+    ) : season === '2' ? (
+      <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
+    ) : (
+      <FaCanadianMapleLeaf
+        color="#9c0000"
+        className="my-auto"
+        size={icon_size}
+      />
+    );
+  let key = 0;
+
+  const { user } = useUser();
+  const [inWorksheet, setInWorksheet] = useState(
+    isInWorksheet(
+      course.season_code,
+      course['course.listings'][0].crn.toString(),
+      user.worksheet
+    )
+  );
+  if (user.worksheet) {
+    var { data } = FetchWorksheet(user.worksheet);
+  }
+
+  const update = isInWorksheet(
+    course.season_code,
+    course['course.listings'][0].crn.toString(),
+    user.worksheet
+  );
+  if (inWorksheet !== update) setInWorksheet(update);
+
+  const [conflict, setConflict] = useState(false);
+  const times = unflattenTimes(course);
+
+  useEffect(() => {
+    const times = unflattenTimes(course);
+    if (!data || !times) return;
+    if (times === 'TBA' || checkConflict(data, course, times)) {
+      setConflict(true);
+      return;
+    }
+    setConflict(false);
+  }, [data ? data : []]);
+
+  const renderTooltip = (props) =>
+    !inWorksheet && conflict ? (
+      <Tooltip id="button-tooltip" {...props}>
+        <small style={{ fontWeight: 500 }}>
+          {times === 'TBA' ? 'Invalid Course Time' : 'Scheduling Conflict'}
+        </small>
+      </Tooltip>
+    ) : (
+      <div />
+    );
 
   return (
     <Col
@@ -32,13 +115,39 @@ const SearchResultsGridItem = ({
             },
           });
           setShowModal(true);
+          setModalCourse(course);
         }}
-        className={styles.one_line + ' ' + styles.item_container + ' p-3'}
+        className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
+        tabIndex="0"
       >
         <Row className="m-auto">
-          <small className={styles.one_line + ' ' + styles.course_codes}>
-            {course.course_codes ? course.course_codes.join(' • ') : ''}
-          </small>
+          <Col xs={multi_seasons ? 8 : 12} className="p-0">
+            <Row className="mx-auto mt-3">
+              <small className={styles.one_line + ' ' + styles.course_codes}>
+                {course.course_codes ? course.course_codes.join(' • ') : ''}
+              </small>
+            </Row>
+          </Col>
+          {multi_seasons && (
+            <Col xs={4} className="p-0">
+              <Row className="m-auto">
+                <div
+                  className={
+                    styles.season_tag +
+                    ' ml-auto px-1 pb-0 ' +
+                    styles[seasons[parseInt(season) - 1]]
+                  }
+                >
+                  <Row className="m-auto">
+                    {icon}
+                    <small style={{ fontWeight: 550 }}>
+                      &nbsp;{"'" + year}
+                    </small>
+                  </Row>
+                </div>
+              </Row>
+            </Col>
+          )}
         </Row>
         <Row className="m-auto">
           <strong className={styles.one_line}>
@@ -75,7 +184,14 @@ const SearchResultsGridItem = ({
                 {course.skills.map((skill) => (
                   <Badge
                     variant="secondary"
-                    className={tag_styles.tag + ' ' + tag_styles[skill]}
+                    className={tag_styles.tag}
+                    key={key++}
+                    style={{
+                      color: skillsAreasColors[skill],
+                      backgroundColor: chroma(skillsAreasColors[skill])
+                        .alpha(0.16)
+                        .css(),
+                    }}
                   >
                     {skill}
                   </Badge>
@@ -83,7 +199,14 @@ const SearchResultsGridItem = ({
                 {course.areas.map((area) => (
                   <Badge
                     variant="secondary"
-                    className={tag_styles.tag + ' ' + tag_styles[area]}
+                    className={tag_styles.tag}
+                    key={key++}
+                    style={{
+                      color: skillsAreasColors[area],
+                      backgroundColor: chroma(skillsAreasColors[area])
+                        .alpha(0.16)
+                        .css(),
+                    }}
                   >
                     {area}
                   </Badge>
@@ -91,9 +214,17 @@ const SearchResultsGridItem = ({
                 {course.skills.length === 0 && course.areas.length === 0 && (
                   <Badge
                     variant="secondary"
-                    className={tag_styles.tag + ' ' + tag_styles.none}
+                    className={tag_styles.tag}
+                    key={key++}
+                    style={{
+                      color: skillsAreasColors['Hu'],
+                      backgroundColor: chroma(skillsAreasColors['Hu'])
+                        .alpha(0.16)
+                        .css(),
+                      opacity: 0,
+                    }}
                   >
-                    N/A
+                    {'Hu'}
                   </Badge>
                 )}
               </div>
@@ -103,7 +234,7 @@ const SearchResultsGridItem = ({
             <div>
               <Row className="m-auto justify-content-end">
                 <div
-                  className={tag_styles.overall_rating + ' mr-1'}
+                  className={styles.rating + ' mr-1'}
                   style={{
                     color: course.average_rating
                       ? ratingColormap(course.average_rating)
@@ -112,13 +243,13 @@ const SearchResultsGridItem = ({
                 >
                   {course.average_rating
                     ? course.average_rating.toFixed(RATINGS_PRECISION)
-                    : 'TBA'}
+                    : 'N/A'}
                 </div>
                 <AiFillStar color="#fac000" className="my-auto" />
               </Row>
               <Row className="m-auto justify-content-end">
                 <div
-                  className={tag_styles.workload_rating + ' mr-1'}
+                  className={styles.rating + ' mr-1'}
                   style={{
                     color: course.average_workload
                       ? workloadColormap(course.average_workload)
@@ -127,7 +258,7 @@ const SearchResultsGridItem = ({
                 >
                   {course.average_workload
                     ? course.average_workload.toFixed(RATINGS_PRECISION)
-                    : 'TBA'}
+                    : 'N/A'}
                 </div>
                 <FcReading className="my-auto" />
               </Row>
@@ -136,14 +267,29 @@ const SearchResultsGridItem = ({
         </Row>
       </div>
       <div className={styles.worksheet_btn}>
-        <WorksheetToggleButton
-          alwaysRed={false}
-          crn={course['course.listings'][0].crn}
-          season_code={course.season_code}
-          modal={false}
-          isMobile={isMobile}
-        />
+        {
+          <WorksheetToggleButton
+            alwaysRed={false}
+            crn={course['course.listings'][0].crn}
+            season_code={course.season_code}
+            modal={false}
+            isMobile={isMobile}
+            times={unflattenTimes(course)}
+          />
+        }
       </div>
+
+      <Fade in={!inWorksheet && conflict}>
+        <div className={styles.conflict_error}>
+          <OverlayTrigger
+            placement="top"
+            delay={{ show: 250, hide: 250 }}
+            overlay={renderTooltip}
+          >
+            <MdErrorOutline color="#fc4103" />
+          </OverlayTrigger>
+        </div>
+      </Fade>
     </Col>
   );
 };

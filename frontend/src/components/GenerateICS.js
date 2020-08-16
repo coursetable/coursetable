@@ -29,7 +29,6 @@ export const generateICS = (listings_all) => {
 
   // Fall 2020 period
   const period = [moment('2020-08-31T08:20'), moment('2020-12-04T17:30')];
-
   let listings = [];
   listings_all.forEach((listing) => {
     if (

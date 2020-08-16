@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { flatten } from '../utilities';
 
@@ -45,7 +45,7 @@ const buildQuery = (worksheet) => {
   }`;
 };
 
-function preprocess_courses(listing) {
+export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -102,9 +102,9 @@ function preprocess_courses(listing) {
   }
 
   return listing;
-}
+};
 
-const FetchWorksheet = (worksheet) => {
+export const FetchWorksheet = (worksheet) => {
   const builtQuery = buildQuery(worksheet);
   var { loading, error, data } = useQuery(gql(builtQuery));
 
@@ -121,4 +121,14 @@ const FetchWorksheet = (worksheet) => {
   return { loading, error, data };
 };
 
-export default FetchWorksheet;
+export const FetchWorksheetLazy = (worksheet, season_code) => {
+  let filtered_worksheet = [];
+  worksheet.forEach((course) => {
+    if (course[0] === season_code) filtered_worksheet.push(course);
+  });
+  const builtQuery = buildQuery(filtered_worksheet);
+  const [fetchWorksheetListings, { loading, data }] = useLazyQuery(
+    gql(builtQuery)
+  );
+  return [fetchWorksheetListings, { loading, data }];
+};

@@ -1,6 +1,5 @@
 import React from 'react';
 import styles from './ListGridToggle.module.css';
-import { Row, Col } from 'react-bootstrap';
 import { FaBars, FaTh } from 'react-icons/fa';
 
 const ListGridToggle = (props) => {

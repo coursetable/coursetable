@@ -1,29 +1,37 @@
 import React, { useState } from 'react';
 import './WorksheetToggleButton.css';
-import {
-  BsBookmark,
-  BsBookmarkFill,
-  BsBookmarkDash,
-  BsBookmarkPlus,
-} from 'react-icons/bs';
+import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { Button } from 'react-bootstrap';
 import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
+import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
 
 const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();
-  var [inWorksheet, setInWorksheet] = useState(
+  if (user.worksheet) {
+    var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
+      user.worksheet,
+      props.season_code
+    );
+  }
+  const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
   );
+
   const update = isInWorksheet(
     props.season_code,
     props.crn.toString(),
     user.worksheet
   );
   if (inWorksheet !== update) setInWorksheet(update);
-  if (user.worksheet === null) return <div>Signin</div>;
+  if (user.worksheet === null)
+    return (
+      <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
+        <BsBookmark size={25} className="disabled-button-icon" />
+      </Button>
+    );
 
   function add_remove_course() {
     let add_remove;
@@ -51,20 +59,25 @@ const WorksheetToggleButton = (props) => {
     add_remove_course();
     // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
+
   return (
     <Button
       variant="toggle"
-      className={'p-0 ' + (props.modal ? '' : 'bookmark_fill')}
+      className={'p-0 bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
       onClick={toggleWorkSheet}
     >
       {inWorksheet ? (
         <BsBookmarkFill
-          className={props.modal ? '' : 'bookmark_fill'}
-          color="#ff6969"
+          className={'bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
+          color="#3396ff"
           size={25}
         />
       ) : (
-        <BsBookmark color="#ff6969" size={25} />
+        <BsBookmark
+          color={'#3396ff'}
+          size={25}
+          style={{ transition: '0.3s' }}
+        />
       )}
     </Button>
   );

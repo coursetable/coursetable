@@ -61,11 +61,16 @@ export default class WeekSchedule extends React.Component {
 
   eventStyleGetter = (event) => {
     const border = '1)';
-    const background = '.9)';
+    const background = '.85)';
     let style = {
       backgroundColor: event.listing.color.concat(background),
       borderColor: event.listing.color.concat(border),
       borderWidth: '2px',
+      filter:
+        this.props.hover_course &&
+        this.props.hover_course.crn === event.listing.crn
+          ? 'brightness(80%)'
+          : 'brightness(100%)',
     };
     return {
       style: style,
@@ -80,8 +85,16 @@ export default class WeekSchedule extends React.Component {
         defaultView={'work_week'}
         views={['work_week']}
         events={ret_values[2]}
-        min={ret_values[0].toDate()}
-        max={ret_values[1].toDate()}
+        min={
+          ret_values[0].get('hours') !== 20
+            ? ret_values[0].toDate()
+            : moment().hour(8).minute(0).toDate()
+        }
+        max={
+          ret_values[1].get('hours') !== 0
+            ? ret_values[1].toDate()
+            : moment().hour(18).minute(0).toDate()
+        }
         localizer={localizer}
         toolbar={false}
         onSelectEvent={(event) => this.showModal(event.listing)}

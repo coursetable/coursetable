@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Form, Button, Collapse } from 'react-bootstrap';
+import { Form, Button, Collapse } from 'react-bootstrap';
 import styles from './Feedback.module.css';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
@@ -47,7 +47,7 @@ function Feedback() {
               { value: 'Feature Request', label: 'Feature Request' },
               { value: 'Other', label: 'Other Comments for the Team' },
             ]}
-            onChange={(option) => setIsBug(option.value === 'bug')}
+            onChange={(option) => setIsBug(option.value === 'Bug Report')}
             name="feedback_type"
           />
         </Form.Group>

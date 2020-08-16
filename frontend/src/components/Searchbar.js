@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef } from 'react';
 import { Form, InputGroup, Button, Row } from 'react-bootstrap';
 import styles from './Searchbar.module.css';
 import { BsSearch } from 'react-icons/bs';

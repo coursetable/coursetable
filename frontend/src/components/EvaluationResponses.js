@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tabs, Tab, Row, Col } from 'react-bootstrap';
+import { Tabs, Tab, Row } from 'react-bootstrap';
 import styles from './EvaluationResponses.module.css';
 
 const CourseModalEvaluations = (props) => {

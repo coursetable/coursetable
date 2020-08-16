@@ -1,6 +1,6 @@
 import React from 'react';
-import { Row, Col } from 'react-bootstrap';
-import styles from './EvaluationRatings.module.css';
+import { Row } from 'react-bootstrap';
+// import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
 
 const EvaluationRatings = (props) => {
@@ -20,7 +20,7 @@ const EvaluationRatings = (props) => {
       }
     }
   });
-  const num_questions = ratings.length;
+  // const num_questions = ratings.length;
   let assessment = [];
   let workload = [];
   let engagement = [];
@@ -45,7 +45,7 @@ const EvaluationRatings = (props) => {
           <Row className="mx-auto mb-1 pl-1">
             <strong>Overall</strong>
           </Row>
-          <RatingsGraph ratings={assessment} reverse={false} />
+          <RatingsGraph ratings={assessment} label="Overall" reverse={false} />
         </div>
       )}
       {workload.length > 0 && (
@@ -53,16 +53,16 @@ const EvaluationRatings = (props) => {
           <Row className="mx-auto mb-1 pl-1">
             <strong>Workload</strong>
           </Row>
-          <RatingsGraph ratings={workload} reverse={true} />
+          <RatingsGraph ratings={workload} label="Workload" reverse={true} />
         </div>
       )}
       {major.length > 0 && (
         <div>
           <Row className="mx-auto mb-1 pl-1">
-            <strong>Taking for Major?</strong>
+            <strong>Taking for major?</strong>
           </Row>
 
-          <RatingsGraph ratings={major} reverse={true} />
+          <RatingsGraph ratings={major} label="Taking for major?" type="yes_no" reverse={true} />
         </div>
       )}
       {engagement.length > 0 && (
@@ -70,7 +70,7 @@ const EvaluationRatings = (props) => {
           <Row className="mx-auto mb-1 pl-1">
             <strong>Engagement</strong>
           </Row>
-          <RatingsGraph ratings={engagement} reverse={false} />
+          <RatingsGraph ratings={engagement} label="Engagement" reverse={false} />
         </div>
       )}
       {organized.length > 0 && (
@@ -78,15 +78,15 @@ const EvaluationRatings = (props) => {
           <Row className="mx-auto mb-1 pl-1">
             <strong>Organization</strong>
           </Row>
-          <RatingsGraph ratings={organized} reverse={false} />
+          <RatingsGraph ratings={organized} label="Organization" reverse={false} />
         </div>
       )}
       {feedback.length > 0 && (
         <div>
           <Row className="mx-auto mb-1 pl-1">
-            <strong>Feedback Clarity</strong>
+            <strong>Feedback clarity</strong>
           </Row>
-          <RatingsGraph ratings={feedback} reverse={false} />
+          <RatingsGraph ratings={feedback} label="Feedback clarity" reverse={false} />
         </div>
       )}
       {challenge.length > 0 && (
@@ -94,7 +94,7 @@ const EvaluationRatings = (props) => {
           <Row className="mx-auto mb-1 pl-1">
             <strong>Intellectual Challenge</strong>
           </Row>
-          <RatingsGraph ratings={challenge} reverse={false} />
+          <RatingsGraph ratings={challenge} label="Intellectual challenge" reverse={false} />
         </div>
       )}
     </div>
