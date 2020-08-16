@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Badge, Col, Container, Row, Modal, Spinner } from 'react-bootstrap';
+import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';

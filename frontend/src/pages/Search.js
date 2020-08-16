@@ -273,13 +273,11 @@ function Search(props) {
     }
   });
 
-  var results;
 
   if (searchType === 'TEXTLESS') {
     if (textlessCalled) {
       if (textlessLoading) {
         if (!searching) setSearching(true); // Set searching after loading starts
-        if (!offset) results = <div>Loading...</div>;
       } else {
         // Keep old courses until new courses are fetched
         if (textlessData && searching) {
@@ -298,7 +296,6 @@ function Search(props) {
     if (textCalled) {
       if (textLoading) {
         if (!searching) setSearching(true); // Set searching after loading starts
-        if (!offset) results = <div>Loading...</div>;
       } else {
         // Keep old courses until new courses are fetched
         if (textData && searching) {
@@ -603,23 +600,19 @@ function Search(props) {
                 : 'pl-2 py-3 pr-3 ' + Styles.results_col)
             }
           >
-            {results ? (
-              results
-            ) : (
-              <SearchResults
-                data={old_data}
-                isList={isList}
-                setView={handleSetView}
-                offset={offset}
-                setOffset={setOffset}
-                loading={searchType === 'TEXT' ? textLoading : textlessLoading}
-                loadMore={handleSubmit}
-                setScroll={setScroll}
-                multi_seasons={multi_seasons}
-                QUERY_SIZE={QUERY_SIZE}
-                refresh_cache={refresh_cache}
-              />
-            )}
+            <SearchResults
+              data={old_data}
+              isList={isList}
+              setView={handleSetView}
+              offset={offset}
+              setOffset={setOffset}
+              loading={searchType === 'TEXT' ? textLoading : textlessLoading}
+              loadMore={handleSubmit}
+              setScroll={setScroll}
+              multi_seasons={multi_seasons}
+              QUERY_SIZE={QUERY_SIZE}
+              refresh_cache={refresh_cache}
+            />
           </Col>
         </Row>
       </HotKeys>

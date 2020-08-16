@@ -11,7 +11,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 import Styles from './SearchResults.module.css';
 import './SearchResults.css';
 
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row, Spinner } from 'react-bootstrap';
 
 import { useLazyQuery } from '@apollo/react-hooks';
 import { GET_COURSE_MODAL } from '../queries/QueryStrings';
@@ -308,11 +308,13 @@ const SearchResults = ({
           </div>
         )}
         <div className={!isList ? 'px-1 pt-3' : ''}>
-          {resultsListing}
+          {data.length !== 0 && resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
-            <Row className="m-auto pt-0 pb-2">
-              <strong className="mx-auto">Loading...</strong>
+            <Row className="m-auto py-5">
+              <Spinner className="m-auto" animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
             </Row>
           )}
         </div>
