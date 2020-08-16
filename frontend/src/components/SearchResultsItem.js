@@ -92,9 +92,6 @@ const SearchResultsItem = ({
       <Col md={3} className={Styles.course_header}>
         {course.professor_names.join("\n")}
       </Col>
-      <Col md={3} className={Styles.course_header}>
-        {course.professor_names.join('\n')}
-      </Col>
       <Col md={2} className={Styles.course_header}>
         {course.times_summary === 'TBA' ? '' : course.times_summary}
         <br />
