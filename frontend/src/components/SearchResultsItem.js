@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Row, Col, Badge } from 'react-bootstrap';
 
@@ -7,11 +7,11 @@ import {
   workloadColormap,
   skillsAreasColors,
 } from '../queries/Constants.js';
-import { unflattenTimes } from '../utilities';
 
 import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
+import CourseConflictIcon from './CourseConflictIcon';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -54,7 +54,7 @@ const SearchResultsItem = ({
           {course.course_codes ? course.course_codes.join(' • ') : ''}
         </div>
         <div className={Styles.skills_areas}>
-          {course.skills.map(skill => (
+          {course.skills.map((skill) => (
             <Badge
               variant="secondary"
               className={Styles.tag}
@@ -69,7 +69,7 @@ const SearchResultsItem = ({
               {skill}
             </Badge>
           ))}
-          {course.areas.map(area => (
+          {course.areas.map((area) => (
             <Badge
               variant="secondary"
               className={Styles.tag}
@@ -95,21 +95,17 @@ const SearchResultsItem = ({
         {course.locations_summary === 'TBA' ? '' : course.locations_summary}
       </Col>
       <Col md={3} className={Styles.course_header}>
-        {course.professor_names.join("\n")}
+        {course.professor_names.join('\n')}
       </Col>
       <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
         {course.average_rating && (
           <div
-            style={
-              {
-                color: ratingColormap(course.average_rating)
-                  .darken(2)
-                  .css(),
-                backgroundColor: chroma(ratingColormap(course.average_rating))
-                  .alpha(0.33)
-                  .css(),
-              }
-            }
+            style={{
+              color: ratingColormap(course.average_rating).darken(2).css(),
+              backgroundColor: chroma(ratingColormap(course.average_rating))
+                .alpha(0.33)
+                .css(),
+            }}
             className={Styles.rating_cell}
           >
             {course.average_rating !== -1 && course.average_rating.toFixed(1)}
@@ -119,19 +115,16 @@ const SearchResultsItem = ({
       <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
         {course.average_workload && (
           <div
-            style={
-              {
-                color: workloadColormap(course.average_workload)
-                  .darken(2)
-                  .css(),
-                backgroundColor: chroma(workloadColormap(course.average_workload))
-                  .alpha(0.33)
-                  .css(),
-              }
-            }
+            style={{
+              color: workloadColormap(course.average_workload).darken(2).css(),
+              backgroundColor: chroma(workloadColormap(course.average_workload))
+                .alpha(0.33)
+                .css(),
+            }}
             className={Styles.rating_cell}
           >
-            {course.average_workload !== -1 && course.average_workload.toFixed(1)}
+            {course.average_workload !== -1 &&
+              course.average_workload.toFixed(1)}
           </div>
         )}
       </Col>
@@ -142,9 +135,11 @@ const SearchResultsItem = ({
           season_code={course.season_code}
           modal={true}
           isMobile={isMobile}
-          times={unflattenTimes(course)}
         />
       </Col>
+      <div className={Styles.conflict_error}>
+        <CourseConflictIcon course={course} />
+      </div>
     </Row>
   );
 };
