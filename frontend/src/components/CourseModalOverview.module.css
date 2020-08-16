@@ -6,6 +6,12 @@
   background-color: rgb(223, 223, 223);
   padding: 6px;
   border-radius: 10px;
+  font-weight: 550;
+  color: rgb(100, 100, 100);
+}
+
+.metadata {
+  font-weight: 600;
 }
 
 .rating_bubble {

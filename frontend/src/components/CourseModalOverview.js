@@ -177,67 +177,81 @@ const CourseModalOverview = (props) => {
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
-            <div
-              style={
-                evaluations[i].rating && {
-                  color: ratingColormap(evaluations[i].rating).darken(2).css(),
-                  backgroundColor: chroma(ratingColormap(evaluations[i].rating))
-                    .alpha(0.33)
-                    .css(),
+            {evaluations[i].rating !== -1 && (
+              <div
+                style={
+                  evaluations[i].rating && {
+                    color: ratingColormap(evaluations[i].rating)
+                      .darken()
+                      .saturate(),
+                    // .darken(2)
+                    // .css(),
+                    // backgroundColor: chroma(
+                    //   ratingColormap(evaluations[i].rating)
+                    // )
+                    //   .alpha(0.33)
+                    //   .css(),
+                  }
                 }
-              }
-              className={`${Styles.rating_cell} ${
-                expanded ? Styles.expanded_ratings : ''
-              }`}
-            >
-              {evaluations[i].rating !== -1 && evaluations[i].rating.toFixed(1)}
-            </div>
+                className={`${Styles.rating_cell} ${
+                  expanded ? Styles.expanded_ratings : ''
+                }`}
+              >
+                {evaluations[i].rating.toFixed(1)}
+              </div>
+            )}
           </Col>
           <Col
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
-            <div
-              style={
-                evaluations[i].professor_rating && {
-                  color: ratingColormap(evaluations[i].professor_rating)
-                    .darken(2)
-                    .css(),
-                  backgroundColor: chroma(
-                    ratingColormap(evaluations[i].professor_rating)
-                  )
-                    .alpha(0.33)
-                    .css(),
+            {evaluations[i].professor_rating !== -1 && (
+              <div
+                style={
+                  evaluations[i].professor_rating && {
+                    color: ratingColormap(evaluations[i].professor_rating)
+                      .darken()
+                      .saturate(),
+                    // .darken(2)
+                    // .css(),
+                    // backgroundColor: chroma(
+                    //   ratingColormap(evaluations[i].professor_rating)
+                    // )
+                    //   .alpha(0.33)
+                    //   .css(),
+                  }
                 }
-              }
-              className={Styles.rating_cell}
-            >
-              {evaluations[i].professor_rating !== -1 &&
-                evaluations[i].professor_rating.toFixed(1)}
-            </div>
+                className={Styles.rating_cell}
+              >
+                {evaluations[i].professor_rating.toFixed(1)}
+              </div>
+            )}
           </Col>
           <Col
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
-            <div
-              style={
-                evaluations[i].workload && {
-                  color: ratingColormap(evaluations[i].workload)
-                    .darken(2)
-                    .css(),
-                  backgroundColor: chroma(
-                    ratingColormap(evaluations[i].workload)
-                  )
-                    .alpha(0.33)
-                    .css(),
+            {evaluations[i].workload !== -1 && (
+              <div
+                style={
+                  evaluations[i].workload && {
+                    color: workloadColormap(evaluations[i].workload)
+                      .darken()
+                      .saturate(),
+                    // .darken(2)
+                    // .css(),
+                    // backgroundColor: chroma(
+                    //   workloadColormap(evaluations[i].workload)
+                    // )
+                    //   .alpha(0.33)
+                    //   .css(),
+                  }
                 }
-              }
-              className={Styles.rating_cell}
-            >
-              {evaluations[i].workload !== -1 &&
-                evaluations[i].workload.toFixed(1)}
-            </div>
+                className={Styles.rating_cell}
+              >
+                {evaluations[i].workload.toFixed(1)}
+              </div>
+            )}
           </Col>
         </Row>
       );
@@ -248,63 +262,93 @@ const CourseModalOverview = (props) => {
     <Modal.Body>
       <Row className="m-auto">
         <Col md={6} className="px-0 mt-0 mb-3">
+          {/* COURSE DESCRIPTION */}
+          <Row className="m-auto pb-3">{listing['course.description']}</Row>
           {listing['professors'] && (
             <Row className="m-auto py-2">
-              Taught by&nbsp;
-              <div className="font-weight-bold">{listing.professors}</div>
+              <Col xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Professor</span>
+              </Col>
+              <Col xs={8} className={Styles.metadata}>
+                {listing.professors}
+              </Col>
             </Row>
           )}
           {listing['course.times_summary'] !== 'TBA' && (
             <Row className="m-auto py-2">
-              Meets&nbsp;
-              <div className="font-weight-bold">
+              <Col xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Meets</span>
+              </Col>
+              <Col xs={8} className={Styles.metadata}>
                 {listing['course.times_summary']}
-              </div>
+              </Col>
             </Row>
           )}
           {listing['section'] && (
             <Row className="m-auto py-2">
-              Section&nbsp;
-              <div className="font-weight-bold">{listing.section}</div>
+              <Col xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Section</span>
+              </Col>
+              <Col xs={8} className={Styles.metadata}>
+                {listing.section}
+              </Col>
             </Row>
           )}
           {listing['course.evaluation_statistics'] &&
           listing['course.evaluation_statistics'][0] &&
           listing['course.evaluation_statistics'][0].enrollment ? (
             <Row className="m-auto py-2">
-              <div className="font-weight-bold">
+              <Col xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Enrollment</span>
+              </Col>
+              <Col xs={8} className={Styles.metadata}>
                 {listing['course.evaluation_statistics'][0].enrollment.enrolled}
-                &nbsp;enrolled
-              </div>
+              </Col>
             </Row>
           ) : enrollment === -1 ? (
             <div />
           ) : (
             <Row className="m-auto py-2">
-              <div className="font-weight-bold">{enrollment}&nbsp;enrolled</div>
+              <Col xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Enrollment</span>
+              </Col>
+              <Col xs={8} className={Styles.metadata}>
+                {'~' + enrollment}
+              </Col>
             </Row>
           )}
           {location_url !== '' && (
             <Row className="m-auto py-2">
-              Taught in&nbsp;
-              <a target="_blank" rel="noopener noreferrer" href={location_url}>
-                {location_name}
-              </a>
+              <Col xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Location</span>
+              </Col>
+              <Col xs={8} className={Styles.metadata}>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={location_url}
+                >
+                  {location_name}
+                </a>
+              </Col>
             </Row>
           )}
           {listing['course.syllabus_url'] && (
             <Row className="m-auto py-2">
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={listing['course.syllabus_url']}
-              >
-                Link to syllabus
-              </a>
+              <Col xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Syllabus</span>
+              </Col>
+              <Col xs={8} className={Styles.metadata}>
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={listing['course.syllabus_url']}
+                >
+                  {listing['course_code']}
+                </a>
+              </Col>
             </Row>
           )}
-          {/* COURSE DESCRIPTION */}
-          <Row className="m-auto pb-3">{listing['course.description']}</Row>
         </Col>
         <Col md={6} className="px-0 my-0">
           {/* <Row className="m-auto justify-content-center">

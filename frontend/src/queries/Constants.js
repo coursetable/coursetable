@@ -194,6 +194,6 @@ export const ratingColormap = chroma
 	.scale()
 	.domain([1, 5]);
 export const workloadColormap = chroma
-	.bezier(['#e84a5f', '#fdffab', '#1fab89'])
-	.scale()
-	.domain([1, 5]);
+  .bezier(['#1fab89', '#fdffab', '#e84a5f'])
+  .scale()
+  .domain([1, 5]);
