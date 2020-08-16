@@ -269,15 +269,15 @@ const SearchResults = ({
               className={`mx-auto px-2 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
             >
               {isList ? (
-                <>
+                <React.Fragment>
                   <Col md={4} style={{ lineHeight: '30px' }}>
                     <strong>{'Description'}</strong>
                   </Col>
-                  <Col md={2} style={{ lineHeight: '30px' }}>
-                    <strong>{'Meets'}</strong>
-                  </Col>
                   <Col md={3} style={{ lineHeight: '30px' }}>
                     <strong>{'Professors'}</strong>
+                  </Col>
+                  <Col md={2} style={{ lineHeight: '30px' }}>
+                    <strong>{'Meets'}</strong>
                   </Col>
                   <Col md={1} style={{ lineHeight: '30px' }}>
                     <strong>{'Rating'}</strong>
@@ -285,7 +285,7 @@ const SearchResults = ({
                   <Col md={1} style={{ lineHeight: '30px' }}>
                     <strong>{'Work'}</strong>
                   </Col>
-                </>
+                </React.Fragment>
               ) : (
                 <Col md={10} style={{ lineHeight: '30px' }}>
                   <strong>

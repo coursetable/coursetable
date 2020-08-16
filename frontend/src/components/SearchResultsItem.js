@@ -44,7 +44,7 @@ const SearchResultsItem = ({
       }}
       tabIndex="0"
     >
-      <Col md={4} xs={8} className={Styles.course_header}>
+      <Col md={4} className={Styles.course_header}>
         <div className={Styles.course_name}>
           {course.title.length > 32
             ? course.title.slice(0, 29) + '...'
@@ -89,15 +89,15 @@ const SearchResultsItem = ({
           <div className={Styles.extra_info}>CANCELLED</div>
         )}
       </Col>
+      <Col md={3} className={Styles.course_header}>
+        {course.professor_names.join("\n")}
+      </Col>
       <Col md={2} className={Styles.course_header}>
         {course.times_summary === 'TBA' ? '' : course.times_summary}
         <br />
         {course.locations_summary === 'TBA' ? '' : course.locations_summary}
       </Col>
-      <Col md={3} className={Styles.course_header}>
-        {course.professor_names.join("\n")}
-      </Col>
-      <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={1} style={{ whiteSpace: 'nowrap' }}>
         {course.average_rating && (
           <div
             style={
@@ -116,7 +116,7 @@ const SearchResultsItem = ({
           </div>
         )}
       </Col>
-      <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={1} style={{ whiteSpace: 'nowrap' }}>
         {course.average_workload && (
           <div
             style={
