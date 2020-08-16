@@ -13,8 +13,6 @@ import { isInWorksheet } from '../utilities';
 
 function MeDropdown(props) {
   const { user } = useUser();
-  console.log("USER:");
-  console.log(user);
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK
   };

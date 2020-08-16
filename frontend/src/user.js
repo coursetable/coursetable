@@ -23,28 +23,26 @@ export const UserProvider = ({ children }) => {
       } else {
         setWorksheet(res.data.data);
       }
-      const fbData = await axios.get(
-        '/legacy_api/FetchFacebookData.php'
-      );
-      if (!fbData.data.success) {
-        setFbLogin(null);
-        console.error(fbData.data.message);
-        if (!suppressError) {
-          toast.error(fbData.data.message);
-        }
-      } else {
-        setFbLogin(fbData.data.data)
-        console.log("FB SUCCESS")
-      }
+      // const fbData = await axios.get(
+      //   '/legacy_api/FetchFacebookData.php'
+      // );
+      // if (!fbData.data.success) {
+      //   setFbLogin(null);
+      //   console.error(fbData.data.message);
+      //   if (!suppressError) {
+      //     toast.error(fbData.data.message);
+      //   }
+      // } else {
+      //   setFbLogin(fbData.data.success)
+      // }
     },
-    [setWorksheet, setFbLogin]
+    [setWorksheet]
   );
 
   const store = {
     // Context state.
     user: {
       worksheet,
-      fbLogin,
     },
 
     // Update methods.
