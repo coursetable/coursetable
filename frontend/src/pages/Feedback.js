@@ -11,7 +11,7 @@ function Feedback() {
   const [validated, setValidated] = useState(false);
   const [isBug, setIsBug] = useState(true);
   const submission_endpoint =
-    'https://api.formcake.com/api/form/aaa0fe2f-df06-457d-8510-ef386265d48d/submission';
+    'https://api.formcake.com/api/form/2100a266-5b01-49d8-bec9-0ec2abd4e185/submission';
 
   const handleSubmit = (event) => {
     const form = event.currentTarget;
