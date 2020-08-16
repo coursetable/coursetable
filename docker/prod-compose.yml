@@ -1,0 +1,106 @@
+version: '3.2'
+services:
+  proxy:
+    image: node:latest
+    ports:
+      - '8039:8039'
+    expose:
+      - 8039
+    volumes:
+      - ../dev_proxy:/app
+    user: '1000'
+    command: sh -c 'cd /app && yarn && yarn start'
+    environment:
+      FRONTEND_LOC: "http://frontend:5000"
+      PORT: 8039
+    links:
+      - frontend
+      - nginx
+    labels:
+      traefik.enable: true
+      traefik.http.routers.coursetable.rule: Host(`coursetable.sheth.io`)
+      traefik.http.routers.coursetable.tls: true
+      traefik.http.routers.coursetable.middlewares: SecureTLS
+    networks:
+      - traefik
+      - default
+
+  frontend:
+    build: ../frontend
+    expose:
+      - '5000'
+
+  graphql-engine:
+    image: hasura/graphql-engine:latest
+    ports:
+      - '8085:8080'
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@db:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## TODO: uncomment next line to set an admin secret
+      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+    networks:
+      - ferry_default
+      - default
+
+  nginx:
+    build: ./nginx
+    ports:
+      - '8079:8080'
+    expose:
+      - '8080'
+    volumes:
+      - ..:/usr/share/nginx/html
+      # Overwrite the default configuration. Our conf is based on it
+      - ../sysadmin/nginx/docker:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php-fpm
+      - mysql
+    links:
+      - php-fpm
+
+  # Ensure php deps are installed
+  php:
+    build: ./php
+    volumes:
+      - ..:/var/www/html
+    command: sh -c 'php composer.phar install'
+    working_dir: /var/www/html
+
+  php-fpm:
+    env_file: ../facebook.env
+    build: ./php
+    volumes:
+      - ..:/usr/share/nginx/html
+
+  mysql:
+    build: ./mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: GoCourseTable
+    ports:
+      - '3306:3306'
+    volumes:
+      # This will get used to initialize the database: see
+      # "Initializing a fresh instance"
+      # in https://hub.docker.com/_/mariadb
+      - ./mysql/database.sql:/docker-entrypoint-initdb.d/00-database.sql
+
+  phpmyadmin:
+    build: ./phpmyadmin
+    depends_on:
+      - mysql
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: GoCourseTable
+    ports:
+      - '8081:80'
+
+networks:
+  traefik:
+    external: true
+  ferry_default:
+    external: true

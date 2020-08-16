@@ -5,6 +5,8 @@ const https = require('https');
 
 const app = express();
 const port = 8080;
+const insecure_port = process.env.PORT || 3001;
+const frontend_uri = process.env.FRONTEND_LOC || "http://frontend:8080";
 
 app.use(
   ['/legacy_api', '/index.php'],
@@ -31,7 +33,7 @@ app.use(
 app.use(
   '/',
   createProxyMiddleware({
-    target: 'http://frontend:3000',
+    target: frontend_uri,
     ws: true,
   })
 );
@@ -48,6 +50,6 @@ https
   .listen(port, () => {
     console.log(`Secure dev proxy listening on port ${port}`);
   });
-app.listen(3001, () => {
-  console.log(`insecure dev proxy listening on port 3001`);
+app.listen(insecure_port, () => {
+  console.log(`insecure dev proxy listening on port ${insecure_port}`);
 });
