@@ -564,7 +564,7 @@ function Search(props) {
                   </Col>
                 </Row>
                 <Row
-                  className={`pt-2 pb-2 px-5 ${Styles.light_bg} ${Styles.toggle_row}`}
+                  className={`pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg} ${Styles.toggle_row}`}
                 >
                   <Form.Check type="switch" className={Styles.toggle_option}>
                     <Form.Check.Input
