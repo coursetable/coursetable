@@ -54,7 +54,7 @@ const SearchResultsItem = ({
           {course.course_codes ? course.course_codes.join(' • ') : ''}
         </div>
         <div className={Styles.skills_areas}>
-          {course.skills.map((skill) => (
+          {course.skills.map(skill => (
             <Badge
               variant="secondary"
               className={Styles.tag}
@@ -69,7 +69,7 @@ const SearchResultsItem = ({
               {skill}
             </Badge>
           ))}
-          {course.areas.map((area) => (
+          {course.areas.map(area => (
             <Badge
               variant="secondary"
               className={Styles.tag}
@@ -89,43 +89,50 @@ const SearchResultsItem = ({
           <div className={Styles.extra_info}>CANCELLED</div>
         )}
       </Col>
-      <Col md={3} xs={8} className={Styles.course_header}>
+      <Col md={2} className={Styles.course_header}>
         {course.times_summary == 'TBA' ? '' : course.times_summary}
         <br />
         {course.locations_summary == 'TBA' ? '' : course.locations_summary}
       </Col>
-      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={3} className={Styles.course_header}>
+        {course.professor_names.join("\n")}
+      </Col>
+      <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
         {course.average_rating && (
-          <ReactRating
-            initialRating={course.average_rating}
-            readonly
-            emptySymbol={<BsSquareFill className={Styles.rating_icon_empty} />}
-            fullSymbol={
-              <BsSquareFill
-                className={Styles.rating_icon_full}
-                style={{ color: ratingColormap(course.average_rating) }}
-              />
+          <div
+            style={
+              {
+                color: ratingColormap(course.average_rating)
+                  .darken(2)
+                  .css(),
+                backgroundColor: chroma(ratingColormap(course.average_rating))
+                  .alpha(0.33)
+                  .css(),
+              }
             }
-            className={Styles.icon_ratings}
-          />
+            className={Styles.rating_cell}
+          >
+            {course.average_rating !== -1 && course.average_rating.toFixed(1)}
+          </div>
         )}
       </Col>
-      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
         {course.average_workload && (
-          <ReactRating
-            initialRating={course.average_workload}
-            readonly
-            emptySymbol={
-              <BsSquareFill className={Styles.workload_icon_empty} />
+          <div
+            style={
+              {
+                color: workloadColormap(course.average_workload)
+                  .darken(2)
+                  .css(),
+                backgroundColor: chroma(workloadColormap(course.average_workload))
+                  .alpha(0.33)
+                  .css(),
+              }
             }
-            fullSymbol={
-              <BsSquareFill
-                className={Styles.workload_icon_full}
-                style={{ color: workloadColormap(course.average_workload) }}
-              />
-            }
-            className={Styles.icon_ratings}
-          />
+            className={Styles.rating_cell}
+          >
+            {course.average_workload !== -1 && course.average_workload.toFixed(1)}
+          </div>
         )}
       </Col>
       <Col md={1} className="text-center">

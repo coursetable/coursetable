@@ -1,5 +1,7 @@
 import chroma from 'chroma-js';
 
+export const CATALOG_QUERY_SIZE = 32;
+
 export const sortbyOptions = [
 	{ label: 'Sort by relevance', value: 'text' },
 	{ label: 'Sort by course name', value: 'course_name' },
