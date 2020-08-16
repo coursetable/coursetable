@@ -6,7 +6,7 @@ const https = require('https');
 const app = express();
 const port = 8080;
 const insecure_port = process.env.PORT || 3001;
-const frontend_uri = process.env.FRONTEND_LOC || "http://frontend:8080";
+const frontend_uri = process.env.FRONTEND_LOC || "http://frontend:3000";
 
 app.use(
   ['/legacy_api', '/index.php'],
