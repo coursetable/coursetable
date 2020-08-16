@@ -90,9 +90,9 @@ const SearchResultsItem = ({
         )}
       </Col>
       <Col md={2} className={Styles.course_header}>
-        {course.times_summary == 'TBA' ? '' : course.times_summary}
+        {course.times_summary === 'TBA' ? '' : course.times_summary}
         <br />
-        {course.locations_summary == 'TBA' ? '' : course.locations_summary}
+        {course.locations_summary === 'TBA' ? '' : course.locations_summary}
       </Col>
       <Col md={3} className={Styles.course_header}>
         {course.professor_names.join("\n")}

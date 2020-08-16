@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { HotKeys } from 'react-hotkeys';
 
@@ -57,7 +57,7 @@ function Search(props) {
   const { height, width } = useWindowDimensions();
 
   const isMobile = width < 768;
-  const [default_search, setDefaultSearch] = useState(true);
+  const [defaultSearch, setDefaultSearch] = useState(true);
   var searchText = React.useRef(
     props.location && props.location.state
       ? props.location.state.search_val
@@ -144,7 +144,7 @@ function Search(props) {
   };
 
   // search form submit handler
-  const handleSubmit = (event, search = false) => {
+  const handleSubmit = useCallback((event, search = false) => {
     let offset2 = -1;
     if (event && search) event.preventDefault();
     if (search) {
@@ -267,7 +267,7 @@ function Search(props) {
         }),
       });
     }
-  };
+  });
 
   var results;
 
@@ -373,11 +373,11 @@ function Search(props) {
   useEffect(() => {
 
     // only execute after seasons have been loaded
-    if (default_search && seasonsOptions) {
+    if (defaultSearch && seasonsOptions) {
       handleSubmit(null, true);
       setDefaultSearch(false);
     }
-  }, [seasonsOptions, default_search]);
+  }, [seasonsOptions, defaultSearch, handleSubmit]);
 
   return (
     <div className={Styles.search_base}>
