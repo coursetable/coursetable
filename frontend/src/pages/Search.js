@@ -70,6 +70,7 @@ function Search(props) {
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
   const [scroll_pos, setScroll] = useState(0); // Scroll pos
   const [end, setEnd] = useState(false); // True when we've fetched all courses
+  const [refresh_cache, setRefreshCache] = useState(0); // Reset row height cache on search
   // const [search_query, setSearchQuery] = useState({}); // Stores the search query
 
   // Size of Query constant
@@ -153,6 +154,7 @@ function Search(props) {
       setOffset(0);
       setOldData([]);
       setEnd(false);
+      setRefreshCache(refresh_cache + 1);
       offset2 = 0; // Account for reset state lag
     } else if (end) return;
 
@@ -615,6 +617,7 @@ function Search(props) {
                 setScroll={setScroll}
                 multi_seasons={multi_seasons}
                 QUERY_SIZE={QUERY_SIZE}
+                refresh_cache={refresh_cache}
               />
             )}
           </Col>
