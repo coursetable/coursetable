@@ -16,8 +16,7 @@
   font-weight: 600;
   color: rgb(107, 107, 107);
   height: 18px;
-  opacity: 0;
-  /* opacity: 1; */
+  opacity: 1;
   transition: opacity 0.3s;
 }
 
@@ -27,9 +26,13 @@
 
 /* Comment out below for hover statistic functionality */
 
-.container:hover .value {
-  opacity: 1;
+/* .value {
+  opacity: 0 !important;
 }
+
+.container:hover .value {
+  opacity: 1 !important;
+} */
 
 @media (hover: none) {
   .value {
