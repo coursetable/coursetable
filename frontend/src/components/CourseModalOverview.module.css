@@ -57,6 +57,17 @@
   font-weight: 500;
 }
 
+.read_more {
+  color: #007bff;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.read_more:hover {
+  cursor: pointer;
+  color: rgb(49, 94, 192);
+}
+
 @media (hover: none) {
   .rating_bubble {
     height: 3rem !important;

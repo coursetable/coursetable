@@ -7,12 +7,17 @@ import Styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import { toSeasonString } from '../utilities';
 import './MultiToggle.css';
+import LinesEllipsis from 'react-lines-ellipsis';
+import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
 import chroma from 'chroma-js';
 
 import CourseModalLoading from './CourseModalLoading';
 
 const CourseModalOverview = (props) => {
+  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
+  const [clamped, setClamped] = useState(false);
+  const [lines, setLines] = useState(10);
   const listing = props.listing;
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   const options = [
@@ -23,6 +28,11 @@ const CourseModalOverview = (props) => {
   const filter = props.filter;
   const [enlarged, setEnlarged] = useState(['', -1]);
   let enrollment = -1;
+
+  const handleReflow = (rleState) => {
+    const { clamped, text } = rleState;
+    setClamped(clamped);
+  };
 
   const setSeason = (evaluation) => {
     let temp = { ...evaluation };
@@ -263,7 +273,25 @@ const CourseModalOverview = (props) => {
       <Row className="m-auto">
         <Col md={6} className="px-0 mt-0 mb-3">
           {/* COURSE DESCRIPTION */}
-          <Row className="m-auto pb-3">{listing['course.description']}</Row>
+          <Row className="m-auto pb-3">
+            <ResponsiveEllipsis
+              style={{ whiteSpace: 'pre-wrap' }}
+              text={listing['course.description']}
+              maxLine={`${lines}`}
+              basedOn="words"
+              onReflow={handleReflow}
+            />
+            {clamped && (
+              <span
+                className={Styles.read_more + ' mx-auto'}
+                onClick={() => {
+                  setLines(100);
+                }}
+              >
+                Read More
+              </span>
+            )}
+          </Row>
           {listing['professors'] && (
             <Row className="m-auto py-2">
               <Col xs={4} className="px-0">
