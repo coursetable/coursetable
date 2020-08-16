@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
-import styles from './CourseConflictIcon.module.css';
 import { useUser } from '../user';
 import { FetchWorksheet } from '../queries/GetWorksheetListings';
 import { isInWorksheet, checkConflict, unflattenTimes } from '../utilities';
@@ -53,7 +52,7 @@ const CourseConflictIcon = ({ course }) => {
 
   return (
     <Fade in={!inWorksheet && conflict}>
-      <div className={styles.conflict_error}>
+      <div>
         <OverlayTrigger
           placement="top"
           delay={{ show: 250, hide: 250 }}
