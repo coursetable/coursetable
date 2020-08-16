@@ -55,7 +55,6 @@ const animatedComponents = makeAnimated();
 
 function Search(props) {
   const { height, width } = useWindowDimensions();
-  const seasonsData = useSeasons();
 
   const isMobile = width < 768;
   const [default_search, setDefaultSearch] = useState(true);
@@ -74,7 +73,7 @@ function Search(props) {
   // const [search_query, setSearchQuery] = useState({}); // Stores the search query
 
   // Size of Query constant
-  const QUERY_SIZE = 10;
+  const QUERY_SIZE = 100;
 
   // State used to determine whether or not to show season tags
   const [multi_seasons, setMultiSeasons] = useState(false);
@@ -100,8 +99,10 @@ function Search(props) {
   // parent state and avoid tooltip errors
   var [selected, setSelected] = React.useState(false);
 
+  // populate seasons from database
   var seasonsOptions;
 
+  const seasonsData = useSeasons();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map(x => {
       return {
@@ -111,6 +112,7 @@ function Search(props) {
     });
   }
 
+  // handler for executing search with no text query
   var [
     executeTextlessSearch,
     { called: textlessCalled, loading: textlessLoading, data: textlessData },
@@ -119,6 +121,7 @@ function Search(props) {
     { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
   );
 
+  // handler for executing search with text
   var [
     executeTextSearch,
     { called: textCalled, loading: textLoading, data: textData },
@@ -134,20 +137,13 @@ function Search(props) {
     history.replace();
   };
 
-  useEffect(() => {
-    console.log();
-    if (default_search && seasonsOptions) {
-      // Default search when first landing on catalog page
-      handleSubmit(null, true);
-      setDefaultSearch(false);
-    }
-  }, [seasonsOptions]);
-
+  // resubmit search on view change
   const handleSetView = isList => {
     setView(isList);
     handleSubmit(null, true);
   };
 
+  // search form submit handler
   const handleSubmit = (event, search = false) => {
     let offset2 = -1;
     if (event && search) event.preventDefault();
@@ -160,23 +156,26 @@ function Search(props) {
       offset2 = 0; // Account for reset state lag
     } else if (end) return;
 
+    // sorting options
     var sortParams = sortby.select.props.value.value;
-
     var ordering = sortbyQueries[sortParams];
 
+    // seasons to filter
     var processedSeasons = seasons.select.props.value;
-
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map(x => {
         return x.value;
       });
     }
+
+    // whether or not multiple seasons are being returned
     const temp_multi_seasons = processedSeasons
       ? processedSeasons.length > 1
       : false;
     if (temp_multi_seasons !== multi_seasons)
       setMultiSeasons(temp_multi_seasons);
 
+    // skills and areas
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
       processedSkillsAreas = processedSkillsAreas.map(x => {
@@ -194,20 +193,22 @@ function Search(props) {
         ]);
       }
 
+      // separate skills and areas
       var processedSkills = processedSkillsAreas.filter(x =>
         skills.includes(x)
       );
       var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
 
+      // set null defaults
       if (processedSkills.length === 0) {
         processedSkills = null;
       }
-
       if (processedAreas.length === 0) {
         processedAreas = null;
       }
     }
 
+    // credits to filter`
     var processedCredits = credits.select.props.value;
     if (processedCredits != null) {
       processedCredits = processedCredits.map(x => {
@@ -215,6 +216,7 @@ function Search(props) {
       });
     }
 
+    // schools to filter
     var processedSchools = schools.select.props.value;
     if (processedSchools != null) {
       processedSchools = processedSchools.map(x => {
@@ -225,7 +227,6 @@ function Search(props) {
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
     var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
-
     var include_all_workloads =
       workloadBounds[0] === 1 && workloadBounds[1] === 5;
 
@@ -236,6 +237,7 @@ function Search(props) {
     if (ordering && ordering.average_workload) {
       include_all_workloads = false;
     }
+
     const search_variables = {
       ordering: ordering,
       offset: offset2 === -1 ? old_data.length : offset2,
@@ -342,15 +344,8 @@ function Search(props) {
     );
   };
 
-  var searchCol = React.useRef();
-  var searchColHeight;
   var [tooTall, setTooTall] = React.useState(true);
   var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
-
-  useEffect(() => {
-    searchColHeight = searchCol.clientHeight;
-    setTooTall(searchColHeight > height);
-  });
 
   const handleResetFilters = () => {
     setHideCancelled(true);
@@ -363,6 +358,26 @@ function Search(props) {
   const scroll_top = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
+
+  // check if the search form is too tall
+  // to be sticky
+
+  var searchCol = React.useRef();
+
+  useEffect(() => {
+    var searchColHeight = searchCol.clientHeight;
+    setTooTall(searchColHeight > height);
+  }, [setTooTall, height]);
+
+  // perform default search on load
+  useEffect(() => {
+
+    // only execute after seasons have been loaded
+    if (default_search && seasonsOptions) {
+      handleSubmit(null, true);
+      setDefaultSearch(false);
+    }
+  }, [seasonsOptions, default_search]);
 
   return (
     <div className={Styles.search_base}>

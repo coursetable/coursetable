@@ -23,7 +23,6 @@ import Changelog from './pages/Changelog';
 import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
-import Infinite from './pages/Infinite'
 
 import { useUser } from './user';
 import Spinner from 'react-bootstrap/Spinner';
@@ -115,10 +114,6 @@ function App() {
 
               <MyRoute exact path="/joinus">
                 <Join />
-              </MyRoute>
-
-              <MyRoute exact path="/infinite">
-                <Infinite />
               </MyRoute>
 
               {/* Catch-all Route */}
