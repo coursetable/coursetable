@@ -20,7 +20,7 @@ function Join() {
   };
 
   const submission_endpoint =
-    'https://api.formcake.com/api/form/fe4ee07b-68b3-45a5-bff4-497cc1bf6ace/submission';
+    'https://api.formcake.com/api/form/76c03c68-682d-4402-8237-36c105de4aa6/submission';
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.join_header + ' mt-5 mb-1'}>Join Us!</h1>

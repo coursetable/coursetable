@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import moment from 'moment';
 import styles from './WorksheetAccordion.module.css';
 import tagStyles from './SearchResultsItem.module.css';
+import { skillsAreasColors } from '../queries/Constants.js';
+import chroma from 'chroma-js';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
@@ -112,6 +114,7 @@ export default class WorksheetAccordion extends React.Component {
     let indx = 0; // Day of the week counter
     let id = 0; // Unique id for each array item
     let accordion_items = [];
+    let key = 0;
     for (let i = today - 1; indx < 5; i = (i + 1) % 5) {
       const day = parsed_courses[i];
       if (day.length === 0) {
@@ -141,6 +144,15 @@ export default class WorksheetAccordion extends React.Component {
                         className={
                           tagStyles.tag + ' ' + tagStyles[course.skills]
                         }
+                        style={{
+                          color: skillsAreasColors[course.skills],
+                          backgroundColor: chroma(
+                            skillsAreasColors[course.skills]
+                          )
+                            .alpha(0.16)
+                            .css(),
+                        }}
+                        key={key++}
                       >
                         {course.skills}
                       </Badge>
@@ -151,6 +163,15 @@ export default class WorksheetAccordion extends React.Component {
                         className={
                           tagStyles.tag + ' ' + tagStyles[course.areas]
                         }
+                        style={{
+                          color: skillsAreasColors[course.areas],
+                          backgroundColor: chroma(
+                            skillsAreasColors[course.areas]
+                          )
+                            .alpha(0.16)
+                            .css(),
+                        }}
+                        key={key++}
                       >
                         {course.areas}
                       </Badge>

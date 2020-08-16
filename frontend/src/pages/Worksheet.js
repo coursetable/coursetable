@@ -12,6 +12,7 @@ import styles from './Worksheet.module.css';
 
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
+import NoCoursesFound from '../images/no_courses_found.svg';
 
 function Worksheet() {
   const { user } = useUser();
@@ -90,12 +91,24 @@ function Worksheet() {
     return 1;
   };
 
-  if (user.worksheet.length === 0)
-    return <div>Please add courses to your worksheet</div>;
-
   const { loading, error, data } = FetchWorksheet(
     listings.length ? worksheet_init : user.worksheet
   );
+  if (user.worksheet.length === 0)
+    return (
+      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
+        <div className="text-center m-auto">
+          <img
+            alt="No courses found."
+            className="py-5"
+            src={NoCoursesFound}
+            style={{ width: '25%' }}
+          ></img>
+          <h3>No courses found</h3>
+          <div>Please add courses to your worksheet</div>
+        </div>
+      </div>
+    );
   if (loading || error) return <div>Loading...</div>;
   if (data === undefined || !data.length) return <div>Error with Query</div>;
   const colors = [

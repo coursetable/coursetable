@@ -1,80 +1,57 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Row } from 'react-bootstrap';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import styles from './RatingsGraph.module.css';
 
-import Chart from 'react-apexcharts';
+const RatingsGraph = (props) => {
+  const ratings = props.ratings;
 
-const RatingsGraph = ({ ratings, label, type }) => {
-  const [show, setShow] = useState(false);
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
+  let max_val = 1;
+  ratings.forEach((rating) => {
+    max_val = Math.max(rating, max_val);
+  });
 
-  var categories = [1, 2, 3, 4, 5];
+  const colors = ['#f54242', '#f5a142', '#f5f542', '#aeed1a', '#00e800'];
+  if (props.reverse) colors.reverse();
 
-  if (type == 'yes_no') {
-    categories = ['Yes', 'No'];
-  }
+  let columns = [];
+  let indx = 0;
+  const MIN_HEIGHT = 15;
+  ratings.forEach((rating) => {
+    const height = rating ? MIN_HEIGHT + (rating / max_val) * 100 : 0;
+    if (indx === 1 && ratings.length === 2) indx = 4;
+    columns.push(
+      <div key={indx} className={styles.bar}>
+        <p className={styles.value + ' m-0 '}>{rating}</p>
+        <div
+          className={styles.column + ' px-1 mx-3'}
+          style={{
+            backgroundColor: colors[indx],
+            height: height.toString() + 'px',
+          }}
+        />
+        {ratings.length === 2 && (
+          <p className={styles.value + ' m-0 ' + styles.xaxis_label}>
+            {indx === 0 ? 'yes' : 'no'}
+          </p>
+        )}
+        {ratings.length === 5 && (
+          <p className={styles.value + ' m-0 ' + styles.xaxis_label}>
+            {indx + 1}
+          </p>
+        )}
+      </div>
+    );
+    indx++;
+  });
 
   return (
     <Row
       className={
         styles.container +
-        'py-3 px-1 mx-auto mb-4 justify-content-center align-items-end'
+        ' mx-auto pl-3 pr-3 mb-4 justify-content-center align-items-end'
       }
     >
-      <Chart
-        options={{
-          chart: {
-            id: 'basic-bar',
-            toolbar: {
-              show: false,
-            },
-          },
-          xaxis: {
-            categories: categories,
-          },
-          yaxis: {
-            show: false,
-            // tickAmount: 3,
-            // decimalsInFloat: 0,
-            // min: 0,
-            // title: {
-            //   text: 'Count',
-            // },
-          },
-          grid: {
-            show: false,
-          },
-          plotOptions: {
-            bar: {
-              dataLabels: {
-                position: 'top', // top, center, bottom
-              },
-            },
-          },
-          dataLabels: {
-                enabled: true,
-                formatter: function (val) {
-                  if(val>0){
-                    return val;
-                  }
-                },
-                offsetY: -24,
-                style: {
-                  fontSize: '12px',
-                  colors: ["#304758"]
-                }
-              },
-        }}
-        series={[
-          {
-            name: label,
-            data: ratings,
-          },
-        ]}
-        type="bar"
-      />
+      {columns}
     </Row>
   );
 };

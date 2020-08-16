@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  Row,
-  Col,
-  Badge,
-  OverlayTrigger,
-  Tooltip,
-  Fade,
-} from 'react-bootstrap';
+import { Row, Col, Badge } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -16,16 +9,13 @@ import {
 import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
+import CourseConflictIcon from './CourseConflictIcon';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import { MdErrorOutline } from 'react-icons/md';
-import { useUser } from '../user';
-import { FetchWorksheet } from '../queries/GetWorksheetListings';
-import { isInWorksheet, checkConflict, unflattenTimes } from '../utilities';
 
 const SearchResultsGridItem = ({
   course,
@@ -56,49 +46,6 @@ const SearchResultsGridItem = ({
       />
     );
   let key = 0;
-
-  const { user } = useUser();
-  const [inWorksheet, setInWorksheet] = useState(
-    isInWorksheet(
-      course.season_code,
-      course['course.listings'][0].crn.toString(),
-      user.worksheet
-    )
-  );
-  if (user.worksheet) {
-    var { data } = FetchWorksheet(user.worksheet);
-  }
-
-  const update = isInWorksheet(
-    course.season_code,
-    course['course.listings'][0].crn.toString(),
-    user.worksheet
-  );
-  if (inWorksheet !== update) setInWorksheet(update);
-
-  const [conflict, setConflict] = useState(false);
-  const times = unflattenTimes(course);
-
-  useEffect(() => {
-    const times = unflattenTimes(course);
-    if (!data || !times) return;
-    if (times === 'TBA' || checkConflict(data, course, times)) {
-      setConflict(true);
-      return;
-    }
-    setConflict(false);
-  }, [data ? data : []]);
-
-  const renderTooltip = (props) =>
-    !inWorksheet && conflict ? (
-      <Tooltip id="button-tooltip" {...props}>
-        <small style={{ fontWeight: 500 }}>
-          {times === 'TBA' ? 'Invalid Course Time' : 'Scheduling Conflict'}
-        </small>
-      </Tooltip>
-    ) : (
-      <div />
-    );
 
   return (
     <Col
@@ -238,7 +185,7 @@ const SearchResultsGridItem = ({
                   style={{
                     color: course.average_rating
                       ? ratingColormap(course.average_rating)
-                      : 'black',
+                      : '#cccccc',
                   }}
                 >
                   {course.average_rating
@@ -253,7 +200,7 @@ const SearchResultsGridItem = ({
                   style={{
                     color: course.average_workload
                       ? workloadColormap(course.average_workload)
-                      : 'black',
+                      : '#cccccc',
                   }}
                 >
                   {course.average_workload
@@ -274,22 +221,12 @@ const SearchResultsGridItem = ({
             season_code={course.season_code}
             modal={false}
             isMobile={isMobile}
-            times={unflattenTimes(course)}
           />
         }
       </div>
-
-      <Fade in={!inWorksheet && conflict}>
-        <div className={styles.conflict_error}>
-          <OverlayTrigger
-            placement="top"
-            delay={{ show: 250, hide: 250 }}
-            overlay={renderTooltip}
-          >
-            <MdErrorOutline color="#fc4103" />
-          </OverlayTrigger>
-        </div>
-      </Fade>
+      <div className={styles.conflict_error}>
+        <CourseConflictIcon course={course} />
+      </div>
     </Col>
   );
 };

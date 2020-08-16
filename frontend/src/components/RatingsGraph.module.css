@@ -13,16 +13,32 @@
 
 .value {
   font-size: 13px;
-  font-weight: 450;
-  color: rgb(143, 140, 140);
+  font-weight: 600;
+  color: rgb(107, 107, 107);
   height: 18px;
-}
-
-.fadeOut {
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-.fadeIn {
   opacity: 1;
   transition: opacity 0.3s;
+}
+
+.xaxis_label {
+  color: rgb(143, 195, 255) !important;
+}
+
+/* Comment out below for hover statistic functionality */
+
+/* .value {
+  opacity: 0 !important;
+}
+
+.container:hover .value {
+  opacity: 1 !important;
+} */
+
+@media (hover: none) {
+  .value {
+    opacity: 1;
+  }
+  .container {
+    margin-top: 25px;
+  }
 }

@@ -39,11 +39,11 @@ const SearchResults = ({
   offset,
   setOffset,
   loading,
-  // Load more function for InfiniteLoader
   loadMore,
   setScroll,
   multi_seasons,
   QUERY_SIZE,
+  refresh_cache,
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -108,6 +108,10 @@ const SearchResults = ({
       setScroll(window.pageYOffset);
     };
   }, []);
+
+  useEffect(() => {
+    cache.clearAll();
+  }, [refresh_cache]);
 
   const num_cols = width < 1100 ? 2 : 3;
   let grid_html = [];

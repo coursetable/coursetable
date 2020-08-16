@@ -121,3 +121,10 @@
 .expanded_card {
   background-color: white;
 }
+
+.conflict_error {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  transform: translate(-50%, 0%);
+}
