@@ -74,7 +74,7 @@ function Search(props) {
   // const [search_query, setSearchQuery] = useState({}); // Stores the search query
 
   // Size of Query constant
-  const QUERY_SIZE = 100;
+  const QUERY_SIZE = 20;
 
   // State used to determine whether or not to show season tags
   const [multi_seasons, setMultiSeasons] = useState(false);
@@ -245,7 +245,7 @@ function Search(props) {
     const search_variables = {
       ordering: ordering,
       offset: offset2 === -1 ? old_data.length : offset2,
-      limit: QUERY_SIZE,
+      limit: search ? 50 : QUERY_SIZE,
       seasons: processedSeasons,
       areas: processedAreas,
       skills: processedSkills,
@@ -272,7 +272,6 @@ function Search(props) {
       });
     }
   });
-
 
   if (searchType === 'TEXTLESS') {
     if (textlessCalled) {
@@ -612,6 +611,7 @@ function Search(props) {
               multi_seasons={multi_seasons}
               QUERY_SIZE={QUERY_SIZE}
               refresh_cache={refresh_cache}
+              end={end}
             />
           </Col>
         </Row>
