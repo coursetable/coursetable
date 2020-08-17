@@ -29,6 +29,18 @@ const SearchResultsItem = ({
     if (!mounted) setMounted(true);
   }, []);
 
+  let courseLocation;
+
+  if(course.locations_summary === 'TBA'){
+    courseLocation = '';
+  }else{
+    if(course.locations_summary.includes('ONLINE')){
+      courseLocation = <div className={Styles.online_tag}>{course.locations_summary}</div>
+    }else{
+      courseLocation = course.locations_summary
+    }
+  }
+
   return (
     <Row
       className={
@@ -91,13 +103,16 @@ const SearchResultsItem = ({
           <div className={Styles.extra_info}>CANCELLED</div>
         )}
       </Col>
-      <Col md={3} className={Styles.course_header}>
+      <Col md={3} className={Styles.course_professors}>
         {course.professor_names.join('\n')}
       </Col>
-      <Col md={2} className={Styles.course_header}>
+      <Col md={2}>
+        <div className={Styles.course_time}>
         {course.times_summary === 'TBA' ? '' : course.times_summary}
-        <br />
-        {course.locations_summary === 'TBA' ? '' : course.locations_summary}
+        </div>
+        <div className={Styles.course_location}>
+        {courseLocation}
+        </div>
       </Col>
       <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
         {course.average_rating && (

@@ -82,6 +82,20 @@
   padding: 0.2em 0.3em;
 }
 
+.course_location{
+  font-weight: 600 !important;
+}
+
+.online_tag{
+  margin: 1px;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 2px 4px !important;
+  border-radius: 6px !important;
+  width: max-content;
+  background: rgba(0,0,0,0.1);
+}
+
 .tag {
   margin: 1px;
   font-size: 0.8rem !important;
