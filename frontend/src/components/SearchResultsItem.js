@@ -30,9 +30,6 @@ const SearchResultsItem = ({
 
   useEffect(() => {
     if (!mounted) setMounted(true);
-    return function cleanup() {
-      setMounted(false);
-    };
   }, []);
 
   return (
