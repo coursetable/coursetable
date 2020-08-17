@@ -325,8 +325,10 @@ const SearchResults = ({
         <div className={!isList ? 'px-1 pt-3' : ''}>
           {data.length !== 0 && resultsListing}
           {/* Render a loading row while performing next query */}
-          {loading && data.length === 0 && (
-            <Row className="m-auto py-5">
+          {loading && (
+            <Row
+              className={'m-auto ' + (data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
+            >
               <Spinner className="m-auto" animation="border" role="status">
                 <span className="sr-only">Loading...</span>
               </Spinner>
