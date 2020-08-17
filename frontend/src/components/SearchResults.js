@@ -113,7 +113,7 @@ const SearchResults = ({
     cache.clearAll();
   }, [refresh_cache]);
 
-  const num_cols = width < 1100 ? 2 : 3;
+  const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
   let grid_html = [];
 
   var resultsListing;
