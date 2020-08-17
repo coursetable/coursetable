@@ -16,18 +16,17 @@
 
 .rating_bubble {
   background-color: rgb(190, 221, 255);
-  border-radius: 6px;
-  height: 1.5em;
+  border-radius: 8px;
+  max-height: 24px;
   transition: background-color 0.3s;
-  overflow: hidden;
-  transition: height 0.2s ease-out;
+  transition: max-height 0.2s ease-out;
 }
 
 .rating_bubble:hover {
   background-color: rgb(92, 168, 250);
+  max-height: 50px;
   cursor: pointer;
-  transition: height 0.2s ease-in;
-  height: 3rem;
+  transition: max-height 0.2s ease-in;
 }
 
 .rating_cell {
@@ -46,12 +45,12 @@
 }
 
 .hidden {
-  display: none !important;
+  opacity: 0;
   transition: 0.1s;
 }
 
 .shown {
-  display: block;
+  opacity: 1;
   transition: 0.2s;
   transition-delay: 0.2s;
   font-weight: 500;
@@ -70,10 +69,12 @@
 
 @media (hover: none) {
   .rating_bubble {
-    height: 3rem !important;
+    max-height: 3rem;
+    height: 3rem;
   }
   .rating_bubble:hover {
-    height: 3rem !important;
-    transition: height 0s ease-in;
+    max-height: 3rem;
+    height: 3rem;
+    transition: max-height 0s;
   }
 }

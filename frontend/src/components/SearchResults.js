@@ -324,6 +324,7 @@ const SearchResults = ({
         )}
         <div className={!isList ? 'px-1 pt-3' : ''}>
           {data.length !== 0 && resultsListing}
+          {refresh_cache > 0 && data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
             <Row

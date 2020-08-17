@@ -280,7 +280,6 @@ const CourseModalOverview = (props) => {
               maxLine={`${lines}`}
               basedOn="words"
               onReflow={handleReflow}
-              // style={{ transition: '0.3s' }}
             />
             {clamped && (
               <span

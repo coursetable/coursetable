@@ -456,7 +456,8 @@ function Search(props) {
                     {seasonsOptions && (
                       <Select
                         isMulti
-                        defaultValue={[seasonsOptions[0]]}
+                        // defaultValue={[seasonsOptions[0]]}
+                        defaultValue={[{ value: '202003', label: 'Fall 2020' }]}
                         options={seasonsOptions}
                         ref={(ref) => {
                           seasons = ref;
