@@ -38,12 +38,18 @@
   background-color: rgba(0, 0, 0, 0.05);
 }
 
-.filter_title{
+.filter_title {
   font-size: 0.9rem;
-  color: rgba(0,0,0,0.75);
+  color: rgba(0, 0, 0, 0.75);
+  webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
 }
 
-:global hr{
+:global hr {
   margin-top: 0.5rem !important;
   margin-bottom: 0.5rem !important;
 }
@@ -56,6 +62,12 @@
   font-weight: 500;
   margin-top: 4px;
   margin-bottom: 4px;
+  webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
 }
 
 .light_bg {
