@@ -1,12 +1,14 @@
 .search_result_item {
-  border: 0px !important;
   background-color: white !important;
+  border-bottom: solid 2px #f6f6f6;
   transition: 0.3s;
+  user-select: none;
 }
 
 .search_result_item:hover {
   cursor: pointer;
   background-color: #e1edff !important;
+  border-bottom: solid 2px #e1edff;
 }
 
 .search_result_item:focus,
