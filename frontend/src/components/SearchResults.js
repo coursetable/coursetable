@@ -44,7 +44,7 @@ const SearchResults = ({
   multiSeasons,
   querySize,
   refreshCache,
-  end = { end },
+  fetchedAll,
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -121,7 +121,7 @@ const SearchResults = ({
 
   function isRowLoaded({ index }) {
     // console.log(index);
-    if (end) return true;
+    if (fetchedAll) return true;
     if (isList) return index < data.length;
     return index < grid_html.length;
   }
@@ -226,7 +226,9 @@ const SearchResults = ({
                       isScrolling={isScrolling}
                       onScroll={onChildScroll}
                       scrollTop={scrollTop}
-                      rowCount={!end ? grid_html.length + 1 : grid_html.length}
+                      rowCount={
+                        !fetchedAll ? grid_html.length + 1 : grid_html.length
+                      }
                       rowHeight={178}
                       rowRenderer={renderGridRow}
                     />
@@ -245,7 +247,7 @@ const SearchResults = ({
         <InfiniteLoader
           isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
-          rowCount={!end ? data.length + 1 : data.length}
+          rowCount={!fetchedAll ? data.length + 1 : data.length}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -261,7 +263,7 @@ const SearchResults = ({
                       isScrolling={isScrolling}
                       onScroll={onChildScroll}
                       scrollTop={scrollTop}
-                      rowCount={!end ? data.length + 1 : data.length}
+                      rowCount={!fetchedAll ? data.length + 1 : data.length}
                       rowRenderer={renderListRow}
                       deferredMeasurementCache={cache}
                       rowHeight={cache.rowHeight}

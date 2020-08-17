@@ -69,7 +69,7 @@ function Search(props) {
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
   const [scrollPos, setScrollPos] = useState(0); // Scroll pos
-  const [end, setEnd] = useState(false); // True when we've fetched all courses
+  const [fetchedAll, setFetchedAll] = useState(false); // True when we've fetched all courses
   const [refreshCache, setRefreshCache] = useState(0); // Reset row height cache on search
 
   // number of search results to return
@@ -158,10 +158,10 @@ function Search(props) {
       //Reset states when making a new search
       setOffset(0);
       setOldData([]);
-      setEnd(false);
+      setFetchedAll(false);
       setRefreshCache(refreshCache + 1);
       offset2 = 0; // Account for reset state lag
-    } else if (end) return;
+    } else if (fetchedAll) return;
 
     // sorting options
     var sortParams = sortby.select.props.value.value;
@@ -283,7 +283,7 @@ function Search(props) {
         // Keep old courses until new courses are fetched
         if (textlessData && searching) {
           if (textlessData.computed_course_info.length < QUERY_SIZE)
-            setEnd(true);
+            setFetchedAll(true);
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(
             textlessData.computed_course_info
@@ -300,7 +300,7 @@ function Search(props) {
       } else {
         // Keep old courses until new courses are fetched
         if (textData && searching) {
-          if (textData.search_course_info.length < QUERY_SIZE) setEnd(true);
+          if (textData.search_course_info.length < QUERY_SIZE) setFetchedAll(true);
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(textData.search_course_info);
           setOldData(new_data); // Replace old with new
@@ -619,7 +619,7 @@ function Search(props) {
               multiSeasons={multiSeasons}
               querySize={QUERY_SIZE}
               refreshCache={refreshCache}
-              end={end}
+              fetchedAll={fetchedAll}
             />
           </Col>
         </Row>

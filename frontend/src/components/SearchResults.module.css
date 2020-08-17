@@ -1,6 +1,7 @@
 .results_container {
   border-radius: 8px;
   background: white;
+  overflow: hidden;
 }
 
 .results_header {

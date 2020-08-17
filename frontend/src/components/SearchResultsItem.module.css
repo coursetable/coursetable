@@ -1,8 +1,8 @@
 .search_result_item {
   background-color: white !important;
-  border-bottom: solid 2px #f6f6f6;
   transition: 0.3s;
   user-select: none;
+  border-top: solid 2px #f6f6f6;
 }
 
 .search_result_item:hover {
