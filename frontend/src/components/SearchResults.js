@@ -324,7 +324,7 @@ const SearchResults = ({
             </Row>
           </div>
         )}
-        <div className={!isList ? 'px-1 pt-3' : ''}>
+        <div className={!isList ? 'px-1 pt-3' : Styles.results_list_container}>
           {data.length !== 0 && resultsListing}
           {refreshCache > 0 && data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
