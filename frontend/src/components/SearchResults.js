@@ -108,7 +108,7 @@ const SearchResults = ({
     window.onscroll = () => {
       setScrollPos(window.pageYOffset);
     };
-  }, []);
+  }, [setScrollPos]);
 
   useEffect(() => {
     cache.clearAll();
@@ -209,7 +209,7 @@ const SearchResults = ({
         <InfiniteLoader
           isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
-          rowCount={!end ? grid_html.length + 1 : grid_html.length}
+          rowCount={!fetchedAll ? grid_html.length + 1 : grid_html.length}
           threshold={8}
         >
           {({ onRowsRendered, registerChild }) => (

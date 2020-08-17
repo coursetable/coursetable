@@ -49,7 +49,7 @@ const SearchResultsGridItem = ({
 
   useEffect(() => {
     if (!mounted) setMounted(true);
-  }, []);
+  }, [mounted]);
   let key = 0;
 
   return (

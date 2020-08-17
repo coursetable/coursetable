@@ -14,7 +14,7 @@ const SeasonsProvider = ({ children }) => {
 
 	useEffect(() => {
 		executeGetSeasons();
-	}, []);
+	}, [executeGetSeasons]);
 
 	return (
 		<SeasonsCtx.Provider value={seasonsData ? seasonsData : []}>

@@ -8,12 +8,11 @@
 .search_result_item:hover {
   cursor: pointer;
   background-color: #e1edff !important;
-  border-bottom: solid 2px #e1edff;
+  border-color: #e1edff;
 }
 
 .search_result_item:focus,
 .search_result_item:active {
-  border: none;
   outline: none;
 }
 
