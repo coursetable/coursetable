@@ -510,7 +510,10 @@ function Search(props) {
                     <div className={Styles.filter_title}>Schools</div>
                     <Select
                       isMulti
-                      defaultValue={[schoolOptions[0]]}
+                      defaultValue={[
+                        { value: 'YC', label: 'Yale College' },
+                        { value: 'GS', label: 'Graduate' },
+                      ]}
                       options={schoolOptions}
                       placeholder="Any"
                       ref={(ref) => {
