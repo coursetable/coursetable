@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { Row, Col, Badge } from 'react-bootstrap';
 
@@ -21,6 +21,7 @@ const SearchResultsItem = ({
   setShowModal,
   setModalCourse,
   executeGetCourseModal,
+  isLast,
 }) => {
   let key = 1;
   const [mounted, setMounted] = useState(false);
@@ -31,21 +32,27 @@ const SearchResultsItem = ({
 
   let courseLocation;
 
-  if(course.locations_summary === 'TBA'){
+  if (course.locations_summary === 'TBA') {
     courseLocation = '';
-  }else{
-    if(course.locations_summary.includes('ONLINE')){
-      courseLocation = <div className={Styles.online_tag}>{course.locations_summary}</div>
-    }else{
-      courseLocation = course.locations_summary
+  } else {
+    if (course.locations_summary.includes('ONLINE')) {
+      courseLocation = (
+        <div className={Styles.online_tag}>{course.locations_summary}</div>
+      );
+    } else {
+      courseLocation = course.locations_summary;
     }
   }
 
   return (
     <Row
       className={
-        'mx-auto px-2 py-2 justify-content-between shadow-sm ' + Styles.search_result_item
+        'mx-auto px-2 py-2 justify-content-between shadow-sm ' +
+        Styles.search_result_item
       }
+      style={{
+        borderBottom: isLast ? 'none' : 'solid 2px #f6f6f6',
+      }}
       onClick={() => {
         executeGetCourseModal({
           variables: {
@@ -65,7 +72,11 @@ const SearchResultsItem = ({
             : course.title}
         </div>
         <div className={Styles.course_code}>
-          {course.course_codes ? course.course_codes.join(' • ') : ''}
+          {course.course_codes
+            ? course.course_codes.length > 2
+              ? course.course_codes[0] + ' • ' + course.course_codes[1] + ' ...'
+              : course.course_codes.join(' • ')
+            : ''}
         </div>
         <div className={Styles.skills_areas}>
           {course.skills.map((skill) => (
@@ -103,16 +114,27 @@ const SearchResultsItem = ({
           <div className={Styles.extra_info}>CANCELLED</div>
         )}
       </Col>
-      <Col md={3} className={Styles.course_professors}>
-        {course.professor_names.join('\n')}
+      <Col md={2} className={Styles.course_professors}>
+        {course.professor_names.map((name, index) =>
+          index > 1 ? (
+            <div />
+          ) : (
+            <Row className="m-auto">
+              {(name.length > 15 ? name.slice(0, 13) + '...' : name) +
+                (index === course.professor_names.length - 1
+                  ? ''
+                  : index === 1
+                  ? ', ...'
+                  : ',')}
+            </Row>
+          )
+        )}
       </Col>
-      <Col md={2}>
+      <Col md={3}>
         <div className={Styles.course_time}>
-        {course.times_summary === 'TBA' ? '' : course.times_summary}
+          {course.times_summary === 'TBA' ? '' : course.times_summary}
         </div>
-        <div className={Styles.course_location}>
-        {courseLocation}
-        </div>
+        <div className={Styles.course_location}>{courseLocation}</div>
       </Col>
       <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
         {course.average_rating && (
@@ -145,15 +167,15 @@ const SearchResultsItem = ({
           </div>
         )}
       </Col>
-      <Col md={1} className="text-center">
+      <Col md={1} />
+      <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           alwaysRed={false}
           crn={course['course.listings'][0].crn}
           season_code={course.season_code}
-          modal={true}
           isMobile={isMobile}
         />
-      </Col>
+      </div>
       {mounted && (
         <div className={Styles.conflict_error}>
           <CourseConflictIcon course={course} />

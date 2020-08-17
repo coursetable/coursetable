@@ -158,6 +158,7 @@ const SearchResults = ({
             setShowModal={setShowModal}
             setModalCourse={setModalCourse}
             executeGetCourseModal={executeGetCourseModal}
+            isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
           />
         </div>
       </CellMeasurer>
@@ -294,10 +295,10 @@ const SearchResults = ({
                   <Col md={4} style={{ lineHeight: '30px' }}>
                     <strong>{'Description'}</strong>
                   </Col>
-                  <Col md={3} style={{ lineHeight: '30px' }}>
+                  <Col md={2} style={{ lineHeight: '30px' }}>
                     <strong>{'Professors'}</strong>
                   </Col>
-                  <Col md={2} style={{ lineHeight: '30px' }}>
+                  <Col md={3} style={{ lineHeight: '30px' }}>
                     <strong>{'Meets'}</strong>
                   </Col>
                   <Col md={1} style={{ lineHeight: '30px' }}>
@@ -316,8 +317,12 @@ const SearchResults = ({
                   </strong>
                 </Col>
               )}
-              <Col md={1} style={{ lineHeight: '30px' }} className="d-flex">
-                <div className="d-flex mx-auto my-auto">
+              <Col
+                md={1}
+                style={{ lineHeight: '30px' }}
+                className="d-flex pr-2"
+              >
+                <div className="d-flex ml-auto my-auto p-0">
                   <ListGridToggle isList={isList} setView={setView} />
                 </div>
               </Col>

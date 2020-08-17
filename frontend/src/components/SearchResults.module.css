@@ -4,7 +4,8 @@
 }
 
 .results_list_container {
-  border-radius: 8px;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
   overflow: hidden;
 }
 
