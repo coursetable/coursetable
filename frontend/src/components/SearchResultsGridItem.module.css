@@ -26,7 +26,7 @@
 .season_tag {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  margin-right: 16px;
+  margin-right: 27px;
 }
 
 .spring {
@@ -70,25 +70,26 @@
 
 .worksheet_btn {
   position: absolute;
-  top: -16px;
-  right: 3%;
+  top: -15px;
+  right: 22px;
   transition: 0.3s;
+  transform: scaleY(1.3);
 }
 
 .worksheet_btn:hover {
-  transform: translateY(10px);
+  transform: scaleY(1.3) translateY(6px);
 }
 
 .conflict_error {
   position: absolute;
-  top: -6px;
-  left: 0px;
-  transform: translate(50%, 0%);
+  top: -7px;
+  right: 0px;
+  transform: translate(-40%, 0%);
 }
 
 @media (hover: none) {
   .worksheet_btn {
-    top: -6px;
+    top: -10px;
   }
 
   .worksheet_btn:hover {

@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { Row, Col, Badge } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -52,6 +52,17 @@ const SearchResultsGridItem = ({
   }, [mounted]);
   let key = 0;
 
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <small>
+        {seasons[season - 1].charAt(0).toUpperCase() +
+          seasons[season - 1].slice(1) +
+          ' ' +
+          season_code.substr(0, 4)}
+      </small>
+    </Tooltip>
+  );
+
   return (
     <Col
       md={col_width}
@@ -83,20 +94,26 @@ const SearchResultsGridItem = ({
           {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
-                <div
-                  className={
-                    styles.season_tag +
-                    ' ml-auto px-1 pb-0 ' +
-                    styles[seasons[parseInt(season) - 1]]
-                  }
+                <OverlayTrigger
+                  placement="top"
+                  delay={{ show: 500, hide: 250 }}
+                  overlay={renderTooltip}
                 >
-                  <Row className="m-auto">
-                    {icon}
-                    <small style={{ fontWeight: 550 }}>
-                      &nbsp;{"'" + year}
-                    </small>
-                  </Row>
-                </div>
+                  <div
+                    className={
+                      styles.season_tag +
+                      ' ml-auto px-1 pb-0 ' +
+                      styles[seasons[parseInt(season) - 1]]
+                    }
+                  >
+                    <Row className="m-auto">
+                      {icon}
+                      <small style={{ fontWeight: 550 }}>
+                        &nbsp;{"'" + year}
+                      </small>
+                    </Row>
+                  </div>
+                </OverlayTrigger>
               </Row>
             </Col>
           )}
@@ -190,6 +207,8 @@ const SearchResultsGridItem = ({
                   style={{
                     color: course.average_rating
                       ? ratingColormap(course.average_rating)
+                          .darken()
+                          .saturate()
                       : '#cccccc',
                   }}
                 >
@@ -205,6 +224,8 @@ const SearchResultsGridItem = ({
                   style={{
                     color: course.average_workload
                       ? workloadColormap(course.average_workload)
+                          .darken()
+                          .saturate()
                       : '#cccccc',
                   }}
                 >
