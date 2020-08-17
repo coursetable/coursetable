@@ -68,23 +68,27 @@ function Search(props) {
   const [offset, setOffset] = useState(0); // How many courses to skip in query
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
-  const [scroll_pos, setScroll] = useState(0); // Scroll pos
+  const [scrollPos, setScrollPos] = useState(0); // Scroll pos
   const [end, setEnd] = useState(false); // True when we've fetched all courses
-  const [refresh_cache, setRefreshCache] = useState(0); // Reset row height cache on search
-  // const [search_query, setSearchQuery] = useState({}); // Stores the search query
+  const [refreshCache, setRefreshCache] = useState(0); // Reset row height cache on search
 
-  // Size of Query constant
+  // number of search results to return
   const QUERY_SIZE = 100;
 
   // State used to determine whether or not to show season tags
-  const [multi_seasons, setMultiSeasons] = useState(false);
+  // (if multiple seasons are queried, the season is indicated)
+  const [multiSeasons, setMultiSeasons] = useState(false);
 
   //State used to rebuild form DOM to reset it
   const [form_key, setFormKey] = useState(0);
 
+  // whether to execute textless or text search
   var [searchType, setSearchType] = React.useState();
+
+  // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
 
+  // react-select refs to get options later
   var sortby = React.useRef();
   var seasons = React.useRef();
   var skillsAreas = React.useRef();
@@ -105,9 +109,10 @@ function Search(props) {
 
   const seasonsData = useSeasons();
   if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map((x) => {
+    seasonsOptions = seasonsData.seasons.map(x => {
       return {
         value: x.season_code,
+        // capitalize term and add year
         label: x.term.charAt(0).toUpperCase() + x.term.slice(1) + ' ' + x.year,
       };
     });
@@ -133,13 +138,13 @@ function Search(props) {
 
   const handleChange = () => {
     if (!props.location.state) return;
-    //Reset searchText
+    // reset searchText
     const { history } = props;
     history.replace();
   };
 
   // resubmit search on view change
-  const handleSetView = (isList) => {
+  const handleSetView = isList => {
     setView(isList);
     handleSubmit(null, true);
   };
@@ -149,12 +154,12 @@ function Search(props) {
     let offset2 = -1;
     if (event && search) event.preventDefault();
     if (search) {
-      window.scrollTo({ top: scroll_pos < 78 ? scroll_pos : 78, left: 0 });
+      window.scrollTo({ top: scrollPos < 78 ? scrollPos : 78, left: 0 });
       //Reset states when making a new search
       setOffset(0);
       setOldData([]);
       setEnd(false);
-      setRefreshCache(refresh_cache + 1);
+      setRefreshCache(refreshCache + 1);
       offset2 = 0; // Account for reset state lag
     } else if (end) return;
 
@@ -165,22 +170,21 @@ function Search(props) {
     // seasons to filter
     var processedSeasons = seasons.select.props.value;
     if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map((x) => {
+      processedSeasons = processedSeasons.map(x => {
         return x.value;
       });
     }
 
     // whether or not multiple seasons are being returned
-    const temp_multi_seasons = processedSeasons
+    const temp_multiSeasons = processedSeasons
       ? processedSeasons.length > 1
       : false;
-    if (temp_multi_seasons !== multi_seasons)
-      setMultiSeasons(temp_multi_seasons);
+    if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
 
     // skills and areas
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map((x) => {
+      processedSkillsAreas = processedSkillsAreas.map(x => {
         return x.value;
       });
 
@@ -196,12 +200,10 @@ function Search(props) {
       }
 
       // separate skills and areas
-      var processedSkills = processedSkillsAreas.filter((x) =>
+      var processedSkills = processedSkillsAreas.filter(x =>
         skills.includes(x)
       );
-      var processedAreas = processedSkillsAreas.filter((x) =>
-        areas.includes(x)
-      );
+      var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
 
       // set null defaults
       if (processedSkills.length === 0) {
@@ -212,10 +214,10 @@ function Search(props) {
       }
     }
 
-    // credits to filter`
+    // credits to filter
     var processedCredits = credits.select.props.value;
     if (processedCredits != null) {
-      processedCredits = processedCredits.map((x) => {
+      processedCredits = processedCredits.map(x => {
         return x.value;
       });
     }
@@ -223,7 +225,7 @@ function Search(props) {
     // schools to filter
     var processedSchools = schools.select.props.value;
     if (processedSchools != null) {
-      processedSchools = processedSchools.map((x) => {
+      processedSchools = processedSchools.map(x => {
         return x.value;
       });
     }
@@ -273,7 +275,6 @@ function Search(props) {
     }
   });
 
-
   if (searchType === 'TEXTLESS') {
     if (textlessCalled) {
       if (textlessLoading) {
@@ -310,24 +311,22 @@ function Search(props) {
   }
 
   // ctrl/cmd-f search hotkey
-  const focusSearch = (e) => {
+  const focusSearch = e => {
     if (e && searchText) {
       e.preventDefault();
       searchText.focus();
     }
   };
-
   const keyMap = {
     FOCUS_SEARCH: ['ctrl+f', 'command+f'],
   };
-
   const handlers = {
     FOCUS_SEARCH: focusSearch,
   };
 
   const { Handle } = Slider;
 
-  const ratingSliderHandle = (e) => {
+  const ratingSliderHandle = e => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -336,7 +335,7 @@ function Search(props) {
     );
   };
 
-  const workloadSliderHandle = (e) => {
+  const workloadSliderHandle = e => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -348,6 +347,7 @@ function Search(props) {
   var [tooTall, setTooTall] = React.useState(true);
   var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
+  // reset the search form
   const handleResetFilters = () => {
     setHideCancelled(true);
     setRatingBounds([1, 5]);
@@ -362,7 +362,6 @@ function Search(props) {
 
   // check if the search form is too tall
   // to be sticky
-
   var searchCol = React.useRef();
 
   useEffect(() => {
@@ -402,10 +401,10 @@ function Search(props) {
             >
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
-                onSubmit={(event) => {
+                onSubmit={event => {
                   handleSubmit(event, true);
                 }}
-                ref={(ref) => {
+                ref={ref => {
                   searchCol = ref;
                 }}
                 key={form_key}
@@ -430,7 +429,7 @@ function Search(props) {
                         }
                         onChange={handleChange}
                         placeholder="Find a class..."
-                        ref={(ref) => (searchText = ref)}
+                        ref={ref => (searchText = ref)}
                       />
                     </InputGroup>
                   </div>
@@ -440,7 +439,7 @@ function Search(props) {
                     <Select
                       defaultValue={sortbyOptions[0]}
                       options={sortbyOptions}
-                      ref={(ref) => {
+                      ref={ref => {
                         sortby = ref;
                       }}
                       // prevent overlap with tooltips
@@ -459,7 +458,7 @@ function Search(props) {
                         isMulti
                         defaultValue={[seasonsOptions[0]]}
                         options={seasonsOptions}
-                        ref={(ref) => {
+                        ref={ref => {
                           seasons = ref;
                         }}
                         placeholder="All"
@@ -479,7 +478,7 @@ function Search(props) {
                       isMulti
                       options={skillsAreasOptions}
                       placeholder="Any"
-                      ref={(ref) => {
+                      ref={ref => {
                         skillsAreas = ref;
                       }}
                       // colors
@@ -496,7 +495,7 @@ function Search(props) {
                       isMulti
                       options={creditOptions}
                       placeholder="Any"
-                      ref={(ref) => {
+                      ref={ref => {
                         credits = ref;
                       }}
                       // prevent overlap with tooltips
@@ -513,7 +512,7 @@ function Search(props) {
                       defaultValue={[schoolOptions[0]]}
                       options={schoolOptions}
                       placeholder="Any"
-                      ref={(ref) => {
+                      ref={ref => {
                         schools = ref;
                       }}
                       // prevent overlap with tooltips
@@ -533,7 +532,9 @@ function Search(props) {
                         max={5}
                         step={0.1}
                         defaultValue={ratingBounds}
-                        onChange={debounce((value) => {
+                        // debounce the slider state update
+                        // to make it smoother
+                        onChange={debounce(value => {
                           setRatingBounds(value);
                         }, 250)}
                         handle={ratingSliderHandle}
@@ -551,7 +552,9 @@ function Search(props) {
                         max={5}
                         step={0.1}
                         defaultValue={workloadBounds}
-                        onChange={debounce((value) => {
+                        // debounce the slider state update
+                        // to make it smoother
+                        onChange={debounce(value => {
                           setWorkloadBounds(value);
                         }, 250)}
                         handle={workloadSliderHandle}
@@ -569,7 +572,7 @@ function Search(props) {
                   <Form.Check type="switch" className={Styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideCancelled}
-                      onChange={(e) => {}} // dummy handler to remove warning
+                      onChange={e => {}} // dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => setHideCancelled(!hideCancelled)}
@@ -608,15 +611,15 @@ function Search(props) {
               setOffset={setOffset}
               loading={searchType === 'TEXT' ? textLoading : textlessLoading}
               loadMore={handleSubmit}
-              setScroll={setScroll}
-              multi_seasons={multi_seasons}
-              QUERY_SIZE={QUERY_SIZE}
-              refresh_cache={refresh_cache}
+              setScrollPos={setScrollPos}
+              multiSeasons={multiSeasons}
+              querySize={QUERY_SIZE}
+              refreshCache={refreshCache}
             />
           </Col>
         </Row>
       </HotKeys>
-      <Fade in={scroll_pos > 3 * height}>
+      <Fade in={scrollPos > 3 * height}>
         <div className={Styles.up_btn}>
           <FaArrowCircleUp timeout={1000} onClick={scroll_top} size={30} />
         </div>

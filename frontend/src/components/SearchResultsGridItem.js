@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Row, Col, Badge } from 'react-bootstrap';
 
 import {
@@ -24,7 +24,7 @@ const SearchResultsGridItem = ({
   setModalCourse,
   executeGetCourseModal,
   num_cols,
-  multi_seasons,
+  multiSeasons,
 }) => {
   const RATINGS_PRECISION = 1;
   const col_width = 12 / num_cols;
@@ -68,14 +68,14 @@ const SearchResultsGridItem = ({
         tabIndex="0"
       >
         <Row className="m-auto">
-          <Col xs={multi_seasons ? 8 : 12} className="p-0">
+          <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.one_line + ' ' + styles.course_codes}>
                 {course.course_codes ? course.course_codes.join(' • ') : ''}
               </small>
             </Row>
           </Col>
-          {multi_seasons && (
+          {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
                 <div

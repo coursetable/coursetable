@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 
 import { Row, Col, Badge } from 'react-bootstrap';
 
@@ -14,9 +14,6 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 
 import Styles from './SearchResultsItem.module.css';
-
-import ReactRating from 'react-rating';
-import { BsSquareFill } from 'react-icons/bs';
 
 const SearchResultsItem = ({
   course,

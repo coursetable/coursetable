@@ -40,10 +40,10 @@ const SearchResults = ({
   setOffset,
   loading,
   loadMore,
-  setScroll,
-  multi_seasons,
-  QUERY_SIZE,
-  refresh_cache,
+  setScrollPos,
+  multiSeasons,
+  querySize,
+  refreshCache,
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -96,22 +96,22 @@ const SearchResults = ({
     if (
       data.length > 0 &&
       data.length !== offset &&
-      data.length % QUERY_SIZE === 0
+      data.length % querySize === 0
     ) {
       setOffset(data.length);
     }
-  }, [data, setOffset, offset, QUERY_SIZE]);
+  }, [data, setOffset, offset, querySize]);
 
   // Fetch more courses if scroll down 80% of the page
   useEffect(() => {
     window.onscroll = () => {
-      setScroll(window.pageYOffset);
+      setScrollPos(window.pageYOffset);
     };
   }, []);
 
   useEffect(() => {
     cache.clearAll();
-  }, [refresh_cache]);
+  }, [refreshCache]);
 
   const num_cols = width < 1100 ? 2 : 3;
   let grid_html = [];
@@ -179,7 +179,7 @@ const SearchResults = ({
               setModalCourse={setModalCourse}
               executeGetCourseModal={executeGetCourseModal}
               num_cols={num_cols}
-              multi_seasons={multi_seasons}
+              multiSeasons={multiSeasons}
               key={key++}
             />
           );
