@@ -26,6 +26,14 @@ const SearchResultsItem = ({
   executeGetCourseModal,
 }) => {
   let key = 1;
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (!mounted) setMounted(true);
+    return function cleanup() {
+      setMounted(false);
+    };
+  }, []);
 
   return (
     <Row
@@ -90,7 +98,7 @@ const SearchResultsItem = ({
         )}
       </Col>
       <Col md={3} className={Styles.course_header}>
-        {course.professor_names.join("\n")}
+        {course.professor_names.join('\n')}
       </Col>
       <Col md={2} className={Styles.course_header}>
         {course.times_summary === 'TBA' ? '' : course.times_summary}
@@ -137,9 +145,11 @@ const SearchResultsItem = ({
           isMobile={isMobile}
         />
       </Col>
-      <div className={Styles.conflict_error}>
-        <CourseConflictIcon course={course} />
-      </div>
+      {mounted && (
+        <div className={Styles.conflict_error}>
+          <CourseConflictIcon course={course} />
+        </div>
+      )}
     </Row>
   );
 };

@@ -45,6 +45,14 @@ const SearchResultsGridItem = ({
         size={icon_size}
       />
     );
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    if (!mounted) setMounted(true);
+    return function cleanup() {
+      setMounted(false);
+    };
+  }, []);
   let key = 0;
 
   return (
@@ -224,9 +232,11 @@ const SearchResultsGridItem = ({
           />
         }
       </div>
-      <div className={styles.conflict_error}>
-        <CourseConflictIcon course={course} />
-      </div>
+      {mounted && (
+        <div className={styles.conflict_error}>
+          <CourseConflictIcon course={course} />
+        </div>
+      )}
     </Col>
   );
 };

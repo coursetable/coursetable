@@ -130,7 +130,7 @@ const SearchResults = ({
 
   const renderGridRow = ({ index, key, style }) => {
     if (!isRowLoaded({ index })) {
-      return <div key={key} />;
+      return <div key={key} style={style} />;
     }
     return (
       <div key={key} style={style}>
@@ -141,7 +141,7 @@ const SearchResults = ({
 
   const renderListRow = ({ index, key, style, parent }) => {
     if (!isRowLoaded({ index })) {
-      return <div key={key} />;
+      return <div key={key} style={style} />;
     }
     return (
       <CellMeasurer
