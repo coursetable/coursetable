@@ -44,6 +44,7 @@ const SearchResults = ({
   multiSeasons,
   querySize,
   refreshCache,
+  end = { end },
 }) => {
   const { height, width } = useWindowDimensions();
 
@@ -113,14 +114,24 @@ const SearchResults = ({
     cache.clearAll();
   }, [refreshCache]);
 
-  const num_cols = width < 1100 ? 2 : 3;
+  const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
   let grid_html = [];
 
   var resultsListing;
 
+  function isRowLoaded({ index }) {
+    // console.log(index);
+    if (end) return true;
+    if (isList) return index < data.length;
+    return index < grid_html.length;
+  }
+
   // Render functions for React Virtualized List:
 
   const renderGridRow = ({ index, key, style }) => {
+    if (!isRowLoaded({ index })) {
+      return <div key={key} style={style} />;
+    }
     return (
       <div key={key} style={style}>
         {grid_html[index]}
@@ -129,6 +140,9 @@ const SearchResults = ({
   };
 
   const renderListRow = ({ index, key, style, parent }) => {
+    if (!isRowLoaded({ index })) {
+      return <div key={key} style={style} />;
+    }
     return (
       <CellMeasurer
         key={key}
@@ -193,9 +207,10 @@ const SearchResults = ({
 
       resultsListing = (
         <InfiniteLoader
-          isRowLoaded={(index) => !!grid_html[index]}
+          isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
-          rowCount={grid_html.length}
+          rowCount={!end ? grid_html.length + 1 : grid_html.length}
+          threshold={8}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -211,7 +226,7 @@ const SearchResults = ({
                       isScrolling={isScrolling}
                       onScroll={onChildScroll}
                       scrollTop={scrollTop}
-                      rowCount={grid_html.length}
+                      rowCount={!end ? grid_html.length + 1 : grid_html.length}
                       rowHeight={178}
                       rowRenderer={renderGridRow}
                     />
@@ -228,9 +243,9 @@ const SearchResults = ({
     else {
       resultsListing = (
         <InfiniteLoader
-          isRowLoaded={(index) => !!data[index]}
+          isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
-          rowCount={data.length}
+          rowCount={!end ? data.length + 1 : data.length}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -246,7 +261,7 @@ const SearchResults = ({
                       isScrolling={isScrolling}
                       onScroll={onChildScroll}
                       scrollTop={scrollTop}
-                      rowCount={data.length}
+                      rowCount={!end ? data.length + 1 : data.length}
                       rowRenderer={renderListRow}
                       deferredMeasurementCache={cache}
                       rowHeight={cache.rowHeight}
@@ -309,9 +324,12 @@ const SearchResults = ({
         )}
         <div className={!isList ? 'px-1 pt-3' : ''}>
           {data.length !== 0 && resultsListing}
+          {refreshCache > 0 && data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
-            <Row className="m-auto py-5">
+            <Row
+              className={'m-auto ' + (data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
+            >
               <Spinner className="m-auto" animation="border" role="status">
                 <span className="sr-only">Loading...</span>
               </Spinner>

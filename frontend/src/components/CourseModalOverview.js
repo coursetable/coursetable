@@ -9,7 +9,7 @@ import { toSeasonString } from '../utilities';
 import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-
+import { IoIosArrowDown } from 'react-icons/io';
 import chroma from 'chroma-js';
 
 import CourseModalLoading from './CourseModalLoading';
@@ -287,8 +287,9 @@ const CourseModalOverview = (props) => {
                 onClick={() => {
                   setLines(100);
                 }}
+                title="Read More"
               >
-                Read More
+                <IoIosArrowDown size={20} />
               </span>
             )}
           </Row>

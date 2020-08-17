@@ -73,7 +73,7 @@ function Search(props) {
   const [refreshCache, setRefreshCache] = useState(0); // Reset row height cache on search
 
   // number of search results to return
-  const QUERY_SIZE = 100;
+  const QUERY_SIZE = 30;
 
   // State used to determine whether or not to show season tags
   // (if multiple seasons are queried, the season is indicated)
@@ -247,7 +247,7 @@ function Search(props) {
     const search_variables = {
       ordering: ordering,
       offset: offset2 === -1 ? old_data.length : offset2,
-      limit: QUERY_SIZE,
+      limit: search ? 60 : QUERY_SIZE,
       seasons: processedSeasons,
       areas: processedAreas,
       skills: processedSkills,
@@ -456,7 +456,8 @@ function Search(props) {
                     {seasonsOptions && (
                       <Select
                         isMulti
-                        defaultValue={[seasonsOptions[0]]}
+                        // defaultValue={[seasonsOptions[0]]}
+                        defaultValue={[{ value: '202003', label: 'Fall 2020' }]}
                         options={seasonsOptions}
                         ref={ref => {
                           seasons = ref;
@@ -509,7 +510,10 @@ function Search(props) {
                     <div className={Styles.filter_title}>Schools</div>
                     <Select
                       isMulti
-                      defaultValue={[schoolOptions[0]]}
+                      defaultValue={[
+                        { value: 'YC', label: 'Yale College' },
+                        { value: 'GS', label: 'Graduate' },
+                      ]}
                       options={schoolOptions}
                       placeholder="Any"
                       ref={ref => {
@@ -615,6 +619,7 @@ function Search(props) {
               multiSeasons={multiSeasons}
               querySize={QUERY_SIZE}
               refreshCache={refreshCache}
+              end={end}
             />
           </Col>
         </Row>

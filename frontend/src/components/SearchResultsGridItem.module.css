@@ -99,8 +99,4 @@
     transform: none;
     cursor: none;
   }
-
-  .container:hover .item_container {
-    background-color: rgb(245, 245, 245);
-  }
 }

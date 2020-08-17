@@ -16,7 +16,7 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 
-const CourseModal = props => {
+const CourseModal = (props) => {
   const is_partial = props.listing === null;
   const listing = !is_partial ? props.listing : props.partial_listing;
   const { width } = useWindowDimensions();
@@ -35,7 +35,7 @@ const CourseModal = props => {
     }
   }
 
-  const setSeason = evaluation => {
+  const setSeason = (evaluation) => {
     setView([evaluation.season_code, evaluation]);
   };
 
@@ -44,6 +44,7 @@ const CourseModal = props => {
     setFilter('both');
     props.hideModal();
   };
+  let key = 0;
 
   return (
     <div className="d-flex justify-content-center">
@@ -101,35 +102,33 @@ const CourseModal = props => {
                         {course_codes_str}
                       </p>
                       {listing['course.skills'] &&
-                        listing['course.skills'].map(skill => (
+                        listing['course.skills'].map((skill) => (
                           <Badge
                             variant="secondary"
                             className={tag_styles.tag}
                             style={{
                               color: skillsAreasColors[skill],
-                              backgroundColor: chroma(
-                                skillsAreasColors[skill]
-                              )
+                              backgroundColor: chroma(skillsAreasColors[skill])
                                 .alpha(0.16)
                                 .css(),
                             }}
+                            key={key++}
                           >
                             {skill}
                           </Badge>
                         ))}
                       {listing['course.areas'] &&
-                        listing['course.areas'].map(area => (
+                        listing['course.areas'].map((area) => (
                           <Badge
                             variant="secondary"
                             className={tag_styles.tag}
                             style={{
                               color: skillsAreasColors[area],
-                              backgroundColor: chroma(
-                                skillsAreasColors[area]
-                              )
+                              backgroundColor: chroma(skillsAreasColors[area])
                                 .alpha(0.16)
                                 .css(),
                             }}
+                            key={key++}
                           >
                             {area}
                           </Badge>
@@ -187,7 +186,7 @@ const CourseModal = props => {
         {props.show &&
           (view[0] === 'overview' ? (
             is_partial ? (
-              <CourseModalLoading/>
+              <CourseModalLoading />
             ) : (
               <CourseModalOverview
                 setFilter={setFilter}

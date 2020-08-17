@@ -17,7 +17,7 @@ const CourseModalEvaluations = (props) => {
     });
   });
   const num_questions = Object.keys(responses).length;
-  console.log(num_questions);
+  // console.log(num_questions);
   let recommend = [];
   let skills = [];
   let strengths = [];
