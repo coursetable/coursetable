@@ -163,6 +163,7 @@ function Search(props) {
       setOldData([]);
       setFetchedAll(false);
       setRefreshCache(refreshCache + 1);
+      // if (!defaultSearch) setCollapsedForm(true);
       offset2 = 0; // Account for reset state lag
     } else if (fetchedAll) return;
 
@@ -387,7 +388,12 @@ function Search(props) {
   return (
     <div className={Styles.search_base}>
       <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
-        <Row className="p-0 m-0 d-flex flex-row-reverse flex-nowrap">
+        <Row
+          className={
+            'p-0 m-0 ' +
+            (!isMobile ? 'd-flex flex-row-reverse flex-nowrap' : '')
+          }
+        >
           <Col
             md={4}
             lg={4}
@@ -395,7 +401,8 @@ function Search(props) {
             className={
               (isMobile
                 ? `p-3 ${Styles.search_col_mobile}`
-                : `pr-0 py-3 pl-3 ${Styles.search_col}`) + ' order-2'
+                : `pr-0 py-3 pl-3 ${Styles.search_col}`) +
+              (!isMobile ? ' order-2' : '')
             }
           >
             <div
@@ -415,25 +422,31 @@ function Search(props) {
                 }}
                 key={form_key}
               >
-                <div
-                  className={
-                    Styles.search_tab +
-                    (collapsed_form ? '' : ' '.concat(Styles.search_tab_hidden))
-                  }
-                  onClick={() => {
-                    setCollapsedForm(false);
-                  }}
-                >
-                  <FaSearch style={{ display: 'block' }} />
-                </div>
-                <div
-                  className={Styles.collapse_form_btn}
-                  onClick={() => {
-                    setCollapsedForm(true);
-                  }}
-                >
-                  <BsX style={{ display: 'block' }} size={20} />
-                </div>
+                {!isMobile && (
+                  <>
+                    <div
+                      className={
+                        Styles.search_tab +
+                        (collapsed_form
+                          ? ''
+                          : ' '.concat(Styles.search_tab_hidden))
+                      }
+                      onClick={() => {
+                        setCollapsedForm(false);
+                      }}
+                    >
+                      <FaSearch style={{ display: 'block' }} />
+                    </div>
+                    <div
+                      className={Styles.collapse_form_btn}
+                      onClick={() => {
+                        setCollapsedForm(true);
+                      }}
+                    >
+                      <BsX style={{ display: 'block' }} size={20} />
+                    </div>
+                  </>
+                )}
                 <Row className="pt-3 px-4">
                   <small
                     className={Styles.reset_filters_btn + ' pl-1'}

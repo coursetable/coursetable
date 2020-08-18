@@ -114,13 +114,13 @@
 .results_col {
   background-color: transparent;
   z-index: 0;
-  transition: 0.5s;
+  transition: 0.3s;
 }
 
 .search_tab {
   position: absolute;
   transition: 0.3s;
-  transition-delay: 0.5s;
+  transition-delay: 0.3s;
   transition-property: right, opacity;
   top: 0px;
   right: -30px;
