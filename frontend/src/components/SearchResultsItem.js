@@ -129,11 +129,10 @@ const SearchResultsItem = ({
             </Row>
           )
         )}
+        {course.professor_names.length === 0 ? 'TBA' : ''}
       </Col>
       <Col md={3}>
-        <div className={Styles.course_time}>
-          {course.times_summary === 'TBA' ? '' : course.times_summary}
-        </div>
+        <div className={Styles.course_time}>{course.times_summary}</div>
         <div className={Styles.course_location}>{courseLocation}</div>
       </Col>
       <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
