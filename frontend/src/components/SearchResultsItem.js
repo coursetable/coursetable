@@ -137,35 +137,36 @@ const SearchResultsItem = ({
         <div className={Styles.course_location}>{courseLocation}</div>
       </Col>
       <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
-        {course.average_rating && (
-          <div
-            style={{
-              color: ratingColormap(course.average_rating).darken(2).css(),
-              backgroundColor: chroma(ratingColormap(course.average_rating))
-                .alpha(0.33)
-                .css(),
-            }}
-            className={Styles.rating_cell}
-          >
-            {course.average_rating !== -1 && course.average_rating.toFixed(1)}
-          </div>
-        )}
+        <div
+          style={{
+            color: course.average_rating
+              ? ratingColormap(course.average_rating).darken(2).css()
+              : '#b5b5b5',
+            backgroundColor: course.average_rating
+              ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
+              : '#ebebeb',
+          }}
+          className={Styles.rating_cell}
+        >
+          {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
+        </div>
       </Col>
       <Col md={1} style={{ whiteSpace: 'nowrap' }}>
-        {course.average_workload && (
-          <div
-            style={{
-              color: workloadColormap(course.average_workload).darken(2).css(),
-              backgroundColor: chroma(workloadColormap(course.average_workload))
-                .alpha(0.33)
-                .css(),
-            }}
-            className={Styles.rating_cell}
-          >
-            {course.average_workload !== -1 &&
-              course.average_workload.toFixed(1)}
-          </div>
-        )}
+        <div
+          style={{
+            color: course.average_workload
+              ? workloadColormap(course.average_workload).darken(2).css()
+              : '#b5b5b5',
+            backgroundColor: course.average_workload
+              ? chroma(workloadColormap(course.average_workload))
+                  .alpha(0.33)
+                  .css()
+              : '#ebebeb',
+          }}
+          className={Styles.rating_cell}
+        >
+          {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
+        </div>
       </Col>
       <Col md={1} />
       <div className={Styles.worksheet_btn}>
