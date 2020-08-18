@@ -117,9 +117,9 @@ const SearchResultsItem = ({
       <Col md={2} className={Styles.course_professors}>
         {course.professor_names.map((name, index) =>
           index > 1 ? (
-            <div />
+            <div key={key++} />
           ) : (
-            <Row className="m-auto">
+            <Row key={key++} className="m-auto">
               {(name.length > 15 ? name.slice(0, 13) + '...' : name) +
                 (index === course.professor_names.length - 1
                   ? ''
