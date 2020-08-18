@@ -47,7 +47,8 @@ import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-import { FaArrowCircleUp } from 'react-icons/fa';
+import { FaArrowCircleUp, FaSearch } from 'react-icons/fa';
+import { BsX } from 'react-icons/bs';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -63,6 +64,8 @@ function Search(props) {
       ? props.location.state.search_val
       : null
   );
+
+  const [collapsed_form, setCollapsedForm] = useState(false);
 
   // States involved in infinite scroll
   const [offset, setOffset] = useState(0); // How many courses to skip in query
@@ -109,7 +112,7 @@ function Search(props) {
 
   const seasonsData = useSeasons();
   if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map(x => {
+    seasonsOptions = seasonsData.seasons.map((x) => {
       return {
         value: x.season_code,
         // capitalize term and add year
@@ -144,7 +147,7 @@ function Search(props) {
   };
 
   // resubmit search on view change
-  const handleSetView = isList => {
+  const handleSetView = (isList) => {
     setView(isList);
     handleSubmit(null, true);
   };
@@ -170,7 +173,7 @@ function Search(props) {
     // seasons to filter
     var processedSeasons = seasons.select.props.value;
     if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map(x => {
+      processedSeasons = processedSeasons.map((x) => {
         return x.value;
       });
     }
@@ -184,7 +187,7 @@ function Search(props) {
     // skills and areas
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map(x => {
+      processedSkillsAreas = processedSkillsAreas.map((x) => {
         return x.value;
       });
 
@@ -200,10 +203,12 @@ function Search(props) {
       }
 
       // separate skills and areas
-      var processedSkills = processedSkillsAreas.filter(x =>
+      var processedSkills = processedSkillsAreas.filter((x) =>
         skills.includes(x)
       );
-      var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
+      var processedAreas = processedSkillsAreas.filter((x) =>
+        areas.includes(x)
+      );
 
       // set null defaults
       if (processedSkills.length === 0) {
@@ -217,7 +222,7 @@ function Search(props) {
     // credits to filter
     var processedCredits = credits.select.props.value;
     if (processedCredits != null) {
-      processedCredits = processedCredits.map(x => {
+      processedCredits = processedCredits.map((x) => {
         return x.value;
       });
     }
@@ -225,7 +230,7 @@ function Search(props) {
     // schools to filter
     var processedSchools = schools.select.props.value;
     if (processedSchools != null) {
-      processedSchools = processedSchools.map(x => {
+      processedSchools = processedSchools.map((x) => {
         return x.value;
       });
     }
@@ -300,7 +305,8 @@ function Search(props) {
       } else {
         // Keep old courses until new courses are fetched
         if (textData && searching) {
-          if (textData.search_course_info.length < QUERY_SIZE) setFetchedAll(true);
+          if (textData.search_course_info.length < QUERY_SIZE)
+            setFetchedAll(true);
           // Combine old courses with new fetched courses
           let new_data = [...old_data].concat(textData.search_course_info);
           setOldData(new_data); // Replace old with new
@@ -311,7 +317,7 @@ function Search(props) {
   }
 
   // ctrl/cmd-f search hotkey
-  const focusSearch = e => {
+  const focusSearch = (e) => {
     if (e && searchText) {
       e.preventDefault();
       searchText.focus();
@@ -326,7 +332,7 @@ function Search(props) {
 
   const { Handle } = Slider;
 
-  const ratingSliderHandle = e => {
+  const ratingSliderHandle = (e) => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -335,7 +341,7 @@ function Search(props) {
     );
   };
 
-  const workloadSliderHandle = e => {
+  const workloadSliderHandle = (e) => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -381,15 +387,15 @@ function Search(props) {
   return (
     <div className={Styles.search_base}>
       <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
-        <Row className="p-0 m-0">
+        <Row className="p-0 m-0 d-flex flex-row-reverse flex-nowrap">
           <Col
             md={4}
             lg={4}
             xl={3}
             className={
-              isMobile
+              (isMobile
                 ? `p-3 ${Styles.search_col_mobile}`
-                : `pr-2 py-3 pl-3 ${Styles.search_col}`
+                : `pr-0 py-3 pl-3 ${Styles.search_col}`) + ' order-2'
             }
           >
             <div
@@ -401,14 +407,33 @@ function Search(props) {
             >
               <Form
                 className={`shadow-sm px-3 ${Styles.search_container}`}
-                onSubmit={event => {
+                onSubmit={(event) => {
                   handleSubmit(event, true);
                 }}
-                ref={ref => {
+                ref={(ref) => {
                   searchCol = ref;
                 }}
                 key={form_key}
               >
+                <div
+                  className={
+                    Styles.search_tab +
+                    (collapsed_form ? '' : ' '.concat(Styles.search_tab_hidden))
+                  }
+                  onClick={() => {
+                    setCollapsedForm(false);
+                  }}
+                >
+                  <FaSearch style={{ display: 'block' }} />
+                </div>
+                <div
+                  className={Styles.collapse_form_btn}
+                  onClick={() => {
+                    setCollapsedForm(true);
+                  }}
+                >
+                  <BsX style={{ display: 'block' }} size={20} />
+                </div>
                 <Row className="pt-3 px-4">
                   <small
                     className={Styles.reset_filters_btn + ' pl-1'}
@@ -429,7 +454,7 @@ function Search(props) {
                         }
                         onChange={handleChange}
                         placeholder="Find a class..."
-                        ref={ref => (searchText = ref)}
+                        ref={(ref) => (searchText = ref)}
                       />
                     </InputGroup>
                   </div>
@@ -439,7 +464,7 @@ function Search(props) {
                     <Select
                       defaultValue={sortbyOptions[0]}
                       options={sortbyOptions}
-                      ref={ref => {
+                      ref={(ref) => {
                         sortby = ref;
                       }}
                       // prevent overlap with tooltips
@@ -459,7 +484,7 @@ function Search(props) {
                         // defaultValue={[seasonsOptions[0]]}
                         defaultValue={[{ value: '202003', label: 'Fall 2020' }]}
                         options={seasonsOptions}
-                        ref={ref => {
+                        ref={(ref) => {
                           seasons = ref;
                         }}
                         placeholder="All"
@@ -479,7 +504,7 @@ function Search(props) {
                       isMulti
                       options={skillsAreasOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         skillsAreas = ref;
                       }}
                       // colors
@@ -496,7 +521,7 @@ function Search(props) {
                       isMulti
                       options={creditOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         credits = ref;
                       }}
                       // prevent overlap with tooltips
@@ -516,7 +541,7 @@ function Search(props) {
                       ]}
                       options={schoolOptions}
                       placeholder="Any"
-                      ref={ref => {
+                      ref={(ref) => {
                         schools = ref;
                       }}
                       // prevent overlap with tooltips
@@ -538,7 +563,7 @@ function Search(props) {
                         defaultValue={ratingBounds}
                         // debounce the slider state update
                         // to make it smoother
-                        onChange={debounce(value => {
+                        onChange={debounce((value) => {
                           setRatingBounds(value);
                         }, 250)}
                         handle={ratingSliderHandle}
@@ -558,7 +583,7 @@ function Search(props) {
                         defaultValue={workloadBounds}
                         // debounce the slider state update
                         // to make it smoother
-                        onChange={debounce(value => {
+                        onChange={debounce((value) => {
                           setWorkloadBounds(value);
                         }, 250)}
                         handle={workloadSliderHandle}
@@ -576,7 +601,7 @@ function Search(props) {
                   <Form.Check type="switch" className={Styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideCancelled}
-                      onChange={e => {}} // dummy handler to remove warning
+                      onChange={(e) => {}} // dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => setHideCancelled(!hideCancelled)}
@@ -597,14 +622,14 @@ function Search(props) {
             </div>
           </Col>
           <Col
-            md={8}
-            lg={8}
-            xl={9}
+            md={collapsed_form ? 12 : 8}
+            lg={collapsed_form ? 12 : 8}
+            xl={collapsed_form ? 12 : 9}
             className={
               'm-0 ' +
               (isMobile
                 ? 'p-3 ' + Styles.results_col_mobile
-                : 'pl-2 py-3 pr-3 ' + Styles.results_col)
+                : (collapsed_form ? 'px-5 pt-3 ' : 'p-3 ') + Styles.results_col)
             }
           >
             <SearchResults

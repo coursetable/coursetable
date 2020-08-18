@@ -282,6 +282,7 @@ const SearchResults = ({
   return (
     <div>
       <Container
+        fluid
         id="results_container"
         className={`px-0 shadow-sm ${Styles.results_container}`}
       >
