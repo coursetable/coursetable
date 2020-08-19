@@ -43,7 +43,7 @@ const CourseConflictIcon = ({ course }) => {
     !inWorksheet && conflict ? (
       <Tooltip id="button-tooltip" {...props}>
         <small style={{ fontWeight: 500 }}>
-          {times === 'TBA' ? 'Invalid Course Time' : 'Scheduling Conflict'}
+          {times === 'TBA' ? 'Invalid Course Time' : 'Conflicts with worksheet'}
         </small>
       </Tooltip>
     ) : (
