@@ -664,7 +664,7 @@ function Search(props) {
       </HotKeys>
       <Fade in={scrollPos > 3 * height}>
         <div className={Styles.up_btn}>
-          <FaArrowCircleUp timeout={1000} onClick={scroll_top} size={30} />
+          <FaArrowCircleUp onClick={scroll_top} size={30} />
         </div>
       </Fade>
     </div>

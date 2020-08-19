@@ -5,6 +5,7 @@ import { Row, Col, Fade } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
+import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 
@@ -40,6 +41,7 @@ function Worksheet() {
   const [hover_expand, setHoverExpand] = useState('none');
   const [cur_expand, setCurExpand] = useState('none');
   const [rev_flex_direction, setRevFlexDirection] = useState(false);
+  const [transition_end, setTransitionEnd] = useState(false);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -169,6 +171,15 @@ function Worksheet() {
             }
             onMouseEnter={() => setHoverExpand('calendar')}
             onMouseLeave={() => setHoverExpand('none')}
+            onTransitionEnd={(e) => {
+              // console.log(e.propertyName);
+              if (
+                e.propertyName === 'transform' &&
+                !transition_end &&
+                cur_expand === 'list'
+              )
+                setTransitionEnd(true);
+            }}
           >
             <WeekSchedule
               className=""
@@ -214,17 +225,30 @@ function Worksheet() {
             onMouseEnter={() => setHoverExpand('list')}
             onMouseLeave={() => setHoverExpand('none')}
           >
-            <WorksheetList
-              onSeasonChange={changeSeason}
-              toggleCourse={toggleCourse}
-              showModal={showModal}
-              courses={filtered_listings}
-              season_codes={season_codes}
-              cur_season={season}
-              hidden_courses={hidden_courses}
-              hasSeason={hasSeason}
-              setHoverCourse={setHoverCourse}
-            />
+            <Fade in={transition_end}>
+              <div style={{ display: transition_end ? '' : 'none' }}>
+                <WorksheetExpandedList
+                  courses={filtered_listings}
+                  showModal={showModal}
+                />
+              </div>
+            </Fade>
+            <Fade in={!transition_end}>
+              <div style={{ display: !transition_end ? '' : 'none' }}>
+                <WorksheetList
+                  onSeasonChange={changeSeason}
+                  toggleCourse={toggleCourse}
+                  showModal={showModal}
+                  courses={filtered_listings}
+                  season_codes={season_codes}
+                  cur_season={season}
+                  hidden_courses={hidden_courses}
+                  hasSeason={hasSeason}
+                  setHoverCourse={setHoverCourse}
+                />
+              </div>
+            </Fade>
+
             <Fade in={hover_expand === 'list'}>
               <div style={{ zIndex: 420 }}>
                 {cur_expand === 'none' ? (
@@ -243,6 +267,7 @@ function Worksheet() {
                     onClick={() => {
                       setCurExpand('none');
                       setHoverExpand('calendar');
+                      if (transition_end === true) setTransitionEnd(false);
                     }}
                   />
                 )}

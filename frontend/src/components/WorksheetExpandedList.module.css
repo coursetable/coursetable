@@ -1,0 +1,41 @@
+.results_container {
+  border-radius: 8px;
+  background: white;
+}
+
+.results_list_container {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  max-height: 80vh;
+  overflow: scroll;
+}
+
+.results_header {
+  background-color: white;
+  border-radius: 8px;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  user-select: none;
+}
+
+.sticky_header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 100;
+}
+
+.results_header_row {
+  border: 0px !important;
+  background-color: white !important;
+  border-radius: 8px 8px 0px 0px !important;
+  user-select: none;
+}
+
+.results_header_inner {
+  background-color: white !important;
+}
+
+:global .sticky {
+  z-index: 1;
+}

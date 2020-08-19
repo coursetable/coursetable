@@ -16,6 +16,8 @@ const buildQuery = (worksheet) => {
       season_code
       section
       course {
+        average_rating
+        average_workload
         course_professors {
           professor {
             name

@@ -122,11 +122,11 @@
   transition: 0.3s;
   transition-delay: 0.3s;
   transition-property: right, opacity;
-  top: 0px;
+  top: 10px;
   right: -30px;
   padding: 7px;
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
   background-color: rgb(198, 232, 255);
   z-index: 2000;
 }
