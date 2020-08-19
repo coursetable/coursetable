@@ -41,7 +41,7 @@
 .filter_title {
   font-size: 0.9rem;
   color: rgba(0, 0, 0, 0.75);
-  webkit-touch-callout: none; /* iOS Safari */
+  -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Old versions of Firefox */
@@ -62,7 +62,7 @@
   font-weight: 500;
   margin-top: 4px;
   margin-bottom: 4px;
-  webkit-touch-callout: none; /* iOS Safari */
+  -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Old versions of Firefox */

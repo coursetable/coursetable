@@ -37,7 +37,7 @@ const CourseConflictIcon = ({ course }) => {
       return;
     }
     setConflict(false);
-  }, [data ? data : []]);
+  }, [course, data]);
 
   const renderTooltip = (props) =>
     !inWorksheet && conflict ? (
