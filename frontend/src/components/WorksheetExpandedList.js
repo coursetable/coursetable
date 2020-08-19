@@ -3,6 +3,7 @@ import React, { useEffect } from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 
 import styles from './WorksheetExpandedList.module.css';
+import search_results_styles from './SearchResults.module.css';
 import WorksheetExpandedListItem from './WorksheetExpandedListItem';
 
 const WorksheetExpandedList = ({ courses, showModal }) => {
@@ -28,11 +29,11 @@ const WorksheetExpandedList = ({ courses, showModal }) => {
       <Container
         fluid
         id="results_container"
-        className={`px-0 shadow-sm ${styles.results_container}`}
+        className={`px-0 shadow-sm ${search_results_styles.results_container}`}
       >
-        <div className={`${styles.sticky_header}`}>
+        <div className={`${search_results_styles.sticky_header}`}>
           <Row
-            className={`mx-auto px-2 py-2 shadow-sm justify-content-between ${styles.results_header_row}`}
+            className={`mx-auto px-2 py-2 shadow-sm justify-content-between ${search_results_styles.results_header_row}`}
           >
             <React.Fragment>
               <Col md={4} style={{ lineHeight: '30px' }}>
