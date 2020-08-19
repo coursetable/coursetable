@@ -12,6 +12,8 @@ import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
+import LinesEllipsis from 'react-lines-ellipsis';
+import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -23,6 +25,7 @@ const SearchResultsItem = ({
   executeGetCourseModal,
   isLast,
 }) => {
+  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
   const [mounted, setMounted] = useState(false);
 
@@ -66,70 +69,63 @@ const SearchResultsItem = ({
       tabIndex="0"
     >
       <Col md={4} className={Styles.course_header}>
-        <div className={Styles.course_name}>
-          {course.title.length > 32
-            ? course.title.slice(0, 29) + '...'
-            : course.title}
-        </div>
-        <div className={Styles.course_code}>
-          {course.course_codes
-            ? course.course_codes.length > 2
-              ? course.course_codes[0] + ' • ' + course.course_codes[1] + ' ...'
-              : course.course_codes.join(' • ')
-            : ''}
-        </div>
-        <div className={Styles.skills_areas}>
-          {course.skills.map((skill) => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[skill],
-                backgroundColor: chroma(skillsAreasColors[skill])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {skill}
-            </Badge>
-          ))}
-          {course.areas.map((area) => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[area],
-                backgroundColor: chroma(skillsAreasColors[area])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {area}
-            </Badge>
-          ))}
-        </div>
+        <div className={Styles.course_name}>{course.title}</div>
+        <Row className="m-auto">
+          <div className={Styles.course_code}>
+            {course.course_codes.join(' • ')}
+          </div>
+          <div className={Styles.skills_areas}>
+            {course.skills.map((skill) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[skill],
+                  backgroundColor: chroma(skillsAreasColors[skill])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {skill}
+              </Badge>
+            ))}
+            {course.areas.map((area) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[area],
+                  backgroundColor: chroma(skillsAreasColors[area])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {area}
+              </Badge>
+            ))}
+          </div>
+        </Row>
         {course['course.extra_info'] !== 'ACTIVE' && (
           <div className={Styles.extra_info}>CANCELLED</div>
         )}
       </Col>
       <Col md={2} className={Styles.course_professors}>
-        {course.professor_names.map((name, index) =>
-          index > 1 ? (
-            <div key={key++} />
-          ) : (
-            <Row key={key++} className="m-auto">
-              {(name.length > 15 ? name.slice(0, 13) + '...' : name) +
-                (index === course.professor_names.length - 1
-                  ? ''
-                  : index === 1
-                  ? ', ...'
-                  : ',')}
-            </Row>
-          )
+        {mounted ? (
+          <ResponsiveEllipsis
+            style={{ whiteSpace: 'pre-wrap' }}
+            text={
+              course.professor_names.length === 0
+                ? 'TBA'
+                : course.professor_names.join(' • ')
+            }
+            maxLine={2}
+            basedOn="words"
+          />
+        ) : (
+          'dummy text'
         )}
-        {course.professor_names.length === 0 ? 'TBA' : ''}
       </Col>
       <Col md={3}>
         <div className={Styles.course_time}>{course.times_summary}</div>

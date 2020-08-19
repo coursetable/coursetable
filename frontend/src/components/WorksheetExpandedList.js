@@ -29,7 +29,7 @@ const WorksheetExpandedList = ({ courses, showModal }) => {
       <Container
         fluid
         id="results_container"
-        className={`px-0 shadow-sm ${search_results_styles.results_container}`}
+        className={`px-0 shadow-sm ${search_results_styles.results_container} ${styles.shadow}`}
       >
         <div className={`${search_results_styles.sticky_header}`}>
           <Row

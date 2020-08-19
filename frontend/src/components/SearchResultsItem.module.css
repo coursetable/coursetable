@@ -19,12 +19,21 @@
 
 .course_name {
   font-weight: bold;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .course_code {
-  display: inline;
   color: rgba(0, 0, 0, 0.5);
   margin-right: 0.5rem;
+  display: block;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .dot {
