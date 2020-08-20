@@ -89,7 +89,7 @@ const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
       <Col md={2} className={Styles.course_professors}>
         <ResponsiveEllipsis
           style={{ whiteSpace: 'pre-wrap' }}
-          text={course.professors.length === 0 ? 'TBA' : course.professors}
+          text={!course.professors || course.professors.length === 0 ? 'TBA' : course.professors}
           maxLine={2}
           basedOn="words"
         />
