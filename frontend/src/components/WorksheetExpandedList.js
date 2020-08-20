@@ -26,7 +26,7 @@ const WorksheetExpandedList = ({
   }
 
   for (let i = 0; i < filtered_courses.length; i++) {
-    const course = courses[i];
+    const course = filtered_courses[i];
     items.push(
       <div key={i}>
         <WorksheetExpandedListItem
