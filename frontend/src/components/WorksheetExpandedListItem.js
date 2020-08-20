@@ -48,7 +48,7 @@ const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
       }}
       tabIndex="0"
     >
-      <Col md={4} className={Styles.course_header}>
+      <Col md={3} className={Styles.course_header}>
         <div className={Styles.course_name}>{course['course.title']}</div>
         <Row className="m-auto">
           <div className={Styles.course_code}>{course.course_code}</div>
@@ -100,7 +100,7 @@ const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
         </div>
         <div className={Styles.course_location}>{courseLocation}</div>
       </Col>
-      <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }} className="d-flex">
         <div
           style={{
             color: course['course.average_rating']
@@ -112,14 +112,14 @@ const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
                   .css()
               : '#ebebeb',
           }}
-          className={Styles.rating_cell}
+          className={Styles.rating_cell + ' my-auto'}
         >
           {course['course.average_rating']
             ? course['course.average_rating'].toFixed(1)
             : 'N/A'}
         </div>
       </Col>
-      <Col md={1} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
         <div
           style={{
             color: course['course.average_workload']
@@ -133,14 +133,14 @@ const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
                   .css()
               : '#ebebeb',
           }}
-          className={Styles.rating_cell}
+          className={Styles.rating_cell + ' my-auto'}
         >
           {course['course.average_workload']
             ? course['course.average_workload'].toFixed(1)
             : 'N/A'}
         </div>
       </Col>
-      <Col md={1} />
+      <Col md={2} />
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           alwaysRed={true}
