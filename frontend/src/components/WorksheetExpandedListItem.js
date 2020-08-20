@@ -96,12 +96,16 @@ const WorksheetExpandedListItem = ({
       <Col md={2} className={Styles.course_professors}>
         <ResponsiveEllipsis
           style={{ whiteSpace: 'pre-wrap' }}
-          text={!course.professors || course.professors.length === 0 ? 'TBA' : course.professors}
+          text={
+            !course.professors || course.professors.length === 0
+              ? 'TBA'
+              : course.professors
+          }
           maxLine={2}
           basedOn="words"
         />
       </Col>
-      <Col md={3}>
+      <Col md={2} className="mr-2">
         <div className={Styles.course_time}>
           {course['course.times_summary']}
         </div>
@@ -129,6 +133,25 @@ const WorksheetExpandedListItem = ({
       <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
         <div
           style={{
+            color: course['professor_avg_rating']
+              ? ratingColormap(course['professor_avg_rating']).darken(2).css()
+              : '#b5b5b5',
+            backgroundColor: course['professor_avg_rating']
+              ? chroma(ratingColormap(course['professor_avg_rating']))
+                  .alpha(0.33)
+                  .css()
+              : '#ebebeb',
+          }}
+          className={Styles.rating_cell + ' my-auto'}
+        >
+          {course['professor_avg_rating']
+            ? course['professor_avg_rating']
+            : 'N/A'}
+        </div>
+      </Col>
+      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
+        <div
+          style={{
             color: course['course.average_workload']
               ? workloadColormap(course['course.average_workload'])
                   .darken(2)
@@ -147,7 +170,9 @@ const WorksheetExpandedListItem = ({
             : 'N/A'}
         </div>
       </Col>
-      <Col md={2} />
+      <Col md={'auto'} className="d-flex p-0">
+        <div style={{ width: '166px' }} className="ml-auto pr-3" />
+      </Col>
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           alwaysRed={true}

@@ -69,18 +69,21 @@ const WorksheetExpandedList = ({
               <Col md={2} className="d-flex">
                 <strong className="my-auto">{'Professors'}</strong>
               </Col>
-              <Col md={3} className="d-flex">
+              <Col md={2} className="d-flex mr-2">
                 <strong className="my-auto">{'Meets'}</strong>
               </Col>
               <Col md={1} className="d-flex">
-                <strong className="my-auto">{'Rating'}</strong>
+                <strong className="my-auto">{'Class'}</strong>
+              </Col>
+              <Col md={1} className="d-flex">
+                <strong className="my-auto">{'Prof'}</strong>
               </Col>
               <Col md={1} className="d-flex">
                 <strong className="my-auto">{'Work'}</strong>
               </Col>
             </React.Fragment>
 
-            <Col md={2} className="d-flex p-0">
+            <Col md={'auto'} className="d-flex p-0">
               <div className="ml-auto pr-3 my-auto">
                 <Select
                   value={{

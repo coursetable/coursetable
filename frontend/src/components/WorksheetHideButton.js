@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './WorksheetToggleButton.css';
-import { FiCheckSquare, FiSquare } from 'react-icons/fi';
+import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 const WorksheetHideButton = (props) => {
@@ -28,9 +28,9 @@ const WorksheetHideButton = (props) => {
     >
       <Button variant="toggle" onClick={toggleWorkSheet} className="p-0">
         {hidden ? (
-          <FiSquare color="#d6d6d6" size={button_size} />
+          <BsEyeSlash color="#d6d6d6" size={button_size} />
         ) : (
-          <FiCheckSquare size={button_size} />
+          <BsEye size={button_size} />
         )}
       </Button>
     </OverlayTrigger>

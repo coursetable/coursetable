@@ -1,16 +1,14 @@
-/* .css-2b097c-container {
-  width: 150px !important;
-} */
-
 .css-yk16xz-control {
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
   border-radius: 0px !important;
   width: 150px !important;
+  cursor: pointer !important;
 }
 
 .css-1pahdxg-control {
+  cursor: pointer !important;
   width: 150px !important;
   border-top: none !important;
   border-left: none !important;
