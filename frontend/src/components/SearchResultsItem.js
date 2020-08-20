@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Row, Col, Badge, OverlayTrigger, Popover } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -47,19 +47,16 @@ const SearchResultsItem = ({
     }
   }
 
-  const renderTitleTooltip = props => {
+  const renderTitlePopover = props => {
     return (
-      <Tooltip {...props}>
-        <div style={{ textAlign: 'left' }}>
-          {course.title}
-          <br />
-          <small>
-            {course.description.length <= 500
-              ? course.description
-              : course.description.slice(0, 500) + '...'}
-          </small>
-        </div>
-      </Tooltip>
+      <Popover {...props} id="title_popover">
+        <Popover.Title>{course.title}</Popover.Title>
+        <Popover.Content>
+          {course.description.length <= 500
+            ? course.description
+            : course.description.slice(0, 500) + '...'}
+        </Popover.Content>
+      </Popover>
     );
   };
 
@@ -84,11 +81,7 @@ const SearchResultsItem = ({
       }}
       tabIndex="0"
     >
-      <OverlayTrigger
-        placement="right"
-        delay={{ show: 100, hide: 100 }}
-        overlay={renderTitleTooltip}
-      >
+      <OverlayTrigger placement="right" overlay={renderTitlePopover}>
         <Col md={4} className={Styles.course_header}>
           <div className={Styles.course_name}>{course.title}</div>
           <Row className="m-auto">

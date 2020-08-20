@@ -26,6 +26,10 @@
   text-overflow: ellipsis;
 }
 
+:global(#title_popover) {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
 .course_code {
   color: rgba(0, 0, 0, 0.5);
   margin-right: 0.5rem;
