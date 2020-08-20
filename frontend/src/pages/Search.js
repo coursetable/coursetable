@@ -84,9 +84,6 @@ function Search(props) {
   //State used to rebuild form DOM to reset it
   const [form_key, setFormKey] = useState(0);
 
-  // whether to execute textless or text search
-  var [searchType, setSearchType] = React.useState();
-
   // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
 
@@ -122,8 +119,8 @@ function Search(props) {
 
   // handler for executing search with text
   var [
-    executeTextSearch,
-    { called: textCalled, loading: textLoading, data: textData },
+    executeSearch,
+    { called: searchCalled, loading: searchLoading, data: searchData },
   ] = useLazyQuery(
     SEARCH_COURSES,
     { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
@@ -254,25 +251,22 @@ function Search(props) {
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
     };
-    setSearchType('TEXT');
-    executeTextSearch({
-      variables: Object.assign(search_variables, {
-        search_text: searchText.value,
-      }),
+    executeSearch({
+      variables: search_variables
     });
   });
 
   
-  if (textCalled) {
-    if (textLoading) {
+  if (searchCalled) {
+    if (searchLoading) {
       if (!searching) setSearching(true); // Set searching after loading starts
     } else {
       // Keep old courses until new courses are fetched
-      if (textData && searching) {
-        if (textData.search_listing_info.length < QUERY_SIZE)
+      if (searchData && searching) {
+        if (searchData.search_listing_info.length < QUERY_SIZE)
           setFetchedAll(true);
         // Combine old courses with new fetched courses
-        let new_data = [...old_data].concat(textData.search_listing_info);
+        let new_data = [...old_data].concat(searchData.search_listing_info);
         setOldData(new_data); // Replace old with new
         setSearching(false); // Not searching
       }
@@ -615,7 +609,7 @@ function Search(props) {
             setView={handleSetView}
             offset={offset}
             setOffset={setOffset}
-            loading={textLoading}
+            loading={searchLoading}
             loadMore={handleSubmit}
             setScrollPos={setScrollPos}
             multiSeasons={multiSeasons}
