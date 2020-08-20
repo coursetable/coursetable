@@ -42,6 +42,7 @@ const buildQuery = (worksheet) => {
         times_summary
         times_by_day
         description
+        requirements
       }
     }
   }`;

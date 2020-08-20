@@ -281,16 +281,25 @@ const CourseModalOverview = (props) => {
               basedOn="words"
               onReflow={handleReflow}
             />
-            {clamped && (
-              <span
-                className={Styles.read_more + ' mx-auto'}
-                onClick={() => {
-                  setLines(100);
-                }}
-                title="Read More"
-              >
-                <IoIosArrowDown size={20} />
-              </span>
+            <Row className="m-auto">
+              {clamped && (
+                <span
+                  className={Styles.read_more + ' mx-auto'}
+                  onClick={() => {
+                    setLines(100);
+                  }}
+                  title="Read More"
+                >
+                  <IoIosArrowDown size={20} />
+                </span>
+              )}
+            </Row>
+            {listing['course.requirements'] && (
+              <Row className="m-auto pt-1">
+                <span className={Styles.requirements}>
+                  {listing['course.requirements']}
+                </span>
+              </Row>
             )}
           </Row>
           {listing['professors'] && (

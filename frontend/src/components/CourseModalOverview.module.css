@@ -58,13 +58,17 @@
 
 .read_more {
   color: #007bff;
-  font-weight: 500;
   transition: 0.3s;
 }
 
 .read_more:hover {
   cursor: pointer;
   color: rgb(49, 94, 192);
+}
+
+.requirements {
+  font-weight: 500;
+  color: rgb(252, 105, 105);
 }
 
 @media (hover: none) {

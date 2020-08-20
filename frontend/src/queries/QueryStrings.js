@@ -108,6 +108,7 @@ export const GET_COURSE_MODAL = gql`
         times_summary
         times_by_day
         description
+        requirements
       }
     }
   }
