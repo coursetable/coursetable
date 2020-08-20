@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Row, Col, Badge } from 'react-bootstrap';
+import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -47,6 +47,14 @@ const SearchResultsItem = ({
     }
   }
 
+  const renderTitleTooltip = props => {
+    return (
+      <Tooltip id="button-tooltip" {...props}>
+        <small>{course.title}</small>
+      </Tooltip>
+    );
+  };
+
   return (
     <Row
       className={
@@ -69,13 +77,17 @@ const SearchResultsItem = ({
       tabIndex="0"
     >
       <Col md={4} className={Styles.course_header}>
-        <div className={Styles.course_name}>{course.title}</div>
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 250, hide: 250 }}
+          overlay={renderTitleTooltip}
+        >
+          <div className={Styles.course_name}>{course.title}</div>
+        </OverlayTrigger>
         <Row className="m-auto">
-          <div className={Styles.course_code}>
-            {course.course_code}
-          </div>
+          <div className={Styles.course_code}>{course.course_code}</div>
           <div className={Styles.skills_areas}>
-            {course.skills.map((skill) => (
+            {course.skills.map(skill => (
               <Badge
                 variant="secondary"
                 className={Styles.tag}
@@ -90,7 +102,7 @@ const SearchResultsItem = ({
                 {skill}
               </Badge>
             ))}
-            {course.areas.map((area) => (
+            {course.areas.map(area => (
               <Badge
                 variant="secondary"
                 className={Styles.tag}
@@ -135,10 +147,14 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_rating
-              ? ratingColormap(course.average_rating).darken(2).css()
+              ? ratingColormap(course.average_rating)
+                  .darken(2)
+                  .css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
+              ? chroma(ratingColormap(course.average_rating))
+                  .alpha(0.33)
+                  .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell}
@@ -150,7 +166,9 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_workload
-              ? workloadColormap(course.average_workload).darken(2).css()
+              ? workloadColormap(course.average_workload)
+                  .darken(2)
+                  .css()
               : '#b5b5b5',
             backgroundColor: course.average_workload
               ? chroma(workloadColormap(course.average_workload))
