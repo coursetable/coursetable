@@ -56,6 +56,14 @@
   font-weight: 500;
 }
 
+.details {
+  display: block;
+  width: 90%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .read_more {
   color: #007bff;
   transition: 0.3s;

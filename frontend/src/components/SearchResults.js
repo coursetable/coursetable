@@ -211,7 +211,7 @@ const SearchResults = ({
           isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
           rowCount={!fetchedAll ? grid_html.length + 1 : grid_html.length}
-          threshold={8}
+          threshold={15}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -249,6 +249,7 @@ const SearchResults = ({
           isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
           rowCount={!fetchedAll ? data.length + 1 : data.length}
+          threshold={30}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>

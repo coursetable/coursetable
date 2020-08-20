@@ -173,14 +173,18 @@ const CourseModalOverview = (props) => {
             style={{ flex: 'none' }}
           >
             <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
-            <div className={expanded ? Styles.shown : Styles.hidden}>
+            <div
+              className={
+                Styles.details +
+                ' mx-auto ' +
+                (expanded ? Styles.shown : Styles.hidden)
+              }
+            >
               {filter === 'professor'
                 ? evaluations[i].course_code[0]
                 : filter === 'both'
                 ? 'Section ' + evaluations[i].section
-                : evaluations[i].professor[0].length <= 15
-                ? evaluations[i].professor[0]
-                : evaluations[i].professor[0].substr(0, 12) + '...'}
+                : evaluations[i].professor[0]}
             </div>
           </Col>
           <Col
@@ -271,7 +275,7 @@ const CourseModalOverview = (props) => {
   return (
     <Modal.Body>
       <Row className="m-auto">
-        <Col md={6} className="px-0 mt-0 mb-3">
+        <Col md={7} className="px-0 mt-0 mb-3">
           {/* COURSE DESCRIPTION */}
           <Row className="m-auto pb-3">
             <ResponsiveEllipsis
@@ -388,7 +392,7 @@ const CourseModalOverview = (props) => {
             </Row>
           )}
         </Col>
-        <Col md={6} className="px-0 my-0">
+        <Col md={5} className="px-0 my-0">
           {/* <Row className="m-auto justify-content-center">
                 <strong>Evaluations</strong>
               </Row> */}

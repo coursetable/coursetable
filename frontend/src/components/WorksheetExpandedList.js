@@ -4,7 +4,6 @@ import { Row, Col, Container } from 'react-bootstrap';
 
 import styles from './WorksheetExpandedList.module.css';
 import search_results_styles from './SearchResults.module.css';
-import './WorksheetExpandedList.css';
 import WorksheetExpandedListItem from './WorksheetExpandedListItem';
 import Select from 'react-select';
 import { toSeasonString } from '../utilities';
