@@ -49,8 +49,16 @@ const SearchResultsItem = ({
 
   const renderTitleTooltip = props => {
     return (
-      <Tooltip id="button-tooltip" {...props}>
-        <small>{course.title}</small>
+      <Tooltip {...props}>
+        <div style={{ textAlign: 'left' }}>
+          {course.title}
+          <br />
+          <small>
+            {course.description.length <= 500
+              ? course.description
+              : course.description.slice(0, 500) + '...'}
+          </small>
+        </div>
       </Tooltip>
     );
   };
@@ -76,53 +84,54 @@ const SearchResultsItem = ({
       }}
       tabIndex="0"
     >
-      <Col md={4} className={Styles.course_header}>
-        <OverlayTrigger
-          placement="top"
-          delay={{ show: 250, hide: 250 }}
-          overlay={renderTitleTooltip}
-        >
+      <OverlayTrigger
+        placement="right"
+        delay={{ show: 100, hide: 100 }}
+        overlay={renderTitleTooltip}
+      >
+        <Col md={4} className={Styles.course_header}>
           <div className={Styles.course_name}>{course.title}</div>
-        </OverlayTrigger>
-        <Row className="m-auto">
-          <div className={Styles.course_code}>{course.course_code}</div>
-          <div className={Styles.skills_areas}>
-            {course.skills.map(skill => (
-              <Badge
-                variant="secondary"
-                className={Styles.tag}
-                key={key++}
-                style={{
-                  color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill])
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {skill}
-              </Badge>
-            ))}
-            {course.areas.map(area => (
-              <Badge
-                variant="secondary"
-                className={Styles.tag}
-                key={key++}
-                style={{
-                  color: skillsAreasColors[area],
-                  backgroundColor: chroma(skillsAreasColors[area])
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {area}
-              </Badge>
-            ))}
-          </div>
-        </Row>
-        {course['course.extra_info'] !== 'ACTIVE' && (
-          <div className={Styles.extra_info}>CANCELLED</div>
-        )}
-      </Col>
+          <Row className="m-auto">
+            <div className={Styles.course_code}>{course.course_code}</div>
+            <div className={Styles.skills_areas}>
+              {course.skills.map(skill => (
+                <Badge
+                  variant="secondary"
+                  className={Styles.tag}
+                  key={key++}
+                  style={{
+                    color: skillsAreasColors[skill],
+                    backgroundColor: chroma(skillsAreasColors[skill])
+                      .alpha(0.16)
+                      .css(),
+                  }}
+                >
+                  {skill}
+                </Badge>
+              ))}
+              {course.areas.map(area => (
+                <Badge
+                  variant="secondary"
+                  className={Styles.tag}
+                  key={key++}
+                  style={{
+                    color: skillsAreasColors[area],
+                    backgroundColor: chroma(skillsAreasColors[area])
+                      .alpha(0.16)
+                      .css(),
+                  }}
+                >
+                  {area}
+                </Badge>
+              ))}
+            </div>
+          </Row>
+          {course['course.extra_info'] !== 'ACTIVE' && (
+            <div className={Styles.extra_info}>CANCELLED</div>
+          )}
+        </Col>
+      </OverlayTrigger>
+
       <Col md={2} className={Styles.course_professors}>
         {mounted ? (
           <ResponsiveEllipsis
