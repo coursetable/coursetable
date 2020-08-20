@@ -28,6 +28,13 @@ const SearchResultsItem = ({
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
   const [mounted, setMounted] = useState(false);
+  const professor_rating =
+    course['course.course_professors'] &&
+    course['course.course_professors'][0] &&
+    course['course.course_professors'][0]['professor'] &&
+    course['course.course_professors'][0]['professor']['average_rating']
+      ? course['course.course_professors'][0]['professor']['average_rating']
+      : -1;
 
   useEffect(() => {
     if (!mounted) setMounted(true);
@@ -50,7 +57,9 @@ const SearchResultsItem = ({
   const renderTitlePopover = (props) => {
     return (
       <Popover {...props} id="title_popover">
-        <Popover.Title>{course.title}</Popover.Title>
+        <Popover.Title>
+          <strong>{course.title}</strong>
+        </Popover.Title>
         <Popover.Content>
           {course.description.length <= 500
             ? course.description
@@ -82,7 +91,7 @@ const SearchResultsItem = ({
       tabIndex="0"
     >
       <OverlayTrigger placement="right" overlay={renderTitlePopover}>
-        <Col md={4} className={Styles.course_header}>
+        <Col md={3} className={Styles.course_header}>
           <div className={Styles.course_name}>{course.title}</div>
           <Row className="m-auto">
             <div className={Styles.course_code}>{course.course_code}</div>
@@ -138,14 +147,14 @@ const SearchResultsItem = ({
             basedOn="words"
           />
         ) : (
-          'dummy text'
+          'professor'
         )}
       </Col>
       <Col md={3}>
         <div className={Styles.course_time}>{course.times_summary}</div>
         <div className={Styles.course_location}>{courseLocation}</div>
       </Col>
-      <Col md={1} xs={4} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
         <div
           style={{
             color: course.average_rating
@@ -155,12 +164,29 @@ const SearchResultsItem = ({
               ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
               : '#ebebeb',
           }}
-          className={Styles.rating_cell}
+          className={Styles.rating_cell + ' my-auto'}
         >
           {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
         </div>
       </Col>
-      <Col md={1} style={{ whiteSpace: 'nowrap' }}>
+      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
+        <div
+          style={{
+            color:
+              professor_rating !== -1
+                ? ratingColormap(professor_rating).darken(2).css()
+                : '#b5b5b5',
+            backgroundColor:
+              professor_rating !== -1
+                ? chroma(ratingColormap(professor_rating)).alpha(0.33).css()
+                : '#ebebeb',
+          }}
+          className={Styles.rating_cell + ' my-auto'}
+        >
+          {professor_rating !== -1 ? professor_rating.toFixed(1) : 'N/A'}
+        </div>
+      </Col>
+      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
         <div
           style={{
             color: course.average_workload
@@ -172,7 +198,7 @@ const SearchResultsItem = ({
                   .css()
               : '#ebebeb',
           }}
-          className={Styles.rating_cell}
+          className={Styles.rating_cell + ' my-auto'}
         >
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>

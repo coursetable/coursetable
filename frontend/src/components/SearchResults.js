@@ -294,7 +294,7 @@ const SearchResults = ({
             >
               {isList ? (
                 <React.Fragment>
-                  <Col md={4} style={{ lineHeight: '30px' }}>
+                  <Col md={3} style={{ lineHeight: '30px' }}>
                     <strong>{'Description'}</strong>
                   </Col>
                   <Col md={2} style={{ lineHeight: '30px' }}>
@@ -304,7 +304,10 @@ const SearchResults = ({
                     <strong>{'Meets'}</strong>
                   </Col>
                   <Col md={1} style={{ lineHeight: '30px' }}>
-                    <strong>{'Rating'}</strong>
+                    <strong>{'Class'}</strong>
+                  </Col>
+                  <Col md={1} style={{ lineHeight: '30px' }}>
+                    <strong>{'Prof'}</strong>
                   </Col>
                   <Col md={1} style={{ lineHeight: '30px' }}>
                     <strong>{'Work'}</strong>

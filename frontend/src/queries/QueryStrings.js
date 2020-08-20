@@ -66,6 +66,12 @@ export const SEARCH_COURSES = gql`
       season_code
       course {
         extra_info
+        course_professors {
+          professor {
+            name
+            average_rating
+          }
+        }
       }
       listing {
         crn

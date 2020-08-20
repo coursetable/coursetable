@@ -1,18 +1,18 @@
 import chroma from 'chroma-js';
 
 export const sortbyOptions = [
-	{ label: 'Sort by relevance', value: 'text' },
 	{ label: 'Sort by course name', value: 'course_name' },
 	{ label: 'Sort by rating', value: 'rating' },
 	{ label: 'Sort by workload', value: 'workload' },
 	// { label: 'Enrollment', value: 'enrollment' },
+  { label: 'Sort by course code', value: 'text' },
 ];
 
 export const sortbyQueries = {
-	text: null,
 	course_name: { title: 'asc' },
 	rating: { average_rating: 'desc' },
 	workload: { average_workload: 'asc' },
+  text: { course_code: 'asc' },
 };
 
 export const areas = ['Hu', 'So', 'Sc'];
