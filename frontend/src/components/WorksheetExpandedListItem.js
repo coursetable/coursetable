@@ -15,10 +15,17 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import Styles from './SearchResultsItem.module.css';
 
-const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
+const WorksheetExpandedListItem = ({
+  course,
+  showModal,
+  isLast,
+  end_fade,
+  hasSeason,
+}) => {
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
   let courseLocation;
+  end_fade = end_fade;
 
   if (course['course.locations_summary'] === 'TBA') {
     courseLocation = '';
@@ -147,6 +154,7 @@ const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
           crn={course.crn}
           season_code={course.season_code}
           modal={false}
+          hasSeason={hasSeason}
         />
       </div>
     </Row>

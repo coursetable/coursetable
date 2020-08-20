@@ -16,6 +16,7 @@ const WorksheetExpandedList = ({
   cur_season,
   season_codes,
   onSeasonChange,
+  hasSeason,
 }) => {
   let items = [];
   let filtered_courses = [];
@@ -34,6 +35,7 @@ const WorksheetExpandedList = ({
           showModal={showModal}
           isLast={i === filtered_courses.length - 1}
           end_fade={end_fade}
+          hasSeason={hasSeason}
         />
       </div>
     );

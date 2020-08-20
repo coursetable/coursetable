@@ -244,6 +244,7 @@ function Worksheet() {
                   cur_season={season}
                   season_codes={season_codes}
                   onSeasonChange={changeSeason}
+                  hasSeason={hasSeason}
                 />
               </div>
             </Fade>
