@@ -41,7 +41,8 @@ function Worksheet() {
   const [hover_expand, setHoverExpand] = useState('none');
   const [cur_expand, setCurExpand] = useState('none');
   const [rev_flex_direction, setRevFlexDirection] = useState(false);
-  const [transition_end, setTransitionEnd] = useState(false);
+  const [start_fade, setStartFade] = useState(false);
+  const [end_fade, setEndFade] = useState(false);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -175,10 +176,10 @@ function Worksheet() {
               // console.log(e.propertyName);
               if (
                 e.propertyName === 'transform' &&
-                !transition_end &&
+                !start_fade &&
                 cur_expand === 'list'
               )
-                setTransitionEnd(true);
+                setStartFade(true);
             }}
           >
             <WeekSchedule
@@ -224,17 +225,27 @@ function Worksheet() {
             }
             onMouseEnter={() => setHoverExpand('list')}
             onMouseLeave={() => setHoverExpand('none')}
+            onTransitionEnd={(e) => {
+              // console.log(e.propertyName);
+              if (
+                e.propertyName === 'flex-basis' &&
+                !end_fade &&
+                cur_expand === 'list'
+              )
+                setEndFade(true);
+            }}
           >
-            <Fade in={transition_end}>
-              <div style={{ display: transition_end ? '' : 'none' }}>
+            <Fade in={start_fade}>
+              <div style={{ display: start_fade ? '' : 'none' }}>
                 <WorksheetExpandedList
                   courses={filtered_listings}
                   showModal={showModal}
+                  end_fade={end_fade}
                 />
               </div>
             </Fade>
-            <Fade in={!transition_end}>
-              <div style={{ display: !transition_end ? '' : 'none' }}>
+            <Fade in={!start_fade}>
+              <div style={{ display: !start_fade ? '' : 'none' }}>
                 <WorksheetList
                   onSeasonChange={changeSeason}
                   toggleCourse={toggleCourse}
@@ -267,7 +278,8 @@ function Worksheet() {
                     onClick={() => {
                       setCurExpand('none');
                       setHoverExpand('calendar');
-                      if (transition_end === true) setTransitionEnd(false);
+                      if (start_fade === true) setStartFade(false);
+                      if (end_fade === true) setEndFade(false);
                     }}
                   />
                 )}

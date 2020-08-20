@@ -11,11 +11,13 @@ import {
 import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
+import LinesEllipsis from 'react-lines-ellipsis';
+import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import Styles from './SearchResultsItem.module.css';
 
-const WorksheetExpandedListItem = ({ course, showModal, isLast }) => {
+const WorksheetExpandedListItem = ({ course, showModal, isLast, end_fade }) => {
+  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
-
   let courseLocation;
 
   if (course['course.locations_summary'] === 'TBA') {
@@ -47,47 +49,50 @@ const WorksheetExpandedListItem = ({ course, showModal, isLast }) => {
       tabIndex="0"
     >
       <Col md={4} className={Styles.course_header}>
-        <div className={Styles.course_name}>
-          {course['course.title'].length > 32
-            ? course['course.title'].slice(0, 29) + '...'
-            : course['course.title']}
-        </div>
-        <div className={Styles.course_code}>{course.course_code}</div>
-        <div className={Styles.skills_areas}>
-          {course['course.skills'].map((skill) => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[skill],
-                backgroundColor: chroma(skillsAreasColors[skill])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {skill}
-            </Badge>
-          ))}
-          {course['course.areas'].map((area) => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[area],
-                backgroundColor: chroma(skillsAreasColors[area])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {area}
-            </Badge>
-          ))}
-        </div>
+        <div className={Styles.course_name}>{course['course.title']}</div>
+        <Row className="m-auto">
+          <div className={Styles.course_code}>{course.course_code}</div>
+          <div className={Styles.skills_areas}>
+            {course['course.skills'].map((skill) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[skill],
+                  backgroundColor: chroma(skillsAreasColors[skill])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {skill}
+              </Badge>
+            ))}
+            {course['course.areas'].map((area) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[area],
+                  backgroundColor: chroma(skillsAreasColors[area])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {area}
+              </Badge>
+            ))}
+          </div>
+        </Row>
       </Col>
       <Col md={2} className={Styles.course_professors}>
-        {course.professors.length === 0 ? 'TBA' : course.professors}
+        <ResponsiveEllipsis
+          style={{ whiteSpace: 'pre-wrap' }}
+          text={course.professors.length === 0 ? 'TBA' : course.professors}
+          maxLine={2}
+          basedOn="words"
+        />
       </Col>
       <Col md={3}>
         <div className={Styles.course_time}>

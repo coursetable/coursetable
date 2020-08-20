@@ -6,7 +6,7 @@ import styles from './WorksheetExpandedList.module.css';
 import search_results_styles from './SearchResults.module.css';
 import WorksheetExpandedListItem from './WorksheetExpandedListItem';
 
-const WorksheetExpandedList = ({ courses, showModal }) => {
+const WorksheetExpandedList = ({ courses, showModal, end_fade }) => {
   let items = [];
 
   // useEffect(() => {
@@ -18,6 +18,7 @@ const WorksheetExpandedList = ({ courses, showModal }) => {
           course={course}
           showModal={showModal}
           isLast={i === courses.length - 1}
+          end_fade={end_fade}
         />
       </div>
     );
