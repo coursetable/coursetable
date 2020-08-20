@@ -4,12 +4,16 @@ import styles from './Join.module.css';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 
+import {
+  selectStyles,
+} from '../queries/Constants';
+
 const animatedComponents = makeAnimated();
 
 function Join() {
   const [validated, setValidated] = useState(false);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
       event.preventDefault();
@@ -50,6 +54,7 @@ function Join() {
             isMulti
             name="roles[]"
             components={animatedComponents}
+            styles={selectStyles}
             options={[
               { value: 'Frontend', label: 'Front-end Developer' },
               { value: 'Backend', label: 'Back-end Developer' },

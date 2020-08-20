@@ -5,6 +5,10 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import './Feedback.css';
 
+import {
+  selectStyles,
+} from '../queries/Constants';
+
 const animatedComponents = makeAnimated();
 
 function Feedback() {
@@ -27,7 +31,7 @@ function Feedback() {
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.feedback_header + ' mt-5 mb-1'}>Feedback Form</h1>
       <p className={styles.feedback_description + ' mb-3 text-muted'}>
-        Feedback Form Description
+        Let us know what you think!
       </p>
       <Form
         noValidate
@@ -49,6 +53,7 @@ function Feedback() {
             ]}
             onChange={(option) => setIsBug(option.value === 'Bug Report')}
             name="feedback_type"
+            styles={selectStyles}
           />
         </Form.Group>
 
@@ -57,12 +62,12 @@ function Feedback() {
             <Form.Group className={styles.form_group}>
               <Form.Label className={styles.form_label}>
                 Course(s) Involved?
-                <span className="text-muted">{' (Include Season)'}</span>
+                <span className="text-muted">{' (Include season)'}</span>
               </Form.Label>
               <Form.Control
                 type="text"
                 name="course"
-                placeholder="e.g. CPSC 323 Spring, 2020"
+                placeholder="e.g. CPSC 323, Spring 2020"
               />
             </Form.Group>
 
@@ -74,6 +79,7 @@ function Feedback() {
                 isMulti
                 name="page[]"
                 components={animatedComponents}
+                styles={selectStyles}
                 options={[
                   { value: 'Login', label: 'Login' },
                   { value: 'Home', label: 'Home' },
@@ -97,6 +103,7 @@ function Feedback() {
                 isMulti
                 name="system[]"
                 components={animatedComponents}
+                styles={selectStyles}
                 options={[
                   { value: 'Chrome', label: 'Chrome' },
                   { value: 'Safari', label: 'Safari' },
@@ -147,7 +154,7 @@ function Feedback() {
             as="textarea"
             name="description"
             rows="4"
-            placeholder="What's Up?"
+            placeholder="What's up?"
           />
           <Form.Control.Feedback type="invalid">
             Please enter a description
@@ -155,7 +162,7 @@ function Feedback() {
         </Form.Group>
 
         <Button variant="info" type="submit">
-          Submit Form
+          Submit
         </Button>
       </Form>
     </div>
