@@ -241,6 +241,9 @@ function Worksheet() {
                   courses={filtered_listings}
                   showModal={showModal}
                   end_fade={end_fade}
+                  cur_season={season}
+                  season_codes={season_codes}
+                  onSeasonChange={changeSeason}
                 />
               </div>
             </Fade>
