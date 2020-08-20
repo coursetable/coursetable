@@ -47,7 +47,7 @@ const SearchResultsItem = ({
     }
   }
 
-  const renderTitlePopover = props => {
+  const renderTitlePopover = (props) => {
     return (
       <Popover {...props} id="title_popover">
         <Popover.Title>{course.title}</Popover.Title>
@@ -72,7 +72,7 @@ const SearchResultsItem = ({
       onClick={() => {
         executeGetCourseModal({
           variables: {
-            crn: course['course.listings'][0]['crn'],
+            crn: course['listing.crn'],
             season_code: course['season_code'],
           },
         });
@@ -87,7 +87,7 @@ const SearchResultsItem = ({
           <Row className="m-auto">
             <div className={Styles.course_code}>{course.course_code}</div>
             <div className={Styles.skills_areas}>
-              {course.skills.map(skill => (
+              {course.skills.map((skill) => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -102,7 +102,7 @@ const SearchResultsItem = ({
                   {skill}
                 </Badge>
               ))}
-              {course.areas.map(area => (
+              {course.areas.map((area) => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -149,14 +149,10 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_rating
-              ? ratingColormap(course.average_rating)
-                  .darken(2)
-                  .css()
+              ? ratingColormap(course.average_rating).darken(2).css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating))
-                  .alpha(0.33)
-                  .css()
+              ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell}
@@ -168,9 +164,7 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_workload
-              ? workloadColormap(course.average_workload)
-                  .darken(2)
-                  .css()
+              ? workloadColormap(course.average_workload).darken(2).css()
               : '#b5b5b5',
             backgroundColor: course.average_workload
               ? chroma(workloadColormap(course.average_workload))
@@ -187,7 +181,7 @@ const SearchResultsItem = ({
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           alwaysRed={false}
-          crn={course['course.listings'][0].crn}
+          crn={course['listing.crn']}
           season_code={course.season_code}
           isMobile={isMobile}
         />

@@ -73,7 +73,7 @@ const SearchResultsGridItem = ({
         onClick={() => {
           executeGetCourseModal({
             variables: {
-              crn: course['course.listings'][0]['crn'],
+              crn: course['listing.crn'],
               season_code: course['season_code'],
             },
           });
@@ -243,7 +243,7 @@ const SearchResultsGridItem = ({
         {
           <WorksheetToggleButton
             alwaysRed={false}
-            crn={course['course.listings'][0].crn}
+            crn={course['listing.crn']}
             season_code={course.season_code}
             modal={false}
             isMobile={isMobile}

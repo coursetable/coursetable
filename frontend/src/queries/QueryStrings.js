@@ -65,10 +65,10 @@ export const SEARCH_COURSES = gql`
       requirements
       season_code
       course {
-        listings {
-          crn
-        }
         extra_info
+      }
+      listing {
+        crn
       }
     }
   }

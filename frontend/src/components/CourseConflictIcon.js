@@ -11,7 +11,7 @@ const CourseConflictIcon = ({ course }) => {
   const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(
       course.season_code,
-      course['course.listings'][0].crn.toString(),
+      course['listing.crn'].toString(),
       user.worksheet
     )
   );
@@ -21,7 +21,7 @@ const CourseConflictIcon = ({ course }) => {
 
   const update = isInWorksheet(
     course.season_code,
-    course['course.listings'][0].crn.toString(),
+    course['listing.crn'].toString(),
     user.worksheet
   );
   if (inWorksheet !== update) setInWorksheet(update);
