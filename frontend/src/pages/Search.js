@@ -46,6 +46,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 import { FaArrowCircleUp, FaSearch } from 'react-icons/fa';
 import { BsX } from 'react-icons/bs';
+import { flatten, preprocess_courses } from '../utilities';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -265,7 +266,13 @@ function Search(props) {
         if (searchData.search_listing_info.length < QUERY_SIZE)
           setFetchedAll(true);
         // Combine old courses with new fetched courses
-        let new_data = [...old_data].concat(searchData.search_listing_info);
+        searchData = searchData.search_listing_info.map((x) => {
+          return flatten(x);
+        });
+        searchData = searchData.map((x) => {
+          return preprocess_courses(x);
+        });
+        let new_data = [...old_data].concat(searchData);
         setOldData(new_data); // Replace old with new
         setSearching(false); // Not searching
       }

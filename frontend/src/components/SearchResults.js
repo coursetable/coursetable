@@ -13,9 +13,7 @@ import './SearchResults.css';
 
 import { Container, Col, Row, Spinner } from 'react-bootstrap';
 
-import { useLazyQuery } from '@apollo/react-hooks';
-import { GET_COURSE_MODAL } from '../queries/QueryStrings';
-import { preprocess_courses, flatten } from '../utilities';
+import { flatten } from '../utilities';
 import {
   InfiniteLoader,
   List,
@@ -52,45 +50,18 @@ const SearchResults = ({
 
   // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
-  const [showModal, setShowModal] = useState(false);
-  const [modal_course, setModalCourse] = useState();
+  const [course_modal, setCourseModal] = useState([false, '']);
   // const [show_tooltip, setShowTooltip] = useState(false);
   let key = 0;
   // const [modalCalled, setModalCalled] = React.useState(false);
 
-  var [
-    executeGetCourseModal,
-    { called: modalCalled, loading: modalLoading, data: modalData },
-  ] = useLazyQuery(GET_COURSE_MODAL);
-
-  const hideModal = () => {
-    setShowModal(false);
+  const showModal = (listing) => {
+    setCourseModal([true, listing]);
   };
 
-  var modal;
-
-  if (modalCalled) {
-    if (modalLoading) {
-      modal = (
-        <CourseModal
-          hideModal={hideModal}
-          show={showModal}
-          listing={null}
-          partial_listing={modal_course}
-        />
-      );
-    } else {
-      if (modalData) {
-        modal = (
-          <CourseModal
-            hideModal={hideModal}
-            show={showModal}
-            listing={preprocess_courses(flatten(modalData.listings[0]))}
-          />
-        );
-      }
-    }
-  }
+  const hideModal = () => {
+    setCourseModal([false, '']);
+  };
 
   // Determine if at end or not. Update Offset value
   useEffect(() => {
@@ -155,9 +126,7 @@ const SearchResults = ({
           <SearchResultsItem
             course={flatten(data[index])}
             isMobile={isMobile}
-            setShowModal={setShowModal}
-            setModalCourse={setModalCourse}
-            executeGetCourseModal={executeGetCourseModal}
+            showModal={showModal}
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
           />
         </div>
@@ -190,9 +159,7 @@ const SearchResults = ({
             <SearchResultsGridItem
               course={flatten(data[j])}
               isMobile={isMobile}
-              setShowModal={setShowModal}
-              setModalCourse={setModalCourse}
-              executeGetCourseModal={executeGetCourseModal}
+              showModal={showModal}
               num_cols={num_cols}
               multiSeasons={multiSeasons}
               key={key++}
@@ -349,7 +316,11 @@ const SearchResults = ({
           )}
         </div>
       </Container>
-      {modal}
+      <CourseModal
+        hideModal={hideModal}
+        show={course_modal[0]}
+        listing={course_modal[1]}
+      />
     </div>
   );
 };

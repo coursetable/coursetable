@@ -20,9 +20,7 @@ import { FaCanadianMapleLeaf } from 'react-icons/fa';
 const SearchResultsGridItem = ({
   course,
   isMobile,
-  setShowModal,
-  setModalCourse,
-  executeGetCourseModal,
+  showModal,
   num_cols,
   multiSeasons,
 }) => {
@@ -71,14 +69,7 @@ const SearchResultsGridItem = ({
     >
       <div
         onClick={() => {
-          executeGetCourseModal({
-            variables: {
-              crn: course['listing.crn'],
-              season_code: course['season_code'],
-            },
-          });
-          setShowModal(true);
-          setModalCourse(course);
+          showModal(course);
         }}
         className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
         tabIndex="0"

@@ -17,24 +17,11 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
 import Styles from './SearchResultsItem.module.css';
 
-const SearchResultsItem = ({
-  course,
-  isMobile,
-  setShowModal,
-  setModalCourse,
-  executeGetCourseModal,
-  isLast,
-}) => {
+const SearchResultsItem = ({ course, isMobile, showModal, isLast }) => {
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
   const [mounted, setMounted] = useState(false);
-  const professor_rating =
-    course['course.course_professors'] &&
-    course['course.course_professors'][0] &&
-    course['course.course_professors'][0]['professor'] &&
-    course['course.course_professors'][0]['professor']['average_rating']
-      ? course['course.course_professors'][0]['professor']['average_rating']
-      : -1;
+  const professor_rating = course['professor_avg_rating'];
 
   useEffect(() => {
     if (!mounted) setMounted(true);
@@ -79,14 +66,7 @@ const SearchResultsItem = ({
         borderBottom: isLast ? 'none' : 'solid 2px #f6f6f6',
       }}
       onClick={() => {
-        executeGetCourseModal({
-          variables: {
-            crn: course['listing.crn'],
-            season_code: course['season_code'],
-          },
-        });
-        setModalCourse(course);
-        setShowModal(true);
+        showModal(course);
       }}
       tabIndex="0"
     >
@@ -172,18 +152,16 @@ const SearchResultsItem = ({
       <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
         <div
           style={{
-            color:
-              professor_rating !== -1
-                ? ratingColormap(professor_rating).darken(2).css()
-                : '#b5b5b5',
-            backgroundColor:
-              professor_rating !== -1
-                ? chroma(ratingColormap(professor_rating)).alpha(0.33).css()
-                : '#ebebeb',
+            color: professor_rating
+              ? ratingColormap(professor_rating).darken(2).css()
+              : '#b5b5b5',
+            backgroundColor: professor_rating
+              ? chroma(ratingColormap(professor_rating)).alpha(0.33).css()
+              : '#ebebeb',
           }}
           className={Styles.rating_cell + ' my-auto'}
         >
-          {professor_rating !== -1 ? professor_rating.toFixed(1) : 'N/A'}
+          {professor_rating ? professor_rating : 'N/A'}
         </div>
       </Col>
       <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">

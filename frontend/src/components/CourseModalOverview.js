@@ -272,6 +272,14 @@ const CourseModalOverview = (props) => {
     }
   }
 
+  if (!listing['course.description'])
+    listing['course.description'] = listing.description;
+  if (!listing['course.requirements'])
+    listing['course.requirements'] = listing.requirements;
+  if (!listing['course.times_summary'])
+    listing['course.times_summary'] = listing.times_summary;
+  if (!listing['section']) listing['section'] = listing['listing.section'];
+
   return (
     <Modal.Body>
       <Row className="m-auto">

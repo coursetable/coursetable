@@ -17,8 +17,7 @@ import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 
 const CourseModal = (props) => {
-  const is_partial = props.listing === null;
-  const listing = !is_partial ? props.listing : props.partial_listing;
+  const listing = props.listing;
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const [view, setView] = useState(['overview', null]);
@@ -53,7 +52,7 @@ const CourseModal = (props) => {
                     {listing && (
                       <WorksheetToggleButton
                         alwaysRed={false}
-                        crn={is_partial ? 69420 : listing.crn}
+                        crn={listing.crn ? listing.crn : listing['listing.crn']}
                         season_code={listing.season_code}
                         modal={true}
                         hasSeason={props.hasSeason}
@@ -70,7 +69,9 @@ const CourseModal = (props) => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
-                          {is_partial ? listing.title : listing['course.title']}
+                          {!listing['course.title']
+                            ? listing.title
+                            : listing['course.title']}
                           <span className="text-muted">
                             {' (' +
                               toSeasonString(listing.season_code)[2] +
@@ -174,16 +175,12 @@ const CourseModal = (props) => {
         </Modal.Header>
         {props.show &&
           (view[0] === 'overview' ? (
-            is_partial ? (
-              <CourseModalLoading />
-            ) : (
-              <CourseModalOverview
-                setFilter={setFilter}
-                filter={filter}
-                setSeason={setSeason}
-                listing={listing}
-              />
-            )
+            <CourseModalOverview
+              setFilter={setFilter}
+              filter={filter}
+              setSeason={setSeason}
+              listing={listing}
+            />
           ) : (
             <CourseModalEvaluations
               season_code={view[0]}

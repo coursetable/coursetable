@@ -65,56 +65,22 @@ export const SEARCH_COURSES = gql`
       requirements
       season_code
       course {
+        times_by_day
         extra_info
+        syllabus_url
         course_professors {
           professor {
             name
             average_rating
           }
+        }
+        evaluation_statistics {
+          enrollment
         }
       }
       listing {
         crn
-      }
-    }
-  }
-`;
-
-export const GET_COURSE_MODAL = gql`
-  query fetch_course($crn: Int, $season_code: String) {
-    listings(
-      where: { crn: { _eq: $crn }, season_code: { _eq: $season_code } }
-    ) {
-      course_code
-      crn
-      season_code
-      section
-      course {
-        course_professors {
-          professor {
-            name
-            average_rating
-          }
-        }
-        computed_course_infos {
-          course_codes
-        }
-        location_times
-        locations_summary
-        syllabus_url
-        skills
-        areas
-        evaluation_statistics {
-          avg_rating
-          avg_workload
-          enrollment
-        }
-        short_title
-        title
-        times_summary
-        times_by_day
-        description
-        requirements
+        section
       }
     }
   }
