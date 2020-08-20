@@ -23,17 +23,6 @@ const CourseModal = (props) => {
   const isMobile = width < 768;
   const [view, setView] = useState(['overview', null]);
   const [filter, setFilter] = useState('both');
-  let course_codes, course_codes_str;
-  if (listing) {
-    course_codes = is_partial
-      ? listing.course_codes
-      : listing['course.computed_course_infos'][0].course_codes;
-    course_codes_str = '';
-    for (let i = 0; i < course_codes.length; i++) {
-      if (i) course_codes_str += ' | ';
-      course_codes_str += course_codes[i];
-    }
-  }
 
   const setSeason = (evaluation) => {
     setView([evaluation.season_code, evaluation]);
@@ -99,7 +88,7 @@ const CourseModal = (props) => {
                           styles.course_codes + ' text-muted my-0 pr-2'
                         }
                       >
-                        {course_codes_str}
+                        {listing.course_code}
                       </p>
                       {listing['course.skills'] &&
                         listing['course.skills'].map((skill) => (

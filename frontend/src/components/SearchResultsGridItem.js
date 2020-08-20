@@ -87,7 +87,7 @@ const SearchResultsGridItem = ({
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.one_line + ' ' + styles.course_codes}>
-                {course.course_codes ? course.course_codes.join(' • ') : ''}
+                {course.course_code ? course.course_code : ''}
               </small>
             </Row>
           </Col>

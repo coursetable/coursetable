@@ -72,7 +72,7 @@ const SearchResultsItem = ({
         <div className={Styles.course_name}>{course.title}</div>
         <Row className="m-auto">
           <div className={Styles.course_code}>
-            {course.course_codes.join(' • ')}
+            {course.course_code}
           </div>
           <div className={Styles.skills_areas}>
             {course.skills.map((skill) => (

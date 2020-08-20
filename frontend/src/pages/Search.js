@@ -19,7 +19,6 @@ import {
 
 import {
   SEARCH_COURSES,
-  SEARCH_COURSES_TEXTLESS,
 } from '../queries/QueryStrings';
 
 import {
@@ -120,15 +119,6 @@ function Search(props) {
       };
     });
   }
-
-  // handler for executing search with no text query
-  var [
-    executeTextlessSearch,
-    { called: textlessCalled, loading: textlessLoading, data: textlessData },
-  ] = useLazyQuery(
-    SEARCH_COURSES_TEXTLESS,
-    { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
-  );
 
   // handler for executing search with text
   var [
@@ -249,6 +239,7 @@ function Search(props) {
     }
 
     const search_variables = {
+      search_text: searchText.value,
       ordering: ordering,
       offset: offset2 === -1 ? old_data.length : offset2,
       limit: search ? 60 : QUERY_SIZE,
@@ -263,54 +254,27 @@ function Search(props) {
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
     };
-
-    if (searchText.value === '') {
-      setSearchType('TEXTLESS');
-      executeTextlessSearch({
-        variables: search_variables,
-      });
-    } else {
-      setSearchType('TEXT');
-      executeTextSearch({
-        variables: Object.assign(search_variables, {
-          search_text: searchText.value,
-        }),
-      });
-    }
+    setSearchType('TEXT');
+    executeTextSearch({
+      variables: Object.assign(search_variables, {
+        search_text: searchText.value,
+      }),
+    });
   });
 
-  if (searchType === 'TEXTLESS') {
-    if (textlessCalled) {
-      if (textlessLoading) {
-        if (!searching) setSearching(true); // Set searching after loading starts
-      } else {
-        // Keep old courses until new courses are fetched
-        if (textlessData && searching) {
-          if (textlessData.computed_course_info.length < QUERY_SIZE)
-            setFetchedAll(true);
-          // Combine old courses with new fetched courses
-          let new_data = [...old_data].concat(
-            textlessData.computed_course_info
-          );
-          setOldData(new_data); // Replace old with new
-          setSearching(false); // Not searching
-        }
-      }
-    }
-  } else if (searchType === 'TEXT') {
-    if (textCalled) {
-      if (textLoading) {
-        if (!searching) setSearching(true); // Set searching after loading starts
-      } else {
-        // Keep old courses until new courses are fetched
-        if (textData && searching) {
-          if (textData.search_course_info.length < QUERY_SIZE)
-            setFetchedAll(true);
-          // Combine old courses with new fetched courses
-          let new_data = [...old_data].concat(textData.search_course_info);
-          setOldData(new_data); // Replace old with new
-          setSearching(false); // Not searching
-        }
+  
+  if (textCalled) {
+    if (textLoading) {
+      if (!searching) setSearching(true); // Set searching after loading starts
+    } else {
+      // Keep old courses until new courses are fetched
+      if (textData && searching) {
+        if (textData.search_listing_info.length < QUERY_SIZE)
+          setFetchedAll(true);
+        // Combine old courses with new fetched courses
+        let new_data = [...old_data].concat(textData.search_listing_info);
+        setOldData(new_data); // Replace old with new
+        setSearching(false); // Not searching
       }
     }
   }
@@ -651,7 +615,7 @@ function Search(props) {
             setView={handleSetView}
             offset={offset}
             setOffset={setOffset}
-            loading={searchType === 'TEXT' ? textLoading : textlessLoading}
+            loading={textLoading}
             loadMore={handleSubmit}
             setScrollPos={setScrollPos}
             multiSeasons={multiSeasons}
