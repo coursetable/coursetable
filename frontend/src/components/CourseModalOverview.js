@@ -173,14 +173,18 @@ const CourseModalOverview = (props) => {
             style={{ flex: 'none' }}
           >
             <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
-            <div className={expanded ? Styles.shown : Styles.hidden}>
+            <div
+              className={
+                Styles.details +
+                ' mx-auto ' +
+                (expanded ? Styles.shown : Styles.hidden)
+              }
+            >
               {filter === 'professor'
                 ? evaluations[i].course_code[0]
                 : filter === 'both'
                 ? 'Section ' + evaluations[i].section
-                : evaluations[i].professor[0].length <= 15
-                ? evaluations[i].professor[0]
-                : evaluations[i].professor[0].substr(0, 12) + '...'}
+                : evaluations[i].professor[0]}
             </div>
           </Col>
           <Col
@@ -268,10 +272,18 @@ const CourseModalOverview = (props) => {
     }
   }
 
+  if (!listing['course.description'])
+    listing['course.description'] = listing.description;
+  if (!listing['course.requirements'])
+    listing['course.requirements'] = listing.requirements;
+  if (!listing['course.times_summary'])
+    listing['course.times_summary'] = listing.times_summary;
+  if (!listing['section']) listing['section'] = listing['listing.section'];
+
   return (
     <Modal.Body>
       <Row className="m-auto">
-        <Col md={6} className="px-0 mt-0 mb-3">
+        <Col md={7} className="px-0 mt-0 mb-3">
           {/* COURSE DESCRIPTION */}
           <Row className="m-auto pb-3">
             <ResponsiveEllipsis
@@ -281,16 +293,25 @@ const CourseModalOverview = (props) => {
               basedOn="words"
               onReflow={handleReflow}
             />
-            {clamped && (
-              <span
-                className={Styles.read_more + ' mx-auto'}
-                onClick={() => {
-                  setLines(100);
-                }}
-                title="Read More"
-              >
-                <IoIosArrowDown size={20} />
-              </span>
+            <Row className="m-auto">
+              {clamped && (
+                <span
+                  className={Styles.read_more + ' mx-auto'}
+                  onClick={() => {
+                    setLines(100);
+                  }}
+                  title="Read More"
+                >
+                  <IoIosArrowDown size={20} />
+                </span>
+              )}
+            </Row>
+            {listing['course.requirements'] && (
+              <Row className="m-auto pt-1">
+                <span className={Styles.requirements}>
+                  {listing['course.requirements']}
+                </span>
+              </Row>
             )}
           </Row>
           {listing['professors'] && (
@@ -379,7 +400,7 @@ const CourseModalOverview = (props) => {
             </Row>
           )}
         </Col>
-        <Col md={6} className="px-0 my-0">
+        <Col md={5} className="px-0 my-0">
           {/* <Row className="m-auto justify-content-center">
                 <strong>Evaluations</strong>
               </Row> */}

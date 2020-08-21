@@ -13,9 +13,7 @@ import './SearchResults.css';
 
 import { Container, Col, Row, Spinner } from 'react-bootstrap';
 
-import { useLazyQuery } from '@apollo/react-hooks';
-import { GET_COURSE_MODAL } from '../queries/QueryStrings';
-import { preprocess_courses, flatten } from '../utilities';
+import { flatten } from '../utilities';
 import {
   InfiniteLoader,
   List,
@@ -52,45 +50,18 @@ const SearchResults = ({
 
   // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
-  const [showModal, setShowModal] = useState(false);
-  const [modal_course, setModalCourse] = useState();
+  const [course_modal, setCourseModal] = useState([false, '']);
   // const [show_tooltip, setShowTooltip] = useState(false);
   let key = 0;
   // const [modalCalled, setModalCalled] = React.useState(false);
 
-  var [
-    executeGetCourseModal,
-    { called: modalCalled, loading: modalLoading, data: modalData },
-  ] = useLazyQuery(GET_COURSE_MODAL);
-
-  const hideModal = () => {
-    setShowModal(false);
+  const showModal = (listing) => {
+    setCourseModal([true, listing]);
   };
 
-  var modal;
-
-  if (modalCalled) {
-    if (modalLoading) {
-      modal = (
-        <CourseModal
-          hideModal={hideModal}
-          show={showModal}
-          listing={null}
-          partial_listing={modal_course}
-        />
-      );
-    } else {
-      if (modalData) {
-        modal = (
-          <CourseModal
-            hideModal={hideModal}
-            show={showModal}
-            listing={preprocess_courses(flatten(modalData.listings[0]))}
-          />
-        );
-      }
-    }
-  }
+  const hideModal = () => {
+    setCourseModal([false, '']);
+  };
 
   // Determine if at end or not. Update Offset value
   useEffect(() => {
@@ -155,9 +126,8 @@ const SearchResults = ({
           <SearchResultsItem
             course={flatten(data[index])}
             isMobile={isMobile}
-            setShowModal={setShowModal}
-            setModalCourse={setModalCourse}
-            executeGetCourseModal={executeGetCourseModal}
+            showModal={showModal}
+            isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
           />
         </div>
       </CellMeasurer>
@@ -189,9 +159,7 @@ const SearchResults = ({
             <SearchResultsGridItem
               course={flatten(data[j])}
               isMobile={isMobile}
-              setShowModal={setShowModal}
-              setModalCourse={setModalCourse}
-              executeGetCourseModal={executeGetCourseModal}
+              showModal={showModal}
               num_cols={num_cols}
               multiSeasons={multiSeasons}
               key={key++}
@@ -210,7 +178,7 @@ const SearchResults = ({
           isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
           rowCount={!fetchedAll ? grid_html.length + 1 : grid_html.length}
-          threshold={8}
+          threshold={15}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -248,6 +216,7 @@ const SearchResults = ({
           isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
           rowCount={!fetchedAll ? data.length + 1 : data.length}
+          threshold={30}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -281,6 +250,7 @@ const SearchResults = ({
   return (
     <div>
       <Container
+        fluid
         id="results_container"
         className={`px-0 shadow-sm ${Styles.results_container}`}
       >
@@ -291,17 +261,20 @@ const SearchResults = ({
             >
               {isList ? (
                 <React.Fragment>
-                  <Col md={4} style={{ lineHeight: '30px' }}>
+                  <Col md={3} style={{ lineHeight: '30px' }}>
                     <strong>{'Description'}</strong>
                   </Col>
-                  <Col md={3} style={{ lineHeight: '30px' }}>
+                  <Col md={2} style={{ lineHeight: '30px' }}>
                     <strong>{'Professors'}</strong>
                   </Col>
-                  <Col md={2} style={{ lineHeight: '30px' }}>
+                  <Col md={3} style={{ lineHeight: '30px' }}>
                     <strong>{'Meets'}</strong>
                   </Col>
                   <Col md={1} style={{ lineHeight: '30px' }}>
-                    <strong>{'Rating'}</strong>
+                    <strong>{'Class'}</strong>
+                  </Col>
+                  <Col md={1} style={{ lineHeight: '30px' }}>
+                    <strong>{'Prof'}</strong>
                   </Col>
                   <Col md={1} style={{ lineHeight: '30px' }}>
                     <strong>{'Work'}</strong>
@@ -316,15 +289,19 @@ const SearchResults = ({
                   </strong>
                 </Col>
               )}
-              <Col md={1} style={{ lineHeight: '30px' }} className="d-flex">
-                <div className="d-flex mx-auto my-auto">
+              <Col
+                md={1}
+                style={{ lineHeight: '30px' }}
+                className="d-flex pr-2"
+              >
+                <div className="d-flex ml-auto my-auto p-0">
                   <ListGridToggle isList={isList} setView={setView} />
                 </div>
               </Col>
             </Row>
           </div>
         )}
-        <div className={!isList ? 'px-1 pt-3' : ''}>
+        <div className={!isList ? 'px-1 pt-3' : Styles.results_list_container}>
           {data.length !== 0 && resultsListing}
           {refreshCache > 0 && data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
@@ -339,7 +316,11 @@ const SearchResults = ({
           )}
         </div>
       </Container>
-      {modal}
+      <CourseModal
+        hideModal={hideModal}
+        show={course_modal[0]}
+        listing={course_modal[1]}
+      />
     </div>
   );
 };

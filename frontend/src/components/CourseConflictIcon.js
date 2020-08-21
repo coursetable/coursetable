@@ -11,7 +11,7 @@ const CourseConflictIcon = ({ course }) => {
   const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(
       course.season_code,
-      course['course.listings'][0].crn.toString(),
+      course['listing.crn'].toString(),
       user.worksheet
     )
   );
@@ -21,7 +21,7 @@ const CourseConflictIcon = ({ course }) => {
 
   const update = isInWorksheet(
     course.season_code,
-    course['course.listings'][0].crn.toString(),
+    course['listing.crn'].toString(),
     user.worksheet
   );
   if (inWorksheet !== update) setInWorksheet(update);
@@ -37,13 +37,13 @@ const CourseConflictIcon = ({ course }) => {
       return;
     }
     setConflict(false);
-  }, [data ? data : []]);
+  }, [course, data]);
 
   const renderTooltip = (props) =>
     !inWorksheet && conflict ? (
       <Tooltip id="button-tooltip" {...props}>
         <small style={{ fontWeight: 500 }}>
-          {times === 'TBA' ? 'Invalid Course Time' : 'Scheduling Conflict'}
+          {times === 'TBA' ? 'Invalid Course Time' : 'Conflicts with worksheet'}
         </small>
       </Tooltip>
     ) : (

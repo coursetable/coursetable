@@ -12,6 +12,7 @@ import {
   FetchWorksheetLazy,
   preprocess_courses,
 } from '../queries/GetWorksheetListings';
+import { toast } from 'react-toastify';
 
 function MeDropdown(props) {
   const { user } = useUser();
@@ -26,6 +27,7 @@ function MeDropdown(props) {
 
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK
+    toast.error('Facebook Integration Is Not Ready Yet');
   };
 
   const handleExportClick = () => {

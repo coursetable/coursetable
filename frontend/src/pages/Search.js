@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { HotKeys } from 'react-hotkeys';
+import { GlobalHotKeys } from 'react-hotkeys';
 
 import Styles from './Search.module.css';
 
@@ -17,10 +17,7 @@ import {
   Fade,
 } from 'react-bootstrap';
 
-import {
-  SEARCH_COURSES,
-  SEARCH_COURSES_TEXTLESS,
-} from '../queries/QueryStrings';
+import { SEARCH_COURSES } from '../queries/QueryStrings';
 
 import {
   sortbyOptions,
@@ -47,7 +44,9 @@ import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-import { FaArrowCircleUp } from 'react-icons/fa';
+import { FaArrowCircleUp, FaSearch } from 'react-icons/fa';
+import { BsX } from 'react-icons/bs';
+import { flatten, preprocess_courses } from '../utilities';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -63,6 +62,8 @@ function Search(props) {
       ? props.location.state.search_val
       : null
   );
+
+  const [collapsed_form, setCollapsedForm] = useState(false);
 
   // States involved in infinite scroll
   const [offset, setOffset] = useState(0); // How many courses to skip in query
@@ -81,9 +82,6 @@ function Search(props) {
 
   //State used to rebuild form DOM to reset it
   const [form_key, setFormKey] = useState(0);
-
-  // whether to execute textless or text search
-  var [searchType, setSearchType] = React.useState();
 
   // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
@@ -109,7 +107,7 @@ function Search(props) {
 
   const seasonsData = useSeasons();
   if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map(x => {
+    seasonsOptions = seasonsData.seasons.map((x) => {
       return {
         value: x.season_code,
         // capitalize term and add year
@@ -118,19 +116,10 @@ function Search(props) {
     });
   }
 
-  // handler for executing search with no text query
-  var [
-    executeTextlessSearch,
-    { called: textlessCalled, loading: textlessLoading, data: textlessData },
-  ] = useLazyQuery(
-    SEARCH_COURSES_TEXTLESS,
-    { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
-  );
-
   // handler for executing search with text
   var [
-    executeTextSearch,
-    { called: textCalled, loading: textLoading, data: textData },
+    executeSearch,
+    { called: searchCalled, loading: searchLoading, data: searchData },
   ] = useLazyQuery(
     SEARCH_COURSES,
     { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
@@ -144,7 +133,7 @@ function Search(props) {
   };
 
   // resubmit search on view change
-  const handleSetView = isList => {
+  const handleSetView = (isList) => {
     setView(isList);
     handleSubmit(null, true);
   };
@@ -160,6 +149,7 @@ function Search(props) {
       setOldData([]);
       setFetchedAll(false);
       setRefreshCache(refreshCache + 1);
+      // if (!defaultSearch) setCollapsedForm(true);
       offset2 = 0; // Account for reset state lag
     } else if (fetchedAll) return;
 
@@ -170,7 +160,7 @@ function Search(props) {
     // seasons to filter
     var processedSeasons = seasons.select.props.value;
     if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map(x => {
+      processedSeasons = processedSeasons.map((x) => {
         return x.value;
       });
     }
@@ -184,7 +174,7 @@ function Search(props) {
     // skills and areas
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map(x => {
+      processedSkillsAreas = processedSkillsAreas.map((x) => {
         return x.value;
       });
 
@@ -200,10 +190,12 @@ function Search(props) {
       }
 
       // separate skills and areas
-      var processedSkills = processedSkillsAreas.filter(x =>
+      var processedSkills = processedSkillsAreas.filter((x) =>
         skills.includes(x)
       );
-      var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
+      var processedAreas = processedSkillsAreas.filter((x) =>
+        areas.includes(x)
+      );
 
       // set null defaults
       if (processedSkills.length === 0) {
@@ -217,7 +209,7 @@ function Search(props) {
     // credits to filter
     var processedCredits = credits.select.props.value;
     if (processedCredits != null) {
-      processedCredits = processedCredits.map(x => {
+      processedCredits = processedCredits.map((x) => {
         return x.value;
       });
     }
@@ -225,7 +217,7 @@ function Search(props) {
     // schools to filter
     var processedSchools = schools.select.props.value;
     if (processedSchools != null) {
-      processedSchools = processedSchools.map(x => {
+      processedSchools = processedSchools.map((x) => {
         return x.value;
       });
     }
@@ -245,6 +237,7 @@ function Search(props) {
     }
 
     const search_variables = {
+      search_text: searchText.value,
       ordering: ordering,
       offset: offset2 === -1 ? old_data.length : offset2,
       limit: search ? 60 : QUERY_SIZE,
@@ -259,59 +252,35 @@ function Search(props) {
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
     };
-
-    if (searchText.value === '') {
-      setSearchType('TEXTLESS');
-      executeTextlessSearch({
-        variables: search_variables,
-      });
-    } else {
-      setSearchType('TEXT');
-      executeTextSearch({
-        variables: Object.assign(search_variables, {
-          search_text: searchText.value,
-        }),
-      });
-    }
+    executeSearch({
+      variables: search_variables,
+    });
   });
 
-  if (searchType === 'TEXTLESS') {
-    if (textlessCalled) {
-      if (textlessLoading) {
-        if (!searching) setSearching(true); // Set searching after loading starts
-      } else {
-        // Keep old courses until new courses are fetched
-        if (textlessData && searching) {
-          if (textlessData.computed_course_info.length < QUERY_SIZE)
-            setFetchedAll(true);
-          // Combine old courses with new fetched courses
-          let new_data = [...old_data].concat(
-            textlessData.computed_course_info
-          );
-          setOldData(new_data); // Replace old with new
-          setSearching(false); // Not searching
-        }
-      }
-    }
-  } else if (searchType === 'TEXT') {
-    if (textCalled) {
-      if (textLoading) {
-        if (!searching) setSearching(true); // Set searching after loading starts
-      } else {
-        // Keep old courses until new courses are fetched
-        if (textData && searching) {
-          if (textData.search_course_info.length < QUERY_SIZE) setFetchedAll(true);
-          // Combine old courses with new fetched courses
-          let new_data = [...old_data].concat(textData.search_course_info);
-          setOldData(new_data); // Replace old with new
-          setSearching(false); // Not searching
-        }
+  if (searchCalled) {
+    if (searchLoading) {
+      if (!searching) setSearching(true); // Set searching after loading starts
+    } else {
+      // Keep old courses until new courses are fetched
+      if (searchData && searching) {
+        if (searchData.search_listing_info.length < QUERY_SIZE)
+          setFetchedAll(true);
+        // Combine old courses with new fetched courses
+        searchData = searchData.search_listing_info.map((x) => {
+          return flatten(x);
+        });
+        searchData = searchData.map((x) => {
+          return preprocess_courses(x);
+        });
+        let new_data = [...old_data].concat(searchData);
+        setOldData(new_data); // Replace old with new
+        setSearching(false); // Not searching
       }
     }
   }
 
   // ctrl/cmd-f search hotkey
-  const focusSearch = e => {
+  const focusSearch = (e) => {
     if (e && searchText) {
       e.preventDefault();
       searchText.focus();
@@ -326,7 +295,7 @@ function Search(props) {
 
   const { Handle } = Slider;
 
-  const ratingSliderHandle = e => {
+  const ratingSliderHandle = (e) => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -335,7 +304,7 @@ function Search(props) {
     );
   };
 
-  const workloadSliderHandle = e => {
+  const workloadSliderHandle = (e) => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -380,253 +349,285 @@ function Search(props) {
 
   return (
     <div className={Styles.search_base}>
-      <HotKeys keyMap={keyMap} handlers={handlers} style={{ outline: 'none' }}>
-        <Row className="p-0 m-0">
-          <Col
-            md={4}
-            lg={4}
-            xl={3}
+      <GlobalHotKeys
+        keyMap={keyMap}
+        handlers={handlers}
+        allowChanges={true} // required for global
+        style={{ outline: 'none' }}
+      />
+      <Row
+        className={
+          'p-0 m-0 ' + (!isMobile ? 'd-flex flex-row-reverse flex-nowrap' : '')
+        }
+      >
+        <Col
+          md={4}
+          lg={4}
+          xl={3}
+          className={
+            (isMobile
+              ? `p-3 ${Styles.search_col_mobile}`
+              : `pr-0 py-3 pl-3 ${Styles.search_col}`) +
+            (!isMobile ? ' order-2' : '')
+          }
+        >
+          <div
             className={
-              isMobile
-                ? `p-3 ${Styles.search_col_mobile}`
-                : `pr-2 py-3 pl-3 ${Styles.search_col}`
+              // only make the filters sticky if not on mobile and
+              // tall enough
+              !isTouch && !tooTall ? Styles.sticky : ''
             }
           >
-            <div
-              className={
-                // only make the filters sticky if not on mobile and
-                // tall enough
-                !isTouch && !tooTall ? Styles.sticky : ''
-              }
+            <Form
+              className={`shadow-sm px-3 ${Styles.search_container}`}
+              onSubmit={(event) => {
+                handleSubmit(event, true);
+              }}
+              ref={(ref) => {
+                searchCol = ref;
+              }}
+              key={form_key}
             >
-              <Form
-                className={`shadow-sm px-3 ${Styles.search_container}`}
-                onSubmit={event => {
-                  handleSubmit(event, true);
-                }}
-                ref={ref => {
-                  searchCol = ref;
-                }}
-                key={form_key}
-              >
-                <Row className="pt-3 px-4">
-                  <small
-                    className={Styles.reset_filters_btn + ' pl-1'}
-                    onClick={handleResetFilters}
+              {!isMobile && (
+                <React.Fragment>
+                  <div
+                    className={
+                      Styles.search_tab +
+                      (collapsed_form
+                        ? ''
+                        : ' '.concat(Styles.search_tab_hidden))
+                    }
+                    onClick={() => {
+                      setCollapsedForm(false);
+                    }}
                   >
-                    Reset Filters
-                  </small>
-                </Row>
-                <Row className="pt-2 px-4 pb-2">
-                  <div className={Styles.search_bar}>
-                    <InputGroup className={Styles.search_input}>
-                      <FormControl
-                        type="text"
-                        defaultValue={
-                          searchText.current !== ''
-                            ? searchText.current
-                            : undefined
-                        }
-                        onChange={handleChange}
-                        placeholder="Find a class..."
-                        ref={ref => (searchText = ref)}
-                      />
-                    </InputGroup>
-                  </div>
-                </Row>
-                <Row className={`py-0 px-4 ${Styles.sort_container}`}>
-                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    <Select
-                      defaultValue={sortbyOptions[0]}
-                      options={sortbyOptions}
-                      ref={ref => {
-                        sortby = ref;
-                      }}
-                      // prevent overlap with tooltips
-                      styles={selectStyles}
-                      menuPortalTarget={document.body}
-                      onChange={() => setSelected(!selected)}
-                    />
-                  </div>
-                </Row>
-                <hr />
-                <Row className={`py-0 px-4 ${Styles.multi_selects}`}>
-                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    <div className={Styles.filter_title}>Semesters</div>
-                    {seasonsOptions && (
-                      <Select
-                        isMulti
-                        // defaultValue={[seasonsOptions[0]]}
-                        defaultValue={[{ value: '202003', label: 'Fall 2020' }]}
-                        options={seasonsOptions}
-                        ref={ref => {
-                          seasons = ref;
-                        }}
-                        placeholder="All"
-                        // prevent overlap with tooltips
-                        styles={selectStyles}
-                        menuPortalTarget={document.body}
-                        onChange={() => setSelected(!selected)}
-                        components={animatedComponents}
-                      />
-                    )}
+                    <FaSearch style={{ display: 'block' }} />
                   </div>
                   <div
-                    className={`col-md-12 p-0  ${Styles.selector_container}`}
+                    className={Styles.collapse_form_btn}
+                    onClick={() => {
+                      setCollapsedForm(true);
+                    }}
                   >
-                    <div className={Styles.filter_title}>Skills and areas</div>
-                    <Select
-                      isMulti
-                      options={skillsAreasOptions}
-                      placeholder="Any"
-                      ref={ref => {
-                        skillsAreas = ref;
-                      }}
-                      // colors
-                      styles={colorOptionStyles}
-                      // prevent overlap with tooltips
-                      menuPortalTarget={document.body}
-                      onChange={() => setSelected(!selected)}
-                      components={animatedComponents}
-                    />
+                    <BsX style={{ display: 'block' }} size={20} />
                   </div>
-                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    <div className={Styles.filter_title}>Credits</div>
-                    <Select
-                      isMulti
-                      options={creditOptions}
-                      placeholder="Any"
-                      ref={ref => {
-                        credits = ref;
-                      }}
-                      // prevent overlap with tooltips
-                      styles={selectStyles}
-                      menuPortalTarget={document.body}
-                      onChange={() => setSelected(!selected)}
-                      components={animatedComponents}
-                    />
-                  </div>
-                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    <div className={Styles.filter_title}>Schools</div>
-                    <Select
-                      isMulti
-                      defaultValue={[
-                        { value: 'YC', label: 'Yale College' },
-                        { value: 'GS', label: 'Graduate' },
-                      ]}
-                      options={schoolOptions}
-                      placeholder="Any"
-                      ref={ref => {
-                        schools = ref;
-                      }}
-                      // prevent overlap with tooltips
-                      styles={selectStyles}
-                      menuPortalTarget={document.body}
-                      onChange={() => setSelected(!selected)}
-                      components={animatedComponents}
-                    />
-                  </div>
-                </Row>
-                <hr />
-                <Row className={`pt-0 pb-2 px-2 ${Styles.sliders}`}>
-                  <Col>
-                    <Container style={{ paddingTop: '1px' }}>
-                      <Range
-                        min={1}
-                        max={5}
-                        step={0.1}
-                        defaultValue={ratingBounds}
-                        // debounce the slider state update
-                        // to make it smoother
-                        onChange={debounce(value => {
-                          setRatingBounds(value);
-                        }, 250)}
-                        handle={ratingSliderHandle}
-                        className={Styles.slider}
-                      />
-                    </Container>
-                    <div className={`text-center ${Styles.filter_title}`}>
-                      Overall rating
-                    </div>
-                  </Col>
-                  <Col>
-                    <Container>
-                      <Range
-                        min={1}
-                        max={5}
-                        step={0.1}
-                        defaultValue={workloadBounds}
-                        // debounce the slider state update
-                        // to make it smoother
-                        onChange={debounce(value => {
-                          setWorkloadBounds(value);
-                        }, 250)}
-                        handle={workloadSliderHandle}
-                        className={Styles.slider}
-                      />
-                    </Container>
-                    <div className={`text-center ${Styles.filter_title}`}>
-                      Workload
-                    </div>
-                  </Col>
-                </Row>
-                <Row
-                  className={`pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg} ${Styles.toggle_row}`}
+                </React.Fragment>
+              )}
+              <Row className="pt-3 px-4">
+                <small
+                  className={Styles.reset_filters_btn + ' pl-1'}
+                  onClick={handleResetFilters}
                 >
-                  <Form.Check type="switch" className={Styles.toggle_option}>
-                    <Form.Check.Input
-                      checked={hideCancelled}
-                      onChange={e => {}} // dummy handler to remove warning
+                  Reset Filters
+                </small>
+              </Row>
+              <Row className="pt-2 px-4 pb-2">
+                <div className={Styles.search_bar}>
+                  <InputGroup className={Styles.search_input}>
+                    <FormControl
+                      type="text"
+                      defaultValue={
+                        searchText.current !== ''
+                          ? searchText.current
+                          : undefined
+                      }
+                      onChange={handleChange}
+                      placeholder="Find a class..."
+                      ref={(ref) => (searchText = ref)}
                     />
-                    <Form.Check.Label
-                      onClick={() => setHideCancelled(!hideCancelled)}
-                    >
-                      Hide cancelled
-                    </Form.Check.Label>
-                  </Form.Check>
-                </Row>
-                <Row className="flex-row-reverse">
-                  <Button
-                    type="submit"
-                    className={'pull-right ' + Styles.secondary_submit}
+                  </InputGroup>
+                </div>
+              </Row>
+              <Row className={`py-0 px-4 ${Styles.sort_container}`}>
+                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <Select
+                    defaultValue={sortbyOptions[0]}
+                    options={sortbyOptions}
+                    ref={(ref) => {
+                      sortby = ref;
+                    }}
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
+                  />
+                </div>
+              </Row>
+              <hr />
+              <Row className={`py-0 px-4 ${Styles.multi_selects}`}>
+                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={Styles.filter_title}>Semesters</div>
+                  {seasonsOptions && (
+                    <Select
+                      isMulti
+                      // defaultValue={[seasonsOptions[0]]}
+                      defaultValue={[{ value: '202003', label: 'Fall 2020' }]}
+                      options={seasonsOptions}
+                      ref={(ref) => {
+                        seasons = ref;
+                      }}
+                      placeholder="All"
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={() => setSelected(!selected)}
+                      components={animatedComponents}
+                    />
+                  )}
+                </div>
+                <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
+                  <div className={Styles.filter_title}>Skills and areas</div>
+                  <Select
+                    isMulti
+                    options={skillsAreasOptions}
+                    placeholder="Any"
+                    ref={(ref) => {
+                      skillsAreas = ref;
+                    }}
+                    // colors
+                    styles={colorOptionStyles}
+                    // prevent overlap with tooltips
+                    menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
+                    components={animatedComponents}
+                  />
+                </div>
+                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={Styles.filter_title}>Credits</div>
+                  <Select
+                    isMulti
+                    options={creditOptions}
+                    placeholder="Any"
+                    ref={(ref) => {
+                      credits = ref;
+                    }}
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
+                    components={animatedComponents}
+                  />
+                </div>
+                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={Styles.filter_title}>Schools</div>
+                  <Select
+                    isMulti
+                    defaultValue={[
+                      { value: 'YC', label: 'Yale College' },
+                      { value: 'GS', label: 'Graduate' },
+                    ]}
+                    options={schoolOptions}
+                    placeholder="Any"
+                    ref={(ref) => {
+                      schools = ref;
+                    }}
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
+                    onChange={() => setSelected(!selected)}
+                    components={animatedComponents}
+                  />
+                </div>
+              </Row>
+              <hr />
+              <Row className={`pt-0 pb-2 px-2 ${Styles.sliders}`}>
+                <Col>
+                  <Container style={{ paddingTop: '1px' }}>
+                    <Range
+                      min={1}
+                      max={5}
+                      step={0.1}
+                      defaultValue={ratingBounds}
+                      // debounce the slider state update
+                      // to make it smoother
+                      onChange={debounce((value) => {
+                        setRatingBounds(value);
+                      }, 250)}
+                      handle={ratingSliderHandle}
+                      className={Styles.slider}
+                    />
+                  </Container>
+                  <div className={`text-center ${Styles.filter_title}`}>
+                    Overall rating
+                  </div>
+                </Col>
+                <Col>
+                  <Container>
+                    <Range
+                      min={1}
+                      max={5}
+                      step={0.1}
+                      defaultValue={workloadBounds}
+                      // debounce the slider state update
+                      // to make it smoother
+                      onChange={debounce((value) => {
+                        setWorkloadBounds(value);
+                      }, 250)}
+                      handle={workloadSliderHandle}
+                      className={Styles.slider}
+                    />
+                  </Container>
+                  <div className={`text-center ${Styles.filter_title}`}>
+                    Workload
+                  </div>
+                </Col>
+              </Row>
+              <Row
+                className={`pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg} ${Styles.toggle_row}`}
+              >
+                <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check.Input
+                    checked={hideCancelled}
+                    onChange={(e) => {}} // dummy handler to remove warning
+                  />
+                  <Form.Check.Label
+                    onClick={() => setHideCancelled(!hideCancelled)}
                   >
-                    Search courses
-                  </Button>
-                </Row>
-              </Form>
-            </div>
-          </Col>
-          <Col
-            md={8}
-            lg={8}
-            xl={9}
-            className={
-              'm-0 ' +
-              (isMobile
-                ? 'p-3 ' + Styles.results_col_mobile
-                : 'pl-2 py-3 pr-3 ' + Styles.results_col)
-            }
-          >
-            <SearchResults
-              data={old_data}
-              isList={isList}
-              setView={handleSetView}
-              offset={offset}
-              setOffset={setOffset}
-              loading={searchType === 'TEXT' ? textLoading : textlessLoading}
-              loadMore={handleSubmit}
-              setScrollPos={setScrollPos}
-              multiSeasons={multiSeasons}
-              querySize={QUERY_SIZE}
-              refreshCache={refreshCache}
-              fetchedAll={fetchedAll}
-            />
-          </Col>
-        </Row>
-      </HotKeys>
+                    Hide cancelled
+                  </Form.Check.Label>
+                </Form.Check>
+              </Row>
+              <Row className="flex-row-reverse">
+                <Button
+                  type="submit"
+                  className={'pull-right ' + Styles.secondary_submit}
+                >
+                  Search courses
+                </Button>
+              </Row>
+            </Form>
+          </div>
+        </Col>
+        <Col
+          md={collapsed_form ? 12 : 8}
+          lg={collapsed_form ? 12 : 8}
+          xl={collapsed_form ? 12 : 9}
+          className={
+            'm-0 ' +
+            (isMobile
+              ? 'p-3 ' + Styles.results_col_mobile
+              : (collapsed_form ? 'px-5 pt-3 ' : 'p-3 ') + Styles.results_col)
+          }
+        >
+          <SearchResults
+            data={old_data}
+            isList={isList}
+            setView={handleSetView}
+            offset={offset}
+            setOffset={setOffset}
+            loading={searchLoading}
+            loadMore={handleSubmit}
+            setScrollPos={setScrollPos}
+            multiSeasons={multiSeasons}
+            querySize={QUERY_SIZE}
+            refreshCache={refreshCache}
+            fetchedAll={fetchedAll}
+          />
+        </Col>
+      </Row>
       <Fade in={scrollPos > 3 * height}>
         <div className={Styles.up_btn}>
-          <FaArrowCircleUp timeout={1000} onClick={scroll_top} size={30} />
+          <FaArrowCircleUp onClick={scroll_top} size={30} />
         </div>
       </Fade>
     </div>

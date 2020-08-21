@@ -1,5 +1,5 @@
-import React, {useState, useEffect} from 'react';
-import { Row, Col, Badge } from 'react-bootstrap';
+import React, { useState, useEffect } from 'react';
+import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -15,14 +15,12 @@ import tag_styles from './SearchResultsItem.module.css';
 import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 import { IoMdSunny } from 'react-icons/io';
-import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { FaCanadianMapleLeaf, FaAppleAlt } from 'react-icons/fa';
 
 const SearchResultsGridItem = ({
   course,
   isMobile,
-  setShowModal,
-  setModalCourse,
-  executeGetCourseModal,
+  showModal,
   num_cols,
   multiSeasons,
 }) => {
@@ -52,6 +50,35 @@ const SearchResultsGridItem = ({
   }, [mounted]);
   let key = 0;
 
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <small>
+        {seasons[season - 1].charAt(0).toUpperCase() +
+          seasons[season - 1].slice(1) +
+          ' ' +
+          season_code.substr(0, 4)}
+      </small>
+    </Tooltip>
+  );
+
+  const class_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <span>Class</span>
+    </Tooltip>
+  );
+
+  const prof_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <span>Professor</span>
+    </Tooltip>
+  );
+
+  const workload_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <span>Workload</span>
+    </Tooltip>
+  );
+
   return (
     <Col
       md={col_width}
@@ -60,14 +87,7 @@ const SearchResultsGridItem = ({
     >
       <div
         onClick={() => {
-          executeGetCourseModal({
-            variables: {
-              crn: course['course.listings'][0]['crn'],
-              season_code: course['season_code'],
-            },
-          });
-          setShowModal(true);
-          setModalCourse(course);
+          showModal(course);
         }}
         className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
         tabIndex="0"
@@ -76,27 +96,33 @@ const SearchResultsGridItem = ({
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.one_line + ' ' + styles.course_codes}>
-                {course.course_codes ? course.course_codes.join(' • ') : ''}
+                {course.course_code ? course.course_code : ''}
               </small>
             </Row>
           </Col>
           {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
-                <div
-                  className={
-                    styles.season_tag +
-                    ' ml-auto px-1 pb-0 ' +
-                    styles[seasons[parseInt(season) - 1]]
-                  }
+                <OverlayTrigger
+                  placement="top"
+                  delay={{ show: 500, hide: 250 }}
+                  overlay={renderTooltip}
                 >
-                  <Row className="m-auto">
-                    {icon}
-                    <small style={{ fontWeight: 550 }}>
-                      &nbsp;{"'" + year}
-                    </small>
-                  </Row>
-                </div>
+                  <div
+                    className={
+                      styles.season_tag +
+                      ' ml-auto px-1 pb-0 ' +
+                      styles[seasons[parseInt(season) - 1]]
+                    }
+                  >
+                    <Row className="m-auto">
+                      {icon}
+                      <small style={{ fontWeight: 550 }}>
+                        &nbsp;{"'" + year}
+                      </small>
+                    </Row>
+                  </div>
+                </OverlayTrigger>
               </Row>
             </Col>
           )}
@@ -108,15 +134,15 @@ const SearchResultsGridItem = ({
               : course.title}
           </strong>
         </Row>
-        <Row className="m-auto">
-          <span className={styles.one_line + ' ' + styles.professors}>
-            {course.professor_names.length > 0
-              ? course.professor_names.join(' • ')
-              : 'Professor: TBA'}
-          </span>
-        </Row>
         <Row className="m-auto justify-content-between">
           <Col xs={7} className="p-0">
+            <Row className="m-auto">
+              <span className={styles.one_line + ' ' + styles.professors}>
+                {course.professor_names.length > 0
+                  ? course.professor_names.join(' • ')
+                  : 'Professor: TBA'}
+              </span>
+            </Row>
             <Row className="m-auto">
               <small className={styles.one_line + ' ' + styles.small_text}>
                 {course.times_summary === 'TBA'
@@ -184,36 +210,75 @@ const SearchResultsGridItem = ({
           </Col>
           <Col xs="auto" className="p-0 d-flex align-items-end">
             <div>
-              <Row className="m-auto justify-content-end">
-                <div
-                  className={styles.rating + ' mr-1'}
-                  style={{
-                    color: course.average_rating
-                      ? ratingColormap(course.average_rating)
-                      : '#cccccc',
-                  }}
-                >
-                  {course.average_rating
-                    ? course.average_rating.toFixed(RATINGS_PRECISION)
-                    : 'N/A'}
-                </div>
-                <AiFillStar color="#fac000" className="my-auto" />
-              </Row>
-              <Row className="m-auto justify-content-end">
-                <div
-                  className={styles.rating + ' mr-1'}
-                  style={{
-                    color: course.average_workload
-                      ? workloadColormap(course.average_workload)
-                      : '#cccccc',
-                  }}
-                >
-                  {course.average_workload
-                    ? course.average_workload.toFixed(RATINGS_PRECISION)
-                    : 'N/A'}
-                </div>
-                <FcReading className="my-auto" />
-              </Row>
+              <OverlayTrigger
+                placement="right"
+                delay={{ show: 500, hide: 250 }}
+                overlay={class_tooltip}
+              >
+                <Row className="m-auto justify-content-end">
+                  <div
+                    className={styles.rating + ' mr-1'}
+                    style={{
+                      color: course.average_rating
+                        ? ratingColormap(course.average_rating)
+                            .darken()
+                            .saturate()
+                        : '#cccccc',
+                    }}
+                  >
+                    {course.average_rating
+                      ? course.average_rating.toFixed(RATINGS_PRECISION)
+                      : 'N/A'}
+                  </div>
+                  <AiFillStar color="#fac000" className="my-auto" />
+                </Row>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="right"
+                delay={{ show: 500, hide: 250 }}
+                overlay={prof_tooltip}
+              >
+                <Row className="m-auto justify-content-end">
+                  <div
+                    className={styles.rating + ' mr-1'}
+                    style={{
+                      color: course.professor_avg_rating
+                        ? ratingColormap(course.professor_avg_rating)
+                            .darken()
+                            .saturate()
+                        : '#cccccc',
+                    }}
+                  >
+                    {course.professor_avg_rating
+                      ? course.professor_avg_rating
+                      : 'N/A'}
+                  </div>
+                  <FaAppleAlt color="#fa6e6e" className="my-auto" />
+                </Row>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="right"
+                delay={{ show: 500, hide: 250 }}
+                overlay={workload_tooltip}
+              >
+                <Row className="m-auto justify-content-end">
+                  <div
+                    className={styles.rating + ' mr-1'}
+                    style={{
+                      color: course.average_workload
+                        ? workloadColormap(course.average_workload)
+                            .darken()
+                            .saturate()
+                        : '#cccccc',
+                    }}
+                  >
+                    {course.average_workload
+                      ? course.average_workload.toFixed(RATINGS_PRECISION)
+                      : 'N/A'}
+                  </div>
+                  <FcReading className="my-auto" />
+                </Row>
+              </OverlayTrigger>
             </div>
           </Col>
         </Row>
@@ -222,7 +287,7 @@ const SearchResultsGridItem = ({
         {
           <WorksheetToggleButton
             alwaysRed={false}
-            crn={course['course.listings'][0].crn}
+            crn={course['listing.crn']}
             season_code={course.season_code}
             modal={false}
             isMobile={isMobile}

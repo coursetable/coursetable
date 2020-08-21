@@ -1,6 +1,11 @@
 .results_container {
   border-radius: 8px;
   background: white;
+}
+
+.results_list_container {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
   overflow: hidden;
 }
 

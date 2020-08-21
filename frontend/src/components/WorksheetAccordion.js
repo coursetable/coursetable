@@ -9,7 +9,10 @@ import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import SeasonDropdown from './SeasonDropdown';
 import FBDropdown from './FBDropdown';
-import CourseModal from '../components/CourseModal';
+import LinesEllipsis from 'react-lines-ellipsis';
+import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+
+const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 function ContextAwareToggle({ eventKey, callback, course }) {
   const currentEventKey = useContext(AccordionContext);
@@ -69,14 +72,6 @@ export default class WorksheetAccordion extends React.Component {
       course_modal: [false, ''],
     };
   }
-
-  showModal = (listing) => {
-    this.setState({ course_modal: [true, listing] });
-  };
-
-  hideModal = () => {
-    this.setState({ course_modal: [false, ''] });
-  };
 
   weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -184,10 +179,17 @@ export default class WorksheetAccordion extends React.Component {
                 >
                   {course.professors}
                 </Row>
-                <Row className="m-auto">{course['course.description']}</Row>
+                <Row className="m-auto">
+                  <ResponsiveEllipsis
+                    style={{ whiteSpace: 'pre-wrap' }}
+                    text={course['course.description']}
+                    maxLine={8}
+                    basedOn="words"
+                  />
+                </Row>
                 <Row className="m-auto">
                   <strong
-                    onClick={() => this.showModal(course)}
+                    onClick={() => this.props.showModal(course)}
                     className={styles.more_info + ' mt-2'}
                   >
                     More Info
@@ -221,12 +223,6 @@ export default class WorksheetAccordion extends React.Component {
           </Col>
         </Row>
         <div className={styles.accordion_list}>{items}</div>
-        <CourseModal
-          hideModal={this.hideModal}
-          show={this.state.course_modal[0]}
-          listing={this.state.course_modal[1]}
-          hasSeason={this.props.hasSeason}
-        />
       </div>
     );
   }

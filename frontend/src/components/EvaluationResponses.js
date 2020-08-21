@@ -63,7 +63,7 @@ const CourseModalEvaluations = (props) => {
     <div>
       <Tabs variant="tabs" transition={false}>
         {recommend.length !== 0 && (
-          <Tab eventKey="recommended" title="Recommendations">
+          <Tab eventKey="recommended" title="Recommend?">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               Would you recommend this course to another student? Please
               explain.
@@ -81,7 +81,7 @@ const CourseModalEvaluations = (props) => {
           </Tab>
         )}
         {strengths.length !== 0 && (
-          <Tab eventKey="strengths/weaknesses" title="Pros/Cons">
+          <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
             <Row className={styles.question_header + ' m-auto pt-2'}>
               What are the strengths and weaknesses of this course and how could
               it be improved?

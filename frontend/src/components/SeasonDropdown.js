@@ -22,7 +22,7 @@ function SeasonDropdown(props) {
   return (
     <div className="container p-0 m-0">
       <DropdownButton
-        variant="success"
+        variant="dark"
         title={toSeasonString(props.cur_season)[0]}
         onSelect={setSeason}
       >

@@ -41,7 +41,7 @@
 .filter_title {
   font-size: 0.9rem;
   color: rgba(0, 0, 0, 0.75);
-  webkit-touch-callout: none; /* iOS Safari */
+  -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Old versions of Firefox */
@@ -62,7 +62,7 @@
   font-weight: 500;
   margin-top: 4px;
   margin-bottom: 4px;
-  webkit-touch-callout: none; /* iOS Safari */
+  -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
   -moz-user-select: none; /* Old versions of Firefox */
@@ -113,6 +113,48 @@
 .results_col {
   background-color: transparent;
   z-index: 0;
+  transition: 0.3s;
+  will-change: max-width, flex-basis;
+}
+
+.search_tab {
+  position: absolute;
+  transition: 0.3s;
+  transition-delay: 0.3s;
+  transition-property: right, opacity;
+  top: 10px;
+  right: -30px;
+  padding: 7px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: rgb(198, 232, 255);
+  z-index: 2000;
+}
+
+.search_tab:hover {
+  cursor: pointer;
+  background-color: rgb(174, 221, 253);
+}
+
+.search_tab_hidden {
+  cursor: inherit !important;
+  transition: 0.3s;
+  transition-delay: 0s !important;
+  transition-property: right, opacity;
+  right: 30px !important;
+  opacity: 0;
+}
+
+.collapse_form_btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: rgb(212, 212, 212);
+}
+
+.collapse_form_btn:hover {
+  cursor: pointer;
+  color: rgb(170, 170, 170);
 }
 
 .results_col_mobile {

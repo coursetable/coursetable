@@ -2,13 +2,14 @@
   background-color: white !important;
   transition: 0.3s;
   user-select: none;
-  border-top: solid 2px #f6f6f6;
+  overflow: hidden;
+  position: relative;
 }
 
 .search_result_item:hover {
   cursor: pointer;
   background-color: #e1edff !important;
-  border-color: #e1edff;
+  border-color: #e1edff !important;
 }
 
 .search_result_item:focus,
@@ -18,12 +19,24 @@
 
 .course_name {
   font-weight: bold;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:global(#title_popover) {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
 }
 
 .course_code {
-  display: inline;
   color: rgba(0, 0, 0, 0.5);
   margin-right: 0.5rem;
+  display: block;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .dot {
@@ -83,18 +96,18 @@
   padding: 0.2em 0.3em;
 }
 
-.course_location{
+.course_location {
   font-weight: 600 !important;
 }
 
-.online_tag{
+.online_tag {
   margin: 1px;
   font-size: 0.8rem !important;
   font-weight: 600 !important;
   padding: 2px 4px !important;
   border-radius: 6px !important;
   width: max-content;
-  background: rgba(0,0,0,0.1);
+  background: rgba(0, 0, 0, 0.1);
 }
 
 .tag {
@@ -114,32 +127,25 @@
   align-items: center;
 }
 
-.toggle_worksheet {
-  background-color: white !important;
-  color: rgba(1, 1, 1, 0.6) !important;
-  border: none !important;
-  border-radius: 8px !important;
-  font-weight: bold !important;
-  font-size: 1.5rem !important;
-}
-
-.toggle_worksheet:hover {
-  background-color: rgba(1, 1, 1, 0.1);
-  color: black;
-}
-
-.toggle_worksheet_mobile {
-  border-radius: 8px;
-  font-size: 1rem;
-}
-
 .expanded_card {
   background-color: white;
 }
 
+.worksheet_btn {
+  position: absolute;
+  top: -14px;
+  right: 18px;
+  transition: 0.3s;
+  transform: scaleY(1.3);
+}
+
+.worksheet_btn:hover {
+  transform: scaleY(1.3) translateY(6px);
+}
+
 .conflict_error {
   position: absolute;
-  top: 0px;
+  top: -6px;
   right: 0px;
-  transform: translate(-50%, 0%);
+  transform: translate(-20%, 0%);
 }
