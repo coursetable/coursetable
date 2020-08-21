@@ -287,7 +287,7 @@ const SearchResultsGridItem = ({
         {
           <WorksheetToggleButton
             alwaysRed={false}
-            crn={course['listing.crn']}
+            crn={course.crn}
             season_code={course.season_code}
             modal={false}
             isMobile={isMobile}

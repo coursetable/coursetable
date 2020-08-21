@@ -9,11 +9,7 @@ import { MdErrorOutline } from 'react-icons/md';
 const CourseConflictIcon = ({ course }) => {
   const { user } = useUser();
   const [inWorksheet, setInWorksheet] = useState(
-    isInWorksheet(
-      course.season_code,
-      course['listing.crn'].toString(),
-      user.worksheet
-    )
+    isInWorksheet(course.season_code, course.crn.toString(), user.worksheet)
   );
   if (user.worksheet) {
     var { data } = FetchWorksheet(user.worksheet);
@@ -21,7 +17,7 @@ const CourseConflictIcon = ({ course }) => {
 
   const update = isInWorksheet(
     course.season_code,
-    course['listing.crn'].toString(),
+    course.crn.toString(),
     user.worksheet
   );
   if (inWorksheet !== update) setInWorksheet(update);

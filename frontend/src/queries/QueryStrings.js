@@ -54,6 +54,7 @@ export const SEARCH_COURSES = gql`
       professor_names
       average_rating
       average_workload
+      average_professor
       times_summary
       times_by_day
       locations_summary
@@ -64,24 +65,11 @@ export const SEARCH_COURSES = gql`
       school
       requirements
       season_code
-      course {
-        times_by_day
-        extra_info
-        syllabus_url
-        course_professors {
-          professor {
-            name
-            average_rating
-          }
-        }
-        evaluation_statistics {
-          enrollment
-        }
-      }
-      listing {
-        crn
-        section
-      }
+      extra_info
+      syllabus_url
+      enrollment
+      section
+      crn
     }
   }
 `;

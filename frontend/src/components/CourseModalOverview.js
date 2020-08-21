@@ -68,6 +68,10 @@ const CourseModalOverview = (props) => {
       location_url = listing[`course.times_by_day.${day}`][0][3];
       location_name = listing[`course.times_by_day.${day}`][0][2];
     }
+    if (listing[`times_by_day.${day}`]) {
+      location_url = listing[`times_by_day.${day}`][0][3];
+      location_name = listing[`times_by_day.${day}`][0][2];
+    }
   }
 
   const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
@@ -278,7 +282,10 @@ const CourseModalOverview = (props) => {
     listing['course.requirements'] = listing.requirements;
   if (!listing['course.times_summary'])
     listing['course.times_summary'] = listing.times_summary;
-  if (!listing['section']) listing['section'] = listing['listing.section'];
+  if (!listing['professors'])
+    listing['professors'] = listing.professor_names.join(', ');
+  if (!listing['course.syllabus_url'])
+    listing['course.syllabus_url'] = listing.syllabus_url;
 
   return (
     <Modal.Body>
@@ -352,7 +359,7 @@ const CourseModalOverview = (props) => {
                 <span className={Styles.lable_bubble}>Enrollment</span>
               </Col>
               <Col xs={8} className={Styles.metadata}>
-                {listing['course.evaluation_statistics'][0].enrollment.enrolled}
+                {listing.enrollment}
               </Col>
             </Row>
           ) : enrollment === -1 ? (

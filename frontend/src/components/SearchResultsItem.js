@@ -17,11 +17,21 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
 import Styles from './SearchResultsItem.module.css';
 
-const SearchResultsItem = ({ course, isMobile, showModal, isLast }) => {
+const SearchResultsItem = ({
+  course,
+  isMobile,
+  showModal,
+  isLast,
+  ROW_WIDTH,
+  PROF_WIDTH,
+  MEET_WIDTH,
+  RATE_WIDTH,
+  BOOKMARK_WIDTH,
+  PADDING,
+}) => {
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
   const [mounted, setMounted] = useState(false);
-  const professor_rating = course['professor_avg_rating'];
 
   useEffect(() => {
     if (!mounted) setMounted(true);
@@ -71,7 +81,20 @@ const SearchResultsItem = ({ course, isMobile, showModal, isLast }) => {
       tabIndex="0"
     >
       <OverlayTrigger placement="right" overlay={renderTitlePopover}>
-        <Col md={3} className={Styles.course_header}>
+        <div
+          style={{
+            width: `${
+              ROW_WIDTH -
+              PROF_WIDTH -
+              MEET_WIDTH -
+              3 * RATE_WIDTH -
+              BOOKMARK_WIDTH -
+              PADDING
+            }px`,
+            paddingLeft: '15px',
+          }}
+          className={Styles.course_header}
+        >
           <div className={Styles.course_name}>{course.title}</div>
           <Row className="m-auto">
             <div className={Styles.course_code}>{course.course_code}</div>
@@ -108,33 +131,35 @@ const SearchResultsItem = ({ course, isMobile, showModal, isLast }) => {
               ))}
             </div>
           </Row>
-          {course['course.extra_info'] !== 'ACTIVE' && (
+          {course.extra_info !== 'ACTIVE' && (
             <div className={Styles.extra_info}>CANCELLED</div>
           )}
-        </Col>
+        </div>
       </OverlayTrigger>
 
-      <Col md={2} className={Styles.course_professors}>
-        {mounted ? (
-          <ResponsiveEllipsis
-            style={{ whiteSpace: 'pre-wrap' }}
-            text={
-              course.professor_names.length === 0
-                ? 'TBA'
-                : course.professor_names.join(' • ')
-            }
-            maxLine={2}
-            basedOn="words"
-          />
-        ) : (
-          'professor'
-        )}
-      </Col>
-      <Col md={3}>
+      <div
+        style={{ width: `${PROF_WIDTH}px` }}
+        className={Styles.course_professors}
+      >
+        <ResponsiveEllipsis
+          style={{ whiteSpace: 'pre-wrap' }}
+          text={
+            course.professor_names.length === 0
+              ? 'TBA'
+              : course.professor_names.join(' • ')
+          }
+          maxLine={2}
+          basedOn="words"
+        />
+      </div>
+      <div style={{ width: `${MEET_WIDTH}px` }}>
         <div className={Styles.course_time}>{course.times_summary}</div>
         <div className={Styles.course_location}>{courseLocation}</div>
-      </Col>
-      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
+      </div>
+      <div
+        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
+        className="d-flex"
+      >
         <div
           style={{
             color: course.average_rating
@@ -144,27 +169,37 @@ const SearchResultsItem = ({ course, isMobile, showModal, isLast }) => {
               ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
               : '#ebebeb',
           }}
-          className={Styles.rating_cell + ' my-auto'}
+          className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
         </div>
-      </Col>
-      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
+      </div>
+      <div
+        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
+        className="d-flex"
+      >
         <div
           style={{
-            color: professor_rating
-              ? ratingColormap(professor_rating).darken(2).css()
+            color: course.average_professor
+              ? ratingColormap(course.average_professor).darken(2).css()
               : '#b5b5b5',
-            backgroundColor: professor_rating
-              ? chroma(ratingColormap(professor_rating)).alpha(0.33).css()
+            backgroundColor: course.average_professor
+              ? chroma(ratingColormap(course.average_professor))
+                  .alpha(0.33)
+                  .css()
               : '#ebebeb',
           }}
-          className={Styles.rating_cell + ' my-auto'}
+          className={Styles.rating_cell + ' m-auto'}
         >
-          {professor_rating ? professor_rating : 'N/A'}
+          {course.average_professor
+            ? course.average_professor.toFixed(1)
+            : 'N/A'}
         </div>
-      </Col>
-      <Col md={1} style={{ whiteSpace: 'nowrap' }} className="d-flex">
+      </div>
+      <div
+        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
+        className="d-flex"
+      >
         <div
           style={{
             color: course.average_workload
@@ -176,16 +211,16 @@ const SearchResultsItem = ({ course, isMobile, showModal, isLast }) => {
                   .css()
               : '#ebebeb',
           }}
-          className={Styles.rating_cell + ' my-auto'}
+          className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
-      </Col>
-      <Col md={1} />
+      </div>
+      <div style={{ width: `${BOOKMARK_WIDTH}px` }} />
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           alwaysRed={false}
-          crn={course['listing.crn']}
+          crn={course.crn}
           season_code={course.season_code}
           isMobile={isMobile}
         />

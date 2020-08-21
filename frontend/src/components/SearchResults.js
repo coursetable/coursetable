@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import SearchResultsItem from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
@@ -88,6 +88,19 @@ const SearchResults = ({
   const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
   let grid_html = [];
 
+  const [ROW_WIDTH, setRowWidth] = useState();
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) setRowWidth(ref.current.offsetWidth);
+    // console.log(ROW_WIDTH);
+  }, [ref.current, width]);
+
+  const PROF_WIDTH = 150;
+  const MEET_WIDTH = 200;
+  const RATE_WIDTH = 50;
+  const BOOKMARK_WIDTH = 50;
+  const PADDING = 100;
+
   var resultsListing;
 
   function isRowLoaded({ index }) {
@@ -128,6 +141,12 @@ const SearchResults = ({
             isMobile={isMobile}
             showModal={showModal}
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
+            ROW_WIDTH={ROW_WIDTH}
+            PROF_WIDTH={PROF_WIDTH}
+            MEET_WIDTH={MEET_WIDTH}
+            RATE_WIDTH={RATE_WIDTH}
+            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
+            PADDING={PADDING}
           />
         </div>
       </CellMeasurer>
@@ -235,7 +254,7 @@ const SearchResults = ({
                       rowCount={!fetchedAll ? data.length + 1 : data.length}
                       rowRenderer={renderListRow}
                       deferredMeasurementCache={cache}
-                      rowHeight={cache.rowHeight}
+                      rowHeight={67}
                     />
                   )}
                 </AutoSizer>
@@ -257,28 +276,51 @@ const SearchResults = ({
         {!isMobile && (
           <div className={`${Styles.sticky_header}`}>
             <Row
+              ref={ref}
               className={`mx-auto px-2 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
             >
               {isList ? (
                 <React.Fragment>
-                  <Col md={3} style={{ lineHeight: '30px' }}>
+                  <div
+                    style={{
+                      lineHeight: '30px',
+                      width: `${
+                        ROW_WIDTH -
+                        PROF_WIDTH -
+                        MEET_WIDTH -
+                        3 * RATE_WIDTH -
+                        BOOKMARK_WIDTH -
+                        PADDING
+                      }px`,
+                      paddingLeft: '15px',
+                    }}
+                  >
                     <strong>{'Description'}</strong>
-                  </Col>
-                  <Col md={2} style={{ lineHeight: '30px' }}>
+                  </div>
+                  <div style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}>
                     <strong>{'Professors'}</strong>
-                  </Col>
-                  <Col md={3} style={{ lineHeight: '30px' }}>
+                  </div>
+                  <div style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}>
                     <strong>{'Meets'}</strong>
-                  </Col>
-                  <Col md={1} style={{ lineHeight: '30px' }}>
-                    <strong>{'Class'}</strong>
-                  </Col>
-                  <Col md={1} style={{ lineHeight: '30px' }}>
-                    <strong>{'Prof'}</strong>
-                  </Col>
-                  <Col md={1} style={{ lineHeight: '30px' }}>
-                    <strong>{'Work'}</strong>
-                  </Col>
+                  </div>
+                  <div
+                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
+                    className="d-flex"
+                  >
+                    <strong className="m-auto">{'Class'}</strong>
+                  </div>
+                  <div
+                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
+                    className="d-flex"
+                  >
+                    <strong className="m-auto">{'Prof'}</strong>
+                  </div>
+                  <div
+                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
+                    className="d-flex"
+                  >
+                    <strong className="m-auto">{'Work'}</strong>
+                  </div>
                 </React.Fragment>
               ) : (
                 <Col md={10} style={{ lineHeight: '30px' }}>
@@ -289,15 +331,14 @@ const SearchResults = ({
                   </strong>
                 </Col>
               )}
-              <Col
-                md={1}
-                style={{ lineHeight: '30px' }}
+              <div
+                style={{ lineHeight: '30px', width: `${BOOKMARK_WIDTH}px` }}
                 className="d-flex pr-2"
               >
                 <div className="d-flex ml-auto my-auto p-0">
                   <ListGridToggle isList={isList} setView={setView} />
                 </div>
-              </Col>
+              </div>
             </Row>
           </div>
         )}
