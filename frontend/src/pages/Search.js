@@ -64,6 +64,11 @@ function Search(props) {
   );
 
   const [collapsed_form, setCollapsedForm] = useState(false);
+  const [transition_end, setTransitionEnd] = useState(false);
+  // useEffect(() => {
+  //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
+  //   if (width > 1200 && collapsed_form) setCollapsedForm(false);
+  // }, [width]);
 
   // States involved in infinite scroll
   const [offset, setOffset] = useState(0); // How many courses to skip in query
@@ -608,6 +613,13 @@ function Search(props) {
               ? 'p-3 ' + Styles.results_col_mobile
               : (collapsed_form ? 'px-5 pt-3 ' : 'p-3 ') + Styles.results_col)
           }
+          onTransitionEnd={(e) => {
+            if (e.propertyName === 'flex-basis') {
+              if (collapsed_form && !transition_end) setTransitionEnd(true);
+              if (!collapsed_form && transition_end) setTransitionEnd(false);
+            }
+            // console.log(e.propertyName);
+          }}
         >
           <SearchResults
             data={old_data}
@@ -622,6 +634,7 @@ function Search(props) {
             querySize={QUERY_SIZE}
             refreshCache={refreshCache}
             fetchedAll={fetchedAll}
+            transition_end={transition_end}
           />
         </Col>
       </Row>

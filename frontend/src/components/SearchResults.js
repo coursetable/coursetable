@@ -43,8 +43,9 @@ const SearchResults = ({
   querySize,
   refreshCache,
   fetchedAll,
+  transition_end,
 }) => {
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
 
@@ -92,14 +93,16 @@ const SearchResults = ({
   const ref = useRef(null);
   useEffect(() => {
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-    // console.log(ROW_WIDTH);
-  }, [ref.current, width]);
+    console.log(ROW_WIDTH);
+  }, [ref.current, width, transition_end]);
 
   const PROF_WIDTH = 150;
   const MEET_WIDTH = 200;
-  const RATE_WIDTH = 50;
+  const RATE_WIDTH = 70;
   const BOOKMARK_WIDTH = 50;
-  const PADDING = 100;
+  const PADDING = 50;
+  const PROF_CUT = 1300;
+  const MEET_CUT = 1000;
 
   var resultsListing;
 
@@ -147,6 +150,8 @@ const SearchResults = ({
             RATE_WIDTH={RATE_WIDTH}
             BOOKMARK_WIDTH={BOOKMARK_WIDTH}
             PADDING={PADDING}
+            PROF_CUT={PROF_CUT}
+            MEET_CUT={MEET_CUT}
           />
         </div>
       </CellMeasurer>
@@ -277,7 +282,10 @@ const SearchResults = ({
           <div className={`${Styles.sticky_header}`}>
             <Row
               ref={ref}
-              className={`mx-auto px-2 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
+              className={
+                `mx-auto px-2 py-2 shadow-sm ${Styles.results_header_row}` +
+                (isList ? ' justify-content-end' : ' justify-content-between')
+              }
             >
               {isList ? (
                 <React.Fragment>
@@ -286,23 +294,33 @@ const SearchResults = ({
                       lineHeight: '30px',
                       width: `${
                         ROW_WIDTH -
-                        PROF_WIDTH -
-                        MEET_WIDTH -
+                        (width > PROF_CUT ? PROF_WIDTH : 0) -
+                        (width > MEET_CUT ? MEET_WIDTH : 0) -
                         3 * RATE_WIDTH -
                         BOOKMARK_WIDTH -
                         PADDING
                       }px`,
                       paddingLeft: '15px',
                     }}
+                    className="mr-auto"
                   >
                     <strong>{'Description'}</strong>
                   </div>
-                  <div style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}>
-                    <strong>{'Professors'}</strong>
-                  </div>
-                  <div style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}>
-                    <strong>{'Meets'}</strong>
-                  </div>
+                  {width > PROF_CUT && (
+                    <div
+                      style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}
+                      className="pr-4"
+                    >
+                      <strong>{'Professors'}</strong>
+                    </div>
+                  )}
+                  {width > MEET_CUT && (
+                    <div
+                      style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}
+                    >
+                      <strong>{'Meets'}</strong>
+                    </div>
+                  )}
                   <div
                     style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                     className="d-flex"

@@ -14,6 +14,7 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -28,10 +29,13 @@ const SearchResultsItem = ({
   RATE_WIDTH,
   BOOKMARK_WIDTH,
   PADDING,
+  PROF_CUT,
+  MEET_CUT,
 }) => {
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
   const [mounted, setMounted] = useState(false);
+  const { width } = useWindowDimensions();
 
   useEffect(() => {
     if (!mounted) setMounted(true);
@@ -69,7 +73,7 @@ const SearchResultsItem = ({
   return (
     <Row
       className={
-        'mx-auto px-2 py-2 justify-content-between shadow-sm ' +
+        'mx-auto px-2 py-2 justify-content-end shadow-sm ' +
         Styles.search_result_item
       }
       style={{
@@ -85,15 +89,15 @@ const SearchResultsItem = ({
           style={{
             width: `${
               ROW_WIDTH -
-              PROF_WIDTH -
-              MEET_WIDTH -
+              (width > PROF_CUT ? PROF_WIDTH : 0) -
+              (width > MEET_CUT ? MEET_WIDTH : 0) -
               3 * RATE_WIDTH -
               BOOKMARK_WIDTH -
               PADDING
             }px`,
             paddingLeft: '15px',
           }}
-          className={Styles.course_header}
+          className={Styles.course_header + ' mr-auto'}
         >
           <div className={Styles.course_name}>{course.title}</div>
           <Row className="m-auto">
@@ -136,26 +140,29 @@ const SearchResultsItem = ({
           )}
         </div>
       </OverlayTrigger>
-
-      <div
-        style={{ width: `${PROF_WIDTH}px` }}
-        className={Styles.course_professors}
-      >
-        <ResponsiveEllipsis
-          style={{ whiteSpace: 'pre-wrap' }}
-          text={
-            course.professor_names.length === 0
-              ? 'TBA'
-              : course.professor_names.join(' • ')
-          }
-          maxLine={2}
-          basedOn="words"
-        />
-      </div>
-      <div style={{ width: `${MEET_WIDTH}px` }}>
-        <div className={Styles.course_time}>{course.times_summary}</div>
-        <div className={Styles.course_location}>{courseLocation}</div>
-      </div>
+      {width > PROF_CUT && (
+        <div
+          style={{ width: `${PROF_WIDTH}px` }}
+          className={Styles.course_professors + ' pr-4'}
+        >
+          <ResponsiveEllipsis
+            style={{ whiteSpace: 'pre-wrap' }}
+            text={
+              course.professor_names.length === 0
+                ? 'TBA'
+                : course.professor_names.join(' • ')
+            }
+            maxLine={2}
+            basedOn="words"
+          />
+        </div>
+      )}
+      {width > MEET_CUT && (
+        <div style={{ width: `${MEET_WIDTH}px` }}>
+          <div className={Styles.course_time}>{course.times_summary}</div>
+          <div className={Styles.course_location}>{courseLocation}</div>
+        </div>
+      )}
       <div
         style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
         className="d-flex"

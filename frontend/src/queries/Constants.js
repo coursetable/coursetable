@@ -9,10 +9,10 @@ export const sortbyOptions = [
 ];
 
 export const sortbyQueries = {
-	course_name: { title: 'asc' },
-	rating: { average_rating: 'desc' },
-	workload: { average_workload: 'asc' },
-  text: { course_code: 'asc' },
+  course_name: { title: 'asc' },
+  rating: { average_rating: 'desc' },
+  workload: { average_workload: 'asc' },
+  text: null,
 };
 
 export const areas = ['Hu', 'So', 'Sc'];
