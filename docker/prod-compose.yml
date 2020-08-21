@@ -2,6 +2,7 @@ version: '3.2'
 services:
   proxy:
     image: node:latest
+    restart: always
     ports:
       - '8039:8039'
     expose:
@@ -27,11 +28,13 @@ services:
 
   frontend:
     build: ../frontend
+    restart: always
     expose:
       - '5000'
 
   graphql-engine:
     image: hasura/graphql-engine:latest
+    restart: always
     ports:
       - '8085:8080'
     environment:
@@ -46,6 +49,7 @@ services:
 
   nginx:
     build: ./nginx
+    restart: always
     ports:
       - '8079:8080'
     expose:
@@ -63,19 +67,22 @@ services:
   # Ensure php deps are installed
   php:
     build: ./php
+    restart: always
     volumes:
       - ..:/var/www/html
     command: sh -c 'php composer.phar install'
     working_dir: /var/www/html
 
   php-fpm:
-    env_file: ../facebook.env
     build: ./php
+    restart: always
+    env_file: ../facebook.env
     volumes:
       - ..:/usr/share/nginx/html
 
   mysql:
     build: ./mysql
+    restart: always
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -90,6 +97,7 @@ services:
 
   phpmyadmin:
     build: ./phpmyadmin
+    restart: always
     depends_on:
       - mysql
     restart: always
