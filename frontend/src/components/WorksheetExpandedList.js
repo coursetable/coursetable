@@ -55,7 +55,7 @@ const WorksheetExpandedList = ({
       <Container
         fluid
         id="results_container"
-        className={`px-0 shadow-sm ${search_results_styles.results_container} ${styles.shadow}`}
+        className={`px-0  ${search_results_styles.results_container} ${styles.shadow}`}
       >
         <div className={`${search_results_styles.sticky_header}`}>
           <Row
@@ -94,7 +94,6 @@ const WorksheetExpandedList = ({
                   onChange={(option) => {
                     onSeasonChange(option.value);
                   }}
-                  minMenuHeight={'auto'}
                 />
               </div>
             </Col>

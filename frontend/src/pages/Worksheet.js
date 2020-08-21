@@ -302,6 +302,7 @@ function Worksheet() {
               season_codes={season_codes}
               courses={season_listings}
               hasSeason={hasSeason}
+              showModal={showModal}
             />
           </Col>
         </Row>
