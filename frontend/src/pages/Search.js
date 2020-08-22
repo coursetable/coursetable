@@ -14,7 +14,6 @@ import {
   FormControl,
   InputGroup,
   Button,
-  Fade,
 } from 'react-bootstrap';
 
 import { SEARCH_COURSES } from '../queries/QueryStrings';
@@ -44,7 +43,7 @@ import Slider, { Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-import { FaArrowCircleUp, FaSearch } from 'react-icons/fa';
+import { FaSearch } from 'react-icons/fa';
 import { BsX } from 'react-icons/bs';
 import { flatten, preprocess_courses } from '../utilities';
 
@@ -64,17 +63,14 @@ function Search(props) {
   );
 
   const [collapsed_form, setCollapsedForm] = useState(false);
-  const [transition_end, setTransitionEnd] = useState(false);
   // useEffect(() => {
   //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
   //   if (width > 1200 && collapsed_form) setCollapsedForm(false);
   // }, [width]);
 
   // States involved in infinite scroll
-  const [offset, setOffset] = useState(0); // How many courses to skip in query
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
-  const [scrollPos, setScrollPos] = useState(0); // Scroll pos
   const [fetchedAll, setFetchedAll] = useState(false); // True when we've fetched all courses
   const [refreshCache, setRefreshCache] = useState(0); // Reset row height cache on search
 
@@ -145,17 +141,15 @@ function Search(props) {
 
   // search form submit handler
   const handleSubmit = useCallback((event, search = false) => {
-    let offset2 = -1;
+    let temp_offset = -1;
     if (event && search) event.preventDefault();
     if (search) {
-      window.scrollTo({ top: scrollPos < 78 ? scrollPos : 78, left: 0 });
       //Reset states when making a new search
-      setOffset(0);
       setOldData([]);
       setFetchedAll(false);
       setRefreshCache(refreshCache + 1);
       // if (!defaultSearch) setCollapsedForm(true);
-      offset2 = 0; // Account for reset state lag
+      temp_offset = 0; // Account for reset state lag
     } else if (fetchedAll) return;
 
     // sorting options
@@ -244,7 +238,7 @@ function Search(props) {
     const search_variables = {
       search_text: searchText.value,
       ordering: ordering,
-      offset: offset2 === -1 ? old_data.length : offset2,
+      offset: temp_offset === -1 ? old_data.length : temp_offset,
       limit: search ? 60 : QUERY_SIZE,
       seasons: processedSeasons,
       areas: processedAreas,
@@ -327,11 +321,6 @@ function Search(props) {
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
     setFormKey(form_key + 1);
-  };
-
-  // Scroll to top button
-  const scroll_top = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
   // check if the search form is too tall
@@ -613,36 +602,19 @@ function Search(props) {
               ? 'p-3 ' + Styles.results_col_mobile
               : (collapsed_form ? 'px-5 pt-3 ' : 'p-3 ') + Styles.results_col)
           }
-          onTransitionEnd={(e) => {
-            if (e.propertyName === 'flex-basis') {
-              if (collapsed_form && !transition_end) setTransitionEnd(true);
-              if (!collapsed_form && transition_end) setTransitionEnd(false);
-            }
-            // console.log(e.propertyName);
-          }}
         >
           <SearchResults
             data={old_data}
             isList={isList}
             setView={handleSetView}
-            offset={offset}
-            setOffset={setOffset}
             loading={searchLoading}
             loadMore={handleSubmit}
-            setScrollPos={setScrollPos}
             multiSeasons={multiSeasons}
-            querySize={QUERY_SIZE}
             refreshCache={refreshCache}
             fetchedAll={fetchedAll}
-            transition_end={transition_end}
           />
         </Col>
       </Row>
-      <Fade in={scrollPos > 3 * height}>
-        <div className={Styles.up_btn}>
-          <FaArrowCircleUp onClick={scroll_top} size={30} />
-        </div>
-      </Fade>
     </div>
   );
 }

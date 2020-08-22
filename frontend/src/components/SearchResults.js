@@ -11,7 +11,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 import Styles from './SearchResults.module.css';
 import './SearchResults.css';
 
-import { Container, Col, Row, Spinner } from 'react-bootstrap';
+import { Container, Col, Row, Spinner, Fade } from 'react-bootstrap';
 
 import { flatten } from '../utilities';
 import {
@@ -24,6 +24,7 @@ import {
 } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
+import { FaArrowCircleUp } from 'react-icons/fa';
 
 const cache = new CellMeasurerCache({
   fixedWidth: true,
@@ -34,16 +35,11 @@ const SearchResults = ({
   data,
   isList,
   setView,
-  offset,
-  setOffset,
   loading,
   loadMore,
-  setScrollPos,
   multiSeasons,
-  querySize,
   refreshCache,
   fetchedAll,
-  transition_end,
 }) => {
   const { width } = useWindowDimensions();
 
@@ -64,23 +60,19 @@ const SearchResults = ({
     setCourseModal([false, '']);
   };
 
-  // Determine if at end or not. Update Offset value
-  useEffect(() => {
-    if (
-      data.length > 0 &&
-      data.length !== offset &&
-      data.length % querySize === 0
-    ) {
-      setOffset(data.length);
-    }
-  }, [data, setOffset, offset, querySize]);
-
-  // Fetch more courses if scroll down 80% of the page
+  const [scroll_visible, setScrollVisible] = useState(false);
+  // Render scroll-up button after scrolling a lot
   useEffect(() => {
     window.onscroll = () => {
-      setScrollPos(window.pageYOffset);
+      if (window.pageYOffset > 2000 && !scroll_visible) setScrollVisible(true);
+      if (window.pageYOffset < 2000 && scroll_visible) setScrollVisible(false);
     };
-  }, [setScrollPos]);
+  });
+
+  // Scroll to top button click handler
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
 
   useEffect(() => {
     cache.clearAll();
@@ -379,6 +371,11 @@ const SearchResults = ({
         show={course_modal[0]}
         listing={course_modal[1]}
       />
+      <Fade in={scroll_visible}>
+        <div className={Styles.up_btn}>
+          <FaArrowCircleUp onClick={scrollTop} size={30} />
+        </div>
+      </Fade>
     </div>
   );
 };
