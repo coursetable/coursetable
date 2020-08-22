@@ -94,7 +94,7 @@ const SearchResults = ({
   useEffect(() => {
     if (ref.current) setRowWidth(ref.current.offsetWidth);
     // console.log(ROW_WIDTH);
-  }, [ref.current, width, transition_end]);
+  }, [ref.current]);
 
   const PROF_WIDTH = 150;
   const MEET_WIDTH = 200;
@@ -284,7 +284,7 @@ const SearchResults = ({
               ref={ref}
               className={
                 `mx-auto px-2 py-2 shadow-sm ${Styles.results_header_row}` +
-                (isList ? ' justify-content-end' : ' justify-content-between')
+                ' justify-content-between'
               }
             >
               {isList ? (
@@ -302,7 +302,6 @@ const SearchResults = ({
                       }px`,
                       paddingLeft: '15px',
                     }}
-                    className="mr-auto"
                   >
                     <strong>{'Description'}</strong>
                   </div>

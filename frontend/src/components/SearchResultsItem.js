@@ -73,7 +73,7 @@ const SearchResultsItem = ({
   return (
     <Row
       className={
-        'mx-auto px-2 py-2 justify-content-end shadow-sm ' +
+        'mx-auto px-2 py-2 justify-content-between shadow-sm ' +
         Styles.search_result_item
       }
       style={{
@@ -97,7 +97,7 @@ const SearchResultsItem = ({
             }px`,
             paddingLeft: '15px',
           }}
-          className={Styles.course_header + ' mr-auto'}
+          className={Styles.course_header}
         >
           <div className={Styles.course_name}>{course.title}</div>
           <Row className="m-auto">

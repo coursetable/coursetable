@@ -323,30 +323,30 @@ const CourseModalOverview = (props) => {
           </Row>
           {listing['professors'] && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
+              <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Professor</span>
               </Col>
-              <Col xs={8} className={Styles.metadata}>
+              <Col sm={9} xs={8} className={Styles.metadata}>
                 {listing.professors}
               </Col>
             </Row>
           )}
           {listing['course.times_summary'] !== 'TBA' && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
+              <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Meets</span>
               </Col>
-              <Col xs={8} className={Styles.metadata}>
+              <Col sm={9} xs={8} className={Styles.metadata}>
                 {listing['course.times_summary']}
               </Col>
             </Row>
           )}
           {listing['section'] && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
+              <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Section</span>
               </Col>
-              <Col xs={8} className={Styles.metadata}>
+              <Col sm={9} xs={8} className={Styles.metadata}>
                 {listing.section}
               </Col>
             </Row>
@@ -355,10 +355,10 @@ const CourseModalOverview = (props) => {
           listing['course.evaluation_statistics'][0] &&
           listing['course.evaluation_statistics'][0].enrollment ? (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
+              <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Enrollment</span>
               </Col>
-              <Col xs={8} className={Styles.metadata}>
+              <Col sm={9} xs={8} className={Styles.metadata}>
                 {listing.enrollment}
               </Col>
             </Row>
@@ -366,20 +366,20 @@ const CourseModalOverview = (props) => {
             <div />
           ) : (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
+              <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Enrollment</span>
               </Col>
-              <Col xs={8} className={Styles.metadata}>
+              <Col sm={9} xs={8} className={Styles.metadata}>
                 {'~' + enrollment}
               </Col>
             </Row>
           )}
           {location_url !== '' && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
+              <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Location</span>
               </Col>
-              <Col xs={8} className={Styles.metadata}>
+              <Col sm={9} xs={8} className={Styles.metadata}>
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -392,10 +392,10 @@ const CourseModalOverview = (props) => {
           )}
           {listing['course.syllabus_url'] && (
             <Row className="m-auto py-2">
-              <Col xs={4} className="px-0">
+              <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Syllabus</span>
               </Col>
-              <Col xs={8} className={Styles.metadata}>
+              <Col sm={9} xs={8} className={Styles.metadata}>
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
