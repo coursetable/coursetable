@@ -6,6 +6,11 @@
   position: relative;
 }
 
+.last_search_result_item {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
 .search_result_item:hover {
   cursor: pointer;
   background-color: #e1edff !important;

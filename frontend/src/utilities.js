@@ -102,10 +102,10 @@ export const useComponentVisible = (initialIsVisible) => {
   const [isComponentVisible, setIsComponentVisible] = useState(
     initialIsVisible
   );
-  const ref = useRef(null);
+  const ref_visible = useRef(null);
 
   const handleClickOutside = (event) => {
-    if (ref.current && !ref.current.contains(event.target)) {
+    if (ref_visible.current && !ref_visible.current.contains(event.target)) {
       setIsComponentVisible(false);
     }
   };
@@ -117,7 +117,7 @@ export const useComponentVisible = (initialIsVisible) => {
     };
   });
 
-  return { ref, isComponentVisible, setIsComponentVisible };
+  return { ref_visible, isComponentVisible, setIsComponentVisible };
 };
 
 export const unflattenTimes = (course) => {

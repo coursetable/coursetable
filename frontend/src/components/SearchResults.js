@@ -93,7 +93,7 @@ const SearchResults = ({
   const ref = useRef(null);
   useEffect(() => {
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-    console.log(ROW_WIDTH);
+    // console.log(ROW_WIDTH);
   }, [ref.current, width, transition_end]);
 
   const PROF_WIDTH = 150;
