@@ -55,7 +55,7 @@ const SearchResultsItem = ({
     }
   }
 
-  const renderTitlePopover = (props) => {
+  const renderTitlePopover = props => {
     return (
       <Popover {...props} id="title_popover">
         <Popover.Title>
@@ -65,6 +65,13 @@ const SearchResultsItem = ({
           {course.description.length <= 500
             ? course.description
             : course.description.slice(0, 500) + '...'}
+          <br />
+          <div className="text-danger">
+            {course.requirements &&
+              (course.requirements.length <= 250
+                ? course.requirements
+                : course.requirements.slice(0, 250) + '...')}
+          </div>
         </Popover.Content>
       </Popover>
     );
@@ -87,14 +94,12 @@ const SearchResultsItem = ({
       <OverlayTrigger placement="right" overlay={renderTitlePopover}>
         <div
           style={{
-            width: `${
-              ROW_WIDTH -
+            width: `${ROW_WIDTH -
               (width > PROF_CUT ? PROF_WIDTH : 0) -
               (width > MEET_CUT ? MEET_WIDTH : 0) -
               3 * RATE_WIDTH -
               BOOKMARK_WIDTH -
-              PADDING
-            }px`,
+              PADDING}px`,
             paddingLeft: '15px',
           }}
           className={Styles.course_header}
@@ -103,7 +108,7 @@ const SearchResultsItem = ({
           <Row className="m-auto">
             <div className={Styles.course_code}>{course.course_code}</div>
             <div className={Styles.skills_areas}>
-              {course.skills.map((skill) => (
+              {course.skills.map(skill => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -118,7 +123,7 @@ const SearchResultsItem = ({
                   {skill}
                 </Badge>
               ))}
-              {course.areas.map((area) => (
+              {course.areas.map(area => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -170,10 +175,14 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_rating
-              ? ratingColormap(course.average_rating).darken(2).css()
+              ? ratingColormap(course.average_rating)
+                  .darken(2)
+                  .css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
+              ? chroma(ratingColormap(course.average_rating))
+                  .alpha(0.33)
+                  .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -188,7 +197,9 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_professor
-              ? ratingColormap(course.average_professor).darken(2).css()
+              ? ratingColormap(course.average_professor)
+                  .darken(2)
+                  .css()
               : '#b5b5b5',
             backgroundColor: course.average_professor
               ? chroma(ratingColormap(course.average_professor))
@@ -210,7 +221,9 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_workload
-              ? workloadColormap(course.average_workload).darken(2).css()
+              ? workloadColormap(course.average_workload)
+                  .darken(2)
+                  .css()
               : '#b5b5b5',
             backgroundColor: course.average_workload
               ? chroma(workloadColormap(course.average_workload))
