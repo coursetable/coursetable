@@ -17,7 +17,13 @@
 .rating_bubble {
   background-color: rgb(190, 221, 255);
   border-radius: 8px;
-  max-height: 24px;
+
+  /* HAVE RATING BUBBLE ANIMATION */
+  /* max-height: 24px; */
+
+  /* NO RATING BUBBLE ANIMATION */
+  max-height: 3rem;
+
   transition: background-color 0.3s;
   transition: max-height 0.2s ease-out;
 }
