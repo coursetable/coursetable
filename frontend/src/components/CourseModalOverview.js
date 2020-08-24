@@ -162,7 +162,11 @@ const CourseModalOverview = (props) => {
         enlarged[0] === evaluations[i].season_code &&
         enlarged[1] === evaluations[i].crn;
 
-      if (isTouch) expanded = true;
+      // HAVE RATING BUBBLE ANIMATION
+      // if (isTouch) expanded = true;
+
+      // NO RATING BUBBLE ANIMATION
+      expanded = true;
 
       items.push(
         <Row key={id++} className="m-auto py-1 justify-content-center">

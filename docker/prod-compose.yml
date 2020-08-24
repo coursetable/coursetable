@@ -19,9 +19,11 @@ services:
       - nginx
     labels:
       traefik.enable: true
-      traefik.http.routers.coursetable.rule: Host(`coursetable.sheth.io`)
+      traefik.http.middlewares.coursetableHeaders.headers.SSLRedirect: true
+      traefik.http.routers.coursetable.rule: Host(`beta.coursetable.com`)
       traefik.http.routers.coursetable.tls: true
-      traefik.http.routers.coursetable.middlewares: SecureTLS
+      traefik.http.routers.coursetable.tls.certResolver: tls_resolver
+      traefik.http.routers.coursetable.middlewares: coursetableHeaders
     networks:
       - traefik
       - default
@@ -67,7 +69,6 @@ services:
   # Ensure php deps are installed
   php:
     build: ./php
-    restart: always
     volumes:
       - ..:/var/www/html
     command: sh -c 'php composer.phar install'
