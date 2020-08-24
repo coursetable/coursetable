@@ -1,6 +1,6 @@
 .search_base {
   background-color: #f6f6f6;
-  width: 100vw;
+  width: 100%;
   min-height: calc(100vh + 15px);
 }
 
