@@ -4,6 +4,7 @@ import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 
 function ContextAwareToggle({ eventKey, callback, question }) {
   const currentEventKey = useContext(AccordionContext);
@@ -37,11 +38,9 @@ function ContextAwareToggle({ eventKey, callback, question }) {
 }
 
 function FAQ() {
-  const filler_text =
-    'This is an example response to a frequently asked question. ' +
-    "I'm taking up multiple lines so it looks better when demo'd. " +
-    "I can't decide if I like black or muted text more, so let me " +
-    'know if you have any preferences.';
+  const scroll_top = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
 
   return (
     <div className={styles.container + ' mx-auto'}>
@@ -49,71 +48,125 @@ function FAQ() {
         Frequently Asked Questions
       </h1>
       <p className={styles.faq_description + ' mb-3 text-muted'}>
-        FAQ Description
+        Have another question?{' '}
+        <NavLink to="/feedback" onClick={scroll_top}>
+          Contact us
+        </NavLink>
+        .
       </p>
       <Accordion>
         <Card className={styles.accordion_card}>
           <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="0" question="Question 1" />
+            <ContextAwareToggle eventKey="0" question="What is CourseTable?" />
           </div>
           <Accordion.Collapse eventKey="0">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
+            <Card.Body className="text-muted py-3">
+              CourseTable offers a clean and effective way for Yale students to
+              find the courses they want. We source all our data from a
+              combination of Yale's course catalog, historical evaluations
+              database, and course demand portal. You can read more about the
+              history of our project{' '}
+              <a
+                href="https://coursetable.com/Blog"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                here
+              </a>
+              .
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
         <Card className={styles.accordion_card}>
           <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="1" question="Question 2" />
+            <ContextAwareToggle
+              eventKey="1"
+              question="Who can use CourseTable?"
+            />
           </div>
           <Accordion.Collapse eventKey="1">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
+            <Card.Body className="text-muted py-3">
+              CourseTable's class listings are open for everyone to search and
+              view. However, we do require you to log in with your Yale ID to
+              view evaluations and use worksheets.
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
         <Card className={styles.accordion_card}>
           <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="2" question="Question 3" />
+            <ContextAwareToggle
+              eventKey="2"
+              question="How often is CourseTable updated?"
+            />
           </div>
           <Accordion.Collapse eventKey="2">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
+            <Card.Body className="text-muted py-3">
+              We update our database daily. If anything continues to not match
+              Yale's catalog after a few days, please let us know through our{' '}
+              <NavLink to="/feedback" onClick={scroll_top}>
+                feedback form
+              </NavLink>
+              .
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
         <Card className={styles.accordion_card}>
           <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="3" question="Question 4" />
+            <ContextAwareToggle
+              eventKey="3"
+              question="Where can I submit feedback or report bugs?"
+            />
           </div>
           <Accordion.Collapse eventKey="3">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
+            <Card.Body className="text-muted py-3">
+              If you have a suggestion or find a bug, please submit our{' '}
+              <NavLink to="/feedback" onClick={scroll_top}>
+                general feedback form
+              </NavLink>
+              . We'll be in touch as soon as possible.
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
         <Card className={styles.accordion_card}>
           <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="4" question="Question 5" />
+            <ContextAwareToggle eventKey="4" question="How can I contribute?" />
           </div>
           <Accordion.Collapse eventKey="4">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
+            <Card.Body className="text-muted py-3">
+              The CourseTable website is open-source and available at our{' '}
+              <a
+                href="https://github.com/coursetable/coursetable"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                GitHub repository
+              </a>
+              . If you'd like to join the team, check out our{' '}
+              <NavLink to="/joinus" onClick={scroll_top}>
+                application
+              </NavLink>
+              !
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
         <Card className={styles.accordion_card}>
           <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="5" question="Question 6" />
+            <ContextAwareToggle
+              eventKey="5"
+              question="What happened to the old CourseTable?"
+            />
           </div>
           <Accordion.Collapse eventKey="5">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
-          </Accordion.Collapse>
-        </Card>
-        <Card className={styles.accordion_card}>
-          <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="6" question="Question 7" />
-          </div>
-          <Accordion.Collapse eventKey="6">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
-          </Accordion.Collapse>
-        </Card>
-        <Card className={styles.accordion_card}>
-          <div className={styles.accordion_header}>
-            <ContextAwareToggle eventKey="7" question="Question 8" />
-          </div>
-          <Accordion.Collapse eventKey="7">
-            <Card.Body className="text-muted py-3">{filler_text}</Card.Body>
+            <Card.Body className="text-muted py-3">
+              Over the summer of 2020, we rebuilt CourseTable as a modern site
+              that will be easier to update and maintain going forward. If we're
+              missing a feature from the old site that you would like to see
+              added back, please{' '}
+              <NavLink to="/feedback" onClick={scroll_top}>
+                let us know
+              </NavLink>
+              .
+            </Card.Body>
           </Accordion.Collapse>
         </Card>
       </Accordion>

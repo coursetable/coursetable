@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import { Container } from 'react-bootstrap';
 
-function App() {
+function Footer() {
   const scroll_top = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
@@ -87,4 +87,4 @@ function App() {
   );
 }
 
-export default App;
+export default Footer;
