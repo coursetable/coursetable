@@ -4,6 +4,7 @@ import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
+import FBLoginButton from './FBLoginButton';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
@@ -12,7 +13,6 @@ import {
   FetchWorksheetLazy,
   preprocess_courses,
 } from '../queries/GetWorksheetListings';
-import { toast } from 'react-toastify';
 
 function MeDropdown(props) {
   const { user } = useUser();
@@ -25,11 +25,6 @@ function MeDropdown(props) {
       CUR_SEASON
     );
   }
-
-  const handleFBClick = () => {
-    // LOGIN/LOGOUT OF FACEBOOK
-    toast.error('Facebook Integration Is Not Ready Yet');
-  };
 
   const handleExportClick = () => {
     fetchWorksheetListings();
@@ -64,31 +59,28 @@ function MeDropdown(props) {
       <Collapse in={props.profile_expanded}>
         <Col className={styles.collapse_col + ' px-3'}>
           {props.isLoggedIn && (
-            <>
-              <Row className=" py-3 m-auto">
-                <FcCalendar className="mr-2 my-auto" size={20} />
-                <span
-                  onClick={handleExportClick}
-                  className={styles.collapse_text}
-                >
-                  Export Worksheet
-                </span>
-              </Row>
-
-              <Row className=" pb-3 m-auto">
-                <FaFacebookSquare
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#007bff"
-                />
-                <span onClick={handleFBClick} className={styles.collapse_text}>
-                  Connect FB
-                </span>
-              </Row>
-            </>
+            <Row className=" py-3 m-auto">
+              <FcCalendar className="mr-2 my-auto" size={20} />
+              <span
+                onClick={handleExportClick}
+                className={styles.collapse_text}
+              >
+                Export Worksheet
+              </span>
+            </Row>
           )}
-          <Row className={' pb-3 m-auto ' + (!props.isLoggedIn ? 'pt-3' : '')}>
-            {props.isLoggedIn ? (
+          {props.isLoggedIn && (
+            <Row className=" pb-3 m-auto">
+              <FaFacebookSquare
+                className="mr-2 my-auto"
+                size={20}
+                color="#007bff"
+              />
+              <FBLoginButton />
+            </Row>
+          )}
+          {props.isLoggedIn ? (
+            <Row className=" pb-3 m-auto">
               <>
                 <FaSignOutAlt
                   className="mr-2 my-auto"
@@ -104,7 +96,9 @@ function MeDropdown(props) {
                   Sign Out
                 </span>
               </>
-            ) : (
+            </Row>
+          ) : (
+            <Row className=" py-3 m-auto">
               <>
                 <FaSignInAlt
                   className="mr-2 my-auto"
@@ -119,8 +113,8 @@ function MeDropdown(props) {
                   Sign In
                 </a>
               </>
-            )}
-          </Row>
+            </Row>
+          )}
         </Col>
       </Collapse>
     </div>

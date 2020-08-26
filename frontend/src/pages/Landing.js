@@ -8,7 +8,7 @@ import Logo from '../components/Logo';
 import styles from './Landing.module.css';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
-function Landing() {
+function Landing(props) {
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
 
@@ -37,32 +37,18 @@ function Landing() {
               </p>
               <Col className="mt-4">
                 <Row className={styles.btn_container}>
-                  <Col md={4} className="p-0 mx-2">
-                    <Button
-                      href="/legacy_api/index.php?forcelogin=1"
-                      variant="primary"
-                      className={styles.btns + ' mb-2'}
-                      size="lg"
-                    >
-                      Login
-                    </Button>
-                  </Col>
-                  {/* <Col md={4} className="p-0 mx-2">
+                  {!props.isLoggedIn && (
+                    <Col md={4} className="p-0 mx-2">
                       <Button
-                        href="/legacy_api/FacebookChannel.php"
+                        href="/legacy_api/index.php?forcelogin=1"
                         variant="primary"
-                        className={styles.btns + ' mb-2'}
+                        className={styles.btns}
                         size="lg"
                       >
-                        <Row className="justify-content-center">
-                          Connect{' '}
-                          <FaFacebookSquare
-                            className="ml-1 my-auto"
-                            size={25}
-                          />
-                        </Row>
+                        Login
                       </Button>
-                    </Col> */}
+                    </Col>
+                  )}
                   <Col md={4} className="p-0 mx-2">
                     <Button
                       size="lg"
