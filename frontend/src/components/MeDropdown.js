@@ -4,7 +4,7 @@ import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
-import FBLoginButton from './FBLoginButton'
+import FBLoginButton from './FBLoginButton';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
@@ -58,24 +58,27 @@ function MeDropdown(props) {
     <div className={styles.collapse_container} onClick={handleDropdownClick}>
       <Collapse in={props.profile_expanded}>
         <Col className={styles.collapse_col + ' px-3'}>
-          {props.isLoggedIn &&
+          {props.isLoggedIn && (
             <Row className=" py-3 m-auto">
               <FcCalendar className="mr-2 my-auto" size={20} />
-              <span onClick={handleExportClick} className={styles.collapse_text}>
+              <span
+                onClick={handleExportClick}
+                className={styles.collapse_text}
+              >
                 Export Worksheet
               </span>
             </Row>
-          }
-          {props.isLoggedIn && 
+          )}
+          {props.isLoggedIn && (
             <Row className=" pb-3 m-auto">
-            <FaFacebookSquare
-              className="mr-2 my-auto"
-              size={20}
-              color="#007bff"
-            />
-            <FBLoginButton/>
+              <FaFacebookSquare
+                className="mr-2 my-auto"
+                size={20}
+                color="#007bff"
+              />
+              <FBLoginButton />
             </Row>
-          }
+          )}
           {props.isLoggedIn ? (
             <Row className=" pb-3 m-auto">
               <>
