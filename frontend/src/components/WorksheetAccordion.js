@@ -106,27 +106,25 @@ export default class WorksheetAccordion extends React.Component {
   buildHtml = (parsed_courses) => {
     let today = new Date().getDay();
     if (today === 0 || today === 6) today = 1;
-    let indx = 0; // Day of the week counter
-    let id = 0; // Unique id for each array item
+    let dayIndex = 0; // Day of the week counter
     let accordion_items = [];
-    let key = 0;
-    for (let i = today - 1; indx < 5; i = (i + 1) % 5) {
+    for (let i = today - 1; dayIndex < 5; i = (i + 1) % 5) {
       const day = parsed_courses[i];
       if (day.length === 0) {
-        indx++;
+        dayIndex++;
         continue;
       }
 
       accordion_items.push(
-        <h5 className={styles.day_header} key={++id}>
+        <h5 className={styles.day_header} key="header">
           {this.weekDays[i]}
         </h5>
       );
-      day.forEach((course) => {
+      day.forEach((course, index) => {
         accordion_items.push(
-          <Card key={++id} className={styles.card + ' px-0'}>
-            <ContextAwareToggle eventKey={++id} course={course} />
-            <Accordion.Collapse eventKey={id}>
+          <Card key={index} className={styles.card + ' px-0'}>
+            <ContextAwareToggle eventKey={`${i}_${course.crn}_${course.season_code}`} course={course} />
+            <Accordion.Collapse eventKey={`${i}_${course.crn}_${course.season_code}`}>
               <Card.Body className="px-2 pt-2 pb-3">
                 <Row className="m-auto">
                   <Col className="p-0">
@@ -147,7 +145,7 @@ export default class WorksheetAccordion extends React.Component {
                             .alpha(0.16)
                             .css(),
                         }}
-                        key={key++}
+                        key="skills"
                       >
                         {course.skills}
                       </Badge>
@@ -166,7 +164,7 @@ export default class WorksheetAccordion extends React.Component {
                             .alpha(0.16)
                             .css(),
                         }}
-                        key={key++}
+                        key="areas"
                       >
                         {course.areas}
                       </Badge>
@@ -200,7 +198,7 @@ export default class WorksheetAccordion extends React.Component {
           </Card>
         );
       });
-      indx++;
+      dayIndex++;
     }
     return <Accordion>{accordion_items}</Accordion>;
   };

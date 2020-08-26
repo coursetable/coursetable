@@ -3,7 +3,6 @@ import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
-import CourseModalLoading from './CourseModalLoading';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { toSeasonString } from '../utilities';

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Row, Col, Badge, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Row, Badge, OverlayTrigger, Popover } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -39,7 +39,7 @@ const SearchResultsItem = ({
 
   useEffect(() => {
     if (!mounted) setMounted(true);
-  }, []);
+  }, [mounted]);
 
   let courseLocation;
 

@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Col, Badge } from 'react-bootstrap';
+import { Row, Badge } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -35,7 +35,6 @@ const WorksheetExpandedListItem = ({
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
   let courseLocation;
-  end_fade = end_fade;
 
   if (course['course.locations_summary'] === 'TBA') {
     courseLocation = '';

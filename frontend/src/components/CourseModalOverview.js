@@ -10,7 +10,6 @@ import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
-import chroma from 'chroma-js';
 
 import CourseModalLoading from './CourseModalLoading';
 
@@ -30,7 +29,7 @@ const CourseModalOverview = (props) => {
   let enrollment = -1;
 
   const handleReflow = (rleState) => {
-    const { clamped, text } = rleState;
+    const { clamped } = rleState;
     setClamped(clamped);
   };
 
@@ -117,7 +116,6 @@ const CourseModalOverview = (props) => {
     });
     evaluations.sort(sortEvals);
 
-    var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
     let id = 0;
     for (let i = 0; i < evaluations.length; i++) {
       if (
@@ -163,6 +161,7 @@ const CourseModalOverview = (props) => {
         enlarged[1] === evaluations[i].crn;
 
       // HAVE RATING BUBBLE ANIMATION
+      // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
       // if (isTouch) expanded = true;
 
       // NO RATING BUBBLE ANIMATION

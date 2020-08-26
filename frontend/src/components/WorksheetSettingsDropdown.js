@@ -3,7 +3,6 @@ import React, { useRef } from 'react';
 import styles from './WorksheetSettingsDropdown.module.css';
 import me_dropdown_styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
-import { FcCalendar } from 'react-icons/fc';
 import Select from 'react-select';
 import { toSeasonString } from '../utilities';
 

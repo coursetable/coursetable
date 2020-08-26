@@ -1,7 +1,7 @@
 import React from 'react';
 import { BsChevronDoubleDown } from 'react-icons/bs';
 import { Button, Row, Col, Container } from 'react-bootstrap';
-import { Element, animateScroll as scroll, scroller } from 'react-scroll';
+import { Element, scroller } from 'react-scroll';
 import { Link } from 'react-router-dom';
 
 import Logo from '../components/Logo';

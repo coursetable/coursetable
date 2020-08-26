@@ -6,16 +6,10 @@ import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
-import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
 
 const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();
-  if (user.worksheet) {
-    var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
-      user.worksheet,
-      props.season_code
-    );
-  }
+  
   const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
   );

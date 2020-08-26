@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
-import { Row, Col, Container } from 'react-bootstrap';
+import { Row, Container } from 'react-bootstrap';
 
 import styles from './WorksheetExpandedList.module.css';
 import search_results_styles from './SearchResults.module.css';
@@ -26,7 +26,7 @@ const WorksheetExpandedList = ({
   useEffect(() => {
     if (ref_width.current) setRowWidth(ref_width.current.offsetWidth);
     // console.log(ROW_WIDTH);
-  }, [ref_width.current, width, end_fade]);
+  }, [width, end_fade]);
   const PROF_WIDTH = 250;
   const MEET_WIDTH = 250;
   const RATE_WIDTH = 70;

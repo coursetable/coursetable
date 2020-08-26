@@ -34,7 +34,6 @@ function Worksheet() {
   season_codes.reverse();
   const [season, setSeason] = useState(updateRecentSeason(true));
   const [listings, setListings] = useState([]);
-  const [worksheet_init, setWorksheetInit] = useState(user.worksheet);
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
   const [hover_course, setHoverCourse] = useState();
@@ -95,7 +94,7 @@ function Worksheet() {
   };
 
   const { loading, error, data } = FetchWorksheet(
-    listings.length ? worksheet_init : user.worksheet
+    listings.length ? user.worksheet : user.worksheet
   );
   if (user.worksheet.length === 0)
     return (
