@@ -1,21 +1,11 @@
-import React, { forceUpdate } from 'react';
+import React from 'react';
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 import { useUser } from '../user';
+import { toast } from 'react-toastify';
 
-// TODO: debug for first-time login; ui isn't updating after user approves fb connection
-
-function useForceUpdate() {
-  const [, forceUpdate] = React.useState();
-
-  return React.useCallback(() => {
-    forceUpdate(s => !s);
-  }, []);
-}
-
-function FBLoginButton(props) {
+function FBLoginButton() {
   const { user, userRefresh } = useUser();
-  const forceUpdate = useForceUpdate()
   
   window.fbAsyncInit = function() {
     window.FB.init({
@@ -26,7 +16,7 @@ function FBLoginButton(props) {
       xfbml: true,  // parse social plugins on this page
       version: 'v7.0',
     });
-  }.bind(this);
+  };
 
   // Load the SDK asynchronously
   (function(d, s, id) {
@@ -37,33 +27,11 @@ function FBLoginButton(props) {
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
 
-  function authChangeCallback() {
-    forceUpdate()
-  }
-
   function testAPI() {
     console.log('Welcome!  Fetching your information.... ');
     window.FB.api('/me', function(response) {
       console.log('Successful login for: ' + response.name);
     });
-
-    // window.FB.api('/me/permissions', response => {
-    //   console.log('/me/permissions')
-    //   const permissions = response.data;
-    //   console.log(permissions)
-    //   let hasUserFriendsPermission = false;
-    //   for (let i = 0; i !== permissions.length; i++) {
-    //     const p = permissions[i];
-    //     if (p.permission === 'user_friends' && p.status === 'granted') {
-    //       hasUserFriendsPermission = true;
-    //     }
-    //   }
-
-    //   if (hasUserFriendsPermission) {
-    //     console.log('FB has permissions');
-    //   } else {
-    //     console.log('FB does not have permissions');      }
-    // });
   }
 
   function statusChangeCallback(response) {
@@ -71,7 +39,6 @@ function FBLoginButton(props) {
     // app know the current login status of the person.
     // Full docs on the response object can be found in the documentation
     // for FB.getLoginStatus().
-    // testAPI();
     if (response.status === 'connected') {
       // Logged into your app and Facebook.
       testAPI();
@@ -84,6 +51,19 @@ function FBLoginButton(props) {
       console.log("Not logged into FB")
     }
   }
+
+  function authStatusChange() {
+    userRefresh()
+    toast.success('Successfully connected to FB!', {
+      position: "top-right",
+      autoClose: 2500,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      });
+  }
   
   // This function is called when someone finishes with the Login
   // Button.  See the onlogin handler attached to it in the sample
@@ -92,11 +72,11 @@ function FBLoginButton(props) {
   function checkLoginState() {
     window.FB.getLoginStatus(function(response) {
       statusChangeCallback(response);
-    }.bind(this));
+    });
   }
 
-  function handleClick() {
-    window.FB.Event.subscribe('auth.statusChange', userRefresh)
+  function handleLoginClick() {
+    window.FB.Event.subscribe('auth.statusChange', authStatusChange)
     window.FB.login(
       checkLoginState(),
       {
@@ -107,14 +87,17 @@ function FBLoginButton(props) {
     axios.get(
       '/legacy_api/FetchFacebookData.php'
     );
-    forceUpdate();
+  }
+
+  function handleLogoutClick() {
+    toast.error('FB disconnect not yet implemented.')
   }
 
   return (
     <div>
       {!user.fbLogin && (
         <span 
-          onClick={handleClick}
+          onClick={handleLoginClick}
           className={styles.collapse_text}
         >
           Connect to FB
@@ -122,7 +105,7 @@ function FBLoginButton(props) {
       )}
       {user.fbLogin && (
         <span 
-          onClick={handleClick}
+          onClick={handleLogoutClick}
           className={styles.collapse_text}
         >
           Disconnect FB

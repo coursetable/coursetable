@@ -1,10 +1,9 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './Navbar.module.css';
-import { Nav, Navbar, Container, Button } from 'react-bootstrap';
+import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
-import FBLoginButton from './FBLoginButton';
 import MeDropdown from './MeDropdown';
 import Searchbar from '../components/Searchbar';
 import { BsFillPersonFill } from 'react-icons/bs';
