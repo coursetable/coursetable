@@ -5,10 +5,9 @@ import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import { Container } from 'react-bootstrap';
 
+import {scrollToTop} from '../utilities';
+
 function Footer() {
-  const scroll_top = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  };
   return (
     <Container fluid>
       <hr />
@@ -26,12 +25,12 @@ function Footer() {
             <h5>Explore</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink to="/catalog" onClick={scroll_top}>
+                <NavLink to="/catalog" onClick={scrollToTop}>
                   Catalog
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/worksheet" onClick={scroll_top}>
+                <NavLink to="/worksheet" onClick={scrollToTop}>
                   Worksheet
                 </NavLink>
               </li>
@@ -41,17 +40,17 @@ function Footer() {
             <h5>Support</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink to="/faq" onClick={scroll_top}>
+                <NavLink to="/faq" onClick={scrollToTop}>
                   FAQ
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/changelog" onClick={scroll_top}>
+                <NavLink to="/changelog" onClick={scrollToTop}>
                   Changelog
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/feedback" onClick={scroll_top}>
+                <NavLink to="/feedback" onClick={scrollToTop}>
                   Feedback
                 </NavLink>
               </li>
@@ -61,12 +60,12 @@ function Footer() {
             <h5>About</h5>
             <ul className="list-unstyled text-small">
               <li>
-                <NavLink to="/about" onClick={scroll_top}>
+                <NavLink to="/about" onClick={scrollToTop}>
                   Team
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/joinus" onClick={scroll_top}>
+                <NavLink to="/joinus" onClick={scrollToTop}>
                   Join us
                 </NavLink>
               </li>

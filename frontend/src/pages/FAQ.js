@@ -6,6 +6,8 @@ import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 
+import {scrollToTop} from '../utilities';
+
 function ContextAwareToggle({ eventKey, callback, question }) {
   const currentEventKey = useContext(AccordionContext);
 
@@ -38,9 +40,6 @@ function ContextAwareToggle({ eventKey, callback, question }) {
 }
 
 function FAQ() {
-  const scroll_top = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  };
 
   return (
     <div className={styles.container + ' mx-auto'}>
@@ -49,7 +48,7 @@ function FAQ() {
       </h1>
       <p className={styles.faq_description + ' mb-3 text-muted'}>
         Have another question?{' '}
-        <NavLink to="/feedback" onClick={scroll_top}>
+        <NavLink to="/feedback" onClick={scrollToTop}>
           Contact us
         </NavLink>
         .
@@ -103,7 +102,7 @@ function FAQ() {
             <Card.Body className="text-muted py-3">
               We update our database daily. If anything continues to not match
               Yale's catalog after a few days, please let us know through our{' '}
-              <NavLink to="/feedback" onClick={scroll_top}>
+              <NavLink to="/feedback" onClick={scrollToTop}>
                 feedback form
               </NavLink>
               .
@@ -120,7 +119,7 @@ function FAQ() {
           <Accordion.Collapse eventKey="3">
             <Card.Body className="text-muted py-3">
               If you have a suggestion or find a bug, please submit our{' '}
-              <NavLink to="/feedback" onClick={scroll_top}>
+              <NavLink to="/feedback" onClick={scrollToTop}>
                 general feedback form
               </NavLink>
               . We'll be in touch as soon as possible.
@@ -142,7 +141,7 @@ function FAQ() {
                 GitHub repository
               </a>
               . If you'd like to join the team, check out our{' '}
-              <NavLink to="/joinus" onClick={scroll_top}>
+              <NavLink to="/joinus" onClick={scrollToTop}>
                 application
               </NavLink>
               !
@@ -162,7 +161,7 @@ function FAQ() {
               that will be easier to update and maintain going forward. If we're
               missing a feature from the old site that you would like to see
               added back, please{' '}
-              <NavLink to="/feedback" onClick={scroll_top}>
+              <NavLink to="/feedback" onClick={scrollToTop}>
                 let us know
               </NavLink>
               .
