@@ -14,7 +14,7 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 function CourseTableNavbar(props) {
   const [nav_expanded, setExpand] = useState(false);
   const {
-    ref,
+    ref_visible,
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisible(false);
@@ -81,7 +81,7 @@ function CourseTableNavbar(props) {
                 <div className="d-none d-md-block">
                   <div className={styles.navbar_me}>
                     <div
-                      ref={ref}
+                      ref={ref_visible}
                       className={styles.icon_circle + ' m-auto'}
                       onClick={() => setIsComponentVisible(!isComponentVisible)}
                     >

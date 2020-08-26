@@ -1,18 +1,18 @@
 import chroma from 'chroma-js';
 
 export const sortbyOptions = [
-	{ label: 'Sort by relevance', value: 'text' },
-	{ label: 'Sort by course name', value: 'course_name' },
-	{ label: 'Sort by rating', value: 'rating' },
-	{ label: 'Sort by workload', value: 'workload' },
-	// { label: 'Enrollment', value: 'enrollment' },
+  { label: 'Sort by Relevance', value: 'text' },
+  { label: 'Sort by Course Name', value: 'course_name' },
+  { label: 'Sort by Rating', value: 'rating' },
+  { label: 'Sort by Workload', value: 'workload' },
+  // { label: 'Enrollment', value: 'enrollment' },
 ];
 
 export const sortbyQueries = {
-	text: null,
-	course_name: { title: 'asc' },
-	rating: { average_rating: 'desc' },
-	workload: { average_workload: 'asc' },
+  course_name: { title: 'asc' },
+  rating: { average_rating: 'desc' },
+  workload: { average_workload: 'asc' },
+  text: null,
 };
 
 export const areas = ['Hu', 'So', 'Sc'];
@@ -194,6 +194,6 @@ export const ratingColormap = chroma
 	.scale()
 	.domain([1, 5]);
 export const workloadColormap = chroma
-	.bezier(['#e84a5f', '#fdffab', '#1fab89'])
-	.scale()
-	.domain([1, 5]);
+  .bezier(['#1fab89', '#fdffab', '#e84a5f'])
+  .scale()
+  .domain([1, 5]);

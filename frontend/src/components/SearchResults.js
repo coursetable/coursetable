@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 
 import SearchResultsItem from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
@@ -11,11 +11,9 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 import Styles from './SearchResults.module.css';
 import './SearchResults.css';
 
-import { Container, Col, Row } from 'react-bootstrap';
+import { Container, Col, Row, Spinner, Fade } from 'react-bootstrap';
 
-import { useLazyQuery } from '@apollo/react-hooks';
-import { GET_COURSE_MODAL } from '../queries/QueryStrings';
-import { preprocess_courses, flatten } from '../utilities';
+import { flatten } from '../utilities';
 import {
   InfiniteLoader,
   List,
@@ -26,6 +24,7 @@ import {
 } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
+import { FaArrowCircleUp } from 'react-icons/fa';
 
 const cache = new CellMeasurerCache({
   fixedWidth: true,
@@ -36,87 +35,82 @@ const SearchResults = ({
   data,
   isList,
   setView,
-  offset,
-  setOffset,
   loading,
-  // Load more function for InfiniteLoader
   loadMore,
-  setScroll,
-  multi_seasons,
-  QUERY_SIZE,
+  multiSeasons,
+  refreshCache,
+  fetchedAll,
 }) => {
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
 
   // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
-  const [showModal, setShowModal] = useState(false);
-  const [modal_course, setModalCourse] = useState();
+  const [course_modal, setCourseModal] = useState([false, '']);
   // const [show_tooltip, setShowTooltip] = useState(false);
   let key = 0;
   // const [modalCalled, setModalCalled] = React.useState(false);
 
-  var [
-    executeGetCourseModal,
-    { called: modalCalled, loading: modalLoading, data: modalData },
-  ] = useLazyQuery(GET_COURSE_MODAL);
-
-  const hideModal = () => {
-    setShowModal(false);
+  const showModal = (listing) => {
+    setCourseModal([true, listing]);
   };
 
-  var modal;
+  const hideModal = () => {
+    setCourseModal([false, '']);
+  };
 
-  if (modalCalled) {
-    if (modalLoading) {
-      modal = (
-        <CourseModal
-          hideModal={hideModal}
-          show={showModal}
-          listing={null}
-          partial_listing={modal_course}
-        />
-      );
-    } else {
-      if (modalData) {
-        modal = (
-          <CourseModal
-            hideModal={hideModal}
-            show={showModal}
-            listing={preprocess_courses(flatten(modalData.listings[0]))}
-          />
-        );
-      }
-    }
-  }
-
-  // Determine if at end or not. Update Offset value
-  useEffect(() => {
-    if (
-      data.length > 0 &&
-      data.length !== offset &&
-      data.length % QUERY_SIZE === 0
-    ) {
-      setOffset(data.length);
-    }
-  }, [data, setOffset, offset, QUERY_SIZE]);
-
-  // Fetch more courses if scroll down 80% of the page
+  const [scroll_visible, setScrollVisible] = useState(false);
+  // Render scroll-up button after scrolling a lot
   useEffect(() => {
     window.onscroll = () => {
-      setScroll(window.pageYOffset);
+      if (window.pageYOffset > 2000 && !scroll_visible) setScrollVisible(true);
+      if (window.pageYOffset < 2000 && scroll_visible) setScrollVisible(false);
     };
-  }, []);
+  });
 
-  const num_cols = width < 1100 ? 2 : 3;
+  // Scroll to top button click handler
+  const scrollTop = () => {
+    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  };
+
+  useEffect(() => {
+    cache.clearAll();
+  }, [refreshCache]);
+
+  const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
   let grid_html = [];
 
+  const [ROW_WIDTH, setRowWidth] = useState();
+  const ref = useRef(null);
+  useEffect(() => {
+    if (ref.current) setRowWidth(ref.current.offsetWidth);
+    // console.log(ROW_WIDTH);
+  },[setRowWidth]);
+
+  const PROF_WIDTH = 150;
+  const MEET_WIDTH = 200;
+  const RATE_WIDTH = 70;
+  const BOOKMARK_WIDTH = 50;
+  const PADDING = 50;
+  const PROF_CUT = 1300;
+  const MEET_CUT = 1000;
+
   var resultsListing;
+
+  function isRowLoaded({ index }) {
+    // console.log(index);
+    if (fetchedAll) return true;
+    if (isList) return index < data.length;
+    return index < grid_html.length;
+  }
 
   // Render functions for React Virtualized List:
 
   const renderGridRow = ({ index, key, style }) => {
+    if (!isRowLoaded({ index })) {
+      return <div key={key} style={style} />;
+    }
     return (
       <div key={key} style={style}>
         {grid_html[index]}
@@ -125,6 +119,9 @@ const SearchResults = ({
   };
 
   const renderListRow = ({ index, key, style, parent }) => {
+    if (!isRowLoaded({ index })) {
+      return <div key={key} style={style} />;
+    }
     return (
       <CellMeasurer
         key={key}
@@ -137,9 +134,16 @@ const SearchResults = ({
           <SearchResultsItem
             course={flatten(data[index])}
             isMobile={isMobile}
-            setShowModal={setShowModal}
-            setModalCourse={setModalCourse}
-            executeGetCourseModal={executeGetCourseModal}
+            showModal={showModal}
+            isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
+            ROW_WIDTH={ROW_WIDTH}
+            PROF_WIDTH={PROF_WIDTH}
+            MEET_WIDTH={MEET_WIDTH}
+            RATE_WIDTH={RATE_WIDTH}
+            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
+            PADDING={PADDING}
+            PROF_CUT={PROF_CUT}
+            MEET_CUT={MEET_CUT}
           />
         </div>
       </CellMeasurer>
@@ -171,11 +175,9 @@ const SearchResults = ({
             <SearchResultsGridItem
               course={flatten(data[j])}
               isMobile={isMobile}
-              setShowModal={setShowModal}
-              setModalCourse={setModalCourse}
-              executeGetCourseModal={executeGetCourseModal}
+              showModal={showModal}
               num_cols={num_cols}
-              multi_seasons={multi_seasons}
+              multiSeasons={multiSeasons}
               key={key++}
             />
           );
@@ -189,9 +191,10 @@ const SearchResults = ({
 
       resultsListing = (
         <InfiniteLoader
-          isRowLoaded={(index) => !!grid_html[index]}
+          isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
-          rowCount={grid_html.length}
+          rowCount={!fetchedAll ? grid_html.length + 1 : grid_html.length}
+          threshold={15}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -207,7 +210,9 @@ const SearchResults = ({
                       isScrolling={isScrolling}
                       onScroll={onChildScroll}
                       scrollTop={scrollTop}
-                      rowCount={grid_html.length}
+                      rowCount={
+                        !fetchedAll ? grid_html.length + 1 : grid_html.length
+                      }
                       rowHeight={178}
                       rowRenderer={renderGridRow}
                     />
@@ -224,9 +229,10 @@ const SearchResults = ({
     else {
       resultsListing = (
         <InfiniteLoader
-          isRowLoaded={(index) => !!data[index]}
+          isRowLoaded={isRowLoaded}
           loadMoreRows={loading ? () => {} : loadMore}
-          rowCount={data.length}
+          rowCount={!fetchedAll ? data.length + 1 : data.length}
+          threshold={30}
         >
           {({ onRowsRendered, registerChild }) => (
             <WindowScroller>
@@ -242,10 +248,10 @@ const SearchResults = ({
                       isScrolling={isScrolling}
                       onScroll={onChildScroll}
                       scrollTop={scrollTop}
-                      rowCount={data.length}
+                      rowCount={!fetchedAll ? data.length + 1 : data.length}
                       rowRenderer={renderListRow}
                       deferredMeasurementCache={cache}
-                      rowHeight={cache.rowHeight}
+                      rowHeight={67}
                     />
                   )}
                 </AutoSizer>
@@ -260,29 +266,71 @@ const SearchResults = ({
   return (
     <div>
       <Container
+        fluid
         id="results_container"
         className={`px-0 shadow-sm ${Styles.results_container}`}
       >
         {!isMobile && (
           <div className={`${Styles.sticky_header}`}>
             <Row
-              className={`mx-auto px-2 py-2 shadow-sm justify-content-between ${Styles.results_header_row}`}
+              ref={ref}
+              className={
+                `mx-auto px-2 py-2 shadow-sm ${Styles.results_header_row}` +
+                ' justify-content-between'
+              }
             >
               {isList ? (
-                <>
-                  <Col md={4} style={{ lineHeight: '30px' }}>
+                <React.Fragment>
+                  <div
+                    style={{
+                      lineHeight: '30px',
+                      width: `${
+                        ROW_WIDTH -
+                        (width > PROF_CUT ? PROF_WIDTH : 0) -
+                        (width > MEET_CUT ? MEET_WIDTH : 0) -
+                        3 * RATE_WIDTH -
+                        BOOKMARK_WIDTH -
+                        PADDING
+                      }px`,
+                      paddingLeft: '15px',
+                    }}
+                  >
                     <strong>{'Description'}</strong>
-                  </Col>
-                  <Col md={3} style={{ lineHeight: '30px' }}>
-                    <strong>{'Meets'}</strong>
-                  </Col>
-                  <Col md={2} style={{ lineHeight: '30px' }}>
-                    <strong>{'Rating'}</strong>
-                  </Col>
-                  <Col md={2} style={{ lineHeight: '30px' }}>
-                    <strong>{'Workload'}</strong>
-                  </Col>
-                </>
+                  </div>
+                  {width > PROF_CUT && (
+                    <div
+                      style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}
+                      className="pr-4"
+                    >
+                      <strong>{'Professors'}</strong>
+                    </div>
+                  )}
+                  {width > MEET_CUT && (
+                    <div
+                      style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}
+                    >
+                      <strong>{'Meets'}</strong>
+                    </div>
+                  )}
+                  <div
+                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
+                    className="d-flex"
+                  >
+                    <strong className="m-auto">{'Class'}</strong>
+                  </div>
+                  <div
+                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
+                    className="d-flex"
+                  >
+                    <strong className="m-auto">{'Prof'}</strong>
+                  </div>
+                  <div
+                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
+                    className="d-flex"
+                  >
+                    <strong className="m-auto">{'Work'}</strong>
+                  </div>
+                </React.Fragment>
               ) : (
                 <Col md={10} style={{ lineHeight: '30px' }}>
                   <strong>
@@ -292,25 +340,42 @@ const SearchResults = ({
                   </strong>
                 </Col>
               )}
-              <Col md={1} style={{ lineHeight: '30px' }} className="d-flex">
-                <div className="d-flex mx-auto my-auto">
+              <div
+                style={{ lineHeight: '30px', width: `${BOOKMARK_WIDTH}px` }}
+                className="d-flex pr-2"
+              >
+                <div className="d-flex ml-auto my-auto p-0">
                   <ListGridToggle isList={isList} setView={setView} />
                 </div>
-              </Col>
+              </div>
             </Row>
           </div>
         )}
-        <div className={!isList ? 'px-1 pt-3' : ''}>
-          {resultsListing}
+        <div className={!isList ? 'px-1 pt-3' : Styles.results_list_container}>
+          {data.length !== 0 && resultsListing}
+          {refreshCache > 0 && data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
-            <Row className="m-auto pt-0 pb-2">
-              <strong className="mx-auto">Loading...</strong>
+            <Row
+              className={'m-auto ' + (data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
+            >
+              <Spinner className="m-auto" animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
             </Row>
           )}
         </div>
       </Container>
-      {modal}
+      <CourseModal
+        hideModal={hideModal}
+        show={course_modal[0]}
+        listing={course_modal[1]}
+      />
+      <Fade in={scroll_visible}>
+        <div className={Styles.up_btn}>
+          <FaArrowCircleUp onClick={scrollTop} size={30} />
+        </div>
+      </Fade>
     </div>
   );
 };

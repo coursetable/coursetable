@@ -24,7 +24,7 @@ const CourseModalEvaluations = (props) => {
           <EvaluationRatings crn={props.crn} info={info} />
         </Col>
 
-        <Col md={7} className="px-0 my-0">
+        <Col md={7} className="pr-0 pl-2 my-0">
           <EvaluationResponses crn={props.crn} info={info} />
         </Col>
       </Row>

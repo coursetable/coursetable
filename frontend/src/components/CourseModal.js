@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { Badge, Col, Container, Row, Modal, Spinner } from 'react-bootstrap';
+import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
-import CourseModalLoading from './CourseModalLoading';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { toSeasonString } from '../utilities';
@@ -16,26 +15,14 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 
-const CourseModal = props => {
-  const is_partial = props.listing === null;
-  const listing = !is_partial ? props.listing : props.partial_listing;
+const CourseModal = (props) => {
+  const listing = props.listing;
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
   const [view, setView] = useState(['overview', null]);
   const [filter, setFilter] = useState('both');
-  let course_codes, course_codes_str;
-  if (listing) {
-    course_codes = is_partial
-      ? listing.course_codes
-      : listing['course.computed_course_infos'][0].course_codes;
-    course_codes_str = '';
-    for (let i = 0; i < course_codes.length; i++) {
-      if (i) course_codes_str += ' | ';
-      course_codes_str += course_codes[i];
-    }
-  }
 
-  const setSeason = evaluation => {
+  const setSeason = (evaluation) => {
     setView([evaluation.season_code, evaluation]);
   };
 
@@ -44,6 +31,7 @@ const CourseModal = props => {
     setFilter('both');
     props.hideModal();
   };
+  let key = 0;
 
   return (
     <div className="d-flex justify-content-center">
@@ -63,7 +51,7 @@ const CourseModal = props => {
                     {listing && (
                       <WorksheetToggleButton
                         alwaysRed={false}
-                        crn={is_partial ? 69420 : listing.crn}
+                        crn={listing.crn ? listing.crn : listing['listing.crn']}
                         season_code={listing.season_code}
                         modal={true}
                         hasSeason={props.hasSeason}
@@ -80,7 +68,9 @@ const CourseModal = props => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
-                          {is_partial ? listing.title : listing['course.title']}
+                          {!listing['course.title']
+                            ? listing.title
+                            : listing['course.title']}
                           <span className="text-muted">
                             {' (' +
                               toSeasonString(listing.season_code)[2] +
@@ -98,38 +88,36 @@ const CourseModal = props => {
                           styles.course_codes + ' text-muted my-0 pr-2'
                         }
                       >
-                        {course_codes_str}
+                        {listing.course_code}
                       </p>
                       {listing['course.skills'] &&
-                        listing['course.skills'].map(skill => (
+                        listing['course.skills'].map((skill) => (
                           <Badge
                             variant="secondary"
                             className={tag_styles.tag}
                             style={{
                               color: skillsAreasColors[skill],
-                              backgroundColor: chroma(
-                                skillsAreasColors[skill]
-                              )
+                              backgroundColor: chroma(skillsAreasColors[skill])
                                 .alpha(0.16)
                                 .css(),
                             }}
+                            key={key++}
                           >
                             {skill}
                           </Badge>
                         ))}
                       {listing['course.areas'] &&
-                        listing['course.areas'].map(area => (
+                        listing['course.areas'].map((area) => (
                           <Badge
                             variant="secondary"
                             className={tag_styles.tag}
                             style={{
                               color: skillsAreasColors[area],
-                              backgroundColor: chroma(
-                                skillsAreasColors[area]
-                              )
+                              backgroundColor: chroma(skillsAreasColors[area])
                                 .alpha(0.16)
                                 .css(),
                             }}
+                            key={key++}
                           >
                             {area}
                           </Badge>
@@ -186,16 +174,12 @@ const CourseModal = props => {
         </Modal.Header>
         {props.show &&
           (view[0] === 'overview' ? (
-            is_partial ? (
-              <CourseModalLoading/>
-            ) : (
-              <CourseModalOverview
-                setFilter={setFilter}
-                filter={filter}
-                setSeason={setSeason}
-                listing={listing}
-              />
-            )
+            <CourseModalOverview
+              setFilter={setFilter}
+              filter={filter}
+              setSeason={setSeason}
+              listing={listing}
+            />
           ) : (
             <CourseModalEvaluations
               season_code={view[0]}

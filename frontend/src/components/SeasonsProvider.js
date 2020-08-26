@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useEffect } from 'react';
 
 import { GET_SEASON_CODES } from '../queries/QueryStrings';
 
@@ -14,10 +14,14 @@ const SeasonsProvider = ({ children }) => {
 
 	useEffect(() => {
 		executeGetSeasons();
-	}, []);
+	}, [executeGetSeasons]);
 
 	return (
-		<SeasonsCtx.Provider value={seasonsData ? seasonsData : []}>
+		<SeasonsCtx.Provider
+			value={seasonsData ? seasonsData : []}
+			called={seasonsCalled}
+			loading={seasonsLoading}
+		>
 			{children}
 		</SeasonsCtx.Provider>
 	);

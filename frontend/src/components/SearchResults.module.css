@@ -3,12 +3,19 @@
   background: white;
 }
 
+.results_list_container {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  overflow: hidden;
+}
+
 .results_header {
   background-color: white;
   border-radius: 8px;
   left: 0;
   right: 0;
   z-index: 1000;
+  user-select: none;
 }
 
 .sticky_header {
@@ -21,10 +28,26 @@
   border: 0px !important;
   background-color: white !important;
   border-radius: 8px 8px 0px 0px !important;
+  user-select: none;
 }
 
 .results_header_inner {
   background-color: white !important;
+}
+
+.up_btn {
+  position: fixed;
+  z-index: 420;
+  bottom: 20px;
+  right: 20px;
+  transition: 0.3s !important;
+  color: rgb(206, 206, 206);
+}
+
+.up_btn:hover {
+  cursor: pointer;
+  color: rgb(180, 180, 180);
+  transform: scale(1.1);
 }
 
 :global .sticky {

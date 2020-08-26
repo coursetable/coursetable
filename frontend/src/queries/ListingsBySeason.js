@@ -3,37 +3,6 @@ import gql from 'graphql-tag';
 
 import { flatten } from '../utilities';
 
-const QUERY_LISTINGS = gql`
-  query fetch_course($season: String, $crn_code: Int) {
-    listings(
-      where: { season_code: { _eq: $season }, crn: { _eq: $crn_code } }
-    ) {
-      course_code
-      course_id
-      crn
-      listing_id
-      number
-      season_code
-      section
-      subject
-      course {
-        course_professors {
-          professor {
-            name
-          }
-        }
-        short_title
-        title
-        times_summary
-        location_times
-        locations_summary
-        skills
-        areas
-      }
-    }
-  }
-`;
-
 const QUERY_LISTINGS_WITH_EVALS = gql`
   query fetch_course($season: String, $crn_code: Int) {
     listings(

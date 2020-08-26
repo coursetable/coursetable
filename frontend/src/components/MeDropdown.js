@@ -13,20 +13,23 @@ import {
   FetchWorksheetLazy,
   preprocess_courses,
 } from '../queries/GetWorksheetListings';
+import { toast } from 'react-toastify';
 
 function MeDropdown(props) {
   const { user } = useUser();
   const [export_ics, setExport] = useState(false);
+  const CUR_SEASON = '202003';
 
   if (user.worksheet) {
     var [fetchWorksheetListings, { data }] = FetchWorksheetLazy(
       user.worksheet,
-      props.season_code
+      CUR_SEASON
     );
   }
 
   const handleFBClick = () => {
     // LOGIN/LOGOUT OF FACEBOOK
+    toast.error('Facebook Integration Is Not Ready Yet');
   };
 
   const handleExportClick = () => {

@@ -31,7 +31,7 @@
 }
 
 :global .modal-custom-width {
-  max-width: 700px !important;
+  max-width: 800px !important;
   /* max-width: none !important; */
 }
 
@@ -40,7 +40,7 @@
   border-radius: 8px !important;
   /* max-height: 80% !important;
   min-height: 80% !important; */
-  /*height: 80% !important;*/
+  height: 90% !important;
 }
 
 :global .modal-title {

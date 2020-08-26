@@ -1,143 +1,255 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
-import { Row, Col, Badge } from 'react-bootstrap';
+import { Row, Badge, OverlayTrigger, Popover } from 'react-bootstrap';
 
 import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
 } from '../queries/Constants.js';
-import { unflattenTimes } from '../utilities';
 
 import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
+import CourseConflictIcon from './CourseConflictIcon';
+import LinesEllipsis from 'react-lines-ellipsis';
+import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import Styles from './SearchResultsItem.module.css';
-
-import ReactRating from 'react-rating';
-import { BsSquareFill } from 'react-icons/bs';
 
 const SearchResultsItem = ({
   course,
   isMobile,
-  setShowModal,
-  setModalCourse,
-  executeGetCourseModal,
+  showModal,
+  isLast,
+  ROW_WIDTH,
+  PROF_WIDTH,
+  MEET_WIDTH,
+  RATE_WIDTH,
+  BOOKMARK_WIDTH,
+  PADDING,
+  PROF_CUT,
+  MEET_CUT,
 }) => {
+  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   let key = 1;
+  const [mounted, setMounted] = useState(false);
+  const { width } = useWindowDimensions();
+
+  useEffect(() => {
+    if (!mounted) setMounted(true);
+  }, [mounted]);
+
+  let courseLocation;
+
+  if (course.locations_summary === 'TBA') {
+    courseLocation = '';
+  } else {
+    if (course.locations_summary.includes('ONLINE')) {
+      courseLocation = (
+        <div className={Styles.online_tag}>{course.locations_summary}</div>
+      );
+    } else {
+      courseLocation = course.locations_summary;
+    }
+  }
+
+  const renderTitlePopover = props => {
+    return (
+      <Popover {...props} id="title_popover">
+        <Popover.Title>
+          <strong>{course.title}</strong>
+        </Popover.Title>
+        <Popover.Content>
+          {course.description.length <= 500
+            ? course.description
+            : course.description.slice(0, 500) + '...'}
+          <br />
+          <div className="text-danger">
+            {course.requirements &&
+              (course.requirements.length <= 250
+                ? course.requirements
+                : course.requirements.slice(0, 250) + '...')}
+          </div>
+        </Popover.Content>
+      </Popover>
+    );
+  };
 
   return (
     <Row
       className={
-        'mx-auto px-2 py-2 justify-content-between ' + Styles.search_result_item
+        'mx-auto px-2 py-2 justify-content-between shadow-sm ' +
+        Styles.search_result_item
       }
+      style={{
+        borderBottom: isLast ? 'none' : 'solid 2px #f6f6f6',
+      }}
       onClick={() => {
-        executeGetCourseModal({
-          variables: {
-            crn: course['course.listings'][0]['crn'],
-            season_code: course['season_code'],
-          },
-        });
-        setModalCourse(course);
-        setShowModal(true);
+        showModal(course);
       }}
       tabIndex="0"
     >
-      <Col md={4} xs={8} className={Styles.course_header}>
-        <div className={Styles.course_name}>
-          {course.title.length > 32
-            ? course.title.slice(0, 29) + '...'
-            : course.title}
+      <OverlayTrigger placement="right" overlay={renderTitlePopover}>
+        <div
+          style={{
+            width: `${ROW_WIDTH -
+              (width > PROF_CUT ? PROF_WIDTH : 0) -
+              (width > MEET_CUT ? MEET_WIDTH : 0) -
+              3 * RATE_WIDTH -
+              BOOKMARK_WIDTH -
+              PADDING}px`,
+            paddingLeft: '15px',
+          }}
+          className={Styles.course_header}
+        >
+          <div className={Styles.course_name}>{course.title}</div>
+          <Row className="m-auto">
+            <div className={Styles.course_code}>{course.course_code}</div>
+            <div className={Styles.skills_areas}>
+              {course.skills.map(skill => (
+                <Badge
+                  variant="secondary"
+                  className={Styles.tag}
+                  key={key++}
+                  style={{
+                    color: skillsAreasColors[skill],
+                    backgroundColor: chroma(skillsAreasColors[skill])
+                      .alpha(0.16)
+                      .css(),
+                  }}
+                >
+                  {skill}
+                </Badge>
+              ))}
+              {course.areas.map(area => (
+                <Badge
+                  variant="secondary"
+                  className={Styles.tag}
+                  key={key++}
+                  style={{
+                    color: skillsAreasColors[area],
+                    backgroundColor: chroma(skillsAreasColors[area])
+                      .alpha(0.16)
+                      .css(),
+                  }}
+                >
+                  {area}
+                </Badge>
+              ))}
+            </div>
+          </Row>
+          {course.extra_info !== 'ACTIVE' && (
+            <div className={Styles.extra_info}>CANCELLED</div>
+          )}
         </div>
-        <div className={Styles.course_code}>
-          {course.course_codes ? course.course_codes.join(' • ') : ''}
-        </div>
-        <div className={Styles.skills_areas}>
-          {course.skills.map((skill) => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[skill],
-                backgroundColor: chroma(skillsAreasColors[skill])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {skill}
-            </Badge>
-          ))}
-          {course.areas.map((area) => (
-            <Badge
-              variant="secondary"
-              className={Styles.tag}
-              key={key++}
-              style={{
-                color: skillsAreasColors[area],
-                backgroundColor: chroma(skillsAreasColors[area])
-                  .alpha(0.16)
-                  .css(),
-              }}
-            >
-              {area}
-            </Badge>
-          ))}
-        </div>
-        {course['course.extra_info'] !== 'ACTIVE' && (
-          <div className={Styles.extra_info}>CANCELLED</div>
-        )}
-      </Col>
-      <Col md={3} xs={8} className={Styles.course_header}>
-        {course.times_summary == 'TBA' ? '' : course.times_summary}
-        <br />
-        {course.locations_summary == 'TBA' ? '' : course.locations_summary}
-      </Col>
-      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-        {course.average_rating && (
-          <ReactRating
-            initialRating={course.average_rating}
-            readonly
-            emptySymbol={<BsSquareFill className={Styles.rating_icon_empty} />}
-            fullSymbol={
-              <BsSquareFill
-                className={Styles.rating_icon_full}
-                style={{ color: ratingColormap(course.average_rating) }}
-              />
+      </OverlayTrigger>
+      {width > PROF_CUT && (
+        <div
+          style={{ width: `${PROF_WIDTH}px` }}
+          className={Styles.course_professors + ' pr-4'}
+        >
+          <ResponsiveEllipsis
+            style={{ whiteSpace: 'pre-wrap' }}
+            text={
+              course.professor_names.length === 0
+                ? 'TBA'
+                : course.professor_names.join(' • ')
             }
-            className={Styles.icon_ratings}
+            maxLine={2}
+            basedOn="words"
           />
-        )}
-      </Col>
-      <Col md={2} xs={4} style={{ whiteSpace: 'nowrap' }}>
-        {course.average_workload && (
-          <ReactRating
-            initialRating={course.average_workload}
-            readonly
-            emptySymbol={
-              <BsSquareFill className={Styles.workload_icon_empty} />
-            }
-            fullSymbol={
-              <BsSquareFill
-                className={Styles.workload_icon_full}
-                style={{ color: workloadColormap(course.average_workload) }}
-              />
-            }
-            className={Styles.icon_ratings}
-          />
-        )}
-      </Col>
-      <Col md={1} className="text-center">
+        </div>
+      )}
+      {width > MEET_CUT && (
+        <div style={{ width: `${MEET_WIDTH}px` }}>
+          <div className={Styles.course_time}>{course.times_summary}</div>
+          <div className={Styles.course_location}>{courseLocation}</div>
+        </div>
+      )}
+      <div
+        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
+        className="d-flex"
+      >
+        <div
+          style={{
+            color: course.average_rating
+              ? ratingColormap(course.average_rating)
+                  .darken(2)
+                  .css()
+              : '#b5b5b5',
+            backgroundColor: course.average_rating
+              ? chroma(ratingColormap(course.average_rating))
+                  .alpha(0.33)
+                  .css()
+              : '#ebebeb',
+          }}
+          className={Styles.rating_cell + ' m-auto'}
+        >
+          {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
+        </div>
+      </div>
+      <div
+        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
+        className="d-flex"
+      >
+        <div
+          style={{
+            color: course.average_professor
+              ? ratingColormap(course.average_professor)
+                  .darken(2)
+                  .css()
+              : '#b5b5b5',
+            backgroundColor: course.average_professor
+              ? chroma(ratingColormap(course.average_professor))
+                  .alpha(0.33)
+                  .css()
+              : '#ebebeb',
+          }}
+          className={Styles.rating_cell + ' m-auto'}
+        >
+          {course.average_professor
+            ? course.average_professor.toFixed(1)
+            : 'N/A'}
+        </div>
+      </div>
+      <div
+        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
+        className="d-flex"
+      >
+        <div
+          style={{
+            color: course.average_workload
+              ? workloadColormap(course.average_workload)
+                  .darken(2)
+                  .css()
+              : '#b5b5b5',
+            backgroundColor: course.average_workload
+              ? chroma(workloadColormap(course.average_workload))
+                  .alpha(0.33)
+                  .css()
+              : '#ebebeb',
+          }}
+          className={Styles.rating_cell + ' m-auto'}
+        >
+          {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
+        </div>
+      </div>
+      <div style={{ width: `${BOOKMARK_WIDTH}px` }} />
+      <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           alwaysRed={false}
-          crn={course['course.listings'][0].crn}
+          crn={course.crn}
           season_code={course.season_code}
-          modal={true}
           isMobile={isMobile}
-          times={unflattenTimes(course)}
         />
-      </Col>
+      </div>
+      {mounted && (
+        <div className={Styles.conflict_error}>
+          <CourseConflictIcon course={course} />
+        </div>
+      )}
     </Row>
   );
 };

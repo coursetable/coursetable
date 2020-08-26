@@ -1,21 +1,15 @@
 import React, { useState } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
-import { Button } from 'react-bootstrap';
+import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
-import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
 
 const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();
-  if (user.worksheet) {
-    var [fetchWorksheetListings, { loading, data }] = FetchWorksheetLazy(
-      user.worksheet,
-      props.season_code
-    );
-  }
+  
   const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
   );
@@ -60,26 +54,40 @@ const WorksheetToggleButton = (props) => {
     // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
 
+  const renderTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <small>
+        {inWorksheet ? 'Remove from worksheet' : 'Add to worksheet'}
+      </small>
+    </Tooltip>
+  );
+
   return (
-    <Button
-      variant="toggle"
-      className={'p-0 bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
-      onClick={toggleWorkSheet}
+    <OverlayTrigger
+      placement="top"
+      delay={{ show: 1000, hide: 250 }}
+      overlay={renderTooltip}
     >
-      {inWorksheet ? (
-        <BsBookmarkFill
-          className={'bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
-          color="#3396ff"
-          size={25}
-        />
-      ) : (
-        <BsBookmark
-          color={'#3396ff'}
-          size={25}
-          style={{ transition: '0.3s' }}
-        />
-      )}
-    </Button>
+      <Button
+        variant="toggle"
+        className={'p-0 bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
+        onClick={toggleWorkSheet}
+      >
+        {inWorksheet ? (
+          <BsBookmarkFill
+            className={'bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
+            color="#3396ff"
+            size={25}
+          />
+        ) : (
+          <BsBookmark
+            color={'#3396ff'}
+            size={25}
+            style={{ transition: '0.3s' }}
+          />
+        )}
+      </Button>
+    </OverlayTrigger>
   );
 };
 

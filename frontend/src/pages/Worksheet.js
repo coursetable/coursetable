@@ -5,6 +5,7 @@ import { Row, Col, Fade } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
+import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 
@@ -12,6 +13,7 @@ import styles from './Worksheet.module.css';
 
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
+import NoCoursesFound from '../images/no_courses_found.svg';
 
 function Worksheet() {
   const { user } = useUser();
@@ -32,13 +34,14 @@ function Worksheet() {
   season_codes.reverse();
   const [season, setSeason] = useState(updateRecentSeason(true));
   const [listings, setListings] = useState([]);
-  const [worksheet_init, setWorksheetInit] = useState(user.worksheet);
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
   const [hover_course, setHoverCourse] = useState();
   const [hover_expand, setHoverExpand] = useState('none');
   const [cur_expand, setCurExpand] = useState('none');
   const [rev_flex_direction, setRevFlexDirection] = useState(false);
+  const [start_fade, setStartFade] = useState(false);
+  const [end_fade, setEndFade] = useState(false);
 
   if (user.worksheet == null) return <div>Please Login</div>;
 
@@ -90,12 +93,24 @@ function Worksheet() {
     return 1;
   };
 
-  if (user.worksheet.length === 0)
-    return <div>Please add courses to your worksheet</div>;
-
   const { loading, error, data } = FetchWorksheet(
-    listings.length ? worksheet_init : user.worksheet
+    listings.length ? user.worksheet : user.worksheet
   );
+  if (user.worksheet.length === 0)
+    return (
+      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
+        <div className="text-center m-auto">
+          <img
+            alt="No courses found."
+            className="py-5"
+            src={NoCoursesFound}
+            style={{ width: '25%' }}
+          ></img>
+          <h3>No courses found</h3>
+          <div>Please add courses to your worksheet</div>
+        </div>
+      </div>
+    );
   if (loading || error) return <div>Loading...</div>;
   if (data === undefined || !data.length) return <div>Error with Query</div>;
   const colors = [
@@ -156,6 +171,15 @@ function Worksheet() {
             }
             onMouseEnter={() => setHoverExpand('calendar')}
             onMouseLeave={() => setHoverExpand('none')}
+            onTransitionEnd={(e) => {
+              // console.log(e.propertyName);
+              if (
+                e.propertyName === 'transform' &&
+                !start_fade &&
+                cur_expand === 'list'
+              )
+                setStartFade(true);
+            }}
           >
             <WeekSchedule
               className=""
@@ -200,18 +224,45 @@ function Worksheet() {
             }
             onMouseEnter={() => setHoverExpand('list')}
             onMouseLeave={() => setHoverExpand('none')}
+            onTransitionEnd={(e) => {
+              // console.log(e.propertyName);
+              if (
+                e.propertyName === 'flex-basis' &&
+                !end_fade &&
+                cur_expand === 'list'
+              )
+                setEndFade(true);
+            }}
           >
-            <WorksheetList
-              onSeasonChange={changeSeason}
-              toggleCourse={toggleCourse}
-              showModal={showModal}
-              courses={filtered_listings}
-              season_codes={season_codes}
-              cur_season={season}
-              hidden_courses={hidden_courses}
-              hasSeason={hasSeason}
-              setHoverCourse={setHoverCourse}
-            />
+            <Fade in={start_fade}>
+              <div style={{ display: start_fade ? '' : 'none' }}>
+                <WorksheetExpandedList
+                  courses={filtered_listings}
+                  showModal={showModal}
+                  end_fade={end_fade}
+                  cur_season={season}
+                  season_codes={season_codes}
+                  onSeasonChange={changeSeason}
+                  hasSeason={hasSeason}
+                />
+              </div>
+            </Fade>
+            <Fade in={!start_fade}>
+              <div style={{ display: !start_fade ? '' : 'none' }}>
+                <WorksheetList
+                  onSeasonChange={changeSeason}
+                  toggleCourse={toggleCourse}
+                  showModal={showModal}
+                  courses={filtered_listings}
+                  season_codes={season_codes}
+                  cur_season={season}
+                  hidden_courses={hidden_courses}
+                  hasSeason={hasSeason}
+                  setHoverCourse={setHoverCourse}
+                />
+              </div>
+            </Fade>
+
             <Fade in={hover_expand === 'list'}>
               <div style={{ zIndex: 420 }}>
                 {cur_expand === 'none' ? (
@@ -230,6 +281,8 @@ function Worksheet() {
                     onClick={() => {
                       setCurExpand('none');
                       setHoverExpand('calendar');
+                      if (start_fade === true) setStartFade(false);
+                      if (end_fade === true) setEndFade(false);
                     }}
                   />
                 )}
@@ -248,6 +301,7 @@ function Worksheet() {
               season_codes={season_codes}
               courses={season_listings}
               hasSeason={hasSeason}
+              showModal={showModal}
             />
           </Col>
         </Row>

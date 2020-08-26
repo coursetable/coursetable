@@ -2,9 +2,15 @@ const express = require('express');
 const { createProxyMiddleware } = require('http-proxy-middleware');
 const fs = require('fs');
 const https = require('https');
+const morgan = require('morgan');
 
 const app = express();
 const port = 8080;
+const insecure_port = process.env.PORT || 3001;
+const frontend_uri = process.env.FRONTEND_LOC || "http://frontend:3000";
+
+// Enable request logging
+app.use(morgan('tiny'));
 
 app.use(
   ['/legacy_api', '/index.php'],
@@ -29,10 +35,16 @@ app.use(
 );
 
 app.use(
+  '/sockjs-node',
+  createProxyMiddleware({
+    target: frontend_uri,
+    ws: true,
+  })
+);
+app.use(
   '/',
   createProxyMiddleware({
-    target: 'http://frontend:3000',
-    ws: true,
+    target: frontend_uri,
   })
 );
 
@@ -48,6 +60,6 @@ https
   .listen(port, () => {
     console.log(`Secure dev proxy listening on port ${port}`);
   });
-app.listen(3001, () => {
-  console.log(`insecure dev proxy listening on port 3001`);
+app.listen(insecure_port, () => {
+  console.log(`insecure dev proxy listening on port ${insecure_port}`);
 });

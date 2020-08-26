@@ -10,12 +10,13 @@ import { UserProvider } from './user';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import ApolloClient from 'apollo-boost';
+import { InMemoryCache, ApolloClient } from '@apollo/client';
 import { ApolloProvider } from '@apollo/react-hooks';
 
 const client = new ApolloClient({
   uri: '/ferry/v1/graphql',
-  // TODO: add apollo in memory cache
+  // default cache for now
+  cache: new InMemoryCache(),
 });
 
 ReactDOM.render(
