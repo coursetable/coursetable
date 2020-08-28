@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 import { useUser } from '../user';
@@ -6,6 +6,7 @@ import { toast } from 'react-toastify';
 
 function FBLoginButton() {
   const { user, userRefresh } = useUser();
+  const [logged_in, setLoggedIn] = useState(user.fbLogin);
 
   window.fbAsyncInit = function () {
     window.FB.init({
@@ -34,6 +35,7 @@ function FBLoginButton() {
     window.FB.api('/me', function (response) {
       console.log('Successful login for: ' + response.name);
     });
+    setLoggedIn(true);
   }
 
   function statusChangeCallback(response) {
@@ -88,16 +90,17 @@ function FBLoginButton() {
 
   function handleLogoutClick() {
     toast.error('FB disconnect not yet implemented.');
+    // setLoggedIn(false);
   }
 
   return (
     <div>
-      {!user.fbLogin && (
+      {!logged_in && (
         <span onClick={handleLoginClick} className={styles.collapse_text}>
           Connect to FB
         </span>
       )}
-      {user.fbLogin && (
+      {logged_in && (
         <span onClick={handleLogoutClick} className={styles.collapse_text}>
           Disconnect FB
         </span>
