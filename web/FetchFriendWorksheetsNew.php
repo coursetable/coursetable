@@ -93,7 +93,7 @@ function retrieveFriendWorksheets($friendNetIds, $season = null)
         if (!isset($friendCourses[$netId])) {
             $friendCourses[$netId] = array();
         }
-        $friendCourses[$netId][] = array($season, $ociId);
+        $friendCourses[$netId][] = array($courseSeason, $ociId);
     }
 
     ksort($friendCourses);
