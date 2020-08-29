@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 
-export const preprocess_courses = listing => {
+export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -42,7 +42,7 @@ export const preprocess_courses = listing => {
     listing['course.course_professors'].length > 0
   ) {
     listing['professors'] = listing['course.course_professors']
-      .map(x => {
+      .map((x) => {
         return x['professor']['name'];
       })
       .join(', ');
@@ -60,7 +60,7 @@ export const preprocess_courses = listing => {
   return listing;
 };
 
-export const flatten = ob => {
+export const flatten = (ob) => {
   var toReturn = {};
 
   for (var i in ob) {
@@ -88,7 +88,7 @@ export const isInWorksheet = (season_code, crn, worksheet) => {
   return false;
 };
 
-export const toSeasonString = season_code => {
+export const toSeasonString = (season_code) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
@@ -98,13 +98,13 @@ export const toSeasonString = season_code => {
   ];
 };
 
-export const useComponentVisible = initialIsVisible => {
+export const useComponentVisible = (initialIsVisible) => {
   const [isComponentVisible, setIsComponentVisible] = useState(
     initialIsVisible
   );
   const ref_visible = useRef(null);
 
-  const handleClickOutside = event => {
+  const handleClickOutside = (event) => {
     if (ref_visible.current && !ref_visible.current.contains(event.target)) {
       setIsComponentVisible(false);
     }
@@ -120,24 +120,24 @@ export const useComponentVisible = initialIsVisible => {
   return { ref_visible, isComponentVisible, setIsComponentVisible };
 };
 
-export const unflattenTimes = course => {
+export const unflattenTimes = (course) => {
   if (!course) return undefined;
   if (course.times_summary === 'TBA') return 'TBA';
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   let times_by_day = [];
-  days.forEach(day => {
+  days.forEach((day) => {
     if (!course[`times_by_day.${day}`]) times_by_day.push(['', '', '', '']);
     else times_by_day.push(course[`times_by_day.${day}`][0]);
   });
   return times_by_day;
 };
 
-export const unflattenTimesModal = listing => {
+export const unflattenTimesModal = (listing) => {
   if (!listing) return undefined;
   if (listing['course.times_summary'] === 'TBA') return 'TBA';
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   let times_by_day = [];
-  days.forEach(day => {
+  days.forEach((day) => {
     if (!listing[`course.times_by_day.${day}`])
       times_by_day.push(['', '', '', '']);
     else times_by_day.push(listing[`course.times_by_day.${day}`][0]);
@@ -168,7 +168,7 @@ export const checkConflict = (listings, course, times) => {
   return false;
 };
 
-export const scrollToTop = event => {
+export const scrollToTop = (event) => {
   const newPage =
     event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
 

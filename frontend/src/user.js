@@ -8,6 +8,7 @@ UserContext.displayName = 'UserContext';
 export const UserProvider = ({ children }) => {
   const [worksheet, setWorksheet] = useState(null);
   const [fbLogin, setFbLogin] = useState(null);
+  const [fbWorksheets, setFbWorksheets] = useState(null);
 
   const userRefresh = useCallback(
     async (suppressError = false) => {
@@ -23,9 +24,7 @@ export const UserProvider = ({ children }) => {
       } else {
         setWorksheet(res.data.data);
       }
-      const fbData = await axios.get(
-        '/legacy_api/FetchFacebookData.php'
-      );
+      const fbData = await axios.get('/legacy_api/FetchFacebookData.php');
       if (!fbData.data.success) {
         setFbLogin(null);
         console.error(fbData.data.message);
@@ -33,7 +32,22 @@ export const UserProvider = ({ children }) => {
           toast.error(fbData.data.message);
         }
       } else {
-        setFbLogin(fbData.data.success)
+        setFbLogin(fbData.data.success);
+        if (fbData.data.success) {
+          const friends_worksheets = await axios.get(
+            '/legacy_api/FetchFriendWorksheetsNew.php'
+          );
+          // console.log(friends_worksheets.data);
+          if (!friends_worksheets.data.success) {
+            setFbWorksheets(null);
+            console.error(friends_worksheets.data.message);
+            if (!suppressError) {
+              toast.error(friends_worksheets.data.message);
+            }
+          } else {
+            setFbWorksheets(friends_worksheets.data);
+          }
+        }
       }
     },
     [setWorksheet, setFbLogin]
@@ -44,6 +58,7 @@ export const UserProvider = ({ children }) => {
     user: {
       worksheet,
       fbLogin,
+      fbWorksheets,
     },
 
     // Update methods.

@@ -6,9 +6,7 @@ import styles from './WorksheetExpandedList.module.css';
 import search_results_styles from './SearchResults.module.css';
 import WorksheetExpandedListItem from './WorksheetExpandedListItem';
 import WorksheetSettingsDropdown from './WorksheetSettingsDropdown';
-import { useComponentVisible } from '../utilities';
 import { useWindowDimensions } from './WindowDimensionsProvider';
-import { FcSettings } from 'react-icons/fc';
 
 const WorksheetExpandedList = ({
   courses,
@@ -18,9 +16,10 @@ const WorksheetExpandedList = ({
   season_codes,
   onSeasonChange,
   hasSeason,
+  setFbPerson,
+  fb_person,
 }) => {
   const { width } = useWindowDimensions();
-  const isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
   const [ROW_WIDTH, setRowWidth] = useState();
   const ref_width = useRef(null);
   useEffect(() => {
@@ -34,12 +33,6 @@ const WorksheetExpandedList = ({
   const PADDING = 50;
   const PROF_CUT = 1300;
   const MEET_CUT = 1000;
-
-  const {
-    ref_visible,
-    isComponentVisible,
-    setIsComponentVisible,
-  } = useComponentVisible(false);
 
   let items = [];
   let filtered_courses = [];
@@ -150,29 +143,15 @@ const WorksheetExpandedList = ({
               }}
               className="d-flex"
             >
-              <div
-                className={
-                  'd-flex ml-auto my-auto p-0 ' +
-                  styles.settings +
-                  (isComponentVisible ? ' ' + styles.settings_rotated : '')
-                }
-                ref={ref_visible}
-                onClick={() => setIsComponentVisible(!isComponentVisible)}
-                onMouseEnter={() => {
-                  if (!isTouch) setIsComponentVisible(true);
-                }}
-              >
-                <FcSettings size={20} />
-              </div>
+              <WorksheetSettingsDropdown
+                cur_season={cur_season}
+                season_codes={season_codes}
+                onSeasonChange={onSeasonChange}
+                setFbPerson={setFbPerson}
+                cur_person={fb_person}
+              />
             </div>
           </Row>
-          <WorksheetSettingsDropdown
-            cur_season={cur_season}
-            settings_expanded={isComponentVisible}
-            setIsComponentVisible={setIsComponentVisible}
-            season_codes={season_codes}
-            onSeasonChange={onSeasonChange}
-          />
         </div>
 
         <div className={styles.results_list_container}>{items}</div>

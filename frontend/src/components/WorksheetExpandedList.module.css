@@ -3,19 +3,6 @@
   border-bottom-right-radius: 8px;
 }
 
-.settings {
-  transition: 0.3s;
-}
-
-.settings:hover {
-  cursor: pointer;
-}
-
-.settings_rotated {
-  transition: 0.3s;
-  transform: rotate(90deg);
-}
-
 .shadow {
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 import { FetchWorksheet } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade } from 'react-bootstrap';
@@ -17,11 +17,16 @@ import NoCoursesFound from '../images/no_courses_found.svg';
 
 function Worksheet() {
   const { user } = useUser();
+  const [fb_person, setFbPerson] = useState('me');
+  const cur_worksheet =
+    fb_person === 'me'
+      ? user.worksheet
+      : user.fbWorksheets.worksheets[fb_person];
   let season_codes = [];
   const updateRecentSeason = (populate_season_codes, season_code = null) => {
     let recentSeason = '200903';
-    if (user.worksheet) {
-      user.worksheet.forEach((szn) => {
+    if (cur_worksheet) {
+      cur_worksheet.forEach((szn) => {
         if (szn[0] !== season_code && szn[0] > recentSeason)
           recentSeason = szn[0];
         if (populate_season_codes && season_codes.indexOf(szn[0]) === -1)
@@ -34,6 +39,7 @@ function Worksheet() {
   season_codes.reverse();
   const [season, setSeason] = useState(updateRecentSeason(true));
   const [listings, setListings] = useState([]);
+  const [init_worksheet, setInitWorksheet] = useState(cur_worksheet);
   const [course_modal, setCourseModal] = useState([false, '']);
   const [hidden_courses, setHiddenCourses] = useState([]);
   const [hover_course, setHoverCourse] = useState();
@@ -43,7 +49,12 @@ function Worksheet() {
   const [start_fade, setStartFade] = useState(false);
   const [end_fade, setEndFade] = useState(false);
 
-  if (user.worksheet == null) return <div>Please Login</div>;
+  useEffect(() => {
+    setListings([]);
+    setInitWorksheet(cur_worksheet);
+  }, [fb_person]);
+
+  if (cur_worksheet == null) return <div>Please Login</div>;
 
   const changeSeason = (season_code) => {
     setSeason(season_code);
@@ -51,10 +62,10 @@ function Worksheet() {
 
   const hasSeason = (season_code, crn) => {
     if (season_code !== season) return;
-    for (let i = 0; i < user.worksheet.length; i++) {
+    for (let i = 0; i < cur_worksheet.length; i++) {
       if (
-        user.worksheet[i][0] === season &&
-        user.worksheet[i][1] !== crn.toString()
+        cur_worksheet[i][0] === season &&
+        cur_worksheet[i][1] !== crn.toString()
       )
         return;
     }
@@ -93,10 +104,8 @@ function Worksheet() {
     return 1;
   };
 
-  const { loading, error, data } = FetchWorksheet(
-    listings.length ? user.worksheet : user.worksheet
-  );
-  if (user.worksheet.length === 0)
+  const { loading, error, data } = FetchWorksheet(init_worksheet);
+  if (cur_worksheet.length === 0)
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
         <div className="text-center m-auto">
@@ -134,7 +143,7 @@ function Worksheet() {
   let filtered_listings = [];
   listings.forEach((listing) => {
     if (
-      isInWorksheet(listing.season_code, listing.crn.toString(), user.worksheet)
+      isInWorksheet(listing.season_code, listing.crn.toString(), cur_worksheet)
     )
       filtered_listings.push(listing);
   });
@@ -243,6 +252,8 @@ function Worksheet() {
                   cur_season={season}
                   season_codes={season_codes}
                   onSeasonChange={changeSeason}
+                  setFbPerson={setFbPerson}
+                  fb_person={fb_person}
                   hasSeason={hasSeason}
                 />
               </div>
