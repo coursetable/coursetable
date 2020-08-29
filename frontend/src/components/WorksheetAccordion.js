@@ -223,7 +223,11 @@ export default class WorksheetAccordion extends React.Component {
             />
           </Col>
           <Col xs={6} className="m-0 p-0">
-            <FBDropdown />
+            <FBDropdown
+              cur_season={this.props.cur_season}
+              setFbPerson={this.props.setFbPerson}
+              cur_person={this.props.cur_person}
+            />
           </Col>
         </Row>
         <div className={styles.accordion_list}>{items}</div>

@@ -314,6 +314,8 @@ function Worksheet() {
               courses={season_listings}
               hasSeason={hasSeason}
               showModal={showModal}
+              setFbPerson={setFbPerson}
+              cur_person={fb_person}
             />
           </Col>
         </Row>
