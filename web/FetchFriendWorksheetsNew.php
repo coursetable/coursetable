@@ -77,7 +77,7 @@ function retrieveFriendWorksheets($friendNetIds, $season = null)
     }
 
     $worksheetCourse = new MysqlTable($mysqli, 'worksheet_courses');
-    $worksheetCourse->setColumns(array('net_id', 'oci_id'))
+    $worksheetCourse->setColumns(array('net_id', 'season', 'oci_id'))
         ->addCond('net_id', $friendNetIds);
     if (isset($season)) {
         $worksheetCourse->addCond('season', $season);
@@ -87,12 +87,13 @@ function retrieveFriendWorksheets($friendNetIds, $season = null)
     $friendCourses = array();
     while ($worksheetCourse->nextItem()) {
         $netId = $worksheetCourse->info['net_id'];
+        $courseSeason = $worksheetCourse->info['season'];
         $ociId = $worksheetCourse->info['oci_id'];
 
         if (!isset($friendCourses[$netId])) {
             $friendCourses[$netId] = array();
         }
-        $friendCourses[$netId][] = $ociId;
+        $friendCourses[$netId][] = array($season, $ociId);
     }
 
     ksort($friendCourses);
