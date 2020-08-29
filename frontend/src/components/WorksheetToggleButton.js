@@ -9,7 +9,7 @@ import { isInWorksheet } from '../utilities';
 
 const WorksheetToggleButton = (props) => {
   const { user, userRefresh } = useUser();
-  
+
   const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
   );
@@ -57,7 +57,7 @@ const WorksheetToggleButton = (props) => {
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       <small>
-        {inWorksheet ? 'Remove from worksheet' : 'Add to worksheet'}
+        {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
       </small>
     </Tooltip>
   );
