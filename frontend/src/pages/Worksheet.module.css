@@ -89,6 +89,14 @@
   transform: translate(50%, -40%) scale(1.1);
 }
 
+.settings_dropdown {
+  position: absolute;
+  display: flex;
+  height: 50px;
+  top: 50px;
+  right: 5px;
+}
+
 @media (hover: none) {
   .container {
     max-height: none !important;

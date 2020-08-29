@@ -34,7 +34,7 @@ function WorksheetSettingsDropdown({
 
   useEffect(() => {
     setIsComponentVisible(false);
-  }, [cur_season]);
+  }, [cur_season, cur_person]);
 
   let season_options = [];
   season_codes.sort();

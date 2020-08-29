@@ -1,8 +1,8 @@
 .collapse_container {
-  max-height: 97px !important;
+  max-height: 92px !important;
   width: 200px;
   position: absolute;
-  right: 10px;
+  right: 0px;
   top: 40px;
   background-color: white;
   z-index: calc(420 + 69);
@@ -29,12 +29,14 @@
   border-right: none !important;
   border-radius: 0px !important;
   width: 175px !important;
+  height: 38px !important;
   cursor: pointer !important;
 }
 
 :global .css-1pahdxg-control {
   cursor: pointer !important;
   width: 175px !important;
+  height: 38px !important;
   border-top: none !important;
   border-left: none !important;
   border-right: none !important;
