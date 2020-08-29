@@ -100,7 +100,7 @@ function WorksheetSettingsDropdown({
                     label:
                       cur_person === 'me' ? 'Me' : friendInfo[cur_person].name,
                   }}
-                  isSearchable={false}
+                  isSearchable={true}
                   options={friend_options}
                   onChange={(option) => {
                     setFbPerson(option.value);
