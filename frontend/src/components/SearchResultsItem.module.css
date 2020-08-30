@@ -154,3 +154,8 @@
   right: 0px;
   transform: translate(-20%, 0%);
 }
+
+.fb_friends {
+  font-weight: 500;
+  padding-left: 2px;
+}

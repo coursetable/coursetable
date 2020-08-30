@@ -420,12 +420,12 @@ const CourseModalOverview = (props) => {
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Friends</span>
+                <span className={Styles.lable_bubble}>FB Friends</span>
               </Col>
               <Col sm={9} xs={8} className={Styles.metadata}>
                 {also_taking.map((friend, index) => {
                   return (
-                    <Row className="m-auto">
+                    <Row className="m-auto" key={index}>
                       {friend + (index === also_taking.length - 1 ? '' : ',')}
                     </Row>
                   );

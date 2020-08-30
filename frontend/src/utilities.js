@@ -179,11 +179,9 @@ export const scrollToTop = (event) => {
 
 export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
   let also_taking = [];
-  console.log([season_code, crn]);
   for (let friend in worksheets) {
     if (
       worksheets[friend].find((value, index, array) => {
-        console.log(value);
         return value[0] === season_code && parseInt(value[1]) === crn;
       })
     )

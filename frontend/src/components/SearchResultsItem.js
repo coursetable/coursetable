@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
-import { Row, Badge, OverlayTrigger, Popover } from 'react-bootstrap';
+import { Row, Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -15,6 +15,8 @@ import CourseConflictIcon from './CourseConflictIcon';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { useWindowDimensions } from './WindowDimensionsProvider';
+import { useUser } from '../user';
+import { fbFriendsAlsoTaking } from '../utilities';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -36,6 +38,13 @@ const SearchResultsItem = ({
   let key = 1;
   const [mounted, setMounted] = useState(false);
   const { width } = useWindowDimensions();
+  const { user } = useUser();
+  let also_taking = fbFriendsAlsoTaking(
+    course.season_code,
+    course.crn,
+    user.fbWorksheets.worksheets,
+    user.fbWorksheets.friendInfo
+  );
 
   useEffect(() => {
     if (!mounted) setMounted(true);
@@ -55,7 +64,7 @@ const SearchResultsItem = ({
     }
   }
 
-  const renderTitlePopover = props => {
+  const renderTitlePopover = (props) => {
     return (
       <Popover {...props} id="title_popover">
         <Popover.Title>
@@ -77,6 +86,12 @@ const SearchResultsItem = ({
     );
   };
 
+  const renderFBFriendsTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {also_taking.join(' • ')}
+    </Tooltip>
+  );
+
   return (
     <Row
       className={
@@ -94,12 +109,14 @@ const SearchResultsItem = ({
       <OverlayTrigger placement="right" overlay={renderTitlePopover}>
         <div
           style={{
-            width: `${ROW_WIDTH -
+            width: `${
+              ROW_WIDTH -
               (width > PROF_CUT ? PROF_WIDTH : 0) -
               (width > MEET_CUT ? MEET_WIDTH : 0) -
               3 * RATE_WIDTH -
               BOOKMARK_WIDTH -
-              PADDING}px`,
+              PADDING
+            }px`,
             paddingLeft: '15px',
           }}
           className={Styles.course_header}
@@ -108,7 +125,7 @@ const SearchResultsItem = ({
           <Row className="m-auto">
             <div className={Styles.course_code}>{course.course_code}</div>
             <div className={Styles.skills_areas}>
-              {course.skills.map(skill => (
+              {course.skills.map((skill) => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -123,7 +140,7 @@ const SearchResultsItem = ({
                   {skill}
                 </Badge>
               ))}
-              {course.areas.map(area => (
+              {course.areas.map((area) => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -175,14 +192,10 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_rating
-              ? ratingColormap(course.average_rating)
-                  .darken(2)
-                  .css()
+              ? ratingColormap(course.average_rating).darken(2).css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating))
-                  .alpha(0.33)
-                  .css()
+              ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -197,9 +210,7 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_professor
-              ? ratingColormap(course.average_professor)
-                  .darken(2)
-                  .css()
+              ? ratingColormap(course.average_professor).darken(2).css()
               : '#b5b5b5',
             backgroundColor: course.average_professor
               ? chroma(ratingColormap(course.average_professor))
@@ -221,9 +232,7 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_workload
-              ? workloadColormap(course.average_workload)
-                  .darken(2)
-                  .css()
+              ? workloadColormap(course.average_workload).darken(2).css()
               : '#b5b5b5',
             backgroundColor: course.average_workload
               ? chroma(workloadColormap(course.average_workload))
@@ -236,7 +245,24 @@ const SearchResultsItem = ({
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
       </div>
-      <div style={{ width: `${BOOKMARK_WIDTH}px` }} />
+      <div
+        style={{
+          width: `${BOOKMARK_WIDTH}px`,
+        }}
+        className="d-flex px-1"
+      >
+        {also_taking.length > 0 && (
+          <OverlayTrigger
+            placement="top"
+            delay={{ show: 250, hide: 400 }}
+            overlay={renderFBFriendsTooltip}
+          >
+            <div className={Styles.fb_friends + ' m-auto'}>
+              {also_taking.length}
+            </div>
+          </OverlayTrigger>
+        )}
+      </div>
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           alwaysRed={false}
