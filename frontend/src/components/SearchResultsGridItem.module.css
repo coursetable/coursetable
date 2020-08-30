@@ -87,6 +87,18 @@
   transform: translate(-40%, 0%);
 }
 
+.fb_friends {
+  position: absolute;
+  top: 0px;
+  left: 8px;
+  width: 16px;
+  height: 16px;
+  line-height: 15px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+}
+
 @media (hover: none) {
   .worksheet_btn {
     top: -10px;

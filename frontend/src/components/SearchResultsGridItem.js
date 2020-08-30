@@ -12,6 +12,8 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
+import { useUser } from '../user';
+import { fbFriendsAlsoTaking } from '../utilities';
 import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 import { IoMdSunny } from 'react-icons/io';
@@ -43,6 +45,16 @@ const SearchResultsGridItem = ({
         size={icon_size}
       />
     );
+  const { user } = useUser();
+  let also_taking =
+    user.fbLogin && user.fbWorksheets
+      ? fbFriendsAlsoTaking(
+          course.season_code,
+          course.crn,
+          user.fbWorksheets.worksheets,
+          user.fbWorksheets.friendInfo
+        )
+      : [];
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
@@ -79,6 +91,12 @@ const SearchResultsGridItem = ({
     </Tooltip>
   );
 
+  const renderFBFriendsTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {also_taking.join(' • ')}
+    </Tooltip>
+  );
+
   return (
     <Col
       md={col_width}
@@ -95,7 +113,7 @@ const SearchResultsGridItem = ({
         <Row className="m-auto">
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
-              <small className={styles.one_line + ' ' + styles.course_codes}>
+              <small className={styles.course_codes}>
                 {course.course_code ? course.course_code : ''}
               </small>
             </Row>
@@ -128,11 +146,7 @@ const SearchResultsGridItem = ({
           )}
         </Row>
         <Row className="m-auto">
-          <strong className={styles.one_line}>
-            {course.title.length > 32
-              ? course.title.slice(0, 29) + '...'
-              : course.title}
-          </strong>
+          <strong className={styles.one_line}>{course.title}</strong>
         </Row>
         <Row className="m-auto justify-content-between">
           <Col xs={7} className="p-0">
@@ -299,6 +313,15 @@ const SearchResultsGridItem = ({
           <CourseConflictIcon course={course} />
         </div>
       )}
+      {/* {also_taking.length > 0 && (
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 250, hide: 400 }}
+          overlay={renderFBFriendsTooltip}
+        >
+          <div className={styles.fb_friends}>{also_taking.length}</div>
+        </OverlayTrigger>
+      )} */}
     </Col>
   );
 };
