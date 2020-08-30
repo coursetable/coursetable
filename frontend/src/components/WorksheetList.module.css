@@ -5,6 +5,14 @@
   overflow: hidden;
   overflow-y: scroll;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+.container::-webkit-scrollbar {
+  display: none;
 }
 
 .clickable {

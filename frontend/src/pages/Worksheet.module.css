@@ -93,8 +93,9 @@
   position: absolute;
   display: flex;
   height: 50px;
-  top: 50px;
-  right: 5px;
+  top: 60px;
+  right: 10px;
+  z-index: 1000;
 }
 
 @media (hover: none) {

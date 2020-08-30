@@ -335,6 +335,7 @@ function Worksheet() {
               onSeasonChange={changeSeason}
               setFbPerson={setFbPerson}
               cur_person={fb_person}
+              icon_size={30}
             />
           </div>
         </div>
