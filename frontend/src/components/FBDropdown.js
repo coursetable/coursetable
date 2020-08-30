@@ -18,7 +18,7 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
       Me
     </Dropdown.Item>,
   ];
-  const friendInfo = user.fbWorksheets.friendInfo;
+  const friendInfo = user.fbLogin ? user.fbWorksheets.friendInfo : {};
   for (let friend in friendInfo) {
     if (containsCurSeason(user.fbWorksheets.worksheets[friend]))
       friend_options.push(
