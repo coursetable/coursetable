@@ -5,15 +5,17 @@ import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
 import Styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
-import { toSeasonString } from '../utilities';
+import { toSeasonString, fbFriendsAlsoTaking } from '../utilities';
 import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
+import { useUser } from '../user';
 
 import CourseModalLoading from './CourseModalLoading';
 
 const CourseModalOverview = (props) => {
+  const { user } = useUser();
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   const [clamped, setClamped] = useState(false);
   const [lines, setLines] = useState(10);
@@ -27,6 +29,12 @@ const CourseModalOverview = (props) => {
   const filter = props.filter;
   const [enlarged, setEnlarged] = useState(['', -1]);
   let enrollment = -1;
+  let also_taking = fbFriendsAlsoTaking(
+    listing.season_code,
+    listing.crn,
+    user.fbWorksheets.worksheets,
+    user.fbWorksheets.friendInfo
+  );
 
   const handleReflow = (rleState) => {
     const { clamped } = rleState;
@@ -406,6 +414,22 @@ const CourseModalOverview = (props) => {
                 >
                   {listing['course_code']}
                 </a>
+              </Col>
+            </Row>
+          )}
+          {also_taking.length > 0 && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Friends</span>
+              </Col>
+              <Col sm={9} xs={8} className={Styles.metadata}>
+                {also_taking.map((friend, index) => {
+                  return (
+                    <Row className="m-auto">
+                      {friend + (index === also_taking.length - 1 ? '' : ',')}
+                    </Row>
+                  );
+                })}
               </Col>
             </Row>
           )}

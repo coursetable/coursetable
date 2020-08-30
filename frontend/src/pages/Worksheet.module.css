@@ -93,8 +93,8 @@
   position: absolute;
   display: flex;
   height: 50px;
-  top: 60px;
-  right: 10px;
+  top: 52px;
+  right: 0px;
   z-index: 1000;
 }
 
