@@ -34,6 +34,11 @@ function FBLoginButton() {
     console.log('Welcome!  Fetching your information.... ');
     window.FB.api('/me', function (response) {
       console.log('Successful login for: ' + response.name);
+      toast.success('Successful login for: ' + response.name);
+      userRefresh().catch((err) => {
+        toast.error('Failed to update FB login');
+        console.error(err);
+      });
     });
     setLoggedIn(true);
   }

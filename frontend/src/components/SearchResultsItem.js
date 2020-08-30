@@ -39,14 +39,15 @@ const SearchResultsItem = ({
   const [mounted, setMounted] = useState(false);
   const { width } = useWindowDimensions();
   const { user } = useUser();
-  let also_taking = user.fbLogin
-    ? fbFriendsAlsoTaking(
-        listing.season_code,
-        listing.crn,
-        user.fbWorksheets.worksheets,
-        user.fbWorksheets.friendInfo
-      )
-    : [];
+  let also_taking =
+    user.fbLogin && user.fbWorksheets
+      ? fbFriendsAlsoTaking(
+          course.season_code,
+          course.crn,
+          user.fbWorksheets.worksheets,
+          user.fbWorksheets.friendInfo
+        )
+      : [];
 
   useEffect(() => {
     if (!mounted) setMounted(true);

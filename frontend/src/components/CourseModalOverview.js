@@ -29,14 +29,15 @@ const CourseModalOverview = (props) => {
   const filter = props.filter;
   const [enlarged, setEnlarged] = useState(['', -1]);
   let enrollment = -1;
-  let also_taking = user.fbLogin
-    ? fbFriendsAlsoTaking(
-        listing.season_code,
-        listing.crn,
-        user.fbWorksheets.worksheets,
-        user.fbWorksheets.friendInfo
-      )
-    : [];
+  let also_taking =
+    user.fbLogin && user.fbWorksheets
+      ? fbFriendsAlsoTaking(
+          listing.season_code,
+          listing.crn,
+          user.fbWorksheets.worksheets,
+          user.fbWorksheets.friendInfo
+        )
+      : [];
 
   const handleReflow = (rleState) => {
     const { clamped } = rleState;
