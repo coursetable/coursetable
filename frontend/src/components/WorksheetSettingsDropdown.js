@@ -50,8 +50,10 @@ function WorksheetSettingsDropdown({
   let friend_options = [{ value: 'me', label: 'Me' }];
   const friendInfo =
     user.fbLogin && user.fbWorksheets ? user.fbWorksheets.friendInfo : {};
+  const friendWorksheets =
+    user.fbLogin && user.fbWorksheets ? user.fbWorksheets.worksheets : {};
   for (let friend in friendInfo) {
-    if (containsCurSeason(user.fbWorksheets.worksheets[friend]))
+    if (containsCurSeason(friendWorksheets[friend]))
       friend_options.push({
         value: friend,
         label: friendInfo[friend].name,

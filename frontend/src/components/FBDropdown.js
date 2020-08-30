@@ -20,8 +20,10 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
   ];
   const friendInfo =
     user.fbLogin && user.fbWorksheets ? user.fbWorksheets.friendInfo : {};
+  const friendWorksheets =
+    user.fbLogin && user.fbWorksheets ? user.fbWorksheets.worksheets : {};
   for (let friend in friendInfo) {
-    if (containsCurSeason(user.fbWorksheets.worksheets[friend]))
+    if (containsCurSeason(friendWorksheets[friend]))
       friend_options.push(
         <Dropdown.Item key={friend} eventKey={friend}>
           {friendInfo[friend].name}
@@ -37,11 +39,7 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={
-          cur_person === 'me'
-            ? 'Me'
-            : user.fbWorksheets.friendInfo[cur_person].name
-        }
+        title={cur_person === 'me' ? 'Me' : friendInfo[cur_person].name}
         onSelect={handleSelect}
       >
         {friend_options}
