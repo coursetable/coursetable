@@ -335,65 +335,57 @@ const CourseModalOverview = (props) => {
               </Row>
             )}
           </Row>
-          {listing['professors'] && (
-            <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Professor</span>
-              </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
-                {listing.professors}
-              </Col>
-            </Row>
-          )}
-          {listing['course.times_summary'] !== 'TBA' && (
-            <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Meets</span>
-              </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
-                {listing['course.times_summary']}
-              </Col>
-            </Row>
-          )}
-          {listing['section'] && (
-            <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Section</span>
-              </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
-                {listing.section}
-              </Col>
-            </Row>
-          )}
-          {listing['course.evaluation_statistics'] &&
-          listing['course.evaluation_statistics'][0] &&
-          listing['course.evaluation_statistics'][0].enrollment ? (
-            <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Enrollment</span>
-              </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
-                {listing.enrollment}
-              </Col>
-            </Row>
-          ) : enrollment === -1 ? (
-            <div />
-          ) : (
-            <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Enrollment</span>
-              </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
-                {'~' + enrollment}
-              </Col>
-            </Row>
-          )}
-          {location_url !== '' && (
-            <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Location</span>
-              </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
+
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Professor</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing['professors'] ? listing.professors : 'N/A'}
+            </Col>
+          </Row>
+
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Meets</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing['course.times_summary'] === 'TBA'
+                ? 'N/A'
+                : listing['course.times_summary']}
+            </Col>
+          </Row>
+
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Section</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing.section ? listing.section : 'N/A'}
+            </Col>
+          </Row>
+
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Enrollment</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing['course.evaluation_statistics'] &&
+              listing['course.evaluation_statistics'][0] &&
+              listing['course.evaluation_statistics'][0].enrollment
+                ? listing.enrollment
+                : enrollment === -1
+                ? 'N/A'
+                : '~' + enrollment}
+            </Col>
+          </Row>
+
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Location</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {location_url !== '' ? (
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -401,15 +393,20 @@ const CourseModalOverview = (props) => {
                 >
                   {location_name}
                 </a>
-              </Col>
-            </Row>
-          )}
-          {listing['course.syllabus_url'] && (
-            <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
-                <span className={Styles.lable_bubble}>Syllabus</span>
-              </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
+              ) : location_name === 'TBD' || location_name === '' ? (
+                'N/A'
+              ) : (
+                location_name
+              )}
+            </Col>
+          </Row>
+
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Syllabus</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing['course.syllabus_url'] ? (
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
@@ -417,9 +414,12 @@ const CourseModalOverview = (props) => {
                 >
                   {listing['course_code']}
                 </a>
-              </Col>
-            </Row>
-          )}
+              ) : (
+                'N/A'
+              )}
+            </Col>
+          </Row>
+
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={3} xs={4} className="px-0">
