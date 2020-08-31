@@ -5,7 +5,7 @@ import { useUser } from '../user';
 import { toast } from 'react-toastify';
 
 function FBLoginButton() {
-  const { user, userRefresh } = useUser();
+  const { user, fbRefresh } = useUser();
   const [logged_in, setLoggedIn] = useState(user.fbLogin);
 
   window.fbAsyncInit = function () {
@@ -35,7 +35,7 @@ function FBLoginButton() {
     window.FB.api('/me', function (response) {
       console.log('Successful login for: ' + response.name);
       toast.success('Successful login for: ' + response.name);
-      userRefresh().catch((err) => {
+      fbRefresh().catch((err) => {
         toast.error('Failed to update FB login');
         console.error(err);
       });
@@ -62,7 +62,7 @@ function FBLoginButton() {
   }
 
   function authStatusChange() {
-    userRefresh();
+    fbRefresh();
     toast.success('Successfully connected to FB!', {
       position: 'top-right',
       autoClose: 2500,

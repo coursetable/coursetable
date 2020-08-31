@@ -25,15 +25,16 @@ import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 
 import { useUser } from './user';
-import {Row, Spinner} from 'react-bootstrap';
+import { Row, Spinner } from 'react-bootstrap';
 
 function App() {
   const [loading, setLoading] = useState(true);
-  const { user, userRefresh } = useUser();
+  const { user, userRefresh, fbRefresh } = useUser();
 
   useEffect(() => {
-    userRefresh(true).finally(() => setLoading(false));
-  }, [userRefresh]);
+    userRefresh(true);
+    fbRefresh(true).finally(() => setLoading(false));
+  }, [userRefresh, fbRefresh]);
 
   const isLoggedIn = Boolean(user.worksheet !== null);
 
@@ -53,7 +54,7 @@ function App() {
 
   if (loading) {
     return (
-      <Row className="m-auto" style={{height:"100%"}}>
+      <Row className="m-auto" style={{ height: '100%' }}>
         <Spinner className="m-auto" animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>

@@ -24,6 +24,12 @@ export const UserProvider = ({ children }) => {
       } else {
         setWorksheet(res.data.data);
       }
+    },
+    [setWorksheet]
+  );
+
+  const fbRefresh = useCallback(
+    async (suppressError = false) => {
       const fbData = await axios.get('/legacy_api/FetchFacebookData.php');
       if (!fbData.data.success) {
         setFbLogin(null);
@@ -50,7 +56,7 @@ export const UserProvider = ({ children }) => {
         }
       }
     },
-    [setWorksheet, setFbLogin]
+    [setFbLogin]
   );
 
   const store = {
@@ -63,6 +69,7 @@ export const UserProvider = ({ children }) => {
 
     // Update methods.
     userRefresh,
+    fbRefresh,
   };
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;
