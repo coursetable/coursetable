@@ -27,6 +27,7 @@ function WorksheetSettingsDropdown({
   };
 
   const containsCurSeason = (worksheet) => {
+    if (!worksheet) return false;
     for (let i = 0; i < worksheet.length; i++) {
       if (worksheet[i][0] === cur_season) return true;
     }
