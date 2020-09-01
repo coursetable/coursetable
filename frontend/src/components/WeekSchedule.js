@@ -14,10 +14,6 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
  */
 
 export default class WeekSchedule extends React.Component {
-  constructor(props) {
-    super(props);
-  }
-
   // Show modal for the listing that was clicked on
   showModal = (listing) => {
     this.props.showModal(listing);

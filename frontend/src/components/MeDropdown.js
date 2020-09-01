@@ -46,22 +46,24 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     setExport(true);
   };
 
+  // Variable used in useEffect to be statically checked
+  const fetched_data = data ? data : [];
   // Called when worksheet updates or export_ics changes
   useEffect(() => {
     // return if worksheet isn't loaded or it isn't time to export
-    if (!data || !export_ics) return;
+    if (fetched_data.length === 0 || !export_ics) return;
     // Preprocess listings data
-    data = data.listings.map((x) => {
+    let processed_data = fetched_data.listings.map((x) => {
       return flatten(x);
     });
-    data = data.map((x) => {
+    processed_data = processed_data.map((x) => {
       return preprocess_courses(x);
     });
     // Generate and download ICS file
-    generateICS(data);
+    generateICS(processed_data);
     // Reset export_ics state on completion
     setExport(false);
-  }, [data ? data : [], export_ics]);
+  }, [fetched_data, export_ics]);
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {

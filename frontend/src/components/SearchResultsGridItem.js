@@ -59,7 +59,7 @@ const SearchResultsGridItem = ({
     );
   // Fetch user context data
   const { user } = useUser();
-  // Fetch list of FB friends that are also shopping this class
+  // Fetch list of FB friends that are also shopping this class. NOT USING THIS RN
   let also_taking =
     user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
@@ -69,6 +69,7 @@ const SearchResultsGridItem = ({
           user.fbWorksheets.friendInfo
         )
       : [];
+
   // Has the component been mounted yet?
   const [mounted, setMounted] = useState(false);
 
@@ -349,7 +350,7 @@ const SearchResultsGridItem = ({
         </div>
       )}
       {/* # of FB friens also taking this class. NOT USING RN */}
-      {/* {also_taking.length > 0 && (
+      {also_taking.length > 0 && 1 === 0 && (
         <OverlayTrigger
           placement="top"
           delay={{ show: 250, hide: 400 }}
@@ -357,7 +358,7 @@ const SearchResultsGridItem = ({
         >
           <div className={styles.fb_friends}>{also_taking.length}</div>
         </OverlayTrigger>
-      )} */}
+      )}
     </Col>
   );
 };

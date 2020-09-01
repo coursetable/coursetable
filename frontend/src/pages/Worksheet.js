@@ -52,7 +52,7 @@ function Worksheet() {
   useEffect(() => {
     setListings([]);
     setInitWorksheet(cur_worksheet);
-  }, [fb_person]);
+  }, [fb_person, cur_worksheet]);
 
   if (cur_worksheet == null) return <div>Please Login</div>;
 

@@ -49,7 +49,7 @@ function WorksheetSettingsDropdown({
   // Close dropdown on season or FB friend select
   useEffect(() => {
     setIsComponentVisible(false);
-  }, [cur_season, cur_person]);
+  }, [cur_season, cur_person, setIsComponentVisible]);
 
   // List to hold season dropdown options
   let season_options = [];

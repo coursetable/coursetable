@@ -48,7 +48,7 @@ const CourseConflictIcon = ({ course }) => {
     }
     // No conflict
     setConflict(false);
-  }, [course, data]);
+  }, [course, data, times]);
 
   // Renders the conflict tooltip on hover
   const renderTooltip = (props) =>
