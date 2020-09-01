@@ -2,16 +2,14 @@
   border-radius: 8px;
   background-color: white;
   max-height: 86vh;
-  overflow-y: scroll;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-  /* Hide scrollbar for IE, Edge and Firefox */
-  -ms-overflow-style: none; /* IE and Edge */
-  scrollbar-width: none; /* Firefox */
 }
 
-/* Hide scrollbar for Chrome, Safari and Opera */
-.container::-webkit-scrollbar {
-  display: none;
+.table {
+  max-height: calc(86vh - 51px);
+  overflow: scroll;
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
 }
 
 .clickable {

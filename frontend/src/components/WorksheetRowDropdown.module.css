@@ -4,6 +4,8 @@
   top: 0;
   z-index: 421;
   background-color: white;
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
 }
 
 .select_container {
