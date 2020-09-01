@@ -3,6 +3,7 @@ import styles from './WorksheetList.module.css';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
+import WorksheetRowDropdown from './WorksheetRowDropdown';
 
 export default class WorksheetList extends React.Component {
   setSeason = (season_code) => {
@@ -37,29 +38,12 @@ export default class WorksheetList extends React.Component {
     return false;
   };
 
-  buildHtml = (season_codes, parsed_courses, cur_season) => {
+  buildHtml = (season_codes, parsed_courses) => {
     let items = [];
     season_codes.sort();
     season_codes.reverse();
-    const seasons = ['', 'Spring', 'Summer', 'Fall'];
     let id = 0;
     season_codes.forEach((season) => {
-      items.push(
-        <ListGroup.Item
-          key={id++}
-          // active={cur_season === season}
-          variant={cur_season === season ? 'primary' : 'secondary'}
-          action
-          onClick={() => this.setSeason(season)}
-          className={styles.seasonHeader}
-        >
-          <h4 className="mb-0">
-            <strong>
-              {season.substring(0, 4) + ' - ' + seasons[parseInt(season[5])]}
-            </strong>
-          </h4>
-        </ListGroup.Item>
-      );
       parsed_courses[season].forEach((course) => {
         items.push(
           <ListGroup.Item
@@ -121,9 +105,16 @@ export default class WorksheetList extends React.Component {
       parsed_courses,
       this.props.cur_season
     );
-    // console.log(this.state.course_info);
+
     return (
       <div className={styles.container}>
+        <WorksheetRowDropdown
+          cur_season={this.props.cur_season}
+          season_codes={this.props.season_codes}
+          onSeasonChange={this.props.onSeasonChange}
+          setFbPerson={this.props.setFbPerson}
+          cur_person={this.props.cur_person}
+        />
         <ListGroup variant="flush" className={styles.table}>
           {items}
         </ListGroup>

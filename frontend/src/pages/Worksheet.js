@@ -6,7 +6,6 @@ import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetExpandedList from '../components/WorksheetExpandedList';
-import WorksheetSettingsDropdown from '../components/WorksheetSettingsDropdown';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 
@@ -247,7 +246,7 @@ function Worksheet() {
             <Fade in={start_fade}>
               <div style={{ display: start_fade ? '' : 'none' }}>
                 <WorksheetExpandedList
-                  courses={filtered_listings}
+                  courses={season_listings}
                   showModal={showModal}
                   end_fade={end_fade}
                   cur_season={season}
@@ -265,12 +264,14 @@ function Worksheet() {
                   onSeasonChange={changeSeason}
                   toggleCourse={toggleCourse}
                   showModal={showModal}
-                  courses={filtered_listings}
+                  courses={season_listings}
                   season_codes={season_codes}
                   cur_season={season}
                   hidden_courses={hidden_courses}
                   hasSeason={hasSeason}
                   setHoverCourse={setHoverCourse}
+                  setFbPerson={setFbPerson}
+                  cur_person={fb_person}
                 />
               </div>
             </Fade>
@@ -326,20 +327,6 @@ function Worksheet() {
         listing={course_modal[1]}
         hasSeason={hasSeason}
       />
-      {cur_expand !== 'list' && (
-        <div className="d-none d-md-block">
-          <div className={styles.settings_dropdown}>
-            <WorksheetSettingsDropdown
-              cur_season={season}
-              season_codes={season_codes}
-              onSeasonChange={changeSeason}
-              setFbPerson={setFbPerson}
-              cur_person={fb_person}
-              icon_size={25}
-            />
-          </div>
-        </div>
-      )}
     </div>
   );
 }

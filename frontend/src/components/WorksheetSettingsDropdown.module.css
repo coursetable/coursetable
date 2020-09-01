@@ -23,25 +23,25 @@
   transform: rotate(90deg);
 }
 
-:global .css-yk16xz-control {
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-radius: 0px !important;
-  width: 175px !important;
+.select_container {
+  width: 100%;
+  border-bottom: 1px solid rgb(209, 209, 209);
+}
+
+:global .css-26l3qy-menu {
+  z-index: 1000 !important;
+}
+
+:global .css-yk16xz-control,
+:global .css-1pahdxg-control {
+  z-index: calc(420 + 69);
+  border: none !important;
+  background-color: transparent !important;
   height: 38px !important;
   cursor: pointer !important;
 }
 
 :global .css-1pahdxg-control {
-  cursor: pointer !important;
-  width: 175px !important;
-  height: 38px !important;
-  border-top: none !important;
-  border-left: none !important;
-  border-right: none !important;
-  border-radius: 0px !important;
-  border-color: hsl(0, 0%, 80%) !important;
   box-shadow: none !important;
   outline: none !important;
 }

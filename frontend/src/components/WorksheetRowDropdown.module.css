@@ -1,0 +1,12 @@
+.container {
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 0;
+  z-index: 421;
+  background-color: white;
+}
+
+.select_container {
+  width: 100%;
+  border-bottom: 1px solid rgb(209, 209, 209);
+}

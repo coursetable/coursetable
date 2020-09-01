@@ -13,7 +13,6 @@ function WorksheetSettingsDropdown({
   onSeasonChange,
   setFbPerson,
   cur_person,
-  icon_size = 20,
 }) {
   const { user } = useUser();
   const {
@@ -77,13 +76,13 @@ function WorksheetSettingsDropdown({
           if (!isTouch) setIsComponentVisible(true);
         }}
       >
-        <FcSettings size={icon_size} />
+        <FcSettings size={20} />
       </div>
       <div className={styles.collapse_container} onClick={handleDropdownClick}>
         <Collapse in={isComponentVisible}>
           <Col className={'px-3'}>
             <Row className="m-auto pt-2">
-              <div className="m-auto">
+              <div className={styles.select_container + ' m-auto'}>
                 <Select
                   value={{
                     value: cur_season,
@@ -98,7 +97,7 @@ function WorksheetSettingsDropdown({
               </div>
             </Row>
             <Row className="m-auto pb-2">
-              <div className="m-auto">
+              <div className={styles.select_container + ' m-auto'}>
                 <Select
                   value={{
                     value: cur_person,

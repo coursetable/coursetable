@@ -35,21 +35,15 @@ const WorksheetExpandedList = ({
   const MEET_CUT = 1000;
 
   let items = [];
-  let filtered_courses = [];
+
   for (let i = 0; i < courses.length; i++) {
     const course = courses[i];
-    if (course.season_code !== cur_season) continue;
-    filtered_courses.push(course);
-  }
-
-  for (let i = 0; i < filtered_courses.length; i++) {
-    const course = filtered_courses[i];
     items.push(
       <div key={i}>
         <WorksheetExpandedListItem
           course={course}
           showModal={showModal}
-          isLast={i === filtered_courses.length - 1}
+          isLast={i === courses.length - 1}
           end_fade={end_fade}
           hasSeason={hasSeason}
           ROW_WIDTH={ROW_WIDTH}
@@ -72,7 +66,7 @@ const WorksheetExpandedList = ({
         id="results_container"
         className={
           `px-0  ${search_results_styles.results_container} ${styles.shadow}` +
-          (filtered_courses.length > 5 ? ' ' + styles.scrollable : '')
+          (courses.length > 5 ? ' ' + styles.scrollable : '')
         }
       >
         <div className={`${search_results_styles.sticky_header}`}>
