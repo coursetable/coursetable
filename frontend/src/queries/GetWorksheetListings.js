@@ -2,11 +2,15 @@ import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
 import { flatten } from '../utilities';
 
+// Build the graphQL query based on the courses in the user's worksheet
 const buildQuery = (worksheet) => {
+  // Holds the listings constraints for the gql query
   let listings = '';
+  // Iterate over each listing
   for (let i = 0; i < worksheet.length; i++) {
     const season_code = worksheet[i][0];
     const crn = worksheet[i][1];
+    // Append constraint
     listings += `{ season_code: { _eq: "${season_code}" }, crn: { _eq: ${crn} }},`;
   }
   return `query fetch_course {
@@ -48,6 +52,7 @@ const buildQuery = (worksheet) => {
   }`;
 };
 
+// Preprocess courses
 export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
@@ -107,10 +112,12 @@ export const preprocess_courses = (listing) => {
   return listing;
 };
 
+// Search query used in Worksheet.js and CourseConflictIcon.js
 export const FetchWorksheet = (worksheet) => {
+  // Build gql query
   const builtQuery = buildQuery(worksheet);
+  // Execute search query
   var { loading, error, data } = useQuery(gql(builtQuery));
-
   if (!(loading || error)) {
     data = data.listings.map((x) => {
       return flatten(x);
@@ -124,12 +131,16 @@ export const FetchWorksheet = (worksheet) => {
   return { loading, error, data };
 };
 
+// Lazy search query used in MeDropdown.js
 export const FetchWorksheetLazy = (worksheet, season_code) => {
   let filtered_worksheet = [];
+  // Get worksheet listings for this season
   worksheet.forEach((course) => {
     if (course[0] === season_code) filtered_worksheet.push(course);
   });
+  // Build gql query
   const builtQuery = buildQuery(filtered_worksheet);
+  // Get lazy search query function
   const [fetchWorksheetListings, { loading, data }] = useLazyQuery(
     gql(builtQuery)
   );

@@ -74,7 +74,10 @@ function Worksheet() {
   useEffect(() => {
     setListings([]);
     setInitWorksheet(cur_worksheet);
-  }, [fb_person, cur_worksheet]);
+    // Ignore compile warning because we can't include cur_worksheet in dependency array
+    // If we do, the page has to perform a search query every time the user removes a course
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fb_person]);
 
   // If worksheet doesn't exist
   if (cur_worksheet == null) return <div>Please Login</div>;

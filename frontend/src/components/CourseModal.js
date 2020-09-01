@@ -8,7 +8,6 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { toSeasonString } from '../utilities';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
-import { unflattenTimesModal } from '../utilities';
 
 import styles from './CourseModal.module.css';
 import tag_styles from './SearchResultsItem.module.css';
@@ -72,8 +71,6 @@ const CourseModal = ({ listing, hideModal, show, hasSeason }) => {
                         season_code={listing.season_code}
                         modal={true}
                         hasSeason={hasSeason}
-                        className="p-0"
-                        times={unflattenTimesModal(listing)}
                       />
                     )}
                   </Col>

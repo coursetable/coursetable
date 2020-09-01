@@ -26,17 +26,27 @@ import NotFound from './pages/NotFound';
 import { useUser } from './user';
 import { Row, Spinner } from 'react-bootstrap';
 
+/**
+ * Render navbar and the corresponding page component for the route the user is on
+ */
+
 function App() {
+  // Page initialized as loading
   const [loading, setLoading] = useState(true);
+  // User context data
   const { user, userRefresh, fbRefresh } = useUser();
 
+  // Refresh user worksheet and FB data on page load
   useEffect(() => {
     userRefresh(true);
+    // Set loading to false after FB is fetched
     fbRefresh(true).finally(() => setLoading(false));
   }, [userRefresh, fbRefresh]);
 
+  // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet !== null);
 
+  // Custom route component that routes to login page if not logged in
   const MyRoute = useCallback(
     ({ children, isRoutePrivate, ...rest }) => {
       let contents;
@@ -51,6 +61,7 @@ function App() {
     [isLoggedIn]
   );
 
+  // Render spinner if page loading
   if (loading) {
     return (
       <Row className="m-auto" style={{ height: '100%' }}>
@@ -67,15 +78,17 @@ function App() {
           <div id="base">
             <Navbar isLoggedIn={isLoggedIn} />
             <Switch>
-              {/* Public Routes */}
+              {/* Home Page */}
               <MyRoute exact path="/">
                 {isLoggedIn ? <Home /> : <Redirect to="/login" />}
               </MyRoute>
 
+              {/* About */}
               <MyRoute exact path="/about">
                 <About />
               </MyRoute>
 
+              {/* Catalog */}
               <MyRoute
                 exact
                 path="/catalog"
@@ -110,11 +123,12 @@ function App() {
                 <Join />
               </MyRoute>
 
-              {/* Catch-all Route */}
+              {/* Catch-all Route to NotFound Page */}
               <MyRoute path="/">
                 <NotFound />
               </MyRoute>
             </Switch>
+            {/* Render footer if not on catalog or worksheet pages */}
             <Route
               render={({ location }) => {
                 return (
