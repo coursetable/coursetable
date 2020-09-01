@@ -5,25 +5,33 @@ import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import './Feedback.css';
 
-import {
-  selectStyles,
-} from '../queries/Constants';
+import { selectStyles } from '../queries/Constants';
 
+// Makes Select forms animated
 const animatedComponents = makeAnimated();
 
+/**
+ * Renders the Feedback page
+ */
+
 function Feedback() {
+  // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
+  // Is the user inputting a bug report?
   const [isBug, setIsBug] = useState(true);
+  // Formcake submission endpoint
   const submission_endpoint =
     'https://api.formcake.com/api/form/2100a266-5b01-49d8-bec9-0ec2abd4e185/submission';
 
+  // Handle form submit
   const handleSubmit = (event) => {
     const form = event.currentTarget;
+    // Don't submit if form is invalid
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
-
+    // Form has been validated
     setValidated(true);
   };
 
@@ -40,6 +48,7 @@ function Feedback() {
         method="POST"
         action={submission_endpoint}
       >
+        {/* Feedback Type */}
         <Form.Group className={styles.form_group}>
           <Form.Label className={styles.form_label}>
             Feedback Type<span style={{ color: '#ff5e5e' }}>{' *'}</span>
@@ -56,9 +65,10 @@ function Feedback() {
             styles={selectStyles}
           />
         </Form.Group>
-
+        {/* Hide if not submitting a bug report */}
         <Collapse in={isBug}>
           <div>
+            {/* Courses Involved */}
             <Form.Group className={styles.form_group}>
               <Form.Label className={styles.form_label}>
                 Course(s) Involved?
@@ -70,7 +80,7 @@ function Feedback() {
                 placeholder="e.g. CPSC 323, Spring 2020"
               />
             </Form.Group>
-
+            {/* Pages involved */}
             <Form.Group className={styles.form_group}>
               <Form.Label className={styles.form_label}>
                 Page(s) Involved?
@@ -94,7 +104,7 @@ function Feedback() {
                 ]}
               />
             </Form.Group>
-
+            {/* Browser/System(s) Involved */}
             <Form.Group className={styles.form_group}>
               <Form.Label className={styles.form_label}>
                 Browser/System(s) Involved?
@@ -121,7 +131,7 @@ function Feedback() {
                 ]}
               />
             </Form.Group>
-
+            {/* Email */}
             <Form.Group className={styles.form_group}>
               <Form.Label className={styles.form_label}>
                 Your Email Address
@@ -138,7 +148,7 @@ function Feedback() {
             </Form.Group>
           </div>
         </Collapse>
-
+        {/* Description */}
         <Form.Group className={styles.form_group}>
           <Form.Label className={styles.form_label}>
             Feedback/Bug Description
@@ -160,7 +170,7 @@ function Feedback() {
             Please enter a description
           </Form.Control.Feedback>
         </Form.Group>
-
+        {/* Submit Button */}
         <Button variant="info" type="submit">
           Submit
         </Button>

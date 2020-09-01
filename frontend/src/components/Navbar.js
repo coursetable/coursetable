@@ -27,7 +27,7 @@ function CourseTableNavbar({ isLoggedIn }) {
 
   // Get the pathname of the current page
   const pathname = useLocation().pathname;
-  // Get width of viewport
+  // Fetch width of window
   const { width } = useWindowDimensions();
   const is_relative = width < 1230;
 

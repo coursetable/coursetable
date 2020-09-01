@@ -6,9 +6,11 @@ import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 
-import {scrollToTop} from '../utilities';
+import { scrollToTop } from '../utilities';
 
+// Custom accordion component
 function ContextAwareToggle({ eventKey, callback, question }) {
+  // Current active item
   const currentEventKey = useContext(AccordionContext);
 
   const decoratedOnClick = useAccordionToggle(
@@ -16,6 +18,7 @@ function ContextAwareToggle({ eventKey, callback, question }) {
     () => callback && callback(eventKey)
   );
 
+  // Is this one currently active?
   const isCurrentEventKey = currentEventKey === eventKey;
 
   return (
@@ -29,6 +32,7 @@ function ContextAwareToggle({ eventKey, callback, question }) {
     >
       {question}
       <FaChevronRight
+        // Rotate arrow when active
         className={
           (!isCurrentEventKey ? '' : styles.accordion_arrow_active) +
           ' my-auto ' +
@@ -39,8 +43,11 @@ function ContextAwareToggle({ eventKey, callback, question }) {
   );
 }
 
-function FAQ() {
+/**
+ * Renders the FAQ page
+ */
 
+function FAQ() {
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.faq_header + ' mt-5 mb-1'}>

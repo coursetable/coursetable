@@ -24,7 +24,7 @@ import chroma from 'chroma-js';
  */
 
 const CourseModal = ({ listing, hideModal, show, hasSeason }) => {
-  // Width of viewport
+  // Fetch width of window
   const { width } = useWindowDimensions();
   // Switch to mobile view?
   const isMobile = width < 768;

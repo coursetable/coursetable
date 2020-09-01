@@ -3,26 +3,31 @@ import { Row, Form, Button } from 'react-bootstrap';
 import styles from './Join.module.css';
 import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
+import { selectStyles } from '../queries/Constants';
 
-import {
-  selectStyles,
-} from '../queries/Constants';
-
+// Makes select forms animated
 const animatedComponents = makeAnimated();
 
-function Join() {
-  const [validated, setValidated] = useState(false);
+/**
+ * Renders the Join Us page
+ */
 
-  const handleSubmit = event => {
+function Join() {
+  // Has form been validated?
+  const [validated, setValidated] = useState(false);
+  // Handle form submission
+  const handleSubmit = (event) => {
     const form = event.currentTarget;
+    // Don't submit if form is invalid
     if (form.checkValidity() === false) {
       event.preventDefault();
       event.stopPropagation();
     }
-
+    // Form has been validated
     setValidated(true);
   };
 
+  // Formcake submission endpoint
   const submission_endpoint =
     'https://api.formcake.com/api/form/76c03c68-682d-4402-8237-36c105de4aa6/submission';
   return (
@@ -38,6 +43,7 @@ function Join() {
         method="POST"
         action={submission_endpoint}
       >
+        {/* Email */}
         <Form.Group className={styles.form_group}>
           <Form.Control
             required
@@ -49,6 +55,7 @@ function Join() {
             Please enter a valid email address
           </Form.Control.Feedback>
         </Form.Group>
+        {/* Role Select */}
         <Form.Group className={styles.form_group}>
           <Select
             isMulti
@@ -64,6 +71,7 @@ function Join() {
             placeholder={'Role(s) of Interest'}
           />
         </Form.Group>
+        {/* Submit Button */}
         <Row className="m-auto">
           <Button variant="primary" type="submit" className="mx-auto">
             Send me updates

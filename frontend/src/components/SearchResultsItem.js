@@ -31,8 +31,8 @@ import Styles from './SearchResultsItem.module.css';
  * @prop RATE_WIDTH - integer that holds width of the ratings columns
  * @prop BOOKMARK_WIDTH - integer that holds width of the last column
  * @prop PADDING - integer that holds width of padding between course and rest of columns
- * @prop PROF_CUT - integer that determines at what viewport width to stop displaying prof column
- * @prop MEET_CUT - integer that determines at what viewport width to stop displaying meets column
+ * @prop PROF_CUT - integer that determines at what window width to stop displaying prof column
+ * @prop MEET_CUT - integer that determines at what window width to stop displaying meets column
  */
 
 const SearchResultsItem = ({
@@ -54,7 +54,7 @@ const SearchResultsItem = ({
   let key = 1;
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
-  // Width of viewport
+  // Fetch width of window
   const { width } = useWindowDimensions();
   // Fetch user context data
   const { user } = useUser();

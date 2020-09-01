@@ -8,10 +8,16 @@ import Logo from '../components/Logo';
 import styles from './Landing.module.css';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
-function Landing(props) {
+/**
+ * Renders the Landing page for when users aren't logged in
+ */
+
+function Landing() {
+  // Get width of window
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
 
+  // Scroll to feature page
   const scrollTo = () => {
     scroller.scrollTo('featurepage', {
       smooth: true,
@@ -19,6 +25,7 @@ function Landing(props) {
     });
   };
 
+  // Scroll to top
   const scrollTop = () => {
     window.scrollTo(0, 0);
   };
@@ -37,18 +44,18 @@ function Landing(props) {
               </p>
               <Col className="mt-4">
                 <Row className={styles.btn_container}>
-                  {!props.isLoggedIn && (
-                    <Col md={4} className="p-0 mx-2">
-                      <Button
-                        href="/legacy_api/index.php?forcelogin=1"
-                        variant="primary"
-                        className={styles.btns}
-                        size="lg"
-                      >
-                        Login
-                      </Button>
-                    </Col>
-                  )}
+                  {/* Login Button */}
+                  <Col md={4} className="p-0 mx-2">
+                    <Button
+                      href="/legacy_api/index.php?forcelogin=1"
+                      variant="primary"
+                      className={styles.btns}
+                      size="lg"
+                    >
+                      Login
+                    </Button>
+                  </Col>
+                  {/* Feature Page Button */}
                   <Col md={4} className="p-0 mx-2">
                     <Button
                       size="lg"
@@ -103,6 +110,7 @@ function Landing(props) {
                   : styles.get_started_row) + ' mx-auto justify-content-center'
               }
             >
+              {/* Catalog Button */}
               <Link to="/catalog">
                 <Button
                   variant="success"

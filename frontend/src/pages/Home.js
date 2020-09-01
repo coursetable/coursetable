@@ -4,6 +4,10 @@ import Logo from '../components/Logo';
 import Searchbar from '../components/Searchbar';
 import styles from './Home.module.css';
 
+/**
+ * Renders the Home page
+ */
+
 function Home() {
   return (
     <div className={styles.container}>

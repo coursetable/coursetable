@@ -32,7 +32,7 @@ const WorksheetExpandedList = ({
   setFbPerson,
   fb_person,
 }) => {
-  // Fetch width of viewport
+  // Fetch width of window
   const { width } = useWindowDimensions();
   // State that holds width of row
   const [ROW_WIDTH, setRowWidth] = useState();

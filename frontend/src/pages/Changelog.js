@@ -4,6 +4,10 @@ import styles from './Changelog.module.css';
 import { FcPlus, FcIdea } from 'react-icons/fc';
 import { FaWrench } from 'react-icons/fa';
 
+/**
+ * Renders the changelog us page
+ */
+
 function Changelog() {
   const filler_text =
     'This is some filler text for a list item on ' +

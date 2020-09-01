@@ -54,7 +54,7 @@ const SearchResults = ({
   refreshCache,
   fetchedAll,
 }) => {
-  // Get width of viewport
+  // Fetch width of window
   const { width } = useWindowDimensions();
 
   const isMobile = width < 768;

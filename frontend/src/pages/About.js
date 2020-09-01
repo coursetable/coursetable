@@ -5,6 +5,10 @@ import { Card, CardDeck, Button, Row } from 'react-bootstrap';
 import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
 
+/**
+ * Renders the about us page
+ */
+
 function About() {
   return (
     <div className={styles.container + ' mx-auto'}>

@@ -84,11 +84,7 @@ function App() {
 
               {/* Auth */}
               <MyRoute exact path="/login">
-                {isLoggedIn ? (
-                  <Redirect to="/" />
-                ) : (
-                  <Landing isLoggedIn={isLoggedIn} />
-                )}
+                {isLoggedIn ? <Redirect to="/" /> : <Landing />}
               </MyRoute>
 
               {/* Worksheet */}

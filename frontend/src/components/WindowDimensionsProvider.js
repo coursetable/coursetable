@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const WindowDimensionsCtx = createContext(null);
 
-// Return dimensions of the viewport
+// Return dimensions of the window
 const WindowDimensionsProvider = ({ children }) => {
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,

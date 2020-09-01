@@ -51,17 +51,23 @@ import { flatten, preprocess_courses } from '../utilities';
 import makeAnimated from 'react-select/animated';
 const animatedComponents = makeAnimated();
 
-function Search(props) {
+/**
+ * Renders search page
+ * @prop location - dictionary that contains search value if search bar was used
+ * @prop history - dictionary that is used to reset default search value
+ */
+
+function Search({ location, history }) {
+  // Fetch window dimensions
   const { height, width } = useWindowDimensions();
-
   const isMobile = width < 768;
+  // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
+  // Search text for the default search if search bar was used
   var searchText = React.useRef(
-    props.location && props.location.state
-      ? props.location.state.search_val
-      : null
+    location && location.state ? location.state.search_val : null
   );
-
+  // Is the search form  collapsed?
   const [collapsed_form, setCollapsedForm] = useState(false);
   // useEffect(() => {
   //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
@@ -94,8 +100,10 @@ function Search(props) {
   var credits = React.useRef();
   var schools = React.useRef();
 
+  // Does the user want to hide cancelled courses?
   var [hideCancelled, setHideCancelled] = React.useState(true);
 
+  // Bounds of course and workload ratings (1-5)
   var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
   var [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
 
@@ -105,7 +113,6 @@ function Search(props) {
 
   // populate seasons from database
   var seasonsOptions;
-
   const seasonsData = useSeasons();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map((x) => {
@@ -127,9 +134,8 @@ function Search(props) {
   );
 
   const handleChange = () => {
-    if (!props.location.state) return;
+    if (!location.state) return;
     // reset searchText
-    const { history } = props;
     history.replace();
   };
 
@@ -235,6 +241,7 @@ function Search(props) {
       include_all_workloads = false;
     }
 
+    // Variables to use in search query
     const search_variables = {
       search_text: searchText.value,
       ordering: ordering,
@@ -251,12 +258,15 @@ function Search(props) {
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
     };
+    // Execute search query
     executeSearch({
       variables: search_variables,
     });
   });
 
+  // If the search query was called
   if (searchCalled) {
+    // If the search query is still loading
     if (searchLoading) {
       if (!searching) setSearching(true); // Set searching after loading starts
     } else {
@@ -294,6 +304,7 @@ function Search(props) {
 
   const { Handle } = Slider;
 
+  // Render slider handles for the course and workload rating sliders
   const ratingSliderHandle = (e) => {
     const { value, className } = e;
     return (
@@ -302,7 +313,6 @@ function Search(props) {
       </Handle>
     );
   };
-
   const workloadSliderHandle = (e) => {
     const { value, className } = e;
     return (
@@ -312,7 +322,9 @@ function Search(props) {
     );
   };
 
+  // Is the search form taller than the window?
   var [tooTall, setTooTall] = React.useState(true);
+  // Is the user on a touch device?
   var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   // reset the search form
@@ -326,7 +338,6 @@ function Search(props) {
   // check if the search form is too tall
   // to be sticky
   var searchCol = React.useRef();
-
   useEffect(() => {
     var searchColHeight = searchCol.clientHeight;
     setTooTall(searchColHeight > height);
@@ -372,6 +383,7 @@ function Search(props) {
               !isTouch && !tooTall ? Styles.sticky : ''
             }
           >
+            {/* Search Form */}
             <Form
               className={`shadow-sm px-3 ${Styles.search_container}`}
               onSubmit={(event) => {
@@ -383,6 +395,7 @@ function Search(props) {
               key={form_key}
             >
               {!isMobile && (
+                // Render buttons to hide/show the search form
                 <React.Fragment>
                   <div
                     className={
@@ -407,6 +420,7 @@ function Search(props) {
                   </div>
                 </React.Fragment>
               )}
+              {/* Reset Filters Button */}
               <Row className="pt-3 px-4">
                 <small
                   className={Styles.reset_filters_btn + ' pl-1'}
@@ -417,6 +431,7 @@ function Search(props) {
               </Row>
               <Row className="pt-2 px-4 pb-2">
                 <div className={Styles.search_bar}>
+                  {/* Search Bar */}
                   <InputGroup className={Styles.search_input}>
                     <FormControl
                       type="text"
@@ -434,6 +449,7 @@ function Search(props) {
               </Row>
               <Row className={`py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  {/* Sort By Multi-Select */}
                   <Select
                     defaultValue={sortbyOptions[0]}
                     options={sortbyOptions}
@@ -452,6 +468,7 @@ function Search(props) {
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   <div className={Styles.filter_title}>Semesters</div>
                   {seasonsOptions && (
+                    // Seasons Multi-Select
                     <Select
                       isMulti
                       // defaultValue={[seasonsOptions[0]]}
@@ -471,6 +488,7 @@ function Search(props) {
                 </div>
                 <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
                   <div className={Styles.filter_title}>Skills and areas</div>
+                  {/* Skills/Areas Multi-Select */}
                   <Select
                     isMulti
                     options={skillsAreasOptions}
@@ -488,6 +506,7 @@ function Search(props) {
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   <div className={Styles.filter_title}>Credits</div>
+                  {/* Course Credit Multi-Select */}
                   <Select
                     isMulti
                     options={creditOptions}
@@ -504,6 +523,7 @@ function Search(props) {
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   <div className={Styles.filter_title}>Schools</div>
+                  {/* Yale Schools Multi-Select */}
                   <Select
                     isMulti
                     defaultValue={[
@@ -527,6 +547,7 @@ function Search(props) {
               <Row className={`pt-0 pb-2 px-2 ${Styles.sliders}`}>
                 <Col>
                   <Container style={{ paddingTop: '1px' }}>
+                    {/* Class Rating Slider */}
                     <Range
                       min={1}
                       max={5}
@@ -547,6 +568,7 @@ function Search(props) {
                 </Col>
                 <Col>
                   <Container>
+                    {/* Workload Rating Slider */}
                     <Range
                       min={1}
                       max={5}
@@ -569,6 +591,7 @@ function Search(props) {
               <Row
                 className={`pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg} ${Styles.toggle_row}`}
               >
+                {/* Hide Cancelled Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
                     checked={hideCancelled}
@@ -582,6 +605,7 @@ function Search(props) {
                 </Form.Check>
               </Row>
               <Row className="flex-row-reverse">
+                {/* Submit Button */}
                 <Button
                   type="submit"
                   className={'pull-right ' + Styles.secondary_submit}

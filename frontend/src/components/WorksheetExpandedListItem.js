@@ -28,8 +28,8 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
  * @prop RATE_WIDTH - integer that holds width of the ratings columns
  * @prop BOOKMARK_WIDTH - integer that holds width of the last column
  * @prop PADDING - integer that holds width of padding between course and rest of columns
- * @prop PROF_CUT - integer that determines at what viewport width to stop displaying prof column
- * @prop MEET_CUT - integer that determines at what viewport width to stop displaying meets column
+ * @prop PROF_CUT - integer that determines at what window width to stop displaying prof column
+ * @prop MEET_CUT - integer that determines at what window width to stop displaying meets column
  */
 
 const WorksheetExpandedListItem = ({
@@ -46,7 +46,7 @@ const WorksheetExpandedListItem = ({
   PROF_CUT,
   MEET_CUT,
 }) => {
-  // Get viewport width
+  // Fetch window width
   const { width } = useWindowDimensions();
   // Component to limit professors list to 2 lines
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
