@@ -5,7 +5,11 @@ import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import { Container } from 'react-bootstrap';
 
-import {scrollToTop} from '../utilities';
+import { scrollToTop } from '../utilities';
+
+/**
+ * Footer
+ */
 
 function Footer() {
   return (
@@ -13,6 +17,7 @@ function Footer() {
       <hr />
       <footer className={'py-5 px-5 ' + styles.footer}>
         <div className="row">
+          {/* Copyright */}
           <div className="col-12 col-md">
             <span className={styles.footer_logo}>
               <Logo />
@@ -24,11 +29,13 @@ function Footer() {
           <div className="col-6 col-md">
             <h5>Explore</h5>
             <ul className="list-unstyled text-small">
+              {/* Catalog */}
               <li>
                 <NavLink to="/catalog" onClick={scrollToTop}>
                   Catalog
                 </NavLink>
               </li>
+              {/* Worksheet */}
               <li>
                 <NavLink to="/worksheet" onClick={scrollToTop}>
                   Worksheet
@@ -39,16 +46,19 @@ function Footer() {
           <div className="col-6 col-md">
             <h5>Support</h5>
             <ul className="list-unstyled text-small">
+              {/* FAQ */}
               <li>
                 <NavLink to="/faq" onClick={scrollToTop}>
                   FAQ
                 </NavLink>
               </li>
+              {/* ChangeLog */}
               <li>
                 <NavLink to="/changelog" onClick={scrollToTop}>
                   Changelog
                 </NavLink>
               </li>
+              {/* Feedback */}
               <li>
                 <NavLink to="/feedback" onClick={scrollToTop}>
                   Feedback
@@ -59,16 +69,19 @@ function Footer() {
           <div className="col-6 col-md">
             <h5>About</h5>
             <ul className="list-unstyled text-small">
+              {/* Team */}
               <li>
                 <NavLink to="/about" onClick={scrollToTop}>
                   Team
                 </NavLink>
               </li>
+              {/* Join us */}
               <li>
                 <NavLink to="/joinus" onClick={scrollToTop}>
                   Join us
                 </NavLink>
               </li>
+              {/* Github */}
               <li>
                 <a
                   href="https://github.com/coursetable"

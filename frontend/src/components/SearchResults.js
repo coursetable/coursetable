@@ -26,10 +26,23 @@ import {
 import NoCoursesFound from '../images/no_courses_found.svg';
 import { FaArrowCircleUp } from 'react-icons/fa';
 
+// Measures the row height. NOT USING RN
 const cache = new CellMeasurerCache({
   fixedWidth: true,
   defaultHeight: 50,
 });
+
+/**
+ * Renders the infinite list of search results
+ * @prop data - list that holds the search results
+ * @prop isList - boolean that determines display format (list or grid)
+ * @prop setView - function to change display format
+ * @prop loading - boolean | Is the search query finished?
+ * @prop loadMore - boolean | Do we need to fetch more courses?
+ * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
+ * @prop refreshCache - integer that triggers the cache to recalculate height
+ * @prop fetchedAll - boolean | Have we fetched all search results?
+ */
 
 const SearchResults = ({
   data,
@@ -41,25 +54,30 @@ const SearchResults = ({
   refreshCache,
   fetchedAll,
 }) => {
+  // Get width of viewport
   const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
-
-  // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
-
+  // State that determines if a course modal needs to be displayed and which course to display
   const [course_modal, setCourseModal] = useState([false, '']);
-  // const [show_tooltip, setShowTooltip] = useState(false);
-  let key = 0;
-  // const [modalCalled, setModalCalled] = React.useState(false);
 
+  // Show tooltip for the list/grid view toggle. NOT USING RN
+  // const [show_tooltip, setShowTooltip] = useState(false);
+
+  // Variable used in list keys
+  let key = 0;
+
+  // Show the modal for the course that was clicked
   const showModal = (listing) => {
     setCourseModal([true, listing]);
   };
 
+  // Reset course_modal state to hide the modal
   const hideModal = () => {
     setCourseModal([false, '']);
   };
 
+  // Should we render the scroll up button?
   const [scroll_visible, setScrollVisible] = useState(false);
   // Render scroll-up button after scrolling a lot
   useEffect(() => {
@@ -74,20 +92,26 @@ const SearchResults = ({
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
+  // Recalculate row height when refreshCache changes
   useEffect(() => {
     cache.clearAll();
   }, [refreshCache]);
 
+  // Number of columns to use in grid view
   const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
+  // List that holds the HTML for each row in grid view
   let grid_html = [];
 
+  // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState();
+  // Ref to get row width
   const ref = useRef(null);
   useEffect(() => {
+    // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-    // console.log(ROW_WIDTH);
   }, [setRowWidth]);
 
+  // Spacing for each column in list view
   const PROF_WIDTH = 150;
   const MEET_WIDTH = 200;
   const RATE_WIDTH = 70;
@@ -96,17 +120,17 @@ const SearchResults = ({
   const PROF_CUT = 1300;
   const MEET_CUT = 1000;
 
+  // Holds HTML for the search results
   var resultsListing;
 
+  // Has the current row been fetched?
   function isRowLoaded({ index }) {
-    // console.log(index);
     if (fetchedAll) return true;
     if (isList) return index < data.length;
     return index < grid_html.length;
   }
 
   // Render functions for React Virtualized List:
-
   const renderGridRow = ({ index, key, style }) => {
     if (!isRowLoaded({ index })) {
       return <div key={key} style={style} />;
@@ -188,17 +212,23 @@ const SearchResults = ({
           </Row>
         );
       }
-
+      // Store HTML for grid view results
       resultsListing = (
         <InfiniteLoader
+          // isRowLoaded detects which rows have been requested to avoid multiple loadMoreRows calls
           isRowLoaded={isRowLoaded}
+          // Only load more if previous search query has finished
           loadMoreRows={loading ? () => {} : loadMore}
+          // Add extra row for loading row
           rowCount={!fetchedAll ? grid_html.length + 1 : grid_html.length}
+          // How many courses from the end should we fetch more
           threshold={15}
         >
           {({ onRowsRendered, registerChild }) => (
+            // Scroll the entire window
             <WindowScroller>
               {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                // Make infinite list take up 100% of its container
                 <AutoSizer disableHeight>
                   {({ width }) => (
                     <List
@@ -229,14 +259,20 @@ const SearchResults = ({
     else {
       resultsListing = (
         <InfiniteLoader
+          // isRowLoaded detects which rows have been requested to avoid multiple loadMoreRows calls
           isRowLoaded={isRowLoaded}
+          // Only load more if previous search query has finished
           loadMoreRows={loading ? () => {} : loadMore}
+          // Add extra row for loading row
           rowCount={!fetchedAll ? data.length + 1 : data.length}
+          // How many courses from the end should we fetch more
           threshold={30}
         >
           {({ onRowsRendered, registerChild }) => (
+            // Scroll the entire window
             <WindowScroller>
               {({ height, isScrolling, onChildScroll, scrollTop }) => (
+                // Make infinite list take up 100% of its container
                 <AutoSizer disableHeight>
                   {({ width }) => (
                     <List
@@ -272,6 +308,7 @@ const SearchResults = ({
       >
         {!isMobile && (
           <div className={`${Styles.sticky_header}`}>
+            {/* Results Header */}
             <Row
               ref={ref}
               className={
@@ -281,6 +318,7 @@ const SearchResults = ({
             >
               {isList ? (
                 <React.Fragment>
+                  {/* Course Name */}
                   <div
                     style={{
                       lineHeight: '30px',
@@ -297,6 +335,7 @@ const SearchResults = ({
                   >
                     <strong>{'Course'}</strong>
                   </div>
+                  {/* Course Professors */}
                   {width > PROF_CUT && (
                     <div
                       style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}
@@ -305,6 +344,7 @@ const SearchResults = ({
                       <strong>{'Professors'}</strong>
                     </div>
                   )}
+                  {/* Course Meeting times and location */}
                   {width > MEET_CUT && (
                     <div
                       style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}
@@ -312,18 +352,21 @@ const SearchResults = ({
                       <strong>{'Meets'}</strong>
                     </div>
                   )}
+                  {/* Class Rating */}
                   <div
                     style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                     className="d-flex"
                   >
                     <strong className="m-auto">{'Class'}</strong>
                   </div>
+                  {/* Professor Rating */}
                   <div
                     style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                     className="d-flex"
                   >
                     <strong className="m-auto">{'Prof'}</strong>
                   </div>
+                  {/* Workload Rating */}
                   <div
                     style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                     className="d-flex"
@@ -332,6 +375,7 @@ const SearchResults = ({
                   </div>
                 </React.Fragment>
               ) : (
+                // Grid view showing how many search results
                 <Col md={10} style={{ lineHeight: '30px' }}>
                   <strong>
                     {`Showing ${data.length} course${
@@ -340,6 +384,7 @@ const SearchResults = ({
                   </strong>
                 </Col>
               )}
+              {/* List Grid Toggle Button */}
               <div
                 style={{ lineHeight: '30px', width: `${BOOKMARK_WIDTH}px` }}
                 className="d-flex pr-2"
@@ -352,6 +397,7 @@ const SearchResults = ({
           </div>
         )}
         <div className={!isList ? 'px-1 pt-3' : Styles.results_list_container}>
+          {/* Render search results */}
           {data.length !== 0 && resultsListing}
           {refreshCache > 0 && data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
@@ -366,11 +412,13 @@ const SearchResults = ({
           )}
         </div>
       </Container>
+      {/* Course Modal */}
       <CourseModal
         hideModal={hideModal}
         show={course_modal[0]}
         listing={course_modal[1]}
       />
+      {/* Scroll up button */}
       <Fade in={scroll_visible}>
         <div className={Styles.up_btn}>
           <FaArrowCircleUp onClick={scrollTop} size={30} />

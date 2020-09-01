@@ -10,15 +10,24 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
-function CourseTableNavbar(props) {
+/**
+ * Renders the navbar
+ * @prop isLoggedIn - boolean | is user logged in?
+ */
+
+function CourseTableNavbar({ isLoggedIn }) {
+  // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState(false);
+  // Ref to detect outside clicks for profile dropdown
   const {
     ref_visible,
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisible(false);
 
+  // Get the pathname of the current page
   const pathname = useLocation().pathname;
+  // Get width of viewport
   const { width } = useWindowDimensions();
   const is_relative = width < 1230;
 
@@ -33,6 +42,7 @@ function CourseTableNavbar(props) {
             expand="md"
             className={styles.navbar}
           >
+            {/* Logo in top left */}
             <Navbar.Brand>
               <NavLink
                 to="/"
@@ -42,6 +52,7 @@ function CourseTableNavbar(props) {
                   verticalAlign: 'middle',
                 }}
               >
+                {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
                   <Logo condensed={pathname === '/'} />
                 </span>
@@ -54,8 +65,10 @@ function CourseTableNavbar(props) {
               id="basic-navbar-nav"
               className="justify-content-end"
             >
+              {/* Close navbar on click in mobile view */}
               <Nav onClick={() => setExpand(false)}>
                 {pathname === '/worksheet' && (
+                  // Display catalog searchbar if on worksheet view
                   <div
                     className={
                       'd-none d-md-block ' +
@@ -67,7 +80,6 @@ function CourseTableNavbar(props) {
                     <Searchbar bar_size="md" />
                   </div>
                 )}
-
                 <NavLink to="/catalog" className={styles.navbar_links}>
                   Catalog
                 </NavLink>
@@ -77,6 +89,7 @@ function CourseTableNavbar(props) {
                 <NavLink to="/about" className={styles.navbar_links}>
                   About
                 </NavLink>
+                {/* Profile icon */}
                 <div className="d-none d-md-block">
                   <div className={styles.navbar_me}>
                     <div
@@ -97,11 +110,12 @@ function CourseTableNavbar(props) {
           </Navbar>
         </Container>
       </div>
+      {/* Dropdown that has position: absolute */}
       <div>
         <MeDropdown
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
-          isLoggedIn={props.isLoggedIn}
+          isLoggedIn={isLoggedIn}
         />
       </div>
     </div>

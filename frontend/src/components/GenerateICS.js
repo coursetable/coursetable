@@ -4,13 +4,8 @@ import { toSeasonString } from '../utilities';
 const FileSaver = require('file-saver');
 const ics = require('ics');
 
+// Is this day during a break?
 const onBreak = (day) => {
-  // Spring 2020 Breaks
-  // const breaks = [
-  //   [moment('2020-01-20T00:01'), moment('2020-01-20T23:59')],
-  //   [moment('2020-03-06T17:30'), moment('2020-03-23T08:19')],
-  // ];
-
   // Fall 2020 Breaks
   const breaks = [[moment('2020-11-21T00:01'), moment('2020-11-30T08:19')]];
 
@@ -20,15 +15,16 @@ const onBreak = (day) => {
   return false;
 };
 
+// generate ICS file and download it
 export const generateICS = (listings_all) => {
-  // console.log(listings_all);
   const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  // Season to export
   const cur_season = '202003';
-  // Spring 2020 period
-  // const period = [moment('2020-01-13T08:20'), moment('2020-04-24T17:30')];
 
   // Fall 2020 period
   const period = [moment('2020-08-31T08:20'), moment('2020-12-04T17:30')];
+
+  // Only get courses for the current season that have valid times
   let listings = [];
   listings_all.forEach((listing) => {
     if (
@@ -38,6 +34,8 @@ export const generateICS = (listings_all) => {
       return;
     if (listing.season_code === cur_season) listings.push(listing);
   });
+
+  // Convert season code to season string
   const season_string = toSeasonString(cur_season);
   if (!listings.length) {
     toast.error(
@@ -46,24 +44,33 @@ export const generateICS = (listings_all) => {
     return;
   }
 
+  // List of events to export to ICS
   let events = [];
+  // Iterate through each day in the current day
   for (let day = period[0]; day <= period[1]; day.add(1, 'day')) {
+    // Skip weekends and breaks
     if (day.day() === 6 || day.day() === 0) continue;
     if (onBreak(day)) continue;
-    // console.log(day.format('dddd, MMMM Do YYYY, h:mm:ss a'));
+    // Get current day of the week in string form
     const weekday = weekdays[day.day() - 1];
+    // Iterate through listings in the worksheet
     for (const listing of listings) {
       const info = listing['course.times_by_day.' + weekday];
+      // Continue if the course doesn't take place on this day of the week
       if (info === undefined) continue;
+      // Get start and end times of the listing
       let start = moment(info[0][0], 'HH:mm')
         .dayOfYear(day.dayOfYear())
         .year(day.year());
       let end = moment(info[0][1], 'HH:mm')
         .dayOfYear(day.dayOfYear())
         .year(day.year());
+      // Correct hour
       if (start.hour() < 8) start.add(12, 'h');
       if (end.hour() < 8) end.add(12, 'h');
+      // Calculate duration
       const duration = end.diff(start, 'minutes');
+      // Add listing to evenets list
       events.push({
         title: listing['course_code'],
         description: listing['course.title'],
@@ -80,12 +87,14 @@ export const generateICS = (listings_all) => {
     }
   }
 
+  // Export to ICS
   ics.createEvents(events, (error, value) => {
     if (error) {
       console.log(error);
       toast.error('Error Generating ICS File');
       return;
     }
+    // Download to user's computer
     let blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
     FileSaver.saveAs(
       blob,

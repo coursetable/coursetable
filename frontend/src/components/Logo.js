@@ -2,6 +2,12 @@ import React from 'react';
 
 import common_styles from '../styles/common.module.css';
 
+/**
+ * CourseTable Logo
+ * @prop variant - string that determines the color scheme for the logo
+ * @prop condensed - boolean that returns 'CT' if true
+ */
+
 function Logo({ variant, condensed = false }) {
   return (
     <span

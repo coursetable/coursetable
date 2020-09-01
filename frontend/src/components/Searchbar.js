@@ -4,21 +4,32 @@ import styles from './Searchbar.module.css';
 import { BsSearch } from 'react-icons/bs';
 import { Redirect } from 'react-router-dom';
 
+/**
+ * Renders search bar to search the catalog
+ * @prop bar_size - string that holds width of the search bar
+ */
+
 function Searchbar({ bar_size }) {
+  // State that holds value to be searched
   const [value, setValue] = useState('');
+  // Ref to get the value from the search bar
   let input = useRef();
+  // On form submit, set value state to the searched value
   const searched = (event) => {
+    // Prevent page refresh on submit
     event.preventDefault();
-    // console.log(input.current.value);
     setValue(input.current.value);
   };
+  // If something was searched scroll to top when switching to catalog page
   if (value) {
     window.scrollTo(0, 0);
   }
 
   return value ? (
+    // Switch to catalog if something was searched
     <Redirect to={{ pathname: '/catalog', state: { search_val: value } }} />
   ) : (
+    // Render search bar
     <Form onSubmit={searched}>
       <InputGroup>
         <Form.Control

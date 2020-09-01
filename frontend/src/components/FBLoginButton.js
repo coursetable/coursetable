@@ -4,6 +4,10 @@ import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 
+/**
+ * FB login button that shows up in the profile dropdown
+ */
+
 function FBLoginButton() {
   const { user, fbRefresh } = useUser();
   const [logged_in, setLoggedIn] = useState(user.fbLogin);

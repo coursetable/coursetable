@@ -24,7 +24,7 @@ export default function InfiniteWrapper({
   const loadMoreItems = isNextPageLoading ? () => {} : loadNextPage;
 
   // Every row is loaded except for our loading indicator row.
-  const isItemLoaded = index => !hasMoreItems || index < items.length;
+  const isItemLoaded = (index) => !hasMoreItems || index < items.length;
 
   // Render an item or a loading indicator.
   const Item = ({ index, style }) => {
@@ -35,7 +35,7 @@ export default function InfiniteWrapper({
       content = items[index].title;
     }
 
-    return <div style={{...style, lineHeight: '32px' }}>{content}</div>;
+    return <div style={{ ...style, lineHeight: '32px' }}>{content}</div>;
   };
 
   return (
