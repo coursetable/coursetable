@@ -14,21 +14,34 @@ import { useUser } from '../user';
 
 import CourseModalLoading from './CourseModalLoading';
 
-const CourseModalOverview = (props) => {
+/**
+ * Displays course modal when clicking on a course
+ * @prop setFilter - function that switches evaluation filter
+ * @prop filter - string that holds current filter
+ * @prop setSeason - function that sets the evaluation to view
+ * @prop listing - dictionary that holds all the info for this listing
+ */
+
+const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   const { user } = useUser();
+  // Component used for cutting off long descriptions
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
+  // Is description clamped?
   const [clamped, setClamped] = useState(false);
-  const [lines, setLines] = useState(10);
-  const listing = props.listing;
+  // Number of description lines to display
+  const [lines, setLines] = useState(8);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+  // Options for the evaluation filters
   const options = [
     { displayName: 'Course', value: 'course' },
     { displayName: 'Both', value: 'both' },
     { displayName: 'Professor', value: 'professor' },
   ];
-  const filter = props.filter;
+  // Is the season hover box enlarged? CURRENTLY NOT USING
   const [enlarged, setEnlarged] = useState(['', -1]);
+  // Variable to store past enrollment data if the course hasn't taken place yet
   let enrollment = -1;
+  // List of other friends shopping this class
   let also_taking =
     user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
@@ -39,30 +52,35 @@ const CourseModalOverview = (props) => {
         )
       : [];
 
+  // Update description clamped state
   const handleReflow = (rleState) => {
     const { clamped } = rleState;
     setClamped(clamped);
   };
 
-  const setSeason = (evaluation) => {
+  // Set the evaluation to view and change to evaluation view
+  const handleSetSeason = (evaluation) => {
+    // Temp dictionary that stores listing info
     let temp = { ...evaluation };
+    // Use first course code if filter is professor
     if (filter === 'professor') {
       temp.professor = listing.professors;
       temp.course_code = evaluation.course_code[0];
-    } else if (filter === 'course') {
+    }
+    // Use first professor if filter is course
+    else if (filter === 'course') {
       temp.course_code = listing.course_code;
       temp.professor = evaluation.professor[0];
-    } else {
+    }
+    // Use normal course code and professors list if filter is both
+    else {
       temp.course_code = listing.course_code;
       temp.professor = listing.professors;
     }
-    props.setSeason(temp);
+    setSeason(temp);
   };
 
-  const setFilter = (val) => {
-    props.setFilter(val);
-  };
-
+  // Sort course evaluations by season code and section
   const sortEvals = (a, b) => {
     if (a.season_code > b.season_code) return -1;
     if (a.season_code < b.season_code) return 1;
@@ -70,6 +88,7 @@ const CourseModalOverview = (props) => {
     return 1;
   };
 
+  // Parse for location url and location name
   let location_url = '',
     location_name = 'TBD';
   for (let i in days) {
@@ -84,51 +103,70 @@ const CourseModalOverview = (props) => {
     }
   }
 
+  // Fetch ratings data for this listing
   const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
     variables: {
       course_code: listing.course_code ? listing.course_code : 'bruh',
       professor_name: listing.professors ? listing.professors : 'bruh',
     },
   });
+  // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
 
+  // Hold list of evaluation dictionaries
   let evaluations = [];
+  // Hold HTML code that displays the list of evaluations
   let items = [];
 
+  // Make sure data is loaded
   if (data) {
+    // Loop by season code
     data.computed_course_info.forEach((season) => {
       if (!season.course.evaluation_statistics[0]) return;
       evaluations.push({
+        // Course rating
         rating:
           season.course.evaluation_statistics[0].avg_rating != null
             ? season.course.evaluation_statistics[0].avg_rating
             : -1,
+        // Workload rating
         workload:
           season.course.evaluation_statistics[0].avg_workload != null
             ? season.course.evaluation_statistics[0].avg_workload
             : -1,
+        // Professor rating
         professor_rating:
           season.course.course_professors[0] &&
           season.course.course_professors[0].professor.average_rating != null
             ? season.course.course_professors[0].professor.average_rating
             : -1,
+        // Enrollment data
         enrollment:
           season.course.evaluation_statistics[0].enrollment != null
             ? season.course.evaluation_statistics[0].enrollment.enrolled
             : -1,
+        // Season code
         season_code: season.season_code,
+        // Professors
         professor: season.professor_names.length
           ? season.professor_names
           : ['TBA'],
+        // Course code
         course_code: season.course_codes.length ? season.course_codes : ['TBA'],
+        // Crn
         crn: season.course.listings[0].crn,
+        // Section number
         section: season.course.listings[0].section,
       });
     });
+    // Sort by season code and section
     evaluations.sort(sortEvals);
 
+    // Variable used for list keys
     let id = 0;
+    // Loop through each listing with evals
     for (let i = 0; i < evaluations.length; i++) {
+      // Store past enrollment data if same course and same section
       if (
         enrollment === -1 &&
         evaluations[i].course_code.includes(listing.course_code) &&
@@ -137,9 +175,11 @@ const CourseModalOverview = (props) => {
         enrollment = evaluations[i].enrollment;
       }
 
+      // Skip listings that have no ratings (therefore prolly don't have comments and graphs)
       if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
         continue;
 
+      // Only show courses that have same course code and same prof
       if (filter === 'both') {
         if (
           evaluations[i].course_code.includes(listing.course_code) &&
@@ -149,6 +189,7 @@ const CourseModalOverview = (props) => {
         if (!evaluations[i].course_code.includes(listing.course_code)) continue;
       }
 
+      // Only show courses that have same course code but different prof
       if (filter === 'course') {
         if (
           evaluations[i].course_code.includes(listing.course_code) &&
@@ -158,6 +199,7 @@ const CourseModalOverview = (props) => {
         if (!evaluations[i].course_code.includes(listing.course_code)) continue;
       }
 
+      // Only show courses that have same prof but different course code
       if (filter === 'professor') {
         if (
           evaluations[i].course_code.includes(listing.course_code) &&
@@ -167,6 +209,7 @@ const CourseModalOverview = (props) => {
         if (!evaluations[i].professor.includes(listing.professors)) continue;
       }
 
+      // Is course eval button expanded? CURRENTLY NOT USING
       let expanded =
         enlarged[0] === evaluations[i].season_code &&
         enlarged[1] === evaluations[i].crn;
@@ -180,10 +223,11 @@ const CourseModalOverview = (props) => {
 
       items.push(
         <Row key={id++} className="m-auto py-1 justify-content-center">
+          {/* Clickable listing button */}
           <Col
             xs={5}
             className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
-            onClick={() => setSeason(evaluations[i])}
+            onClick={() => handleSetSeason(evaluations[i])}
             onMouseEnter={() =>
               setEnlarged([evaluations[i].season_code, evaluations[i].crn])
             }
@@ -205,6 +249,7 @@ const CourseModalOverview = (props) => {
                 : evaluations[i].professor[0]}
             </div>
           </Col>
+          {/* Course Rating */}
           <Col
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
@@ -216,13 +261,6 @@ const CourseModalOverview = (props) => {
                     color: ratingColormap(evaluations[i].rating)
                       .darken()
                       .saturate(),
-                    // .darken(2)
-                    // .css(),
-                    // backgroundColor: chroma(
-                    //   ratingColormap(evaluations[i].rating)
-                    // )
-                    //   .alpha(0.33)
-                    //   .css(),
                   }
                 }
                 className={`${Styles.rating_cell} ${
@@ -233,6 +271,7 @@ const CourseModalOverview = (props) => {
               </div>
             )}
           </Col>
+          {/* Professor Rating */}
           <Col
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
@@ -244,13 +283,6 @@ const CourseModalOverview = (props) => {
                     color: ratingColormap(evaluations[i].professor_rating)
                       .darken()
                       .saturate(),
-                    // .darken(2)
-                    // .css(),
-                    // backgroundColor: chroma(
-                    //   ratingColormap(evaluations[i].professor_rating)
-                    // )
-                    //   .alpha(0.33)
-                    //   .css(),
                   }
                 }
                 className={Styles.rating_cell}
@@ -259,6 +291,7 @@ const CourseModalOverview = (props) => {
               </div>
             )}
           </Col>
+          {/* Workload Rating */}
           <Col
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
@@ -270,13 +303,6 @@ const CourseModalOverview = (props) => {
                     color: workloadColormap(evaluations[i].workload)
                       .darken()
                       .saturate(),
-                    // .darken(2)
-                    // .css(),
-                    // backgroundColor: chroma(
-                    //   workloadColormap(evaluations[i].workload)
-                    // )
-                    //   .alpha(0.33)
-                    //   .css(),
                   }
                 }
                 className={Styles.rating_cell}
@@ -290,6 +316,8 @@ const CourseModalOverview = (props) => {
     }
   }
 
+  // Account for different variables names used in the 2 different search listings queries
+  // EVENTUALLY: USE search_listing_info FOR BOTH CATALOG AND WORKSHEET
   if (!listing['course.description'])
     listing['course.description'] = listing.description;
   if (!listing['course.requirements'])
@@ -305,7 +333,7 @@ const CourseModalOverview = (props) => {
     <Modal.Body>
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
-          {/* COURSE DESCRIPTION */}
+          {/* Course Description */}
           <Row className="m-auto pb-3">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
@@ -314,6 +342,7 @@ const CourseModalOverview = (props) => {
               basedOn="words"
               onReflow={handleReflow}
             />
+            {/* Read More arrow button */}
             <Row className="m-auto">
               {clamped && (
                 <span
@@ -327,6 +356,7 @@ const CourseModalOverview = (props) => {
                 </span>
               )}
             </Row>
+            {/* Course Requirements */}
             {listing['course.requirements'] && (
               <Row className="m-auto pt-1">
                 <span className={Styles.requirements}>
@@ -335,7 +365,7 @@ const CourseModalOverview = (props) => {
               </Row>
             )}
           </Row>
-
+          {/* Course Professors */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Professor</span>
@@ -344,7 +374,7 @@ const CourseModalOverview = (props) => {
               {listing['professors'] ? listing.professors : 'N/A'}
             </Col>
           </Row>
-
+          {/* Course Times */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Meets</span>
@@ -355,7 +385,7 @@ const CourseModalOverview = (props) => {
                 : listing['course.times_summary']}
             </Col>
           </Row>
-
+          {/* Course Section */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Section</span>
@@ -364,7 +394,7 @@ const CourseModalOverview = (props) => {
               {listing.section ? listing.section : 'N/A'}
             </Col>
           </Row>
-
+          {/* Course Enrollment */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Enrollment</span>
@@ -379,7 +409,7 @@ const CourseModalOverview = (props) => {
                 : '~' + enrollment}
             </Col>
           </Row>
-
+          {/* Course Location */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Location</span>
@@ -400,7 +430,7 @@ const CourseModalOverview = (props) => {
               )}
             </Col>
           </Row>
-
+          {/* Course Syllabus */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Syllabus</span>
@@ -419,7 +449,7 @@ const CourseModalOverview = (props) => {
               )}
             </Col>
           </Row>
-
+          {/* FB Friends that are also shopping this course */}
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={3} xs={4} className="px-0">
@@ -437,10 +467,9 @@ const CourseModalOverview = (props) => {
             </Row>
           )}
         </Col>
+        {/* Course Evaluations */}
         <Col md={5} className="px-0 my-0">
-          {/* <Row className="m-auto justify-content-center">
-                <strong>Evaluations</strong>
-              </Row> */}
+          {/* Filter Select */}
           <Row className="m-auto justify-content-center">
             <MultiToggle
               options={options}
@@ -449,6 +478,7 @@ const CourseModalOverview = (props) => {
               className={Styles.evaluations_filter + ' mb-2'}
             />
           </Row>
+          {/* Course Evaluations Header */}
           {items.length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
@@ -465,8 +495,9 @@ const CourseModalOverview = (props) => {
               </Col>
             </Row>
           )}
+          {/* Course Evaluations */}
           {items.length !== 0 && items}
-
+          {/* No Course Evaluations */}
           {items.length === 0 && (
             <Row className="m-auto justify-content-center">
               <strong>No Results</strong>

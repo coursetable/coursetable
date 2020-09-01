@@ -15,52 +15,70 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 
-const CourseModal = (props) => {
-  const listing = props.listing;
+/**
+ * Displays course modal when clicking on a course
+ * @prop listing - dictionary that holds listing info
+ * @prop hideModal - function to hide modal
+ * @prop show - boolean that determines when to show modal
+ * @prop hasSeason - function that switches to most recent season if removing the last course of the current season
+ */
+
+const CourseModal = ({ listing, hideModal, show, hasSeason }) => {
+  // Width of viewport
   const { width } = useWindowDimensions();
+  // Switch to mobile view?
   const isMobile = width < 768;
+  // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
   const [view, setView] = useState(['overview', null]);
+  // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState('both');
 
+  // Set which evaluation we are viewing
   const setSeason = (evaluation) => {
     setView([evaluation.season_code, evaluation]);
   };
 
-  const hideModal = () => {
+  // Called when hiding modal
+  const handleHide = () => {
+    // Reset views and filters
     setView(['overview', null]);
     setFilter('both');
-    props.hideModal();
+    hideModal();
   };
+  // key variable for lists
   let key = 0;
 
   return (
     <div className="d-flex justify-content-center">
       <Modal
-        show={props.show}
+        show={show}
         scrollable={true}
-        onHide={hideModal}
+        onHide={handleHide}
         dialogClassName="modal-custom-width"
         centered
       >
         <Modal.Header closeButton>
           <Container className="p-0" fluid>
             {view[0] === 'overview' ? (
+              // Viewing Course Overview
               <div>
                 <Row className="m-auto">
                   <Col xs="auto" className="my-auto p-0">
+                    {/* Show worksheet add/remove button */}
                     {listing && (
                       <WorksheetToggleButton
                         alwaysRed={false}
                         crn={listing.crn ? listing.crn : listing['listing.crn']}
                         season_code={listing.season_code}
                         modal={true}
-                        hasSeason={props.hasSeason}
+                        hasSeason={hasSeason}
                         className="p-0"
-                        times={unflattenTimesModal(props.listing)}
+                        times={unflattenTimesModal(listing)}
                       />
                     )}
                   </Col>
                   <Col className="p-0 ml-3">
+                    {/* Course Title */}
                     <Modal.Title>
                       <Row className={'mx-auto mt-1 align-items-center'}>
                         <span
@@ -83,6 +101,7 @@ const CourseModal = (props) => {
                     </Modal.Title>
 
                     <Row className={styles.badges + ' mx-auto mt-1 '}>
+                      {/* Course Codes */}
                       <p
                         className={
                           styles.course_codes + ' text-muted my-0 pr-2'
@@ -90,6 +109,7 @@ const CourseModal = (props) => {
                       >
                         {listing.course_code}
                       </p>
+                      {/* Course Skills and Areas */}
                       {listing['course.skills'] &&
                         listing['course.skills'].map((skill) => (
                           <Badge
@@ -127,9 +147,11 @@ const CourseModal = (props) => {
                 </Row>
               </div>
             ) : (
+              // Viewing course evaluation
               <div>
                 <Row className="m-auto">
                   <Col xs="auto" className="my-auto p-0">
+                    {/* Back to overview arrow */}
                     <div
                       onClick={() => setView(['overview', null])}
                       className={styles.back_arrow}
@@ -138,6 +160,7 @@ const CourseModal = (props) => {
                     </div>
                   </Col>
                   <Col className="p-0 ml-3">
+                    {/* Course Title */}
                     <Modal.Title>
                       <Row className={'mx-auto mt-1 align-items-center'}>
                         <span
@@ -156,7 +179,7 @@ const CourseModal = (props) => {
                         </span>
                       </Row>
                     </Modal.Title>
-
+                    {/* Course Professors and Section number */}
                     {view[1].professor !== '' && (
                       <Row className={styles.badges + ' mx-auto mt-1 '}>
                         <p
@@ -172,8 +195,9 @@ const CourseModal = (props) => {
             )}
           </Container>
         </Modal.Header>
-        {props.show &&
+        {show &&
           (view[0] === 'overview' ? (
+            // Show overview data
             <CourseModalOverview
               setFilter={setFilter}
               filter={filter}
@@ -181,6 +205,7 @@ const CourseModal = (props) => {
               listing={listing}
             />
           ) : (
+            // Show eval data
             <CourseModalEvaluations
               season_code={view[0]}
               crn={view[1].crn}

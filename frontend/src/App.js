@@ -16,7 +16,6 @@ import Home from './pages/Home';
 
 import Search from './pages/Search';
 import About from './pages/About';
-import Courses from './pages/Courses';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
 import Changelog from './pages/Changelog';
@@ -82,10 +81,6 @@ function App() {
                 path="/catalog"
                 render={(props) => <Search {...props} />}
               />
-
-              <MyRoute exact path="/courses">
-                <Courses />
-              </MyRoute>
 
               {/* Auth */}
               <MyRoute exact path="/login">

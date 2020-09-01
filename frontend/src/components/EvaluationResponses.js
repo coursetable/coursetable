@@ -2,25 +2,38 @@ import React from 'react';
 import { Tabs, Tab, Row } from 'react-bootstrap';
 import styles from './EvaluationResponses.module.css';
 
-const CourseModalEvaluations = props => {
-  const info = props.info;
+/**
+ * Displays Evaluation Comments
+ * @prop crn - integer that holds current listing's crn
+ * @prop info - dictionary that holds the eval data for each question
+ */
+
+const CourseModalEvaluations = ({ crn, info }) => {
+  // Dictionary that holds the comments for each question
   let responses = {};
-  info.forEach(section => {
+  // Loop through each section for this course code
+  info.forEach((section) => {
     const crn_code = section.course.listings[0].crn;
-    if (crn_code !== props.crn) return;
+    // Only fetch comments for this section
+    if (crn_code !== crn) return;
     const nodes = section.course.evaluation_narratives_aggregate.nodes;
+    // Return if no comments
     if (!nodes.length) return;
-    nodes.forEach(node => {
+    // Add comments to responses dictionary
+    nodes.forEach((node) => {
       if (!responses[node.evaluation_question.question_text])
         responses[node.evaluation_question.question_text] = [];
       responses[node.evaluation_question.question_text].push(node.comment);
     });
   });
+  // Number of questions
   const num_questions = Object.keys(responses).length;
+  // Lists that hold the html for the comments for a specific question
   let recommend = [];
   let skills = [];
   let strengths = [];
   let summary = [];
+  // Populate the lists above
   for (let key in responses) {
     if (key.includes('summarize')) {
       summary = responses[key].map((response, index) => {
@@ -60,6 +73,7 @@ const CourseModalEvaluations = props => {
   return (
     <div>
       <Tabs variant="tabs" transition={false}>
+        {/* Recommend Question */}
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">
             <Row className={styles.question_header + ' m-auto pt-2'}>
@@ -69,6 +83,7 @@ const CourseModalEvaluations = props => {
             {recommend}
           </Tab>
         )}
+        {/* Knowledge/Skills Question */}
         {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
             <Row className={styles.question_header + ' m-auto pt-2'}>
@@ -78,6 +93,7 @@ const CourseModalEvaluations = props => {
             {skills}
           </Tab>
         )}
+        {/* Strengths/Weaknesses Question */}
         {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
             <Row className={styles.question_header + ' m-auto pt-2'}>
@@ -87,6 +103,7 @@ const CourseModalEvaluations = props => {
             {strengths}
           </Tab>
         )}
+        {/* Summarize Question */}
         {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
             <Row className={styles.question_header + ' m-auto pt-2'}>
