@@ -20,9 +20,23 @@ import { fbFriendsAlsoTaking } from '../utilities';
 
 import Styles from './SearchResultsItem.module.css';
 
+/**
+ * Renders a list item for a search result
+ * @prop course - listing data for the current course
+ * @prop showModal - function that shows the course modal for this listing
+ * @prop isLast - boolean | is this the last course of the search results?
+ * @prop ROW_WIDTH - integer that holds width of the row
+ * @prop PROF_WIDTH - integer that holds width of the professor column
+ * @prop MEET_WIDTH - integer that holds width of the meets column
+ * @prop RATE_WIDTH - integer that holds width of the ratings columns
+ * @prop BOOKMARK_WIDTH - integer that holds width of the last column
+ * @prop PADDING - integer that holds width of padding between course and rest of columns
+ * @prop PROF_CUT - integer that determines at what viewport width to stop displaying prof column
+ * @prop MEET_CUT - integer that determines at what viewport width to stop displaying meets column
+ */
+
 const SearchResultsItem = ({
   course,
-  isMobile,
   showModal,
   isLast,
   ROW_WIDTH,
@@ -34,11 +48,17 @@ const SearchResultsItem = ({
   PROF_CUT,
   MEET_CUT,
 }) => {
+  // Used to cut off Professors list at 2 lines
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
+  // Variable used in list keys
   let key = 1;
+  // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
+  // Width of viewport
   const { width } = useWindowDimensions();
+  // Fetch user context data
   const { user } = useUser();
+  // Fetch list of FB Friends that are also shopping this class
   let also_taking =
     user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
@@ -49,10 +69,12 @@ const SearchResultsItem = ({
         )
       : [];
 
+  // Set mounted on mount
   useEffect(() => {
     if (!mounted) setMounted(true);
   }, [mounted]);
 
+  // Course location HTML
   let courseLocation;
 
   if (course.locations_summary === 'TBA') {
@@ -67,6 +89,7 @@ const SearchResultsItem = ({
     }
   }
 
+  // Render popover that contains title, description, and requirements when hovering over course name
   const renderTitlePopover = (props) => {
     return (
       <Popover {...props} id="title_popover">
@@ -89,6 +112,7 @@ const SearchResultsItem = ({
     );
   };
 
+  // Render tooltip with names of FB friends also shopping
   const renderFBFriendsTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       {also_taking.join(' • ')}
@@ -110,6 +134,7 @@ const SearchResultsItem = ({
       tabIndex="0"
     >
       <OverlayTrigger placement="right" overlay={renderTitlePopover}>
+        {/* Course Title, Code, and Skills/Area column */}
         <div
           style={{
             width: `${
@@ -124,9 +149,12 @@ const SearchResultsItem = ({
           }}
           className={Styles.course_header}
         >
+          {/* Course Title */}
           <div className={Styles.course_name}>{course.title}</div>
           <Row className="m-auto">
+            {/* Course Code */}
             <div className={Styles.course_code}>{course.course_code}</div>
+            {/* Course Skills/Areas */}
             <div className={Styles.skills_areas}>
               {course.skills.map((skill) => (
                 <Badge
@@ -159,12 +187,14 @@ const SearchResultsItem = ({
                 </Badge>
               ))}
             </div>
+            {/* Course Extra Info */}
+            {course.extra_info !== 'ACTIVE' && (
+              <div className={Styles.extra_info + ' ml-1'}>CANCELLED</div>
+            )}
           </Row>
-          {course.extra_info !== 'ACTIVE' && (
-            <div className={Styles.extra_info}>CANCELLED</div>
-          )}
         </div>
       </OverlayTrigger>
+      {/* Course Professors */}
       {width > PROF_CUT && (
         <div
           style={{ width: `${PROF_WIDTH}px` }}
@@ -182,12 +212,14 @@ const SearchResultsItem = ({
           />
         </div>
       )}
+      {/* Course Meets and Location */}
       {width > MEET_CUT && (
         <div style={{ width: `${MEET_WIDTH}px` }}>
           <div className={Styles.course_time}>{course.times_summary}</div>
           <div className={Styles.course_location}>{courseLocation}</div>
         </div>
       )}
+      {/* Class Rating */}
       <div
         style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
         className="d-flex"
@@ -206,6 +238,7 @@ const SearchResultsItem = ({
           {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
         </div>
       </div>
+      {/* Professor Rating */}
       <div
         style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
         className="d-flex"
@@ -228,6 +261,7 @@ const SearchResultsItem = ({
             : 'N/A'}
         </div>
       </div>
+      {/* Workload Rating */}
       <div
         style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
         className="d-flex"
@@ -248,6 +282,7 @@ const SearchResultsItem = ({
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
       </div>
+      {/* # FB Friends also shopping */}
       <div
         style={{
           width: `${BOOKMARK_WIDTH}px`,
@@ -266,14 +301,15 @@ const SearchResultsItem = ({
           </OverlayTrigger>
         )}
       </div>
+      {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
-          alwaysRed={false}
+          worksheetView={false}
           crn={course.crn}
           season_code={course.season_code}
-          isMobile={isMobile}
         />
       </div>
+      {/* Render conflict icon only when component has been mounted */}
       {mounted && (
         <div className={Styles.conflict_error}>
           <CourseConflictIcon course={course} />

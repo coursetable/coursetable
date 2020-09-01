@@ -16,11 +16,26 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import Styles from './SearchResultsItem.module.css';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
+/**
+ * Renders a list item for a course in the expanded list view
+ * @prop course - listing data for the current course
+ * @prop showModal - function that shows the course modal for this listing
+ * @prop isLast - boolean | is this the last course of the search results?
+ * @prop hasSeason - function to pass to bookmark button
+ * @prop ROW_WIDTH - integer that holds width of the row
+ * @prop PROF_WIDTH - integer that holds width of the professor column
+ * @prop MEET_WIDTH - integer that holds width of the meets column
+ * @prop RATE_WIDTH - integer that holds width of the ratings columns
+ * @prop BOOKMARK_WIDTH - integer that holds width of the last column
+ * @prop PADDING - integer that holds width of padding between course and rest of columns
+ * @prop PROF_CUT - integer that determines at what viewport width to stop displaying prof column
+ * @prop MEET_CUT - integer that determines at what viewport width to stop displaying meets column
+ */
+
 const WorksheetExpandedListItem = ({
   course,
   showModal,
   isLast,
-  end_fade,
   hasSeason,
   ROW_WIDTH,
   PROF_WIDTH,
@@ -31,11 +46,14 @@ const WorksheetExpandedListItem = ({
   PROF_CUT,
   MEET_CUT,
 }) => {
+  // Get viewport width
   const { width } = useWindowDimensions();
+  // Component to limit professors list to 2 lines
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
+  // Variable used in list key
   let key = 1;
+  // Course locations HTML
   let courseLocation;
-
   if (course['course.locations_summary'] === 'TBA') {
     courseLocation = '';
   } else {
@@ -65,6 +83,7 @@ const WorksheetExpandedListItem = ({
       }}
       tabIndex="0"
     >
+      {/* Course Title, Code, and Skills/Areas*/}
       <div
         style={{
           width: `${
@@ -79,9 +98,12 @@ const WorksheetExpandedListItem = ({
         }}
         className={Styles.course_header + ' mr-auto'}
       >
+        {/* Course Title */}
         <div className={Styles.course_name}>{course['course.title']}</div>
         <Row className="m-auto">
+          {/* Course Code */}
           <div className={Styles.course_code}>{course.course_code}</div>
+          {/* Course Skills/Areas */}
           <div className={Styles.skills_areas}>
             {course['course.skills'].map((skill) => (
               <Badge
@@ -116,6 +138,7 @@ const WorksheetExpandedListItem = ({
           </div>
         </Row>
       </div>
+      {/* Course Professors */}
       {width > PROF_CUT && (
         <div
           style={{ width: `${PROF_WIDTH}px` }}
@@ -133,6 +156,7 @@ const WorksheetExpandedListItem = ({
           />
         </div>
       )}
+      {/* Course Meeting Times and Locations */}
       {width > MEET_CUT && (
         <div style={{ width: `${MEET_WIDTH}px` }}>
           <div className={Styles.course_time}>
@@ -141,6 +165,7 @@ const WorksheetExpandedListItem = ({
           <div className={Styles.course_location}>{courseLocation}</div>
         </div>
       )}
+      {/* Class Ratings */}
       <div
         style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
         className="d-flex"
@@ -163,6 +188,7 @@ const WorksheetExpandedListItem = ({
             : 'N/A'}
         </div>
       </div>
+      {/* Professor Ratings */}
       <div
         style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
         className="d-flex"
@@ -185,6 +211,7 @@ const WorksheetExpandedListItem = ({
             : 'N/A'}
         </div>
       </div>
+      {/* Workload Ratings */}
       <div
         style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
         className="d-flex"
@@ -209,10 +236,12 @@ const WorksheetExpandedListItem = ({
             : 'N/A'}
         </div>
       </div>
+      {/* TODO: Add # of FB Friends also shopping this course here */}
       <div style={{ width: `${BOOKMARK_WIDTH}px` }} />
+      {/* Bookmark Button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
-          alwaysRed={true}
+          worksheetView={true}
           crn={course.crn}
           season_code={course.season_code}
           modal={false}

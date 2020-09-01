@@ -7,19 +7,34 @@ import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
 
-const WorksheetToggleButton = (props) => {
+/**
+ * Render worksheet list in default worksheet view
+ * @prop worksheetView - boolean | are we in the worksheet view?
+ * @prop crn - integer that holds the crn of the current course
+ * @prop season_code - string that holds the current season code
+ * @prop modal - boolean | are we rendering in the course modal
+ * @prop hasSeason - function to switch to most recent course when removing the last course of a season
+ */
+
+const WorksheetToggleButton = ({
+  worksheetView,
+  crn,
+  season_code,
+  modal,
+  hasSeason,
+}) => {
+  // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
 
+  // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(
-    isInWorksheet(props.season_code, props.crn.toString(), user.worksheet)
+    isInWorksheet(season_code, crn.toString(), user.worksheet)
   );
 
-  const update = isInWorksheet(
-    props.season_code,
-    props.crn.toString(),
-    user.worksheet
-  );
+  // Reset inWorksheet state on every rerender
+  const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
   if (inWorksheet !== update) setInWorksheet(update);
+  // Disabled worksheed add/remove button if not logged in
   if (user.worksheet === null)
     return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
@@ -27,33 +42,38 @@ const WorksheetToggleButton = (props) => {
       </Button>
     );
 
+  // Add/remove course
   function add_remove_course() {
     let add_remove;
+    // Determine if we are adding or removing the course
     inWorksheet ? (add_remove = 'remove') : (add_remove = 'add');
+    // User legacy api php to perform worksheet action
     axios
       .get(
-        `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${props.season_code}&ociId=${props.crn}`
+        `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${season_code}&ociId=${crn}`
       )
       .then((response) => {
         // console.log(response.data);
+        // Refresh user's worksheet
         userRefresh().catch((err) => {
           toast.error('Failed to update worksheet');
           console.error(err);
         });
-        if (props.hasSeason && add_remove === 'remove')
-          props.hasSeason(props.season_code, props.crn);
-        if (props.setUpdate) props.setUpdate(add_remove);
-        if (!props.alwaysRed) setInWorksheet(!inWorksheet);
+        // Check to see if user removed the last course of a season
+        if (hasSeason && add_remove === 'remove') hasSeason(season_code, crn);
+        // If not in worksheet view, update inWorksheet state
+        if (!worksheetView) setInWorksheet(!inWorksheet);
       });
   }
 
+  // Handle button click
   function toggleWorkSheet(e) {
     e.preventDefault();
     e.stopPropagation();
     add_remove_course();
-    // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
 
+  // Render remove/add message on hover
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       <small>
@@ -70,12 +90,12 @@ const WorksheetToggleButton = (props) => {
     >
       <Button
         variant="toggle"
-        className={'p-0 bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
+        className={'p-0 bookmark_fill ' + (modal ? '' : 'bookmark_move')}
         onClick={toggleWorkSheet}
       >
         {inWorksheet ? (
           <BsBookmarkFill
-            className={'bookmark_fill ' + (props.modal ? '' : 'bookmark_move')}
+            className={'bookmark_fill ' + (modal ? '' : 'bookmark_move')}
             color="#3396ff"
             size={25}
           />

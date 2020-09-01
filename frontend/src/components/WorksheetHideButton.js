@@ -3,17 +3,28 @@ import './WorksheetToggleButton.css';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-const WorksheetHideButton = (props) => {
+/**
+ * Render the course hide button in the Worksheet List
+ * @prop toggleCourse - function to hide/show course
+ * @prop crn - int that holds crn for the current course
+ * @prop season_code - string that holds the current season code
+ */
+
+const WorksheetHideButton = ({ toggleCourse, crn, season_code }) => {
+  // Is this course hidden?
   const [hidden, setHidden] = useState(false);
+  // Handle hide/show click
   function toggleWorkSheet(e) {
     e.preventDefault();
-    const temp = hidden;
+    // Set hidden course in Worksheet.js
+    toggleCourse(season_code, crn, hidden);
+    // Set hidden course in this component
     setHidden(!hidden);
-    props.toggleCourse(props.season_code, props.crn, temp);
-    // console.log('toggle ', props.crn + ' ' + props.season_code);
   }
+  // Size of toggle button
   const button_size = 18;
 
+  // Tooltip that displays show/hide message on hover
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       <small>{(!hidden ? 'Hide ' : 'Show ') + 'in calendar'}</small>

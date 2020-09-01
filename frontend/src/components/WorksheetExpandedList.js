@@ -8,6 +8,19 @@ import WorksheetExpandedListItem from './WorksheetExpandedListItem';
 import WorksheetSettingsDropdown from './WorksheetSettingsDropdown';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
+/**
+ * Render expanded worksheet list after maximize button is clicked
+ * @prop courses - list of listings dictionaries
+ * @prop showModal - function to show modal for a certain listing
+ * @prop end_fade - boolean | Is the fading animation over so we can get width of row?
+ * @prop cur_season - string that holds the current season code
+ * @prop season_codes - list of season codes
+ * @prop onSeasonChange - function to change season
+ * @prop hasSeason - function to pass to bookmark button
+ * @prop setFbPerson - function to change FB person
+ * @prop fb_person - string of current person who's worksheet we are viewing
+ */
+
 const WorksheetExpandedList = ({
   courses,
   showModal,
@@ -19,13 +32,17 @@ const WorksheetExpandedList = ({
   setFbPerson,
   fb_person,
 }) => {
+  // Fetch width of viewport
   const { width } = useWindowDimensions();
+  // State that holds width of row
   const [ROW_WIDTH, setRowWidth] = useState();
+  // Ref to get row width
   const ref_width = useRef(null);
   useEffect(() => {
+    // Update row width on window resize or once the animation is over
     if (ref_width.current) setRowWidth(ref_width.current.offsetWidth);
-    // console.log(ROW_WIDTH);
   }, [width, end_fade]);
+  // Spacing for columns
   const PROF_WIDTH = 250;
   const MEET_WIDTH = 250;
   const RATE_WIDTH = 70;
@@ -34,17 +51,18 @@ const WorksheetExpandedList = ({
   const PROF_CUT = 1300;
   const MEET_CUT = 1000;
 
+  // List that holds the HTML for the list of courses
   let items = [];
-
+  // Iterate over each listing
   for (let i = 0; i < courses.length; i++) {
     const course = courses[i];
+    // Add list item HTML to items list
     items.push(
       <div key={i}>
         <WorksheetExpandedListItem
           course={course}
           showModal={showModal}
           isLast={i === courses.length - 1}
-          end_fade={end_fade}
           hasSeason={hasSeason}
           ROW_WIDTH={ROW_WIDTH}
           PROF_WIDTH={PROF_WIDTH}
@@ -70,6 +88,7 @@ const WorksheetExpandedList = ({
         }
       >
         <div className={`${search_results_styles.sticky_header}`}>
+          {/* Header Row */}
           <Row
             ref={ref_width}
             className={
@@ -80,6 +99,7 @@ const WorksheetExpandedList = ({
             }
           >
             <React.Fragment>
+              {/* Course Title, Code, and Skills/Areas */}
               <div
                 style={{
                   lineHeight: '30px',
@@ -95,8 +115,9 @@ const WorksheetExpandedList = ({
                 }}
                 className="mr-auto"
               >
-                <strong>{'Description'}</strong>
+                <strong>{'Course'}</strong>
               </div>
+              {/* Course Professors */}
               {width > PROF_CUT && (
                 <div
                   style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}
@@ -105,23 +126,27 @@ const WorksheetExpandedList = ({
                   <strong>{'Professors'}</strong>
                 </div>
               )}
+              {/* Course Meet Times and Location */}
               {width > MEET_CUT && (
                 <div style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}>
                   <strong>{'Meets'}</strong>
                 </div>
               )}
+              {/* Class Rating */}
               <div
                 style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                 className="d-flex"
               >
                 <strong className="m-auto">{'Class'}</strong>
               </div>
+              {/* Professor Rating */}
               <div
                 style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                 className="d-flex"
               >
                 <strong className="m-auto">{'Prof'}</strong>
               </div>
+              {/* Workload Rating */}
               <div
                 style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                 className="d-flex"
@@ -129,6 +154,7 @@ const WorksheetExpandedList = ({
                 <strong className="m-auto">{'Work'}</strong>
               </div>
             </React.Fragment>
+            {/* Settings Dropdown to switch season and FB friend worksheet */}
             <div
               style={{
                 lineHeight: '30px',
@@ -147,7 +173,7 @@ const WorksheetExpandedList = ({
             </div>
           </Row>
         </div>
-
+        {/* Render HTML of items */}
         <div className={styles.results_list_container}>{items}</div>
       </Container>
     </div>

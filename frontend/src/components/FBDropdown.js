@@ -5,7 +5,7 @@ import { useUser } from '../user';
 import './DropdownShared.css';
 
 /**
- * FB Dropdown in mobile view
+ * Render FB Dropdown in mobile view
  * @prop cur_season - string that holds the current season code
  * @prop setFbPerson - function to switch to a FB friend's worksheet
  * @prop cur_person - string that holds the current person who's worksheet you are viewing

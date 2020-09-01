@@ -191,7 +191,6 @@ function Worksheet() {
             }}
           >
             <WeekSchedule
-              className=""
               showModal={showModal}
               courses={season_listings}
               hover_course={hover_course}
@@ -261,16 +260,16 @@ function Worksheet() {
             <Fade in={!start_fade}>
               <div style={{ display: !start_fade ? '' : 'none' }}>
                 <WorksheetList
+                  courses={season_listings}
+                  showModal={showModal}
+                  cur_season={season}
+                  season_codes={season_codes}
                   onSeasonChange={changeSeason}
                   toggleCourse={toggleCourse}
-                  showModal={showModal}
-                  courses={season_listings}
-                  season_codes={season_codes}
-                  cur_season={season}
-                  hasSeason={hasSeason}
                   setHoverCourse={setHoverCourse}
                   setFbPerson={setFbPerson}
                   cur_person={fb_person}
+                  hasSeason={hasSeason}
                 />
               </div>
             </Fade>

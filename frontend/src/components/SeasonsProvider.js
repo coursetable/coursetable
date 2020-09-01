@@ -6,25 +6,28 @@ import { useLazyQuery } from '@apollo/react-hooks';
 
 const SeasonsCtx = createContext(null);
 
+// Fetch all seasons present in the database
 const SeasonsProvider = ({ children }) => {
-	var [
-		executeGetSeasons,
-		{ called: seasonsCalled, loading: seasonsLoading, data: seasonsData },
-	] = useLazyQuery(GET_SEASON_CODES);
+  // Initialize lazy query function
+  var [
+    executeGetSeasons,
+    { called: seasonsCalled, loading: seasonsLoading, data: seasonsData },
+  ] = useLazyQuery(GET_SEASON_CODES);
 
-	useEffect(() => {
-		executeGetSeasons();
-	}, [executeGetSeasons]);
+  // Use lazy query function to fetch seasons
+  useEffect(() => {
+    executeGetSeasons();
+  }, [executeGetSeasons]);
 
-	return (
-		<SeasonsCtx.Provider
-			value={seasonsData ? seasonsData : []}
-			called={seasonsCalled}
-			loading={seasonsLoading}
-		>
-			{children}
-		</SeasonsCtx.Provider>
-	);
+  return (
+    <SeasonsCtx.Provider
+      value={seasonsData ? seasonsData : []}
+      called={seasonsCalled}
+      loading={seasonsLoading}
+    >
+      {children}
+    </SeasonsCtx.Provider>
+  );
 };
 
 export default SeasonsProvider;

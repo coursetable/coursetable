@@ -7,6 +7,15 @@ import { toSeasonString, useComponentVisible } from '../utilities';
 import { useUser } from '../user';
 import { FcSettings } from 'react-icons/fc';
 
+/**
+ * Render dropdown when settings icon is clicked in the expanded worksheet list view
+ * @prop cur_season - string that holds the current season code
+ * @prop season_codes - list of season codes
+ * @prop onSeasonChange - function to change season
+ * @prop setFbPerson - function to change FB person
+ * @prop cur_person - string of current person who's worksheet we are viewing
+ */
+
 function WorksheetSettingsDropdown({
   cur_season,
   season_codes,
@@ -14,17 +23,21 @@ function WorksheetSettingsDropdown({
   setFbPerson,
   cur_person,
 }) {
+  // Fetch user context data
   const { user } = useUser();
+  // Refs to detect clicks outside of the dropdown
   const {
     ref_visible,
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisible(false);
 
+  // Keep dropdown open on click
   const handleDropdownClick = () => {
     setIsComponentVisible(true);
   };
 
+  // Does the worksheet contain any courses from the current season?
   const containsCurSeason = (worksheet) => {
     if (!worksheet) return false;
     for (let i = 0; i < worksheet.length; i++) {
@@ -33,13 +46,17 @@ function WorksheetSettingsDropdown({
     return false;
   };
 
+  // Close dropdown on season or FB friend select
   useEffect(() => {
     setIsComponentVisible(false);
   }, [cur_season, cur_person]);
 
+  // List to hold season dropdown options
   let season_options = [];
+  // Sort season codes from most to least recent
   season_codes.sort();
   season_codes.reverse();
+  // Iterate over seasons and populate season_options list
   season_codes.forEach((season_code) => {
     season_options.push({
       value: season_code,
@@ -47,11 +64,15 @@ function WorksheetSettingsDropdown({
     });
   });
 
+  // List of FB friend options. Initialize with me option
   let friend_options = [{ value: 'me', label: 'Me' }];
+  // FB Friends names
   const friendInfo =
     user.fbLogin && user.fbWorksheets ? user.fbWorksheets.friendInfo : {};
+  // FB Friends worksheets
   const friendWorksheets =
     user.fbLogin && user.fbWorksheets ? user.fbWorksheets.worksheets : {};
+  // Add FB friend to dropdown if they have worksheet courses in the current season
   for (let friend in friendInfo) {
     if (containsCurSeason(friendWorksheets[friend]))
       friend_options.push({
@@ -60,10 +81,12 @@ function WorksheetSettingsDropdown({
       });
   }
 
+  // Is the user using a touch screen device
   const isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   return (
     <>
+      {/* Settings Icon */}
       <div
         className={
           'd-flex ml-auto my-auto p-0 ' +
@@ -78,9 +101,11 @@ function WorksheetSettingsDropdown({
       >
         <FcSettings size={20} />
       </div>
+      {/* Dropdown */}
       <div className={styles.collapse_container} onClick={handleDropdownClick}>
         <Collapse in={isComponentVisible}>
           <Col className={'px-3'}>
+            {/* Season Select */}
             <Row className="m-auto pt-2">
               <div className={styles.select_container + ' m-auto'}>
                 <Select
@@ -96,6 +121,7 @@ function WorksheetSettingsDropdown({
                 />
               </div>
             </Row>
+            {/* FB Friends Select */}
             <Row className="m-auto pb-2">
               <div className={styles.select_container + ' m-auto'}>
                 <Select

@@ -67,7 +67,7 @@ const CourseModal = ({ listing, hideModal, show, hasSeason }) => {
                     {/* Show worksheet add/remove button */}
                     {listing && (
                       <WorksheetToggleButton
-                        alwaysRed={false}
+                        worksheetView={false}
                         crn={listing.crn ? listing.crn : listing['listing.crn']}
                         season_code={listing.season_code}
                         modal={true}

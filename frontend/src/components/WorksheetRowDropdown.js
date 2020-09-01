@@ -1,10 +1,19 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import styles from './WorksheetRowDropdown.module.css';
 import { Row, Col } from 'react-bootstrap';
 import Select from 'react-select';
-import { toSeasonString, useComponentVisible } from '../utilities';
+import { toSeasonString } from '../utilities';
 import { useUser } from '../user';
+
+/**
+ * Render row of season and FB friends dropdowns
+ * @prop cur_season - string that holds the current season code
+ * @prop season_codes - list of season codes
+ * @prop onSeasonChange - function to change season
+ * @prop setFbPerson - function to change FB person
+ * @prop cur_person - string of current person who's worksheet we are viewing
+ */
 
 function WorksheetRowDropdown({
   cur_season,
@@ -13,8 +22,10 @@ function WorksheetRowDropdown({
   setFbPerson,
   cur_person,
 }) {
+  // Fetch user context data
   const { user } = useUser();
 
+  // Does the worksheet contain any courses from the current season?
   const containsCurSeason = (worksheet) => {
     if (!worksheet) return false;
     for (let i = 0; i < worksheet.length; i++) {
@@ -23,9 +34,12 @@ function WorksheetRowDropdown({
     return false;
   };
 
+  // List to hold season dropdown options
   let season_options = [];
+  // Sort season codes from most to least recent
   season_codes.sort();
   season_codes.reverse();
+  // Iterate over seasons and populate season_options list
   season_codes.forEach((season_code) => {
     season_options.push({
       value: season_code,
@@ -33,11 +47,15 @@ function WorksheetRowDropdown({
     });
   });
 
+  // List of FB friend options. Initialize with me option
   let friend_options = [{ value: 'me', label: 'Me' }];
+  // FB Friends names
   const friendInfo =
     user.fbLogin && user.fbWorksheets ? user.fbWorksheets.friendInfo : {};
+  // FB Friends worksheets
   const friendWorksheets =
     user.fbLogin && user.fbWorksheets ? user.fbWorksheets.worksheets : {};
+  // Add FB friend to dropdown if they have worksheet courses in the current season
   for (let friend in friendInfo) {
     if (containsCurSeason(friendWorksheets[friend]))
       friend_options.push({
@@ -46,10 +64,9 @@ function WorksheetRowDropdown({
       });
   }
 
-  const isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
-
   return (
     <Row className={styles.container + ' shadow-sm mx-auto pt-1 pb-2'}>
+      {/* Season Select */}
       <Col md={6} className="px-2">
         <div className={styles.select_container}>
           <Select
@@ -65,6 +82,7 @@ function WorksheetRowDropdown({
           />
         </div>
       </Col>
+      {/* FB Friend Select */}
       <Col md={6} className="px-2">
         <div className={styles.select_container}>
           <Select

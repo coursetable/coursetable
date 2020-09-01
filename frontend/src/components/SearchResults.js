@@ -157,7 +157,6 @@ const SearchResults = ({
         <div style={style}>
           <SearchResultsItem
             course={flatten(data[index])}
-            isMobile={isMobile}
             showModal={showModal}
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
             ROW_WIDTH={ROW_WIDTH}
@@ -198,7 +197,6 @@ const SearchResults = ({
           row_elements.push(
             <SearchResultsGridItem
               course={flatten(data[j])}
-              isMobile={isMobile}
               showModal={showModal}
               num_cols={num_cols}
               multiSeasons={multiSeasons}
