@@ -21,6 +21,7 @@ export default class WeekSchedule extends React.Component {
     let parsedCourses = [];
     let id = 0;
     listings.forEach((course) => {
+      if (course.hidden) return;
       const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       for (var indx = 0; indx < 5; indx++) {
         const info = course['course.times_by_day.' + weekDays[indx]];

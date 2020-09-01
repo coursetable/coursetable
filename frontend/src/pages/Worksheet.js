@@ -142,6 +142,7 @@ function Worksheet() {
 
   let filtered_listings = [];
   listings.forEach((listing) => {
+    listing.hidden = false;
     if (
       isInWorksheet(listing.season_code, listing.crn.toString(), cur_worksheet)
     )
@@ -150,11 +151,10 @@ function Worksheet() {
 
   let season_listings = [];
   filtered_listings.forEach((listing) => {
-    if (
-      listing.season_code === season &&
-      isHidden(listing.season_code, listing.crn) === -1
-    )
+    if (listing.season_code === season) {
+      listing.hidden = isHidden(listing.season_code, listing.crn) !== -1;
       season_listings.push(listing);
+    }
   });
 
   const expand_btn_size = 18;
@@ -267,7 +267,6 @@ function Worksheet() {
                   courses={season_listings}
                   season_codes={season_codes}
                   cur_season={season}
-                  hidden_courses={hidden_courses}
                   hasSeason={hasSeason}
                   setHoverCourse={setHoverCourse}
                   setFbPerson={setFbPerson}

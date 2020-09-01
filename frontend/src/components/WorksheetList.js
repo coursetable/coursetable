@@ -14,14 +14,6 @@ export default class WorksheetList extends React.Component {
     this.props.toggleCourse(season_code, crn, hidden);
   };
 
-  isHidden = (season_code, crn) => {
-    for (let i = 0; i < this.props.hidden_courses.length; i++) {
-      let course = this.props.hidden_courses[i];
-      if (course[0] === season_code && course[1] === crn) return true;
-    }
-    return false;
-  };
-
   buildHtml = (cur_season, courses) => {
     let items = [];
     let id = 0;
@@ -54,9 +46,7 @@ export default class WorksheetList extends React.Component {
             </Col>
             <Col
               className={
-                (this.isHidden(cur_season, course.crn)
-                  ? styles.hidden + ' '
-                  : '') +
+                (course.hidden ? styles.hidden + ' ' : '') +
                 styles.list_text +
                 ' px-0'
               }
