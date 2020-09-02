@@ -23,8 +23,8 @@ function SeasonDropdown({ onSeasonChange, cur_season, season_codes }) {
   // Populate list of HTML options
   season_codes.forEach((season) => {
     seasons_html.push(
-      <Dropdown.Item key={season} eventKey={season}>
-        {toSeasonString(season)[0]}
+      <Dropdown.Item key={season} eventKey={season} className="d-flex">
+        <div className="mx-auto">{toSeasonString(season)[0]}</div>
       </Dropdown.Item>
     );
   });

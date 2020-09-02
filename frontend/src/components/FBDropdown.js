@@ -26,8 +26,8 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
 
   // Holds HTML for the FB friends
   let friend_options = [
-    <Dropdown.Item key={'me'} eventKey={'me'}>
-      Me
+    <Dropdown.Item key={'me'} eventKey={'me'} className="d-flex">
+      <div className="mx-auto">Me</div>
     </Dropdown.Item>,
   ];
   // FB friend names
@@ -40,8 +40,8 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
   for (let friend in friendInfo) {
     if (containsCurSeason(friendWorksheets[friend]))
       friend_options.push(
-        <Dropdown.Item key={friend} eventKey={friend}>
-          {friendInfo[friend].name}
+        <Dropdown.Item key={friend} eventKey={friend} className="d-flex">
+          <div className="mx-auto">{friendInfo[friend].name}</div>
         </Dropdown.Item>
       );
   }

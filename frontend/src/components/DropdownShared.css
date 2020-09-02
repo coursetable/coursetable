@@ -5,6 +5,12 @@
   width: 100%;
 }
 
+.dropdown-menu {
+  max-height: 50vh;
+  min-width: 0 !important;
+  overflow: scroll;
+}
+
 .dropdown-toggle {
   border-top-left-radius: 0 !important;
   border-bottom-left-radius: 0 !important;
