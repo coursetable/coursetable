@@ -1,0 +1,18 @@
+.container,
+.dropdown,
+.dropdown-menu,
+.dropdown-toggle {
+  width: 100%;
+}
+
+.dropdown-toggle {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+  border-top-right-radius: 0 !important;
+}
+
+.dropdown-toggle:focus,
+.dropdown-toggle:active {
+  box-shadow: none !important;
+}

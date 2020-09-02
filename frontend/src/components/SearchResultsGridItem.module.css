@@ -1,0 +1,115 @@
+.container {
+  transition: 0.3s;
+}
+
+.container:hover {
+  transform: scale(1.03);
+  cursor: pointer;
+}
+
+.container:hover .item_container {
+  background-color: rgba(220, 236, 255, 0.5);
+}
+
+.item_container:focus,
+.item_container:active {
+  border: none;
+  outline: none;
+}
+
+.item_container {
+  background-color: rgb(245, 245, 245);
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.season_tag {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+  margin-right: 27px;
+}
+
+.spring {
+  background-color: rgb(184, 223, 187);
+}
+
+.summer {
+  background-color: rgb(235, 221, 175);
+}
+
+.fall {
+  background-color: rgb(255, 212, 209);
+}
+
+.course_codes {
+  font-weight: 500;
+  color: rgb(47, 123, 167);
+}
+
+.professors {
+  font-weight: 550;
+  color: rgb(78, 78, 78);
+}
+
+.small_text {
+  font-weight: 500;
+  color: rgb(78, 78, 78);
+}
+
+.one_line {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rating {
+  font-weight: bold;
+}
+
+.worksheet_btn {
+  position: absolute;
+  top: -15px;
+  right: 22px;
+  transition: 0.3s;
+  transform: scaleY(1.3);
+}
+
+.worksheet_btn:hover {
+  transform: scaleY(1.3) translateY(6px);
+}
+
+.conflict_error {
+  position: absolute;
+  top: -7px;
+  right: 0px;
+  transform: translate(-40%, 0%);
+}
+
+.fb_friends {
+  position: absolute;
+  top: 0px;
+  left: 8px;
+  width: 16px;
+  height: 16px;
+  line-height: 15px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+@media (hover: none) {
+  .worksheet_btn {
+    top: -10px;
+  }
+
+  .worksheet_btn:hover {
+    transform: none;
+  }
+
+  .container:hover {
+    transform: none;
+    cursor: none;
+  }
+}

@@ -1,0 +1,161 @@
+.search_result_item {
+  background-color: white !important;
+  transition: 0.3s;
+  user-select: none;
+  overflow: hidden;
+  position: relative;
+}
+
+.last_search_result_item {
+  border-bottom-left-radius: 8px;
+  border-bottom-right-radius: 8px;
+}
+
+.search_result_item:hover {
+  cursor: pointer;
+  background-color: #e1edff !important;
+  border-color: #e1edff !important;
+}
+
+.search_result_item:focus,
+.search_result_item:active {
+  outline: none;
+}
+
+.course_name {
+  font-weight: bold;
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+:global(#title_popover) {
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+}
+
+.course_code {
+  color: rgba(0, 0, 0, 0.5);
+  margin-right: 0.5rem;
+  display: block;
+  max-width: 60%;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.dot {
+  display: inline;
+}
+
+.skills_areas {
+  display: inline;
+}
+
+.course_section {
+  display: inline;
+  color: rgba(1, 1, 1, 0.4);
+}
+
+.extra_info {
+  background-color: #e23e57;
+  color: white;
+  border-radius: 4px;
+  width: max-content;
+  padding: 0.2rem 0.4rem;
+  font-weight: 600;
+  font-size: 0.75rem;
+}
+
+.icon_ratings {
+  font-size: 0.75rem;
+}
+
+.workload_icon_empty,
+.workload_icon_full {
+  padding: 1px;
+}
+
+.workload_icon_empty {
+  color: #e8e8e8;
+}
+
+.rating_icon_empty,
+.rating_icon_full {
+  padding: 1px;
+}
+
+.rating_icon_empty {
+  color: #e8e8e8;
+}
+
+.rating_cell {
+  width: max-content;
+  text-align: center;
+  font-weight: 600;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  padding: 0.2em 0.3em;
+}
+
+.course_location {
+  font-weight: 600 !important;
+}
+
+.online_tag {
+  margin: 1px;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 2px 4px !important;
+  border-radius: 6px !important;
+  width: max-content;
+  background: rgba(0, 0, 0, 0.1);
+}
+
+.tag {
+  margin: 1px;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  padding: 4px 6px !important;
+  border-radius: 6px !important;
+}
+
+.none {
+  background-color: rgb(102, 102, 102) !important;
+}
+
+.friends_count {
+  display: flex;
+  align-items: center;
+}
+
+.expanded_card {
+  background-color: white;
+}
+
+.worksheet_btn {
+  position: absolute;
+  top: -14px;
+  right: 18px;
+  transition: 0.3s;
+  transform: scaleY(1.3);
+}
+
+.worksheet_btn:hover {
+  transform: scaleY(1.3) translateY(6px);
+}
+
+.conflict_error {
+  position: absolute;
+  top: -6px;
+  right: 0px;
+  transform: translate(-20%, 0%);
+}
+
+.fb_friends {
+  font-weight: 500;
+  padding-left: 2px;
+}

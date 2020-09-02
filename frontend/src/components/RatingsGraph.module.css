@@ -1,0 +1,44 @@
+.container {
+  height: 130px;
+}
+
+.bar {
+  text-align: center;
+}
+
+.column {
+  width: 15px;
+  border-radius: 10px;
+}
+
+.value {
+  font-size: 13px;
+  font-weight: 600;
+  color: rgb(107, 107, 107);
+  height: 18px;
+  opacity: 1;
+  transition: opacity 0.3s;
+}
+
+.xaxis_label {
+  color: rgb(143, 195, 255) !important;
+}
+
+/* Comment out below for hover statistic functionality */
+
+/* .value {
+  opacity: 0 !important;
+}
+
+.container:hover .value {
+  opacity: 1 !important;
+} */
+
+@media (hover: none) {
+  .value {
+    opacity: 1;
+  }
+  .container {
+    margin-top: 25px;
+  }
+}

@@ -1,0 +1,28 @@
+.container {
+  width: 700px;
+  margin-bottom: 3rem;
+}
+
+.about_header {
+  font-weight: 600;
+  font-size: 25px;
+  text-align: center;
+}
+
+.about_description {
+  font-weight: 500;
+  font-size: 15px;
+  text-align: center;
+}
+
+@media (max-width: 768px) {
+  .container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 425px) {
+  .container {
+    width: 90vw;
+  }
+}

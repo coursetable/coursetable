@@ -1,0 +1,31 @@
+.container {
+  height: 100vh;
+}
+
+.homepage {
+  height: calc(100vh - 62px);
+}
+
+.coursetable_logo {
+  padding-top: 10vh;
+  font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman,
+    serif;
+  text-align: center;
+}
+
+.title {
+  font-size: calc(20px + 8vw);
+}
+
+.search_bar_container {
+  width: calc(120px + 50vw);
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 5vh;
+}
+
+.carddeck_container {
+  width: 70vw;
+  height: 30vh;
+  margin-top: 10vh;
+}

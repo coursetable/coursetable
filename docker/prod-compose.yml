@@ -2,42 +2,57 @@ version: '3.2'
 services:
   proxy:
     image: node:latest
+    restart: always
     ports:
-      - '8080:8080'
-      - '3001:3001'
+      - '8039:8039'
+      - '8038:8080'
+    expose:
+      - 8039
     volumes:
       - ../dev_proxy:/app
     user: '1000'
     command: sh -c 'cd /app && yarn && yarn start'
+    environment:
+      FRONTEND_LOC: "http://frontend:5000"
+      PORT: 8039
     links:
       - frontend
       - nginx
+    labels:
+      traefik.enable: true
+      traefik.http.middlewares.coursetableHeaders.headers.SSLRedirect: true
+      traefik.http.routers.coursetable.rule: Host(`beta.coursetable.com`)
+      traefik.http.routers.coursetable.tls: true
+      traefik.http.routers.coursetable.tls.certResolver: tls_resolver
+      traefik.http.routers.coursetable.middlewares: coursetableHeaders
+    networks:
+      - traefik
+      - default
 
   frontend:
-    image: node:latest
-    ports:
-      - '3000:3000'
+    build: ../frontend
+    restart: always
     expose:
-      - '3000'
-    volumes:
-      - ../frontend:/app
-    user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
-    tty: true # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+      - '5000'
 
   graphql-engine:
     image: hasura/graphql-engine:latest
+    restart: always
     ports:
       - '8085:8080'
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@0.tcp.ngrok.io:11189/postgres
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@db:5432/postgres
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      ## uncomment next line to set an admin secret
+      ## TODO: uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+    networks:
+      - ferry_default
+      - default
 
   nginx:
     build: ./nginx
+    restart: always
     ports:
       - '8079:8080'
     expose:
@@ -61,13 +76,15 @@ services:
     working_dir: /var/www/html
 
   php-fpm:
-    env_file: ../facebook.env
     build: ./php
+    restart: always
+    env_file: ../facebook.env
     volumes:
       - ..:/usr/share/nginx/html
 
   mysql:
     build: ./mysql
+    restart: always
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     environment:
@@ -82,6 +99,7 @@ services:
 
   phpmyadmin:
     build: ./phpmyadmin
+    restart: always
     depends_on:
       - mysql
     restart: always
@@ -90,3 +108,9 @@ services:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
       - '8081:80'
+
+networks:
+  traefik:
+    external: true
+  ferry_default:
+    external: true

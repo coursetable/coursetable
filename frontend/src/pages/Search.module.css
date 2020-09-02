@@ -1,0 +1,220 @@
+.search_base {
+  background-color: #f6f6f6;
+  width: 100%;
+  min-height: calc(100vh + 15px);
+}
+
+.search_col {
+  background-color: transparent;
+  border-radius: 8px;
+  padding-right: 0px !important;
+}
+
+.search_col_mobile {
+  background-color: transparent;
+  overflow: scroll;
+  z-index: 1;
+}
+
+.sticky {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 420;
+}
+
+.search_container {
+  background-color: white;
+  width: 100%;
+  border-radius: 0.5rem;
+}
+
+.search_bar {
+  width: 100%;
+}
+
+.search_input input {
+  border: none;
+  border-radius: 0.5rem;
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.filter_title {
+  font-size: 0.9rem;
+  color: rgba(0, 0, 0, 0.75);
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+
+:global hr {
+  margin-top: 0.5rem !important;
+  margin-bottom: 0.5rem !important;
+}
+
+.multi_selects {
+  border-radius: 8px;
+}
+
+.selector_container {
+  font-weight: 500;
+  margin-top: 4px;
+  margin-bottom: 4px;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none; /* Safari */
+  -khtml-user-select: none; /* Konqueror HTML */
+  -moz-user-select: none; /* Old versions of Firefox */
+  -ms-user-select: none; /* Internet Explorer/Edge */
+  user-select: none;
+}
+
+.light_bg {
+  background-color: rgba(0, 0, 0, 0.033);
+}
+
+.sliders {
+  font-weight: 500;
+}
+
+.slider {
+  margin-top: 2rem;
+  padding: 1rem;
+}
+
+.secondary_submit {
+  background-color: #2d87f3 !important;
+  font-weight: 600 !important;
+  width: 100%;
+  border-radius: 0px 0px 8px 8px !important;
+  padding: 0.5rem !important;
+  transition: 0.3s;
+}
+
+.secondary_submit:hover {
+  background-color: #2670ca !important;
+}
+
+.toggle_row {
+  border-radius: 8px 8px 0px 0px;
+}
+
+.toggle_option {
+  margin-right: 1rem;
+  user-select: none;
+  cursor: pointer !important;
+}
+
+.toggle_option label {
+  cursor: pointer;
+}
+
+.results_col {
+  background-color: transparent;
+  z-index: 0;
+  transition: 0.3s;
+  will-change: max-width, flex-basis;
+}
+
+.search_tab {
+  position: absolute;
+  transition: 0.3s;
+  transition-delay: 0.3s;
+  transition-property: right, opacity;
+  top: 10px;
+  right: -30px;
+  padding: 7px;
+  border-top-right-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: rgb(198, 232, 255);
+  z-index: 2000;
+}
+
+.search_tab:hover {
+  cursor: pointer;
+  background-color: rgb(174, 221, 253);
+}
+
+.search_tab_hidden {
+  cursor: inherit !important;
+  transition: 0.3s;
+  transition-delay: 0s !important;
+  transition-property: right, opacity;
+  right: 30px !important;
+  opacity: 0;
+}
+
+.collapse_form_btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  color: rgb(212, 212, 212);
+}
+
+.collapse_form_btn:hover {
+  cursor: pointer;
+  color: rgb(170, 170, 170);
+}
+
+.results_col_mobile {
+  background-color: transparent;
+  z-index: 0;
+}
+
+:global .rc-slider-track {
+  background-color: #78b5ff !important;
+}
+
+:global .rc-slider-handle {
+  border: solid 2px #78b5ff !important;
+  background: white !important;
+}
+
+.rating_tooltip,
+.workload_tooltip {
+  font-size: 0.75rem;
+  width: 1.5rem;
+  color: white;
+  background-color: #2d87f3;
+  text-align: center;
+  padding: 5px 0;
+  border-radius: 6px;
+  font-weight: 600;
+
+  position: absolute;
+  z-index: 1;
+  bottom: 150%;
+  left: 50%;
+  margin-left: -0.75rem;
+}
+
+/* arrow */
+.rating_tooltip::after,
+.workload_tooltip::after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: #2d87f3 transparent transparent transparent;
+}
+
+.reset_filters_btn {
+  color: #e23e57;
+  font-weight: 500;
+  transition: 0.3s;
+}
+
+.reset_filters_btn:hover {
+  cursor: pointer;
+  color: #a82f41;
+}
+
+@media (hover: none) {
+  .search_container {
+    max-height: none;
+  }
+}

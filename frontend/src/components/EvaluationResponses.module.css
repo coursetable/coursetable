@@ -1,0 +1,14 @@
+.response {
+  font-size: 14px;
+  font-weight: 450;
+  color: rgb(59, 58, 58);
+  border-bottom-style: solid;
+  border-bottom-color: rgb(224, 224, 224);
+  border-bottom-width: 1px;
+}
+
+.question_header {
+  color: black;
+  font-weight: 600;
+  font-size: 14px;
+}
