@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Row, Badge } from 'react-bootstrap';
+import { Row, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -15,6 +15,8 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import Styles from './SearchResultsItem.module.css';
 import { useWindowDimensions } from './WindowDimensionsProvider';
+import { useUser } from '../user';
+import { fbFriendsAlsoTaking } from '../utilities';
 
 /**
  * Renders a list item for a course in the expanded list view
@@ -67,6 +69,26 @@ const WorksheetExpandedListItem = ({
       courseLocation = course['course.locations_summary'];
     }
   }
+
+  // Fetch user context data
+  const { user } = useUser();
+  // Fetch list of FB Friends that are also shopping this class
+  let also_taking =
+    user.fbLogin && user.fbWorksheets
+      ? fbFriendsAlsoTaking(
+          course.season_code,
+          course.crn,
+          user.fbWorksheets.worksheets,
+          user.fbWorksheets.friendInfo
+        )
+      : [];
+
+  // Render tooltip with names of FB friends also shopping
+  const renderFBFriendsTooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      {also_taking.join(' • ')}
+    </Tooltip>
+  );
 
   return (
     <Row
@@ -236,8 +258,25 @@ const WorksheetExpandedListItem = ({
             : 'N/A'}
         </div>
       </div>
-      {/* TODO: Add # of FB Friends also shopping this course here */}
-      <div style={{ width: `${BOOKMARK_WIDTH}px` }} />
+      {/* # FB Friends also shopping */}
+      <div
+        style={{
+          width: `${BOOKMARK_WIDTH}px`,
+        }}
+        className="d-flex px-1"
+      >
+        {also_taking.length > 0 && (
+          <OverlayTrigger
+            placement="top"
+            delay={{ show: 250, hide: 400 }}
+            overlay={renderFBFriendsTooltip}
+          >
+            <div className={Styles.fb_friends + ' m-auto'}>
+              {also_taking.length}
+            </div>
+          </OverlayTrigger>
+        )}
+      </div>
       {/* Bookmark Button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
