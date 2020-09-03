@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 import { FetchWorksheet } from '../queries/GetWorksheetListings';
-import { Row, Col, Fade } from 'react-bootstrap';
+import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
@@ -165,7 +165,16 @@ function Worksheet() {
       </div>
     );
   // Wait for search query to finish
-  if (loading || error) return <div>Loading...</div>;
+  if (loading || error)
+    return (
+      <Spinner
+        className={styles.loading_spinner}
+        animation="border"
+        role="status"
+      >
+        <span className="sr-only">Loading...</span>
+      </Spinner>
+    );
   // Error with query
   if (data === undefined || !data.length) return <div>Error with Query</div>;
   // List of colors for the calendar events

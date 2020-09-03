@@ -5,6 +5,12 @@
   overflow: hidden;
 }
 
+.loading_spinner {
+  position: fixed;
+  top: calc(50% - 16px);
+  left: calc(50% - 16px);
+}
+
 .calendar {
   height: 86vh;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
