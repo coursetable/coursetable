@@ -109,7 +109,7 @@ const SearchResults = ({
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth]);
+  }, [setRowWidth, width]);
 
   // Spacing for each column in list view
   const PROF_WIDTH = 150;

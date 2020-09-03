@@ -46,6 +46,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 import { FaSearch } from 'react-icons/fa';
 import { BsX } from 'react-icons/bs';
 import { flatten, preprocess_courses } from '../utilities';
+import { Element, scroller } from 'react-scroll';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -60,7 +61,7 @@ const animatedComponents = makeAnimated();
 function Search({ location, history }) {
   // Fetch window dimensions
   const { height, width } = useWindowDimensions();
-  const isMobile = width < 768;
+  let isMobile = width < 768;
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
@@ -272,6 +273,13 @@ function Search({ location, history }) {
     } else {
       // Keep old courses until new courses are fetched
       if (searchData && searching) {
+        // Scroll down to catalog when search is complete for mobile view
+        if (isMobile && old_data.length === 0) {
+          scroller.scrollTo('catalog', {
+            smooth: true,
+            duration: 500,
+          });
+        }
         if (searchData.search_listing_info.length < QUERY_SIZE)
           setFetchedAll(true);
         // Combine old courses with new fetched courses
@@ -351,6 +359,12 @@ function Search({ location, history }) {
       setDefaultSearch(false);
     }
   }, [seasonsOptions, defaultSearch, handleSubmit]);
+
+  // Switch to grid view if window changes to mobile width
+  useEffect(() => {
+    isMobile = width < 768;
+    if (isMobile && isList === true) setView(false);
+  }, [width]);
 
   return (
     <div className={Styles.search_base}>
@@ -616,6 +630,8 @@ function Search({ location, history }) {
             </Form>
           </div>
         </Col>
+        {/* Search Results Catalog */}
+
         <Col
           md={collapsed_form ? 12 : 8}
           lg={collapsed_form ? 12 : 8}
@@ -627,16 +643,18 @@ function Search({ location, history }) {
               : (collapsed_form ? 'px-5 pt-3 ' : 'p-3 ') + Styles.results_col)
           }
         >
-          <SearchResults
-            data={old_data}
-            isList={isList}
-            setView={handleSetView}
-            loading={searchLoading}
-            loadMore={handleSubmit}
-            multiSeasons={multiSeasons}
-            refreshCache={refreshCache}
-            fetchedAll={fetchedAll}
-          />
+          <Element name="catalog">
+            <SearchResults
+              data={old_data}
+              isList={isList}
+              setView={handleSetView}
+              loading={searchLoading}
+              loadMore={handleSubmit}
+              multiSeasons={multiSeasons}
+              refreshCache={refreshCache}
+              fetchedAll={fetchedAll}
+            />
+          </Element>
         </Col>
       </Row>
     </div>
