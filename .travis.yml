@@ -9,6 +9,7 @@ before_install:
   - docker pull composer
   - docker pull php
   - docker run -v `pwd`:/app composer /bin/sh -c "php composer.phar install"
+  - nvm install 12.0
   - npm install --global prettier
 
 script:

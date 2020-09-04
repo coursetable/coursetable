@@ -6,7 +6,7 @@ $forceLogin = isset($_GET['forcelogin']);
 $logout  = isset($_GET['logout']);
 
 // Logout
-if($logout) {
+if ($logout) {
     ProjectCommon::casLogout();
 }
 
