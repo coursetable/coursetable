@@ -14,4 +14,4 @@ before_install:
 
 script:
   - docker run -v `pwd`:/app -w /app php /bin/sh -c "./phpcs.sh"
-  - cd web && prettier -l '**/*.js' '**/*.ts' '**/*.tsx' '**/*.html' '**/*.css'
+  - cd frontend && prettier -l .
