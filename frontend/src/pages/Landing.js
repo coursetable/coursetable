@@ -52,7 +52,7 @@ function Landing() {
                       className={styles.btns}
                       size="lg"
                     >
-                      Login
+                      Login with CAS
                     </Button>
                   </Col>
                   {/* Feature Page Button */}
