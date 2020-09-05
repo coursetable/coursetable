@@ -3,7 +3,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import SearchResultsItem from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
 
-import CourseModal from './CourseModal';
 import ListGridToggle from './ListGridToggle';
 
 import { useWindowDimensions } from './WindowDimensionsProvider';
@@ -53,29 +52,18 @@ const SearchResults = ({
   multiSeasons,
   refreshCache,
   fetchedAll,
+  showModal,
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
-  // State that determines if a course modal needs to be displayed and which course to display
-  const [course_modal, setCourseModal] = useState([false, '']);
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
 
   // Variable used in list keys
   let key = 0;
-
-  // Show the modal for the course that was clicked
-  const showModal = (listing) => {
-    setCourseModal([true, listing]);
-  };
-
-  // Reset course_modal state to hide the modal
-  const hideModal = () => {
-    setCourseModal([false, '']);
-  };
 
   // Should we render the scroll up button?
   const [scroll_visible, setScrollVisible] = useState(false);
@@ -410,12 +398,6 @@ const SearchResults = ({
           )}
         </div>
       </Container>
-      {/* Course Modal */}
-      <CourseModal
-        hideModal={hideModal}
-        show={course_modal[0]}
-        listing={course_modal[1]}
-      />
       {/* Scroll up button */}
       <Fade in={scroll_visible}>
         <div className={Styles.up_btn}>

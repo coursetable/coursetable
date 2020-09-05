@@ -22,7 +22,7 @@ import chroma from 'chroma-js';
  * @prop hasSeason - function that switches to most recent season if removing the last course of the current season
  */
 
-const CourseModal = ({ listing, hideModal, show, hasSeason }) => {
+const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
   // Switch to mobile view?

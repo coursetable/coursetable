@@ -5,6 +5,7 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import Styles from './Search.module.css';
 
 import SearchResults from '../components/SearchResults';
+import CourseModal from '../components/CourseModal';
 
 import {
   Col,
@@ -74,6 +75,19 @@ function Search({ location, history }) {
   //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
   //   if (width > 1200 && collapsed_form) setCollapsedForm(false);
   // }, [width]);
+
+  // State that determines if a course modal needs to be displayed and which course to display
+  const [course_modal, setCourseModal] = useState([false, '']);
+
+  // Show the modal for the course that was clicked
+  const showModal = (listing) => {
+    setCourseModal([true, listing]);
+  };
+
+  // Reset course_modal state to hide the modal
+  const hideModal = () => {
+    setCourseModal([false, '']);
+  };
 
   // States involved in infinite scroll
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
@@ -362,9 +376,8 @@ function Search({ location, history }) {
 
   // Switch to grid view if window changes to mobile width
   useEffect(() => {
-    isMobile = width < 768;
-    if (isMobile && isList === true) setView(false);
-  }, [width]);
+    if (width < 768 && isList === true) setView(false);
+  }, [width, isList]);
 
   return (
     <div className={Styles.search_base}>
@@ -653,10 +666,17 @@ function Search({ location, history }) {
               multiSeasons={multiSeasons}
               refreshCache={refreshCache}
               fetchedAll={fetchedAll}
+              showModal={showModal}
             />
           </Element>
         </Col>
       </Row>
+      {/* Course Modal */}
+      <CourseModal
+        hideModal={hideModal}
+        show={course_modal[0]}
+        listing={course_modal[1]}
+      />
     </div>
   );
 }
