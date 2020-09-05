@@ -92,7 +92,7 @@ function App() {
               <MyRoute
                 exact
                 path="/catalog"
-                render={(props) => <Search {...props} />}
+                render={props => <Search {...props} />}
               />
 
               {/* Auth */}
@@ -122,6 +122,14 @@ function App() {
               <MyRoute exact path="/joinus">
                 <Join />
               </MyRoute>
+
+              <Route
+                path="/Blog"
+                component={() => {
+                  window.location.href = 'https://coursetable.com/Blog';
+                  return null;
+                }}
+              />
 
               {/* Catch-all Route to NotFound Page */}
               <MyRoute path="/">
