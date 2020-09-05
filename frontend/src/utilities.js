@@ -42,26 +42,41 @@ export const preprocess_courses = (listing) => {
 
   // Combine array of professors into one string
   if (
-    'course.course_professors' in listing &&
-    listing['course.course_professors'].length > 0
+    ('course.course_professors' in listing &&
+      listing['course.course_professors'].length > 0) ||
+    ('professor_names' in listing && listing['professor_names'].length > 0)
   ) {
-    listing['professors'] = listing['course.course_professors']
-      .map((x) => {
-        return x['professor']['name'];
-      })
-      .join(', ');
-
-    // for the average professor rating, take the first professor
-    const professor = listing['course.course_professors'][0]['professor'];
-
-    // Trim professor ratings to one decimal point
-    if ('average_rating' in professor && professor['average_rating'] !== null) {
-      listing['professor_avg_rating'] = professor['average_rating'].toFixed(
-        RATINGS_PRECISION
-      );
+    // Distinguish between the 2 different search queries
+    if ('professor_names' in listing) {
+      listing['professors'] = listing['professor_names'].join(', ');
+      // for the average professor rating, take the first professor
+      if (
+        'average_professor' in listing &&
+        listing['average_professor'] !== null
+      )
+        // Trim professor ratings to one decimal point
+        listing['professor_avg_rating'] = listing['average_professor'].toFixed(
+          RATINGS_PRECISION
+        );
+    } else {
+      listing['professors'] = listing['course.course_professors']
+        .map((x) => {
+          return x['professor']['name'];
+        })
+        .join(', ');
+      // for the average professor rating, take the first professor
+      const professor = listing['course.course_professors'][0]['professor'];
+      if (
+        'average_rating' in professor &&
+        professor['average_rating'] !== null
+      ) {
+        // Trim professor ratings to one decimal point
+        listing['professor_avg_rating'] = professor['average_rating'].toFixed(
+          RATINGS_PRECISION
+        );
+      }
     }
   }
-
   return listing;
 };
 

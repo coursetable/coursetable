@@ -23,13 +23,6 @@ import CourseModalLoading from './CourseModalLoading';
  */
 
 const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
-  // Fetch ratings data for this listing
-  const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
-    variables: {
-      course_code: listing.course_code ? listing.course_code : 'bruh',
-      professor_name: listing.professors ? listing.professors : 'bruh',
-    },
-  });
   const { user } = useUser();
   // Component used for cutting off long descriptions
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -110,6 +103,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     }
   }
 
+  // Fetch ratings data for this listing
+  const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
+    variables: {
+      course_code: listing.course_code ? listing.course_code : 'bruh',
+      professor_name: listing.professors ? listing.professors : 'bruh',
+    },
+  });
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Hold list of evaluation dictionaries
