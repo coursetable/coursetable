@@ -83,9 +83,7 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
-                          {!listing['course.title']
-                            ? listing.title
-                            : listing['course.title']}
+                          {listing.title}
                           <span className="text-muted">
                             {' (' +
                               toSeasonString(listing.season_code)[2] +
@@ -107,8 +105,8 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                         {listing.course_code}
                       </p>
                       {/* Course Skills and Areas */}
-                      {listing['course.skills'] &&
-                        listing['course.skills'].map((skill) => (
+                      {listing.skills &&
+                        listing.skills.map((skill) => (
                           <Badge
                             variant="secondary"
                             className={tag_styles.tag}
@@ -123,8 +121,8 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                             {skill}
                           </Badge>
                         ))}
-                      {listing['course.areas'] &&
-                        listing['course.areas'].map((area) => (
+                      {listing.areas &&
+                        listing.areas.map((area) => (
                           <Badge
                             variant="secondary"
                             className={tag_styles.tag}

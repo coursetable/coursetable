@@ -75,11 +75,9 @@ export default class WorksheetList extends React.Component {
               }
               onClick={() => this.showModal(course)}
             >
-              <strong>{course['course_code']}</strong>
+              <strong>{course.course_code}</strong>
               <br />
-              <span className={styles.course_title}>
-                {course['course.title']}
-              </span>
+              <span className={styles.course_title}>{course.title}</span>
             </Col>
           </Row>
         </ListGroup.Item>

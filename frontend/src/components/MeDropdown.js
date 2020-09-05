@@ -9,10 +9,8 @@ import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { flatten } from '../utilities';
-import {
-  FetchWorksheetLazy,
-  preprocess_courses,
-} from '../queries/GetWorksheetListings';
+import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
+import { preprocess_courses } from '../utilities';
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
@@ -53,7 +51,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     // return if worksheet isn't loaded or it isn't time to export
     if (fetched_data.length === 0 || !export_ics) return;
     // Preprocess listings data
-    let processed_data = fetched_data.listings.map((x) => {
+    let processed_data = fetched_data.search_listing_info.map((x) => {
       return flatten(x);
     });
     processed_data = processed_data.map((x) => {

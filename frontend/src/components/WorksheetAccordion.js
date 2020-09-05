@@ -60,15 +60,15 @@ function ContextAwareToggle({ eventKey, callback, course }) {
                         href={course['location_url']}
                         className={styles.location_url + ' text-muted'}
                       >
-                        {course['course.locations_summary']}
+                        {course.locations_summary}
                       </a> */}
-              {course['course.locations_summary']}
+              {course.locations_summary}
             </small>
           </Row>
         </Col>
         {/* Course Time */}
         <Col xs="auto" className="p-0 text-muted">
-          {trim(course['course.times_summary'])}
+          {trim(course.times_summary)}
         </Col>
       </Row>
     </div>
@@ -112,7 +112,7 @@ export default class WorksheetAccordion extends React.Component {
     listings.forEach((course) => {
       // Iterate over each weekday
       for (let indx = 0; indx < 5; indx++) {
-        const info = course['course.times_by_day.' + this.weekDays[indx]];
+        const info = course['times_by_day.' + this.weekDays[indx]];
         // If this listing meets on this day
         if (info !== undefined) {
           // Get start time
@@ -180,48 +180,42 @@ export default class WorksheetAccordion extends React.Component {
                 <Row className="m-auto">
                   {/* Course Title */}
                   <Col className="p-0">
-                    <strong>{course['course.title']}</strong>
+                    <strong>{course.title}</strong>
                   </Col>
-                  {/* Course Skills/Areas */}
                   <Col xs="auto" className="pr-0">
-                    {!course.skills || (
-                      <Badge
-                        variant="secondary"
-                        className={
-                          tagStyles.tag + ' ' + tagStyles[course.skills]
-                        }
-                        style={{
-                          color: skillsAreasColors[course.skills],
-                          backgroundColor: chroma(
-                            skillsAreasColors[course.skills]
-                          )
-                            .alpha(0.16)
-                            .css(),
-                        }}
-                        key={++id}
-                      >
-                        {course.skills}
-                      </Badge>
-                    )}
-                    {!course.areas || (
-                      <Badge
-                        variant="secondary"
-                        className={
-                          tagStyles.tag + ' ' + tagStyles[course.areas]
-                        }
-                        style={{
-                          color: skillsAreasColors[course.areas],
-                          backgroundColor: chroma(
-                            skillsAreasColors[course.areas]
-                          )
-                            .alpha(0.16)
-                            .css(),
-                        }}
-                        key={++id}
-                      >
-                        {course.areas}
-                      </Badge>
-                    )}
+                    {/* Course Skills and Areas */}
+                    {course.skills &&
+                      course.skills.map((skill) => (
+                        <Badge
+                          variant="secondary"
+                          className={tagStyles.tag}
+                          style={{
+                            color: skillsAreasColors[skill],
+                            backgroundColor: chroma(skillsAreasColors[skill])
+                              .alpha(0.16)
+                              .css(),
+                          }}
+                          key={skill}
+                        >
+                          {skill}
+                        </Badge>
+                      ))}
+                    {course.areas &&
+                      course.areas.map((area) => (
+                        <Badge
+                          variant="secondary"
+                          className={tagStyles.tag}
+                          style={{
+                            color: skillsAreasColors[area],
+                            backgroundColor: chroma(skillsAreasColors[area])
+                              .alpha(0.16)
+                              .css(),
+                          }}
+                          key={area}
+                        >
+                          {area}
+                        </Badge>
+                      ))}
                   </Col>
                 </Row>
                 {/* Course Professors */}
@@ -235,7 +229,7 @@ export default class WorksheetAccordion extends React.Component {
                 <Row className="m-auto">
                   <ResponsiveEllipsis
                     style={{ whiteSpace: 'pre-wrap' }}
-                    text={course['course.description']}
+                    text={course.description}
                     maxLine={8}
                     basedOn="words"
                   />

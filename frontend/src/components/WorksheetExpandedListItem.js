@@ -56,17 +56,15 @@ const WorksheetExpandedListItem = ({
   let key = 1;
   // Course locations HTML
   let courseLocation;
-  if (course['course.locations_summary'] === 'TBA') {
+  if (course.locations_summary === 'TBA') {
     courseLocation = '';
   } else {
-    if (course['course.locations_summary'].includes('ONLINE')) {
+    if (course.locations_summary.includes('ONLINE')) {
       courseLocation = (
-        <div className={Styles.online_tag}>
-          {course['course.locations_summary']}
-        </div>
+        <div className={Styles.online_tag}>{course.locations_summary}</div>
       );
     } else {
-      courseLocation = course['course.locations_summary'];
+      courseLocation = course.locations_summary;
     }
   }
 
@@ -121,13 +119,13 @@ const WorksheetExpandedListItem = ({
         className={Styles.course_header + ' mr-auto'}
       >
         {/* Course Title */}
-        <div className={Styles.course_name}>{course['course.title']}</div>
+        <div className={Styles.course_name}>{course.title}</div>
         <Row className="m-auto">
           {/* Course Code */}
           <div className={Styles.course_code}>{course.course_code}</div>
           {/* Course Skills/Areas */}
           <div className={Styles.skills_areas}>
-            {course['course.skills'].map((skill) => (
+            {course.skills.map((skill) => (
               <Badge
                 variant="secondary"
                 className={Styles.tag}
@@ -142,7 +140,7 @@ const WorksheetExpandedListItem = ({
                 {skill}
               </Badge>
             ))}
-            {course['course.areas'].map((area) => (
+            {course.areas.map((area) => (
               <Badge
                 variant="secondary"
                 className={Styles.tag}
@@ -181,9 +179,7 @@ const WorksheetExpandedListItem = ({
       {/* Course Meeting Times and Locations */}
       {width > MEET_CUT && (
         <div style={{ width: `${MEET_WIDTH}px` }}>
-          <div className={Styles.course_time}>
-            {course['course.times_summary']}
-          </div>
+          <div className={Styles.course_time}>{course.times_summary}</div>
           <div className={Styles.course_location}>{courseLocation}</div>
         </div>
       )}
@@ -194,20 +190,16 @@ const WorksheetExpandedListItem = ({
       >
         <div
           style={{
-            color: course['course.average_rating']
-              ? ratingColormap(course['course.average_rating']).darken(2).css()
+            color: course.average_rating
+              ? ratingColormap(course.average_rating).darken(2).css()
               : '#b5b5b5',
-            backgroundColor: course['course.average_rating']
-              ? chroma(ratingColormap(course['course.average_rating']))
-                  .alpha(0.33)
-                  .css()
+            backgroundColor: course.average_rating
+              ? chroma(ratingColormap(course.average_rating)).alpha(0.33).css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course['course.average_rating']
-            ? course['course.average_rating'].toFixed(1)
-            : 'N/A'}
+          {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
         </div>
       </div>
       {/* Professor Ratings */}
@@ -217,19 +209,19 @@ const WorksheetExpandedListItem = ({
       >
         <div
           style={{
-            color: course['professor_avg_rating']
-              ? ratingColormap(course['professor_avg_rating']).darken(2).css()
+            color: course.average_professor
+              ? ratingColormap(course.average_professor).darken(2).css()
               : '#b5b5b5',
-            backgroundColor: course['professor_avg_rating']
-              ? chroma(ratingColormap(course['professor_avg_rating']))
+            backgroundColor: course.average_professor
+              ? chroma(ratingColormap(course.average_professor))
                   .alpha(0.33)
                   .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course['professor_avg_rating']
-            ? course['professor_avg_rating']
+          {course.average_professor
+            ? course.average_professor.toFixed(1)
             : 'N/A'}
         </div>
       </div>
@@ -240,22 +232,18 @@ const WorksheetExpandedListItem = ({
       >
         <div
           style={{
-            color: course['course.average_workload']
-              ? workloadColormap(course['course.average_workload'])
-                  .darken(2)
-                  .css()
+            color: course.average_workload
+              ? workloadColormap(course.average_workload).darken(2).css()
               : '#b5b5b5',
-            backgroundColor: course['course.average_workload']
-              ? chroma(workloadColormap(course['course.average_workload']))
+            backgroundColor: course.average_workload
+              ? chroma(workloadColormap(course.average_workload))
                   .alpha(0.33)
                   .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course['course.average_workload']
-            ? course['course.average_workload'].toFixed(1)
-            : 'N/A'}
+          {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
       </div>
       {/* # FB Friends also shopping */}

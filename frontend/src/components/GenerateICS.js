@@ -27,11 +27,7 @@ export const generateICS = (listings_all) => {
   // Only get courses for the current season that have valid times
   let listings = [];
   listings_all.forEach((listing) => {
-    if (
-      !listing['course.times_summary'] ||
-      listing['course.times_summary'] === 'TBA'
-    )
-      return;
+    if (!listing.times_summary || listing.times_summary === 'TBA') return;
     if (listing.season_code === cur_season) listings.push(listing);
   });
 
@@ -55,7 +51,7 @@ export const generateICS = (listings_all) => {
     const weekday = weekdays[day.day() - 1];
     // Iterate through listings in the worksheet
     for (const listing of listings) {
-      const info = listing['course.times_by_day.' + weekday];
+      const info = listing['times_by_day.' + weekday];
       // Continue if the course doesn't take place on this day of the week
       if (info === undefined) continue;
       // Get start and end times of the listing
@@ -73,8 +69,8 @@ export const generateICS = (listings_all) => {
       // Add listing to evenets list
       events.push({
         title: listing['course_code'],
-        description: listing['course.title'],
-        location: listing['course.locations_summary'],
+        description: listing.title,
+        location: listing.locations_summary,
         start: [
           start.year(),
           start.month() + 1,

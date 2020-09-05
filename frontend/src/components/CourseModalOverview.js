@@ -93,10 +93,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     location_name = 'TBD';
   for (let i in days) {
     const day = days[i];
-    if (listing[`course.times_by_day.${day}`]) {
-      location_url = listing[`course.times_by_day.${day}`][0][3];
-      location_name = listing[`course.times_by_day.${day}`][0][2];
-    }
     if (listing[`times_by_day.${day}`]) {
       location_url = listing[`times_by_day.${day}`][0][3];
       location_name = listing[`times_by_day.${day}`][0][2];
@@ -315,19 +311,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     }
   }
 
-  // Account for different variables names used in the 2 different search listings queries
-  // EVENTUALLY: USE search_listing_info FOR BOTH CATALOG AND WORKSHEET
-  if (!listing['course.description'])
-    listing['course.description'] = listing.description;
-  if (!listing['course.requirements'])
-    listing['course.requirements'] = listing.requirements;
-  if (!listing['course.times_summary'])
-    listing['course.times_summary'] = listing.times_summary;
-  if (!listing['professors'])
-    listing['professors'] = listing.professor_names.join(', ');
-  if (!listing['course.syllabus_url'])
-    listing['course.syllabus_url'] = listing.syllabus_url;
-
   return (
     <Modal.Body>
       <Row className="m-auto">
@@ -336,7 +319,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           <Row className="m-auto pb-3">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
-              text={listing['course.description']}
+              text={listing.description}
               maxLine={`${lines}`}
               basedOn="words"
               onReflow={handleReflow}
@@ -356,10 +339,10 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               )}
             </Row>
             {/* Course Requirements */}
-            {listing['course.requirements'] && (
+            {listing.requirements && (
               <Row className="m-auto pt-1">
                 <span className={Styles.requirements}>
-                  {listing['course.requirements']}
+                  {listing.requirements}
                 </span>
               </Row>
             )}
@@ -379,9 +362,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Meets</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['course.times_summary'] === 'TBA'
-                ? 'N/A'
-                : listing['course.times_summary']}
+              {listing.times_summary === 'TBA' ? 'N/A' : listing.times_summary}
             </Col>
           </Row>
           {/* Course Section */}
@@ -399,10 +380,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Enrollment</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['course.evaluation_statistics'] &&
-              listing['course.evaluation_statistics'][0] &&
-              listing['course.evaluation_statistics'][0].enrollment
-                ? listing.enrollment
+              {listing['enrollment.enrolled']
+                ? listing['enrollment.enrolled']
                 : enrollment === -1
                 ? 'N/A'
                 : '~' + enrollment}
@@ -435,11 +414,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Syllabus</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['course.syllabus_url'] ? (
+              {listing.syllabus_url ? (
                 <a
                   target="_blank"
                   rel="noopener noreferrer"
-                  href={listing['course.syllabus_url']}
+                  href={listing.syllabus_url}
                 >
                   {listing['course_code']}
                 </a>

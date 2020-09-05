@@ -34,7 +34,7 @@ export default class WeekSchedule extends React.Component {
       if (course.hidden) return;
       const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       for (var indx = 0; indx < 5; indx++) {
-        const info = course['course.times_by_day.' + weekDays[indx]];
+        const info = course['times_by_day.' + weekDays[indx]];
         // If the listing takes place on this day
         if (info !== undefined) {
           // Get start and end times for the listing
@@ -71,7 +71,7 @@ export default class WeekSchedule extends React.Component {
         <strong>{event.title}</strong>
         <br />
         <small className="location_text">
-          {event.event.listing['course.locations_summary']}
+          {event.event.listing.locations_summary}
         </small>
       </div>
     );
