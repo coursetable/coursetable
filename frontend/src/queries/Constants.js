@@ -47,7 +47,7 @@ export const skillsAreasOptions = [
 ];
 
 export const colorOptionStyles = {
-  control: (styles) => ({
+  control: styles => ({
     ...styles,
     backgroundColor: 'white',
     borderRadius: '8px',
@@ -104,8 +104,8 @@ export const colorOptionStyles = {
       color: 'white',
     },
   }),
-  menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
-  menu: (base) => ({
+  menuPortal: base => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
+  menu: base => ({
     ...base,
     paddingTop: 0,
     marginTop: 0,
@@ -113,7 +113,7 @@ export const colorOptionStyles = {
     boxShadow:
       '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
   }),
-  menuList: (base) => ({
+  menuList: base => ({
     ...base,
     paddingTop: 0,
     paddingBottom: 0,
@@ -122,26 +122,26 @@ export const colorOptionStyles = {
 };
 
 export const selectStyles = {
-  multiValue: (styles) => {
+  multiValue: styles => {
     return {
       ...styles,
       borderRadius: '6px',
     };
   },
-  multiValueRemove: (styles) => {
+  multiValueRemove: styles => {
     return {
       ...styles,
       borderRadius: '6px',
     };
   },
-  control: (base) => ({
+  control: base => ({
     ...base,
     borderRadius: '8px',
     cursor: 'pointer',
     border: 'solid 2px rgba(0,0,0,0.1)',
   }),
-  menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
-  menu: (base) => ({
+  menuPortal: base => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
+  menu: base => ({
     ...base,
     paddingTop: 0,
     marginTop: 0,
@@ -149,13 +149,13 @@ export const selectStyles = {
     boxShadow:
       '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
   }),
-  menuList: (base) => ({
+  menuList: base => ({
     ...base,
     paddingTop: 0,
     paddingBottom: 0,
     borderRadius: '8px',
   }),
-  option: (base) => ({
+  option: base => ({
     ...base,
     cursor: 'pointer',
   }),
@@ -190,10 +190,10 @@ export const schoolOptions = [
 ];
 
 export const ratingColormap = chroma
-  .bezier(['#e84a5f', '#fdffab', '#1fab89'])
+  .bezier(['#e23e57', '#ffbd39', '#55e9bc'])
   .scale()
   .domain([1, 5]);
 export const workloadColormap = chroma
-  .bezier(['#1fab89', '#fdffab', '#e84a5f'])
+  .bezier(['#55e9bc', '#ffbd39', '#e23e57'])
   .scale()
   .domain([1, 5]);
