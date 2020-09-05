@@ -171,6 +171,10 @@
   background: white !important;
 }
 
+:global .rc-slider-rail {
+  left: 0 !important;
+}
+
 .rating_tooltip,
 .workload_tooltip {
   font-size: 0.75rem;
