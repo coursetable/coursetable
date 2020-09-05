@@ -80,7 +80,7 @@ function Search({ location, history }) {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // Show the modal for the course that was clicked
-  const showModal = (listing) => {
+  const showModal = listing => {
     setCourseModal([true, listing]);
   };
 
@@ -130,7 +130,7 @@ function Search({ location, history }) {
   var seasonsOptions;
   const seasonsData = useSeasons();
   if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map((x) => {
+    seasonsOptions = seasonsData.seasons.map(x => {
       return {
         value: x.season_code,
         // capitalize term and add year
@@ -155,7 +155,7 @@ function Search({ location, history }) {
   };
 
   // resubmit search on view change
-  const handleSetView = (isList) => {
+  const handleSetView = isList => {
     setView(isList);
     handleSubmit(null, true);
   };
@@ -180,7 +180,7 @@ function Search({ location, history }) {
     // seasons to filter
     var processedSeasons = seasons.select.props.value;
     if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map((x) => {
+      processedSeasons = processedSeasons.map(x => {
         return x.value;
       });
     }
@@ -194,7 +194,7 @@ function Search({ location, history }) {
     // skills and areas
     var processedSkillsAreas = skillsAreas.select.props.value;
     if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map((x) => {
+      processedSkillsAreas = processedSkillsAreas.map(x => {
         return x.value;
       });
 
@@ -210,12 +210,10 @@ function Search({ location, history }) {
       }
 
       // separate skills and areas
-      var processedSkills = processedSkillsAreas.filter((x) =>
+      var processedSkills = processedSkillsAreas.filter(x =>
         skills.includes(x)
       );
-      var processedAreas = processedSkillsAreas.filter((x) =>
-        areas.includes(x)
-      );
+      var processedAreas = processedSkillsAreas.filter(x => areas.includes(x));
 
       // set null defaults
       if (processedSkills.length === 0) {
@@ -229,7 +227,7 @@ function Search({ location, history }) {
     // credits to filter
     var processedCredits = credits.select.props.value;
     if (processedCredits != null) {
-      processedCredits = processedCredits.map((x) => {
+      processedCredits = processedCredits.map(x => {
         return x.value;
       });
     }
@@ -237,7 +235,7 @@ function Search({ location, history }) {
     // schools to filter
     var processedSchools = schools.select.props.value;
     if (processedSchools != null) {
-      processedSchools = processedSchools.map((x) => {
+      processedSchools = processedSchools.map(x => {
         return x.value;
       });
     }
@@ -297,10 +295,10 @@ function Search({ location, history }) {
         if (searchData.search_listing_info.length < QUERY_SIZE)
           setFetchedAll(true);
         // Combine old courses with new fetched courses
-        searchData = searchData.search_listing_info.map((x) => {
+        searchData = searchData.search_listing_info.map(x => {
           return flatten(x);
         });
-        searchData = searchData.map((x) => {
+        searchData = searchData.map(x => {
           return preprocess_courses(x);
         });
         let new_data = [...old_data].concat(searchData);
@@ -311,7 +309,7 @@ function Search({ location, history }) {
   }
 
   // ctrl/cmd-f search hotkey
-  const focusSearch = (e) => {
+  const focusSearch = e => {
     if (e && searchText) {
       e.preventDefault();
       searchText.focus();
@@ -327,7 +325,7 @@ function Search({ location, history }) {
   const { Handle } = Slider;
 
   // Render slider handles for the course and workload rating sliders
-  const ratingSliderHandle = (e) => {
+  const ratingSliderHandle = e => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -335,7 +333,7 @@ function Search({ location, history }) {
       </Handle>
     );
   };
-  const workloadSliderHandle = (e) => {
+  const workloadSliderHandle = e => {
     const { value, className } = e;
     return (
       <Handle {...e} key={className}>
@@ -413,10 +411,10 @@ function Search({ location, history }) {
             {/* Search Form */}
             <Form
               className={`shadow-sm px-3 ${Styles.search_container}`}
-              onSubmit={(event) => {
+              onSubmit={event => {
                 handleSubmit(event, true);
               }}
-              ref={(ref) => {
+              ref={ref => {
                 searchCol = ref;
               }}
               key={form_key}
@@ -450,7 +448,7 @@ function Search({ location, history }) {
               {/* Reset Filters Button */}
               <Row className="pt-3 px-4">
                 <small
-                  className={Styles.reset_filters_btn + ' pl-1'}
+                  className={Styles.reset_filters_btn + ' mx-auto'}
                   onClick={handleResetFilters}
                 >
                   Reset Filters
@@ -469,7 +467,7 @@ function Search({ location, history }) {
                       }
                       onChange={handleChange}
                       placeholder="Find a class..."
-                      ref={(ref) => (searchText = ref)}
+                      ref={ref => (searchText = ref)}
                     />
                   </InputGroup>
                 </div>
@@ -480,7 +478,7 @@ function Search({ location, history }) {
                   <Select
                     defaultValue={sortbyOptions[0]}
                     options={sortbyOptions}
-                    ref={(ref) => {
+                    ref={ref => {
                       sortby = ref;
                     }}
                     // prevent overlap with tooltips
@@ -501,7 +499,7 @@ function Search({ location, history }) {
                       // defaultValue={[seasonsOptions[0]]}
                       defaultValue={[{ value: '202003', label: 'Fall 2020' }]}
                       options={seasonsOptions}
-                      ref={(ref) => {
+                      ref={ref => {
                         seasons = ref;
                       }}
                       placeholder="All"
@@ -520,7 +518,7 @@ function Search({ location, history }) {
                     isMulti
                     options={skillsAreasOptions}
                     placeholder="Any"
-                    ref={(ref) => {
+                    ref={ref => {
                       skillsAreas = ref;
                     }}
                     // colors
@@ -538,7 +536,7 @@ function Search({ location, history }) {
                     isMulti
                     options={creditOptions}
                     placeholder="Any"
-                    ref={(ref) => {
+                    ref={ref => {
                       credits = ref;
                     }}
                     // prevent overlap with tooltips
@@ -559,7 +557,7 @@ function Search({ location, history }) {
                     ]}
                     options={schoolOptions}
                     placeholder="Any"
-                    ref={(ref) => {
+                    ref={ref => {
                       schools = ref;
                     }}
                     // prevent overlap with tooltips
@@ -582,7 +580,7 @@ function Search({ location, history }) {
                       defaultValue={ratingBounds}
                       // debounce the slider state update
                       // to make it smoother
-                      onChange={debounce((value) => {
+                      onChange={debounce(value => {
                         setRatingBounds(value);
                       }, 250)}
                       handle={ratingSliderHandle}
@@ -603,7 +601,7 @@ function Search({ location, history }) {
                       defaultValue={workloadBounds}
                       // debounce the slider state update
                       // to make it smoother
-                      onChange={debounce((value) => {
+                      onChange={debounce(value => {
                         setWorkloadBounds(value);
                       }, 250)}
                       handle={workloadSliderHandle}
@@ -622,7 +620,7 @@ function Search({ location, history }) {
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
                     checked={hideCancelled}
-                    onChange={(e) => {}} // dummy handler to remove warning
+                    onChange={e => {}} // dummy handler to remove warning
                   />
                   <Form.Check.Label
                     onClick={() => setHideCancelled(!hideCancelled)}
