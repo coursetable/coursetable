@@ -72,7 +72,16 @@ const CourseModalEvaluations = ({ crn, info }) => {
 
   return (
     <div>
-      <Tabs variant="tabs" transition={false}>
+      <Tabs
+        variant="tabs"
+        transition={false}
+        onSelect={() => {
+          // Scroll to top of modal when a different tab is selected
+          document
+            .querySelector('.modal-body')
+            .scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        }}
+      >
         {/* Recommend Question */}
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">

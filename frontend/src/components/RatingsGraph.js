@@ -65,7 +65,7 @@ const RatingsGraph = ({ ratings, reverse }) => {
     <Row
       className={
         styles.container +
-        ' mx-auto pl-3 pr-3 mb-4 justify-content-center align-items-end'
+        ' mx-auto px-3 mb-5 justify-content-center align-items-end'
       }
     >
       {columns}

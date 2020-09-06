@@ -12,3 +12,9 @@
   font-weight: 600;
   font-size: 14px;
 }
+
+:global .nav-tabs {
+  position: sticky;
+  top: -1rem;
+  background-color: white;
+}
