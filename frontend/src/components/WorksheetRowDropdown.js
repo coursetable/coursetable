@@ -65,9 +65,9 @@ function WorksheetRowDropdown({
   }
 
   return (
-    <Row className={styles.container + ' shadow-sm mx-auto pt-1 pb-2'}>
+    <Row className={styles.container + ' shadow-sm mx-auto pt-2 pb-2'}>
       {/* Season Select */}
-      <Col md={6} className="px-2">
+      <Col md={6} className="pl-2 pr-1">
         <div className={styles.select_container}>
           <Select
             value={{
@@ -83,7 +83,7 @@ function WorksheetRowDropdown({
         </div>
       </Col>
       {/* FB Friend Select */}
-      <Col md={6} className="px-2">
+      <Col md={6} className="pr-2 pl-1">
         <div className={styles.select_container}>
           <Select
             value={{

@@ -59,20 +59,31 @@ const WorksheetExpandedList = ({
     // Add list item HTML to items list
     items.push(
       <div key={i}>
-        <SearchResultsItem
-          course={course}
-          showModal={showModal}
-          isLast={i === courses.length - 1}
-          hasSeason={hasSeason}
-          ROW_WIDTH={ROW_WIDTH}
-          PROF_WIDTH={PROF_WIDTH}
-          MEET_WIDTH={MEET_WIDTH}
-          RATE_WIDTH={RATE_WIDTH}
-          BOOKMARK_WIDTH={BOOKMARK_WIDTH}
-          PADDING={PADDING}
-          PROF_CUT={PROF_CUT}
-          MEET_CUT={MEET_CUT}
-        />
+        {end_fade ? (
+          // Fade animation finished, and we can display data
+          <SearchResultsItem
+            course={course}
+            showModal={showModal}
+            isLast={i === courses.length - 1}
+            hasSeason={hasSeason}
+            ROW_WIDTH={ROW_WIDTH}
+            PROF_WIDTH={PROF_WIDTH}
+            MEET_WIDTH={MEET_WIDTH}
+            RATE_WIDTH={RATE_WIDTH}
+            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
+            PADDING={PADDING}
+            PROF_CUT={PROF_CUT}
+            MEET_CUT={MEET_CUT}
+          />
+        ) : (
+          // Fade animation hasn't finished
+          <Row
+            className="mx-auto my-0 p-0"
+            style={{ height: '67px', borderBottom: 'solid 2px #f6f6f6' }}
+          >
+            <strong className="m-auto">Loading...</strong>
+          </Row>
+        )}
       </div>
     );
   }
@@ -93,9 +104,7 @@ const WorksheetExpandedList = ({
             ref={ref_width}
             className={
               'mx-auto px-2 py-2 shadow-sm justify-content-between ' +
-              search_results_styles.results_header_row +
-              ' ' +
-              styles.results_header_row
+              search_results_styles.results_header_row
             }
           >
             <React.Fragment>
@@ -113,7 +122,6 @@ const WorksheetExpandedList = ({
                   }px`,
                   paddingLeft: '15px',
                 }}
-                className="mr-auto"
               >
                 <strong>{'Course'}</strong>
               </div>

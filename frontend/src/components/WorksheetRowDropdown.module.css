@@ -10,5 +10,10 @@
 
 .select_container {
   width: 100%;
-  border-bottom: 1px solid rgb(209, 209, 209);
+  border-radius: 8px;
+  background-color: rgb(240, 240, 240);
+}
+
+.select_container:hover {
+  background-color: rgba(220, 236, 255, 0.7);
 }

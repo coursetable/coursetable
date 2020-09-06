@@ -124,11 +124,13 @@ const SearchResultsItem = ({
   return (
     <Row
       className={
-        'mx-auto px-2 py-2 justify-content-between shadow-sm ' +
-        Styles.search_result_item
+        'mx-auto px-2 py-2 justify-content-between ' + Styles.search_result_item
       }
       style={{
         borderBottom: isLast ? 'none' : 'solid 2px #f6f6f6',
+        borderBottomLeftRadius: isLast ? '8px' : '',
+        borderBottomRightRadius: isLast ? '8px' : '',
+        height: '67px',
       }}
       onClick={() => {
         showModal(course);

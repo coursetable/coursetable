@@ -241,7 +241,7 @@ const SearchResults = ({
       );
     }
 
-    // otherwise, prepare the listing
+    // Store HTML for list view results
     else {
       resultsListing = (
         <InfiniteLoader
