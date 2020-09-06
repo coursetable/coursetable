@@ -81,6 +81,12 @@ function Footer() {
                   Join us
                 </NavLink>
               </li>
+              {/* Blog */}
+              <li>
+                <NavLink to="/blog" onClick={scrollToTop}>
+                  Blog
+                </NavLink>
+              </li>
               {/* Github */}
               <li>
                 <a
