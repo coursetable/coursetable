@@ -26,7 +26,16 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
 
   // Holds HTML for the FB friends
   let friend_options = [
-    <Dropdown.Item key={'me'} eventKey={'me'} className="d-flex">
+    <Dropdown.Item
+      key={'me'}
+      eventKey={'me'}
+      className="d-flex"
+      // Styling if this is the current person
+      style={{
+        backgroundColor: 'me' === cur_person ? '#007bff' : '',
+        color: 'me' === cur_person ? 'white' : 'black',
+      }}
+    >
       <div className="mx-auto">Me</div>
     </Dropdown.Item>,
   ];
@@ -40,7 +49,16 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
   for (let friend in friendInfo) {
     if (containsCurSeason(friendWorksheets[friend]))
       friend_options.push(
-        <Dropdown.Item key={friend} eventKey={friend} className="d-flex">
+        <Dropdown.Item
+          key={friend}
+          eventKey={friend}
+          className="d-flex"
+          // Styling if this is the current person
+          style={{
+            backgroundColor: friend === cur_person ? '#007bff' : '',
+            color: friend === cur_person ? 'white' : 'black',
+          }}
+        >
           <div className="mx-auto">{friendInfo[friend].name}</div>
         </Dropdown.Item>
       );
