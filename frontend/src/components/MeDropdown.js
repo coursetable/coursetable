@@ -65,10 +65,14 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
-    // Sign Out of Yale CAS
-    window.location.href = '/legacy_api/index.php?logout=1';
-
-    // TODO: Only sign out of coursetable
+    // Clear cookies
+    document.cookie.split(';').forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+    });
+    // Redirect to home page and refresh as well
+    window.location.pathname = '/';
   };
 
   // Keep dropdown open on clicks
