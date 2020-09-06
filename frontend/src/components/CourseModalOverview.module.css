@@ -3,11 +3,8 @@
 }
 
 .lable_bubble {
-  background-color: rgb(223, 223, 223);
-  padding: 6px;
-  border-radius: 10px;
   font-weight: 550;
-  color: rgb(100, 100, 100);
+  color: rgb(136, 136, 136);
 }
 
 .metadata {
@@ -17,10 +14,8 @@
 .rating_bubble {
   background-color: rgb(190, 221, 255);
   border-radius: 8px;
-
   /* HAVE RATING BUBBLE ANIMATION */
   /* max-height: 24px; */
-
   /* NO RATING BUBBLE ANIMATION */
   max-height: 3rem;
 
