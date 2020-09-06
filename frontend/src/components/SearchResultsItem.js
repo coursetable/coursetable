@@ -21,10 +21,11 @@ import { fbFriendsAlsoTaking } from '../utilities';
 import Styles from './SearchResultsItem.module.css';
 
 /**
- * Renders a list item for a search result
+ * Renders a list item for a search result and expanded worksheet list item
  * @prop course - listing data for the current course
  * @prop showModal - function that shows the course modal for this listing
  * @prop isLast - boolean | is this the last course of the search results?
+ * @prop hasSeason - function to pass to bookmark button
  * @prop ROW_WIDTH - integer that holds width of the row
  * @prop PROF_WIDTH - integer that holds width of the professor column
  * @prop MEET_WIDTH - integer that holds width of the meets column
@@ -39,6 +40,7 @@ const SearchResultsItem = ({
   course,
   showModal,
   isLast,
+  hasSeason = null,
   ROW_WIDTH,
   PROF_WIDTH,
   MEET_WIDTH,
@@ -90,7 +92,7 @@ const SearchResultsItem = ({
   }
 
   // Render popover that contains title, description, and requirements when hovering over course name
-  const renderTitlePopover = props => {
+  const renderTitlePopover = (props) => {
     return (
       <Popover {...props} id="title_popover">
         <Popover.Title>
@@ -113,7 +115,7 @@ const SearchResultsItem = ({
   };
 
   // Render tooltip with names of FB friends also shopping
-  const renderFBFriendsTooltip = props => (
+  const renderFBFriendsTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       {also_taking.join(' • ')}
     </Tooltip>
@@ -137,12 +139,14 @@ const SearchResultsItem = ({
         {/* Course Title, Code, and Skills/Area column */}
         <div
           style={{
-            width: `${ROW_WIDTH -
+            width: `${
+              ROW_WIDTH -
               (width > PROF_CUT ? PROF_WIDTH : 0) -
               (width > MEET_CUT ? MEET_WIDTH : 0) -
               3 * RATE_WIDTH -
               BOOKMARK_WIDTH -
-              PADDING}px`,
+              PADDING
+            }px`,
             paddingLeft: '15px',
           }}
           className={Styles.course_header}
@@ -154,7 +158,7 @@ const SearchResultsItem = ({
             <div className={Styles.course_code}>{course.course_code}</div>
             {/* Course Skills/Areas */}
             <div className={Styles.skills_areas}>
-              {course.skills.map(skill => (
+              {course.skills.map((skill) => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -169,7 +173,7 @@ const SearchResultsItem = ({
                   {skill}
                 </Badge>
               ))}
-              {course.areas.map(area => (
+              {course.areas.map((area) => (
                 <Badge
                   variant="secondary"
                   className={Styles.tag}
@@ -225,14 +229,10 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_rating
-              ? ratingColormap(course.average_rating)
-                  .darken(3)
-                  .css()
+              ? ratingColormap(course.average_rating).darken(3).css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating))
-                  .alpha(0.75)
-                  .css()
+              ? chroma(ratingColormap(course.average_rating)).alpha(0.75).css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -248,9 +248,7 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_professor
-              ? ratingColormap(course.average_professor)
-                  .darken(3)
-                  .css()
+              ? ratingColormap(course.average_professor).darken(3).css()
               : '#b5b5b5',
             backgroundColor: course.average_professor
               ? chroma(ratingColormap(course.average_professor))
@@ -273,9 +271,7 @@ const SearchResultsItem = ({
         <div
           style={{
             color: course.average_workload
-              ? workloadColormap(course.average_workload)
-                  .darken(2)
-                  .css()
+              ? workloadColormap(course.average_workload).darken(2).css()
               : '#b5b5b5',
             backgroundColor: course.average_workload
               ? chroma(workloadColormap(course.average_workload))
@@ -310,13 +306,15 @@ const SearchResultsItem = ({
       {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
-          worksheetView={false}
+          worksheetView={hasSeason != null}
           crn={course.crn}
           season_code={course.season_code}
+          modal={false}
+          hasSeason={hasSeason}
         />
       </div>
       {/* Render conflict icon only when component has been mounted */}
-      {mounted && (
+      {mounted && !hasSeason && (
         <div className={Styles.conflict_error}>
           <CourseConflictIcon course={course} />
         </div>

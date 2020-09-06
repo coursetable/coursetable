@@ -4,7 +4,7 @@ import { Row, Container } from 'react-bootstrap';
 
 import styles from './WorksheetExpandedList.module.css';
 import search_results_styles from './SearchResults.module.css';
-import WorksheetExpandedListItem from './WorksheetExpandedListItem';
+import SearchResultsItem from './SearchResultsItem';
 import WorksheetSettingsDropdown from './WorksheetSettingsDropdown';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
@@ -59,7 +59,7 @@ const WorksheetExpandedList = ({
     // Add list item HTML to items list
     items.push(
       <div key={i}>
-        <WorksheetExpandedListItem
+        <SearchResultsItem
           course={course}
           showModal={showModal}
           isLast={i === courses.length - 1}
