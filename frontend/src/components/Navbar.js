@@ -9,6 +9,7 @@ import Searchbar from '../components/Searchbar';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import FBLoginButton from './FBLoginButton';
 
 /**
  * Renders the navbar
@@ -30,6 +31,18 @@ function CourseTableNavbar({ isLoggedIn }) {
   // Fetch width of window
   const { width } = useWindowDimensions();
   const is_relative = width < 1230;
+
+  // Handle 'sign out' button click
+  const handleLogoutClick = () => {
+    // Clear cookies
+    document.cookie.split(';').forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/, '')
+        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+    });
+    // Redirect to home page and refresh as well
+    window.location.pathname = '/';
+  };
 
   return (
     <div>
@@ -80,16 +93,19 @@ function CourseTableNavbar({ isLoggedIn }) {
                     <Searchbar bar_size="md" />
                   </div>
                 )}
+                {/* Catalog Page */}
                 <NavLink to="/catalog" className={styles.navbar_links}>
                   Catalog
                 </NavLink>
+                {/* Worksheet Page */}
                 <NavLink to="/worksheet" className={styles.navbar_links}>
                   Worksheet
                 </NavLink>
+                {/* About Page */}
                 <NavLink to="/about" className={styles.navbar_links}>
                   About
                 </NavLink>
-                {/* Profile icon */}
+                {/* Profile Icon. Show if not mobile */}
                 <div className="d-none d-md-block">
                   <div className={styles.navbar_me}>
                     <div
@@ -104,6 +120,32 @@ function CourseTableNavbar({ isLoggedIn }) {
                       />
                     </div>
                   </div>
+                </div>
+                {/* Sign in/out and Facebook buttons. Show if mobile */}
+                <div className="d-md-none">
+                  {!isLoggedIn ? (
+                    <div
+                      className={styles.navbar_links}
+                      onClick={() => {
+                        window.location.href =
+                          '/legacy_api/index.php?forcelogin=1';
+                      }}
+                    >
+                      Sign In
+                    </div>
+                  ) : (
+                    <>
+                      <div className={styles.navbar_links}>
+                        <FBLoginButton />
+                      </div>
+                      <div
+                        className={styles.navbar_links}
+                        onClick={handleLogoutClick}
+                      >
+                        Sign Out
+                      </div>
+                    </>
+                  )}
                 </div>
               </Nav>
             </Navbar.Collapse>
