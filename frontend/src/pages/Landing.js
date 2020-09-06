@@ -39,13 +39,15 @@ function Landing() {
               <h1 className={styles.title + ' ' + styles.coursetable_logo}>
                 <Logo />
               </h1>
-              <p className={styles.description}>
+              <p className={styles.description + ' mt-3'}>
                 The best place to shop for classes at Yale.
               </p>
-              <Col className="mt-4">
-                <Row className={styles.btn_container}>
+              <Col className="mt-5">
+                <Row
+                  className={styles.btn_container + ' justify-content-center'}
+                >
                   {/* Login Button */}
-                  <Col md={4} className="p-0 mx-2">
+                  <Col md={'auto'} className="p-0 mx-2 mb-2">
                     <Button
                       href="/legacy_api/index.php?forcelogin=1"
                       variant="primary"
@@ -56,7 +58,7 @@ function Landing() {
                     </Button>
                   </Col>
                   {/* Feature Page Button */}
-                  <Col md={4} className="p-0 mx-2">
+                  <Col md={'auto'} className="p-0 mx-2 mb-2">
                     <Button
                       size="lg"
                       className={styles.btns}
