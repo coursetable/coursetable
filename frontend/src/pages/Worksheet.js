@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import { FetchWorksheet } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
@@ -24,6 +24,16 @@ function Worksheet() {
   const { user } = useUser();
   // Current user who's worksheet we are viewing
   const [fb_person, setFbPerson] = useState('me');
+  const handleFBPersonChange = (new_person) => {
+    // Reset listings data when changing FB person
+    setListings([]);
+    setInitWorksheet(
+      new_person === 'me'
+        ? user.worksheet
+        : user.fbWorksheets.worksheets[new_person]
+    );
+    setFbPerson(new_person);
+  };
   // Worksheet of the current person
   const cur_worksheet =
     fb_person === 'me'
@@ -69,15 +79,6 @@ function Worksheet() {
   const [start_fade, setStartFade] = useState(false);
   // Fade animation has ended
   const [end_fade, setEndFade] = useState(false);
-
-  // Reset listings data when changing FB person
-  useEffect(() => {
-    setListings([]);
-    setInitWorksheet(cur_worksheet);
-    // Ignore compile warning because we can't include cur_worksheet in dependency array
-    // If we do, the page has to perform a search query every time the user removes a course
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [fb_person]);
 
   // If worksheet doesn't exist
   if (cur_worksheet == null) return <div>Please Login</div>;
@@ -324,7 +325,7 @@ function Worksheet() {
                   cur_season={season}
                   season_codes={season_codes}
                   onSeasonChange={changeSeason}
-                  setFbPerson={setFbPerson}
+                  setFbPerson={handleFBPersonChange}
                   fb_person={fb_person}
                   hasSeason={hasSeason}
                 />
@@ -341,7 +342,7 @@ function Worksheet() {
                   onSeasonChange={changeSeason}
                   toggleCourse={toggleCourse}
                   setHoverCourse={setHoverCourse}
-                  setFbPerson={setFbPerson}
+                  setFbPerson={handleFBPersonChange}
                   cur_person={fb_person}
                   hasSeason={hasSeason}
                 />
@@ -392,7 +393,7 @@ function Worksheet() {
               courses={season_listings}
               hasSeason={hasSeason}
               showModal={showModal}
-              setFbPerson={setFbPerson}
+              setFbPerson={handleFBPersonChange}
               cur_person={fb_person}
             />
           </Col>
