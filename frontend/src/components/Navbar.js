@@ -5,10 +5,10 @@ import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
-import Searchbar from '../components/Searchbar';
+// import Searchbar from '../components/Searchbar';
+// import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import FBLoginButton from './FBLoginButton';
 
 /**
@@ -29,8 +29,8 @@ function CourseTableNavbar({ isLoggedIn }) {
   // Get the pathname of the current page
   const pathname = useLocation().pathname;
   // Fetch width of window
-  const { width } = useWindowDimensions();
-  const is_relative = width < 1230;
+  // const { width } = useWindowDimensions();
+  // const is_relative = width < 1230;
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
@@ -74,14 +74,11 @@ function CourseTableNavbar({ isLoggedIn }) {
 
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-            <Navbar.Collapse
-              id="basic-navbar-nav"
-              className="justify-content-end"
-            >
+            <Navbar.Collapse id="basic-navbar-nav" className="d-flex">
               {/* Close navbar on click in mobile view */}
-              <Nav onClick={() => setExpand(false)}>
-                {pathname === '/worksheet' && (
-                  // Display catalog searchbar if on worksheet view
+              <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
+                {/* {pathname === '/worksheet' && (
+                  // Display catalog searchbar if on worksheet view. NOT USING RN
                   <div
                     className={
                       'd-none d-md-block ' +
@@ -92,21 +89,31 @@ function CourseTableNavbar({ isLoggedIn }) {
                   >
                     <Searchbar bar_size="md" />
                   </div>
-                )}
+                )} */}
+                {/* About Page */}
+                <NavLink
+                  to="/about"
+                  className={styles.navbar_links + ' mr-auto'}
+                >
+                  About
+                </NavLink>
                 {/* Catalog Page */}
-                <NavLink to="/catalog" className={styles.navbar_links}>
+                <NavLink
+                  to="/catalog"
+                  className={styles.navbar_links + ' align-self-end'}
+                >
                   Catalog
                 </NavLink>
                 {/* Worksheet Page */}
-                <NavLink to="/worksheet" className={styles.navbar_links}>
+                <NavLink
+                  to="/worksheet"
+                  className={styles.navbar_links + ' align-self-end'}
+                >
                   Worksheet
                 </NavLink>
-                {/* About Page */}
-                <NavLink to="/about" className={styles.navbar_links}>
-                  About
-                </NavLink>
+
                 {/* Profile Icon. Show if not mobile */}
-                <div className="d-none d-md-block">
+                <div className="d-none d-md-block align-self-end">
                   <div className={styles.navbar_me}>
                     <div
                       ref={ref_visible}

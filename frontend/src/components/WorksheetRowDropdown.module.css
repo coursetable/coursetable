@@ -12,6 +12,7 @@
   width: 100%;
   border-radius: 8px;
   background-color: rgb(240, 240, 240);
+  transition: 0.3s;
 }
 
 .select_container:hover {
