@@ -6,7 +6,7 @@ import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import MeDropdown from './MeDropdown';
 // import Searchbar from '../components/Searchbar';
-// import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
@@ -29,7 +29,8 @@ function CourseTableNavbar({ isLoggedIn }) {
   // Get the pathname of the current page
   const pathname = useLocation().pathname;
   // Fetch width of window
-  // const { width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
+  const is_mobile = width < 768;
   // const is_relative = width < 1230;
 
   // Handle 'sign out' button click
@@ -74,7 +75,11 @@ function CourseTableNavbar({ isLoggedIn }) {
 
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
-            <Navbar.Collapse id="basic-navbar-nav" className="d-flex">
+            <Navbar.Collapse
+              id="basic-navbar-nav"
+              // Make navbar display: flex when not mobile. If mobile, normal formatting
+              className={!is_mobile ? 'd-flex' : 'justify-content-end'}
+            >
               {/* Close navbar on click in mobile view */}
               <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
                 {/* {pathname === '/worksheet' && (
@@ -93,27 +98,41 @@ function CourseTableNavbar({ isLoggedIn }) {
                 {/* About Page */}
                 <NavLink
                   to="/about"
-                  className={styles.navbar_links + ' mr-auto'}
+                  // Left align about link if not mobile
+                  className={
+                    styles.navbar_links + (!is_mobile ? ' mr-auto' : '')
+                  }
                 >
                   About
                 </NavLink>
                 {/* Catalog Page */}
                 <NavLink
                   to="/catalog"
-                  className={styles.navbar_links + ' align-self-end'}
+                  // Right align catalog link if not mobile
+                  className={
+                    styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
+                  }
                 >
                   Catalog
                 </NavLink>
                 {/* Worksheet Page */}
                 <NavLink
                   to="/worksheet"
-                  className={styles.navbar_links + ' align-self-end'}
+                  // Right align worksheet link if not mobile
+                  className={
+                    styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
+                  }
                 >
                   Worksheet
                 </NavLink>
 
                 {/* Profile Icon. Show if not mobile */}
-                <div className="d-none d-md-block align-self-end">
+                <div
+                  // Right align profile icon if not mobile
+                  className={
+                    'd-none d-md-block ' + (!is_mobile ? 'align-self-end' : '')
+                  }
+                >
                   <div className={styles.navbar_me}>
                     <div
                       ref={ref_visible}
