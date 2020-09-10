@@ -108,15 +108,13 @@ function Search({ location, history }) {
   // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
 
-  // react-select refs to get options later. TODO: CHANGE THESE TO STATES
-  var sortby = React.useRef();
-  var skillsAreas = React.useRef();
-  var credits = React.useRef();
-
   // react-select states for controlled forms
+  const [select_sortby, setSelectSortby] = useState(sortbyOptions[0]);
   const [select_seasons, setSelectSeasons] = useState([
     { value: '202003', label: 'Fall 2020' },
   ]);
+  const [select_skillsareas, setSelectSkillsAreas] = useState();
+  const [select_credits, setSelectCredits] = useState();
   const [select_schools, setSelectSchools] = useState([
     { value: 'YC', label: 'Yale College' },
     { value: 'GS', label: 'Graduate' },
@@ -181,25 +179,30 @@ function Search({ location, history }) {
     } else if (fetchedAll) return;
 
     // sorting options
-    var sortParams = sortby.select.props.value.value;
+    var sortParams = select_sortby.value;
     var ordering = sortbyQueries[sortParams];
 
     // seasons to filter
     var processedSeasons = select_seasons;
+
+    // whether or not multiple seasons are being returned
+    const temp_multiSeasons = processedSeasons
+      ? processedSeasons.length !== 1
+      : false;
+    if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
+
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
         return x.value;
       });
+      // set null defaults
+      if (processedSeasons.length === 0) {
+        processedSeasons = null;
+      }
     }
 
-    // whether or not multiple seasons are being returned
-    const temp_multiSeasons = processedSeasons
-      ? processedSeasons.length > 1
-      : false;
-    if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
-
     // skills and areas
-    var processedSkillsAreas = skillsAreas.select.props.value;
+    var processedSkillsAreas = select_skillsareas;
     if (processedSkillsAreas != null) {
       processedSkillsAreas = processedSkillsAreas.map((x) => {
         return x.value;
@@ -234,11 +237,15 @@ function Search({ location, history }) {
     }
 
     // credits to filter
-    var processedCredits = credits.select.props.value;
+    var processedCredits = select_credits;
     if (processedCredits != null) {
       processedCredits = processedCredits.map((x) => {
         return x.value;
       });
+      // set null defaults
+      if (processedCredits.length === 0) {
+        processedCredits = null;
+      }
     }
 
     // schools to filter
@@ -247,6 +254,10 @@ function Search({ location, history }) {
       processedSchools = processedSchools.map((x) => {
         return x.value;
       });
+      // set null defaults
+      if (processedSchools.length === 0) {
+        processedSchools = null;
+      }
     }
 
     // if the bounds are unaltered, we need to set them to null
@@ -485,15 +496,15 @@ function Search({ location, history }) {
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Sort By Multi-Select */}
                   <Select
-                    defaultValue={sortbyOptions[0]}
+                    value={select_sortby}
                     options={sortbyOptions}
-                    ref={(ref) => {
-                      sortby = ref;
-                    }}
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
+                    onChange={(options) => {
+                      setSelected(!selected);
+                      setSelectSortby(options);
+                    }}
                   />
                 </div>
               </Row>
@@ -538,7 +549,6 @@ function Search({ location, history }) {
                             // If summer school selected, remove it
                             if (new_schools[i].value === 'SU') {
                               new_schools.splice(i, 1);
-                              console.log('remove');
                             }
                           }
                           // Update schools state
@@ -554,16 +564,17 @@ function Search({ location, history }) {
                   {/* Skills/Areas Multi-Select */}
                   <Select
                     isMulti
+                    value={select_skillsareas}
                     options={skillsAreasOptions}
                     placeholder="Any"
-                    ref={(ref) => {
-                      skillsAreas = ref;
-                    }}
                     // colors
                     styles={colorOptionStyles}
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
+                    onChange={(options) => {
+                      setSelected(!selected);
+                      setSelectSkillsAreas(options);
+                    }}
                     components={animatedComponents}
                   />
                 </div>
@@ -572,15 +583,16 @@ function Search({ location, history }) {
                   {/* Course Credit Multi-Select */}
                   <Select
                     isMulti
+                    value={select_credits}
                     options={creditOptions}
                     placeholder="Any"
-                    ref={(ref) => {
-                      credits = ref;
-                    }}
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
+                    onChange={(options) => {
+                      setSelected(!selected);
+                      setSelectCredits(options);
+                    }}
                     components={animatedComponents}
                   />
                 </div>
