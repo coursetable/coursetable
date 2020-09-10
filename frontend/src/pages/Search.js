@@ -127,10 +127,6 @@ function Search({ location, history }) {
   var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
   var [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
 
-  // dummy variable to make selectors update
-  // parent state and avoid tooltip errors
-  var [selected, setSelected] = React.useState(false);
-
   // populate seasons from database
   var seasonsOptions;
   const seasonsData = useSeasons();
@@ -502,7 +498,6 @@ function Search({ location, history }) {
                     styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelected(!selected);
                       setSelectSortby(options);
                     }}
                   />
@@ -523,7 +518,6 @@ function Search({ location, history }) {
                       styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={(options) => {
-                        setSelected(!selected);
                         // Set seasons state
                         setSelectSeasons(options);
                         let has_summer_season = false;
@@ -572,7 +566,6 @@ function Search({ location, history }) {
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelected(!selected);
                       setSelectSkillsAreas(options);
                     }}
                     components={animatedComponents}
@@ -590,7 +583,6 @@ function Search({ location, history }) {
                     styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelected(!selected);
                       setSelectCredits(options);
                     }}
                     components={animatedComponents}
@@ -608,7 +600,6 @@ function Search({ location, history }) {
                     styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelected(!selected);
                       setSelectSchools(options);
                     }}
                     components={animatedComponents}
