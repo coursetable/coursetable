@@ -108,12 +108,19 @@ function Search({ location, history }) {
   // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
 
-  // react-select refs to get options later
+  // react-select refs to get options later. TODO: CHANGE THESE TO STATES
   var sortby = React.useRef();
-  var seasons = React.useRef();
   var skillsAreas = React.useRef();
   var credits = React.useRef();
-  var schools = React.useRef();
+
+  // react-select states for controlled forms
+  const [select_seasons, setSelectSeasons] = useState([
+    { value: '202003', label: 'Fall 2020' },
+  ]);
+  const [select_schools, setSelectSchools] = useState([
+    { value: 'YC', label: 'Yale College' },
+    { value: 'GS', label: 'Graduate' },
+  ]);
 
   // Does the user want to hide cancelled courses?
   var [hideCancelled, setHideCancelled] = React.useState(true);
@@ -178,7 +185,7 @@ function Search({ location, history }) {
     var ordering = sortbyQueries[sortParams];
 
     // seasons to filter
-    var processedSeasons = seasons.select.props.value;
+    var processedSeasons = select_seasons;
     if (processedSeasons != null) {
       processedSeasons = processedSeasons.map((x) => {
         return x.value;
@@ -235,7 +242,7 @@ function Search({ location, history }) {
     }
 
     // schools to filter
-    var processedSchools = schools.select.props.value;
+    var processedSchools = select_schools;
     if (processedSchools != null) {
       processedSchools = processedSchools.map((x) => {
         return x.value;
@@ -498,17 +505,46 @@ function Search({ location, history }) {
                     // Seasons Multi-Select
                     <Select
                       isMulti
-                      // defaultValue={[seasonsOptions[0]]}
-                      defaultValue={[{ value: '202003', label: 'Fall 2020' }]}
+                      value={select_seasons}
                       options={seasonsOptions}
-                      ref={(ref) => {
-                        seasons = ref;
-                      }}
                       placeholder="All"
                       // prevent overlap with tooltips
                       styles={selectStyles}
                       menuPortalTarget={document.body}
-                      onChange={() => setSelected(!selected)}
+                      onChange={(options) => {
+                        setSelected(!selected);
+                        // Set seasons state
+                        setSelectSeasons(options);
+                        let has_summer_season = false;
+                        // Check to see if user has selected a summer season
+                        if (options) {
+                          options.forEach((season) => {
+                            // Summer season exists
+                            if (season.value[5] === '2') {
+                              has_summer_season = true;
+                              // Add summer session to schools
+                              setSelectSchools([
+                                ...select_schools,
+                                { label: 'Summer Session', value: 'SU' },
+                              ]);
+                            }
+                          });
+                        }
+                        // If no summer season selected
+                        if (!has_summer_season) {
+                          // Copy school state
+                          let new_schools = [...select_schools];
+                          for (let i = 0; i < new_schools.length; i++) {
+                            // If summer school selected, remove it
+                            if (new_schools[i].value === 'SU') {
+                              new_schools.splice(i, 1);
+                              console.log('remove');
+                            }
+                          }
+                          // Update schools state
+                          setSelectSchools(new_schools);
+                        }
+                      }}
                       components={animatedComponents}
                     />
                   )}
@@ -553,19 +589,16 @@ function Search({ location, history }) {
                   {/* Yale Schools Multi-Select */}
                   <Select
                     isMulti
-                    defaultValue={[
-                      { value: 'YC', label: 'Yale College' },
-                      { value: 'GS', label: 'Graduate' },
-                    ]}
+                    value={select_schools}
                     options={schoolOptions}
                     placeholder="Any"
-                    ref={(ref) => {
-                      schools = ref;
-                    }}
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
-                    onChange={() => setSelected(!selected)}
+                    onChange={(options) => {
+                      setSelected(!selected);
+                      setSelectSchools(options);
+                    }}
                     components={animatedComponents}
                   />
                 </div>
