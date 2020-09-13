@@ -106,7 +106,7 @@ const SearchResults = ({
   const BOOKMARK_WIDTH = 50;
   const PADDING = 50;
   const PROF_CUT = 1300;
-  const MEET_CUT = 1000;
+  const MEET_CUT = 1200;
 
   // Holds HTML for the search results
   var resultsListing;

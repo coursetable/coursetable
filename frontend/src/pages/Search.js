@@ -388,9 +388,9 @@ function Search({ location, history }) {
     }
   }, [seasonsOptions, defaultSearch, handleSubmit]);
 
-  // Switch to grid view if window changes to mobile width
+  // Switch to grid view if window width changes < 900
   useEffect(() => {
-    if (width < 768 && isList === true) setView(false);
+    if (width < 900 && isList === true) setView(false);
   }, [width, isList]);
 
   return (
