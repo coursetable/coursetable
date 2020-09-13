@@ -146,6 +146,7 @@ const SearchResults = ({
           <SearchResultsItem
             course={flatten(data[index])}
             showModal={showModal}
+            multiSeasons={multiSeasons}
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
             ROW_WIDTH={ROW_WIDTH}
             PROF_WIDTH={PROF_WIDTH}

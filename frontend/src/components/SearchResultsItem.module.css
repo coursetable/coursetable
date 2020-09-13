@@ -44,6 +44,21 @@
   overflow: hidden;
 }
 
+.spring {
+  color: rgb(15, 100, 22) !important;
+  background-color: rgb(184, 223, 187) !important;
+}
+
+.summer {
+  color: rgb(230, 130, 0) !important;
+  background-color: rgb(243, 233, 200) !important;
+}
+
+.fall {
+  color: rgb(170, 50, 41) !important;
+  background-color: rgb(255, 212, 209) !important;
+}
+
 .dot {
   display: inline;
 }

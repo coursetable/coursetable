@@ -17,6 +17,9 @@ import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useUser } from '../user';
 import { fbFriendsAlsoTaking } from '../utilities';
+import { IoMdSunny } from 'react-icons/io';
+import { FcCloseUpMode } from 'react-icons/fc';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -24,6 +27,7 @@ import Styles from './SearchResultsItem.module.css';
  * Renders a list item for a search result and expanded worksheet list item
  * @prop course - listing data for the current course
  * @prop showModal - function that shows the course modal for this listing
+ * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLast - boolean | is this the last course of the search results?
  * @prop hasSeason - function to pass to bookmark button
  * @prop ROW_WIDTH - integer that holds width of the row
@@ -39,6 +43,7 @@ import Styles from './SearchResultsItem.module.css';
 const SearchResultsItem = ({
   course,
   showModal,
+  multiSeasons,
   isLast,
   hasSeason = null,
   ROW_WIDTH,
@@ -90,6 +95,39 @@ const SearchResultsItem = ({
       courseLocation = course.locations_summary;
     }
   }
+
+  // Season code for this listing
+  const season_code = course.season_code;
+  const season = season_code[5];
+  const year = season_code.substr(2, 2);
+  // Size of season icons
+  const icon_size = 10;
+  const seasons = ['spring', 'summer', 'fall'];
+  // Determine the icon for this season
+  const icon =
+    season === '1' ? (
+      <FcCloseUpMode className="my-auto" size={icon_size} />
+    ) : season === '2' ? (
+      <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
+    ) : (
+      <FaCanadianMapleLeaf
+        color="#9c0000"
+        className="my-auto"
+        size={icon_size}
+      />
+    );
+
+  // Tooltip for hovering over season
+  const season_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <small>
+        {seasons[season - 1].charAt(0).toUpperCase() +
+          seasons[season - 1].slice(1) +
+          ' ' +
+          season_code.substr(0, 4)}
+      </small>
+    </Tooltip>
+  );
 
   // Render popover that contains title, description, and requirements when hovering over course name
   const renderTitlePopover = (props) => {
@@ -158,6 +196,27 @@ const SearchResultsItem = ({
           <Row className="m-auto">
             {/* Course Code */}
             <div className={Styles.course_code}>{course.course_code}</div>
+            {/* Season Code */}
+            {multiSeasons && (
+              <OverlayTrigger
+                placement="top"
+                delay={{ show: 500, hide: 250 }}
+                overlay={season_tooltip}
+              >
+                <div className={Styles.skills_areas}>
+                  <Badge
+                    variant="secondary"
+                    className={
+                      Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
+                    }
+                    key={key++}
+                  >
+                    <div style={{ display: 'inline-block' }}>{icon}</div>
+                    &nbsp;{"'" + year}
+                  </Badge>
+                </div>
+              </OverlayTrigger>
+            )}
             {/* Course Skills/Areas */}
             <div className={Styles.skills_areas}>
               {course.skills.map((skill) => (
