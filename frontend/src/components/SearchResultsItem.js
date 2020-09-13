@@ -46,7 +46,7 @@ const SearchResultsItem = ({
   showModal,
   multiSeasons,
   isLast,
-  isLoggedIn,
+  isLoggedIn = true,
   hasSeason = null,
   ROW_WIDTH,
   PROF_WIDTH,
