@@ -48,6 +48,8 @@ import { FaSearch } from 'react-icons/fa';
 import { BsX } from 'react-icons/bs';
 import { flatten, preprocess_courses } from '../utilities';
 import { Element, scroller } from 'react-scroll';
+import { useUser } from '../user';
+import { toast } from 'react-toastify';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -60,6 +62,11 @@ const animatedComponents = makeAnimated();
  */
 
 function Search({ location, history }) {
+  // Fetch user context data
+  const { user } = useUser();
+  // Is the user logged in?
+  const isLoggedIn = user.worksheet !== null;
+
   // Fetch window dimensions
   const { height, width } = useWindowDimensions();
   let isMobile = width < 768;
@@ -393,6 +400,11 @@ function Search({ location, history }) {
     if (width < 900 && isList === true) setView(false);
   }, [width, isList]);
 
+  // Notify user that they aren't signed in on first load
+  useEffect(() => {
+    if (!isLoggedIn) toast.error('Please sign in to view evaluations');
+  }, []);
+
   return (
     <div className={Styles.search_base}>
       <GlobalHotKeys
@@ -703,6 +715,7 @@ function Search({ location, history }) {
               refreshCache={refreshCache}
               fetchedAll={fetchedAll}
               showModal={showModal}
+              isLoggedIn={isLoggedIn}
             />
           </Element>
         </Col>

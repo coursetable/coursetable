@@ -29,6 +29,7 @@ import Styles from './SearchResultsItem.module.css';
  * @prop showModal - function that shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLast - boolean | is this the last course of the search results?
+ * @prop isLoggedIn - boolean | is the user logged in?
  * @prop hasSeason - function to pass to bookmark button
  * @prop ROW_WIDTH - integer that holds width of the row
  * @prop PROF_WIDTH - integer that holds width of the professor column
@@ -45,6 +46,7 @@ const SearchResultsItem = ({
   showModal,
   multiSeasons,
   isLast,
+  isLoggedIn,
   hasSeason = null,
   ROW_WIDTH,
   PROF_WIDTH,
@@ -288,17 +290,24 @@ const SearchResultsItem = ({
         className="d-flex"
       >
         <div
+          // Only show eval data when user is signed in
           style={{
-            color: course.average_rating
-              ? ratingColormap(course.average_rating).darken(3).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating)).alpha(0.75).css()
-              : '#ebebeb',
+            color:
+              course.average_rating && isLoggedIn
+                ? ratingColormap(course.average_rating).darken(3).css()
+                : '#b5b5b5',
+            backgroundColor:
+              course.average_rating && isLoggedIn
+                ? chroma(ratingColormap(course.average_rating))
+                    .alpha(0.75)
+                    .css()
+                : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
+          {course.average_rating && isLoggedIn
+            ? course.average_rating.toFixed(1)
+            : 'N/A'}
         </div>
       </div>
       {/* Professor Rating */}
@@ -307,19 +316,22 @@ const SearchResultsItem = ({
         className="d-flex"
       >
         <div
+          // Only show eval data when user is signed in
           style={{
-            color: course.average_professor
-              ? ratingColormap(course.average_professor).darken(3).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_professor
-              ? chroma(ratingColormap(course.average_professor))
-                  .alpha(0.75)
-                  .css()
-              : '#ebebeb',
+            color:
+              course.average_professor && isLoggedIn
+                ? ratingColormap(course.average_professor).darken(3).css()
+                : '#b5b5b5',
+            backgroundColor:
+              course.average_professor && isLoggedIn
+                ? chroma(ratingColormap(course.average_professor))
+                    .alpha(0.75)
+                    .css()
+                : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course.average_professor
+          {course.average_professor && isLoggedIn
             ? course.average_professor.toFixed(1)
             : 'N/A'}
         </div>
@@ -330,19 +342,24 @@ const SearchResultsItem = ({
         className="d-flex"
       >
         <div
+          // Only show eval data when user is signed in
           style={{
-            color: course.average_workload
-              ? workloadColormap(course.average_workload).darken(2).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_workload
-              ? chroma(workloadColormap(course.average_workload))
-                  .alpha(0.33)
-                  .css()
-              : '#ebebeb',
+            color:
+              course.average_workload && isLoggedIn
+                ? workloadColormap(course.average_workload).darken(2).css()
+                : '#b5b5b5',
+            backgroundColor:
+              course.average_workload && isLoggedIn
+                ? chroma(workloadColormap(course.average_workload))
+                    .alpha(0.33)
+                    .css()
+                : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
+          {course.average_workload && isLoggedIn
+            ? course.average_workload.toFixed(1)
+            : 'N/A'}
         </div>
       </div>
       {/* # FB Friends also shopping */}

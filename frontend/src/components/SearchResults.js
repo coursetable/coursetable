@@ -41,6 +41,7 @@ const cache = new CellMeasurerCache({
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop refreshCache - integer that triggers the cache to recalculate height
  * @prop fetchedAll - boolean | Have we fetched all search results?
+ * @prop isLoggedIn - boolean | is the user logged in?
  */
 
 const SearchResults = ({
@@ -53,6 +54,7 @@ const SearchResults = ({
   refreshCache,
   fetchedAll,
   showModal,
+  isLoggedIn,
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -147,6 +149,7 @@ const SearchResults = ({
             course={flatten(data[index])}
             showModal={showModal}
             multiSeasons={multiSeasons}
+            isLoggedIn={isLoggedIn}
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
             ROW_WIDTH={ROW_WIDTH}
             PROF_WIDTH={PROF_WIDTH}
@@ -187,6 +190,7 @@ const SearchResults = ({
             <SearchResultsGridItem
               course={flatten(data[j])}
               showModal={showModal}
+              isLoggedIn={isLoggedIn}
               num_cols={num_cols}
               multiSeasons={multiSeasons}
               key={key++}

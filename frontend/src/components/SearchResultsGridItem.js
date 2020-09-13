@@ -23,6 +23,7 @@ import { FaCanadianMapleLeaf, FaAppleAlt } from 'react-icons/fa';
  * Renders a grid item for a search result
  * @prop course - listing data for the current course
  * @prop showModal - function that shows the course modal for this listing
+ * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_cols - integer that holds how many columns in grid view
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  */
@@ -30,6 +31,7 @@ import { FaCanadianMapleLeaf, FaAppleAlt } from 'react-icons/fa';
 const SearchResultsGridItem = ({
   course,
   showModal,
+  isLoggedIn,
   num_cols,
   multiSeasons,
 }) => {
@@ -264,16 +266,18 @@ const SearchResultsGridItem = ({
               >
                 <Row className="m-auto justify-content-end">
                   <div
+                    // Only show eval data when user is signed in
                     className={styles.rating + ' mr-1'}
                     style={{
-                      color: course.average_rating
-                        ? ratingColormap(course.average_rating)
-                            .darken()
-                            .saturate()
-                        : '#cccccc',
+                      color:
+                        course.average_rating && isLoggedIn
+                          ? ratingColormap(course.average_rating)
+                              .darken()
+                              .saturate()
+                          : '#cccccc',
                     }}
                   >
-                    {course.average_rating
+                    {course.average_rating && isLoggedIn
                       ? course.average_rating.toFixed(RATINGS_PRECISION)
                       : 'N/A'}
                   </div>
@@ -288,16 +292,18 @@ const SearchResultsGridItem = ({
               >
                 <Row className="m-auto justify-content-end">
                   <div
+                    // Only show eval data when user is signed in
                     className={styles.rating + ' mr-1'}
                     style={{
-                      color: course.professor_avg_rating
-                        ? ratingColormap(course.professor_avg_rating)
-                            .darken()
-                            .saturate()
-                        : '#cccccc',
+                      color:
+                        course.professor_avg_rating && isLoggedIn
+                          ? ratingColormap(course.professor_avg_rating)
+                              .darken()
+                              .saturate()
+                          : '#cccccc',
                     }}
                   >
-                    {course.professor_avg_rating
+                    {course.professor_avg_rating && isLoggedIn
                       ? course.professor_avg_rating
                       : 'N/A'}
                   </div>
@@ -312,16 +318,18 @@ const SearchResultsGridItem = ({
               >
                 <Row className="m-auto justify-content-end">
                   <div
+                    // Only show eval data when user is signed in
                     className={styles.rating + ' mr-1'}
                     style={{
-                      color: course.average_workload
-                        ? workloadColormap(course.average_workload)
-                            .darken()
-                            .saturate()
-                        : '#cccccc',
+                      color:
+                        course.average_workload && isLoggedIn
+                          ? workloadColormap(course.average_workload)
+                              .darken()
+                              .saturate()
+                          : '#cccccc',
                     }}
                   >
-                    {course.average_workload
+                    {course.average_workload && isLoggedIn
                       ? course.average_workload.toFixed(RATINGS_PRECISION)
                       : 'N/A'}
                   </div>
