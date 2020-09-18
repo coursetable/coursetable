@@ -3,25 +3,49 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 const fs = require('fs');
 const https = require('https');
 const morgan = require('morgan');
+const axios = require('axios').default;
 
 const app = express();
 const port = 8080;
 const insecure_port = process.env.PORT || 3001;
-const frontend_uri = process.env.FRONTEND_LOC || "http://frontend:3000";
+const frontend_uri = process.env.FRONTEND_LOC || 'http://frontend:3000';
+const php_uri = 'http://nginx:8080';
 
-// Enable request logging
+// Enable request logging.
 app.use(morgan('tiny'));
+
+// Setup all the proxy routes.
 
 app.use(
   ['/legacy_api', '/index.php'],
   createProxyMiddleware({
-    target: 'http://nginx:8080/',
+    target: php_uri,
     pathRewrite: {
       '^/legacy_api': '/', // remove base path
     },
     xfwd: true,
   })
 );
+
+app.use('/ferry', (req, res, next) => {
+  // Query the backend for authentication status.
+  axios
+    .get(`${php_uri}/AuthStatus.php`, {
+      headers: {
+        cookie: req.headers['cookie'],
+      },
+    })
+    .then(({ data }) => {
+      if (data.success) {
+        return next();
+      }
+      // Return 403 forbidden if the request lacks auth.
+      res.status(403).send('request missing authentication');
+    })
+    .catch((err) => {
+      return next(err);
+    });
+});
 
 app.use(
   '/ferry',
