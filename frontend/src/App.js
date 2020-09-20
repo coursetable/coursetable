@@ -22,6 +22,7 @@ import Changelog from './pages/Changelog';
 import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
+import Thankyou from './pages/Thankyou';
 
 import { useUser } from './user';
 import { Row, Spinner } from 'react-bootstrap';
@@ -103,6 +104,11 @@ function App() {
               {/* Worksheet */}
               <MyRoute isRoutePrivate={true} exact path="/worksheet">
                 {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
+              </MyRoute>
+
+              {/* Thank You */}
+              <MyRoute exact path="/thankyou">
+                <Thankyou />
               </MyRoute>
 
               {/* Footer Links */}
