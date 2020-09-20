@@ -23,6 +23,8 @@ import {
 } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
+import Authentication from '../images/authentication.svg';
+
 import { FaArrowCircleUp } from 'react-icons/fa';
 
 // Measures the row height. NOT USING RN
@@ -165,18 +167,22 @@ const SearchResults = ({
     );
   };
 
-  // if no courses found, render the empty state
+  // if no courses found (either due to query or authentication), render the empty state
   if (data.length === 0) {
     resultsListing = (
       <div className="text-center py-5">
         <img
           alt="No courses found."
           className="py-5"
-          src={NoCoursesFound}
+          src={isLoggedIn ? NoCoursesFound : Authentication}
           style={{ width: '25%' }}
         ></img>
-        <h3>No courses found</h3>
-        <div>We couldn't find any courses matching your search.</div>
+        <h3>{isLoggedIn ? 'No courses found' : 'Please log in'}</h3>
+        <div>
+          {isLoggedIn
+            ? "We couldn't find any courses matching your search."
+            : 'A valid Yale NetID is required to access course information.'}
+        </div>
       </div>
     );
   } else {
@@ -313,14 +319,12 @@ const SearchResults = ({
                   <div
                     style={{
                       lineHeight: '30px',
-                      width: `${
-                        ROW_WIDTH -
+                      width: `${ROW_WIDTH -
                         (width > PROF_CUT ? PROF_WIDTH : 0) -
                         (width > MEET_CUT ? MEET_WIDTH : 0) -
                         3 * RATE_WIDTH -
                         BOOKMARK_WIDTH -
-                        PADDING
-                      }px`,
+                        PADDING}px`,
                       paddingLeft: '15px',
                     }}
                   >
@@ -388,9 +392,13 @@ const SearchResults = ({
           </div>
         )}
         <div className={!isList ? 'px-1 pt-3' : Styles.results_list_container}>
-          {/* Render search results */}
+          {/* If there are search results, render them */}
           {data.length !== 0 && resultsListing}
-          {refreshCache > 0 && data.length === 0 && !loading && resultsListing}
+          {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
+          {data.length === 0 &&
+            (!isLoggedIn || refreshCache > 0) &&
+            !loading &&
+            resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
             <Row
