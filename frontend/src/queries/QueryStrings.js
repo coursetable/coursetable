@@ -99,6 +99,7 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
         course_professors {
           professor {
             average_rating
+            name
           }
         }
         listings {

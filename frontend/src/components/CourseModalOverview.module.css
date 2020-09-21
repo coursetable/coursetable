@@ -65,6 +65,16 @@
   text-overflow: ellipsis;
 }
 
+.link {
+  color: #007bff;
+}
+
+.link:hover {
+  color: rgb(49, 94, 192);
+  cursor: pointer;
+  text-decoration: underline;
+}
+
 .read_more {
   color: #007bff;
   transition: 0.3s;
@@ -78,6 +88,10 @@
 .requirements {
   font-weight: 500;
   color: rgb(252, 105, 105);
+}
+
+:global .popover {
+  max-width: 400px !important;
 }
 
 @media (hover: none) {

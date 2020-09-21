@@ -319,12 +319,14 @@ const SearchResults = ({
                   <div
                     style={{
                       lineHeight: '30px',
-                      width: `${ROW_WIDTH -
+                      width: `${
+                        ROW_WIDTH -
                         (width > PROF_CUT ? PROF_WIDTH : 0) -
                         (width > MEET_CUT ? MEET_WIDTH : 0) -
                         3 * RATE_WIDTH -
                         BOOKMARK_WIDTH -
-                        PADDING}px`,
+                        PADDING
+                      }px`,
                       paddingLeft: '15px',
                     }}
                   >

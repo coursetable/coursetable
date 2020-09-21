@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Row, Col, Modal } from 'react-bootstrap';
+import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
@@ -115,12 +115,55 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   let evaluations = [];
   // Hold HTML code that displays the list of evaluations
   let items = [];
-
+  // Holds Prof information for popover
+  let prof_info = {};
+  listing.professor_names.forEach((prof) => {
+    prof_info[prof] = {
+      num_courses: 0,
+      total_rating: 0,
+      rating_first: 0,
+      rating_last: 0,
+      season_first: '999999',
+      season_last: '000000',
+    };
+  });
   // Make sure data is loaded
   if (data) {
     // Loop by season code
     data.computed_course_info.forEach((season) => {
       if (!season.course.evaluation_statistics[0]) return;
+      // Stores the average rating for all profs teaching this course and populates prof_info
+      let average_professor_rating = 0;
+      if (season.course.course_professors) {
+        const num_profs = season.course.course_professors.length;
+        season.course.course_professors.forEach((prof) => {
+          if (prof.professor.average_rating) {
+            // Add up all prof ratings
+            average_professor_rating += prof.professor.average_rating;
+            // Update prof_info
+            if (prof.professor.name in prof_info) {
+              // Store dict from prof_info for easy access
+              const dict = prof_info[prof.professor.name];
+              // Total number of courses this professor teaches
+              dict.num_courses++;
+              // Total rating. Will divide by number of courses later to get average
+              dict.total_rating += prof.professor.average_rating;
+              // Update earliest rating
+              if (season.season_code < dict.season_first) {
+                dict.rating_first = prof.professor.average_rating;
+                dict.season_first = season.season_code;
+              }
+              // Update most recent rating
+              if (season.season_code > dict.season_last) {
+                dict.rating_last = prof.professor.average_rating;
+                dict.season_last = season.season_code;
+              }
+            }
+          }
+        });
+        // Divide by number of profs to get average
+        average_professor_rating /= num_profs;
+      }
       evaluations.push({
         // Course rating
         rating:
@@ -133,11 +176,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             ? season.course.evaluation_statistics[0].avg_workload
             : -1,
         // Professor rating
-        professor_rating:
-          season.course.course_professors[0] &&
-          season.course.course_professors[0].professor.average_rating != null
-            ? season.course.course_professors[0].professor.average_rating
-            : -1,
+        professor_rating: average_professor_rating
+          ? average_professor_rating
+          : -1,
         // Enrollment data
         enrollment:
           season.course.evaluation_statistics[0].enrollment != null
@@ -314,6 +355,112 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     }
   }
 
+  // Render popover that contains prof info
+  const renderProfInfoPopover = (props) => {
+    let prof_name = '';
+    let prof_dict = {};
+    // Store dict from prop_info for easy access
+    if (props.popper.state) {
+      prof_name = props.popper.state.options.prof_name;
+      prof_dict = prof_info[prof_name];
+    }
+    return (
+      <Popover {...props} id="title_popover" className="d-none d-md-block">
+        <Popover.Title>
+          <Row className="mx-auto">
+            {/* Professor Name */}
+            <strong>{prof_name}</strong>
+          </Row>
+          <Row className="mx-auto">
+            {/* Professor Email */}
+            <small>Professor's Email</small>
+          </Row>
+        </Popover.Title>
+        <Popover.Content style={{ width: '400px' }}>
+          <Row className="mx-auto my-1">
+            <Col md={4}>
+              {/* Professor Rating */}
+              <Row className="mx-auto">
+                <strong
+                  className="mx-auto"
+                  style={{
+                    color: prof_dict.num_courses
+                      ? ratingColormap(
+                          prof_dict.total_rating / prof_dict.num_courses
+                        )
+                          .darken()
+                          .saturate()
+                      : '#b5b5b5',
+                  }}
+                >
+                  {
+                    // Get average rating
+                    prof_dict.num_courses
+                      ? (
+                          prof_dict.total_rating / prof_dict.num_courses
+                        ).toFixed(1)
+                      : 'N/A'
+                  }
+                </strong>
+              </Row>
+              <Row className="mx-auto">
+                <small className="mx-auto text-center  font-weight-bold">
+                  Avg. Rating
+                </small>
+              </Row>
+            </Col>
+            <Col md={4}>
+              {/* Number of courses taught by this professor */}
+              <Row className="mx-auto">
+                <strong className="mx-auto">{prof_dict.num_courses}</strong>
+              </Row>
+              <Row className="mx-auto">
+                <small className="mx-auto text-center  font-weight-bold">
+                  Classes Taught
+                </small>
+              </Row>
+            </Col>
+            <Col md={4}>
+              {/* Professor rating change */}
+              <Row className="mx-auto">
+                <strong
+                  className="mx-auto"
+                  style={{
+                    color: prof_dict.num_courses
+                      ? ratingColormap(
+                          (
+                            5 +
+                            prof_dict.rating_last -
+                            prof_dict.rating_first
+                          ).toFixed(1) / 2
+                        )
+                          .darken()
+                          .saturate()
+                      : '#b5b5b5',
+                  }}
+                >
+                  {
+                    // Get difference between earliest and latest ratings
+                    prof_dict.num_courses
+                      ? (
+                          prof_dict.rating_last - prof_dict.rating_first
+                        ).toFixed(1)
+                      : 'N/A'
+                  }
+                </strong>
+              </Row>
+              <Row className="mx-auto">
+                <small className="mx-auto text-center font-weight-bold">
+                  Rating Change
+                </small>
+              </Row>
+            </Col>
+          </Row>
+        </Popover.Content>
+      </Popover>
+    );
+  };
+
   return (
     <Modal.Body>
       <Row className="m-auto">
@@ -356,7 +503,23 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Professor</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['professors'] ? listing.professors : 'N/A'}
+              {listing['professor_names'].map((prof, index) => {
+                return (
+                  <>
+                    {index ? ' • ' : ''}
+                    <OverlayTrigger
+                      trigger="click"
+                      rootClose
+                      placement="right"
+                      overlay={renderProfInfoPopover}
+                      popperConfig={{ prof_name: prof }}
+                    >
+                      <span className={Styles.link}>{prof}</span>
+                    </OverlayTrigger>
+                  </>
+                );
+              })}
+              {/* {listing['professors'] ? listing.professors : 'N/A'} */}
             </Col>
           </Row>
           {/* Course Times */}
