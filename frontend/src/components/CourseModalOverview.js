@@ -503,23 +503,24 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Professor</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['professor_names'].map((prof, index) => {
-                return (
-                  <>
-                    {index ? ' • ' : ''}
-                    <OverlayTrigger
-                      trigger="click"
-                      rootClose
-                      placement="right"
-                      overlay={renderProfInfoPopover}
-                      popperConfig={{ prof_name: prof }}
-                    >
-                      <span className={Styles.link}>{prof}</span>
-                    </OverlayTrigger>
-                  </>
-                );
-              })}
-              {/* {listing['professors'] ? listing.professors : 'N/A'} */}
+              {listing['professor_names'].length
+                ? listing['professor_names'].map((prof, index) => {
+                    return (
+                      <>
+                        {index ? ' • ' : ''}
+                        <OverlayTrigger
+                          trigger="click"
+                          rootClose
+                          placement="right"
+                          overlay={renderProfInfoPopover}
+                          popperConfig={{ prof_name: prof }}
+                        >
+                          <span className={Styles.link}>{prof}</span>
+                        </OverlayTrigger>
+                      </>
+                    );
+                  })
+                : 'N/A'}
             </Col>
           </Row>
           {/* Course Times */}
