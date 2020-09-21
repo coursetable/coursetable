@@ -90,10 +90,6 @@
   color: rgb(252, 105, 105);
 }
 
-:global .popover {
-  max-width: 400px !important;
-}
-
 @media (hover: none) {
   .rating_bubble {
     max-height: 3rem;

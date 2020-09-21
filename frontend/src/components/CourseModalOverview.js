@@ -121,10 +121,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     prof_info[prof] = {
       num_courses: 0,
       total_rating: 0,
-      rating_first: 0,
-      rating_last: 0,
-      season_first: '999999',
-      season_last: '000000',
     };
   });
   // Make sure data is loaded
@@ -148,16 +144,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               dict.num_courses++;
               // Total rating. Will divide by number of courses later to get average
               dict.total_rating += prof.professor.average_rating;
-              // Update earliest rating
-              if (season.season_code < dict.season_first) {
-                dict.rating_first = prof.professor.average_rating;
-                dict.season_first = season.season_code;
-              }
-              // Update most recent rating
-              if (season.season_code > dict.season_last) {
-                dict.rating_last = prof.professor.average_rating;
-                dict.season_last = season.season_code;
-              }
             }
           }
         });
@@ -376,11 +362,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             <small>Professor's Email</small>
           </Row>
         </Popover.Title>
-        <Popover.Content style={{ width: '400px' }}>
+        <Popover.Content style={{ width: '274px' }}>
           <Row className="mx-auto my-1">
-            <Col md={4}>
+            <Col md={6}>
               {/* Professor Rating */}
-              <Row className="mx-auto">
+              <Row className="mx-auto mb-1">
                 <strong
                   className="mx-auto"
                   style={{
@@ -409,49 +395,14 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 </small>
               </Row>
             </Col>
-            <Col md={4}>
+            <Col md={6}>
               {/* Number of courses taught by this professor */}
-              <Row className="mx-auto">
+              <Row className="mx-auto mb-1">
                 <strong className="mx-auto">{prof_dict.num_courses}</strong>
               </Row>
               <Row className="mx-auto">
                 <small className="mx-auto text-center  font-weight-bold">
                   Classes Taught
-                </small>
-              </Row>
-            </Col>
-            <Col md={4}>
-              {/* Professor rating change */}
-              <Row className="mx-auto">
-                <strong
-                  className="mx-auto"
-                  style={{
-                    color: prof_dict.num_courses
-                      ? ratingColormap(
-                          (
-                            5 +
-                            prof_dict.rating_last -
-                            prof_dict.rating_first
-                          ).toFixed(1) / 2
-                        )
-                          .darken()
-                          .saturate()
-                      : '#b5b5b5',
-                  }}
-                >
-                  {
-                    // Get difference between earliest and latest ratings
-                    prof_dict.num_courses
-                      ? (
-                          prof_dict.rating_last - prof_dict.rating_first
-                        ).toFixed(1)
-                      : 'N/A'
-                  }
-                </strong>
-              </Row>
-              <Row className="mx-auto">
-                <small className="mx-auto text-center font-weight-bold">
-                  Rating Change
                 </small>
               </Row>
             </Col>
@@ -506,7 +457,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               {listing['professor_names'].length
                 ? listing['professor_names'].map((prof, index) => {
                     return (
-                      <>
+                      <React.Fragment key={index}>
                         {index ? ' • ' : ''}
                         <OverlayTrigger
                           trigger="click"
@@ -517,7 +468,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                         >
                           <span className={Styles.link}>{prof}</span>
                         </OverlayTrigger>
-                      </>
+                      </React.Fragment>
                     );
                   })
                 : 'N/A'}

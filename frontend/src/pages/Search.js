@@ -49,7 +49,6 @@ import { BsX } from 'react-icons/bs';
 import { flatten, preprocess_courses } from '../utilities';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
-import { toast } from 'react-toastify';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -399,11 +398,6 @@ function Search({ location, history }) {
   useEffect(() => {
     if (width < 900 && isList === true) setView(false);
   }, [width, isList]);
-
-  // Notify user that they aren't signed in on first load
-  useEffect(() => {
-    if (!isLoggedIn) toast.error('Please sign in to view evaluations');
-  }, []);
 
   return (
     <div className={Styles.search_base}>
