@@ -68,7 +68,7 @@ function WorksheetRowDropdown({
     <Row className={styles.container + ' shadow-sm mx-auto pt-2 pb-2'}>
       {/* Season Select */}
       <Col md={6} className="pl-2 pr-1">
-        <div className={styles.select_container}>
+        <div className={styles.select_container + ' ' + styles.hover_effect}>
           <Select
             value={{
               value: cur_season,
@@ -84,13 +84,23 @@ function WorksheetRowDropdown({
       </Col>
       {/* FB Friend Select */}
       <Col md={6} className="pr-2 pl-1">
-        <div className={styles.select_container}>
+        <div
+          className={
+            styles.select_container +
+            (user.fbLogin ? ' ' + styles.hover_effect : '')
+          }
+        >
           <Select
             value={{
               value: cur_person,
-              label: cur_person === 'me' ? 'Me' : friendInfo[cur_person].name,
+              label: user.fbLogin
+                ? cur_person === 'me'
+                  ? 'Me'
+                  : friendInfo[cur_person].name
+                : 'Connect FB',
             }}
             isSearchable={true}
+            isDisabled={!user.fbLogin}
             options={friend_options}
             onChange={(option) => {
               setFbPerson(option.value);

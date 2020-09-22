@@ -15,6 +15,6 @@
   transition: 0.3s;
 }
 
-.select_container:hover {
+.hover_effect:hover {
   background-color: rgba(220, 236, 255, 0.7);
 }

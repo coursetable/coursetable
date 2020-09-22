@@ -33,7 +33,8 @@
 }
 
 :global .css-yk16xz-control,
-:global .css-1pahdxg-control {
+:global .css-1pahdxg-control,
+:global .css-1fhf3k1-control {
   z-index: calc(420 + 69);
   border: none !important;
   background-color: transparent !important;
@@ -46,11 +47,13 @@
   outline: none !important;
 }
 
-:global .css-1okebmr-indicatorSeparator {
+:global .css-1okebmr-indicatorSeparator,
+:global .css-109onse-indicatorSeparator {
   display: none !important;
 }
 
-:global .css-1uccc91-singleValue {
+:global .css-1uccc91-singleValue,
+:global .css-107lb6w-singleValue {
   font-size: 15px;
   font-weight: 500;
 }

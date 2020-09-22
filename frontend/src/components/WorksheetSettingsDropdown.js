@@ -127,10 +127,14 @@ function WorksheetSettingsDropdown({
                 <Select
                   value={{
                     value: cur_person,
-                    label:
-                      cur_person === 'me' ? 'Me' : friendInfo[cur_person].name,
+                    label: user.fbLogin
+                      ? cur_person === 'me'
+                        ? 'Me'
+                        : friendInfo[cur_person].name
+                      : 'Connect FB',
                   }}
                   isSearchable={true}
+                  isDisabled={!user.fbLogin}
                   options={friend_options}
                   onChange={(option) => {
                     setFbPerson(option.value);
