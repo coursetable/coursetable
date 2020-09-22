@@ -25,8 +25,6 @@ import CourseModalLoading from './CourseModalLoading';
 const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Fetch user context data
   const { user } = useUser();
-  // Is the user logged in?
-  const isLoggedIn = user.worksheet !== null;
   // Component used for cutting off long descriptions
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   // Is description clamped?
@@ -575,7 +573,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             />
           </Row>
           {/* Course Evaluations Header */}
-          {items.length !== 0 && isLoggedIn && (
+          {items.length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
                 <span className={Styles.evaluation_header}>Season</span>
@@ -591,20 +589,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               </Col>
             </Row>
           )}
-          {/* Course Evaluations (if logged in)*/}
-          {items.length !== 0 && isLoggedIn && items}
+          {/* Course Evaluations */}
+          {items.length !== 0 && items}
           {/* No Course Evaluations */}
-          {items.length === 0 && isLoggedIn && (
+          {items.length === 0 && (
             <Row className="m-auto justify-content-center">
               <strong>No Results</strong>
-            </Row>
-          )}
-          {/* User isn't logged in */}
-          {!isLoggedIn && (
-            <Row className="m-auto justify-content-center">
-              <strong style={{ color: 'rgb(252, 105, 105)' }}>
-                Please sign in to view evaluations
-              </strong>
             </Row>
           )}
         </Col>
