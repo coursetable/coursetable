@@ -119,12 +119,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     prof_info[prof] = {
       num_courses: 0,
       total_rating: 0,
+      email: '',
     };
   });
   // Make sure data is loaded
   if (data) {
     // Loop by season code
-    data.computed_course_info.forEach((season) => {
+    data.computed_listing_info.forEach((season) => {
       if (!season.course.evaluation_statistics[0]) return;
       // Stores the average rating for all profs teaching this course and populates prof_info
       let average_professor_rating = 0;
@@ -142,6 +143,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               dict.num_courses++;
               // Total rating. Will divide by number of courses later to get average
               dict.total_rating += prof.professor.average_rating;
+              // Prof email
+              dict.email = prof.professor.email;
             }
           }
         });
@@ -175,7 +178,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           ? season.professor_names
           : ['TBA'],
         // Course code
-        course_code: season.course_codes.length ? season.course_codes : ['TBA'],
+        course_code: season.all_course_codes.length
+          ? season.all_course_codes
+          : ['TBA'],
         // Crn
         crn: season.course.listings[0].crn,
         // Section number
@@ -357,7 +362,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           </Row>
           <Row className="mx-auto">
             {/* Professor Email */}
-            <small>Professor's Email</small>
+            <small>
+              {prof_dict.email !== '' ? (
+                <a href={`mailto: ${prof_dict.email}`}>{prof_dict.email}</a>
+              ) : (
+                <span className="text-muted">N/A</span>
+              )}
+            </small>
           </Row>
         </Popover.Title>
         <Popover.Content style={{ width: '274px' }}>

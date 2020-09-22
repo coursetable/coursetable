@@ -79,17 +79,17 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
     $course_code: String
     $professor_name: String
   ) {
-    computed_course_info(
+    computed_listing_info(
       where: {
         _or: [
-          { course_codes: { _has_key: $course_code } }
+          { course_code: { _eq: $course_code } }
           { professor_names: { _has_key: $professor_name } }
         ]
       }
     ) {
       professor_names
       season_code
-      course_codes
+      all_course_codes
       course {
         evaluation_statistics {
           avg_rating
@@ -100,6 +100,7 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
           professor {
             average_rating
             name
+            email
           }
         }
         listings {
