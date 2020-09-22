@@ -126,7 +126,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   if (data) {
     // Loop by season code
     data.computed_listing_info.forEach((season) => {
-      if (!season.course.evaluation_statistics[0]) return;
+      // if (!season.course.evaluation_statistics[0]) return;
       // Stores the average rating for all profs teaching this course and populates prof_info
       let average_professor_rating = 0;
       if (season.course.course_professors) {
@@ -153,24 +153,16 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       }
       evaluations.push({
         // Course rating
-        rating:
-          season.course.evaluation_statistics[0].avg_rating != null
-            ? season.course.evaluation_statistics[0].avg_rating
-            : -1,
+        rating: season.average_rating != null ? season.average_rating : -1,
         // Workload rating
         workload:
-          season.course.evaluation_statistics[0].avg_workload != null
-            ? season.course.evaluation_statistics[0].avg_workload
-            : -1,
+          season.average_workload != null ? season.average_workload : -1,
         // Professor rating
         professor_rating: average_professor_rating
           ? average_professor_rating
           : -1,
         // Enrollment data
-        enrollment:
-          season.course.evaluation_statistics[0].enrollment != null
-            ? season.course.evaluation_statistics[0].enrollment.enrolled
-            : -1,
+        enrollment: season.enrollment != null ? season.enrollment.enrolled : -1,
         // Season code
         season_code: season.season_code,
         // Professors
@@ -182,9 +174,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           ? season.all_course_codes
           : ['TBA'],
         // Crn
-        crn: season.course.listings[0].crn,
+        crn: season.crn,
         // Section number
-        section: season.course.listings[0].section,
+        section: season.section,
       });
     });
     // Sort by season code and section

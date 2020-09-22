@@ -90,23 +90,18 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       professor_names
       season_code
       all_course_codes
+      section
+      crn
+      enrollment
+      average_rating
+      average_workload
       course {
-        evaluation_statistics {
-          avg_rating
-          avg_workload
-          enrollment
-        }
         course_professors {
           professor {
             average_rating
             name
             email
           }
-        }
-        listings {
-          section
-          crn
-          course_code
         }
       }
     }
@@ -115,17 +110,14 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
 
 export const SEARCH_EVALUATION_NARRATIVES = gql`
   query SearchEvaluationNarratives($season_code: String, $course_code: String) {
-    computed_course_info(
+    computed_listing_info(
       where: {
         season_code: { _eq: $season_code }
-        course_codes: { _has_key: $course_code }
+        course_code: { _eq: $course_code }
       }
     ) {
+      crn
       course {
-        listings {
-          section
-          crn
-        }
         evaluation_narratives_aggregate {
           nodes {
             comment

@@ -13,7 +13,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
   let responses = {};
   // Loop through each section for this course code
   info.forEach((section) => {
-    const crn_code = section.course.listings[0].crn;
+    const crn_code = section.crn;
     // Only fetch comments for this section
     if (crn_code !== crn) return;
     const nodes = section.course.evaluation_narratives_aggregate.nodes;

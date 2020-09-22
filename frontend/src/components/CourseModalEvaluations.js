@@ -24,7 +24,7 @@ const CourseModalEvaluations = ({ season_code, crn, course_code }) => {
   });
   // Wait until fetched
   if (loading || error) return <CourseModalLoading />;
-  const info = data.computed_course_info;
+  const info = data.computed_listing_info;
 
   return (
     <Modal.Body>

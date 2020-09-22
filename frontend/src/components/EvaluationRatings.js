@@ -14,7 +14,7 @@ const EvaluationRatings = ({ crn, info }) => {
   let ratings = [];
   // Loop through each section
   info.forEach((section) => {
-    const crn_code = section.course.listings[0].crn;
+    const crn_code = section.crn;
     // Only fetch ratings data for this section
     if (crn_code !== crn) return;
     const temp = section.course.evaluation_ratings;
