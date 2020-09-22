@@ -96,6 +96,9 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       average_rating
       average_workload
       course {
+        evaluation_statistics {
+          avg_workload
+        }
         course_professors {
           professor {
             average_rating

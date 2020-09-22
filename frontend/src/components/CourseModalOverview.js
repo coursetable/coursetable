@@ -126,7 +126,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   if (data) {
     // Loop by season code
     data.computed_listing_info.forEach((season) => {
-      // if (!season.course.evaluation_statistics[0]) return;
+      if (!season.course.evaluation_statistics[0]) return;
       // Stores the average rating for all profs teaching this course and populates prof_info
       let average_professor_rating = 0;
       if (season.course.course_professors) {
