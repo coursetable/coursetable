@@ -95,9 +95,11 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       enrollment
       average_rating
       average_workload
+      course_code
       course {
         evaluation_statistics {
           avg_workload
+          avg_rating
         }
         course_professors {
           professor {

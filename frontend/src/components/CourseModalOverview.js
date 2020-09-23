@@ -153,10 +153,15 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       }
       evaluations.push({
         // Course rating
-        rating: season.average_rating != null ? season.average_rating : -1,
+        rating:
+          season.course.evaluation_statistics[0].avg_rating != null
+            ? season.course.evaluation_statistics[0].avg_rating
+            : -1,
         // Workload rating
         workload:
-          season.average_workload != null ? season.average_workload : -1,
+          season.course.evaluation_statistics[0].avg_workload != null
+            ? season.course.evaluation_statistics[0].avg_workload
+            : -1,
         // Professor rating
         professor_rating: average_professor_rating
           ? average_professor_rating
@@ -170,9 +175,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           ? season.professor_names
           : ['TBA'],
         // Course code
-        course_code: season.all_course_codes.length
-          ? season.all_course_codes
-          : ['TBA'],
+        course_code: season.course_code ? [season.course_code] : ['TBA'],
         // Crn
         crn: season.crn,
         // Section number
