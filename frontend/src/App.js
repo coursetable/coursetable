@@ -18,7 +18,6 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
-import Changelog from './pages/Changelog';
 import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
@@ -115,10 +114,6 @@ function App() {
 
               <MyRoute exact path="/faq">
                 <FAQ />
-              </MyRoute>
-
-              <MyRoute exact path="/changelog">
-                <Changelog />
               </MyRoute>
 
               <MyRoute exact path="/feedback">

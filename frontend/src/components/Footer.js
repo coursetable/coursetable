@@ -52,12 +52,6 @@ function Footer() {
                   FAQ
                 </NavLink>
               </li>
-              {/* ChangeLog */}
-              <li>
-                <NavLink to="/changelog" onClick={scrollToTop}>
-                  Changelog
-                </NavLink>
-              </li>
               {/* Feedback */}
               <li>
                 <NavLink to="/feedback" onClick={scrollToTop}>
