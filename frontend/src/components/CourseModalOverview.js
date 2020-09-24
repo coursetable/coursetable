@@ -129,22 +129,22 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       if (!season.course.evaluation_statistics[0]) return;
       // Stores the average rating for all profs teaching this course and populates prof_info
       let average_professor_rating = 0;
-      if (season.course.course_professors) {
-        const num_profs = season.course.course_professors.length;
-        season.course.course_professors.forEach((prof) => {
-          if (prof.professor.average_rating) {
+      if (season.professor_info) {
+        const num_profs = season.professor_info.length;
+        season.professor_info.forEach((prof) => {
+          if (prof.average_rating) {
             // Add up all prof ratings
-            average_professor_rating += prof.professor.average_rating;
+            average_professor_rating += prof.average_rating;
             // Update prof_info
-            if (prof.professor.name in prof_info) {
+            if (prof.name in prof_info) {
               // Store dict from prof_info for easy access
-              const dict = prof_info[prof.professor.name];
+              const dict = prof_info[prof.name];
               // Total number of courses this professor teaches
               dict.num_courses++;
               // Total rating. Will divide by number of courses later to get average
-              dict.total_rating += prof.professor.average_rating;
+              dict.total_rating += prof.average_rating;
               // Prof email
-              dict.email = prof.professor.email;
+              dict.email = prof.email;
             }
           }
         });
