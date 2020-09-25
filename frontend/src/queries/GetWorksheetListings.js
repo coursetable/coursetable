@@ -23,6 +23,7 @@ const buildQuery = (worksheet) => {
       title
       description
       professor_names
+      all_course_codes
       average_rating
       average_workload
       average_professor
