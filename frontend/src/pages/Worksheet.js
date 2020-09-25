@@ -168,13 +168,15 @@ function Worksheet() {
   // Wait for search query to finish
   if (loading || error)
     return (
-      <Spinner
-        className={styles.loading_spinner}
-        animation="border"
-        role="status"
-      >
-        <span className="sr-only">Loading...</span>
-      </Spinner>
+      <div style={{ height: '93vh' }}>
+        <Spinner
+          className={styles.loading_spinner}
+          animation="border"
+          role="status"
+        >
+          <span className="sr-only">Loading...</span>
+        </Spinner>
+      </div>
     );
   // Error with query
   if (data === undefined || !data.length) return <div>Error with Query</div>;

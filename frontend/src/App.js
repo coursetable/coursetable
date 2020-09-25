@@ -140,11 +140,7 @@ function App() {
             {/* Render footer if not on catalog or worksheet pages */}
             <Route
               render={({ location }) => {
-                return (
-                  !['/catalog', '/worksheet'].includes(location.pathname) && (
-                    <Footer />
-                  )
-                );
+                return !['/catalog'].includes(location.pathname) && <Footer />;
               }}
             />
           </div>
