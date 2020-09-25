@@ -102,7 +102,8 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                           styles.course_codes + ' text-muted my-0 pr-2'
                         }
                       >
-                        {listing.course_code}
+                        {listing.all_course_codes &&
+                          listing.all_course_codes.join(' • ')}
                       </p>
                       {/* Course Skills and Areas */}
                       {listing.skills &&

@@ -51,6 +51,7 @@ export const SEARCH_COURSES = gql`
       listing_id
       title
       description
+      all_course_codes
       professor_names
       average_rating
       average_workload
