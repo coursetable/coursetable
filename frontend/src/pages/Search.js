@@ -374,6 +374,14 @@ function Search({ location, history }) {
     setHideCancelled(true);
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
+    setSelectSortby(sortbyOptions[0]);
+    setSelectSeasons([{ value: '202003', label: 'Fall 2020' }]);
+    setSelectSkillsAreas(null);
+    setSelectCredits(null);
+    setSelectSchools([
+      { value: 'YC', label: 'Yale College' },
+      { value: 'GS', label: 'Graduate' },
+    ]);
     setFormKey(form_key + 1);
   };
 
