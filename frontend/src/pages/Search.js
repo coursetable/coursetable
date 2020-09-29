@@ -427,7 +427,7 @@ function Search({ location, history }) {
           className={
             (isMobile
               ? `p-3 ${Styles.search_col_mobile}`
-              : `pr-0 py-3 pl-3 ${Styles.search_col}`) +
+              : `pr-0 my-3 pl-3 ${Styles.search_col}`) +
             (!isMobile ? ' order-2' : '')
           }
         >
