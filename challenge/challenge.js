@@ -22,10 +22,39 @@ const testQuery = gql`
 	}
 `;
 
+const getEvalsQuery = gql`
+	query($season: String, $minRating: float8) {
+		evaluation_statistics(
+			limit: 3
+			where: {
+				course: { season_code: { _eq: $season } }
+				avg_rating: { _gte: $minRating }
+			}
+			order_by: { avg_rating: asc }
+		) {
+			course_id
+			enrollment
+			course {
+				season_code
+				listings {
+					crn
+					course_code
+				}
+			}
+		}
+	}
+`;
+
 app.get('/challenge', (req, res) => {
+	const minRating = 1 + Math.random() * 4;
+
 	query({
-		query: testQuery,
+		query: getEvalsQuery,
 		endpoint: 'http://graphql-engine:8080/v1/graphql',
+		variables: {
+			season: '201903',
+			minRating: minRating,
+		},
 	})
 		.then(response => {
 			res.json({ body: response });
