@@ -15,15 +15,21 @@ const crypto = require('crypto');
 const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 const CHALLENGE_PASSWORD = process.env.CHALLENGE_PASSWORD || 'thisisapassword';
 
-function encrypt(text) {
-	var cipher = crypto.createCipher(CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD);
+function encrypt(text, salt) {
+	var cipher = crypto.createCipher(
+		CHALLENGE_ALGORITHM,
+		CHALLENGE_PASSWORD + salt
+	);
 	var crypted = cipher.update(text, 'utf8', 'hex');
 	crypted += cipher.final('hex');
 	return crypted;
 }
 
-function decrypt(text) {
-	var decipher = crypto.createDecipher(CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD);
+function decrypt(text, salt) {
+	var decipher = crypto.createDecipher(
+		CHALLENGE_ALGORITHM,
+		CHALLENGE_PASSWORD + salt
+	);
 	var dec = decipher.update(text, 'hex', 'utf8');
 	dec += decipher.final('utf8');
 	return dec;
@@ -31,30 +37,37 @@ function decrypt(text) {
 
 function constructChallenge(queryResponse) {
 	const course_enrollments = queryResponse['data']['evaluation_statistics'].map(
-		x => x['enrollment']
+		x => x['enrollment']['enrolled']
 	);
 	const course_ids = queryResponse['data']['evaluation_statistics'].map(
 		x => x['course_id']
 	);
 
-	const course_titles = queryResponse['data']['evaluation_statistics'].map(
-		x => x['titles']
-	);
-
-	const listing_crns = queryResponse['data']['evaluation_statistics'].map(x =>
-		x['course']['listings'].map(x => x['crn'])
-	);
-
-	const course_season_codes = queryResponse['data'][
-		'evaluation_statistics'
-	].map(x => x['course']['season_code']);
-
-	return {
+	const secrets = {
 		course_enrollments: course_enrollments,
 		course_ids: course_ids,
+	};
+	const salt = crypto.randomBytes(16).toString('hex');
+	const token = encrypt(JSON.stringify(secrets), salt);
+
+	const course_titles = queryResponse['data']['evaluation_statistics'].map(
+		x => x['course']['title']
+	);
+
+	const oce_urls = queryResponse['data']['evaluation_statistics'].map(x => {
+		const crn = x['course']['listings'][0]['crn'];
+		const season = x['course']['season_code'];
+
+		const oce_url = `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=${crn}&term_code=${season}`;
+
+		return oce_url;
+	});
+
+	return {
+		token: token,
+		salt: salt,
 		course_titles: course_titles,
-		course_season_codes: course_season_codes,
-		listing_crns: listing_crns,
+		oce_urls: oce_urls,
 	};
 }
 
