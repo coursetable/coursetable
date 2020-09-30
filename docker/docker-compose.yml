@@ -11,7 +11,17 @@ services:
     command: sh -c 'cd /app && yarn && yarn start'
     links:
       - frontend
+      - challenge
       - nginx
+
+  challenge:
+    image: node:latest
+    ports:
+      - '4096:4096'
+    volumes:
+      - ../challenge:/app
+    user: '1000'
+    command: sh -c 'cd /app && yarn && yarn start'
 
   frontend:
     image: node:latest

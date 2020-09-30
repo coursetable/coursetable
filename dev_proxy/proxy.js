@@ -9,6 +9,7 @@ const app = express();
 const port = 8080;
 const insecure_port = process.env.PORT || 3001;
 const frontend_uri = process.env.FRONTEND_LOC || 'http://frontend:3000';
+const challenge_uri = process.env.CHALLENGE_LOC || 'http://challenge:4096';
 const php_uri = 'http://nginx:8080';
 
 // Enable request logging.
@@ -42,7 +43,7 @@ app.use('/ferry', (req, res, next) => {
       // Return 403 forbidden if the request lacks auth.
       res.status(403).send('request missing authentication');
     })
-    .catch((err) => {
+    .catch(err => {
       return next(err);
     });
 });
@@ -55,6 +56,13 @@ app.use(
       '^/ferry': '/', // remove base path
     },
     ws: true,
+  })
+);
+
+app.use(
+  '/challenge',
+  createProxyMiddleware({
+    target: challenge_uri,
   })
 );
 
