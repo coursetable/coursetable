@@ -8,13 +8,33 @@ const axios = require('axios').default;
 const app = express();
 const port = 4096;
 
+const gql = require('graphql-tag');
+const { query } = require('graphqurl');
+
 // Enable request logging.
 app.use(morgan('tiny'));
 
+const testQuery = gql`
+	query Test {
+		courses(limit: 10) {
+			title
+		}
+	}
+`;
+
 app.get('/challenge', (req, res) => {
-  res.send('Hello World!');
+	query({
+		query: testQuery,
+		endpoint: 'http://graphql-engine:8080/v1/graphql',
+	})
+		.then(response => {
+			res.json({ body: response });
+		})
+		.catch(error => {
+			res.json({ body: error });
+		});
 });
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`);
+	console.log(`Example app listening at http://localhost:${port}`);
 });
