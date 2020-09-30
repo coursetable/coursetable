@@ -142,6 +142,11 @@ const SearchResultsGridItem = ({
             <Row className="mx-auto mt-3">
               <small className={styles.course_codes}>
                 {course.course_code ? course.course_code : ''}
+                {course.section
+                  ? ' ' +
+                    (course.section.length > 1 ? '' : '0') +
+                    course.section
+                  : ''}
               </small>
             </Row>
           </Col>

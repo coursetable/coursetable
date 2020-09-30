@@ -8,12 +8,14 @@ import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 
 import styles from './Worksheet.module.css';
 
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 import NoCoursesFound from '../images/no_courses_found.svg';
+import ServerError from '../images/server_error.svg';
 
 /**
  * Renders worksheet page
@@ -166,7 +168,7 @@ function Worksheet() {
       </div>
     );
   // Wait for search query to finish
-  if (loading || error)
+  if (loading) {
     return (
       <div style={{ height: '93vh' }}>
         <Spinner
@@ -178,6 +180,25 @@ function Worksheet() {
         </Spinner>
       </div>
     );
+  } else if (error) {
+    return (
+      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
+        <div className="text-center m-auto">
+          <img
+            alt="No courses found."
+            className="py-5"
+            src={ServerError}
+            style={{ width: '25%' }}
+          ></img>
+          <h3>There seems to be an issue with our server</h3>
+          <div>
+            Please file a <NavLink to="/feedback">report</NavLink> to let us
+            know
+          </div>
+        </div>
+      </div>
+    );
+  }
   // Error with query
   if (data === undefined || !data.length) return <div>Error with Query</div>;
   // List of colors for the calendar events

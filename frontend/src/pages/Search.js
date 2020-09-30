@@ -440,7 +440,7 @@ function Search({ location, history }) {
           >
             {/* Search Form */}
             <Form
-              className={`shadow-sm px-3 ${Styles.search_container}`}
+              className={`px-0 ${Styles.search_container}`}
               onSubmit={(event) => {
                 handleSubmit(event, true);
               }}
@@ -484,7 +484,7 @@ function Search({ location, history }) {
                   Reset Filters
                 </small>
               </Row>
-              <Row className="pt-2 px-4 pb-2">
+              <Row className="mx-auto pt-2 px-4 pb-2">
                 <div className={Styles.search_bar}>
                   {/* Search Bar */}
                   <InputGroup className={Styles.search_input}>
@@ -502,7 +502,7 @@ function Search({ location, history }) {
                   </InputGroup>
                 </div>
               </Row>
-              <Row className={`py-0 px-4 ${Styles.sort_container}`}>
+              <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Sort By Multi-Select */}
                   <Select
@@ -518,7 +518,7 @@ function Search({ location, history }) {
                 </div>
               </Row>
               <hr />
-              <Row className={`py-0 px-4 ${Styles.multi_selects}`}>
+              <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   <div className={Styles.filter_title}>Semesters</div>
                   {seasonsOptions && (
@@ -621,7 +621,7 @@ function Search({ location, history }) {
                 </div>
               </Row>
               <hr />
-              <Row className={`pt-0 pb-2 px-2 ${Styles.sliders}`}>
+              <Row className={`mx-auto pt-0 pb-2 px-2 ${Styles.sliders}`}>
                 <Col>
                   <Container style={{ paddingTop: '1px' }}>
                     {/* Class Rating Slider */}
@@ -666,7 +666,7 @@ function Search({ location, history }) {
                 </Col>
               </Row>
               <Row
-                className={`pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg} ${Styles.toggle_row}`}
+                className={`mx-auto pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg}`}
               >
                 {/* Hide Cancelled Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
@@ -681,7 +681,7 @@ function Search({ location, history }) {
                   </Form.Check.Label>
                 </Form.Check>
               </Row>
-              <Row className="flex-row-reverse">
+              <Row className="mx-auto flex-row-reverse">
                 {/* Submit Button */}
                 <Button
                   type="submit"

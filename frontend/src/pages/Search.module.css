@@ -1,5 +1,4 @@
 .search_base {
-  background-color: #f6f6f6;
   width: 100%;
   min-height: calc(100vh + 15px);
 }
@@ -26,6 +25,7 @@
   background-color: white;
   width: 100%;
   border-radius: 0.5rem;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
 .search_bar {
@@ -94,10 +94,6 @@
 
 .secondary_submit:hover {
   background-color: #2670ca !important;
-}
-
-.toggle_row {
-  border-radius: 8px 8px 0px 0px;
 }
 
 .toggle_option {
