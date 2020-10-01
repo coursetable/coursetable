@@ -9,5 +9,6 @@
     "http-proxy-middleware": "^1.0.4",
     "morgan": "^1.10.0",
     "nodemon": "^2.0.4"
-  }
+  },
+  "type": "module"
 }
