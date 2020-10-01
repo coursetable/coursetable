@@ -92,24 +92,25 @@ services:
       - '8081:80'
 
   umami:
-    # image: ghcr.io/mikecao/umami:postgresql-latest
     build: ./umami
     ports:
       - "4000:3000"
     environment:
-      DATABASE_URL: postgresql://umami:umami@db:5432/umami
+      DATABASE_URL: postgresql://umami:umami@postgres:5432/umami
       DATABASE_TYPE: postgresql
       HASH_SALT: tHiS_a_ReAlLy_SaLtY_sAlT
     depends_on:
       - postgres
 
   postgres:
-    # image: postgres:12-alpine
-    build: ./sql
+    build: ./postgres
+    restart: always
+    ports:
+      - "5432"
     environment:
       POSTGRES_DB: umami
       POSTGRES_USER: umami
       POSTGRES_PASSWORD: umami
     volumes:
-      - ./sql/database.sql:/docker-entrypoint-initdb.d/00-postgresql.sql
+      - ./postgres/schema.database.sql:/docker-entrypoint-initdb.d/schema.database.sql
     
