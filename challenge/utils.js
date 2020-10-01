@@ -49,7 +49,7 @@ export function constructChallenge(response) {
 	let ratingIndices = new Array();
 
 	for (const evaluation_rating of response['data']['evaluation_ratings']) {
-		const ratingIndex = getRandomInt(5);
+		const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
 		if (!Number.isInteger(evaluation_rating['rating'][ratingIndex])) {
 			return 'RATINGS_RETRIEVAL_ERROR';
@@ -82,6 +82,7 @@ export function constructChallenge(response) {
 
 	// Yale OCE urls for user to retrieve answers
 	const oceUrls = response['data']['evaluation_ratings'].map(x => {
+		// courses have multiple CRNs, and any one should be fine
 		const crn = x['course']['listings'][0]['crn'];
 		const season = x['course']['season_code'];
 
