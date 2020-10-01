@@ -23,23 +23,24 @@ const CHALLENGE_PASSWORD = process.env.CHALLENGE_PASSWORD || 'thisisapassword';
 const NUM_CHALLENGE_COURSES = 3;
 const CHALLENGE_SEASON = '201903';
 
+const VALID_QUESTION_CODES = ['YC006', 'YC306', 'YC404'];
+
 // Enable request logging.
 app.use(morgan('tiny'));
 
 // query for selecting courses to test
 const requestEvalsQuery = gql`
 	query($season: String, $minRating: float8) {
-		evaluation_statistics(
+		evaluation_ratings(
 			limit: ${NUM_CHALLENGE_COURSES}
 			where: {
-				course: { season_code: { _eq: $season } }
-				avg_rating: { _gte: $minRating }
-				enrollment: { _is_null: false }
+				course: { season_code: { _eq: $season }, average_rating: {_gt: $minRating} }
+				question_code: { _in: ${JSON.stringify(VALID_QUESTION_CODES)} }
+				rating: { _is_null: false }
 			}
-			order_by: { avg_rating: asc }
+			order_by: {course: {average_rating: asc}}
 		) {
-			course_id
-			enrollment
+			rating
 			course {
 				season_code
 				title
@@ -48,16 +49,20 @@ const requestEvalsQuery = gql`
 					course_code
 				}
 			}
+			id
+			evaluation_question {
+		    	question_text
+		    }
 		}
 	}
 `;
 
 // query for retrieving course enrollment data again
 const verifyEvalsQuery = gql`
-	query($course_ids: [Int!]) {
-		evaluation_statistics(where: { course_id: { _in: $course_ids } }) {
-			course_id
-			enrollment
+	query($questionIds: [Int!]) {
+		evaluation_ratings(where: { id: { _in: $questionIds } }) {
+			id
+			rating
 		}
 	}
 `;
@@ -84,48 +89,63 @@ function decrypt(text, salt) {
 	return dec;
 }
 
+function getRandomInt(max) {
+	return Math.floor(Math.random() * Math.floor(max));
+}
+
 function constructChallenge(response) {
 	// array of course enrollment counts
-	const course_enrollments = response['data']['evaluation_statistics'].map(
-		x => x['enrollment']['enrolled']
-	);
+	let ratingIndices = new Array();
 
-	// array of CourseTable course IDs
-	const course_ids = response['data']['evaluation_statistics'].map(
-		x => x['course_id']
-	);
+	for (const evaluation_rating of response['data']['evaluation_ratings']) {
+		const ratingIndex = getRandomInt(5);
+
+		if (!Number.isInteger(evaluation_rating['rating'][ratingIndex])) {
+			return 'RATINGS_RETRIEVAL_ERROR';
+		}
+		ratingIndices.push(ratingIndex);
+	}
+
+	// array of CourseTable question IDs
+	const ratingIds = response['data']['evaluation_ratings'].map(x => x['id']);
 
 	// construct token object
-	const secrets = course_enrollments.map((x, index) => {
+	const secrets = ratingIds.map((x, index) => {
 		return {
-			course_id: course_ids[index],
+			courseRatingId: ratingIds[index],
+			courseRatingIndex: ratingIndices[index],
 		};
 	});
+
 	// encrypt token
 	const salt = crypto.randomBytes(16).toString('hex');
 	const token = encrypt(JSON.stringify(secrets), salt);
 
-	// course titles for user's benefit
-	const course_titles = response['data']['evaluation_statistics'].map(
+	// course titles and questions for user
+	const courseTitles = response['data']['evaluation_ratings'].map(
 		x => x['course']['title']
+	);
+	const courseQuestionTexts = response['data']['evaluation_ratings'].map(
+		x => x['evaluation_question']['question_text']
 	);
 
 	// Yale OCE urls for user to retrieve answers
-	const oce_urls = response['data']['evaluation_statistics'].map(x => {
+	const oceUrls = response['data']['evaluation_ratings'].map(x => {
 		const crn = x['course']['listings'][0]['crn'];
 		const season = x['course']['season_code'];
 
-		const oce_url = `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=${crn}&term_code=${season}`;
+		const oceUrl = `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=${crn}&term_code=${season}`;
 
-		return oce_url;
+		return oceUrl;
 	});
 
 	// merged course information object
-	const course_info = course_titles.map((x, index) => {
+	const course_info = courseTitles.map((x, index) => {
 		return {
-			course_title: x,
-			course_id: course_ids[index],
-			course_oce_url: oce_urls[index],
+			courseTitle: courseTitles[index],
+			courseRatingIndex: ratingIndices[index],
+			courseQuestionTexts: courseQuestionTexts[index],
+			courseOceUrl: oceUrls[index],
 		};
 	});
 
@@ -159,33 +179,21 @@ app.get('/challenge/request', (req, res) => {
 
 function verifyChallenge(response, answers) {
 	// the true values in CourseTable to compare against
-	const truth = response['data']['evaluation_statistics'];
+	const truth = response['data']['evaluation_ratings'];
 
-	// course_id:answer mapping for easier checking
-	let truthPairs = {};
-	let answerPairs = {};
+	// mapping from question ID to ratings
+	let truthById = {};
 
-	// populate truthPairs
 	truth.forEach(x => {
-		truthPairs[x['course_id']] = x['enrollment']['enrolled'];
+		truthById[x['id']] = x['rating'];
 	});
 
-	// populate answerPairs
-	answers.forEach(x => {
-		answerPairs[x['course_id']] = x['answer'];
-	});
-
-	// compare keys again just to be sure courses match
-	truthKeys = Object.keys(truthPairs);
-	answerKeys = Object.keys(answerPairs);
-
-	if (truthKeys.sort().join(',') !== answerKeys.sort().join(',')) {
-		return 'INVALID_TOKEN';
-	}
-
-	// compare answers
-	for (const key of truthKeys) {
-		if (truthPairs[key] !== answerPairs[key]) {
+	// for each answer, check that it matches our data
+	for (const answer of answers) {
+		if (
+			truthById[answer['courseRatingId']][answer['courseRatingIndex']] !==
+			answer['answer']
+		) {
 			return 'INCORRECT';
 		}
 	}
@@ -197,27 +205,33 @@ app.post('/challenge/verify', (req, res) => {
 	let { token, salt, answers } = req.body;
 
 	let secrets; // the decrypted token
-	let secret_course_ids;
-	let answer_course_ids;
+
+	let secretRatingIds;
+	let secretRatings;
+
+	let answerRatings;
 
 	try {
 		secrets = JSON.parse(decrypt(token, salt));
-		secret_course_ids = secrets.map(x => x['course_id']);
+		secretRatingIds = secrets.map(x => x['courseRatingId']);
+		secretRatings = secrets.map(
+			x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
+		);
 	} catch (e) {
 		res.json({ body: 'INVALID_TOKEN' });
 	}
 
 	try {
 		answers = JSON.parse(answers);
-		answer_course_ids = answers.map(x => x['course_id']);
+		answerRatings = answers.map(
+			x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
+		);
 	} catch (e) {
 		res.json({ body: 'INVALID_ANSWERS' });
 	}
 
-	// make sure the provided course IDs match those we have
-	if (
-		secret_course_ids.sort().join(',') !== answer_course_ids.sort().join(',')
-	) {
+	// make sure the provided ratings IDs and indices match those we have
+	if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
 		res.json({ body: 'INVALID_TOKEN' });
 	}
 
@@ -225,7 +239,7 @@ app.post('/challenge/verify', (req, res) => {
 		query: verifyEvalsQuery,
 		endpoint: GRAPHQL_ENDPOINT,
 		variables: {
-			course_ids: secret_course_ids,
+			questionIds: secretRatingIds,
 		},
 	})
 		.then(response => {
