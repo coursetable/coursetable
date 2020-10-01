@@ -2,7 +2,11 @@ import crypto from 'crypto';
 
 import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './constants.js';
 
-// encrypt a string with a salt )used to fix the challenge fields)
+/**
+ * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
+ * @prop text - string to encrypt
+ * @prop salt - salt value to append to password
+ */
 export function encrypt(text, salt) {
 	var cipher = crypto.createCipher(
 		CHALLENGE_ALGORITHM,
@@ -13,7 +17,11 @@ export function encrypt(text, salt) {
 	return crypted;
 }
 
-// decrypt a salted string
+/**
+ * Decrypt a salted string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
+ * @prop text - string to decrypt
+ * @prop salt - salt value to append to password
+ */
 export function decrypt(text, salt) {
 	var decipher = crypto.createDecipher(
 		CHALLENGE_ALGORITHM,
@@ -24,11 +32,18 @@ export function decrypt(text, salt) {
 	return dec;
 }
 
-// get a random integer between 0 and max-1
+/**
+ * Randomly-generate an integer between 0 and max-1
+ * @prop max - max integer to return (not inclusive)
+ */
 export function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
 }
 
+/**
+ * Generate a challenge object given a query response
+ * @prop response - response from the query
+ */
 export function constructChallenge(response) {
 	// array of course enrollment counts
 	let ratingIndices = new Array();
@@ -92,6 +107,12 @@ export function constructChallenge(response) {
 	};
 }
 
+/**
+ * Compare a response from the database and user-provided answers
+ * to verify that a challenge is solved or not.
+ * @prop response - response from the query
+ * @prop answers - user-provided answers
+ */
 export function verifyChallenge(response, answers) {
 	// the true values in CourseTable to compare against
 	const truth = response['data']['evaluation_ratings'];

@@ -18,6 +18,11 @@ import { requestEvalsQuery, verifyEvalsQuery } from './queries.js';
 
 import { constructChallenge, verifyChallenge, decrypt } from './utils.js';
 
+/**
+ * Generates and returns a user challenge.
+ * @prop req - request object
+ * @prop res - return object
+ */
 app.get('/challenge/request', (req, res) => {
 	// randomize the selected challenge courses by
 	// randomly choosing a minimum rating
@@ -39,6 +44,11 @@ app.get('/challenge/request', (req, res) => {
 		});
 });
 
+/**
+ * Verifies answers to a challenge.
+ * @prop req - request object
+ * @prop res - return object
+ */
 app.post('/challenge/verify', (req, res) => {
 	let { token, salt, answers } = req.body;
 
