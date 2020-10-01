@@ -72,6 +72,17 @@ app.use(
   })
 );
 
+app.use(
+  '/umami',
+  createProxyMiddleware({
+    target: 'http://umami:3000',
+    pathRewrite: {
+      '^/umami': '/', // remove base path
+    },
+  })
+);
+
+
 // Serve with SSL.
 https
   .createServer(

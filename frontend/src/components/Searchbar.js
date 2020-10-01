@@ -17,6 +17,7 @@ function Searchbar({ bar_size }) {
   // On form submit, set value state to the searched value
   const searched = (event) => {
     // Prevent page refresh on submit
+    window.umami("Search perfromed from homepage");
     event.preventDefault();
     setValue(input.current.value);
   };
