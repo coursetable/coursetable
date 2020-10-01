@@ -26,21 +26,21 @@ The `/challenge/request` route accepts GET requests and returns a JSON object wi
 
 4. The token, salt, and an object containing the title, question, response category, and OCE URL for each token are returned. In particular, this object is of the following structure:
 
-   ```javascript
-   {
-       token: ...,
-       salt: ...,
-       course_info: [
-           {
-   			courseTitle: ...,
-   			courseRatingIndex: ...,
-   			courseQuestionTexts: ...,
-   			courseOceUrl: ...,
-   		},
-           ...
-       ]
-   }
-   ```
+  ```javascript
+  {
+    token: ...,
+    salt: ...,
+    course_info: [
+      {
+      courseTitle: ...,
+      courseRatingIndex: ...,
+      courseQuestionTexts: ...,
+      courseOceUrl: ...,
+      },
+      ...
+    ]
+  }
+  ```
 
 ### Verifying a response
 
@@ -54,7 +54,7 @@ This route expects a URL-encoded body containing the following:
 
   ```javascript
   [
-  	{ courseRatingId: ..., courseRatingIndex: ..., answer: ... },
+    { courseRatingId: ..., courseRatingIndex: ..., answer: ... },
   	...
   ]
   ```
