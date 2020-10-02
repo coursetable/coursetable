@@ -22,6 +22,7 @@ import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
+import Challenge from './pages/Challenge';
 
 import { useUser } from './user';
 import { Row, Spinner } from 'react-bootstrap';
@@ -98,6 +99,10 @@ function App() {
               {/* Auth */}
               <MyRoute exact path="/login">
                 {isLoggedIn ? <Redirect to="/" /> : <Landing />}
+              </MyRoute>
+              {/* OCE Challenge */}
+              <MyRoute exact path="/ocechallenge">
+                <Challenge />
               </MyRoute>
 
               {/* Worksheet */}
