@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import qs from 'qs';
+import { useHistory } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
 import { toast } from 'react-toastify';
@@ -9,6 +11,8 @@ import { toast } from 'react-toastify';
  */
 
 function Challenge() {
+  // react-router history to redirect to catalog
+  let history = useHistory();
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
   // Stores body of response for the /challenge/request API call
@@ -20,8 +24,7 @@ function Challenge() {
     { answer: '' },
   ]);
 
-  // Fetch questions on component mount
-  useEffect(() => {
+  const fetchQuestions = () => {
     axios.get('/challenge/request').then((res) => {
       // Questions not properly fetched
       if (!res.data || !res.data.body) {
@@ -33,6 +36,11 @@ function Challenge() {
         setResBody(res.data.body);
       }
     });
+  };
+
+  // Fetch questions on component mount
+  useEffect(() => {
+    fetchQuestions();
   }, []);
 
   // Handle form submit
@@ -47,23 +55,41 @@ function Challenge() {
     }
     // Form is valid
     else {
+      // Body data to be passed in post request
       const post_body = {
         token: res_body.token,
         salt: res_body.salt,
         answers: answers,
       };
-      // console.log(post_body);
+      // Config header for urlencoded
+      const config = {
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+        },
+      };
       // Verify answers
-      axios.post('/challenge/verify', { post_body }).then((res) => {
-        // Answers not properly verified
-        if (!res.data || !res.data.body) {
-          toast.error('Error with /challenge/verify API call');
-        } else {
-          if (res.data.body === 'CORRECT')
-            toast.success('All of your responses were correct!');
-          else toast.error('Some of your responses were incorrect');
-        }
-      });
+      axios
+        .post('/challenge/verify', qs.stringify(post_body), config)
+        .then((res) => {
+          // Answers not properly verified
+          if (!res.data || !res.data.body) {
+            toast.error('Error with /challenge/verify API call');
+          } else {
+            // Correct responses
+            if (res.data.body === 'CORRECT') {
+              toast.success('All of your responses were correct!');
+              history.push('/catalog');
+            }
+            // Incorrect responses
+            else {
+              toast.error('Incorrect responses. Try again.');
+              // Reset questions and form
+              setAnswers([{ answer: '' }, { answer: '' }, { answer: '' }]);
+              setValidated(false);
+              fetchQuestions();
+            }
+          }
+        });
     }
     // Form has been validated
     setValidated(true);

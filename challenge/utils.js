@@ -127,11 +127,13 @@ export function verifyChallenge(response, answers) {
     truthById[x['id']] = x['rating'];
   });
 
+  // return [truthById, answers];
   // for each answer, check that it matches our data
   for (const answer of answers) {
     if (
-      truthById[answer['courseRatingId']][answer['courseRatingIndex']] !==
-      answer['answer']
+      truthById[answer['courseRatingId']][
+        parseInt(answer['courseRatingIndex'])
+      ] !== parseInt(answer['answer'])
     ) {
       return 'INCORRECT';
     }
