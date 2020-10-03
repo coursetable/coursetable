@@ -15,21 +15,38 @@ const php_uri = 'http://nginx:8080';
 // Enable request logging.
 app.use(morgan('tiny'));
 
-// Setup all the proxy routes.
+// Strip all headers matching X-COURSETABLE-* from incoming requests.
+app.use((req, _, next) => {
+  for (const [header, _] of Object.entries(req.headers)) {
+    // Headers are automatically made lowercase by express.
+    if (header.startsWith('x-coursetable-')) {
+      delete req.headers[header];
+    }
+  }
 
-app.use(
-  ['/legacy_api', '/index.php'],
-  createProxyMiddleware({
-    target: php_uri,
-    pathRewrite: {
-      '^/legacy_api': '/', // remove base path
-    },
-    xfwd: true,
-  })
-);
+  next();
+});
 
-app.use('/ferry', (req, res, next) => {
-  // Query the backend for authentication status.
+// Authentication - set X-COURSETABLE-* headers.
+const authSoft = (req, _, next) => {
+  axios
+    .get(`${php_uri}/AuthStatus.php`, {
+      headers: {
+        cookie: req.headers['cookie'],
+      },
+    })
+    .then(({ data }) => {
+      req.headers['x-coursetable-authd'] = data.success;
+      req.headers['x-coursetable-netid'] = data.netId;
+      return next();
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
+
+// Authentication - reject all unauthenticated requests.
+const authHard = (req, res, next) => {
   axios
     .get(`${php_uri}/AuthStatus.php`, {
       headers: {
@@ -43,11 +60,25 @@ app.use('/ferry', (req, res, next) => {
       // Return 403 forbidden if the request lacks auth.
       res.status(403).send('request missing authentication');
     })
-    .catch(err => {
+    .catch((err) => {
       return next(err);
     });
-});
+};
 
+// Setup all the proxy routes.
+
+app.use(
+  ['/legacy_api', '/index.php'],
+  createProxyMiddleware({
+    target: php_uri,
+    pathRewrite: {
+      '^/legacy_api': '/', // remove base path
+    },
+    xfwd: true,
+  })
+);
+
+app.use('/ferry', authHard);
 app.use(
   '/ferry',
   createProxyMiddleware({
@@ -59,6 +90,7 @@ app.use(
   })
 );
 
+app.use('/challenge', authSoft);
 app.use(
   '/challenge',
   createProxyMiddleware({
