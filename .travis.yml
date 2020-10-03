@@ -15,3 +15,4 @@ before_install:
 script:
   - docker run -v `pwd`:/app -w /app php /bin/sh -c "./phpcs.sh"
   - cd frontend && prettier -l .
+  - cd challenge && prettier -l .
