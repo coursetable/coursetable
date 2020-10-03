@@ -170,7 +170,7 @@ function Challenge() {
         </Form>
       ) : (
         // Loading spinner while fetching questions
-        <Row className="m-auto" style={{ height: '55vh' }}>
+        <Row className="m-auto" style={{ height: '45vh' }}>
           <Spinner
             className={styles.loading_spinner}
             animation="border"

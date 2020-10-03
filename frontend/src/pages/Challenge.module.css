@@ -20,3 +20,15 @@
   top: calc(50% - 16px);
   left: calc(50% - 16px);
 }
+
+@media (max-width: 768px) {
+  .container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 425px) {
+  .container {
+    width: 90vw;
+  }
+}
