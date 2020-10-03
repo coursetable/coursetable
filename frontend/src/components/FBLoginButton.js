@@ -13,6 +13,8 @@ function FBLoginButton() {
 
   // Note: window.FB setup via index.html.
 
+  // TODO: add support for refreshing facebook auth status
+
   const syncFacebook = useCallback(() => {
     return axios.get('/legacy_api/FetchFacebookData.php').then(({ data }) => {
       if (!data.success) {
@@ -62,6 +64,7 @@ function FBLoginButton() {
   }, [syncFacebook]);
 
   const handleLogoutClick = useCallback(() => {
+    // TODO: disconnect_facebook does not implement it correctly.
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')
       .then(() => {
