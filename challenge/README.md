@@ -1,6 +1,6 @@
 # User challenge
 
-This module provides an API for verifying that a user has access to the Yale course evaluations at OCE (Online Course Evaluations). 
+This module provides an API for verifying that a user has access to the Yale course evaluations at OCE (Online Course Evaluations).
 
 **TODO**:
 
@@ -26,25 +26,25 @@ The `/challenge/request` route accepts GET requests and returns a JSON object wi
 
 4. The token, salt, and an object containing the title, question, response category, and OCE URL for each token are returned. In particular, this object is of the following structure:
 
-  ```javascript
-  {
-    token: ...,
-    salt: ...,
-    course_info: [
-      {
-      courseTitle: ...,
-      courseRatingIndex: ...,
-      courseQuestionTexts: ...,
-      courseOceUrl: ...,
-      },
-      ...
-    ]
-  }
-  ```
+```javascript
+{
+  token: ...,
+  salt: ...,
+  course_info: [
+    {
+    courseTitle: ...,
+    courseRatingIndex: ...,
+    courseQuestionTexts: ...,
+    courseOceUrl: ...,
+    },
+    ...
+  ]
+}
+```
 
 ### Verifying a response
 
-The `/challenge/verify` route accepts POST requests and returns a JSON object specifying whether or not the responses are correct, incorrect, or otherwise malformed. 
+The `/challenge/verify` route accepts POST requests and returns a JSON object specifying whether or not the responses are correct, incorrect, or otherwise malformed.
 
 This route expects a URL-encoded body containing the following:
 

@@ -33,10 +33,10 @@ export const requestEvalsQuery = gql`
 
 // query for retrieving course enrollment data again
 export const verifyEvalsQuery = gql`
-	query($questionIds: [Int!]) {
-		evaluation_ratings(where: { id: { _in: $questionIds } }) {
-			id
-			rating
-		}
-	}
+  query($questionIds: [Int!]) {
+    evaluation_ratings(where: { id: { _in: $questionIds } }) {
+      id
+      rating
+    }
+  }
 `;
