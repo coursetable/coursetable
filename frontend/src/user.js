@@ -41,37 +41,24 @@ export const UserProvider = ({ children }) => {
   // Refresh user FB stuff
   const fbRefresh = useCallback(
     async (suppressError = false) => {
-      const fbData = await axios.get('/legacy_api/FetchFacebookData.php');
-      if (!fbData.data.success) {
-        // Error with login
-        setFbLogin(null);
-        console.error(fbData.data.message);
+      const friends_worksheets = await axios.get(
+        '/legacy_api/FetchFriendWorksheetsNew.php'
+      );
+      if (!friends_worksheets.data.success) {
+        // Error with fetching friends' worksheets
+        console.log(friends_worksheets.data.message);
         if (!suppressError) {
-          toast.error(fbData.data.message);
+          toast.error(friends_worksheets.data.message);
         }
+        setFbLogin(false);
+        setFbWorksheets(null);
       } else {
-        // Set login status
-        setFbLogin(fbData.data.success);
-        if (fbData.data.success) {
-          // If user is logged into FB, update their friends' worksheets
-          const friends_worksheets = await axios.get(
-            '/legacy_api/FetchFriendWorksheetsNew.php'
-          );
-          if (!friends_worksheets.data.success) {
-            // Error with fetching friends' worksheets
-            setFbWorksheets(null);
-            console.error(friends_worksheets.data.message);
-            if (!suppressError) {
-              toast.error(friends_worksheets.data.message);
-            }
-          } else {
-            // Successfully fetched friends' worksheets
-            setFbWorksheets(friends_worksheets.data);
-          }
-        }
+        // Successfully fetched friends' worksheets
+        setFbLogin(true);
+        setFbWorksheets(friends_worksheets.data);
       }
     },
-    [setFbLogin]
+    [setFbLogin, setFbWorksheets]
   );
 
   const store = {
