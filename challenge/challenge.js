@@ -18,6 +18,27 @@ import { requestEvalsQuery, verifyEvalsQuery } from './queries.js';
 
 import { constructChallenge, verifyChallenge, decrypt } from './utils.js';
 
+import mysql from 'mysql';
+var connection = mysql.createConnection({
+	host: 'mysql',
+	user: 'root',
+	password: 'GoCourseTable',
+	database: 'yaleplus',
+});
+
+connection.connect();
+
+connection.query('SELECT * FROM StudentBluebookSettings LIMIT 5', function(
+	error,
+	results,
+	fields
+) {
+	if (error) throw error;
+	console.log(JSON.stringify(results));
+});
+
+connection.end();
+
 /**
  * Generates and returns a user challenge.
  * @prop req - request object
