@@ -12,32 +12,24 @@ const { query } = graphqurl;
 // Enable request logging.
 app.use(morgan('tiny'));
 
-import { PORT, GRAPHQL_ENDPOINT, CHALLENGE_SEASON } from './constants.js';
+import {
+	PORT,
+	GRAPHQL_ENDPOINT,
+	CHALLENGE_SEASON,
+	MAX_CHALLENGE_REQUESTS,
+} from './constants.js';
 
 import { requestEvalsQuery, verifyEvalsQuery } from './queries.js';
 
 import { constructChallenge, verifyChallenge, decrypt } from './utils.js';
 
 import mysql from 'mysql';
-var connection = mysql.createConnection({
+var mysqlConnection = mysql.createConnection({
 	host: 'mysql',
 	user: 'root',
 	password: 'GoCourseTable',
 	database: 'yaleplus',
 });
-
-connection.connect();
-
-connection.query('SELECT * FROM StudentBluebookSettings LIMIT 5', function(
-	error,
-	results,
-	fields
-) {
-	if (error) throw error;
-	console.log(JSON.stringify(results));
-});
-
-connection.end();
 
 /**
  * Generates and returns a user challenge.
@@ -56,24 +48,74 @@ app.get('/challenge/request', (req, res) => {
 		});
 	}
 
-	// randomize the selected challenge courses by
-	// randomly choosing a minimum rating
-	const minRating = 1 + Math.random() * 4;
+	// use mysql.escape() to prevent injection attacks
+	mysqlConnection.query(
+		`SELECT challengeTries FROM StudentBluebookSettings WHERE netid=${mysql.escape(
+			netid
+		)} LIMIT 1`,
+		(error, results, fields) => {
+			// catch general query errors
+			if (error) {
+				console.error(error.message);
+				res.status(400).send({
+					error: 'INTERNAL_ERROR',
+				});
+			}
 
-	query({
-		query: requestEvalsQuery,
-		endpoint: GRAPHQL_ENDPOINT,
-		variables: {
-			season: CHALLENGE_SEASON,
-			minRating: minRating,
-		},
-	})
-		.then(response => {
-			res.json({ body: constructChallenge(response) });
-		})
-		.catch(error => {
-			res.json({ body: error });
-		});
+			// affirm single user retrieved
+			if (results.length !== 1) {
+				res.status(400).send({
+					error: 'USER_NOT_FOUND',
+				});
+			}
+
+			const challengeTries = results[0]['challengeTries'];
+
+			// limit number of challenge requests
+			if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
+				res.status(400).send({
+					error: 'MAX_TRIES_REACHED',
+				});
+			}
+
+			// update number of tries
+			mysqlConnection.query(
+				`UPDATE StudentBluebookSettings SET challengeTries=${challengeTries +
+					1} WHERE netid=${mysql.escape(netid)}`,
+				(error, results, fields) => {
+					// catch general query errors
+					if (error) {
+						console.error(error.message);
+						res.status(400).send({
+							error: 'INTERNAL_ERROR',
+						});
+					}
+
+					// randomize the selected challenge courses by
+					// randomly choosing a minimum rating
+					const minRating = 1 + Math.random() * 4;
+
+					query({
+						query: requestEvalsQuery,
+						endpoint: GRAPHQL_ENDPOINT,
+						variables: {
+							season: CHALLENGE_SEASON,
+							minRating: minRating,
+						},
+					})
+						.then(response => {
+							res.json({
+								body: constructChallenge(response),
+								challengeTries: challengeTries + 1,
+							});
+						})
+						.catch(error => {
+							res.json({ body: error });
+						});
+				}
+			);
+		}
+	);
 });
 
 /**
