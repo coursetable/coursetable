@@ -193,7 +193,7 @@ app.post('/challenge/verify', (req, res) => {
 				(error, results, fields) => {
 					// catch general query errors
 					if (error) {
-						// console.error(error.message);
+						console.error(error.message);
 						res.status(400).send({
 							error: 'INTERNAL_ERROR',
 						});
@@ -260,10 +260,35 @@ app.post('/challenge/verify', (req, res) => {
 						},
 					})
 						.then(response => {
-							res.json({
-								body: verifyChallenge(response, answers),
-								challengeTries: challengeTries + 1,
-							});
+							// if answers are incorrect, respond with error
+							if (!verifyChallenge(response, answers)) {
+								res.status(400).send({
+									error: 'INCORRECT',
+									challengeTries: challengeTries + 1,
+								});
+							}
+
+							// otherwise, enable evaluations
+							mysqlConnection.query(
+								`UPDATE StudentBluebookSettings SET evaluationsEnabled=1 WHERE netid=${mysql.escape(
+									netid
+								)}`,
+								(error, results, fields) => {
+									// catch general query errors
+									if (error) {
+										console.error(error.message);
+										res.status(400).send({
+											error: 'INTERNAL_ERROR',
+										});
+										return;
+									}
+
+									res.json({
+										body: 'CORRECT',
+										challengeTries: challengeTries + 1,
+									});
+								}
+							);
 						})
 						.catch(error => {
 							res.json({ body: error, challengeTries: challengeTries + 1 });

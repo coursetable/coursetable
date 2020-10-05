@@ -58,7 +58,7 @@ export function constructChallenge(response) {
   }
 
   // array of CourseTable question IDs
-  const ratingIds = response['data']['evaluation_ratings'].map((x) => x['id']);
+  const ratingIds = response['data']['evaluation_ratings'].map(x => x['id']);
 
   // construct token object
   const secrets = ratingIds.map((x, index) => {
@@ -73,16 +73,16 @@ export function constructChallenge(response) {
   const token = encrypt(JSON.stringify(secrets), salt);
 
   // course ids, titles and questions for user
-  const courseIds = response['data']['evaluation_ratings'].map((x) => x['id']);
+  const courseIds = response['data']['evaluation_ratings'].map(x => x['id']);
   const courseTitles = response['data']['evaluation_ratings'].map(
-    (x) => x['course']['title']
+    x => x['course']['title']
   );
   const courseQuestionTexts = response['data']['evaluation_ratings'].map(
-    (x) => x['evaluation_question']['question_text']
+    x => x['evaluation_question']['question_text']
   );
 
   // Yale OCE urls for user to retrieve answers
-  const oceUrls = response['data']['evaluation_ratings'].map((x) => {
+  const oceUrls = response['data']['evaluation_ratings'].map(x => {
     // courses have multiple CRNs, and any one should be fine
     const crn = x['course']['listings'][0]['crn'];
     const season = x['course']['season_code'];
@@ -123,7 +123,7 @@ export function verifyChallenge(response, answers) {
   // mapping from question ID to ratings
   let truthById = {};
 
-  truth.forEach((x) => {
+  truth.forEach(x => {
     truthById[x['id']] = x['rating'];
   });
 
@@ -135,9 +135,9 @@ export function verifyChallenge(response, answers) {
         parseInt(answer['courseRatingIndex'])
       ] !== parseInt(answer['answer'])
     ) {
-      return 'INCORRECT';
+      return false;
     }
   }
 
-  return 'CORRECT';
+  return true;
 }
