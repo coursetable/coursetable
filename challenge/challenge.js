@@ -31,6 +31,12 @@ var mysqlConnection = mysql.createConnection({
 	database: 'yaleplus',
 });
 
+// open the MySQL connection
+mysqlConnection.connect(error => {
+	if (error) throw error;
+	console.log('Successfully connected to the database.');
+});
+
 /**
  * Generates and returns a user challenge.
  * @prop req - request object
@@ -46,6 +52,7 @@ app.get('/challenge/request', (req, res) => {
 		res.status(400).send({
 			error: 'NOT_AUTHENTICATED',
 		});
+		return;
 	}
 
 	// use mysql.escape() to prevent injection attacks
@@ -60,6 +67,7 @@ app.get('/challenge/request', (req, res) => {
 				res.status(400).send({
 					error: 'INTERNAL_ERROR',
 				});
+				return;
 			}
 
 			// affirm single user retrieved
@@ -67,6 +75,7 @@ app.get('/challenge/request', (req, res) => {
 				res.status(400).send({
 					error: 'USER_NOT_FOUND',
 				});
+				return;
 			}
 
 			const challengeTries = results[0]['challengeTries'];
@@ -76,6 +85,7 @@ app.get('/challenge/request', (req, res) => {
 				res.status(400).send({
 					error: 'MAX_TRIES_REACHED',
 				});
+				return;
 			}
 
 			// update number of tries
@@ -89,6 +99,7 @@ app.get('/challenge/request', (req, res) => {
 						res.status(400).send({
 							error: 'INTERNAL_ERROR',
 						});
+						return;
 					}
 
 					// randomize the selected challenge courses by
@@ -110,7 +121,7 @@ app.get('/challenge/request', (req, res) => {
 							});
 						})
 						.catch(error => {
-							res.json({ body: error });
+							res.json({ body: error, challengeTries: challengeTries + 1 });
 						});
 				}
 			);
@@ -135,61 +146,132 @@ app.post('/challenge/verify', (req, res) => {
 		});
 	}
 
-	let { token, salt, answers } = req.body;
+	mysqlConnection.query(
+		`SELECT challengeTries,evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
+			netid
+		)} LIMIT 1`,
+		(error, results, fields) => {
+			// catch general query errors
+			if (error) {
+				console.error(error.message);
+				res.status(400).send({
+					error: 'INTERNAL_ERROR',
+				});
+				return;
+			}
 
-	let secrets; // the decrypted token
+			// affirm single user retrieved
+			if (results.length !== 1) {
+				res.status(400).send({
+					error: 'USER_NOT_FOUND',
+				});
+				return;
+			}
 
-	let secretRatingIds; // for retrieving the correct ones from the database
+			const challengeTries = results[0]['challengeTries'];
+			const evaluationsEnabled = results[0]['evaluationsEnabled'];
 
-	// list in the format "<question_id>_<rating_index>" to verify
-	// the submitted answers match those encoded in the token
-	let secretRatings;
-	let answerRatings;
+			if (evaluationsEnabled === 1) {
+				res.status(400).send({
+					error: 'ALREADY_ENABLED',
+				});
+				return;
+			}
 
-	// catch malformed token decryption errors
-	try {
-		secrets = JSON.parse(decrypt(token, salt));
-		secretRatingIds = secrets.map(x => x['courseRatingId']);
-		secretRatings = secrets.map(
-			x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
-		);
-	} catch (e) {
-		res.status(400).send({
-			error: 'INVALID_TOKEN',
-		});
-	}
+			// limit number of challenge requests
+			if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
+				res.status(400).send({
+					error: 'MAX_TRIES_REACHED',
+				});
+				return;
+			}
 
-	// catch malformed answer JSON errors
-	try {
-		answerRatings = answers.map(
-			x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
-		);
-	} catch (e) {
-		res.status(400).send({
-			error: 'MALFORMED_ANSWERS',
-		});
-	}
+			// update number of tries
+			mysqlConnection.query(
+				`UPDATE StudentBluebookSettings SET challengeTries=${challengeTries +
+					1} WHERE netid=${mysql.escape(netid)}`,
+				(error, results, fields) => {
+					// catch general query errors
+					if (error) {
+						// console.error(error.message);
+						res.status(400).send({
+							error: 'INTERNAL_ERROR',
+						});
+						return;
+					}
 
-	// make sure the provided ratings IDs and indices match those we have
-	if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
-		res.status(400).send({
-			error: 'INVALID_TOKEN',
-		});
-	}
+					let { token, salt, answers } = req.body;
 
-	query({
-		query: verifyEvalsQuery,
-		endpoint: GRAPHQL_ENDPOINT,
-		variables: {
-			questionIds: secretRatingIds,
-		},
-	})
-		.then(response => {
-			res.json({ body: verifyChallenge(response, answers) });
-		})
-		.catch(error => {
-			res.json({ body: error });
-		});
+					let secrets; // the decrypted token
+
+					let secretRatingIds; // for retrieving the correct ones from the database
+
+					// list in the format "<question_id>_<rating_index>" to verify
+					// the submitted answers match those encoded in the token
+					let secretRatings;
+					let answerRatings;
+
+					// catch malformed token decryption errors
+					try {
+						secrets = JSON.parse(decrypt(token, salt));
+						secretRatingIds = secrets.map(x => x['courseRatingId']);
+						secretRatings = secrets.map(
+							x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
+						);
+					} catch (e) {
+						res.status(400).send({
+							error: 'INVALID_TOKEN',
+							challengeTries: challengeTries + 1,
+						});
+						return;
+					}
+
+					// catch malformed answer JSON errors
+					try {
+						answers = JSON.parse(answers);
+						answerRatings = answers.map(
+							x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
+						);
+					} catch (e) {
+						console.error(e);
+						res.status(400).send({
+							error: 'MALFORMED_ANSWERS',
+							challengeTries: challengeTries + 1,
+						});
+						return;
+					}
+
+					// make sure the provided ratings IDs and indices match those we have
+					if (
+						secretRatings.sort().join(',') !== answerRatings.sort().join(',')
+					) {
+						res.status(400).send({
+							error: 'INVALID_TOKEN',
+							challengeTries: challengeTries + 1,
+						});
+						return;
+					}
+
+					query({
+						query: verifyEvalsQuery,
+						endpoint: GRAPHQL_ENDPOINT,
+						variables: {
+							questionIds: secretRatingIds,
+						},
+					})
+						.then(response => {
+							res.json({
+								body: verifyChallenge(response, answers),
+								challengeTries: challengeTries + 1,
+							});
+						})
+						.catch(error => {
+							res.json({ body: error, challengeTries: challengeTries + 1 });
+						});
+				}
+			);
+		}
+	);
 });
 
 app.listen(PORT, () => {
