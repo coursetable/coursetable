@@ -57,7 +57,7 @@ app.get('/challenge/request', (req, res) => {
 
 	// use mysql.escape() to prevent injection attacks
 	mysqlConnection.query(
-		`SELECT challengeTries FROM StudentBluebookSettings WHERE netid=${mysql.escape(
+		`SELECT challengeTries,evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
 			netid
 		)} LIMIT 1`,
 		(error, results, fields) => {
@@ -79,7 +79,14 @@ app.get('/challenge/request', (req, res) => {
 			}
 
 			const challengeTries = results[0]['challengeTries'];
+			const evaluationsEnabled = results[0]['evaluationsEnabled'];
 
+			if (evaluationsEnabled === 1) {
+				res.status(400).send({
+					error: 'ALREADY_ENABLED',
+				});
+				return;
+			}
 			// limit number of challenge requests
 			if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
 				res.status(400).send({
