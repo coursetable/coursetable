@@ -178,6 +178,11 @@ function Search({ location, history }) {
       setRefreshCache(refreshCache + 1);
       // if (!defaultSearch) setCollapsedForm(true);
       temp_offset = 0; // Account for reset state lag
+
+        
+      // Metric Tracking of Invidiual Searches
+      window.umami.trackEvent("Searched - " + searchText.value, "search-text");
+
     } else if (fetchedAll) return;
 
     // sorting options
@@ -675,7 +680,12 @@ function Search({ location, history }) {
                     onChange={(e) => {}} // dummy handler to remove warning
                   />
                   <Form.Check.Label
-                    onClick={() => setHideCancelled(!hideCancelled)}
+                    onClick={() => {
+                      setHideCancelled(!hideCancelled);
+                      
+                      // Metric Tracking for Hide Cancelled Courses Toggle
+                      window.umami.trackEvent("Cancelled Hidden - " + (!hideCancelled).toString(), "hide-toggle");
+                    }}
                   >
                     Hide cancelled
                   </Form.Check.Label>

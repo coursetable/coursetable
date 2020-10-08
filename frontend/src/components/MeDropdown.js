@@ -38,6 +38,10 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
 
   // Handle 'export worksheet' button clikc
   const handleExportClick = () => {
+    
+    // Metric Tracking of Worksheet Export
+    window.umami.trackEvent("Worksheet Exported", "worksheet");
+
     // Call the lazy query function to fetch listing data for the worksheet
     fetchWorksheetListings();
     // Start export process
@@ -65,6 +69,10 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
+    
+    // Metric Tracking of Logging Out
+    window.umami.trackEvent("Account Logout", "account");
+
     // Clear cookies
     document.cookie.split(';').forEach((c) => {
       document.cookie = c

@@ -95,11 +95,18 @@ function FBLoginButton() {
       return_scopes: true,
     });
     axios.get('/legacy_api/FetchFacebookData.php');
+    
+    // Metric Tracking of Facebook Login
+    window.umami.trackEvent("Facebook Login", "facebook");
+
   }
 
   function handleLogoutClick() {
     toast.error('FB disconnect not yet implemented.');
     // setLoggedIn(false);
+
+    // Metric Tracking of Facebook Logout
+    window.umami.trackEvent("Facebook Logout", "facebook");
   }
 
   return (

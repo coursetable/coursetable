@@ -39,6 +39,10 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
 
   // Called when hiding modal
   const handleHide = () => {
+
+    // Metric Tracking for Hiding the Modal 
+    window.umami.trackEvent("Modal Hidden", "modal");
+
     // Reset views and filters
     setView(['overview', null]);
     setFilter('both');
@@ -149,7 +153,12 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                   <Col xs="auto" className="my-auto p-0">
                     {/* Back to overview arrow */}
                     <div
-                      onClick={() => setView(['overview', null])}
+                      onClick={() => {
+                        setView(['overview', null]);
+                        
+                        // Metric Tracking What Courses Get Viewed 
+                        window.umami.trackEvent("Course Viewed - " + view[1].course_code, "course-viewed");
+                      }}
                       className={styles.back_arrow}
                     >
                       <IoMdArrowRoundBack size={30} />
