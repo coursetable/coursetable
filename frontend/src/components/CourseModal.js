@@ -176,12 +176,14 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                       </Row>
                     </Modal.Title>
                     {/* Course Professors and Section number */}
-                    {view[1].professor !== '' && (
+                    {view[1].professor !== ['TBA'] && (
                       <Row className={styles.badges + ' mx-auto mt-1 '}>
                         <p
                           className={styles.course_codes + '  my-0 text-muted'}
                         >
-                          {view[1].professor + ' | Section ' + view[1].section}
+                          {view[1].professor.join(', ') +
+                            ' | Section ' +
+                            view[1].section}
                         </p>
                       </Row>
                     )}

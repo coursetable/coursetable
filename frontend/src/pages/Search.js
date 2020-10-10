@@ -190,7 +190,7 @@ function Search({ location, history }) {
     // whether or not multiple seasons are being returned
     const temp_multiSeasons = processedSeasons
       ? processedSeasons.length !== 1
-      : false;
+      : true;
     if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
 
     if (processedSeasons != null) {
@@ -496,7 +496,7 @@ function Search({ location, history }) {
                           : undefined
                       }
                       onChange={handleChange}
-                      placeholder="Find a class..."
+                      placeholder="Search by course code, title, or prof"
                       ref={(ref) => (searchText = ref)}
                     />
                   </InputGroup>

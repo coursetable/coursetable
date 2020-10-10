@@ -63,21 +63,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   const handleSetSeason = (evaluation) => {
     // Temp dictionary that stores listing info
     let temp = { ...evaluation };
-    // Use first course code if filter is professor
-    if (filter === 'professor') {
-      temp.professor = listing.professors;
-      temp.course_code = evaluation.course_code[0];
-    }
-    // Use first professor if filter is course
-    else if (filter === 'course') {
-      temp.course_code = listing.course_code;
-      temp.professor = evaluation.professor[0];
-    }
-    // Use normal course code and professors list if filter is both
-    else {
-      temp.course_code = listing.course_code;
-      temp.professor = listing.professors;
-    }
+    temp.course_code = temp.course_code[0];
     setSeason(temp);
   };
 
@@ -99,12 +85,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       location_name = listing[`times_by_day.${day}`][0][2];
     }
   }
-
   // Fetch ratings data for this listing
   const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
     variables: {
       course_code: listing.course_code ? listing.course_code : 'bruh',
-      professor_name: listing.professors ? listing.professors : 'bruh',
+      professor_name: listing.professor_names
+        ? listing.professor_names
+        : ['bruh'],
     },
   });
   // Wait until data is fetched
@@ -122,6 +109,15 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       email: '',
     };
   });
+  // Count number of profs that overlap between this listing and an eval
+  const overlapping_profs = (eval_profs) => {
+    let cnt = 0;
+    listing.professor_names.forEach((prof) => {
+      // Eval course contains this prof
+      if (eval_profs.includes(prof)) cnt++;
+    });
+    return cnt;
+  };
   // Make sure data is loaded
   if (data) {
     // Loop by season code
@@ -204,32 +200,40 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Only show courses that have same course code and same prof
       if (filter === 'both') {
+        // Skip if same course code but different profs
         if (
           evaluations[i].course_code.includes(listing.course_code) &&
-          !evaluations[i].professor.includes(listing.professors)
+          overlapping_profs(evaluations[i].professor) !==
+            listing.professor_names.length
         )
           continue;
+        // Skip if different course code
         if (!evaluations[i].course_code.includes(listing.course_code)) continue;
       }
 
       // Only show courses that have same course code but different prof
       if (filter === 'course') {
+        // Skip if same course code and a same prof
         if (
           evaluations[i].course_code.includes(listing.course_code) &&
-          evaluations[i].professor.includes(listing.professors)
+          overlapping_profs(evaluations[i].professor) > 0
         )
           continue;
+        // Skip if different course code
         if (!evaluations[i].course_code.includes(listing.course_code)) continue;
       }
 
       // Only show courses that have same prof but different course code
       if (filter === 'professor') {
+        // Skip if same course code and same profs
         if (
           evaluations[i].course_code.includes(listing.course_code) &&
-          evaluations[i].professor.includes(listing.professors)
+          overlapping_profs(evaluations[i].professor) ===
+            listing.professor_names.length
         )
           continue;
-        if (!evaluations[i].professor.includes(listing.professors)) continue;
+        // Skip if no overlapping profs
+        if (overlapping_profs(evaluations[i].professor) === 0) continue;
       }
 
       // Is course eval button expanded? CURRENTLY NOT USING
