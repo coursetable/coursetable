@@ -87,6 +87,10 @@ function Search({ location, history }) {
 
   // Show the modal for the course that was clicked
   const showModal = (listing) => {
+    
+    // Metric Tracking What Courses Get Viewed 
+    //window.umami.trackEvent("Course Viewed - " + listing, "course-viewed");
+    
     setCourseModal([true, listing]);
   };
 
@@ -163,6 +167,10 @@ function Search({ location, history }) {
 
   // resubmit search on view change
   const handleSetView = (isList) => {
+    
+    // Metric Tracking for View Changes
+    window.umami.trackEvent((isList) ? "List View" : "Grid View", "modal-view");
+
     setView(isList);
     handleSubmit(null, true);
   };
@@ -183,7 +191,13 @@ function Search({ location, history }) {
       // Metric Tracking of Invidiual Searches
       window.umami.trackEvent("Searched - " + searchText.value, "search-text");
 
-    } else if (fetchedAll) return;
+    } else if (fetchedAll) {
+      
+      // Metric Tracking of Viewing All
+      window.umami.trackEvent("Viewed All", "search");
+
+      return;
+    };
 
     // sorting options
     var sortParams = select_sortby.value;

@@ -18,7 +18,7 @@ function Searchbar({ bar_size }) {
   const searched = (event) => {
 
     // Metric Tracking of Invidiual Searches
-    window.umami.trackEvent("Searched - " + input.current.value, "search-text");
+    //window.umami.trackEvent("Searched - " + input.current.value, "search-text");
 
     // Prevent page refresh on submit
     event.preventDefault();
