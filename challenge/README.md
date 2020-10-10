@@ -4,10 +4,9 @@ This module provides an API for verifying that a user has access to the Yale cou
 
 **TODO**:
 
-- Link to mysql database for the following:
-  - Require user to be logged in via CAS beforehand
-  - Limit number of attempts per user
-  - Keep track of enabled users
+- Separate out challenge database code into models and controllers
+- Change MAX_CHALLENGE_REQUESTS in constants.js to something smaller before deploy
+- Implement Hasura access control to show/hide evaluations for CAS-authenticated users based on challenge completion
 - Update `crypto.createCipher` and `crypto.createDecipher` (now deprecated) in `utils.js` to `crypto.createCipheriv` and `crypto.createDecipheriv`.
 
 ## How it works
