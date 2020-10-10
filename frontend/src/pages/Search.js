@@ -536,7 +536,7 @@ function Search({ location, history }) {
                         setSelectSeasons(options);
                         let has_summer_season = false;
                         // Check to see if user has selected a summer season
-                        if (options) {
+                        if (options && options.length > 0) {
                           options.forEach((season) => {
                             // Summer season exists
                             if (season.value[5] === '2') {
@@ -548,6 +548,13 @@ function Search({ location, history }) {
                               ]);
                             }
                           });
+                        } else {
+                          has_summer_season = true;
+                          // Add summer session to schools
+                          setSelectSchools([
+                            ...select_schools,
+                            { label: 'Summer Session', value: 'SU' },
+                          ]);
                         }
                         // If no summer season selected
                         if (!has_summer_season) {
