@@ -200,23 +200,22 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Only show courses that have same course code and same prof
       if (filter === 'both') {
-        // Skip if same course code but different profs
-        if (
-          evaluations[i].course_code.includes(listing.course_code) &&
-          overlapping_profs(evaluations[i].professor) !==
-            listing.professor_names.length
-        )
-          continue;
         // Skip if different course code
         if (!evaluations[i].course_code.includes(listing.course_code)) continue;
+        // Skip if different professors
+        if (
+          overlapping_profs(evaluations[i].professor) !==
+          listing.professor_names.length
+        )
+          continue;
       }
 
       // Only show courses that have same course code but different prof
       if (filter === 'course') {
-        // Skip if same course code and a same prof
+        // Skip if same profs
         if (
-          evaluations[i].course_code.includes(listing.course_code) &&
-          overlapping_profs(evaluations[i].professor) > 0
+          overlapping_profs(evaluations[i].professor) ===
+          listing.professor_names.length
         )
           continue;
         // Skip if different course code
@@ -225,13 +224,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Only show courses that have same prof but different course code
       if (filter === 'professor') {
-        // Skip if same course code and same profs
-        if (
-          evaluations[i].course_code.includes(listing.course_code) &&
-          overlapping_profs(evaluations[i].professor) ===
-            listing.professor_names.length
-        )
-          continue;
+        // Skip if same course code
+        if (evaluations[i].course_code.includes(listing.course_code)) continue;
         // Skip if no overlapping profs
         if (overlapping_profs(evaluations[i].professor) === 0) continue;
       }
