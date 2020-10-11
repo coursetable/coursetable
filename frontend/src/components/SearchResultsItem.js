@@ -110,11 +110,7 @@ const SearchResultsItem = ({
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
-      <FaCanadianMapleLeaf
-        color="#9c0000"
-        className="my-auto"
-        size={icon_size}
-      />
+      <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
 
   // Tooltip for hovering over season
