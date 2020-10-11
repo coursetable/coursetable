@@ -15,7 +15,7 @@ function Challenge() {
   let history = useHistory();
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
-  // Stores body of response for the /challenge/request API call
+  // Stores body of response for the /api/challenge/request API call
   const [res_body, setResBody] = useState(null);
   // Stores user's answers
   const [answers, setAnswers] = useState([
@@ -25,10 +25,10 @@ function Challenge() {
   ]);
 
   const fetchQuestions = () => {
-    axios.get('/challenge/request').then((res) => {
+    axios.get('/api/challenge/request').then(res => {
       // Questions not properly fetched
       if (!res.data || !res.data.body) {
-        toast.error('Error with /challenge/request API call');
+        toast.error('Error with /api/challenge/request API call');
       }
       // Successfully fetched questions so update res_body state
       else {
@@ -44,7 +44,7 @@ function Challenge() {
   }, []);
 
   // Handle form submit
-  const handleSubmit = (event) => {
+  const handleSubmit = event => {
     const form = event.currentTarget;
     // Prevent default page reload
     event.preventDefault();
@@ -69,11 +69,11 @@ function Challenge() {
       };
       // Verify answers
       axios
-        .post('/challenge/verify', qs.stringify(post_body), config)
-        .then((res) => {
+        .post('/api/challenge/verify', qs.stringify(post_body), config)
+        .then(res => {
           // Answers not properly verified
           if (!res.data || !res.data.body) {
-            toast.error('Error with /challenge/verify API call');
+            toast.error('Error with /api/challenge/verify API call');
           } else {
             // Correct responses
             if (res.data.body === 'CORRECT') {
@@ -133,7 +133,7 @@ function Challenge() {
             required
             placeholder="Enter rating"
             value={answers[index].answer}
-            onChange={(event) => {
+            onChange={event => {
               // Copy answers state into a new variable
               let new_answers = [...answers];
               // Update new answers

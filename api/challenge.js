@@ -42,7 +42,7 @@ mysqlConnection.connect(error => {
  * @prop req - request object
  * @prop res - return object
  */
-app.get('/challenge/request', (req, res) => {
+app.get('/api/challenge/request', (req, res) => {
   // get authentication headers
   const netid = req.header('x-coursetable-netid'); // user's NetID
   const authd = req.header('x-coursetable-authd'); // if user is logged in
@@ -141,7 +141,7 @@ app.get('/challenge/request', (req, res) => {
  * @prop req - request object
  * @prop res - return object
  */
-app.post('/challenge/verify', (req, res) => {
+app.post('/api/challenge/verify', (req, res) => {
   // get authentication headers
   const netid = req.header('x-coursetable-netid'); // user's NetID
   const authd = req.header('x-coursetable-authd'); // if user is logged in
