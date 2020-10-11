@@ -13,27 +13,27 @@ Student.getChallengeStatus = (netid, result) => {
     (err, res) => {
       if (err) {
         console.error('findChallenge error: ', err);
-        result(err, null);
+        result(500, err, null);
         return;
       }
 
       // affirm single user retrieved
       if (res.length !== 1) {
-        result('USER_NOT_FOUND', null);
+        result(401, 'USER_NOT_FOUND', null);
       }
 
       const challengeTries = res[0]['challengeTries'];
       const evaluationsEnabled = res[0]['evaluationsEnabled'];
 
       if (evaluationsEnabled === 1) {
-        result('ALREADY_ENABLED');
+        result(403, 'ALREADY_ENABLED', null);
       }
       // limit number of challenge requests
       if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
-        result('MAX_TRIES_REACHED');
+        result(429, 'MAX_TRIES_REACHED', null);
       }
 
-      result(null, res[0]);
+      result(200, null, res[0]);
 
       return;
     }
@@ -47,11 +47,11 @@ Student.incrementChallengeTries = (challengeTries, netid, result) => {
     (err, res) => {
       if (err) {
         console.error('incrementChallengeTries error: ', err);
-        result(err, null);
+        result(500, null);
         return;
       }
 
-      result(null, true);
+      result(200, null, true);
       return;
     }
   );
@@ -65,11 +65,11 @@ Student.enableEvaluations = (netid, result) => {
     (err, res) => {
       if (err) {
         console.error('enableEvaluations error: ', err);
-        result(err, null);
+        result(500, err, null);
         return;
       }
 
-      result(null, true);
+      result(200, null, true);
       return;
     }
   );
