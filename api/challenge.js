@@ -49,7 +49,7 @@ app.get('/api/challenge/request', (req, res) => {
 
   // require NetID authentication
   if (authd !== 'true') {
-    res.status(400).send({
+    res.status(401).send({
       error: 'NOT_AUTHENTICATED',
     });
     return;
@@ -64,7 +64,7 @@ app.get('/api/challenge/request', (req, res) => {
       // catch general query errors
       if (error) {
         console.error(error.message);
-        res.status(400).send({
+        res.status(500).send({
           error: 'INTERNAL_ERROR',
         });
         return;
@@ -72,7 +72,7 @@ app.get('/api/challenge/request', (req, res) => {
 
       // affirm single user retrieved
       if (results.length !== 1) {
-        res.status(400).send({
+        res.status(401).send({
           error: 'USER_NOT_FOUND',
         });
         return;
@@ -82,14 +82,14 @@ app.get('/api/challenge/request', (req, res) => {
       const evaluationsEnabled = results[0]['evaluationsEnabled'];
 
       if (evaluationsEnabled === 1) {
-        res.status(400).send({
+        res.status(200).send({
           error: 'ALREADY_ENABLED',
         });
         return;
       }
       // limit number of challenge requests
       if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
-        res.status(400).send({
+        res.status(429).send({
           error: 'MAX_TRIES_REACHED',
         });
         return;
@@ -103,7 +103,7 @@ app.get('/api/challenge/request', (req, res) => {
           // catch general query errors
           if (error) {
             console.error(error.message);
-            res.status(400).send({
+            res.status(500).send({
               error: 'INTERNAL_ERROR',
             });
             return;
@@ -148,7 +148,7 @@ app.post('/api/challenge/verify', (req, res) => {
 
   // require NetID authentication
   if (authd !== 'true') {
-    res.status(400).send({
+    res.status(401).send({
       error: 'NOT_AUTHENTICATED',
     });
   }
@@ -161,7 +161,7 @@ app.post('/api/challenge/verify', (req, res) => {
       // catch general query errors
       if (error) {
         console.error(error.message);
-        res.status(400).send({
+        res.status(500).send({
           error: 'INTERNAL_ERROR',
         });
         return;
@@ -169,7 +169,7 @@ app.post('/api/challenge/verify', (req, res) => {
 
       // affirm single user retrieved
       if (results.length !== 1) {
-        res.status(400).send({
+        res.status(401).send({
           error: 'USER_NOT_FOUND',
         });
         return;
@@ -179,7 +179,7 @@ app.post('/api/challenge/verify', (req, res) => {
       const evaluationsEnabled = results[0]['evaluationsEnabled'];
 
       if (evaluationsEnabled === 1) {
-        res.status(400).send({
+        res.status(200).send({
           error: 'ALREADY_ENABLED',
         });
         return;
@@ -187,7 +187,7 @@ app.post('/api/challenge/verify', (req, res) => {
 
       // limit number of challenge requests
       if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
-        res.status(400).send({
+        res.status(429).send({
           error: 'MAX_TRIES_REACHED',
         });
         return;
@@ -201,7 +201,7 @@ app.post('/api/challenge/verify', (req, res) => {
           // catch general query errors
           if (error) {
             console.error(error.message);
-            res.status(400).send({
+            res.status(500).send({
               error: 'INTERNAL_ERROR',
             });
             return;
@@ -226,7 +226,7 @@ app.post('/api/challenge/verify', (req, res) => {
               x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
             );
           } catch (e) {
-            res.status(400).send({
+            res.status(406).send({
               error: 'INVALID_TOKEN',
               challengeTries: challengeTries + 1,
             });
@@ -241,7 +241,7 @@ app.post('/api/challenge/verify', (req, res) => {
             );
           } catch (e) {
             console.error(e);
-            res.status(400).send({
+            res.status(406).send({
               error: 'MALFORMED_ANSWERS',
               challengeTries: challengeTries + 1,
             });
@@ -252,7 +252,7 @@ app.post('/api/challenge/verify', (req, res) => {
           if (
             secretRatings.sort().join(',') !== answerRatings.sort().join(',')
           ) {
-            res.status(400).send({
+            res.status(406).send({
               error: 'INVALID_TOKEN',
               challengeTries: challengeTries + 1,
             });
@@ -269,7 +269,7 @@ app.post('/api/challenge/verify', (req, res) => {
             .then(response => {
               // if answers are incorrect, respond with error
               if (!verifyChallenge(response, answers)) {
-                res.status(400).send({
+                res.status(200).send({
                   error: 'INCORRECT',
                   challengeTries: challengeTries + 1,
                 });
@@ -284,7 +284,7 @@ app.post('/api/challenge/verify', (req, res) => {
                   // catch general query errors
                   if (error) {
                     console.error(error.message);
-                    res.status(400).send({
+                    res.status(500).send({
                       error: 'INTERNAL_ERROR',
                     });
                     return;

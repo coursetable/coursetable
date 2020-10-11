@@ -93,7 +93,7 @@ function App() {
               <MyRoute
                 exact
                 path="/catalog"
-                render={(props) => <Search {...props} />}
+                render={props => <Search {...props} />}
               />
 
               {/* Auth */}
@@ -101,7 +101,7 @@ function App() {
                 {isLoggedIn ? <Redirect to="/" /> : <Landing />}
               </MyRoute>
               {/* OCE Challenge */}
-              <MyRoute exact path="/ocechallenge">
+              <MyRoute exact path="/challenge">
                 <Challenge />
               </MyRoute>
 

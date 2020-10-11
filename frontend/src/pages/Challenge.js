@@ -6,6 +6,8 @@ import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
 import { toast } from 'react-toastify';
 
+import { FiExternalLink } from 'react-icons/fi';
+
 /**
  * Renders the OCE Challenge page if the user hasn't completed yet
  */
@@ -24,18 +26,27 @@ function Challenge() {
     { answer: '' },
   ]);
 
+  const [requestError, setRequestError] = useState(null);
+
   const fetchQuestions = () => {
-    axios.get('/api/challenge/request').then(res => {
-      // Questions not properly fetched
-      if (!res.data || !res.data.body) {
-        toast.error('Error with /api/challenge/request API call');
-      }
-      // Successfully fetched questions so update res_body state
-      else {
-        // console.log(res.data.body);
-        setResBody(res.data.body);
-      }
-    });
+    axios
+      .get('/api/challenge/request')
+      .then(res => {
+        // Questions not properly fetched
+        if (!res.data || !res.data.body) {
+          toast.error('Error with /api/challenge/request API call');
+        }
+        // Successfully fetched questions so update res_body state
+        else {
+          // console.log(res.data.body);
+          setResBody(res.data.body);
+        }
+      })
+      .catch(err => {
+        if (err.response.data) {
+          setRequestError(err.response.data.error);
+        }
+      });
   };
 
   // Fetch questions on component mount
@@ -107,31 +118,31 @@ function Challenge() {
         <Form.Group controlId={`question#${index + 1}`} key={index}>
           {/* Course Title */}
           <Row className="mx-auto">
-            <strong>{course.courseTitle}</strong>
-          </Row>
-          {/* Question with link to OCE Page */}
-          <Row className="mx-auto mb-1">
-            <small>
+            <strong>
               <a
                 href={course.courseOceUrl}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                How many students responded to the{' '}
-                <span className="font-weight-bold">overall assessment</span>{' '}
-                question with
-                <span className="font-weight-bold">
-                  {' "' + rating_options[course.courseRatingIndex]}"
-                </span>
-                ?
+                {course.courseTitle} <FiExternalLink />
               </a>
-            </small>
+            </strong>
+          </Row>
+          {/* Question with link to OCE Page */}
+          <Row className="mx-auto mb-1">
+            How many students responded to the{' '}
+            <span className="font-weight-bold">"overall assessment"</span>{' '}
+            question with
+            <span className="font-weight-bold">
+              {' "' + rating_options[course.courseRatingIndex]}"
+            </span>
+            ?
           </Row>
           {/* Number Input Box */}
           <Form.Control
             type="number"
             required
-            placeholder="Enter rating"
+            placeholder="Number of students"
             value={answers[index].answer}
             onChange={event => {
               // Copy answers state into a new variable
@@ -149,6 +160,10 @@ function Challenge() {
     });
   }
 
+  if (requestError) {
+    return <div>{requestError}</div>;
+  }
+
   return (
     <div className={styles.container + ' mx-auto'}>
       {/* Page Header */}
@@ -157,8 +172,10 @@ function Challenge() {
       </h1>
       {/* Page Description */}
       <p className={styles.challenge_description + ' mb-4 text-muted'}>
-        Please complete the following challenge to confirm you have access to
-        Yale OCE
+        To confirm that you're a Yale student with access to course evaluations,
+        we ask that you retrieve the number of people who responded to a
+        specific question for three courses. If your responses match the values
+        in our database, you'll be good to go!
       </p>
       {res_body ? (
         // Show form when questions have been fetched
