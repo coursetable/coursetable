@@ -1,27 +1,20 @@
-import express from 'express';
 import bodyParser from 'body-parser';
-
-import morgan from 'morgan';
-
-const app = express();
-app.use(bodyParser.urlencoded({ extended: true }));
 
 import graphqurl from 'graphqurl';
 const { query } = graphqurl;
 
-// Enable request logging.
-app.use(morgan('tiny'));
-
 import {
-  PORT,
   GRAPHQL_ENDPOINT,
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
-} from './constants.js';
+} from '../config/constants.js';
 
-import { requestEvalsQuery, verifyEvalsQuery } from './queries.js';
+import {
+  requestEvalsQuery,
+  verifyEvalsQuery,
+} from '../queries/challenge.queries.js';
 
-import { constructChallenge, verifyChallenge, decrypt } from './utils.js';
+import { constructChallenge, checkChallenge, decrypt } from '../utils.js';
 
 import mysql from 'mysql';
 var mysqlConnection = mysql.createConnection({
@@ -42,7 +35,7 @@ mysqlConnection.connect(error => {
  * @prop req - request object
  * @prop res - return object
  */
-app.get('/api/challenge/request', (req, res) => {
+export const requestChallenge = (req, res) => {
   // get authentication headers
   const netid = req.header('x-coursetable-netid'); // user's NetID
   const authd = req.header('x-coursetable-authd'); // if user is logged in
@@ -134,14 +127,14 @@ app.get('/api/challenge/request', (req, res) => {
       );
     }
   );
-});
+};
 
 /**
  * Verifies answers to a challenge.
  * @prop req - request object
  * @prop res - return object
  */
-app.post('/api/challenge/verify', (req, res) => {
+export const verifyChallenge = (req, res) => {
   // get authentication headers
   const netid = req.header('x-coursetable-netid'); // user's NetID
   const authd = req.header('x-coursetable-authd'); // if user is logged in
@@ -268,7 +261,7 @@ app.post('/api/challenge/verify', (req, res) => {
           })
             .then(response => {
               // if answers are incorrect, respond with error
-              if (!verifyChallenge(response, answers)) {
+              if (!checkChallenge(response, answers)) {
                 res.status(200).send({
                   error: 'INCORRECT',
                   challengeTries: challengeTries + 1,
@@ -304,8 +297,4 @@ app.post('/api/challenge/verify', (req, res) => {
       );
     }
   );
-});
-
-app.listen(PORT, () => {
-  console.log(`Challenge API listening at http://localhost:${PORT}`);
-});
+};

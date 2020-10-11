@@ -1,6 +1,6 @@
 import crypto from 'crypto';
 
-import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './constants.js';
+import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './config/constants.js';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
@@ -116,7 +116,7 @@ export function constructChallenge(response) {
  * @prop response - response from the query
  * @prop answers - user-provided answers
  */
-export function verifyChallenge(response, answers) {
+export function checkChallenge(response, answers) {
   // the true values in CourseTable to compare against
   const truth = response['data']['evaluation_ratings'];
 
