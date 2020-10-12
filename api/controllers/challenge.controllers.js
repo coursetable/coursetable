@@ -1,5 +1,6 @@
 import graphqurl from 'graphqurl';
 const { query } = graphqurl;
+import crypto from 'crypto';
 
 import {
   GRAPHQL_ENDPOINT,
@@ -12,7 +13,7 @@ import {
   verifyEvalsQuery,
 } from '../queries/challenge.queries.js';
 
-import { constructChallenge, checkChallenge, decrypt } from '../utils.js';
+import { encrypt, decrypt, getRandomInt } from '../utils.js';
 
 import Student from '../models/student.models.js';
 
@@ -27,15 +28,88 @@ const verifyHeaders = (req, res) => {
       error: 'NOT_AUTHENTICATED',
     });
   }
+
+  return { netid: netid, authd: authd };
 };
 
+/**
+ * Generate a challenge object given a query response.
+ * Used by the requestChallenge controller.
+ *
+ * @prop response - response from the GraphQL query over evaluations
+ */
+const constructChallenge = response => {
+  // array of course enrollment counts
+  let ratingIndices = new Array();
+
+  for (const evaluation_rating of response['data']['evaluation_ratings']) {
+    const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
+
+    if (!Number.isInteger(evaluation_rating['rating'][ratingIndex])) {
+      return 'RATINGS_RETRIEVAL_ERROR';
+    }
+    ratingIndices.push(ratingIndex);
+  }
+
+  // array of CourseTable question IDs
+  const ratingIds = response['data']['evaluation_ratings'].map(x => x['id']);
+
+  // construct token object
+  const secrets = ratingIds.map((x, index) => {
+    return {
+      courseRatingId: ratingIds[index],
+      courseRatingIndex: ratingIndices[index],
+    };
+  });
+
+  // encrypt token
+  const salt = crypto.randomBytes(16).toString('hex');
+  const token = encrypt(JSON.stringify(secrets), salt);
+
+  // course ids, titles and questions for user
+  const courseIds = response['data']['evaluation_ratings'].map(x => x['id']);
+  const courseTitles = response['data']['evaluation_ratings'].map(
+    x => x['course']['title']
+  );
+  const courseQuestionTexts = response['data']['evaluation_ratings'].map(
+    x => x['evaluation_question']['question_text']
+  );
+
+  // Yale OCE urls for user to retrieve answers
+  const oceUrls = response['data']['evaluation_ratings'].map(x => {
+    // courses have multiple CRNs, and any one should be fine
+    const crn = x['course']['listings'][0]['crn'];
+    const season = x['course']['season_code'];
+
+    const oceUrl = `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=${crn}&term_code=${season}`;
+
+    return oceUrl;
+  });
+
+  // merged course information object
+  const course_info = courseTitles.map((x, index) => {
+    return {
+      courseId: courseIds[index],
+      courseTitle: courseTitles[index],
+      courseRatingIndex: ratingIndices[index],
+      courseQuestionTexts: courseQuestionTexts[index],
+      courseOceUrl: oceUrls[index],
+    };
+  });
+
+  return {
+    token: token,
+    salt: salt,
+    course_info: course_info,
+  };
+};
 /**
  * Generates and returns a user challenge.
  * @prop req - request object
  * @prop res - return object
  */
 export const requestChallenge = (req, res) => {
-  verifyHeaders(req, res);
+  const { netid, authd } = verifyHeaders(req, res);
 
   const student = new Student();
 
@@ -88,12 +162,45 @@ export const requestChallenge = (req, res) => {
 };
 
 /**
+ * Compare a response from the database and user-provided answers
+ * to verify that a challenge is solved or not. Used by the
+ * verifyChallenge controller.
+ *
+ * @prop response - response from the GraphQL query over the evaluations
+ * @prop answers - user-provided answers
+ */
+const checkChallenge = (response, answers) => {
+  // the true values in CourseTable to compare against
+  const truth = response['data']['evaluation_ratings'];
+
+  // mapping from question ID to ratings
+  let truthById = {};
+
+  truth.forEach(x => {
+    truthById[x['id']] = x['rating'];
+  });
+
+  // for each answer, check that it matches our data
+  for (const answer of answers) {
+    if (
+      truthById[answer['courseRatingId']][
+        parseInt(answer['courseRatingIndex'])
+      ] !== parseInt(answer['answer'])
+    ) {
+      return false;
+    }
+  }
+
+  return true;
+};
+
+/**
  * Verifies answers to a challenge.
  * @prop req - request object
  * @prop res - return object
  */
 export const verifyChallenge = (req, res) => {
-  verifyHeaders(req, res);
+  const { netid, authd } = verifyHeaders(req, res);
 
   const student = new Student();
 
