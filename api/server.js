@@ -5,10 +5,7 @@ import morgan from 'morgan';
 import { PORT } from './config/constants.js';
 
 // import routes
-import {
-  requestChallenge,
-  verifyChallenge,
-} from './routes/challenge.routes.js';
+import challenge from './routes/challenge.routes.js';
 
 const app = express();
 // Enable url-encoding
@@ -19,12 +16,14 @@ app.use(morgan('tiny'));
 /**
  * Generates and returns a user challenge.
  */
-app.get('/api/challenge/request', requestChallenge);
+// app.get('/api/challenge/request', requestChallenge);
 
 /**
  * Generates and returns a user challenge.
  */
-app.post('/api/challenge/verify', verifyChallenge);
+// app.post('/api/challenge/verify', verifyChallenge);
+
+challenge(app);
 
 app.listen(PORT, () => {
   console.log(`Challenge API listening at http://localhost:${PORT}`);

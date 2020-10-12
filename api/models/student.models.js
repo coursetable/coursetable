@@ -20,6 +20,7 @@ Student.getChallengeStatus = (netid, result) => {
       // affirm single user retrieved
       if (res.length !== 1) {
         result(401, 'USER_NOT_FOUND', null);
+        return;
       }
 
       const challengeTries = res[0]['challengeTries'];
@@ -27,10 +28,12 @@ Student.getChallengeStatus = (netid, result) => {
 
       if (evaluationsEnabled === 1) {
         result(403, 'ALREADY_ENABLED', null);
+        return;
       }
       // limit number of challenge requests
       if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
         result(429, 'MAX_TRIES_REACHED', null);
+        return;
       }
 
       result(200, null, res[0]);
