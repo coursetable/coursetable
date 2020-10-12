@@ -38,21 +38,23 @@ const verifyHeaders = (req, res) => {
  *
  * @prop response - response from the GraphQL query over evaluations
  */
-const constructChallenge = response => {
+const constructChallenge = (req, res, evals, challengeTries) => {
   // array of course enrollment counts
   let ratingIndices = new Array();
 
-  for (const evaluation_rating of response['data']['evaluation_ratings']) {
+  for (const evaluation_rating of evals['data']['evaluation_ratings']) {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
     if (!Number.isInteger(evaluation_rating['rating'][ratingIndex])) {
-      return 'RATINGS_RETRIEVAL_ERROR';
+      return res.status(500).json({
+        error: 'RATINGS_RETRIEVAL_ERROR',
+      });
     }
     ratingIndices.push(ratingIndex);
   }
 
   // array of CourseTable question IDs
-  const ratingIds = response['data']['evaluation_ratings'].map(x => x['id']);
+  const ratingIds = evals['data']['evaluation_ratings'].map(x => x['id']);
 
   // construct token object
   const secrets = ratingIds.map((x, index) => {
@@ -67,16 +69,16 @@ const constructChallenge = response => {
   const token = encrypt(JSON.stringify(secrets), salt);
 
   // course ids, titles and questions for user
-  const courseIds = response['data']['evaluation_ratings'].map(x => x['id']);
-  const courseTitles = response['data']['evaluation_ratings'].map(
+  const courseIds = evals['data']['evaluation_ratings'].map(x => x['id']);
+  const courseTitles = evals['data']['evaluation_ratings'].map(
     x => x['course']['title']
   );
-  const courseQuestionTexts = response['data']['evaluation_ratings'].map(
+  const courseQuestionTexts = evals['data']['evaluation_ratings'].map(
     x => x['evaluation_question']['question_text']
   );
 
   // Yale OCE urls for user to retrieve answers
-  const oceUrls = response['data']['evaluation_ratings'].map(x => {
+  const oceUrls = evals['data']['evaluation_ratings'].map(x => {
     // courses have multiple CRNs, and any one should be fine
     const crn = x['course']['listings'][0]['crn'];
     const season = x['course']['season_code'];
@@ -97,11 +99,14 @@ const constructChallenge = response => {
     };
   });
 
-  return {
-    token: token,
-    salt: salt,
-    course_info: course_info,
-  };
+  return res.json({
+    body: {
+      token: token,
+      salt: salt,
+      course_info: course_info,
+    },
+    challengeTries: challengeTries + 1,
+  });
 };
 /**
  * Generates and returns a user challenge.
@@ -144,11 +149,8 @@ export const requestChallenge = (req, res) => {
             minRating: minRating,
           },
         })
-          .then(response => {
-            return res.json({
-              body: constructChallenge(response),
-              challengeTries: challengeTries + 1,
-            });
+          .then(evals => {
+            return constructChallenge(req, res, evals, challengeTries);
           })
           .catch(error => {
             return res.json({
