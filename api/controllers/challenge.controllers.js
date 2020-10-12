@@ -36,7 +36,10 @@ const verifyHeaders = (req, res) => {
  * Generate a challenge object given a query response.
  * Used by the requestChallenge controller.
  *
- * @prop response - response from the GraphQL query over evaluations
+ * @prop req - express request object
+ * @prop res - express response object
+ * @prop evals - evals from the GraphQL query over evaluations
+ * @prop challengeTries - number of user attempts
  */
 const constructChallenge = (req, res, evals, challengeTries) => {
   // array of course enrollment counts
@@ -108,6 +111,7 @@ const constructChallenge = (req, res, evals, challengeTries) => {
     challengeTries: challengeTries + 1,
   });
 };
+
 /**
  * Generates and returns a user challenge.
  * @prop req - request object
@@ -134,6 +138,7 @@ export const requestChallenge = (req, res) => {
         if (err) {
           return res.status(statusCode).json({
             error: err,
+            challengeTries: challengeTries + 1,
           });
         }
 
@@ -152,9 +157,9 @@ export const requestChallenge = (req, res) => {
           .then(evals => {
             return constructChallenge(req, res, evals, challengeTries);
           })
-          .catch(error => {
-            return res.json({
-              body: error,
+          .catch(err => {
+            return res.status(500).json({
+              error: err,
               challengeTries: challengeTries + 1,
             });
           });
@@ -168,12 +173,12 @@ export const requestChallenge = (req, res) => {
  * to verify that a challenge is solved or not. Used by the
  * verifyChallenge controller.
  *
- * @prop response - response from the GraphQL query over the evaluations
+ * @prop true_evals - response from the GraphQL query over the evaluations
  * @prop answers - user-provided answers
  */
-const checkChallenge = (response, answers) => {
+const checkChallenge = (true_evals, answers) => {
   // the true values in CourseTable to compare against
-  const truth = response['data']['evaluation_ratings'];
+  const truth = true_evals['data']['evaluation_ratings'];
 
   // mapping from question ID to ratings
   let truthById = {};
@@ -277,9 +282,9 @@ export const verifyChallenge = (req, res) => {
             questionIds: secretRatingIds,
           },
         })
-          .then(response => {
+          .then(true_evals => {
             // if answers are incorrect, respond with error
-            if (!checkChallenge(response, answers)) {
+            if (!checkChallenge(true_evals, answers)) {
               return res.status(200).json({
                 body: 'INCORRECT',
                 challengeTries: challengeTries + 1,
@@ -304,6 +309,7 @@ export const verifyChallenge = (req, res) => {
           .catch(err => {
             return res.status(500).json({
               error: err,
+              challengeTries: challengeTries + 1,
             });
           });
       }

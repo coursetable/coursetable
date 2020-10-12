@@ -13,16 +13,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Enable request logging.
 app.use(morgan('tiny'));
 
-/**
- * Generates and returns a user challenge.
- */
-// app.get('/api/challenge/request', requestChallenge);
-
-/**
- * Generates and returns a user challenge.
- */
-// app.post('/api/challenge/verify', verifyChallenge);
-
+// apply routes
 challenge(app);
 
 app.listen(PORT, () => {

@@ -5,6 +5,17 @@ import { MAX_CHALLENGE_REQUESTS } from '../config/constants.js';
 
 const Student = function(student) {};
 
+/**
+ * Get the challenge attempt count and whether or not
+ * evaluations are enabled for a user.
+ *
+ * Note that an error is raised if evaluations are enabled.
+ *
+ * @prop netid - student's netID
+ * @prop result - return object
+ *
+ * @return {response_code, error_message, response_data}
+ */
 Student.getChallengeStatus = (netid, result) => {
   mysql_db.query(
     `SELECT challengeTries,evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
@@ -26,6 +37,7 @@ Student.getChallengeStatus = (netid, result) => {
       const challengeTries = res[0]['challengeTries'];
       const evaluationsEnabled = res[0]['evaluationsEnabled'];
 
+      // check if already enabled
       if (evaluationsEnabled === 1) {
         result(403, 'ALREADY_ENABLED', null);
         return;
@@ -43,6 +55,16 @@ Student.getChallengeStatus = (netid, result) => {
   );
 };
 
+/**
+ * Increment the number of challenge attempts for a student
+ * to 1+ the provided value.
+ *
+ * @prop challengeTries - number of challenge attempts
+ * @prop netid - student's netID
+ * @prop result - return object
+ *
+ * @return {response_code, error_message, success_boolean}
+ */
 Student.incrementChallengeTries = (challengeTries, netid, result) => {
   mysql_db.query(
     `UPDATE StudentBluebookSettings SET challengeTries=${challengeTries +
@@ -50,7 +72,7 @@ Student.incrementChallengeTries = (challengeTries, netid, result) => {
     (err, res) => {
       if (err) {
         console.error('incrementChallengeTries error: ', err);
-        result(500, null);
+        result(500, err, null);
         return;
       }
 
@@ -60,6 +82,14 @@ Student.incrementChallengeTries = (challengeTries, netid, result) => {
   );
 };
 
+/**
+ * Enable evaluations access for a user.
+ *
+ * @prop netid - student's netID
+ * @prop result - return object
+ *
+ * @return {response_code, error_message, success_boolean}
+ */
 Student.enableEvaluations = (netid, result) => {
   mysql_db.query(
     `UPDATE StudentBluebookSettings SET evaluationsEnabled=1 WHERE netid=${mysql.escape(
