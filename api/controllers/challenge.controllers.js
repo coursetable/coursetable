@@ -15,12 +15,8 @@ import {
 import { constructChallenge, checkChallenge, decrypt } from '../utils.js';
 
 import Student from '../models/student.models.js';
-/**
- * Generates and returns a user challenge.
- * @prop req - request object
- * @prop res - return object
- */
-export const requestChallenge = (req, res) => {
+
+const verifyHeaders = (req, res) => {
   // get authentication headers
   const netid = req.header('x-coursetable-netid'); // user's NetID
   const authd = req.header('x-coursetable-authd'); // if user is logged in
@@ -31,6 +27,15 @@ export const requestChallenge = (req, res) => {
       error: 'NOT_AUTHENTICATED',
     });
   }
+};
+
+/**
+ * Generates and returns a user challenge.
+ * @prop req - request object
+ * @prop res - return object
+ */
+export const requestChallenge = (req, res) => {
+  verifyHeaders(req, res);
 
   const student = new Student();
 
@@ -88,16 +93,7 @@ export const requestChallenge = (req, res) => {
  * @prop res - return object
  */
 export const verifyChallenge = (req, res) => {
-  // get authentication headers
-  const netid = req.header('x-coursetable-netid'); // user's NetID
-  const authd = req.header('x-coursetable-authd'); // if user is logged in
-
-  // require NetID authentication
-  if (authd !== 'true') {
-    return res.status(401).json({
-      error: 'NOT_AUTHENTICATED',
-    });
-  }
+  verifyHeaders(req, res);
 
   const student = new Student();
 
