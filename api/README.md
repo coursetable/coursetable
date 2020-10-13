@@ -1,21 +1,21 @@
-# User challenge
+# API
 
-This module provides an API for verifying that a user has access to the Yale course evaluations at OCE (Online Course Evaluations).
+This module provides an Express server that performs various back-end functions. As of right now, it generates and verifies the user challenge that checks if a user can access course evaluations on their own.
 
 **TODO**:
-
-- Separate out challenge database code into models and controllers
-- Change MAX_CHALLENGE_REQUESTS in constants.js to something smaller before deploy
+- Tie challenge token to user to prevent sharing
 - Implement Hasura access control to show/hide evaluations for CAS-authenticated users based on challenge completion
 - Update `crypto.createCipher` and `crypto.createDecipher` (now deprecated) in `utils.js` to `crypto.createCipheriv` and `crypto.createDecipheriv`.
 
-## How it works
+## Challenge
+
+### How it works
 
 To verify that users have access to course evaluations, we ask them to retrieve some rating data from OCE that are then compared with the values in our database. If the responses match, then the user is granted access to CourseTable's data.
 
 ### Requesting a challenge
 
-The `/challenge/request` route accepts GET requests and returns a JSON object with challenge questions. This is done as follows:
+The `/api/challenge/request` route accepts GET requests and returns a JSON object with challenge questions. This is done as follows:
 
 1. We (semi)-randomly select three course evaluation questions that fall under the category of "What is your overall rating of this course?" and have five response options with counts as well as a mean. This random selection is implemented by choosing a random float between 1 and 5 and selecting questions with a mean response just above this threshold (accomplished by sorting the responses in order of ascending mean rating and limiting the first three).
 
@@ -43,11 +43,11 @@ The `/challenge/request` route accepts GET requests and returns a JSON object wi
 
 ### Verifying a response
 
-The `/challenge/verify` route accepts POST requests and returns a JSON object specifying whether or not the responses are correct, incorrect, or otherwise malformed.
+The `/api/challenge/verify` route accepts POST requests and returns a JSON object specifying whether or not the responses are correct, incorrect, or otherwise malformed.
 
 This route expects a URL-encoded body containing the following:
 
-- The token and salt previously from `/challenge/request`.
+- The token and salt previously from `/api/challenge/request`.
 
 - An answers object of the following structure:
 
