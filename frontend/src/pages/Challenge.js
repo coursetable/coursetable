@@ -31,6 +31,9 @@ function Challenge() {
   const [requestError, setRequestError] = useState(null);
   const [verifyError, setVerifyError] = useState(null);
 
+  const [numTries, setNumTries] = useState(null);
+  const [maxTries, setMaxTries] = useState(null);
+
   const fetchQuestions = () => {
     axios
       .get('/api/challenge/request')
@@ -41,8 +44,9 @@ function Challenge() {
         }
         // Successfully fetched questions so update res_body state
         else {
-          // console.log(res.data.body);
           setResBody(res.data.body);
+          setNumTries(res.data.body.challengeTries);
+          setMaxTries(res.data.body.maxChallengeTries);
         }
       })
       .catch(err => {
@@ -90,17 +94,16 @@ function Challenge() {
             toast.error('Error with /api/challenge/verify API call');
           } else {
             // Correct responses
-            if (res.data.body === 'CORRECT') {
+            if (res.data.body.message === 'CORRECT') {
               toast.success('All of your responses were correct!');
               history.push('/catalog');
             }
             // Incorrect responses
             else {
               toast.error('Incorrect responses. Try again.');
-              // Reset questions and form
-              // setAnswers([{ answer: '' }, { answer: '' }, { answer: '' }]);
               setValidated(false);
-              fetchQuestions();
+              setNumTries(res.data.body.challengeTries);
+              setMaxTries(res.data.body.maxChallengeTries);
             }
           }
         })
@@ -261,12 +264,18 @@ function Challenge() {
         {/* Page Header */}
         <h1 className={'font-weight-bold mb-2'}>Enable evaluations</h1>
         {/* Page Description */}
-        <p className={styles.challenge_description + ' mb-4 text-muted'}>
+        <p className={styles.challenge_description + ' mb-2 text-muted'}>
           To confirm that you're a Yale student with access to course
           evaluations, we ask that you retrieve the number of people who
           responded to a specific question for three courses (linked below). If
           your responses match the values in our database, you'll be good to go!
         </p>
+        <div className="mb-2">
+          <span className="font-weight-bold mb-6">
+            {numTries}/{maxTries}
+          </span>{' '}
+          attempts used
+        </div>
         {verifyError && verifyError}
         {res_body ? (
           // Show form when questions have been fetched

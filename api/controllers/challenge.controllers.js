@@ -114,8 +114,9 @@ const constructChallenge = (req, res, evals, challengeTries) => {
       token: token,
       salt: salt,
       course_info: course_info,
+      challengeTries: challengeTries + 1,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     },
-    challengeTries: challengeTries + 1,
   });
 };
 
@@ -146,6 +147,7 @@ export const requestChallenge = (req, res) => {
           return res.status(statusCode).json({
             error: err,
             challengeTries: challengeTries + 1,
+            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
           });
         }
 
@@ -168,6 +170,7 @@ export const requestChallenge = (req, res) => {
             return res.status(500).json({
               error: err,
               challengeTries: challengeTries + 1,
+              maxChallengeTries: MAX_CHALLENGE_REQUESTS,
             });
           });
       }
@@ -258,6 +261,7 @@ export const verifyChallenge = (req, res) => {
           return res.status(406).json({
             error: 'INVALID_TOKEN',
             challengeTries: challengeTries + 1,
+            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
           });
         }
         // catch malformed answer JSON errors
@@ -269,6 +273,7 @@ export const verifyChallenge = (req, res) => {
           return res.status(406).json({
             error: 'MALFORMED_ANSWERS',
             challengeTries: challengeTries + 1,
+            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
           });
         }
 
@@ -277,6 +282,7 @@ export const verifyChallenge = (req, res) => {
           return res.status(406).json({
             error: 'INVALID_TOKEN',
             challengeTries: challengeTries + 1,
+            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
           });
         }
 
@@ -291,8 +297,11 @@ export const verifyChallenge = (req, res) => {
             // if answers are incorrect, respond with error
             if (!checkChallenge(true_evals, answers)) {
               return res.status(200).json({
-                body: 'INCORRECT',
-                challengeTries: challengeTries + 1,
+                body: {
+                  message: 'INCORRECT',
+                  challengeTries: challengeTries + 1,
+                  maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+                },
               });
             }
 
@@ -302,12 +311,16 @@ export const verifyChallenge = (req, res) => {
                 return res.status(statusCode).json({
                   error: err,
                   challengeTries: challengeTries + 1,
+                  maxChallengeTries: MAX_CHALLENGE_REQUESTS,
                 });
               }
 
               return res.json({
-                body: 'CORRECT',
-                challengeTries: challengeTries + 1,
+                body: {
+                  message: 'CORRECT',
+                  challengeTries: challengeTries + 1,
+                  maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+                },
               });
             });
           })
@@ -315,6 +328,7 @@ export const verifyChallenge = (req, res) => {
             return res.status(500).json({
               error: err,
               challengeTries: challengeTries + 1,
+              maxChallengeTries: MAX_CHALLENGE_REQUESTS,
             });
           });
       }
