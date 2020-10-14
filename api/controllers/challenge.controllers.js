@@ -153,8 +153,6 @@ export const requestChallenge = (req, res) => {
         // randomly choosing a minimum rating
         const minRating = 1 + Math.random() * 4;
 
-        console.log('hello!');
-
         query({
           query: requestEvalsQuery,
           endpoint: GRAPHQL_ENDPOINT,

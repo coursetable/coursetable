@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import qs from 'qs';
-import { useHistory } from 'react-router-dom';
+import { useHistory, NavLink } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
 import { toast } from 'react-toastify';
 
 import { FiExternalLink } from 'react-icons/fi';
+
+import ChallengeError from '../images/error.svg';
 
 /**
  * Renders the OCE Challenge page if the user hasn't completed yet
@@ -160,8 +162,91 @@ function Challenge() {
     });
   }
 
+  const goBack = () => {
+    history.goBack();
+  };
+
   if (requestError) {
-    return <div>{requestError}</div>;
+    let errorTitle;
+    let errorMessage;
+    if (requestError === 'NOT_AUTHENTICATED') {
+      errorTitle = 'Please log in!';
+      errorMessage = (
+        <div>
+          You need to be logged in via CAS to enable your account.
+          <br />
+          <a
+            href="/legacy_api/index.php?forcelogin=1"
+            className="btn btn-primary mt-3"
+          >
+            Log in
+          </a>
+        </div>
+      );
+    } else if (requestError === 'USER_NOT_FOUND') {
+      errorTitle = 'Account not found!';
+      errorMessage = (
+        <div>
+          Please make sure you are logged in via CAS.
+          <br />
+          <a
+            href="/legacy_api/index.php?forcelogin=1"
+            className="btn btn-primary mt-3"
+          >
+            Log in
+          </a>
+        </div>
+      );
+    } else if (requestError === 'ALREADY_ENABLED') {
+      errorTitle = "You've already passed!";
+      errorMessage = (
+        <div>
+          You've completed the challenge already - no need to do it again.
+          <br />
+          <div onClick={goBack} className="btn btn-primary mt-3">
+            Go back
+          </div>
+        </div>
+      );
+    } else if (requestError === 'MAX_TRIES_REACHED') {
+      errorTitle = 'Max attempts reached!';
+      errorMessage = (
+        <div>
+          You've used up all your challenge attempts. Please{' '}
+          <NavLink to="/feedback">contact us</NavLink> if you would like to gain
+          access.
+        </div>
+      );
+    } else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
+      errorTitle = 'Challenge generation error!';
+      errorMessage = (
+        <div>
+          We couldn't find a challenge. Please{' '}
+          <NavLink to="/feedback">let us know</NavLink> what went wrong.
+        </div>
+      );
+    } else {
+      errorTitle = 'Internal error!';
+      errorMessage = (
+        <div>
+          Looks like we messed up. Please{' '}
+          <NavLink to="/feedback">let us know</NavLink> what went wrong.
+        </div>
+      );
+    }
+    return (
+      <div className="py-5" style={{ background: '#ffaaa5' }}>
+        <div className="bg-white container col-sm-8 col-md-6 col-lg-4 text-center p-5 rounded shadow">
+          <img
+            alt="No courses found."
+            className="w-50 md:w-25 py-5"
+            src={ChallengeError}
+          ></img>
+          <h3>{errorTitle}</h3>
+          <div>{errorMessage}</div>
+        </div>
+      </div>
+    );
   }
 
   return (
