@@ -17,19 +17,26 @@ import { encrypt, decrypt, getRandomInt } from '../utils.js';
 
 import Student from '../models/student.models.js';
 
-const verifyHeaders = (req, res) => {
+/**
+ * Middleware to verify request headers
+ *
+ * @prop req - express request object
+ * @prop res - express response object
+ * @prop next - express next object
+ */
+export const verifyHeaders = (req, res, next) => {
   // get authentication headers
   const netid = req.header('x-coursetable-netid'); // user's NetID
   const authd = req.header('x-coursetable-authd'); // if user is logged in
 
   // require NetID authentication
-  if (authd !== 'true') {
+  if (authd !== 'true' || !netid) {
     return res.status(401).json({
       error: 'NOT_AUTHENTICATED',
     });
   }
 
-  return { netid: netid, authd: authd };
+  next();
 };
 
 /**
@@ -118,7 +125,7 @@ const constructChallenge = (req, res, evals, challengeTries) => {
  * @prop res - return object
  */
 export const requestChallenge = (req, res) => {
-  const { netid, authd } = verifyHeaders(req, res);
+  const netid = req.header('x-coursetable-netid'); // user's NetID
 
   const student = new Student();
 
@@ -145,6 +152,8 @@ export const requestChallenge = (req, res) => {
         // randomize the selected challenge courses by
         // randomly choosing a minimum rating
         const minRating = 1 + Math.random() * 4;
+
+        console.log('hello!');
 
         query({
           query: requestEvalsQuery,
@@ -207,7 +216,7 @@ const checkChallenge = (true_evals, answers) => {
  * @prop res - return object
  */
 export const verifyChallenge = (req, res) => {
-  const { netid, authd } = verifyHeaders(req, res);
+  const netid = req.header('x-coursetable-netid'); // user's NetID
 
   const student = new Student();
 
