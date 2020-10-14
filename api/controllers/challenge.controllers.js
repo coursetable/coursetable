@@ -260,10 +260,8 @@ export const verifyChallenge = (req, res) => {
             challengeTries: challengeTries + 1,
           });
         }
-
         // catch malformed answer JSON errors
         try {
-          answers = JSON.parse(answers);
           answerRatings = answers.map(
             x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
           );

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
 import qs from 'qs';
+import axios from 'axios';
 import { useHistory, NavLink } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
@@ -98,7 +98,7 @@ function Challenge() {
             else {
               toast.error('Incorrect responses. Try again.');
               // Reset questions and form
-              setAnswers([{ answer: '' }, { answer: '' }, { answer: '' }]);
+              // setAnswers([{ answer: '' }, { answer: '' }, { answer: '' }]);
               setValidated(false);
               fetchQuestions();
             }
