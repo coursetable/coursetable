@@ -48,7 +48,7 @@ export const verifyHeaders = (req, res, next) => {
  * @prop evals - evals from the GraphQL query over evaluations
  * @prop challengeTries - number of user attempts
  */
-const constructChallenge = (req, res, evals, challengeTries) => {
+const constructChallenge = (req, res, evals, challengeTries, netid) => {
   // array of course enrollment counts
   let ratingIndices = new Array();
 
@@ -67,12 +67,17 @@ const constructChallenge = (req, res, evals, challengeTries) => {
   const ratingIds = evals['data']['evaluation_ratings'].map(x => x['id']);
 
   // construct token object
-  const secrets = ratingIds.map((x, index) => {
+  const ratingSecrets = ratingIds.map((x, index) => {
     return {
       courseRatingId: ratingIds[index],
       courseRatingIndex: ratingIndices[index],
     };
   });
+
+  const secrets = {
+    netid: netid,
+    ratingSecrets: ratingSecrets,
+  };
 
   // encrypt token
   const salt = crypto.randomBytes(16).toString('hex');
@@ -164,7 +169,7 @@ export const requestChallenge = (req, res) => {
           },
         })
           .then(evals => {
-            return constructChallenge(req, res, evals, challengeTries);
+            return constructChallenge(req, res, evals, challengeTries, netid);
           })
           .catch(err => {
             return res.status(500).json({
@@ -253,8 +258,10 @@ export const verifyChallenge = (req, res) => {
         // catch malformed token decryption errors
         try {
           secrets = JSON.parse(decrypt(token, salt));
-          secretRatingIds = secrets.map(x => x['courseRatingId']);
-          secretRatings = secrets.map(
+          secretRatingIds = secrets['ratingSecrets'].map(
+            x => x['courseRatingId']
+          );
+          secretRatings = secrets['ratingSecrets'].map(
             x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
           );
         } catch (e) {
@@ -264,6 +271,18 @@ export const verifyChallenge = (req, res) => {
             maxChallengeTries: MAX_CHALLENGE_REQUESTS,
           });
         }
+
+        console.log(secrets);
+
+        // ensure that netid in token is same as in headers
+        if (secrets['netid'] !== netid) {
+          return res.status(406).json({
+            error: 'INVALID_TOKEN',
+            challengeTries: challengeTries + 1,
+            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+          });
+        }
+
         // catch malformed answer JSON errors
         try {
           answerRatings = answers.map(
