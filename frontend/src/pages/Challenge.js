@@ -28,13 +28,19 @@ function Challenge() {
     { answer: '' },
   ]);
 
+  // error code from requesting challenge
   const [requestError, setRequestError] = useState(null);
+  // error code from verifying challenge
   const [verifyError, setVerifyError] = useState(null);
+  // error message to render after verification (if applicable)
   const [verifyErrorMessage, setVerifyErrorMessage] = useState(null);
 
+  // number of challenge attempts
   const [numTries, setNumTries] = useState(null);
+  // max number of attempts allowed
   const [maxTries, setMaxTries] = useState(null);
 
+  // get the challenge questions
   const fetchQuestions = () => {
     axios
       .get('/api/challenge/request')
@@ -43,7 +49,7 @@ function Challenge() {
         if (!res.data || !res.data.body) {
           toast.error('Error with /api/challenge/request API call');
         }
-        // Successfully fetched questions so update res_body state
+        // Successfully fetched questions so update body and set max tries
         else {
           setResBody(res.data.body);
           setNumTries(res.data.body.challengeTries);
@@ -101,7 +107,15 @@ function Challenge() {
             }
             // Incorrect responses
             else {
-              toast.error('Incorrect responses. Try again.');
+              toast.error('Incorrect responses. Please try again.');
+
+              setVerifyError('INCORRECT');
+
+              setVerifyErrorMessage(
+                <div>Incorrect responses. Please try again.</div>
+              );
+
+              // Invalidate the form
               setValidated(false);
               setNumTries(res.data.body.challengeTries);
               setMaxTries(res.data.body.maxChallengeTries);
@@ -114,6 +128,7 @@ function Challenge() {
 
             setVerifyError(error);
 
+            // Max attempts reached
             if (error === 'MAX_TRIES_REACHED') {
               setVerifyErrorMessage(
                 <div>
@@ -122,7 +137,9 @@ function Challenge() {
                   to gain access.
                 </div>
               );
-            } else if (error === 'INVALID_TOKEN') {
+            }
+            // Bad token
+            else if (error === 'INVALID_TOKEN') {
               setVerifyErrorMessage(
                 <div>
                   Your answers aren't formatted correctly. Please{' '}
@@ -130,7 +147,9 @@ function Challenge() {
                   is an error.
                 </div>
               );
-            } else if (error === 'MALFORMED_ANSWERS') {
+            }
+            // Bad answers
+            else if (error === 'MALFORMED_ANSWERS') {
               setVerifyErrorMessage(
                 <div>
                   Your answers aren't formatted correctly. Please{' '}
@@ -138,7 +157,9 @@ function Challenge() {
                   is an error.
                 </div>
               );
-            } else {
+            }
+            // Other errors
+            else {
               setVerifyErrorMessage(
                 <div>
                   Looks like we messed up. Please{' '}
@@ -207,9 +228,12 @@ function Challenge() {
     });
   }
 
+  // If error in requesting challenge, render error message
   if (requestError) {
     let errorTitle;
     let errorMessage;
+
+    // If user is not logged in
     if (requestError === 'NOT_AUTHENTICATED') {
       errorTitle = 'Please log in!';
       errorMessage = (
@@ -224,7 +248,9 @@ function Challenge() {
           </a>
         </div>
       );
-    } else if (requestError === 'USER_NOT_FOUND') {
+    }
+    // If user is not in database
+    else if (requestError === 'USER_NOT_FOUND') {
       errorTitle = 'Account not found!';
       errorMessage = (
         <div>
@@ -238,7 +264,9 @@ function Challenge() {
           </a>
         </div>
       );
-    } else if (requestError === 'ALREADY_ENABLED') {
+    }
+    // Evaluations already enabled
+    else if (requestError === 'ALREADY_ENABLED') {
       errorTitle = "You've already passed!";
       errorMessage = (
         <div>
@@ -254,7 +282,9 @@ function Challenge() {
           </div>
         </div>
       );
-    } else if (requestError === 'MAX_TRIES_REACHED') {
+    }
+    // Maximum attempts
+    else if (requestError === 'MAX_TRIES_REACHED') {
       errorTitle = 'Max attempts reached!';
       errorMessage = (
         <div>
@@ -263,7 +293,9 @@ function Challenge() {
           access.
         </div>
       );
-    } else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
+    }
+    // Cannot get properly formed ratings
+    else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
       errorTitle = 'Challenge generation error!';
       errorMessage = (
         <div>
@@ -271,7 +303,9 @@ function Challenge() {
           <NavLink to="/feedback">let us know</NavLink> what went wrong.
         </div>
       );
-    } else {
+    }
+    // Other errors
+    else {
       errorTitle = 'Internal error!';
       errorMessage = (
         <div>
@@ -302,17 +336,23 @@ function Challenge() {
         <h1 className={'font-weight-bold mb-2'}>Enable evaluations</h1>
         {/* Page Description */}
         <p className={styles.challenge_description + ' mb-2 text-muted'}>
-          To confirm that you're a Yale student with access to course
-          evaluations, we ask that you retrieve the number of people who
-          responded to a specific question for three courses (linked below). If
-          your responses match the values in our database, you'll be good to go!
+          To confirm that you have access to course evaluations, we ask that you
+          retrieve the number of people who responded to a specific question for
+          three courses (linked below). If your responses match the values in
+          our database, you'll be good to go!
+          <br />
+          If the challenge is not working for you, please{' '}
+          <NavLink to="/feedback">let us know</NavLink> and we can grant you
+          access manually.
         </p>
+        {/* Track number of attempts */}
         <div className="mb-2">
           <span className="font-weight-bold mb-6">
             {numTries}/{maxTries}
           </span>{' '}
-          attempts used
+          attempts used (request/verify both count)
         </div>
+        {/* Error messages from verification */}
         {verifyError && (
           <div className="text-danger mb-2">{verifyErrorMessage}</div>
         )}
@@ -326,7 +366,7 @@ function Challenge() {
           </Form>
         ) : (
           // Loading spinner while fetching questions
-          <Row className="m-auto" style={{ height: '45vh' }}>
+          <Row className="mx-auto py-5 my-5">
             <Spinner
               className={styles.loading_spinner}
               animation="border"
