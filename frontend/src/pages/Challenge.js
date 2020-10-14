@@ -30,6 +30,7 @@ function Challenge() {
 
   const [requestError, setRequestError] = useState(null);
   const [verifyError, setVerifyError] = useState(null);
+  const [verifyErrorMessage, setVerifyErrorMessage] = useState(null);
 
   const [numTries, setNumTries] = useState(null);
   const [maxTries, setMaxTries] = useState(null);
@@ -109,7 +110,42 @@ function Challenge() {
         })
         .catch(err => {
           if (err.response.data) {
-            setVerifyError(err.response.data.error);
+            const { error } = err.response.data;
+
+            setVerifyError(error);
+
+            if (error === 'MAX_TRIES_REACHED') {
+              setVerifyErrorMessage(
+                <div>
+                  You've used up all your challenge attempts. Please{' '}
+                  <NavLink to="/feedback">contact us</NavLink> if you would like
+                  to gain access.
+                </div>
+              );
+            } else if (error === 'INVALID_TOKEN') {
+              setVerifyErrorMessage(
+                <div>
+                  Your answers aren't formatted correctly. Please{' '}
+                  <NavLink to="/feedback">contact us</NavLink> if you think this
+                  is an error.
+                </div>
+              );
+            } else if (error === 'MALFORMED_ANSWERS') {
+              setVerifyErrorMessage(
+                <div>
+                  Your answers aren't formatted correctly. Please{' '}
+                  <NavLink to="/feedback">contact us</NavLink> if you think this
+                  is an error.
+                </div>
+              );
+            } else {
+              setVerifyErrorMessage(
+                <div>
+                  Looks like we messed up. Please{' '}
+                  <NavLink to="/feedback">let us know</NavLink> what went wrong.
+                </div>
+              );
+            }
           }
         });
     }
@@ -171,10 +207,6 @@ function Challenge() {
     });
   }
 
-  const goBack = () => {
-    history.goBack();
-  };
-
   if (requestError) {
     let errorTitle;
     let errorMessage;
@@ -212,7 +244,12 @@ function Challenge() {
         <div>
           You've completed the challenge already - no need to do it again.
           <br />
-          <div onClick={goBack} className="btn btn-primary mt-3">
+          <div
+            onClick={() => {
+              history.goBack();
+            }}
+            className="btn btn-primary mt-3"
+          >
             Go back
           </div>
         </div>
@@ -276,7 +313,9 @@ function Challenge() {
           </span>{' '}
           attempts used
         </div>
-        {verifyError && verifyError}
+        {verifyError && (
+          <div className="text-danger mb-2">{verifyErrorMessage}</div>
+        )}
         {res_body ? (
           // Show form when questions have been fetched
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
