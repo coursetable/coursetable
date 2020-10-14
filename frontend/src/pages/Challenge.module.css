@@ -3,18 +3,6 @@
   margin-bottom: 3rem;
 }
 
-.challenge_header {
-  font-weight: 600;
-  font-size: 25px;
-  text-align: center;
-}
-
-.challenge_description {
-  font-weight: 500;
-  font-size: 15px;
-  text-align: center;
-}
-
 .loading_spinner {
   position: fixed;
   top: calc(50% - 16px);

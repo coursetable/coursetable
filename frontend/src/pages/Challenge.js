@@ -29,6 +29,7 @@ function Challenge() {
   ]);
 
   const [requestError, setRequestError] = useState(null);
+  const [verifyError, setVerifyError] = useState(null);
 
   const fetchQuestions = () => {
     axios
@@ -102,6 +103,11 @@ function Challenge() {
               fetchQuestions();
             }
           }
+        })
+        .catch(err => {
+          if (err.response.data) {
+            setVerifyError(err.response.data.error);
+          }
         });
     }
     // Form has been validated
@@ -132,11 +138,11 @@ function Challenge() {
           </Row>
           {/* Question with link to OCE Page */}
           <Row className="mx-auto mb-1">
-            How many students responded to the{' '}
+            How many students responded to the&nbsp;
             <span className="font-weight-bold">"overall assessment"</span>{' '}
-            question with
+            question with&nbsp;
             <span className="font-weight-bold">
-              {' "' + rating_options[course.courseRatingIndex]}"
+              "{rating_options[course.courseRatingIndex]}"
             </span>
             ?
           </Row>
@@ -250,38 +256,39 @@ function Challenge() {
   }
 
   return (
-    <div className={styles.container + ' mx-auto'}>
-      {/* Page Header */}
-      <h1 className={styles.challenge_header + ' mt-5 mb-1'}>
-        Looks like this is your first time signing in
-      </h1>
-      {/* Page Description */}
-      <p className={styles.challenge_description + ' mb-4 text-muted'}>
-        To confirm that you're a Yale student with access to course evaluations,
-        we ask that you retrieve the number of people who responded to a
-        specific question for three courses. If your responses match the values
-        in our database, you'll be good to go!
-      </p>
-      {res_body ? (
-        // Show form when questions have been fetched
-        <Form noValidate validated={validated} onSubmit={handleSubmit}>
-          {question_html}
-          <Button variant="primary" type="submit">
-            Submit
-          </Button>
-        </Form>
-      ) : (
-        // Loading spinner while fetching questions
-        <Row className="m-auto" style={{ height: '45vh' }}>
-          <Spinner
-            className={styles.loading_spinner}
-            animation="border"
-            role="status"
-          >
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </Row>
-      )}
+    <div className="py-5" style={{ background: '#a8d8ea' }}>
+      <div className="bg-white container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow">
+        {/* Page Header */}
+        <h1 className={'font-weight-bold mb-2'}>Enable evaluations</h1>
+        {/* Page Description */}
+        <p className={styles.challenge_description + ' mb-4 text-muted'}>
+          To confirm that you're a Yale student with access to course
+          evaluations, we ask that you retrieve the number of people who
+          responded to a specific question for three courses (linked below). If
+          your responses match the values in our database, you'll be good to go!
+        </p>
+        {verifyError && verifyError}
+        {res_body ? (
+          // Show form when questions have been fetched
+          <Form noValidate validated={validated} onSubmit={handleSubmit}>
+            {question_html}
+            <Button variant="primary" type="submit" className="w-100">
+              Submit
+            </Button>
+          </Form>
+        ) : (
+          // Loading spinner while fetching questions
+          <Row className="m-auto" style={{ height: '45vh' }}>
+            <Spinner
+              className={styles.loading_spinner}
+              animation="border"
+              role="status"
+            >
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </Row>
+        )}
+      </div>
     </div>
   );
 }
