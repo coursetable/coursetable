@@ -20,8 +20,7 @@ $authorizationState = ProjectCommon::getStudentAuthorizationState($netId, $yaleP
 if ($netId && $authorizationState == 'authorized') {
     if ($successUrl) {
         header('Location: /'.$successUrl);
-    }
-    else {
+    } else {
         header('Location: /');
     }
 }
