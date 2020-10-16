@@ -17,42 +17,50 @@ const Student = function (student) {};
  * @return {response_code, error_message, response_data}
  */
 Student.getChallengeStatus = (netid, result) => {
-  mysql_db.query(
-    `SELECT challengeTries,evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
-      netid
-    )}`,
-    (err, res) => {
-      if (err) {
-        console.error('findChallenge error: ', err);
-        result(500, err, null);
-        return;
-      }
-
-      // affirm single user retrieved
-      if (res.length !== 1) {
-        result(401, 'USER_NOT_FOUND', null);
-        return;
-      }
-
-      const challengeTries = res[0]['challengeTries'];
-      const evaluationsEnabled = res[0]['evaluationsEnabled'];
-
-      // check if already enabled
-      if (evaluationsEnabled === 1) {
-        result(403, 'ALREADY_ENABLED', null);
-        return;
-      }
-      // limit number of challenge requests
-      if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
-        result(429, 'MAX_TRIES_REACHED', null);
-        return;
-      }
-
-      result(200, null, res[0]);
-
+  mysql_db.getConnection(function (err, connection) {
+    if (err) {
+      console.error(err);
+      result(500, err, null);
       return;
     }
-  );
+    connection.query(
+      `SELECT challengeTries,evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
+        netid
+      )}`,
+      (err, res) => {
+        connection.release(); //put connection back in pool
+        if (err) {
+          console.error('findChallenge error: ', err);
+          result(500, err, null);
+          return;
+        }
+
+        // affirm single user retrieved
+        if (res.length !== 1) {
+          result(401, 'USER_NOT_FOUND', null);
+          return;
+        }
+
+        const challengeTries = res[0]['challengeTries'];
+        const evaluationsEnabled = res[0]['evaluationsEnabled'];
+
+        // check if already enabled
+        if (evaluationsEnabled === 1) {
+          result(403, 'ALREADY_ENABLED', null);
+          return;
+        }
+        // limit number of challenge requests
+        if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
+          result(429, 'MAX_TRIES_REACHED', null);
+          return;
+        }
+
+        result(200, null, res[0]);
+
+        return;
+      }
+    );
+  });
 };
 
 /**
@@ -66,21 +74,29 @@ Student.getChallengeStatus = (netid, result) => {
  * @return {response_code, error_message, success_boolean}
  */
 Student.incrementChallengeTries = (challengeTries, netid, result) => {
-  mysql_db.query(
-    `UPDATE StudentBluebookSettings SET challengeTries=${
-      challengeTries + 1
-    } WHERE netid=${mysql.escape(netid)}`,
-    (err, res) => {
-      if (err) {
-        console.error('incrementChallengeTries error: ', err);
-        result(500, err, null);
-        return;
-      }
-
-      result(200, null, true);
+  mysql_db.getConnection(function (err, connection) {
+    if (err) {
+      console.error(err);
+      result(500, err, null);
       return;
     }
-  );
+    connection.query(
+      `UPDATE StudentBluebookSettings SET challengeTries=${
+        challengeTries + 1
+      } WHERE netid=${mysql.escape(netid)}`,
+      (err, res) => {
+        connection.release(); //put connection back in pool
+        if (err) {
+          console.error('incrementChallengeTries error: ', err);
+          result(500, err, null);
+          return;
+        }
+
+        result(200, null, true);
+        return;
+      }
+    );
+  });
 };
 
 /**
@@ -92,21 +108,29 @@ Student.incrementChallengeTries = (challengeTries, netid, result) => {
  * @return {response_code, error_message, success_boolean}
  */
 Student.enableEvaluations = (netid, result) => {
-  mysql_db.query(
-    `UPDATE StudentBluebookSettings SET evaluationsEnabled=1 WHERE netid=${mysql.escape(
-      netid
-    )}`,
-    (err, res) => {
-      if (err) {
-        console.error('enableEvaluations error: ', err);
-        result(500, err, null);
-        return;
-      }
-
-      result(200, null, true);
+  mysql_db.getConnection(function (err, connection) {
+    if (err) {
+      console.error(err);
+      result(500, err, null);
       return;
     }
-  );
+    connection.query(
+      `UPDATE StudentBluebookSettings SET evaluationsEnabled=1 WHERE netid=${mysql.escape(
+        netid
+      )}`,
+      (err, res) => {
+        connection.release(); //put connection back in pool
+        if (err) {
+          console.error('enableEvaluations error: ', err);
+          result(500, err, null);
+          return;
+        }
+
+        result(200, null, true);
+        return;
+      }
+    );
+  });
 };
 
 export default Student;

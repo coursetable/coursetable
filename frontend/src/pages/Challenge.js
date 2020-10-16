@@ -198,9 +198,9 @@ function Challenge() {
           </Row>
           {/* Question with link to OCE Page */}
           <Row className="mx-auto mb-1">
-            How many students responded to the&nbsp;
-            <span className="font-weight-bold">"overall assessment"</span>
-            &nbsp;question with&nbsp;
+            How many students responded to the{' '}
+            <span className="font-weight-bold">"overall assessment"</span>{' '}
+            question with{' '}
             <span className="font-weight-bold">
               "{rating_options[course.courseRatingIndex]}"
             </span>
@@ -350,7 +350,7 @@ function Challenge() {
           <span className="font-weight-bold mb-6">
             {numTries}/{maxTries}
           </span>{' '}
-          attempts used
+          {numTries === 1 ? 'attempt' : 'attempts'} used
         </div>
         {/* Error messages from verification */}
         {verifyError && (
