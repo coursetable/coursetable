@@ -64,7 +64,7 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
   }
 
   // array of CourseTable question IDs
-  const ratingIds = evals['data']['evaluation_ratings'].map((x) => x['id']);
+  const ratingIds = evals['data']['evaluation_ratings'].map(x => x['id']);
 
   // construct token object
   const ratingSecrets = ratingIds.map((x, index) => {
@@ -84,16 +84,16 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
   const token = encrypt(JSON.stringify(secrets), salt);
 
   // course ids, titles and questions for user
-  const courseIds = evals['data']['evaluation_ratings'].map((x) => x['id']);
+  const courseIds = evals['data']['evaluation_ratings'].map(x => x['id']);
   const courseTitles = evals['data']['evaluation_ratings'].map(
-    (x) => x['course']['title']
+    x => x['course']['title']
   );
   const courseQuestionTexts = evals['data']['evaluation_ratings'].map(
-    (x) => x['evaluation_question']['question_text']
+    x => x['evaluation_question']['question_text']
   );
 
   // Yale OCE urls for user to retrieve answers
-  const oceUrls = evals['data']['evaluation_ratings'].map((x) => {
+  const oceUrls = evals['data']['evaluation_ratings'].map(x => {
     // courses have multiple CRNs, and any one should be fine
     const crn = x['course']['listings'][0]['crn'];
     const season = x['course']['season_code'];
@@ -119,7 +119,7 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
       token: token,
       salt: salt,
       course_info: course_info,
-      challengeTries: challengeTries + 1,
+      challengeTries: challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     },
   });
@@ -144,42 +144,28 @@ export const requestChallenge = (req, res) => {
 
     const challengeTries = data['challengeTries'];
 
-    Student.incrementChallengeTries(
-      challengeTries,
-      netid,
-      (statusCode, err, data) => {
-        if (err) {
-          return res.status(statusCode).json({
-            error: err,
-            challengeTries: challengeTries + 1,
-            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-          });
-        }
+    // randomize the selected challenge courses by
+    // randomly choosing a minimum rating
+    const minRating = 1 + Math.random() * 4;
 
-        // randomize the selected challenge courses by
-        // randomly choosing a minimum rating
-        const minRating = 1 + Math.random() * 4;
-
-        query({
-          query: requestEvalsQuery,
-          endpoint: GRAPHQL_ENDPOINT,
-          variables: {
-            season: CHALLENGE_SEASON,
-            minRating: minRating,
-          },
-        })
-          .then((evals) => {
-            return constructChallenge(req, res, evals, challengeTries, netid);
-          })
-          .catch((err) => {
-            return res.status(500).json({
-              error: err,
-              challengeTries: challengeTries + 1,
-              maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-            });
-          });
-      }
-    );
+    query({
+      query: requestEvalsQuery,
+      endpoint: GRAPHQL_ENDPOINT,
+      variables: {
+        season: CHALLENGE_SEASON,
+        minRating: minRating,
+      },
+    })
+      .then(evals => {
+        return constructChallenge(req, res, evals, challengeTries, netid);
+      })
+      .catch(err => {
+        return res.status(500).json({
+          error: err,
+          challengeTries: challengeTries,
+          maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+        });
+      });
   });
 };
 
@@ -198,7 +184,7 @@ const checkChallenge = (true_evals, answers) => {
   // mapping from question ID to ratings
   let truthById = {};
 
-  truth.forEach((x) => {
+  truth.forEach(x => {
     truthById[x['id']] = x['rating'];
   });
 
@@ -259,10 +245,10 @@ export const verifyChallenge = (req, res) => {
         try {
           secrets = JSON.parse(decrypt(token, salt));
           secretRatingIds = secrets['ratingSecrets'].map(
-            (x) => x['courseRatingId']
+            x => x['courseRatingId']
           );
           secretRatings = secrets['ratingSecrets'].map(
-            (x) => `${x['courseRatingId']}_${x['courseRatingIndex']}`
+            x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
           );
         } catch (e) {
           return res.status(406).json({
@@ -284,7 +270,7 @@ export const verifyChallenge = (req, res) => {
         // catch malformed answer JSON errors
         try {
           answerRatings = answers.map(
-            (x) => `${x['courseRatingId']}_${x['courseRatingIndex']}`
+            x => `${x['courseRatingId']}_${x['courseRatingIndex']}`
           );
         } catch (e) {
           return res.status(406).json({
@@ -310,7 +296,7 @@ export const verifyChallenge = (req, res) => {
             questionIds: secretRatingIds,
           },
         })
-          .then((true_evals) => {
+          .then(true_evals => {
             // if answers are incorrect, respond with error
             if (!checkChallenge(true_evals, answers)) {
               return res.status(200).json({
@@ -341,7 +327,7 @@ export const verifyChallenge = (req, res) => {
               });
             });
           })
-          .catch((err) => {
+          .catch(err => {
             return res.status(500).json({
               error: err,
               challengeTries: challengeTries + 1,
