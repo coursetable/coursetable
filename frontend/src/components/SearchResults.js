@@ -185,7 +185,16 @@ const SearchResults = ({
           src={isLoggedIn ? NoCoursesFound : Authentication}
           style={{ width: '25%' }}
         ></img>
-        <h3>{isLoggedIn ? 'No courses found' : 'Please log in'}</h3>
+        {isLoggedIn ? (
+          <h3>No courses found</h3>
+        ) : (
+          <h3>
+            Please{' '}
+            <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
+              log in
+            </a>
+          </h3>
+        )}
         <div>
           {isLoggedIn
             ? "We couldn't find any courses matching your search."
