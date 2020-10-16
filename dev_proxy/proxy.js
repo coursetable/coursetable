@@ -40,12 +40,13 @@ const authSoft = (req, _, next) => {
       req.headers['x-coursetable-netid'] = data.netId;
       return next();
     })
-    .catch(err => {
+    .catch((err) => {
       return next(err);
     });
 };
 
 // Authentication - reject all unauthenticated requests.
+// If the user does not have evals enabled, these requests are also rejected.
 const authHard = (req, res, next) => {
   axios
     .get(`${php_uri}/AuthStatus.php`, {
@@ -54,13 +55,19 @@ const authHard = (req, res, next) => {
       },
     })
     .then(({ data }) => {
-      if (data.success) {
-        return next();
+      if (!data.success) {
+        // Return 403 forbidden if the request lacks auth.
+        return res.status(403).send('request missing authentication');
       }
-      // Return 403 forbidden if the request lacks auth.
-      res.status(403).send('request missing authentication');
+
+      if (!data.evaluationsEnabled) {
+        // Return 403 forbidden since evals are not enabled.
+        return res.status(403).send('you must enable evaluations first');
+      }
+
+      return next();
     })
-    .catch(err => {
+    .catch((err) => {
       return next(err);
     });
 };
