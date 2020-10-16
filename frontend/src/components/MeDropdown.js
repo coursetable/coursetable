@@ -27,14 +27,11 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   // Season to export classes from
   const CUR_SEASON = '202003';
 
-  // Make sure worksheet is loaded
-  if (user.worksheet) {
-    // Initialize the lazy query function
-    var [fetchWorksheetListings, { data }] = FetchWorksheetLazy(
-      user.worksheet,
-      CUR_SEASON
-    );
-  }
+  // Initialize the lazy query function
+  const [fetchWorksheetListings, { data }] = FetchWorksheetLazy(
+    user.worksheet,
+    CUR_SEASON
+  );
 
   // Handle 'export worksheet' button clikc
   const handleExportClick = () => {
