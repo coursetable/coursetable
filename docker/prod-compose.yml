@@ -32,6 +32,7 @@ services:
 
   api:
     image: node:latest
+    restart: always
     ports:
       - '4096:4096'
     volumes:
