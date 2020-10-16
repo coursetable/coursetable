@@ -33,7 +33,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     CUR_SEASON
   );
 
-  // Handle 'export worksheet' button clikc
+  // Handle 'export worksheet' button click
   const handleExportClick = () => {
     // Call the lazy query function to fetch listing data for the worksheet
     fetchWorksheetListings();
