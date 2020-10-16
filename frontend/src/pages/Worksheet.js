@@ -64,7 +64,9 @@ function Worksheet() {
   // Listings data to be fetched from database
   const [listings, setListings] = useState([]);
   // Store the initial worksheet to be cached on the first listings query
-  const [init_worksheet, setInitWorksheet] = useState(cur_worksheet);
+  const [init_worksheet, setInitWorksheet] = useState(
+    cur_worksheet ? cur_worksheet : []
+  );
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
@@ -81,9 +83,6 @@ function Worksheet() {
   const [start_fade, setStartFade] = useState(false);
   // Fade animation has ended
   const [end_fade, setEndFade] = useState(false);
-
-  // If worksheet doesn't exist
-  if (cur_worksheet == null) return <div>Please Login</div>;
 
   // Function to change season
   const changeSeason = (season_code) => {
@@ -151,6 +150,9 @@ function Worksheet() {
   // Only performs search query once with the initial worksheet and then caches the result
   // This prevents the need to perform another search query and render "loading..." when removing a course
   const { loading, error, data } = FetchWorksheet(init_worksheet);
+
+  // If user somehow isn't logged in and worksheet is null
+  if (cur_worksheet == null) return <div>Please Login</div>;
   // Display no courses page if no courses in worksheet
   if (cur_worksheet.length === 0)
     return (
