@@ -32,21 +32,21 @@ function Home() {
             <Card border="primary">
               <Card.Body>
                 <Card.Title>Most Popular</Card.Title>
-                <Card.Text>Definitely not CPSC 323</Card.Text>
+                <Card.Text>Coming soon!</Card.Text>
               </Card.Body>
             </Card>
             {/* What's New Box */}
             <Card border="success">
               <Card.Body>
                 <Card.Title>What's New?</Card.Title>
-                <Card.Text>Literally Everything.</Card.Text>
+                <Card.Text>Literally everything :)</Card.Text>
               </Card.Body>
             </Card>
             {/* Surprise Me Box */}
             <Card border="dark">
               <Card.Body>
                 <Card.Title>Surprise Me</Card.Title>
-                <Card.Text>A humanities course for a change</Card.Text>
+                <Card.Text>Coming soon!</Card.Text>
               </Card.Body>
             </Card>
           </CardDeck>
