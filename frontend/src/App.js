@@ -23,6 +23,7 @@ import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import Challenge from './pages/Challenge';
+import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
 import { Row, Spinner } from 'react-bootstrap';
@@ -106,8 +107,13 @@ function App() {
               </MyRoute>
 
               {/* Worksheet */}
-              <MyRoute isRoutePrivate={true} exact path="/worksheet">
-                {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
+              <MyRoute exact path="/worksheet">
+                {isLoggedIn ? <Worksheet /> : <Redirect to="/worksheetlogin" />}
+              </MyRoute>
+
+              {/* Worksheet Login */}
+              <MyRoute exact path="/worksheetlogin">
+                <WorksheetLogin />
               </MyRoute>
 
               {/* Thank You */}
