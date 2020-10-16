@@ -67,10 +67,9 @@ export const FetchWorksheet = (worksheet) => {
 
 // Lazy search query used in MeDropdown.js
 export const FetchWorksheetLazy = (worksheet, season_code) => {
-  let filtered_worksheet = [];
   // Get worksheet listings for this season
-  worksheet.forEach((course) => {
-    if (course[0] === season_code) filtered_worksheet.push(course);
+  const filtered_worksheet = (worksheet || []).filter((course) => {
+    return course[0] === season_code;
   });
   // Build gql query
   const builtQuery = buildQuery(filtered_worksheet);
