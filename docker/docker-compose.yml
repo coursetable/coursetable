@@ -22,6 +22,12 @@ services:
       - ../api:/app
     user: '1000'
     command: sh -c 'cd /app && yarn && yarn start'
+    environment:
+      GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      MYSQL_HOST: mysql
+      MYSQL_USER: root
+      MYSQL_PASSWORD: GoCourseTable
+      MYSQL_DB: yaleplus
 
   frontend:
     image: node:latest

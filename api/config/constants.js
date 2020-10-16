@@ -1,4 +1,4 @@
-export const GRAPHQL_ENDPOINT = 'http://graphql-engine:8080/v1/graphql';
+export const GRAPHQL_ENDPOINT = process.env.GRAPHQL_ENDPOINT;
 export const PORT = 4096;
 
 export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
