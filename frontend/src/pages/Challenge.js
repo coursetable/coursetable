@@ -44,7 +44,7 @@ function Challenge() {
   const fetchQuestions = () => {
     axios
       .get('/api/challenge/request')
-      .then(res => {
+      .then((res) => {
         // Questions not properly fetched
         if (!res.data || !res.data.body) {
           toast.error('Error with /api/challenge/request API call');
@@ -56,7 +56,7 @@ function Challenge() {
           setMaxTries(res.data.body.maxChallengeTries);
         }
       })
-      .catch(err => {
+      .catch((err) => {
         if (err.response.data) {
           setRequestError(err.response.data.error);
         }
@@ -69,7 +69,7 @@ function Challenge() {
   }, []);
 
   // Handle form submit
-  const handleSubmit = event => {
+  const handleSubmit = (event) => {
     const form = event.currentTarget;
     // Prevent default page reload
     event.preventDefault();
@@ -95,7 +95,7 @@ function Challenge() {
       // Verify answers
       axios
         .post('/api/challenge/verify', qs.stringify(post_body), config)
-        .then(res => {
+        .then((res) => {
           // Answers not properly verified
           if (!res.data || !res.data.body) {
             toast.error('Error with /api/challenge/verify API call');
@@ -122,7 +122,7 @@ function Challenge() {
             }
           }
         })
-        .catch(err => {
+        .catch((err) => {
           if (err.response.data) {
             const { error } = err.response.data;
 
@@ -212,7 +212,7 @@ function Challenge() {
             required
             placeholder="Number of students"
             value={answers[index].answer}
-            onChange={event => {
+            onChange={(event) => {
               // Copy answers state into a new variable
               let new_answers = [...answers];
               // Update new answers
