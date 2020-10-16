@@ -93,7 +93,7 @@ function App() {
               <MyRoute
                 exact
                 path="/catalog"
-                render={props => <Search {...props} />}
+                render={(props) => <Search {...props} />}
               />
 
               {/* Auth */}

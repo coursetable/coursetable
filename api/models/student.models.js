@@ -3,7 +3,7 @@ import mysql_db from './mysql_db.js';
 
 import { MAX_CHALLENGE_REQUESTS } from '../config/constants.js';
 
-const Student = function(student) {};
+const Student = function (student) {};
 
 /**
  * Get the challenge attempt count and whether or not
@@ -67,8 +67,9 @@ Student.getChallengeStatus = (netid, result) => {
  */
 Student.incrementChallengeTries = (challengeTries, netid, result) => {
   mysql_db.query(
-    `UPDATE StudentBluebookSettings SET challengeTries=${challengeTries +
-      1} WHERE netid=${mysql.escape(netid)}`,
+    `UPDATE StudentBluebookSettings SET challengeTries=${
+      challengeTries + 1
+    } WHERE netid=${mysql.escape(netid)}`,
     (err, res) => {
       if (err) {
         console.error('incrementChallengeTries error: ', err);
