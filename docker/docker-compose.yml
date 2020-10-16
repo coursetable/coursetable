@@ -56,7 +56,7 @@ services:
     volumes:
       - ../frontend:/app
     user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
+    command: sh -c 'cd /app && yarn && FORCE_COLOR=true yarn start | cat'
     tty: true # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
 
   graphql-engine:
