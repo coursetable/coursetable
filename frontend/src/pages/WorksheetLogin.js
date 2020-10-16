@@ -5,10 +5,15 @@ import Authentication from '../images/authentication.svg';
  * Renders a login page if user tries to access worksheet page
  */
 
-function Thankyou() {
+function WorksheetLogin() {
   return (
     <div className="text-center py-5">
-      <h3>Please <a href="/legacy_api/index.php?forcelogin=1&successurl=worksheet">log in</a></h3>
+      <h3>
+        Please{' '}
+        <a href="/legacy_api/index.php?forcelogin=1&successurl=worksheet">
+          log in
+        </a>
+      </h3>
       <div>A valid Yale NetID is required to access worksheet information.</div>
       <img
         alt="Not logged in"
@@ -20,4 +25,4 @@ function Thankyou() {
   );
 }
 
-export default Thankyou;
+export default WorksheetLogin;
