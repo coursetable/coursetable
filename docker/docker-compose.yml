@@ -20,8 +20,26 @@ services:
       - '4096:4096'
     volumes:
       - ../api:/app
+      - ./wait-for-it.sh:/wait-for-it.sh
     user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
+    command:
+      # make the API wait for mysql to start first
+      [
+        './wait-for-it.sh',
+        'mysql:3306',
+        '-t',
+        '60',
+        '--',
+        'sh',
+        '-c',
+        'cd /app && yarn && yarn start',
+      ]
+    depends_on:
+      - graphql-engine
+      - mysql
+    links:
+      - graphql-engine
+      - mysql
     environment:
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
       MYSQL_HOST: mysql
