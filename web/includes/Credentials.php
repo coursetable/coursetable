@@ -10,12 +10,19 @@ function maybe_define($name, $value)
     if (defined($name)) {
         return;
     }
-    define($name, $value);
+    $alt = getenv($name);
+    if ($alt) {
+	define($name, $alt);
+    } else {
+        define($name, $value);
+    }
 }
 
 // This is a sample database credentials file. The settings here are perfect
 // for developing locally with Docker
+// Defining these environment variables will override the values here.
 maybe_define('MYSQL_HOST', 'mysql'); // e.g. define('MYSQL_HOST', 'example.com');
+maybe_define('MYSQL_PORT', '3306');
 maybe_define('MYSQL_USERNAME', 'root');
 maybe_define('MYSQL_PASSWORD', 'GoCourseTable');
 maybe_define('MYSQL_DATABASE', 'yale_advanced_oci');
