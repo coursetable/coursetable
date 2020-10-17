@@ -12,7 +12,7 @@ function maybe_define($name, $value)
     }
     $alt = getenv($name);
     if ($alt) {
-	define($name, $alt);
+        define($name, $alt);
     } else {
         define($name, $value);
     }
