@@ -3518,7 +3518,8 @@ class CAS_Client
     private function _isHttps()
     {
         if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO'])) {
-            return ($_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+            $part = explode(',', $_SERVER['HTTP_X_FORWARDED_PROTO'])[0];
+            return ($part === 'https');
         }
         if ( isset($_SERVER['HTTPS'])
             && !empty($_SERVER['HTTPS'])
