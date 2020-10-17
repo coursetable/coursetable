@@ -24,7 +24,7 @@ services:
       traefik.http.middlewares.coursetableHeaders.headers.SSLRedirect: true
       traefik.http.routers.coursetable.rule: Host(`beta.coursetable.com`)
       traefik.http.routers.coursetable.tls: true
-      traefik.http.routers.coursetable.tls.certResolver: tls_resolver
+      traefik.http.routers.coursetable.tls.certResolver: ctresolver
       traefik.http.routers.coursetable.middlewares: coursetableHeaders
     networks:
       - traefik
@@ -41,9 +41,10 @@ services:
     command: sh -c 'cd /app && yarn && yarn start'
     environment:
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
-      MYSQL_HOST: mysql
-      MYSQL_USER: root
-      MYSQL_PASSWORD: GoCourseTable
+      MYSQL_HOST: ${MYSQL_HOST?host}
+      MYSQL_PORT: ${MYSQL_PORT?port}
+      MYSQL_USER: ${MYSQL_USERNAME?username}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
       MYSQL_DB: yaleplus
 
   frontend:
@@ -58,10 +59,9 @@ services:
     ports:
       - '8085:8080'
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@db:5432/postgres
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false' # set to "false" to disable console
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry db}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
-      ## TODO: uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
     networks:
       - ferry_default
@@ -96,35 +96,46 @@ services:
     build: ./php
     restart: always
     env_file: ../facebook.env
+    environment:
+      MYSQL_HOST: ${MYSQL_HOST?host}
+      MYSQL_PORT: ${MYSQL_PORT?port}
+      MYSQL_USERNAME: ${MYSQL_USERNAME?username}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
+      MYSQL_DATABASE: yale_advanced_oci
     volumes:
       - ..:/usr/share/nginx/html
 
+#  mysql:
+#    build: ./mysql
+#    restart: always
+#    command: --default-authentication-plugin=mysql_native_password
+#    restart: always
+#    environment:
+#      MYSQL_ROOT_PASSWORD: GoCourseTable
+#    ports:
+#      - '3306:3306'
+#    volumes:
+#      # This will get used to initialize the database: see
+#      # "Initializing a fresh instance"
+#      # in https://hub.docker.com/_/mariadb
+#      - ./mysql/database.sql:/docker-entrypoint-initdb.d/00-database.sql
   mysql:
-    build: ./mysql
-    restart: always
-    command: --default-authentication-plugin=mysql_native_password
-    restart: always
-    environment:
-      MYSQL_ROOT_PASSWORD: GoCourseTable
-    ports:
-      - '3306:3306'
-    volumes:
-      # This will get used to initialize the database: see
-      # "Initializing a fresh instance"
-      # in https://hub.docker.com/_/mariadb
-      - ./mysql/database.sql:/docker-entrypoint-initdb.d/00-database.sql
-
+    image: containous/whoami
   phpmyadmin:
-    build: ./phpmyadmin
-    restart: always
-    depends_on:
-      - mysql
-    restart: always
-    environment:
-      PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: GoCourseTable
-    ports:
-      - '8081:80'
+    image: containous/whoami
+
+
+#  phpmyadmin:
+#    build: ./phpmyadmin
+#    restart: always
+#    depends_on:
+#      - mysql
+#    restart: always
+#    environment:
+#      PMA_HOST: mysql
+#      MYSQL_ROOT_PASSWORD: GoCourseTable
+#    ports:
+#      - '8081:80'
 
 networks:
   traefik:
