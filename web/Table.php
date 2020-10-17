@@ -26,6 +26,15 @@ if (isset($_GET['disconnect_facebook'])) {
             'facebookDataJson' => ''
         )
     );
+    $friends = new StudentFacebookFriend($yalePlusMysqli);
+    $friends->setInfoArray(
+        array(
+            'id' => 0,
+            'netid' => $netId,
+            'name' => '',
+            'facebookId' => 0
+        )
+    );
     if (!$student->commit()) {
         $log->write("facebook disconnect failed for {$netid} on: {$student->lastquery}", e_error, 0);
     }
