@@ -26,7 +26,7 @@ if (isset($_GET['disconnect_facebook'])) {
             'facebookDataJson' => ''
         )
     );
-    $friends = new StudentFacebookFriend($yalePlusMysqli);
+    $friends = new StudentFacebookFriend($netId);
     $friends->setInfoArray(
         array(
             'id' => 0,

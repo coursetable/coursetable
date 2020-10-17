@@ -86,9 +86,18 @@ function FBLoginButton() {
         </span>
       )}
       {logged_in && (
-        <span onClick={handleLogoutClick} className={styles.collapse_text}>
-          Disconnect FB
-        </span>
+        <div>
+          <div>
+            <span onClick={handleLogoutClick} className={styles.collapse_text}>
+              Disconnect FB
+            </span>
+          </div>
+          <div>
+            <span className={styles.collapse_text}>
+              Refresh friends list
+            </span>
+          </div>
+        </div>
       )}
     </div>
   );
