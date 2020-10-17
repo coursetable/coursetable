@@ -6,6 +6,7 @@ import { FaFacebookSquare } from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { FaSyncAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { flatten } from '../utilities';
@@ -104,6 +105,15 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                 color="#007bff"
               />
               <FBLoginButton />
+            </Row>
+          )}
+          {/* Refresh FB friends */}
+          {isLoggedIn && (
+            <Row className=" pb-3 m-auto">
+              <FaSyncAlt
+              size={20}
+              color="#32CD32"
+              />
             </Row>
           )}
           {/* Sign In/Out button */}
