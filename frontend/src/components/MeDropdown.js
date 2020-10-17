@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-
 import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
@@ -11,6 +10,8 @@ import { useUser } from '../user';
 import { flatten } from '../utilities';
 import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
 import { preprocess_courses } from '../utilities';
+
+import { FaSyncAlt } from 'react-icons/fa';
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar

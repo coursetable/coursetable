@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
+import { FaSyncAlt } from 'react-icons/fa';
 
 /**
  * FB login button that shows up in the profile dropdown
@@ -86,18 +87,19 @@ function FBLoginButton() {
         </span>
       )}
       {logged_in && (
-        <div>
-          <div>
-            <span onClick={handleLogoutClick} className={styles.collapse_text}>
-              Disconnect FB
-            </span>
-          </div>
-          <div>
-            <span className={styles.collapse_text}>
-              Refresh friends list
-            </span>
-          </div>
-        </div>
+        <Fragment>
+          <span onClick={handleLogoutClick} className={styles.collapse_text}>
+            Disconnect FB
+          </span>
+          <span onClick={handleLoginClick}>
+            <FaSyncAlt
+              className="ml-2 my-0"
+              size={20} 
+              color='#32CD32'
+              title='Refresh FB friends'
+            />
+          </span>
+        </Fragment>
       )}
     </div>
   );
