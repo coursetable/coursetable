@@ -9,6 +9,10 @@ import ae from '../images/headshots/aidan-evans.jpg'
 import ml from '../images/headshots/michelle-li.jpg'
 import hs from '../images/headshots/harshal-sheth.jpg'
 import jc from '../images/headshots/josh-chough.jpg'
+import dl from '../images/headshots/deyuan-li.jpg'
+import kh from '../images/headshots/kevin-hu.jpg'
+import ma from '../images/headshots/murad-avliyakulov.jpg'
+import ag from '../images/headshots/abhijit-gupta.jpg'
 
 /**
  * Renders the about us page
@@ -22,6 +26,12 @@ function About() {
         CourseTable was a course-data processor created by Peter Xu (Yale MC '14) and 
         Harry Yu (Yale SY '14) and is continuing to be developed by the Yale Computer Society. 
         It helps you find the courses at Yale where you'll learn and enjoy the most.
+      </p>
+      <p className={styles.about_description + ' mb-3 text-muted'}>
+        To learn more about how to use and the history of CourseTable please see{' '}
+        <Link to="/faq">
+          the FAQ page.
+        </Link>
       </p>
       <Row className="mx-auto">
         <Link to="/joinus" className="mx-auto">
@@ -51,7 +61,7 @@ function About() {
             </Card.Body>
           </Card>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={kh} />
             <Card.Body>
               <Card.Title>Kevin Hu</Card.Title>
               <Card.Text className="text-muted">
@@ -72,7 +82,7 @@ function About() {
             </Card.Body>
           </Card>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={ma} />
             <Card.Body>
               <Card.Title>Murad Avliyakulov</Card.Title>
               <Card.Text className="text-muted">
@@ -93,7 +103,7 @@ function About() {
         {/* THIRD ROW OF PPL */}
         <CardDeck className={'my-3'}>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={ag} />
             <Card.Body>
               <Card.Title>Abhijit Gupta</Card.Title>
               <Card.Text className="text-muted">
@@ -141,7 +151,7 @@ function About() {
             </Card.Body>
           </Card>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={dl} />
             <Card.Body>
               <Card.Title>Deyuan Li</Card.Title>
               <Card.Text className="text-muted">
