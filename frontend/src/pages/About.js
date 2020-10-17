@@ -5,6 +5,11 @@ import { Card, CardDeck, Button, Row } from 'react-bootstrap';
 import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
 
+import ae from '../images/headshots/aidan-evans.jpg'
+import ml from '../images/headshots/michelle-li.jpg'
+import hs from '../images/headshots/harshal-sheth.jpg'
+import jc from '../images/headshots/josh-chough.jpg'
+
 /**
  * Renders the about us page
  */
@@ -14,7 +19,9 @@ function About() {
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
       <p className={styles.about_description + ' mb-3 text-muted'}>
-        About Us Description
+        CourseTable was a course-data processor created by Peter Xu (Yale MC '14) and 
+        Harry Yu (Yale SY '14) and is continuing to be developed by the Yale Computer Society. 
+        It helps you find the courses at Yale where you'll learn and enjoy the most.
       </p>
       <Row className="mx-auto">
         <Link to="/joinus" className="mx-auto">
@@ -26,29 +33,29 @@ function About() {
         {/* FIRST ROW OF PPL */}
         <CardDeck className={'my-3'}>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={hs} />
             <Card.Body>
-              <Card.Title>Name 1</Card.Title>
+              <Card.Title>Harshal Sheth</Card.Title>
               <Card.Text className="text-muted">
-                Description of person 1
+                CourseTable Lead
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card>
+            <Card.Img variant="top" src={ml} />
+            <Card.Body>
+              <Card.Title>Michelle M. Li</Card.Title>
+              <Card.Text className="text-muted">
+                Design Lead
               </Card.Text>
             </Card.Body>
           </Card>
           <Card>
             <Card.Img variant="top" src={pic} />
             <Card.Body>
-              <Card.Title>Name 2</Card.Title>
+              <Card.Title>Kevin Hu</Card.Title>
               <Card.Text className="text-muted">
-                Description of person 2
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={pic} />
-            <Card.Body>
-              <Card.Title>Name 3</Card.Title>
-              <Card.Text className="text-muted">
-                Description of person 3
+                Development
               </Card.Text>
             </Card.Body>
           </Card>
@@ -58,27 +65,87 @@ function About() {
           <Card>
             <Card.Img variant="top" src={pic} />
             <Card.Body>
-              <Card.Title>Name 4</Card.Title>
+              <Card.Title>Max Yuan</Card.Title>
               <Card.Text className="text-muted">
-                Description of person 4
+                Development
               </Card.Text>
             </Card.Body>
           </Card>
           <Card>
             <Card.Img variant="top" src={pic} />
             <Card.Body>
-              <Card.Title>Name 5</Card.Title>
+              <Card.Title>Murad Avliyakulov</Card.Title>
               <Card.Text className="text-muted">
-                Description of person 5
+                Development
               </Card.Text>
             </Card.Body>
           </Card>
           <Card>
             <Card.Img variant="top" src={pic} />
             <Card.Body>
-              <Card.Title>Name 6</Card.Title>
+              <Card.Title>Dylan Fernandez de Lara</Card.Title>
               <Card.Text className="text-muted">
-                Description of person 6
+                Design
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </CardDeck>
+        {/* THIRD ROW OF PPL */}
+        <CardDeck className={'my-3'}>
+          <Card>
+            <Card.Img variant="top" src={pic} />
+            <Card.Body>
+              <Card.Title>Abhijit Gupta</Card.Title>
+              <Card.Text className="text-muted">
+                Development
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card>
+            <Card.Img variant="top" src={pic} />
+            <Card.Body>
+              <Card.Title>Sidney Hirschman</Card.Title>
+              <Card.Text className="text-muted">
+                Design
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card>
+            <Card.Img variant="top" src={pic} />
+            <Card.Body>
+              <Card.Title>Hao Li</Card.Title>
+              <Card.Text className="text-muted">
+                Development
+              </Card.Text>
+            </Card.Body>
+          </Card>
+        </CardDeck>
+        {/* FOURTH ROW OF PPL */}
+        <CardDeck className={'my-3'}>
+          <Card>
+            <Card.Img variant="top" src={jc} />
+            <Card.Body>
+              <Card.Title>Josh Chough</Card.Title>
+              <Card.Text className="text-muted">
+                Design
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card>
+            <Card.Img variant="top" src={ae} />
+            <Card.Body>
+              <Card.Title>Aidan Evans</Card.Title>
+              <Card.Text className="text-muted">
+                Development
+              </Card.Text>
+            </Card.Body>
+          </Card>
+          <Card>
+            <Card.Img variant="top" src={pic} />
+            <Card.Body>
+              <Card.Title>Deyuan Li</Card.Title>
+              <Card.Text className="text-muted">
+                Development
               </Card.Text>
             </Card.Body>
           </Card>
