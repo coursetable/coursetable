@@ -24,8 +24,8 @@ class ProjectCommon
     {
         $mysqlAccount = MYSQL_USERNAME;
         $mysqlPassword = MYSQL_PASSWORD;
-	$mysqlPort = intval(MYSQL_PORT);
-	//printf("mysql://%s:%s@%s:%d/%s\n", $mysqlAccount, $mysqlPassword, MYSQL_HOST, $mysqlPort, $db);
+        $mysqlPort = intval(MYSQL_PORT);
+    //printf("mysql://%s:%s@%s:%d/%s\n", $mysqlAccount, $mysqlPassword, MYSQL_HOST, $mysqlPort, $db);
         $mysqli = new mysqli(MYSQL_HOST, $mysqlAccount, $mysqlPassword, $db, $mysqlPort);
 
         if (mysqli_connect_errno()) {
