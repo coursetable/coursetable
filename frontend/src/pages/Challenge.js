@@ -192,15 +192,19 @@ function Challenge() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {course.courseTitle} <FiExternalLink />
+                {course.courseTitle}{' '}
+                <FiExternalLink
+                  // Better spacing for the link icon
+                  className="mb-1"
+                />
               </a>
             </strong>
           </Row>
           {/* Question with link to OCE Page */}
           <Row className="mx-auto mb-1">
-            How many students responded to the{' '}
-            <span className="font-weight-bold">"overall assessment"</span>{' '}
-            question with{' '}
+            How many students responded to the&nbsp;
+            <span className="font-weight-bold">"overall assessment"</span>
+            &nbsp;question with&nbsp;
             <span className="font-weight-bold">
               "{rating_options[course.courseRatingIndex]}"
             </span>
