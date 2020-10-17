@@ -76,14 +76,14 @@ const WorksheetExpandedList = ({
             MEET_CUT={MEET_CUT}
           />
         ) : (
-          // Fade animation hasn't finished
-          <Row
-            className="mx-auto my-0 p-0"
-            style={{ height: '67px', borderBottom: 'solid 2px #f6f6f6' }}
-          >
-            <strong className="m-auto">Loading...</strong>
-          </Row>
-        )}
+            // Fade animation hasn't finished
+            <Row
+              className="mx-auto my-0 p-0"
+              style={{ height: '67px', borderBottom: 'solid 2px #f6f6f6' }}
+            >
+              <strong className="m-auto">Loading...</strong>
+            </Row>
+          )}
       </div>
     );
   }
@@ -112,14 +112,13 @@ const WorksheetExpandedList = ({
               <div
                 style={{
                   lineHeight: '30px',
-                  width: `${
-                    ROW_WIDTH -
+                  width: `${ROW_WIDTH -
                     (width > PROF_CUT ? PROF_WIDTH : 0) -
                     (width > MEET_CUT ? MEET_WIDTH : 0) -
                     3 * RATE_WIDTH -
                     BOOKMARK_WIDTH -
                     PADDING
-                  }px`,
+                    }px`,
                   paddingLeft: '15px',
                 }}
               >

@@ -88,6 +88,7 @@ function Worksheet() {
     setSeason(season_code);
   };
 
+
   // Function to switch to most recent season if user has just removed the last course of this season
   const hasSeason = (season_code, crn) => {
     // Return if not removing course from this season
@@ -276,17 +277,17 @@ function Worksheet() {
                     }}
                   />
                 ) : (
-                  <FaCompressAlt
-                    className={styles.expand_btn + ' ' + styles.top_right}
-                    size={expand_btn_size}
-                    onClick={() => {
-                      // Compress calendar
-                      setCurExpand('none');
-                      // Show hover icons for list because that is where mouse will end up
-                      setHoverExpand('list');
-                    }}
-                  />
-                )}
+                    <FaCompressAlt
+                      className={styles.expand_btn + ' ' + styles.top_right}
+                      size={expand_btn_size}
+                      onClick={() => {
+                        // Compress calendar
+                        setCurExpand('none');
+                        // Show hover icons for list because that is where mouse will end up
+                        setHoverExpand('list');
+                      }}
+                    />
+                  )}
               </div>
             </Fade>
           </Col>
@@ -362,23 +363,27 @@ function Worksheet() {
                       setCurExpand('list');
                       // Reverse the flex direction, so the list component doesnt wrap under the calendar component
                       setRevFlexDirection(true);
+                      // Track toggling table view for worksheet
+                      window.umami.trackEvent("Table View", "worksheet");
                     }}
                   />
                 ) : (
-                  <FaCompressAlt
-                    className={styles.expand_btn + ' ' + styles.top_left}
-                    size={expand_btn_size}
-                    onClick={() => {
-                      // Compress the list component
-                      setCurExpand('none');
-                      // Show hover icons for calendar because that is where mouse will end up
-                      setHoverExpand('calendar');
-                      // Reset fade states
-                      if (start_fade === true) setStartFade(false);
-                      if (end_fade === true) setEndFade(false);
-                    }}
-                  />
-                )}
+                    <FaCompressAlt
+                      className={styles.expand_btn + ' ' + styles.top_left}
+                      size={expand_btn_size}
+                      onClick={() => {
+                        // Compress the list component
+                        setCurExpand('none');
+                        // Show hover icons for calendar because that is where mouse will end up
+                        setHoverExpand('calendar');
+                        // Track toggling list view for worksheet
+                        window.umami.trackEvent("List View", "worksheet");
+                        // Reset fade states
+                        if (start_fade === true) setStartFade(false);
+                        if (end_fade === true) setEndFade(false);
+                      }}
+                    />
+                  )}
               </div>
             </Fade>
           </Col>
