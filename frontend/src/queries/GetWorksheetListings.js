@@ -48,6 +48,7 @@ const buildQuery = (worksheet) => {
 
 // Search query used in Worksheet.js and CourseConflictIcon.js
 export const FetchWorksheet = (worksheet) => {
+  if (!worksheet) worksheet = [];
   // Build gql query
   const builtQuery = buildQuery(worksheet);
   // Execute search query
@@ -67,10 +68,10 @@ export const FetchWorksheet = (worksheet) => {
 
 // Lazy search query used in MeDropdown.js
 export const FetchWorksheetLazy = (worksheet, season_code) => {
-  let filtered_worksheet = [];
+  if (!worksheet) worksheet = [];
   // Get worksheet listings for this season
-  worksheet.forEach((course) => {
-    if (course[0] === season_code) filtered_worksheet.push(course);
+  const filtered_worksheet = (worksheet || []).filter((course) => {
+    return course[0] === season_code;
   });
   // Build gql query
   const builtQuery = buildQuery(filtered_worksheet);

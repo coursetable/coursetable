@@ -110,11 +110,7 @@ const SearchResultsItem = ({
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
-      <FaCanadianMapleLeaf
-        color="#9c0000"
-        className="my-auto"
-        size={icon_size}
-      />
+      <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
 
   // Tooltip for hovering over season
@@ -195,7 +191,12 @@ const SearchResultsItem = ({
           <div className={Styles.course_name}>{course.title}</div>
           <Row className="m-auto">
             {/* Course Code */}
-            <div className={Styles.course_code}>{course.course_code}</div>
+            <div className={Styles.course_code}>
+              {course.course_code}
+              {course.section
+                ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
+                : ''}
+            </div>
             {/* Season Code */}
             {multiSeasons && (
               <OverlayTrigger

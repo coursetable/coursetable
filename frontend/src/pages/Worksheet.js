@@ -8,12 +8,14 @@ import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import { NavLink } from 'react-router-dom';
 
 import styles from './Worksheet.module.css';
 
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 import NoCoursesFound from '../images/no_courses_found.svg';
+import ServerError from '../images/server_error.svg';
 
 /**
  * Renders worksheet page
@@ -62,7 +64,9 @@ function Worksheet() {
   // Listings data to be fetched from database
   const [listings, setListings] = useState([]);
   // Store the initial worksheet to be cached on the first listings query
-  const [init_worksheet, setInitWorksheet] = useState(cur_worksheet);
+  const [init_worksheet, setInitWorksheet] = useState(
+    cur_worksheet ? cur_worksheet : []
+  );
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
@@ -79,9 +83,6 @@ function Worksheet() {
   const [start_fade, setStartFade] = useState(false);
   // Fade animation has ended
   const [end_fade, setEndFade] = useState(false);
-
-  // If worksheet doesn't exist
-  if (cur_worksheet == null) return <div>Please Login</div>;
 
   // Function to change season
   const changeSeason = (season_code) => {
@@ -149,6 +150,9 @@ function Worksheet() {
   // Only performs search query once with the initial worksheet and then caches the result
   // This prevents the need to perform another search query and render "loading..." when removing a course
   const { loading, error, data } = FetchWorksheet(init_worksheet);
+
+  // If user somehow isn't logged in and worksheet is null
+  if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
   if (cur_worksheet.length === 0)
     return (
@@ -166,7 +170,7 @@ function Worksheet() {
       </div>
     );
   // Wait for search query to finish
-  if (loading || error)
+  if (loading) {
     return (
       <div style={{ height: '93vh' }}>
         <Spinner
@@ -178,6 +182,25 @@ function Worksheet() {
         </Spinner>
       </div>
     );
+  } else if (error) {
+    return (
+      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
+        <div className="text-center m-auto">
+          <img
+            alt="No courses found."
+            className="py-5"
+            src={ServerError}
+            style={{ width: '25%' }}
+          ></img>
+          <h3>There seems to be an issue with our server</h3>
+          <div>
+            Please file a <NavLink to="/feedback">report</NavLink> to let us
+            know
+          </div>
+        </div>
+      </div>
+    );
+  }
   // Error with query
   if (data === undefined || !data.length) return <div>Error with Query</div>;
   // List of colors for the calendar events

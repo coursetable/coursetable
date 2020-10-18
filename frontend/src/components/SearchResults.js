@@ -10,7 +10,15 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 import Styles from './SearchResults.module.css';
 import './SearchResults.css';
 
-import { Container, Col, Row, Spinner, Fade } from 'react-bootstrap';
+import {
+  Container,
+  Col,
+  Row,
+  Spinner,
+  Fade,
+  Tooltip,
+  OverlayTrigger,
+} from 'react-bootstrap';
 
 import { flatten } from '../utilities';
 import {
@@ -25,7 +33,9 @@ import {
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
-import { FaArrowCircleUp } from 'react-icons/fa';
+import { FaArrowCircleUp, FaAppleAlt } from 'react-icons/fa';
+import { FcReading } from 'react-icons/fc';
+import { AiFillStar } from 'react-icons/ai';
 
 // Measures the row height. NOT USING RN
 const cache = new CellMeasurerCache({
@@ -106,10 +116,10 @@ const SearchResults = ({
   // Spacing for each column in list view
   const PROF_WIDTH = 150;
   const MEET_WIDTH = 200;
-  const RATE_WIDTH = 70;
+  const RATE_WIDTH = 40;
   const BOOKMARK_WIDTH = 50;
   const PADDING = 50;
-  const PROF_CUT = 1300;
+  const PROF_CUT = 1023;
   const MEET_CUT = 1200;
 
   // Holds HTML for the search results
@@ -165,7 +175,6 @@ const SearchResults = ({
       </CellMeasurer>
     );
   };
-
   // if no courses found (either due to query or authentication), render the empty state
   if (data.length === 0) {
     resultsListing = (
@@ -176,7 +185,16 @@ const SearchResults = ({
           src={isLoggedIn ? NoCoursesFound : Authentication}
           style={{ width: '25%' }}
         ></img>
-        <h3>{isLoggedIn ? 'No courses found' : 'Please log in'}</h3>
+        {isLoggedIn ? (
+          <h3>No courses found</h3>
+        ) : (
+          <h3>
+            Please{' '}
+            <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
+              log in
+            </a>
+          </h3>
+        )}
         <div>
           {isLoggedIn
             ? "We couldn't find any courses matching your search."
@@ -295,12 +313,33 @@ const SearchResults = ({
     }
   }
 
+  // Tooltip for hovering over class rating
+  const class_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <span>Class Rating</span>
+    </Tooltip>
+  );
+
+  // Tooltip for hovering over professor rating
+  const prof_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <span>Professor Rating</span>
+    </Tooltip>
+  );
+
+  // Tooltip for hovering over workload rating
+  const workload_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <span>Workload Rating</span>
+    </Tooltip>
+  );
+
   return (
     <div>
       <Container
         fluid
         id="results_container"
-        className={`px-0 shadow-sm ${Styles.results_container}`}
+        className={`px-0 ${Styles.results_container}`}
       >
         {!isMobile && (
           <div className={`${Styles.sticky_header}`}>
@@ -312,6 +351,13 @@ const SearchResults = ({
                 ' justify-content-between'
               }
             >
+              {/* <div
+                className={
+                  Styles.list_grid_toggle + ' d-flex ml-auto my-auto p-0'
+                }
+              >
+                <ListGridToggle isList={isList} setView={setView} />
+              </div> */}
               {isList ? (
                 <React.Fragment>
                   {/* Course Name */}
@@ -353,21 +399,53 @@ const SearchResults = ({
                     style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                     className="d-flex"
                   >
-                    <strong className="m-auto">{'Class'}</strong>
+                    <div className="m-auto">
+                      <OverlayTrigger
+                        placement="top"
+                        delay={{ show: 500, hide: 250 }}
+                        overlay={class_tooltip}
+                      >
+                        <AiFillStar
+                          color="#fac000"
+                          style={{ display: 'block' }}
+                          size={20}
+                        />
+                      </OverlayTrigger>
+                    </div>
                   </div>
                   {/* Professor Rating */}
                   <div
                     style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                     className="d-flex"
                   >
-                    <strong className="m-auto">{'Prof'}</strong>
+                    <div className="m-auto">
+                      <OverlayTrigger
+                        placement="top"
+                        delay={{ show: 500, hide: 250 }}
+                        overlay={prof_tooltip}
+                      >
+                        <FaAppleAlt
+                          color="#fa6e6e"
+                          style={{ display: 'block' }}
+                          size={16}
+                        />
+                      </OverlayTrigger>
+                    </div>
                   </div>
                   {/* Workload Rating */}
                   <div
                     style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
                     className="d-flex"
                   >
-                    <strong className="m-auto">{'Work'}</strong>
+                    <div className="m-auto">
+                      <OverlayTrigger
+                        placement="top"
+                        delay={{ show: 500, hide: 250 }}
+                        overlay={workload_tooltip}
+                      >
+                        <FcReading style={{ display: 'block' }} size={20} />
+                      </OverlayTrigger>
+                    </div>
                   </div>
                 </React.Fragment>
               ) : (

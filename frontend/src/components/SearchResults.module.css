@@ -1,6 +1,7 @@
 .results_container {
   border-radius: 8px;
   background: white;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
 .results_list_container {
@@ -48,6 +49,14 @@
   cursor: pointer;
   color: rgb(180, 180, 180);
   transform: scale(1.1);
+}
+
+.list_grid_toggle {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 1000;
+  transform: translate(30%, -40%);
 }
 
 :global .sticky {

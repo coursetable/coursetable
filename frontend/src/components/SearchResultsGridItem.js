@@ -53,11 +53,7 @@ const SearchResultsGridItem = ({
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
-      <FaCanadianMapleLeaf
-        color="#9c0000"
-        className="my-auto"
-        size={icon_size}
-      />
+      <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
   // Fetch user context data
   const { user } = useUser();
@@ -142,6 +138,11 @@ const SearchResultsGridItem = ({
             <Row className="mx-auto mt-3">
               <small className={styles.course_codes}>
                 {course.course_code ? course.course_code : ''}
+                {course.section
+                  ? ' ' +
+                    (course.section.length > 1 ? '' : '0') +
+                    course.section
+                  : ''}
               </small>
             </Row>
           </Col>
@@ -158,7 +159,7 @@ const SearchResultsGridItem = ({
                     className={
                       styles.season_tag +
                       ' ml-auto px-1 pb-0 ' +
-                      styles[seasons[parseInt(season) - 1]]
+                      tag_styles[seasons[parseInt(season) - 1]]
                     }
                   >
                     <Row className="m-auto">

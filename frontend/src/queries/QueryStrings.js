@@ -78,13 +78,13 @@ export const SEARCH_COURSES = gql`
 export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
   query SearchAverageAcrossSeasons(
     $course_code: String
-    $professor_name: String
+    $professor_name: [String!]
   ) {
     computed_listing_info(
       where: {
         _or: [
           { course_code: { _eq: $course_code } }
-          { professor_names: { _has_key: $professor_name } }
+          { professor_names: { _has_keys_any: $professor_name } }
         ]
       }
     ) {

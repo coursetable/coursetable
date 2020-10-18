@@ -11,7 +11,7 @@ if (!empty($netId)) {
     $sbsColumns = array('evaluationsEnabled');
     $sbs = StudentBluebookSetting::findOrCreate($yalePlusMysqli, $netId, $sbsColumns);
 
-    $evaluationsEnabled = $sbs->info['evaluationsEnabled'] || IS_DEVELOPMENT;
+    $evaluationsEnabled = (bool) $sbs->info['evaluationsEnabled'];
     $success = true;
 }
 

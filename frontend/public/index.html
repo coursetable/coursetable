@@ -42,4 +42,22 @@
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
   </body>
+
+  <script>
+    window.fbAsyncInit = function () {
+      window.FB.init({
+        appId: '185745958145518', // The app ID for CourseTable
+        status: true,
+        cookie: true, // enable cookies to allow the server to access the session
+        xfbml: true, // parse social plugins on this page
+        version: 'v7.0',
+      });
+    };
+  </script>
+  <script
+    async
+    defer
+    crossorigin="anonymous"
+    src="https://connect.facebook.net/en_US/sdk.js"
+  ></script>
 </html>
