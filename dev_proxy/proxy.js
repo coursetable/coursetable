@@ -59,16 +59,6 @@ app.use(
 );
 
 app.use(
-  '/umami',
-  createProxyMiddleware({
-    target: 'http://umami:3000',
-    pathRewrite: {
-      '^/umami': '/', // remove base path
-    },
-  })
-);
-
-app.use(
   '/sockjs-node',
   createProxyMiddleware({
     target: frontend_uri,
