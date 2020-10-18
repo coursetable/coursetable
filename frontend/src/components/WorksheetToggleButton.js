@@ -73,7 +73,7 @@ const WorksheetToggleButton = ({
     add_remove_course();
 
     //Metric Tracking for Worksheet Toggle Button
-    window.umami.trackEvent("Worksheet Toggled", "worksheet");
+    window.umami.trackEvent('Worksheet Toggled', 'worksheet');
   }
 
   // Render remove/add message on hover

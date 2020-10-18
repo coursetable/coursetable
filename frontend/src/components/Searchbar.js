@@ -16,14 +16,12 @@ function Searchbar({ bar_size }) {
   let input = useRef();
   // On form submit, set value state to the searched value
   const searched = (event) => {
-
     // Metric Tracking of Invidiual Searches
     //window.umami.trackEvent("Searched - " + input.current.value, "search-text");
 
     // Prevent page refresh on submit
     event.preventDefault();
     setValue(input.current.value);
-
   };
   // If something was searched scroll to top when switching to catalog page
   if (value) {

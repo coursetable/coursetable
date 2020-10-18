@@ -95,10 +95,9 @@ function FBLoginButton() {
       return_scopes: true,
     });
     axios.get('/legacy_api/FetchFacebookData.php');
-    
-    // Metric Tracking of Facebook Login
-    window.umami.trackEvent("Facebook Login", "facebook");
 
+    // Metric Tracking of Facebook Login
+    window.umami.trackEvent('Facebook Login', 'facebook');
   }
 
   function handleLogoutClick() {
@@ -106,7 +105,7 @@ function FBLoginButton() {
     // setLoggedIn(false);
 
     // Metric Tracking of Facebook Logout
-    window.umami.trackEvent("Facebook Logout", "facebook");
+    window.umami.trackEvent('Facebook Logout', 'facebook');
   }
 
   return (

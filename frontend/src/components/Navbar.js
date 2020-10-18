@@ -45,7 +45,7 @@ function CourseTableNavbar({ isLoggedIn }) {
     window.location.pathname = '/';
 
     // Metric Tracking of Logging Out
-    window.umami.trackEvent("Account Logout", "account");
+    window.umami.trackEvent('Account Logout', 'account');
   };
 
   return (
@@ -157,7 +157,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                       className={styles.navbar_links}
                       onClick={() => {
                         //Metric Tracking of Connecting Facebook
-                        window.umami.trackEvent("Facebook Login", "facebook");
+                        window.umami.trackEvent('Facebook Login', 'facebook');
 
                         window.location.href =
                           '/legacy_api/index.php?forcelogin=1';
