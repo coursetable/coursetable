@@ -1,6 +1,6 @@
-.container {
+/* .container {
   height: 194vh;
-}
+} */
 
 .splashpage {
   height: calc(100vh - 62px);
@@ -12,8 +12,6 @@
 
 .coursetable_logo {
   padding-top: 15vh;
-  font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman,
-    serif;
 }
 
 .btn_container {
@@ -34,45 +32,45 @@
   width: 200px;
 }
 
-.chevron {
+/* .chevron {
   position: absolute;
   left: 50%;
   top: 95%;
   transform: translate(-50%, 0);
   color: rgb(187, 187, 187);
   transition: 0.3s ease;
-}
+} */
 
-.chevron:hover {
+/* .chevron:hover {
   color: rgb(102, 102, 102);
-}
+} */
 
-.feature_page {
+/* .feature_page {
   height: 100vh;
   position: absolute;
   top: 200vh;
   left: 50%;
   transform: translate(-50%, -100%);
   text-align: center;
-}
+} */
 
-.page_separator {
+/* .page_separator {
   border-top: solid;
   border-width: 1px;
   width: 50vw;
   border-color: rgb(197, 196, 196);
-}
+} */
 
-.whyCourseTable {
+/* .whyCourseTable {
   margin-top: 6vh;
   margin-bottom: 8vh;
   font-size: calc(15px + 4vw);
   width: 100vw;
-}
+} */
 
-.feature_row {
+/* .feature_row {
   width: 100vw;
-}
+} */
 
 .feature {
   height: 150px;

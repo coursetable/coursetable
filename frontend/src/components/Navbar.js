@@ -103,10 +103,21 @@ function CourseTableNavbar({ isLoggedIn }) {
                   to="/about"
                   // Left align about link if not mobile
                   className={
-                    styles.navbar_links + (!is_mobile ? ' mr-auto' : '')
+                    styles.navbar_links +
+                    (!is_mobile ? ' align-self-begin' : '')
                   }
                 >
                   About
+                </NavLink>
+                {/* FAQs Page */}
+                <NavLink
+                  to="/faq"
+                  // Left align about link if not mobile
+                  className={
+                    styles.navbar_links + (!is_mobile ? ' mr-auto' : '')
+                  }
+                >
+                  FAQ
                 </NavLink>
                 {/* Catalog Page */}
                 <NavLink
