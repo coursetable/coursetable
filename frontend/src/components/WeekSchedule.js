@@ -11,6 +11,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
  * @prop showModal - function to show modal for a particular listing
  * @prop courses - list of dictionaries of listing data
  * @prop hover_course - dictionary of listing that is being hovered over in list view
+ * @setHoverCourse - function to set the hover course
  */
 
 export default class WeekSchedule extends React.Component {
@@ -67,16 +68,24 @@ export default class WeekSchedule extends React.Component {
   // Render the custom data displayed on each calendar event
   customEvent = (event) => {
     return (
-      <div>
+      <div
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
+        onMouseEnter={() => this.props.setHoverCourse(event.event.listing)}
+        onMouseLeave={() => this.props.setHoverCourse(null)}
+      >
         <strong>{event.title}</strong>
         <br />
-        <small>
+        {/* <small>
           {moment(event.event.start).format('hh:mm') +
             ' - ' +
             moment(event.event.end).format('hh:mm')}
-        </small>
-        <br />
-        <small className="location_text font-weight-bold">
+        </small> */}
+        {/* <small>{event.event.listing.title}</small>
+        <br /> */}
+        <small className="location_text">
           {event.event.listing.locations_summary}
         </small>
       </div>
@@ -86,27 +95,33 @@ export default class WeekSchedule extends React.Component {
   // Custom styling for the calendar events
   eventStyleGetter = (event) => {
     const border = '1)';
-    const background = '.8)';
-    let style = {
-      backgroundColor: event.listing.color.concat(background),
-      borderColor: event.listing.color.concat(border),
-      borderWidth: '2px',
-      filter:
-        this.props.hover_course &&
-        this.props.hover_course.crn === event.listing.crn
-          ? 'saturate(130%)'
-          : '',
-      transform:
-        this.props.hover_course &&
-        this.props.hover_course.crn === event.listing.crn
-          ? 'scale(1.03)'
-          : '',
-      zIndex:
-        this.props.hover_course &&
-        this.props.hover_course.crn === event.listing.crn
-          ? 69
-          : '',
-    };
+    let style;
+    if (
+      this.props.hover_course &&
+      this.props.hover_course.crn === event.listing.crn
+    ) {
+      style = {
+        backgroundColor: event.listing.color.concat('1)'),
+        borderColor: event.listing.color.concat(border),
+        borderWidth: '2px',
+        filter: 'saturate(130%)',
+        transform: 'scale(1.03)',
+        zIndex: 69,
+      };
+    } else if (this.props.hover_course) {
+      style = {
+        backgroundColor: event.listing.color.concat('.85)'),
+        borderColor: event.listing.color.concat(border),
+        borderWidth: '2px',
+        opacity: '40%',
+      };
+    } else {
+      style = {
+        backgroundColor: event.listing.color.concat('.85)'),
+        borderColor: event.listing.color.concat(border),
+        borderWidth: '2px',
+      };
+    }
     return {
       style: style,
     };

@@ -283,6 +283,7 @@ function Worksheet() {
               showModal={showModal}
               courses={season_listings}
               hover_course={hover_course}
+              setHoverCourse={setHoverCourse}
             />
             {/* Expand/Compress icons for calendar */}
             <Fade in={hover_expand === 'calendar'}>
