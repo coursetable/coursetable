@@ -101,6 +101,11 @@ function App() {
               <MyRoute exact path="/login">
                 {isLoggedIn ? <Redirect to="/" /> : <Landing />}
               </MyRoute>
+
+              <MyRoute exact path="/worksheetlogin">
+                {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
+              </MyRoute>
+
               {/* OCE Challenge */}
               <MyRoute exact path="/challenge">
                 <Challenge />
@@ -109,11 +114,6 @@ function App() {
               {/* Worksheet */}
               <MyRoute exact path="/worksheet">
                 {isLoggedIn ? <Worksheet /> : <Redirect to="/worksheetlogin" />}
-              </MyRoute>
-
-              {/* Worksheet Login */}
-              <MyRoute exact path="/worksheetlogin">
-                <WorksheetLogin />
               </MyRoute>
 
               {/* Thank You */}
