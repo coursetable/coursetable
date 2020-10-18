@@ -235,7 +235,7 @@ function Search({ location, history }) {
 
       // match all languages
       if (processedSkillsAreas.includes('L')) {
-        // Track if all languages is toggled for as search crtieria
+        // Track if all languages is toggled for as search criteria
         window.umami.trackEvent('search criteria - all languages', 'search');
 
         processedSkillsAreas = processedSkillsAreas.concat([

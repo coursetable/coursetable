@@ -90,27 +90,3 @@ services:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
       - '8081:80'
-
-  umami:
-    image: ghcr.io/mikecao/umami:postgresql-latest
-    restart: always
-    ports:
-      - '4000:3000'
-    environment:
-      DATABASE_URL: postgresql://umami:umami@postgres:5432/umami
-      DATABASE_TYPE: postgresql
-      HASH_SALT: tHiS_a_ReAlLy_SaLtY_sAlT
-    depends_on:
-      - postgres
-
-  postgres:
-    image: postgres:12-alpine
-    restart: always
-    ports:
-      - '5432'
-    environment:
-      POSTGRES_DB: umami
-      POSTGRES_USER: umami
-      POSTGRES_PASSWORD: umami
-    volumes:
-      - ./umami/schema.database.sql:/docker-entrypoint-initdb.d/schema.database.sql
