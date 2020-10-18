@@ -64,6 +64,13 @@ function WorksheetRowDropdown({
       });
   }
 
+  // Sort FB friends in alphabetical order
+  friend_options.sort((a, b) => {
+    if (a.label === 'Me') return -1;
+    if (b.label === 'Me') return 1;
+    return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
+  });
+
   return (
     <Row className={styles.container + ' shadow-sm mx-auto pt-2 pb-2'}>
       {/* Season Select */}

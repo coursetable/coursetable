@@ -81,6 +81,12 @@ function WorksheetSettingsDropdown({
       });
   }
 
+  // Sort FB friends in alphabetical order
+  friend_options.sort((a, b) => {
+    if (a.label === 'Me') return -1;
+    if (b.label === 'Me') return 1;
+    return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
+  });
   // Is the user using a touch screen device
   const isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
