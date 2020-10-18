@@ -346,12 +346,14 @@ function Challenge() {
           access manually.
         </p>
         {/* Track number of attempts */}
-        <div className="mb-2">
-          <span className="font-weight-bold mb-6">
-            {numTries}/{maxTries}
-          </span>{' '}
-          {numTries === 1 ? 'attempt' : 'attempts'} used
-        </div>
+        {numTries !== null && (
+          <div className="mb-2">
+            <span className="font-weight-bold mb-6">
+              {numTries}/{maxTries}
+            </span>{' '}
+            {numTries === 1 ? 'attempt' : 'attempts'} used
+          </div>
+        )}
         {/* Error messages from verification */}
         {verifyError && (
           <div className="text-danger mb-2">{verifyErrorMessage}</div>
