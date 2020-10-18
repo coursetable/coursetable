@@ -66,7 +66,7 @@ function FBLoginButton() {
 
   const handleLogoutClick = useCallback(() => {
     window.umami.trackEvent('Facebook Logout', 'facebook');
-    
+
     // TODO: disconnect_facebook does not implement it correctly.
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')
