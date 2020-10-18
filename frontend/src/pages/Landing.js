@@ -1,12 +1,12 @@
 import React from 'react';
-import { BsChevronDoubleDown } from 'react-icons/bs';
+// import { BsChevronDoubleDown } from 'react-icons/bs';
 import { Button, Row, Col, Container } from 'react-bootstrap';
-import { Element, scroller } from 'react-scroll';
+import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
 
 import Logo from '../components/Logo';
 import styles from './Landing.module.css';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+// import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 /**
  * Renders the Landing page for when users aren't logged in
@@ -14,21 +14,21 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 function Landing() {
   // Get width of window
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
+  // const { width } = useWindowDimensions();
+  // const isMobile = width < 768;
 
   // Scroll to feature page
-  const scrollTo = () => {
-    scroller.scrollTo('featurepage', {
-      smooth: true,
-      duration: 500,
-    });
-  };
+  // const scrollTo = () => {
+  //   scroller.scrollTo('featurepage', {
+  //     smooth: true,
+  //     duration: 500,
+  //   });
+  // };
 
   // Scroll to top
-  const scrollTop = () => {
-    window.scrollTo(0, 0);
-  };
+  // const scrollTop = () => {
+  //   window.scrollTo(0, 0);
+  // };
 
   return (
     <div className={styles.container}>
@@ -57,26 +57,23 @@ function Landing() {
                       Login with CAS
                     </Button>
                   </Col>
-                  {/* Feature Page Button */}
+                  {/* About Page Button */}
                   <Col md={'auto'} className="p-0 mx-2 mb-2">
-                    <Button
-                      size="lg"
-                      className={styles.btns}
-                      variant="dark"
-                      onClick={scrollTo}
-                    >
-                      Features
-                    </Button>
+                    <Link to="/about">
+                      <Button size="lg" className={styles.btns} variant="dark">
+                        About
+                      </Button>
+                    </Link>
                   </Col>
                 </Row>
               </Col>
             </div>
-            <div onClick={scrollTo} className={styles.chevron}>
+            {/* <div onClick={scrollTo} className={styles.chevron}>
               <BsChevronDoubleDown size={30} />
-            </div>
+            </div> */}
           </div>
         </Element>
-        <Element name="featurepage">
+        {/* <Element name="featurepage">
           <div className={styles.feature_page}>
             <div className={styles.page_separator + ' mx-auto'} />
             <h1 className={styles.whyCourseTable}>Why CourseTable?</h1>
@@ -112,7 +109,7 @@ function Landing() {
                   : styles.get_started_row) + ' mx-auto justify-content-center'
               }
             >
-              {/* Catalog Button */}
+              {/* Catalog Button * /}
               <Link to="/catalog">
                 <Button
                   variant="success"
@@ -125,7 +122,7 @@ function Landing() {
               </Link>
             </Row>
           </div>
-        </Element>
+        </Element> */}
       </Container>
     </div>
   );
