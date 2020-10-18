@@ -112,7 +112,6 @@ function FAQ() {
             course codes, any match course code is included in the computation.
           </p>
           <p>
-            The class ratings are an average of the average overall rating for
             The professor rating is an average of the average overall rating for
             every course which a professor has taught. A course is included in
             this calculation even if it was co-taught with other professor(s).
