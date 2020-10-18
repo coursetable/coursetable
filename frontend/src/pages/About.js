@@ -13,6 +13,8 @@ import dl from '../images/headshots/deyuan-li.jpg'
 import kh from '../images/headshots/kevin-hu.jpg'
 import ma from '../images/headshots/murad-avliyakulov.jpg'
 import ag from '../images/headshots/abhijit-gupta.jpg'
+import my from '../images/headshots/max-yuan.jpg'
+import sh from '../images/headshots/sidney-hirschman.jpeg'
 
 /**
  * Renders the about us page
@@ -73,7 +75,7 @@ function About() {
         {/* SECOND ROW OF PPL */}
         <CardDeck className={'my-3'}>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={my} />
             <Card.Body>
               <Card.Title>Max Yuan</Card.Title>
               <Card.Text className="text-muted">
@@ -112,7 +114,7 @@ function About() {
             </Card.Body>
           </Card>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={sh} />
             <Card.Body>
               <Card.Title>Sidney Hirschman</Card.Title>
               <Card.Text className="text-muted">
