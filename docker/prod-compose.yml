@@ -48,7 +48,10 @@ services:
       MYSQL_DB: yaleplus
 
   frontend:
-    build: ../frontend
+    build:
+      context: ../frontend
+      args:
+        REACT_APP_UMAMI_WEBSITE_ID: 1fbff7d5-794d-456f-aa1a-61d8f5794b74
     restart: always
     expose:
       - '5000'

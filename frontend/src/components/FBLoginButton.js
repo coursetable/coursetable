@@ -33,6 +33,7 @@ function FBLoginButton() {
       if (response.status === 'connected') {
         // Logged into your app and Facebook.
         console.log('FB connected');
+        window.umami.trackEvent('Facebook Login', 'facebook');
 
         syncFacebook()
           .then(() => {
@@ -64,6 +65,8 @@ function FBLoginButton() {
   }, [syncFacebook]);
 
   const handleLogoutClick = useCallback(() => {
+    window.umami.trackEvent('Facebook Logout', 'facebook');
+
     // TODO: disconnect_facebook does not implement it correctly.
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')

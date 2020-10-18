@@ -87,6 +87,12 @@ function Search({ location, history }) {
 
   // Show the modal for the course that was clicked
   const showModal = (listing) => {
+    // Metric Tracking What Courses Get Viewed
+    window.umami.trackEvent(
+      'Course Viewed - ' + listing.course_code,
+      'course-viewed'
+    );
+
     setCourseModal([true, listing]);
   };
 
@@ -163,6 +169,9 @@ function Search({ location, history }) {
 
   // resubmit search on view change
   const handleSetView = (isList) => {
+    // Metric Tracking for View Changes
+    window.umami.trackEvent(isList ? 'List View' : 'Grid View', 'modal-view');
+
     setView(isList);
     handleSubmit(null, true);
   };
@@ -178,7 +187,15 @@ function Search({ location, history }) {
       setRefreshCache(refreshCache + 1);
       // if (!defaultSearch) setCollapsedForm(true);
       temp_offset = 0; // Account for reset state lag
-    } else if (fetchedAll) return;
+
+      // Metric Tracking of Invidiual Searches
+      window.umami.trackEvent('Searched - ' + searchText.value, 'search-text');
+    } else if (fetchedAll) {
+      // Metric Tracking of Viewing All
+      window.umami.trackEvent('Viewed All', 'search');
+
+      return;
+    }
 
     // sorting options
     var sortParams = select_sortby.value;
@@ -200,6 +217,12 @@ function Search({ location, history }) {
       // set null defaults
       if (processedSeasons.length === 0) {
         processedSeasons = null;
+      } else {
+        // Tracking which seasons the search was done with
+        window.umami.trackEvent(
+          'search criteria: seasons - ' + processedSeasons,
+          'search'
+        );
       }
     }
 
@@ -212,6 +235,9 @@ function Search({ location, history }) {
 
       // match all languages
       if (processedSkillsAreas.includes('L')) {
+        // Track if all languages is toggled for as search criteria
+        window.umami.trackEvent('search criteria - all languages', 'search');
+
         processedSkillsAreas = processedSkillsAreas.concat([
           'L1',
           'L2',
@@ -232,9 +258,21 @@ function Search({ location, history }) {
       // set null defaults
       if (processedSkills.length === 0) {
         processedSkills = null;
+      } else {
+        // Tracking which skills the search was done with
+        window.umami.trackEvent(
+          'search criteria: skills - ' + processedSkills,
+          'search'
+        );
       }
       if (processedAreas.length === 0) {
         processedAreas = null;
+      } else {
+        // Tracking which areas the search was done with
+        window.umami.trackEvent(
+          'search criteria: areas - ' + processedAreas,
+          'search'
+        );
       }
     }
 
@@ -247,6 +285,12 @@ function Search({ location, history }) {
       // set null defaults
       if (processedCredits.length === 0) {
         processedCredits = null;
+      } else {
+        // Tracking which credits the search was done with
+        window.umami.trackEvent(
+          'search criteria: credits - ' + processedCredits,
+          'search'
+        );
       }
     }
 
@@ -256,17 +300,37 @@ function Search({ location, history }) {
       processedSchools = processedSchools.map((x) => {
         return x.value;
       });
+
       // set null defaults
       if (processedSchools.length === 0) {
         processedSchools = null;
+      } else {
+        // Tracking which schools the search was done with
+        window.umami.trackEvent(
+          'search criteria: schools - ' + processedSchools,
+          'search'
+        );
       }
     }
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
     var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+
+    // Tracking which rating bounds the search was done with
+    window.umami.trackEvent(
+      'search criteria: rating bounds - ' + ratingBounds,
+      'search'
+    );
+
     var include_all_workloads =
       workloadBounds[0] === 1 && workloadBounds[1] === 5;
+
+    // Tracking which workload bounds the search was done with
+    window.umami.trackEvent(
+      'search criteria: workload bounds - ' + workloadBounds,
+      'search'
+    );
 
     // override when we want to sort
     if (ordering && ordering.average_rating) {
@@ -682,7 +746,15 @@ function Search({ location, history }) {
                     onChange={(e) => {}} // dummy handler to remove warning
                   />
                   <Form.Check.Label
-                    onClick={() => setHideCancelled(!hideCancelled)}
+                    onClick={() => {
+                      setHideCancelled(!hideCancelled);
+
+                      // Metric Tracking for Hide Cancelled Courses Toggle
+                      window.umami.trackEvent(
+                        'Cancelled Hidden - ' + (!hideCancelled).toString(),
+                        'hide-toggle'
+                      );
+                    }}
                   >
                     Hide cancelled
                   </Form.Check.Label>

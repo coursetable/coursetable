@@ -385,6 +385,8 @@ function Worksheet() {
                       setCurExpand('list');
                       // Reverse the flex direction, so the list component doesnt wrap under the calendar component
                       setRevFlexDirection(true);
+                      // Track toggling table view for worksheet
+                      window.umami.trackEvent('Table View', 'worksheet');
                     }}
                   />
                 ) : (
@@ -396,6 +398,8 @@ function Worksheet() {
                       setCurExpand('none');
                       // Show hover icons for calendar because that is where mouse will end up
                       setHoverExpand('calendar');
+                      // Track toggling list view for worksheet
+                      window.umami.trackEvent('List View', 'worksheet');
                       // Reset fade states
                       if (start_fade === true) setStartFade(false);
                       if (end_fade === true) setEndFade(false);
