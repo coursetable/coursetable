@@ -27,7 +27,9 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
   // Holds HTML for the FB friends
   let friend_options = [
     <Dropdown.Item
-      key={'me'}
+      key={
+        "aaaaa lmao hopefully no one has this many a's at the beginning of their name that'd be kinda jokes"
+      }
       eventKey={'me'}
       className="d-flex"
       // Styling if this is the current person
@@ -50,7 +52,7 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
     if (containsCurSeason(friendWorksheets[friend]))
       friend_options.push(
         <Dropdown.Item
-          key={friend}
+          key={friendInfo[friend].name}
           eventKey={friend}
           className="d-flex"
           // Styling if this is the current person
@@ -63,6 +65,11 @@ function FBDropdown({ cur_season, setFbPerson, cur_person }) {
         </Dropdown.Item>
       );
   }
+
+  // Sort FB friends in alphabetical order
+  friend_options.sort((a, b) => {
+    return a.key.toLowerCase() < b.key.toLowerCase() ? -1 : 1;
+  });
 
   // Set FB person on click
   const handleSelect = (fb_person) => {

@@ -152,7 +152,7 @@ function Worksheet() {
   const { loading, error, data } = FetchWorksheet(init_worksheet);
 
   // If user somehow isn't logged in and worksheet is null
-  if (cur_worksheet == null) return <div>Please Login</div>;
+  if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
   if (cur_worksheet.length === 0)
     return (
