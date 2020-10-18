@@ -70,7 +70,13 @@ export default class WeekSchedule extends React.Component {
       <div>
         <strong>{event.title}</strong>
         <br />
-        <small className="location_text">
+        <small>
+          {moment(event.event.start).format('hh:mm') +
+            ' - ' +
+            moment(event.event.end).format('hh:mm')}
+        </small>
+        <br />
+        <small className="location_text font-weight-bold">
           {event.event.listing.locations_summary}
         </small>
       </div>
@@ -80,7 +86,7 @@ export default class WeekSchedule extends React.Component {
   // Custom styling for the calendar events
   eventStyleGetter = (event) => {
     const border = '1)';
-    const background = '.85)';
+    const background = '.8)';
     let style = {
       backgroundColor: event.listing.color.concat(background),
       borderColor: event.listing.color.concat(border),
@@ -88,8 +94,18 @@ export default class WeekSchedule extends React.Component {
       filter:
         this.props.hover_course &&
         this.props.hover_course.crn === event.listing.crn
-          ? 'brightness(80%)'
-          : 'brightness(100%)',
+          ? 'saturate(130%)'
+          : '',
+      transform:
+        this.props.hover_course &&
+        this.props.hover_course.crn === event.listing.crn
+          ? 'scale(1.03)'
+          : '',
+      zIndex:
+        this.props.hover_course &&
+        this.props.hover_course.crn === event.listing.crn
+          ? 69
+          : '',
     };
     return {
       style: style,

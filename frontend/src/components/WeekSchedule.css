@@ -4,8 +4,7 @@
 }
 
 .rbc-allday-cell {
-  height: 0 !important;
-  border: none !important;
+  display: none !important;
 }
 
 .rbc-today,
@@ -33,9 +32,15 @@
 }
 
 .rbc-event {
-  transition: filter 0.3s;
+  transition: transform 0.3s, filter 0.3s;
+}
+
+.rbc-event-label {
+  display: none !important;
 }
 
 .rbc-event:hover {
-  filter: brightness(80%) !important;
+  filter: saturate(130%) !important;
+  transform: scale(1.03);
+  z-index: 69 !important;
 }
