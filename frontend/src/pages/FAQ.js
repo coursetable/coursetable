@@ -141,7 +141,7 @@ function FAQ() {
       title: 'How often is CourseTable updated?',
       contents: (
         <>
-          We update our database every day around 3:30am EST. If anthing
+          We update our database every day around 3:30am EST. If anything
           continues to not match Yale's catalog after a few days, please let us
           know through our{' '}
           <NavLink to="/feedback" onClick={scrollToTop}>
