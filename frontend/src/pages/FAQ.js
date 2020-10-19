@@ -106,18 +106,27 @@ function FAQ() {
       contents: (
         <>
           We source our data from a combination of Yale's{' '}
-          <a href="https://courses.yale.edu/" target="_blank">
+          <a
+            href="https://courses.yale.edu/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             course catalog
           </a>
           ,{' '}
           <a
             href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
             target="_blank"
+            rel="noopener noreferrer"
           >
             historical evaluations database
           </a>
           , and{' '}
-          <a href="https://ivy.yale.edu/course-stats/" target="_blank">
+          <a
+            href="https://ivy.yale.edu/course-stats/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
             course demand portal
           </a>
           . Some of the information is also pulled from our historical archives
@@ -213,7 +222,11 @@ function FAQ() {
           </p>
           <p>
             In 2014,{' '}
-            <a href="https://coursetable.com/Blog" target="_blank">
+            <a
+              href="https://coursetable.com/Blog"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               Yale unceremoniously blocked it from campus networks.
             </a>{' '}
             After significant internal and external pressure, these restrictions

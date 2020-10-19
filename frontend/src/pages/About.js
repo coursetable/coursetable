@@ -103,11 +103,19 @@ function About() {
         the courses they want, bringing together course information, student
         evaluations, and course demand statistics in a untuitive interface. It's
         run by a small team of volunteers within the{' '}
-        <a href="http://yalecompsociety.org/" target="_blank">
+        <a
+          href="http://yalecompsociety.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           Yale Computer Society
         </a>{' '}
         and is completely{' '}
-        <a href="https://github.com/coursetable" target="_blank">
+        <a
+          href="https://github.com/coursetable"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           open source
         </a>
         .
