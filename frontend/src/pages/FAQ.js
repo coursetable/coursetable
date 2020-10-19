@@ -54,17 +54,39 @@ function FAQ() {
       title: 'What is CourseTable?',
       contents: (
         <>
-          CourseTable offers a clean and effective way for Yale students to find
-          the courses they want. We source all our data from a combination of
-          Yale's course catalog, historical evaluations database, and course
-          demand portal. You can read more about the history of our project{' '}
-          <a
-            href="https://coursetable.com/Blog"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            here
-          </a>
+          <p>
+            CourseTable offers a clean and effective way for Yale students to
+            find the courses they want, bringing together course information,
+            student evaluations, and course demand statistics in a untuitive
+            interface.
+          </p>
+          <p>
+            A couple disclaimers:
+            <ul>
+              <li>
+                Evaluations are not everything! Professors' personalities and
+                teaching styles are often divisive, and you will likely enjoy a
+                class up your alley more than the random, most-highly evaluated
+                class. Also, sophomores and freshmen: keep in mind
+                highly-evaluated seminars are often filled to the brim.
+              </li>
+              <li>CourseTable is not affiliated with Yale.</li>
+            </ul>
+          </p>
+        </>
+      ),
+    },
+    {
+      title: 'What happened to the old CourseTable?',
+      contents: (
+        <>
+          Over the summer of 2020, we rebuilt CourseTable as a modern site that
+          will be easier to update and maintain going forward. If we're missing
+          a feature from the old site that you would like to see added back,
+          please{' '}
+          <NavLink to="/feedback" onClick={scrollToTop}>
+            let us know
+          </NavLink>
           .
         </>
       ),
@@ -73,23 +95,57 @@ function FAQ() {
       title: 'Who can use CourseTable?',
       contents: (
         <>
-          CourseTable's class listings are open for everyone to search and view.
-          However, we do require you to log in with your Yale ID to view
-          evaluations and use worksheets.
+          Any Yale student can use CourseTable! However, we do require you to
+          log in with your Yale ID, since some of the information we provide is
+          not available to the general public.
         </>
       ),
     },
-    // TODO: Where does the data come from?
+    {
+      title: 'Where does CourseTable get the data?',
+      contents: (
+        <>
+          We source our data from a combination of Yale's{' '}
+          <a href="https://courses.yale.edu/" target="_blank">
+            course catalog
+          </a>
+          ,{' '}
+          <a
+            href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
+            target="_blank"
+          >
+            historical evaluations database
+          </a>
+          , and{' '}
+          <a href="https://ivy.yale.edu/course-stats/" target="_blank">
+            course demand portal
+          </a>
+          . Some of the information is also pulled from our historical archives
+          of the aforementioned data sources.
+        </>
+      ),
+    },
     {
       title: 'How often is CourseTable updated?',
       contents: (
         <>
-          We update our database daily. If anything continues to not match
-          Yale's catalog after a few days, please let us know through our{' '}
+          We update our database every day around 3:30am EST. If anthing
+          continues to not match Yale's catalog after a few days, please let us
+          know through our{' '}
           <NavLink to="/feedback" onClick={scrollToTop}>
             feedback form
           </NavLink>
           .
+        </>
+      ),
+    },
+    {
+      title: "Can I use CourseTable's data for a project?",
+      contents: (
+        <>
+          Sure. Shoot us an <a href="mailto: harshal.sheth@yale.edu">email</a>{' '}
+          with a brief description of your project, and we'll get back to you
+          shortly.
         </>
       ),
     },
@@ -139,19 +195,41 @@ function FAQ() {
       title: 'Who runs CourseTable?',
       contents: (
         <>
-          The Yale Computer Society{' '}
-          <a
-            href="https://yaledailynews.com/blog/2019/09/18/coursetable-taken-over-by-computer-society/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            took over CourseTable
-          </a>{' '}
-          in the fall of 2019. It is now run by{' '}
+          CourseTable is run by a small{' '}
           <NavLink to="/about" onClick={scrollToTop}>
-            these wonderful developers and designers
-          </NavLink>
-          .
+            team
+          </NavLink>{' '}
+          of volunteers within the Yale Computer Society.
+        </>
+      ),
+    },
+    {
+      title: 'What is the history of CourseTable?',
+      contents: (
+        <>
+          <p>
+            CourseTable was created in 2012 by Peter Xu (Yale MC '14) and Harry
+            Yu (Yale SY '14).
+          </p>
+          <p>
+            In 2014,{' '}
+            <a href="https://coursetable.com/Blog" target="_blank">
+              Yale unceremoniously blocked it from campus networks.
+            </a>{' '}
+            After significant internal and external pressure, these restrictions
+            were removed.
+          </p>
+          <p>
+            In the fall of 2019, the Yale Computer Society{' '}
+            <a
+              href="https://yaledailynews.com/blog/2019/09/18/coursetable-taken-over-by-computer-society/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              took over
+            </a>{' '}
+            maintainence and development of CourseTable.
+          </p>
         </>
       ),
     },
@@ -172,21 +250,6 @@ function FAQ() {
             application
           </NavLink>
           !
-        </>
-      ),
-    },
-    {
-      title: 'What happened to the old CourseTable?',
-      contents: (
-        <>
-          Over the summer of 2020, we rebuilt CourseTable as a modern site that
-          will be easier to update and maintain going forward. If we're missing
-          a feature from the old site that you would like to see added back,
-          please{' '}
-          <NavLink to="/feedback" onClick={scrollToTop}>
-            let us know
-          </NavLink>
-          .
         </>
       ),
     },
