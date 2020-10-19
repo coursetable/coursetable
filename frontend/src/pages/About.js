@@ -101,7 +101,7 @@ function About() {
       <p className={styles.about_description + ' mb-3 text-muted'}>
         CourseTable offers a clean and effective way for Yale students to find
         the courses they want, bringing together course information, student
-        evaluations, and course demand statistics in a untuitive interface. It's
+        evaluations, and course demand statistics in an intuitive interface. It's
         run by a small team of volunteers within the{' '}
         <a
           href="http://yalecompsociety.org/"
