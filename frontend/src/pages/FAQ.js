@@ -57,7 +57,7 @@ function FAQ() {
           <p>
             CourseTable offers a clean and effective way for Yale students to
             find the courses they want, bringing together course information,
-            student evaluations, and course demand statistics in a untuitive
+            student evaluations, and course demand statistics in an intuitive
             interface.
           </p>
           <p>
@@ -67,8 +67,11 @@ function FAQ() {
                 Evaluations are not everything! Professors' personalities and
                 teaching styles are often divisive, and you will likely enjoy a
                 class up your alley more than the random, most-highly evaluated
-                class. Also, sophomores and freshmen: keep in mind
-                highly-evaluated seminars are often filled to the brim.
+                class.
+              </li>
+              <li>
+                Sophomores and freshmen: keep in mind highly-evaluated seminars
+                are often filled to the brim.
               </li>
               <li>CourseTable is not affiliated with Yale.</li>
             </ul>
