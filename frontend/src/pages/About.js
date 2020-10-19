@@ -23,15 +23,17 @@ import df from '../images/headshots/dylan-fernandez-de-lara.jpg'
  */
 
 function About() {
-  return (
-    <div className={styles.container + ' mx-auto'}>
-      <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
-      <p className={styles.about_description + ' mb-3 text-muted'}>
+
+  const descriptions = [
+    (
+      <>
         CourseTable was a course-data processor created by Peter Xu (Yale MC '14) and 
         Harry Yu (Yale SY '14) and is continuing to be developed by the Yale Computer Society. 
         It helps you find the courses at Yale where you'll learn and enjoy the most.
-      </p>
-      <p className={styles.about_description + ' mb-3 text-muted'}>
+      </>
+    ),
+    (
+      <>
         After CourseTable's creation in 2013,{' '}
         <a
           href="https://coursetable.com/Blog"
@@ -40,14 +42,104 @@ function About() {
         >
           Yale unceremonisously blocked it from campus networks.
         </a>
-        {' '}Restrictions were later removed and as of 2019, CourseTable has been maintained and developed by the Yale Computer Society.
-      </p>
-      <p className={styles.about_description + ' mb-3 text-muted'}>
+        {' '}Restrictions were later removed and as of 2019, the
+        Yale Computer Society has continued to maintain and further
+        develop the site.
+      </>
+    ),
+    (
+      <>
         To learn more about how to use and the history of CourseTable please see{' '}
         <Link to="/faq">
           the FAQ page.
         </Link>
-      </p>
+      </>
+    )
+  ];
+
+  const people = [
+    {
+      name : 'Harshal Sheth',
+      image: hs,
+      role : 'CourseTable Lead'
+    },
+    {
+      name : "Michelle M. Li",
+      image: ml,
+      role : "Design Lead"
+    },
+    {
+      name : "Kevin Hu",
+      image: kh,
+      role : 'Development'
+    },
+    {
+      name : "Max Yuan",
+      image: my,
+      role : "Development"
+    },
+    {
+      name : "Murad Avliyakulov",
+      image: ma,
+      role : "Development"
+    },
+    {
+      name : "Dylan Fernandez de Lara",
+      image: df,
+      role : "Design"
+    },
+    {
+      name : "Abhijit Gupta",
+      image: ag,
+      role : "Development"
+    },
+    {
+      name : "Sidney Hirschman",
+      image: sh,
+      role : "Design"
+    },
+    {
+      name : "Hao Li",
+      image: hl,
+      role : "Development"
+    },
+    {
+      name : "Josh Chough",
+      image: jc,
+      role : "Design"
+    },
+    {
+      name : "Aidan Evans",
+      image: ae,
+      role : "Development"
+    },
+    {
+      name : "Deyuan Li",
+      image: dl,
+      role : "Development"
+    }
+  ]
+
+
+  //splits people into rows of three
+  var rows = [], size = 3;
+  for (var i = 0; i < people.length; i += size) {
+
+    rows.push(people.slice(i, i + size));
+
+  }
+
+  
+  return (
+    <div className={styles.container + ' mx-auto'}>
+      <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
+      
+      {descriptions.map((part, idx) => (
+        <p key={"description" + idx} className={styles.about_description + ' mb-3 text-muted'}>
+          {part}
+        </p>
+      ))}
+
       <Row className="mx-auto">
         <Link to="/joinus" className="mx-auto">
           <Button>Join Us</Button>
@@ -55,126 +147,21 @@ function About() {
       </Row>
 
       <div className={styles.profile_cards + ' my-3'}>
-        {/* FIRST ROW OF PPL */}
-        <CardDeck className={'my-3'}>
-          <Card>
-            <Card.Img variant="top" src={hs} />
-            <Card.Body>
-              <Card.Title>Harshal Sheth</Card.Title>
-              <Card.Text className="text-muted">
-                CourseTable Lead
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={ml} />
-            <Card.Body>
-              <Card.Title>Michelle M. Li</Card.Title>
-              <Card.Text className="text-muted">
-                Design Lead
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={kh} />
-            <Card.Body>
-              <Card.Title>Kevin Hu</Card.Title>
-              <Card.Text className="text-muted">
-                Development
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </CardDeck>
-        {/* SECOND ROW OF PPL */}
-        <CardDeck className={'my-3'}>
-          <Card>
-            <Card.Img variant="top" src={my} />
-            <Card.Body>
-              <Card.Title>Max Yuan</Card.Title>
-              <Card.Text className="text-muted">
-                Development
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={ma} />
-            <Card.Body>
-              <Card.Title>Murad Avliyakulov</Card.Title>
-              <Card.Text className="text-muted">
-                Development
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={df} />
-            <Card.Body>
-              <Card.Title>Dylan Fernandez de Lara</Card.Title>
-              <Card.Text className="text-muted">
-                Design
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </CardDeck>
-        {/* THIRD ROW OF PPL */}
-        <CardDeck className={'my-3'}>
-          <Card>
-            <Card.Img variant="top" src={ag} />
-            <Card.Body>
-              <Card.Title>Abhijit Gupta</Card.Title>
-              <Card.Text className="text-muted">
-                Development
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={sh} />
-            <Card.Body>
-              <Card.Title>Sidney Hirschman</Card.Title>
-              <Card.Text className="text-muted">
-                Design
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={hl} />
-            <Card.Body>
-              <Card.Title>Hao Li</Card.Title>
-              <Card.Text className="text-muted">
-                Development
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </CardDeck>
-        {/* FOURTH ROW OF PPL */}
-        <CardDeck className={'my-3'}>
-          <Card>
-            <Card.Img variant="top" src={jc} />
-            <Card.Body>
-              <Card.Title>Josh Chough</Card.Title>
-              <Card.Text className="text-muted">
-                Design
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={ae} />
-            <Card.Body>
-              <Card.Title>Aidan Evans</Card.Title>
-              <Card.Text className="text-muted">
-                Development
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={dl} />
-            <Card.Body>
-              <Card.Title>Deyuan Li</Card.Title>
-              <Card.Text className="text-muted">
-                Development
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </CardDeck>
+        {rows.map((row, idx) => (
+          <CardDeck key={idx} className={"my-3"}>
+            {row.map((person, idy) => (
+              <Card key={idx + ' ' + idy}>
+                <Card.Img variant="top" src={person.image} />
+                <Card.Body>
+                  <Card.Title>{person.name}</Card.Title>
+                  <Card.Text className="text-muted">
+                    {person.role}
+                  </Card.Text>
+                </Card.Body>
+              </Card>
+            ))}
+          </CardDeck>
+        ))}
       </div>
     </div>
   );
