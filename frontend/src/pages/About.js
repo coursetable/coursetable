@@ -23,31 +23,7 @@ import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
  */
 
 function About() {
-  const descriptions = [
-    <>
-      CourseTable was a course-data processor created by Peter Xu (Yale MC '14)
-      and Harry Yu (Yale SY '14) and is continuing to be developed by the Yale
-      Computer Society. It helps you find the courses at Yale where you'll learn
-      and enjoy the most.
-    </>,
-    <>
-      After CourseTable's creation in 2013,{' '}
-      <a
-        href="https://coursetable.com/Blog"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        Yale unceremonisously blocked it from campus networks.
-      </a>{' '}
-      Restrictions were later removed and as of 2019, the Yale Computer Society
-      has continued to maintain and further develop the site.
-    </>,
-    <>
-      To learn more about how to use and the history of CourseTable please see{' '}
-      <Link to="/faq">the FAQ page.</Link>
-    </>,
-  ];
-
+  // TODO: add a link for each person
   const people = [
     {
       name: 'Harshal Sheth',
@@ -75,9 +51,9 @@ function About() {
       role: 'Development',
     },
     {
-      name: 'Dylan Fernandez de Lara',
-      image: df,
-      role: 'Design',
+      name: 'Hao Li',
+      image: hl,
+      role: 'Development',
     },
     {
       name: 'Abhijit Gupta',
@@ -85,14 +61,14 @@ function About() {
       role: 'Development',
     },
     {
-      name: 'Sidney Hirschman',
-      image: sh,
+      name: 'Dylan Fernandez de Lara',
+      image: df,
       role: 'Design',
     },
     {
-      name: 'Hao Li',
-      image: hl,
-      role: 'Development',
+      name: 'Sidney Hirschman',
+      image: sh,
+      role: 'Design',
     },
     {
       name: 'Josh Chough',
@@ -122,19 +98,39 @@ function About() {
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
 
-      {descriptions.map((part, idx) => (
-        <p
-          key={'description' + idx}
-          className={styles.about_description + ' mb-3 text-muted'}
+      <p className={styles.about_description + ' mb-3 text-muted'}>
+        CourseTable offers a clean and effective way for Yale students to find
+        the courses they want, bringing together course information, student
+        evaluations, and course demand statistics in an intuitive interface.
+        It's run by a small team of volunteers within the{' '}
+        <a
+          href="http://yalecompsociety.org/"
+          target="_blank"
+          rel="noopener noreferrer"
         >
-          {part}
-        </p>
-      ))}
+          Yale Computer Society
+        </a>{' '}
+        and is completely{' '}
+        <a
+          href="https://github.com/coursetable"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          open source
+        </a>
+        .
+      </p>
 
       <Row className="mx-auto">
-        <Link to="/joinus" className="mx-auto">
-          <Button>Join Us</Button>
-        </Link>
+        <div className="mx-auto">
+          <Link to="faq">
+            <Button variant="outline-secondary">FAQ</Button>
+          </Link>
+          <span style={{ width: '1em', display: 'inline-block' }}></span>
+          <Link to="/joinus">
+            <Button>Join Us</Button>
+          </Link>
+        </div>
       </Row>
 
       <div className={styles.profile_cards + ' my-3'}>
