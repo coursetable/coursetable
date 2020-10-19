@@ -5,7 +5,6 @@ import FBReactSelect from './FBReactSelect';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import Select from 'react-select';
 import { toSeasonString, useComponentVisible } from '../utilities';
-import { useUser } from '../user';
 import { FcSettings } from 'react-icons/fc';
 
 /**
