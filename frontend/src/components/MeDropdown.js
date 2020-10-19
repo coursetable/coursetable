@@ -25,7 +25,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
   // Season to export classes from
-  const CUR_SEASON = '202003';
+  const CUR_SEASON = '202101';
 
   // Initialize the lazy query function
   const [fetchWorksheetListings, { data }] = FetchWorksheetLazy(
