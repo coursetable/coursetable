@@ -163,8 +163,8 @@ export default class WorksheetAccordion extends React.Component {
         </h5>
       );
       // Iterate over each course that takes place on this day
-      for (let i = 0; i < day.length; i++) {
-        const course = day[i];
+      for (let j = 0; j < day.length; j++) {
+        const course = day[j];
         accordion_items.push(
           <Card key={++id} className={styles.card + ' px-0'}>
             {/* Custom Accordion Item Header */}
