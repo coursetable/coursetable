@@ -1,8 +1,11 @@
 .container {
   margin-bottom: 0px;
   border: none;
-  max-height: 92vh;
   overflow: hidden;
+}
+
+.desktop_container {
+  max-height: 92vh;
 }
 
 .loading_spinner {
@@ -102,10 +105,4 @@
   top: 52px;
   right: 0px;
   z-index: 488;
-}
-
-@media (hover: none) {
-  .container {
-    max-height: none !important;
-  }
 }

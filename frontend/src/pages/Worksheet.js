@@ -246,7 +246,7 @@ function Worksheet() {
   return (
     <div className={styles.container}>
       {/* Desktop View */}
-      <div className="d-none d-md-block">
+      <div className={styles.desktop_container + ' d-none d-md-block'}>
         <Row
           className={'m-4 ' + (rev_flex_direction ? 'flex-wrap-reverse' : '')}
         >
