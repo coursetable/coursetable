@@ -3,7 +3,10 @@ import moment from 'moment';
 import './WeekSchedule.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
+import LinesEllipsis from 'react-lines-ellipsis';
+import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
+const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 // TODO: Allow users to change color of courses in calendar?
 
 /**
@@ -78,13 +81,14 @@ export default class WeekSchedule extends React.Component {
       >
         <strong>{event.title}</strong>
         <br />
-        {/* <small>
-          {moment(event.event.start).format('hh:mm') +
-            ' - ' +
-            moment(event.event.end).format('hh:mm')}
-        </small> */}
-        {/* <small>{event.event.listing.title}</small>
-        <br /> */}
+        <span style={{ fontSize: '12px' }}>
+          <ResponsiveEllipsis
+            style={{ whiteSpace: 'pre-wrap' }}
+            text={event.event.listing.title}
+            maxLine={'2'}
+            basedOn="words"
+          />
+        </span>
         <small className="location_text">
           {event.event.listing.locations_summary}
         </small>
