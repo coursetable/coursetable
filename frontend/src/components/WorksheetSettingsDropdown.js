@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 
 import styles from './WorksheetSettingsDropdown.module.css';
+import FBReactSelect from './FBReactSelect';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import Select from 'react-select';
 import { toSeasonString, useComponentVisible } from '../utilities';
@@ -23,8 +24,6 @@ function WorksheetSettingsDropdown({
   setFbPerson,
   cur_person,
 }) {
-  // Fetch user context data
-  const { user } = useUser();
   // Refs to detect clicks outside of the dropdown
   const {
     ref_visible,
@@ -35,15 +34,6 @@ function WorksheetSettingsDropdown({
   // Keep dropdown open on click
   const handleDropdownClick = () => {
     setIsComponentVisible(true);
-  };
-
-  // Does the worksheet contain any courses from the current season?
-  const containsCurSeason = (worksheet) => {
-    if (!worksheet) return false;
-    for (let i = 0; i < worksheet.length; i++) {
-      if (worksheet[i][0] === cur_season) return true;
-    }
-    return false;
   };
 
   // Close dropdown on season or FB friend select
@@ -64,29 +54,6 @@ function WorksheetSettingsDropdown({
     });
   });
 
-  // List of FB friend options. Initialize with me option
-  let friend_options = [{ value: 'me', label: 'Me' }];
-  // FB Friends names
-  const friendInfo =
-    user.fbLogin && user.fbWorksheets ? user.fbWorksheets.friendInfo : {};
-  // FB Friends worksheets
-  const friendWorksheets =
-    user.fbLogin && user.fbWorksheets ? user.fbWorksheets.worksheets : {};
-  // Add FB friend to dropdown if they have worksheet courses in the current season
-  for (let friend in friendInfo) {
-    if (containsCurSeason(friendWorksheets[friend]))
-      friend_options.push({
-        value: friend,
-        label: friendInfo[friend].name,
-      });
-  }
-
-  // Sort FB friends in alphabetical order
-  friend_options.sort((a, b) => {
-    if (a.label === 'Me') return -1;
-    if (b.label === 'Me') return 1;
-    return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
-  });
   // Is the user using a touch screen device
   const isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
@@ -130,21 +97,10 @@ function WorksheetSettingsDropdown({
             {/* FB Friends Select */}
             <Row className="m-auto pb-2">
               <div className={styles.select_container + ' m-auto'}>
-                <Select
-                  value={{
-                    value: cur_person,
-                    label: user.fbLogin
-                      ? cur_person === 'me'
-                        ? 'Me'
-                        : friendInfo[cur_person].name
-                      : 'Connect FB',
-                  }}
-                  isSearchable={true}
-                  isDisabled={!user.fbLogin}
-                  options={friend_options}
-                  onChange={(option) => {
-                    setFbPerson(option.value);
-                  }}
+                <FBReactSelect
+                  cur_season={cur_season}
+                  setFbPerson={setFbPerson}
+                  cur_person={cur_person}
                 />
               </div>
             </Row>
