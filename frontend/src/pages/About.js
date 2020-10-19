@@ -2,7 +2,7 @@ import React from 'react';
 
 import styles from './About.module.css';
 import { Card, CardDeck, Button, Row } from 'react-bootstrap';
-import pic from '../images/default_pfp.png';
+//import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
 
 import ae from '../images/headshots/aidan-evans.jpg'
@@ -15,6 +15,8 @@ import ma from '../images/headshots/murad-avliyakulov.jpg'
 import ag from '../images/headshots/abhijit-gupta.jpg'
 import my from '../images/headshots/max-yuan.jpg'
 import sh from '../images/headshots/sidney-hirschman.jpeg'
+import hl from '../images/headshots/hao-li.jpg'
+import df from '../images/headshots/dylan-fernandez-de-lara.jpg'
 
 /**
  * Renders the about us page
@@ -28,6 +30,17 @@ function About() {
         CourseTable was a course-data processor created by Peter Xu (Yale MC '14) and 
         Harry Yu (Yale SY '14) and is continuing to be developed by the Yale Computer Society. 
         It helps you find the courses at Yale where you'll learn and enjoy the most.
+      </p>
+      <p className={styles.about_description + ' mb-3 text-muted'}>
+        After CourseTable's creation in 2013,{' '}
+        <a
+          href="https://coursetable.com/Blog"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Yale unceremonisously blocked it from campus networks.
+        </a>
+        {' '}Restrictions were later removed and as of 2019, CourseTable has been maintained and developed by the Yale Computer Society.
       </p>
       <p className={styles.about_description + ' mb-3 text-muted'}>
         To learn more about how to use and the history of CourseTable please see{' '}
@@ -93,7 +106,7 @@ function About() {
             </Card.Body>
           </Card>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={df} />
             <Card.Body>
               <Card.Title>Dylan Fernandez de Lara</Card.Title>
               <Card.Text className="text-muted">
@@ -123,7 +136,7 @@ function About() {
             </Card.Body>
           </Card>
           <Card>
-            <Card.Img variant="top" src={pic} />
+            <Card.Img variant="top" src={hl} />
             <Card.Body>
               <Card.Title>Hao Li</Card.Title>
               <Card.Text className="text-muted">
