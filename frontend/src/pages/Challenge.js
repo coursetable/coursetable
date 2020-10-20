@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useHistory, NavLink } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
+import { useUser } from '../user';
 import { toast } from 'react-toastify';
 
 import { FiExternalLink } from 'react-icons/fi';
@@ -15,6 +16,8 @@ import ChallengeError from '../images/error.svg';
  */
 
 function Challenge() {
+  // Get user context info and refresh
+  const { userRefresh } = useUser();
   // react-router history to redirect to catalog
   let history = useHistory();
   // Has the form been validated for submission?
@@ -103,7 +106,14 @@ function Challenge() {
             // Correct responses
             if (res.data.body.message === 'CORRECT') {
               toast.success('All of your responses were correct!');
-              history.push('/catalog');
+              userRefresh()
+                .catch((err) => {
+                  toast.error('Failed to update evaluation status');
+                  console.error(err);
+                })
+                .then(() => {
+                  history.push('/catalog');
+                });
             }
             // Incorrect responses
             else {
