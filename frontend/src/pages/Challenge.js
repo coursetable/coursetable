@@ -112,7 +112,7 @@ function Challenge() {
                   console.error(err);
                 })
                 .then(() => {
-                  history.push('/catalog');
+                  history.goBack();
                 });
             }
             // Incorrect responses
@@ -125,7 +125,6 @@ function Challenge() {
                 <div>Incorrect responses. Please try again.</div>
               );
 
-              // Invalidate the form
               setValidated(false);
               setNumTries(res.data.body.challengeTries);
               setMaxTries(res.data.body.maxChallengeTries);

@@ -98,7 +98,7 @@ function App() {
                   user.hasEvals ? (
                     <Search {...props} />
                   ) : (
-                    <Redirect to="/challenge" />
+                    <Redirect push={true} to="/challenge" />
                   )
                 }
               />
@@ -123,7 +123,7 @@ function App() {
                   user.hasEvals ? (
                     <Worksheet />
                   ) : (
-                    <Redirect to="/challenge" />
+                    <Redirect push={true} to="/challenge" />
                   )
                 ) : (
                   <Redirect to="/worksheetlogin" />
