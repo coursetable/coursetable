@@ -44,19 +44,32 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
     return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
   });
 
+  if (!user.fbLogin) {
+    // TODO: replace with a button to connect FB
+    return (
+      <Select
+        value={{
+          value: cur_person,
+          label: 'Connect FB',
+        }}
+        isDisabled={true}
+      />
+    );
+  }
+
   return (
     <Select
-      value={{
-        value: cur_person,
-        label: user.fbLogin
-          ? cur_person === 'me'
-            ? 'Me'
-            : friendInfo[cur_person].name
-          : 'Connect FB',
-      }}
+      value={
+        cur_person === 'me'
+          ? null
+          : {
+              value: cur_person,
+              label: friendInfo[cur_person].name,
+            }
+      }
+      placeholder="Friends' courses"
       isSearchable={true}
       isClearable={cur_person !== 'me'}
-      isDisabled={!user.fbLogin}
       options={friend_options}
       onChange={(option) => {
         // Cleared FB friend
