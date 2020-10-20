@@ -123,7 +123,7 @@ function Search({ location, history }) {
   // react-select states for controlled forms
   const [select_sortby, setSelectSortby] = useState(sortbyOptions[0]);
   const [select_seasons, setSelectSeasons] = useState([
-    { value: '202003', label: 'Fall 2020' },
+    { value: '202101', label: 'Spring 2021' },
   ]);
   const [select_skillsareas, setSelectSkillsAreas] = useState();
   const [select_credits, setSelectCredits] = useState();
@@ -439,7 +439,7 @@ function Search({ location, history }) {
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
     setSelectSortby(sortbyOptions[0]);
-    setSelectSeasons([{ value: '202003', label: 'Fall 2020' }]);
+    setSelectSeasons([{ value: '202101', label: 'Spring 2021' }]);
     setSelectSkillsAreas(null);
     setSelectCredits(null);
     setSelectSchools([
