@@ -162,6 +162,7 @@ export default class WeekSchedule extends React.Component {
         // Display Mon, Tue, Wed, ... at the top
         formats={{
           dayFormat: 'ddd',
+          timeGutterFormat: 'ha',
         }}
       />
     );
