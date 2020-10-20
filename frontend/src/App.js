@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useCallback,
+  useMemo,
+  Suspense,
+} from 'react';
 import {
   BrowserRouter as Router,
   Switch,
@@ -11,22 +17,24 @@ import Footer from './components/Footer';
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import SeasonsProvider from './components/SeasonsProvider';
 
+import { useUser } from './user';
+import { Row, Spinner } from 'react-bootstrap';
+
+// Bundle these pages.
 import Landing from './pages/Landing';
 import Home from './pages/Home';
 
-import Search from './pages/Search';
-import About from './pages/About';
-import Worksheet from './pages/Worksheet';
-import FAQ from './pages/FAQ';
-import Feedback from './pages/Feedback';
-import Join from './pages/Join';
-import NotFound from './pages/NotFound';
-import Thankyou from './pages/Thankyou';
-import Challenge from './pages/Challenge';
-import WorksheetLogin from './pages/WorksheetLogin';
-
-import { useUser } from './user';
-import { Row, Spinner } from 'react-bootstrap';
+// Use code-splitting for the rest.
+const Search = React.lazy(() => import('./pages/Search'));
+const Worksheet = React.lazy(() => import('./pages/Worksheet'));
+const About = React.lazy(() => import('./pages/About'));
+const FAQ = React.lazy(() => import('./pages/FAQ'));
+const Feedback = React.lazy(() => import('./pages/Feedback'));
+const Join = React.lazy(() => import('./pages/Join'));
+const NotFound = React.lazy(() => import('./pages/NotFound'));
+const Thankyou = React.lazy(() => import('./pages/Thankyou'));
+const Challenge = React.lazy(() => import('./pages/Challenge'));
+const WorksheetLogin = React.lazy(() => import('./pages/WorksheetLogin'));
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -63,8 +71,7 @@ function App() {
     [isLoggedIn]
   );
 
-  // Render spinner if page loading
-  if (loading) {
+  const loader = useMemo(() => {
     return (
       <Row className="m-auto" style={{ height: '100%' }}>
         <Spinner className="m-auto" animation="border" role="status">
@@ -72,82 +79,96 @@ function App() {
         </Spinner>
       </Row>
     );
+  }, []);
+
+  // Render spinner if page loading
+  if (loading) {
+    return loader;
   }
+
   return (
     <Router>
       <WindowDimensionsProvider>
         <SeasonsProvider>
           <div id="base">
             <Navbar isLoggedIn={isLoggedIn} />
-            <Switch>
-              {/* Home Page */}
-              <MyRoute exact path="/">
-                {isLoggedIn ? <Home /> : <Redirect to="/login" />}
-              </MyRoute>
+            <Suspense fallback={loader}>
+              <Switch>
+                {/* Home Page */}
+                <MyRoute exact path="/">
+                  {isLoggedIn ? <Home /> : <Redirect to="/login" />}
+                </MyRoute>
 
-              {/* About */}
-              <MyRoute exact path="/about">
-                <About />
-              </MyRoute>
+                {/* About */}
+                <MyRoute exact path="/about">
+                  <About />
+                </MyRoute>
 
-              {/* Catalog */}
-              <MyRoute
-                exact
-                path="/catalog"
-                render={(props) => <Search {...props} />}
-              />
+                {/* Catalog */}
+                <MyRoute exact path="/catalog">
+                  <Search />
+                </MyRoute>
 
-              {/* Auth */}
-              <MyRoute exact path="/login">
-                {isLoggedIn ? <Redirect to="/" /> : <Landing />}
-              </MyRoute>
+                {/* Auth */}
+                <MyRoute exact path="/login">
+                  {isLoggedIn ? <Redirect to="/" /> : <Landing />}
+                </MyRoute>
 
-              <MyRoute exact path="/worksheetlogin">
-                {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
-              </MyRoute>
+                <MyRoute exact path="/worksheetlogin">
+                  {isLoggedIn ? (
+                    <Redirect to="/worksheet" />
+                  ) : (
+                    <WorksheetLogin />
+                  )}
+                </MyRoute>
 
-              {/* OCE Challenge */}
-              <MyRoute exact path="/challenge">
-                <Challenge />
-              </MyRoute>
+                {/* OCE Challenge */}
+                <MyRoute exact path="/challenge">
+                  <Challenge />
+                </MyRoute>
 
-              {/* Worksheet */}
-              <MyRoute exact path="/worksheet">
-                {isLoggedIn ? <Worksheet /> : <Redirect to="/worksheetlogin" />}
-              </MyRoute>
+                {/* Worksheet */}
+                <MyRoute exact path="/worksheet">
+                  {isLoggedIn ? (
+                    <Worksheet />
+                  ) : (
+                    <Redirect to="/worksheetlogin" />
+                  )}
+                </MyRoute>
 
-              {/* Thank You */}
-              <MyRoute exact path="/thankyou">
-                <Thankyou />
-              </MyRoute>
+                {/* Thank You */}
+                <MyRoute exact path="/thankyou">
+                  <Thankyou />
+                </MyRoute>
 
-              {/* Footer Links */}
+                {/* Footer Links */}
 
-              <MyRoute exact path="/faq">
-                <FAQ />
-              </MyRoute>
+                <MyRoute exact path="/faq">
+                  <FAQ />
+                </MyRoute>
 
-              <MyRoute exact path="/feedback">
-                <Feedback />
-              </MyRoute>
+                <MyRoute exact path="/feedback">
+                  <Feedback />
+                </MyRoute>
 
-              <MyRoute exact path="/joinus">
-                <Join />
-              </MyRoute>
+                <MyRoute exact path="/joinus">
+                  <Join />
+                </MyRoute>
 
-              <Route
-                path="/Blog"
-                component={() => {
-                  window.location.href = 'https://coursetable.com/Blog';
-                  return null;
-                }}
-              />
+                <Route
+                  path="/Blog"
+                  component={() => {
+                    window.location.href = 'https://coursetable.com/Blog';
+                    return null;
+                  }}
+                />
 
-              {/* Catch-all Route to NotFound Page */}
-              <MyRoute path="/">
-                <NotFound />
-              </MyRoute>
-            </Switch>
+                {/* Catch-all Route to NotFound Page */}
+                <MyRoute path="/">
+                  <NotFound />
+                </MyRoute>
+              </Switch>
+            </Suspense>
             {/* Render footer if not on catalog or worksheet pages */}
             <Route
               render={({ location }) => {
