@@ -599,9 +599,19 @@ function Search({ location, history }) {
                         // Set seasons state
                         setSelectSeasons(options);
                         let has_summer_season = false;
-                        // Check to see if user has selected a summer season
+                        let has_season_before_2014 = false;
+                        // User has selected at least 1 season
                         if (options && options.length > 0) {
                           options.forEach((season) => {
+                            // Ignore the rest if there is already a season before 2014
+                            if (has_season_before_2014) return;
+                            // Season before 2014 exists
+                            if (season.value < '201400') {
+                              has_season_before_2014 = true;
+                              // Clear schools
+                              setSelectSchools([]);
+                              return;
+                            }
                             // Summer season exists
                             if (season.value[5] === '2') {
                               has_summer_season = true;
@@ -620,8 +630,8 @@ function Search({ location, history }) {
                             { label: 'Summer Session', value: 'SU' },
                           ]);
                         }
-                        // If no summer season selected
-                        if (!has_summer_season) {
+                        // If no summer season selected and no season before 2014
+                        if (!has_summer_season && !has_season_before_2014) {
                           // Copy school state
                           let new_schools = [...select_schools];
                           for (let i = 0; i < new_schools.length; i++) {
@@ -685,7 +695,7 @@ function Search({ location, history }) {
                     styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelectSchools(options);
+                      setSelectSchools(options ? options : []);
                     }}
                     components={animatedComponents}
                   />
