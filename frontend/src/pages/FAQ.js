@@ -49,7 +49,6 @@ function ContextAwareToggle({ eventKey, callback, question }) {
 
 function FAQ() {
   const faqs = [
-    // TODO: ensure that this link continues to work.
     {
       title: 'What is CourseTable?',
       contents: (
@@ -216,6 +215,7 @@ function FAQ() {
       ),
     },
     {
+      // TODO: ensure that the blog link continues to work.
       title: 'What is the history of CourseTable?',
       contents: (
         <>
@@ -244,7 +244,7 @@ function FAQ() {
             >
               took over
             </a>{' '}
-            maintainence and development of CourseTable.
+            maintenance and development of CourseTable.
           </p>
         </>
       ),

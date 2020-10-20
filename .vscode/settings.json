@@ -33,5 +33,9 @@
     "**/node_modules": true,
     "**/bower_components": true,
     "**/docker/mysql/database.sql": true
-  }
+  },
+  "cSpell.words": [
+    "noopener",
+    "noreferrer"
+  ]
 }
