@@ -10,8 +10,12 @@ UserContext.displayName = 'UserContext';
  */
 
 export const UserProvider = ({ children }) => {
+  // User's netId
+  const [netId, setNetId] = useState(null);
   // User's worksheet
   const [worksheet, setWorksheet] = useState(null);
+  // User's evals enabled status
+  const [hasEvals, setHasEvals] = useState(null);
   // User's FB login status
   const [fbLogin, setFbLogin] = useState(null);
   // User's FB friends' worksheets
@@ -25,14 +29,18 @@ export const UserProvider = ({ children }) => {
       );
       if (!res.data.success) {
         // Error with fetching user's worksheet
+        setNetId(null);
         setWorksheet(null);
+        setHasEvals(null);
         console.error(res.data.message);
         if (!suppressError) {
           toast.error(res.data.message);
         }
       } else {
         // Successfully fetched worksheet
+        setNetId(res.data.netId);
         setWorksheet(res.data.data);
+        setHasEvals(res.data.evaluationsEnabled);
       }
     },
     [setWorksheet]
@@ -64,7 +72,9 @@ export const UserProvider = ({ children }) => {
   const store = {
     // Context state.
     user: {
+      netId,
       worksheet,
+      hasEvals,
       fbLogin,
       fbWorksheets,
     },
