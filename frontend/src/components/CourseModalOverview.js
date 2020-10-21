@@ -176,6 +176,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         crn: season.crn,
         // Section number
         section: season.section,
+        // Course Title
+        title: season.title,
+        // Course Skills
+        skills: season.skills,
+        // Course Areas
+        areas: season.areas,
       });
     });
     // Sort by season code and section
