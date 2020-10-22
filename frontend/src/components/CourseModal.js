@@ -169,7 +169,7 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
-                          {view[1].course_code + ' '} Evaluations
+                          {view[1].title + ' '}
                           <span className="text-muted">
                             {' (' +
                               toSeasonString(view[0])[2] +
@@ -180,18 +180,67 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                         </span>
                       </Row>
                     </Modal.Title>
-                    {/* Course Professors and Section number */}
-                    {view[1].professor !== ['TBA'] && (
-                      <Row className={styles.badges + ' mx-auto mt-1 '}>
+
+                    <Row className={styles.badges + ' mx-auto mt-1 '}>
+                      {/* Course Code */}
+                      <p
+                        className={
+                          styles.course_codes + '  my-0 text-muted pr-2'
+                        }
+                      >
+                        {view[1].course_code}
+                      </p>
+                      {/* Course Skills and Areas */}
+                      {view[1].skills &&
+                        view[1].skills.map((skill) => (
+                          <Badge
+                            variant="secondary"
+                            className={tag_styles.tag}
+                            style={{
+                              color: skillsAreasColors[skill],
+                              backgroundColor: chroma(skillsAreasColors[skill])
+                                .alpha(0.16)
+                                .css(),
+                            }}
+                            key={key++}
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      {view[1].areas &&
+                        view[1].areas.map((area) => (
+                          <Badge
+                            variant="secondary"
+                            className={tag_styles.tag}
+                            style={{
+                              color: skillsAreasColors[area],
+                              backgroundColor: chroma(skillsAreasColors[area])
+                                .alpha(0.16)
+                                .css(),
+                            }}
+                            key={key++}
+                          >
+                            {area}
+                          </Badge>
+                        ))}
+                      {/* Course Professors and Section */}
+                      {view[1].professor !== ['TBA'] && (
                         <p
-                          className={styles.course_codes + '  my-0 text-muted'}
+                          className={
+                            styles.course_codes +
+                            '  my-0 text-muted' +
+                            (view[1].skills.length || view[1].areas.length
+                              ? ' pl-2 '
+                              : '')
+                          }
                         >
-                          {view[1].professor.join(', ') +
+                          {'| ' +
+                            view[1].professor.join(', ') +
                             ' | Section ' +
                             view[1].section}
                         </p>
-                      </Row>
-                    )}
+                      )}
+                    </Row>
                   </Col>
                 </Row>
               </div>
