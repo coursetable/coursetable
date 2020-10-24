@@ -89,6 +89,7 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       }
     ) {
       professor_names
+      professor_info
       season_code
       all_course_codes
       section
