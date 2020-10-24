@@ -1,6 +1,7 @@
 import React from 'react';
 import Select from 'react-select';
 import { useUser } from '../user';
+import './FBReactSelect.css';
 
 /**
  * Render FB React-Select Dropdown in WorksheetSettingsDropdown.js and WorksheetRowDropdown.js
@@ -58,26 +59,28 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
   }
 
   return (
-    <Select
-      value={
-        cur_person === 'me'
-          ? null
-          : {
-              value: cur_person,
-              label: friendInfo[cur_person].name,
-            }
-      }
-      placeholder="Friends' courses"
-      isSearchable={true}
-      isClearable={cur_person !== 'me'}
-      options={friend_options}
-      onChange={(option) => {
-        // Cleared FB friend
-        if (!option) setFbPerson('me');
-        // Selected FB friend
-        else setFbPerson(option.value);
-      }}
-    />
+    <div className="fb_select">
+      <Select
+        value={
+          cur_person === 'me'
+            ? null
+            : {
+                value: cur_person,
+                label: friendInfo[cur_person].name,
+              }
+        }
+        placeholder="Friends' courses"
+        isSearchable={true}
+        isClearable={cur_person !== 'me'}
+        options={friend_options}
+        onChange={(option) => {
+          // Cleared FB friend
+          if (!option) setFbPerson('me');
+          // Selected FB friend
+          else setFbPerson(option.value);
+        }}
+      />
+    </div>
   );
 }
 
