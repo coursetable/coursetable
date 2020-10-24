@@ -134,6 +134,7 @@ function Search({ location, history }) {
 
   // Does the user want to hide cancelled courses?
   var [hideCancelled, setHideCancelled] = React.useState(true);
+  var [hideFirstYearSeminars, setHideFirstYearSeminars] = React.useState(false);
 
   // Bounds of course and workload ratings (1-5)
   var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
@@ -436,6 +437,7 @@ function Search({ location, history }) {
   // reset the search form
   const handleResetFilters = () => {
     setHideCancelled(true);
+    setHideFirstYearSeminars(false);
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
     setSelectSortby(sortbyOptions[0]);
@@ -747,7 +749,7 @@ function Search({ location, history }) {
                 </Col>
               </Row>
               <Row
-                className={`mx-auto pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg}`}
+                className={`mx-auto pt-2 pb-2 px-5 justify-content-left ${Styles.light_bg}`}
               >
                 {/* Hide Cancelled Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
@@ -767,6 +769,31 @@ function Search({ location, history }) {
                     }}
                   >
                     Hide cancelled
+                  </Form.Check.Label>
+                </Form.Check>
+              </Row>
+              <Row
+                className={`mx-auto pt-2 pb-2 px-5 justify-content-left ${Styles.light_bg}`}
+              >
+                {/* Hide First-Year Seminar Courses Toggle */}
+                <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check.Input
+                    checked={hideFirstYearSeminars}
+                    onChange={(e) => {}} // dummy handler to remove warning
+                  />
+                  <Form.Check.Label
+                    onClick={() => {
+                      setHideFirstYearSeminars(!hideFirstYearSeminars);
+
+                      // Metric Tracking for Hide First Year-Seminar Courses Toggle
+                      window.umami.trackEvent(
+                        'First-Year Seminars - ' +
+                          (!hideFirstYearSeminars).toString(),
+                        'hide-toggle'
+                      );
+                    }}
+                  >
+                    Hide first-year seminars
                   </Form.Check.Label>
                 </Form.Check>
               </Row>
