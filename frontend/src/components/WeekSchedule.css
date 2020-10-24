@@ -37,3 +37,7 @@
 .rbc-event-label {
   display: none !important;
 }
+
+.rbc-time-content {
+  overflow-y: visible !important;
+}
