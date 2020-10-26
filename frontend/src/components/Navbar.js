@@ -34,7 +34,7 @@ function CourseTableNavbar({ isLoggedIn }) {
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
     // Clear cookies
-    document.cookie.split(';').forEach(c => {
+    document.cookie.split(';').forEach((c) => {
       document.cookie = c
         .replace(/^ +/, '')
         .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
@@ -52,7 +52,7 @@ function CourseTableNavbar({ isLoggedIn }) {
         <Container fluid>
           <Navbar
             expanded={nav_expanded}
-            onToggle={expanded => setExpand(expanded)}
+            onToggle={(expanded) => setExpand(expanded)}
             // sticky="top"
             expand="md"
             className={styles.navbar}
