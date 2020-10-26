@@ -16,6 +16,7 @@ function Logo({ variant, icon = true, wordmark = true }) {
       className={common_styles.coursetable_logo}
       style={{
         color: variant === 'dark' ? 'white' : 'black',
+        display: 'block',
       }}
     >
       {icon && (

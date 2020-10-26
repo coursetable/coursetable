@@ -58,7 +58,7 @@ function CourseTableNavbar({ isLoggedIn }) {
             className={styles.navbar}
           >
             {/* Logo in top left */}
-            <Nav className={styles.nav_brand + ' navbar-brand'}>
+            <Nav className={styles.nav_brand + ' navbar-brand py-2'}>
               <NavLink
                 to="/"
                 activeStyle={{
