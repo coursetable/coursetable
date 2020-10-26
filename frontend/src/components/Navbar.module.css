@@ -2,10 +2,13 @@
   background: white;
 }
 
+nav > .nav_brand {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .nav_logo {
-  font-size: 1.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  font-size: 1.6rem;
 }
 
 .navbar_links {

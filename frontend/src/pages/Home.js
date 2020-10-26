@@ -16,7 +16,7 @@ function Home() {
         <div className={styles.homepage}>
           {/* Logo */}
           <h1 className={styles.title + ' ' + styles.coursetable_logo}>
-            <Logo />
+            <Logo icon={false} />
           </h1>
           {/* Searchbar */}
           <div className={styles.search_bar_container}>
