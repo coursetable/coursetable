@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import styles from './Navbar.module.css';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
@@ -10,6 +9,7 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
+import styles from './Navbar.module.css';
 
 /**
  * Renders the navbar
@@ -26,8 +26,6 @@ function CourseTableNavbar({ isLoggedIn }) {
     setIsComponentVisible,
   } = useComponentVisible(false);
 
-  // Get the pathname of the current page
-  const pathname = useLocation().pathname;
   // Fetch width of window
   const { width } = useWindowDimensions();
   const is_mobile = width < 768;
@@ -36,7 +34,7 @@ function CourseTableNavbar({ isLoggedIn }) {
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
     // Clear cookies
-    document.cookie.split(';').forEach((c) => {
+    document.cookie.split(';').forEach(c => {
       document.cookie = c
         .replace(/^ +/, '')
         .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
@@ -54,13 +52,13 @@ function CourseTableNavbar({ isLoggedIn }) {
         <Container fluid>
           <Navbar
             expanded={nav_expanded}
-            onToggle={(expanded) => setExpand(expanded)}
+            onToggle={expanded => setExpand(expanded)}
             // sticky="top"
             expand="md"
             className={styles.navbar}
           >
             {/* Logo in top left */}
-            <Navbar.Brand>
+            <Nav className={styles.nav_brand + ' navbar-brand'}>
               <NavLink
                 to="/"
                 activeStyle={{
@@ -71,10 +69,10 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo condensed={pathname === '/'} />
+                  <Logo wordmark={false} />
                 </span>
               </NavLink>
-            </Navbar.Brand>
+            </Nav>
 
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
 

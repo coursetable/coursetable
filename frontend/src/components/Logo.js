@@ -1,5 +1,7 @@
 import React from 'react';
 
+import logo from '../images/brand/bluebook.svg';
+import wordmark_outlines from '../images/brand/wordmark_outlines.svg';
 import common_styles from '../styles/common.module.css';
 
 /**
@@ -8,7 +10,7 @@ import common_styles from '../styles/common.module.css';
  * @prop condensed - boolean that returns 'CT' if true
  */
 
-function Logo({ variant, condensed = false }) {
+function Logo({ variant, icon = true, wordmark = true }) {
   return (
     <span
       className={common_styles.coursetable_logo}
@@ -16,8 +18,16 @@ function Logo({ variant, condensed = false }) {
         color: variant === 'dark' ? 'white' : 'black',
       }}
     >
-      {condensed ? 'C' : 'Course'}
-      <span style={{ color: '#92bcea' }}>{condensed ? 'T' : 'Table'}</span>
+      {icon && (
+        <img src={logo} alt="" className={common_styles.coursetable_logo_img} />
+      )}{' '}
+      {wordmark && (
+        <img
+          src={wordmark_outlines}
+          alt="CourseTable"
+          className={common_styles.coursetable_logo_wordmark}
+        />
+      )}
     </span>
   );
 }

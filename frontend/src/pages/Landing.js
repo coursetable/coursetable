@@ -37,7 +37,7 @@ function Landing() {
           <div className={styles.splashpage}>
             <div className={styles.coursetable_window}>
               <h1 className={styles.title + ' ' + styles.coursetable_logo}>
-                <Logo />
+                <Logo icon={false} />
               </h1>
               <p className={styles.description + ' mt-3'}>
                 The best place to shop for classes at Yale.
