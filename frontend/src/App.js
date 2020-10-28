@@ -94,7 +94,13 @@ function App() {
               <MyRoute
                 exact
                 path="/catalog"
-                render={(props) => <Search {...props} />}
+                render={(props) =>
+                  user.hasEvals ? (
+                    <Search {...props} />
+                  ) : (
+                    <Redirect push={true} to="/challenge" />
+                  )
+                }
               />
 
               {/* Auth */}
@@ -113,7 +119,15 @@ function App() {
 
               {/* Worksheet */}
               <MyRoute exact path="/worksheet">
-                {isLoggedIn ? <Worksheet /> : <Redirect to="/worksheetlogin" />}
+                {isLoggedIn ? (
+                  user.hasEvals ? (
+                    <Worksheet />
+                  ) : (
+                    <Redirect push={true} to="/challenge" />
+                  )
+                ) : (
+                  <Redirect to="/worksheetlogin" />
+                )}
               </MyRoute>
 
               {/* Thank You */}

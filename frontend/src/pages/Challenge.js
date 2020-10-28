@@ -4,7 +4,9 @@ import axios from 'axios';
 import { useHistory, NavLink } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
+import { useUser } from '../user';
 import { toast } from 'react-toastify';
+import { useApolloClient } from '@apollo/react-hooks';
 
 import { FiExternalLink } from 'react-icons/fi';
 
@@ -15,6 +17,10 @@ import ChallengeError from '../images/error.svg';
  */
 
 function Challenge() {
+  // Apollo client
+  const client = useApolloClient();
+  // Get user context info and refresh
+  const { userRefresh } = useUser();
   // react-router history to redirect to catalog
   let history = useHistory();
   // Has the form been validated for submission?
@@ -102,8 +108,18 @@ function Challenge() {
           } else {
             // Correct responses
             if (res.data.body.message === 'CORRECT') {
-              toast.success('All of your responses were correct!');
-              history.push('/catalog');
+              userRefresh()
+                .then(() => {
+                  return client.resetStore();
+                })
+                .then(() => {
+                  toast.success('All of your responses were correct!');
+                  history.goBack();
+                })
+                .catch((err) => {
+                  toast.error('Failed to update evaluation status');
+                  console.error(err);
+                });
             }
             // Incorrect responses
             else {
@@ -115,7 +131,6 @@ function Challenge() {
                 <div>Incorrect responses. Please try again.</div>
               );
 
-              // Invalidate the form
               setValidated(false);
               setNumTries(res.data.body.challengeTries);
               setMaxTries(res.data.body.maxChallengeTries);
@@ -192,15 +207,19 @@ function Challenge() {
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {course.courseTitle} <FiExternalLink />
+                {course.courseTitle}{' '}
+                <FiExternalLink
+                  // Better spacing for the link icon
+                  className="mb-1"
+                />
               </a>
             </strong>
           </Row>
           {/* Question with link to OCE Page */}
           <Row className="mx-auto mb-1">
-            How many students responded to the{' '}
-            <span className="font-weight-bold">"overall assessment"</span>{' '}
-            question with{' '}
+            How many students responded to the&nbsp;
+            <span className="font-weight-bold">"overall assessment"</span>
+            &nbsp;question with&nbsp;
             <span className="font-weight-bold">
               "{rating_options[course.courseRatingIndex]}"
             </span>
@@ -321,7 +340,7 @@ function Challenge() {
             alt="No courses found."
             className="w-50 md:w-25 py-5"
             src={ChallengeError}
-          ></img>
+          />
           <h3>{errorTitle}</h3>
           <div>{errorMessage}</div>
         </div>
