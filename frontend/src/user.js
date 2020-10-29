@@ -39,11 +39,11 @@ export const UserProvider = ({ children }) => {
       } else {
         // Successfully fetched worksheet
         setNetId(res.data.netId);
-        setWorksheet(res.data.data);
         setHasEvals(res.data.evaluationsEnabled);
+        setWorksheet(res.data.data);
       }
     },
-    [setWorksheet]
+    [setWorksheet, setNetId, setHasEvals]
   );
 
   // Refresh user FB stuff
