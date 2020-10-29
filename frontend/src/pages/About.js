@@ -1,7 +1,7 @@
 import React from 'react';
 
 import styles from './About.module.css';
-import { Card, CardDeck, Button, Row } from 'react-bootstrap';
+import { Card, Button, Row } from 'react-bootstrap';
 //import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
 
@@ -38,12 +38,12 @@ function About() {
     {
       name: 'Kevin Hu',
       image: kh,
-      role: 'Development',
+      role: 'Backend Dev Lead',
     },
     {
       name: 'Max Yuan',
       image: my,
-      role: 'Development',
+      role: 'Frontend Dev Lead',
     },
     {
       name: 'Murad Avliyakulov',
@@ -87,18 +87,11 @@ function About() {
     },
   ];
 
-  //splits people into rows of three
-  var rows = [],
-    size = 3;
-  for (var i = 0; i < people.length; i += size) {
-    rows.push(people.slice(i, i + size));
-  }
-
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
 
-      <p className={styles.about_description + ' mb-3 text-muted'}>
+      <p className={styles.about_description + ' mb-3 mx-auto text-muted'}>
         CourseTable offers a clean and effective way for Yale students to find
         the courses they want, bringing together course information, student
         evaluations, and course demand statistics in an intuitive interface.
@@ -134,19 +127,19 @@ function About() {
       </Row>
 
       <div className={styles.profile_cards + ' my-3'}>
-        {rows.map((row, idx) => (
-          <CardDeck key={idx} className={'my-3'}>
-            {row.map((person, idy) => (
-              <Card key={idx + ' ' + idy}>
+        <Row className="mx-auto">
+          {people.map((person, idx) => (
+            <div className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
+              <Card key={idx} style={{ height: '100%' }}>
                 <Card.Img variant="top" src={person.image} />
-                <Card.Body>
-                  <Card.Title>{person.name}</Card.Title>
+                <Card.Body className="p-3">
+                  <Card.Title className="mb-1">{person.name}</Card.Title>
                   <Card.Text className="text-muted">{person.role}</Card.Text>
                 </Card.Body>
               </Card>
-            ))}
-          </CardDeck>
-        ))}
+            </div>
+          ))}
+        </Row>
       </div>
     </div>
   );

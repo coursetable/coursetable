@@ -1,5 +1,5 @@
 .container {
-  width: 700px;
+  width: 900px;
   margin-bottom: 3rem;
 }
 
@@ -13,9 +13,10 @@
   font-weight: 500;
   font-size: 15px;
   text-align: center;
+  max-width: 750px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 950px) {
   .container {
     width: 80vw;
   }
