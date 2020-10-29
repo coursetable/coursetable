@@ -12,6 +12,7 @@ import {
   FcBookmark,
   FcSearch,
 } from 'react-icons/fc';
+import LandingImage from '../images/landing_page.svg';
 // import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 /**
@@ -42,9 +43,9 @@ function Landing() {
         <Element name="splashpage">
           <div className={styles.splashpage + ' mx-auto'}>
             <Row className="mx-auto" style={{ height: '100%' }}>
-              <Col lg={6} className="d-flex">
+              <Col md={6} className="d-flex">
                 <div className="m-auto">
-                  <h1 className="font-weight-bold text-lg-left mb-4">
+                  <h1 className="font-weight-bold text-md-left mb-4">
                     The best place to shop for classes at Yale.
                   </h1>
                   <Row className={'pb-2 m-auto'}>
@@ -74,7 +75,7 @@ function Landing() {
                       See what classes your friends are interested in
                     </span>
                   </Row>
-                  <Row className="mx-auto mt-4 justify-content-lg-start justify-content-center">
+                  <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
                     <a
                       href="/legacy_api/index.php?forcelogin=1"
                       className={styles.btn + ' ' + styles.login + ' mr-2'}
@@ -90,9 +91,13 @@ function Landing() {
                   </Row>
                 </div>
               </Col>
-              <Col lg={6} className="d-flex">
-                <div className="m-auto font-weight-bold">
-                  WHAT GOES HERE ?????
+              <Col md={6} className="d-flex">
+                <div className="m-auto d-none d-md-block">
+                  <img
+                    alt="Landing page"
+                    src={LandingImage}
+                    style={{ width: '100%' }}
+                  ></img>
                 </div>
               </Col>
             </Row>
