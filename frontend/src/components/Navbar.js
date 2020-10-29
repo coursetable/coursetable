@@ -160,6 +160,14 @@ function CourseTableNavbar({ isLoggedIn }) {
                 </div>
                 {/* Sign in/out and Facebook buttons. Show if mobile */}
                 <div className="d-md-none">
+                  <div className={styles.navbar_links}>
+                    <a
+                      href="https://old.coursetable.com/"
+                      style={{ color: 'rgba(1, 1, 1, 0.6)' }}
+                    >
+                      Old CourseTable
+                    </a>
+                  </div>
                   {!isLoggedIn ? (
                     <div
                       className={styles.navbar_links}

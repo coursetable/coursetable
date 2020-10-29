@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
-import { FcCalendar } from 'react-icons/fc';
+import { FcCalendar, FcUndo } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
@@ -86,9 +86,23 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     <div className={styles.collapse_container} onClick={handleDropdownClick}>
       <Collapse in={profile_expanded}>
         <Col className={styles.collapse_col + ' px-3'}>
+          {/* Revert to Old CourseTable Link */}
+          <Row className=" py-3 m-auto">
+            <FcUndo
+              className="mr-2 my-auto"
+              size={20}
+              style={{ paddingLeft: '2px' }}
+            />
+            <a
+              href="https://old.coursetable.com/"
+              className={styles.collapse_text}
+            >
+              Old CourseTable
+            </a>
+          </Row>
           {/* Export Worksheet button */}
           {isLoggedIn && (
-            <Row className=" py-3 m-auto">
+            <Row className=" pb-3 m-auto">
               <FcCalendar className="mr-2 my-auto" size={20} />
               <span
                 onClick={handleExportClick}
@@ -112,38 +126,34 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
           {/* Sign In/Out button */}
           {isLoggedIn ? (
             <Row className=" pb-3 m-auto">
-              <>
-                <FaSignOutAlt
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#ed5f5f"
-                  style={{ paddingLeft: '2px' }}
-                />
-                <span
-                  // href="/legacy_api/index.php?logout=1"
-                  onClick={handleLogoutClick}
-                  className={styles.collapse_text}
-                >
-                  Sign Out
-                </span>
-              </>
+              <FaSignOutAlt
+                className="mr-2 my-auto"
+                size={20}
+                color="#ed5f5f"
+                style={{ paddingLeft: '2px' }}
+              />
+              <span
+                // href="/legacy_api/index.php?logout=1"
+                onClick={handleLogoutClick}
+                className={styles.collapse_text}
+              >
+                Sign Out
+              </span>
             </Row>
           ) : (
             <Row className=" py-3 m-auto">
-              <>
-                <FaSignInAlt
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#30e36b"
-                  style={{ paddingLeft: '2px' }}
-                />
-                <a
-                  href="/legacy_api/index.php?forcelogin=1"
-                  className={styles.collapse_text}
-                >
-                  Sign In
-                </a>
-              </>
+              <FaSignInAlt
+                className="mr-2 my-auto"
+                size={20}
+                color="#30e36b"
+                style={{ paddingLeft: '2px' }}
+              />
+              <a
+                href="/legacy_api/index.php?forcelogin=1"
+                className={styles.collapse_text}
+              >
+                Sign In
+              </a>
             </Row>
           )}
         </Col>
