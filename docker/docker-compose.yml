@@ -125,3 +125,10 @@ services:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
       - '8081:80'
+
+  legacy:
+    image: nginx
+    ports:
+      - '8075:80'
+    volumes:
+      - ../legacy:/usr/share/nginx/html:ro

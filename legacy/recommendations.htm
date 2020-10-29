@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Yale Blocks Student Course Selection Website - CourseTable</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- Le styles -->
+    <link href="/libs/bootstrap-2.3.2/css/bootstrap.css" rel="stylesheet">
+
+    <!-- HTML5 shim, for IE6-8 support of HTML5 elements -->
+    <!--[if lt IE 9]>
+    <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+
+    <!-- Fav and touch icons -->
+    <!--
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" href="/libs/bootstrap/ico/apple-touch-icon-144-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" href="/libs/bootstrap/ico/apple-touch-icon-114-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" href="/libs/bootstrap/ico/apple-touch-icon-72-precomposed.png">
+    <link rel="apple-touch-icon-precomposed" href="/libs/bootstrap/ico/apple-touch-icon-57-precomposed.png">
+    -->
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="shortcut icon" href="/favicon.png">
+
+
+
+    <style>
+        body {
+            background-color: #222;
+        }
+        #fixed-center {
+            margin: 50px auto;
+            width: 90%;
+			max-width: 800px;
+            background-color: #fff;
+            opacity: 0.9;
+			font-size: 16px;
+			line-height: 1.5;
+
+            -webkit-border-radius: 10px;
+            -moz-border-radius: 10px;
+            border-radius: 10px;
+
+            z-index: 2;
+        }
+		li {
+			line-height: 1.5;
+		}
+		#fixed-center h1 {
+			font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman, serif;
+			color: #fff;
+			background: #445;
+			margin: 0;
+			font-weight: normal;
+			padding: 20px;
+
+			border-radius: 10px 10px 0 0;
+            -webkit-border-radius: 10px 10px 0 0;
+            -moz-border-radius: 10px 10px 0 0;
+		}
+		#fixed-center-inner {
+			padding: 10px 20px 20px;
+		}
+        body {
+			/*
+            background: url(/res/saybrook.jpg) no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+			*/
+        }
+
+        #background {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/res/saybrook.jpg', sizingMethod='scale');
+            -ms-filter: "progid:DXImageTransform.Microsoft.AlphaImageLoader(src='/res/saybrook.jpg', sizingMethod='scale')";
+        }
+
+        .not-tester-alert, .continue-btn {
+            display: none;
+        }
+
+        .force-inline {
+            display: inline !important;
+        }
+
+        .force-block {
+            display: block !important;
+        }
+
+        .force-hide {
+            display: none !important;
+        }
+    </style>
+
+
+
+</head>
+
+<body>
+
+
+<div id="background">
+</div>
+
+<div id="fixed-center">
+	<h1 class="splash-title">Yale Blocks Student Course Listing Website</h1>
+	<div id="fixed-center-inner">
+		<p><strong>2014-01-17 3:06PM EST update:</strong> <a href="/Blog">For the original article, please see here.</a></p>
+		<p>Dean Gentry, Registrar Olszewski, and Dean McKinley made time in their busy shopping-week schedules to meet with us, and we now have a much clearer view of what's going on.</p>
+
+        <p><strong>We can propose changes to Yale's policies through a formal procedure. We intend to bring CourseTable through this procedure.</strong> Several Yale offices did mishandle the situation, but that's behind us. We cannot guarantee that CourseTable will ever be back up in any form, but we continue to believe that it's a useful tool that students deserve to access.</p>
+
+        <p><strong>Despite the actions of the Dean's, Registrar's, and Legal Counsel office, this experience has proven to us that Yalies do care about technology.</strong> We've received private and public support from professors in the sciences and humanities.</p>
+
+        <p>Harry and I have both learned a lot about how universities function, but we feel that universities can learn from this experience as well.</p>
+
+		<h3>Recommendations for Yale and other universities</h3>
+		<p>We're now working with Yale to encourage Yale to:
+		<ol>
+			<li>
+				<p><strong>Make decisions pragmatically, rather than based on just rules.</strong></p>
+
+				<p><strong>Yale should have kept CourseTable up until the end of shopping week.</strong> While there was a faculty agreement, Yale should have realized that letting the site be until the end of shopping period wouldn't hurt. When rules and stakeholders' (students' and faculty's) wishes conflict, Yale should realize that <strong>rules are only there to protect stakeholders.</strong> If faculty and students probably wouldn't mind that much, just let it be!</p>
+			</li>
+
+			<li>
+				<p><strong>Listen to and communicate with its students.</strong></p>
+
+				<p><strong>If we had known about the faculty agreement earlier on, and knew <em>why</em> they were making the decisions they did, we would have been a lot less frustrated</strong>. Yale staff are particularly busy this week, but this doesn't mean they can't take 15 minutes and write a statement for us. Likewise, emails to us could say more than "we're looking into it," and rather say "unfortunately, we'd like you to shut down now because of this pre-existing agreement, whose text we've attached." Moreover, Yale said they decided shutting it down wasn't a problem because it only impacted a third of students. That's a third too many for us.</p>
+			</li>
+
+			<li>
+				<p><strong><em>Never</em> block non-malware websites like this.</strong></p>
+
+				<img src="blocked.png" alt="&quot;To help guard against malicious activity on the Yale networks, access to the web page you were trying to visit has been blocked in accordance with Yale policy.
+
+				If you have any questions or believe you have received this message in error, please contact your local support provider or the ITS Help Desk at 203-432-9000 or helpdesk@yale.edu. Visit the ITS website to learn more.&quot;">
+
+				<p><strong>If there's anything that we hated in this whole episode, it was how Yale blocked CourseTable's IP address and domain without warning.</strong> This kind of blocking doesn't work (you can just go to the local coffeeshop), and is very worrying. We hope that Yale will make clear policies, similar to the <a href="http://www.yale.edu/about/documents/specialdocuments/Freedom_Expression/freedom1975.pdf">1975 Woodward Report</a>, ensuring that network blocks on Yale's network are never used like this again and are only used to protect against malware.</p>
+			</li>
+
+			<li>
+				<p><strong>Make it easier to get data and permission.</strong></p>
+
+				<p><strong>We had no idea how to get permission to use course data.</strong> We knew vaguely that we had to contact some departments somewhere, but which departments? Apparently, for course data, the Dean's Office owns the data, ITS and the Registrar run the systems, and the General Counsel handles the legal aspects. Different people were in charge of copyright and trademark licensing. Getting permission takes weeks, if not months. <strong>Yale should embrace open data</strong>. We're sympathetic and know that Yale's held back by legacy technology, but we don't need an API to have an open data <em>policy</em> for students!</p>
+			</li>
+
+			<li>
+				<p><strong>Inform students how the university works so that students know who to approach and what to expect.</strong></p>
+
+				<p><strong>ITS, the Dean's office, Faculty, YCC, and students are all different groups.</strong> For example, as mentioned farther down, Yale recommended that we go through the Teaching and Learning Committee and the YCC, which have student representation and direct ties. We didn't know that. A quick web page pointing people to the right parts of Yale to contact and how they all tie together would have been very helpful.</p>
+			</li>
+		</ol>
+
+		<p>Overall, we hope that Yale will listen to its students. <strong>Yale has not guaranteed any results, but we would be very disappointed if Yale does not give authorization to CourseTable, an immensely useful tool, or if Yale doesn't end up better as a result.</strong></p>
+
+		<h3 id="story">The Story</h3>
+		<p>In 2001, course evaluations were shown only to professors to improve their teaching. When OCI came out, the faculty agreed to put evaluations online for students, but also agreed on a specific format for them. We still don't know the details, but it seems to forbid displaying averages right with the course title and description. We've asked them for the specific text.</p>
+
+		<p>Yale asked us last Friday (January 10) to shut down immediately because we violated this agreement with faculty (of which we were unaware until recently), and they thought there would be minimal impact because only a part of campus was using it. At the time, they said nothing about blocking the site's servers. We said we would comply and shut down. But after looking back at how Yale Bluebook was tolerated and then bought, and the number of users, we also said that we would rather work with them to find a solution.</p>
+
+		<p>Apparently, though, the process is supposed to take a while, and involves going through the <a "http://yalecollege.yale.edu/content/teaching-learning-advising">Teaching, Learning, and Advising Committee</a>, which recommends action after consulting with faculty. Yale then decided that they had to follow the earlier faculty agreement, even considering the student impact, and decided to block and then shut down the website.</p>
+
+		<p>Thank you, Yale students and everyone who contacted us with kind words, for your support over the past few days!</p>
+
+		<h3>Concrete Next Steps for CourseTable</h3>
+
+		<ol>
+			<li>Get the full text of the original agreement between faculty and the Yale Dean's Office, and see what must be changed.</li>
+			<li>Propose these changes to the <a href="http://yalecollege.yale.edu/content/teaching-learning-advising">Teaching, Learning, and Advising Committee</a>, and get concrete terms.</li>
+			<li>Request and receive permission to use Yale College data under those terms.</li>
+		</ol>
+
+		<p>For further comment, please email <a href="mailto:coursetableyale@gmail.com">Peter Xu and Harry Yu at coursetableyale@gmail.com</a></p>
+	</div>
+</div>
+
+
+<!-- Le javascript
+        ================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.js"></script>
+<script src="/libs/bootstrap-2.3.2/js/bootstrap.js"></script>
+
+
+
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-53419058-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
+</body>
+</html>
