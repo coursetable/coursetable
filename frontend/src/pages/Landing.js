@@ -52,14 +52,14 @@ function Landing() {
                     <span className={styles.feature_text + ' d-inline'}>
                       <FcSearch className="mr-2 my-auto" size={20} />
                       Browse our catalog of{' '}
-                      <span style={{ color: '#007bff' }}>20,000+</span> classes
+                      <span style={{ color: '#007bff' }}>80,000+</span> classes
                     </span>
                   </Row>
                   <Row className={'pb-2 m-auto'}>
                     <span className={styles.feature_text}>
                       <FcComboChart className="mr-2 my-auto" size={20} />
                       Read from{' '}
-                      <span style={{ color: '#007bff' }}>30,000+</span> student
+                      <span style={{ color: '#007bff' }}>600,000+</span> student
                       evaluation comments
                     </span>
                   </Row>
