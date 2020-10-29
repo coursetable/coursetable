@@ -40,9 +40,11 @@ function App() {
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
-    userRefresh(true);
-    // Set loading to false after FB is fetched
-    fbRefresh(true).finally(() => setLoading(false));
+    // Set loading to false after user info is fetched
+    userRefresh(true).finally(() => setLoading(false));
+
+    // Don't wait for the results of this.
+    fbRefresh(true);
   }, [userRefresh, fbRefresh]);
 
   // Determine if user is logged in
@@ -94,11 +96,11 @@ function App() {
               <MyRoute
                 exact
                 path="/catalog"
-                render={(props) =>
-                  user.hasEvals ? (
-                    <Search {...props} />
-                  ) : (
+                render={props =>
+                  user.isLoggedIn && !user.hasEvals ? (
                     <Redirect push={true} to="/challenge" />
+                  ) : (
+                    <Search {...props} />
                   )
                 }
               />
