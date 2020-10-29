@@ -85,6 +85,14 @@ app.use(
   })
 );
 
+// Redirection routes for historical pages.
+app.get('/Blog', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/Blog.html');
+});
+app.get('/recommendations.htm', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/recommendations.htm');
+});
+
 app.use('/ferry', authHard);
 app.use(
   '/ferry',

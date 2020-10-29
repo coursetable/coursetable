@@ -77,9 +77,13 @@ function Footer() {
               </li>
               {/* Blog */}
               <li>
-                <NavLink to="/blog" onClick={scrollToTop}>
+                <a
+                  href="https://legacy.coursetable.com/Blog.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Blog
-                </NavLink>
+                </a>
               </li>
               {/* Github */}
               <li>

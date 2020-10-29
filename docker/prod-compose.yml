@@ -13,7 +13,7 @@ services:
     user: '1000'
     command: sh -c 'cd /app && yarn && yarn start'
     environment:
-      FRONTEND_LOC: "http://frontend:5000"
+      FRONTEND_LOC: 'http://frontend:5000'
       PORT: 8039
     links:
       - frontend
@@ -128,6 +128,21 @@ services:
       - mysql_default
       - default
 
+  legacy:
+    image: nginx
+    restart: always
+    ports:
+      - '8075:80'
+    volumes:
+      - ../legacy:/usr/share/nginx/html:ro
+    labels:
+      traefik.enable: true
+      traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
+      traefik.http.routers.coursetable-legacy.tls: true
+      traefik.http.routers.coursetable-legacy.tls.certResolver: ctresolver
+    networks:
+      - traefik
+      - default
 
 networks:
   traefik:
