@@ -149,14 +149,6 @@ function App() {
                 <Join />
               </MyRoute>
 
-              <Route
-                path="/Blog"
-                component={() => {
-                  window.location.href = 'https://coursetable.com/Blog';
-                  return null;
-                }}
-              />
-
               {/* Catch-all Route to NotFound Page */}
               <MyRoute path="/">
                 <NotFound />
