@@ -77,12 +77,6 @@ function Worksheet() {
   const [hover_expand, setHoverExpand] = useState('none');
   // Currently expanded component (calendar or list or none)
   const [cur_expand, setCurExpand] = useState('none');
-  // Reverse flex direction if list view is being expanded
-  const [rev_flex_direction, setRevFlexDirection] = useState(false);
-  // Fade animation has started
-  const [start_fade, setStartFade] = useState(false);
-  // Fade animation has ended
-  const [end_fade, setEndFade] = useState(false);
 
   // Function to change season
   const changeSeason = (season_code) => {
@@ -247,9 +241,7 @@ function Worksheet() {
     <div className={styles.container}>
       {/* Desktop View */}
       <div className={styles.desktop_container + ' d-none d-md-block'}>
-        <Row
-          className={'m-4 ' + (rev_flex_direction ? 'flex-wrap-reverse' : '')}
-        >
+        <Row className={'m-4'}>
           {/* Calendar Component */}
           <Col
             // Width of componenet depends on if it is expanded or not
@@ -257,27 +249,12 @@ function Worksheet() {
             className={
               styles.calendar +
               ' m-0 p-0 ' +
-              (rev_flex_direction
-                ? styles.calendar_hidden
-                : styles.calendar_expand) +
-              ' ' +
-              (cur_expand === 'list' ? styles.hidden + ' ' : '') +
-              (cur_expand === 'calendar' ? styles.delay : '')
+              (cur_expand === 'list' ? styles.hidden : '')
             }
             // Show hover icon
             onMouseEnter={() => setHoverExpand('calendar')}
             // Hide hover icon
             onMouseLeave={() => setHoverExpand('none')}
-            // Start fade into expanded list when the calendar has finished transitioning out of view
-            onTransitionEnd={(e) => {
-              // console.log(e.propertyName);
-              if (
-                e.propertyName === 'transform' &&
-                !start_fade &&
-                cur_expand === 'list'
-              )
-                setStartFade(true);
-            }}
           >
             <WeekSchedule
               showModal={showModal}
@@ -295,8 +272,6 @@ function Worksheet() {
                     onClick={() => {
                       // Expand calendar
                       setCurExpand('calendar');
-                      // Normal flex direction so calendar doesn't wrap under list
-                      setRevFlexDirection(false);
                     }}
                   />
                 ) : (
@@ -321,33 +296,21 @@ function Worksheet() {
             className={
               styles.table +
               ' pl-4 ml-auto ' +
-              (rev_flex_direction ? styles.table_expand : styles.table_hidden) +
-              ' ' +
-              (cur_expand === 'list' ? styles.delay + ' pr-4 ' : 'pr-0 ') +
+              (cur_expand === 'list' ? ' pr-4 ' : 'pr-0 ') +
               (cur_expand === 'calendar' ? styles.hidden : '')
             }
             // Show hover icon
             onMouseEnter={() => setHoverExpand('list')}
             // Hide hover icon
             onMouseLeave={() => setHoverExpand('none')}
-            // Once fade into expanded list ends, set end_fade to true
-            onTransitionEnd={(e) => {
-              // console.log(e.propertyName);
-              if (
-                e.propertyName === 'flex-basis' &&
-                !end_fade &&
-                cur_expand === 'list'
-              )
-                setEndFade(true);
-            }}
           >
             {/* Expanded List Component */}
-            <Fade in={start_fade}>
-              <div style={{ display: start_fade ? '' : 'none' }}>
+            <Fade in={cur_expand === 'list'}>
+              <div style={{ display: cur_expand === 'list' ? '' : 'none' }}>
                 <WorksheetExpandedList
                   courses={season_listings}
                   showModal={showModal}
-                  end_fade={end_fade}
+                  cur_expand={cur_expand}
                   cur_season={season}
                   season_codes={season_codes}
                   onSeasonChange={changeSeason}
@@ -358,8 +321,8 @@ function Worksheet() {
               </div>
             </Fade>
             {/* Default List Component */}
-            <Fade in={!start_fade}>
-              <div style={{ display: !start_fade ? '' : 'none' }}>
+            <Fade in={cur_expand !== 'list'}>
+              <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
                 <WorksheetList
                   courses={season_listings}
                   showModal={showModal}
@@ -384,8 +347,6 @@ function Worksheet() {
                     onClick={() => {
                       // Expand the list component
                       setCurExpand('list');
-                      // Reverse the flex direction, so the list component doesnt wrap under the calendar component
-                      setRevFlexDirection(true);
                       // Track toggling table view for worksheet
                       window.umami.trackEvent('Table View', 'worksheet');
                     }}
@@ -401,9 +362,6 @@ function Worksheet() {
                       setHoverExpand('calendar');
                       // Track toggling list view for worksheet
                       window.umami.trackEvent('List View', 'worksheet');
-                      // Reset fade states
-                      if (start_fade === true) setStartFade(false);
-                      if (end_fade === true) setEndFade(false);
                     }}
                   />
                 )}
