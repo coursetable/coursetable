@@ -3,7 +3,7 @@
 } */
 
 .splashpage {
-  height: calc(100vh - 58px);
+  min-height: calc(100vh - 58px);
   text-align: center;
   max-width: 900px;
 }

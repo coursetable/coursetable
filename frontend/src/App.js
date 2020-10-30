@@ -96,7 +96,7 @@ function App() {
               <MyRoute
                 exact
                 path="/catalog"
-                render={props =>
+                render={(props) =>
                   user.isLoggedIn && !user.hasEvals ? (
                     <Redirect push={true} to="/challenge" />
                   ) : (

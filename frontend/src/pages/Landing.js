@@ -42,7 +42,7 @@ function Landing() {
       <Container fluid>
         <Element name="splashpage">
           <div className={styles.splashpage + ' mx-auto'}>
-            <Row className="mx-auto" style={{ height: '100%' }}>
+            <Row className="mx-auto" style={{ minHeight: 'inherit' }}>
               <Col md={6} className="d-flex">
                 <div className="m-auto">
                   <h1 className="font-weight-bold text-md-left mb-4">
