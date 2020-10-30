@@ -76,3 +76,7 @@
   color: #007bff !important;
   background-color: rgb(241, 241, 241) !important;
 }
+
+:global .modal-dialog {
+  transition: transform 0.1s ease-out !important;
+}
