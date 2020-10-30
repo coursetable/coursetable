@@ -12,7 +12,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
  * Render expanded worksheet list after maximize button is clicked
  * @prop courses - list of listings dictionaries
  * @prop showModal - function to show modal for a certain listing
- * @prop end_fade - boolean | Is the fading animation over so we can get width of row?
+ * @prop cur_expand - string | Determines whether or not the list is expanded
  * @prop cur_season - string that holds the current season code
  * @prop season_codes - list of season codes
  * @prop onSeasonChange - function to change season
@@ -24,7 +24,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 const WorksheetExpandedList = ({
   courses,
   showModal,
-  end_fade,
+  cur_expand,
   cur_season,
   season_codes,
   onSeasonChange,
@@ -41,7 +41,7 @@ const WorksheetExpandedList = ({
   useEffect(() => {
     // Update row width on window resize or once the animation is over
     if (ref_width.current) setRowWidth(ref_width.current.offsetWidth);
-  }, [width, end_fade]);
+  }, [width, cur_expand]);
   // Spacing for columns
   const PROF_WIDTH = 250;
   const MEET_WIDTH = 250;
@@ -59,31 +59,20 @@ const WorksheetExpandedList = ({
     // Add list item HTML to items list
     items.push(
       <div key={i}>
-        {end_fade ? (
-          // Fade animation finished, and we can display data
-          <SearchResultsItem
-            course={course}
-            showModal={showModal}
-            isLast={i === courses.length - 1}
-            hasSeason={hasSeason}
-            ROW_WIDTH={ROW_WIDTH}
-            PROF_WIDTH={PROF_WIDTH}
-            MEET_WIDTH={MEET_WIDTH}
-            RATE_WIDTH={RATE_WIDTH}
-            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
-            PADDING={PADDING}
-            PROF_CUT={PROF_CUT}
-            MEET_CUT={MEET_CUT}
-          />
-        ) : (
-          // Fade animation hasn't finished
-          <Row
-            className="mx-auto my-0 p-0"
-            style={{ height: '67px', borderBottom: 'solid 2px #f6f6f6' }}
-          >
-            <strong className="m-auto">Loading...</strong>
-          </Row>
-        )}
+        <SearchResultsItem
+          course={course}
+          showModal={showModal}
+          isLast={i === courses.length - 1}
+          hasSeason={hasSeason}
+          ROW_WIDTH={ROW_WIDTH}
+          PROF_WIDTH={PROF_WIDTH}
+          MEET_WIDTH={MEET_WIDTH}
+          RATE_WIDTH={RATE_WIDTH}
+          BOOKMARK_WIDTH={BOOKMARK_WIDTH}
+          PADDING={PADDING}
+          PROF_CUT={PROF_CUT}
+          MEET_CUT={MEET_CUT}
+        />
       </div>
     );
   }
