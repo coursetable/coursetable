@@ -29,6 +29,7 @@ import {
   selectStyles,
   creditOptions,
   schoolOptions,
+  departmentOptions,
 } from '../queries/Constants';
 
 import { useLazyQuery } from '@apollo/react-hooks';
@@ -131,6 +132,7 @@ function Search({ location, history }) {
     { value: 'YC', label: 'Yale College' },
     { value: 'GS', label: 'Graduate' },
   ]);
+  const [select_departments, setSelectDepartments] = useState([]);
 
   // Does the user want to hide cancelled courses?
   var [hideCancelled, setHideCancelled] = React.useState(true);
@@ -313,6 +315,25 @@ function Search({ location, history }) {
       }
     }
 
+    // departments to filter
+    var processedDepartments = select_departments;
+    if (processedDepartments != null) {
+      processedDepartments = processedDepartments.map((x) => {
+        return x.value;
+      });
+
+      // set null defaults
+      if (processedDepartments.length === 0) {
+        processedDepartments = null;
+      } else {
+        // Tracking which schools the search was done with
+        window.umami.trackEvent(
+          'search criteria: departments - ' + processedDepartments,
+          'search'
+        );
+      }
+    }
+
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
     var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
@@ -351,6 +372,7 @@ function Search({ location, history }) {
       skills: processedSkills,
       credits: processedCredits,
       schools: processedSchools,
+      departments: processedDepartments,
       min_rating: include_all_ratings ? null : ratingBounds[0],
       max_rating: include_all_ratings ? null : ratingBounds[1],
       min_workload: include_all_workloads ? null : workloadBounds[0],
@@ -679,6 +701,24 @@ function Search({ location, history }) {
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectCredits(options);
+                    }}
+                    components={animatedComponents}
+                  />
+                </div>
+                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={Styles.filter_title}>Departments</div>
+                  {/* Yale Departments Multi-Select */}
+                  <Select
+                    isMulti
+                    value={select_departments}
+                    options={departmentOptions}
+                    placeholder="Any"
+                    isSearchable={true}
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
+                    onChange={(options) => {
+                      setSelectDepartments(options ? options : []);
                     }}
                     components={animatedComponents}
                   />
