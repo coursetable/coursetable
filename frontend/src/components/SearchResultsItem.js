@@ -133,7 +133,7 @@ const SearchResultsItem = ({
           <strong>{course.title}</strong>
         </Popover.Title>
         <Popover.Content>
-          {course.description.length <= 500
+          {course.description && course.description.length <= 500
             ? course.description
             : course.description.slice(0, 500) + '...'}
           <br />
