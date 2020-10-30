@@ -85,9 +85,9 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   return (
     <div className={styles.collapse_container} onClick={handleDropdownClick}>
       <Collapse in={profile_expanded}>
-        <Col className={styles.collapse_col + ' px-3'}>
+        <Col className={styles.collapse_col + ' px-3 pt-3'}>
           {/* Revert to Old CourseTable Link */}
-          <Row className=" py-3 m-auto">
+          <Row className=" pb-3 m-auto">
             <FcUndo
               className="mr-2 my-auto"
               size={20}
@@ -141,7 +141,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
               </span>
             </Row>
           ) : (
-            <Row className=" py-3 m-auto">
+            <Row className=" pb-3 m-auto">
               <FaSignInAlt
                 className="mr-2 my-auto"
                 size={20}
