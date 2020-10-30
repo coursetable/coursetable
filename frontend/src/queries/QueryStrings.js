@@ -21,7 +21,7 @@ export const SEARCH_COURSES = gql`
     $limit: Int
     $seasons: [String!]
     $schools: [String!]
-    $departments: [String!]
+    $subjects: [String!]
     $areas: [String!]
     $credits: [float8!]
     $skills: [String!]
@@ -43,7 +43,7 @@ export const SEARCH_COURSES = gql`
         average_workload: { _gte: $min_workload, _lte: $max_workload }
         credits: { _in: $credits }
         school: { _in: $schools }
-        subject: { _in: $departments }
+        subject: { _in: $subjects }
         course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering

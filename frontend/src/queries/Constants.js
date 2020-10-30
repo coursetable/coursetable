@@ -189,7 +189,7 @@ export const schoolOptions = [
   { label: 'Summer Session', value: 'SU' },
 ];
 
-export const departmentOptions = [
+export const subjectOptions = [
   { value: 'ACCT', label: 'Accounting' },
   { value: 'AFAM', label: 'African American Studies' },
   { value: 'AFST', label: 'African Studies' },
