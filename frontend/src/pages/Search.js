@@ -87,15 +87,18 @@ function Search({ location, history }) {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // Show the modal for the course that was clicked
-  const showModal = (listing) => {
-    // Metric Tracking What Courses Get Viewed
-    window.umami.trackEvent(
-      'Course Viewed - ' + listing.course_code,
-      'course-viewed'
-    );
+  const showModal = useCallback(
+    (listing) => {
+      // Metric Tracking What Courses Get Viewed
+      window.umami.trackEvent(
+        'Course Viewed - ' + listing.course_code,
+        'course-viewed'
+      );
 
-    setCourseModal([true, listing]);
-  };
+      setCourseModal([true, listing]);
+    },
+    [setCourseModal]
+  );
 
   // Reset course_modal state to hide the modal
   const hideModal = () => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
 import { FetchWorksheet } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
@@ -36,11 +36,14 @@ function Worksheet() {
     );
     setFbPerson(new_person);
   };
+
   // Worksheet of the current person
-  const cur_worksheet =
-    fb_person === 'me'
+  const cur_worksheet = useMemo(() => {
+    return fb_person === 'me'
       ? user.worksheet
       : user.fbWorksheets.worksheets[fb_person];
+  }, [user.worksheet, user.fbWorksheets, fb_person]);
+
   // List of season codes
   let season_codes = [];
   // Populates season_codes list and also updates the most recent season

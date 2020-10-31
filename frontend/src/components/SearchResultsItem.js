@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { Row, Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 
@@ -16,7 +16,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking } from '../utilities';
+import { fbFriendsAlsoTaking, flatten } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -41,7 +41,7 @@ import Styles from './SearchResultsItem.module.css';
  */
 
 const SearchResultsItem = ({
-  course,
+  unflat_course,
   showModal,
   multiSeasons,
   isLast,
@@ -55,6 +55,11 @@ const SearchResultsItem = ({
   PROF_CUT,
   MEET_CUT,
 }) => {
+  const course = useMemo(() => {
+    if (unflat_course.crn === 22131) console.log('reflatten here');
+    return flatten(unflat_course);
+  }, [unflat_course]);
+
   // Used to cut off Professors list at 2 lines
   const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   // Variable used in list keys
@@ -66,7 +71,7 @@ const SearchResultsItem = ({
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB Friends that are also shopping this class
-  let also_taking =
+  let also_taking = // TODO: useMemo
     user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
           course.season_code,

@@ -136,9 +136,9 @@ const SearchResults = ({
       return <div key={key} style={style} />;
     }
     return (
-      <div style={style}>
+      <div style={style} key={key}>
         <SearchResultsItem
-          course={flatten(data[index])}
+          unflat_course={data[index]}
           showModal={showModal}
           multiSeasons={multiSeasons}
           isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
@@ -478,4 +478,5 @@ const SearchResults = ({
   );
 };
 
+SearchResults.whyDidYouRender = true;
 export default SearchResults;
