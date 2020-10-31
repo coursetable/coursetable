@@ -69,7 +69,7 @@ function FBLoginButton() {
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')
       .then(() => {
-        return fbRefresh(true);
+        return syncFacebook();
       })
       .then(() => {
         toast.success('FB disconnected');
@@ -77,7 +77,7 @@ function FBLoginButton() {
       .catch(() => {
         toast.error('Error disconnecting FB');
       });
-  }, [fbRefresh]);
+  }, [syncFacebook]);
 
   return (
     <div>
