@@ -74,9 +74,6 @@ const SearchResults = ({
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
 
-  // Variable used in list keys
-  let key = 0;
-
   // Should we render the scroll up button?
   const [scroll_visible, setScrollVisible] = useState(false);
   // Render scroll-up button after scrolling a lot
@@ -165,32 +162,48 @@ const SearchResults = ({
         </div>
       );
     },
-    [grid_html]
+    [grid_html, isRowLoaded]
   );
 
-  const renderListRow = ({ index, key, style }) => {
-    if (!isRowLoaded({ index })) {
-      return <div key={key} style={style} />;
-    }
-    return (
-      <div style={style} key={key}>
-        <SearchResultsItem
-          unflat_course={data[index]}
-          showModal={showModal}
-          multiSeasons={multiSeasons}
-          isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
-          ROW_WIDTH={ROW_WIDTH}
-          PROF_WIDTH={PROF_WIDTH}
-          MEET_WIDTH={MEET_WIDTH}
-          RATE_WIDTH={RATE_WIDTH}
-          BOOKMARK_WIDTH={BOOKMARK_WIDTH}
-          PADDING={PADDING}
-          PROF_CUT={PROF_CUT}
-          MEET_CUT={MEET_CUT}
-        />
-      </div>
-    );
-  };
+  const renderListRow = useCallback(
+    ({ index, key, style }) => {
+      if (!isRowLoaded({ index })) {
+        return <div key={key} style={style} />;
+      }
+      return (
+        <div style={style} key={key}>
+          <SearchResultsItem
+            unflat_course={data[index]}
+            showModal={showModal}
+            multiSeasons={multiSeasons}
+            isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
+            ROW_WIDTH={ROW_WIDTH}
+            PROF_WIDTH={PROF_WIDTH}
+            MEET_WIDTH={MEET_WIDTH}
+            RATE_WIDTH={RATE_WIDTH}
+            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
+            PADDING={PADDING}
+            PROF_CUT={PROF_CUT}
+            MEET_CUT={MEET_CUT}
+          />
+        </div>
+      );
+    },
+    [
+      data,
+      showModal,
+      multiSeasons,
+      ROW_WIDTH,
+      PROF_WIDTH,
+      MEET_WIDTH,
+      RATE_WIDTH,
+      BOOKMARK_WIDTH,
+      PADDING,
+      PROF_CUT,
+      MEET_CUT,
+    ]
+  );
+
   // if no courses found (either due to query or authentication), render the empty state
   if (data.length === 0) {
     resultsListing = (

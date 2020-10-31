@@ -17,9 +17,6 @@ const CourseConflictIcon = ({ course }) => {
   const [inWorksheet, setInWorksheet] = useState(
     isInWorksheet(course.season_code, course.crn.toString(), user.worksheet)
   );
-  if (course.crn === 22131) {
-    console.log('here', course.crn);
-  }
 
   // Fetch listing info for each listing in user's worksheet
   if (user.worksheet) {

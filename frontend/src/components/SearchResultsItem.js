@@ -56,7 +56,6 @@ const SearchResultsItem = ({
   MEET_CUT,
 }) => {
   const course = useMemo(() => {
-    if (unflat_course.crn === 22131) console.log('reflatten here');
     return flatten(unflat_course);
   }, [unflat_course]);
 
