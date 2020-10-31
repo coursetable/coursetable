@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 
 import SearchResultsItem from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
@@ -88,8 +94,33 @@ const SearchResults = ({
 
   // Number of columns to use in grid view
   const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
+
   // List that holds the HTML for each row in grid view
-  let grid_html = [];
+  const grid_html = useMemo(() => {
+    let grid = [];
+    const len = data.length;
+    for (let i = 0; i < len; i += num_cols) {
+      let row_elements = [];
+      for (let j = i; j < len && j < i + num_cols; j++) {
+        row_elements.push(
+          <SearchResultsGridItem
+            course={flatten(data[j])}
+            showModal={showModal}
+            isLoggedIn={isLoggedIn}
+            num_cols={num_cols}
+            multiSeasons={multiSeasons}
+            key={j}
+          />
+        );
+      }
+      grid.push(
+        <Row className="mx-auto" key={i}>
+          {row_elements}
+        </Row>
+      );
+    }
+    return grid;
+  }, [data, showModal, isLoggedIn, multiSeasons]);
 
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState();
@@ -113,23 +144,29 @@ const SearchResults = ({
   var resultsListing;
 
   // Has the current row been fetched?
-  function isRowLoaded({ index }) {
-    if (fetchedAll) return true;
-    if (isList) return index < data.length;
-    return index < grid_html.length;
-  }
+  const isRowLoaded = useCallback(
+    ({ index }) => {
+      if (fetchedAll) return true;
+      if (isList) return index < data.length;
+      return index < grid_html.length;
+    },
+    [fetchedAll, isList, grid_html, data]
+  );
 
   // Render functions for React Virtualized List:
-  const renderGridRow = ({ index, key, style }) => {
-    if (!isRowLoaded({ index })) {
-      return <div key={key} style={style} />;
-    }
-    return (
-      <div key={key} style={style}>
-        {grid_html[index]}
-      </div>
-    );
-  };
+  const renderGridRow = useCallback(
+    ({ index, key, style }) => {
+      if (!isRowLoaded({ index })) {
+        return <div key={key} style={style} />;
+      }
+      return (
+        <div key={key} style={style}>
+          {grid_html[index]}
+        </div>
+      );
+    },
+    [grid_html]
+  );
 
   const renderListRow = ({ index, key, style }) => {
     if (!isRowLoaded({ index })) {
@@ -184,27 +221,6 @@ const SearchResults = ({
   } else {
     // if not list view, prepare the grid
     if (!isList) {
-      const len = data.length;
-      for (let i = 0; i < len; i += num_cols) {
-        let row_elements = [];
-        for (let j = i; j < len && j < i + num_cols; j++) {
-          row_elements.push(
-            <SearchResultsGridItem
-              course={flatten(data[j])}
-              showModal={showModal}
-              isLoggedIn={isLoggedIn}
-              num_cols={num_cols}
-              multiSeasons={multiSeasons}
-              key={key++}
-            />
-          );
-        }
-        grid_html.push(
-          <Row className="mx-auto" key={key++}>
-            {row_elements}
-          </Row>
-        );
-      }
       // Store HTML for grid view results
       resultsListing = (
         <InfiniteLoader
@@ -292,24 +308,33 @@ const SearchResults = ({
   }
 
   // Tooltip for hovering over class rating
-  const class_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Class Rating</span>
-    </Tooltip>
+  const class_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Class Rating</span>
+      </Tooltip>
+    ),
+    []
   );
 
   // Tooltip for hovering over professor rating
-  const prof_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Professor Rating</span>
-    </Tooltip>
+  const prof_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Professor Rating</span>
+      </Tooltip>
+    ),
+    []
   );
 
   // Tooltip for hovering over workload rating
-  const workload_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Workload Rating</span>
-    </Tooltip>
+  const workload_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Workload Rating</span>
+      </Tooltip>
+    ),
+    []
   );
 
   return (
@@ -379,7 +404,7 @@ const SearchResults = ({
                   >
                     <div className="m-auto">
                       <OverlayTrigger
-                        placement="top"
+                        placement="bottom"
                         delay={{ show: 500, hide: 250 }}
                         overlay={class_tooltip}
                       >
@@ -398,7 +423,7 @@ const SearchResults = ({
                   >
                     <div className="m-auto">
                       <OverlayTrigger
-                        placement="top"
+                        placement="bottom"
                         delay={{ show: 500, hide: 250 }}
                         overlay={prof_tooltip}
                       >
@@ -417,7 +442,7 @@ const SearchResults = ({
                   >
                     <div className="m-auto">
                       <OverlayTrigger
-                        placement="top"
+                        placement="bottom"
                         delay={{ show: 500, hide: 250 }}
                         overlay={workload_tooltip}
                       >
@@ -478,5 +503,4 @@ const SearchResults = ({
   );
 };
 
-SearchResults.whyDidYouRender = true;
 export default SearchResults;
