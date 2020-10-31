@@ -70,7 +70,7 @@ export const SEARCH_COURSES = gql`
       season_code
       extra_info
       syllabus_url
-      enrollment
+      enrolled
       section
       crn
     }
@@ -96,7 +96,7 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       all_course_codes
       section
       crn
-      enrollment
+      enrolled
       average_rating
       average_workload
       course_code

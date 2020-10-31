@@ -163,7 +163,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           ? average_professor_rating
           : -1,
         // Enrollment data
-        enrollment: season.enrollment != null ? season.enrollment.enrolled : -1,
+        enrollment: season.enrolled ? season.enrolled : -1,
         // Season code
         season_code: season.season_code,
         // Professors

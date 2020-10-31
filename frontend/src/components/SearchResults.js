@@ -131,7 +131,7 @@ const SearchResults = ({
     );
   };
 
-  const renderListRow = ({ index, key, style, parent }) => {
+  const renderListRow = ({ index, key, style }) => {
     if (!isRowLoaded({ index })) {
       return <div key={key} style={style} />;
     }
