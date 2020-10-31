@@ -19,7 +19,7 @@ app.use(morgan('tiny'));
 challenge(app);
 catalog(app);
 
-app.use('/static', express.static(path.join(path.resolve(), 'static')));
+app.use('/api/static', express.static(path.join(path.resolve(), 'static')));
 
 app.listen(PORT, () => {
   console.log(`Express API listening at http://localhost:${PORT}`);

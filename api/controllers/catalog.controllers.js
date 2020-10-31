@@ -19,7 +19,8 @@ export const refreshCatalog = (req, res, next) => {
       // note that this directory is relative
       // to where the function is called
       // (i.e. /api)
-      toJSON('./static/seasons.json', seasons);
+      console.log(seasons);
+      toJSON('./static/seasons.json', seasons.data.seasons);
 
       return res.json(seasons);
     })
