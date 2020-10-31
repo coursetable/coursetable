@@ -137,7 +137,7 @@ const SearchResultsItem = ({
             ? course.description.length <= 500
               ? course.description
               : course.description.slice(0, 500) + '...'
-            : ''}
+            : 'no description'}
           <br />
           <div className="text-danger">
             {course.requirements &&

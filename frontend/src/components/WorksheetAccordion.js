@@ -229,7 +229,9 @@ export default class WorksheetAccordion extends React.Component {
                 <Row className="m-auto">
                   <ResponsiveEllipsis
                     style={{ whiteSpace: 'pre-wrap' }}
-                    text={course.description}
+                    text={
+                      course.description ? course.description : 'no description'
+                    }
                     maxLine={8}
                     basedOn="words"
                   />

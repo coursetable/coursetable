@@ -428,7 +428,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           <Row className="m-auto pb-3">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
-              text={listing.description}
+              text={
+                listing.description ? listing.description : 'no description'
+              }
               maxLine={`${lines}`}
               basedOn="words"
               onReflow={handleReflow}
