@@ -6,6 +6,7 @@ import { PORT } from './config/constants.js';
 
 // import routes
 import challenge from './routes/challenge.routes.js';
+import catalog from './routes/catalog.routes.js';
 
 const app = express();
 // Enable url-encoding
@@ -15,7 +16,8 @@ app.use(morgan('tiny'));
 
 // apply routes
 challenge(app);
+catalog(app);
 
 app.listen(PORT, () => {
-  console.log(`Challenge API listening at http://localhost:${PORT}`);
+  console.log(`Express API listening at http://localhost:${PORT}`);
 });
