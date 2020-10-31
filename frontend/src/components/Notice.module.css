@@ -1,0 +1,21 @@
+.banner {
+  min-height: 3em;
+  background-color: #f8f8f8;
+  color: #495057;
+
+  display: flex;
+  justify-content: space-between;
+  flex-direction: row;
+  align-items: center;
+}
+
+.banner .content {
+  flex-grow: 1;
+  font-size: 0.9em;
+  padding: 10px 5px;
+  text-align: center;
+}
+
+.banner span {
+  width: 30px;
+}

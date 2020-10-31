@@ -4,8 +4,10 @@ import {
   Switch,
   Route,
   Redirect,
+  Link,
 } from 'react-router-dom';
 
+import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
@@ -80,6 +82,12 @@ function App() {
       <WindowDimensionsProvider>
         <SeasonsProvider>
           <div id="base">
+            <Notice>
+              CourseTable v2.0 is under construction, but{' '}
+              <Link to="/feedback">feedback</Link> is welcome. The{' '}
+              <a href="https://old.coursetable.com">old site</a> is also still
+              available.
+            </Notice>
             <Navbar isLoggedIn={isLoggedIn} />
             <Switch>
               {/* Home Page */}
