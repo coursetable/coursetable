@@ -26,8 +26,6 @@ import {
   List,
   WindowScroller,
   AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
 } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
@@ -37,12 +35,6 @@ import { FaArrowCircleUp, FaAppleAlt } from 'react-icons/fa';
 import { FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 
-// Measures the row height. NOT USING RN
-const cache = new CellMeasurerCache({
-  fixedWidth: true,
-  defaultHeight: 50,
-});
-
 /**
  * Renders the infinite list of search results
  * @prop data - list that holds the search results
@@ -51,7 +43,7 @@ const cache = new CellMeasurerCache({
  * @prop loading - boolean | Is the search query finished?
  * @prop loadMore - boolean | Do we need to fetch more courses?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop refreshCache - integer that triggers the cache to recalculate height
+ * @prop searched - boolean | has the search started?
  * @prop fetchedAll - boolean | Have we fetched all search results?
  * @prop isLoggedIn - boolean | is the user logged in?
  */
@@ -63,7 +55,7 @@ const SearchResults = ({
   loading,
   loadMore,
   multiSeasons,
-  refreshCache,
+  searched,
   fetchedAll,
   showModal,
   isLoggedIn,
@@ -93,11 +85,6 @@ const SearchResults = ({
   const scrollTop = () => {
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
-
-  // Recalculate row height when refreshCache changes
-  useEffect(() => {
-    cache.clearAll();
-  }, [refreshCache]);
 
   // Number of columns to use in grid view
   const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
@@ -149,30 +136,22 @@ const SearchResults = ({
       return <div key={key} style={style} />;
     }
     return (
-      <CellMeasurer
-        key={key}
-        cache={cache}
-        parent={parent}
-        columnIndex={0}
-        rowIndex={index}
-      >
-        <div style={style}>
-          <SearchResultsItem
-            course={flatten(data[index])}
-            showModal={showModal}
-            multiSeasons={multiSeasons}
-            isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
-            ROW_WIDTH={ROW_WIDTH}
-            PROF_WIDTH={PROF_WIDTH}
-            MEET_WIDTH={MEET_WIDTH}
-            RATE_WIDTH={RATE_WIDTH}
-            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
-            PADDING={PADDING}
-            PROF_CUT={PROF_CUT}
-            MEET_CUT={MEET_CUT}
-          />
-        </div>
-      </CellMeasurer>
+      <div style={style}>
+        <SearchResultsItem
+          course={flatten(data[index])}
+          showModal={showModal}
+          multiSeasons={multiSeasons}
+          isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
+          ROW_WIDTH={ROW_WIDTH}
+          PROF_WIDTH={PROF_WIDTH}
+          MEET_WIDTH={MEET_WIDTH}
+          RATE_WIDTH={RATE_WIDTH}
+          BOOKMARK_WIDTH={BOOKMARK_WIDTH}
+          PADDING={PADDING}
+          PROF_CUT={PROF_CUT}
+          MEET_CUT={MEET_CUT}
+        />
+      </div>
     );
   };
   // if no courses found (either due to query or authentication), render the empty state
@@ -300,7 +279,6 @@ const SearchResults = ({
                       scrollTop={scrollTop}
                       rowCount={!fetchedAll ? data.length + 1 : data.length}
                       rowRenderer={renderListRow}
-                      deferredMeasurementCache={cache}
                       rowHeight={67}
                     />
                   )}
@@ -475,7 +453,7 @@ const SearchResults = ({
           {data.length !== 0 && resultsListing}
           {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
           {data.length === 0 &&
-            (!isLoggedIn || refreshCache > 0) &&
+            (!isLoggedIn || searched) &&
             !loading &&
             resultsListing}
           {/* Render a loading row while performing next query */}

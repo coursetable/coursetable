@@ -106,7 +106,7 @@ function Search({ location, history }) {
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
   const [fetchedAll, setFetchedAll] = useState(false); // True when we've fetched all courses
-  const [refreshCache, setRefreshCache] = useState(0); // Reset row height cache on search
+  const [searched, setSearched] = useState(false); // Reset row height cache on search
 
   // number of search results to return
   const QUERY_SIZE = 30;
@@ -186,7 +186,7 @@ function Search({ location, history }) {
       //Reset states when making a new search
       setOldData([]);
       setFetchedAll(false);
-      setRefreshCache(refreshCache + 1);
+      setSearched(true);
       // if (!defaultSearch) setCollapsedForm(true);
       temp_offset = 0; // Account for reset state lag
 
@@ -843,7 +843,7 @@ function Search({ location, history }) {
               loading={searchLoading}
               loadMore={handleSubmit}
               multiSeasons={multiSeasons}
-              refreshCache={refreshCache}
+              searched={searched}
               fetchedAll={fetchedAll}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
