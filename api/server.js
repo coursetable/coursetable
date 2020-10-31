@@ -1,6 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
+import path from 'path';
 
 import { PORT } from './config/constants.js';
 
@@ -17,6 +18,8 @@ app.use(morgan('tiny'));
 // apply routes
 challenge(app);
 catalog(app);
+
+app.use('/static', express.static(path.join(path.resolve(), 'static')));
 
 app.listen(PORT, () => {
   console.log(`Express API listening at http://localhost:${PORT}`);

@@ -1,4 +1,5 @@
 import crypto from 'crypto';
+import jsonfile from 'jsonfile';
 
 import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './config/constants.js';
 
@@ -38,4 +39,17 @@ export function decrypt(text, salt) {
  */
 export function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
+}
+
+const JSON_FORMAT = { spaces: 4, EOL: '\n' };
+
+/**
+ * Wrapper for exporting an object to JSON.
+ * @param {String} path
+ * @param {Object} obj
+ */
+export function toJSON(path, obj) {
+  jsonfile.writeFile(path, obj, JSON_FORMAT, function (err) {
+    if (err) console.error(err);
+  });
 }

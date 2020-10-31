@@ -3,6 +3,8 @@ const { query } = graphqurl;
 
 import { GRAPHQL_ENDPOINT } from '../config/constants.js';
 
+import { toJSON } from '../utils.js';
+
 import {
   listSeasonsQuery,
   catalogBySeasonQuery,
@@ -14,6 +16,11 @@ export const refreshCatalog = (req, res, next) => {
     endpoint: GRAPHQL_ENDPOINT,
   })
     .then((seasons) => {
+      // note that this directory is relative
+      // to where the function is called
+      // (i.e. /api)
+      toJSON('./static/seasons.json', seasons);
+
       return res.json(seasons);
     })
     .catch((err) => {
