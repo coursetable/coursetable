@@ -199,22 +199,13 @@ const SearchResults = ({
             multiSeasons={multiSeasons}
             isLast={index === data.length - 1}
             COL_SPACING={COL_SPACING}
-            ROW_WIDTH={ROW_WIDTH}
             TITLE_WIDTH={TITLE_WIDTH}
             isScrolling={isScrolling}
           />
         </div>
       );
     },
-    [
-      data,
-      showModal,
-      multiSeasons,
-      isRowLoaded,
-      ROW_WIDTH,
-      COL_SPACING,
-      TITLE_WIDTH,
-    ]
+    [data, showModal, multiSeasons, isRowLoaded, COL_SPACING, TITLE_WIDTH]
   );
 
   // if no courses found (either due to query or authentication), render the empty state
@@ -363,6 +354,26 @@ const SearchResults = ({
     []
   );
 
+  // Tooltip for hovering over enrollment
+  const enrollment_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Class Enrollment</span>
+      </Tooltip>
+    ),
+    []
+  );
+
+  // Tooltip for hovering over fb friends
+  const fb_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Number of Facebook friends shopping this class</span>
+      </Tooltip>
+    ),
+    []
+  );
+
   return (
     <div>
       <Container
@@ -411,13 +422,25 @@ const SearchResults = ({
                     style={{ width: `${COL_SPACING.NUM_WIDTH}px` }}
                     className={Styles.results_header}
                   >
-                    <span className="m-auto">#</span>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={enrollment_tooltip}
+                    >
+                      <span className="m-auto">#</span>
+                    </OverlayTrigger>
                   </div>
                   <div
                     style={{ width: `${COL_SPACING.NUM_WIDTH}px` }}
                     className={Styles.results_header}
                   >
-                    <span className="m-auto">#FB</span>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={fb_tooltip}
+                    >
+                      <span className="m-auto">#FB</span>
+                    </OverlayTrigger>
                   </div>
                   {/* Class Rating */}
                   <div
@@ -427,7 +450,7 @@ const SearchResults = ({
                     <div className="m-auto">
                       <OverlayTrigger
                         placement="bottom"
-                        delay={{ show: 500, hide: 250 }}
+                        delay={{ show: 100, hide: 100 }}
                         overlay={class_tooltip}
                       >
                         <AiFillStar
@@ -446,7 +469,7 @@ const SearchResults = ({
                     <div className="m-auto">
                       <OverlayTrigger
                         placement="bottom"
-                        delay={{ show: 500, hide: 250 }}
+                        delay={{ show: 100, hide: 100 }}
                         overlay={prof_tooltip}
                       >
                         <FaAppleAlt
@@ -465,7 +488,7 @@ const SearchResults = ({
                     <div className="m-auto">
                       <OverlayTrigger
                         placement="bottom"
-                        delay={{ show: 500, hide: 250 }}
+                        delay={{ show: 100, hide: 100 }}
                         overlay={workload_tooltip}
                       >
                         <FcReading style={{ display: 'block' }} size={20} />

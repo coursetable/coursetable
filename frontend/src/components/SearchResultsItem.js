@@ -224,7 +224,7 @@ const SearchResultsItem = ({
           overlay={renderFBFriendsTooltip}
         >
           <span className={'m-auto'}>
-            {also_taking.length > 0 ? also_taking.length : 'n/a'}
+            {also_taking.length > 0 ? also_taking.length : ''}
           </span>
         </OverlayTrigger>
       </div>
