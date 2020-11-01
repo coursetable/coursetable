@@ -47,6 +47,8 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: GoCourseTable
       MYSQL_DB: yaleplus
+      CHALLENGE_PASSWORD: thisisapassword2
+      FERRY_SECRET: '' # we want this empty in development so no auth is required to refresh
 
   frontend:
     image: node:latest
