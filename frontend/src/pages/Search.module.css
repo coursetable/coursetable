@@ -77,14 +77,14 @@
 
 .sort_btn {
   cursor: pointer;
-  border-radius: 20px;
+  border-radius: 8px;
   padding: 5px;
   margin-left: auto;
   transition: 0.3s;
 }
 
 .sort_btn:hover {
-  background-color: rgb(226, 226, 226);
+  background-color: rgb(236, 236, 236);
 }
 
 .sort_icon {

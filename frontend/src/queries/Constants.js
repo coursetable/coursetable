@@ -8,13 +8,6 @@ export const sortbyOptions = [
   // { label: 'Enrollment', value: 'enrollment' },
 ];
 
-export const sortbyQueries = {
-  course_name: { title: 'asc' },
-  rating: { average_rating: 'desc' },
-  workload: { average_workload: 'asc' },
-  text: null,
-};
-
 export const areas = ['Hu', 'So', 'Sc'];
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
 

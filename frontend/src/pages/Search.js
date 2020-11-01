@@ -21,7 +21,6 @@ import { SEARCH_COURSES } from '../queries/QueryStrings';
 
 import {
   sortbyOptions,
-  sortbyQueries,
   areas,
   skills,
   skillsAreasOptions,
