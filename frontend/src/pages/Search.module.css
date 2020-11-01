@@ -126,8 +126,6 @@
 .results_col {
   background-color: transparent;
   z-index: 0;
-  transition: 0.3s;
-  /* will-change: max-width, flex-basis; */
 }
 
 .search_tab {
