@@ -59,8 +59,8 @@ export const FerryProvider = ({ children }) => {
   const store = {
     seasons: seasonsData || [],
     loading: seasonsLoading || requests !== 0,
-    error: [...[seasonsError ? [seasonsError] : []], ...errors],
-    courseData,
+    errors: [...[seasonsError ? [seasonsError] : []], ...errors],
+    courses: courseData,
     requestSeasons,
   };
 
