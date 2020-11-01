@@ -21,6 +21,7 @@ export const SEARCH_COURSES = gql`
     $limit: Int
     $seasons: [String!]
     $schools: [String!]
+    $subjects: [String!]
     $areas: [String!]
     $credits: [float8!]
     $skills: [String!]
@@ -42,6 +43,7 @@ export const SEARCH_COURSES = gql`
         average_workload: { _gte: $min_workload, _lte: $max_workload }
         credits: { _in: $credits }
         school: { _in: $schools }
+        subject: { _in: $subjects }
         course: { extra_info: { _eq: $extra_info } }
       }
       order_by: $ordering
@@ -68,7 +70,7 @@ export const SEARCH_COURSES = gql`
       season_code
       extra_info
       syllabus_url
-      enrollment
+      enrolled
       section
       crn
     }
@@ -94,7 +96,7 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       all_course_codes
       section
       crn
-      enrollment
+      enrolled
       average_rating
       average_workload
       course_code

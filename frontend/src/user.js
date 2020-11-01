@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -69,15 +75,19 @@ export const UserProvider = ({ children }) => {
     [setFbLogin, setFbWorksheets]
   );
 
-  const store = {
-    // Context state.
-    user: {
+  const user = useMemo(() => {
+    return {
       netId,
       worksheet,
       hasEvals,
       fbLogin,
       fbWorksheets,
-    },
+    };
+  }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
+
+  const store = {
+    // Context state.
+    user,
 
     // Update methods.
     userRefresh,

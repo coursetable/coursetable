@@ -10,15 +10,6 @@
   overflow: hidden;
 }
 
-.results_header {
-  background-color: white;
-  border-radius: 8px;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  user-select: none;
-}
-
 .sticky_header {
   position: sticky !important;
   top: 0 !important;
@@ -34,6 +25,13 @@
 
 .results_header_inner {
   background-color: white !important;
+}
+
+.results_header {
+  line-height: 30px;
+  display: flex;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .up_btn {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 
 import { Row, Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 
@@ -12,11 +12,8 @@ import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import LinesEllipsis from 'react-lines-ellipsis';
-import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking } from '../utilities';
+import { fbFriendsAlsoTaking, flatten } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -30,44 +27,37 @@ import Styles from './SearchResultsItem.module.css';
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLast - boolean | is this the last course of the search results?
  * @prop hasSeason - function to pass to bookmark button
- * @prop ROW_WIDTH - integer that holds width of the row
- * @prop PROF_WIDTH - integer that holds width of the professor column
- * @prop MEET_WIDTH - integer that holds width of the meets column
- * @prop RATE_WIDTH - integer that holds width of the ratings columns
- * @prop BOOKMARK_WIDTH - integer that holds width of the last column
- * @prop PADDING - integer that holds width of padding between course and rest of columns
- * @prop PROF_CUT - integer that determines at what window width to stop displaying prof column
- * @prop MEET_CUT - integer that determines at what window width to stop displaying meets column
+ * @prop COL_SPACING - dictionary with widths of each column
+ * @prop ROW_WIDTH - integer that holds width of row
+ * @prop TITLE_WIDTH - integer that holds width of title
+ * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
  */
 
 const SearchResultsItem = ({
-  course,
+  unflat_course,
   showModal,
   multiSeasons,
   isLast,
   hasSeason = null,
+  COL_SPACING,
   ROW_WIDTH,
-  PROF_WIDTH,
-  MEET_WIDTH,
-  RATE_WIDTH,
-  BOOKMARK_WIDTH,
-  PADDING,
-  PROF_CUT,
-  MEET_CUT,
+  TITLE_WIDTH,
+  isScrolling,
 }) => {
-  // Used to cut off Professors list at 2 lines
-  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
+  const course = useMemo(() => {
+    return flatten(unflat_course);
+  }, [unflat_course]);
+
   // Variable used in list keys
   let key = 1;
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
-  // Fetch width of window
-  const { width } = useWindowDimensions();
+
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB Friends that are also shopping this class
-  let also_taking =
-    user.fbLogin && user.fbWorksheets
+  let also_taking = useMemo(() => {
+    return user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
           course.season_code,
           course.crn,
@@ -75,26 +65,12 @@ const SearchResultsItem = ({
           user.fbWorksheets.friendInfo
         )
       : [];
+  }, [user.fbLogin, user.fbWorksheets, course]);
 
   // Set mounted on mount
   useEffect(() => {
     if (!mounted) setMounted(true);
   }, [mounted]);
-
-  // Course location HTML
-  let courseLocation;
-
-  if (course.locations_summary === 'TBA') {
-    courseLocation = '';
-  } else {
-    if (course.locations_summary.includes('ONLINE')) {
-      courseLocation = (
-        <div className={Styles.online_tag}>{course.locations_summary}</div>
-      );
-    } else {
-      courseLocation = course.locations_summary;
-    }
-  }
 
   // Season code for this listing
   const season_code = course.season_code;
@@ -104,14 +80,15 @@ const SearchResultsItem = ({
   const icon_size = 10;
   const seasons = ['spring', 'summer', 'fall'];
   // Determine the icon for this season
-  const icon =
-    season === '1' ? (
+  const icon = useMemo(() => {
+    return season === '1' ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
+  }, [season]);
 
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
@@ -151,54 +128,60 @@ const SearchResultsItem = ({
   };
 
   // Render tooltip with names of FB friends also shopping
-  const renderFBFriendsTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      {also_taking.join(' • ')}
-    </Tooltip>
-  );
+  const renderFBFriendsTooltip = (props) =>
+    also_taking.length > 0 ? (
+      <Tooltip id="button-tooltip" {...props}>
+        {also_taking.join(' • ')}
+      </Tooltip>
+    ) : (
+      <div />
+    );
+
+  const code_style = {
+    width: `${COL_SPACING.CODE_WIDTH}px`,
+    paddingLeft: '15px',
+  };
+  const title_style = { width: `${TITLE_WIDTH}px` };
+  const rate_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_WIDTH}px`,
+  };
+  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
+  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
+  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
+  const num_style = { width: `${COL_SPACING.NUM_WIDTH}px` };
+  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
     <Row
       className={
-        'mx-auto px-2 py-2 justify-content-between ' + Styles.search_result_item
+        'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
+        Styles.search_result_item +
+        ' ' +
+        (isLast ? Styles.last_search_result_item : '')
       }
-      style={{
-        borderBottom: isLast ? 'none' : 'solid 2px #f6f6f6',
-        borderBottomLeftRadius: isLast ? '8px' : '',
-        borderBottomRightRadius: isLast ? '8px' : '',
-        height: '67px',
-      }}
       onClick={() => {
         showModal(course);
       }}
       tabIndex="0"
     >
+      <div
+        style={code_style}
+        className={Styles.ellipsis_text + ' font-weight-bold'}
+      >
+        {course.course_code}
+        <span className="text-muted">
+          {course.section
+            ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
+            : ''}
+        </span>
+      </div>
       <OverlayTrigger placement="right" overlay={renderTitlePopover}>
         {/* Course Title, Code, and Skills/Area column */}
-        <div
-          style={{
-            width: `${
-              ROW_WIDTH -
-              (width > PROF_CUT ? PROF_WIDTH : 0) -
-              (width > MEET_CUT ? MEET_WIDTH : 0) -
-              3 * RATE_WIDTH -
-              BOOKMARK_WIDTH -
-              PADDING
-            }px`,
-            paddingLeft: '15px',
-          }}
-          className={Styles.course_header}
-        >
+        <div style={title_style}>
           {/* Course Title */}
-          <div className={Styles.course_name}>{course.title}</div>
+          <div className={Styles.ellipsis_text}>{course.title}</div>
           <Row className="m-auto">
-            {/* Course Code */}
-            <div className={Styles.course_code}>
-              {course.course_code}
-              {course.section
-                ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
-                : ''}
-            </div>
             {/* Season Code */}
             {multiSeasons && (
               <OverlayTrigger
@@ -220,76 +203,33 @@ const SearchResultsItem = ({
                 </div>
               </OverlayTrigger>
             )}
-            {/* Course Skills/Areas */}
-            <div className={Styles.skills_areas}>
-              {course.skills.map((skill) => (
-                <Badge
-                  variant="secondary"
-                  className={Styles.tag}
-                  key={key++}
-                  style={{
-                    color: skillsAreasColors[skill],
-                    backgroundColor: chroma(skillsAreasColors[skill])
-                      .alpha(0.16)
-                      .css(),
-                  }}
-                >
-                  {skill}
-                </Badge>
-              ))}
-              {course.areas.map((area) => (
-                <Badge
-                  variant="secondary"
-                  className={Styles.tag}
-                  key={key++}
-                  style={{
-                    color: skillsAreasColors[area],
-                    backgroundColor: chroma(skillsAreasColors[area])
-                      .alpha(0.16)
-                      .css(),
-                  }}
-                >
-                  {area}
-                </Badge>
-              ))}
-            </div>
             {/* Course Extra Info */}
-            {course.extra_info !== 'ACTIVE' && (
+            {/* {course.extra_info !== 'ACTIVE' && (
               <div className={Styles.extra_info + ' ml-1'}>CANCELLED</div>
-            )}
+            )} */}
           </Row>
         </div>
       </OverlayTrigger>
-      {/* Course Professors */}
-      {width > PROF_CUT && (
-        <div
-          style={{ width: `${PROF_WIDTH}px` }}
-          className={Styles.course_professors + ' pr-4'}
+      {/* Enrollment */}
+      <div style={num_style} className="d-flex">
+        <span className="m-auto">
+          {course.enrolled ? course.enrolled : 'n/a'}
+        </span>
+      </div>
+      {/* # FB Friends also shopping */}
+      <div style={num_style} className="d-flex">
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 100, hide: 100 }}
+          overlay={renderFBFriendsTooltip}
         >
-          <ResponsiveEllipsis
-            style={{ whiteSpace: 'pre-wrap' }}
-            text={
-              course.professor_names.length === 0
-                ? 'TBA'
-                : course.professor_names.join(' • ')
-            }
-            maxLine={2}
-            basedOn="words"
-          />
-        </div>
-      )}
-      {/* Course Meets and Location */}
-      {width > MEET_CUT && (
-        <div style={{ width: `${MEET_WIDTH}px` }}>
-          <div className={Styles.course_time}>{course.times_summary}</div>
-          <div className={Styles.course_location}>{courseLocation}</div>
-        </div>
-      )}
+          <span className={'m-auto'}>
+            {also_taking.length > 0 ? also_taking.length : ''}
+          </span>
+        </OverlayTrigger>
+      </div>
       {/* Class Rating */}
-      <div
-        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
-        className="d-flex"
-      >
+      <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
           style={{
@@ -297,7 +237,7 @@ const SearchResultsItem = ({
               ? ratingColormap(course.average_rating).darken(3).css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating)).alpha(0.75).css()
+              ? chroma(ratingColormap(course.average_rating))
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -306,10 +246,7 @@ const SearchResultsItem = ({
         </div>
       </div>
       {/* Professor Rating */}
-      <div
-        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
-        className="d-flex"
-      >
+      <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
           style={{
@@ -318,8 +255,6 @@ const SearchResultsItem = ({
               : '#b5b5b5',
             backgroundColor: course.average_professor
               ? chroma(ratingColormap(course.average_professor))
-                  .alpha(0.75)
-                  .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -330,10 +265,7 @@ const SearchResultsItem = ({
         </div>
       </div>
       {/* Workload Rating */}
-      <div
-        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
-        className="d-flex"
-      >
+      <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
           style={{
@@ -342,8 +274,6 @@ const SearchResultsItem = ({
               : '#b5b5b5',
             backgroundColor: course.average_workload
               ? chroma(workloadColormap(course.average_workload))
-                  .alpha(0.33)
-                  .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -351,25 +281,63 @@ const SearchResultsItem = ({
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
       </div>
-      {/* # FB Friends also shopping */}
-      <div
-        style={{
-          width: `${BOOKMARK_WIDTH}px`,
-        }}
-        className="d-flex px-1"
-      >
-        {also_taking.length > 0 && (
-          <OverlayTrigger
-            placement="top"
-            delay={{ show: 250, hide: 400 }}
-            overlay={renderFBFriendsTooltip}
-          >
-            <div className={Styles.fb_friends + ' m-auto'}>
-              {also_taking.length}
-            </div>
-          </OverlayTrigger>
-        )}
-      </div>
+      {/* Course Professors */}
+      {ROW_WIDTH > COL_SPACING.PROF_CUT && (
+        <div style={prof_style} className={Styles.ellipsis_text}>
+          {course.professor_names.length === 0
+            ? 'TBA'
+            : course.professor_names.join(' • ')}
+        </div>
+      )}
+      {/* Course Meets */}
+      {ROW_WIDTH > COL_SPACING.MEET_CUT && (
+        <div style={meet_style}>
+          <div className={Styles.course_time}>{course.times_summary}</div>
+        </div>
+      )}
+      {/* Course Location */}
+      {ROW_WIDTH > COL_SPACING.LOC_CUT && (
+        <div style={loc_style}>
+          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+        </div>
+      )}
+      {/* Skills and Areas */}
+      {ROW_WIDTH > COL_SPACING.SA_CUT && (
+        <div style={sa_style} className="d-flex pr-2">
+          <span className={Styles.skills_areas + ' '}>
+            {course.skills.map((skill) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag + ' my-auto'}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[skill],
+                  backgroundColor: chroma(skillsAreasColors[skill])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {skill}
+              </Badge>
+            ))}
+            {course.areas.map((area) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag + ' my-auto'}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[area],
+                  backgroundColor: chroma(skillsAreasColors[area])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {area}
+              </Badge>
+            ))}
+          </span>
+        </div>
+      )}
       {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
@@ -381,7 +349,7 @@ const SearchResultsItem = ({
         />
       </div>
       {/* Render conflict icon only when component has been mounted */}
-      {mounted && !hasSeason && (
+      {mounted && !hasSeason && !isScrolling && (
         <div className={Styles.conflict_error}>
           <CourseConflictIcon course={course} />
         </div>
@@ -390,4 +358,6 @@ const SearchResultsItem = ({
   );
 };
 
-export default SearchResultsItem;
+const SearchResultsItemMemo = React.memo(SearchResultsItem);
+// SearchResultsItemMemo.whyDidYouRender = true;
+export default SearchResultsItemMemo;
