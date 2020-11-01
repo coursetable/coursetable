@@ -25,6 +25,7 @@ app.use(morgan('tiny'));
 challenge(app);
 catalog(app);
 
+// Mount static files route and require NetID authentication
 app.use(
   '/api/static',
   verifyNetID,

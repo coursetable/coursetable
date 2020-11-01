@@ -31,13 +31,16 @@ export const verifyHeaders = (req, res, next) => {
  * @prop next - express next object
  */
 export const refreshCatalog = (req, res, next) => {
-  fetchCatalog(true)
+  // always overwrite when callec
+  const overwrite = true;
+  fetchCatalog(overwrite)
     .then(() => {
       return res.status(200).json({
         status: 'OK',
       });
     })
     .catch((err) => {
+      console.error(err);
       return res.status(500).json(err);
     });
 };

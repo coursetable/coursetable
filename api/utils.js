@@ -88,6 +88,7 @@ export async function fetchCatalog(overwrite) {
       endpoint: GRAPHQL_ENDPOINT,
     });
   } catch (err) {
+    console.error(err);
     throw Error(err);
   }
 
@@ -119,18 +120,18 @@ export async function fetchCatalog(overwrite) {
           },
         });
       } catch (err) {
-        console.log(err);
+        console.error(err);
         throw err;
       }
-
-      console.log(
-        `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
-      );
 
       if (catalog.data.computed_listing_info) {
         fs.writeFileSync(
           output_path,
           JSON.stringify(catalog.data.computed_listing_info)
+        );
+
+        console.log(
+          `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
         );
         return;
       }
