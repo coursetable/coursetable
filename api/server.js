@@ -26,7 +26,10 @@ catalog(app);
 app.use('/api/static', express.static(path.join(path.resolve(), 'static')));
 
 console.log('Updating static catalog');
-fetchCatalog().then(() => {
+
+const overwriteCatalog = process.env.OVERWRITE_CATALOG || false;
+
+fetchCatalog(overwriteCatalog).then(() => {
   app.listen(PORT, () => {
     console.log(`Express API listening at http://localhost:${PORT}`);
   });

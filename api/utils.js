@@ -72,6 +72,13 @@ export async function fetchCatalog(overwrite) {
 
   const processSeasons = await seasons.data.seasons.map(
     async ({ season_code }) => {
+      const output_path = `./static/catalogs/${season_code}.json`;
+
+      if (!overwrite && fs.existsSync(output_path)) {
+        console.log(`Catalog for ${season_code} exists, skipping`);
+        return;
+      }
+
       const catalog = await query({
         query: catalogBySeasonQuery,
         endpoint: GRAPHQL_ENDPOINT,
@@ -85,20 +92,13 @@ export async function fetchCatalog(overwrite) {
       );
 
       fs.writeFileSync(
-        `./static/catalogs/${season_code}.json`,
+        output_path,
         JSON.stringify(catalog.data.computed_listing_info)
       );
 
-      return [catalog, season_code];
+      return;
     }
   );
 
   const catalogs = await Promise.all(processSeasons);
-
-  // catalogs.map(([catalog, season_code]) => {
-  //   fs.writeFileSync(
-  //     `./static/catalogs/${season_code}.json`,
-  //     JSON.stringify(catalog.data.computed_listing_info)
-  //   );
-  // });
 }
