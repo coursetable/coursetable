@@ -18,7 +18,6 @@ import { fbFriendsAlsoTaking, flatten } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import { BsBookmark } from 'react-icons/bs';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -341,21 +340,13 @@ const SearchResultsItem = ({
       )}
       {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
-        {!isScrolling ? (
-          // Render interactive bookmark if not scrolling
-          <WorksheetToggleButton
-            worksheetView={hasSeason != null}
-            crn={course.crn}
-            season_code={course.season_code}
-            modal={false}
-            hasSeason={hasSeason}
-          />
-        ) : (
-          // Render blank bookmark if scrolling
-          <div className={Styles.blank_btn}>
-            <BsBookmark color={'#3396ff'} size={25} />
-          </div>
-        )}
+        <WorksheetToggleButton
+          worksheetView={hasSeason != null}
+          crn={course.crn}
+          season_code={course.season_code}
+          modal={false}
+          hasSeason={hasSeason}
+        />
       </div>
       {/* Render conflict icon only when component has been mounted */}
       {mounted && !hasSeason && !isScrolling && (
