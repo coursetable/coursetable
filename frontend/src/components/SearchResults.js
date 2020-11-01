@@ -187,7 +187,7 @@ const SearchResults = ({
   );
 
   const renderListRow = useCallback(
-    ({ index, key, style }) => {
+    ({ index, key, style, isScrolling }) => {
       if (!isRowLoaded({ index })) {
         return <div key={key} style={style} />;
       }
@@ -201,6 +201,7 @@ const SearchResults = ({
             COL_SPACING={COL_SPACING}
             ROW_WIDTH={ROW_WIDTH}
             TITLE_WIDTH={TITLE_WIDTH}
+            isScrolling={isScrolling}
           />
         </div>
       );

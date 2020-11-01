@@ -11,13 +11,14 @@ import {
 import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
-// import CourseConflictIcon from './CourseConflictIcon';
+import CourseConflictIcon from './CourseConflictIcon';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useUser } from '../user';
 import { fbFriendsAlsoTaking, flatten } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { BsBookmark } from 'react-icons/bs';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -28,9 +29,9 @@ import Styles from './SearchResultsItem.module.css';
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLast - boolean | is this the last course of the search results?
  * @prop hasSeason - function to pass to bookmark button
- * @prop ROW_WIDTH - integer that holds width of the row
  * @prop COL_SPACING - dictionary with widths of each column
  * @prop TITLE_WIDTH - integer that holds width of title
+ * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
  */
 
 const SearchResultsItem = ({
@@ -39,9 +40,9 @@ const SearchResultsItem = ({
   multiSeasons,
   isLast,
   hasSeason = null,
-  ROW_WIDTH,
   COL_SPACING,
   TITLE_WIDTH,
+  isScrolling,
 }) => {
   const course = useMemo(() => {
     return flatten(unflat_course);
@@ -340,20 +341,28 @@ const SearchResultsItem = ({
       )}
       {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
-        <WorksheetToggleButton
-          worksheetView={hasSeason != null}
-          crn={course.crn}
-          season_code={course.season_code}
-          modal={false}
-          hasSeason={hasSeason}
-        />
+        {!isScrolling ? (
+          // Render interactive bookmark if not scrolling
+          <WorksheetToggleButton
+            worksheetView={hasSeason != null}
+            crn={course.crn}
+            season_code={course.season_code}
+            modal={false}
+            hasSeason={hasSeason}
+          />
+        ) : (
+          // Render blank bookmark if scrolling
+          <div className={Styles.blank_btn}>
+            <BsBookmark color={'#3396ff'} size={25} />
+          </div>
+        )}
       </div>
       {/* Render conflict icon only when component has been mounted */}
-      {/* {mounted && !hasSeason && (
+      {mounted && !hasSeason && !isScrolling && (
         <div className={Styles.conflict_error}>
           <CourseConflictIcon course={course} />
         </div>
-      )} */}
+      )}
     </Row>
   );
 };

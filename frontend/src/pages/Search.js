@@ -40,7 +40,7 @@ import { useSeasons } from '../components/SeasonsProvider';
 
 import { debounce } from 'lodash';
 
-import Slider, { Handle, Range } from 'rc-slider';
+import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
