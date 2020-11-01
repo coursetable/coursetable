@@ -41,7 +41,7 @@ import { useSeasons } from '../components/SeasonsProvider';
 
 import { debounce } from 'lodash';
 
-import Slider, { Range } from 'rc-slider';
+import Slider, { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
@@ -475,25 +475,23 @@ function Search({ location, history }) {
     FOCUS_SEARCH: focusSearch,
   };
 
-  const { Handle } = Slider;
-
   // Render slider handles for the course and workload rating sliders
-  const ratingSliderHandle = (e) => {
-    const { value, className } = e;
+  const ratingSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
     return (
-      <Handle {...e} key={className}>
+      <Handle {...e} key={key}>
         <div className={`shadow ${Styles.rating_tooltip}`}>{value}</div>
       </Handle>
     );
-  };
-  const workloadSliderHandle = (e) => {
-    const { value, className } = e;
+  }, []);
+  const workloadSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
     return (
-      <Handle {...e} key={className}>
+      <Handle {...e} key={key}>
         <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
       </Handle>
     );
-  };
+  }, []);
 
   // Is the search form taller than the window?
   var [tooTall, setTooTall] = React.useState(true);
