@@ -286,8 +286,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 style={
                   evaluations[i].rating && {
                     color: ratingColormap(evaluations[i].rating)
-                      .darken()
-                      .saturate(),
+                      .darken(3)
+                      .css(),
+                    backgroundColor: ratingColormap(evaluations[i].rating),
                   }
                 }
                 className={`${Styles.rating_cell} ${
@@ -308,8 +309,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 style={
                   evaluations[i].professor_rating && {
                     color: ratingColormap(evaluations[i].professor_rating)
-                      .darken()
-                      .saturate(),
+                      .darken(3)
+                      .css(),
+                    backgroundColor: ratingColormap(
+                      evaluations[i].professor_rating
+                    ),
                   }
                 }
                 className={Styles.rating_cell}
@@ -328,8 +332,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 style={
                   evaluations[i].workload && {
                     color: workloadColormap(evaluations[i].workload)
-                      .darken()
-                      .saturate(),
+                      .darken(3)
+                      .css(),
+                    backgroundColor: workloadColormap(evaluations[i].workload),
                   }
                 }
                 className={Styles.rating_cell}

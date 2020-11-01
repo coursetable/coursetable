@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import SearchResultsItem from './SearchResultsItem';
+import SearchResultsItemMemo from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
@@ -117,7 +117,7 @@ const SearchResults = ({
       );
     }
     return grid;
-  }, [data, showModal, isLoggedIn, multiSeasons]);
+  }, [data, showModal, isLoggedIn, multiSeasons, num_cols]);
 
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState();
@@ -129,10 +129,12 @@ const SearchResults = ({
   }, [setRowWidth, width]);
 
   // Spacing for each column in list view
+  const CODE_WIDTH = 110;
+  const RATE_WIDTH = 30;
   const PROF_WIDTH = 150;
-  const MEET_WIDTH = 200;
-  const RATE_WIDTH = 40;
-  const BOOKMARK_WIDTH = 50;
+  const MEET_WIDTH = 160;
+  const LOC_WIDTH = 100;
+  const BOOKMARK_WIDTH = 40;
   const PADDING = 50;
   const PROF_CUT = 1023;
   const MEET_CUT = 1200;
@@ -172,15 +174,17 @@ const SearchResults = ({
       }
       return (
         <div style={style} key={key}>
-          <SearchResultsItem
+          <SearchResultsItemMemo
             unflat_course={data[index]}
             showModal={showModal}
             multiSeasons={multiSeasons}
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
             ROW_WIDTH={ROW_WIDTH}
+            CODE_WIDTH={CODE_WIDTH}
             PROF_WIDTH={PROF_WIDTH}
             MEET_WIDTH={MEET_WIDTH}
             RATE_WIDTH={RATE_WIDTH}
+            LOC_WIDTH={LOC_WIDTH}
             BOOKMARK_WIDTH={BOOKMARK_WIDTH}
             PADDING={PADDING}
             PROF_CUT={PROF_CUT}
@@ -193,7 +197,9 @@ const SearchResults = ({
       data,
       showModal,
       multiSeasons,
+      isRowLoaded,
       ROW_WIDTH,
+      CODE_WIDTH,
       PROF_WIDTH,
       MEET_WIDTH,
       RATE_WIDTH,
@@ -308,7 +314,7 @@ const SearchResults = ({
                       scrollTop={scrollTop}
                       rowCount={!fetchedAll ? data.length + 1 : data.length}
                       rowRenderer={renderListRow}
-                      rowHeight={67}
+                      rowHeight={32}
                     />
                   )}
                 </AutoSizer>
@@ -376,44 +382,34 @@ const SearchResults = ({
               </div> */}
               {isList ? (
                 <React.Fragment>
+                  <div
+                    style={{ width: `${CODE_WIDTH}px`, paddingLeft: '15px' }}
+                    className={Styles.results_header}
+                  >
+                    Code
+                  </div>
                   {/* Course Name */}
                   <div
                     style={{
-                      lineHeight: '30px',
                       width: `${
                         ROW_WIDTH -
+                        CODE_WIDTH -
+                        LOC_WIDTH -
                         (width > PROF_CUT ? PROF_WIDTH : 0) -
                         (width > MEET_CUT ? MEET_WIDTH : 0) -
                         3 * RATE_WIDTH -
                         BOOKMARK_WIDTH -
                         PADDING
                       }px`,
-                      paddingLeft: '15px',
                     }}
+                    className={Styles.results_header}
                   >
-                    <strong>{'Course'}</strong>
+                    Title
                   </div>
-                  {/* Course Professors */}
-                  {width > PROF_CUT && (
-                    <div
-                      style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}
-                      className="pr-4"
-                    >
-                      <strong>{'Professors'}</strong>
-                    </div>
-                  )}
-                  {/* Course Meeting times and location */}
-                  {width > MEET_CUT && (
-                    <div
-                      style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}
-                    >
-                      <strong>{'Meets'}</strong>
-                    </div>
-                  )}
                   {/* Class Rating */}
                   <div
-                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
-                    className="d-flex"
+                    style={{ width: `${RATE_WIDTH}px` }}
+                    className={Styles.results_header}
                   >
                     <div className="m-auto">
                       <OverlayTrigger
@@ -431,8 +427,8 @@ const SearchResults = ({
                   </div>
                   {/* Professor Rating */}
                   <div
-                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
-                    className="d-flex"
+                    style={{ width: `${RATE_WIDTH}px` }}
+                    className={Styles.results_header}
                   >
                     <div className="m-auto">
                       <OverlayTrigger
@@ -450,8 +446,8 @@ const SearchResults = ({
                   </div>
                   {/* Workload Rating */}
                   <div
-                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
-                    className="d-flex"
+                    style={{ width: `${RATE_WIDTH}px` }}
+                    className={Styles.results_header}
                   >
                     <div className="m-auto">
                       <OverlayTrigger
@@ -463,10 +459,34 @@ const SearchResults = ({
                       </OverlayTrigger>
                     </div>
                   </div>
+                  {/* Course Professors */}
+                  {width > PROF_CUT && (
+                    <div
+                      style={{ width: `${PROF_WIDTH}px` }}
+                      className={Styles.results_header}
+                    >
+                      Professors
+                    </div>
+                  )}
+                  {/* Course Meeting times and location */}
+                  {width > MEET_CUT && (
+                    <div
+                      style={{ width: `${MEET_WIDTH}px` }}
+                      className={Styles.results_header}
+                    >
+                      Meets
+                    </div>
+                  )}
+                  <div
+                    style={{ width: `${LOC_WIDTH}px` }}
+                    className={Styles.results_header}
+                  >
+                    Location
+                  </div>
                 </React.Fragment>
               ) : (
                 // Grid view showing how many search results
-                <Col md={10} style={{ lineHeight: '30px' }}>
+                <Col md={10}>
                   <strong>
                     {`Showing ${data.length} course${
                       data.length === 1 ? '' : 's'
@@ -476,8 +496,8 @@ const SearchResults = ({
               )}
               {/* List Grid Toggle Button */}
               <div
-                style={{ lineHeight: '30px', width: `${BOOKMARK_WIDTH}px` }}
-                className="d-flex pr-2"
+                style={{ width: `${BOOKMARK_WIDTH}px` }}
+                className={Styles.results_header + ' pr-2'}
               >
                 <div className="d-flex ml-auto my-auto p-0">
                   <ListGridToggle isList={isList} setView={setView} />
@@ -516,4 +536,5 @@ const SearchResults = ({
   );
 };
 
+// SearchResults.whyDidYouRender = true;
 export default SearchResults;

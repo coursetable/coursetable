@@ -5,15 +5,13 @@ import { Row, Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import {
   ratingColormap,
   workloadColormap,
-  skillsAreasColors,
+  // skillsAreasColors,
 } from '../queries/Constants.js';
 
 import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
-import CourseConflictIcon from './CourseConflictIcon';
-import LinesEllipsis from 'react-lines-ellipsis';
-import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+// import CourseConflictIcon from './CourseConflictIcon';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useUser } from '../user';
 import { fbFriendsAlsoTaking, flatten } from '../utilities';
@@ -33,6 +31,7 @@ import Styles from './SearchResultsItem.module.css';
  * @prop ROW_WIDTH - integer that holds width of the row
  * @prop PROF_WIDTH - integer that holds width of the professor column
  * @prop MEET_WIDTH - integer that holds width of the meets column
+ * @prop LOC_WIDTH - integer that holds width of locaiton column
  * @prop RATE_WIDTH - integer that holds width of the ratings columns
  * @prop BOOKMARK_WIDTH - integer that holds width of the last column
  * @prop PADDING - integer that holds width of padding between course and rest of columns
@@ -47,8 +46,10 @@ const SearchResultsItem = ({
   isLast,
   hasSeason = null,
   ROW_WIDTH,
+  CODE_WIDTH,
   PROF_WIDTH,
   MEET_WIDTH,
+  LOC_WIDTH,
   RATE_WIDTH,
   BOOKMARK_WIDTH,
   PADDING,
@@ -59,8 +60,6 @@ const SearchResultsItem = ({
     return flatten(unflat_course);
   }, [unflat_course]);
 
-  // Used to cut off Professors list at 2 lines
-  const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
   // Variable used in list keys
   let key = 1;
   // Has the component been mounted?
@@ -70,8 +69,8 @@ const SearchResultsItem = ({
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB Friends that are also shopping this class
-  let also_taking = // TODO: useMemo
-    user.fbLogin && user.fbWorksheets
+  let also_taking = useMemo(() => {
+    return user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
           course.season_code,
           course.crn,
@@ -79,26 +78,12 @@ const SearchResultsItem = ({
           user.fbWorksheets.friendInfo
         )
       : [];
+  }, [user.fbLogin, user.fbWorksheets, course]);
 
   // Set mounted on mount
   useEffect(() => {
     if (!mounted) setMounted(true);
   }, [mounted]);
-
-  // Course location HTML
-  let courseLocation;
-
-  if (course.locations_summary === 'TBA') {
-    courseLocation = '';
-  } else {
-    if (course.locations_summary.includes('ONLINE')) {
-      courseLocation = (
-        <div className={Styles.online_tag}>{course.locations_summary}</div>
-      );
-    } else {
-      courseLocation = course.locations_summary;
-    }
-  }
 
   // Season code for this listing
   const season_code = course.season_code;
@@ -108,14 +93,15 @@ const SearchResultsItem = ({
   const icon_size = 10;
   const seasons = ['spring', 'summer', 'fall'];
   // Determine the icon for this season
-  const icon =
-    season === '1' ? (
+  const icon = useMemo(() => {
+    return season === '1' ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
+  }, [season]);
 
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
@@ -137,9 +123,11 @@ const SearchResultsItem = ({
           <strong>{course.title}</strong>
         </Popover.Title>
         <Popover.Content>
-          {course.description && course.description.length <= 500
-            ? course.description
-            : course.description.slice(0, 500) + '...'}
+          {course.description
+            ? course.description.length <= 500
+              ? course.description
+              : course.description.slice(0, 500) + '...'
+            : 'no description'}
           <br />
           <div className="text-danger">
             {course.requirements &&
@@ -159,48 +147,69 @@ const SearchResultsItem = ({
     </Tooltip>
   );
 
+  const code_style = { width: `${CODE_WIDTH}px`, paddingLeft: '15px' };
+  const title_style = useMemo(() => {
+    return {
+      width: `${
+        ROW_WIDTH -
+        CODE_WIDTH -
+        LOC_WIDTH -
+        (width > PROF_CUT ? PROF_WIDTH : 0) -
+        (width > MEET_CUT ? MEET_WIDTH : 0) -
+        3 * RATE_WIDTH -
+        BOOKMARK_WIDTH -
+        PADDING
+      }px`,
+    };
+  }, [
+    ROW_WIDTH,
+    CODE_WIDTH,
+    LOC_WIDTH,
+    PROF_CUT,
+    PROF_WIDTH,
+    MEET_CUT,
+    MEET_WIDTH,
+    RATE_WIDTH,
+    BOOKMARK_WIDTH,
+    PADDING,
+    width,
+  ]);
+  const rate_style = { whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` };
+  const prof_style = { width: `${PROF_WIDTH}px` };
+  const meet_style = { width: `${MEET_WIDTH}px` };
+  const loc_style = { width: `${LOC_WIDTH}px` };
+  const bookmark_style = { width: `${BOOKMARK_WIDTH}px` };
+
   return (
     <Row
       className={
-        'mx-auto px-2 py-2 justify-content-between ' + Styles.search_result_item
+        'mx-auto px-2 py-0 justify-content-between ' +
+        Styles.search_result_item +
+        ' ' +
+        (isLast ? Styles.last_search_result_item : '')
       }
-      style={{
-        borderBottom: isLast ? 'none' : 'solid 2px #f6f6f6',
-        borderBottomLeftRadius: isLast ? '8px' : '',
-        borderBottomRightRadius: isLast ? '8px' : '',
-        height: '67px',
-      }}
       onClick={() => {
         showModal(course);
       }}
       tabIndex="0"
     >
+      <div
+        style={code_style}
+        className={Styles.ellipsis_text + ' font-weight-bold'}
+      >
+        {course.course_code}
+        <span className="text-muted">
+          {course.section
+            ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
+            : ''}
+        </span>
+      </div>
       <OverlayTrigger placement="right" overlay={renderTitlePopover}>
         {/* Course Title, Code, and Skills/Area column */}
-        <div
-          style={{
-            width: `${
-              ROW_WIDTH -
-              (width > PROF_CUT ? PROF_WIDTH : 0) -
-              (width > MEET_CUT ? MEET_WIDTH : 0) -
-              3 * RATE_WIDTH -
-              BOOKMARK_WIDTH -
-              PADDING
-            }px`,
-            paddingLeft: '15px',
-          }}
-          className={Styles.course_header}
-        >
+        <div style={title_style}>
           {/* Course Title */}
-          <div className={Styles.course_name}>{course.title}</div>
+          <div className={Styles.ellipsis_text}>{course.title}</div>
           <Row className="m-auto">
-            {/* Course Code */}
-            <div className={Styles.course_code}>
-              {course.course_code}
-              {course.section
-                ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
-                : ''}
-            </div>
             {/* Season Code */}
             {multiSeasons && (
               <OverlayTrigger
@@ -223,7 +232,7 @@ const SearchResultsItem = ({
               </OverlayTrigger>
             )}
             {/* Course Skills/Areas */}
-            <div className={Styles.skills_areas}>
+            {/* <div className={Styles.skills_areas}>
               {course.skills.map((skill) => (
                 <Badge
                   variant="secondary"
@@ -254,44 +263,16 @@ const SearchResultsItem = ({
                   {area}
                 </Badge>
               ))}
-            </div>
+            </div> */}
             {/* Course Extra Info */}
-            {course.extra_info !== 'ACTIVE' && (
+            {/* {course.extra_info !== 'ACTIVE' && (
               <div className={Styles.extra_info + ' ml-1'}>CANCELLED</div>
-            )}
+            )} */}
           </Row>
         </div>
       </OverlayTrigger>
-      {/* Course Professors */}
-      {width > PROF_CUT && (
-        <div
-          style={{ width: `${PROF_WIDTH}px` }}
-          className={Styles.course_professors + ' pr-4'}
-        >
-          <ResponsiveEllipsis
-            style={{ whiteSpace: 'pre-wrap' }}
-            text={
-              course.professor_names.length === 0
-                ? 'TBA'
-                : course.professor_names.join(' • ')
-            }
-            maxLine={2}
-            basedOn="words"
-          />
-        </div>
-      )}
-      {/* Course Meets and Location */}
-      {width > MEET_CUT && (
-        <div style={{ width: `${MEET_WIDTH}px` }}>
-          <div className={Styles.course_time}>{course.times_summary}</div>
-          <div className={Styles.course_location}>{courseLocation}</div>
-        </div>
-      )}
       {/* Class Rating */}
-      <div
-        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
-        className="d-flex"
-      >
+      <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
           style={{
@@ -299,7 +280,7 @@ const SearchResultsItem = ({
               ? ratingColormap(course.average_rating).darken(3).css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating)).alpha(0.75).css()
+              ? chroma(ratingColormap(course.average_rating))
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -308,10 +289,7 @@ const SearchResultsItem = ({
         </div>
       </div>
       {/* Professor Rating */}
-      <div
-        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
-        className="d-flex"
-      >
+      <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
           style={{
@@ -320,8 +298,6 @@ const SearchResultsItem = ({
               : '#b5b5b5',
             backgroundColor: course.average_professor
               ? chroma(ratingColormap(course.average_professor))
-                  .alpha(0.75)
-                  .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -332,10 +308,7 @@ const SearchResultsItem = ({
         </div>
       </div>
       {/* Workload Rating */}
-      <div
-        style={{ whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` }}
-        className="d-flex"
-      >
+      <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
           style={{
@@ -344,8 +317,6 @@ const SearchResultsItem = ({
               : '#b5b5b5',
             backgroundColor: course.average_workload
               ? chroma(workloadColormap(course.average_workload))
-                  .alpha(0.33)
-                  .css()
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -353,13 +324,25 @@ const SearchResultsItem = ({
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
       </div>
+      {/* Course Professors */}
+      {width > PROF_CUT && (
+        <div style={prof_style} className={Styles.ellipsis_text}>
+          {course.professor_names.length === 0
+            ? 'TBA'
+            : course.professor_names.join(' • ')}
+        </div>
+      )}
+      {/* Course Meets and Location */}
+      {width > MEET_CUT && (
+        <div style={meet_style}>
+          <div className={Styles.course_time}>{course.times_summary}</div>
+        </div>
+      )}
+      <div style={loc_style}>
+        <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+      </div>
       {/* # FB Friends also shopping */}
-      <div
-        style={{
-          width: `${BOOKMARK_WIDTH}px`,
-        }}
-        className="d-flex px-1"
-      >
+      <div style={bookmark_style} className="d-flex px-1">
         {also_taking.length > 0 && (
           <OverlayTrigger
             placement="top"
@@ -383,13 +366,15 @@ const SearchResultsItem = ({
         />
       </div>
       {/* Render conflict icon only when component has been mounted */}
-      {mounted && !hasSeason && (
+      {/* {mounted && !hasSeason && (
         <div className={Styles.conflict_error}>
           <CourseConflictIcon course={course} />
         </div>
-      )}
+      )} */}
     </Row>
   );
 };
 
-export default SearchResultsItem;
+const SearchResultsItemMemo = React.memo(SearchResultsItem);
+// SearchResultsItemMemo.whyDidYouRender = true;
+export default SearchResultsItemMemo;

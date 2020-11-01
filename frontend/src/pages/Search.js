@@ -112,7 +112,7 @@ function Search({ location, history }) {
   const [searched, setSearched] = useState(false); // Reset row height cache on search
 
   // number of search results to return
-  const QUERY_SIZE = 30;
+  // const QUERY_SIZE = 30;
 
   // State used to determine whether or not to show season tags
   // (if multiple seasons are queried, the season is indicated)
@@ -182,211 +182,232 @@ function Search({ location, history }) {
   };
 
   // search form submit handler
-  const handleSubmit = useCallback((event, search = false) => {
-    let temp_offset = -1;
-    if (event && search) event.preventDefault();
-    if (search) {
-      //Reset states when making a new search
-      setOldData([]);
-      setFetchedAll(false);
-      setSearched(true);
-      // if (!defaultSearch) setCollapsedForm(true);
-      temp_offset = 0; // Account for reset state lag
+  const handleSubmit = useCallback(
+    (event, search = false) => {
+      let temp_offset = -1;
+      if (event && search) event.preventDefault();
+      if (search) {
+        //Reset states when making a new search
+        setOldData([]);
+        setFetchedAll(false);
+        setSearched(true);
+        // if (!defaultSearch) setCollapsedForm(true);
+        temp_offset = 0; // Account for reset state lag
 
-      // Metric Tracking of Invidiual Searches
-      window.umami.trackEvent('Searched - ' + searchText.value, 'search-text');
-    } else if (fetchedAll) {
-      // Metric Tracking of Viewing All
-      window.umami.trackEvent('Viewed All', 'search');
-
-      return;
-    }
-
-    // sorting options
-    var sortParams = select_sortby.value;
-    var ordering = sortbyQueries[sortParams];
-
-    // seasons to filter
-    var processedSeasons = select_seasons;
-
-    // whether or not multiple seasons are being returned
-    const temp_multiSeasons = processedSeasons
-      ? processedSeasons.length !== 1
-      : true;
-    if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
-
-    if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map((x) => {
-        return x.value;
-      });
-      // set null defaults
-      if (processedSeasons.length === 0) {
-        processedSeasons = null;
-      } else {
-        // Tracking which seasons the search was done with
+        // Metric Tracking of Invidiual Searches
         window.umami.trackEvent(
-          'search criteria: seasons - ' + processedSeasons,
-          'search'
+          'Searched - ' + searchText.value,
+          'search-text'
         );
-      }
-    }
+      } else if (fetchedAll) {
+        // Metric Tracking of Viewing All
+        window.umami.trackEvent('Viewed All', 'search');
 
-    // skills and areas
-    var processedSkillsAreas = select_skillsareas;
-    if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map((x) => {
-        return x.value;
-      });
-
-      // match all languages
-      if (processedSkillsAreas.includes('L')) {
-        // Track if all languages is toggled for as search criteria
-        window.umami.trackEvent('search criteria - all languages', 'search');
-
-        processedSkillsAreas = processedSkillsAreas.concat([
-          'L1',
-          'L2',
-          'L3',
-          'L4',
-          'L5',
-        ]);
+        return;
       }
 
-      // separate skills and areas
-      var processedSkills = processedSkillsAreas.filter((x) =>
-        skills.includes(x)
+      // sorting options
+      var sortParams = select_sortby.value;
+      var ordering = sortbyQueries[sortParams];
+
+      // seasons to filter
+      var processedSeasons = select_seasons;
+
+      // whether or not multiple seasons are being returned
+      const temp_multiSeasons = processedSeasons
+        ? processedSeasons.length !== 1
+        : true;
+      if (temp_multiSeasons !== multiSeasons)
+        setMultiSeasons(temp_multiSeasons);
+
+      if (processedSeasons != null) {
+        processedSeasons = processedSeasons.map((x) => {
+          return x.value;
+        });
+        // set null defaults
+        if (processedSeasons.length === 0) {
+          processedSeasons = null;
+        } else {
+          // Tracking which seasons the search was done with
+          window.umami.trackEvent(
+            'search criteria: seasons - ' + processedSeasons,
+            'search'
+          );
+        }
+      }
+
+      // skills and areas
+      var processedSkillsAreas = select_skillsareas;
+      if (processedSkillsAreas != null) {
+        processedSkillsAreas = processedSkillsAreas.map((x) => {
+          return x.value;
+        });
+
+        // match all languages
+        if (processedSkillsAreas.includes('L')) {
+          // Track if all languages is toggled for as search criteria
+          window.umami.trackEvent('search criteria - all languages', 'search');
+
+          processedSkillsAreas = processedSkillsAreas.concat([
+            'L1',
+            'L2',
+            'L3',
+            'L4',
+            'L5',
+          ]);
+        }
+
+        // separate skills and areas
+        var processedSkills = processedSkillsAreas.filter((x) =>
+          skills.includes(x)
+        );
+        var processedAreas = processedSkillsAreas.filter((x) =>
+          areas.includes(x)
+        );
+
+        // set null defaults
+        if (processedSkills.length === 0) {
+          processedSkills = null;
+        } else {
+          // Tracking which skills the search was done with
+          window.umami.trackEvent(
+            'search criteria: skills - ' + processedSkills,
+            'search'
+          );
+        }
+        if (processedAreas.length === 0) {
+          processedAreas = null;
+        } else {
+          // Tracking which areas the search was done with
+          window.umami.trackEvent(
+            'search criteria: areas - ' + processedAreas,
+            'search'
+          );
+        }
+      }
+
+      // credits to filter
+      var processedCredits = select_credits;
+      if (processedCredits != null) {
+        processedCredits = processedCredits.map((x) => {
+          return x.value;
+        });
+        // set null defaults
+        if (processedCredits.length === 0) {
+          processedCredits = null;
+        } else {
+          // Tracking which credits the search was done with
+          window.umami.trackEvent(
+            'search criteria: credits - ' + processedCredits,
+            'search'
+          );
+        }
+      }
+
+      // schools to filter
+      var processedSchools = select_schools;
+      if (processedSchools != null) {
+        processedSchools = processedSchools.map((x) => {
+          return x.value;
+        });
+
+        // set null defaults
+        if (processedSchools.length === 0) {
+          processedSchools = null;
+        } else {
+          // Tracking which schools the search was done with
+          window.umami.trackEvent(
+            'search criteria: schools - ' + processedSchools,
+            'search'
+          );
+        }
+      }
+
+      // subject to filter
+      var processedSubjects = select_subjects;
+      if (processedSubjects != null) {
+        processedSubjects = processedSubjects.map((x) => {
+          return x.value;
+        });
+
+        // set null defaults
+        if (processedSubjects.length === 0) {
+          processedSubjects = null;
+        } else {
+          // Tracking which schools the search was done with
+          window.umami.trackEvent(
+            'search criteria: subjects - ' + processedSubjects,
+            'search'
+          );
+        }
+      }
+
+      // if the bounds are unaltered, we need to set them to null
+      // to include unrated courses
+      var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+
+      // Tracking which rating bounds the search was done with
+      window.umami.trackEvent(
+        'search criteria: rating bounds - ' + ratingBounds,
+        'search'
       );
-      var processedAreas = processedSkillsAreas.filter((x) =>
-        areas.includes(x)
+
+      var include_all_workloads =
+        workloadBounds[0] === 1 && workloadBounds[1] === 5;
+
+      // Tracking which workload bounds the search was done with
+      window.umami.trackEvent(
+        'search criteria: workload bounds - ' + workloadBounds,
+        'search'
       );
 
-      // set null defaults
-      if (processedSkills.length === 0) {
-        processedSkills = null;
-      } else {
-        // Tracking which skills the search was done with
-        window.umami.trackEvent(
-          'search criteria: skills - ' + processedSkills,
-          'search'
-        );
+      // override when we want to sort
+      if (ordering && ordering.average_rating) {
+        include_all_ratings = false;
       }
-      if (processedAreas.length === 0) {
-        processedAreas = null;
-      } else {
-        // Tracking which areas the search was done with
-        window.umami.trackEvent(
-          'search criteria: areas - ' + processedAreas,
-          'search'
-        );
+      if (ordering && ordering.average_workload) {
+        include_all_workloads = false;
       }
-    }
 
-    // credits to filter
-    var processedCredits = select_credits;
-    if (processedCredits != null) {
-      processedCredits = processedCredits.map((x) => {
-        return x.value;
+      // Variables to use in search query
+      const search_variables = {
+        search_text: searchText.value,
+        ordering: ordering,
+        offset: temp_offset === -1 ? old_data.length : temp_offset,
+        // limit: search ? 60 : QUERY_SIZE,
+        seasons: processedSeasons,
+        areas: processedAreas,
+        skills: processedSkills,
+        credits: processedCredits,
+        schools: processedSchools,
+        subjects: processedSubjects,
+        min_rating: include_all_ratings ? null : ratingBounds[0],
+        max_rating: include_all_ratings ? null : ratingBounds[1],
+        min_workload: include_all_workloads ? null : workloadBounds[0],
+        max_workload: include_all_workloads ? null : workloadBounds[1],
+        extra_info: hideCancelled ? 'ACTIVE' : null,
+      };
+      // Execute search query
+      executeSearch({
+        variables: search_variables,
       });
-      // set null defaults
-      if (processedCredits.length === 0) {
-        processedCredits = null;
-      } else {
-        // Tracking which credits the search was done with
-        window.umami.trackEvent(
-          'search criteria: credits - ' + processedCredits,
-          'search'
-        );
-      }
     }
-
-    // schools to filter
-    var processedSchools = select_schools;
-    if (processedSchools != null) {
-      processedSchools = processedSchools.map((x) => {
-        return x.value;
-      });
-
-      // set null defaults
-      if (processedSchools.length === 0) {
-        processedSchools = null;
-      } else {
-        // Tracking which schools the search was done with
-        window.umami.trackEvent(
-          'search criteria: schools - ' + processedSchools,
-          'search'
-        );
-      }
-    }
-
-    // subject to filter
-    var processedSubjects = select_subjects;
-    if (processedSubjects != null) {
-      processedSubjects = processedSubjects.map((x) => {
-        return x.value;
-      });
-
-      // set null defaults
-      if (processedSubjects.length === 0) {
-        processedSubjects = null;
-      } else {
-        // Tracking which schools the search was done with
-        window.umami.trackEvent(
-          'search criteria: subjects - ' + processedSubjects,
-          'search'
-        );
-      }
-    }
-
-    // if the bounds are unaltered, we need to set them to null
-    // to include unrated courses
-    var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
-
-    // Tracking which rating bounds the search was done with
-    window.umami.trackEvent(
-      'search criteria: rating bounds - ' + ratingBounds,
-      'search'
-    );
-
-    var include_all_workloads =
-      workloadBounds[0] === 1 && workloadBounds[1] === 5;
-
-    // Tracking which workload bounds the search was done with
-    window.umami.trackEvent(
-      'search criteria: workload bounds - ' + workloadBounds,
-      'search'
-    );
-
-    // override when we want to sort
-    if (ordering && ordering.average_rating) {
-      include_all_ratings = false;
-    }
-    if (ordering && ordering.average_workload) {
-      include_all_workloads = false;
-    }
-
-    // Variables to use in search query
-    const search_variables = {
-      search_text: searchText.value,
-      ordering: ordering,
-      offset: temp_offset === -1 ? old_data.length : temp_offset,
-      limit: search ? 60 : QUERY_SIZE,
-      seasons: processedSeasons,
-      areas: processedAreas,
-      skills: processedSkills,
-      credits: processedCredits,
-      schools: processedSchools,
-      subjects: processedSubjects,
-      min_rating: include_all_ratings ? null : ratingBounds[0],
-      max_rating: include_all_ratings ? null : ratingBounds[1],
-      min_workload: include_all_workloads ? null : workloadBounds[0],
-      max_workload: include_all_workloads ? null : workloadBounds[1],
-      extra_info: hideCancelled ? 'ACTIVE' : null,
-    };
-    // Execute search query
-    executeSearch({
-      variables: search_variables,
-    });
-  });
+    // [
+    //   executeSearch,
+    //   fetchedAll,
+    //   hideCancelled,
+    //   multiSeasons,
+    //   old_data.length,
+    //   ratingBounds,
+    //   select_credits,
+    //   select_schools,
+    //   select_seasons,
+    //   select_skillsareas,
+    //   select_sortby.value,
+    //   select_subjects,
+    //   workloadBounds,
+    // ]
+  );
 
   // If the search query was called
   if (searchCalled) {
@@ -403,8 +424,8 @@ function Search({ location, history }) {
             duration: 500,
           });
         }
-        if (searchData.search_listing_info.length < QUERY_SIZE)
-          setFetchedAll(true);
+        // if (searchData.search_listing_info.length < QUERY_SIZE)
+        setFetchedAll(true);
         // Combine old courses with new fetched courses
         searchData = searchData.search_listing_info.map((x) => {
           return flatten(x);

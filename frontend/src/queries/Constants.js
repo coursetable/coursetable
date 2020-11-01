@@ -322,10 +322,12 @@ export const subjectOptions = [
 ];
 
 export const ratingColormap = chroma
-  .bezier(['#e23e57', '#ffbd39', '#55e9bc'])
+  .bezier(['#f8696b', '#ffeb84', '#63b37b'])
+  // .bezier(['#ff5959', '#ffeb84', '#00bd26'])
   .scale()
   .domain([1, 5]);
 export const workloadColormap = chroma
-  .bezier(['#55e9bc', '#ffbd39', '#e23e57'])
+  .bezier(['#63b37b', '#ffeb84', '#f8696b'])
+  // .bezier(['#00bd26', '#ffeb84', '#ff5959'])
   .scale()
   .domain([1, 5]);

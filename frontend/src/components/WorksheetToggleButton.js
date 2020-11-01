@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
@@ -25,11 +25,11 @@ const WorksheetToggleButton = ({
 }) => {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
-
+  const worksheet_check = useMemo(() => {
+    return isInWorksheet(season_code, crn.toString(), user.worksheet);
+  }, [user.worksheet, season_code, crn]);
   // Is the current course in the worksheet?
-  const [inWorksheet, setInWorksheet] = useState(
-    isInWorksheet(season_code, crn.toString(), user.worksheet)
-  );
+  const [inWorksheet, setInWorksheet] = useState(worksheet_check);
 
   // Reset inWorksheet state on every rerender
   const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
@@ -85,6 +85,7 @@ const WorksheetToggleButton = ({
     </Tooltip>
   );
 
+  const bookmark_style = { transition: '0.3s' };
   return (
     <OverlayTrigger
       placement="top"
@@ -103,15 +104,12 @@ const WorksheetToggleButton = ({
             size={25}
           />
         ) : (
-          <BsBookmark
-            color={'#3396ff'}
-            size={25}
-            style={{ transition: '0.3s' }}
-          />
+          <BsBookmark color={'#3396ff'} size={25} style={bookmark_style} />
         )}
       </Button>
     </OverlayTrigger>
   );
 };
 
-export default WorksheetToggleButton;
+// WorksheetToggleButton.whyDidYouRender = true;
+export default React.memo(WorksheetToggleButton);
