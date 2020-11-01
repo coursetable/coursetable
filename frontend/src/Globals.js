@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import SeasonsProvider from './components/SeasonsProvider';
+import FerryProvider from './components/FerryProvider';
 
 import { UserProvider } from './user';
 
@@ -58,14 +58,14 @@ function Globals({ children }) {
       <ApolloProvider client={client}>
         <UserProvider>
           <WindowDimensionsProvider>
-            <SeasonsProvider>
+            <FerryProvider>
               <Router>
                 <SPAPageChangeListener />
                 <div id="base">{children}</div>
               </Router>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
               <ToastContainer />
-            </SeasonsProvider>
+            </FerryProvider>
           </WindowDimensionsProvider>
         </UserProvider>
       </ApolloProvider>

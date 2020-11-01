@@ -7,7 +7,7 @@ import { useLazyQuery } from '@apollo/react-hooks';
 const SeasonsCtx = createContext(null);
 
 // Fetch all seasons present in the database
-const SeasonsProvider = ({ children }) => {
+const FerryProvider = ({ children }) => {
   // Initialize lazy query function
   var [
     executeGetSeasons,
@@ -30,5 +30,5 @@ const SeasonsProvider = ({ children }) => {
   );
 };
 
-export default SeasonsProvider;
+export default FerryProvider;
 export const useSeasons = () => useContext(SeasonsCtx);

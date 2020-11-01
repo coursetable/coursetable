@@ -36,7 +36,7 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import Select from 'react-select';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
-import { useSeasons } from '../components/SeasonsProvider';
+import { useSeasons } from '../components/FerryProvider';
 
 import { debounce } from 'lodash';
 
