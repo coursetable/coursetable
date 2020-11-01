@@ -374,6 +374,22 @@ const SearchResults = ({
     []
   );
 
+  // Column width styles
+  const code_style = {
+    width: `${COL_SPACING.CODE_WIDTH}px`,
+    paddingLeft: '15px',
+  };
+  const title_style = { width: `${TITLE_WIDTH}px` };
+  const rate_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_WIDTH}px`,
+  };
+  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
+  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
+  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
+  const num_style = { width: `${COL_SPACING.NUM_WIDTH}px` };
+  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
+
   return (
     <div>
       <Container
@@ -400,28 +416,14 @@ const SearchResults = ({
               </div> */}
               {isList ? (
                 <React.Fragment>
-                  <div
-                    style={{
-                      width: `${COL_SPACING.CODE_WIDTH}px`,
-                      paddingLeft: '15px',
-                    }}
-                    className={Styles.results_header}
-                  >
+                  <div style={code_style} className={Styles.results_header}>
                     Code
                   </div>
                   {/* Course Name */}
-                  <div
-                    style={{
-                      width: `${TITLE_WIDTH}px`,
-                    }}
-                    className={Styles.results_header}
-                  >
+                  <div style={title_style} className={Styles.results_header}>
                     Title
                   </div>
-                  <div
-                    style={{ width: `${COL_SPACING.NUM_WIDTH}px` }}
-                    className={Styles.results_header}
-                  >
+                  <div style={num_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
@@ -430,10 +432,7 @@ const SearchResults = ({
                       <span className="m-auto">#</span>
                     </OverlayTrigger>
                   </div>
-                  <div
-                    style={{ width: `${COL_SPACING.NUM_WIDTH}px` }}
-                    className={Styles.results_header}
-                  >
+                  <div style={num_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
@@ -443,10 +442,7 @@ const SearchResults = ({
                     </OverlayTrigger>
                   </div>
                   {/* Class Rating */}
-                  <div
-                    style={{ width: `${COL_SPACING.RATE_WIDTH}px` }}
-                    className={Styles.results_header}
-                  >
+                  <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
                       <OverlayTrigger
                         placement="bottom"
@@ -462,10 +458,7 @@ const SearchResults = ({
                     </div>
                   </div>
                   {/* Professor Rating */}
-                  <div
-                    style={{ width: `${COL_SPACING.RATE_WIDTH}px` }}
-                    className={Styles.results_header}
-                  >
+                  <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
                       <OverlayTrigger
                         placement="bottom"
@@ -481,10 +474,7 @@ const SearchResults = ({
                     </div>
                   </div>
                   {/* Workload Rating */}
-                  <div
-                    style={{ width: `${COL_SPACING.RATE_WIDTH}px` }}
-                    className={Styles.results_header}
-                  >
+                  <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
                       <OverlayTrigger
                         placement="bottom"
@@ -497,33 +487,24 @@ const SearchResults = ({
                   </div>
                   {/* Course Professors */}
                   {width > COL_SPACING.PROF_CUT && (
-                    <div
-                      style={{ width: `${COL_SPACING.PROF_WIDTH}px` }}
-                      className={Styles.results_header}
-                    >
+                    <div style={prof_style} className={Styles.results_header}>
                       Professors
                     </div>
                   )}
                   {/* Course Meeting times and location */}
                   {width > COL_SPACING.MEET_CUT && (
-                    <div
-                      style={{ width: `${COL_SPACING.MEET_WIDTH}px` }}
-                      className={Styles.results_header}
-                    >
+                    <div style={meet_style} className={Styles.results_header}>
                       Meets
                     </div>
                   )}
                   {width > COL_SPACING.LOC_CUT && (
-                    <div
-                      style={{ width: `${COL_SPACING.LOC_WIDTH}px` }}
-                      className={Styles.results_header}
-                    >
+                    <div style={loc_style} className={Styles.results_header}>
                       Location
                     </div>
                   )}
                   {width > COL_SPACING.SA_CUT && (
                     <div
-                      style={{ width: `${COL_SPACING.SA_WIDTH}px` }}
+                      style={sa_style}
                       className={Styles.results_header + ' pr-2'}
                     >
                       Skills/Areas
