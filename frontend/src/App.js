@@ -78,102 +78,96 @@ function App() {
     );
   }
   return (
-    <Router>
-      <WindowDimensionsProvider>
-        <SeasonsProvider>
-          <div id="base">
-            <Notice>
-              CourseTable v2.0 is under construction, but{' '}
-              <Link to="/feedback">feedback</Link> is welcome. The{' '}
-              <a href="https://old.coursetable.com">old site</a> is also still
-              available.
-            </Notice>
-            <Navbar isLoggedIn={isLoggedIn} />
-            <Switch>
-              {/* Home Page */}
-              <MyRoute exact path="/">
-                {isLoggedIn ? <Home /> : <Redirect to="/login" />}
-              </MyRoute>
+    <>
+      <Notice>
+        CourseTable v2.0 is under construction, but{' '}
+        <Link to="/feedback">feedback</Link> is welcome. The{' '}
+        <a href="https://old.coursetable.com">old site</a> is also still
+        available.
+      </Notice>
+      <Navbar isLoggedIn={isLoggedIn} />
+      <Switch>
+        {/* Home Page */}
+        <MyRoute exact path="/">
+          {isLoggedIn ? <Home /> : <Redirect to="/login" />}
+        </MyRoute>
 
-              {/* About */}
-              <MyRoute exact path="/about">
-                <About />
-              </MyRoute>
+        {/* About */}
+        <MyRoute exact path="/about">
+          <About />
+        </MyRoute>
 
-              {/* Catalog */}
-              <MyRoute
-                exact
-                path="/catalog"
-                render={(props) =>
-                  user.isLoggedIn && !user.hasEvals ? (
-                    <Redirect push={true} to="/challenge" />
-                  ) : (
-                    <Search {...props} />
-                  )
-                }
-              />
+        {/* Catalog */}
+        <MyRoute
+          exact
+          path="/catalog"
+          render={(props) =>
+            user.isLoggedIn && !user.hasEvals ? (
+              <Redirect push={true} to="/challenge" />
+            ) : (
+              <Search {...props} />
+            )
+          }
+        />
 
-              {/* Auth */}
-              <MyRoute exact path="/login">
-                {isLoggedIn ? <Redirect to="/" /> : <Landing />}
-              </MyRoute>
+        {/* Auth */}
+        <MyRoute exact path="/login">
+          {isLoggedIn ? <Redirect to="/" /> : <Landing />}
+        </MyRoute>
 
-              <MyRoute exact path="/worksheetlogin">
-                {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
-              </MyRoute>
+        <MyRoute exact path="/worksheetlogin">
+          {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
+        </MyRoute>
 
-              {/* OCE Challenge */}
-              <MyRoute exact path="/challenge">
-                <Challenge />
-              </MyRoute>
+        {/* OCE Challenge */}
+        <MyRoute exact path="/challenge">
+          <Challenge />
+        </MyRoute>
 
-              {/* Worksheet */}
-              <MyRoute exact path="/worksheet">
-                {isLoggedIn ? (
-                  user.hasEvals ? (
-                    <Worksheet />
-                  ) : (
-                    <Redirect push={true} to="/challenge" />
-                  )
-                ) : (
-                  <Redirect to="/worksheetlogin" />
-                )}
-              </MyRoute>
+        {/* Worksheet */}
+        <MyRoute exact path="/worksheet">
+          {isLoggedIn ? (
+            user.hasEvals ? (
+              <Worksheet />
+            ) : (
+              <Redirect push={true} to="/challenge" />
+            )
+          ) : (
+            <Redirect to="/worksheetlogin" />
+          )}
+        </MyRoute>
 
-              {/* Thank You */}
-              <MyRoute exact path="/thankyou">
-                <Thankyou />
-              </MyRoute>
+        {/* Thank You */}
+        <MyRoute exact path="/thankyou">
+          <Thankyou />
+        </MyRoute>
 
-              {/* Footer Links */}
+        {/* Footer Links */}
 
-              <MyRoute exact path="/faq">
-                <FAQ />
-              </MyRoute>
+        <MyRoute exact path="/faq">
+          <FAQ />
+        </MyRoute>
 
-              <MyRoute exact path="/feedback">
-                <Feedback />
-              </MyRoute>
+        <MyRoute exact path="/feedback">
+          <Feedback />
+        </MyRoute>
 
-              <MyRoute exact path="/joinus">
-                <Join />
-              </MyRoute>
+        <MyRoute exact path="/joinus">
+          <Join />
+        </MyRoute>
 
-              {/* Catch-all Route to NotFound Page */}
-              <MyRoute path="/">
-                <NotFound />
-              </MyRoute>
-            </Switch>
-            {/* Render footer if not on catalog or worksheet pages */}
-            <Route
-              render={({ location }) => {
-                return !['/catalog'].includes(location.pathname) && <Footer />;
-              }}
-            />
-          </div>
-        </SeasonsProvider>
-      </WindowDimensionsProvider>
-    </Router>
+        {/* Catch-all Route to NotFound Page */}
+        <MyRoute path="/">
+          <NotFound />
+        </MyRoute>
+      </Switch>
+      {/* Render footer if not on catalog or worksheet pages */}
+      <Route
+        render={({ location }) => {
+          return !['/catalog'].includes(location.pathname) && <Footer />;
+        }}
+      />
+    </>
   );
 }
 
