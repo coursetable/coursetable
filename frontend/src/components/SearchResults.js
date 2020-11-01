@@ -197,7 +197,7 @@ const SearchResults = ({
             unflat_course={data[index]}
             showModal={showModal}
             multiSeasons={multiSeasons}
-            isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
+            isLast={index === data.length - 1}
             COL_SPACING={COL_SPACING}
             ROW_WIDTH={ROW_WIDTH}
             TITLE_WIDTH={TITLE_WIDTH}
