@@ -137,7 +137,7 @@ const SearchResults = ({
     MEET_WIDTH: 160,
     LOC_WIDTH: 100,
     SA_WIDTH: 100,
-    PADDING: 40,
+    PADDING: 35,
     PROF_CUT: 1100,
     MEET_CUT: 1200,
     LOC_CUT: 1300,

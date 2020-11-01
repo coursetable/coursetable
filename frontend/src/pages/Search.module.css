@@ -68,10 +68,27 @@
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+  width: calc(100% - 35px);
 }
 
 .light_bg {
   background-color: rgba(0, 0, 0, 0.033);
+}
+
+.sort_btn {
+  cursor: pointer;
+  border-radius: 20px;
+  padding: 5px;
+  margin-left: auto;
+  transition: 0.3s;
+}
+
+.sort_btn:hover {
+  background-color: rgb(226, 226, 226);
+}
+
+.sort_icon {
+  display: block;
 }
 
 .sliders {

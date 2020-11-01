@@ -47,6 +47,12 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 import { FaSearch } from 'react-icons/fa';
 import { BsX } from 'react-icons/bs';
+import {
+  FcAlphabeticalSortingAz,
+  FcAlphabeticalSortingZa,
+  FcNumericalSorting12,
+  FcNumericalSorting21,
+} from 'react-icons/fc';
 import { flatten, preprocess_courses } from '../utilities';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
@@ -85,6 +91,9 @@ function Search({ location, history }) {
 
   // State that determines if a course modal needs to be displayed and which course to display
   const [course_modal, setCourseModal] = useState([false, '']);
+
+  // State that determines sort order
+  const [sort_order, setSortOrder] = useState('asc');
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -181,6 +190,11 @@ function Search({ location, history }) {
     handleSubmit(null, true);
   };
 
+  const handleSortOrder = () => {
+    if (sort_order === 'asc') setSortOrder('desc');
+    else setSortOrder('asc');
+  };
+
   // search form submit handler
   const handleSubmit = useCallback(
     (event, search = false) => {
@@ -208,7 +222,14 @@ function Search({ location, history }) {
 
       // sorting options
       var sortParams = select_sortby.value;
-      var ordering = sortbyQueries[sortParams];
+      var ordering = null;
+      if (sortParams === 'text' && sort_order === 'desc')
+        ordering = { course_code: 'desc' };
+      else if (sortParams === 'course_name') ordering = { title: sort_order };
+      else if (sortParams === 'rating')
+        ordering = { average_rating: sort_order };
+      else if (sortParams === 'workload')
+        ordering = { average_workload: sort_order };
 
       // seasons to filter
       var processedSeasons = select_seasons;
@@ -492,6 +513,8 @@ function Search({ location, history }) {
       { value: 'YC', label: 'Yale College' },
       { value: 'GS', label: 'Graduate' },
     ]);
+    setSelectSubjects([]);
+    setSortOrder('asc');
     setFormKey(form_key + 1);
   };
 
@@ -613,7 +636,7 @@ function Search({ location, history }) {
                 </div>
               </Row>
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                <div className={`${Styles.selector_container}`}>
                   {/* Sort By Multi-Select */}
                   <Select
                     value={select_sortby}
@@ -625,6 +648,37 @@ function Search({ location, history }) {
                       setSelectSortby(options);
                     }}
                   />
+                </div>
+                <div
+                  className={Styles.sort_btn + ' my-auto'}
+                  onClick={handleSortOrder}
+                >
+                  {select_sortby.value === 'text' ||
+                  select_sortby.value === 'course_name' ? (
+                    // Sorting by letters
+                    sort_order === 'asc' ? (
+                      <FcAlphabeticalSortingAz
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    ) : (
+                      <FcAlphabeticalSortingZa
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    )
+                  ) : // Sorting by numbers
+                  sort_order === 'asc' ? (
+                    <FcNumericalSorting12
+                      className={Styles.sort_icon}
+                      size={20}
+                    />
+                  ) : (
+                    <FcNumericalSorting21
+                      className={Styles.sort_icon}
+                      size={20}
+                    />
+                  )}
                 </div>
               </Row>
               <hr />
