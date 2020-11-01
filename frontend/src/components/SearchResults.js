@@ -9,7 +9,7 @@ import React, {
 import SearchResultsItemMemo from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
 
-import ListGridToggle from './ListGridToggle';
+// import ListGridToggle from './ListGridToggle';
 
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
@@ -136,11 +136,27 @@ const SearchResults = ({
     PROF_WIDTH: 150,
     MEET_WIDTH: 160,
     LOC_WIDTH: 100,
-    BOOKMARK_WIDTH: 40,
-    PADDING: 50,
-    PROF_CUT: 1023,
+    SA_WIDTH: 100,
+    PADDING: 40,
+    PROF_CUT: 1100,
     MEET_CUT: 1200,
+    LOC_CUT: 1300,
+    SA_CUT: 1400,
   };
+  const TITLE_WIDTH = useMemo(() => {
+    return (
+      ROW_WIDTH -
+      COL_SPACING.CODE_WIDTH -
+      COL_SPACING.LOC_WIDTH -
+      (width > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
+      (width > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
+      (width > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
+      (width > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
+      3 * COL_SPACING.RATE_WIDTH -
+      2 * COL_SPACING.NUM_WIDTH -
+      COL_SPACING.PADDING
+    );
+  }, [width, ROW_WIDTH, COL_SPACING]);
 
   // Holds HTML for the search results
   var resultsListing;
@@ -184,11 +200,20 @@ const SearchResults = ({
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
             COL_SPACING={COL_SPACING}
             ROW_WIDTH={ROW_WIDTH}
+            TITLE_WIDTH={TITLE_WIDTH}
           />
         </div>
       );
     },
-    [data, showModal, multiSeasons, isRowLoaded, ROW_WIDTH, COL_SPACING]
+    [
+      data,
+      showModal,
+      multiSeasons,
+      isRowLoaded,
+      ROW_WIDTH,
+      COL_SPACING,
+      TITLE_WIDTH,
+    ]
   );
 
   // if no courses found (either due to query or authentication), render the empty state
@@ -350,7 +375,7 @@ const SearchResults = ({
             <Row
               ref={ref}
               className={
-                `mx-auto px-2 py-2 shadow-sm ${Styles.results_header_row}` +
+                `mx-auto pl-4 pr-2 py-2 shadow-sm ${Styles.results_header_row}` +
                 ' justify-content-between'
               }
             >
@@ -375,21 +400,7 @@ const SearchResults = ({
                   {/* Course Name */}
                   <div
                     style={{
-                      width: `${
-                        ROW_WIDTH -
-                        COL_SPACING.CODE_WIDTH -
-                        COL_SPACING.LOC_WIDTH -
-                        (width > COL_SPACING.PROF_CUT
-                          ? COL_SPACING.PROF_WIDTH
-                          : 0) -
-                        (width > COL_SPACING.MEET_CUT
-                          ? COL_SPACING.MEET_WIDTH
-                          : 0) -
-                        3 * COL_SPACING.RATE_WIDTH -
-                        2 * COL_SPACING.NUM_WIDTH -
-                        COL_SPACING.BOOKMARK_WIDTH -
-                        COL_SPACING.PADDING
-                      }px`,
+                      width: `${TITLE_WIDTH}px`,
                     }}
                     className={Styles.results_header}
                   >
@@ -478,12 +489,22 @@ const SearchResults = ({
                       Meets
                     </div>
                   )}
-                  <div
-                    style={{ width: `${COL_SPACING.LOC_WIDTH}px` }}
-                    className={Styles.results_header}
-                  >
-                    Location
-                  </div>
+                  {width > COL_SPACING.LOC_CUT && (
+                    <div
+                      style={{ width: `${COL_SPACING.LOC_WIDTH}px` }}
+                      className={Styles.results_header}
+                    >
+                      Location
+                    </div>
+                  )}
+                  {width > COL_SPACING.SA_CUT && (
+                    <div
+                      style={{ width: `${COL_SPACING.SA_WIDTH}px` }}
+                      className={Styles.results_header + ' pr-2'}
+                    >
+                      Skills/Areas
+                    </div>
+                  )}
                 </React.Fragment>
               ) : (
                 // Grid view showing how many search results
@@ -496,14 +517,14 @@ const SearchResults = ({
                 </Col>
               )}
               {/* List Grid Toggle Button */}
-              <div
+              {/* <div
                 style={{ width: `${COL_SPACING.BOOKMARK_WIDTH}px` }}
                 className={Styles.results_header + ' pr-2'}
               >
                 <div className="d-flex ml-auto my-auto p-0">
                   <ListGridToggle isList={isList} setView={setView} />
                 </div>
-              </div>
+              </div> */}
             </Row>
           </div>
         )}

@@ -5,7 +5,7 @@ import { Row, Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 import {
   ratingColormap,
   workloadColormap,
-  // skillsAreasColors,
+  skillsAreasColors,
 } from '../queries/Constants.js';
 
 import chroma from 'chroma-js';
@@ -30,6 +30,7 @@ import Styles from './SearchResultsItem.module.css';
  * @prop hasSeason - function to pass to bookmark button
  * @prop ROW_WIDTH - integer that holds width of the row
  * @prop COL_SPACING - dictionary with widths of each column
+ * @prop TITLE_WIDTH - integer that holds width of title
  */
 
 const SearchResultsItem = ({
@@ -40,6 +41,7 @@ const SearchResultsItem = ({
   hasSeason = null,
   ROW_WIDTH,
   COL_SPACING,
+  TITLE_WIDTH,
 }) => {
   const course = useMemo(() => {
     return flatten(unflat_course);
@@ -139,21 +141,7 @@ const SearchResultsItem = ({
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const title_style = useMemo(() => {
-    return {
-      width: `${
-        ROW_WIDTH -
-        COL_SPACING.CODE_WIDTH -
-        COL_SPACING.LOC_WIDTH -
-        (width > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
-        (width > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
-        3 * COL_SPACING.RATE_WIDTH -
-        2 * COL_SPACING.NUM_WIDTH -
-        COL_SPACING.BOOKMARK_WIDTH -
-        COL_SPACING.PADDING
-      }px`,
-    };
-  }, [ROW_WIDTH, COL_SPACING, width]);
+  const title_style = { width: `${TITLE_WIDTH}px` };
   const rate_style = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WIDTH}px`,
@@ -161,13 +149,13 @@ const SearchResultsItem = ({
   const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const bookmark_style = { width: `${COL_SPACING.BOOKMARK_WIDTH}px` };
   const num_style = { width: `${COL_SPACING.NUM_WIDTH}px` };
+  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
     <Row
       className={
-        'mx-auto px-2 py-0 justify-content-between ' +
+        'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
         Styles.search_result_item +
         ' ' +
         (isLast ? Styles.last_search_result_item : '')
@@ -215,39 +203,6 @@ const SearchResultsItem = ({
                 </div>
               </OverlayTrigger>
             )}
-            {/* Course Skills/Areas */}
-            {/* <div className={Styles.skills_areas}>
-              {course.skills.map((skill) => (
-                <Badge
-                  variant="secondary"
-                  className={Styles.tag}
-                  key={key++}
-                  style={{
-                    color: skillsAreasColors[skill],
-                    backgroundColor: chroma(skillsAreasColors[skill])
-                      .alpha(0.16)
-                      .css(),
-                  }}
-                >
-                  {skill}
-                </Badge>
-              ))}
-              {course.areas.map((area) => (
-                <Badge
-                  variant="secondary"
-                  className={Styles.tag}
-                  key={key++}
-                  style={{
-                    color: skillsAreasColors[area],
-                    backgroundColor: chroma(skillsAreasColors[area])
-                      .alpha(0.16)
-                      .css(),
-                  }}
-                >
-                  {area}
-                </Badge>
-              ))}
-            </div> */}
             {/* Course Extra Info */}
             {/* {course.extra_info !== 'ACTIVE' && (
               <div className={Styles.extra_info + ' ml-1'}>CANCELLED</div>
@@ -255,6 +210,7 @@ const SearchResultsItem = ({
           </Row>
         </div>
       </OverlayTrigger>
+      {/* Enrollment */}
       <div style={num_style} className="d-flex">
         <span className="m-auto">
           {course.enrolled ? course.enrolled : 'n/a'}
@@ -333,17 +289,55 @@ const SearchResultsItem = ({
             : course.professor_names.join(' • ')}
         </div>
       )}
-      {/* Course Meets and Location */}
+      {/* Course Meets */}
       {width > COL_SPACING.MEET_CUT && (
         <div style={meet_style}>
           <div className={Styles.course_time}>{course.times_summary}</div>
         </div>
       )}
-      <div style={loc_style}>
-        <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
-      </div>
-      {/* # FB Friends also shopping */}
-      <div style={bookmark_style} className="d-flex px-1"></div>
+      {/* Course Location */}
+      {width > COL_SPACING.LOC_CUT && (
+        <div style={loc_style}>
+          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+        </div>
+      )}
+      {/* Skills and Areas */}
+      {width > COL_SPACING.SA_CUT && (
+        <div style={sa_style} className="d-flex pr-2">
+          <span className={Styles.skills_areas + ' '}>
+            {course.skills.map((skill) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag + ' my-auto'}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[skill],
+                  backgroundColor: chroma(skillsAreasColors[skill])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {skill}
+              </Badge>
+            ))}
+            {course.areas.map((area) => (
+              <Badge
+                variant="secondary"
+                className={Styles.tag + ' my-auto'}
+                key={key++}
+                style={{
+                  color: skillsAreasColors[area],
+                  backgroundColor: chroma(skillsAreasColors[area])
+                    .alpha(0.16)
+                    .css(),
+                }}
+              >
+                {area}
+              </Badge>
+            ))}
+          </span>
+        </div>
+      )}
       {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
