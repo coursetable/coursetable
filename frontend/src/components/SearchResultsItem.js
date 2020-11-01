@@ -29,14 +29,7 @@ import Styles from './SearchResultsItem.module.css';
  * @prop isLast - boolean | is this the last course of the search results?
  * @prop hasSeason - function to pass to bookmark button
  * @prop ROW_WIDTH - integer that holds width of the row
- * @prop PROF_WIDTH - integer that holds width of the professor column
- * @prop MEET_WIDTH - integer that holds width of the meets column
- * @prop LOC_WIDTH - integer that holds width of locaiton column
- * @prop RATE_WIDTH - integer that holds width of the ratings columns
- * @prop BOOKMARK_WIDTH - integer that holds width of the last column
- * @prop PADDING - integer that holds width of padding between course and rest of columns
- * @prop PROF_CUT - integer that determines at what window width to stop displaying prof column
- * @prop MEET_CUT - integer that determines at what window width to stop displaying meets column
+ * @prop COL_SPACING - dictionary with widths of each column
  */
 
 const SearchResultsItem = ({
@@ -46,15 +39,7 @@ const SearchResultsItem = ({
   isLast,
   hasSeason = null,
   ROW_WIDTH,
-  CODE_WIDTH,
-  PROF_WIDTH,
-  MEET_WIDTH,
-  LOC_WIDTH,
-  RATE_WIDTH,
-  BOOKMARK_WIDTH,
-  PADDING,
-  PROF_CUT,
-  MEET_CUT,
+  COL_SPACING,
 }) => {
   const course = useMemo(() => {
     return flatten(unflat_course);
@@ -147,38 +132,32 @@ const SearchResultsItem = ({
     </Tooltip>
   );
 
-  const code_style = { width: `${CODE_WIDTH}px`, paddingLeft: '15px' };
+  const code_style = {
+    width: `${COL_SPACING.CODE_WIDTH}px`,
+    paddingLeft: '15px',
+  };
   const title_style = useMemo(() => {
     return {
       width: `${
         ROW_WIDTH -
-        CODE_WIDTH -
-        LOC_WIDTH -
-        (width > PROF_CUT ? PROF_WIDTH : 0) -
-        (width > MEET_CUT ? MEET_WIDTH : 0) -
-        3 * RATE_WIDTH -
-        BOOKMARK_WIDTH -
-        PADDING
+        COL_SPACING.CODE_WIDTH -
+        COL_SPACING.LOC_WIDTH -
+        (width > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
+        (width > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
+        3 * COL_SPACING.RATE_WIDTH -
+        COL_SPACING.BOOKMARK_WIDTH -
+        COL_SPACING.PADDING
       }px`,
     };
-  }, [
-    ROW_WIDTH,
-    CODE_WIDTH,
-    LOC_WIDTH,
-    PROF_CUT,
-    PROF_WIDTH,
-    MEET_CUT,
-    MEET_WIDTH,
-    RATE_WIDTH,
-    BOOKMARK_WIDTH,
-    PADDING,
-    width,
-  ]);
-  const rate_style = { whiteSpace: 'nowrap', width: `${RATE_WIDTH}px` };
-  const prof_style = { width: `${PROF_WIDTH}px` };
-  const meet_style = { width: `${MEET_WIDTH}px` };
-  const loc_style = { width: `${LOC_WIDTH}px` };
-  const bookmark_style = { width: `${BOOKMARK_WIDTH}px` };
+  }, [ROW_WIDTH, COL_SPACING, width]);
+  const rate_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_WIDTH}px`,
+  };
+  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
+  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
+  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
+  const bookmark_style = { width: `${COL_SPACING.BOOKMARK_WIDTH}px` };
 
   return (
     <Row
@@ -325,7 +304,7 @@ const SearchResultsItem = ({
         </div>
       </div>
       {/* Course Professors */}
-      {width > PROF_CUT && (
+      {width > COL_SPACING.PROF_CUT && (
         <div style={prof_style} className={Styles.ellipsis_text}>
           {course.professor_names.length === 0
             ? 'TBA'
@@ -333,7 +312,7 @@ const SearchResultsItem = ({
         </div>
       )}
       {/* Course Meets and Location */}
-      {width > MEET_CUT && (
+      {width > COL_SPACING.MEET_CUT && (
         <div style={meet_style}>
           <div className={Styles.course_time}>{course.times_summary}</div>
         </div>

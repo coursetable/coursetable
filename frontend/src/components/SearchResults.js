@@ -129,15 +129,17 @@ const SearchResults = ({
   }, [setRowWidth, width]);
 
   // Spacing for each column in list view
-  const CODE_WIDTH = 110;
-  const RATE_WIDTH = 30;
-  const PROF_WIDTH = 150;
-  const MEET_WIDTH = 160;
-  const LOC_WIDTH = 100;
-  const BOOKMARK_WIDTH = 40;
-  const PADDING = 50;
-  const PROF_CUT = 1023;
-  const MEET_CUT = 1200;
+  const COL_SPACING = {
+    CODE_WIDTH: 110,
+    RATE_WIDTH: 30,
+    PROF_WIDTH: 150,
+    MEET_WIDTH: 160,
+    LOC_WIDTH: 100,
+    BOOKMARK_WIDTH: 40,
+    PADDING: 50,
+    PROF_CUT: 1023,
+    MEET_CUT: 1200,
+  };
 
   // Holds HTML for the search results
   var resultsListing;
@@ -179,35 +181,13 @@ const SearchResults = ({
             showModal={showModal}
             multiSeasons={multiSeasons}
             isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
+            COL_SPACING={COL_SPACING}
             ROW_WIDTH={ROW_WIDTH}
-            CODE_WIDTH={CODE_WIDTH}
-            PROF_WIDTH={PROF_WIDTH}
-            MEET_WIDTH={MEET_WIDTH}
-            RATE_WIDTH={RATE_WIDTH}
-            LOC_WIDTH={LOC_WIDTH}
-            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
-            PADDING={PADDING}
-            PROF_CUT={PROF_CUT}
-            MEET_CUT={MEET_CUT}
           />
         </div>
       );
     },
-    [
-      data,
-      showModal,
-      multiSeasons,
-      isRowLoaded,
-      ROW_WIDTH,
-      CODE_WIDTH,
-      PROF_WIDTH,
-      MEET_WIDTH,
-      RATE_WIDTH,
-      BOOKMARK_WIDTH,
-      PADDING,
-      PROF_CUT,
-      MEET_CUT,
-    ]
+    [data, showModal, multiSeasons, isRowLoaded, ROW_WIDTH, COL_SPACING]
   );
 
   // if no courses found (either due to query or authentication), render the empty state
@@ -383,7 +363,10 @@ const SearchResults = ({
               {isList ? (
                 <React.Fragment>
                   <div
-                    style={{ width: `${CODE_WIDTH}px`, paddingLeft: '15px' }}
+                    style={{
+                      width: `${COL_SPACING.CODE_WIDTH}px`,
+                      paddingLeft: '15px',
+                    }}
                     className={Styles.results_header}
                   >
                     Code
@@ -393,13 +376,17 @@ const SearchResults = ({
                     style={{
                       width: `${
                         ROW_WIDTH -
-                        CODE_WIDTH -
-                        LOC_WIDTH -
-                        (width > PROF_CUT ? PROF_WIDTH : 0) -
-                        (width > MEET_CUT ? MEET_WIDTH : 0) -
-                        3 * RATE_WIDTH -
-                        BOOKMARK_WIDTH -
-                        PADDING
+                        COL_SPACING.CODE_WIDTH -
+                        COL_SPACING.LOC_WIDTH -
+                        (width > COL_SPACING.PROF_CUT
+                          ? COL_SPACING.PROF_WIDTH
+                          : 0) -
+                        (width > COL_SPACING.MEET_CUT
+                          ? COL_SPACING.MEET_WIDTH
+                          : 0) -
+                        3 * COL_SPACING.RATE_WIDTH -
+                        COL_SPACING.BOOKMARK_WIDTH -
+                        COL_SPACING.PADDING
                       }px`,
                     }}
                     className={Styles.results_header}
@@ -408,7 +395,7 @@ const SearchResults = ({
                   </div>
                   {/* Class Rating */}
                   <div
-                    style={{ width: `${RATE_WIDTH}px` }}
+                    style={{ width: `${COL_SPACING.RATE_WIDTH}px` }}
                     className={Styles.results_header}
                   >
                     <div className="m-auto">
@@ -427,7 +414,7 @@ const SearchResults = ({
                   </div>
                   {/* Professor Rating */}
                   <div
-                    style={{ width: `${RATE_WIDTH}px` }}
+                    style={{ width: `${COL_SPACING.RATE_WIDTH}px` }}
                     className={Styles.results_header}
                   >
                     <div className="m-auto">
@@ -446,7 +433,7 @@ const SearchResults = ({
                   </div>
                   {/* Workload Rating */}
                   <div
-                    style={{ width: `${RATE_WIDTH}px` }}
+                    style={{ width: `${COL_SPACING.RATE_WIDTH}px` }}
                     className={Styles.results_header}
                   >
                     <div className="m-auto">
@@ -460,25 +447,25 @@ const SearchResults = ({
                     </div>
                   </div>
                   {/* Course Professors */}
-                  {width > PROF_CUT && (
+                  {width > COL_SPACING.PROF_CUT && (
                     <div
-                      style={{ width: `${PROF_WIDTH}px` }}
+                      style={{ width: `${COL_SPACING.PROF_WIDTH}px` }}
                       className={Styles.results_header}
                     >
                       Professors
                     </div>
                   )}
                   {/* Course Meeting times and location */}
-                  {width > MEET_CUT && (
+                  {width > COL_SPACING.MEET_CUT && (
                     <div
-                      style={{ width: `${MEET_WIDTH}px` }}
+                      style={{ width: `${COL_SPACING.MEET_WIDTH}px` }}
                       className={Styles.results_header}
                     >
                       Meets
                     </div>
                   )}
                   <div
-                    style={{ width: `${LOC_WIDTH}px` }}
+                    style={{ width: `${COL_SPACING.LOC_WIDTH}px` }}
                     className={Styles.results_header}
                   >
                     Location
@@ -496,7 +483,7 @@ const SearchResults = ({
               )}
               {/* List Grid Toggle Button */}
               <div
-                style={{ width: `${BOOKMARK_WIDTH}px` }}
+                style={{ width: `${COL_SPACING.BOOKMARK_WIDTH}px` }}
                 className={Styles.results_header + ' pr-2'}
               >
                 <div className="d-flex ml-auto my-auto p-0">
