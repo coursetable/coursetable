@@ -30,10 +30,14 @@ export const verifyHeaders = (req, res, next) => {
  * @prop res - express response object
  * @prop next - express next object
  */
-export const refreshCatalog = async (req, res, next) => {
-  await fetchCatalog();
-
-  return res.status(200).json({
-    status: 'OK',
-  });
+export const refreshCatalog = (req, res, next) => {
+  fetchCatalog(true)
+    .then(() => {
+      return res.status(200).json({
+        status: 'OK',
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json(err);
+    });
 };

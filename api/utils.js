@@ -58,18 +58,25 @@ export function getRandomInt(max) {
  * @prop overwrite - whether or not to skip existing catalogs.
  */
 export async function fetchCatalog(overwrite) {
-  const seasons = await query({
-    query: listSeasonsQuery,
-    endpoint: GRAPHQL_ENDPOINT,
-  });
+  let seasons;
+  // get a list of all seasons
+  try {
+    seasons = await query({
+      query: listSeasonsQuery,
+      endpoint: GRAPHQL_ENDPOINT,
+    });
+  } catch (err) {
+    throw Error(err);
+  }
 
   console.log(`Fetched ${seasons.data.seasons.length} seasons`);
-
   fs.writeFileSync(
     `./static/seasons.json`,
     JSON.stringify(seasons.data.seasons)
   );
 
+  // for each season, fetch all courses inside it and save
+  // (if overwrite = true or if file does not exist)
   const processSeasons = await seasons.data.seasons.map(
     async ({ season_code }) => {
       const output_path = `./static/catalogs/${season_code}.json`;
@@ -79,26 +86,34 @@ export async function fetchCatalog(overwrite) {
         return;
       }
 
-      const catalog = await query({
-        query: catalogBySeasonQuery,
-        endpoint: GRAPHQL_ENDPOINT,
-        variables: {
-          season: season_code,
-        },
-      });
+      let catalog;
+
+      try {
+        catalog = await query({
+          query: catalogBySeasonQuery,
+          endpoint: GRAPHQL_ENDPOINT,
+          variables: {
+            season: season_code,
+          },
+        });
+      } catch (err) {
+        console.log(err);
+        throw err;
+      }
 
       console.log(
         `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
       );
 
-      fs.writeFileSync(
-        output_path,
-        JSON.stringify(catalog.data.computed_listing_info)
-      );
-
-      return;
+      if (catalog.data.computed_listing_info) {
+        fs.writeFileSync(
+          output_path,
+          JSON.stringify(catalog.data.computed_listing_info)
+        );
+        return;
+      }
     }
   );
 
-  const catalogs = await Promise.all(processSeasons);
+  return Promise.all(processSeasons);
 }
