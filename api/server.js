@@ -10,6 +10,8 @@ import { PORT, FERRY_SECRET } from './config/constants.js';
 import challenge from './routes/challenge.routes.js';
 import catalog from './routes/catalog.routes.js';
 
+import { verifyNetID } from './utils.js';
+
 // import catalog fetch function (same as /api/catalog/refresh)
 import { fetchCatalog } from './utils.js';
 
@@ -23,7 +25,11 @@ app.use(morgan('tiny'));
 challenge(app);
 catalog(app);
 
-app.use('/api/static', express.static(path.join(path.resolve(), 'static')));
+app.use(
+  '/api/static',
+  verifyNetID,
+  express.static(path.join(path.resolve(), 'static'))
+);
 
 console.log('Updating static catalog');
 
