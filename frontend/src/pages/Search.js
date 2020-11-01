@@ -922,6 +922,7 @@ function Search({ location, history }) {
               fetchedAll={fetchedAll}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
+              expanded={collapsed_form}
             />
           </Element>
         </Col>

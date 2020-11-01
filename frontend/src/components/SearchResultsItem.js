@@ -12,7 +12,6 @@ import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useUser } from '../user';
 import { fbFriendsAlsoTaking, flatten } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
@@ -29,6 +28,7 @@ import Styles from './SearchResultsItem.module.css';
  * @prop isLast - boolean | is this the last course of the search results?
  * @prop hasSeason - function to pass to bookmark button
  * @prop COL_SPACING - dictionary with widths of each column
+ * @prop ROW_WIDTH - integer that holds width of row
  * @prop TITLE_WIDTH - integer that holds width of title
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
  */
@@ -40,6 +40,7 @@ const SearchResultsItem = ({
   isLast,
   hasSeason = null,
   COL_SPACING,
+  ROW_WIDTH,
   TITLE_WIDTH,
   isScrolling,
 }) => {
@@ -51,8 +52,7 @@ const SearchResultsItem = ({
   let key = 1;
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
-  // Fetch width of window
-  const { width } = useWindowDimensions();
+
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB Friends that are also shopping this class
@@ -282,7 +282,7 @@ const SearchResultsItem = ({
         </div>
       </div>
       {/* Course Professors */}
-      {width > COL_SPACING.PROF_CUT && (
+      {ROW_WIDTH > COL_SPACING.PROF_CUT && (
         <div style={prof_style} className={Styles.ellipsis_text}>
           {course.professor_names.length === 0
             ? 'TBA'
@@ -290,19 +290,19 @@ const SearchResultsItem = ({
         </div>
       )}
       {/* Course Meets */}
-      {width > COL_SPACING.MEET_CUT && (
+      {ROW_WIDTH > COL_SPACING.MEET_CUT && (
         <div style={meet_style}>
           <div className={Styles.course_time}>{course.times_summary}</div>
         </div>
       )}
       {/* Course Location */}
-      {width > COL_SPACING.LOC_CUT && (
+      {ROW_WIDTH > COL_SPACING.LOC_CUT && (
         <div style={loc_style}>
           <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
       )}
       {/* Skills and Areas */}
-      {width > COL_SPACING.SA_CUT && (
+      {ROW_WIDTH > COL_SPACING.SA_CUT && (
         <div style={sa_style} className="d-flex pr-2">
           <span className={Styles.skills_areas + ' '}>
             {course.skills.map((skill) => (

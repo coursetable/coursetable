@@ -57,7 +57,7 @@ import { AiFillStar } from 'react-icons/ai';
 const SearchResults = ({
   data,
   isList,
-  setView,
+  // setView,
   loading,
   loadMore,
   multiSeasons,
@@ -65,6 +65,7 @@ const SearchResults = ({
   fetchedAll,
   showModal,
   isLoggedIn,
+  expanded,
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -126,7 +127,7 @@ const SearchResults = ({
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, width]);
+  }, [setRowWidth, width, expanded]);
 
   // Spacing for each column in list view
   const COL_SPACING = {
@@ -138,25 +139,25 @@ const SearchResults = ({
     LOC_WIDTH: 100,
     SA_WIDTH: 100,
     PADDING: 35,
-    PROF_CUT: 1100,
-    MEET_CUT: 1200,
-    LOC_CUT: 1300,
-    SA_CUT: 1400,
+    PROF_CUT: 730,
+    MEET_CUT: 830,
+    LOC_CUT: 930,
+    SA_CUT: 1030,
   };
   const TITLE_WIDTH = useMemo(() => {
     return (
       ROW_WIDTH -
       COL_SPACING.CODE_WIDTH -
       COL_SPACING.LOC_WIDTH -
-      (width > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
-      (width > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
-      (width > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
-      (width > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
       3 * COL_SPACING.RATE_WIDTH -
       2 * COL_SPACING.NUM_WIDTH -
       COL_SPACING.PADDING
     );
-  }, [width, ROW_WIDTH, COL_SPACING]);
+  }, [ROW_WIDTH, COL_SPACING]);
 
   // Holds HTML for the search results
   var resultsListing;
@@ -200,12 +201,21 @@ const SearchResults = ({
             isLast={index === data.length - 1}
             COL_SPACING={COL_SPACING}
             TITLE_WIDTH={TITLE_WIDTH}
+            ROW_WIDTH={ROW_WIDTH}
             isScrolling={isScrolling}
           />
         </div>
       );
     },
-    [data, showModal, multiSeasons, isRowLoaded, COL_SPACING, TITLE_WIDTH]
+    [
+      data,
+      showModal,
+      multiSeasons,
+      isRowLoaded,
+      COL_SPACING,
+      TITLE_WIDTH,
+      ROW_WIDTH,
+    ]
   );
 
   // if no courses found (either due to query or authentication), render the empty state
@@ -486,23 +496,23 @@ const SearchResults = ({
                     </div>
                   </div>
                   {/* Course Professors */}
-                  {width > COL_SPACING.PROF_CUT && (
+                  {ROW_WIDTH > COL_SPACING.PROF_CUT && (
                     <div style={prof_style} className={Styles.results_header}>
                       Professors
                     </div>
                   )}
                   {/* Course Meeting times and location */}
-                  {width > COL_SPACING.MEET_CUT && (
+                  {ROW_WIDTH > COL_SPACING.MEET_CUT && (
                     <div style={meet_style} className={Styles.results_header}>
                       Meets
                     </div>
                   )}
-                  {width > COL_SPACING.LOC_CUT && (
+                  {ROW_WIDTH > COL_SPACING.LOC_CUT && (
                     <div style={loc_style} className={Styles.results_header}>
                       Location
                     </div>
                   )}
-                  {width > COL_SPACING.SA_CUT && (
+                  {ROW_WIDTH > COL_SPACING.SA_CUT && (
                     <div
                       style={sa_style}
                       className={Styles.results_header + ' pr-2'}
