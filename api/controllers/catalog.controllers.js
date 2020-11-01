@@ -14,7 +14,7 @@ export const verifyHeaders = (req, res, next) => {
   const authd = req.header('x-ferry-secret'); // if user is logged in
 
   // require NetID authentication
-  if (authd !== FERRY_SECRET) {
+  if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
     return res.status(401).json({
       error: 'NOT_AUTHENTICATED',
     });
