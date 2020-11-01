@@ -132,6 +132,7 @@ const SearchResults = ({
   const COL_SPACING = {
     CODE_WIDTH: 110,
     RATE_WIDTH: 30,
+    NUM_WIDTH: 40,
     PROF_WIDTH: 150,
     MEET_WIDTH: 160,
     LOC_WIDTH: 100,
@@ -385,6 +386,7 @@ const SearchResults = ({
                           ? COL_SPACING.MEET_WIDTH
                           : 0) -
                         3 * COL_SPACING.RATE_WIDTH -
+                        2 * COL_SPACING.NUM_WIDTH -
                         COL_SPACING.BOOKMARK_WIDTH -
                         COL_SPACING.PADDING
                       }px`,
@@ -392,6 +394,18 @@ const SearchResults = ({
                     className={Styles.results_header}
                   >
                     Title
+                  </div>
+                  <div
+                    style={{ width: `${COL_SPACING.NUM_WIDTH}px` }}
+                    className={Styles.results_header}
+                  >
+                    <span className="m-auto">#</span>
+                  </div>
+                  <div
+                    style={{ width: `${COL_SPACING.NUM_WIDTH}px` }}
+                    className={Styles.results_header}
+                  >
+                    <span className="m-auto">#FB</span>
                   </div>
                   {/* Class Rating */}
                   <div

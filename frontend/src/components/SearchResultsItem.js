@@ -126,11 +126,14 @@ const SearchResultsItem = ({
   };
 
   // Render tooltip with names of FB friends also shopping
-  const renderFBFriendsTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      {also_taking.join(' • ')}
-    </Tooltip>
-  );
+  const renderFBFriendsTooltip = (props) =>
+    also_taking.length > 0 ? (
+      <Tooltip id="button-tooltip" {...props}>
+        {also_taking.join(' • ')}
+      </Tooltip>
+    ) : (
+      <div />
+    );
 
   const code_style = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
@@ -145,6 +148,7 @@ const SearchResultsItem = ({
         (width > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
         (width > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
         3 * COL_SPACING.RATE_WIDTH -
+        2 * COL_SPACING.NUM_WIDTH -
         COL_SPACING.BOOKMARK_WIDTH -
         COL_SPACING.PADDING
       }px`,
@@ -158,6 +162,7 @@ const SearchResultsItem = ({
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
   const bookmark_style = { width: `${COL_SPACING.BOOKMARK_WIDTH}px` };
+  const num_style = { width: `${COL_SPACING.NUM_WIDTH}px` };
 
   return (
     <Row
@@ -250,6 +255,23 @@ const SearchResultsItem = ({
           </Row>
         </div>
       </OverlayTrigger>
+      <div style={num_style} className="d-flex">
+        <span className="m-auto">
+          {course.enrolled ? course.enrolled : 'n/a'}
+        </span>
+      </div>
+      {/* # FB Friends also shopping */}
+      <div style={num_style} className="d-flex">
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 100, hide: 100 }}
+          overlay={renderFBFriendsTooltip}
+        >
+          <span className={'m-auto'}>
+            {also_taking.length > 0 ? also_taking.length : 'n/a'}
+          </span>
+        </OverlayTrigger>
+      </div>
       {/* Class Rating */}
       <div style={rate_style} className="d-flex">
         <div
@@ -321,19 +343,7 @@ const SearchResultsItem = ({
         <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
       </div>
       {/* # FB Friends also shopping */}
-      <div style={bookmark_style} className="d-flex px-1">
-        {also_taking.length > 0 && (
-          <OverlayTrigger
-            placement="top"
-            delay={{ show: 250, hide: 400 }}
-            overlay={renderFBFriendsTooltip}
-          >
-            <div className={Styles.fb_friends + ' m-auto'}>
-              {also_taking.length}
-            </div>
-          </OverlayTrigger>
-        )}
-      </div>
+      <div style={bookmark_style} className="d-flex px-1"></div>
       {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
