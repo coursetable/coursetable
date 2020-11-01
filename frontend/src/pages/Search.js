@@ -36,7 +36,7 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import Select from 'react-select';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
-import { useSeasons } from '../components/FerryProvider';
+import { useFerry } from '../components/FerryProvider';
 
 import { debounce } from 'lodash';
 
@@ -151,7 +151,7 @@ function Search({ location, history }) {
 
   // populate seasons from database
   var seasonsOptions;
-  const seasonsData = useSeasons();
+  const { seasons: seasonsData } = useFerry();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map((x) => {
       return {
