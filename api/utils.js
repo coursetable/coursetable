@@ -138,5 +138,5 @@ export async function fetchCatalog(overwrite) {
     }
   );
 
-  return Promise.all(processSeasons);
+  return Promise.allSettled(processSeasons);
 }
