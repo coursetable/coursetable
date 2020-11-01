@@ -1,13 +1,17 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
+import axios from 'axios';
 import path from 'path';
 
-import { PORT } from './config/constants.js';
+import { PORT, FERRY_SECRET } from './config/constants.js';
 
 // import routes
 import challenge from './routes/challenge.routes.js';
 import catalog from './routes/catalog.routes.js';
+
+// import catalog fetch function (same as /api/catalog/refresh)
+import { fetchCatalog } from './utils.js';
 
 const app = express();
 // Enable url-encoding
@@ -21,6 +25,9 @@ catalog(app);
 
 app.use('/api/static', express.static(path.join(path.resolve(), 'static')));
 
-app.listen(PORT, () => {
-  console.log(`Express API listening at http://localhost:${PORT}`);
+console.log('Updating static catalog');
+fetchCatalog().then(() => {
+  app.listen(PORT, () => {
+    console.log(`Express API listening at http://localhost:${PORT}`);
+  });
 });

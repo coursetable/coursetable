@@ -1,5 +1,8 @@
-import { refreshCatalog } from '../controllers/catalog.controllers.js';
+import {
+  verifyHeaders,
+  refreshCatalog,
+} from '../controllers/catalog.controllers.js';
 
 export default (app) => {
-  app.get('/api/catalog/refresh', refreshCatalog);
+  app.get('/api/catalog/refresh', verifyHeaders, refreshCatalog);
 };

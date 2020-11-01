@@ -1,5 +1,17 @@
+import fs from 'fs';
+
 import crypto from 'crypto';
 import jsonfile from 'jsonfile';
+
+import graphqurl from 'graphqurl';
+const { query } = graphqurl;
+
+import { GRAPHQL_ENDPOINT } from './config/constants.js';
+
+import {
+  listSeasonsQuery,
+  catalogBySeasonQuery,
+} from './queries/catalog.queries.js';
 
 import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './config/constants.js';
 
@@ -41,15 +53,52 @@ export function getRandomInt(max) {
   return Math.floor(Math.random() * Math.floor(max));
 }
 
-const JSON_FORMAT = { spaces: 4, EOL: '\n' };
-
 /**
- * Wrapper for exporting an object to JSON.
- * @param {String} path
- * @param {Object} obj
+ * Get static catalogs for each season from Hasura,
+ * @prop overwrite - whether or not to skip existing catalogs.
  */
-export function toJSON(path, obj) {
-  jsonfile.writeFile(path, obj, JSON_FORMAT, function (err) {
-    if (err) console.error(err);
+export async function fetchCatalog(overwrite) {
+  const seasons = await query({
+    query: listSeasonsQuery,
+    endpoint: GRAPHQL_ENDPOINT,
   });
+
+  console.log(`Fetched ${seasons.data.seasons.length} seasons`);
+
+  fs.writeFileSync(
+    `./static/seasons.json`,
+    JSON.stringify(seasons.data.seasons)
+  );
+
+  const processSeasons = await seasons.data.seasons.map(
+    async ({ season_code }) => {
+      const catalog = await query({
+        query: catalogBySeasonQuery,
+        endpoint: GRAPHQL_ENDPOINT,
+        variables: {
+          season: season_code,
+        },
+      });
+
+      console.log(
+        `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
+      );
+
+      fs.writeFileSync(
+        `./static/catalogs/${season_code}.json`,
+        JSON.stringify(catalog.data.computed_listing_info)
+      );
+
+      return [catalog, season_code];
+    }
+  );
+
+  const catalogs = await Promise.all(processSeasons);
+
+  // catalogs.map(([catalog, season_code]) => {
+  //   fs.writeFileSync(
+  //     `./static/catalogs/${season_code}.json`,
+  //     JSON.stringify(catalog.data.computed_listing_info)
+  //   );
+  // });
 }

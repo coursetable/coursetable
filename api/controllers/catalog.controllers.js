@@ -1,56 +1,37 @@
-import graphqurl from 'graphqurl';
-const { query } = graphqurl;
+import { GRAPHQL_ENDPOINT, FERRY_SECRET } from '../config/constants.js';
 
-import fs from 'fs';
+import { fetchCatalog } from '../utils.js';
 
-import { GRAPHQL_ENDPOINT } from '../config/constants.js';
+/**
+ * Middleware to verify request headers
+ *
+ * @prop req - express request object
+ * @prop res - express response object
+ * @prop next - express next object
+ */
+export const verifyHeaders = (req, res, next) => {
+  // get authentication headers
+  const authd = req.header('x-ferry-secret'); // if user is logged in
 
-import { toJSON } from '../utils.js';
+  // require NetID authentication
+  if (authd !== FERRY_SECRET) {
+    return res.status(401).json({
+      error: 'NOT_AUTHENTICATED',
+    });
+  }
 
-import {
-  listSeasonsQuery,
-  catalogBySeasonQuery,
-} from '../queries/catalog.queries.js';
+  next();
+};
 
+/**
+ * Endpoint to refresh static catalog JSONs
+ *
+ * @prop req - express request object
+ * @prop res - express response object
+ * @prop next - express next object
+ */
 export const refreshCatalog = async (req, res, next) => {
-  const seasons = await query({
-    query: listSeasonsQuery,
-    endpoint: GRAPHQL_ENDPOINT,
-  });
-
-  console.log(`Fetched ${seasons.data.seasons.length} seasons`);
-
-  fs.writeFileSync(
-    `./static/seasons.json`,
-    JSON.stringify(seasons.data.seasons)
-  );
-
-  const processSeasons = await seasons.data.seasons.map(
-    async ({ season_code }) => {
-      const catalog = await query({
-        query: catalogBySeasonQuery,
-        endpoint: GRAPHQL_ENDPOINT,
-        variables: {
-          season: season_code,
-        },
-      });
-
-      console.log(
-        `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
-      );
-
-      return [catalog, season_code];
-    }
-  );
-
-  const catalogs = await Promise.all(processSeasons);
-
-  catalogs.map(([catalog, season_code]) => {
-    fs.writeFileSync(
-      `./static/catalogs/${season_code}.json`,
-      JSON.stringify(catalog.data.computed_listing_info)
-    );
-  });
+  await fetchCatalog();
 
   return res.status(200).json({
     status: 'OK',
