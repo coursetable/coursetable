@@ -1,6 +1,8 @@
 import graphqurl from 'graphqurl';
 const { query } = graphqurl;
 
+import fs from 'fs';
+
 import { GRAPHQL_ENDPOINT } from '../config/constants.js';
 
 import { toJSON } from '../utils.js';
@@ -10,23 +12,47 @@ import {
   catalogBySeasonQuery,
 } from '../queries/catalog.queries.js';
 
-export const refreshCatalog = (req, res, next) => {
-  query({
+export const refreshCatalog = async (req, res, next) => {
+  const seasons = await query({
     query: listSeasonsQuery,
     endpoint: GRAPHQL_ENDPOINT,
-  })
-    .then((seasons) => {
-      // note that this directory is relative
-      // to where the function is called
-      // (i.e. /api)
-      console.log(seasons);
-      toJSON('./static/seasons.json', seasons.data.seasons);
+  });
 
-      return res.json(seasons);
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        error: err,
+  console.log(`Fetched ${seasons.data.seasons.length} seasons`);
+
+  fs.writeFileSync(
+    `./static/seasons.json`,
+    JSON.stringify(seasons.data.seasons)
+  );
+
+  const processSeasons = await seasons.data.seasons.map(
+    async ({ season_code }) => {
+      const catalog = await query({
+        query: catalogBySeasonQuery,
+        endpoint: GRAPHQL_ENDPOINT,
+        variables: {
+          season: season_code,
+        },
       });
-    });
+
+      console.log(
+        `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
+      );
+
+      return [catalog, season_code];
+    }
+  );
+
+  const catalogs = await Promise.all(processSeasons);
+
+  catalogs.map(([catalog, season_code]) => {
+    fs.writeFileSync(
+      `./static/catalogs/${season_code}.json`,
+      JSON.stringify(catalog.data.computed_listing_info)
+    );
+  });
+
+  return res.status(200).json({
+    status: 'OK',
+  });
 };
