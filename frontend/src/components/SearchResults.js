@@ -42,7 +42,6 @@ import { AiFillStar } from 'react-icons/ai';
  * @prop isList - boolean that determines display format (list or grid)
  * @prop setView - function to change display format
  * @prop loading - boolean | Is the search query finished?
- * @prop loadMore - boolean | Do we need to fetch more courses?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop searched - boolean | has the search started?
  * @prop isLoggedIn - boolean | is the user logged in?
