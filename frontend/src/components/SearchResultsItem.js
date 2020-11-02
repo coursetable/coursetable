@@ -42,7 +42,7 @@ const SearchResultsItem = ({
   COL_SPACING,
   ROW_WIDTH,
   TITLE_WIDTH,
-  isScrolling,
+  isScrolling = false,
 }) => {
   const course = useMemo(() => {
     return flatten(unflat_course);

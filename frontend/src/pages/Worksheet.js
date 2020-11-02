@@ -5,7 +5,8 @@ import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
-import WorksheetExpandedList from '../components/WorksheetExpandedList';
+// import WorksheetExpandedList from '../components/WorksheetExpandedList';
+import SearchResults from '../components/SearchResults';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
@@ -310,16 +311,11 @@ function Worksheet() {
             {/* Expanded List Component */}
             <Fade in={cur_expand === 'list'}>
               <div style={{ display: cur_expand === 'list' ? '' : 'none' }}>
-                <WorksheetExpandedList
-                  courses={season_listings}
+                <SearchResults
+                  data={season_listings}
                   showModal={showModal}
-                  cur_expand={cur_expand}
-                  cur_season={season}
-                  season_codes={season_codes}
-                  onSeasonChange={changeSeason}
-                  setFbPerson={handleFBPersonChange}
-                  fb_person={fb_person}
-                  hasSeason={hasSeason}
+                  expanded={cur_expand === 'list'}
+                  isLoggedIn={user.worksheet !== null}
                 />
               </div>
             </Fade>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import {
-  BrowserRouter as Router,
+  // BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
@@ -10,8 +10,8 @@ import {
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import SeasonsProvider from './components/SeasonsProvider';
+// import WindowDimensionsProvider from './components/WindowDimensionsProvider';
+// import SeasonsProvider from './components/SeasonsProvider';
 
 import Landing from './pages/Landing';
 import Home from './pages/Home';

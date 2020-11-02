@@ -916,10 +916,8 @@ function Search({ location, history }) {
               isList={isList}
               setView={handleSetView}
               loading={searchLoading}
-              loadMore={handleSubmit}
               multiSeasons={multiSeasons}
               searched={searched}
-              fetchedAll={fetchedAll}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
               expanded={collapsed_form}
