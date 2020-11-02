@@ -68,7 +68,7 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo wordmark={false} />
+                  <Logo icon={false} />
                 </span>
               </NavLink>
             </Nav>
