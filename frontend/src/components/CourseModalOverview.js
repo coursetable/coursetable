@@ -482,22 +482,24 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
           </Row>
           {/* Course Information (flag_info) */}
-          <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
-              <span className={Styles.lable_bubble}>Info</span>
-            </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.flag_info.length ? (
-                <ul className={Styles.flag_info}>
-                  {listing.flag_info.map((text) => (
-                    <li key={text}>{text}</li>
-                  ))}
-                </ul>
-              ) : (
-                'N/A'
-              )}
-            </Col>
-          </Row>
+          {listing.flag_info.length && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Info</span>
+              </Col>
+              <Col sm={9} xs={8} className={Styles.metadata}>
+                {listing.flag_info.length ? (
+                  <ul className={Styles.flag_info}>
+                    {listing.flag_info.map((text) => (
+                      <li key={text}>{text}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  'N/A'
+                )}
+              </Col>
+            </Row>
+          )}
           {/* Course Enrollment */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
