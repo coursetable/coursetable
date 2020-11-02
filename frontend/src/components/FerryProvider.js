@@ -4,6 +4,7 @@ import { GET_SEASON_CODES } from '../queries/QueryStrings';
 
 import { useQuery } from '@apollo/react-hooks';
 import { axios } from 'axios';
+import { toast } from 'react-toastify';
 
 const FerryCtx = createContext(null);
 FerryCtx.displayName = 'FerryCtx';
@@ -38,6 +39,11 @@ export const FerryProvider = ({ children }) => {
   const requestSeasons = useCallback(
     (seasons) => {
       const requests = seasons.map(async (season) => {
+        if (season in courseData) {
+          // Skip if already loaded.
+          return;
+        }
+
         diffRequests(+1);
         const res = await axios.get(`/api/static/catalogs/${season}.json`);
         const info = res.data;
@@ -49,8 +55,9 @@ export const FerryProvider = ({ children }) => {
         });
         diffRequests(-1);
       });
-      requests.forEach((request) => {
-        request.catch((err) => addError(err));
+      Promise.all(requests).catch((err) => {
+        toast.error('Failed to fetch course information');
+        addError(err);
       });
     },
     [diffRequests, setCourseData, addError]
