@@ -1,5 +1,7 @@
 import { useQuery, useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
+import { useEffect, useMemo } from 'react';
+import { useFerry } from '../components/FerryProvider';
 import { flatten, preprocess_courses } from '../utilities';
 
 // Build the graphQL query based on the courses in the user's worksheet
@@ -54,21 +56,47 @@ const buildQuery = (worksheet) => {
 };
 
 // Search query used in Worksheet.js and CourseConflictIcon.js
-export const FetchWorksheet = (worksheet) => {
+export const useWorksheetInfo = (worksheet) => {
   if (!worksheet) worksheet = [];
-  // Build gql query
-  const builtQuery = buildQuery(worksheet);
-  // Execute search query
-  var { loading, error, data } = useQuery(gql(builtQuery));
-  if (!(loading || error)) {
-    data = data.search_listing_info.map((x) => {
-      return flatten(x);
-    });
 
-    data = data.map((x) => {
-      return preprocess_courses(x);
+  const required_seasons = useMemo(() => {
+    const seasons = new Set();
+    worksheet.forEach((item) => {
+      seasons.add(item[0]);
     });
-  }
+    return [...seasons];
+  }, [worksheet]);
+
+  const { loading, error, courses, requestSeasons } = useFerry();
+
+  // Resolve needed seasons.
+  useEffect(() => requestSeasons(required_seasons), [
+    required_seasons,
+    requestSeasons,
+  ]);
+
+  const data = useMemo(() => {
+    const data = [];
+
+    // Resolve the worksheet items.
+    for (let i = 0; i < worksheet.length; i++) {
+      const season_code = worksheet[i][0];
+      const crn = worksheet[i][1];
+
+      if (courses && season_code in courses) {
+        data.push(courses[season_code][crn]);
+      }
+    }
+
+    const res = data
+      .map((x) => {
+        return flatten(x);
+      })
+      .map((x) => {
+        return preprocess_courses(x);
+      });
+    return res;
+  }, [courses, worksheet]);
 
   return { loading, error, data };
 };

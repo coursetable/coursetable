@@ -3,11 +3,39 @@ import React, { createContext, useCallback, useContext, useState } from 'react';
 import { GET_SEASON_CODES } from '../queries/QueryStrings';
 
 import { useQuery } from '@apollo/react-hooks';
-import { axios } from 'axios';
+import axios from 'axios';
+import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 
 const FerryCtx = createContext(null);
 FerryCtx.displayName = 'FerryCtx';
+
+// Global course data cache.
+const courseDataLock = new AsyncLock();
+let courseData = {};
+const addToCache = (season) => {
+  return courseDataLock.acquire('courseData', () => {
+    if (season in courseData) {
+      // Skip if already loaded.
+      return;
+    }
+
+    return axios.get(`/api/static/catalogs/${season}.json`).then((res) => {
+      // Convert season list into a crn lookup table.
+      const data = res.data;
+      const info = {};
+      for (const item of data) {
+        info[item.crn] = item;
+      }
+
+      // Save in global cache. Here we force the creation of a new object.
+      courseData = {
+        ...courseData,
+        [season]: info,
+      };
+    });
+  });
+};
 
 // Fetch all seasons present in the database
 export const FerryProvider = ({ children }) => {
@@ -34,39 +62,35 @@ export const FerryProvider = ({ children }) => {
     [setErrors]
   );
 
-  const [courseData, setCourseData] = useState({});
-
   const requestSeasons = useCallback(
     (seasons) => {
-      const requests = seasons.map(async (season) => {
+      const requests = seasons.map((season) => {
+        // Racy preemptive check of cache.
         if (season in courseData) {
-          // Skip if already loaded.
-          return;
+          return true;
         }
 
+        // Add to cache.
         diffRequests(+1);
-        const res = await axios.get(`/api/static/catalogs/${season}.json`);
-        const info = res.data;
-        setCourseData((courseData) => {
-          return {
-            ...courseData,
-            season: info,
-          };
+        return addToCache(season).finally(() => {
+          diffRequests(-1);
         });
-        diffRequests(-1);
       });
       Promise.all(requests).catch((err) => {
         toast.error('Failed to fetch course information');
+        console.error(err);
         addError(err);
       });
     },
-    [diffRequests, courseData, setCourseData, addError]
+    [diffRequests, addError]
   );
+
+  const error = seasonsError ? seasonsError : errors[0];
 
   const store = {
     seasons: seasonsData || [],
     loading: seasonsLoading || requests !== 0,
-    errors: [...[seasonsError ? [seasonsError] : []], ...errors],
+    error: error,
     courses: courseData,
     requestSeasons,
   };
