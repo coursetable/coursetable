@@ -39,7 +39,7 @@ const WorksheetExpandedList = ({
       data={courses}
       showModal={showModal}
       expanded={cur_expand === 'list'}
-      isLoggedIn={false}
+      isLoggedIn={true}
     />
   );
 };
