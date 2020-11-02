@@ -123,6 +123,7 @@ const SearchResults = ({
 
   // Spacing for each column in list view
   const COL_SPACING = {
+    SZN_WIDTH: 80,
     CODE_WIDTH: 110,
     RATE_WIDTH: 30,
     NUM_WIDTH: 40,
@@ -131,14 +132,15 @@ const SearchResults = ({
     LOC_WIDTH: 100,
     SA_WIDTH: 100,
     PADDING: 35,
-    PROF_CUT: 730,
-    MEET_CUT: 830,
-    LOC_CUT: 930,
-    SA_CUT: 1030,
+    PROF_CUT: !multiSeasons ? 730 : 830,
+    MEET_CUT: !multiSeasons ? 830 : 930,
+    LOC_CUT: !multiSeasons ? 930 : 1030,
+    SA_CUT: !multiSeasons ? 1030 : 1130,
   };
   const TITLE_WIDTH = useMemo(() => {
     return (
       ROW_WIDTH -
+      (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
       COL_SPACING.CODE_WIDTH -
       COL_SPACING.LOC_WIDTH -
       (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
@@ -321,9 +323,13 @@ const SearchResults = ({
   );
 
   // Column width styles
+  const szn_style = {
+    width: `${COL_SPACING.SZN_WIDTH}px`,
+    paddingLeft: '15px',
+  };
   const code_style = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
-    paddingLeft: '15px',
+    paddingLeft: !multiSeasons ? '15px' : '0px',
   };
   const title_style = { width: `${TITLE_WIDTH}px` };
   const rate_style = {
@@ -362,6 +368,11 @@ const SearchResults = ({
               </div> */}
               {isList ? (
                 <React.Fragment>
+                  {multiSeasons && (
+                    <div style={szn_style} className={Styles.results_header}>
+                      Season
+                    </div>
+                  )}
                   <div style={code_style} className={Styles.results_header}>
                     Code
                   </div>
