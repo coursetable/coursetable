@@ -281,67 +281,73 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
-            {evaluations[i].rating !== -1 && (
-              <div
-                style={
-                  evaluations[i].rating && {
-                    color: ratingColormap(evaluations[i].rating)
-                      .darken(3)
-                      .css(),
-                    backgroundColor: ratingColormap(evaluations[i].rating),
-                  }
-                }
-                className={`${Styles.rating_cell} ${
-                  expanded ? Styles.expanded_ratings : ''
-                }`}
-              >
-                {evaluations[i].rating.toFixed(1)}
-              </div>
-            )}
+            <div
+              style={{
+                color:
+                  evaluations[i].rating !== -1
+                    ? ratingColormap(evaluations[i].rating).darken(3).css()
+                    : '#b5b5b5',
+                backgroundColor:
+                  evaluations[i].rating !== -1
+                    ? ratingColormap(evaluations[i].rating)
+                    : '#ebebeb',
+              }}
+              className={`${Styles.rating_cell} ${
+                expanded ? Styles.expanded_ratings : ''
+              }`}
+            >
+              {evaluations[i].rating !== -1
+                ? evaluations[i].rating.toFixed(1)
+                : 'N/A'}
+            </div>
           </Col>
           {/* Professor Rating */}
           <Col
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
-            {evaluations[i].professor_rating !== -1 && (
-              <div
-                style={
-                  evaluations[i].professor_rating && {
-                    color: ratingColormap(evaluations[i].professor_rating)
-                      .darken(3)
-                      .css(),
-                    backgroundColor: ratingColormap(
-                      evaluations[i].professor_rating
-                    ),
-                  }
-                }
-                className={Styles.rating_cell}
-              >
-                {evaluations[i].professor_rating.toFixed(1)}
-              </div>
-            )}
+            <div
+              style={{
+                color:
+                  evaluations[i].professor_rating !== -1
+                    ? ratingColormap(evaluations[i].professor_rating)
+                        .darken(3)
+                        .css()
+                    : '#b5b5b5',
+                backgroundColor:
+                  evaluations[i].professor_rating !== -1
+                    ? ratingColormap(evaluations[i].professor_rating)
+                    : '#ebebeb',
+              }}
+              className={Styles.rating_cell}
+            >
+              {evaluations[i].professor_rating !== -1
+                ? evaluations[i].professor_rating.toFixed(1)
+                : 'N/A'}
+            </div>
           </Col>
           {/* Workload Rating */}
           <Col
             xs={2}
             className={`px-1 ml-0 d-flex justify-content-center text-center`}
           >
-            {evaluations[i].workload !== -1 && (
-              <div
-                style={
-                  evaluations[i].workload && {
-                    color: workloadColormap(evaluations[i].workload)
-                      .darken(3)
-                      .css(),
-                    backgroundColor: workloadColormap(evaluations[i].workload),
-                  }
-                }
-                className={Styles.rating_cell}
-              >
-                {evaluations[i].workload.toFixed(1)}
-              </div>
-            )}
+            <div
+              style={{
+                color:
+                  evaluations[i].workload !== -1
+                    ? workloadColormap(evaluations[i].workload).darken(3).css()
+                    : '#b5b5b5',
+                backgroundColor:
+                  evaluations[i].workload !== -1
+                    ? workloadColormap(evaluations[i].workload)
+                    : '#ebebeb',
+              }}
+              className={Styles.rating_cell}
+            >
+              {evaluations[i].workload !== -1
+                ? evaluations[i].workload.toFixed(1)
+                : 'N/A'}
+            </div>
           </Col>
         </Row>
       );
