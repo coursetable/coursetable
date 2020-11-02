@@ -89,7 +89,11 @@ function App() {
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">
-          {isLoggedIn ? <Home /> : <Redirect to="/login" />}
+          {isLoggedIn ? (
+            /*<Home />*/ <Redirect to="/catalog" />
+          ) : (
+            <Redirect to="/login" />
+          )}
         </MyRoute>
 
         {/* About */}
