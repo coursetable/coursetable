@@ -70,12 +70,16 @@ export const SEARCH_COURSES = gql`
       season_code
       extra_info
       syllabus_url
+      section
+      crn
       enrolled
       last_enrollment
       last_enrollment_same_professors
-      section
-      crn
       flag_info
+      regnotes
+      rp_attr
+      classnotes
+      final_exam
     }
   }
 `;

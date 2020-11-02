@@ -554,6 +554,50 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               )}
             </Col>
           </Row>
+          {/* Class Notes (classnotes) */}
+          {listing.classnotes && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Class Notes</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.classnotes}
+              </Col>
+            </Row>
+          )}
+          {/* Registrar Notes (regnotes) */}
+          {listing.regnotes && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Registrar Notes</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.regnotes}
+              </Col>
+            </Row>
+          )}
+          {/* Reading Period Notes (rp_attr) */}
+          {listing.rp_attr && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Reading Period</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.rp_attr}
+              </Col>
+            </Row>
+          )}
+          {/* Final Exam (final_exam) */}
+          {listing.final_exam && listing.final_exam !== 'HTBA' && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Final Exam</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.final_exam}
+              </Col>
+            </Row>
+          )}
           {/* FB Friends that are also shopping this course */}
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">

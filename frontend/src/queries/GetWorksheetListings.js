@@ -39,12 +39,16 @@ const buildQuery = (worksheet) => {
       season_code
       extra_info
       syllabus_url
-      enrolled
       section
       crn
+      enrolled
       last_enrollment
       last_enrollment_same_professors
       flag_info
+      regnotes
+      rp_attr
+      classnotes
+      final_exam
     }    
   }`;
 };
