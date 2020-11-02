@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { useUser } from '../user';
@@ -13,41 +13,31 @@ import { MdErrorOutline } from 'react-icons/md';
 
 const CourseConflictIcon = ({ course }) => {
   const { user } = useUser();
-  // Is the course already in the user's worksheet
-  const [inWorksheet, setInWorksheet] = useState(
-    isInWorksheet(course.season_code, course.crn.toString(), user.worksheet)
-  );
+
+  const inWorksheet = useMemo(() => {
+    return isInWorksheet(
+      course.season_code,
+      course.crn.toString(),
+      user.worksheet
+    );
+  }, [course.season_code, course.crn, user.worksheet]);
 
   // Fetch listing info for each listing in user's worksheet
-  if (user.worksheet) {
-    var { data } = FetchWorksheet(user.worksheet);
-  }
+  const { data } = FetchWorksheet(user.worksheet);
 
-  // This updates on rerender
-  const update = isInWorksheet(
-    course.season_code,
-    course.crn.toString(),
-    user.worksheet
-  );
-  // Update inWorksheet state if something has changed
-  if (inWorksheet !== update) setInWorksheet(update);
-
-  // Is there a conflict?
-  const [conflict, setConflict] = useState(false);
   // Get listing times
-  const times = unflattenTimes(course);
+  const times = useMemo(() => unflattenTimes(course), [course]);
 
   // Update conflict status whenever the user's worksheet changes
-  useEffect(() => {
+  const conflict = useMemo(() => {
     // Return if worksheet hasn't been loaded or this listing has no times
-    if (!data || !times) return;
+    if (!data || !times) return false;
     // There is a conflict or this listing has an invalid time
     if (times === 'TBA' || checkConflict(data, course, times)) {
-      setConflict(true);
-      return;
+      return true;
     }
     // No conflict
-    setConflict(false);
+    return false;
   }, [course, data, times]);
 
   // Renders the conflict tooltip on hover
