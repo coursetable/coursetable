@@ -32,7 +32,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // Variable to store past enrollment data if the course hasn't taken place yet
-  const [enrollment, setEnrollment] = useState(-1);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // List of other friends shopping this class
   let also_taking =
@@ -159,8 +158,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           professor_rating: average_professor_rating
             ? average_professor_rating
             : -1,
-          // Enrollment data
-          enrollment: season.enrolled ? season.enrolled : -1,
           // Season code
           season_code: season.season_code,
           // Professors
@@ -190,15 +187,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Loop through each listing with evals
       for (let i = 0; i < evaluations.length; i++) {
-        // Store past enrollment data if same course and same section
-        if (
-          enrollment === -1 &&
-          evaluations[i].course_code.includes(listing.course_code) &&
-          evaluations[i].section === listing.section
-        ) {
-          setEnrollment(evaluations[i].enrollment);
-        }
-
         // Skip listings that have no ratings (therefore prolly don't have comments and graphs)
         if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
           continue;
@@ -318,7 +306,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     }
   }, [
     data,
-    enrollment,
     evaluations,
     filter,
     handleSetSeason,
@@ -494,17 +481,39 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               {listing.section ? listing.section : 'N/A'}
             </Col>
           </Row>
+          {/* Course Information (flag_info) */}
+          {listing.flag_info.length > 0 && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Info</span>
+              </Col>
+              <Col sm={9} xs={8} className={Styles.metadata}>
+                {listing.flag_info.length ? (
+                  <ul className={Styles.flag_info}>
+                    {listing.flag_info.map((text) => (
+                      <li key={text}>{text}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  'N/A'
+                )}
+              </Col>
+            </Row>
+          )}
           {/* Course Enrollment */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Enrollment</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['enrollment.enrolled']
-                ? listing['enrollment.enrolled']
-                : enrollment === -1
-                ? 'N/A'
-                : '~' + enrollment}
+              {listing.enrolled
+                ? listing.enrolled
+                : listing.last_enrollment &&
+                  listing.last_enrollment_same_professors
+                ? listing.last_enrollment
+                : listing.last_enrollment
+                ? `~${listing.last_enrollment} (different professor was teaching)`
+                : 'N/A'}
             </Col>
           </Row>
           {/* Course Location */}
@@ -547,6 +556,50 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               )}
             </Col>
           </Row>
+          {/* Class Notes (classnotes) */}
+          {listing.classnotes && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Class Notes</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.classnotes}
+              </Col>
+            </Row>
+          )}
+          {/* Registrar Notes (regnotes) */}
+          {listing.regnotes && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Registrar Notes</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.regnotes}
+              </Col>
+            </Row>
+          )}
+          {/* Reading Period Notes (rp_attr) */}
+          {listing.rp_attr && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Reading Period</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.rp_attr}
+              </Col>
+            </Row>
+          )}
+          {/* Final Exam (final_exam) */}
+          {listing.final_exam && listing.final_exam !== 'HTBA' && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Final Exam</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.final_exam}
+              </Col>
+            </Row>
+          )}
           {/* FB Friends that are also shopping this course */}
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">

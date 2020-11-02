@@ -5,6 +5,7 @@ export const sortbyOptions = [
   { label: 'Sort by Course Name', value: 'course_name' },
   { label: 'Sort by Rating', value: 'rating' },
   { label: 'Sort by Workload', value: 'workload' },
+  { label: 'Sort by (Rating - Workload)', value: 'gut' },
   // { label: 'Enrollment', value: 'enrollment' },
 ];
 

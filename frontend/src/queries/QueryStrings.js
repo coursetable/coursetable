@@ -44,7 +44,7 @@ export const SEARCH_COURSES = gql`
         credits: { _in: $credits }
         school: { _in: $schools }
         subject: { _in: $subjects }
-        course: { extra_info: { _eq: $extra_info } }
+        extra_info: { _eq: $extra_info }
       }
       order_by: $ordering
       limit: $limit
@@ -70,9 +70,16 @@ export const SEARCH_COURSES = gql`
       season_code
       extra_info
       syllabus_url
-      enrolled
       section
       crn
+      enrolled
+      last_enrollment
+      last_enrollment_same_professors
+      flag_info
+      regnotes
+      rp_attr
+      classnotes
+      final_exam
     }
   }
 `;
@@ -97,6 +104,8 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       section
       crn
       enrolled
+      last_enrollment
+      last_enrollment_same_professors
       average_rating
       average_workload
       course_code
