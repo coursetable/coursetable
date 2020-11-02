@@ -42,6 +42,8 @@ const buildQuery = (worksheet) => {
       enrolled
       section
       crn
+      last_enrollment
+      last_enrollment_same_professors
       flag_info
     }    
   }`;

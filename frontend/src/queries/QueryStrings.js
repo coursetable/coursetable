@@ -71,6 +71,8 @@ export const SEARCH_COURSES = gql`
       extra_info
       syllabus_url
       enrolled
+      last_enrollment
+      last_enrollment_same_professors
       section
       crn
       flag_info
@@ -98,6 +100,8 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       section
       crn
       enrolled
+      last_enrollment
+      last_enrollment_same_professors
       average_rating
       average_workload
       course_code

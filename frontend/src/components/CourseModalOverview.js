@@ -32,7 +32,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // Variable to store past enrollment data if the course hasn't taken place yet
-  const [enrollment, setEnrollment] = useState(-1);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // List of other friends shopping this class
   let also_taking =
@@ -159,8 +158,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           professor_rating: average_professor_rating
             ? average_professor_rating
             : -1,
-          // Enrollment data
-          enrollment: season.enrolled ? season.enrolled : -1,
           // Season code
           season_code: season.season_code,
           // Professors
@@ -190,15 +187,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Loop through each listing with evals
       for (let i = 0; i < evaluations.length; i++) {
-        // Store past enrollment data if same course and same section
-        if (
-          enrollment === -1 &&
-          evaluations[i].course_code.includes(listing.course_code) &&
-          evaluations[i].section === listing.section
-        ) {
-          setEnrollment(evaluations[i].enrollment);
-        }
-
         // Skip listings that have no ratings (therefore prolly don't have comments and graphs)
         if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
           continue;
@@ -318,7 +306,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     }
   }, [
     data,
-    enrollment,
     evaluations,
     filter,
     handleSetSeason,
@@ -517,11 +504,14 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Enrollment</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['enrollment.enrolled']
-                ? listing['enrollment.enrolled']
-                : enrollment === -1
-                ? 'N/A'
-                : '~' + enrollment}
+              {listing.enrolled
+                ? listing.enrolled
+                : listing.last_enrollment &&
+                  listing.last_enrollment_same_professors
+                ? listing.last_enrollment
+                : listing.last_enrollment
+                ? `~${listing.last_enrollment} (different professor was teaching)`
+                : 'N/A'}
             </Col>
           </Row>
           {/* Course Location */}

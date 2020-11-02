@@ -221,7 +221,13 @@ const SearchResultsItem = ({
       {/* Enrollment */}
       <div style={num_style} className="d-flex">
         <span className="m-auto">
-          {course.enrolled ? course.enrolled : 'n/a'}
+          {course.enrolled
+            ? course.enrolled
+            : course.last_enrollment && course.last_enrollment_same_professors
+            ? course.last_enrollment
+            : course.last_enrollment
+            ? `~${course.last_enrollment}`
+            : ''}
         </span>
       </div>
       {/* # FB Friends also shopping */}
