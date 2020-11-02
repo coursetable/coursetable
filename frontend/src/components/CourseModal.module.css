@@ -30,6 +30,10 @@
   color: #007bff;
 }
 
+.cancelled_text {
+  color: rgb(255, 98, 98);
+}
+
 :global .modal-custom-width {
   max-width: 800px !important;
   /* max-width: none !important; */

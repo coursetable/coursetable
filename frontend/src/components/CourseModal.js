@@ -92,6 +92,13 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
+                          {listing.extra_info !== 'ACTIVE' ? (
+                            <span className={styles.cancelled_text}>
+                              CANCELLED{' '}
+                            </span>
+                          ) : (
+                            ''
+                          )}
                           {listing.title}
                           <span className="text-muted">
                             {' (' +

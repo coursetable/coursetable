@@ -107,7 +107,14 @@ const SearchResultsItem = ({
     return (
       <Popover {...props} id="title_popover">
         <Popover.Title>
-          <strong>{course.title}</strong>
+          <strong>
+            {course.extra_info !== 'ACTIVE' ? (
+              <span className={Styles.cancelled_text}>CANCELLED </span>
+            ) : (
+              ''
+            )}
+            {course.title}
+          </strong>
         </Popover.Title>
         <Popover.Content>
           {course.description
@@ -162,7 +169,9 @@ const SearchResultsItem = ({
         'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
         Styles.search_result_item +
         ' ' +
-        (isLast ? Styles.last_search_result_item : '')
+        (isLast ? Styles.last_search_result_item : '') +
+        // red background if class is cancelled
+        (course.extra_info !== 'ACTIVE' ? ' ' + Styles.cancelled_class : '')
       }
       onClick={() => {
         showModal(course);
@@ -207,12 +216,6 @@ const SearchResultsItem = ({
         <div style={title_style}>
           {/* Course Title */}
           <div className={Styles.ellipsis_text}>{course.title}</div>
-          <Row className="m-auto">
-            {/* Course Extra Info */}
-            {/* {course.extra_info !== 'ACTIVE' && (
-              <div className={Styles.extra_info + ' ml-1'}>CANCELLED</div>
-            )} */}
-          </Row>
         </div>
       </OverlayTrigger>
       {/* Enrollment */}
@@ -297,7 +300,7 @@ const SearchResultsItem = ({
       {/* Course Meets */}
       {ROW_WIDTH > COL_SPACING.MEET_CUT && (
         <div style={meet_style}>
-          <div className={Styles.course_time}>{course.times_summary}</div>
+          <div className={Styles.ellipsis_text}>{course.times_summary}</div>
         </div>
       )}
       {/* Course Location */}
