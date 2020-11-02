@@ -150,7 +150,7 @@ const SearchResults = ({
       2 * COL_SPACING.NUM_WIDTH -
       COL_SPACING.PADDING
     );
-  }, [ROW_WIDTH, COL_SPACING]);
+  }, [ROW_WIDTH, COL_SPACING, multiSeasons]);
 
   // Holds HTML for the search results
   var resultsListing;
