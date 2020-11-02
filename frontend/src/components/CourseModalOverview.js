@@ -482,7 +482,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
           </Row>
           {/* Course Information (flag_info) */}
-          {listing.flag_info.length && (
+          {listing.flag_info.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={3} xs={4} className="px-0">
                 <span className={Styles.lable_bubble}>Info</span>
