@@ -42,7 +42,7 @@ const SearchResultsItem = ({
   COL_SPACING,
   ROW_WIDTH,
   TITLE_WIDTH,
-  isScrolling,
+  isScrolling = false,
 }) => {
   const course = useMemo(() => {
     return flatten(unflat_course);
@@ -137,9 +137,13 @@ const SearchResultsItem = ({
       <div />
     );
 
+  const szn_style = {
+    width: `${COL_SPACING.SZN_WIDTH}px`,
+    paddingLeft: '15px',
+  };
   const code_style = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
-    paddingLeft: '15px',
+    paddingLeft: !multiSeasons ? '15px' : '0px',
   };
   const title_style = { width: `${TITLE_WIDTH}px` };
   const rate_style = {
@@ -165,6 +169,28 @@ const SearchResultsItem = ({
       }}
       tabIndex="0"
     >
+      {multiSeasons && (
+        <div style={szn_style} className="d-flex">
+          <OverlayTrigger
+            placement="top"
+            delay={{ show: 500, hide: 250 }}
+            overlay={season_tooltip}
+          >
+            <div className={Styles.skills_areas + ' my-auto'}>
+              <Badge
+                variant="secondary"
+                className={
+                  Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
+                }
+                key={key++}
+              >
+                <div style={{ display: 'inline-block' }}>{icon}</div>
+                &nbsp;{"'" + year}
+              </Badge>
+            </div>
+          </OverlayTrigger>
+        </div>
+      )}
       <div
         style={code_style}
         className={Styles.ellipsis_text + ' font-weight-bold'}
@@ -182,27 +208,6 @@ const SearchResultsItem = ({
           {/* Course Title */}
           <div className={Styles.ellipsis_text}>{course.title}</div>
           <Row className="m-auto">
-            {/* Season Code */}
-            {multiSeasons && (
-              <OverlayTrigger
-                placement="top"
-                delay={{ show: 500, hide: 250 }}
-                overlay={season_tooltip}
-              >
-                <div className={Styles.skills_areas}>
-                  <Badge
-                    variant="secondary"
-                    className={
-                      Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
-                    }
-                    key={key++}
-                  >
-                    <div style={{ display: 'inline-block' }}>{icon}</div>
-                    &nbsp;{"'" + year}
-                  </Badge>
-                </div>
-              </OverlayTrigger>
-            )}
             {/* Course Extra Info */}
             {/* {course.extra_info !== 'ACTIVE' && (
               <div className={Styles.extra_info + ' ml-1'}>CANCELLED</div>

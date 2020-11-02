@@ -27,12 +27,7 @@ import {
 } from 'react-bootstrap';
 
 import { flatten } from '../utilities';
-import {
-  InfiniteLoader,
-  List,
-  WindowScroller,
-  AutoSizer,
-} from 'react-virtualized';
+import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
@@ -47,22 +42,18 @@ import { AiFillStar } from 'react-icons/ai';
  * @prop isList - boolean that determines display format (list or grid)
  * @prop setView - function to change display format
  * @prop loading - boolean | Is the search query finished?
- * @prop loadMore - boolean | Do we need to fetch more courses?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop searched - boolean | has the search started?
- * @prop fetchedAll - boolean | Have we fetched all search results?
  * @prop isLoggedIn - boolean | is the user logged in?
  */
 
 const SearchResults = ({
   data,
-  isList,
+  isList = true,
   // setView,
-  loading,
-  loadMore,
-  multiSeasons,
-  searched,
-  fetchedAll,
+  loading = false,
+  multiSeasons = false,
+  searched = true,
   showModal,
   isLoggedIn,
   expanded,
@@ -131,6 +122,7 @@ const SearchResults = ({
 
   // Spacing for each column in list view
   const COL_SPACING = {
+    SZN_WIDTH: 80,
     CODE_WIDTH: 110,
     RATE_WIDTH: 30,
     NUM_WIDTH: 40,
@@ -139,14 +131,15 @@ const SearchResults = ({
     LOC_WIDTH: 100,
     SA_WIDTH: 100,
     PADDING: 35,
-    PROF_CUT: 730,
-    MEET_CUT: 830,
-    LOC_CUT: 930,
-    SA_CUT: 1030,
+    PROF_CUT: !multiSeasons ? 730 : 830,
+    MEET_CUT: !multiSeasons ? 830 : 930,
+    LOC_CUT: !multiSeasons ? 930 : 1030,
+    SA_CUT: !multiSeasons ? 1030 : 1130,
   };
   const TITLE_WIDTH = useMemo(() => {
     return (
       ROW_WIDTH -
+      (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
       COL_SPACING.CODE_WIDTH -
       COL_SPACING.LOC_WIDTH -
       (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
@@ -162,36 +155,20 @@ const SearchResults = ({
   // Holds HTML for the search results
   var resultsListing;
 
-  // Has the current row been fetched?
-  const isRowLoaded = useCallback(
-    ({ index }) => {
-      if (fetchedAll) return true;
-      if (isList) return index < data.length;
-      return index < grid_html.length;
-    },
-    [fetchedAll, isList, grid_html, data]
-  );
-
   // Render functions for React Virtualized List:
   const renderGridRow = useCallback(
     ({ index, key, style }) => {
-      if (!isRowLoaded({ index })) {
-        return <div key={key} style={style} />;
-      }
       return (
         <div key={key} style={style}>
           {grid_html[index]}
         </div>
       );
     },
-    [grid_html, isRowLoaded]
+    [grid_html]
   );
 
   const renderListRow = useCallback(
     ({ index, key, style, isScrolling }) => {
-      if (!isRowLoaded({ index })) {
-        return <div key={key} style={style} />;
-      }
       return (
         <div style={style} key={key}>
           <SearchResultsItemMemo
@@ -207,15 +184,7 @@ const SearchResults = ({
         </div>
       );
     },
-    [
-      data,
-      showModal,
-      multiSeasons,
-      isRowLoaded,
-      COL_SPACING,
-      TITLE_WIDTH,
-      ROW_WIDTH,
-    ]
+    [data, showModal, multiSeasons, COL_SPACING, TITLE_WIDTH, ROW_WIDTH]
   );
 
   // if no courses found (either due to query or authentication), render the empty state
@@ -250,86 +219,54 @@ const SearchResults = ({
     if (!isList) {
       // Store HTML for grid view results
       resultsListing = (
-        <InfiniteLoader
-          // isRowLoaded detects which rows have been requested to avoid multiple loadMoreRows calls
-          isRowLoaded={isRowLoaded}
-          // Only load more if previous search query has finished
-          loadMoreRows={loading ? () => {} : loadMore}
-          // Add extra row for loading row
-          rowCount={!fetchedAll ? grid_html.length + 1 : grid_html.length}
-          // How many courses from the end should we fetch more
-          threshold={15}
-        >
-          {({ onRowsRendered, registerChild }) => (
-            // Scroll the entire window
-            <WindowScroller>
-              {({ height, isScrolling, onChildScroll, scrollTop }) => (
-                // Make infinite list take up 100% of its container
-                <AutoSizer disableHeight>
-                  {({ width }) => (
-                    <List
-                      autoHeight
-                      width={width}
-                      height={height}
-                      onRowsRendered={onRowsRendered}
-                      ref={registerChild}
-                      isScrolling={isScrolling}
-                      onScroll={onChildScroll}
-                      scrollTop={scrollTop}
-                      rowCount={
-                        !fetchedAll ? grid_html.length + 1 : grid_html.length
-                      }
-                      rowHeight={178}
-                      rowRenderer={renderGridRow}
-                    />
-                  )}
-                </AutoSizer>
+        // Scroll the entire window
+        <WindowScroller>
+          {({ height, isScrolling, onChildScroll, scrollTop }) => (
+            // Make infinite list take up 100% of its container
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <List
+                  autoHeight
+                  width={width}
+                  height={height}
+                  isScrolling={isScrolling}
+                  onScroll={onChildScroll}
+                  scrollTop={scrollTop}
+                  rowCount={grid_html.length}
+                  rowHeight={178}
+                  rowRenderer={renderGridRow}
+                />
               )}
-            </WindowScroller>
+            </AutoSizer>
           )}
-        </InfiniteLoader>
+        </WindowScroller>
       );
     }
 
     // Store HTML for list view results
     else {
       resultsListing = (
-        <InfiniteLoader
-          // isRowLoaded detects which rows have been requested to avoid multiple loadMoreRows calls
-          isRowLoaded={isRowLoaded}
-          // Only load more if previous search query has finished
-          loadMoreRows={loading ? () => {} : loadMore}
-          // Add extra row for loading row
-          rowCount={!fetchedAll ? data.length + 1 : data.length}
-          // How many courses from the end should we fetch more
-          threshold={30}
-        >
-          {({ onRowsRendered, registerChild }) => (
-            // Scroll the entire window
-            <WindowScroller>
-              {({ height, isScrolling, onChildScroll, scrollTop }) => (
-                // Make infinite list take up 100% of its container
-                <AutoSizer disableHeight>
-                  {({ width }) => (
-                    <List
-                      autoHeight
-                      width={width}
-                      height={height}
-                      onRowsRendered={onRowsRendered}
-                      ref={registerChild}
-                      isScrolling={isScrolling}
-                      onScroll={onChildScroll}
-                      scrollTop={scrollTop}
-                      rowCount={!fetchedAll ? data.length + 1 : data.length}
-                      rowRenderer={renderListRow}
-                      rowHeight={32}
-                    />
-                  )}
-                </AutoSizer>
+        // Scroll the entire window
+        <WindowScroller>
+          {({ height, isScrolling, onChildScroll, scrollTop }) => (
+            // Make infinite list take up 100% of its container
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <List
+                  autoHeight
+                  width={width}
+                  height={height}
+                  isScrolling={isScrolling}
+                  onScroll={onChildScroll}
+                  scrollTop={scrollTop}
+                  rowCount={data.length}
+                  rowHeight={32}
+                  rowRenderer={renderListRow}
+                />
               )}
-            </WindowScroller>
+            </AutoSizer>
           )}
-        </InfiniteLoader>
+        </WindowScroller>
       );
     }
   }
@@ -385,9 +322,13 @@ const SearchResults = ({
   );
 
   // Column width styles
+  const szn_style = {
+    width: `${COL_SPACING.SZN_WIDTH}px`,
+    paddingLeft: '15px',
+  };
   const code_style = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
-    paddingLeft: '15px',
+    paddingLeft: !multiSeasons ? '15px' : '0px',
   };
   const title_style = { width: `${TITLE_WIDTH}px` };
   const rate_style = {
@@ -426,6 +367,11 @@ const SearchResults = ({
               </div> */}
               {isList ? (
                 <React.Fragment>
+                  {multiSeasons && (
+                    <div style={szn_style} className={Styles.results_header}>
+                      Season
+                    </div>
+                  )}
                   <div style={code_style} className={Styles.results_header}>
                     Code
                   </div>
