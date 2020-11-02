@@ -60,7 +60,7 @@ export const FerryProvider = ({ children }) => {
         addError(err);
       });
     },
-    [diffRequests, setCourseData, addError]
+    [diffRequests, courseData, setCourseData, addError]
   );
 
   const store = {

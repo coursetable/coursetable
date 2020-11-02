@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { useUser } from '../user';
