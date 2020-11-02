@@ -22,8 +22,8 @@ const buildQuery = (worksheet) => {
       listing_id
       title
       description
-      professor_names
       all_course_codes
+      professor_names
       average_rating
       average_workload
       average_professor
@@ -39,9 +39,10 @@ const buildQuery = (worksheet) => {
       season_code
       extra_info
       syllabus_url
-      enrollment
+      enrolled
       section
       crn
+      flag_info
     }    
   }`;
 };

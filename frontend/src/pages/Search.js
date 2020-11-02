@@ -146,11 +146,11 @@ function Search({ location, history }) {
   const [select_subjects, setSelectSubjects] = useState([]);
 
   // Does the user want to hide cancelled courses?
-  var [hideCancelled, setHideCancelled] = React.useState(true);
+  const [hideCancelled, setHideCancelled] = React.useState(true);
 
   // Bounds of course and workload ratings (1-5)
-  var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
-  var [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
+  const [ratingBounds, setRatingBounds] = React.useState([1, 5]);
+  const [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
 
   // populate seasons from database
   var seasonsOptions;

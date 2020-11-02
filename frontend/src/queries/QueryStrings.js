@@ -44,7 +44,7 @@ export const SEARCH_COURSES = gql`
         credits: { _in: $credits }
         school: { _in: $schools }
         subject: { _in: $subjects }
-        course: { extra_info: { _eq: $extra_info } }
+        extra_info: { _eq: $extra_info }
       }
       order_by: $ordering
       limit: $limit
@@ -73,6 +73,7 @@ export const SEARCH_COURSES = gql`
       enrolled
       section
       crn
+      flag_info
     }
   }
 `;
