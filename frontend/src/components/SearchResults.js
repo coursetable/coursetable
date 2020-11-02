@@ -121,7 +121,6 @@ const SearchResults = ({
     if (ref.current) setRowWidth(ref.current.offsetWidth);
   }, [setRowWidth, width, expanded]);
 
-  console.log(ROW_WIDTH);
   // Spacing for each column in list view
   const COL_SPACING = {
     CODE_WIDTH: 110,
