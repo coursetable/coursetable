@@ -32,14 +32,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  // Options for the evaluation filters
-  const options = [
-    { displayName: 'Course', value: 'course' },
-    { displayName: 'Both', value: 'both' },
-    { displayName: 'Professor', value: 'professor' },
-  ];
-  // Is the season hover box enlarged? CURRENTLY NOT USING
-  const [enlarged, setEnlarged] = useState(['', -1]);
   // Variable to store past enrollment data if the course hasn't taken place yet
   let enrollment = -1;
   // List of other friends shopping this class
@@ -99,7 +91,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Hold list of evaluation dictionaries
   let evaluations = [];
   // Hold HTML code that displays the list of evaluations
-  let items = [];
+  let items = { both: [], course: [], professor: [] };
   // Holds Prof information for popover
   let prof_info = {};
   listing.professor_names.forEach((prof) => {
@@ -204,64 +196,17 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
         continue;
 
-      // Only show courses that have same course code and same prof
-      if (filter === 'both') {
-        // Skip if different course code
-        if (!evaluations[i].course_code.includes(listing.course_code)) continue;
-        // Skip if different professors
-        if (
-          !listing.professor_names.length ||
-          overlapping_profs(evaluations[i].professor) !==
-            listing.professor_names.length
-        )
-          continue;
-      }
-
-      // Only show courses that have same course code
-      if (filter === 'course') {
-        // Skip if different course code
-        if (!evaluations[i].course_code.includes(listing.course_code)) continue;
-      }
-
-      // Only show courses that have same prof
-      if (filter === 'professor') {
-        // Skip if no overlapping profs
-        if (overlapping_profs(evaluations[i].professor) === 0) continue;
-      }
-
-      // Is course eval button expanded? CURRENTLY NOT USING
-      let expanded =
-        enlarged[0] === evaluations[i].season_code &&
-        enlarged[1] === evaluations[i].crn;
-
-      // HAVE RATING BUBBLE ANIMATION
-      // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
-      // if (isTouch) expanded = true;
-
-      // NO RATING BUBBLE ANIMATION
-      expanded = true;
-
-      items.push(
+      const eval_box = (
         <Row key={id++} className="m-auto py-1 justify-content-center">
           {/* Clickable listing button */}
           <Col
             xs={5}
             className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
             onClick={() => handleSetSeason(evaluations[i])}
-            onMouseEnter={() =>
-              setEnlarged([evaluations[i].season_code, evaluations[i].crn])
-            }
-            onMouseLeave={() => setEnlarged(['', -1])}
             style={{ flex: 'none' }}
           >
             <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
-            <div
-              className={
-                Styles.details +
-                ' mx-auto ' +
-                (expanded ? Styles.shown : Styles.hidden)
-              }
-            >
+            <div className={Styles.details + ' mx-auto ' + Styles.shown}>
               {filter === 'professor'
                 ? evaluations[i].course_code[0]
                 : filter === 'both'
@@ -285,9 +230,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                     ? ratingColormap(evaluations[i].rating)
                     : '#ebebeb',
               }}
-              className={`${Styles.rating_cell} ${
-                expanded ? Styles.expanded_ratings : ''
-              }`}
+              className={`${Styles.rating_cell} ${Styles.expanded_ratings}`}
             >
               {evaluations[i].rating !== -1
                 ? evaluations[i].rating.toFixed(1)
@@ -344,6 +287,23 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           </Col>
         </Row>
       );
+      // Course in both column
+      if (
+        evaluations[i].course_code.includes(listing.course_code) &&
+        listing.professor_names.length &&
+        overlapping_profs(evaluations[i].professor) ===
+          listing.professor_names.length
+      ) {
+        items['both'].push(eval_box);
+      }
+      // Course in course column
+      if (evaluations[i].course_code.includes(listing.course_code)) {
+        items['course'].push(eval_box);
+      }
+      // Course in prof column
+      if (overlapping_profs(evaluations[i].professor) > 0) {
+        items['professor'].push(eval_box);
+      }
     }
   }
 
@@ -423,6 +383,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       </Popover>
     );
   };
+
+  // Options for the evaluation filters
+  const options = [
+    { displayName: `Course (${items['course'].length})`, value: 'course' },
+    { displayName: `Both (${items['both'].length})`, value: 'both' },
+    { displayName: `Prof (${items['professor'].length})`, value: 'professor' },
+  ];
 
   return (
     <Modal.Body>
@@ -589,7 +556,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             />
           </Row>
           {/* Course Evaluations Header */}
-          {items.length !== 0 && (
+          {items[filter].length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
                 <span className={Styles.evaluation_header}>Season</span>
@@ -606,9 +573,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Row>
           )}
           {/* Course Evaluations */}
-          {items.length !== 0 && items}
+          {items[filter].length !== 0 && items[filter]}
           {/* No Course Evaluations */}
-          {items.length === 0 && (
+          {items[filter].length === 0 && (
             <Row className="m-auto justify-content-center">
               <strong>No Results</strong>
             </Row>
