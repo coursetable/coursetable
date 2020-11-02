@@ -210,28 +210,21 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         if (!evaluations[i].course_code.includes(listing.course_code)) continue;
         // Skip if different professors
         if (
+          !listing.professor_names.length ||
           overlapping_profs(evaluations[i].professor) !==
-          listing.professor_names.length
+            listing.professor_names.length
         )
           continue;
       }
 
-      // Only show courses that have same course code but different prof
+      // Only show courses that have same course code
       if (filter === 'course') {
-        // Skip if same profs
-        if (
-          overlapping_profs(evaluations[i].professor) ===
-          listing.professor_names.length
-        )
-          continue;
         // Skip if different course code
         if (!evaluations[i].course_code.includes(listing.course_code)) continue;
       }
 
-      // Only show courses that have same prof but different course code
+      // Only show courses that have same prof
       if (filter === 'professor') {
-        // Skip if same course code
-        if (evaluations[i].course_code.includes(listing.course_code)) continue;
         // Skip if no overlapping profs
         if (overlapping_profs(evaluations[i].professor) === 0) continue;
       }
