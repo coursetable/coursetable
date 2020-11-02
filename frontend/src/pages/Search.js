@@ -229,6 +229,8 @@ function Search({ location, history }) {
         ordering = { average_rating: sort_order };
       else if (sortParams === 'workload')
         ordering = { average_workload: sort_order };
+      else if (sortParams === 'gut')
+        ordering = { average_gut_rating: `${sort_order}_nulls_last` };
 
       // seasons to filter
       var processedSeasons = select_seasons;
