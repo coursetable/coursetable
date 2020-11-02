@@ -20,7 +20,7 @@ function Footer() {
           {/* Copyright */}
           <div className="col-12 col-md">
             <span className={styles.footer_logo}>
-              <Logo />
+              <Logo icon={false} />
             </span>
             <small className="d-block mb-3">
               &copy; {new Date().getFullYear()}
