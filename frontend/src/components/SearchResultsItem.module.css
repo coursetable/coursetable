@@ -1,5 +1,5 @@
 .search_result_item {
-  background-color: white !important;
+  background-color: white;
   transition: 0.3s;
   user-select: none;
   overflow: hidden;
@@ -18,8 +18,8 @@
 
 .search_result_item:hover {
   cursor: pointer;
-  background-color: #e1edff !important;
-  border-color: #e1edff !important;
+  background-color: #e1edff;
+  border-color: #e1edff;
 }
 
 .search_result_item:focus,
@@ -162,4 +162,12 @@
 .fb_friends {
   font-weight: 500;
   padding-left: 2px;
+}
+
+.cancelled_text {
+  color: rgb(255, 98, 98);
+}
+
+.cancelled_class {
+  background-color: rgb(255, 218, 218) !important;
 }
