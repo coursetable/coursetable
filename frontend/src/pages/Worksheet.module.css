@@ -1,11 +1,14 @@
 .container {
   margin-bottom: 0px;
   border: none;
-  overflow: hidden;
 }
 
 .desktop_container {
   max-height: 92vh;
+}
+
+.expanded_list_container {
+  min-height: 30vh;
 }
 
 .loading_spinner {

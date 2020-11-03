@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback, useMemo } from 'react';
 import Select from 'react-select';
 import { useUser } from '../user';
 import './FBReactSelect.css';
@@ -15,35 +15,45 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
   const { user } = useUser();
 
   // Does the worksheet contain any courses from the current season?
-  const containsCurSeason = (worksheet) => {
-    if (!worksheet) return false;
-    for (let i = 0; i < worksheet.length; i++) {
-      if (worksheet[i][0] === cur_season) return true;
-    }
-    return false;
-  };
-
-  // List of FB friend options. Initialize with me option
-  let friend_options = [];
+  const containsCurSeason = useCallback(
+    (worksheet) => {
+      if (!worksheet) return false;
+      for (let i = 0; i < worksheet.length; i++) {
+        if (worksheet[i][0] === cur_season) return true;
+      }
+      return false;
+    },
+    [cur_season]
+  );
   // FB Friends names
-  const friendInfo =
-    user.fbLogin && user.fbWorksheets ? user.fbWorksheets.friendInfo : {};
+  const friendInfo = useMemo(() => {
+    return user.fbLogin && user.fbWorksheets
+      ? user.fbWorksheets.friendInfo
+      : {};
+  }, [user.fbLogin, user.fbWorksheets]);
   // FB Friends worksheets
-  const friendWorksheets =
-    user.fbLogin && user.fbWorksheets ? user.fbWorksheets.worksheets : {};
-  // Add FB friend to dropdown if they have worksheet courses in the current season
-  for (let friend in friendInfo) {
-    if (containsCurSeason(friendWorksheets[friend]))
-      friend_options.push({
-        value: friend,
-        label: friendInfo[friend].name,
-      });
-  }
-
-  // Sort FB friends in alphabetical order
-  friend_options.sort((a, b) => {
-    return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
-  });
+  const friendWorksheets = useMemo(() => {
+    return user.fbLogin && user.fbWorksheets
+      ? user.fbWorksheets.worksheets
+      : {};
+  }, [user.fbLogin, user.fbWorksheets]);
+  // List of FB friend options. Initialize with me option
+  const friend_options = useMemo(() => {
+    let friend_options_temp = [];
+    // Add FB friend to dropdown if they have worksheet courses in the current season
+    for (let friend in friendInfo) {
+      if (containsCurSeason(friendWorksheets[friend]))
+        friend_options_temp.push({
+          value: friend,
+          label: friendInfo[friend].name,
+        });
+    }
+    // Sort FB friends in alphabetical order
+    friend_options_temp.sort((a, b) => {
+      return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
+    });
+    return friend_options_temp;
+  }, [containsCurSeason, friendInfo, friendWorksheets]);
 
   if (!user.fbLogin) {
     // TODO: replace with a button to connect FB

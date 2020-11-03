@@ -19,10 +19,10 @@ import chroma from 'chroma-js';
  * @prop listing - dictionary that holds listing info
  * @prop hideModal - function to hide modal
  * @prop show - boolean that determines when to show modal
- * @prop hasSeason - function that switches to most recent season if removing the last course of the current season
+
  */
 
-const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
+const CourseModal = ({ listing, hideModal, show }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
   // Switch to mobile view?
@@ -79,7 +79,6 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                         crn={listing.crn ? listing.crn : listing['listing.crn']}
                         season_code={listing.season_code}
                         modal={true}
-                        hasSeason={hasSeason}
                       />
                     )}
                   </Col>

@@ -537,6 +537,7 @@ function Search({ location, history }) {
   // Switch to grid view if window width changes < 900
   useEffect(() => {
     if (width < 900 && isList === true) setView(false);
+    else if (width >= 900 && isList === false) setView(true);
   }, [width, isList]);
 
   return (
