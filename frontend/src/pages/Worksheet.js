@@ -243,8 +243,13 @@ function Worksheet() {
   return (
     <div className={styles.container}>
       {/* Desktop View */}
-      <div className={styles.desktop_container + ' d-none d-md-block'}>
-        <Row className={'m-4'}>
+      <div
+        className={
+          (cur_expand !== 'list' ? styles.desktop_container : '') +
+          ' d-none d-md-block'
+        }
+      >
+        <Row className={'m-3'}>
           {/* Calendar Component */}
           <Col
             // Width of componenet depends on if it is expanded or not
@@ -298,8 +303,8 @@ function Worksheet() {
             md={cur_expand === 'list' ? 12 : 3}
             className={
               styles.table +
-              ' pl-4 ml-auto ' +
-              (cur_expand === 'list' ? ' pr-4 ' : 'pr-0 ') +
+              ' pl-3 ml-auto ' +
+              (cur_expand === 'list' ? ' p3-4 ' : 'pr-0 ') +
               (cur_expand === 'calendar' ? styles.hidden : '')
             }
             // Show hover icon
