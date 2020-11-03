@@ -19,12 +19,22 @@ $yaleAdvancedOciMysqli = ProjectCommon::createYaleAdvancedOciMysqli();
 // Disconnect Facebook if requested
 if (isset($_GET['disconnect_facebook'])) {
     $sqlClearFriends = "DELETE FROM StudentFacebookFriends WHERE netId='$netId'";
-
     if ($yalePlusMysqli->query($sqlClearFriends) === TRUE) {
         $log->write("facebook successfully disconnected");
     }
     else {
         $log->write("facebook disconnect failed for {$netId}");
+    }
+    $student = new Student($yalePlusMysqli);
+    $student->setInfoArray(
+        array(
+            'netId' => $netId,
+            'facebookId' => 0,
+            'facebookDataJson' => ''
+        )
+    );
+    if (!$student->commit()) {
+        $log->write("facebook disconnect failed for {$netid} on: {$student->lastquery}", e_error, 0);
     }
 }
 

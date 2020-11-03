@@ -11,8 +11,6 @@ import { flatten } from '../utilities';
 import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
 import { preprocess_courses } from '../utilities';
 
-import { FaSyncAlt } from 'react-icons/fa';
-
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
  * @prop profile_expanded - boolean | is dropdown visible?

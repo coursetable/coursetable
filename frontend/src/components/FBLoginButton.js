@@ -69,7 +69,7 @@ function FBLoginButton() {
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')
       .then(() => {
-        return syncFacebook();
+        return fbRefresh(true);
       })
       .then(() => {
         toast.success('FB disconnected');
@@ -77,10 +77,10 @@ function FBLoginButton() {
       .catch(() => {
         toast.error('Error disconnecting FB');
       });
-  }, [syncFacebook]);
+  }, [fbRefresh]);
 
   return (
-    <div>
+    <div className="d-flex">
       {!logged_in && (
         <span onClick={handleLoginClick} className={styles.collapse_text}>
           Connect to FB
@@ -91,14 +91,14 @@ function FBLoginButton() {
           <span onClick={handleLogoutClick} className={styles.collapse_text}>
             Disconnect FB
           </span>
-          <span onClick={handleLoginClick}>
-            <FaSyncAlt
-              className="ml-2 my-0"
-              size={20} 
-              color='#32CD32'
-              title='Refresh FB friends'
-            />
-          </span>
+
+          <FaSyncAlt
+            className={styles.fb_sync + ' ml-2 my-auto'}
+            size={15}
+            color="#32CD32"
+            title="Refresh FB friends"
+            onClick={handleLoginClick}
+          />
         </Fragment>
       )}
     </div>
