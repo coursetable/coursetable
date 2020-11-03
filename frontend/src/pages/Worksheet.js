@@ -63,8 +63,6 @@ function Worksheet() {
   const [hidden_courses, setHiddenCourses] = useState([]);
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState();
-  // Which component (calendar or list or none) is the user hovering over. Determines which side gets the expand button
-  const [hover_expand, setHoverExpand] = useState('none');
   // Currently expanded component (calendar or list or none)
   const [cur_expand, setCurExpand] = useState('none');
 
@@ -95,7 +93,6 @@ function Worksheet() {
   // Hide course modal
   const hideModal = useCallback(() => {
     setCourseModal([false, '']);
-    setHoverExpand(cur_expand);
   }, [cur_expand]);
 
   // Check to see if this course is hidden
@@ -270,10 +267,6 @@ function Worksheet() {
               ' m-0 p-0 ' +
               (cur_expand === 'list' ? styles.hidden : '')
             }
-            // Show hover icon
-            onMouseEnter={() => setHoverExpand('calendar')}
-            // Hide hover icon
-            onMouseLeave={() => setHoverExpand('none')}
           >
             <WeekSchedule
               showModal={showModal}
@@ -282,31 +275,27 @@ function Worksheet() {
               setHoverCourse={setHoverCourse}
             />
             {/* Expand/Compress icons for calendar */}
-            <Fade in={hover_expand === 'calendar'}>
-              <div style={{ zIndex: 420 }}>
-                {cur_expand === 'none' ? (
-                  <FaExpandAlt
-                    className={styles.expand_btn + ' ' + styles.top_right}
-                    size={expand_btn_size}
-                    onClick={() => {
-                      // Expand calendar
-                      setCurExpand('calendar');
-                    }}
-                  />
-                ) : (
-                  <FaCompressAlt
-                    className={styles.expand_btn + ' ' + styles.top_right}
-                    size={expand_btn_size}
-                    onClick={() => {
-                      // Compress calendar
-                      setCurExpand('none');
-                      // Show hover icons for list because that is where mouse will end up
-                      setHoverExpand('list');
-                    }}
-                  />
-                )}
-              </div>
-            </Fade>
+            <div style={{ zIndex: 420 }}>
+              {cur_expand === 'none' ? (
+                <FaExpandAlt
+                  className={styles.expand_btn + ' ' + styles.top_right}
+                  size={expand_btn_size}
+                  onClick={() => {
+                    // Expand calendar
+                    setCurExpand('calendar');
+                  }}
+                />
+              ) : (
+                <FaCompressAlt
+                  className={styles.expand_btn + ' ' + styles.top_right}
+                  size={expand_btn_size}
+                  onClick={() => {
+                    // Compress calendar
+                    setCurExpand('none');
+                  }}
+                />
+              )}
+            </div>
           </Col>
           {/* List Component*/}
           <Col
@@ -314,14 +303,10 @@ function Worksheet() {
             md={cur_expand === 'list' ? 12 : 3}
             className={
               styles.table +
-              ' pl-3 ml-auto ' +
-              (cur_expand === 'list' ? ' p3-4 ' : 'pr-0 ') +
+              ' pl-4 ml-auto ' +
+              (cur_expand === 'list' ? ' pr-4 ' : 'pr-0 ') +
               (cur_expand === 'calendar' ? styles.hidden : '')
             }
-            // Show hover icon
-            onMouseEnter={() => setHoverExpand('list')}
-            // Hide hover icon
-            onMouseLeave={() => setHoverExpand('none')}
           >
             {/* Expanded List Component */}
             <Fade in={cur_expand === 'list'}>
@@ -355,35 +340,32 @@ function Worksheet() {
               </div>
             </Fade>
             {/* Expand/Compress Icons for list */}
-            <Fade in={hover_expand === 'list'}>
-              <div style={{ zIndex: 420 }}>
-                {cur_expand === 'none' ? (
-                  <FaExpandAlt
-                    className={styles.expand_btn + ' ' + styles.top_left}
-                    size={expand_btn_size}
-                    onClick={() => {
-                      // Expand the list component
-                      setCurExpand('list');
-                      // Track toggling table view for worksheet
-                      window.umami.trackEvent('Table View', 'worksheet');
-                    }}
-                  />
-                ) : (
-                  <FaCompressAlt
-                    className={styles.expand_btn + ' ' + styles.top_left}
-                    size={expand_btn_size}
-                    onClick={() => {
-                      // Compress the list component
-                      setCurExpand('none');
-                      // Show hover icons for calendar because that is where mouse will end up
-                      setHoverExpand('calendar');
-                      // Track toggling list view for worksheet
-                      window.umami.trackEvent('List View', 'worksheet');
-                    }}
-                  />
-                )}
-              </div>
-            </Fade>
+
+            <div style={{ zIndex: 420 }}>
+              {cur_expand === 'none' ? (
+                <FaExpandAlt
+                  className={styles.expand_btn + ' ' + styles.top_left}
+                  size={expand_btn_size}
+                  onClick={() => {
+                    // Expand the list component
+                    setCurExpand('list');
+                    // Track toggling table view for worksheet
+                    window.umami.trackEvent('Table View', 'worksheet');
+                  }}
+                />
+              ) : (
+                <FaCompressAlt
+                  className={styles.expand_btn + ' ' + styles.top_left}
+                  size={expand_btn_size}
+                  onClick={() => {
+                    // Compress the list component
+                    setCurExpand('none');
+                    // Track toggling list view for worksheet
+                    window.umami.trackEvent('List View', 'worksheet');
+                  }}
+                />
+              )}
+            </div>
           </Col>
         </Row>
       </div>

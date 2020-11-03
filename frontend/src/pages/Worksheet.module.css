@@ -56,11 +56,11 @@
 
 .top_left {
   left: 0%;
-  transform: rotateZ(90deg) translate(-40%, -50%);
+  transform: rotateZ(90deg) translate(-40%, -85%);
 }
 
 .top_left:hover {
-  transform: rotateZ(90deg) translate(-40%, -50%) scale(1.1);
+  transform: rotateZ(90deg) translate(-40%, -85%) scale(1.1);
 }
 
 .top_right {
