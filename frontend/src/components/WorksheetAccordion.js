@@ -81,7 +81,6 @@ function ContextAwareToggle({ eventKey, callback, course }) {
  * @prop cur_season - string that holds the current season code
  * @prop season_codes - list of season codes
  * @prop courses - list of listings dictionaries
- * @prop hasSeason - function to pass to bookmark button
  * @prop showModal - function to show modal for a certain listing
  * @prop setFbPerson - function to change FB person
  * @prop cur_person - string of current person who's worksheet we are viewing

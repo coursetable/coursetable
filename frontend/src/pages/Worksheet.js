@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 
 import { FetchWorksheet } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
@@ -44,26 +44,23 @@ function Worksheet() {
       : user.fbWorksheets.worksheets[fb_person];
   }, [user.worksheet, user.fbWorksheets, fb_person]);
 
-  // List of season codes
-  let season_codes = [];
-  // Populates season_codes list and also updates the most recent season
-  const updateRecentSeason = (populate_season_codes, season_code = null) => {
-    let recentSeason = '200903';
+  const season_codes = useMemo(() => {
+    let season_codes_temp = [];
     if (cur_worksheet) {
       cur_worksheet.forEach((szn) => {
-        if (szn[0] !== season_code && szn[0] > recentSeason)
-          recentSeason = szn[0];
-        if (populate_season_codes && season_codes.indexOf(szn[0]) === -1)
-          season_codes.push(szn[0]);
+        if (season_codes_temp.indexOf(szn[0]) === -1)
+          season_codes_temp.push(szn[0]);
       });
     }
-    return recentSeason;
-  };
-  // Sort season codes from most to least recent
-  season_codes.sort();
-  season_codes.reverse();
+    season_codes_temp.sort();
+    season_codes_temp.reverse();
+    return season_codes_temp;
+  }, [cur_worksheet]);
+
   // Current season initialized to most recent season
-  const [season, setSeason] = useState(updateRecentSeason(true));
+  const [season, setSeason] = useState(
+    season_codes.length > 0 ? season_codes[0] : ''
+  );
   // Listings data to be fetched from database
   const [listings, setListings] = useState([]);
   // Store the initial worksheet to be cached on the first listings query
@@ -86,23 +83,6 @@ function Worksheet() {
     setSeason(season_code);
   };
 
-  // Function to switch to most recent season if user has just removed the last course of this season
-  const hasSeason = (season_code, crn) => {
-    // Return if not removing course from this season
-    if (season_code !== season) return;
-    // Iterate through courses in worksheet
-    for (let i = 0; i < cur_worksheet.length; i++) {
-      // Return if other courses exist in this season
-      if (
-        cur_worksheet[i][0] === season &&
-        cur_worksheet[i][1] !== crn.toString()
-      )
-        return;
-    }
-    // No more courses in this season, so switch to most recent
-    changeSeason(updateRecentSeason(false, season_code));
-  };
-
   // Show course modal for the chosen listing
   const showModal = (listing) => {
     setCourseModal([true, listing]);
@@ -115,13 +95,19 @@ function Worksheet() {
   };
 
   // Check to see if this course is hidden
-  const isHidden = (season_code, crn) => {
-    for (let i = 0; i < hidden_courses.length; i++) {
-      if (hidden_courses[i][0] === season_code && hidden_courses[i][1] === crn)
-        return i;
-    }
-    return -1;
-  };
+  const isHidden = useCallback(
+    (season_code, crn) => {
+      for (let i = 0; i < hidden_courses.length; i++) {
+        if (
+          hidden_courses[i][0] === season_code &&
+          hidden_courses[i][1] === crn
+        )
+          return i;
+      }
+      return -1;
+    },
+    [hidden_courses]
+  );
 
   // Hide/Show this course
   const toggleCourse = (season_code, crn, hidden) => {
@@ -143,10 +129,63 @@ function Worksheet() {
     return 1;
   };
 
+  // List of colors for the calendar events
+  const colors = [
+    'rgba(108, 194, 111, ',
+    'rgba(202, 95, 83, ',
+    'rgba(49, 164, 212, ',
+    'rgba(223, 134, 83, ',
+    'rgba(38, 186, 154, ',
+    'rgba(186, 120, 129, ',
+  ];
+
   // Perform search query to fetch listing data for each worksheet course
   // Only performs search query once with the initial worksheet and then caches the result
   // This prevents the need to perform another search query and render "loading..." when removing a course
   const { loading, error, data } = FetchWorksheet(init_worksheet);
+
+  // Initialize listings state if haven't already
+  if (
+    !listings.length &&
+    !loading &&
+    !error &&
+    cur_worksheet &&
+    cur_worksheet.length &&
+    data &&
+    data.length > 0
+  ) {
+    let temp = [...data];
+    // Assign color to each course
+    for (let i = 0; i < data.length; i++) {
+      temp[i].color = colors[i % colors.length];
+    }
+    // Sort list by course code
+    temp.sort(sortByCourseCode);
+    setListings(temp);
+  }
+
+  // Holds the courses that are in the worksheet and in this current season
+  // The listings list might have courses that have been removed from the worksheet because we don't fetch listings data again
+  // So we need to filter for only the course that are in the worksheet as well as by season
+  const season_listings = useMemo(() => {
+    if (!listings.length) return [];
+    let season_listings_temp = [];
+    listings.forEach((listing) => {
+      if (
+        listing.season_code === season &&
+        isInWorksheet(
+          listing.season_code,
+          listing.crn.toString(),
+          cur_worksheet
+        )
+      ) {
+        // Set hidden key of each listing
+        listing.hidden = isHidden(listing.season_code, listing.crn) !== -1;
+        season_listings_temp.push(listing);
+      }
+    });
+    return season_listings_temp;
+  }, [listings, cur_worksheet, isHidden, season]);
 
   // If user somehow isn't logged in and worksheet is null
   if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
@@ -200,42 +239,6 @@ function Worksheet() {
   }
   // Error with query
   if (data === undefined || !data.length) return <div>Error with Query</div>;
-  // List of colors for the calendar events
-  const colors = [
-    'rgba(108, 194, 111, ',
-    'rgba(202, 95, 83, ',
-    'rgba(49, 164, 212, ',
-    'rgba(223, 134, 83, ',
-    'rgba(38, 186, 154, ',
-    'rgba(186, 120, 129, ',
-  ];
-
-  // Initialize listings state if haven't already
-  if (!listings.length) {
-    let temp = [...data];
-    // Assign color to each course
-    for (let i = 0; i < data.length; i++) {
-      temp[i].color = colors[i % colors.length];
-    }
-    // Sort list by course code
-    temp.sort(sortByCourseCode);
-    setListings(temp);
-  }
-
-  // Holds the courses that are in the worksheet and in this current season
-  // The listings list might have courses that have been removed from the worksheet because we don't fetch listings data again
-  // So we need to filter for only the course that are in the worksheet as well as by season
-  let season_listings = [];
-  listings.forEach((listing) => {
-    if (
-      listing.season_code === season &&
-      isInWorksheet(listing.season_code, listing.crn.toString(), cur_worksheet)
-    ) {
-      // Set hidden key of each listing
-      listing.hidden = isHidden(listing.season_code, listing.crn) !== -1;
-      season_listings.push(listing);
-    }
-  });
 
   // Button size for expand icons
   const expand_btn_size = 18;
@@ -325,7 +328,6 @@ function Worksheet() {
                   onSeasonChange={changeSeason}
                   setFbPerson={handleFBPersonChange}
                   fb_person={fb_person}
-                  hasSeason={hasSeason}
                 />
               </div>
             </Fade>
@@ -342,7 +344,6 @@ function Worksheet() {
                   setHoverCourse={setHoverCourse}
                   setFbPerson={handleFBPersonChange}
                   cur_person={fb_person}
-                  hasSeason={hasSeason}
                 />
               </div>
             </Fade>
@@ -388,7 +389,6 @@ function Worksheet() {
               cur_season={season}
               season_codes={season_codes}
               courses={season_listings}
-              hasSeason={hasSeason}
               showModal={showModal}
               setFbPerson={handleFBPersonChange}
               cur_person={fb_person}
@@ -401,7 +401,6 @@ function Worksheet() {
         hideModal={hideModal}
         show={course_modal[0]}
         listing={course_modal[1]}
-        hasSeason={hasSeason}
       />
     </div>
   );

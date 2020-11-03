@@ -14,7 +14,6 @@ import WorksheetRowDropdown from './WorksheetRowDropdown';
  * @prop onSeasonChange - function to change season
  * @prop toggleCourse - function to hide/show course
  * @prop setHoverCourse - function to darken calendar events of this listing
- * @prop hasSeason - function to pass to bookmark button
  * @prop setFbPerson - function to change FB person
  * @prop cur_person - string of current person who's worksheet we are viewing
  */
@@ -52,7 +51,6 @@ export default class WorksheetList extends React.Component {
               crn={course.crn}
               season_code={cur_season}
               modal={false}
-              hasSeason={this.props.hasSeason}
             />
           </div>
           <Row className="align-items-center mx-auto">

@@ -13,16 +13,9 @@ import { isInWorksheet } from '../utilities';
  * @prop crn - integer that holds the crn of the current course
  * @prop season_code - string that holds the current season code
  * @prop modal - boolean | are we rendering in the course modal
- * @prop hasSeason - function to switch to most recent course when removing the last course of a season
  */
 
-const WorksheetToggleButton = ({
-  worksheetView,
-  crn,
-  season_code,
-  modal,
-  hasSeason,
-}) => {
+const WorksheetToggleButton = ({ worksheetView, crn, season_code, modal }) => {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
   const worksheet_check = useMemo(() => {
@@ -59,10 +52,8 @@ const WorksheetToggleButton = ({
           toast.error('Failed to update worksheet');
           console.error(err);
         });
-        // Check to see if user removed the last course of a season
-        if (hasSeason && add_remove === 'remove') hasSeason(season_code, crn);
         // If not in worksheet view, update inWorksheet state
-        if (!worksheetView) setInWorksheet(!inWorksheet);
+        setInWorksheet(!inWorksheet);
       });
   }
 
