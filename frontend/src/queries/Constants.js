@@ -180,6 +180,7 @@ export const schoolOptions = [
   { label: 'Music', value: 'MU' },
   { label: 'Nursing', value: 'NR' },
   { label: 'Physician Associate', value: 'PA' },
+  { label: 'Public Health', value: 'PH' },
   { label: 'Summer Session', value: 'SU' },
 ];
 
