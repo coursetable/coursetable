@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 import React, { Fragment, useCallback } from 'react';
-=======
-import React, { useCallback } from 'react';
->>>>>>> master
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 import { useUser } from '../user';
