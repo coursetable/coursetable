@@ -9,7 +9,7 @@ import React, {
 import SearchResultsItemMemo from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
 
-// import ListGridToggle from './ListGridToggle';
+import ListGridToggle from './ListGridToggle';
 
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
@@ -50,7 +50,7 @@ import { AiFillStar } from 'react-icons/ai';
 const SearchResults = ({
   data,
   isList = true,
-  // setView,
+  setView,
   loading = false,
   multiSeasons = false,
   searched = true,
@@ -131,6 +131,7 @@ const SearchResults = ({
     LOC_WIDTH: 100,
     SA_WIDTH: 100,
     PADDING: 35,
+    NUM_CUT: !multiSeasons ? 580 : 680,
     PROF_CUT: !multiSeasons ? 730 : 830,
     MEET_CUT: !multiSeasons ? 830 : 930,
     LOC_CUT: !multiSeasons ? 930 : 1030,
@@ -142,12 +143,12 @@ const SearchResults = ({
       (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
       COL_SPACING.CODE_WIDTH -
       COL_SPACING.LOC_WIDTH -
+      (ROW_WIDTH > COL_SPACING.NUM_CUT ? 2 * COL_SPACING.NUM_WIDTH : 0) -
       (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
       (ROW_WIDTH > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
       (ROW_WIDTH > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
       (ROW_WIDTH > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
       3 * COL_SPACING.RATE_WIDTH -
-      2 * COL_SPACING.NUM_WIDTH -
       COL_SPACING.PADDING
     );
   }, [ROW_WIDTH, COL_SPACING, multiSeasons]);
@@ -360,13 +361,13 @@ const SearchResults = ({
                 ' justify-content-between'
               }
             >
-              {/* <div
+              <div
                 className={
                   Styles.list_grid_toggle + ' d-flex ml-auto my-auto p-0'
                 }
               >
                 <ListGridToggle isList={isList} setView={setView} />
-              </div> */}
+              </div>
               {isList ? (
                 <React.Fragment>
                   {multiSeasons && (
@@ -381,24 +382,28 @@ const SearchResults = ({
                   <div style={title_style} className={Styles.results_header}>
                     Title
                   </div>
-                  <div style={num_style} className={Styles.results_header}>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={enrollment_tooltip}
-                    >
-                      <span className="m-auto">#</span>
-                    </OverlayTrigger>
-                  </div>
-                  <div style={num_style} className={Styles.results_header}>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={fb_tooltip}
-                    >
-                      <span className="m-auto">#FB</span>
-                    </OverlayTrigger>
-                  </div>
+                  {ROW_WIDTH > COL_SPACING.NUM_CUT && (
+                    <>
+                      <div style={num_style} className={Styles.results_header}>
+                        <OverlayTrigger
+                          placement="bottom"
+                          delay={{ show: 100, hide: 100 }}
+                          overlay={enrollment_tooltip}
+                        >
+                          <span className="m-auto">#</span>
+                        </OverlayTrigger>
+                      </div>
+                      <div style={num_style} className={Styles.results_header}>
+                        <OverlayTrigger
+                          placement="bottom"
+                          delay={{ show: 100, hide: 100 }}
+                          overlay={fb_tooltip}
+                        >
+                          <span className="m-auto">#FB</span>
+                        </OverlayTrigger>
+                      </div>
+                    </>
+                  )}
                   {/* Class Rating */}
                   <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
@@ -472,22 +477,13 @@ const SearchResults = ({
               ) : (
                 // Grid view showing how many search results
                 <Col md={10}>
-                  <strong>
+                  <div className={Styles.results_header}>
                     {`Showing ${data.length} course${
                       data.length === 1 ? '' : 's'
                     }...`}
-                  </strong>
+                  </div>
                 </Col>
               )}
-              {/* List Grid Toggle Button */}
-              {/* <div
-                style={{ width: `${COL_SPACING.BOOKMARK_WIDTH}px` }}
-                className={Styles.results_header + ' pr-2'}
-              >
-                <div className="d-flex ml-auto my-auto p-0">
-                  <ListGridToggle isList={isList} setView={setView} />
-                </div>
-              </div> */}
             </Row>
           </div>
         )}

@@ -114,9 +114,6 @@ function Search({ location, history }) {
   };
 
   // States involved in infinite scroll
-  const [old_data, setOldData] = useState([]); // Holds the combined list of courses
-  const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
-  const [fetchedAll, setFetchedAll] = useState(false); // True when we've fetched all courses
   const [searched, setSearched] = useState(false); // Reset row height cache on search
 
   // number of search results to return
@@ -169,10 +166,7 @@ function Search({ location, history }) {
   var [
     executeSearch,
     { called: searchCalled, loading: searchLoading, data: searchData },
-  ] = useLazyQuery(
-    SEARCH_COURSES,
-    { fetchPolicy: 'no-cache' } // Doesn't cache results, so always search results always rerender on new search. Comment this out if implementing fetchMore
-  );
+  ] = useLazyQuery(SEARCH_COURSES);
 
   const handleChange = () => {
     if (!location.state) return;
@@ -197,26 +191,16 @@ function Search({ location, history }) {
   // search form submit handler
   const handleSubmit = useCallback(
     (event, search = false) => {
-      let temp_offset = -1;
       if (event && search) event.preventDefault();
       if (search) {
         //Reset states when making a new search
-        setOldData([]);
-        setFetchedAll(false);
         setSearched(true);
-        // if (!defaultSearch) setCollapsedForm(true);
-        temp_offset = 0; // Account for reset state lag
 
         // Metric Tracking of Invidiual Searches
         window.umami.trackEvent(
           'Searched - ' + searchText.value,
           'search-text'
         );
-      } else if (fetchedAll) {
-        // Metric Tracking of Viewing All
-        window.umami.trackEvent('Viewed All', 'search');
-
-        return;
       }
 
       // sorting options
@@ -395,8 +379,6 @@ function Search({ location, history }) {
       const search_variables = {
         search_text: searchText.value,
         ordering: ordering,
-        offset: temp_offset === -1 ? old_data.length : temp_offset,
-        // limit: search ? 60 : QUERY_SIZE,
         seasons: processedSeasons,
         areas: processedAreas,
         skills: processedSkills,
@@ -416,11 +398,10 @@ function Search({ location, history }) {
     }
     // [
     //   executeSearch,
-    //   fetchedAll,
     //   hideCancelled,
     //   multiSeasons,
-    //   old_data.length,
     //   ratingBounds,
+    //   sort_order,
     //   select_credits,
     //   select_schools,
     //   select_seasons,
@@ -435,30 +416,21 @@ function Search({ location, history }) {
   if (searchCalled) {
     // If the search query is still loading
     if (searchLoading) {
-      if (!searching) setSearching(true); // Set searching after loading starts
-    } else {
-      // Keep old courses until new courses are fetched
-      if (searchData && searching) {
-        // Scroll down to catalog when search is complete for mobile view
-        if (isMobile && old_data.length === 0) {
-          scroller.scrollTo('catalog', {
-            smooth: true,
-            duration: 500,
-          });
-        }
-        // if (searchData.search_listing_info.length < QUERY_SIZE)
-        setFetchedAll(true);
-        // Combine old courses with new fetched courses
-        searchData = searchData.search_listing_info.map((x) => {
-          return flatten(x);
+    } else if (searchData) {
+      // Scroll down to catalog when search is complete for mobile view
+      if (isMobile) {
+        scroller.scrollTo('catalog', {
+          smooth: true,
+          duration: 500,
         });
-        searchData = searchData.map((x) => {
-          return preprocess_courses(x);
-        });
-        let new_data = [...old_data].concat(searchData);
-        setOldData(new_data); // Replace old with new
-        setSearching(false); // Not searching
       }
+      // Preprocess search data
+      searchData = searchData.search_listing_info.map((x) => {
+        return flatten(x);
+      });
+      searchData = searchData.map((x) => {
+        return preprocess_courses(x);
+      });
     }
   }
 
@@ -536,8 +508,7 @@ function Search({ location, history }) {
 
   // Switch to grid view if window width changes < 900
   useEffect(() => {
-    if (width < 900 && isList === true) setView(false);
-    else if (width >= 900 && isList === false) setView(true);
+    if (width < 768 && isList === true) setView(false);
   }, [width, isList]);
 
   return (
@@ -915,7 +886,7 @@ function Search({ location, history }) {
         >
           <Element name="catalog">
             <SearchResults
-              data={old_data}
+              data={searchData ? searchData : []}
               isList={isList}
               setView={handleSetView}
               loading={searchLoading}
