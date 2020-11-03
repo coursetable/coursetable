@@ -136,10 +136,7 @@ function Search({ location, history }) {
   ]);
   const [select_skillsareas, setSelectSkillsAreas] = useState();
   const [select_credits, setSelectCredits] = useState();
-  const [select_schools, setSelectSchools] = useState([
-    { value: 'YC', label: 'Yale College' },
-    { value: 'GS', label: 'Graduate' },
-  ]);
+  const [select_schools, setSelectSchools] = useState([]);
   const [select_subjects, setSelectSubjects] = useState([]);
 
   // Does the user want to hide cancelled courses?
@@ -480,10 +477,7 @@ function Search({ location, history }) {
     setSelectSeasons([{ value: '202101', label: 'Spring 2021' }]);
     setSelectSkillsAreas(null);
     setSelectCredits(null);
-    setSelectSchools([
-      { value: 'YC', label: 'Yale College' },
-      { value: 'GS', label: 'Graduate' },
-    ]);
+    setSelectSchools([]);
     setSelectSubjects([]);
     setSortOrder('asc');
     setFormKey(form_key + 1);
@@ -669,51 +663,6 @@ function Search({ location, history }) {
                       onChange={(options) => {
                         // Set seasons state
                         setSelectSeasons(options);
-                        let has_summer_season = false;
-                        let has_season_before_2014 = false;
-                        // User has selected at least 1 season
-                        if (options && options.length > 0) {
-                          options.forEach((season) => {
-                            // Ignore the rest if there is already a season before 2014
-                            if (has_season_before_2014) return;
-                            // Season before 2014 exists
-                            if (season.value < '201400') {
-                              has_season_before_2014 = true;
-                              // Clear schools
-                              setSelectSchools([]);
-                              return;
-                            }
-                            // Summer season exists
-                            if (season.value[5] === '2') {
-                              has_summer_season = true;
-                              // Add summer session to schools
-                              setSelectSchools([
-                                ...select_schools,
-                                { label: 'Summer Session', value: 'SU' },
-                              ]);
-                            }
-                          });
-                        } else {
-                          has_summer_season = true;
-                          // Add summer session to schools
-                          setSelectSchools([
-                            ...select_schools,
-                            { label: 'Summer Session', value: 'SU' },
-                          ]);
-                        }
-                        // If no summer season selected and no season before 2014
-                        if (!has_summer_season && !has_season_before_2014) {
-                          // Copy school state
-                          let new_schools = [...select_schools];
-                          for (let i = 0; i < new_schools.length; i++) {
-                            // If summer school selected, remove it
-                            if (new_schools[i].value === 'SU') {
-                              new_schools.splice(i, 1);
-                            }
-                          }
-                          // Update schools state
-                          setSelectSchools(new_schools);
-                        }
                       }}
                       components={animatedComponents}
                     />
