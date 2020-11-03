@@ -93,7 +93,7 @@ function Worksheet() {
   // Hide course modal
   const hideModal = useCallback(() => {
     setCourseModal([false, '']);
-  }, [cur_expand]);
+  }, []);
 
   // Check to see if this course is hidden
   const isHidden = useCallback(

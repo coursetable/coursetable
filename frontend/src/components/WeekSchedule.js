@@ -94,7 +94,7 @@ function WeekSchedule({ showModal, courses, hover_course, setHoverCourse }) {
       );
     },
     // [setHoverCourse]
-    []
+    [event_style]
   );
 
   // Custom styling for the calendar events
