@@ -8,6 +8,10 @@
   max-height: 92vh;
 }
 
+.expanded_list_container {
+  min-height: 92vh;
+}
+
 .loading_spinner {
   position: fixed;
   top: calc(50% - 16px);

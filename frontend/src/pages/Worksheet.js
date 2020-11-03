@@ -245,8 +245,9 @@ function Worksheet() {
       {/* Desktop View */}
       <div
         className={
-          (cur_expand !== 'list' ? styles.desktop_container : '') +
-          ' d-none d-md-block'
+          (cur_expand !== 'list'
+            ? styles.desktop_container
+            : styles.expanded_list_container) + ' d-none d-md-block'
         }
       >
         <Row className={'m-3'}>
