@@ -49,7 +49,7 @@ import { AiFillStar } from 'react-icons/ai';
 
 const SearchResults = ({
   data,
-  isList = true,
+  isList,
   setView,
   loading = false,
   multiSeasons = false,

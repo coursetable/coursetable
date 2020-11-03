@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import SearchResults from './SearchResults';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
@@ -32,6 +32,7 @@ const WorksheetExpandedList = ({
   fb_person,
 }) => {
   const { user } = useUser();
+  const [isList, setView] = useState(true);
   return (
     <div className={styles.container}>
       <Row className="mx-auto">
@@ -43,6 +44,8 @@ const WorksheetExpandedList = ({
               showModal={showModal}
               expanded={cur_expand === 'list'}
               isLoggedIn={true}
+              isList={isList}
+              setView={setView}
             />
           </div>
         </Col>
