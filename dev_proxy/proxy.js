@@ -9,10 +9,68 @@ const app = express();
 const port = 8080;
 const insecure_port = process.env.PORT || 3001;
 const frontend_uri = process.env.FRONTEND_LOC || 'http://frontend:3000';
+const api_uri = process.env.CHALLENGE_LOC || 'http://api:4096';
 const php_uri = 'http://nginx:8080';
 
 // Enable request logging.
 app.use(morgan('tiny'));
+
+// Strip all headers matching X-COURSETABLE-* from incoming requests.
+app.use((req, _, next) => {
+  for (const [header, _] of Object.entries(req.headers)) {
+    // Headers are automatically made lowercase by express.
+    if (header.startsWith('x-coursetable-')) {
+      delete req.headers[header];
+    }
+  }
+
+  next();
+});
+
+// Authentication - set X-COURSETABLE-* headers.
+const authSoft = (req, _, next) => {
+  axios
+    .get(`${php_uri}/AuthStatus.php`, {
+      headers: {
+        cookie: req.headers['cookie'],
+      },
+    })
+    .then(({ data }) => {
+      req.headers['x-coursetable-authd'] = data.success;
+      req.headers['x-coursetable-netid'] = data.netId;
+      return next();
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
+
+// Authentication - reject all unauthenticated requests.
+// If the user does not have evals enabled, these requests are also rejected.
+const authHard = (req, res, next) => {
+  axios
+    .get(`${php_uri}/AuthStatus.php`, {
+      headers: {
+        cookie: req.headers['cookie'],
+      },
+    })
+    .then(({ data }) => {
+      if (!data.success) {
+        // Return 403 forbidden if the request lacks auth.
+        return res.status(403).send('request missing authentication');
+      }
+
+      if (!data.evaluationsEnabled) {
+        // Return 403 forbidden since evals are not enabled.
+        return res.status(403).send('you must enable evaluations first');
+      }
+
+      return next();
+    })
+    .catch((err) => {
+      return next(err);
+    });
+};
 
 // Setup all the proxy routes.
 
@@ -27,26 +85,15 @@ app.use(
   })
 );
 
-app.use('/ferry', (req, res, next) => {
-  // Query the backend for authentication status.
-  axios
-    .get(`${php_uri}/AuthStatus.php`, {
-      headers: {
-        cookie: req.headers['cookie'],
-      },
-    })
-    .then(({ data }) => {
-      if (data.success) {
-        return next();
-      }
-      // Return 403 forbidden if the request lacks auth.
-      res.status(403).send('request missing authentication');
-    })
-    .catch((err) => {
-      return next(err);
-    });
+// Redirection routes for historical pages.
+app.get('/Blog', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/Blog.html');
+});
+app.get('/recommendations.htm', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/recommendations.htm');
 });
 
+app.use('/ferry', authHard);
 app.use(
   '/ferry',
   createProxyMiddleware({
@@ -55,6 +102,14 @@ app.use(
       '^/ferry': '/', // remove base path
     },
     ws: true,
+  })
+);
+
+app.use('/api', authSoft);
+app.use(
+  '/api',
+  createProxyMiddleware({
+    target: api_uri,
   })
 );
 

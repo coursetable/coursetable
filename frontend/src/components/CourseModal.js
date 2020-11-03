@@ -19,10 +19,10 @@ import chroma from 'chroma-js';
  * @prop listing - dictionary that holds listing info
  * @prop hideModal - function to hide modal
  * @prop show - boolean that determines when to show modal
- * @prop hasSeason - function that switches to most recent season if removing the last course of the current season
+
  */
 
-const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
+const CourseModal = ({ listing, hideModal, show }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
   // Switch to mobile view?
@@ -39,6 +39,9 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
 
   // Called when hiding modal
   const handleHide = () => {
+    // Metric Tracking for Hiding the Modal
+    //window.umami.trackEvent("Modal Hidden", "modal");
+
     // Reset views and filters
     setView(['overview', null]);
     setFilter('both');
@@ -54,6 +57,12 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
         scrollable={true}
         onHide={handleHide}
         dialogClassName="modal-custom-width"
+        /*
+        TODO: set to 100ms animation
+        Modal.TRANSITION_DURATION = 100;
+        Modal.BACKDROP_TRANSITION_DURATION = 50;
+        */
+        animation={false}
         centered
       >
         <Modal.Header closeButton>
@@ -70,7 +79,6 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                         crn={listing.crn ? listing.crn : listing['listing.crn']}
                         season_code={listing.season_code}
                         modal={true}
-                        hasSeason={hasSeason}
                       />
                     )}
                   </Col>
@@ -83,6 +91,13 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
+                          {listing.extra_info !== 'ACTIVE' ? (
+                            <span className={styles.cancelled_text}>
+                              CANCELLED{' '}
+                            </span>
+                          ) : (
+                            ''
+                          )}
                           {listing.title}
                           <span className="text-muted">
                             {' (' +
@@ -149,7 +164,9 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                   <Col xs="auto" className="my-auto p-0">
                     {/* Back to overview arrow */}
                     <div
-                      onClick={() => setView(['overview', null])}
+                      onClick={() => {
+                        setView(['overview', null]);
+                      }}
                       className={styles.back_arrow}
                     >
                       <IoMdArrowRoundBack size={30} />
@@ -164,7 +181,7 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                             isMobile ? 'modal-title-mobile' : 'modal-title'
                           }
                         >
-                          {view[1].course_code + ' '} Evaluations
+                          {view[1].title + ' '}
                           <span className="text-muted">
                             {' (' +
                               toSeasonString(view[0])[2] +
@@ -175,16 +192,67 @@ const CourseModal = ({ listing, hideModal, show, hasSeason = null }) => {
                         </span>
                       </Row>
                     </Modal.Title>
-                    {/* Course Professors and Section number */}
-                    {view[1].professor !== '' && (
-                      <Row className={styles.badges + ' mx-auto mt-1 '}>
+
+                    <Row className={styles.badges + ' mx-auto mt-1 '}>
+                      {/* Course Code */}
+                      <p
+                        className={
+                          styles.course_codes + '  my-0 text-muted pr-2'
+                        }
+                      >
+                        {view[1].course_code}
+                      </p>
+                      {/* Course Skills and Areas */}
+                      {view[1].skills &&
+                        view[1].skills.map((skill) => (
+                          <Badge
+                            variant="secondary"
+                            className={tag_styles.tag}
+                            style={{
+                              color: skillsAreasColors[skill],
+                              backgroundColor: chroma(skillsAreasColors[skill])
+                                .alpha(0.16)
+                                .css(),
+                            }}
+                            key={key++}
+                          >
+                            {skill}
+                          </Badge>
+                        ))}
+                      {view[1].areas &&
+                        view[1].areas.map((area) => (
+                          <Badge
+                            variant="secondary"
+                            className={tag_styles.tag}
+                            style={{
+                              color: skillsAreasColors[area],
+                              backgroundColor: chroma(skillsAreasColors[area])
+                                .alpha(0.16)
+                                .css(),
+                            }}
+                            key={key++}
+                          >
+                            {area}
+                          </Badge>
+                        ))}
+                      {/* Course Professors and Section */}
+                      {view[1].professor !== ['TBA'] && (
                         <p
-                          className={styles.course_codes + '  my-0 text-muted'}
+                          className={
+                            styles.course_codes +
+                            '  my-0 text-muted' +
+                            (view[1].skills.length || view[1].areas.length
+                              ? ' pl-2 '
+                              : '')
+                          }
                         >
-                          {view[1].professor + ' | Section ' + view[1].section}
+                          {'| ' +
+                            view[1].professor.join(', ') +
+                            ' | Section ' +
+                            view[1].section}
                         </p>
-                      </Row>
-                    )}
+                      )}
+                    </Row>
                   </Col>
                 </Row>
               </div>

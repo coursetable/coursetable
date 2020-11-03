@@ -21,7 +21,6 @@ import { SEARCH_COURSES } from '../queries/QueryStrings';
 
 import {
   sortbyOptions,
-  sortbyQueries,
   areas,
   skills,
   skillsAreasOptions,
@@ -29,6 +28,7 @@ import {
   selectStyles,
   creditOptions,
   schoolOptions,
+  subjectOptions,
 } from '../queries/Constants';
 
 import { useLazyQuery } from '@apollo/react-hooks';
@@ -40,12 +40,18 @@ import { useSeasons } from '../components/SeasonsProvider';
 
 import { debounce } from 'lodash';
 
-import Slider, { Range } from 'rc-slider';
+import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
 import { FaSearch } from 'react-icons/fa';
 import { BsX } from 'react-icons/bs';
+import {
+  FcAlphabeticalSortingAz,
+  FcAlphabeticalSortingZa,
+  FcNumericalSorting12,
+  FcNumericalSorting21,
+} from 'react-icons/fc';
 import { flatten, preprocess_courses } from '../utilities';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
@@ -85,10 +91,22 @@ function Search({ location, history }) {
   // State that determines if a course modal needs to be displayed and which course to display
   const [course_modal, setCourseModal] = useState([false, '']);
 
+  // State that determines sort order
+  const [sort_order, setSortOrder] = useState('asc');
+
   // Show the modal for the course that was clicked
-  const showModal = (listing) => {
-    setCourseModal([true, listing]);
-  };
+  const showModal = useCallback(
+    (listing) => {
+      // Metric Tracking What Courses Get Viewed
+      window.umami.trackEvent(
+        'Course Viewed - ' + listing.course_code,
+        'course-viewed'
+      );
+
+      setCourseModal([true, listing]);
+    },
+    [setCourseModal]
+  );
 
   // Reset course_modal state to hide the modal
   const hideModal = () => {
@@ -99,10 +117,10 @@ function Search({ location, history }) {
   const [old_data, setOldData] = useState([]); // Holds the combined list of courses
   const [searching, setSearching] = useState(false); // True when performing query. False right when query complete. Prevents double saving
   const [fetchedAll, setFetchedAll] = useState(false); // True when we've fetched all courses
-  const [refreshCache, setRefreshCache] = useState(0); // Reset row height cache on search
+  const [searched, setSearched] = useState(false); // Reset row height cache on search
 
   // number of search results to return
-  const QUERY_SIZE = 30;
+  // const QUERY_SIZE = 30;
 
   // State used to determine whether or not to show season tags
   // (if multiple seasons are queried, the season is indicated)
@@ -117,7 +135,7 @@ function Search({ location, history }) {
   // react-select states for controlled forms
   const [select_sortby, setSelectSortby] = useState(sortbyOptions[0]);
   const [select_seasons, setSelectSeasons] = useState([
-    { value: '202003', label: 'Fall 2020' },
+    { value: '202101', label: 'Spring 2021' },
   ]);
   const [select_skillsareas, setSelectSkillsAreas] = useState();
   const [select_credits, setSelectCredits] = useState();
@@ -125,13 +143,14 @@ function Search({ location, history }) {
     { value: 'YC', label: 'Yale College' },
     { value: 'GS', label: 'Graduate' },
   ]);
+  const [select_subjects, setSelectSubjects] = useState([]);
 
   // Does the user want to hide cancelled courses?
-  var [hideCancelled, setHideCancelled] = React.useState(true);
+  const [hideCancelled, setHideCancelled] = React.useState(true);
 
   // Bounds of course and workload ratings (1-5)
-  var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
-  var [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
+  const [ratingBounds, setRatingBounds] = React.useState([1, 5]);
+  const [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
 
   // populate seasons from database
   var seasonsOptions;
@@ -163,141 +182,254 @@ function Search({ location, history }) {
 
   // resubmit search on view change
   const handleSetView = (isList) => {
+    // Metric Tracking for View Changes
+    window.umami.trackEvent(isList ? 'List View' : 'Grid View', 'modal-view');
+
     setView(isList);
     handleSubmit(null, true);
   };
 
+  const handleSortOrder = () => {
+    if (sort_order === 'asc') setSortOrder('desc');
+    else setSortOrder('asc');
+  };
+
   // search form submit handler
-  const handleSubmit = useCallback((event, search = false) => {
-    let temp_offset = -1;
-    if (event && search) event.preventDefault();
-    if (search) {
-      //Reset states when making a new search
-      setOldData([]);
-      setFetchedAll(false);
-      setRefreshCache(refreshCache + 1);
-      // if (!defaultSearch) setCollapsedForm(true);
-      temp_offset = 0; // Account for reset state lag
-    } else if (fetchedAll) return;
+  const handleSubmit = useCallback(
+    (event, search = false) => {
+      let temp_offset = -1;
+      if (event && search) event.preventDefault();
+      if (search) {
+        //Reset states when making a new search
+        setOldData([]);
+        setFetchedAll(false);
+        setSearched(true);
+        // if (!defaultSearch) setCollapsedForm(true);
+        temp_offset = 0; // Account for reset state lag
 
-    // sorting options
-    var sortParams = select_sortby.value;
-    var ordering = sortbyQueries[sortParams];
+        // Metric Tracking of Invidiual Searches
+        window.umami.trackEvent(
+          'Searched - ' + searchText.value,
+          'search-text'
+        );
+      } else if (fetchedAll) {
+        // Metric Tracking of Viewing All
+        window.umami.trackEvent('Viewed All', 'search');
 
-    // seasons to filter
-    var processedSeasons = select_seasons;
-
-    // whether or not multiple seasons are being returned
-    const temp_multiSeasons = processedSeasons
-      ? processedSeasons.length !== 1
-      : false;
-    if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
-
-    if (processedSeasons != null) {
-      processedSeasons = processedSeasons.map((x) => {
-        return x.value;
-      });
-      // set null defaults
-      if (processedSeasons.length === 0) {
-        processedSeasons = null;
-      }
-    }
-
-    // skills and areas
-    var processedSkillsAreas = select_skillsareas;
-    if (processedSkillsAreas != null) {
-      processedSkillsAreas = processedSkillsAreas.map((x) => {
-        return x.value;
-      });
-
-      // match all languages
-      if (processedSkillsAreas.includes('L')) {
-        processedSkillsAreas = processedSkillsAreas.concat([
-          'L1',
-          'L2',
-          'L3',
-          'L4',
-          'L5',
-        ]);
+        return;
       }
 
-      // separate skills and areas
-      var processedSkills = processedSkillsAreas.filter((x) =>
-        skills.includes(x)
+      // sorting options
+      var sortParams = select_sortby.value;
+      var ordering = null;
+      if (sortParams === 'text' && sort_order === 'desc')
+        ordering = { course_code: 'desc' };
+      else if (sortParams === 'course_name') ordering = { title: sort_order };
+      else if (sortParams === 'rating')
+        ordering = { average_rating: sort_order };
+      else if (sortParams === 'workload')
+        ordering = { average_workload: sort_order };
+      else if (sortParams === 'gut')
+        ordering = { average_gut_rating: `${sort_order}_nulls_last` };
+
+      // seasons to filter
+      var processedSeasons = select_seasons;
+
+      // whether or not multiple seasons are being returned
+      const temp_multiSeasons = processedSeasons
+        ? processedSeasons.length !== 1
+        : true;
+      if (temp_multiSeasons !== multiSeasons)
+        setMultiSeasons(temp_multiSeasons);
+
+      if (processedSeasons != null) {
+        processedSeasons = processedSeasons.map((x) => {
+          return x.value;
+        });
+        // set null defaults
+        if (processedSeasons.length === 0) {
+          processedSeasons = null;
+        } else {
+          // Tracking which seasons the search was done with
+          window.umami.trackEvent(
+            'search criteria: seasons - ' + processedSeasons,
+            'search'
+          );
+        }
+      }
+
+      // skills and areas
+      var processedSkillsAreas = select_skillsareas;
+      if (processedSkillsAreas != null) {
+        processedSkillsAreas = processedSkillsAreas.map((x) => {
+          return x.value;
+        });
+
+        // match all languages
+        if (processedSkillsAreas.includes('L')) {
+          // Track if all languages is toggled for as search criteria
+          window.umami.trackEvent('search criteria - all languages', 'search');
+
+          processedSkillsAreas = processedSkillsAreas.concat([
+            'L1',
+            'L2',
+            'L3',
+            'L4',
+            'L5',
+          ]);
+        }
+
+        // separate skills and areas
+        var processedSkills = processedSkillsAreas.filter((x) =>
+          skills.includes(x)
+        );
+        var processedAreas = processedSkillsAreas.filter((x) =>
+          areas.includes(x)
+        );
+
+        // set null defaults
+        if (processedSkills.length === 0) {
+          processedSkills = null;
+        } else {
+          // Tracking which skills the search was done with
+          window.umami.trackEvent(
+            'search criteria: skills - ' + processedSkills,
+            'search'
+          );
+        }
+        if (processedAreas.length === 0) {
+          processedAreas = null;
+        } else {
+          // Tracking which areas the search was done with
+          window.umami.trackEvent(
+            'search criteria: areas - ' + processedAreas,
+            'search'
+          );
+        }
+      }
+
+      // credits to filter
+      var processedCredits = select_credits;
+      if (processedCredits != null) {
+        processedCredits = processedCredits.map((x) => {
+          return x.value;
+        });
+        // set null defaults
+        if (processedCredits.length === 0) {
+          processedCredits = null;
+        } else {
+          // Tracking which credits the search was done with
+          window.umami.trackEvent(
+            'search criteria: credits - ' + processedCredits,
+            'search'
+          );
+        }
+      }
+
+      // schools to filter
+      var processedSchools = select_schools;
+      if (processedSchools != null) {
+        processedSchools = processedSchools.map((x) => {
+          return x.value;
+        });
+
+        // set null defaults
+        if (processedSchools.length === 0) {
+          processedSchools = null;
+        } else {
+          // Tracking which schools the search was done with
+          window.umami.trackEvent(
+            'search criteria: schools - ' + processedSchools,
+            'search'
+          );
+        }
+      }
+
+      // subject to filter
+      var processedSubjects = select_subjects;
+      if (processedSubjects != null) {
+        processedSubjects = processedSubjects.map((x) => {
+          return x.value;
+        });
+
+        // set null defaults
+        if (processedSubjects.length === 0) {
+          processedSubjects = null;
+        } else {
+          // Tracking which schools the search was done with
+          window.umami.trackEvent(
+            'search criteria: subjects - ' + processedSubjects,
+            'search'
+          );
+        }
+      }
+
+      // if the bounds are unaltered, we need to set them to null
+      // to include unrated courses
+      var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+
+      // Tracking which rating bounds the search was done with
+      window.umami.trackEvent(
+        'search criteria: rating bounds - ' + ratingBounds,
+        'search'
       );
-      var processedAreas = processedSkillsAreas.filter((x) =>
-        areas.includes(x)
+
+      var include_all_workloads =
+        workloadBounds[0] === 1 && workloadBounds[1] === 5;
+
+      // Tracking which workload bounds the search was done with
+      window.umami.trackEvent(
+        'search criteria: workload bounds - ' + workloadBounds,
+        'search'
       );
 
-      // set null defaults
-      if (processedSkills.length === 0) {
-        processedSkills = null;
+      // override when we want to sort
+      if (ordering && ordering.average_rating) {
+        include_all_ratings = false;
       }
-      if (processedAreas.length === 0) {
-        processedAreas = null;
+      if (ordering && ordering.average_workload) {
+        include_all_workloads = false;
       }
-    }
 
-    // credits to filter
-    var processedCredits = select_credits;
-    if (processedCredits != null) {
-      processedCredits = processedCredits.map((x) => {
-        return x.value;
+      // Variables to use in search query
+      const search_variables = {
+        search_text: searchText.value,
+        ordering: ordering,
+        offset: temp_offset === -1 ? old_data.length : temp_offset,
+        // limit: search ? 60 : QUERY_SIZE,
+        seasons: processedSeasons,
+        areas: processedAreas,
+        skills: processedSkills,
+        credits: processedCredits,
+        schools: processedSchools,
+        subjects: processedSubjects,
+        min_rating: include_all_ratings ? null : ratingBounds[0],
+        max_rating: include_all_ratings ? null : ratingBounds[1],
+        min_workload: include_all_workloads ? null : workloadBounds[0],
+        max_workload: include_all_workloads ? null : workloadBounds[1],
+        extra_info: hideCancelled ? 'ACTIVE' : null,
+      };
+      // Execute search query
+      executeSearch({
+        variables: search_variables,
       });
-      // set null defaults
-      if (processedCredits.length === 0) {
-        processedCredits = null;
-      }
     }
-
-    // schools to filter
-    var processedSchools = select_schools;
-    if (processedSchools != null) {
-      processedSchools = processedSchools.map((x) => {
-        return x.value;
-      });
-      // set null defaults
-      if (processedSchools.length === 0) {
-        processedSchools = null;
-      }
-    }
-
-    // if the bounds are unaltered, we need to set them to null
-    // to include unrated courses
-    var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
-    var include_all_workloads =
-      workloadBounds[0] === 1 && workloadBounds[1] === 5;
-
-    // override when we want to sort
-    if (ordering && ordering.average_rating) {
-      include_all_ratings = false;
-    }
-    if (ordering && ordering.average_workload) {
-      include_all_workloads = false;
-    }
-
-    // Variables to use in search query
-    const search_variables = {
-      search_text: searchText.value,
-      ordering: ordering,
-      offset: temp_offset === -1 ? old_data.length : temp_offset,
-      limit: search ? 60 : QUERY_SIZE,
-      seasons: processedSeasons,
-      areas: processedAreas,
-      skills: processedSkills,
-      credits: processedCredits,
-      schools: processedSchools,
-      min_rating: include_all_ratings ? null : ratingBounds[0],
-      max_rating: include_all_ratings ? null : ratingBounds[1],
-      min_workload: include_all_workloads ? null : workloadBounds[0],
-      max_workload: include_all_workloads ? null : workloadBounds[1],
-      extra_info: hideCancelled ? 'ACTIVE' : null,
-    };
-    // Execute search query
-    executeSearch({
-      variables: search_variables,
-    });
-  });
+    // [
+    //   executeSearch,
+    //   fetchedAll,
+    //   hideCancelled,
+    //   multiSeasons,
+    //   old_data.length,
+    //   ratingBounds,
+    //   select_credits,
+    //   select_schools,
+    //   select_seasons,
+    //   select_skillsareas,
+    //   select_sortby.value,
+    //   select_subjects,
+    //   workloadBounds,
+    // ]
+  );
 
   // If the search query was called
   if (searchCalled) {
@@ -314,8 +446,8 @@ function Search({ location, history }) {
             duration: 500,
           });
         }
-        if (searchData.search_listing_info.length < QUERY_SIZE)
-          setFetchedAll(true);
+        // if (searchData.search_listing_info.length < QUERY_SIZE)
+        setFetchedAll(true);
         // Combine old courses with new fetched courses
         searchData = searchData.search_listing_info.map((x) => {
           return flatten(x);
@@ -344,25 +476,23 @@ function Search({ location, history }) {
     FOCUS_SEARCH: focusSearch,
   };
 
-  const { Handle } = Slider;
-
   // Render slider handles for the course and workload rating sliders
-  const ratingSliderHandle = (e) => {
-    const { value, className } = e;
+  const ratingSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
     return (
-      <Handle {...e} key={className}>
+      <Handle {...e} key={key}>
         <div className={`shadow ${Styles.rating_tooltip}`}>{value}</div>
       </Handle>
     );
-  };
-  const workloadSliderHandle = (e) => {
-    const { value, className } = e;
+  }, []);
+  const workloadSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
     return (
-      <Handle {...e} key={className}>
+      <Handle {...e} key={key}>
         <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
       </Handle>
     );
-  };
+  }, []);
 
   // Is the search form taller than the window?
   var [tooTall, setTooTall] = React.useState(true);
@@ -375,13 +505,15 @@ function Search({ location, history }) {
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
     setSelectSortby(sortbyOptions[0]);
-    setSelectSeasons([{ value: '202003', label: 'Fall 2020' }]);
+    setSelectSeasons([{ value: '202101', label: 'Spring 2021' }]);
     setSelectSkillsAreas(null);
     setSelectCredits(null);
     setSelectSchools([
       { value: 'YC', label: 'Yale College' },
       { value: 'GS', label: 'Graduate' },
     ]);
+    setSelectSubjects([]);
+    setSortOrder('asc');
     setFormKey(form_key + 1);
   };
 
@@ -405,6 +537,7 @@ function Search({ location, history }) {
   // Switch to grid view if window width changes < 900
   useEffect(() => {
     if (width < 900 && isList === true) setView(false);
+    else if (width >= 900 && isList === false) setView(true);
   }, [width, isList]);
 
   return (
@@ -496,14 +629,14 @@ function Search({ location, history }) {
                           : undefined
                       }
                       onChange={handleChange}
-                      placeholder="Find a class..."
+                      placeholder="Search by course code, title, or prof"
                       ref={(ref) => (searchText = ref)}
                     />
                   </InputGroup>
                 </div>
               </Row>
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                <div className={`${Styles.selector_container}`}>
                   {/* Sort By Multi-Select */}
                   <Select
                     value={select_sortby}
@@ -515,6 +648,37 @@ function Search({ location, history }) {
                       setSelectSortby(options);
                     }}
                   />
+                </div>
+                <div
+                  className={Styles.sort_btn + ' my-auto'}
+                  onClick={handleSortOrder}
+                >
+                  {select_sortby.value === 'text' ||
+                  select_sortby.value === 'course_name' ? (
+                    // Sorting by letters
+                    sort_order === 'asc' ? (
+                      <FcAlphabeticalSortingAz
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    ) : (
+                      <FcAlphabeticalSortingZa
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    )
+                  ) : // Sorting by numbers
+                  sort_order === 'asc' ? (
+                    <FcNumericalSorting12
+                      className={Styles.sort_icon}
+                      size={20}
+                    />
+                  ) : (
+                    <FcNumericalSorting21
+                      className={Styles.sort_icon}
+                      size={20}
+                    />
+                  )}
                 </div>
               </Row>
               <hr />
@@ -535,9 +699,19 @@ function Search({ location, history }) {
                         // Set seasons state
                         setSelectSeasons(options);
                         let has_summer_season = false;
-                        // Check to see if user has selected a summer season
-                        if (options) {
+                        let has_season_before_2014 = false;
+                        // User has selected at least 1 season
+                        if (options && options.length > 0) {
                           options.forEach((season) => {
+                            // Ignore the rest if there is already a season before 2014
+                            if (has_season_before_2014) return;
+                            // Season before 2014 exists
+                            if (season.value < '201400') {
+                              has_season_before_2014 = true;
+                              // Clear schools
+                              setSelectSchools([]);
+                              return;
+                            }
                             // Summer season exists
                             if (season.value[5] === '2') {
                               has_summer_season = true;
@@ -548,9 +722,16 @@ function Search({ location, history }) {
                               ]);
                             }
                           });
+                        } else {
+                          has_summer_season = true;
+                          // Add summer session to schools
+                          setSelectSchools([
+                            ...select_schools,
+                            { label: 'Summer Session', value: 'SU' },
+                          ]);
                         }
-                        // If no summer season selected
-                        if (!has_summer_season) {
+                        // If no summer season selected and no season before 2014
+                        if (!has_summer_season && !has_season_before_2014) {
                           // Copy school state
                           let new_schools = [...select_schools];
                           for (let i = 0; i < new_schools.length; i++) {
@@ -603,6 +784,24 @@ function Search({ location, history }) {
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={Styles.filter_title}>Subjects</div>
+                  {/* Yale Subjects Multi-Select */}
+                  <Select
+                    isMulti
+                    value={select_subjects}
+                    options={subjectOptions}
+                    placeholder="Any"
+                    isSearchable={true}
+                    // prevent overlap with tooltips
+                    styles={selectStyles}
+                    menuPortalTarget={document.body}
+                    onChange={(options) => {
+                      setSelectSubjects(options ? options : []);
+                    }}
+                    components={animatedComponents}
+                  />
+                </div>
+                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   <div className={Styles.filter_title}>Schools</div>
                   {/* Yale Schools Multi-Select */}
                   <Select
@@ -614,7 +813,7 @@ function Search({ location, history }) {
                     styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelectSchools(options);
+                      setSelectSchools(options ? options : []);
                     }}
                     components={animatedComponents}
                   />
@@ -675,7 +874,15 @@ function Search({ location, history }) {
                     onChange={(e) => {}} // dummy handler to remove warning
                   />
                   <Form.Check.Label
-                    onClick={() => setHideCancelled(!hideCancelled)}
+                    onClick={() => {
+                      setHideCancelled(!hideCancelled);
+
+                      // Metric Tracking for Hide Cancelled Courses Toggle
+                      window.umami.trackEvent(
+                        'Cancelled Hidden - ' + (!hideCancelled).toString(),
+                        'hide-toggle'
+                      );
+                    }}
                   >
                     Hide cancelled
                   </Form.Check.Label>
@@ -712,12 +919,11 @@ function Search({ location, history }) {
               isList={isList}
               setView={handleSetView}
               loading={searchLoading}
-              loadMore={handleSubmit}
               multiSeasons={multiSeasons}
-              refreshCache={refreshCache}
-              fetchedAll={fetchedAll}
+              searched={searched}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
+              expanded={collapsed_form}
             />
           </Element>
         </Col>

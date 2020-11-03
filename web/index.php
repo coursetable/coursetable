@@ -3,6 +3,7 @@ require_once 'includes/ProjectCommon.php';
 
 $smarty = ProjectCommon::createSmarty();
 $forceLogin = isset($_GET['forcelogin']);
+$successUrl = $_GET['successurl'];
 $logout  = isset($_GET['logout']);
 
 // Logout
@@ -17,7 +18,11 @@ $yaleAdvancedOciMysqli = ProjectCommon::createYaleAdvancedOciMysqli();
 // If we got here and it's forcelogin, take it straight to the Bluebook
 $authorizationState = ProjectCommon::getStudentAuthorizationState($netId, $yalePlusMysqli);
 if ($netId && $authorizationState == 'authorized') {
-    header('Location: /');
+    if ($successUrl) {
+        header('Location: /'.$successUrl);
+    } else {
+        header('Location: /');
+    }
 }
 
 $sbs = new StudentBluebookSetting($yalePlusMysqli);

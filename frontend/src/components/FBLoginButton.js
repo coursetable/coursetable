@@ -1,4 +1,8 @@
+<<<<<<< HEAD
 import React, { Fragment, useCallback } from 'react';
+=======
+import React, { useCallback } from 'react';
+>>>>>>> master
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 import { useUser } from '../user';
@@ -34,6 +38,7 @@ function FBLoginButton() {
       if (response.status === 'connected') {
         // Logged into your app and Facebook.
         console.log('FB connected');
+        window.umami.trackEvent('Facebook Login', 'facebook');
 
         syncFacebook()
           .then(() => {
@@ -65,6 +70,8 @@ function FBLoginButton() {
   }, [syncFacebook]);
 
   const handleLogoutClick = useCallback(() => {
+    window.umami.trackEvent('Facebook Logout', 'facebook');
+
     // TODO: disconnect_facebook does not implement it correctly.
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')

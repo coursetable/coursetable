@@ -131,21 +131,6 @@ function Feedback() {
                 ]}
               />
             </Form.Group>
-            {/* Email */}
-            <Form.Group className={styles.form_group}>
-              <Form.Label className={styles.form_label}>
-                Your Email Address
-                <br />
-                <span className={styles.form_secondary_label}>
-                  We may contact you if further details are required
-                </span>
-              </Form.Label>
-              <Form.Control
-                type="email"
-                name="email"
-                placeholder="name@yale.edu"
-              />
-            </Form.Group>
           </div>
         </Collapse>
         {/* Description */}
@@ -169,6 +154,36 @@ function Feedback() {
           <Form.Control.Feedback type="invalid">
             Please enter a description
           </Form.Control.Feedback>
+        </Form.Group>
+        {/* Email */}
+        <Form.Group className={styles.form_group}>
+          <Form.Label className={styles.form_label}>
+            Your Email Address
+            <span style={{ color: '#ff5e5e' }}>{' *'}</span>
+            <br />
+            <span className={styles.form_secondary_label}>
+              We may contact you if further details are required and we have
+              your permission
+            </span>
+          </Form.Label>
+          <Form.Control
+            required
+            type="email"
+            name="email"
+            placeholder="name@yale.edu"
+          />
+          <Form.Control.Feedback type="invalid">
+            Please enter a valid email address
+          </Form.Control.Feedback>
+        </Form.Group>
+        {/* Follow up permission checkbox */}
+        <Form.Group className={styles.form_group}>
+          <Form.Check
+            type="switch"
+            id="permission"
+            name="permission"
+            label="Permission to follow up with me about my feedback"
+          />
         </Form.Group>
         {/* Submit Button */}
         <Button variant="info" type="submit">

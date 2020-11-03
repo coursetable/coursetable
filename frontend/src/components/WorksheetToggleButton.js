@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
@@ -13,23 +13,16 @@ import { isInWorksheet } from '../utilities';
  * @prop crn - integer that holds the crn of the current course
  * @prop season_code - string that holds the current season code
  * @prop modal - boolean | are we rendering in the course modal
- * @prop hasSeason - function to switch to most recent course when removing the last course of a season
  */
 
-const WorksheetToggleButton = ({
-  worksheetView,
-  crn,
-  season_code,
-  modal,
-  hasSeason,
-}) => {
+const WorksheetToggleButton = ({ worksheetView, crn, season_code, modal }) => {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
-
+  const worksheet_check = useMemo(() => {
+    return isInWorksheet(season_code, crn.toString(), user.worksheet);
+  }, [user.worksheet, season_code, crn]);
   // Is the current course in the worksheet?
-  const [inWorksheet, setInWorksheet] = useState(
-    isInWorksheet(season_code, crn.toString(), user.worksheet)
-  );
+  const [inWorksheet, setInWorksheet] = useState(worksheet_check);
 
   // Reset inWorksheet state on every rerender
   const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
@@ -59,10 +52,8 @@ const WorksheetToggleButton = ({
           toast.error('Failed to update worksheet');
           console.error(err);
         });
-        // Check to see if user removed the last course of a season
-        if (hasSeason && add_remove === 'remove') hasSeason(season_code, crn);
         // If not in worksheet view, update inWorksheet state
-        if (!worksheetView) setInWorksheet(!inWorksheet);
+        setInWorksheet(!inWorksheet);
       });
   }
 
@@ -71,6 +62,9 @@ const WorksheetToggleButton = ({
     e.preventDefault();
     e.stopPropagation();
     add_remove_course();
+
+    //Metric Tracking for Worksheet Toggle Button
+    window.umami.trackEvent('Worksheet Toggled', 'worksheet');
   }
 
   // Render remove/add message on hover
@@ -82,6 +76,7 @@ const WorksheetToggleButton = ({
     </Tooltip>
   );
 
+  const bookmark_style = { transition: '0.3s' };
   return (
     <OverlayTrigger
       placement="top"
@@ -100,15 +95,12 @@ const WorksheetToggleButton = ({
             size={25}
           />
         ) : (
-          <BsBookmark
-            color={'#3396ff'}
-            size={25}
-            style={{ transition: '0.3s' }}
-          />
+          <BsBookmark color={'#3396ff'} size={25} style={bookmark_style} />
         )}
       </Button>
     </OverlayTrigger>
   );
 };
 
-export default WorksheetToggleButton;
+// WorksheetToggleButton.whyDidYouRender = true;
+export default React.memo(WorksheetToggleButton);

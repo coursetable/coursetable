@@ -68,10 +68,27 @@
   -moz-user-select: none; /* Old versions of Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none;
+  width: calc(100% - 35px);
 }
 
 .light_bg {
   background-color: rgba(0, 0, 0, 0.033);
+}
+
+.sort_btn {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 5px;
+  margin-left: auto;
+  transition: 0.3s;
+}
+
+.sort_btn:hover {
+  background-color: rgb(236, 236, 236);
+}
+
+.sort_icon {
+  display: block;
 }
 
 .sliders {
@@ -109,8 +126,6 @@
 .results_col {
   background-color: transparent;
   z-index: 0;
-  transition: 0.3s;
-  will-change: max-width, flex-basis;
 }
 
 .search_tab {
@@ -134,9 +149,7 @@
 
 .search_tab_hidden {
   cursor: inherit !important;
-  transition: 0.3s;
-  transition-delay: 0s !important;
-  transition-property: right, opacity;
+  transition: 0s;
   right: 30px !important;
   opacity: 0;
 }

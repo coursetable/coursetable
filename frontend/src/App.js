@@ -1,18 +1,12 @@
 import React, { useEffect, useState, useCallback } from 'react';
-import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Redirect,
-} from 'react-router-dom';
+import { Switch, Route, Redirect, Link } from 'react-router-dom';
 
+import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import SeasonsProvider from './components/SeasonsProvider';
 
 import Landing from './pages/Landing';
-import Home from './pages/Home';
+// import Home from './pages/Home';
 
 import Search from './pages/Search';
 import About from './pages/About';
@@ -22,6 +16,8 @@ import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
+import Challenge from './pages/Challenge';
+import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
 import { Row, Spinner } from 'react-bootstrap';
@@ -38,9 +34,11 @@ function App() {
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
-    userRefresh(true);
-    // Set loading to false after FB is fetched
-    fbRefresh(true).finally(() => setLoading(false));
+    // Set loading to false after user info is fetched
+    userRefresh(true).finally(() => setLoading(false));
+
+    // Don't wait for the results of this.
+    fbRefresh(true);
   }, [userRefresh, fbRefresh]);
 
   // Determine if user is logged in
@@ -72,81 +70,100 @@ function App() {
     );
   }
   return (
-    <Router>
-      <WindowDimensionsProvider>
-        <SeasonsProvider>
-          <div id="base">
-            <Navbar isLoggedIn={isLoggedIn} />
-            <Switch>
-              {/* Home Page */}
-              <MyRoute exact path="/">
-                {isLoggedIn ? <Home /> : <Redirect to="/login" />}
-              </MyRoute>
+    <>
+      <Notice>
+        CourseTable v2.0 is under construction, but{' '}
+        <Link to="/feedback">feedback</Link> is welcome. The{' '}
+        <a href="https://old.coursetable.com">old site</a> is also still
+        available.
+      </Notice>
+      <Navbar isLoggedIn={isLoggedIn} />
+      <Switch>
+        {/* Home Page */}
+        <MyRoute exact path="/">
+          {isLoggedIn ? (
+            /*<Home />*/ <Redirect to="/catalog" />
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </MyRoute>
 
-              {/* About */}
-              <MyRoute exact path="/about">
-                <About />
-              </MyRoute>
+        {/* About */}
+        <MyRoute exact path="/about">
+          <About />
+        </MyRoute>
 
-              {/* Catalog */}
-              <MyRoute
-                exact
-                path="/catalog"
-                render={(props) => <Search {...props} />}
-              />
+        {/* Catalog */}
+        <MyRoute
+          exact
+          path="/catalog"
+          render={(props) =>
+            user.isLoggedIn && !user.hasEvals ? (
+              <Redirect push={true} to="/challenge" />
+            ) : (
+              <Search {...props} />
+            )
+          }
+        />
 
-              {/* Auth */}
-              <MyRoute exact path="/login">
-                {isLoggedIn ? <Redirect to="/" /> : <Landing />}
-              </MyRoute>
+        {/* Auth */}
+        <MyRoute exact path="/login">
+          {isLoggedIn ? <Redirect to="/" /> : <Landing />}
+        </MyRoute>
 
-              {/* Worksheet */}
-              <MyRoute isRoutePrivate={true} exact path="/worksheet">
-                {isLoggedIn ? <Worksheet /> : <Redirect to="/login" />}
-              </MyRoute>
+        <MyRoute exact path="/worksheetlogin">
+          {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
+        </MyRoute>
 
-              {/* Thank You */}
-              <MyRoute exact path="/thankyou">
-                <Thankyou />
-              </MyRoute>
+        {/* OCE Challenge */}
+        <MyRoute exact path="/challenge">
+          <Challenge />
+        </MyRoute>
 
-              {/* Footer Links */}
+        {/* Worksheet */}
+        <MyRoute exact path="/worksheet">
+          {isLoggedIn ? (
+            user.hasEvals ? (
+              <Worksheet />
+            ) : (
+              <Redirect push={true} to="/challenge" />
+            )
+          ) : (
+            <Redirect to="/worksheetlogin" />
+          )}
+        </MyRoute>
 
-              <MyRoute exact path="/faq">
-                <FAQ />
-              </MyRoute>
+        {/* Thank You */}
+        <MyRoute exact path="/thankyou">
+          <Thankyou />
+        </MyRoute>
 
-              <MyRoute exact path="/feedback">
-                <Feedback />
-              </MyRoute>
+        {/* Footer Links */}
 
-              <MyRoute exact path="/joinus">
-                <Join />
-              </MyRoute>
+        <MyRoute exact path="/faq">
+          <FAQ />
+        </MyRoute>
 
-              <Route
-                path="/Blog"
-                component={() => {
-                  window.location.href = 'https://coursetable.com/Blog';
-                  return null;
-                }}
-              />
+        <MyRoute exact path="/feedback">
+          <Feedback />
+        </MyRoute>
 
-              {/* Catch-all Route to NotFound Page */}
-              <MyRoute path="/">
-                <NotFound />
-              </MyRoute>
-            </Switch>
-            {/* Render footer if not on catalog or worksheet pages */}
-            <Route
-              render={({ location }) => {
-                return !['/catalog'].includes(location.pathname) && <Footer />;
-              }}
-            />
-          </div>
-        </SeasonsProvider>
-      </WindowDimensionsProvider>
-    </Router>
+        <MyRoute exact path="/joinus">
+          <Join />
+        </MyRoute>
+
+        {/* Catch-all Route to NotFound Page */}
+        <MyRoute path="/">
+          <NotFound />
+        </MyRoute>
+      </Switch>
+      {/* Render footer if not on catalog or worksheet pages */}
+      <Route
+        render={({ location }) => {
+          return !['/catalog'].includes(location.pathname) && <Footer />;
+        }}
+      />
+    </>
   );
 }
 

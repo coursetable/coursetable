@@ -30,6 +30,10 @@
   color: #007bff;
 }
 
+.cancelled_text {
+  color: rgb(255, 98, 98);
+}
+
 :global .modal-custom-width {
   max-width: 800px !important;
   /* max-width: none !important; */
@@ -75,4 +79,8 @@
 :global .nav-link:hover {
   color: #007bff !important;
   background-color: rgb(241, 241, 241) !important;
+}
+
+:global .modal-dialog {
+  transition: transform 0.1s ease-out !important;
 }

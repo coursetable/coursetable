@@ -4,19 +4,14 @@
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
+.results_container_max_width {
+  max-width: 1400px;
+}
+
 .results_list_container {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
   overflow: hidden;
-}
-
-.results_header {
-  background-color: white;
-  border-radius: 8px;
-  left: 0;
-  right: 0;
-  z-index: 1000;
-  user-select: none;
 }
 
 .sticky_header {
@@ -34,6 +29,13 @@
 
 .results_header_inner {
   background-color: white !important;
+}
+
+.results_header {
+  line-height: 30px;
+  display: flex;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .up_btn {

@@ -1,88 +1,145 @@
 import React from 'react';
 
 import styles from './About.module.css';
-import { Card, CardDeck, Button, Row } from 'react-bootstrap';
-import pic from '../images/default_pfp.png';
+import { Card, Button, Row } from 'react-bootstrap';
+//import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
+
+import ae from '../images/headshots/aidan-evans.jpg';
+import ml from '../images/headshots/michelle-li.jpg';
+import hs from '../images/headshots/harshal-sheth.jpg';
+import jc from '../images/headshots/josh-chough.jpg';
+import dl from '../images/headshots/deyuan-li.jpg';
+import kh from '../images/headshots/kevin-hu.jpg';
+import ma from '../images/headshots/murad-avliyakulov.jpg';
+import ag from '../images/headshots/abhijit-gupta.jpg';
+import my from '../images/headshots/max-yuan.jpg';
+import sh from '../images/headshots/sidney-hirschman.jpeg';
+import hl from '../images/headshots/hao-li.jpg';
+import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 
 /**
  * Renders the about us page
  */
 
 function About() {
+  // TODO: add a link for each person
+  const people = [
+    {
+      name: 'Harshal Sheth',
+      image: hs,
+      role: 'CourseTable Lead',
+    },
+    {
+      name: 'Michelle M. Li',
+      image: ml,
+      role: 'Design Lead',
+    },
+    {
+      name: 'Kevin Hu',
+      image: kh,
+      role: 'Backend Dev Lead',
+    },
+    {
+      name: 'Max Yuan',
+      image: my,
+      role: 'Frontend Dev Lead',
+    },
+    {
+      name: 'Murad Avliyakulov',
+      image: ma,
+      role: 'Development',
+    },
+    {
+      name: 'Hao Li',
+      image: hl,
+      role: 'Development',
+    },
+    {
+      name: 'Abhijit Gupta',
+      image: ag,
+      role: 'Development',
+    },
+    {
+      name: 'Dylan Fernandez de Lara',
+      image: df,
+      role: 'Design',
+    },
+    {
+      name: 'Sidney Hirschman',
+      image: sh,
+      role: 'Design',
+    },
+    {
+      name: 'Josh Chough',
+      image: jc,
+      role: 'Design',
+    },
+    {
+      name: 'Aidan Evans',
+      image: ae,
+      role: 'Development',
+    },
+    {
+      name: 'Deyuan Li',
+      image: dl,
+      role: 'Development',
+    },
+  ];
+
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
-      <p className={styles.about_description + ' mb-3 text-muted'}>
-        About Us Description
+
+      <p className={styles.about_description + ' mb-3 mx-auto text-muted'}>
+        CourseTable offers a clean and effective way for Yale students to find
+        the courses they want, bringing together course information, student
+        evaluations, and course demand statistics in an intuitive interface.
+        It's run by a small team of volunteers within the{' '}
+        <a
+          href="http://yalecompsociety.org/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Yale Computer Society
+        </a>{' '}
+        and is completely{' '}
+        <a
+          href="https://github.com/coursetable"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          open source
+        </a>
+        .
       </p>
+
       <Row className="mx-auto">
-        <Link to="/joinus" className="mx-auto">
-          <Button>Join Us</Button>
-        </Link>
+        <div className="mx-auto">
+          <Link to="faq">
+            <Button variant="outline-secondary">FAQ</Button>
+          </Link>
+          <span style={{ width: '1em', display: 'inline-block' }}></span>
+          <Link to="/joinus">
+            <Button>Join Us</Button>
+          </Link>
+        </div>
       </Row>
 
       <div className={styles.profile_cards + ' my-3'}>
-        {/* FIRST ROW OF PPL */}
-        <CardDeck className={'my-3'}>
-          <Card>
-            <Card.Img variant="top" src={pic} />
-            <Card.Body>
-              <Card.Title>Name 1</Card.Title>
-              <Card.Text className="text-muted">
-                Description of person 1
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={pic} />
-            <Card.Body>
-              <Card.Title>Name 2</Card.Title>
-              <Card.Text className="text-muted">
-                Description of person 2
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={pic} />
-            <Card.Body>
-              <Card.Title>Name 3</Card.Title>
-              <Card.Text className="text-muted">
-                Description of person 3
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </CardDeck>
-        {/* SECOND ROW OF PPL */}
-        <CardDeck className={'my-3'}>
-          <Card>
-            <Card.Img variant="top" src={pic} />
-            <Card.Body>
-              <Card.Title>Name 4</Card.Title>
-              <Card.Text className="text-muted">
-                Description of person 4
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={pic} />
-            <Card.Body>
-              <Card.Title>Name 5</Card.Title>
-              <Card.Text className="text-muted">
-                Description of person 5
-              </Card.Text>
-            </Card.Body>
-          </Card>
-          <Card>
-            <Card.Img variant="top" src={pic} />
-            <Card.Body>
-              <Card.Title>Name 6</Card.Title>
-              <Card.Text className="text-muted">
-                Description of person 6
-              </Card.Text>
-            </Card.Body>
-          </Card>
-        </CardDeck>
+        <Row className="mx-auto">
+          {people.map((person, idx) => (
+            <div className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
+              <Card key={idx} style={{ height: '100%' }}>
+                <Card.Img variant="top" src={person.image} />
+                <Card.Body className="p-3">
+                  <Card.Title className="mb-1">{person.name}</Card.Title>
+                  <Card.Text className="text-muted">{person.role}</Card.Text>
+                </Card.Body>
+              </Card>
+            </div>
+          ))}
+        </Row>
       </div>
     </div>
   );

@@ -101,3 +101,8 @@
     transition: max-height 0s;
   }
 }
+
+.flag_info {
+  margin-bottom: 0;
+  padding-left: 1em;
+}

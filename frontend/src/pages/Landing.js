@@ -1,12 +1,19 @@
 import React from 'react';
-import { BsChevronDoubleDown } from 'react-icons/bs';
-import { Button, Row, Col, Container } from 'react-bootstrap';
-import { Element, scroller } from 'react-scroll';
+// import { BsChevronDoubleDown } from 'react-icons/bs';
+import { Row, Col, Container } from 'react-bootstrap';
+import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
 
-import Logo from '../components/Logo';
+// import Logo from '../components/Logo';
 import styles from './Landing.module.css';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import {
+  FcConferenceCall,
+  FcComboChart,
+  FcBookmark,
+  FcSearch,
+} from 'react-icons/fc';
+import LandingImage from '../images/landing_page.svg';
+// import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 /**
  * Renders the Landing page for when users aren't logged in
@@ -14,69 +21,92 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 function Landing() {
   // Get width of window
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
+  // const { width } = useWindowDimensions();
+  // const isMobile = width < 768;
 
   // Scroll to feature page
-  const scrollTo = () => {
-    scroller.scrollTo('featurepage', {
-      smooth: true,
-      duration: 500,
-    });
-  };
+  // const scrollTo = () => {
+  //   scroller.scrollTo('featurepage', {
+  //     smooth: true,
+  //     duration: 500,
+  //   });
+  // };
 
   // Scroll to top
-  const scrollTop = () => {
-    window.scrollTo(0, 0);
-  };
+  // const scrollTop = () => {
+  //   window.scrollTo(0, 0);
+  // };
 
   return (
     <div className={styles.container}>
       <Container fluid>
         <Element name="splashpage">
-          <div className={styles.splashpage}>
-            <div className={styles.coursetable_window}>
-              <h1 className={styles.title + ' ' + styles.coursetable_logo}>
-                <Logo />
-              </h1>
-              <p className={styles.description + ' mt-3'}>
-                The best place to shop for classes at Yale.
-              </p>
-              <Col className="mt-5">
-                <Row
-                  className={styles.btn_container + ' justify-content-center'}
-                >
-                  {/* Login Button */}
-                  <Col md={'auto'} className="p-0 mx-2 mb-2">
-                    <Button
+          <div className={styles.splashpage + ' mx-auto'}>
+            <Row className="mx-auto" style={{ minHeight: 'inherit' }}>
+              <Col md={6} className="d-flex">
+                <div className="m-auto">
+                  <h1 className="font-weight-bold text-md-left mb-4">
+                    The best place to shop for classes at Yale.
+                  </h1>
+                  <Row className={'pb-2 m-auto'}>
+                    <span className={styles.feature_text + ' d-inline'}>
+                      <FcSearch className="mr-2 my-auto" size={20} />
+                      Browse our catalog of{' '}
+                      <span style={{ color: '#007bff' }}>80,000+</span> classes
+                    </span>
+                  </Row>
+                  <Row className={'pb-2 m-auto'}>
+                    <span className={styles.feature_text}>
+                      <FcComboChart className="mr-2 my-auto" size={20} />
+                      Read from{' '}
+                      <span style={{ color: '#007bff' }}>600,000+</span> student
+                      evaluation comments
+                    </span>
+                  </Row>
+                  <Row className={'pb-2 m-auto'}>
+                    <span className={styles.feature_text}>
+                      <FcBookmark className="mr-2 my-auto" size={20} />
+                      Save and view classes in your worksheet
+                    </span>
+                  </Row>
+                  <Row className={'m-auto'}>
+                    <span className={styles.feature_text}>
+                      <FcConferenceCall className="mr-2 my-auto" size={20} />
+                      See what classes your friends are interested in
+                    </span>
+                  </Row>
+                  <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
+                    <a
                       href="/legacy_api/index.php?forcelogin=1"
-                      variant="primary"
-                      className={styles.btns}
-                      size="lg"
+                      className={styles.btn + ' ' + styles.login + ' mr-2'}
                     >
                       Login with CAS
-                    </Button>
-                  </Col>
-                  {/* Feature Page Button */}
-                  <Col md={'auto'} className="p-0 mx-2 mb-2">
-                    <Button
-                      size="lg"
-                      className={styles.btns}
-                      variant="dark"
-                      onClick={scrollTo}
+                    </a>
+                    <Link
+                      to="/about"
+                      className={styles.btn + ' ' + styles.about}
                     >
-                      Features
-                    </Button>
-                  </Col>
-                </Row>
+                      About Us
+                    </Link>
+                  </Row>
+                </div>
               </Col>
-            </div>
-            <div onClick={scrollTo} className={styles.chevron}>
+              <Col md={6} className="d-flex">
+                <div className="m-auto d-none d-md-block">
+                  <img
+                    alt="Landing page"
+                    src={LandingImage}
+                    style={{ width: '100%' }}
+                  ></img>
+                </div>
+              </Col>
+            </Row>
+            {/* <div onClick={scrollTo} className={styles.chevron}>
               <BsChevronDoubleDown size={30} />
-            </div>
+            </div> */}
           </div>
         </Element>
-        <Element name="featurepage">
+        {/* <Element name="featurepage">
           <div className={styles.feature_page}>
             <div className={styles.page_separator + ' mx-auto'} />
             <h1 className={styles.whyCourseTable}>Why CourseTable?</h1>
@@ -112,7 +142,7 @@ function Landing() {
                   : styles.get_started_row) + ' mx-auto justify-content-center'
               }
             >
-              {/* Catalog Button */}
+              {/* Catalog Button * /}
               <Link to="/catalog">
                 <Button
                   variant="success"
@@ -125,7 +155,7 @@ function Landing() {
               </Link>
             </Row>
           </div>
-        </Element>
+        </Element> */}
       </Container>
     </div>
   );

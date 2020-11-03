@@ -1,13 +1,13 @@
 .container {
-  height: 100vh;
+  min-height: 100vh;
 }
 
 .homepage {
-  height: calc(100vh - 62px);
+  min-height: calc(100vh - 58px);
 }
 
 .coursetable_logo {
-  padding-top: 10vh;
+  padding-top: 14vh;
   font-family: YaleDesign, Garamond, 'Palatino Linotype', Palatino, Bookman,
     serif;
   text-align: center;
@@ -26,6 +26,6 @@
 
 .carddeck_container {
   width: 70vw;
-  height: 30vh;
+  min-height: 30vh;
   margin-top: 8vh;
 }

@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useMemo,
+} from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 
@@ -10,8 +16,12 @@ UserContext.displayName = 'UserContext';
  */
 
 export const UserProvider = ({ children }) => {
+  // User's netId
+  const [netId, setNetId] = useState(null);
   // User's worksheet
   const [worksheet, setWorksheet] = useState(null);
+  // User's evals enabled status
+  const [hasEvals, setHasEvals] = useState(null);
   // User's FB login status
   const [fbLogin, setFbLogin] = useState(null);
   // User's FB friends' worksheets
@@ -25,17 +35,21 @@ export const UserProvider = ({ children }) => {
       );
       if (!res.data.success) {
         // Error with fetching user's worksheet
+        setNetId(null);
         setWorksheet(null);
+        setHasEvals(null);
         console.error(res.data.message);
         if (!suppressError) {
           toast.error(res.data.message);
         }
       } else {
         // Successfully fetched worksheet
+        setNetId(res.data.netId);
+        setHasEvals(res.data.evaluationsEnabled);
         setWorksheet(res.data.data);
       }
     },
-    [setWorksheet]
+    [setWorksheet, setNetId, setHasEvals]
   );
 
   // Refresh user FB stuff
@@ -61,13 +75,19 @@ export const UserProvider = ({ children }) => {
     [setFbLogin, setFbWorksheets]
   );
 
-  const store = {
-    // Context state.
-    user: {
+  const user = useMemo(() => {
+    return {
+      netId,
       worksheet,
+      hasEvals,
       fbLogin,
       fbWorksheets,
-    },
+    };
+  }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
+
+  const store = {
+    // Context state.
+    user,
 
     // Update methods.
     userRefresh,

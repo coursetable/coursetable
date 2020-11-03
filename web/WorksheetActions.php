@@ -173,9 +173,16 @@ function removeFromWorksheet($netId, $ociId, $season)
 
 function retrieveWorksheetOciIdsJson($netId, $season)
 {
+    global $yalePlusMysqli;
+    $sbsColumns = array('evaluationsEnabled');
+    $sbs = StudentBluebookSetting::findOrCreate($yalePlusMysqli, $netId, $sbsColumns);
+    $evaluationsEnabled = (bool) $sbs->info['evaluationsEnabled'];
+
     echo json_encode(
         array(
         'success' => true,
+        'netId' => $netId,
+        'evaluationsEnabled' => $evaluationsEnabled,
         'data' => retrieveWorksheetOciIds($netId, $season)
         )
     );
@@ -183,6 +190,7 @@ function retrieveWorksheetOciIdsJson($netId, $season)
 }
 
 $log = ProjectCommon::createLog('WorksheetAddRemove');
+$yalePlusMysqli = ProjectCommon::createYalePlusMysqli();
 $mysqli = ProjectCommon::createYaleAdvancedOciMysqli();
 
 $netId = ProjectCommon::casAuthenticate(false);

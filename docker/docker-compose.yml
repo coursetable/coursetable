@@ -11,7 +11,44 @@ services:
     command: sh -c 'cd /app && yarn && yarn start'
     links:
       - frontend
+      - api
       - nginx
+
+  api:
+    image: node:latest
+    ports:
+      - '4096:4096'
+    volumes:
+      - ../api:/app
+      - ./wait-for-it.sh:/wait-for-it.sh
+    user: '1000'
+    command:
+      # make the API wait for mysql to start first
+      [
+        './wait-for-it.sh',
+        'mysql:3306',
+        '-t',
+        '60',
+        '--',
+        'sh',
+        '-c',
+        'cd /app && yarn && yarn start',
+      ]
+    depends_on:
+      - graphql-engine
+      - mysql
+    links:
+      - graphql-engine
+      - mysql
+    environment:
+      GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      MYSQL_HOST: mysql
+      MYSQL_PORT: 3306
+      MYSQL_USER: root
+      MYSQL_PASSWORD: GoCourseTable
+      MYSQL_DB: yaleplus
+      CHALLENGE_PASSWORD: thisisapassword2
+      FERRY_SECRET: '' # we want this empty in development so no auth is required to refresh
 
   frontend:
     image: node:latest
@@ -21,8 +58,10 @@ services:
       - '3000'
     volumes:
       - ../frontend:/app
+    environment:
+      REACT_APP_UMAMI_WEBSITE_ID: 603e532b-7def-4cf0-ab2c-031157aa7966
     user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
+    command: sh -c 'cd /app && yarn && FORCE_COLOR=true yarn start | cat'
     tty: true # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
 
   graphql-engine:
@@ -30,7 +69,7 @@ services:
     ports:
       - '8085:8080'
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@2.tcp.ngrok.io:10019/postgres
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@coursetable.com:5432/postgres
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
@@ -69,7 +108,6 @@ services:
   mysql:
     build: ./mysql
     command: --default-authentication-plugin=mysql_native_password
-    restart: always
     environment:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
@@ -84,9 +122,15 @@ services:
     build: ./phpmyadmin
     depends_on:
       - mysql
-    restart: always
     environment:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
       - '8081:80'
+
+  legacy:
+    image: nginx
+    ports:
+      - '8075:80'
+    volumes:
+      - ../legacy:/usr/share/nginx/html:ro

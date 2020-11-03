@@ -22,8 +22,8 @@ const buildQuery = (worksheet) => {
       listing_id
       title
       description
-      professor_names
       all_course_codes
+      professor_names
       average_rating
       average_workload
       average_professor
@@ -39,15 +39,23 @@ const buildQuery = (worksheet) => {
       season_code
       extra_info
       syllabus_url
-      enrollment
       section
       crn
+      enrolled
+      last_enrollment
+      last_enrollment_same_professors
+      flag_info
+      regnotes
+      rp_attr
+      classnotes
+      final_exam
     }    
   }`;
 };
 
 // Search query used in Worksheet.js and CourseConflictIcon.js
 export const FetchWorksheet = (worksheet) => {
+  if (!worksheet) worksheet = [];
   // Build gql query
   const builtQuery = buildQuery(worksheet);
   // Execute search query
@@ -67,10 +75,10 @@ export const FetchWorksheet = (worksheet) => {
 
 // Lazy search query used in MeDropdown.js
 export const FetchWorksheetLazy = (worksheet, season_code) => {
-  let filtered_worksheet = [];
+  if (!worksheet) worksheet = [];
   // Get worksheet listings for this season
-  worksheet.forEach((course) => {
-    if (course[0] === season_code) filtered_worksheet.push(course);
+  const filtered_worksheet = (worksheet || []).filter((course) => {
+    return course[0] === season_code;
   });
   // Build gql query
   const builtQuery = buildQuery(filtered_worksheet);
