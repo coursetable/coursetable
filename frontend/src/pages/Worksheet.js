@@ -26,16 +26,6 @@ function Worksheet() {
   const { user } = useUser();
   // Current user who's worksheet we are viewing
   const [fb_person, setFbPerson] = useState('me');
-  const handleFBPersonChange = (new_person) => {
-    // Reset listings data when changing FB person
-    setListings([]);
-    setInitWorksheet(
-      new_person === 'me'
-        ? user.worksheet
-        : user.fbWorksheets.worksheets[new_person]
-    );
-    setFbPerson(new_person);
-  };
 
   // Worksheet of the current person
   const cur_worksheet = useMemo(() => {
@@ -78,21 +68,35 @@ function Worksheet() {
   // Currently expanded component (calendar or list or none)
   const [cur_expand, setCurExpand] = useState('none');
 
+  const handleFBPersonChange = useCallback(
+    (new_person) => {
+      // Reset listings data when changing FB person
+      setListings([]);
+      setInitWorksheet(
+        new_person === 'me'
+          ? user.worksheet
+          : user.fbWorksheets.worksheets[new_person]
+      );
+      setFbPerson(new_person);
+    },
+    [user]
+  );
+
   // Function to change season
-  const changeSeason = (season_code) => {
+  const changeSeason = useCallback((season_code) => {
     setSeason(season_code);
-  };
+  }, []);
 
   // Show course modal for the chosen listing
-  const showModal = (listing) => {
+  const showModal = useCallback((listing) => {
     setCourseModal([true, listing]);
-  };
+  }, []);
 
   // Hide course modal
-  const hideModal = () => {
+  const hideModal = useCallback(() => {
     setCourseModal([false, '']);
     setHoverExpand(cur_expand);
-  };
+  }, [cur_expand]);
 
   // Check to see if this course is hidden
   const isHidden = useCallback(
@@ -110,18 +114,21 @@ function Worksheet() {
   );
 
   // Hide/Show this course
-  const toggleCourse = (season_code, crn, hidden) => {
-    // Hide course
-    if (!hidden) {
-      setHiddenCourses([...hidden_courses, [season_code, crn]]);
-    }
-    // Show course
-    else {
-      let temp = [...hidden_courses];
-      temp.splice(isHidden(season_code, crn), 1);
-      setHiddenCourses(temp);
-    }
-  };
+  const toggleCourse = useCallback(
+    (season_code, crn, hidden) => {
+      // Hide course
+      if (!hidden) {
+        setHiddenCourses([...hidden_courses, [season_code, crn]]);
+      }
+      // Show course
+      else {
+        let temp = [...hidden_courses];
+        temp.splice(isHidden(season_code, crn), 1);
+        setHiddenCourses(temp);
+      }
+    },
+    [hidden_courses, isHidden]
+  );
 
   // Function to sort worksheet courses by course code
   const sortByCourseCode = (a, b) => {

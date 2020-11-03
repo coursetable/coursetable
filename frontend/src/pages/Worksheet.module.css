@@ -1,7 +1,6 @@
 .container {
   margin-bottom: 0px;
   border: none;
-  overflow: hidden;
 }
 
 .desktop_container {
@@ -9,7 +8,7 @@
 }
 
 .expanded_list_container {
-  min-height: 92vh;
+  min-height: 30vh;
 }
 
 .loading_spinner {
