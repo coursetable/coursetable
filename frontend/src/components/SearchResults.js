@@ -346,7 +346,9 @@ const SearchResults = ({
       <Container
         fluid
         id="results_container"
-        className={`px-0 ${Styles.results_container}`}
+        className={`px-0 ${Styles.results_container} ${
+          expanded ? Styles.results_container_max_width : ''
+        }`}
       >
         {!isMobile && (
           <div className={`${Styles.sticky_header}`}>
