@@ -16,6 +16,7 @@ import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import ServerError from '../images/server_error.svg';
+import posthog from 'posthog-js';
 
 /**
  * Renders worksheet page
@@ -82,6 +83,7 @@ function Worksheet() {
 
   // Function to change season
   const changeSeason = useCallback((season_code) => {
+    posthog.capture('worksheet-season', { new_season: season_code });
     setSeason(season_code);
   }, []);
 
@@ -348,9 +350,8 @@ function Worksheet() {
                   size={expand_btn_size}
                   onClick={() => {
                     // Expand the list component
+                    posthog.capture('worksheet-view-list');
                     setCurExpand('list');
-                    // Track toggling table view for worksheet
-                    window.umami.trackEvent('Table View', 'worksheet');
                   }}
                 />
               ) : (
@@ -359,9 +360,8 @@ function Worksheet() {
                   size={expand_btn_size}
                   onClick={() => {
                     // Compress the list component
+                    posthog.capture('worksheet-view-table');
                     setCurExpand('none');
-                    // Track toggling list view for worksheet
-                    window.umami.trackEvent('List View', 'worksheet');
                   }}
                 />
               )}

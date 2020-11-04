@@ -34,7 +34,7 @@ const client = new ApolloClient({
 function SPAPageChangeListener({ callback }) {
   const location = useLocation();
   useEffect(() => {
-    posthog.capture('$pageview');
+    posthog.capture_pageview();
   }, [location, hasFired]);
   return <></>;
 }
