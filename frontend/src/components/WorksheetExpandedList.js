@@ -88,4 +88,4 @@ const WorksheetExpandedList = ({
   );
 };
 
-export default WorksheetExpandedList;
+export default React.memo(WorksheetExpandedList);
