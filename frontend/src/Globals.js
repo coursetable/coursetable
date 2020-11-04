@@ -22,6 +22,7 @@ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
 POSTHOG_TOKEN &&
   posthog.init(POSTHOG_TOKEN, {
     api_host: 'https://hog.coursetable.com',
+    capture_pageview: false,
   });
 
 const client = new ApolloClient({
@@ -32,17 +33,9 @@ const client = new ApolloClient({
 
 function SPAPageChangeListener({ callback }) {
   const location = useLocation();
-
-  // Skip first pageview - already captured by init() call.
-  const hasFired = useRef(false);
   useEffect(() => {
-    if (!hasFired.current) {
-      hasFired.current = true;
-      return;
-    }
     posthog.capture('$pageview');
   }, [location, hasFired]);
-
   return <></>;
 }
 
