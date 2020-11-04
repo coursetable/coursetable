@@ -140,11 +140,13 @@ function Search({ location, history }) {
   const [select_subjects, setSelectSubjects] = useState([]);
 
   // Does the user want to hide cancelled courses?
-  const [hideCancelled, setHideCancelled] = React.useState(true);
+  const [hideCancelled, setHideCancelled] = useState(true);
+  // Does the user want to hide first year seminars?
+  const [hideFirstYearSeminars, setHideFirstYearSeminars] = useState(false);
 
   // Bounds of course and workload ratings (1-5)
-  const [ratingBounds, setRatingBounds] = React.useState([1, 5]);
-  const [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
+  const [ratingBounds, setRatingBounds] = useState([1, 5]);
+  const [workloadBounds, setWorkloadBounds] = useState([1, 5]);
 
   // populate seasons from database
   var seasonsOptions;
@@ -387,6 +389,7 @@ function Search({ location, history }) {
         min_workload: include_all_workloads ? null : workloadBounds[0],
         max_workload: include_all_workloads ? null : workloadBounds[1],
         extra_info: hideCancelled ? 'ACTIVE' : null,
+        fy_sem: hideFirstYearSeminars ? false : null,
       };
       // Execute search query
       executeSearch({
@@ -471,6 +474,7 @@ function Search({ location, history }) {
   // reset the search form
   const handleResetFilters = () => {
     setHideCancelled(true);
+    setHideFirstYearSeminars(false);
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
     setSelectSortby(sortbyOptions[0]);
@@ -785,7 +789,7 @@ function Search({ location, history }) {
                 </Col>
               </Row>
               <Row
-                className={`mx-auto pt-2 pb-2 px-5 justify-content-center ${Styles.light_bg}`}
+                className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
               >
                 {/* Hide Cancelled Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
@@ -804,7 +808,32 @@ function Search({ location, history }) {
                       );
                     }}
                   >
-                    Hide cancelled
+                    Hide cancelled courses
+                  </Form.Check.Label>
+                </Form.Check>
+              </Row>
+              <Row
+                className={`mx-auto py-1 px-4 justify-content-left ${Styles.light_bg}`}
+              >
+                {/* Hide First-Year Seminar Courses Toggle */}
+                <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check.Input
+                    checked={hideFirstYearSeminars}
+                    onChange={(e) => {}} // dummy handler to remove warning
+                  />
+                  <Form.Check.Label
+                    onClick={() => {
+                      setHideFirstYearSeminars(!hideFirstYearSeminars);
+
+                      // Metric Tracking for Hide First Year-Seminar Courses Toggle
+                      window.umami.trackEvent(
+                        'First-Year Seminars - ' +
+                          (!hideFirstYearSeminars).toString(),
+                        'hide-toggle'
+                      );
+                    }}
+                  >
+                    Hide first-year seminars
                   </Form.Check.Label>
                 </Form.Check>
               </Row>
