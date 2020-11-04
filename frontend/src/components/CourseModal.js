@@ -282,4 +282,4 @@ const CourseModal = ({ listing, hideModal, show }) => {
   );
 };
 
-export default CourseModal;
+export default React.memo(CourseModal);

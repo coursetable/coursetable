@@ -15,10 +15,9 @@ const localizer = momentLocalizer(moment);
  * @prop showModal - function to show modal for a particular listing
  * @prop courses - list of dictionaries of listing data
  * @prop hover_course - dictionary of listing that is being hovered over in list view
- * @prop setHoverCourse - function to set the hover course
  */
 
-function WeekSchedule({ showModal, courses, hover_course, setHoverCourse }) {
+function WeekSchedule({ showModal, courses, hover_course }) {
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback((listings) => {
     // Initialize earliest and latest class times
@@ -136,6 +135,18 @@ function WeekSchedule({ showModal, courses, hover_course, setHoverCourse }) {
     return parseListings(courses);
   }, [courses, parseListings]);
 
+  const minTime = useMemo(() => {
+    return ret_values[0].get('hours') !== 20
+      ? ret_values[0].toDate()
+      : moment().hour(8).minute(0).toDate();
+  }, [ret_values]);
+
+  const maxTime = useMemo(() => {
+    return ret_values[1].get('hours') !== 0
+      ? ret_values[1].toDate()
+      : moment().hour(18).minute(0).toDate();
+  }, [ret_values]);
+
   return (
     <Calendar
       // Show Mon-Fri
@@ -143,17 +154,9 @@ function WeekSchedule({ showModal, courses, hover_course, setHoverCourse }) {
       views={['work_week']}
       events={ret_values[2]}
       // Earliest course time or 8am if no courses
-      min={
-        ret_values[0].get('hours') !== 20
-          ? ret_values[0].toDate()
-          : moment().hour(8).minute(0).toDate()
-      }
+      min={minTime}
       // Latest course time or 6pm if no courses
-      max={
-        ret_values[1].get('hours') !== 0
-          ? ret_values[1].toDate()
-          : moment().hour(18).minute(0).toDate()
-      }
+      max={maxTime}
       localizer={localizer}
       toolbar={false}
       onSelectEvent={(event) => showModal(event.listing)}
