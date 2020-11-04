@@ -750,7 +750,7 @@ function Search({ location, history }) {
                 </Col>
               </Row>
               <Row
-                className={`mx-auto pt-2 pb-2 px-5 justify-content-left ${Styles.light_bg}`}
+                className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
               >
                 {/* Hide Cancelled Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
@@ -769,12 +769,12 @@ function Search({ location, history }) {
                       );
                     }}
                   >
-                    Hide cancelled
+                    Hide cancelled courses
                   </Form.Check.Label>
                 </Form.Check>
               </Row>
               <Row
-                className={`mx-auto pt-2 pb-2 px-5 justify-content-left ${Styles.light_bg}`}
+                className={`mx-auto py-1 px-4 justify-content-left ${Styles.light_bg}`}
               >
                 {/* Hide First-Year Seminar Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
