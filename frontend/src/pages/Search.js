@@ -133,12 +133,12 @@ function Search({ location, history }) {
   ]);
 
   // Does the user want to hide cancelled courses?
-  var [hideCancelled, setHideCancelled] = React.useState(true);
-  var [hideFirstYearSeminars, setHideFirstYearSeminars] = React.useState(false);
+  const [hideCancelled, setHideCancelled] = useState(true);
+  const [hideFirstYearSeminars, setHideFirstYearSeminars] = useState(false);
 
   // Bounds of course and workload ratings (1-5)
-  var [ratingBounds, setRatingBounds] = React.useState([1, 5]);
-  var [workloadBounds, setWorkloadBounds] = React.useState([1, 5]);
+  const [ratingBounds, setRatingBounds] = useState([1, 5]);
+  const [workloadBounds, setWorkloadBounds] = useState([1, 5]);
 
   // populate seasons from database
   var seasonsOptions;
@@ -357,6 +357,7 @@ function Search({ location, history }) {
       min_workload: include_all_workloads ? null : workloadBounds[0],
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
+      fy_sem: hideFirstYearSeminars ? false : null,
     };
     // Execute search query
     executeSearch({

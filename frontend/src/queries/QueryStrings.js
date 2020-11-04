@@ -29,6 +29,7 @@ export const SEARCH_COURSES = gql`
     $min_workload: float8
     $max_workload: float8
     $extra_info: String
+    $fy_sem: Boolean
   ) {
     search_listing_info(
       args: { query: $search_text }
@@ -43,6 +44,7 @@ export const SEARCH_COURSES = gql`
         credits: { _in: $credits }
         school: { _in: $schools }
         course: { extra_info: { _eq: $extra_info } }
+        fysem: { _eq: $fy_sem }
       }
       order_by: $ordering
       limit: $limit
