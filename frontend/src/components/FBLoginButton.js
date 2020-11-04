@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { FaSyncAlt } from 'react-icons/fa';
+import posthog from 'posthog-js';
 
 /**
  * FB login button that shows up in the profile dropdown
@@ -32,7 +33,7 @@ function FBLoginButton() {
       if (response.status === 'connected') {
         // Logged into your app and Facebook.
         console.log('FB connected');
-        window.umami.trackEvent('Facebook Login', 'facebook');
+        posthog.capture('facebook-login', { info: response });
 
         syncFacebook()
           .then(() => {
@@ -64,7 +65,7 @@ function FBLoginButton() {
   }, [syncFacebook]);
 
   const handleLogoutClick = useCallback(() => {
-    window.umami.trackEvent('Facebook Logout', 'facebook');
+    posthog.capture('facebook-logout');
 
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')

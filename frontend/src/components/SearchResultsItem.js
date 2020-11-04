@@ -216,30 +216,35 @@ const SearchResultsItem = ({
           <div className={Styles.ellipsis_text}>{course.title}</div>
         </div>
       </OverlayTrigger>
-      {/* Enrollment */}
-      <div style={num_style} className="d-flex">
-        <span className="m-auto">
-          {course.enrolled
-            ? course.enrolled
-            : course.last_enrollment && course.last_enrollment_same_professors
-            ? course.last_enrollment
-            : course.last_enrollment
-            ? `~${course.last_enrollment}`
-            : ''}
-        </span>
-      </div>
-      {/* # FB Friends also shopping */}
-      <div style={num_style} className="d-flex">
-        <OverlayTrigger
-          placement="top"
-          delay={{ show: 100, hide: 100 }}
-          overlay={renderFBFriendsTooltip}
-        >
-          <span className={'m-auto'}>
-            {also_taking.length > 0 ? also_taking.length : ''}
-          </span>
-        </OverlayTrigger>
-      </div>
+      {ROW_WIDTH > COL_SPACING.NUM_CUT && (
+        <>
+          {/* Enrollment */}
+          <div style={num_style} className="d-flex">
+            <span className="m-auto">
+              {course.enrolled
+                ? course.enrolled
+                : course.last_enrollment &&
+                  course.last_enrollment_same_professors
+                ? course.last_enrollment
+                : course.last_enrollment
+                ? `~${course.last_enrollment}`
+                : ''}
+            </span>
+          </div>
+          {/* # FB Friends also shopping */}
+          <div style={num_style} className="d-flex">
+            <OverlayTrigger
+              placement="top"
+              delay={{ show: 100, hide: 100 }}
+              overlay={renderFBFriendsTooltip}
+            >
+              <span className={'m-auto'}>
+                {also_taking.length > 0 ? also_taking.length : ''}
+              </span>
+            </OverlayTrigger>
+          </div>
+        </>
+      )}
       {/* Class Rating */}
       <div style={rate_style} className="d-flex">
         <div

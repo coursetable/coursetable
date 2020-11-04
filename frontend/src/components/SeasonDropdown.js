@@ -12,15 +12,6 @@ import { toSeasonString } from '../utilities';
  */
 
 function SeasonDropdown({ onSeasonChange, cur_season, season_codes }) {
-  // Change season
-  const setSeason = (season_code) => {
-    /*
-    // Metric Tracking of Season Changes
-    window.umami.trackEvent(cur_season, "search-season");
-    */
-    onSeasonChange(season_code);
-  };
-
   // HTML holding season options
   let seasons_html = [];
 
@@ -47,7 +38,7 @@ function SeasonDropdown({ onSeasonChange, cur_season, season_codes }) {
       <DropdownButton
         variant="dark"
         title={toSeasonString(cur_season)[0]}
-        onSelect={setSeason}
+        onSelect={onSeasonChange}
       >
         {seasons_html}
       </DropdownButton>

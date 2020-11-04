@@ -55,10 +55,7 @@
 
 .list_grid_toggle {
   position: absolute;
-  top: 0;
-  right: 0;
-  z-index: 1000;
-  transform: translate(30%, -40%);
+  left: 5px;
 }
 
 :global .sticky {
