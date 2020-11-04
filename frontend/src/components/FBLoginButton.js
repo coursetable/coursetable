@@ -3,6 +3,7 @@ import styles from './MeDropdown.module.css';
 import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
+import posthog from 'posthog-js';
 
 /**
  * FB login button that shows up in the profile dropdown
@@ -33,7 +34,7 @@ function FBLoginButton() {
       if (response.status === 'connected') {
         // Logged into your app and Facebook.
         console.log('FB connected');
-        window.umami.trackEvent('Facebook Login', 'facebook');
+        posthog.capture('facebook-login', { info: response });
 
         syncFacebook()
           .then(() => {
@@ -65,7 +66,7 @@ function FBLoginButton() {
   }, [syncFacebook]);
 
   const handleLogoutClick = useCallback(() => {
-    window.umami.trackEvent('Facebook Logout', 'facebook');
+    posthog.capture('facebook-logout');
 
     // TODO: disconnect_facebook does not implement it correctly.
     axios

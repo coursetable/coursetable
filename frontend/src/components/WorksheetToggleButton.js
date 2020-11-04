@@ -6,6 +6,7 @@ import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
+import posthog from 'posthog-js';
 
 /**
  * Render worksheet list in default worksheet view
@@ -15,7 +16,7 @@ import { isInWorksheet } from '../utilities';
  * @prop modal - boolean | are we rendering in the course modal
  */
 
-const WorksheetToggleButton = ({ worksheetView, crn, season_code, modal }) => {
+function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
   const worksheet_check = useMemo(() => {
@@ -37,9 +38,11 @@ const WorksheetToggleButton = ({ worksheetView, crn, season_code, modal }) => {
 
   // Add/remove course
   function add_remove_course() {
-    let add_remove;
+    posthog.capture('worksheet-add-remove', { season_code, crn });
+
     // Determine if we are adding or removing the course
-    inWorksheet ? (add_remove = 'remove') : (add_remove = 'add');
+    const add_remove = inWorksheet ? 'remove' : 'add';
+
     // User legacy api php to perform worksheet action
     axios
       .get(
@@ -62,9 +65,6 @@ const WorksheetToggleButton = ({ worksheetView, crn, season_code, modal }) => {
     e.preventDefault();
     e.stopPropagation();
     add_remove_course();
-
-    //Metric Tracking for Worksheet Toggle Button
-    window.umami.trackEvent('Worksheet Toggled', 'worksheet');
   }
 
   // Render remove/add message on hover
@@ -100,7 +100,7 @@ const WorksheetToggleButton = ({ worksheetView, crn, season_code, modal }) => {
       </Button>
     </OverlayTrigger>
   );
-};
+}
 
 // WorksheetToggleButton.whyDidYouRender = true;
 export default React.memo(WorksheetToggleButton);

@@ -9,6 +9,7 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
+import posthog from 'posthog-js';
 
 /**
  * Renders the navbar
@@ -32,6 +33,9 @@ function CourseTableNavbar({ isLoggedIn }) {
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
+    posthog.capture('logout');
+    posthog.reset();
+
     // Clear cookies
     document.cookie.split(';').forEach((c) => {
       document.cookie = c
@@ -40,9 +44,6 @@ function CourseTableNavbar({ isLoggedIn }) {
     });
     // Redirect to home page and refresh as well
     window.location.pathname = '/';
-
-    // Metric Tracking of Logging Out
-    window.umami.trackEvent('Account Logout', 'account');
   };
 
   return (
@@ -172,8 +173,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                     <div
                       className={styles.navbar_links}
                       onClick={() => {
-                        //Metric Tracking of Connecting Facebook
-                        window.umami.trackEvent('Facebook Login', 'facebook');
+                        posthog.capture('login');
 
                         window.location.href =
                           '/legacy_api/index.php?forcelogin=1';

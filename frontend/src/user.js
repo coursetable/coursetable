@@ -6,6 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 import axios from 'axios';
+import posthog from 'posthog-js';
 import { toast } from 'react-toastify';
 
 const UserContext = createContext();
@@ -36,6 +37,7 @@ export const UserProvider = ({ children }) => {
       if (!res.data.success) {
         // Error with fetching user's worksheet
         setNetId(null);
+        posthog.reset();
         setWorksheet(null);
         setHasEvals(null);
         console.error(res.data.message);
@@ -45,6 +47,7 @@ export const UserProvider = ({ children }) => {
       } else {
         // Successfully fetched worksheet
         setNetId(res.data.netId);
+        posthog.identify(res.data.netId);
         setHasEvals(res.data.evaluationsEnabled);
         setWorksheet(res.data.data);
       }

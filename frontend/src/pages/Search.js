@@ -58,6 +58,7 @@ import { useUser } from '../user';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
+import posthog from 'posthog-js';
 const animatedComponents = makeAnimated();
 
 /**
@@ -97,11 +98,11 @@ function Search({ location, history }) {
   // Show the modal for the course that was clicked
   const showModal = useCallback(
     (listing) => {
-      // Metric Tracking What Courses Get Viewed
-      window.umami.trackEvent(
-        'Course Viewed - ' + listing.course_code,
-        'course-viewed'
-      );
+      posthog.capture('course-modal-open', {
+        season_code: listing.season_code,
+        course_code: listing.course_code,
+        crn: listing.crn,
+      });
 
       setCourseModal([true, listing]);
     },
@@ -175,8 +176,7 @@ function Search({ location, history }) {
 
   // resubmit search on view change
   const handleSetView = (isList) => {
-    // Metric Tracking for View Changes
-    window.umami.trackEvent(isList ? 'List View' : 'Grid View', 'modal-view');
+    posthog.capture('catalog-view-toggle', { isList });
 
     setView(isList);
     handleSubmit(null, true);
@@ -194,12 +194,6 @@ function Search({ location, history }) {
       if (search) {
         //Reset states when making a new search
         setSearched(true);
-
-        // Metric Tracking of Invidiual Searches
-        window.umami.trackEvent(
-          'Searched - ' + searchText.value,
-          'search-text'
-        );
       }
 
       // sorting options
@@ -232,12 +226,6 @@ function Search({ location, history }) {
         // set null defaults
         if (processedSeasons.length === 0) {
           processedSeasons = null;
-        } else {
-          // Tracking which seasons the search was done with
-          window.umami.trackEvent(
-            'search criteria: seasons - ' + processedSeasons,
-            'search'
-          );
         }
       }
 
@@ -250,9 +238,6 @@ function Search({ location, history }) {
 
         // match all languages
         if (processedSkillsAreas.includes('L')) {
-          // Track if all languages is toggled for as search criteria
-          window.umami.trackEvent('search criteria - all languages', 'search');
-
           processedSkillsAreas = processedSkillsAreas.concat([
             'L1',
             'L2',
@@ -273,21 +258,9 @@ function Search({ location, history }) {
         // set null defaults
         if (processedSkills.length === 0) {
           processedSkills = null;
-        } else {
-          // Tracking which skills the search was done with
-          window.umami.trackEvent(
-            'search criteria: skills - ' + processedSkills,
-            'search'
-          );
         }
         if (processedAreas.length === 0) {
           processedAreas = null;
-        } else {
-          // Tracking which areas the search was done with
-          window.umami.trackEvent(
-            'search criteria: areas - ' + processedAreas,
-            'search'
-          );
         }
       }
 
@@ -300,12 +273,6 @@ function Search({ location, history }) {
         // set null defaults
         if (processedCredits.length === 0) {
           processedCredits = null;
-        } else {
-          // Tracking which credits the search was done with
-          window.umami.trackEvent(
-            'search criteria: credits - ' + processedCredits,
-            'search'
-          );
         }
       }
 
@@ -319,12 +286,6 @@ function Search({ location, history }) {
         // set null defaults
         if (processedSchools.length === 0) {
           processedSchools = null;
-        } else {
-          // Tracking which schools the search was done with
-          window.umami.trackEvent(
-            'search criteria: schools - ' + processedSchools,
-            'search'
-          );
         }
       }
 
@@ -338,12 +299,6 @@ function Search({ location, history }) {
         // set null defaults
         if (processedSubjects.length === 0) {
           processedSubjects = null;
-        } else {
-          // Tracking which schools the search was done with
-          window.umami.trackEvent(
-            'search criteria: subjects - ' + processedSubjects,
-            'search'
-          );
         }
       }
 
@@ -351,20 +306,8 @@ function Search({ location, history }) {
       // to include unrated courses
       var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
 
-      // Tracking which rating bounds the search was done with
-      window.umami.trackEvent(
-        'search criteria: rating bounds - ' + ratingBounds,
-        'search'
-      );
-
       var include_all_workloads =
         workloadBounds[0] === 1 && workloadBounds[1] === 5;
-
-      // Tracking which workload bounds the search was done with
-      window.umami.trackEvent(
-        'search criteria: workload bounds - ' + workloadBounds,
-        'search'
-      );
 
       // override when we want to sort
       if (ordering && ordering.average_rating) {
@@ -391,6 +334,12 @@ function Search({ location, history }) {
         extra_info: hideCancelled ? 'ACTIVE' : null,
         fy_sem: hideFirstYearSeminars ? false : null,
       };
+
+      // Track search
+      posthog.capture('search', {
+        ...search_variables,
+      });
+
       // Execute search query
       executeSearch({
         variables: search_variables,
@@ -800,12 +749,6 @@ function Search({ location, history }) {
                   <Form.Check.Label
                     onClick={() => {
                       setHideCancelled(!hideCancelled);
-
-                      // Metric Tracking for Hide Cancelled Courses Toggle
-                      window.umami.trackEvent(
-                        'Cancelled Hidden - ' + (!hideCancelled).toString(),
-                        'hide-toggle'
-                      );
                     }}
                   >
                     Hide cancelled courses
@@ -824,13 +767,6 @@ function Search({ location, history }) {
                   <Form.Check.Label
                     onClick={() => {
                       setHideFirstYearSeminars(!hideFirstYearSeminars);
-
-                      // Metric Tracking for Hide First Year-Seminar Courses Toggle
-                      window.umami.trackEvent(
-                        'First-Year Seminars - ' +
-                          (!hideFirstYearSeminars).toString(),
-                        'hide-toggle'
-                      );
                     }}
                   >
                     Hide first-year seminars
