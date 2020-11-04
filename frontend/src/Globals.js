@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
@@ -18,12 +18,23 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
 const POSTHOG_TOKEN = process.env.REACT_APP_POSTHOG_TOKEN;
-// [enable for testing] const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
-POSTHOG_TOKEN &&
+// /* testing only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
+const posthog_options = {
+  api_host: 'https://hog.coursetable.com',
+  capture_pageview: false,
+};
+window.posthog = posthog; // save posthog in window object
+if (POSTHOG_TOKEN !== '') {
   posthog.init(POSTHOG_TOKEN, {
-    api_host: 'https://hog.coursetable.com',
-    capture_pageview: false,
+    ...posthog_options,
   });
+} else {
+  // Disable capturing.
+  posthog.init('[disable]', {
+    ...posthog_options,
+    opt_out_capturing_by_default: true,
+  });
+}
 
 const client = new ApolloClient({
   uri: '/ferry/v1/graphql',
@@ -34,8 +45,8 @@ const client = new ApolloClient({
 function SPAPageChangeListener({ callback }) {
   const location = useLocation();
   useEffect(() => {
-    posthog.capture_pageview();
-  }, [location, hasFired]);
+    posthog.capture('$pageview');
+  }, [location]);
   return <></>;
 }
 
