@@ -59,22 +59,20 @@ function FAQ() {
             student evaluations, and course demand statistics in an intuitive
             interface.
           </p>
-          <p>
-            A couple disclaimers:
-            <ul>
-              <li>
-                Evaluations are not everything! Professors' personalities and
-                teaching styles are often divisive, and you will likely enjoy a
-                class up your alley more than the random, most-highly evaluated
-                class.
-              </li>
-              <li>
-                Sophomores and freshmen: keep in mind highly-evaluated seminars
-                are often filled to the brim.
-              </li>
-              <li>CourseTable is not affiliated with Yale.</li>
-            </ul>
-          </p>
+          <p style={{ marginBottom: '0' }}>A couple disclaimers:</p>
+          <ul>
+            <li>
+              Evaluations are not everything! Professors' personalities and
+              teaching styles are often divisive, and you will likely enjoy a
+              class up your alley more than the random, most-highly evaluated
+              class.
+            </li>
+            <li>
+              Sophomores and freshmen: keep in mind highly-evaluated seminars
+              are often filled to the brim.
+            </li>
+            <li>CourseTable is not affiliated with Yale.</li>
+          </ul>
         </>
       ),
     },
@@ -89,7 +87,9 @@ function FAQ() {
           <NavLink to="/feedback" onClick={scrollToTop}>
             let us know
           </NavLink>
-          .
+          . You can also revert to the{' '}
+          <a href="https://old.coursetable.com/">old CourseTable site</a> if you
+          prefer it.
         </>
       ),
     },

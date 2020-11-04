@@ -2,14 +2,17 @@
   background: white;
 }
 
+nav > .nav_brand {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
 .nav_logo {
-  font-size: 1.5rem;
-  padding-top: 0.5rem;
-  padding-bottom: 0.5rem;
+  font-size: 1.6rem;
 }
 
 .navbar_links {
-  padding: 0.5rem 1rem !important;
+  padding: 0.5rem 1rem 0.5rem 0rem !important;
   transition: 0.33s ease-out;
   color: rgba(1, 1, 1, 0.6);
   font-weight: 500;

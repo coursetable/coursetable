@@ -18,15 +18,3 @@
 .hover_effect:hover {
   background-color: rgba(220, 236, 255, 0.7);
 }
-
-/* Hide the arrow dropdown and replace it with an x if a FB friend is chosen*/
-:global
-  .css-1hb7zxy-IndicatorsContainer
-  > .css-tlfecz-indicatorContainer
-  ~ .css-tlfecz-indicatorContainer,
-:global
-  .css-1hb7zxy-IndicatorsContainer
-  > .css-1gtu0rj-indicatorContainer
-  ~ .css-1gtu0rj-indicatorContainer {
-  display: none !important;
-}

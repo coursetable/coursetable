@@ -1,11 +1,18 @@
 import React from 'react';
 // import { BsChevronDoubleDown } from 'react-icons/bs';
-import { Button, Row, Col, Container } from 'react-bootstrap';
+import { Row, Col, Container } from 'react-bootstrap';
 import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
 
-import Logo from '../components/Logo';
+// import Logo from '../components/Logo';
 import styles from './Landing.module.css';
+import {
+  FcConferenceCall,
+  FcComboChart,
+  FcBookmark,
+  FcSearch,
+} from 'react-icons/fc';
+import LandingImage from '../images/landing_page.svg';
 // import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 /**
@@ -34,40 +41,66 @@ function Landing() {
     <div className={styles.container}>
       <Container fluid>
         <Element name="splashpage">
-          <div className={styles.splashpage}>
-            <div className={styles.coursetable_window}>
-              <h1 className={styles.title + ' ' + styles.coursetable_logo}>
-                <Logo />
-              </h1>
-              <p className={styles.description + ' mt-3'}>
-                The best place to shop for classes at Yale.
-              </p>
-              <Col className="mt-5">
-                <Row
-                  className={styles.btn_container + ' justify-content-center'}
-                >
-                  {/* Login Button */}
-                  <Col md={'auto'} className="p-0 mx-2 mb-2">
-                    <Button
+          <div className={styles.splashpage + ' mx-auto'}>
+            <Row className="mx-auto" style={{ minHeight: 'inherit' }}>
+              <Col md={6} className="d-flex">
+                <div className="m-auto">
+                  <h1 className="font-weight-bold text-md-left mb-4">
+                    The best place to shop for classes at Yale.
+                  </h1>
+                  <Row className={'pb-2 m-auto'}>
+                    <span className={styles.feature_text + ' d-inline'}>
+                      <FcSearch className="mr-2 my-auto" size={20} />
+                      Browse our catalog of{' '}
+                      <span style={{ color: '#007bff' }}>80,000+</span> classes
+                    </span>
+                  </Row>
+                  <Row className={'pb-2 m-auto'}>
+                    <span className={styles.feature_text}>
+                      <FcComboChart className="mr-2 my-auto" size={20} />
+                      Read from{' '}
+                      <span style={{ color: '#007bff' }}>600,000+</span> student
+                      evaluation comments
+                    </span>
+                  </Row>
+                  <Row className={'pb-2 m-auto'}>
+                    <span className={styles.feature_text}>
+                      <FcBookmark className="mr-2 my-auto" size={20} />
+                      Save and view classes in your worksheet
+                    </span>
+                  </Row>
+                  <Row className={'m-auto'}>
+                    <span className={styles.feature_text}>
+                      <FcConferenceCall className="mr-2 my-auto" size={20} />
+                      See what classes your friends are interested in
+                    </span>
+                  </Row>
+                  <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
+                    <a
                       href="/legacy_api/index.php?forcelogin=1"
-                      variant="primary"
-                      className={styles.btns}
-                      size="lg"
+                      className={styles.btn + ' ' + styles.login + ' mr-2'}
                     >
                       Login with CAS
-                    </Button>
-                  </Col>
-                  {/* About Page Button */}
-                  <Col md={'auto'} className="p-0 mx-2 mb-2">
-                    <Link to="/about">
-                      <Button size="lg" className={styles.btns} variant="dark">
-                        About
-                      </Button>
+                    </a>
+                    <Link
+                      to="/about"
+                      className={styles.btn + ' ' + styles.about}
+                    >
+                      About Us
                     </Link>
-                  </Col>
-                </Row>
+                  </Row>
+                </div>
               </Col>
-            </div>
+              <Col md={6} className="d-flex">
+                <div className="m-auto d-none d-md-block">
+                  <img
+                    alt="Landing page"
+                    src={LandingImage}
+                    style={{ width: '100%' }}
+                  ></img>
+                </div>
+              </Col>
+            </Row>
             {/* <div onClick={scrollTo} className={styles.chevron}>
               <BsChevronDoubleDown size={30} />
             </div> */}

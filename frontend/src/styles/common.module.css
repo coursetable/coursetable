@@ -4,3 +4,14 @@
   display: inline-block;
   line-height: 1rem;
 }
+
+.coursetable_logo_img {
+  height: 1em;
+  width: auto;
+}
+
+.coursetable_logo_wordmark {
+  height: 0.8em;
+  width: auto;
+  margin-top: -0.1em;
+}

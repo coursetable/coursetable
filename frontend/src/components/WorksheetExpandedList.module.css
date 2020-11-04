@@ -1,13 +1,4 @@
-.results_list_container {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
-.shadow {
+.select_col {
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-}
-
-.scrollable {
-  overflow: scroll;
-  max-height: 86vh;
+  border-radius: 8px;
 }

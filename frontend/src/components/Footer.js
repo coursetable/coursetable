@@ -20,7 +20,7 @@ function Footer() {
           {/* Copyright */}
           <div className="col-12 col-md">
             <span className={styles.footer_logo}>
-              <Logo />
+              <Logo icon={false} />
             </span>
             <small className="d-block mb-3">
               &copy; {new Date().getFullYear()}
@@ -77,9 +77,13 @@ function Footer() {
               </li>
               {/* Blog */}
               <li>
-                <NavLink to="/blog" onClick={scrollToTop}>
+                <a
+                  href="https://legacy.coursetable.com/Blog.html"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   Blog
-                </NavLink>
+                </a>
               </li>
               {/* Github */}
               <li>

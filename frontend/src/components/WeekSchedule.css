@@ -30,10 +30,18 @@
   font-weight: 500;
 }
 
-.rbc-event {
-  transition: transform 0.3s, background-color 0.3s, opacity 0.2s;
+/* .rbc-event {
+  transition: transform 0.1s, background-color 0.1s, opacity 0.1s;
+} */
+
+.rbc-event:hover {
+  filter: brightness(85%);
 }
 
 .rbc-event-label {
   display: none !important;
+}
+
+.rbc-time-content {
+  overflow-y: visible !important;
 }

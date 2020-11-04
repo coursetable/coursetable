@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
-import { FcCalendar } from 'react-icons/fc';
+import { FcCalendar, FcUndo } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
@@ -85,34 +85,49 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   return (
     <div className={styles.collapse_container} onClick={handleDropdownClick}>
       <Collapse in={profile_expanded}>
-        <Col className={styles.collapse_col + ' px-3'}>
-          {/* Export Worksheet button */}
-          {isLoggedIn && (
-            <Row className=" py-3 m-auto">
-              <FcCalendar className="mr-2 my-auto" size={20} />
-              <span
-                onClick={handleExportClick}
-                className={styles.collapse_text}
-              >
-                Export Worksheet
-              </span>
-            </Row>
-          )}
-          {/* Connect FB button */}
-          {isLoggedIn && (
+        {/* This wrapper div is important for making the collapse animation smooth */}
+        <div>
+          <Col className={styles.collapse_col + ' px-3 pt-3'}>
+            {/* Revert to Old CourseTable Link */}
             <Row className=" pb-3 m-auto">
-              <FaFacebookSquare
+              <FcUndo
                 className="mr-2 my-auto"
                 size={20}
-                color="#007bff"
+                style={{ paddingLeft: '2px' }}
               />
-              <FBLoginButton />
+              <a
+                href="https://old.coursetable.com/"
+                className={styles.collapse_text}
+              >
+                Old CourseTable
+              </a>
             </Row>
-          )}
-          {/* Sign In/Out button */}
-          {isLoggedIn ? (
-            <Row className=" pb-3 m-auto">
-              <>
+            {/* Export Worksheet button */}
+            {isLoggedIn && (
+              <Row className=" pb-3 m-auto">
+                <FcCalendar className="mr-2 my-auto" size={20} />
+                <span
+                  onClick={handleExportClick}
+                  className={styles.collapse_text}
+                >
+                  Export Worksheet
+                </span>
+              </Row>
+            )}
+            {/* Connect FB button */}
+            {isLoggedIn && (
+              <Row className=" pb-3 m-auto">
+                <FaFacebookSquare
+                  className="mr-2 my-auto"
+                  size={20}
+                  color="#007bff"
+                />
+                <FBLoginButton />
+              </Row>
+            )}
+            {/* Sign In/Out button */}
+            {isLoggedIn ? (
+              <Row className=" pb-3 m-auto">
                 <FaSignOutAlt
                   className="mr-2 my-auto"
                   size={20}
@@ -126,11 +141,9 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                 >
                   Sign Out
                 </span>
-              </>
-            </Row>
-          ) : (
-            <Row className=" py-3 m-auto">
-              <>
+              </Row>
+            ) : (
+              <Row className=" pb-3 m-auto">
                 <FaSignInAlt
                   className="mr-2 my-auto"
                   size={20}
@@ -143,10 +156,10 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                 >
                   Sign In
                 </a>
-              </>
-            </Row>
-          )}
-        </Col>
+              </Row>
+            )}
+          </Col>
+        </div>
       </Collapse>
     </div>
   );

@@ -3,15 +3,14 @@
 } */
 
 .splashpage {
-  height: calc(100vh - 62px);
-}
-
-.coursetable_window {
+  min-height: calc(100vh - 58px);
   text-align: center;
+  max-width: 900px;
 }
 
-.coursetable_logo {
-  padding-top: 15vh;
+/* .coursetable_logo {
+  padding-top: 16vh;
+  padding-bottom: 5vh;
 }
 
 .btn_container {
@@ -26,11 +25,46 @@
 .description {
   font-size: calc(10px + 3vw);
   line-height: 90%;
+} */
+
+.feature_text {
+  font-weight: 500;
+  transition: 0.3s;
+  cursor: default;
+  text-align: left;
 }
 
+.feature_text:hover {
+  transform: translateX(7px);
+}
+
+.btn {
+  padding: 8px;
+  border-radius: 10px;
+  font-weight: 500;
+  color: white;
+  transition: 0.3s;
+}
+
+.login {
+  background-color: #1084ff;
+}
+
+.about {
+  background-color: #344a61;
+}
+
+.btn:hover {
+  text-decoration: none;
+  color: white;
+  transform: translateY(-5px);
+  filter: brightness(90%);
+}
+
+/* 
 .btns {
   width: 200px;
-}
+} */
 
 /* .chevron {
   position: absolute;

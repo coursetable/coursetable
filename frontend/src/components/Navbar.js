@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { useLocation } from 'react-router-dom';
-import styles from './Navbar.module.css';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
@@ -10,6 +8,7 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
+import styles from './Navbar.module.css';
 
 /**
  * Renders the navbar
@@ -26,8 +25,6 @@ function CourseTableNavbar({ isLoggedIn }) {
     setIsComponentVisible,
   } = useComponentVisible(false);
 
-  // Get the pathname of the current page
-  const pathname = useLocation().pathname;
   // Fetch width of window
   const { width } = useWindowDimensions();
   const is_mobile = width < 768;
@@ -60,7 +57,7 @@ function CourseTableNavbar({ isLoggedIn }) {
             className={styles.navbar}
           >
             {/* Logo in top left */}
-            <Navbar.Brand>
+            <Nav className={styles.nav_brand + ' navbar-brand py-2'}>
               <NavLink
                 to="/"
                 activeStyle={{
@@ -71,10 +68,10 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo condensed={pathname === '/'} />
+                  <Logo icon={false} />
                 </span>
               </NavLink>
-            </Navbar.Brand>
+            </Nav>
 
             <Navbar.Toggle aria-controls="basic-navbar-nav" />
 
@@ -163,6 +160,14 @@ function CourseTableNavbar({ isLoggedIn }) {
                 </div>
                 {/* Sign in/out and Facebook buttons. Show if mobile */}
                 <div className="d-md-none">
+                  <div className={styles.navbar_links}>
+                    <a
+                      href="https://old.coursetable.com/"
+                      style={{ color: 'rgba(1, 1, 1, 0.6)' }}
+                    >
+                      Old CourseTable
+                    </a>
+                  </div>
                   {!isLoggedIn ? (
                     <div
                       className={styles.navbar_links}

@@ -1,11 +1,14 @@
 .container {
   margin-bottom: 0px;
   border: none;
-  overflow: hidden;
 }
 
 .desktop_container {
   max-height: 92vh;
+}
+
+.expanded_list_container {
+  min-height: 30vh;
 }
 
 .loading_spinner {
@@ -21,40 +24,11 @@
   background-color: white;
 }
 
-/* ALLOW TRANSITION ANIMATIONS */
-
-.calendar_expand {
-  transition: 0.5s;
-}
-
-.table_hidden {
-  transition: transform 0.5s;
-  transition-delay: 0.5s;
-}
-
-.table_expand {
-  transition: 0.5s;
-}
-
-.calendar_hidden {
-  transition: transform 0.5s;
-  transition-delay: 0.5s;
-}
-
-.hidden {
-  transition-delay: 0s !important;
-  transform: translateY(100vh);
-}
-
-.delay {
-  transition-delay: 0.5s;
-}
-
 /* DISABLE TRANSITION ANIMATIONS */
 
-/* .hidden {
+.hidden {
   display: none;
-} */
+}
 
 /* ----------------------------- */
 
@@ -105,4 +79,34 @@
   top: 52px;
   right: 0px;
   z-index: 488;
+}
+
+:global .css-26l3qy-menu {
+  z-index: 1000 !important;
+}
+
+:global .css-yk16xz-control,
+:global .css-1pahdxg-control,
+:global .css-1fhf3k1-control {
+  z-index: calc(420 + 69);
+  border: none !important;
+  background-color: transparent !important;
+  height: 38px !important;
+  cursor: pointer !important;
+}
+
+:global .css-1pahdxg-control {
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+:global .css-1okebmr-indicatorSeparator,
+:global .css-109onse-indicatorSeparator {
+  display: none !important;
+}
+
+:global .css-1uccc91-singleValue,
+:global .css-107lb6w-singleValue {
+  font-size: 15px;
+  font-weight: 500;
 }

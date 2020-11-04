@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
@@ -31,17 +31,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   const [clamped, setClamped] = useState(false);
   // Number of description lines to display
   const [lines, setLines] = useState(8);
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-  // Options for the evaluation filters
-  const options = [
-    { displayName: 'Course', value: 'course' },
-    { displayName: 'Both', value: 'both' },
-    { displayName: 'Professor', value: 'professor' },
-  ];
-  // Is the season hover box enlarged? CURRENTLY NOT USING
-  const [enlarged, setEnlarged] = useState(['', -1]);
   // Variable to store past enrollment data if the course hasn't taken place yet
-  let enrollment = -1;
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // List of other friends shopping this class
   let also_taking =
     user.fbLogin && user.fbWorksheets
@@ -60,12 +51,15 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   };
 
   // Set the evaluation to view and change to evaluation view
-  const handleSetSeason = (evaluation) => {
-    // Temp dictionary that stores listing info
-    let temp = { ...evaluation };
-    temp.course_code = temp.course_code[0];
-    setSeason(temp);
-  };
+  const handleSetSeason = useCallback(
+    (evaluation) => {
+      // Temp dictionary that stores listing info
+      let temp = { ...evaluation };
+      temp.course_code = temp.course_code[0];
+      setSeason(temp);
+    },
+    [setSeason]
+  );
 
   // Sort course evaluations by season code and section
   const sortEvals = (a, b) => {
@@ -94,12 +88,10 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         : ['bruh'],
     },
   });
-  // Wait until data is fetched
-  if (loading || error) return <CourseModalLoading />;
   // Hold list of evaluation dictionaries
   let evaluations = [];
   // Hold HTML code that displays the list of evaluations
-  let items = [];
+
   // Holds Prof information for popover
   let prof_info = {};
   listing.professor_names.forEach((prof) => {
@@ -110,239 +102,219 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     };
   });
   // Count number of profs that overlap between this listing and an eval
-  const overlapping_profs = (eval_profs) => {
-    let cnt = 0;
-    listing.professor_names.forEach((prof) => {
-      // Eval course contains this prof
-      if (eval_profs.includes(prof)) cnt++;
-    });
-    return cnt;
-  };
-  // Make sure data is loaded
-  if (data) {
-    // Loop by season code
-    data.computed_listing_info.forEach((season) => {
-      if (!season.course.evaluation_statistics[0]) return;
-      // Stores the average rating for all profs teaching this course and populates prof_info
-      let average_professor_rating = 0;
-      if (season.professor_info) {
-        const num_profs = season.professor_info.length;
-        season.professor_info.forEach((prof) => {
-          if (prof.average_rating) {
-            // Add up all prof ratings
-            average_professor_rating += prof.average_rating;
-            // Update prof_info
-            if (prof.name in prof_info) {
-              // Store dict from prof_info for easy access
-              const dict = prof_info[prof.name];
-              // Total number of courses this professor teaches
-              dict.num_courses++;
-              // Total rating. Will divide by number of courses later to get average
-              dict.total_rating += prof.average_rating;
-              // Prof email
-              dict.email = prof.email;
-            }
-          }
-        });
-        // Divide by number of profs to get average
-        average_professor_rating /= num_profs;
-      }
-      evaluations.push({
-        // Course rating
-        rating:
-          season.course.evaluation_statistics[0].avg_rating != null
-            ? season.course.evaluation_statistics[0].avg_rating
-            : -1,
-        // Workload rating
-        workload:
-          season.course.evaluation_statistics[0].avg_workload != null
-            ? season.course.evaluation_statistics[0].avg_workload
-            : -1,
-        // Professor rating
-        professor_rating: average_professor_rating
-          ? average_professor_rating
-          : -1,
-        // Enrollment data
-        enrollment: season.enrollment != null ? season.enrollment.enrolled : -1,
-        // Season code
-        season_code: season.season_code,
-        // Professors
-        professor: season.professor_names.length
-          ? season.professor_names
-          : ['TBA'],
-        // Course code
-        course_code: season.course_code ? [season.course_code] : ['TBA'],
-        // Crn
-        crn: season.crn,
-        // Section number
-        section: season.section,
-        // Course Title
-        title: season.title,
-        // Course Skills
-        skills: season.skills,
-        // Course Areas
-        areas: season.areas,
+  const overlapping_profs = useCallback(
+    (eval_profs) => {
+      let cnt = 0;
+      listing.professor_names.forEach((prof) => {
+        // Eval course contains this prof
+        if (eval_profs.includes(prof)) cnt++;
       });
-    });
-    // Sort by season code and section
-    evaluations.sort(sortEvals);
-
-    // Variable used for list keys
-    let id = 0;
-    // Loop through each listing with evals
-    for (let i = 0; i < evaluations.length; i++) {
-      // Store past enrollment data if same course and same section
-      if (
-        enrollment === -1 &&
-        evaluations[i].course_code.includes(listing.course_code) &&
-        evaluations[i].section === listing.section
-      ) {
-        enrollment = evaluations[i].enrollment;
-      }
-
-      // Skip listings that have no ratings (therefore prolly don't have comments and graphs)
-      if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
-        continue;
-
-      // Only show courses that have same course code and same prof
-      if (filter === 'both') {
-        // Skip if different course code
-        if (!evaluations[i].course_code.includes(listing.course_code)) continue;
-        // Skip if different professors
-        if (
-          overlapping_profs(evaluations[i].professor) !==
-          listing.professor_names.length
-        )
-          continue;
-      }
-
-      // Only show courses that have same course code but different prof
-      if (filter === 'course') {
-        // Skip if same profs
-        if (
-          overlapping_profs(evaluations[i].professor) ===
-          listing.professor_names.length
-        )
-          continue;
-        // Skip if different course code
-        if (!evaluations[i].course_code.includes(listing.course_code)) continue;
-      }
-
-      // Only show courses that have same prof but different course code
-      if (filter === 'professor') {
-        // Skip if same course code
-        if (evaluations[i].course_code.includes(listing.course_code)) continue;
-        // Skip if no overlapping profs
-        if (overlapping_profs(evaluations[i].professor) === 0) continue;
-      }
-
-      // Is course eval button expanded? CURRENTLY NOT USING
-      let expanded =
-        enlarged[0] === evaluations[i].season_code &&
-        enlarged[1] === evaluations[i].crn;
-
-      // HAVE RATING BUBBLE ANIMATION
-      // var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
-      // if (isTouch) expanded = true;
-
-      // NO RATING BUBBLE ANIMATION
-      expanded = true;
-
-      items.push(
-        <Row key={id++} className="m-auto py-1 justify-content-center">
-          {/* Clickable listing button */}
-          <Col
-            xs={5}
-            className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
-            onClick={() => handleSetSeason(evaluations[i])}
-            onMouseEnter={() =>
-              setEnlarged([evaluations[i].season_code, evaluations[i].crn])
-            }
-            onMouseLeave={() => setEnlarged(['', -1])}
-            style={{ flex: 'none' }}
-          >
-            <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
-            <div
-              className={
-                Styles.details +
-                ' mx-auto ' +
-                (expanded ? Styles.shown : Styles.hidden)
+      return cnt;
+    },
+    [listing.professor_names]
+  );
+  // Make sure data is loaded
+  const items = useMemo(() => {
+    if (data) {
+      // Loop by season code
+      data.computed_listing_info.forEach((season) => {
+        if (!season.course.evaluation_statistics[0]) return;
+        // Stores the average rating for all profs teaching this course and populates prof_info
+        let average_professor_rating = 0;
+        if (season.professor_info) {
+          const num_profs = season.professor_info.length;
+          season.professor_info.forEach((prof) => {
+            if (prof.average_rating) {
+              // Add up all prof ratings
+              average_professor_rating += prof.average_rating;
+              // Update prof_info
+              if (prof.name in prof_info) {
+                // Store dict from prof_info for easy access
+                const dict = prof_info[prof.name];
+                // Total number of courses this professor teaches
+                dict.num_courses++;
+                // Total rating. Will divide by number of courses later to get average
+                dict.total_rating += prof.average_rating;
+                // Prof email
+                dict.email = prof.email;
               }
-            >
-              {filter === 'professor'
-                ? evaluations[i].course_code[0]
-                : filter === 'both'
-                ? 'Section ' + evaluations[i].section
-                : evaluations[i].professor[0]}
-            </div>
-          </Col>
-          {/* Course Rating */}
-          <Col
-            xs={2}
-            className={`px-1 ml-0 d-flex justify-content-center text-center`}
-          >
-            {evaluations[i].rating !== -1 && (
-              <div
-                style={
-                  evaluations[i].rating && {
-                    color: ratingColormap(evaluations[i].rating)
-                      .darken()
-                      .saturate(),
-                  }
-                }
-                className={`${Styles.rating_cell} ${
-                  expanded ? Styles.expanded_ratings : ''
-                }`}
-              >
-                {evaluations[i].rating.toFixed(1)}
-              </div>
-            )}
-          </Col>
-          {/* Professor Rating */}
-          <Col
-            xs={2}
-            className={`px-1 ml-0 d-flex justify-content-center text-center`}
-          >
-            {evaluations[i].professor_rating !== -1 && (
-              <div
-                style={
-                  evaluations[i].professor_rating && {
-                    color: ratingColormap(evaluations[i].professor_rating)
-                      .darken()
-                      .saturate(),
-                  }
-                }
-                className={Styles.rating_cell}
-              >
-                {evaluations[i].professor_rating.toFixed(1)}
-              </div>
-            )}
-          </Col>
-          {/* Workload Rating */}
-          <Col
-            xs={2}
-            className={`px-1 ml-0 d-flex justify-content-center text-center`}
-          >
-            {evaluations[i].workload !== -1 && (
-              <div
-                style={
-                  evaluations[i].workload && {
-                    color: workloadColormap(evaluations[i].workload)
-                      .darken()
-                      .saturate(),
-                  }
-                }
-                className={Styles.rating_cell}
-              >
-                {evaluations[i].workload.toFixed(1)}
-              </div>
-            )}
-          </Col>
-        </Row>
-      );
-    }
-  }
+            }
+          });
+          // Divide by number of profs to get average
+          average_professor_rating /= num_profs;
+        }
+        evaluations.push({
+          // Course rating
+          rating:
+            season.course.evaluation_statistics[0].avg_rating != null
+              ? season.course.evaluation_statistics[0].avg_rating
+              : -1,
+          // Workload rating
+          workload:
+            season.course.evaluation_statistics[0].avg_workload != null
+              ? season.course.evaluation_statistics[0].avg_workload
+              : -1,
+          // Professor rating
+          professor_rating: average_professor_rating
+            ? average_professor_rating
+            : -1,
+          // Season code
+          season_code: season.season_code,
+          // Professors
+          professor: season.professor_names.length
+            ? season.professor_names
+            : ['TBA'],
+          // Course code
+          course_code: season.course_code ? [season.course_code] : ['TBA'],
+          // Crn
+          crn: season.crn,
+          // Section number
+          section: season.section,
+          // Course Title
+          title: season.title,
+          // Course Skills
+          skills: season.skills,
+          // Course Areas
+          areas: season.areas,
+        });
+      });
+      // Sort by season code and section
+      evaluations.sort(sortEvals);
+      // Hold eval html for each column
+      let temp_items = { both: [], course: [], professor: [] };
+      // Variable used for list keys
+      let id = 0;
 
+      // Loop through each listing with evals
+      for (let i = 0; i < evaluations.length; i++) {
+        // Skip listings that have no ratings (therefore prolly don't have comments and graphs)
+        if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
+          continue;
+
+        const eval_box = (
+          <Row key={id++} className="m-auto py-1 justify-content-center">
+            {/* Clickable listing button */}
+            <Col
+              xs={5}
+              className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
+              onClick={() => handleSetSeason(evaluations[i])}
+              style={{ flex: 'none' }}
+            >
+              <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+              <div className={Styles.details + ' mx-auto ' + Styles.shown}>
+                {filter === 'professor'
+                  ? evaluations[i].course_code[0]
+                  : filter === 'both'
+                  ? 'Section ' + evaluations[i].section
+                  : evaluations[i].professor[0]}
+              </div>
+            </Col>
+            {/* Course Rating */}
+            <Col
+              xs={2}
+              className={`px-1 ml-0 d-flex justify-content-center text-center`}
+            >
+              <div
+                style={{
+                  color:
+                    evaluations[i].rating !== -1
+                      ? ratingColormap(evaluations[i].rating).darken(3).css()
+                      : '#b5b5b5',
+                  backgroundColor:
+                    evaluations[i].rating !== -1
+                      ? ratingColormap(evaluations[i].rating)
+                      : '#ebebeb',
+                }}
+                className={`${Styles.rating_cell} ${Styles.expanded_ratings}`}
+              >
+                {evaluations[i].rating !== -1
+                  ? evaluations[i].rating.toFixed(1)
+                  : 'N/A'}
+              </div>
+            </Col>
+            {/* Professor Rating */}
+            <Col
+              xs={2}
+              className={`px-1 ml-0 d-flex justify-content-center text-center`}
+            >
+              <div
+                style={{
+                  color:
+                    evaluations[i].professor_rating !== -1
+                      ? ratingColormap(evaluations[i].professor_rating)
+                          .darken(3)
+                          .css()
+                      : '#b5b5b5',
+                  backgroundColor:
+                    evaluations[i].professor_rating !== -1
+                      ? ratingColormap(evaluations[i].professor_rating)
+                      : '#ebebeb',
+                }}
+                className={Styles.rating_cell}
+              >
+                {evaluations[i].professor_rating !== -1
+                  ? evaluations[i].professor_rating.toFixed(1)
+                  : 'N/A'}
+              </div>
+            </Col>
+            {/* Workload Rating */}
+            <Col
+              xs={2}
+              className={`px-1 ml-0 d-flex justify-content-center text-center`}
+            >
+              <div
+                style={{
+                  color:
+                    evaluations[i].workload !== -1
+                      ? workloadColormap(evaluations[i].workload)
+                          .darken(3)
+                          .css()
+                      : '#b5b5b5',
+                  backgroundColor:
+                    evaluations[i].workload !== -1
+                      ? workloadColormap(evaluations[i].workload)
+                      : '#ebebeb',
+                }}
+                className={Styles.rating_cell}
+              >
+                {evaluations[i].workload !== -1
+                  ? evaluations[i].workload.toFixed(1)
+                  : 'N/A'}
+              </div>
+            </Col>
+          </Row>
+        );
+        // Course in both column
+        if (
+          evaluations[i].course_code.includes(listing.course_code) &&
+          listing.professor_names.length &&
+          overlapping_profs(evaluations[i].professor) ===
+            listing.professor_names.length
+        ) {
+          temp_items['both'].push(eval_box);
+        }
+        // Course in course column
+        if (evaluations[i].course_code.includes(listing.course_code)) {
+          temp_items['course'].push(eval_box);
+        }
+        // Course in prof column
+        if (overlapping_profs(evaluations[i].professor) > 0) {
+          temp_items['professor'].push(eval_box);
+        }
+      }
+      return temp_items;
+    }
+  }, [
+    data,
+    evaluations,
+    filter,
+    handleSetSeason,
+    listing,
+    overlapping_profs,
+    prof_info,
+  ]);
+  // Wait until data is fetched
+  if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
   const renderProfInfoPopover = (props) => {
     let prof_name = '';
@@ -420,6 +392,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     );
   };
 
+  // Options for the evaluation filters
+  const options = [
+    { displayName: `Course (${items['course'].length})`, value: 'course' },
+    { displayName: `Both (${items['both'].length})`, value: 'both' },
+    { displayName: `Prof (${items['professor'].length})`, value: 'professor' },
+  ];
+
   return (
     <Modal.Body>
       <Row className="m-auto">
@@ -428,7 +407,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           <Row className="m-auto pb-3">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
-              text={listing.description}
+              text={
+                listing.description ? listing.description : 'no description'
+              }
               maxLine={`${lines}`}
               basedOn="words"
               onReflow={handleReflow}
@@ -500,17 +481,39 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               {listing.section ? listing.section : 'N/A'}
             </Col>
           </Row>
+          {/* Course Information (flag_info) */}
+          {listing.flag_info.length > 0 && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Info</span>
+              </Col>
+              <Col sm={9} xs={8} className={Styles.metadata}>
+                {listing.flag_info.length ? (
+                  <ul className={Styles.flag_info}>
+                    {listing.flag_info.map((text) => (
+                      <li key={text}>{text}</li>
+                    ))}
+                  </ul>
+                ) : (
+                  'N/A'
+                )}
+              </Col>
+            </Row>
+          )}
           {/* Course Enrollment */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Enrollment</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing['enrollment.enrolled']
-                ? listing['enrollment.enrolled']
-                : enrollment === -1
-                ? 'N/A'
-                : '~' + enrollment}
+              {listing.enrolled
+                ? listing.enrolled
+                : listing.last_enrollment &&
+                  listing.last_enrollment_same_professors
+                ? listing.last_enrollment
+                : listing.last_enrollment
+                ? `~${listing.last_enrollment} (different professor was teaching)`
+                : 'N/A'}
             </Col>
           </Row>
           {/* Course Location */}
@@ -553,6 +556,50 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               )}
             </Col>
           </Row>
+          {/* Class Notes (classnotes) */}
+          {listing.classnotes && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Class Notes</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.classnotes}
+              </Col>
+            </Row>
+          )}
+          {/* Registrar Notes (regnotes) */}
+          {listing.regnotes && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Registrar Notes</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.regnotes}
+              </Col>
+            </Row>
+          )}
+          {/* Reading Period Notes (rp_attr) */}
+          {listing.rp_attr && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Reading Period</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.rp_attr}
+              </Col>
+            </Row>
+          )}
+          {/* Final Exam (final_exam) */}
+          {listing.final_exam && listing.final_exam !== 'HTBA' && (
+            <Row className="m-auto py-2">
+              <Col sm={3} xs={4} className="px-0">
+                <span className={Styles.lable_bubble}>Final Exam</span>
+              </Col>
+              <Col sm={9} xs={8}>
+                {listing.final_exam}
+              </Col>
+            </Row>
+          )}
           {/* FB Friends that are also shopping this course */}
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
@@ -583,7 +630,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             />
           </Row>
           {/* Course Evaluations Header */}
-          {items.length !== 0 && (
+          {items[filter].length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
                 <span className={Styles.evaluation_header}>Season</span>
@@ -600,9 +647,9 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Row>
           )}
           {/* Course Evaluations */}
-          {items.length !== 0 && items}
+          {items[filter].length !== 0 && items[filter]}
           {/* No Course Evaluations */}
-          {items.length === 0 && (
+          {items[filter].length === 0 && (
             <Row className="m-auto justify-content-center">
               <strong>No Results</strong>
             </Row>

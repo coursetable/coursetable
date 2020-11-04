@@ -79,4 +79,5 @@ const CourseConflictIcon = ({ course }) => {
   );
 };
 
-export default CourseConflictIcon;
+// CourseConflictIcon.whyDidYouRender = true;
+export default React.memo(CourseConflictIcon);

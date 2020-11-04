@@ -47,6 +47,8 @@ services:
       MYSQL_USER: root
       MYSQL_PASSWORD: GoCourseTable
       MYSQL_DB: yaleplus
+      CHALLENGE_PASSWORD: thisisapassword2
+      FERRY_SECRET: '' # we want this empty in development so no auth is required to refresh
 
   frontend:
     image: node:latest
@@ -67,7 +69,7 @@ services:
     ports:
       - '8085:8080'
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@2.tcp.ngrok.io:10019/postgres
+      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@coursetable.com:5432/postgres
       HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
@@ -125,3 +127,10 @@ services:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
       - '8081:80'
+
+  legacy:
+    image: nginx
+    ports:
+      - '8075:80'
+    volumes:
+      - ../legacy:/usr/share/nginx/html:ro

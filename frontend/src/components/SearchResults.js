@@ -1,6 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 
-import SearchResultsItem from './SearchResultsItem';
+import SearchResultsItemMemo from './SearchResultsItem';
 import SearchResultsGridItem from './SearchResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
@@ -21,14 +27,7 @@ import {
 } from 'react-bootstrap';
 
 import { flatten } from '../utilities';
-import {
-  InfiniteLoader,
-  List,
-  WindowScroller,
-  AutoSizer,
-  CellMeasurer,
-  CellMeasurerCache,
-} from 'react-virtualized';
+import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
@@ -37,22 +36,14 @@ import { FaArrowCircleUp, FaAppleAlt } from 'react-icons/fa';
 import { FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 
-// Measures the row height. NOT USING RN
-const cache = new CellMeasurerCache({
-  fixedWidth: true,
-  defaultHeight: 50,
-});
-
 /**
  * Renders the infinite list of search results
  * @prop data - list that holds the search results
  * @prop isList - boolean that determines display format (list or grid)
  * @prop setView - function to change display format
  * @prop loading - boolean | Is the search query finished?
- * @prop loadMore - boolean | Do we need to fetch more courses?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop refreshCache - integer that triggers the cache to recalculate height
- * @prop fetchedAll - boolean | Have we fetched all search results?
+ * @prop searched - boolean | has the search started?
  * @prop isLoggedIn - boolean | is the user logged in?
  */
 
@@ -60,13 +51,12 @@ const SearchResults = ({
   data,
   isList,
   setView,
-  loading,
-  loadMore,
-  multiSeasons,
-  refreshCache,
-  fetchedAll,
+  loading = false,
+  multiSeasons = false,
+  searched = true,
   showModal,
   isLoggedIn,
+  expanded,
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -75,9 +65,6 @@ const SearchResults = ({
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
-
-  // Variable used in list keys
-  let key = 0;
 
   // Should we render the scroll up button?
   const [scroll_visible, setScrollVisible] = useState(false);
@@ -94,15 +81,35 @@ const SearchResults = ({
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  // Recalculate row height when refreshCache changes
-  useEffect(() => {
-    cache.clearAll();
-  }, [refreshCache]);
-
   // Number of columns to use in grid view
   const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
+
   // List that holds the HTML for each row in grid view
-  let grid_html = [];
+  const grid_html = useMemo(() => {
+    let grid = [];
+    const len = data.length;
+    for (let i = 0; i < len; i += num_cols) {
+      let row_elements = [];
+      for (let j = i; j < len && j < i + num_cols; j++) {
+        row_elements.push(
+          <SearchResultsGridItem
+            course={flatten(data[j])}
+            showModal={showModal}
+            isLoggedIn={isLoggedIn}
+            num_cols={num_cols}
+            multiSeasons={multiSeasons}
+            key={j}
+          />
+        );
+      }
+      grid.push(
+        <Row className="mx-auto" key={i}>
+          {row_elements}
+        </Row>
+      );
+    }
+    return grid;
+  }, [data, showModal, isLoggedIn, multiSeasons, num_cols]);
 
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState();
@@ -111,70 +118,76 @@ const SearchResults = ({
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, width]);
+  }, [setRowWidth, width, expanded]);
 
   // Spacing for each column in list view
-  const PROF_WIDTH = 150;
-  const MEET_WIDTH = 200;
-  const RATE_WIDTH = 40;
-  const BOOKMARK_WIDTH = 50;
-  const PADDING = 50;
-  const PROF_CUT = 1023;
-  const MEET_CUT = 1200;
+  const COL_SPACING = {
+    SZN_WIDTH: 80,
+    CODE_WIDTH: 110,
+    RATE_WIDTH: 30,
+    NUM_WIDTH: 40,
+    PROF_WIDTH: 150,
+    MEET_WIDTH: 160,
+    LOC_WIDTH: 100,
+    SA_WIDTH: 100,
+    PADDING: 35,
+    NUM_CUT: !multiSeasons ? 580 : 680,
+    PROF_CUT: !multiSeasons ? 730 : 830,
+    MEET_CUT: !multiSeasons ? 830 : 930,
+    LOC_CUT: !multiSeasons ? 930 : 1030,
+    SA_CUT: !multiSeasons ? 1030 : 1130,
+  };
+  const TITLE_WIDTH = useMemo(() => {
+    return (
+      ROW_WIDTH -
+      (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
+      COL_SPACING.CODE_WIDTH -
+      COL_SPACING.LOC_WIDTH -
+      (ROW_WIDTH > COL_SPACING.NUM_CUT ? 2 * COL_SPACING.NUM_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
+      (ROW_WIDTH > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
+      3 * COL_SPACING.RATE_WIDTH -
+      COL_SPACING.PADDING
+    );
+  }, [ROW_WIDTH, COL_SPACING, multiSeasons]);
 
   // Holds HTML for the search results
   var resultsListing;
 
-  // Has the current row been fetched?
-  function isRowLoaded({ index }) {
-    if (fetchedAll) return true;
-    if (isList) return index < data.length;
-    return index < grid_html.length;
-  }
-
   // Render functions for React Virtualized List:
-  const renderGridRow = ({ index, key, style }) => {
-    if (!isRowLoaded({ index })) {
-      return <div key={key} style={style} />;
-    }
-    return (
-      <div key={key} style={style}>
-        {grid_html[index]}
-      </div>
-    );
-  };
+  const renderGridRow = useCallback(
+    ({ index, key, style }) => {
+      return (
+        <div key={key} style={style}>
+          {grid_html[index]}
+        </div>
+      );
+    },
+    [grid_html]
+  );
 
-  const renderListRow = ({ index, key, style, parent }) => {
-    if (!isRowLoaded({ index })) {
-      return <div key={key} style={style} />;
-    }
-    return (
-      <CellMeasurer
-        key={key}
-        cache={cache}
-        parent={parent}
-        columnIndex={0}
-        rowIndex={index}
-      >
-        <div style={style}>
-          <SearchResultsItem
-            course={flatten(data[index])}
+  const renderListRow = useCallback(
+    ({ index, key, style, isScrolling }) => {
+      return (
+        <div style={style} key={key}>
+          <SearchResultsItemMemo
+            unflat_course={data[index]}
             showModal={showModal}
             multiSeasons={multiSeasons}
-            isLast={index === data.length - 1 && data.length % 30 !== 0} // This is wack
+            isLast={index === data.length - 1}
+            COL_SPACING={COL_SPACING}
+            TITLE_WIDTH={TITLE_WIDTH}
             ROW_WIDTH={ROW_WIDTH}
-            PROF_WIDTH={PROF_WIDTH}
-            MEET_WIDTH={MEET_WIDTH}
-            RATE_WIDTH={RATE_WIDTH}
-            BOOKMARK_WIDTH={BOOKMARK_WIDTH}
-            PADDING={PADDING}
-            PROF_CUT={PROF_CUT}
-            MEET_CUT={MEET_CUT}
+            isScrolling={isScrolling}
           />
         </div>
-      </CellMeasurer>
-    );
-  };
+      );
+    },
+    [data, showModal, multiSeasons, COL_SPACING, TITLE_WIDTH, ROW_WIDTH]
+  );
+
   // if no courses found (either due to query or authentication), render the empty state
   if (data.length === 0) {
     resultsListing = (
@@ -205,141 +218,138 @@ const SearchResults = ({
   } else {
     // if not list view, prepare the grid
     if (!isList) {
-      const len = data.length;
-      for (let i = 0; i < len; i += num_cols) {
-        let row_elements = [];
-        for (let j = i; j < len && j < i + num_cols; j++) {
-          row_elements.push(
-            <SearchResultsGridItem
-              course={flatten(data[j])}
-              showModal={showModal}
-              isLoggedIn={isLoggedIn}
-              num_cols={num_cols}
-              multiSeasons={multiSeasons}
-              key={key++}
-            />
-          );
-        }
-        grid_html.push(
-          <Row className="mx-auto" key={key++}>
-            {row_elements}
-          </Row>
-        );
-      }
       // Store HTML for grid view results
       resultsListing = (
-        <InfiniteLoader
-          // isRowLoaded detects which rows have been requested to avoid multiple loadMoreRows calls
-          isRowLoaded={isRowLoaded}
-          // Only load more if previous search query has finished
-          loadMoreRows={loading ? () => {} : loadMore}
-          // Add extra row for loading row
-          rowCount={!fetchedAll ? grid_html.length + 1 : grid_html.length}
-          // How many courses from the end should we fetch more
-          threshold={15}
-        >
-          {({ onRowsRendered, registerChild }) => (
-            // Scroll the entire window
-            <WindowScroller>
-              {({ height, isScrolling, onChildScroll, scrollTop }) => (
-                // Make infinite list take up 100% of its container
-                <AutoSizer disableHeight>
-                  {({ width }) => (
-                    <List
-                      autoHeight
-                      width={width}
-                      height={height}
-                      onRowsRendered={onRowsRendered}
-                      ref={registerChild}
-                      isScrolling={isScrolling}
-                      onScroll={onChildScroll}
-                      scrollTop={scrollTop}
-                      rowCount={
-                        !fetchedAll ? grid_html.length + 1 : grid_html.length
-                      }
-                      rowHeight={178}
-                      rowRenderer={renderGridRow}
-                    />
-                  )}
-                </AutoSizer>
+        // Scroll the entire window
+        <WindowScroller>
+          {({ height, isScrolling, onChildScroll, scrollTop }) => (
+            // Make infinite list take up 100% of its container
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <List
+                  autoHeight
+                  width={width}
+                  height={height}
+                  isScrolling={isScrolling}
+                  onScroll={onChildScroll}
+                  scrollTop={scrollTop}
+                  rowCount={grid_html.length}
+                  rowHeight={178}
+                  rowRenderer={renderGridRow}
+                />
               )}
-            </WindowScroller>
+            </AutoSizer>
           )}
-        </InfiniteLoader>
+        </WindowScroller>
       );
     }
 
     // Store HTML for list view results
     else {
       resultsListing = (
-        <InfiniteLoader
-          // isRowLoaded detects which rows have been requested to avoid multiple loadMoreRows calls
-          isRowLoaded={isRowLoaded}
-          // Only load more if previous search query has finished
-          loadMoreRows={loading ? () => {} : loadMore}
-          // Add extra row for loading row
-          rowCount={!fetchedAll ? data.length + 1 : data.length}
-          // How many courses from the end should we fetch more
-          threshold={30}
-        >
-          {({ onRowsRendered, registerChild }) => (
-            // Scroll the entire window
-            <WindowScroller>
-              {({ height, isScrolling, onChildScroll, scrollTop }) => (
-                // Make infinite list take up 100% of its container
-                <AutoSizer disableHeight>
-                  {({ width }) => (
-                    <List
-                      autoHeight
-                      width={width}
-                      height={height}
-                      onRowsRendered={onRowsRendered}
-                      ref={registerChild}
-                      isScrolling={isScrolling}
-                      onScroll={onChildScroll}
-                      scrollTop={scrollTop}
-                      rowCount={!fetchedAll ? data.length + 1 : data.length}
-                      rowRenderer={renderListRow}
-                      deferredMeasurementCache={cache}
-                      rowHeight={67}
-                    />
-                  )}
-                </AutoSizer>
+        // Scroll the entire window
+        <WindowScroller>
+          {({ height, isScrolling, onChildScroll, scrollTop }) => (
+            // Make infinite list take up 100% of its container
+            <AutoSizer disableHeight>
+              {({ width }) => (
+                <List
+                  autoHeight
+                  width={width}
+                  height={height}
+                  isScrolling={isScrolling}
+                  onScroll={onChildScroll}
+                  scrollTop={scrollTop}
+                  rowCount={data.length}
+                  rowHeight={32}
+                  rowRenderer={renderListRow}
+                />
               )}
-            </WindowScroller>
+            </AutoSizer>
           )}
-        </InfiniteLoader>
+        </WindowScroller>
       );
     }
   }
 
   // Tooltip for hovering over class rating
-  const class_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Class Rating</span>
-    </Tooltip>
+  const class_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Class Rating</span>
+      </Tooltip>
+    ),
+    []
   );
 
   // Tooltip for hovering over professor rating
-  const prof_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Professor Rating</span>
-    </Tooltip>
+  const prof_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Professor Rating</span>
+      </Tooltip>
+    ),
+    []
   );
 
   // Tooltip for hovering over workload rating
-  const workload_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Workload Rating</span>
-    </Tooltip>
+  const workload_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Workload Rating</span>
+      </Tooltip>
+    ),
+    []
   );
+
+  // Tooltip for hovering over enrollment
+  const enrollment_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Class Enrollment</span>
+      </Tooltip>
+    ),
+    []
+  );
+
+  // Tooltip for hovering over fb friends
+  const fb_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>Number of Facebook friends shopping this class</span>
+      </Tooltip>
+    ),
+    []
+  );
+
+  // Column width styles
+  const szn_style = {
+    width: `${COL_SPACING.SZN_WIDTH}px`,
+    paddingLeft: '15px',
+  };
+  const code_style = {
+    width: `${COL_SPACING.CODE_WIDTH}px`,
+    paddingLeft: !multiSeasons ? '15px' : '0px',
+  };
+  const title_style = { width: `${TITLE_WIDTH}px` };
+  const rate_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_WIDTH}px`,
+  };
+  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
+  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
+  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
+  const num_style = { width: `${COL_SPACING.NUM_WIDTH}px` };
+  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
     <div>
       <Container
         fluid
         id="results_container"
-        className={`px-0 ${Styles.results_container}`}
+        className={`px-0 ${Styles.results_container} ${
+          expanded ? Styles.results_container_max_width : ''
+        }`}
       >
         {!isMobile && (
           <div className={`${Styles.sticky_header}`}>
@@ -347,62 +357,59 @@ const SearchResults = ({
             <Row
               ref={ref}
               className={
-                `mx-auto px-2 py-2 shadow-sm ${Styles.results_header_row}` +
+                `mx-auto pl-4 pr-2 py-2 shadow-sm ${Styles.results_header_row}` +
                 ' justify-content-between'
               }
             >
-              {/* <div
+              <div
                 className={
                   Styles.list_grid_toggle + ' d-flex ml-auto my-auto p-0'
                 }
               >
                 <ListGridToggle isList={isList} setView={setView} />
-              </div> */}
+              </div>
               {isList ? (
                 <React.Fragment>
-                  {/* Course Name */}
-                  <div
-                    style={{
-                      lineHeight: '30px',
-                      width: `${
-                        ROW_WIDTH -
-                        (width > PROF_CUT ? PROF_WIDTH : 0) -
-                        (width > MEET_CUT ? MEET_WIDTH : 0) -
-                        3 * RATE_WIDTH -
-                        BOOKMARK_WIDTH -
-                        PADDING
-                      }px`,
-                      paddingLeft: '15px',
-                    }}
-                  >
-                    <strong>{'Course'}</strong>
-                  </div>
-                  {/* Course Professors */}
-                  {width > PROF_CUT && (
-                    <div
-                      style={{ lineHeight: '30px', width: `${PROF_WIDTH}px` }}
-                      className="pr-4"
-                    >
-                      <strong>{'Professors'}</strong>
+                  {multiSeasons && (
+                    <div style={szn_style} className={Styles.results_header}>
+                      Season
                     </div>
                   )}
-                  {/* Course Meeting times and location */}
-                  {width > MEET_CUT && (
-                    <div
-                      style={{ lineHeight: '30px', width: `${MEET_WIDTH}px` }}
-                    >
-                      <strong>{'Meets'}</strong>
-                    </div>
+                  <div style={code_style} className={Styles.results_header}>
+                    Code
+                  </div>
+                  {/* Course Name */}
+                  <div style={title_style} className={Styles.results_header}>
+                    Title
+                  </div>
+                  {ROW_WIDTH > COL_SPACING.NUM_CUT && (
+                    <>
+                      <div style={num_style} className={Styles.results_header}>
+                        <OverlayTrigger
+                          placement="bottom"
+                          delay={{ show: 100, hide: 100 }}
+                          overlay={enrollment_tooltip}
+                        >
+                          <span className="m-auto">#</span>
+                        </OverlayTrigger>
+                      </div>
+                      <div style={num_style} className={Styles.results_header}>
+                        <OverlayTrigger
+                          placement="bottom"
+                          delay={{ show: 100, hide: 100 }}
+                          overlay={fb_tooltip}
+                        >
+                          <span className="m-auto">#FB</span>
+                        </OverlayTrigger>
+                      </div>
+                    </>
                   )}
                   {/* Class Rating */}
-                  <div
-                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
-                    className="d-flex"
-                  >
+                  <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
                       <OverlayTrigger
-                        placement="top"
-                        delay={{ show: 500, hide: 250 }}
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
                         overlay={class_tooltip}
                       >
                         <AiFillStar
@@ -414,14 +421,11 @@ const SearchResults = ({
                     </div>
                   </div>
                   {/* Professor Rating */}
-                  <div
-                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
-                    className="d-flex"
-                  >
+                  <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
                       <OverlayTrigger
-                        placement="top"
-                        delay={{ show: 500, hide: 250 }}
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
                         overlay={prof_tooltip}
                       >
                         <FaAppleAlt
@@ -433,40 +437,53 @@ const SearchResults = ({
                     </div>
                   </div>
                   {/* Workload Rating */}
-                  <div
-                    style={{ lineHeight: '30px', width: `${RATE_WIDTH}px` }}
-                    className="d-flex"
-                  >
+                  <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
                       <OverlayTrigger
-                        placement="top"
-                        delay={{ show: 500, hide: 250 }}
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
                         overlay={workload_tooltip}
                       >
                         <FcReading style={{ display: 'block' }} size={20} />
                       </OverlayTrigger>
                     </div>
                   </div>
+                  {/* Course Professors */}
+                  {ROW_WIDTH > COL_SPACING.PROF_CUT && (
+                    <div style={prof_style} className={Styles.results_header}>
+                      Professors
+                    </div>
+                  )}
+                  {/* Course Meeting times and location */}
+                  {ROW_WIDTH > COL_SPACING.MEET_CUT && (
+                    <div style={meet_style} className={Styles.results_header}>
+                      Meets
+                    </div>
+                  )}
+                  {ROW_WIDTH > COL_SPACING.LOC_CUT && (
+                    <div style={loc_style} className={Styles.results_header}>
+                      Location
+                    </div>
+                  )}
+                  {ROW_WIDTH > COL_SPACING.SA_CUT && (
+                    <div
+                      style={sa_style}
+                      className={Styles.results_header + ' pr-2'}
+                    >
+                      Skills/Areas
+                    </div>
+                  )}
                 </React.Fragment>
               ) : (
                 // Grid view showing how many search results
-                <Col md={10} style={{ lineHeight: '30px' }}>
-                  <strong>
+                <Col md={10}>
+                  <div className={Styles.results_header}>
                     {`Showing ${data.length} course${
                       data.length === 1 ? '' : 's'
                     }...`}
-                  </strong>
+                  </div>
                 </Col>
               )}
-              {/* List Grid Toggle Button */}
-              <div
-                style={{ lineHeight: '30px', width: `${BOOKMARK_WIDTH}px` }}
-                className="d-flex pr-2"
-              >
-                <div className="d-flex ml-auto my-auto p-0">
-                  <ListGridToggle isList={isList} setView={setView} />
-                </div>
-              </div>
             </Row>
           </div>
         )}
@@ -475,7 +492,7 @@ const SearchResults = ({
           {data.length !== 0 && resultsListing}
           {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
           {data.length === 0 &&
-            (!isLoggedIn || refreshCache > 0) &&
+            (!isLoggedIn || searched) &&
             !loading &&
             resultsListing}
           {/* Render a loading row while performing next query */}
@@ -500,4 +517,5 @@ const SearchResults = ({
   );
 };
 
+// SearchResults.whyDidYouRender = true;
 export default SearchResults;

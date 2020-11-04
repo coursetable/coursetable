@@ -2,8 +2,18 @@
 
 Coursetable is made of two big parts:
 
-1.  **Website**: this is the site you see when you go to [coursetable.com](https://coursetable.com). The code for this is in the `web` directory.
-2.  **Crawler**: these are the scripts behind the scenes that actually get all the data from Yale’s websites. The code for this is in the `crawler` directory, which is currently included via a Git submodule.
+1.  **Website**: The site you see when you go to [coursetable.com](https://coursetable.com). The code for this – the front-end site as well as the various back-end scripts that handle user actions – is contained within this repository.
+2.  **Crawler**: The scripts behind the scenes that actually get all the data from Yale’s websites. The code for this is in our [ferry](https://github.com/coursetable/ferry) repository.
+
+## Design:
+The various functions of the website are compartmentalized as follows:
+
+- `/api`: An Express server for back-end logic going forward. Currently handles user challenges.
+- `/dev_proxy`: Proxy configuration for relaying connections between services (e.g. authentication headers, CAS cookies, etc.)
+- `/docker`: Configuration files for running everything together in Docker.
+- `/frontend`: The current face of the site, built in React.
+- `/sysadmin`: Administrative tools such as phpMyAdmin. 
+- `/web`: Older PHP scripts migrated from the legacy site. 
 
 ## How to develop
 
@@ -33,8 +43,8 @@ We use GitHub issues to track bugs and feature requests: https://github.com/cour
 
 For different languages:
 
-- Javascript: We use `prettier` to automatically format the code. Make sure you use your editor's integration!
-- PHP: We use PHP CodeSniffer to maintain coding standards; generally, it's 4 spaces for tabs, camelCase for variables, and follow whatever else that's in use right now.
+- JavaScript: We use [prettier](https://prettier.io/) to automatically format the code. Make sure you use your editor's integration!
+- PHP: We use [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) to maintain coding standards; generally, it's 4 spaces for tabs, camelCase for variables, and follow whatever else that's in use right now.
 
 We have automated checks set up that will run for every commit and pull request.
 

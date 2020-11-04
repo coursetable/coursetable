@@ -21,6 +21,7 @@ export const SEARCH_COURSES = gql`
     $limit: Int
     $seasons: [String!]
     $schools: [String!]
+    $subjects: [String!]
     $areas: [String!]
     $credits: [float8!]
     $skills: [String!]
@@ -43,7 +44,8 @@ export const SEARCH_COURSES = gql`
         average_workload: { _gte: $min_workload, _lte: $max_workload }
         credits: { _in: $credits }
         school: { _in: $schools }
-        course: { extra_info: { _eq: $extra_info } }
+        subject: { _in: $subjects }
+        extra_info: { _eq: $extra_info }
         fysem: { _eq: $fy_sem }
       }
       order_by: $ordering
@@ -70,9 +72,16 @@ export const SEARCH_COURSES = gql`
       season_code
       extra_info
       syllabus_url
-      enrollment
       section
       crn
+      enrolled
+      last_enrollment
+      last_enrollment_same_professors
+      flag_info
+      regnotes
+      rp_attr
+      classnotes
+      final_exam
     }
   }
 `;
@@ -91,11 +100,14 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
       }
     ) {
       professor_names
+      professor_info
       season_code
       all_course_codes
       section
       crn
-      enrollment
+      enrolled
+      last_enrollment
+      last_enrollment_same_professors
       average_rating
       average_workload
       course_code
