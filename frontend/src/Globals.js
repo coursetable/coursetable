@@ -17,8 +17,8 @@ import posthog from 'posthog-js';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
-//const POSTHOG_TOKEN = process.env.REACT_APP_POSTHOG_TOKEN;
-const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
+const POSTHOG_TOKEN = process.env.REACT_APP_POSTHOG_TOKEN;
+// [enable for testing] const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
 POSTHOG_TOKEN &&
   posthog.init(POSTHOG_TOKEN, {
     api_host: 'https://hog.coursetable.com',
