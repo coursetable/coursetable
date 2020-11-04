@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React, { Fragment, useCallback } from 'react';
 import styles from './MeDropdown.module.css';
 import axios from 'axios';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
+import { FaSyncAlt } from 'react-icons/fa';
 import posthog from 'posthog-js';
 
 /**
@@ -13,8 +14,6 @@ function FBLoginButton() {
   const logged_in = user.fbLogin;
 
   // Note: window.FB setup via index.html.
-
-  // TODO: add support for refreshing facebook auth status
 
   const syncFacebook = useCallback(() => {
     return axios.get('/legacy_api/FetchFacebookData.php').then(({ data }) => {
@@ -68,7 +67,6 @@ function FBLoginButton() {
   const handleLogoutClick = useCallback(() => {
     posthog.capture('facebook-logout');
 
-    // TODO: disconnect_facebook does not implement it correctly.
     axios
       .get('/legacy_api/Table.php?disconnect_facebook')
       .then(() => {
@@ -83,16 +81,26 @@ function FBLoginButton() {
   }, [fbRefresh]);
 
   return (
-    <div>
+    <div className="d-flex">
       {!logged_in && (
         <span onClick={handleLoginClick} className={styles.collapse_text}>
           Connect to FB
         </span>
       )}
       {logged_in && (
-        <span onClick={handleLogoutClick} className={styles.collapse_text}>
-          Disconnect FB
-        </span>
+        <Fragment>
+          <span onClick={handleLogoutClick} className={styles.collapse_text}>
+            Disconnect FB
+          </span>
+
+          <FaSyncAlt
+            className={styles.fb_sync + ' ml-2 my-auto'}
+            size={15}
+            color="#32CD32"
+            title="Refresh FB friends"
+            onClick={handleLoginClick}
+          />
+        </Fragment>
       )}
     </div>
   );
