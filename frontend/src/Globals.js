@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom';
+import React, { useEffect, useRef, useState } from 'react';
+import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import SeasonsProvider from './components/SeasonsProvider';
@@ -12,14 +12,39 @@ import 'react-toastify/dist/ReactToastify.css';
 import { InMemoryCache, ApolloClient } from '@apollo/client';
 import { ApolloProvider } from '@apollo/react-hooks';
 
+import posthog from 'posthog-js';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+
+//const POSTHOG_TOKEN = process.env.REACT_APP_POSTHOG_TOKEN;
+const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
+POSTHOG_TOKEN &&
+  posthog.init(POSTHOG_TOKEN, {
+    api_host: 'https://hog.coursetable.com',
+  });
 
 const client = new ApolloClient({
   uri: '/ferry/v1/graphql',
   // default cache for now
   cache: new InMemoryCache(),
 });
+
+function SPAPageChangeListener({ callback }) {
+  const location = useLocation();
+
+  // Skip first pageview - already captured by init() call.
+  const hasFired = useRef(false);
+  useEffect(() => {
+    if (!hasFired.current) {
+      hasFired.current = true;
+      return;
+    }
+    posthog.capture('$pageview');
+  }, [location, hasFired]);
+
+  return <></>;
+}
 
 function Globals({ children }) {
   return (
@@ -31,6 +56,7 @@ function Globals({ children }) {
           <WindowDimensionsProvider>
             <SeasonsProvider>
               <Router>
+                <SPAPageChangeListener />
                 <div id="base">{children}</div>
               </Router>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import posthog from 'posthog-js';
 
 import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
@@ -65,6 +66,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
+    posthog.reset();
     // Metric Tracking of Logging Out
     window.umami.trackEvent('Account Logout', 'account');
 
