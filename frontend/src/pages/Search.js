@@ -199,15 +199,21 @@ function Search({ location, history }) {
       // sorting options
       var sortParams = select_sortby.value;
       var ordering = null;
-      if (sortParams === 'text' && sort_order === 'desc')
-        ordering = { course_code: 'desc' };
-      else if (sortParams === 'course_name') ordering = { title: sort_order };
+      if (sortParams === 'course_code') {
+        if (sort_order === 'desc') ordering = { course_code: 'desc' };
+      } else if (sortParams === 'course_title')
+        ordering = { title: sort_order };
+      else if (sortParams === 'course_number')
+        ordering = { number: sort_order };
       else if (sortParams === 'rating')
         ordering = { average_rating: sort_order };
       else if (sortParams === 'workload')
         ordering = { average_workload: sort_order };
+      else if (sortParams === 'professor')
+        ordering = { average_professor: `${sort_order}_nulls_last` };
       else if (sortParams === 'gut')
         ordering = { average_gut_rating: `${sort_order}_nulls_last` };
+      else console.error('unknown sort order - ', sortParams);
 
       // seasons to filter
       var processedSeasons = select_seasons;
@@ -338,6 +344,7 @@ function Search({ location, history }) {
       // Track search
       posthog.capture('search', {
         ...search_variables,
+        search_text_clean: search_variables.search_text || '[none]',
       });
 
       // Execute search query
@@ -571,8 +578,8 @@ function Search({ location, history }) {
                   className={Styles.sort_btn + ' my-auto'}
                   onClick={handleSortOrder}
                 >
-                  {select_sortby.value === 'text' ||
-                  select_sortby.value === 'course_name' ? (
+                  {select_sortby.value === 'course_code' ||
+                  select_sortby.value === 'course_title' ? (
                     // Sorting by letters
                     sort_order === 'asc' ? (
                       <FcAlphabeticalSortingAz
