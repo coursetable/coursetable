@@ -8,7 +8,6 @@ import React, {
 import axios from 'axios';
 import posthog from 'posthog-js';
 import { toast } from 'react-toastify';
-import { useCourseData } from './components/FerryProvider';
 import { useWorksheetInfo } from './queries/GetWorksheetListings';
 
 const UserContext = createContext();
@@ -92,7 +91,7 @@ export const UserProvider = ({ children }) => {
       fbLogin,
       fbWorksheets,
     };
-  }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
+  }, [netId, worksheet, worksheetDataObj, hasEvals, fbLogin, fbWorksheets]);
 
   const store = {
     // Context state.

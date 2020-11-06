@@ -111,7 +111,7 @@ export const useCourseData = (seasons) => {
 
   useEffect(() => {
     requestSeasons(seasons);
-  }, [seasons]);
+  }, [requestSeasons, seasons]);
 
   return { loading, error, courses };
 };
