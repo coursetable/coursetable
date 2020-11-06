@@ -11,6 +11,8 @@ import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import posthog from 'posthog-js';
 
+import { enable, disable } from 'darkreader';
+
 /**
  * Renders the navbar
  * @prop isLoggedIn - boolean | is user logged in?
@@ -117,6 +119,19 @@ function CourseTableNavbar({ isLoggedIn }) {
                 >
                   FAQ
                 </NavLink>
+
+                <div
+                  onClick={() => {
+                    enable({
+                      brightness: 100,
+                      contrast: 90,
+                      sepia: 10,
+                    });
+                  }}
+                >
+                  DarkMode
+                </div>
+
                 {/* Catalog Page */}
                 <NavLink
                   to="/catalog"
