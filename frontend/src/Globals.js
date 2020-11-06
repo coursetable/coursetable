@@ -59,18 +59,19 @@ function Globals({ children }) {
       {/* TODO: reenable StrictMode later */}
       {/* <React.StrictMode> */}
       <ApolloProvider client={client}>
-        <UserProvider>
-          <WindowDimensionsProvider>
-            <FerryProvider>
+        <FerryProvider>
+          {/* UserProvider must be inside the FerryProvider */}
+          <UserProvider>
+            <WindowDimensionsProvider>
               <Router>
                 <SPAPageChangeListener />
                 <div id="base">{children}</div>
               </Router>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
               <ToastContainer />
-            </FerryProvider>
-          </WindowDimensionsProvider>
-        </UserProvider>
+            </WindowDimensionsProvider>
+          </UserProvider>
+        </FerryProvider>
       </ApolloProvider>
       {/* </React.StrictMode> */}
     </>

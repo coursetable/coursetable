@@ -1,4 +1,10 @@
-import React, { createContext, useCallback, useContext, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import { GET_SEASON_CODES } from '../queries/QueryStrings';
 
@@ -100,3 +106,12 @@ export const FerryProvider = ({ children }) => {
 
 export default FerryProvider;
 export const useFerry = () => useContext(FerryCtx);
+export const useCourseData = (seasons) => {
+  const { loading, error, courses, requestSeasons } = useFerry();
+
+  useEffect(() => {
+    requestSeasons(seasons);
+  }, [seasons]);
+
+  return { loading, error, courses };
+};

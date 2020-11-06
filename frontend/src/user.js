@@ -8,6 +8,8 @@ import React, {
 import axios from 'axios';
 import posthog from 'posthog-js';
 import { toast } from 'react-toastify';
+import { useCourseData } from './components/FerryProvider';
+import { useWorksheetInfo } from './queries/GetWorksheetListings';
 
 const UserContext = createContext();
 UserContext.displayName = 'UserContext';
@@ -78,10 +80,14 @@ export const UserProvider = ({ children }) => {
     [setFbLogin, setFbWorksheets]
   );
 
+  // Get user's worksheet information.
+  const worksheetDataObj = useWorksheetInfo(worksheet);
+
   const user = useMemo(() => {
     return {
       netId,
       worksheet,
+      worksheetDataObj,
       hasEvals,
       fbLogin,
       fbWorksheets,

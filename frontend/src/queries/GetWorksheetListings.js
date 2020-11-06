@@ -1,7 +1,7 @@
-import { useQuery, useLazyQuery } from '@apollo/react-hooks';
+import { useLazyQuery } from '@apollo/react-hooks';
 import gql from 'graphql-tag';
-import { useEffect, useMemo } from 'react';
-import { useFerry } from '../components/FerryProvider';
+import { useMemo } from 'react';
+import { useCourseData } from '../components/FerryProvider';
 import { flatten, preprocess_courses } from '../utilities';
 
 // Build the graphQL query based on the courses in the user's worksheet
@@ -67,13 +67,7 @@ export const useWorksheetInfo = (worksheet) => {
     return [...seasons];
   }, [worksheet]);
 
-  const { loading, error, courses, requestSeasons } = useFerry();
-
-  // Resolve needed seasons.
-  useEffect(() => requestSeasons(required_seasons), [
-    required_seasons,
-    requestSeasons,
-  ]);
+  const { loading, error, courses } = useCourseData(required_seasons);
 
   const data = useMemo(() => {
     const data = [];

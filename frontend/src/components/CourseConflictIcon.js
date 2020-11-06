@@ -2,7 +2,6 @@ import React, { useMemo } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { useUser } from '../user';
-import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { isInWorksheet, checkConflict, unflattenTimes } from '../utilities';
 import { MdErrorOutline } from 'react-icons/md';
 
@@ -23,7 +22,7 @@ const CourseConflictIcon = ({ course }) => {
   }, [course.season_code, course.crn, user.worksheet]);
 
   // Fetch listing info for each listing in user's worksheet
-  const { data } = useWorksheetInfo(user.worksheet);
+  const { data } = user.worksheetDataObj;
 
   // Get listing times
   const times = useMemo(() => unflattenTimes(course), [course]);
