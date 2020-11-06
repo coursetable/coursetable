@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
+import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 // import Searchbar from '../components/Searchbar';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
@@ -11,7 +12,10 @@ import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import posthog from 'posthog-js';
 
-import { enable, disable } from 'darkreader';
+import {
+  enable as enableDarkMode,
+  disable as disableDarkMode,
+} from 'darkreader';
 
 /**
  * Renders the navbar
@@ -48,6 +52,9 @@ function CourseTableNavbar({ isLoggedIn }) {
     window.location.pathname = '/';
   };
 
+  // DarkMode or LightMode
+  const [darkModeEnabled, setDarkModeEnabled] = useState(false);
+
   return (
     <div>
       <div className={`shadow-sm ${styles.navbar}`}>
@@ -71,7 +78,7 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo icon={false} />
+                  <Logo variant={'dark'} icon={false} />
                 </span>
               </NavLink>
             </Nav>
@@ -120,17 +127,24 @@ function CourseTableNavbar({ isLoggedIn }) {
                   FAQ
                 </NavLink>
 
-                <div
+                {/* DarkMode Button */}
+                <span
+                  className={styles.nav_logo}
                   onClick={() => {
-                    enable({
-                      brightness: 100,
-                      contrast: 90,
-                      sepia: 10,
-                    });
+                    if (darkModeEnabled) {
+                      disableDarkMode();
+                    } else {
+                      enableDarkMode({
+                        brightness: 100,
+                        contrast: 90,
+                        sepia: 10,
+                      });
+                    }
+                    setDarkModeEnabled(!darkModeEnabled);
                   }}
                 >
-                  DarkMode
-                </div>
+                  <DarkModeButton darkModeEnabled={darkModeEnabled} />
+                </span>
 
                 {/* Catalog Page */}
                 <NavLink
