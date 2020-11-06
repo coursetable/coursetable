@@ -23,7 +23,6 @@ export const catalogBySeasonQuery = gql`
       average_rating
       average_workload
       average_professor
-      flag_info
       times_summary
       times_by_day
       locations_summary
@@ -36,9 +35,16 @@ export const catalogBySeasonQuery = gql`
       season_code
       extra_info
       syllabus_url
-      enrollment
       section
       crn
+      enrolled
+      last_enrollment
+      last_enrollment_same_professors
+      flag_info
+      regnotes
+      rp_attr
+      classnotes
+      final_exam
     }
   }
 `;
