@@ -1,11 +1,13 @@
 import chroma from 'chroma-js';
 
 export const sortbyOptions = [
-  { label: 'Sort by Course Code', value: 'text' },
-  { label: 'Sort by Course Name', value: 'course_name' },
-  { label: 'Sort by Rating', value: 'rating' },
+  { label: 'Sort by Course Code', value: 'course_code' },
+  { label: 'Sort by Course Number', value: 'course_number' },
+  { label: 'Sort by Course Title', value: 'course_title' },
+  { label: 'Sort by Course Rating', value: 'rating' },
+  { label: 'Sort by Professor Rating', value: 'professor' },
   { label: 'Sort by Workload', value: 'workload' },
-  { label: 'Sort by (Rating - Workload)', value: 'gut' },
+  { label: 'Sort by Guts (Rating - Workload)', value: 'gut' },
   // { label: 'Enrollment', value: 'enrollment' },
 ];
 

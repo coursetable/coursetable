@@ -60,7 +60,7 @@ services:
       - ../frontend:/app
     environment:
       REACT_APP_UMAMI_WEBSITE_ID: 603e532b-7def-4cf0-ab2c-031157aa7966
-      REACT_APP_POSTHOG_TOKEN: ''
+      REACT_APP_POSTHOG_TOKEN: 'nothing' # dummy value to make posthog happy
     user: '1000'
     command: sh -c 'cd /app && yarn && FORCE_COLOR=true yarn start | cat'
     tty: true # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
