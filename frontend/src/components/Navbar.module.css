@@ -33,6 +33,16 @@ nav > .nav_brand {
   display: flex;
 }
 
+.navbar_dark_mode_btn {
+  padding: 0.5rem 1rem 0.5rem 0rem !important;
+}
+
+.navbar_dark_mode_btn:hover {
+  cursor: pointer;
+  -webkit-filter: saturate(2.5);
+  filter: saturate(2.5);
+}
+
 .icon_circle {
   background-color: rgba(1, 1, 1, 0.1);
   width: 30px;

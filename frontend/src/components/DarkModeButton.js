@@ -12,11 +12,11 @@ import common_styles from '../styles/common.module.css';
 
 function DarkModeButton({ darkModeEnabled = false }) {
   return (
-    <span className={common_styles.coursetable_logo}>
+    <span>
       <img
         src={darkModeEnabled ? sun : moon}
         alt="ChangeTheme"
-        className={common_styles.coursetable_logo_wordmark}
+        className={common_styles.dark_mode_btn}
       />
     </span>
   );
