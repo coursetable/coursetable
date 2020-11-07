@@ -1,9 +1,6 @@
 import React from 'react';
 
-import moon from '../images/darkmode.png';
-import sun from '../images/lightmode.png';
-
-import common_styles from '../styles/common.module.css';
+import { FaSun, FaRegMoon } from 'react-icons/fa';
 
 /**
  * DarkMode Button
@@ -13,11 +10,7 @@ import common_styles from '../styles/common.module.css';
 function DarkModeButton({ darkModeEnabled = false }) {
   return (
     <span>
-      <img
-        src={darkModeEnabled ? sun : moon}
-        alt="ChangeTheme"
-        className={common_styles.dark_mode_btn}
-      />
+      {darkModeEnabled ? <FaSun size={20} /> : <FaRegMoon size={20} />}
     </span>
   );
 }
