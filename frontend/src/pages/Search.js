@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
 
 import { GlobalHotKeys } from 'react-hotkeys';
 
@@ -36,7 +36,7 @@ import { useLazyQuery } from '@apollo/react-hooks';
 import Select from 'react-select';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
-import { useFerry } from '../components/FerryProvider';
+import { useCourseData, useFerry } from '../components/FerryProvider';
 
 import { debounce } from 'lodash';
 
@@ -162,11 +162,54 @@ function Search({ location, history }) {
     });
   }
 
+  const required_seasons = useMemo(() => {
+    if (select_seasons === null) {
+      return [];
+    }
+    if (select_seasons.length === 0) {
+      // Nothing selected, so default to all seasons.
+      return seasonsData.seasons.map((x) => x.season_code);
+    }
+    return select_seasons.map((x) => x.value);
+  }, [select_seasons, seasonsData]);
+
+  const { loading: coursesLoading, courses: courseData } = useCourseData(
+    required_seasons
+  );
+
   // handler for executing search with text
   var [
     executeSearch,
-    { called: searchCalled, loading: searchLoading, data: searchData },
+    { called: searchCalled, loading: searchLoading, data: searchKeys },
   ] = useLazyQuery(SEARCH_COURSES);
+
+  const searchData = useMemo(() => {
+    // Match search results with course data.
+    if (coursesLoading || searchLoading) return [];
+    if (!searchKeys || searchKeys.length === 0) return [];
+
+    return (
+      searchKeys.search_listing_info
+        .map(({ season_code, crn }) => {
+          const v = courseData[season_code][crn];
+          if (!v) {
+            console.log('[search] error resolving', season_code, crn);
+          }
+          return v;
+        })
+        .filter((x) => {
+          // Remove nulls if necessary; only needed when the static files are outdated but API is updated.
+          return x;
+        })
+        // Preprocess search data
+        .map((x) => {
+          return flatten(x);
+        })
+        .map((x) => {
+          return preprocess_courses(x);
+        })
+    );
+  }, [coursesLoading, courseData, searchLoading, searchKeys]);
 
   const handleChange = () => {
     if (!location.state) return;
@@ -216,7 +259,7 @@ function Search({ location, history }) {
       else console.error('unknown sort order - ', sortParams);
 
       // seasons to filter
-      var processedSeasons = select_seasons;
+      var processedSeasons = required_seasons;
 
       // whether or not multiple seasons are being returned
       const temp_multiSeasons = processedSeasons
@@ -225,14 +268,9 @@ function Search({ location, history }) {
       if (temp_multiSeasons !== multiSeasons)
         setMultiSeasons(temp_multiSeasons);
 
-      if (processedSeasons != null) {
-        processedSeasons = processedSeasons.map((x) => {
-          return x.value;
-        });
+      if (processedSeasons === null || processedSeasons.length === 0) {
         // set null defaults
-        if (processedSeasons.length === 0) {
-          processedSeasons = null;
-        }
+        processedSeasons = null;
       }
 
       // skills and areas
@@ -371,7 +409,7 @@ function Search({ location, history }) {
   // If the search query was called
   if (searchCalled) {
     // If the search query is still loading
-    if (searchLoading) {
+    if (searchLoading || coursesLoading) {
     } else if (searchData) {
       // Scroll down to catalog when search is complete for mobile view
       if (isMobile) {
@@ -380,13 +418,6 @@ function Search({ location, history }) {
           duration: 500,
         });
       }
-      // Preprocess search data
-      searchData = searchData.search_listing_info.map((x) => {
-        return flatten(x);
-      });
-      searchData = searchData.map((x) => {
-        return preprocess_courses(x);
-      });
     }
   }
 
@@ -807,10 +838,10 @@ function Search({ location, history }) {
         >
           <Element name="catalog">
             <SearchResults
-              data={searchData ? searchData : []}
+              data={searchData}
               isList={isList}
               setView={handleSetView}
-              loading={searchLoading}
+              loading={searchLoading || coursesLoading}
               multiSeasons={multiSeasons}
               searched={searched}
               showModal={showModal}

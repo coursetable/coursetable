@@ -52,36 +52,8 @@ export const SEARCH_COURSES = gql`
       limit: $limit
       offset: $offset
     ) {
-      listing_id
-      title
-      description
-      all_course_codes
-      professor_names
-      average_rating
-      average_workload
-      average_professor
-      times_summary
-      times_by_day
-      locations_summary
-      skills
-      areas
-      credits
-      course_code
-      school
-      requirements
       season_code
-      extra_info
-      syllabus_url
-      section
       crn
-      enrolled
-      last_enrollment
-      last_enrollment_same_professors
-      flag_info
-      regnotes
-      rp_attr
-      classnotes
-      final_exam
     }
   }
 `;
