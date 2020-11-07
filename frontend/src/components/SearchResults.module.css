@@ -1,6 +1,6 @@
 .results_container {
   border-radius: 8px;
-  background: white;
+  background: #fcfcfc;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
@@ -22,13 +22,13 @@
 
 .results_header_row {
   border: 0px !important;
-  background-color: white !important;
+  background-color: #f6f6f6 !important;
   border-radius: 8px 8px 0px 0px !important;
   user-select: none;
 }
 
 .results_header_inner {
-  background-color: white !important;
+  background-color: #f6f6f6 !important;
 }
 
 .results_header {
