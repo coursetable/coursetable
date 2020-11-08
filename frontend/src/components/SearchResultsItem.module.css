@@ -1,5 +1,5 @@
 .search_result_item {
-  background-color: #f6f6f6;
+  background-color: white;
   transition: 0.3s;
   user-select: none;
   overflow: hidden;
@@ -7,8 +7,8 @@
   font-size: 13px;
   line-height: 32px;
   height: 32px;
-  border-bottom: solid 1px #f0f0f0;
-  border-top: solid 1px #f0f0f0;
+  border-bottom: solid 1px #f6f6f6;
+  border-top: solid 1px #f6f6f6;
 }
 
 .last_search_result_item {
