@@ -58,7 +58,7 @@ function CourseTableNavbar({ isLoggedIn }) {
 
   // Checks user preferences for dark mode
   if (!window.localStorage.getItem('darkmode')) {
-    var temp =
+    let temp =
       window.matchMedia('(prefers-color-scheme)').media !== 'not all' &&
       window.matchMedia('(prefers-color-scheme: dark)').matches;
     window.localStorage.setItem('darkmode', temp ? 'dark' : 'light');
@@ -73,8 +73,8 @@ function CourseTableNavbar({ isLoggedIn }) {
     if (darkModeEnabled)
       enableDarkMode({
         brightness: 100,
-        contrast: 90,
-        sepia: 10,
+        contrast: 100,
+        sepia: 5,
       });
     else disableDarkMode();
   }, [darkModeEnabled]);

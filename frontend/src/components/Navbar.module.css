@@ -35,12 +35,12 @@ nav > .nav_brand {
 
 .navbar_dark_mode_btn {
   padding: 0.5rem 1rem 0.5rem 0rem !important;
+  transition: 0.33s ease-out;
 }
 
 .navbar_dark_mode_btn:hover {
   cursor: pointer;
-  -webkit-filter: saturate(2.5);
-  filter: saturate(2.5);
+  color: rgb(51, 162, 255);
 }
 
 .icon_circle {
