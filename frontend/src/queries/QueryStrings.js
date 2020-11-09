@@ -13,6 +13,7 @@ export const GET_SEASON_CODES = gql`
   }
 `;
 
+// TODO: remove this
 export const SEARCH_COURSES = gql`
   query SearchCourses(
     $search_text: String

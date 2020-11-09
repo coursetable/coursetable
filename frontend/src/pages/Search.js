@@ -38,7 +38,7 @@ import Select from 'react-select';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 
-import { debounce } from 'lodash';
+import { debounce, set } from 'lodash';
 
 import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -177,29 +177,101 @@ function Search({ location, history }) {
     required_seasons
   );
 
-  // handler for executing search with text
-  var [
-    executeSearch,
-    { called: searchCalled, loading: searchLoading, data: searchKeys },
-  ] = useLazyQuery(SEARCH_COURSES);
+  const searchCalled = true;
+  const searchLoading = false;
+  const [searchConfig, setSearchConfig] = useState({});
 
   const searchData = useMemo(() => {
     // Match search results with course data.
-    if (coursesLoading || searchLoading) return [];
-    if (!searchKeys || searchKeys.length === 0) return [];
+    if (coursesLoading) return [];
+    if (Object.keys(searchConfig).length === 0) return [];
 
     return (
-      searchKeys.search_listing_info
-        .map(({ season_code, crn }) => {
-          const v = courseData[season_code][crn];
-          if (!v) {
-            console.log('[search] error resolving', season_code, crn);
+      []
+        .concat(
+          ...required_seasons.map((season_code) =>
+            Object.values(courseData[season_code])
+          )
+        )
+        .filter((listing) => {
+          // Apply filters.
+          /*
+          const search_variables = {
+            search_text: searchText.value,
+            ordering: ordering,
+          };
+          */
+          // TODO: search_text
+          // TODO: ordering
+
+          if (
+            searchConfig.min_rating !== null &&
+            searchConfig.max_rating !== null &&
+            (listing.average_rating === null ||
+              listing.average_rating < searchConfig.min_rating ||
+              listing.average_rating > searchConfig.max_rating)
+          ) {
+            console.log('removing b/c of rating');
+            return false;
           }
-          return v;
-        })
-        .filter((x) => {
-          // Remove nulls if necessary; only needed when the static files are outdated but API is updated.
-          return x;
+
+          if (
+            searchConfig.min_workload !== null &&
+            searchConfig.max_workload !== null &&
+            (listing.average_workload === null ||
+              listing.average_workload < searchConfig.min_workload ||
+              listing.average_workload > searchConfig.max_workload)
+          ) {
+            console.log('removing b/c of workload');
+            return false;
+          }
+
+          if (
+            searchConfig.extra_info !== null &&
+            searchConfig.extra_info !== listing.extra_info
+          ) {
+            console.log('removing b/c of extra_info');
+            return false;
+          }
+
+          if (
+            searchConfig.fy_sem !== null &&
+            searchConfig.fy_sem !== listing.fysem
+          ) {
+            console.log('removing b/c of fysem');
+            return false;
+          }
+
+          if (
+            searchConfig.subjects.size !== 0 &&
+            !searchConfig.subjects.has(listing.subject)
+          ) {
+            return false;
+          }
+
+          if (
+            (searchConfig.areas.size !== 0 || searchConfig.skills.size !== 0) &&
+            !listing.areas.some((v) => searchConfig.areas.has(v)) &&
+            !listing.skills.some((v) => searchConfig.skills.has(v))
+          ) {
+            return false;
+          }
+
+          if (
+            searchConfig.credits.size !== 0 &&
+            !searchConfig.credits.has(listing.credits)
+          ) {
+            return false;
+          }
+
+          if (
+            searchConfig.schools.size !== 0 &&
+            !searchConfig.schools.has(listing.school)
+          ) {
+            return false;
+          }
+
+          return true;
         })
         // Preprocess search data
         .map((x) => {
@@ -209,7 +281,7 @@ function Search({ location, history }) {
           return preprocess_courses(x);
         })
     );
-  }, [coursesLoading, courseData, searchLoading, searchKeys]);
+  }, [coursesLoading, courseData, searchConfig]);
 
   const handleChange = () => {
     if (!location.state) return;
@@ -365,12 +437,12 @@ function Search({ location, history }) {
       const search_variables = {
         search_text: searchText.value,
         ordering: ordering,
-        seasons: processedSeasons,
-        areas: processedAreas,
-        skills: processedSkills,
-        credits: processedCredits,
-        schools: processedSchools,
-        subjects: processedSubjects,
+        seasons: new Set(processedSeasons),
+        areas: new Set(processedAreas),
+        skills: new Set(processedSkills),
+        credits: new Set(processedCredits),
+        schools: new Set(processedSchools),
+        subjects: new Set(processedSubjects),
         min_rating: include_all_ratings ? null : ratingBounds[0],
         max_rating: include_all_ratings ? null : ratingBounds[1],
         min_workload: include_all_workloads ? null : workloadBounds[0],
@@ -386,9 +458,7 @@ function Search({ location, history }) {
       });
 
       // Execute search query
-      executeSearch({
-        variables: search_variables,
-      });
+      setSearchConfig(search_variables);
     }
     // [
     //   executeSearch,
