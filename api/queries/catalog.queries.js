@@ -30,6 +30,8 @@ export const catalogBySeasonQuery = gql`
       areas
       credits
       course_code
+      subject
+      number
       school
       requirements
       season_code

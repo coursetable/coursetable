@@ -31,14 +31,12 @@ import {
   subjectOptions,
 } from '../queries/Constants';
 
-import { useLazyQuery } from '@apollo/react-hooks';
-
 import Select from 'react-select';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 
-import { debounce, set } from 'lodash';
+import { debounce } from 'lodash';
 
 import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -186,93 +184,98 @@ function Search({ location, history }) {
     if (coursesLoading) return [];
     if (Object.keys(searchConfig).length === 0) return [];
 
-    return (
-      []
-        .concat(
-          ...required_seasons.map((season_code) =>
-            Object.values(courseData[season_code])
-          )
+    const filtered = []
+      .concat(
+        ...required_seasons.map((season_code) =>
+          Object.values(courseData[season_code])
         )
-        .filter((listing) => {
-          // Apply filters.
-          /*
-          const search_variables = {
-            search_text: searchText.value,
-            ordering: ordering,
-          };
-          */
-          // TODO: search_text
-          // TODO: ordering
+      )
+      .filter((listing) => {
+        // Apply filters.
+        // TODO: search_text
+        // TODO: ordering
 
-          if (
-            searchConfig.min_rating !== null &&
-            searchConfig.max_rating !== null &&
-            (listing.average_rating === null ||
-              listing.average_rating < searchConfig.min_rating ||
-              listing.average_rating > searchConfig.max_rating)
-          ) {
-            console.log('removing b/c of rating');
-            return false;
-          }
+        if (
+          searchConfig.min_rating !== null &&
+          searchConfig.max_rating !== null &&
+          (listing.average_rating === null ||
+            listing.average_rating < searchConfig.min_rating ||
+            listing.average_rating > searchConfig.max_rating)
+        ) {
+          return false;
+        }
 
-          if (
-            searchConfig.min_workload !== null &&
-            searchConfig.max_workload !== null &&
-            (listing.average_workload === null ||
-              listing.average_workload < searchConfig.min_workload ||
-              listing.average_workload > searchConfig.max_workload)
-          ) {
-            console.log('removing b/c of workload');
-            return false;
-          }
+        if (
+          searchConfig.min_workload !== null &&
+          searchConfig.max_workload !== null &&
+          (listing.average_workload === null ||
+            listing.average_workload < searchConfig.min_workload ||
+            listing.average_workload > searchConfig.max_workload)
+        ) {
+          return false;
+        }
 
-          if (
-            searchConfig.extra_info !== null &&
-            searchConfig.extra_info !== listing.extra_info
-          ) {
-            console.log('removing b/c of extra_info');
-            return false;
-          }
+        if (
+          searchConfig.extra_info !== null &&
+          searchConfig.extra_info !== listing.extra_info
+        ) {
+          return false;
+        }
 
-          if (
-            searchConfig.fy_sem !== null &&
-            searchConfig.fy_sem !== listing.fysem
-          ) {
-            console.log('removing b/c of fysem');
-            return false;
-          }
+        if (
+          searchConfig.fy_sem !== null &&
+          searchConfig.fy_sem !== listing.fysem
+        ) {
+          return false;
+        }
 
-          if (
-            searchConfig.subjects.size !== 0 &&
-            !searchConfig.subjects.has(listing.subject)
-          ) {
-            return false;
-          }
+        if (
+          searchConfig.subjects.size !== 0 &&
+          !searchConfig.subjects.has(listing.subject)
+        ) {
+          return false;
+        }
 
-          if (
-            (searchConfig.areas.size !== 0 || searchConfig.skills.size !== 0) &&
-            !listing.areas.some((v) => searchConfig.areas.has(v)) &&
-            !listing.skills.some((v) => searchConfig.skills.has(v))
-          ) {
-            return false;
-          }
+        if (
+          (searchConfig.areas.size !== 0 || searchConfig.skills.size !== 0) &&
+          !listing.areas.some((v) => searchConfig.areas.has(v)) &&
+          !listing.skills.some((v) => searchConfig.skills.has(v))
+        ) {
+          return false;
+        }
 
-          if (
-            searchConfig.credits.size !== 0 &&
-            !searchConfig.credits.has(listing.credits)
-          ) {
-            return false;
-          }
+        if (
+          searchConfig.credits.size !== 0 &&
+          !searchConfig.credits.has(listing.credits)
+        ) {
+          return false;
+        }
 
-          if (
-            searchConfig.schools.size !== 0 &&
-            !searchConfig.schools.has(listing.school)
-          ) {
-            return false;
-          }
+        if (
+          searchConfig.schools.size !== 0 &&
+          !searchConfig.schools.has(listing.school)
+        ) {
+          return false;
+        }
 
-          return true;
-        })
+        // TODO: apply search text filter
+
+        return true;
+      });
+
+    // Apply sorting order.
+    filtered.sort((a, b) => {
+      const key = Object.keys(searchConfig.ordering)[0];
+      const item_a = a[key];
+      const item_b = b[key];
+      const order_asc = searchConfig.ordering[key].startsWith('asc');
+
+      const res = (item_a > item_b) - (item_a < item_b);
+      return order_asc ? res : -res;
+    });
+
+    return (
+      filtered
         // Preprocess search data
         .map((x) => {
           return flatten(x);
@@ -315,7 +318,7 @@ function Search({ location, history }) {
       var sortParams = select_sortby.value;
       var ordering = null;
       if (sortParams === 'course_code') {
-        if (sort_order === 'desc') ordering = { course_code: 'desc' };
+        ordering = { course_code: sort_order };
       } else if (sortParams === 'course_title')
         ordering = { title: sort_order };
       else if (sortParams === 'course_number')
