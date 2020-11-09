@@ -121,6 +121,7 @@ function Search({ location, history }) {
   const [multiSeasons, setMultiSeasons] = useState(false);
 
   //State used to rebuild form DOM to reset it
+  // TODO: get rid of this
   const [form_key, setFormKey] = useState(0);
 
   // way to display results
@@ -476,6 +477,7 @@ function Search({ location, history }) {
     if (searchLoading || coursesLoading) {
     } else if (searchData) {
       // Scroll down to catalog when search is complete for mobile view
+      // TODO: this is called too frequently
       if (isMobile) {
         scroller.scrollTo('catalog', {
           smooth: true,
