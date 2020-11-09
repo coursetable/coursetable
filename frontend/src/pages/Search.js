@@ -36,7 +36,7 @@ import Select from 'react-select';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 
-import { debounce } from 'lodash';
+import { debounce, orderBy } from 'lodash';
 
 import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -184,17 +184,14 @@ function Search({ location, history }) {
     if (coursesLoading) return [];
     if (Object.keys(searchConfig).length === 0) return [];
 
-    const filtered = []
+    let filtered = []
       .concat(
-        ...required_seasons.map((season_code) =>
-          Object.values(courseData[season_code])
-        )
+        ...required_seasons.map((season_code) => [
+          ...courseData[season_code].values(),
+        ])
       )
       .filter((listing) => {
         // Apply filters.
-        // TODO: search_text
-        // TODO: ordering
-
         if (
           searchConfig.min_rating !== null &&
           searchConfig.max_rating !== null &&
@@ -264,15 +261,19 @@ function Search({ location, history }) {
       });
 
     // Apply sorting order.
-    filtered.sort((a, b) => {
-      const key = Object.keys(searchConfig.ordering)[0];
-      const item_a = a[key];
-      const item_b = b[key];
-      const order_asc = searchConfig.ordering[key].startsWith('asc');
-
-      const res = (item_a > item_b) - (item_a < item_b);
-      return order_asc ? res : -res;
-    });
+    // Force anything that is null to the bottom.
+    // In case of ties, we fallback to the course code.
+    const key = Object.keys(searchConfig.ordering)[0];
+    const order_asc = searchConfig.ordering[key].startsWith('asc');
+    filtered = orderBy(
+      filtered,
+      [
+        (listing) => !!listing[key],
+        (listing) => listing[key],
+        (listing) => listing.course_code,
+      ],
+      ['desc', order_asc ? 'asc' : 'desc', 'asc']
+    );
 
     return (
       filtered
@@ -427,14 +428,6 @@ function Search({ location, history }) {
 
       var include_all_workloads =
         workloadBounds[0] === 1 && workloadBounds[1] === 5;
-
-      // override when we want to sort
-      if (ordering && ordering.average_rating) {
-        include_all_ratings = false;
-      }
-      if (ordering && ordering.average_workload) {
-        include_all_workloads = false;
-      }
 
       // Variables to use in search query
       const search_variables = {

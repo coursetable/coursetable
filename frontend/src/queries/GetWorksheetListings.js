@@ -22,10 +22,10 @@ export const useWorksheetInfo = (worksheet) => {
     // Resolve the worksheet items.
     for (let i = 0; i < worksheet.length; i++) {
       const season_code = worksheet[i][0];
-      const crn = worksheet[i][1];
+      const crn = parseInt(worksheet[i][1], 10);
 
       if (courses && season_code in courses) {
-        data.push(courses[season_code][crn]);
+        data.push(courses[season_code].get(crn));
       }
     }
 

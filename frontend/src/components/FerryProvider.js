@@ -29,9 +29,9 @@ const addToCache = (season) => {
     return axios.get(`/api/static/catalogs/${season}.json`).then((res) => {
       // Convert season list into a crn lookup table.
       const data = res.data;
-      const info = {};
+      const info = new Map();
       for (const item of data) {
-        info[item.crn] = item;
+        info.set(item.crn, item);
       }
 
       // Save in global cache. Here we force the creation of a new object.
