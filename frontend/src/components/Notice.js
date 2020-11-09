@@ -14,7 +14,7 @@ function Notice({ children }) {
       <div className={styles.content}>
         <div className={styles.content_inner}>{children}</div>
       </div>
-      <span onClick={() => setVisible(false)}>
+      <span className={styles.close_button} onClick={() => setVisible(false)}>
         <FaTimes style={{ display: 'block' }} />
       </span>
     </div>

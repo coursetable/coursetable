@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
+import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 // import Searchbar from '../components/Searchbar';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
@@ -10,6 +11,12 @@ import { useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import posthog from 'posthog-js';
+
+import {
+  setFetchMethod,
+  enable as enableDarkMode,
+  disable as disableDarkMode,
+} from 'darkreader';
 
 /**
  * Renders the navbar
@@ -46,6 +53,32 @@ function CourseTableNavbar({ isLoggedIn }) {
     window.location.pathname = '/';
   };
 
+  // DarkMode or LightMode
+  setFetchMethod(window.fetch);
+
+  // Checks user preferences for dark mode
+  if (!window.localStorage.getItem('darkmode')) {
+    let temp =
+      window.matchMedia('(prefers-color-scheme)').media !== 'not all' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
+    window.localStorage.setItem('darkmode', temp ? 'dark' : 'light');
+  }
+
+  const [darkModeEnabled, setDarkModeEnabled] = useState(
+    window.localStorage.getItem('darkmode') === 'dark'
+  );
+
+  // Updates current theme appropriately
+  useEffect(() => {
+    if (darkModeEnabled)
+      enableDarkMode({
+        brightness: 100,
+        contrast: 100,
+        sepia: 5,
+      });
+    else disableDarkMode();
+  }, [darkModeEnabled]);
+
   return (
     <div>
       <div className={`shadow-sm ${styles.navbar}`}>
@@ -69,7 +102,7 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo icon={false} />
+                  <Logo icon={false} useWordmarkDark={darkModeEnabled} />
                 </span>
               </NavLink>
             </Nav>
@@ -117,6 +150,21 @@ function CourseTableNavbar({ isLoggedIn }) {
                 >
                   FAQ
                 </NavLink>
+
+                {/* DarkMode Button */}
+                <div
+                  className={styles.navbar_dark_mode_btn}
+                  onClick={() => {
+                    window.localStorage.setItem(
+                      'darkmode',
+                      !darkModeEnabled ? 'dark' : 'light'
+                    );
+                    setDarkModeEnabled(!darkModeEnabled);
+                  }}
+                >
+                  <DarkModeButton darkModeEnabled={darkModeEnabled} />
+                </div>
+
                 {/* Catalog Page */}
                 <NavLink
                   to="/catalog"
