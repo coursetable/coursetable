@@ -17,8 +17,6 @@ import {
   Button,
 } from 'react-bootstrap';
 
-import { SEARCH_COURSES } from '../queries/QueryStrings';
-
 import {
   sortbyOptions,
   areas,
@@ -275,17 +273,17 @@ function Search({ location, history }) {
       ['desc', order_asc ? 'asc' : 'desc', 'asc']
     );
 
-    return (
-      filtered
-        // Preprocess search data
-        .map((x) => {
-          return flatten(x);
-        })
-        .map((x) => {
-          return preprocess_courses(x);
-        })
-    );
-  }, [coursesLoading, courseData, searchConfig]);
+    filtered = filtered
+      // Preprocess search data
+      .map((x) => {
+        return flatten(x);
+      })
+      .map((x) => {
+        return preprocess_courses(x);
+      });
+
+    return filtered;
+  }, [required_seasons, coursesLoading, courseData, searchConfig]);
 
   const handleChange = () => {
     if (!location.state) return;

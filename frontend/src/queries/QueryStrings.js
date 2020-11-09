@@ -13,52 +13,6 @@ export const GET_SEASON_CODES = gql`
   }
 `;
 
-// TODO: remove this
-export const SEARCH_COURSES = gql`
-  query SearchCourses(
-    $search_text: String
-    $ordering: [computed_listing_info_order_by!]
-    $offset: Int
-    $limit: Int
-    $seasons: [String!]
-    $schools: [String!]
-    $subjects: [String!]
-    $areas: [String!]
-    $credits: [float8!]
-    $skills: [String!]
-    $min_rating: float8
-    $max_rating: float8
-    $min_workload: float8
-    $max_workload: float8
-    $extra_info: String
-    $fy_sem: Boolean
-  ) {
-    search_listing_info(
-      args: { query: $search_text }
-      where: {
-        season_code: { _in: $seasons }
-        _or: {
-          areas: { _has_keys_any: $areas }
-          skills: { _has_keys_any: $skills }
-        }
-        average_rating: { _gte: $min_rating, _lte: $max_rating }
-        average_workload: { _gte: $min_workload, _lte: $max_workload }
-        credits: { _in: $credits }
-        school: { _in: $schools }
-        subject: { _in: $subjects }
-        extra_info: { _eq: $extra_info }
-        fysem: { _eq: $fy_sem }
-      }
-      order_by: $ordering
-      limit: $limit
-      offset: $offset
-    ) {
-      season_code
-      crn
-    }
-  }
-`;
-
 export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
   query SearchAverageAcrossSeasons(
     $course_code: String
