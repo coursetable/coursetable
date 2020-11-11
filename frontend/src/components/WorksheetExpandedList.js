@@ -21,6 +21,7 @@ import { FaCompressAlt } from 'react-icons/fa';
  * @prop onSeasonChange - function to change season
  * @prop setFbPerson - function to change FB person
  * @prop fb_person - string of current person who's worksheet we are viewing
+ * @prop setCurExpand - function to minimize the expanded list view
  */
 
 const WorksheetExpandedList = ({
