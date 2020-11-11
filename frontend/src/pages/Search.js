@@ -448,7 +448,7 @@ function Search({ location, history }) {
   var searchCol = React.useRef();
   useEffect(() => {
     var searchColHeight = searchCol.clientHeight;
-    setTooTall(searchColHeight > height);
+    setTooTall(searchColHeight > height - 56);
   }, [setTooTall, height]);
 
   // perform default search on load

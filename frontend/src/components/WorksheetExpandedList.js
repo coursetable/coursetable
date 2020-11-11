@@ -6,8 +6,10 @@ import SeasonReactSelect from './SeasonReactSelect';
 // import { useEffect, useState, useRef, useMemo } from 'react';
 import styles from './WorksheetExpandedList.module.css';
 import select_styles from './WorksheetRowDropdown.module.css';
+import worksheet_styles from '../pages/Worksheet.module.css';
 import { Col, Row } from 'react-bootstrap';
 import { useUser } from '../user';
+import { FaCompressAlt } from 'react-icons/fa';
 
 /**
  * Render expanded worksheet list after maximize button is clicked
@@ -30,25 +32,13 @@ const WorksheetExpandedList = ({
   onSeasonChange,
   setFbPerson,
   fb_person,
+  setCurExpand,
 }) => {
   const { user } = useUser();
   const [isList, setView] = useState(true);
   return (
     <div className={styles.container}>
       <Row className="mx-auto">
-        {/* Worksheet courses in search results format */}
-        <Col md={10} className="pl-0 pr-3">
-          <div className={styles.search_results}>
-            <SearchResults
-              data={courses}
-              showModal={showModal}
-              expanded={cur_expand === 'list'}
-              isLoggedIn={true}
-              isList={isList}
-              setView={setView}
-            />
-          </div>
-        </Col>
         {/* Season and FB friends dropdown */}
         <Col md={2} className="p-0">
           <div className={styles.select_col + ' p-2'}>
@@ -81,6 +71,27 @@ const WorksheetExpandedList = ({
                 />
               </div>
             </Row>
+            <FaCompressAlt
+              className={worksheet_styles.expand_btn + ' ' + styles.top_left}
+              size={18}
+              onClick={() => {
+                // Compress list
+                setCurExpand('none');
+              }}
+            />
+          </div>
+        </Col>
+        {/* Worksheet courses in search results format */}
+        <Col md={10} className="pr-0 pl-3">
+          <div className={styles.search_results}>
+            <SearchResults
+              data={courses}
+              showModal={showModal}
+              expanded={cur_expand === 'list'}
+              isLoggedIn={true}
+              isList={isList}
+              setView={setView}
+            />
           </div>
         </Col>
       </Row>

@@ -176,7 +176,7 @@ export const scrollToTop = (event) => {
     event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
 
   if (!newPage) {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, left: 0 });
   }
 };
 

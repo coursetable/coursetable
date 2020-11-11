@@ -2,6 +2,12 @@
   background: white;
 }
 
+.sticky_navbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
 nav > .nav_brand {
   padding-top: 0;
   padding-bottom: 0;

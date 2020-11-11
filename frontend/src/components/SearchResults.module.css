@@ -16,8 +16,8 @@
 
 .sticky_header {
   position: sticky !important;
-  top: 0 !important;
-  z-index: 100;
+  top: 56px !important;
+  z-index: 1;
 }
 
 .results_header_row {

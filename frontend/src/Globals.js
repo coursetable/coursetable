@@ -64,7 +64,9 @@ function Globals({ children }) {
             <SeasonsProvider>
               <Router>
                 <SPAPageChangeListener />
-                <div id="base">{children}</div>
+                <div id="base" style={{ height: 'auto' }}>
+                  {children}
+                </div>
               </Router>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
               <ToastContainer />

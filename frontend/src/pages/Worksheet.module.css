@@ -40,7 +40,7 @@
 .expand_btn {
   position: absolute;
   top: 0%;
-  z-index: 1000;
+  z-index: 2;
   color: rgb(179, 179, 179);
   padding: 3px;
   background-color: rgb(238, 238, 238);
