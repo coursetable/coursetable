@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 
 import { GlobalHotKeys } from 'react-hotkeys';
 
@@ -75,9 +81,8 @@ function Search({ location, history }) {
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
-  var searchText = React.useRef(
-    location && location.state ? location.state.search_val : null
-  );
+  const searchTextInput = useRef(null);
+  const [searchText, setSearchText] = useState('');
   // Is the search form  collapsed?
   const [collapsed_form, setCollapsedForm] = useState(false);
   // useEffect(() => {
@@ -292,7 +297,7 @@ function Search({ location, history }) {
 
       // Variables to use in search query
       const search_variables = {
-        search_text: searchText.value,
+        search_text: searchText,
         ordering: ordering,
         seasons: new Set(processedSeasons),
         areas: new Set(processedAreas),
@@ -463,16 +468,8 @@ function Search({ location, history }) {
     return filtered;
   }, [required_seasons, coursesLoading, courseData, searchConfig]);
 
-  const handleChange = () => {
-    if (!location.state) return;
-    // reset searchText
-    history.replace();
-  };
-
-  // resubmit search on view change
   const handleSetView = (isList) => {
     posthog.capture('catalog-view-toggle', { isList });
-
     setView(isList);
   };
 
@@ -499,9 +496,9 @@ function Search({ location, history }) {
 
   // ctrl/cmd-f search hotkey
   const focusSearch = (e) => {
-    if (e && searchText) {
+    if (e && searchTextInput) {
       e.preventDefault();
-      searchText.focus();
+      searchTextInput.focus();
     }
   };
   const keyMap = {
@@ -656,14 +653,10 @@ function Search({ location, history }) {
                   <InputGroup className={Styles.search_input}>
                     <FormControl
                       type="text"
-                      defaultValue={
-                        searchText.current !== ''
-                          ? searchText.current
-                          : undefined
-                      }
-                      onChange={handleChange}
+                      value={searchText}
+                      onChange={(event) => setSearchText(event.target.value)}
                       placeholder="Search by course code, title, or prof"
-                      ref={(ref) => (searchText = ref)}
+                      ref={searchTextInput}
                     />
                   </InputGroup>
                 </div>
