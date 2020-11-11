@@ -153,7 +153,7 @@ function CourseTableNavbar({ isLoggedIn }) {
 
                 {/* DarkMode Button */}
                 <div
-                  className={styles.navbar_dark_mode_btn}
+                  className={styles.navbar_dark_mode_btn + ' d-flex'}
                   onClick={() => {
                     window.localStorage.setItem(
                       'darkmode',

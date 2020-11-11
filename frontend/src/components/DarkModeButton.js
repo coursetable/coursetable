@@ -9,8 +9,12 @@ import { FaSun, FaRegMoon } from 'react-icons/fa';
 
 function DarkModeButton({ darkModeEnabled = false }) {
   return (
-    <span>
-      {darkModeEnabled ? <FaSun size={20} /> : <FaRegMoon size={20} />}
+    <span className="my-auto">
+      {darkModeEnabled ? (
+        <FaSun size={20} style={{ display: 'block' }} />
+      ) : (
+        <FaRegMoon size={20} style={{ display: 'block' }} />
+      )}
     </span>
   );
 }
