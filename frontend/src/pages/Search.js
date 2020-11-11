@@ -110,9 +110,6 @@ function Search({ location, history }) {
     setCourseModal([false, '']);
   };
 
-  // States involved in infinite scroll
-  const [searched, setSearched] = useState(false); // Reset row height cache on search
-
   // number of search results to return
   // const QUERY_SIZE = 30;
 
@@ -276,6 +273,7 @@ function Search({ location, history }) {
 
     filtered = filtered
       // Preprocess search data
+      // TODO: do this in ferry provider so it's only done once
       .map((x) => {
         return flatten(x);
       })
@@ -307,12 +305,8 @@ function Search({ location, history }) {
 
   // search form submit handler
   const handleSubmit = useCallback(
-    (event, search = false) => {
-      if (event && search) event.preventDefault();
-      if (search) {
-        //Reset states when making a new search
-        setSearched(true);
-      }
+    (event) => {
+      if (event) event.preventDefault();
 
       // sorting options
       var sortParams = select_sortby.value;
@@ -909,7 +903,6 @@ function Search({ location, history }) {
               setView={handleSetView}
               loading={searchLoading || coursesLoading}
               multiSeasons={multiSeasons}
-              searched={searched}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
               expanded={collapsed_form}

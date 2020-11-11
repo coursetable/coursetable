@@ -43,7 +43,6 @@ import { AiFillStar } from 'react-icons/ai';
  * @prop setView - function to change display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop searched - boolean | has the search started?
  * @prop isLoggedIn - boolean | is the user logged in?
  */
 
@@ -53,7 +52,6 @@ const SearchResults = ({
   setView,
   loading = false,
   multiSeasons = false,
-  searched = true,
   showModal,
   isLoggedIn,
   expanded,
@@ -491,10 +489,7 @@ const SearchResults = ({
           {/* If there are search results, render them */}
           {data.length !== 0 && resultsListing}
           {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
-          {data.length === 0 &&
-            (!isLoggedIn || searched) &&
-            !loading &&
-            resultsListing}
+          {data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
             <Row

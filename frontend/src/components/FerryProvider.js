@@ -83,6 +83,8 @@ export const FerryProvider = ({ children }) => {
         });
       });
       Promise.all(requests).catch((err) => {
+        // TODO: better handling of errors when not logged in
+        // TODO: better handling when evals not enabled
         toast.error('Failed to fetch course information');
         console.error(err);
         addError(err);
