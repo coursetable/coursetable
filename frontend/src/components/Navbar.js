@@ -7,7 +7,7 @@ import MeDropdown from './MeDropdown';
 // import Searchbar from '../components/Searchbar';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
-import { useComponentVisible } from '../utilities';
+import { scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import posthog from 'posthog-js';
@@ -80,15 +80,15 @@ function CourseTableNavbar({ isLoggedIn }) {
   }, [darkModeEnabled]);
 
   return (
-    <div>
-      <div className={`shadow-sm ${styles.navbar}`}>
-        <Container fluid>
+    <div className={styles.sticky_navbar}>
+      <div className={`${styles.navbar}`}>
+        <Container fluid className="p-0">
           <Navbar
             expanded={nav_expanded}
             onToggle={(expanded) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className={styles.navbar}
+            className={styles.navbar + ' shadow-sm px-3'}
           >
             {/* Logo in top left */}
             <Nav className={styles.nav_brand + ' navbar-brand py-2'}>
@@ -153,7 +153,7 @@ function CourseTableNavbar({ isLoggedIn }) {
 
                 {/* DarkMode Button */}
                 <div
-                  className={styles.navbar_dark_mode_btn}
+                  className={styles.navbar_dark_mode_btn + ' d-flex'}
                   onClick={() => {
                     window.localStorage.setItem(
                       'darkmode',
@@ -172,6 +172,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                   className={
                     styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
                   }
+                  onClick={scrollToTop}
                 >
                   Catalog
                 </NavLink>
@@ -182,6 +183,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                   className={
                     styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
                   }
+                  onClick={scrollToTop}
                 >
                   Worksheet
                 </NavLink>

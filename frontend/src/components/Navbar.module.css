@@ -2,6 +2,12 @@
   background: white;
 }
 
+.sticky_navbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
 nav > .nav_brand {
   padding-top: 0;
   padding-bottom: 0;
@@ -34,7 +40,7 @@ nav > .nav_brand {
 }
 
 .navbar_dark_mode_btn {
-  padding: 0.5rem 1rem 0.5rem 0rem !important;
+  padding-right: 1rem !important;
   transition: 0.33s ease-out;
 }
 

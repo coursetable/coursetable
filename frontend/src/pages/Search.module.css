@@ -17,8 +17,8 @@
 
 .sticky {
   position: sticky !important;
-  top: 0 !important;
-  z-index: 420;
+  top: 56px !important;
+  z-index: 1;
 }
 
 .search_container {
@@ -139,7 +139,6 @@
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
   background-color: rgb(198, 232, 255);
-  z-index: 2000;
 }
 
 .search_tab:hover {

@@ -378,6 +378,7 @@ function Search({ location, history }) {
         scroller.scrollTo('catalog', {
           smooth: true,
           duration: 500,
+          offset: -56,
         });
       }
       // Preprocess search data
@@ -448,7 +449,7 @@ function Search({ location, history }) {
   var searchCol = React.useRef();
   useEffect(() => {
     var searchColHeight = searchCol.clientHeight;
-    setTooTall(searchColHeight > height);
+    setTooTall(searchColHeight > height - 56);
   }, [setTooTall, height]);
 
   // perform default search on load
