@@ -173,7 +173,164 @@ function Search({ location, history }) {
 
   const searchCalled = true;
   const searchLoading = false;
-  const [searchConfig, setSearchConfig] = useState({});
+
+  const searchConfig = useMemo(
+    () => {
+      // sorting options
+      var sortParams = select_sortby.value;
+      var ordering = null;
+      if (sortParams === 'course_code') {
+        ordering = { course_code: sort_order };
+      } else if (sortParams === 'course_title')
+        ordering = { title: sort_order };
+      else if (sortParams === 'course_number')
+        ordering = { number: sort_order };
+      else if (sortParams === 'rating')
+        ordering = { average_rating: sort_order };
+      else if (sortParams === 'workload')
+        ordering = { average_workload: sort_order };
+      else if (sortParams === 'professor')
+        ordering = { average_professor: `${sort_order}_nulls_last` };
+      else if (sortParams === 'gut')
+        ordering = { average_gut_rating: `${sort_order}_nulls_last` };
+      else console.error('unknown sort order - ', sortParams);
+
+      // seasons to filter
+      var processedSeasons = required_seasons;
+
+      // whether or not multiple seasons are being returned
+      const temp_multiSeasons = processedSeasons
+        ? processedSeasons.length !== 1
+        : true;
+      if (temp_multiSeasons !== multiSeasons)
+        setMultiSeasons(temp_multiSeasons);
+
+      if (processedSeasons === null || processedSeasons.length === 0) {
+        // set null defaults
+        processedSeasons = null;
+      }
+
+      // skills and areas
+      var processedSkillsAreas = select_skillsareas;
+      if (processedSkillsAreas != null) {
+        processedSkillsAreas = processedSkillsAreas.map((x) => {
+          return x.value;
+        });
+
+        // match all languages
+        if (processedSkillsAreas.includes('L')) {
+          processedSkillsAreas = processedSkillsAreas.concat([
+            'L1',
+            'L2',
+            'L3',
+            'L4',
+            'L5',
+          ]);
+        }
+
+        // separate skills and areas
+        var processedSkills = processedSkillsAreas.filter((x) =>
+          skills.includes(x)
+        );
+        var processedAreas = processedSkillsAreas.filter((x) =>
+          areas.includes(x)
+        );
+
+        // set null defaults
+        if (processedSkills.length === 0) {
+          processedSkills = null;
+        }
+        if (processedAreas.length === 0) {
+          processedAreas = null;
+        }
+      }
+
+      // credits to filter
+      var processedCredits = select_credits;
+      if (processedCredits != null) {
+        processedCredits = processedCredits.map((x) => {
+          return x.value;
+        });
+        // set null defaults
+        if (processedCredits.length === 0) {
+          processedCredits = null;
+        }
+      }
+
+      // schools to filter
+      var processedSchools = select_schools;
+      if (processedSchools != null) {
+        processedSchools = processedSchools.map((x) => {
+          return x.value;
+        });
+
+        // set null defaults
+        if (processedSchools.length === 0) {
+          processedSchools = null;
+        }
+      }
+
+      // subject to filter
+      var processedSubjects = select_subjects;
+      if (processedSubjects != null) {
+        processedSubjects = processedSubjects.map((x) => {
+          return x.value;
+        });
+
+        // set null defaults
+        if (processedSubjects.length === 0) {
+          processedSubjects = null;
+        }
+      }
+
+      // if the bounds are unaltered, we need to set them to null
+      // to include unrated courses
+      var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+
+      var include_all_workloads =
+        workloadBounds[0] === 1 && workloadBounds[1] === 5;
+
+      // Variables to use in search query
+      const search_variables = {
+        search_text: searchText.value,
+        ordering: ordering,
+        seasons: new Set(processedSeasons),
+        areas: new Set(processedAreas),
+        skills: new Set(processedSkills),
+        credits: new Set(processedCredits),
+        schools: new Set(processedSchools),
+        subjects: new Set(processedSubjects),
+        min_rating: include_all_ratings ? null : ratingBounds[0],
+        max_rating: include_all_ratings ? null : ratingBounds[1],
+        min_workload: include_all_workloads ? null : workloadBounds[0],
+        max_workload: include_all_workloads ? null : workloadBounds[1],
+        extra_info: hideCancelled ? 'ACTIVE' : null,
+        fy_sem: hideFirstYearSeminars ? false : null,
+      };
+
+      // Track search
+      posthog.capture('search', {
+        ...search_variables,
+        search_text_clean: search_variables.search_text || '[none]',
+      });
+
+      return search_variables;
+    }
+    // [
+    //   executeSearch,
+    //   hideCancelled,
+    //   multiSeasons,
+    //   ratingBounds,
+    //   sort_order,
+    //   select_credits,
+    //   select_schools,
+    //   select_seasons,
+    //   select_skillsareas,
+    //   select_sortby.value,
+    //   select_subjects,
+    //   workloadBounds,
+    // ]
+  );
 
   const searchData = useMemo(() => {
     // Match search results with course data.
@@ -317,175 +474,12 @@ function Search({ location, history }) {
     posthog.capture('catalog-view-toggle', { isList });
 
     setView(isList);
-    handleSubmit(null, true);
   };
 
   const handleSortOrder = () => {
     if (sort_order === 'asc') setSortOrder('desc');
     else setSortOrder('asc');
   };
-
-  // search form submit handler
-  const handleSubmit = useCallback(
-    (event) => {
-      if (event) event.preventDefault();
-
-      // sorting options
-      var sortParams = select_sortby.value;
-      var ordering = null;
-      if (sortParams === 'course_code') {
-        ordering = { course_code: sort_order };
-      } else if (sortParams === 'course_title')
-        ordering = { title: sort_order };
-      else if (sortParams === 'course_number')
-        ordering = { number: sort_order };
-      else if (sortParams === 'rating')
-        ordering = { average_rating: sort_order };
-      else if (sortParams === 'workload')
-        ordering = { average_workload: sort_order };
-      else if (sortParams === 'professor')
-        ordering = { average_professor: `${sort_order}_nulls_last` };
-      else if (sortParams === 'gut')
-        ordering = { average_gut_rating: `${sort_order}_nulls_last` };
-      else console.error('unknown sort order - ', sortParams);
-
-      // seasons to filter
-      var processedSeasons = required_seasons;
-
-      // whether or not multiple seasons are being returned
-      const temp_multiSeasons = processedSeasons
-        ? processedSeasons.length !== 1
-        : true;
-      if (temp_multiSeasons !== multiSeasons)
-        setMultiSeasons(temp_multiSeasons);
-
-      if (processedSeasons === null || processedSeasons.length === 0) {
-        // set null defaults
-        processedSeasons = null;
-      }
-
-      // skills and areas
-      var processedSkillsAreas = select_skillsareas;
-      if (processedSkillsAreas != null) {
-        processedSkillsAreas = processedSkillsAreas.map((x) => {
-          return x.value;
-        });
-
-        // match all languages
-        if (processedSkillsAreas.includes('L')) {
-          processedSkillsAreas = processedSkillsAreas.concat([
-            'L1',
-            'L2',
-            'L3',
-            'L4',
-            'L5',
-          ]);
-        }
-
-        // separate skills and areas
-        var processedSkills = processedSkillsAreas.filter((x) =>
-          skills.includes(x)
-        );
-        var processedAreas = processedSkillsAreas.filter((x) =>
-          areas.includes(x)
-        );
-
-        // set null defaults
-        if (processedSkills.length === 0) {
-          processedSkills = null;
-        }
-        if (processedAreas.length === 0) {
-          processedAreas = null;
-        }
-      }
-
-      // credits to filter
-      var processedCredits = select_credits;
-      if (processedCredits != null) {
-        processedCredits = processedCredits.map((x) => {
-          return x.value;
-        });
-        // set null defaults
-        if (processedCredits.length === 0) {
-          processedCredits = null;
-        }
-      }
-
-      // schools to filter
-      var processedSchools = select_schools;
-      if (processedSchools != null) {
-        processedSchools = processedSchools.map((x) => {
-          return x.value;
-        });
-
-        // set null defaults
-        if (processedSchools.length === 0) {
-          processedSchools = null;
-        }
-      }
-
-      // subject to filter
-      var processedSubjects = select_subjects;
-      if (processedSubjects != null) {
-        processedSubjects = processedSubjects.map((x) => {
-          return x.value;
-        });
-
-        // set null defaults
-        if (processedSubjects.length === 0) {
-          processedSubjects = null;
-        }
-      }
-
-      // if the bounds are unaltered, we need to set them to null
-      // to include unrated courses
-      var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
-
-      var include_all_workloads =
-        workloadBounds[0] === 1 && workloadBounds[1] === 5;
-
-      // Variables to use in search query
-      const search_variables = {
-        search_text: searchText.value,
-        ordering: ordering,
-        seasons: new Set(processedSeasons),
-        areas: new Set(processedAreas),
-        skills: new Set(processedSkills),
-        credits: new Set(processedCredits),
-        schools: new Set(processedSchools),
-        subjects: new Set(processedSubjects),
-        min_rating: include_all_ratings ? null : ratingBounds[0],
-        max_rating: include_all_ratings ? null : ratingBounds[1],
-        min_workload: include_all_workloads ? null : workloadBounds[0],
-        max_workload: include_all_workloads ? null : workloadBounds[1],
-        extra_info: hideCancelled ? 'ACTIVE' : null,
-        fy_sem: hideFirstYearSeminars ? false : null,
-      };
-
-      // Track search
-      posthog.capture('search', {
-        ...search_variables,
-        search_text_clean: search_variables.search_text || '[none]',
-      });
-
-      // Execute search query
-      setSearchConfig(search_variables);
-    }
-    // [
-    //   executeSearch,
-    //   hideCancelled,
-    //   multiSeasons,
-    //   ratingBounds,
-    //   sort_order,
-    //   select_credits,
-    //   select_schools,
-    //   select_seasons,
-    //   select_skillsareas,
-    //   select_sortby.value,
-    //   select_subjects,
-    //   workloadBounds,
-    // ]
-  );
 
   // If the search query was called
   if (searchCalled) {
@@ -568,10 +562,9 @@ function Search({ location, history }) {
   useEffect(() => {
     // only execute after seasons have been loaded
     if (defaultSearch && seasonsOptions) {
-      handleSubmit(null, true);
       setDefaultSearch(false);
     }
-  }, [seasonsOptions, defaultSearch, handleSubmit]);
+  }, [seasonsOptions, defaultSearch]);
 
   // Switch to grid view if window width changes < 900
   useEffect(() => {
@@ -613,7 +606,9 @@ function Search({ location, history }) {
             <Form
               className={`px-0 ${Styles.search_container}`}
               onSubmit={(event) => {
-                handleSubmit(event, true);
+                // TODO this
+                console.log('[catalog search] form submission?');
+                event.preventDefault();
               }}
               ref={(ref) => {
                 searchCol = ref;
