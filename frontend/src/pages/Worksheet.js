@@ -250,7 +250,7 @@ function Worksheet() {
   const expand_btn_size = 18;
 
   return (
-    <div className={styles.container + ' m-3'}>
+    <div className={styles.container}>
       {/* Desktop View */}
       <div
         className={
@@ -259,7 +259,7 @@ function Worksheet() {
             : styles.expanded_list_container) + ' d-none d-md-block'
         }
       >
-        <Row className={'mx-auto'}>
+        <Row className={'m-3'}>
           {/* Calendar Component */}
           <Col
             // Width of componenet depends on if it is expanded or not

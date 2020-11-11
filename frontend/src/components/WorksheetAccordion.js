@@ -272,7 +272,7 @@ function WorksheetAccordion({
 
   return (
     <div className={styles.container}>
-      <Row className={styles.dropdowns + ' m-0'}>
+      <Row className={styles.dropdowns + ' mx-auto'}>
         {/* Season Dropdown */}
         <Col xs={6} className="m-0 p-0">
           <SeasonDropdown
