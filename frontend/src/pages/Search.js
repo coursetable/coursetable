@@ -176,171 +176,167 @@ function Search({ location, history }) {
     required_seasons
   );
 
+  // TODO remove these
   const searchCalled = true;
   const searchLoading = false;
 
-  const searchConfig = useMemo(
-    () => {
-      // sorting options
-      var sortParams = select_sortby.value;
-      var ordering = null;
-      if (sortParams === 'course_code') {
-        ordering = { course_code: sort_order };
-      } else if (sortParams === 'course_title')
-        ordering = { title: sort_order };
-      else if (sortParams === 'course_number')
-        ordering = { number: sort_order };
-      else if (sortParams === 'rating')
-        ordering = { average_rating: sort_order };
-      else if (sortParams === 'workload')
-        ordering = { average_workload: sort_order };
-      else if (sortParams === 'professor')
-        ordering = { average_professor: `${sort_order}_nulls_last` };
-      else if (sortParams === 'gut')
-        ordering = { average_gut_rating: `${sort_order}_nulls_last` };
-      else console.error('unknown sort order - ', sortParams);
+  const searchConfig = useMemo(() => {
+    // sorting options
+    let sortParams = select_sortby.value;
+    let ordering = null;
+    if (sortParams === 'course_code') {
+      ordering = { course_code: sort_order };
+    } else if (sortParams === 'course_title') ordering = { title: sort_order };
+    else if (sortParams === 'course_number') ordering = { number: sort_order };
+    else if (sortParams === 'rating') ordering = { average_rating: sort_order };
+    else if (sortParams === 'workload')
+      ordering = { average_workload: sort_order };
+    else if (sortParams === 'professor')
+      ordering = { average_professor: `${sort_order}_nulls_last` };
+    else if (sortParams === 'gut')
+      ordering = { average_gut_rating: `${sort_order}_nulls_last` };
+    else console.error('unknown sort order - ', sortParams);
 
-      // seasons to filter
-      var processedSeasons = required_seasons;
+    // seasons to filter
+    var processedSeasons = required_seasons;
 
-      // whether or not multiple seasons are being returned
-      const temp_multiSeasons = processedSeasons
-        ? processedSeasons.length !== 1
-        : true;
-      if (temp_multiSeasons !== multiSeasons)
-        setMultiSeasons(temp_multiSeasons);
+    // whether or not multiple seasons are being returned
+    const temp_multiSeasons = processedSeasons
+      ? processedSeasons.length !== 1
+      : true;
+    if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
 
-      if (processedSeasons === null || processedSeasons.length === 0) {
-        // set null defaults
-        processedSeasons = null;
-      }
+    if (processedSeasons === null || processedSeasons.length === 0) {
+      // set null defaults
+      processedSeasons = null;
+    }
 
-      // skills and areas
-      var processedSkillsAreas = select_skillsareas;
-      if (processedSkillsAreas != null) {
-        processedSkillsAreas = processedSkillsAreas.map((x) => {
-          return x.value;
-        });
-
-        // match all languages
-        if (processedSkillsAreas.includes('L')) {
-          processedSkillsAreas = processedSkillsAreas.concat([
-            'L1',
-            'L2',
-            'L3',
-            'L4',
-            'L5',
-          ]);
-        }
-
-        // separate skills and areas
-        var processedSkills = processedSkillsAreas.filter((x) =>
-          skills.includes(x)
-        );
-        var processedAreas = processedSkillsAreas.filter((x) =>
-          areas.includes(x)
-        );
-
-        // set null defaults
-        if (processedSkills.length === 0) {
-          processedSkills = null;
-        }
-        if (processedAreas.length === 0) {
-          processedAreas = null;
-        }
-      }
-
-      // credits to filter
-      var processedCredits = select_credits;
-      if (processedCredits != null) {
-        processedCredits = processedCredits.map((x) => {
-          return x.value;
-        });
-        // set null defaults
-        if (processedCredits.length === 0) {
-          processedCredits = null;
-        }
-      }
-
-      // schools to filter
-      var processedSchools = select_schools;
-      if (processedSchools != null) {
-        processedSchools = processedSchools.map((x) => {
-          return x.value;
-        });
-
-        // set null defaults
-        if (processedSchools.length === 0) {
-          processedSchools = null;
-        }
-      }
-
-      // subject to filter
-      var processedSubjects = select_subjects;
-      if (processedSubjects != null) {
-        processedSubjects = processedSubjects.map((x) => {
-          return x.value;
-        });
-
-        // set null defaults
-        if (processedSubjects.length === 0) {
-          processedSubjects = null;
-        }
-      }
-
-      // if the bounds are unaltered, we need to set them to null
-      // to include unrated courses
-      var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
-
-      var include_all_workloads =
-        workloadBounds[0] === 1 && workloadBounds[1] === 5;
-
-      // Variables to use in search query
-      const search_variables = {
-        search_text: searchText,
-        ordering: ordering,
-        seasons: new Set(processedSeasons),
-        areas: new Set(processedAreas),
-        skills: new Set(processedSkills),
-        credits: new Set(processedCredits),
-        schools: new Set(processedSchools),
-        subjects: new Set(processedSubjects),
-        min_rating: include_all_ratings ? null : ratingBounds[0],
-        max_rating: include_all_ratings ? null : ratingBounds[1],
-        min_workload: include_all_workloads ? null : workloadBounds[0],
-        max_workload: include_all_workloads ? null : workloadBounds[1],
-        extra_info: hideCancelled ? 'ACTIVE' : null,
-        fy_sem: hideFirstYearSeminars ? false : null,
-      };
-
-      // Track search
-      posthog.capture('search', {
-        ...search_variables,
-        search_text_clean: search_variables.search_text || '[none]',
+    // skills and areas
+    var processedSkillsAreas = select_skillsareas;
+    if (processedSkillsAreas != null) {
+      processedSkillsAreas = processedSkillsAreas.map((x) => {
+        return x.value;
       });
 
-      return search_variables;
+      // match all languages
+      if (processedSkillsAreas.includes('L')) {
+        processedSkillsAreas = processedSkillsAreas.concat([
+          'L1',
+          'L2',
+          'L3',
+          'L4',
+          'L5',
+        ]);
+      }
+
+      // separate skills and areas
+      var processedSkills = processedSkillsAreas.filter((x) =>
+        skills.includes(x)
+      );
+      var processedAreas = processedSkillsAreas.filter((x) =>
+        areas.includes(x)
+      );
+
+      // set null defaults
+      if (processedSkills.length === 0) {
+        processedSkills = null;
+      }
+      if (processedAreas.length === 0) {
+        processedAreas = null;
+      }
     }
-    // [
-    //   executeSearch,
-    //   hideCancelled,
-    //   multiSeasons,
-    //   ratingBounds,
-    //   sort_order,
-    //   select_credits,
-    //   select_schools,
-    //   select_seasons,
-    //   select_skillsareas,
-    //   select_sortby.value,
-    //   select_subjects,
-    //   workloadBounds,
-    // ]
-  );
+
+    // credits to filter
+    var processedCredits = select_credits;
+    if (processedCredits != null) {
+      processedCredits = processedCredits.map((x) => {
+        return x.value;
+      });
+      // set null defaults
+      if (processedCredits.length === 0) {
+        processedCredits = null;
+      }
+    }
+
+    // schools to filter
+    var processedSchools = select_schools;
+    if (processedSchools != null) {
+      processedSchools = processedSchools.map((x) => {
+        return x.value;
+      });
+
+      // set null defaults
+      if (processedSchools.length === 0) {
+        processedSchools = null;
+      }
+    }
+
+    // subject to filter
+    var processedSubjects = select_subjects;
+    if (processedSubjects != null) {
+      processedSubjects = processedSubjects.map((x) => {
+        return x.value;
+      });
+
+      // set null defaults
+      if (processedSubjects.length === 0) {
+        processedSubjects = null;
+      }
+    }
+
+    // if the bounds are unaltered, we need to set them to null
+    // to include unrated courses
+    var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+
+    var include_all_workloads =
+      workloadBounds[0] === 1 && workloadBounds[1] === 5;
+
+    // Variables to use in search query
+    const search_variables = {
+      search_text: searchText,
+      ordering: ordering,
+      seasons: new Set(processedSeasons),
+      areas: new Set(processedAreas),
+      skills: new Set(processedSkills),
+      credits: new Set(processedCredits),
+      schools: new Set(processedSchools),
+      subjects: new Set(processedSubjects),
+      min_rating: include_all_ratings ? null : ratingBounds[0],
+      max_rating: include_all_ratings ? null : ratingBounds[1],
+      min_workload: include_all_workloads ? null : workloadBounds[0],
+      max_workload: include_all_workloads ? null : workloadBounds[1],
+      extra_info: hideCancelled ? 'ACTIVE' : null,
+      fy_sem: hideFirstYearSeminars ? false : null,
+    };
+
+    // Track search
+    posthog.capture('search', {
+      ...search_variables,
+      search_text_clean: search_variables.search_text || '[none]',
+    });
+
+    return search_variables;
+  }, [
+    hideCancelled,
+    hideFirstYearSeminars,
+    multiSeasons,
+    ratingBounds,
+    sort_order,
+    select_credits,
+    select_schools,
+    required_seasons,
+    select_skillsareas,
+    select_sortby.value,
+    select_subjects,
+    workloadBounds,
+    searchText,
+  ]);
 
   const searchData = useMemo(() => {
     // Match search results with course data.
     if (coursesLoading) return [];
     if (Object.keys(searchConfig).length === 0) return [];
+    console.log('start search/filter');
 
     // Pre-processing for the search text.
     const tokens = (searchConfig.search_text || '')
@@ -465,6 +461,7 @@ function Search({ location, history }) {
         return preprocess_courses(x);
       });
 
+    console.log('end search/filter');
     return filtered;
   }, [required_seasons, coursesLoading, courseData, searchConfig]);
 
@@ -663,7 +660,7 @@ function Search({ location, history }) {
               </Row>
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`${Styles.selector_container}`}>
-                  {/* Sort By Multi-Select */}
+                  {/* Sort By Select */}
                   <Select
                     value={select_sortby}
                     options={sortbyOptions}
