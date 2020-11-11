@@ -180,6 +180,13 @@ function Search({ location, history }) {
     if (coursesLoading) return [];
     if (Object.keys(searchConfig).length === 0) return [];
 
+    // Pre-processing for the search text.
+    const tokens = (searchConfig.search_text || '')
+      .split(/\s+/)
+      .filter((x) => !!x)
+      .map((token) => token.toLowerCase());
+    console.log(tokens);
+
     let filtered = []
       .concat(
         ...required_seasons.map((season_code) => [
@@ -251,7 +258,22 @@ function Search({ location, history }) {
           return false;
         }
 
-        // TODO: apply search text filter
+        // Handle search text. Each token must match something.
+        // TODO: fuzzy matching?
+        // TODO: search across descriptions?
+        for (const token of tokens) {
+          if (
+            listing.subject.toLowerCase().startsWith(token) ||
+            listing.number.toLowerCase().startsWith(token) ||
+            listing.title.toLowerCase().includes(token) ||
+            listing.professor_names.some((professor) =>
+              professor.toLowerCase().includes(token)
+            )
+          )
+            continue;
+
+          return false;
+        }
 
         return true;
       });
