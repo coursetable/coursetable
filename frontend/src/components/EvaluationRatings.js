@@ -1,7 +1,13 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
-// import styles from './EvaluationRatings.module.css';
+import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
+import {
+  questions,
+  graph_labels,
+  graph_titles,
+  question_text,
+} from '../queries/Constants';
 
 /**
  * Displays Evaluation Graphs
@@ -31,46 +37,7 @@ const EvaluationRatings = ({ crn, info }) => {
     }
   });
 
-  // Each of the following lists will store the values for a specific question
-  const questions = [
-    'assessment',
-    'workload',
-    'major',
-    'engagement',
-    'organized',
-    'feedback',
-    'challenge',
-  ];
-  const graph_labels = {
-    assessment: ['poor', 'fair', 'good', 'very good', 'excellent'],
-    workload: ['much less', 'less', 'same', 'greater', 'much greater'],
-    engagement: ['very low', 'low', 'medium', 'high', 'very high'],
-    organized: [
-      'strongly disagree',
-      'disagree',
-      'neutral',
-      'agree',
-      'strongly agree',
-    ],
-    feedback: [
-      'strongly disagree',
-      'disagree',
-      'neutral',
-      'agree',
-      'strongly agree',
-    ],
-    challenge: ['much less', 'less', 'same', 'greater', 'much greater'],
-    major: [],
-  };
-  const graph_titles = {
-    assessment: 'Overall',
-    workload: 'Workload',
-    engagement: 'Engagement',
-    organized: 'Organization',
-    feedback: 'Feedback Clarity',
-    challenge: 'Intellectual Challenge',
-    major: 'Taking for Major?',
-  };
+  // Dictionary with ratings for each question
   let filtered_ratings = {
     assessment: [],
     workload: [],
@@ -88,8 +55,6 @@ const EvaluationRatings = ({ crn, info }) => {
     });
   });
 
-  console.log(filtered_ratings);
-
   let items = [];
   questions.forEach((question) => {
     if (filtered_ratings[question].length) {
@@ -97,6 +62,9 @@ const EvaluationRatings = ({ crn, info }) => {
         <div key={question}>
           <Row className="mx-auto mb-1 pl-1 justify-content-center">
             <strong>{graph_titles[question]}</strong>
+            <small className={styles.question_text + ' text-center text-muted'}>
+              {question_text[question]}
+            </small>
           </Row>
           <RatingsGraph
             ratings={filtered_ratings[question]}
