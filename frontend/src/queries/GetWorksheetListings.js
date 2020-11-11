@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useCourseData } from '../components/FerryProvider';
-import { flatten, preprocess_courses } from '../utilities';
 
 // Search query used in Worksheet.js and CourseConflictIcon.js
 export const useWorksheetInfo = (worksheet) => {
@@ -29,14 +28,7 @@ export const useWorksheetInfo = (worksheet) => {
       }
     }
 
-    const res = data
-      .map((x) => {
-        return flatten(x);
-      })
-      .map((x) => {
-        return preprocess_courses(x);
-      });
-    return res;
+    return data;
   }, [courses, worksheet]);
 
   return { loading, error, data };

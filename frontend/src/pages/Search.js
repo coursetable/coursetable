@@ -54,7 +54,6 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import { flatten, preprocess_courses } from '../utilities';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
 
@@ -451,16 +450,6 @@ function Search({ location, history }) {
       ['desc', order_asc ? 'asc' : 'desc', 'asc']
     );
 
-    filtered = filtered
-      // Preprocess search data
-      // TODO: do this in ferry provider so it's only done once
-      .map((x) => {
-        return flatten(x);
-      })
-      .map((x) => {
-        return preprocess_courses(x);
-      });
-
     console.log('end search/filter');
     return filtered;
   }, [required_seasons, coursesLoading, courseData, searchConfig]);
@@ -600,8 +589,7 @@ function Search({ location, history }) {
             <Form
               className={`px-0 ${Styles.search_container}`}
               onSubmit={(event) => {
-                // TODO this
-                console.log('[catalog search] form submission?');
+                // TODO: remove the search button
                 event.preventDefault();
               }}
               ref={(ref) => {

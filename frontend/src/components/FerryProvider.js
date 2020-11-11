@@ -12,6 +12,7 @@ import { useQuery } from '@apollo/react-hooks';
 import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
+import { flatten, preprocess_courses } from '../utilities';
 
 const FerryCtx = createContext(null);
 FerryCtx.displayName = 'FerryCtx';
@@ -30,8 +31,9 @@ const addToCache = (season) => {
       // Convert season list into a crn lookup table.
       const data = res.data;
       const info = new Map();
-      for (const item of data) {
-        info.set(item.crn, item);
+      for (const raw_listing of data) {
+        const listing = preprocess_courses(flatten(raw_listing));
+        info.set(listing.crn, listing);
       }
 
       // Save in global cache. Here we force the creation of a new object.
