@@ -171,9 +171,11 @@ function Search({ location, history }) {
     return select_seasons.map((x) => x.value);
   }, [select_seasons, seasonsData]);
 
-  const { loading: coursesLoading, courses: courseData } = useCourseData(
-    required_seasons
-  );
+  const {
+    loading: coursesLoading,
+    courses: courseData,
+    error: courseLoadError,
+  } = useCourseData(required_seasons);
 
   // TODO remove these
   const searchCalled = true;
@@ -319,7 +321,7 @@ function Search({ location, history }) {
 
   const searchData = useMemo(() => {
     // Match search results with course data.
-    if (coursesLoading) return [];
+    if (coursesLoading || courseLoadError) return [];
     if (Object.keys(searchConfig).length === 0) return [];
     console.log('start search/filter');
 
@@ -542,6 +544,7 @@ function Search({ location, history }) {
     if (width < 768 && isList === true) setView(false);
   }, [width, isList]);
 
+  // TODO: add state if courseLoadError is present
   return (
     <div className={Styles.search_base}>
       <GlobalHotKeys
