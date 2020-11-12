@@ -447,16 +447,21 @@ function Search({ location, history }) {
     else setSortOrder('asc');
   };
 
-  const scroll_to_results = useCallback(() => {
-    // Scroll down to catalog when in mobile view.
-    if (isMobile) {
-      scroller.scrollTo('catalog', {
-        smooth: true,
-        duration: 500,
-        offset: -56,
-      });
-    }
-  }, [isMobile]);
+  const scroll_to_results = useCallback(
+    (event) => {
+      if (event) event.preventDefault();
+
+      // Scroll down to catalog when in mobile view.
+      if (isMobile) {
+        scroller.scrollTo('catalog', {
+          smooth: true,
+          duration: 500,
+          offset: -56,
+        });
+      }
+    },
+    [isMobile]
+  );
 
   // Scroll to the bottom when courses finish loading on initial load.
   const [doneInitialScroll, setDoneInitialScroll] = useState(false);
@@ -575,11 +580,7 @@ function Search({ location, history }) {
             {/* Search Form */}
             <Form
               className={`px-0 ${Styles.search_container}`}
-              onSubmit={(event) => {
-                console.log('scrolling');
-                scroll_to_results();
-                event.preventDefault();
-              }}
+              onSubmit={scroll_to_results}
               ref={(ref) => {
                 searchCol = ref;
               }}
