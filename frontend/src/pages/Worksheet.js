@@ -322,6 +322,7 @@ function Worksheet() {
                   onSeasonChange={changeSeason}
                   setFbPerson={handleFBPersonChange}
                   fb_person={fb_person}
+                  setCurExpand={setCurExpand}
                 />
               </div>
             </Fade>
@@ -343,8 +344,8 @@ function Worksheet() {
             </Fade>
             {/* Expand/Compress Icons for list */}
 
-            <div style={{ zIndex: 420 }}>
-              {cur_expand === 'none' ? (
+            <div>
+              {cur_expand === 'none' && (
                 <FaExpandAlt
                   className={styles.expand_btn + ' ' + styles.top_left}
                   size={expand_btn_size}
@@ -352,16 +353,6 @@ function Worksheet() {
                     // Expand the list component
                     posthog.capture('worksheet-view-list');
                     setCurExpand('list');
-                  }}
-                />
-              ) : (
-                <FaCompressAlt
-                  className={styles.expand_btn + ' ' + styles.top_left}
-                  size={expand_btn_size}
-                  onClick={() => {
-                    // Compress the list component
-                    posthog.capture('worksheet-view-table');
-                    setCurExpand('none');
                   }}
                 />
               )}

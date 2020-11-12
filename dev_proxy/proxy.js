@@ -32,7 +32,7 @@ const authSoft = (req, _, next) => {
   axios
     .get(`${php_uri}/AuthStatus.php`, {
       headers: {
-        cookie: req.headers['cookie'],
+        cookie: req.headers['cookie'] || null,
       },
     })
     .then(({ data }) => {

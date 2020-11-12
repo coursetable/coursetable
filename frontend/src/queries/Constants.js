@@ -197,6 +197,58 @@ export const schoolOptions = [
   { label: 'Summer Session', value: 'SU' },
 ];
 
+export const questions = [
+  'assessment',
+  'workload',
+  'major',
+  'engagement',
+  'organized',
+  'feedback',
+  'challenge',
+];
+export const question_text = {
+  assessment: 'What is your overall assessment of this course?',
+  workload:
+    'Relative to other courses you have taken at Yale, the workload of this course was:',
+  major:
+    'Do you expect to use this class for credit toward your major, or toward a pre-professional program?',
+  engagement: 'Your level of engagement with the course was:',
+  organized: 'The course was well organized to facilitate student learning.',
+  feedback: 'I received clear feedback that improved my learning.',
+  challenge:
+    'Relative to other courses you have taken at Yale, the level of intellectual challenge of this course was:',
+};
+export const graph_labels = {
+  assessment: ['poor', 'fair', 'good', 'very good', 'excellent'],
+  workload: ['much less', 'less', 'same', 'greater', 'much greater'],
+  engagement: ['very low', 'low', 'medium', 'high', 'very high'],
+  organized: [
+    'strongly disagree',
+    'disagree',
+    'neutral',
+    'agree',
+    'strongly agree',
+  ],
+  feedback: [
+    'strongly disagree',
+    'disagree',
+    'neutral',
+    'agree',
+    'strongly agree',
+  ],
+  challenge: ['much less', 'less', 'same', 'greater', 'much greater'],
+  major: [],
+};
+export const graph_titles = {
+  assessment: 'Overall',
+  workload: 'Workload',
+  engagement: 'Engagement',
+  organized: 'Organization',
+  feedback: 'Feedback Clarity',
+  challenge: 'Intellectual Challenge',
+  major: 'Taking for Major?',
+};
+
 export const subjectOptions = [
   { value: 'ACCT', label: 'ACCT - Accounting' },
   { value: 'ADSC', label: 'ADSC - Administrative Sciences' },
