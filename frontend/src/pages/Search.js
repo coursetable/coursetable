@@ -471,7 +471,7 @@ function Search({ location, history }) {
   const focusSearch = (e) => {
     if (e && searchTextInput) {
       e.preventDefault();
-      searchTextInput.focus();
+      searchTextInput.current.focus();
     }
   };
   const keyMap = {
