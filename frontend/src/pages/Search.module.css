@@ -32,10 +32,11 @@
   width: 100%;
 }
 
+/* Make this look good in dark mode */
 .search_input input {
-  border: none;
+  /* border: none; */
   border-radius: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.05);
+  /* background-color: rgba(0, 0, 0, 0.05); */
 }
 
 .filter_title {
