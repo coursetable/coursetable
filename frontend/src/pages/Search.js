@@ -312,7 +312,6 @@ function Search({ location, history }) {
     // Match search results with course data.
     if (coursesLoading || courseLoadError) return [];
     if (Object.keys(searchConfig).length === 0) return [];
-    console.log('start search/filter');
 
     // Pre-processing for the search text.
     const tokens = (searchConfig.search_text || '')
@@ -427,7 +426,6 @@ function Search({ location, history }) {
       ['desc', order_asc ? 'asc' : 'desc', 'asc']
     );
 
-    console.log('end search/filter');
     return filtered;
   }, [
     required_seasons,
@@ -447,11 +445,8 @@ function Search({ location, history }) {
     else setSortOrder('asc');
   };
 
-  // If the search query is still loading
-  if (coursesLoading) {
-  } else if (searchData) {
-    // Scroll down to catalog when search is complete for mobile view
-    // TODO: this is called too frequently
+  const scroll_to_results = useCallback(() => {
+    // Scroll down to catalog when in mobile view.
     if (isMobile) {
       scroller.scrollTo('catalog', {
         smooth: true,
@@ -459,7 +454,16 @@ function Search({ location, history }) {
         offset: -56,
       });
     }
-  }
+  }, [isMobile]);
+
+  // Scroll to the bottom when courses finish loading on initial load.
+  const [doneInitialScroll, setDoneInitialScroll] = useState(false);
+  useEffect(() => {
+    if (!coursesLoading && !doneInitialScroll) {
+      scroll_to_results();
+      setDoneInitialScroll(true);
+    }
+  }, [coursesLoading, doneInitialScroll, scroll_to_results]);
 
   // ctrl/cmd-f search hotkey
   const focusSearch = (e) => {
@@ -569,7 +573,11 @@ function Search({ location, history }) {
             {/* Search Form */}
             <Form
               className={`px-0 ${Styles.search_container}`}
-              onSubmit={(event) => event.preventDefault()}
+              onSubmit={(event) => {
+                console.log('scrolling');
+                scroll_to_results();
+                event.preventDefault();
+              }}
               ref={(ref) => {
                 searchCol = ref;
               }}
