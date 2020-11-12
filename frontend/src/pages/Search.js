@@ -326,9 +326,7 @@ function Search({ location, history }) {
       .split(/\s+/)
       .filter((x) => !!x)
       .map((token) => token.toLowerCase());
-    console.log(tokens);
 
-    console.log('required seasons', required_seasons);
     let filtered = []
       .concat(
         ...required_seasons.map((season_code) => {
@@ -572,10 +570,7 @@ function Search({ location, history }) {
             {/* Search Form */}
             <Form
               className={`px-0 ${Styles.search_container}`}
-              onSubmit={(event) => {
-                // TODO: remove the search button
-                event.preventDefault();
-              }}
+              onSubmit={(event) => event.preventDefault()}
               ref={(ref) => {
                 searchCol = ref;
               }}
@@ -849,15 +844,6 @@ function Search({ location, history }) {
                     Hide first-year seminars
                   </Form.Check.Label>
                 </Form.Check>
-              </Row>
-              <Row className="mx-auto flex-row-reverse">
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  className={'pull-right ' + Styles.secondary_submit}
-                >
-                  Search courses
-                </Button>
               </Row>
             </Form>
           </div>

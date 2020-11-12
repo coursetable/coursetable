@@ -47,6 +47,7 @@ export const catalogBySeasonQuery = gql`
       rp_attr
       classnotes
       final_exam
+      fysem
     }
   }
 `;
