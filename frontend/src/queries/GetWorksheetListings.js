@@ -24,7 +24,12 @@ export const useWorksheetInfo = (worksheet) => {
       const crn = parseInt(worksheet[i][1], 10);
 
       if (courses && season_code in courses) {
-        data.push(courses[season_code].get(crn));
+        const course = courses[season_code].get(crn);
+        if (!course) {
+          console.warn('failed to resolve worksheet course', season_code, crn);
+        } else {
+          data.push(course);
+        }
       }
     }
 
