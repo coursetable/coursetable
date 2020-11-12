@@ -166,7 +166,7 @@ function Search({ location, history }) {
     }
     if (select_seasons.length === 0) {
       // Nothing selected, so default to all seasons.
-      return seasonsData.seasons.map((x) => x.season_code);
+      return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
     }
     return select_seasons.map((x) => x.value);
   }, [select_seasons, seasonsData]);
@@ -346,9 +346,10 @@ function Search({ location, history }) {
 
     let filtered = []
       .concat(
-        ...required_seasons.map((season_code) => [
-          ...courseData[season_code].values(),
-        ])
+        ...required_seasons.map((season_code) => {
+          if (!courseData[season_code]) return [];
+          return [...courseData[season_code].values()];
+        })
       )
       .filter((listing) => {
         // Apply filters.
@@ -702,7 +703,7 @@ function Search({ location, history }) {
                       isMulti
                       value={select_seasons}
                       options={seasonsOptions}
-                      placeholder="All"
+                      placeholder="Last 5 Years"
                       // prevent overlap with tooltips
                       styles={selectStyles}
                       menuPortalTarget={document.body}
