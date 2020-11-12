@@ -18,6 +18,7 @@ import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
+import CatalogLogin from './pages/CatalogLogin';
 
 import { useUser } from './user';
 import { Row, Spinner } from 'react-bootstrap';
@@ -99,13 +100,21 @@ function App() {
           path="/catalog"
           render={(props) => {
             const requires_challenge = isLoggedIn && !user.hasEvals;
-            return requires_challenge ? (
-              <Redirect push={true} to="/challenge" />
+            return isLoggedIn ? (
+              requires_challenge ? (
+                <Redirect push={true} to="/challenge" />
+              ) : (
+                <Search {...props} />
+              )
             ) : (
-              <Search {...props} />
+              <Redirect to="/cataloglogin" />
             );
           }}
         />
+
+        <MyRoute exact path="/cataloglogin">
+          {isLoggedIn ? <Redirect to="/catalog" /> : <CatalogLogin />}
+        </MyRoute>
 
         {/* Auth */}
         <MyRoute exact path="/login">
