@@ -97,13 +97,14 @@ function App() {
         <MyRoute
           exact
           path="/catalog"
-          render={(props) =>
-            user.isLoggedIn && !user.hasEvals ? (
+          render={(props) => {
+            const requires_challenge = isLoggedIn && !user.hasEvals;
+            return requires_challenge ? (
               <Redirect push={true} to="/challenge" />
             ) : (
               <Search {...props} />
-            )
-          }
+            );
+          }}
         />
 
         {/* Auth */}

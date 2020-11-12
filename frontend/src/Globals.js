@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import SeasonsProvider from './components/SeasonsProvider';
+import FerryProvider from './components/FerryProvider';
 
 import { UserProvider } from './user';
 
@@ -59,9 +59,10 @@ function Globals({ children }) {
       {/* TODO: reenable StrictMode later */}
       {/* <React.StrictMode> */}
       <ApolloProvider client={client}>
-        <UserProvider>
-          <WindowDimensionsProvider>
-            <SeasonsProvider>
+        <FerryProvider>
+          {/* UserProvider must be inside the FerryProvider */}
+          <UserProvider>
+            <WindowDimensionsProvider>
               <Router>
                 <SPAPageChangeListener />
                 <div id="base" style={{ height: 'auto' }}>
@@ -70,9 +71,9 @@ function Globals({ children }) {
               </Router>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
               <ToastContainer />
-            </SeasonsProvider>
-          </WindowDimensionsProvider>
-        </UserProvider>
+            </WindowDimensionsProvider>
+          </UserProvider>
+        </FerryProvider>
       </ApolloProvider>
       {/* </React.StrictMode> */}
     </>

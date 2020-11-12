@@ -8,6 +8,7 @@ import React, {
 import axios from 'axios';
 import posthog from 'posthog-js';
 import { toast } from 'react-toastify';
+import { useWorksheetInfo } from './queries/GetWorksheetListings';
 
 const UserContext = createContext();
 UserContext.displayName = 'UserContext';
@@ -37,9 +38,9 @@ export const UserProvider = ({ children }) => {
       if (!res.data.success) {
         // Error with fetching user's worksheet
         setNetId(null);
-        posthog.reset();
         setWorksheet(null);
         setHasEvals(null);
+        posthog.reset();
         console.error(res.data.message);
         if (!suppressError) {
           toast.error(res.data.message);
@@ -47,9 +48,9 @@ export const UserProvider = ({ children }) => {
       } else {
         // Successfully fetched worksheet
         setNetId(res.data.netId);
-        posthog.identify(res.data.netId);
         setHasEvals(res.data.evaluationsEnabled);
         setWorksheet(res.data.data);
+        posthog.identify(res.data.netId);
       }
     },
     [setWorksheet, setNetId, setHasEvals]
@@ -78,15 +79,19 @@ export const UserProvider = ({ children }) => {
     [setFbLogin, setFbWorksheets]
   );
 
+  // Get user's worksheet information.
+  const worksheetDataObj = useWorksheetInfo(worksheet);
+
   const user = useMemo(() => {
     return {
       netId,
       worksheet,
+      worksheetDataObj,
       hasEvals,
       fbLogin,
       fbWorksheets,
     };
-  }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
+  }, [netId, worksheet, worksheetDataObj, hasEvals, fbLogin, fbWorksheets]);
 
   const store = {
     // Context state.

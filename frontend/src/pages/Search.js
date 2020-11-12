@@ -1,4 +1,10 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 
 import { GlobalHotKeys } from 'react-hotkeys';
 
@@ -17,8 +23,6 @@ import {
   Button,
 } from 'react-bootstrap';
 
-import { SEARCH_COURSES } from '../queries/QueryStrings';
-
 import {
   sortbyOptions,
   areas,
@@ -31,14 +35,12 @@ import {
   subjectOptions,
 } from '../queries/Constants';
 
-import { useLazyQuery } from '@apollo/react-hooks';
-
 import Select from 'react-select';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
-import { useSeasons } from '../components/SeasonsProvider';
+import { useCourseData, useFerry } from '../components/FerryProvider';
 
-import { debounce } from 'lodash';
+import { debounce, orderBy } from 'lodash';
 
 import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -52,7 +54,6 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import { flatten, preprocess_courses } from '../utilities';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
 
@@ -79,9 +80,8 @@ function Search({ location, history }) {
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
-  var searchText = React.useRef(
-    location && location.state ? location.state.search_val : null
-  );
+  const searchTextInput = useRef(null);
+  const [searchText, setSearchText] = useState('');
   // Is the search form  collapsed?
   const [collapsed_form, setCollapsedForm] = useState(false);
   // useEffect(() => {
@@ -114,18 +114,8 @@ function Search({ location, history }) {
     setCourseModal([false, '']);
   };
 
-  // States involved in infinite scroll
-  const [searched, setSearched] = useState(false); // Reset row height cache on search
-
   // number of search results to return
   // const QUERY_SIZE = 30;
-
-  // State used to determine whether or not to show season tags
-  // (if multiple seasons are queried, the season is indicated)
-  const [multiSeasons, setMultiSeasons] = useState(false);
-
-  //State used to rebuild form DOM to reset it
-  const [form_key, setFormKey] = useState(0);
 
   // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
@@ -151,7 +141,7 @@ function Search({ location, history }) {
 
   // populate seasons from database
   var seasonsOptions;
-  const seasonsData = useSeasons();
+  const { seasons: seasonsData } = useFerry();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map((x) => {
       return {
@@ -162,24 +152,294 @@ function Search({ location, history }) {
     });
   }
 
-  // handler for executing search with text
-  var [
-    executeSearch,
-    { called: searchCalled, loading: searchLoading, data: searchData },
-  ] = useLazyQuery(SEARCH_COURSES);
+  const required_seasons = useMemo(() => {
+    if (select_seasons === null) {
+      return [];
+    }
+    if (select_seasons.length === 0) {
+      // Nothing selected, so default to all seasons.
+      return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
+    }
+    return select_seasons.map((x) => x.value);
+  }, [select_seasons, seasonsData]);
 
-  const handleChange = () => {
-    if (!location.state) return;
-    // reset searchText
-    history.replace();
-  };
+  const {
+    loading: coursesLoading,
+    courses: courseData,
+    error: courseLoadError,
+  } = useCourseData(required_seasons);
 
-  // resubmit search on view change
+  // State used to determine whether or not to show season tags
+  // (if multiple seasons are queried, the season is indicated)
+  const multiSeasons = required_seasons.length !== 1;
+
+  const searchConfig = useMemo(() => {
+    // sorting options
+    let sortParams = select_sortby.value;
+    let ordering = null;
+    if (sortParams === 'course_code') {
+      ordering = { course_code: sort_order };
+    } else if (sortParams === 'course_title') ordering = { title: sort_order };
+    else if (sortParams === 'course_number') ordering = { number: sort_order };
+    else if (sortParams === 'rating') ordering = { average_rating: sort_order };
+    else if (sortParams === 'workload')
+      ordering = { average_workload: sort_order };
+    else if (sortParams === 'professor')
+      ordering = { average_professor: `${sort_order}_nulls_last` };
+    else if (sortParams === 'gut')
+      ordering = { average_gut_rating: `${sort_order}_nulls_last` };
+    else console.error('unknown sort order - ', sortParams);
+
+    // skills and areas
+    var processedSkillsAreas = select_skillsareas;
+    if (processedSkillsAreas != null) {
+      processedSkillsAreas = processedSkillsAreas.map((x) => {
+        return x.value;
+      });
+
+      // match all languages
+      if (processedSkillsAreas.includes('L')) {
+        processedSkillsAreas = processedSkillsAreas.concat([
+          'L1',
+          'L2',
+          'L3',
+          'L4',
+          'L5',
+        ]);
+      }
+
+      // separate skills and areas
+      var processedSkills = processedSkillsAreas.filter((x) =>
+        skills.includes(x)
+      );
+      var processedAreas = processedSkillsAreas.filter((x) =>
+        areas.includes(x)
+      );
+
+      // set null defaults
+      if (processedSkills.length === 0) {
+        processedSkills = null;
+      }
+      if (processedAreas.length === 0) {
+        processedAreas = null;
+      }
+    }
+
+    // credits to filter
+    var processedCredits = select_credits;
+    if (processedCredits != null) {
+      processedCredits = processedCredits.map((x) => {
+        return x.value;
+      });
+      // set null defaults
+      if (processedCredits.length === 0) {
+        processedCredits = null;
+      }
+    }
+
+    // schools to filter
+    var processedSchools = select_schools;
+    if (processedSchools != null) {
+      processedSchools = processedSchools.map((x) => {
+        return x.value;
+      });
+
+      // set null defaults
+      if (processedSchools.length === 0) {
+        processedSchools = null;
+      }
+    }
+
+    // subject to filter
+    var processedSubjects = select_subjects;
+    if (processedSubjects != null) {
+      processedSubjects = processedSubjects.map((x) => {
+        return x.value;
+      });
+
+      // set null defaults
+      if (processedSubjects.length === 0) {
+        processedSubjects = null;
+      }
+    }
+
+    // if the bounds are unaltered, we need to set them to null
+    // to include unrated courses
+    var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+
+    var include_all_workloads =
+      workloadBounds[0] === 1 && workloadBounds[1] === 5;
+
+    // Variables to use in search query
+    const search_variables = {
+      search_text: searchText,
+      ordering: ordering,
+      // seasons: not included because it is handled by required_seasons
+      areas: new Set(processedAreas),
+      skills: new Set(processedSkills),
+      credits: new Set(processedCredits),
+      schools: new Set(processedSchools),
+      subjects: new Set(processedSubjects),
+      min_rating: include_all_ratings ? null : ratingBounds[0],
+      max_rating: include_all_ratings ? null : ratingBounds[1],
+      min_workload: include_all_workloads ? null : workloadBounds[0],
+      max_workload: include_all_workloads ? null : workloadBounds[1],
+      extra_info: hideCancelled ? 'ACTIVE' : null,
+      fy_sem: hideFirstYearSeminars ? false : null,
+    };
+
+    // Track search
+    posthog.capture('search', {
+      ...search_variables,
+      search_text_clean: search_variables.search_text || '[none]',
+    });
+
+    return search_variables;
+  }, [
+    hideCancelled,
+    hideFirstYearSeminars,
+    ratingBounds,
+    sort_order,
+    select_credits,
+    select_schools,
+    select_skillsareas,
+    select_sortby.value,
+    select_subjects,
+    workloadBounds,
+    searchText,
+  ]);
+
+  // TODO: debounce + make async
+  const searchData = useMemo(() => {
+    // Match search results with course data.
+    if (coursesLoading || courseLoadError) return [];
+    if (Object.keys(searchConfig).length === 0) return [];
+
+    // Pre-processing for the search text.
+    const tokens = (searchConfig.search_text || '')
+      .split(/\s+/)
+      .filter((x) => !!x)
+      .map((token) => token.toLowerCase());
+
+    let filtered = []
+      .concat(
+        ...required_seasons.map((season_code) => {
+          if (!courseData[season_code]) return [];
+          return [...courseData[season_code].values()];
+        })
+      )
+      .filter((listing) => {
+        // Apply filters.
+        if (
+          searchConfig.min_rating !== null &&
+          searchConfig.max_rating !== null &&
+          (listing.average_rating === null ||
+            listing.average_rating < searchConfig.min_rating ||
+            listing.average_rating > searchConfig.max_rating)
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.min_workload !== null &&
+          searchConfig.max_workload !== null &&
+          (listing.average_workload === null ||
+            listing.average_workload < searchConfig.min_workload ||
+            listing.average_workload > searchConfig.max_workload)
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.extra_info !== null &&
+          searchConfig.extra_info !== listing.extra_info
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.fy_sem !== null &&
+          searchConfig.fy_sem !== listing.fysem
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.subjects.size !== 0 &&
+          !searchConfig.subjects.has(listing.subject)
+        ) {
+          return false;
+        }
+
+        if (
+          (searchConfig.areas.size !== 0 || searchConfig.skills.size !== 0) &&
+          !listing.areas.some((v) => searchConfig.areas.has(v)) &&
+          !listing.skills.some((v) => searchConfig.skills.has(v))
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.credits.size !== 0 &&
+          !searchConfig.credits.has(listing.credits)
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.schools.size !== 0 &&
+          !searchConfig.schools.has(listing.school)
+        ) {
+          return false;
+        }
+
+        // Handle search text. Each token must match something.
+        // TODO: fuzzy matching?
+        // TODO: search across descriptions?
+        for (const token of tokens) {
+          if (
+            listing.subject.toLowerCase().startsWith(token) ||
+            listing.number.toLowerCase().startsWith(token) ||
+            listing.title.toLowerCase().includes(token) ||
+            listing.professor_names.some((professor) =>
+              professor.toLowerCase().includes(token)
+            )
+          )
+            continue;
+
+          return false;
+        }
+
+        return true;
+      });
+
+    // Apply sorting order.
+    // Force anything that is null to the bottom.
+    // In case of ties, we fallback to the course code.
+    const key = Object.keys(searchConfig.ordering)[0];
+    const order_asc = searchConfig.ordering[key].startsWith('asc');
+    filtered = orderBy(
+      filtered,
+      [
+        (listing) => !!listing[key],
+        (listing) => listing[key],
+        (listing) => listing.course_code,
+      ],
+      ['desc', order_asc ? 'asc' : 'desc', 'asc']
+    );
+
+    return filtered;
+  }, [
+    required_seasons,
+    coursesLoading,
+    courseLoadError,
+    courseData,
+    searchConfig,
+  ]);
+
   const handleSetView = (isList) => {
     posthog.capture('catalog-view-toggle', { isList });
-
     setView(isList);
-    handleSubmit(null, true);
   };
 
   const handleSortOrder = () => {
@@ -187,193 +447,11 @@ function Search({ location, history }) {
     else setSortOrder('asc');
   };
 
-  // search form submit handler
-  const handleSubmit = useCallback(
-    (event, search = false) => {
-      if (event && search) event.preventDefault();
-      if (search) {
-        //Reset states when making a new search
-        setSearched(true);
-      }
+  const scroll_to_results = useCallback(
+    (event) => {
+      if (event) event.preventDefault();
 
-      // sorting options
-      var sortParams = select_sortby.value;
-      var ordering = null;
-      if (sortParams === 'course_code') {
-        if (sort_order === 'desc') ordering = { course_code: 'desc' };
-      } else if (sortParams === 'course_title')
-        ordering = { title: sort_order };
-      else if (sortParams === 'course_number')
-        ordering = { number: sort_order };
-      else if (sortParams === 'rating')
-        ordering = { average_rating: sort_order };
-      else if (sortParams === 'workload')
-        ordering = { average_workload: sort_order };
-      else if (sortParams === 'professor')
-        ordering = { average_professor: `${sort_order}_nulls_last` };
-      else if (sortParams === 'gut')
-        ordering = { average_gut_rating: `${sort_order}_nulls_last` };
-      else console.error('unknown sort order - ', sortParams);
-
-      // seasons to filter
-      var processedSeasons = select_seasons;
-
-      // whether or not multiple seasons are being returned
-      const temp_multiSeasons = processedSeasons
-        ? processedSeasons.length !== 1
-        : true;
-      if (temp_multiSeasons !== multiSeasons)
-        setMultiSeasons(temp_multiSeasons);
-
-      if (processedSeasons != null) {
-        processedSeasons = processedSeasons.map((x) => {
-          return x.value;
-        });
-        // set null defaults
-        if (processedSeasons.length === 0) {
-          processedSeasons = null;
-        }
-      }
-
-      // skills and areas
-      var processedSkillsAreas = select_skillsareas;
-      if (processedSkillsAreas != null) {
-        processedSkillsAreas = processedSkillsAreas.map((x) => {
-          return x.value;
-        });
-
-        // match all languages
-        if (processedSkillsAreas.includes('L')) {
-          processedSkillsAreas = processedSkillsAreas.concat([
-            'L1',
-            'L2',
-            'L3',
-            'L4',
-            'L5',
-          ]);
-        }
-
-        // separate skills and areas
-        var processedSkills = processedSkillsAreas.filter((x) =>
-          skills.includes(x)
-        );
-        var processedAreas = processedSkillsAreas.filter((x) =>
-          areas.includes(x)
-        );
-
-        // set null defaults
-        if (processedSkills.length === 0) {
-          processedSkills = null;
-        }
-        if (processedAreas.length === 0) {
-          processedAreas = null;
-        }
-      }
-
-      // credits to filter
-      var processedCredits = select_credits;
-      if (processedCredits != null) {
-        processedCredits = processedCredits.map((x) => {
-          return x.value;
-        });
-        // set null defaults
-        if (processedCredits.length === 0) {
-          processedCredits = null;
-        }
-      }
-
-      // schools to filter
-      var processedSchools = select_schools;
-      if (processedSchools != null) {
-        processedSchools = processedSchools.map((x) => {
-          return x.value;
-        });
-
-        // set null defaults
-        if (processedSchools.length === 0) {
-          processedSchools = null;
-        }
-      }
-
-      // subject to filter
-      var processedSubjects = select_subjects;
-      if (processedSubjects != null) {
-        processedSubjects = processedSubjects.map((x) => {
-          return x.value;
-        });
-
-        // set null defaults
-        if (processedSubjects.length === 0) {
-          processedSubjects = null;
-        }
-      }
-
-      // if the bounds are unaltered, we need to set them to null
-      // to include unrated courses
-      var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
-
-      var include_all_workloads =
-        workloadBounds[0] === 1 && workloadBounds[1] === 5;
-
-      // override when we want to sort
-      if (ordering && ordering.average_rating) {
-        include_all_ratings = false;
-      }
-      if (ordering && ordering.average_workload) {
-        include_all_workloads = false;
-      }
-
-      // Variables to use in search query
-      const search_variables = {
-        search_text: searchText.value,
-        ordering: ordering,
-        seasons: processedSeasons,
-        areas: processedAreas,
-        skills: processedSkills,
-        credits: processedCredits,
-        schools: processedSchools,
-        subjects: processedSubjects,
-        min_rating: include_all_ratings ? null : ratingBounds[0],
-        max_rating: include_all_ratings ? null : ratingBounds[1],
-        min_workload: include_all_workloads ? null : workloadBounds[0],
-        max_workload: include_all_workloads ? null : workloadBounds[1],
-        extra_info: hideCancelled ? 'ACTIVE' : null,
-        fy_sem: hideFirstYearSeminars ? false : null,
-      };
-
-      // Track search
-      posthog.capture('search', {
-        ...search_variables,
-        search_text_clean: search_variables.search_text || '[none]',
-      });
-
-      // Execute search query
-      executeSearch({
-        variables: search_variables,
-      });
-    }
-    // [
-    //   executeSearch,
-    //   hideCancelled,
-    //   multiSeasons,
-    //   ratingBounds,
-    //   sort_order,
-    //   select_credits,
-    //   select_schools,
-    //   select_seasons,
-    //   select_skillsareas,
-    //   select_sortby.value,
-    //   select_subjects,
-    //   workloadBounds,
-    // ]
-  );
-
-  // If the search query was called
-  if (searchCalled) {
-    // If the search query is still loading
-    if (searchLoading) {
-    } else if (searchData) {
-      // Scroll down to catalog when search is complete for mobile view
+      // Scroll down to catalog when in mobile view.
       if (isMobile) {
         scroller.scrollTo('catalog', {
           smooth: true,
@@ -381,21 +459,24 @@ function Search({ location, history }) {
           offset: -56,
         });
       }
-      // Preprocess search data
-      searchData = searchData.search_listing_info.map((x) => {
-        return flatten(x);
-      });
-      searchData = searchData.map((x) => {
-        return preprocess_courses(x);
-      });
+    },
+    [isMobile]
+  );
+
+  // Scroll to the bottom when courses finish loading on initial load.
+  const [doneInitialScroll, setDoneInitialScroll] = useState(false);
+  useEffect(() => {
+    if (!coursesLoading && !doneInitialScroll) {
+      scroll_to_results();
+      setDoneInitialScroll(true);
     }
-  }
+  }, [coursesLoading, doneInitialScroll, scroll_to_results]);
 
   // ctrl/cmd-f search hotkey
   const focusSearch = (e) => {
-    if (e && searchText) {
+    if (e && searchTextInput) {
       e.preventDefault();
-      searchText.focus();
+      searchTextInput.current.focus();
     }
   };
   const keyMap = {
@@ -441,7 +522,6 @@ function Search({ location, history }) {
     setSelectSchools([]);
     setSelectSubjects([]);
     setSortOrder('asc');
-    setFormKey(form_key + 1);
   };
 
   // check if the search form is too tall
@@ -456,16 +536,16 @@ function Search({ location, history }) {
   useEffect(() => {
     // only execute after seasons have been loaded
     if (defaultSearch && seasonsOptions) {
-      handleSubmit(null, true);
       setDefaultSearch(false);
     }
-  }, [seasonsOptions, defaultSearch, handleSubmit]);
+  }, [seasonsOptions, defaultSearch]);
 
   // Switch to grid view if window width changes < 900
   useEffect(() => {
     if (width < 768 && isList === true) setView(false);
   }, [width, isList]);
 
+  // TODO: add state if courseLoadError is present
   return (
     <div className={Styles.search_base}>
       <GlobalHotKeys
@@ -500,13 +580,10 @@ function Search({ location, history }) {
             {/* Search Form */}
             <Form
               className={`px-0 ${Styles.search_container}`}
-              onSubmit={(event) => {
-                handleSubmit(event, true);
-              }}
+              onSubmit={scroll_to_results}
               ref={(ref) => {
                 searchCol = ref;
               }}
-              key={form_key}
             >
               {!isMobile && (
                 // Render buttons to hide/show the search form
@@ -549,21 +626,17 @@ function Search({ location, history }) {
                   <InputGroup className={Styles.search_input}>
                     <FormControl
                       type="text"
-                      defaultValue={
-                        searchText.current !== ''
-                          ? searchText.current
-                          : undefined
-                      }
-                      onChange={handleChange}
+                      value={searchText}
+                      onChange={(event) => setSearchText(event.target.value)}
                       placeholder="Search by course code, title, or prof"
-                      ref={(ref) => (searchText = ref)}
+                      ref={searchTextInput}
                     />
                   </InputGroup>
                 </div>
               </Row>
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`${Styles.selector_container}`}>
-                  {/* Sort By Multi-Select */}
+                  {/* Sort By Select */}
                   <Select
                     value={select_sortby}
                     options={sortbyOptions}
@@ -617,13 +690,13 @@ function Search({ location, history }) {
                       isMulti
                       value={select_seasons}
                       options={seasonsOptions}
-                      placeholder="All"
+                      placeholder="Last 5 Years"
                       // prevent overlap with tooltips
                       styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={(options) => {
                         // Set seasons state
-                        setSelectSeasons(options);
+                        setSelectSeasons(options ? options : []);
                       }}
                       components={animatedComponents}
                     />
@@ -781,15 +854,13 @@ function Search({ location, history }) {
                   </Form.Check.Label>
                 </Form.Check>
               </Row>
-              <Row className="mx-auto flex-row-reverse">
-                {/* Submit Button */}
-                <Button
-                  type="submit"
-                  className={'pull-right ' + Styles.secondary_submit}
-                >
-                  Search courses
-                </Button>
-              </Row>
+              <div className={Styles.useless_btn}>
+                {/* The form requires a button with type submit in order to process
+                    events when someone hits enter to submit. We want this functionality
+                    so we can scroll to the results on mobile when they hit enter,
+                    and hence have a hidden button here. */}
+                <Button type="submit" />
+              </div>
             </Form>
           </div>
         </Col>
@@ -808,12 +879,11 @@ function Search({ location, history }) {
         >
           <Element name="catalog">
             <SearchResults
-              data={searchData ? searchData : []}
+              data={searchData}
               isList={isList}
               setView={handleSetView}
-              loading={searchLoading}
+              loading={coursesLoading}
               multiSeasons={multiSeasons}
-              searched={searched}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
               expanded={collapsed_form}
