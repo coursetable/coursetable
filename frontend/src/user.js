@@ -38,9 +38,9 @@ export const UserProvider = ({ children }) => {
       if (!res.data.success) {
         // Error with fetching user's worksheet
         setNetId(null);
-        posthog.reset();
         setWorksheet(null);
         setHasEvals(null);
+        posthog.reset();
         console.error(res.data.message);
         if (!suppressError) {
           toast.error(res.data.message);
@@ -48,9 +48,9 @@ export const UserProvider = ({ children }) => {
       } else {
         // Successfully fetched worksheet
         setNetId(res.data.netId);
-        posthog.identify(res.data.netId);
         setHasEvals(res.data.evaluationsEnabled);
         setWorksheet(res.data.data);
+        posthog.identify(res.data.netId);
       }
     },
     [setWorksheet, setNetId, setHasEvals]
