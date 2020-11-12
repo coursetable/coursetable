@@ -13,7 +13,7 @@ import chroma from 'chroma-js';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking, flatten } from '../utilities';
+import { fbFriendsAlsoTaking } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -33,7 +33,7 @@ import Styles from './SearchResultsItem.module.css';
  */
 
 const SearchResultsItem = ({
-  unflat_course,
+  course,
   showModal,
   multiSeasons,
   isLast,
@@ -42,10 +42,6 @@ const SearchResultsItem = ({
   TITLE_WIDTH,
   isScrolling = false,
 }) => {
-  const course = useMemo(() => {
-    return flatten(unflat_course);
-  }, [unflat_course]);
-
   // Variable used in list keys
   let key = 1;
   // Has the component been mounted?
