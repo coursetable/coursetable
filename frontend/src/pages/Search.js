@@ -708,7 +708,7 @@ function Search({ location, history }) {
                       menuPortalTarget={document.body}
                       onChange={(options) => {
                         // Set seasons state
-                        setSelectSeasons(options);
+                        setSelectSeasons(options ? options : []);
                       }}
                       components={animatedComponents}
                     />
