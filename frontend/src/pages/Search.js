@@ -173,10 +173,6 @@ function Search({ location, history }) {
     error: courseLoadError,
   } = useCourseData(required_seasons);
 
-  // TODO remove these
-  const searchCalled = true;
-  const searchLoading = false;
-
   // State used to determine whether or not to show season tags
   // (if multiple seasons are queried, the season is indicated)
   const multiSeasons = required_seasons.length !== 1;
@@ -454,19 +450,16 @@ function Search({ location, history }) {
     else setSortOrder('asc');
   };
 
-  // If the search query was called
-  if (searchCalled) {
-    // If the search query is still loading
-    if (searchLoading || coursesLoading) {
-    } else if (searchData) {
-      // Scroll down to catalog when search is complete for mobile view
-      // TODO: this is called too frequently
-      if (isMobile) {
-        scroller.scrollTo('catalog', {
-          smooth: true,
-          duration: 500,
-        });
-      }
+  // If the search query is still loading
+  if (coursesLoading) {
+  } else if (searchData) {
+    // Scroll down to catalog when search is complete for mobile view
+    // TODO: this is called too frequently
+    if (isMobile) {
+      scroller.scrollTo('catalog', {
+        smooth: true,
+        duration: 500,
+      });
     }
   }
 
@@ -887,7 +880,7 @@ function Search({ location, history }) {
               data={searchData}
               isList={isList}
               setView={handleSetView}
-              loading={searchLoading || coursesLoading}
+              loading={coursesLoading}
               multiSeasons={multiSeasons}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
