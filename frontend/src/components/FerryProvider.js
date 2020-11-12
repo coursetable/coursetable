@@ -81,6 +81,8 @@ export const FerryProvider = ({ children }) => {
     (seasons) => {
       const requests = seasons.map((season) => {
         // Racy preemptive check of cache.
+        // We cannot check courseLoadAttempted here, since that is set prior
+        // to the data actually being loaded.
         if (season in courseData) {
           return true;
         }
@@ -92,8 +94,6 @@ export const FerryProvider = ({ children }) => {
         });
       });
       Promise.all(requests).catch((err) => {
-        // TODO: better handling of errors when not logged in
-        // TODO: better handling when evals not enabled
         toast.error('Failed to fetch course information');
         console.error(err);
         addError(err);
