@@ -116,10 +116,6 @@ function Search({ location, history }) {
   // number of search results to return
   // const QUERY_SIZE = 30;
 
-  //State used to rebuild form DOM to reset it
-  // TODO: get rid of this
-  const [form_key, setFormKey] = useState(0);
-
   // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
 
@@ -514,7 +510,6 @@ function Search({ location, history }) {
     setSelectSchools([]);
     setSelectSubjects([]);
     setSortOrder('asc');
-    setFormKey(form_key + 1);
   };
 
   // check if the search form is too tall
@@ -577,7 +572,6 @@ function Search({ location, history }) {
               ref={(ref) => {
                 searchCol = ref;
               }}
-              key={form_key}
             >
               {!isMobile && (
                 // Render buttons to hide/show the search form
