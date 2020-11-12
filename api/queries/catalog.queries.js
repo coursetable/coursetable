@@ -23,6 +23,7 @@ export const catalogBySeasonQuery = gql`
       average_rating
       average_workload
       average_professor
+      average_gut_rating
       times_summary
       times_by_day
       locations_summary
