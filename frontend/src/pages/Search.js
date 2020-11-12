@@ -196,20 +196,6 @@ function Search({ location, history }) {
       ordering = { average_gut_rating: `${sort_order}_nulls_last` };
     else console.error('unknown sort order - ', sortParams);
 
-    // seasons to filter
-    var processedSeasons = required_seasons;
-
-    // whether or not multiple seasons are being returned
-    const temp_multiSeasons = processedSeasons
-      ? processedSeasons.length !== 1
-      : true;
-    if (temp_multiSeasons !== multiSeasons) setMultiSeasons(temp_multiSeasons);
-
-    if (processedSeasons === null || processedSeasons.length === 0) {
-      // set null defaults
-      processedSeasons = null;
-    }
-
     // skills and areas
     var processedSkillsAreas = select_skillsareas;
     if (processedSkillsAreas != null) {
@@ -294,7 +280,7 @@ function Search({ location, history }) {
     const search_variables = {
       search_text: searchText,
       ordering: ordering,
-      seasons: new Set(processedSeasons),
+      // seasons: not included because it is handled by required_seasons
       areas: new Set(processedAreas),
       skills: new Set(processedSkills),
       credits: new Set(processedCredits),
@@ -344,6 +330,7 @@ function Search({ location, history }) {
       .map((token) => token.toLowerCase());
     console.log(tokens);
 
+    console.log('required seasons', required_seasons);
     let filtered = []
       .concat(
         ...required_seasons.map((season_code) => {

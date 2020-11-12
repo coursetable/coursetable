@@ -19,13 +19,20 @@ FerryCtx.displayName = 'FerryCtx';
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
+let courseLoadAttempted = {};
 let courseData = {};
 const addToCache = (season) => {
   return courseDataLock.acquire('courseData', () => {
-    if (season in courseData) {
-      // Skip if already loaded.
+    if (season in courseData || season in courseLoadAttempted) {
+      // Skip if already loaded, or if we previously tried to load it.
       return;
     }
+
+    // Log that we attempted to load this.
+    courseLoadAttempted = {
+      ...courseLoadAttempted,
+      [season]: true,
+    };
 
     return axios.get(`/api/static/catalogs/${season}.json`).then((res) => {
       // Convert season list into a crn lookup table.
@@ -98,7 +105,7 @@ export const FerryProvider = ({ children }) => {
   const error = seasonsError ? seasonsError : errors[0];
 
   const store = {
-    seasons: seasonsData || [],
+    seasons: seasonsData || { seasons: [] },
     loading: seasonsLoading || requests !== 0,
     error: error,
     courses: courseData,
