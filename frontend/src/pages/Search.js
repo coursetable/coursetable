@@ -117,10 +117,6 @@ function Search({ location, history }) {
   // number of search results to return
   // const QUERY_SIZE = 30;
 
-  // State used to determine whether or not to show season tags
-  // (if multiple seasons are queried, the season is indicated)
-  const [multiSeasons, setMultiSeasons] = useState(false);
-
   //State used to rebuild form DOM to reset it
   // TODO: get rid of this
   const [form_key, setFormKey] = useState(0);
@@ -180,6 +176,10 @@ function Search({ location, history }) {
   // TODO remove these
   const searchCalled = true;
   const searchLoading = false;
+
+  // State used to determine whether or not to show season tags
+  // (if multiple seasons are queried, the season is indicated)
+  const multiSeasons = required_seasons.length !== 1;
 
   const searchConfig = useMemo(() => {
     // sorting options
