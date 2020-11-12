@@ -225,6 +225,10 @@
   color: #a82f41;
 }
 
+.useless_btn {
+  display: none;
+}
+
 @media (hover: none) {
   .search_container {
     max-height: none;

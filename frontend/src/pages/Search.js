@@ -20,6 +20,7 @@ import {
   Form,
   FormControl,
   InputGroup,
+  Button,
 } from 'react-bootstrap';
 
 import {
@@ -851,6 +852,9 @@ function Search({ location, history }) {
                   </Form.Check.Label>
                 </Form.Check>
               </Row>
+              <div className={Styles.useless_btn}>
+                <Button type="submit" />
+              </div>
             </Form>
           </div>
         </Col>
