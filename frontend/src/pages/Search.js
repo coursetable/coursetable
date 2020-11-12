@@ -20,7 +20,6 @@ import {
   Form,
   FormControl,
   InputGroup,
-  Button,
 } from 'react-bootstrap';
 
 import {
@@ -302,12 +301,10 @@ function Search({ location, history }) {
   }, [
     hideCancelled,
     hideFirstYearSeminars,
-    multiSeasons,
     ratingBounds,
     sort_order,
     select_credits,
     select_schools,
-    required_seasons,
     select_skillsareas,
     select_sortby.value,
     select_subjects,
@@ -436,7 +433,13 @@ function Search({ location, history }) {
 
     console.log('end search/filter');
     return filtered;
-  }, [required_seasons, coursesLoading, courseData, searchConfig]);
+  }, [
+    required_seasons,
+    coursesLoading,
+    courseLoadError,
+    courseData,
+    searchConfig,
+  ]);
 
   const handleSetView = (isList) => {
     posthog.capture('catalog-view-toggle', { isList });
