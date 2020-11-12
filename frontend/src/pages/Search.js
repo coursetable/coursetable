@@ -309,6 +309,7 @@ function Search({ location, history }) {
     searchText,
   ]);
 
+  // TODO: debounce + make async
   const searchData = useMemo(() => {
     // Match search results with course data.
     if (coursesLoading || courseLoadError) return [];
@@ -853,6 +854,10 @@ function Search({ location, history }) {
                 </Form.Check>
               </Row>
               <div className={Styles.useless_btn}>
+                {/* The form requires a button with type submit in order to process
+                    events when someone hits enter to submit. We want this functionality
+                    so we can scroll to the results on mobile when they hit enter,
+                    and hence have a hidden button here. */}
                 <Button type="submit" />
               </div>
             </Form>
