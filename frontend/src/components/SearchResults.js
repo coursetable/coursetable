@@ -186,31 +186,37 @@ const SearchResults = ({
     [data, showModal, multiSeasons, COL_SPACING, TITLE_WIDTH, ROW_WIDTH]
   );
 
-  // if no courses found (either due to query or authentication), render the empty state
-  if (data.length === 0) {
+  if (!isLoggedIn) {
+    // render an auth wall
+    resultsListing = (
+      <div className="text-center py-5">
+        <img
+          alt="Not logged in"
+          className="py-5"
+          src={Authentication}
+          style={{ width: '25%' }}
+        ></img>
+        <h3>
+          Please{' '}
+          <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
+            log in
+          </a>
+        </h3>
+        <div>A valid Yale NetID is required to access course information.</div>
+      </div>
+    );
+  } else if (data.length === 0) {
+    // if no courses found, render the empty state
     resultsListing = (
       <div className="text-center py-5">
         <img
           alt="No courses found."
           className="py-5"
-          src={isLoggedIn ? NoCoursesFound : Authentication}
+          src={NoCoursesFound}
           style={{ width: '25%' }}
         ></img>
-        {isLoggedIn ? (
-          <h3>No courses found</h3>
-        ) : (
-          <h3>
-            Please{' '}
-            <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
-              log in
-            </a>
-          </h3>
-        )}
-        <div>
-          {isLoggedIn
-            ? "We couldn't find any courses matching your search."
-            : 'A valid Yale NetID is required to access course information.'}
-        </div>
+        <h3>No courses found</h3>
+        <div>We couldn't find any courses matching your search.</div>
       </div>
     );
   } else {
