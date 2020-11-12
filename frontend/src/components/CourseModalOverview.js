@@ -516,6 +516,15 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 : 'N/A'}
             </Col>
           </Row>
+          {/* Credits */}
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Credits</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing.credits}
+            </Col>
+          </Row>
           {/* Course Location */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
