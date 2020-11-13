@@ -48,6 +48,7 @@ Sentry.init({
   dsn:
     'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [new Integrations.BrowserTracing()],
+  environment: process.env.NODE_ENV,
 
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
