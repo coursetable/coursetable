@@ -387,26 +387,6 @@ const SearchResults = ({
                   >
                     Title
                   </div>
-                  <>
-                    <div style={num_style} className={Styles.results_header}>
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={enrollment_tooltip}
-                      >
-                        <span className="m-auto">#</span>
-                      </OverlayTrigger>
-                    </div>
-                    <div style={num_style} className={Styles.results_header}>
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={fb_tooltip}
-                      >
-                        <span className="m-auto">#FB</span>
-                      </OverlayTrigger>
-                    </div>
-                  </>
                   {/* Class Rating */}
                   <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
@@ -451,6 +431,15 @@ const SearchResults = ({
                       </OverlayTrigger>
                     </div>
                   </div>
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={enrollment_tooltip}
+                    >
+                      <span className="m-auto">#</span>
+                    </OverlayTrigger>
+                  </div>
                   {/* Course Professors */}
                   <div
                     style={prof_style}
@@ -472,11 +461,17 @@ const SearchResults = ({
                     Location
                   </div>
 
-                  <div
-                    style={sa_style}
-                    className={Styles.results_header + ' pr-2'}
-                  >
+                  <div style={sa_style} className={Styles.results_header}>
                     Skills/Areas
+                  </div>
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={fb_tooltip}
+                    >
+                      <span className="m-auto">#FB</span>
+                    </OverlayTrigger>
                   </div>
                 </React.Fragment>
               ) : (

@@ -213,34 +213,6 @@ const SearchResultsItem = ({
           <div className={Styles.ellipsis_text}>{course.title}</div>
         </div>
       </OverlayTrigger>
-
-      <>
-        {/* Enrollment */}
-        <div style={num_style} className="d-flex">
-          <span className="m-auto">
-            {course.enrolled
-              ? course.enrolled
-              : course.last_enrollment && course.last_enrollment_same_professors
-              ? course.last_enrollment
-              : course.last_enrollment
-              ? `~${course.last_enrollment}`
-              : ''}
-          </span>
-        </div>
-        {/* # FB Friends also shopping */}
-        <div style={num_style} className="d-flex">
-          <OverlayTrigger
-            placement="top"
-            delay={{ show: 100, hide: 100 }}
-            overlay={renderFBFriendsTooltip}
-          >
-            <span className={'m-auto'}>
-              {also_taking.length > 0 ? also_taking.length : ''}
-            </span>
-          </OverlayTrigger>
-        </div>
-      </>
-
       {/* Class Rating */}
       <div style={rate_style} className="d-flex">
         <div
@@ -294,8 +266,20 @@ const SearchResultsItem = ({
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
       </div>
-      {/* Course Professors */}
+      {/* Enrollment */}
+      <div style={num_style} className="d-flex">
+        <span className="m-auto">
+          {course.enrolled
+            ? course.enrolled
+            : course.last_enrollment && course.last_enrollment_same_professors
+            ? course.last_enrollment
+            : course.last_enrollment
+            ? `~${course.last_enrollment}`
+            : ''}
+        </span>
+      </div>
 
+      {/* Course Professors */}
       <div style={prof_style} className={Styles.ellipsis_text}>
         {course.professor_names.length === 0
           ? 'TBA'
@@ -316,7 +300,7 @@ const SearchResultsItem = ({
 
       {/* Skills and Areas */}
 
-      <div style={sa_style} className="d-flex pr-2">
+      <div style={sa_style} className="d-flex">
         <span className={Styles.skills_areas + ' '}>
           {course.skills.map((skill) => (
             <Badge
@@ -349,6 +333,18 @@ const SearchResultsItem = ({
             </Badge>
           ))}
         </span>
+      </div>
+      {/* # FB Friends also shopping */}
+      <div style={num_style} className="d-flex ">
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 100, hide: 100 }}
+          overlay={renderFBFriendsTooltip}
+        >
+          <span className="m-auto">
+            {also_taking.length > 0 ? also_taking.length : ''}
+          </span>
+        </OverlayTrigger>
       </div>
 
       {/* Bookmark button */}
