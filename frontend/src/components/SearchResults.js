@@ -80,7 +80,7 @@ const SearchResults = ({
   };
 
   // State that holds width of the row for list view
-  const [ROW_WIDTH, setRowWidth] = useState();
+  const [ROW_WIDTH, setRowWidth] = useState(0);
   // Ref to get row width
   const ref = useRef(null);
   useEffect(() => {
@@ -170,6 +170,7 @@ const SearchResults = ({
             TITLE_WIDTH={TITLE_WIDTH}
             ROW_WIDTH={ROW_WIDTH}
             isScrolling={isScrolling}
+            expanded={expanded}
           />
         </div>
       );

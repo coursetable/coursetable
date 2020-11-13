@@ -30,6 +30,7 @@ import Styles from './SearchResultsItem.module.css';
  * @prop ROW_WIDTH - integer that holds width of row
  * @prop TITLE_WIDTH - integer that holds width of title
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
+ * @prop expanded - boolean | is the catalog expanded or not
  */
 
 const SearchResultsItem = ({
@@ -41,6 +42,7 @@ const SearchResultsItem = ({
   ROW_WIDTH,
   TITLE_WIDTH,
   isScrolling = false,
+  expanded,
 }) => {
   // Variable used in list keys
   let key = 1;
@@ -206,7 +208,10 @@ const SearchResultsItem = ({
             : ''}
         </span>
       </div>
-      <OverlayTrigger placement="left" overlay={renderTitlePopover}>
+      <OverlayTrigger
+        placement={expanded ? 'right' : 'left'}
+        overlay={renderTitlePopover}
+      >
         {/* Course Title */}
         <div style={title_style}>
           <div className={Styles.ellipsis_text}>{course.title}</div>
