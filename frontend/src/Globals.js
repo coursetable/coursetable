@@ -14,6 +14,9 @@ import { ApolloProvider } from '@apollo/react-hooks';
 
 import posthog from 'posthog-js';
 
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
@@ -38,6 +41,16 @@ if (POSTHOG_TOKEN !== '') {
     opt_out_capturing_by_default: true,
   });
 }
+
+Sentry.init({
+  dsn:
+    'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
+  integrations: [new Integrations.BrowserTracing()],
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
 
 const client = new ApolloClient({
   uri: '/ferry/v1/graphql',
