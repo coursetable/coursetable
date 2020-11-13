@@ -267,7 +267,10 @@ const SearchResults = ({
   const class_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Class Rating</span>
+        <span>
+          Average Course Rating <br />
+          (any professor and all cross-listed courses)
+        </span>
       </Tooltip>
     ),
     []
@@ -277,7 +280,7 @@ const SearchResults = ({
   const prof_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Professor Rating</span>
+        <span>Average Professor Rating</span>
       </Tooltip>
     ),
     []
@@ -287,7 +290,10 @@ const SearchResults = ({
   const workload_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Workload Rating</span>
+        <span>
+          Average Workload Rating <br />
+          (any professor and all cross-listed courses)
+        </span>
       </Tooltip>
     ),
     []
@@ -297,7 +303,12 @@ const SearchResults = ({
   const enrollment_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Class Enrollment</span>
+        <span>
+          Class Enrollment
+          <br />
+          (based on the most recent instance of this course. a ~ means a
+          different professor was teaching)
+        </span>
       </Tooltip>
     ),
     []
