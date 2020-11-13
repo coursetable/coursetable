@@ -79,36 +79,6 @@ const SearchResults = ({
     window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
   };
 
-  // Number of columns to use in grid view
-  const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
-
-  // List that holds the HTML for each row in grid view
-  const grid_html = useMemo(() => {
-    let grid = [];
-    const len = data.length;
-    for (let i = 0; i < len; i += num_cols) {
-      let row_elements = [];
-      for (let j = i; j < len && j < i + num_cols; j++) {
-        row_elements.push(
-          <SearchResultsGridItem
-            course={flatten(data[j])}
-            showModal={showModal}
-            isLoggedIn={isLoggedIn}
-            num_cols={num_cols}
-            multiSeasons={multiSeasons}
-            key={j}
-          />
-        );
-      }
-      grid.push(
-        <Row className="mx-auto" key={i}>
-          {row_elements}
-        </Row>
-      );
-    }
-    return grid;
-  }, [data, showModal, isLoggedIn, multiSeasons, num_cols]);
-
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState();
   // Ref to get row width
@@ -152,18 +122,39 @@ const SearchResults = ({
   }, [ROW_WIDTH, COL_SPACING, multiSeasons]);
 
   // Holds HTML for the search results
-  var resultsListing;
+  let resultsListing;
+
+  // Number of columns to use in grid view
+  const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
 
   // Render functions for React Virtualized List:
   const renderGridRow = useCallback(
     ({ index, key, style }) => {
+      let row_elements = [];
+      for (
+        let j = index * num_cols;
+        j < data.length && j < (index + 1) * num_cols;
+        j++
+      ) {
+        row_elements.push(
+          <SearchResultsGridItem
+            course={flatten(data[j])}
+            showModal={showModal}
+            isLoggedIn={isLoggedIn}
+            num_cols={num_cols}
+            multiSeasons={multiSeasons}
+            key={j}
+          />
+        );
+      }
+
       return (
         <div key={key} style={style}>
-          {grid_html[index]}
+          <Row className="mx-auto">{row_elements}</Row>
         </div>
       );
     },
-    [grid_html]
+    [data, showModal, isLoggedIn, multiSeasons, num_cols]
   );
 
   const renderListRow = useCallback(
@@ -171,7 +162,7 @@ const SearchResults = ({
       return (
         <div style={style} key={key}>
           <SearchResultsItemMemo
-            unflat_course={data[index]}
+            course={data[index]}
             showModal={showModal}
             multiSeasons={multiSeasons}
             isLast={index === data.length - 1}
@@ -237,7 +228,7 @@ const SearchResults = ({
                   isScrolling={isScrolling}
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
-                  rowCount={grid_html.length}
+                  rowCount={Math.ceil(data.length / num_cols)}
                   rowHeight={178}
                   rowRenderer={renderGridRow}
                 />
