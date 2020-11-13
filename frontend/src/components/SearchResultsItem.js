@@ -194,6 +194,7 @@ const SearchResultsItem = ({
           </OverlayTrigger>
         </div>
       )}
+      {/* Course Code*/}
       <div
         style={code_style}
         className={Styles.ellipsis_text + ' font-weight-bold'}
@@ -205,10 +206,9 @@ const SearchResultsItem = ({
             : ''}
         </span>
       </div>
-      <OverlayTrigger placement="right" overlay={renderTitlePopover}>
-        {/* Course Title, Code, and Skills/Area column */}
+      <OverlayTrigger placement="left" overlay={renderTitlePopover}>
+        {/* Course Title */}
         <div style={title_style}>
-          {/* Course Title */}
           <div className={Styles.ellipsis_text}>{course.title}</div>
         </div>
       </OverlayTrigger>
