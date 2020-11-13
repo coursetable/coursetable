@@ -234,6 +234,10 @@
   color: #a82f41;
 }
 
+.num_results {
+  font-weight: 500;
+}
+
 .useless_btn {
   display: none;
 }

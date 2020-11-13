@@ -614,15 +614,20 @@ function Search({ location, history }) {
                 </React.Fragment>
               )}
               {/* Reset Filters Button */}
-              <Row className="pt-3 px-4">
+              <Row className="mx-auto pt-4 px-4">
                 <small
-                  className={Styles.reset_filters_btn + ' mx-auto'}
+                  className={Styles.reset_filters_btn + ' mr-auto'}
                   onClick={handleResetFilters}
                 >
                   Reset Filters
                 </small>
+                <small className={Styles.num_results + ' ml-auto text-muted'}>
+                  {coursesLoading
+                    ? 'Searching ...'
+                    : 'Showing ' + searchData.length + ' results'}
+                </small>
               </Row>
-              <Row className="mx-auto pt-2 px-4 pb-2">
+              <Row className="mx-auto pt-1 pb-2 px-4">
                 <div className={Styles.search_bar}>
                   {/* Search Bar */}
                   <InputGroup className={Styles.search_input}>
@@ -636,6 +641,7 @@ function Search({ location, history }) {
                   </InputGroup>
                 </div>
               </Row>
+
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`${Styles.selector_container}`}>
                   {/* Sort By Select */}
