@@ -153,6 +153,10 @@ function Search({ location, history }) {
   }
 
   const required_seasons = useMemo(() => {
+    if (!isLoggedIn) {
+      // If we're not logged in, don't attempt to request any seasons.
+      return [];
+    }
     if (select_seasons === null) {
       return [];
     }
@@ -161,7 +165,7 @@ function Search({ location, history }) {
       return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
     }
     return select_seasons.map((x) => x.value);
-  }, [select_seasons, seasonsData]);
+  }, [isLoggedIn, select_seasons, seasonsData]);
 
   const {
     loading: coursesLoading,

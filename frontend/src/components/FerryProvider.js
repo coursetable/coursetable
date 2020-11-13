@@ -105,9 +105,10 @@ export const FerryProvider = ({ children }) => {
   const error = seasonsError ? seasonsError : errors[0];
 
   const store = {
-    seasons: seasonsData || { seasons: [] },
-    loading: seasonsLoading || requests !== 0,
+    // If there's any error, we want to immediately stop "loading" and start "erroring".
+    loading: (seasonsLoading || requests !== 0) && !error,
     error: error,
+    seasons: seasonsData || { seasons: [] },
     courses: courseData,
     requestSeasons,
   };
