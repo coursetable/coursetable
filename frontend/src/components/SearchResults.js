@@ -21,7 +21,6 @@ import {
   Col,
   Row,
   Spinner,
-  Fade,
   Tooltip,
   OverlayTrigger,
 } from 'react-bootstrap';
@@ -32,7 +31,7 @@ import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
-import { FaArrowCircleUp, FaAppleAlt } from 'react-icons/fa';
+import { FaAppleAlt } from 'react-icons/fa';
 import { FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 
@@ -63,21 +62,6 @@ const SearchResults = ({
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
-
-  // Should we render the scroll up button?
-  const [scroll_visible, setScrollVisible] = useState(false);
-  // Render scroll-up button after scrolling a lot
-  useEffect(() => {
-    window.onscroll = () => {
-      if (window.pageYOffset > 2000 && !scroll_visible) setScrollVisible(true);
-      if (window.pageYOffset < 2000 && scroll_visible) setScrollVisible(false);
-    };
-  });
-
-  // Scroll to top button click handler
-  const scrollTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  };
 
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState(0);
@@ -504,12 +488,6 @@ const SearchResults = ({
           )}
         </div>
       </Container>
-      {/* Scroll up button */}
-      <Fade in={scroll_visible}>
-        <div className={Styles.up_btn}>
-          <FaArrowCircleUp onClick={scrollTop} size={30} />
-        </div>
-      </Fade>
     </div>
   );
 };
