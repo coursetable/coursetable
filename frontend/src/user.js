@@ -7,6 +7,7 @@ import React, {
 } from 'react';
 import axios from 'axios';
 import posthog from 'posthog-js';
+import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import { useWorksheetInfo } from './queries/GetWorksheetListings';
 
@@ -41,6 +42,7 @@ export const UserProvider = ({ children }) => {
         setWorksheet(null);
         setHasEvals(null);
         posthog.reset();
+        Sentry.configureScope((scope) => scope.clear());
         console.error(res.data.message);
         if (!suppressError) {
           toast.error(res.data.message);
@@ -51,6 +53,7 @@ export const UserProvider = ({ children }) => {
         setHasEvals(res.data.evaluationsEnabled);
         setWorksheet(res.data.data);
         posthog.identify(res.data.netId);
+        Sentry.setUser({ username: res.data.netId });
       }
     },
     [setWorksheet, setNetId, setHasEvals]
