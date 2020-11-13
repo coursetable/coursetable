@@ -38,6 +38,14 @@
   font-weight: 600;
 }
 
+.one_line {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 .up_btn {
   position: fixed;
   z-index: 420;

@@ -89,38 +89,34 @@ const SearchResults = ({
   }, [setRowWidth, width, expanded]);
 
   // Spacing for each column in list view
-  const COL_SPACING = {
+  let COL_SPACING = {
     SZN_WIDTH: 80,
     CODE_WIDTH: 110,
     RATE_WIDTH: 30,
     NUM_WIDTH: 30,
-    PROF_WIDTH: 130,
-    MEET_WIDTH: 160,
-    LOC_WIDTH: 85,
     SA_WIDTH: 100,
     PADDING: 35,
-    NUM_CUT: !multiSeasons ? 580 : 580,
-    PROF_CUT: !multiSeasons ? 630 : 730,
-    MEET_CUT: !multiSeasons ? 730 : 830,
-    LOC_CUT: !multiSeasons ? 830 : 930,
-    SA_CUT: !multiSeasons ? 930 : 1030,
   };
-  const TITLE_WIDTH = useMemo(() => {
+  const EXTRA = useMemo(() => {
     return (
       ROW_WIDTH -
       (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
       COL_SPACING.CODE_WIDTH -
-      COL_SPACING.LOC_WIDTH -
-      (ROW_WIDTH > COL_SPACING.NUM_CUT ? 2 * COL_SPACING.NUM_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
+      2 * COL_SPACING.NUM_WIDTH -
+      COL_SPACING.SA_WIDTH -
       3 * COL_SPACING.RATE_WIDTH -
       COL_SPACING.PADDING
     );
-  }, [ROW_WIDTH, COL_SPACING, multiSeasons]);
+  }, [COL_SPACING, ROW_WIDTH, multiSeasons]);
 
+  COL_SPACING.PROF_WIDTH = Math.min(EXTRA / 4, 160);
+  COL_SPACING.MEET_WIDTH = Math.min(EXTRA / 4, 160);
+  COL_SPACING.LOC_WIDTH = Math.min(EXTRA / 6, 100);
+  COL_SPACING.TITLE_WIDTH =
+    EXTRA -
+    COL_SPACING.PROF_WIDTH -
+    COL_SPACING.MEET_WIDTH -
+    COL_SPACING.LOC_WIDTH;
   // Holds HTML for the search results
   let resultsListing;
 
@@ -167,7 +163,6 @@ const SearchResults = ({
             multiSeasons={multiSeasons}
             isLast={index === data.length - 1}
             COL_SPACING={COL_SPACING}
-            TITLE_WIDTH={TITLE_WIDTH}
             ROW_WIDTH={ROW_WIDTH}
             isScrolling={isScrolling}
             expanded={expanded}
@@ -175,7 +170,7 @@ const SearchResults = ({
         </div>
       );
     },
-    [data, showModal, multiSeasons, COL_SPACING, TITLE_WIDTH, ROW_WIDTH]
+    [data, showModal, multiSeasons, expanded, COL_SPACING, ROW_WIDTH]
   );
 
   if (!isLoggedIn) {
@@ -327,7 +322,7 @@ const SearchResults = ({
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${TITLE_WIDTH}px` };
+  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
   const rate_style = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WIDTH}px`,
@@ -375,31 +370,32 @@ const SearchResults = ({
                     Code
                   </div>
                   {/* Course Name */}
-                  <div style={title_style} className={Styles.results_header}>
+                  <div
+                    style={title_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
                     Title
                   </div>
-                  {ROW_WIDTH > COL_SPACING.NUM_CUT && (
-                    <>
-                      <div style={num_style} className={Styles.results_header}>
-                        <OverlayTrigger
-                          placement="bottom"
-                          delay={{ show: 100, hide: 100 }}
-                          overlay={enrollment_tooltip}
-                        >
-                          <span className="m-auto">#</span>
-                        </OverlayTrigger>
-                      </div>
-                      <div style={num_style} className={Styles.results_header}>
-                        <OverlayTrigger
-                          placement="bottom"
-                          delay={{ show: 100, hide: 100 }}
-                          overlay={fb_tooltip}
-                        >
-                          <span className="m-auto">#FB</span>
-                        </OverlayTrigger>
-                      </div>
-                    </>
-                  )}
+                  <>
+                    <div style={num_style} className={Styles.results_header}>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={enrollment_tooltip}
+                      >
+                        <span className="m-auto">#</span>
+                      </OverlayTrigger>
+                    </div>
+                    <div style={num_style} className={Styles.results_header}>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={fb_tooltip}
+                      >
+                        <span className="m-auto">#FB</span>
+                      </OverlayTrigger>
+                    </div>
+                  </>
                   {/* Class Rating */}
                   <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
@@ -445,30 +441,32 @@ const SearchResults = ({
                     </div>
                   </div>
                   {/* Course Professors */}
-                  {ROW_WIDTH > COL_SPACING.PROF_CUT && (
-                    <div style={prof_style} className={Styles.results_header}>
-                      Professors
-                    </div>
-                  )}
+                  <div
+                    style={prof_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Professors
+                  </div>
                   {/* Course Meeting times and location */}
-                  {ROW_WIDTH > COL_SPACING.MEET_CUT && (
-                    <div style={meet_style} className={Styles.results_header}>
-                      Meets
-                    </div>
-                  )}
-                  {ROW_WIDTH > COL_SPACING.LOC_CUT && (
-                    <div style={loc_style} className={Styles.results_header}>
-                      Location
-                    </div>
-                  )}
-                  {ROW_WIDTH > COL_SPACING.SA_CUT && (
-                    <div
-                      style={sa_style}
-                      className={Styles.results_header + ' pr-2'}
-                    >
-                      Skills/Areas
-                    </div>
-                  )}
+                  <div
+                    style={meet_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Meets
+                  </div>
+                  <div
+                    style={loc_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Location
+                  </div>
+
+                  <div
+                    style={sa_style}
+                    className={Styles.results_header + ' pr-2'}
+                  >
+                    Skills/Areas
+                  </div>
                 </React.Fragment>
               ) : (
                 // Grid view showing how many search results
