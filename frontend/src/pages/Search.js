@@ -554,327 +554,512 @@ function Search({ location, history }) {
         allowChanges={true} // required for global
         style={{ outline: 'none' }}
       />
-      <Row
-        className={
-          'p-0 m-0 ' + (!isMobile ? 'd-flex flex-row-reverse flex-nowrap' : '')
-        }
-      >
-        <Col
-          md={4}
-          lg={4}
-          xl={3}
-          className={
-            (isMobile
-              ? `p-3 ${Styles.search_col_mobile}`
-              : `pr-0 my-3 pl-3 ${Styles.search_col}`) +
-            (!isMobile ? ' order-2' : '')
-          }
-        >
-          <div
-            className={
-              // only make the filters sticky if not on mobile and
-              // tall enough
-              !isTouch && !tooTall ? Styles.sticky : ''
-            }
-          >
-            {/* Search Form */}
-            <Form
-              className={`px-0 ${Styles.search_container}`}
-              onSubmit={scroll_to_results}
-              ref={(ref) => {
-                searchCol = ref;
-              }}
+      <Row className={'p-0 m-0'}>
+        {isMobile ? (
+          // Mobile Search Options
+          <Col md={12} className={`p-3 ${Styles.search_col_mobile}`}>
+            <div
+              className={
+                // only make the filters sticky if not on mobile and
+                // tall enough
+                !isTouch && !tooTall ? Styles.sticky : ''
+              }
             >
-              {!isMobile && (
-                // Render buttons to hide/show the search form
-                <React.Fragment>
-                  <div
-                    className={
-                      Styles.search_tab +
-                      (collapsed_form
-                        ? ''
-                        : ' '.concat(Styles.search_tab_hidden))
-                    }
-                    onClick={() => {
-                      setCollapsedForm(false);
-                    }}
+              {/* Search Form */}
+              <Form
+                className={`px-0 ${Styles.search_container}`}
+                onSubmit={scroll_to_results}
+                ref={(ref) => {
+                  searchCol = ref;
+                }}
+              >
+                {!isMobile && (
+                  // Render buttons to hide/show the search form
+                  <React.Fragment>
+                    <div
+                      className={
+                        Styles.search_tab +
+                        (collapsed_form
+                          ? ''
+                          : ' '.concat(Styles.search_tab_hidden))
+                      }
+                      onClick={() => {
+                        setCollapsedForm(false);
+                      }}
+                    >
+                      <FaSearch style={{ display: 'block' }} />
+                    </div>
+                    <div
+                      className={Styles.collapse_form_btn}
+                      onClick={() => {
+                        setCollapsedForm(true);
+                      }}
+                    >
+                      <BsX style={{ display: 'block' }} size={20} />
+                    </div>
+                  </React.Fragment>
+                )}
+                {/* Reset Filters Button */}
+                <Row className="pt-3 px-4">
+                  <small
+                    className={Styles.reset_filters_btn + ' mx-auto'}
+                    onClick={handleResetFilters}
                   >
-                    <FaSearch style={{ display: 'block' }} />
+                    Reset Filters
+                  </small>
+                </Row>
+                <Row className="mx-auto pt-2 px-4 pb-2">
+                  <div className={Styles.mobile_search_bar}>
+                    {/* Search Bar */}
+                    <InputGroup className={Styles.search_input}>
+                      <FormControl
+                        type="text"
+                        value={searchText}
+                        onChange={(event) => setSearchText(event.target.value)}
+                        placeholder="Search by course code, title, or prof"
+                        ref={searchTextInput}
+                      />
+                    </InputGroup>
                   </div>
+                </Row>
+                <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                   <div
-                    className={Styles.collapse_form_btn}
-                    onClick={() => {
-                      setCollapsedForm(true);
-                    }}
+                    className={`${Styles.selector_container} ${Styles.mobile_sizing}`}
                   >
-                    <BsX style={{ display: 'block' }} size={20} />
-                  </div>
-                </React.Fragment>
-              )}
-              {/* Reset Filters Button */}
-              <Row className="pt-3 px-4">
-                <small
-                  className={Styles.reset_filters_btn + ' mx-auto'}
-                  onClick={handleResetFilters}
-                >
-                  Reset Filters
-                </small>
-              </Row>
-              <Row className="mx-auto pt-2 px-4 pb-2">
-                <div className={Styles.search_bar}>
-                  {/* Search Bar */}
-                  <InputGroup className={Styles.search_input}>
-                    <FormControl
-                      type="text"
-                      value={searchText}
-                      onChange={(event) => setSearchText(event.target.value)}
-                      placeholder="Search by course code, title, or prof"
-                      ref={searchTextInput}
-                    />
-                  </InputGroup>
-                </div>
-              </Row>
-              <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
-                <div className={`${Styles.selector_container}`}>
-                  {/* Sort By Select */}
-                  <Select
-                    value={select_sortby}
-                    options={sortbyOptions}
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={(options) => {
-                      setSelectSortby(options);
-                    }}
-                  />
-                </div>
-                <div
-                  className={Styles.sort_btn + ' my-auto'}
-                  onClick={handleSortOrder}
-                >
-                  {select_sortby.value === 'course_code' ||
-                  select_sortby.value === 'course_title' ? (
-                    // Sorting by letters
-                    sort_order === 'asc' ? (
-                      <FcAlphabeticalSortingAz
-                        className={Styles.sort_icon}
-                        size={20}
-                      />
-                    ) : (
-                      <FcAlphabeticalSortingZa
-                        className={Styles.sort_icon}
-                        size={20}
-                      />
-                    )
-                  ) : // Sorting by numbers
-                  sort_order === 'asc' ? (
-                    <FcNumericalSorting12
-                      className={Styles.sort_icon}
-                      size={20}
-                    />
-                  ) : (
-                    <FcNumericalSorting21
-                      className={Styles.sort_icon}
-                      size={20}
-                    />
-                  )}
-                </div>
-              </Row>
-              <hr />
-              <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Semesters</div>
-                  {seasonsOptions && (
-                    // Seasons Multi-Select
+                    {/* Sort By Select */}
                     <Select
-                      isMulti
-                      value={select_seasons}
-                      options={seasonsOptions}
-                      placeholder="Last 5 Years"
+                      value={select_sortby}
+                      options={sortbyOptions}
                       // prevent overlap with tooltips
                       styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={(options) => {
-                        // Set seasons state
-                        setSelectSeasons(options ? options : []);
+                        setSelectSortby(options);
+                      }}
+                    />
+                  </div>
+                  <div
+                    className={Styles.sort_btn + ' my-auto'}
+                    onClick={handleSortOrder}
+                  >
+                    {select_sortby.value === 'course_code' ||
+                    select_sortby.value === 'course_title' ? (
+                      // Sorting by letters
+                      sort_order === 'asc' ? (
+                        <FcAlphabeticalSortingAz
+                          className={Styles.sort_icon}
+                          size={20}
+                        />
+                      ) : (
+                        <FcAlphabeticalSortingZa
+                          className={Styles.sort_icon}
+                          size={20}
+                        />
+                      )
+                    ) : // Sorting by numbers
+                    sort_order === 'asc' ? (
+                      <FcNumericalSorting12
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    ) : (
+                      <FcNumericalSorting21
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    )}
+                  </div>
+                </Row>
+                <hr />
+                <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
+                  <div
+                    className={`col-md-12 p-0 ${Styles.selector_container} ${Styles.mobile_sizing}`}
+                  >
+                    {seasonsOptions && (
+                      // Seasons Multi-Select
+                      <Select
+                        isMulti
+                        value={select_seasons}
+                        options={seasonsOptions}
+                        placeholder="Last 5 Years"
+                        // prevent overlap with tooltips
+                        styles={selectStyles}
+                        menuPortalTarget={document.body}
+                        onChange={(options) => {
+                          // Set seasons state
+                          setSelectSeasons(options ? options : []);
+                        }}
+                        components={animatedComponents}
+                      />
+                    )}
+                  </div>
+                  <div
+                    className={`col-md-12 p-0  ${Styles.selector_container} ${Styles.mobile_sizing}`}
+                  >
+                    {/* Skills/Areas Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_skillsareas}
+                      options={skillsAreasOptions}
+                      placeholder="All Skills and Areas"
+                      // colors
+                      styles={colorOptionStyles}
+                      // prevent overlap with tooltips
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectSkillsAreas(options);
                       }}
                       components={animatedComponents}
                     />
-                  )}
-                </div>
-                <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Skills and areas</div>
-                  {/* Skills/Areas Multi-Select */}
-                  <Select
-                    isMulti
-                    value={select_skillsareas}
-                    options={skillsAreasOptions}
-                    placeholder="Any"
-                    // colors
-                    styles={colorOptionStyles}
-                    // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
-                    onChange={(options) => {
-                      setSelectSkillsAreas(options);
-                    }}
-                    components={animatedComponents}
-                  />
-                </div>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Credits</div>
-                  {/* Course Credit Multi-Select */}
-                  <Select
-                    isMulti
-                    value={select_credits}
-                    options={creditOptions}
-                    placeholder="Any"
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={(options) => {
-                      setSelectCredits(options);
-                    }}
-                    components={animatedComponents}
-                  />
-                </div>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Subjects</div>
-                  {/* Yale Subjects Multi-Select */}
-                  <Select
-                    isMulti
-                    value={select_subjects}
-                    options={subjectOptions}
-                    placeholder="Any"
-                    isSearchable={true}
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={(options) => {
-                      setSelectSubjects(options ? options : []);
-                    }}
-                    components={animatedComponents}
-                  />
-                </div>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Schools</div>
-                  {/* Yale Schools Multi-Select */}
-                  <Select
-                    isMulti
-                    value={select_schools}
-                    options={schoolOptions}
-                    placeholder="Any"
-                    // prevent overlap with tooltips
-                    styles={selectStyles}
-                    menuPortalTarget={document.body}
-                    onChange={(options) => {
-                      setSelectSchools(options ? options : []);
-                    }}
-                    components={animatedComponents}
-                  />
-                </div>
-              </Row>
-              <hr />
-              <Row className={`mx-auto pt-0 pb-2 px-2 ${Styles.sliders}`}>
-                <Col>
-                  <Container style={{ paddingTop: '1px' }}>
-                    {/* Class Rating Slider */}
-                    <Range
-                      min={1}
-                      max={5}
-                      step={0.1}
-                      defaultValue={ratingBounds}
-                      // debounce the slider state update
-                      // to make it smoother
-                      onChange={debounce((value) => {
-                        setRatingBounds(value);
-                      }, 250)}
-                      handle={ratingSliderHandle}
-                      className={Styles.slider}
-                    />
-                  </Container>
-                  <div className={`text-center ${Styles.filter_title}`}>
-                    Overall rating
                   </div>
-                </Col>
-                <Col>
-                  <Container>
-                    {/* Workload Rating Slider */}
-                    <Range
-                      min={1}
-                      max={5}
-                      step={0.1}
-                      defaultValue={workloadBounds}
-                      // debounce the slider state update
-                      // to make it smoother
-                      onChange={debounce((value) => {
-                        setWorkloadBounds(value);
-                      }, 250)}
-                      handle={workloadSliderHandle}
-                      className={Styles.slider}
+                  <div
+                    className={`col-md-12 p-0 ${Styles.selector_container} ${Styles.mobile_sizing}`}
+                  >
+                    {/* Course Credit Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_credits}
+                      options={creditOptions}
+                      placeholder="All Credits"
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectCredits(options);
+                      }}
+                      components={animatedComponents}
                     />
-                  </Container>
-                  <div className={`text-center ${Styles.filter_title}`}>
-                    Workload
                   </div>
-                </Col>
-              </Row>
-              <Row
-                className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
-              >
-                {/* Hide Cancelled Courses Toggle */}
-                <Form.Check type="switch" className={Styles.toggle_option}>
-                  <Form.Check.Input
-                    checked={hideCancelled}
-                    onChange={(e) => {}} // dummy handler to remove warning
-                  />
-                  <Form.Check.Label
-                    onClick={() => {
-                      setHideCancelled(!hideCancelled);
-                    }}
+                  <div
+                    className={`col-md-12 p-0 ${Styles.selector_container} ${Styles.mobile_sizing}`}
                   >
-                    Hide cancelled courses
-                  </Form.Check.Label>
-                </Form.Check>
-              </Row>
-              <Row
-                className={`mx-auto py-1 px-4 justify-content-left ${Styles.light_bg}`}
-              >
-                {/* Hide First-Year Seminar Courses Toggle */}
-                <Form.Check type="switch" className={Styles.toggle_option}>
-                  <Form.Check.Input
-                    checked={hideFirstYearSeminars}
-                    onChange={(e) => {}} // dummy handler to remove warning
-                  />
-                  <Form.Check.Label
-                    onClick={() => {
-                      setHideFirstYearSeminars(!hideFirstYearSeminars);
-                    }}
+                    {/* Yale Subjects Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_subjects}
+                      options={subjectOptions}
+                      placeholder="All Subjects"
+                      isSearchable={true}
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectSubjects(options ? options : []);
+                      }}
+                      components={animatedComponents}
+                    />
+                  </div>
+                  <div
+                    className={`col-md-12 p-0 ${Styles.selector_container} ${Styles.mobile_sizing}`}
                   >
-                    Hide first-year seminars
-                  </Form.Check.Label>
-                </Form.Check>
-              </Row>
-              <div className={Styles.useless_btn}>
-                {/* The form requires a button with type submit in order to process
+                    {/* Yale Schools Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_schools}
+                      options={schoolOptions}
+                      placeholder="All Schools"
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectSchools(options ? options : []);
+                      }}
+                      components={animatedComponents}
+                    />
+                  </div>
+                </Row>
+                <hr />
+                <Row className={`mx-auto pt-0 pb-2 px-2 ${Styles.sliders}`}>
+                  <Col>
+                    <Container style={{ paddingTop: '1px' }}>
+                      {/* Class Rating Slider */}
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        defaultValue={ratingBounds}
+                        // debounce the slider state update
+                        // to make it smoother
+                        onChange={debounce((value) => {
+                          setRatingBounds(value);
+                        }, 250)}
+                        handle={ratingSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Overall rating
+                    </div>
+                  </Col>
+                  <Col>
+                    <Container>
+                      {/* Workload Rating Slider */}
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        defaultValue={workloadBounds}
+                        // debounce the slider state update
+                        // to make it smoother
+                        onChange={debounce((value) => {
+                          setWorkloadBounds(value);
+                        }, 250)}
+                        handle={workloadSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Workload
+                    </div>
+                  </Col>
+                </Row>
+                <Row
+                  className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
+                >
+                  {/* Hide Cancelled Courses Toggle */}
+                  <Form.Check type="switch" className={Styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideCancelled}
+                      onChange={(e) => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideCancelled(!hideCancelled);
+                      }}
+                    >
+                      Hide cancelled courses
+                    </Form.Check.Label>
+                  </Form.Check>
+                </Row>
+                <Row
+                  className={`mx-auto py-1 px-4 justify-content-left ${Styles.light_bg}`}
+                >
+                  {/* Hide First-Year Seminar Courses Toggle */}
+                  <Form.Check type="switch" className={Styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideFirstYearSeminars}
+                      onChange={(e) => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideFirstYearSeminars(!hideFirstYearSeminars);
+                      }}
+                    >
+                      Hide first-year seminars
+                    </Form.Check.Label>
+                  </Form.Check>
+                </Row>
+                <div className={Styles.useless_btn}>
+                  {/* The form requires a button with type submit in order to process
                     events when someone hits enter to submit. We want this functionality
                     so we can scroll to the results on mobile when they hit enter,
                     and hence have a hidden button here. */}
-                <Button type="submit" />
-              </div>
-            </Form>
-          </div>
-        </Col>
+                  <Button type="submit" />
+                </div>
+              </Form>
+            </div>
+          </Col>
+        ) : (
+          // Desktop Search Options
+          <Col md={12} className="px-0">
+            <Row className="mx-auto">
+              <Form
+                className={`px-0 ${Styles.search_container}`}
+                onSubmit={scroll_to_results}
+                ref={(ref) => {
+                  searchCol = ref;
+                }}
+              >
+                <Row className="mx-auto py-1 px-4">
+                  {/* Search Bar */}
+                  <div className={Styles.search_bar + ' flex-grow-1'}>
+                    <InputGroup className={Styles.search_input}>
+                      <FormControl
+                        type="text"
+                        value={searchText}
+                        onChange={(event) => setSearchText(event.target.value)}
+                        placeholder="Search by course code, title, or prof"
+                        ref={searchTextInput}
+                      />
+                    </InputGroup>
+                  </div>
+                  <div className={Styles.sortby_select + ' mx-2'}>
+                    {/* Sort By Select */}
+                    <Select
+                      value={select_sortby}
+                      options={sortbyOptions}
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectSortby(options);
+                      }}
+                    />
+                  </div>
+                  <div
+                    className={Styles.sort_btn + ' my-auto'}
+                    onClick={handleSortOrder}
+                  >
+                    {select_sortby.value === 'course_code' ||
+                    select_sortby.value === 'course_title' ? (
+                      // Sorting by letters
+                      sort_order === 'asc' ? (
+                        <FcAlphabeticalSortingAz
+                          className={Styles.sort_icon}
+                          size={20}
+                        />
+                      ) : (
+                        <FcAlphabeticalSortingZa
+                          className={Styles.sort_icon}
+                          size={20}
+                        />
+                      )
+                    ) : // Sorting by numbers
+                    sort_order === 'asc' ? (
+                      <FcNumericalSorting12
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    ) : (
+                      <FcNumericalSorting21
+                        className={Styles.sort_icon}
+                        size={20}
+                      />
+                    )}
+                  </div>
+                </Row>
+                <hr className="m-0" />
+                <Row className="mx-auto py-1 px-4">
+                  {seasonsOptions && (
+                    // Seasons Multi-Select
+                    <div
+                      className={
+                        Styles.selector_container + ' ' + Styles.desktop_sizing
+                      }
+                    >
+                      <Select
+                        isMulti
+                        value={select_seasons}
+                        options={seasonsOptions}
+                        placeholder="Last 5 Years"
+                        // prevent overlap with tooltips
+                        styles={selectStyles}
+                        menuPortalTarget={document.body}
+                        onChange={(options) => {
+                          // Set seasons state
+                          setSelectSeasons(options ? options : []);
+                        }}
+                        components={animatedComponents}
+                      />
+                    </div>
+                  )}
+                  <div
+                    className={
+                      Styles.selector_container +
+                      ' ' +
+                      Styles.desktop_sizing +
+                      ' ' +
+                      Styles.subject_select
+                    }
+                  >
+                    {/* Yale Subjects Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_subjects}
+                      options={subjectOptions}
+                      placeholder="All Subjects"
+                      isSearchable={true}
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectSubjects(options ? options : []);
+                      }}
+                      components={animatedComponents}
+                    />
+                  </div>
+                  <div
+                    className={
+                      Styles.selector_container + ' ' + Styles.desktop_sizing
+                    }
+                  >
+                    {/* Yale Schools Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_schools}
+                      options={schoolOptions}
+                      placeholder="All Schools"
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectSchools(options ? options : []);
+                      }}
+                      components={animatedComponents}
+                    />
+                  </div>
+                  <div
+                    className={
+                      Styles.selector_container + ' ' + Styles.desktop_sizing
+                    }
+                  >
+                    {/* Skills/Areas Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_skillsareas}
+                      options={skillsAreasOptions}
+                      placeholder="All Skills/Areas"
+                      // colors
+                      styles={colorOptionStyles}
+                      // prevent overlap with tooltips
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectSkillsAreas(options);
+                      }}
+                      components={animatedComponents}
+                    />
+                  </div>
+                  <div
+                    className={
+                      Styles.selector_container + ' ' + Styles.desktop_sizing
+                    }
+                  >
+                    {/* Course Credit Multi-Select */}
+                    <Select
+                      isMulti
+                      value={select_credits}
+                      options={creditOptions}
+                      placeholder="All Credits"
+                      // prevent overlap with tooltips
+                      styles={selectStyles}
+                      menuPortalTarget={document.body}
+                      onChange={(options) => {
+                        setSelectCredits(options);
+                      }}
+                      components={animatedComponents}
+                    />
+                  </div>
+                </Row>
+                <div className={Styles.useless_btn}>
+                  {/* The form requires a button with type submit in order to process
+                    events when someone hits enter to submit. We want this functionality
+                    so we can scroll to the results on mobile when they hit enter,
+                    and hence have a hidden button here. */}
+                  <Button type="submit" />
+                </div>
+              </Form>
+            </Row>
+          </Col>
+        )}
         {/* Search Results Catalog */}
 
         <Col
-          md={collapsed_form ? 12 : 8}
-          lg={collapsed_form ? 12 : 8}
-          xl={collapsed_form ? 12 : 9}
+          md={12}
           className={
             'm-0 ' +
             (isMobile
               ? 'p-3 ' + Styles.results_col_mobile
-              : (collapsed_form ? 'px-5 pt-3 ' : 'p-3 ') + Styles.results_col)
+              : 'px-5 pt-3 ' + Styles.results_col)
           }
         >
           <Element name="catalog">

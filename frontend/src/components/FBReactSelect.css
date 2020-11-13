@@ -1,6 +1,6 @@
 /* Hide the arrow dropdown and replace it with an x if a FB friend is chosen*/
-.fb_select .css-tlfecz-indicatorContainer ~ .css-tlfecz-indicatorContainer,
-.fb_select .css-1gtu0rj-indicatorContainer ~ .css-1gtu0rj-indicatorContainer {
+.css-tlfecz-indicatorContainer ~ .css-tlfecz-indicatorContainer,
+.css-1gtu0rj-indicatorContainer ~ .css-1gtu0rj-indicatorContainer {
   display: none !important;
 }
 
