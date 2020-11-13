@@ -24,7 +24,7 @@ const POSTHOG_TOKEN =
   process.env.REACT_APP_POSTHOG_TOKEN ||
   console.error('posthog token not set') /* always false */ ||
   'dummy';
-// /* testing only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
+// /* testing posthog in development only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
 const posthog_options = {
   api_host: 'https://hog.coursetable.com',
   capture_pageview: false,
@@ -42,6 +42,8 @@ if (POSTHOG_TOKEN !== '') {
   });
 }
 
+// Note: this is currently enabled in development as well. We can revisit this
+// if it becomes annoying.
 Sentry.init({
   dsn:
     'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
