@@ -1,6 +1,6 @@
 .search_base {
   width: 100%;
-  min-height: calc(100vh + 15px);
+  min-height: calc(100vh - 56px);
 }
 
 .search_col {
@@ -135,7 +135,7 @@
   transition-delay: 0.3s;
   transition-property: right, opacity;
   top: 10px;
-  right: -30px;
+  right: -45px;
   padding: 7px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
