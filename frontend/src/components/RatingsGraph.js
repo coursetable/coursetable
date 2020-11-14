@@ -6,9 +6,10 @@ import styles from './RatingsGraph.module.css';
  * Displays Evaluation Graphs
  * @prop ratings - list that holds the counts for each rating 1-5
  * @prop reverse - boolean of whether or not to reverse the colors
+ * @prop labels - list that holds the x-axis labels for the grpah
  */
 
-const RatingsGraph = ({ ratings, reverse }) => {
+const RatingsGraph = ({ ratings, reverse, labels }) => {
   let max_val = 1;
   // Find the maximum count for a rating
   ratings.forEach((rating) => {
@@ -39,7 +40,7 @@ const RatingsGraph = ({ ratings, reverse }) => {
         <p className={styles.value + ' m-0 '}>{rating}</p>
         {/* Bar */}
         <div
-          className={styles.column + ' px-1 mx-3'}
+          className={styles.column + ' px-1 mx-auto'}
           style={{
             backgroundColor: colors[indx],
             height: height.toString() + 'px',
@@ -53,7 +54,8 @@ const RatingsGraph = ({ ratings, reverse }) => {
         )}
         {ratings.length === 5 && (
           <p className={styles.value + ' m-0 ' + styles.xaxis_label}>
-            {indx + 1}
+            <span className="d-none d-sm-block">{labels[indx]}</span>
+            <span className="d-sm-none">{indx + 1}</span>
           </p>
         )}
       </div>

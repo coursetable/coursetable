@@ -57,11 +57,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
         scrollable={true}
         onHide={handleHide}
         dialogClassName="modal-custom-width"
-        /*
-        TODO: set to 100ms animation
-        Modal.TRANSITION_DURATION = 100;
-        Modal.BACKDROP_TRANSITION_DURATION = 50;
-        */
         animation={false}
         centered
       >

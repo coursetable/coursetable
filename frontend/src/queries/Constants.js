@@ -43,15 +43,18 @@ export const skillsAreasOptions = [
 ];
 
 export const ratingColormap = chroma
-  .bezier(['#f8696b', '#ffeb84', '#63b37b'])
-  // .bezier(['#ff5959', '#ffeb84', '#00bd26'])
-  .scale()
+  .scale(['#f8696b', '#ffeb84', '#63b37b'])
   .domain([1, 5]);
 export const workloadColormap = chroma
-  .bezier(['#63b37b', '#ffeb84', '#f8696b'])
-  // .bezier(['#00bd26', '#ffeb84', '#ff5959'])
-  .scale()
+  .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
+
+export const na_cell = {
+  color: '#b5b5b5',
+  backgroundColor: '#ebebeb',
+  fontWeight: 400,
+  fontSize: '12px',
+};
 
 export const colorOptionStyles = {
   control: (styles) => ({
@@ -169,10 +172,10 @@ export const selectStyles = {
 };
 
 export const creditOptions = [
-  { label: '0.5', value: '0.5' },
-  { label: '1', value: '1' },
-  { label: '1.5', value: '1.5' },
-  { label: '2', value: '2' },
+  { label: '0.5', value: 0.5 },
+  { label: '1', value: 1 },
+  { label: '1.5', value: 1.5 },
+  { label: '2', value: 2 },
 ];
 
 // to get a list of abbreviations, run
@@ -196,6 +199,58 @@ export const schoolOptions = [
   { label: 'Public Health', value: 'PH' },
   { label: 'Summer Session', value: 'SU' },
 ];
+
+export const questions = [
+  'assessment',
+  'workload',
+  'major',
+  'engagement',
+  'organized',
+  'feedback',
+  'challenge',
+];
+export const question_text = {
+  assessment: 'What is your overall assessment of this course?',
+  workload:
+    'Relative to other courses you have taken at Yale, the workload of this course was:',
+  major:
+    'Do you expect to use this class for credit toward your major, or toward a pre-professional program?',
+  engagement: 'Your level of engagement with the course was:',
+  organized: 'The course was well organized to facilitate student learning.',
+  feedback: 'I received clear feedback that improved my learning.',
+  challenge:
+    'Relative to other courses you have taken at Yale, the level of intellectual challenge of this course was:',
+};
+export const graph_labels = {
+  assessment: ['poor', 'fair', 'good', 'very good', 'excellent'],
+  workload: ['much less', 'less', 'same', 'greater', 'much greater'],
+  engagement: ['very low', 'low', 'medium', 'high', 'very high'],
+  organized: [
+    'strongly disagree',
+    'disagree',
+    'neutral',
+    'agree',
+    'strongly agree',
+  ],
+  feedback: [
+    'strongly disagree',
+    'disagree',
+    'neutral',
+    'agree',
+    'strongly agree',
+  ],
+  challenge: ['much less', 'less', 'same', 'greater', 'much greater'],
+  major: [],
+};
+export const graph_titles = {
+  assessment: 'Overall',
+  workload: 'Workload',
+  engagement: 'Engagement',
+  organized: 'Organization',
+  feedback: 'Feedback Clarity',
+  challenge: 'Intellectual Challenge',
+  major: 'Taking for Major?',
+};
 
 export const subjectOptions = [
   { value: 'ACCT', label: 'ACCT - Accounting' },

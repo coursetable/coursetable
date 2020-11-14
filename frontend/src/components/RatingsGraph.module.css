@@ -22,6 +22,9 @@
 
 .xaxis_label {
   color: rgb(143, 195, 255) !important;
+  font-size: 10px !important;
+  width: 55px;
+  text-align: center;
 }
 
 /* Comment out below for hover statistic functionality */

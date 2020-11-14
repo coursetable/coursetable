@@ -6,6 +6,7 @@ import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
+  na_cell,
 } from '../queries/Constants.js';
 
 import chroma from 'chroma-js';
@@ -13,7 +14,7 @@ import chroma from 'chroma-js';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking, flatten } from '../utilities';
+import { fbFriendsAlsoTaking } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -27,27 +28,19 @@ import Styles from './SearchResultsItem.module.css';
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLast - boolean | is this the last course of the search results?
  * @prop COL_SPACING - dictionary with widths of each column
- * @prop ROW_WIDTH - integer that holds width of row
- * @prop TITLE_WIDTH - integer that holds width of title
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
+ * @prop expanded - boolean | is the catalog expanded or not
  */
 
 const SearchResultsItem = ({
-  unflat_course,
+  course,
   showModal,
   multiSeasons,
   isLast,
   COL_SPACING,
-  ROW_WIDTH,
-  TITLE_WIDTH,
   isScrolling = false,
+  expanded,
 }) => {
-  const course = useMemo(() => {
-    return flatten(unflat_course);
-  }, [unflat_course]);
-
-  // Variable used in list keys
-  let key = 1;
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
 
@@ -150,7 +143,7 @@ const SearchResultsItem = ({
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${TITLE_WIDTH}px` };
+  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
   const rate_style = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WIDTH}px`,
@@ -189,7 +182,7 @@ const SearchResultsItem = ({
                 className={
                   Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
                 }
-                key={key++}
+                key={season}
               >
                 <div style={{ display: 'inline-block' }}>{icon}</div>
                 &nbsp;{"'" + year}
@@ -198,6 +191,7 @@ const SearchResultsItem = ({
           </OverlayTrigger>
         </div>
       )}
+      {/* Course Code*/}
       <div
         style={code_style}
         className={Styles.ellipsis_text + ' font-weight-bold'}
@@ -209,54 +203,27 @@ const SearchResultsItem = ({
             : ''}
         </span>
       </div>
-      <OverlayTrigger placement="right" overlay={renderTitlePopover}>
-        {/* Course Title, Code, and Skills/Area column */}
+      <OverlayTrigger
+        placement={expanded ? 'right' : 'left'}
+        overlay={renderTitlePopover}
+      >
+        {/* Course Title */}
         <div style={title_style}>
-          {/* Course Title */}
           <div className={Styles.ellipsis_text}>{course.title}</div>
         </div>
       </OverlayTrigger>
-      {ROW_WIDTH > COL_SPACING.NUM_CUT && (
-        <>
-          {/* Enrollment */}
-          <div style={num_style} className="d-flex">
-            <span className="m-auto">
-              {course.enrolled
-                ? course.enrolled
-                : course.last_enrollment &&
-                  course.last_enrollment_same_professors
-                ? course.last_enrollment
-                : course.last_enrollment
-                ? `~${course.last_enrollment}`
-                : ''}
-            </span>
-          </div>
-          {/* # FB Friends also shopping */}
-          <div style={num_style} className="d-flex">
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 100, hide: 100 }}
-              overlay={renderFBFriendsTooltip}
-            >
-              <span className={'m-auto'}>
-                {also_taking.length > 0 ? also_taking.length : ''}
-              </span>
-            </OverlayTrigger>
-          </div>
-        </>
-      )}
       {/* Class Rating */}
       <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
-          style={{
-            color: course.average_rating
-              ? ratingColormap(course.average_rating).darken(3).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating))
-              : '#ebebeb',
-          }}
+          style={
+            course.average_rating
+              ? {
+                  color: ratingColormap(course.average_rating).darken(3).css(),
+                  backgroundColor: ratingColormap(course.average_rating),
+                }
+              : na_cell
+          }
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
@@ -266,14 +233,16 @@ const SearchResultsItem = ({
       <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
-          style={{
-            color: course.average_professor
-              ? ratingColormap(course.average_professor).darken(3).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_professor
-              ? chroma(ratingColormap(course.average_professor))
-              : '#ebebeb',
-          }}
+          style={
+            course.average_professor
+              ? {
+                  color: ratingColormap(course.average_professor)
+                    .darken(3)
+                    .css(),
+                  backgroundColor: ratingColormap(course.average_professor),
+                }
+              : na_cell
+          }
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_professor
@@ -285,76 +254,102 @@ const SearchResultsItem = ({
       <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
-          style={{
-            color: course.average_workload
-              ? workloadColormap(course.average_workload).darken(2).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_workload
-              ? chroma(workloadColormap(course.average_workload))
-              : '#ebebeb',
-          }}
+          style={
+            course.average_workload
+              ? {
+                  color: workloadColormap(course.average_workload)
+                    .darken(3)
+                    .css(),
+                  backgroundColor: workloadColormap(course.average_workload),
+                }
+              : na_cell
+          }
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </div>
       </div>
+      {/* Enrollment */}
+      <div style={num_style} className="d-flex">
+        <span className="m-auto">
+          {course.enrolled
+            ? course.enrolled
+            : course.last_enrollment && course.last_enrollment_same_professors
+            ? course.last_enrollment
+            : course.last_enrollment
+            ? `~${course.last_enrollment}`
+            : ''}
+        </span>
+      </div>
+
       {/* Course Professors */}
-      {ROW_WIDTH > COL_SPACING.PROF_CUT && (
-        <div style={prof_style} className={Styles.ellipsis_text}>
-          {course.professor_names.length === 0
-            ? 'TBA'
-            : course.professor_names.join(' • ')}
-        </div>
-      )}
+      <div style={prof_style} className={Styles.ellipsis_text}>
+        {course.professor_names.length === 0
+          ? 'TBA'
+          : course.professor_names.join(' • ')}
+      </div>
+
       {/* Course Meets */}
-      {ROW_WIDTH > COL_SPACING.MEET_CUT && (
-        <div style={meet_style}>
-          <div className={Styles.ellipsis_text}>{course.times_summary}</div>
-        </div>
-      )}
+
+      <div style={meet_style}>
+        <div className={Styles.ellipsis_text}>{course.times_summary}</div>
+      </div>
+
       {/* Course Location */}
-      {ROW_WIDTH > COL_SPACING.LOC_CUT && (
-        <div style={loc_style}>
-          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
-        </div>
-      )}
+
+      <div style={loc_style}>
+        <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+      </div>
+
       {/* Skills and Areas */}
-      {ROW_WIDTH > COL_SPACING.SA_CUT && (
-        <div style={sa_style} className="d-flex pr-2">
-          <span className={Styles.skills_areas + ' '}>
-            {course.skills.map((skill) => (
-              <Badge
-                variant="secondary"
-                className={Styles.tag + ' my-auto'}
-                key={key++}
-                style={{
-                  color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill])
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {skill}
-              </Badge>
-            ))}
-            {course.areas.map((area) => (
-              <Badge
-                variant="secondary"
-                className={Styles.tag + ' my-auto'}
-                key={key++}
-                style={{
-                  color: skillsAreasColors[area],
-                  backgroundColor: chroma(skillsAreasColors[area])
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {area}
-              </Badge>
-            ))}
+
+      <div style={sa_style} className="d-flex">
+        <span className={Styles.skills_areas + ' '}>
+          {course.skills.map((skill, index) => (
+            <Badge
+              variant="secondary"
+              className={Styles.tag + ' my-auto'}
+              key={index}
+              style={{
+                color: skillsAreasColors[skill],
+                backgroundColor: chroma(skillsAreasColors[skill])
+                  .alpha(0.16)
+                  .css(),
+              }}
+            >
+              {skill}
+            </Badge>
+          ))}
+          {course.areas.map((area, index) => (
+            <Badge
+              variant="secondary"
+              className={Styles.tag + ' my-auto'}
+              key={index}
+              style={{
+                color: skillsAreasColors[area],
+                backgroundColor: chroma(skillsAreasColors[area])
+                  .alpha(0.16)
+                  .css(),
+              }}
+            >
+              {area}
+            </Badge>
+          ))}
+        </span>
+      </div>
+      {/* # FB Friends also shopping */}
+      <div style={num_style} className="d-flex ">
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 100, hide: 100 }}
+          overlay={renderFBFriendsTooltip}
+        >
+          <span className="m-auto">
+            {also_taking.length > 0 ? also_taking.length : ''}
           </span>
-        </div>
-      )}
+        </OverlayTrigger>
+      </div>
+
       {/* Bookmark button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton

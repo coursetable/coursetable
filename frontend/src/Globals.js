@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
 
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import SeasonsProvider from './components/SeasonsProvider';
+import FerryProvider from './components/FerryProvider';
 
 import { UserProvider } from './user';
 
@@ -14,6 +14,9 @@ import { ApolloProvider } from '@apollo/react-hooks';
 
 import posthog from 'posthog-js';
 
+import * as Sentry from '@sentry/react';
+import { Integrations } from '@sentry/tracing';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
 
@@ -21,7 +24,7 @@ const POSTHOG_TOKEN =
   process.env.REACT_APP_POSTHOG_TOKEN ||
   console.error('posthog token not set') /* always false */ ||
   'dummy';
-// /* testing only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
+// /* testing posthog in development only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
 const posthog_options = {
   api_host: 'https://hog.coursetable.com',
   capture_pageview: false,
@@ -38,6 +41,18 @@ if (POSTHOG_TOKEN !== '') {
     opt_out_capturing_by_default: true,
   });
 }
+
+const isDev = process.env.NODE_ENV === 'development';
+Sentry.init({
+  dsn:
+    'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
+  integrations: [new Integrations.BrowserTracing()],
+  environment: process.env.NODE_ENV,
+
+  // Note: this is currently enabled in development. We can revisit this if it becomes annoying.
+  // We can also adjust the production sample rate depending on our quotas.
+  tracesSampleRate: isDev ? 1.0 : 0.2,
+});
 
 const client = new ApolloClient({
   uri: '/ferry/v1/graphql',
@@ -59,18 +74,21 @@ function Globals({ children }) {
       {/* TODO: reenable StrictMode later */}
       {/* <React.StrictMode> */}
       <ApolloProvider client={client}>
-        <UserProvider>
-          <WindowDimensionsProvider>
-            <SeasonsProvider>
+        <FerryProvider>
+          {/* UserProvider must be inside the FerryProvider */}
+          <UserProvider>
+            <WindowDimensionsProvider>
               <Router>
                 <SPAPageChangeListener />
-                <div id="base">{children}</div>
+                <div id="base" style={{ height: 'auto' }}>
+                  {children}
+                </div>
               </Router>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
               <ToastContainer />
-            </SeasonsProvider>
-          </WindowDimensionsProvider>
-        </UserProvider>
+            </WindowDimensionsProvider>
+          </UserProvider>
+        </FerryProvider>
       </ApolloProvider>
       {/* </React.StrictMode> */}
     </>

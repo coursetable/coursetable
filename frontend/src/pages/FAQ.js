@@ -215,7 +215,6 @@ function FAQ() {
       ),
     },
     {
-      // TODO: ensure that the blog link continues to work.
       title: 'What is the history of CourseTable?',
       contents: (
         <>
@@ -226,7 +225,7 @@ function FAQ() {
           <p>
             In 2014,{' '}
             <a
-              href="https://coursetable.com/Blog"
+              href="https://legacy.coursetable.com/Blog.html"
               target="_blank"
               rel="noopener noreferrer"
             >

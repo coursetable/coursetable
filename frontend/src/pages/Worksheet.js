@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useCallback } from 'react';
 
-import { FetchWorksheet } from '../queries/GetWorksheetListings';
+import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
@@ -148,7 +148,7 @@ function Worksheet() {
   // Perform search query to fetch listing data for each worksheet course
   // Only performs search query once with the initial worksheet and then caches the result
   // This prevents the need to perform another search query and render "loading..." when removing a course
-  const { loading, error, data } = FetchWorksheet(init_worksheet);
+  const { loading, error, data } = useWorksheetInfo(init_worksheet);
 
   // Initialize listings state if haven't already
   if (
@@ -322,6 +322,7 @@ function Worksheet() {
                   onSeasonChange={changeSeason}
                   setFbPerson={handleFBPersonChange}
                   fb_person={fb_person}
+                  setCurExpand={setCurExpand}
                 />
               </div>
             </Fade>
@@ -343,8 +344,8 @@ function Worksheet() {
             </Fade>
             {/* Expand/Compress Icons for list */}
 
-            <div style={{ zIndex: 420 }}>
-              {cur_expand === 'none' ? (
+            <div>
+              {cur_expand === 'none' && (
                 <FaExpandAlt
                   className={styles.expand_btn + ' ' + styles.top_left}
                   size={expand_btn_size}
@@ -352,16 +353,6 @@ function Worksheet() {
                     // Expand the list component
                     posthog.capture('worksheet-view-list');
                     setCurExpand('list');
-                  }}
-                />
-              ) : (
-                <FaCompressAlt
-                  className={styles.expand_btn + ' ' + styles.top_left}
-                  size={expand_btn_size}
-                  onClick={() => {
-                    // Compress the list component
-                    posthog.capture('worksheet-view-table');
-                    setCurExpand('none');
                   }}
                 />
               )}
