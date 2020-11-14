@@ -4,7 +4,7 @@ import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent, StyledListItem } from './StyledComponents';
 
 /**
  * Render worksheet list in default worksheet view
@@ -41,9 +41,9 @@ function WorksheetList({
       courses.forEach((course) => {
         // Add listgroup item to items list
         items.push(
-          <ListGroup.Item
+          <StyledListItem
             key={id++}
-            className={styles.clickable + ' p-0'}
+            className={styles.clickable + ' py-1 px-2'}
             onMouseEnter={() => {
               setHoverCourse(course);
             }}
@@ -51,43 +51,41 @@ function WorksheetList({
               setHoverCourse(null);
             }}
           >
-            <SurfaceComponent className={'py-1 px-2'}>
-              {/* Bookmark Button */}
-              <div className={styles.bookmark}>
-                <WorksheetToggleButton
-                  worksheetView={true}
-                  crn={course.crn}
-                  season_code={cur_season}
-                  modal={false}
-                />
-              </div>
-              <Row className="align-items-center mx-auto">
-                {/* Hide Button */}
-                <Col xs="auto" className="pl-0 pr-2 my-auto">
-                  <Row className="m-auto">
-                    <WorksheetHideButton
-                      toggleCourse={toggleCourse}
-                      crn={course.crn}
-                      season_code={cur_season}
-                    />
-                  </Row>
-                </Col>
-                {/* Course Code and Title */}
-                <Col
-                  className={
-                    (course.hidden ? styles.hidden + ' ' : '') +
-                    styles.list_text +
-                    ' px-0'
-                  }
-                  onClick={() => showModal(course)}
-                >
-                  <strong>{course.course_code}</strong>
-                  <br />
-                  <span className={styles.course_title}>{course.title}</span>
-                </Col>
-              </Row>
-            </SurfaceComponent>
-          </ListGroup.Item>
+            {/* Bookmark Button */}
+            <div className={styles.bookmark}>
+              <WorksheetToggleButton
+                worksheetView={true}
+                crn={course.crn}
+                season_code={cur_season}
+                modal={false}
+              />
+            </div>
+            <Row className="align-items-center mx-auto">
+              {/* Hide Button */}
+              <Col xs="auto" className="pl-0 pr-2 my-auto">
+                <Row className="m-auto">
+                  <WorksheetHideButton
+                    toggleCourse={toggleCourse}
+                    crn={course.crn}
+                    season_code={cur_season}
+                  />
+                </Row>
+              </Col>
+              {/* Course Code and Title */}
+              <Col
+                className={
+                  (course.hidden ? styles.hidden + ' ' : '') +
+                  styles.list_text +
+                  ' px-0'
+                }
+                onClick={() => showModal(course)}
+              >
+                <strong>{course.course_code}</strong>
+                <br />
+                <span className={styles.course_title}>{course.title}</span>
+              </Col>
+            </Row>
+          </StyledListItem>
         );
       });
 

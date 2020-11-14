@@ -6,6 +6,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import { StyledCalendar } from './StyledComponents';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 const localizer = momentLocalizer(moment);
@@ -182,7 +183,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
   }, [ret_values]);
 
   return (
-    <Calendar
+    <StyledCalendar
       // Show Mon-Fri
       defaultView={'work_week'}
       views={['work_week']}

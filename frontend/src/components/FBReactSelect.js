@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import Select from 'react-select';
 import { useUser } from '../user';
 import './FBReactSelect.css';
+import { StyledSelect } from './StyledComponents';
 
 /**
  * Render FB React-Select Dropdown in WorksheetSettingsDropdown.js and WorksheetRowDropdown.js
@@ -70,7 +71,8 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
 
   return (
     <div className="fb_select">
-      <Select
+      <StyledSelect
+        classNamePrefix={'Select'}
         value={
           cur_person === 'me'
             ? null

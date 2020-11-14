@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import Select from 'react-select';
 import { toSeasonString } from '../utilities';
+import { StyledSelect } from './StyledComponents';
 
 /**
  * Render season dropdown
@@ -27,7 +28,8 @@ function SeasonReactSelect({ cur_season, season_codes, onSeasonChange }) {
   }, [season_codes]);
 
   return (
-    <Select
+    <StyledSelect
+      classNamePrefix={'Select'}
       value={{
         value: cur_season,
         label: toSeasonString(cur_season)[0],
