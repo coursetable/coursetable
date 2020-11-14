@@ -36,6 +36,7 @@
 
 .rbc-event:hover {
   filter: brightness(85%);
+  z-index: 2;
 }
 
 .rbc-event-label {
