@@ -38,13 +38,12 @@
   font-weight: 600;
 }
 
-.up_btn {
-  position: fixed;
-  z-index: 420;
-  bottom: 20px;
-  right: 20px;
-  transition: 0.3s !important;
-  color: rgb(206, 206, 206);
+.one_line {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .up_btn:hover {
@@ -56,6 +55,7 @@
 .list_grid_toggle {
   position: absolute;
   left: 5px;
+  z-index: 2;
 }
 
 :global .sticky {

@@ -88,7 +88,7 @@ const WorksheetExpandedList = ({
             <SearchResults
               data={courses}
               showModal={showModal}
-              expanded={cur_expand === 'list'}
+              expanded={cur_expand !== 'list'}
               isLoggedIn={true}
               isList={isList}
               setView={setView}

@@ -49,7 +49,7 @@ function App() {
   // Render spinner if page loading
   if (loading) {
     return (
-      <Row className="m-auto" style={{ height: '100%' }}>
+      <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
