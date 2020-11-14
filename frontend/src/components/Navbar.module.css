@@ -1,7 +1,3 @@
-.navbar {
-  background: white;
-}
-
 .sticky_navbar {
   position: sticky;
   top: 0;
@@ -20,7 +16,8 @@ nav > .nav_brand {
 .navbar_links {
   padding: 0.5rem 1rem 0.5rem 0rem !important;
   transition: 0.33s ease-out;
-  color: rgba(1, 1, 1, 0.6);
+  /* color: rgba(1, 1, 1, 0.6); */
+  color: inherit;
   font-weight: 500;
 }
 

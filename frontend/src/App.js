@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import { ThemeProvider } from 'styled-components';
+import { useDarkMode } from './components/UseDarkMode';
+import { GlobalStyles } from './components/GlobalStyles';
+import { lightTheme, darkTheme } from './components/Themes';
 
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
@@ -27,6 +31,10 @@ import { Row, Spinner } from 'react-bootstrap';
  */
 
 function App() {
+  // website light/dark theme
+  const [theme, themeToggler] = useDarkMode();
+  const themeMode = theme === 'light' ? lightTheme : darkTheme;
+
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -57,105 +65,108 @@ function App() {
     );
   }
   return (
-    <>
-      <Notice>
-        CourseTable v2.0 is under construction, but{' '}
-        <Link to="/feedback">feedback</Link> is welcome. The{' '}
-        <a href="https://old.coursetable.com">old site</a> is also still
-        available.
-      </Notice>
-      <Navbar isLoggedIn={isLoggedIn} />
-      <Switch>
-        {/* Home Page */}
-        <MyRoute exact path="/">
-          {isLoggedIn ? (
-            /*<Home />*/ <Redirect to="/catalog" />
-          ) : (
-            <Redirect to="/login" />
-          )}
-        </MyRoute>
-
-        {/* About */}
-        <MyRoute exact path="/about">
-          <About />
-        </MyRoute>
-
-        {/* Catalog */}
-        <MyRoute
-          exact
-          path="/catalog"
-          render={(props) => {
-            const requires_challenge = isLoggedIn && !user.hasEvals;
-            return requires_challenge ? (
-              <Redirect push={true} to="/challenge" />
+    <ThemeProvider theme={themeMode}>
+      <>
+        <GlobalStyles />
+        <Notice>
+          CourseTable v2.0 is under construction, but{' '}
+          <Link to="/feedback">feedback</Link> is welcome. The{' '}
+          <a href="https://old.coursetable.com">old site</a> is also still
+          available.
+        </Notice>
+        <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
+        <Switch>
+          {/* Home Page */}
+          <MyRoute exact path="/">
+            {isLoggedIn ? (
+              /*<Home />*/ <Redirect to="/catalog" />
             ) : (
-              <Search {...props} />
-            );
+              <Redirect to="/login" />
+            )}
+          </MyRoute>
+
+          {/* About */}
+          <MyRoute exact path="/about">
+            <About />
+          </MyRoute>
+
+          {/* Catalog */}
+          <MyRoute
+            exact
+            path="/catalog"
+            render={(props) => {
+              const requires_challenge = isLoggedIn && !user.hasEvals;
+              return requires_challenge ? (
+                <Redirect push={true} to="/challenge" />
+              ) : (
+                <Search {...props} />
+              );
+            }}
+          />
+
+          {/* Auth */}
+          <MyRoute exact path="/login">
+            {isLoggedIn ? <Redirect to="/" /> : <Landing />}
+          </MyRoute>
+
+          <MyRoute exact path="/worksheetlogin">
+            {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
+          </MyRoute>
+
+          {/* OCE Challenge */}
+          <MyRoute exact path="/challenge">
+            <Challenge />
+          </MyRoute>
+
+          {/* Worksheet */}
+          <MyRoute exact path="/worksheet">
+            {isLoggedIn ? (
+              user.hasEvals ? (
+                <Worksheet />
+              ) : (
+                <Redirect push={true} to="/challenge" />
+              )
+            ) : (
+              <Redirect to="/worksheetlogin" />
+            )}
+          </MyRoute>
+
+          {/* Thank You */}
+          <MyRoute exact path="/thankyou">
+            <Thankyou />
+          </MyRoute>
+
+          {/* Footer Links */}
+
+          <MyRoute exact path="/faq">
+            <FAQ />
+          </MyRoute>
+
+          <MyRoute exact path="/feedback">
+            <Feedback />
+          </MyRoute>
+
+          <MyRoute exact path="/joinus">
+            <Join />
+          </MyRoute>
+
+          <MyRoute path="/Table">
+            <Redirect to="/catalog" />
+          </MyRoute>
+
+          {/* Catch-all Route to NotFound Page */}
+          <MyRoute path="/">
+            <NotFound />
+          </MyRoute>
+        </Switch>
+        {/* Render footer if not on catalog or worksheet pages */}
+        <Route
+          render={({ location }) => {
+            return !['/catalog'].includes(location.pathname) && <Footer />;
           }}
         />
-
-        {/* Auth */}
-        <MyRoute exact path="/login">
-          {isLoggedIn ? <Redirect to="/" /> : <Landing />}
-        </MyRoute>
-
-        <MyRoute exact path="/worksheetlogin">
-          {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
-        </MyRoute>
-
-        {/* OCE Challenge */}
-        <MyRoute exact path="/challenge">
-          <Challenge />
-        </MyRoute>
-
-        {/* Worksheet */}
-        <MyRoute exact path="/worksheet">
-          {isLoggedIn ? (
-            user.hasEvals ? (
-              <Worksheet />
-            ) : (
-              <Redirect push={true} to="/challenge" />
-            )
-          ) : (
-            <Redirect to="/worksheetlogin" />
-          )}
-        </MyRoute>
-
-        {/* Thank You */}
-        <MyRoute exact path="/thankyou">
-          <Thankyou />
-        </MyRoute>
-
-        {/* Footer Links */}
-
-        <MyRoute exact path="/faq">
-          <FAQ />
-        </MyRoute>
-
-        <MyRoute exact path="/feedback">
-          <Feedback />
-        </MyRoute>
-
-        <MyRoute exact path="/joinus">
-          <Join />
-        </MyRoute>
-
-        <MyRoute path="/Table">
-          <Redirect to="/catalog" />
-        </MyRoute>
-
-        {/* Catch-all Route to NotFound Page */}
-        <MyRoute path="/">
-          <NotFound />
-        </MyRoute>
-      </Switch>
-      {/* Render footer if not on catalog or worksheet pages */}
-      <Route
-        render={({ location }) => {
-          return !['/catalog'].includes(location.pathname) && <Footer />;
-        }}
-      />
-    </>
+      </>
+    </ThemeProvider>
   );
 }
 

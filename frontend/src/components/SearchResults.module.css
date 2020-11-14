@@ -1,6 +1,5 @@
 .results_container {
   border-radius: 8px;
-  background: white;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
@@ -28,7 +27,7 @@
 }
 
 .results_header_inner {
-  background-color: white !important;
+  /* background-color: white !important; */
 }
 
 .results_header {

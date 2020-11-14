@@ -56,6 +56,10 @@ import {
 } from 'react-icons/fc';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
+import {
+  SecondaryBackground,
+  StyledSelect,
+} from '../components/StyledComponents';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -574,16 +578,18 @@ function Search({ location, history }) {
             (!isMobile ? ' order-2' : '')
           }
         >
-          <div
+          <SecondaryBackground
             className={
+              Styles.search_container +
+              ' ' +
               // only make the filters sticky if not on mobile and
               // tall enough
-              !isTouch && !tooTall ? Styles.sticky : ''
+              (!isTouch && !tooTall ? Styles.sticky : '')
             }
           >
             {/* Search Form */}
             <Form
-              className={`px-0 ${Styles.search_container}`}
+              className={'px-0'}
               onSubmit={scroll_to_results}
               ref={(ref) => {
                 searchCol = ref;
@@ -866,7 +872,7 @@ function Search({ location, history }) {
                 <Button type="submit" />
               </div>
             </Form>
-          </div>
+          </SecondaryBackground>
         </Col>
         {/* Search Results Catalog */}
 

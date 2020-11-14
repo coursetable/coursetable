@@ -11,6 +11,7 @@ import { scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import posthog from 'posthog-js';
+import { SecondaryBackground } from '../components/StyledComponents';
 
 import {
   setFetchMethod,
@@ -23,7 +24,7 @@ import {
  * @prop isLoggedIn - boolean | is user logged in?
  */
 
-function CourseTableNavbar({ isLoggedIn }) {
+function CourseTableNavbar({ isLoggedIn, themeToggler }) {
   // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState(false);
   // Ref to detect outside clicks for profile dropdown
@@ -53,42 +54,42 @@ function CourseTableNavbar({ isLoggedIn }) {
     window.location.pathname = '/';
   };
 
-  // DarkMode or LightMode
-  setFetchMethod(window.fetch);
+  // // DarkMode or LightMode
+  // setFetchMethod(window.fetch);
 
-  // Checks user preferences for dark mode
-  if (!window.localStorage.getItem('darkmode')) {
-    let temp =
-      window.matchMedia('(prefers-color-scheme)').media !== 'not all' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-    window.localStorage.setItem('darkmode', temp ? 'dark' : 'light');
-  }
+  // // Checks user preferences for dark mode
+  // if (!window.localStorage.getItem('darkmode')) {
+  //   let temp =
+  //     window.matchMedia('(prefers-color-scheme)').media !== 'not all' &&
+  //     window.matchMedia('(prefers-color-scheme: dark)').matches;
+  //   window.localStorage.setItem('darkmode', temp ? 'dark' : 'light');
+  // }
 
-  const [darkModeEnabled, setDarkModeEnabled] = useState(
-    window.localStorage.getItem('darkmode') === 'dark'
-  );
+  // const [darkModeEnabled, setDarkModeEnabled] = useState(
+  //   window.localStorage.getItem('darkmode') === 'dark'
+  // );
 
-  // Updates current theme appropriately
-  useEffect(() => {
-    if (darkModeEnabled)
-      enableDarkMode({
-        brightness: 100,
-        contrast: 100,
-        sepia: 5,
-      });
-    else disableDarkMode();
-  }, [darkModeEnabled]);
+  // // Updates current theme appropriately
+  // useEffect(() => {
+  //   if (darkModeEnabled)
+  //     enableDarkMode({
+  //       brightness: 100,
+  //       contrast: 100,
+  //       sepia: 5,
+  //     });
+  //   else disableDarkMode();
+  // }, [darkModeEnabled]);
 
   return (
     <div className={styles.sticky_navbar}>
-      <div className={`${styles.navbar}`}>
+      <SecondaryBackground>
         <Container fluid className="p-0">
           <Navbar
             expanded={nav_expanded}
             onToggle={(expanded) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className={styles.navbar + ' shadow-sm px-3'}
+            className={'shadow-sm px-3'}
           >
             {/* Logo in top left */}
             <Nav className={styles.nav_brand + ' navbar-brand py-2'}>
@@ -102,7 +103,7 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo icon={false} useWordmarkDark={darkModeEnabled} />
+                  <Logo icon={false} />
                 </span>
               </NavLink>
             </Nav>
@@ -154,15 +155,18 @@ function CourseTableNavbar({ isLoggedIn }) {
                 {/* DarkMode Button */}
                 <div
                   className={styles.navbar_dark_mode_btn + ' d-flex'}
-                  onClick={() => {
-                    window.localStorage.setItem(
-                      'darkmode',
-                      !darkModeEnabled ? 'dark' : 'light'
-                    );
-                    setDarkModeEnabled(!darkModeEnabled);
-                  }}
+                  // onClick={() => {
+                  //   window.localStorage.setItem(
+                  //     'darkmode',
+                  //     !darkModeEnabled ? 'dark' : 'light'
+                  //   );
+                  //   setDarkModeEnabled(!darkModeEnabled);
+                  // }}
                 >
-                  <DarkModeButton darkModeEnabled={darkModeEnabled} />
+                  <DarkModeButton
+                    // darkModeEnabled={darkModeEnabled}
+                    toggleTheme={themeToggler}
+                  />
                 </div>
 
                 {/* Catalog Page */}
@@ -249,7 +253,7 @@ function CourseTableNavbar({ isLoggedIn }) {
             </Navbar.Collapse>
           </Navbar>
         </Container>
-      </div>
+      </SecondaryBackground>
       {/* Dropdown that has position: absolute */}
       <div>
         <MeDropdown
