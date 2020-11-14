@@ -588,6 +588,10 @@ function Search({ location, history }) {
 
   // Saves search form options to sesssionStorage on change
   useEffect(() => {
+    setSSObject('searchText', searchText);
+  }, [searchText]);
+
+  useEffect(() => {
     setSSObject('collapsed_form', collapsed_form);
   }, [collapsed_form]);
 
