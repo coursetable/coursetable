@@ -1,6 +1,5 @@
 .container {
   border-radius: 8px;
-  /* background-color: white; */
   max-height: 86vh;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
@@ -29,7 +28,7 @@
 }
 
 .hidden {
-  color: #b9b8b8;
+  /* color: #b9b8b8; */
 }
 
 .list_text {

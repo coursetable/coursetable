@@ -1,5 +1,5 @@
 import React from 'react';
-
+import { withTheme } from 'styled-components';
 import { FaSun, FaRegMoon } from 'react-icons/fa';
 
 /**
@@ -7,10 +7,10 @@ import { FaSun, FaRegMoon } from 'react-icons/fa';
  * @prop darkModeEnabled - boolean to determine which image to display (true for "sun"; false for "moon")
  */
 
-function DarkModeButton({ darkModeEnabled = false, theme, toggleTheme }) {
+function DarkModeButton({ theme, toggleTheme }) {
   return (
     <span className="my-auto" onClick={toggleTheme}>
-      {darkModeEnabled ? (
+      {theme.theme === 'dark' ? (
         <FaSun size={20} style={{ display: 'block' }} />
       ) : (
         <FaRegMoon size={20} style={{ display: 'block' }} />
@@ -19,4 +19,4 @@ function DarkModeButton({ darkModeEnabled = false, theme, toggleTheme }) {
   );
 }
 
-export default DarkModeButton;
+export default withTheme(DarkModeButton);

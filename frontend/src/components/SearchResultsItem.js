@@ -18,7 +18,7 @@ import { fbFriendsAlsoTaking } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import { StyledResultsItem } from './StyledComponents';
+import { SecondaryText, StyledResultsItem } from './StyledComponents';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -198,11 +198,11 @@ const SearchResultsItem = ({
         className={Styles.ellipsis_text + ' font-weight-bold'}
       >
         {course.course_code}
-        <span className="text-muted">
+        <SecondaryText>
           {course.section
             ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
             : ''}
-        </span>
+        </SecondaryText>
       </div>
       <OverlayTrigger
         placement={expanded ? 'right' : 'left'}

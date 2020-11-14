@@ -27,8 +27,8 @@ function WorksheetRowDropdown({
   const { user } = useUser();
 
   return (
-    <SurfaceComponent2>
-      <Row className={styles.container + ' shadow-sm mx-auto pt-2 pb-2'}>
+    <SurfaceComponent2 className={styles.container}>
+      <Row className="shadow-sm mx-auto pt-2 pb-2">
         {/* Season Select */}
         <Col md={6} className="pl-2 pr-1">
           <div className={styles.select_container + ' ' + styles.hover_effect}>

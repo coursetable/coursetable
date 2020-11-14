@@ -9,6 +9,7 @@ export const lightTheme = {
   border: '#f6f6f6',
   select: '#f0f0f0',
   multiValue: 'hsl(0,0%,90%)',
+  hidden: '#b9b8b8',
 };
 export const darkTheme = {
   theme: 'dark',
@@ -17,8 +18,9 @@ export const darkTheme = {
   background: '#121212',
   surface: '#242424',
   surface_2: '#363636',
-  banner: '#000721',
+  banner: '#363636',
   border: '#303030',
-  select: '#303030',
+  select: '#4d4d4d',
   multiValue: '#525252',
+  hidden: '#4d4d4d',
 };

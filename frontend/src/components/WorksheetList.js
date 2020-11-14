@@ -4,7 +4,8 @@ import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
-import { StyledListItem } from './StyledComponents';
+import { StyledListItem, SurfaceComponent } from './StyledComponents';
+import { withTheme } from 'styled-components';
 
 /**
  * Render worksheet list in default worksheet view
@@ -29,6 +30,7 @@ function WorksheetList({
   setHoverCourse,
   setFbPerson,
   cur_person,
+  theme,
 }) {
   // Build the HTML for the list of courses of a given season
   const buildHtml = useCallback(
@@ -37,8 +39,13 @@ function WorksheetList({
       let items = [];
       // Variable for list keys
       let id = 0;
+
       // Iterate over all listings of this season
       courses.forEach((course) => {
+        // Style for coloring hidden courses
+        const color_style = {
+          color: course.hidden ? theme.hidden : theme.text,
+        };
         // Add listgroup item to items list
         items.push(
           <StyledListItem
@@ -73,11 +80,8 @@ function WorksheetList({
               </Col>
               {/* Course Code and Title */}
               <Col
-                className={
-                  (course.hidden ? styles.hidden + ' ' : '') +
-                  styles.list_text +
-                  ' px-0'
-                }
+                className={styles.list_text + ' px-0'}
+                style={color_style}
                 onClick={() => showModal(course)}
               >
                 <strong>{course.course_code}</strong>
@@ -91,7 +95,7 @@ function WorksheetList({
 
       return items;
     },
-    [setHoverCourse, toggleCourse, showModal]
+    [setHoverCourse, toggleCourse, showModal, theme]
   );
 
   const items = useMemo(() => {
@@ -109,12 +113,12 @@ function WorksheetList({
         cur_person={cur_person}
       />
       {/* List of courses for this season */}
-      <div className={styles.table}>
+      <SurfaceComponent className={styles.table}>
         <ListGroup variant="flush">{items}</ListGroup>
-      </div>
+      </SurfaceComponent>
     </div>
   );
 }
 
 // WorksheetList.whyDidYouRender = true;
-export default React.memo(WorksheetList);
+export default React.memo(withTheme(WorksheetList));

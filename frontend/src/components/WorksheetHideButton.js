@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './WorksheetToggleButton.css';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { withTheme } from 'styled-components';
 
 /**
  * Render the course hide button in the Worksheet List
@@ -10,7 +11,7 @@ import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
  * @prop season_code - string that holds the current season code
  */
 
-const WorksheetHideButton = ({ toggleCourse, crn, season_code }) => {
+const WorksheetHideButton = ({ toggleCourse, crn, season_code, theme }) => {
   // Is this course hidden?
   const [hidden, setHidden] = useState(false);
   // Handle hide/show click
@@ -39,13 +40,13 @@ const WorksheetHideButton = ({ toggleCourse, crn, season_code }) => {
     >
       <Button variant="toggle" onClick={toggleWorkSheet} className="p-0">
         {hidden ? (
-          <BsEyeSlash color="#d6d6d6" size={button_size} />
+          <BsEyeSlash color={theme.hidden} size={button_size} />
         ) : (
-          <BsEye size={button_size} />
+          <BsEye color={theme.text} size={button_size} />
         )}
       </Button>
     </OverlayTrigger>
   );
 };
 
-export default WorksheetHideButton;
+export default React.memo(withTheme(WorksheetHideButton));

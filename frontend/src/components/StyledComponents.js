@@ -25,9 +25,9 @@ export const StyledResultsItem = styled(Row)`
 `;
 
 export const StyledListItem = styled(ListGroup.Item)`
-  background-color: ${({ theme }) => theme.surface};
+  background-color: transparent;
   border-color: ${({ theme }) => theme.border};
-  transition: 0.3s linear;
+  transition: border-color 0.3s linear;
 `;
 
 export const StyledSelect = styled(Select)`
