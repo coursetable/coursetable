@@ -29,6 +29,7 @@ export const StyledListItem = styled(ListGroup.Item)`
 export const StyledSelect = styled(Select)`
   .Select__control {
     background-color: ${({ theme }) => theme.select};
+    border: none;
     transition: 0.3s linear;
   }
 
@@ -105,4 +106,9 @@ export const StyledModal = styled(Modal)`
   .modal-content {
     background-color: ${({ theme }) => theme.surface};
   }
+`;
+
+export const StyledHr = styled.hr`
+  border-color: ${({ theme }) =>
+    theme.theme === 'light' ? '#dedede' : '#404040'};
 `;

@@ -34,16 +34,7 @@
 /* Make this look good in dark mode */
 .search_input input {
   border-radius: 8px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  transition: 0.1s;
-}
-
-.search_input input:hover {
-  border-color: rgba(0, 0, 0, 0.3);
-}
-
-.search_input input:focus {
-  border-color: #2684ff !important;
+  border: none;
 }
 
 .filter_title {
