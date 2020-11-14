@@ -10,8 +10,14 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import { scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
+import styled from 'styled-components';
 import posthog from 'posthog-js';
 import { SurfaceComponent } from '../components/StyledComponents';
+
+const StyledMeIcon = styled.div`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
+`;
 
 /**
  * Renders the navbar
@@ -168,7 +174,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                   }
                 >
                   <div className={styles.navbar_me}>
-                    <div
+                    <StyledMeIcon
                       ref={ref_visible}
                       className={styles.icon_circle + ' m-auto'}
                       onClick={() => setIsComponentVisible(!isComponentVisible)}
@@ -178,7 +184,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                         size={20}
                         color={isComponentVisible ? '#007bff' : undefined}
                       />
-                    </div>
+                    </StyledMeIcon>
                   </div>
                 </div>
                 {/* Sign in/out and Facebook buttons. Show if mobile */}
