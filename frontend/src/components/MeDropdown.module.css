@@ -2,7 +2,7 @@
   width: 200px;
   position: absolute;
   right: 10px;
-  background-color: white;
+  /* background-color: white; */
   z-index: calc(420 + 69);
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   border-radius: 10px;
@@ -10,7 +10,8 @@
 }
 
 .collapse_text {
-  color: rgba(1, 1, 1, 0.6);
+  /* color: rgba(1, 1, 1, 0.6); */
+  color: inherit;
   font-weight: 500;
   transition: 0.3s;
 }

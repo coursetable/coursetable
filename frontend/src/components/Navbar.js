@@ -11,7 +11,7 @@ import { scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import posthog from 'posthog-js';
-import { SecondaryBackground } from '../components/StyledComponents';
+import { SurfaceComponent } from '../components/StyledComponents';
 
 import {
   setFetchMethod,
@@ -82,7 +82,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
 
   return (
     <div className={styles.sticky_navbar}>
-      <SecondaryBackground>
+      <SurfaceComponent>
         <Container fluid className="p-0">
           <Navbar
             expanded={nav_expanded}
@@ -253,7 +253,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
             </Navbar.Collapse>
           </Navbar>
         </Container>
-      </SecondaryBackground>
+      </SurfaceComponent>
       {/* Dropdown that has position: absolute */}
       <div>
         <MeDropdown

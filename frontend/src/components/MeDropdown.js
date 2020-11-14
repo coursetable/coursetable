@@ -9,6 +9,7 @@ import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+import { SurfaceComponent } from './StyledComponents';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -75,7 +76,10 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     setIsComponentVisible(true);
   };
   return (
-    <div className={styles.collapse_container} onClick={handleDropdownClick}>
+    <SurfaceComponent
+      className={styles.collapse_container}
+      onClick={handleDropdownClick}
+    >
       <Collapse in={profile_expanded}>
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
@@ -153,7 +157,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
           </Col>
         </div>
       </Collapse>
-    </div>
+    </SurfaceComponent>
   );
 }
 

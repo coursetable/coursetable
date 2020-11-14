@@ -3,7 +3,7 @@
   position: sticky;
   top: 0;
   z-index: 2;
-  background-color: white;
+  /* background-color: white; */
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
 }

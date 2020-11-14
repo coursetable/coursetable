@@ -9,6 +9,7 @@ import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
+import { SurfaceComponent } from '../components/StyledComponents';
 
 import styles from './Worksheet.module.css';
 
@@ -270,34 +271,36 @@ function Worksheet() {
               (cur_expand === 'list' ? styles.hidden : '')
             }
           >
-            <WeekSchedule
-              showModal={showModal}
-              courses={season_listings}
-              hover_course={hover_course}
-              setHoverCourse={setHoverCourse}
-            />
-            {/* Expand/Compress icons for calendar */}
-            <div style={{ zIndex: 420 }}>
-              {cur_expand === 'none' ? (
-                <FaExpandAlt
-                  className={styles.expand_btn + ' ' + styles.top_right}
-                  size={expand_btn_size}
-                  onClick={() => {
-                    // Expand calendar
-                    setCurExpand('calendar');
-                  }}
-                />
-              ) : (
-                <FaCompressAlt
-                  className={styles.expand_btn + ' ' + styles.top_right}
-                  size={expand_btn_size}
-                  onClick={() => {
-                    // Compress calendar
-                    setCurExpand('none');
-                  }}
-                />
-              )}
-            </div>
+            <SurfaceComponent style={{ height: '100%' }}>
+              <WeekSchedule
+                showModal={showModal}
+                courses={season_listings}
+                hover_course={hover_course}
+                setHoverCourse={setHoverCourse}
+              />
+              {/* Expand/Compress icons for calendar */}
+              <div style={{ zIndex: 420 }}>
+                {cur_expand === 'none' ? (
+                  <FaExpandAlt
+                    className={styles.expand_btn + ' ' + styles.top_right}
+                    size={expand_btn_size}
+                    onClick={() => {
+                      // Expand calendar
+                      setCurExpand('calendar');
+                    }}
+                  />
+                ) : (
+                  <FaCompressAlt
+                    className={styles.expand_btn + ' ' + styles.top_right}
+                    size={expand_btn_size}
+                    onClick={() => {
+                      // Compress calendar
+                      setCurExpand('none');
+                    }}
+                  />
+                )}
+              </div>
+            </SurfaceComponent>
           </Col>
           {/* List Component*/}
           <Col

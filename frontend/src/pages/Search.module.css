@@ -48,7 +48,7 @@
 
 .filter_title {
   font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.75);
+  /* color: rgba(0, 0, 0, 0.75); */
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */

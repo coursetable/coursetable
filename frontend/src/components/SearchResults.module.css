@@ -17,17 +17,11 @@
   position: sticky !important;
   top: 56px !important;
   z-index: 1;
+  border-radius: 8px 8px 0px 0px;
 }
 
 .results_header_row {
-  border: 0px !important;
-  background-color: white !important;
-  border-radius: 8px 8px 0px 0px !important;
   user-select: none;
-}
-
-.results_header_inner {
-  /* background-color: white !important; */
 }
 
 .results_header {

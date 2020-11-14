@@ -56,10 +56,7 @@ import {
 } from 'react-icons/fc';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
-import {
-  SecondaryBackground,
-  StyledSelect,
-} from '../components/StyledComponents';
+import { SurfaceComponent, StyledSelect } from '../components/StyledComponents';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -576,7 +573,7 @@ function Search({ location, history }) {
             (!isMobile ? ' order-2' : '')
           }
         >
-          <SecondaryBackground
+          <SurfaceComponent
             className={
               Styles.search_container +
               ' ' +
@@ -871,7 +868,7 @@ function Search({ location, history }) {
                 <Button type="submit" />
               </div>
             </Form>
-          </SecondaryBackground>
+          </SurfaceComponent>
         </Col>
         {/* Search Results Catalog */}
 
