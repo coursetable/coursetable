@@ -18,6 +18,8 @@ import NoCoursesFound from '../images/no_courses_found.svg';
 import ServerError from '../images/server_error.svg';
 import posthog from 'posthog-js';
 
+import { setSSObject, getSSObject, setSSObjectIfEmpty } from '../utilities.js';
+
 /**
  * Renders worksheet page
  */
@@ -26,7 +28,8 @@ function Worksheet() {
   // Get user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  const [fb_person, setFbPerson] = useState('me');
+  setSSObjectIfEmpty('fb_person', 'me');
+  const [fb_person, setFbPerson] = useState(getSSObject('fb_person'));
 
   // Worksheet of the current person
   const cur_worksheet = useMemo(() => {
@@ -49,9 +52,8 @@ function Worksheet() {
   }, [cur_worksheet]);
 
   // Current season initialized to most recent season
-  const [season, setSeason] = useState(
-    season_codes.length > 0 ? season_codes[0] : ''
-  );
+  setSSObjectIfEmpty('season', season_codes.length > 0 ? season_codes[0] : '');
+  const [season, setSeason] = useState(getSSObject('season'));
   // Listings data to be fetched from database
   const [listings, setListings] = useState([]);
   // Store the initial worksheet to be cached on the first listings query
@@ -61,11 +63,32 @@ function Worksheet() {
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
-  const [hidden_courses, setHiddenCourses] = useState([]);
+  setSSObjectIfEmpty('hidden_courses', []);
+  const [hidden_courses, setHiddenCourses] = useState(
+    getSSObject('hidden_courses')
+  );
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState();
   // Currently expanded component (calendar or list or none)
-  const [cur_expand, setCurExpand] = useState('none');
+  setSSObjectIfEmpty('cur_expand', 'none');
+  const [cur_expand, setCurExpand] = useState(getSSObject('cur_expand'));
+
+  // Saves worksheet settings to sessionStorage on change
+  useEffect(() => {
+    setSSObject('fb_person', fb_person);
+  }, [fb_person]);
+
+  useEffect(() => {
+    setSSObject('season', season);
+  }, [season]);
+
+  useEffect(() => {
+    setSSObject('hidden_courses', hidden_courses);
+  }, [hidden_courses]);
+
+  useEffect(() => {
+    setSSObject('cur_expand', cur_expand);
+  }, [cur_expand]);
 
   const handleFBPersonChange = useCallback(
     (new_person) => {
