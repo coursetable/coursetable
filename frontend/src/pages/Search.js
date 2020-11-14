@@ -568,13 +568,11 @@ function Search({ location, history }) {
         }
       >
         <Col
-          md={4}
-          lg={4}
-          xl={3}
+          md={3}
           className={
             (isMobile
               ? `p-3 ${Styles.search_col_mobile}`
-              : `pr-0 my-3 pl-3 ${Styles.search_col}`) +
+              : `pl-0 pr-3 pt-3 ${Styles.search_col}`) +
             (!isMobile ? ' order-2' : '')
           }
         >
@@ -622,15 +620,20 @@ function Search({ location, history }) {
                 </React.Fragment>
               )}
               {/* Reset Filters Button */}
-              <Row className="pt-3 px-4">
+              <Row className="mx-auto pt-4 px-4">
                 <small
-                  className={Styles.reset_filters_btn + ' mx-auto'}
+                  className={Styles.reset_filters_btn + ' mr-auto'}
                   onClick={handleResetFilters}
                 >
                   Reset Filters
                 </small>
+                <small className={Styles.num_results + ' ml-auto text-muted'}>
+                  {coursesLoading
+                    ? 'Searching ...'
+                    : 'Showing ' + searchData.length + ' results'}
+                </small>
               </Row>
-              <Row className="mx-auto pt-2 px-4 pb-2">
+              <Row className="mx-auto pt-1 pb-2 px-4">
                 <div className={Styles.search_bar}>
                   {/* Search Bar */}
                   <InputGroup className={Styles.search_input}>
@@ -644,6 +647,7 @@ function Search({ location, history }) {
                   </InputGroup>
                 </div>
               </Row>
+
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`${Styles.selector_container}`}>
                   {/* Sort By Select */}
@@ -693,7 +697,6 @@ function Search({ location, history }) {
               <hr />
               <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Semesters</div>
                   {seasonsOptions && (
                     // Seasons Multi-Select
                     <Select
@@ -713,13 +716,12 @@ function Search({ location, history }) {
                   )}
                 </div>
                 <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Skills and areas</div>
                   {/* Skills/Areas Multi-Select */}
                   <Select
                     isMulti
                     value={select_skillsareas}
                     options={skillsAreasOptions}
-                    placeholder="Any"
+                    placeholder="All Skills/Areas"
                     // colors
                     styles={colorOptionStyles}
                     // prevent overlap with tooltips
@@ -731,13 +733,12 @@ function Search({ location, history }) {
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Credits</div>
                   {/* Course Credit Multi-Select */}
                   <Select
                     isMulti
                     value={select_credits}
                     options={creditOptions}
-                    placeholder="Any"
+                    placeholder="All Credits"
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
@@ -748,13 +749,12 @@ function Search({ location, history }) {
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Subjects</div>
                   {/* Yale Subjects Multi-Select */}
                   <Select
                     isMulti
                     value={select_subjects}
                     options={subjectOptions}
-                    placeholder="Any"
+                    placeholder="All Subjects"
                     isSearchable={true}
                     // prevent overlap with tooltips
                     styles={selectStyles}
@@ -766,13 +766,12 @@ function Search({ location, history }) {
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  <div className={Styles.filter_title}>Schools</div>
                   {/* Yale Schools Multi-Select */}
                   <Select
                     isMulti
                     value={select_schools}
                     options={schoolOptions}
-                    placeholder="Any"
+                    placeholder="All Schools"
                     // prevent overlap with tooltips
                     styles={selectStyles}
                     menuPortalTarget={document.body}
@@ -877,14 +876,13 @@ function Search({ location, history }) {
         {/* Search Results Catalog */}
 
         <Col
-          md={collapsed_form ? 12 : 8}
-          lg={collapsed_form ? 12 : 8}
-          xl={collapsed_form ? 12 : 9}
+          md={collapsed_form ? 12 : 9}
           className={
             'm-0 ' +
             (isMobile
               ? 'p-3 ' + Styles.results_col_mobile
-              : (collapsed_form ? 'px-5 pt-3 ' : 'p-3 ') + Styles.results_col)
+              : (collapsed_form ? 'px-5 py-3 ' : 'px-0 py-3 ') +
+                Styles.results_col)
           }
         >
           <Element name="catalog">

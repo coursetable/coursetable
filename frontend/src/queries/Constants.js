@@ -43,15 +43,18 @@ export const skillsAreasOptions = [
 ];
 
 export const ratingColormap = chroma
-  .bezier(['#f8696b', '#ffeb84', '#63b37b'])
-  // .bezier(['#ff5959', '#ffeb84', '#00bd26'])
-  .scale()
+  .scale(['#f8696b', '#ffeb84', '#63b37b'])
   .domain([1, 5]);
 export const workloadColormap = chroma
-  .bezier(['#63b37b', '#ffeb84', '#f8696b'])
-  // .bezier(['#00bd26', '#ffeb84', '#ff5959'])
-  .scale()
+  .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
+
+export const na_cell = {
+  color: '#b5b5b5',
+  backgroundColor: '#ebebeb',
+  fontWeight: 400,
+  fontSize: '12px',
+};
 
 export const colorOptionStyles = {
   control: (styles) => ({

@@ -21,7 +21,6 @@ import {
   Col,
   Row,
   Spinner,
-  Fade,
   Tooltip,
   OverlayTrigger,
 } from 'react-bootstrap';
@@ -32,7 +31,7 @@ import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
-import { FaArrowCircleUp, FaAppleAlt } from 'react-icons/fa';
+import { FaAppleAlt } from 'react-icons/fa';
 import { FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 
@@ -64,23 +63,8 @@ const SearchResults = ({
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
 
-  // Should we render the scroll up button?
-  const [scroll_visible, setScrollVisible] = useState(false);
-  // Render scroll-up button after scrolling a lot
-  useEffect(() => {
-    window.onscroll = () => {
-      if (window.pageYOffset > 2000 && !scroll_visible) setScrollVisible(true);
-      if (window.pageYOffset < 2000 && scroll_visible) setScrollVisible(false);
-    };
-  });
-
-  // Scroll to top button click handler
-  const scrollTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
-  };
-
   // State that holds width of the row for list view
-  const [ROW_WIDTH, setRowWidth] = useState();
+  const [ROW_WIDTH, setRowWidth] = useState(0);
   // Ref to get row width
   const ref = useRef(null);
   useEffect(() => {
@@ -89,38 +73,34 @@ const SearchResults = ({
   }, [setRowWidth, width, expanded]);
 
   // Spacing for each column in list view
-  const COL_SPACING = {
+  let COL_SPACING = {
     SZN_WIDTH: 80,
     CODE_WIDTH: 110,
     RATE_WIDTH: 30,
-    NUM_WIDTH: 40,
-    PROF_WIDTH: 150,
-    MEET_WIDTH: 160,
-    LOC_WIDTH: 100,
+    NUM_WIDTH: 30,
     SA_WIDTH: 100,
     PADDING: 35,
-    NUM_CUT: !multiSeasons ? 580 : 680,
-    PROF_CUT: !multiSeasons ? 730 : 830,
-    MEET_CUT: !multiSeasons ? 830 : 930,
-    LOC_CUT: !multiSeasons ? 930 : 1030,
-    SA_CUT: !multiSeasons ? 1030 : 1130,
   };
-  const TITLE_WIDTH = useMemo(() => {
+  const EXTRA = useMemo(() => {
     return (
       ROW_WIDTH -
       (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
       COL_SPACING.CODE_WIDTH -
-      COL_SPACING.LOC_WIDTH -
-      (ROW_WIDTH > COL_SPACING.NUM_CUT ? 2 * COL_SPACING.NUM_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
+      2 * COL_SPACING.NUM_WIDTH -
+      COL_SPACING.SA_WIDTH -
       3 * COL_SPACING.RATE_WIDTH -
       COL_SPACING.PADDING
     );
-  }, [ROW_WIDTH, COL_SPACING, multiSeasons]);
+  }, [COL_SPACING, ROW_WIDTH, multiSeasons]);
 
+  COL_SPACING.PROF_WIDTH = Math.min(EXTRA / 4, 160);
+  COL_SPACING.MEET_WIDTH = Math.min(EXTRA / 4, 160);
+  COL_SPACING.LOC_WIDTH = Math.min(EXTRA / 6, 100);
+  COL_SPACING.TITLE_WIDTH =
+    EXTRA -
+    COL_SPACING.PROF_WIDTH -
+    COL_SPACING.MEET_WIDTH -
+    COL_SPACING.LOC_WIDTH;
   // Holds HTML for the search results
   let resultsListing;
 
@@ -167,14 +147,14 @@ const SearchResults = ({
             multiSeasons={multiSeasons}
             isLast={index === data.length - 1}
             COL_SPACING={COL_SPACING}
-            TITLE_WIDTH={TITLE_WIDTH}
             ROW_WIDTH={ROW_WIDTH}
             isScrolling={isScrolling}
+            expanded={expanded}
           />
         </div>
       );
     },
-    [data, showModal, multiSeasons, COL_SPACING, TITLE_WIDTH, ROW_WIDTH]
+    [data, showModal, multiSeasons, expanded, COL_SPACING, ROW_WIDTH]
   );
 
   if (!isLoggedIn) {
@@ -271,7 +251,10 @@ const SearchResults = ({
   const class_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Class Rating</span>
+        <span>
+          Average Course Rating <br />
+          (any professor and all cross-listed courses)
+        </span>
       </Tooltip>
     ),
     []
@@ -281,7 +264,7 @@ const SearchResults = ({
   const prof_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Professor Rating</span>
+        <span>Average Professor Rating</span>
       </Tooltip>
     ),
     []
@@ -291,7 +274,10 @@ const SearchResults = ({
   const workload_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Workload Rating</span>
+        <span>
+          Average Workload Rating <br />
+          (any professor and all cross-listed courses)
+        </span>
       </Tooltip>
     ),
     []
@@ -301,7 +287,12 @@ const SearchResults = ({
   const enrollment_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Class Enrollment</span>
+        <span>
+          Class Enrollment
+          <br />
+          (based on the most recent instance of this course. a ~ means a
+          different professor was teaching)
+        </span>
       </Tooltip>
     ),
     []
@@ -326,7 +317,7 @@ const SearchResults = ({
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${TITLE_WIDTH}px` };
+  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
   const rate_style = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WIDTH}px`,
@@ -374,31 +365,12 @@ const SearchResults = ({
                     Code
                   </div>
                   {/* Course Name */}
-                  <div style={title_style} className={Styles.results_header}>
+                  <div
+                    style={title_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
                     Title
                   </div>
-                  {ROW_WIDTH > COL_SPACING.NUM_CUT && (
-                    <>
-                      <div style={num_style} className={Styles.results_header}>
-                        <OverlayTrigger
-                          placement="bottom"
-                          delay={{ show: 100, hide: 100 }}
-                          overlay={enrollment_tooltip}
-                        >
-                          <span className="m-auto">#</span>
-                        </OverlayTrigger>
-                      </div>
-                      <div style={num_style} className={Styles.results_header}>
-                        <OverlayTrigger
-                          placement="bottom"
-                          delay={{ show: 100, hide: 100 }}
-                          overlay={fb_tooltip}
-                        >
-                          <span className="m-auto">#FB</span>
-                        </OverlayTrigger>
-                      </div>
-                    </>
-                  )}
                   {/* Class Rating */}
                   <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
@@ -443,31 +415,48 @@ const SearchResults = ({
                       </OverlayTrigger>
                     </div>
                   </div>
-                  {/* Course Professors */}
-                  {ROW_WIDTH > COL_SPACING.PROF_CUT && (
-                    <div style={prof_style} className={Styles.results_header}>
-                      Professors
-                    </div>
-                  )}
-                  {/* Course Meeting times and location */}
-                  {ROW_WIDTH > COL_SPACING.MEET_CUT && (
-                    <div style={meet_style} className={Styles.results_header}>
-                      Meets
-                    </div>
-                  )}
-                  {ROW_WIDTH > COL_SPACING.LOC_CUT && (
-                    <div style={loc_style} className={Styles.results_header}>
-                      Location
-                    </div>
-                  )}
-                  {ROW_WIDTH > COL_SPACING.SA_CUT && (
-                    <div
-                      style={sa_style}
-                      className={Styles.results_header + ' pr-2'}
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={enrollment_tooltip}
                     >
-                      Skills/Areas
-                    </div>
-                  )}
+                      <span className="m-auto">#</span>
+                    </OverlayTrigger>
+                  </div>
+                  {/* Course Professors */}
+                  <div
+                    style={prof_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Professors
+                  </div>
+                  {/* Course Meeting times and location */}
+                  <div
+                    style={meet_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Meets
+                  </div>
+                  <div
+                    style={loc_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Location
+                  </div>
+
+                  <div style={sa_style} className={Styles.results_header}>
+                    Skills/Areas
+                  </div>
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={fb_tooltip}
+                    >
+                      <span className="m-auto">#FB</span>
+                    </OverlayTrigger>
+                  </div>
                 </React.Fragment>
               ) : (
                 // Grid view showing how many search results
@@ -499,12 +488,6 @@ const SearchResults = ({
           )}
         </div>
       </Container>
-      {/* Scroll up button */}
-      <Fade in={scroll_visible}>
-        <div className={Styles.up_btn}>
-          <FaArrowCircleUp onClick={scrollTop} size={30} />
-        </div>
-      </Fade>
     </div>
   );
 };

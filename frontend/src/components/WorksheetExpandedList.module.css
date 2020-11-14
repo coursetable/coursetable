@@ -8,4 +8,9 @@
 .top_left {
   left: 0%;
   transform: rotateZ(90deg) translate(-40%, 40%);
+  transition: 0.3s;
+}
+
+.top_left:hover {
+  transform: rotateZ(90deg) translate(-40%, 40%) scale(1.1);
 }
