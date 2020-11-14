@@ -42,20 +42,17 @@
 }
 
 .expand_btn {
-  position: absolute;
-  top: 0%;
-  z-index: 2;
-  color: rgb(179, 179, 179);
   padding: 3px;
-  background-color: rgb(238, 238, 238);
   border-radius: 6px;
   transition: 0.3s;
 }
 
 .expand_btn:hover {
-  color: rgb(102, 101, 101);
-  background-color: rgb(200, 200, 200);
   cursor: pointer;
+}
+
+.expand_icon {
+  display: block;
 }
 
 .top_left {

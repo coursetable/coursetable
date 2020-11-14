@@ -17,6 +17,7 @@ import { SurfaceComponent } from '../components/StyledComponents';
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
+  transition: 0.3s linear;
 `;
 
 /**

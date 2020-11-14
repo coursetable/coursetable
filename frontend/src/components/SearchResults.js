@@ -238,7 +238,7 @@ const SearchResults = ({
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={data.length}
-                  rowHeight={32}
+                  rowHeight={34}
                   rowRenderer={renderListRow}
                 />
               )}

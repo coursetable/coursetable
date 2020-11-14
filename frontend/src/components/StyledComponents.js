@@ -122,3 +122,11 @@ export const StyledCard = styled(Card)`
   background-color: ${({ theme }) => theme.surface};
   transition: 0.3s linear;
 `;
+
+export const StyledExpandBtn = styled.div`
+  background-color: ${({ theme }) => theme.select};
+  color: ${({ theme }) => theme.text_secondary};
+  position: absolute;
+  top: 0%;
+  z-index: 2;
+`;
