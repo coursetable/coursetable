@@ -13,15 +13,7 @@ import Styles from './Search.module.css';
 import SearchResults from '../components/SearchResults';
 import CourseModal from '../components/CourseModal';
 
-import {
-  Col,
-  Container,
-  Row,
-  Form,
-  FormControl,
-  InputGroup,
-  Button,
-} from 'react-bootstrap';
+import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 
 import {
   sortbyOptions,
@@ -34,8 +26,6 @@ import {
   schoolOptions,
   subjectOptions,
 } from '../queries/Constants';
-
-import Select from 'react-select';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
@@ -60,6 +50,7 @@ import {
   SurfaceComponent,
   StyledSelect,
   StyledInput,
+  StyledHr,
 } from '../components/StyledComponents';
 
 // Multi-Select Animations
@@ -696,7 +687,7 @@ function Search({ location, history }) {
                   )}
                 </div>
               </Row>
-              <hr />
+              <StyledHr />
               <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {seasonsOptions && (
@@ -789,8 +780,8 @@ function Search({ location, history }) {
                   />
                 </div>
               </Row>
-              <hr />
-              <Row className={`mx-auto pt-0 pb-2 px-2 ${Styles.sliders}`}>
+              <StyledHr />
+              <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
                 <Col>
                   <Container style={{ paddingTop: '1px' }}>
                     {/* Class Rating Slider */}
@@ -834,6 +825,7 @@ function Search({ location, history }) {
                   </div>
                 </Col>
               </Row>
+              <StyledHr className="mb-0" />
               <Row
                 className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
               >

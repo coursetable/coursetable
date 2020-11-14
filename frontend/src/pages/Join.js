@@ -1,9 +1,13 @@
 import React, { useState } from 'react';
 import { Row, Form, Button } from 'react-bootstrap';
 import styles from './Join.module.css';
-import Select from 'react-select';
 import makeAnimated from 'react-select/animated';
 import { selectStyles } from '../queries/Constants';
+import {
+  StyledSelect,
+  StyledInput,
+  SecondaryText,
+} from '../components/StyledComponents';
 
 // Makes select forms animated
 const animatedComponents = makeAnimated();
@@ -34,7 +38,7 @@ function Join() {
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.join_header + ' mt-5 mb-1'}>Join Us!</h1>
       <p className={styles.join_description + ' mb-3 text-muted'}>
-        We'll be in touch.
+        <SecondaryText>We'll be in touch.</SecondaryText>
       </p>
       <Form
         noValidate
@@ -45,7 +49,7 @@ function Join() {
       >
         {/* Email */}
         <Form.Group className={styles.form_group}>
-          <Form.Control
+          <StyledInput
             required
             name="email"
             type="email"
@@ -57,7 +61,8 @@ function Join() {
         </Form.Group>
         {/* Role Select */}
         <Form.Group className={styles.form_group}>
-          <Select
+          <StyledSelect
+            classNamePrefix="Select"
             isMulti
             name="roles[]"
             components={animatedComponents}

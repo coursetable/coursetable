@@ -4,7 +4,7 @@ import styles from './Footer.module.css';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import { Container } from 'react-bootstrap';
-import { StyledHr } from './StyledComponents';
+import { StyledHr, SecondaryText } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';
 
@@ -33,13 +33,13 @@ function Footer() {
               {/* Catalog */}
               <li>
                 <NavLink to="/catalog" onClick={scrollToTop}>
-                  Catalog
+                  <SecondaryText>Catalog</SecondaryText>
                 </NavLink>
               </li>
               {/* Worksheet */}
               <li>
                 <NavLink to="/worksheet" onClick={scrollToTop}>
-                  Worksheet
+                  <SecondaryText>Worksheet</SecondaryText>
                 </NavLink>
               </li>
             </ul>
@@ -50,13 +50,13 @@ function Footer() {
               {/* FAQ */}
               <li>
                 <NavLink to="/faq" onClick={scrollToTop}>
-                  FAQ
+                  <SecondaryText>FAQ</SecondaryText>
                 </NavLink>
               </li>
               {/* Feedback */}
               <li>
                 <NavLink to="/feedback" onClick={scrollToTop}>
-                  Feedback
+                  <SecondaryText>Feedback</SecondaryText>
                 </NavLink>
               </li>
             </ul>
@@ -67,13 +67,13 @@ function Footer() {
               {/* Team */}
               <li>
                 <NavLink to="/about" onClick={scrollToTop}>
-                  Team
+                  <SecondaryText>Team</SecondaryText>
                 </NavLink>
               </li>
               {/* Join us */}
               <li>
                 <NavLink to="/joinus" onClick={scrollToTop}>
-                  Join us
+                  <SecondaryText>Join Us</SecondaryText>
                 </NavLink>
               </li>
               {/* Blog */}
@@ -83,7 +83,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Blog
+                  <SecondaryText>Blog</SecondaryText>
                 </a>
               </li>
               {/* Github */}
@@ -93,7 +93,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  GitHub
+                  <SecondaryText>Github</SecondaryText>
                 </a>
               </li>
             </ul>

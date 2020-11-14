@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react';
-import Select from 'react-select';
 import { toSeasonString } from '../utilities';
 import { StyledSelect } from './StyledComponents';
 

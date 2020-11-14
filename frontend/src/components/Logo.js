@@ -10,6 +10,7 @@ import { withTheme } from 'styled-components';
  * CourseTable Logo
  * @prop variant - string that determines the color scheme for the logo
  * @prop condensed - boolean that returns 'CT' if true
+ * @prop theme - holds dictionary of current dark/light theme styles
  */
 
 function Logo({ icon = true, wordmark = true, theme }) {

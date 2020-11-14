@@ -4,7 +4,7 @@ import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
-import { SurfaceComponent, StyledListItem } from './StyledComponents';
+import { StyledListItem } from './StyledComponents';
 
 /**
  * Render worksheet list in default worksheet view

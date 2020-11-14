@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Select from 'react-select';
-import { FormControl, ListGroup, Modal } from 'react-bootstrap';
+import { FormControl, ListGroup, Modal, Card } from 'react-bootstrap';
 import { Calendar } from 'react-big-calendar';
 
 export const SurfaceComponent = styled.div`
@@ -8,8 +8,8 @@ export const SurfaceComponent = styled.div`
   transition: 0.3s linear;
 `;
 
-export const ThirdBackground = styled.div`
-  background-color: ${({ theme }) => theme.surface};
+export const SecondaryText = styled.span`
+  color: ${({ theme }) => theme.text_secondary};
   transition: 0.3s linear;
 `;
 
@@ -53,13 +53,17 @@ export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text};
   transition: 0.3s linear !important;
+  border: none;
+  border-radius: 8px;
 
   &:focus {
     background-color: ${({ theme }) => theme.select};
+    border: none;
   }
 
   &.form-control:focus {
     color: ${({ theme }) => theme.text};
+    border: none;
   }
 `;
 
@@ -111,4 +115,10 @@ export const StyledModal = styled(Modal)`
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
     theme.theme === 'light' ? '#dedede' : '#404040'};
+  transition: 0.3s linear;
+`;
+
+export const StyledCard = styled(Card)`
+  background-color: ${({ theme }) => theme.surface};
+  transition: 0.3s linear;
 `;

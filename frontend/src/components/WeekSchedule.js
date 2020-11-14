@@ -2,7 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import moment from 'moment';
 import './WeekSchedule.css';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';

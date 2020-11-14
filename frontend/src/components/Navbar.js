@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
@@ -12,12 +12,6 @@ import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import posthog from 'posthog-js';
 import { SurfaceComponent } from '../components/StyledComponents';
-
-import {
-  setFetchMethod,
-  enable as enableDarkMode,
-  disable as disableDarkMode,
-} from 'darkreader';
 
 /**
  * Renders the navbar
@@ -53,32 +47,6 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
     // Redirect to home page and refresh as well
     window.location.pathname = '/';
   };
-
-  // // DarkMode or LightMode
-  // setFetchMethod(window.fetch);
-
-  // // Checks user preferences for dark mode
-  // if (!window.localStorage.getItem('darkmode')) {
-  //   let temp =
-  //     window.matchMedia('(prefers-color-scheme)').media !== 'not all' &&
-  //     window.matchMedia('(prefers-color-scheme: dark)').matches;
-  //   window.localStorage.setItem('darkmode', temp ? 'dark' : 'light');
-  // }
-
-  // const [darkModeEnabled, setDarkModeEnabled] = useState(
-  //   window.localStorage.getItem('darkmode') === 'dark'
-  // );
-
-  // // Updates current theme appropriately
-  // useEffect(() => {
-  //   if (darkModeEnabled)
-  //     enableDarkMode({
-  //       brightness: 100,
-  //       contrast: 100,
-  //       sepia: 5,
-  //     });
-  //   else disableDarkMode();
-  // }, [darkModeEnabled]);
 
   return (
     <div className={styles.sticky_navbar}>
