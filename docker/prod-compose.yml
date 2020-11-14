@@ -15,10 +15,6 @@ services:
     environment:
       FRONTEND_LOC: 'http://frontend:5000'
       PORT: 8039
-    links:
-      - frontend
-      - api
-      - nginx
     labels:
       traefik.enable: true
       traefik.http.routers.coursetable.rule: Host(`coursetable.com`)
