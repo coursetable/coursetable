@@ -68,6 +68,23 @@ const animatedComponents = makeAnimated();
  */
 
 function Search({ location, history }) {
+  //sessionStorage util functions
+  const setObject = (key, obj) => {
+    window.sessionStorage.setItem(key, JSON.stringify(obj));
+  };
+  const setObjectIfEmpty = (key, obj) => {
+    if (!getObject(key)) setObject(key, obj);
+  };
+
+  const getObject = (key) => {
+    if (!window.sessionStorage.getItem(key)) {
+      return false;
+    }
+
+    let str_val = window.sessionStorage.getItem(key);
+    return str_val === 'undefined' ? undefined : JSON.parse(str_val);
+  };
+
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
@@ -83,7 +100,10 @@ function Search({ location, history }) {
     location && location.state ? location.state.search_val : null
   );
   // Is the search form  collapsed?
-  const [collapsed_form, setCollapsedForm] = useState(false);
+  setObjectIfEmpty('collapsed_form', false);
+  const [collapsed_form, setCollapsedForm] = useState(
+    getObject('collapsed_form')
+  );
   // useEffect(() => {
   //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
   //   if (width > 1200 && collapsed_form) setCollapsedForm(false);
@@ -93,7 +113,8 @@ function Search({ location, history }) {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  const [sort_order, setSortOrder] = useState('asc');
+  setObjectIfEmpty('sort_order', 'asc');
+  const [sort_order, setSortOrder] = useState(getObject('sort_order'));
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -122,7 +143,8 @@ function Search({ location, history }) {
 
   // State used to determine whether or not to show season tags
   // (if multiple seasons are queried, the season is indicated)
-  const [multiSeasons, setMultiSeasons] = useState(false);
+  setObjectIfEmpty('multiSeasons', false);
+  const [multiSeasons, setMultiSeasons] = useState(getObject('multiSeasons'));
 
   //State used to rebuild form DOM to reset it
   const [form_key, setFormKey] = useState(0);
@@ -130,24 +152,52 @@ function Search({ location, history }) {
   // way to display results
   const [isList, setView] = useState(isMobile ? false : true);
 
-  // react-select states for controlled forms
-  const [select_sortby, setSelectSortby] = useState(sortbyOptions[0]);
-  const [select_seasons, setSelectSeasons] = useState([
+  // sets search form state defaults in sessionStorage
+  setObjectIfEmpty('select_sortby', sortbyOptions[0]);
+  setObjectIfEmpty('select_seasons', [
     { value: '202101', label: 'Spring 2021' },
   ]);
-  const [select_skillsareas, setSelectSkillsAreas] = useState();
-  const [select_credits, setSelectCredits] = useState();
-  const [select_schools, setSelectSchools] = useState([]);
-  const [select_subjects, setSelectSubjects] = useState([]);
+  setObjectIfEmpty('select_skillsareas', undefined);
+  setObjectIfEmpty('select_credits', undefined);
+  setObjectIfEmpty('select_schools', []);
+  setObjectIfEmpty('select_subjects', []);
+  setObjectIfEmpty('hideCancelled', true);
+  setObjectIfEmpty('hideFirstYearSeminars', false);
+  setObjectIfEmpty('ratingBounds', [1, 5]);
+  setObjectIfEmpty('workloadBounds', [1, 5]);
+
+  // react-select states for controlled forms
+  const [select_sortby, setSelectSortby] = useState(getObject('select_sortby'));
+  const [select_seasons, setSelectSeasons] = useState(
+    getObject('select_seasons')
+  );
+  const [select_skillsareas, setSelectSkillsAreas] = useState(
+    getObject('select_skillsareas')
+  );
+  const [select_credits, setSelectCredits] = useState(
+    getObject('select_credits')
+  );
+  const [select_schools, setSelectSchools] = useState(
+    getObject('select_schools')
+  );
+  const [select_subjects, setSelectSubjects] = useState(
+    getObject('select_subjects')
+  );
 
   // Does the user want to hide cancelled courses?
-  const [hideCancelled, setHideCancelled] = useState(true);
+  const [hideCancelled, setHideCancelled] = useState(
+    getObject('hideCancelled')
+  );
   // Does the user want to hide first year seminars?
-  const [hideFirstYearSeminars, setHideFirstYearSeminars] = useState(false);
+  const [hideFirstYearSeminars, setHideFirstYearSeminars] = useState(
+    getObject('hideFirstYearSeminars')
+  );
 
   // Bounds of course and workload ratings (1-5)
-  const [ratingBounds, setRatingBounds] = useState([1, 5]);
-  const [workloadBounds, setWorkloadBounds] = useState([1, 5]);
+  const [ratingBounds, setRatingBounds] = useState(getObject('ratingBounds'));
+  const [workloadBounds, setWorkloadBounds] = useState(
+    getObject('workloadBounds')
+  );
 
   // populate seasons from database
   var seasonsOptions;
@@ -464,6 +514,59 @@ function Search({ location, history }) {
   useEffect(() => {
     if (width < 768 && isList === true) setView(false);
   }, [width, isList]);
+
+  // Saves search form options to sesssionStorage on change
+  useEffect(() => {
+    setObject('collapsed_form', collapsed_form);
+  }, [collapsed_form]);
+
+  useEffect(() => {
+    setObject('sort_order', sort_order);
+  }, [sort_order]);
+
+  useEffect(() => {
+    setObject('multiSeasons', multiSeasons);
+  }, [multiSeasons]);
+
+  useEffect(() => {
+    setObject('select_sortby', select_sortby);
+  }, [select_sortby]);
+
+  useEffect(() => {
+    setObject('select_seasons', select_seasons);
+  }, [select_seasons]);
+
+  useEffect(() => {
+    setObject('select_skillsareas', select_skillsareas);
+  }, [select_skillsareas]);
+
+  useEffect(() => {
+    setObject('select_credits', select_credits);
+  }, [select_credits]);
+
+  useEffect(() => {
+    setObject('select_schools', select_schools);
+  }, [select_schools]);
+
+  useEffect(() => {
+    setObject('select_subjects', select_subjects);
+  }, [select_subjects]);
+
+  useEffect(() => {
+    setObject('hideCancelled', hideCancelled);
+  }, [hideCancelled]);
+
+  useEffect(() => {
+    setObject('hideFirstYearSeminars', hideFirstYearSeminars);
+  }, [hideFirstYearSeminars]);
+
+  useEffect(() => {
+    setObject('ratingBounds', ratingBounds);
+  }, [ratingBounds]);
+
+  useEffect(() => {
+    setObject('workloadBounds', workloadBounds);
+  }, [workloadBounds]);
 
   return (
     <div className={Styles.search_base}>
