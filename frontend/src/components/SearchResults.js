@@ -35,7 +35,7 @@ import { FaAppleAlt } from 'react-icons/fa';
 import { FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent_2 } from './StyledComponents';
 
 /**
  * Renders the infinite list of search results
@@ -340,7 +340,7 @@ const SearchResults = ({
         }`}
       >
         {!isMobile && (
-          <SurfaceComponent className={`${Styles.sticky_header}`}>
+          <SurfaceComponent_2 className={`${Styles.sticky_header}`}>
             {/* Results Header */}
             <Row
               ref={ref}
@@ -471,7 +471,7 @@ const SearchResults = ({
                 </Col>
               )}
             </Row>
-          </SurfaceComponent>
+          </SurfaceComponent_2>
         )}
         <div className={!isList ? 'px-1 pt-3' : Styles.results_list_container}>
           {/* If there are search results, render them */}

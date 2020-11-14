@@ -4,7 +4,7 @@ import styles from './WorksheetRowDropdown.module.css';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
 import { Row, Col } from 'react-bootstrap';
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent_2 } from './StyledComponents';
 import { useUser } from '../user';
 
 /**
@@ -27,7 +27,7 @@ function WorksheetRowDropdown({
   const { user } = useUser();
 
   return (
-    <SurfaceComponent>
+    <SurfaceComponent_2>
       <Row className={styles.container + ' shadow-sm mx-auto pt-2 pb-2'}>
         {/* Season Select */}
         <Col md={6} className="pl-2 pr-1">
@@ -55,7 +55,7 @@ function WorksheetRowDropdown({
           </div>
         </Col>
       </Row>
-    </SurfaceComponent>
+    </SurfaceComponent_2>
   );
 }
 

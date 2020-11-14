@@ -8,6 +8,11 @@ export const SurfaceComponent = styled.div`
   transition: 0.3s linear;
 `;
 
+export const SurfaceComponent_2 = styled.div`
+  background-color: ${({ theme }) => theme.surface_2};
+  transition: 0.3s linear;
+`;
+
 export const SecondaryText = styled.span`
   color: ${({ theme }) => theme.text_secondary};
   transition: 0.3s linear;
@@ -129,4 +134,5 @@ export const StyledExpandBtn = styled.div`
   position: absolute;
   top: 0%;
   z-index: 2;
+  transition: 0.3s linear;
 `;
