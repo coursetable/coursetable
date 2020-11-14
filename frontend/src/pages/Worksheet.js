@@ -271,7 +271,7 @@ function Worksheet() {
               (cur_expand === 'list' ? styles.hidden : '')
             }
           >
-            <SurfaceComponent style={{ height: '100%' }}>
+            <SurfaceComponent className={styles.calendar_style_container}>
               <WeekSchedule
                 showModal={showModal}
                 courses={season_listings}
