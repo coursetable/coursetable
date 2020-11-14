@@ -51,6 +51,7 @@ import {
   StyledSelect,
   StyledInput,
   StyledHr,
+  SecondaryText,
 } from '../components/StyledComponents';
 
 // Multi-Select Animations
@@ -619,10 +620,12 @@ function Search({ location, history }) {
                 >
                   Reset Filters
                 </small>
-                <small className={Styles.num_results + ' ml-auto text-muted'}>
-                  {coursesLoading
-                    ? 'Searching ...'
-                    : 'Showing ' + searchData.length + ' results'}
+                <small className={Styles.num_results + ' ml-auto'}>
+                  <SecondaryText>
+                    {coursesLoading
+                      ? 'Searching ...'
+                      : 'Showing ' + searchData.length + ' results'}
+                  </SecondaryText>
                 </small>
               </Row>
               <Row className="mx-auto pt-1 pb-2 px-4">

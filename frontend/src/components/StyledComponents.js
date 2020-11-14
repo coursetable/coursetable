@@ -114,7 +114,7 @@ export const StyledModal = styled(Modal)`
 
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
-    theme.theme === 'light' ? '#dedede' : '#404040'};
+    theme.theme === 'light' ? '#ededed' : '#404040'};
   transition: 0.3s linear;
 `;
 

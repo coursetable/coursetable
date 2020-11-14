@@ -1,9 +1,5 @@
 .banner {
   min-height: 3em;
-  background-color: #f8f8f8;
-  color: #495057;
-  border-bottom: 1px solid #4950574d;
-
   display: flex;
   justify-content: space-between;
   flex-direction: row;
