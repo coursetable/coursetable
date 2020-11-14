@@ -40,8 +40,6 @@ const SearchResultsItem = ({
   isScrolling = false,
   expanded,
 }) => {
-  // Variable used in list keys
-  let key = 1;
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
 
@@ -183,7 +181,7 @@ const SearchResultsItem = ({
                 className={
                   Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
                 }
-                key={key++}
+                key={season}
               >
                 <div style={{ display: 'inline-block' }}>{icon}</div>
                 &nbsp;{"'" + year}
@@ -222,7 +220,7 @@ const SearchResultsItem = ({
               ? ratingColormap(course.average_rating).darken(3).css()
               : '#b5b5b5',
             backgroundColor: course.average_rating
-              ? chroma(ratingColormap(course.average_rating))
+              ? ratingColormap(course.average_rating)
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -239,7 +237,7 @@ const SearchResultsItem = ({
               ? ratingColormap(course.average_professor).darken(3).css()
               : '#b5b5b5',
             backgroundColor: course.average_professor
-              ? chroma(ratingColormap(course.average_professor))
+              ? ratingColormap(course.average_professor)
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -255,10 +253,10 @@ const SearchResultsItem = ({
           // Only show eval data when user is signed in
           style={{
             color: course.average_workload
-              ? workloadColormap(course.average_workload).darken(2).css()
+              ? workloadColormap(course.average_workload).darken(3).css()
               : '#b5b5b5',
             backgroundColor: course.average_workload
-              ? chroma(workloadColormap(course.average_workload))
+              ? workloadColormap(course.average_workload)
               : '#ebebeb',
           }}
           className={Styles.rating_cell + ' m-auto'}
@@ -302,11 +300,11 @@ const SearchResultsItem = ({
 
       <div style={sa_style} className="d-flex">
         <span className={Styles.skills_areas + ' '}>
-          {course.skills.map((skill) => (
+          {course.skills.map((skill, index) => (
             <Badge
               variant="secondary"
               className={Styles.tag + ' my-auto'}
-              key={key++}
+              key={index}
               style={{
                 color: skillsAreasColors[skill],
                 backgroundColor: chroma(skillsAreasColors[skill])
@@ -317,11 +315,11 @@ const SearchResultsItem = ({
               {skill}
             </Badge>
           ))}
-          {course.areas.map((area) => (
+          {course.areas.map((area, index) => (
             <Badge
               variant="secondary"
               className={Styles.tag + ' my-auto'}
-              key={key++}
+              key={index}
               style={{
                 color: skillsAreasColors[area],
                 backgroundColor: chroma(skillsAreasColors[area])
