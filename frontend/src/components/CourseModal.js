@@ -14,6 +14,7 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 import posthog from 'posthog-js';
+import { StyledModal } from './StyledComponents';
 
 /**
  * Displays course modal when clicking on a course
@@ -52,7 +53,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
 
   return (
     <div className="d-flex justify-content-center">
-      <Modal
+      <StyledModal
         show={show}
         scrollable={true}
         onHide={handleHide}
@@ -272,7 +273,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
               setSeason={setSeason}
             />
           ))}
-      </Modal>
+      </StyledModal>
     </div>
   );
 };

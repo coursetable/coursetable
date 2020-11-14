@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import Select from 'react-select';
-import { FormControl, ListGroup } from 'react-bootstrap';
+import { FormControl, ListGroup, Modal } from 'react-bootstrap';
 import { Calendar } from 'react-big-calendar';
 
 export const SurfaceComponent = styled.div`
@@ -98,5 +98,11 @@ export const StyledCalendar = styled(Calendar)`
         }
       }
     }
+  }
+`;
+
+export const StyledModal = styled(Modal)`
+  .modal-content {
+    background-color: ${({ theme }) => theme.surface};
   }
 `;
