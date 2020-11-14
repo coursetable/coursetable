@@ -6,6 +6,7 @@ import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
+  na_cell,
 } from '../queries/Constants.js';
 
 import chroma from 'chroma-js';
@@ -215,14 +216,14 @@ const SearchResultsItem = ({
       <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
-          style={{
-            color: course.average_rating
-              ? ratingColormap(course.average_rating).darken(3).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_rating
-              ? ratingColormap(course.average_rating)
-              : '#ebebeb',
-          }}
+          style={
+            course.average_rating
+              ? {
+                  color: ratingColormap(course.average_rating).darken(3).css(),
+                  backgroundColor: ratingColormap(course.average_rating),
+                }
+              : na_cell
+          }
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
@@ -232,14 +233,16 @@ const SearchResultsItem = ({
       <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
-          style={{
-            color: course.average_professor
-              ? ratingColormap(course.average_professor).darken(3).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_professor
-              ? ratingColormap(course.average_professor)
-              : '#ebebeb',
-          }}
+          style={
+            course.average_professor
+              ? {
+                  color: ratingColormap(course.average_professor)
+                    .darken(3)
+                    .css(),
+                  backgroundColor: ratingColormap(course.average_professor),
+                }
+              : na_cell
+          }
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_professor
@@ -251,14 +254,16 @@ const SearchResultsItem = ({
       <div style={rate_style} className="d-flex">
         <div
           // Only show eval data when user is signed in
-          style={{
-            color: course.average_workload
-              ? workloadColormap(course.average_workload).darken(3).css()
-              : '#b5b5b5',
-            backgroundColor: course.average_workload
-              ? workloadColormap(course.average_workload)
-              : '#ebebeb',
-          }}
+          style={
+            course.average_workload
+              ? {
+                  color: workloadColormap(course.average_workload)
+                    .darken(3)
+                    .css(),
+                  backgroundColor: workloadColormap(course.average_workload),
+                }
+              : na_cell
+          }
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}

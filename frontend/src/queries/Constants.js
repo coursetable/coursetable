@@ -49,6 +49,13 @@ export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
 
+export const na_cell = {
+  color: '#b5b5b5',
+  backgroundColor: '#ebebeb',
+  fontWeight: 400,
+  fontSize: '12px',
+};
+
 export const colorOptionStyles = {
   control: (styles) => ({
     ...styles,
