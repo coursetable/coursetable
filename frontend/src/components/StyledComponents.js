@@ -1,14 +1,14 @@
 import styled from 'styled-components';
 import Select from 'react-select';
-import { FormControl, ListGroup, Modal, Card } from 'react-bootstrap';
+import { FormControl, ListGroup, Modal, Card, Row } from 'react-bootstrap';
 import { Calendar } from 'react-big-calendar';
 
 export const SurfaceComponent = styled.div`
   background-color: ${({ theme }) => theme.surface};
-  transition: 0.3s linear;
+  transition: background-color 0.3s linear;
 `;
 
-export const SurfaceComponent_2 = styled.div`
+export const SurfaceComponent2 = styled.div`
   background-color: ${({ theme }) => theme.surface_2};
   transition: 0.3s linear;
 `;
@@ -18,8 +18,7 @@ export const SecondaryText = styled.span`
   transition: 0.3s linear;
 `;
 
-export const StyledResultsItem = styled.div`
-  background-color: ${({ theme }) => theme.surface};
+export const StyledResultsItem = styled(Row)`
   border-bottom: solid 1px ${({ theme }) => theme.border};
   border-top: solid 1px ${({ theme }) => theme.border};
   transition: 0.3s linear;

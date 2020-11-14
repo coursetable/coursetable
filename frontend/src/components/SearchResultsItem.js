@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-import { Row, Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
+import { Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -156,221 +156,215 @@ const SearchResultsItem = ({
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
-    <StyledResultsItem>
-      <Row
-        className={
-          'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
-          Styles.search_result_item +
-          ' ' +
-          (isLast ? Styles.last_search_result_item : '') +
-          // red background if class is cancelled
-          (course.extra_info !== 'ACTIVE' ? ' ' + Styles.cancelled_class : '')
-        }
-        onClick={() => {
-          showModal(course);
-        }}
-        tabIndex="0"
-      >
-        {multiSeasons && (
-          <div style={szn_style} className="d-flex">
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 500, hide: 250 }}
-              overlay={season_tooltip}
-            >
-              <div className={Styles.skills_areas + ' my-auto'}>
-                <Badge
-                  variant="secondary"
-                  className={
-                    Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
-                  }
-                  key={season}
-                >
-                  <div style={{ display: 'inline-block' }}>{icon}</div>
-                  &nbsp;{"'" + year}
-                </Badge>
-              </div>
-            </OverlayTrigger>
-          </div>
-        )}
-        {/* Course Code*/}
-        <div
-          style={code_style}
-          className={Styles.ellipsis_text + ' font-weight-bold'}
-        >
-          {course.course_code}
-          <span className="text-muted">
-            {course.section
-              ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
-              : ''}
-          </span>
-        </div>
-        <OverlayTrigger
-          placement={expanded ? 'right' : 'left'}
-          overlay={renderTitlePopover}
-        >
-          {/* Course Title */}
-          <div style={title_style}>
-            <div className={Styles.ellipsis_text}>{course.title}</div>
-          </div>
-        </OverlayTrigger>
-        {/* Class Rating */}
-        <div style={rate_style} className="d-flex">
-          <div
-            // Only show eval data when user is signed in
-            style={
-              course.average_rating
-                ? {
-                    color: ratingColormap(course.average_rating)
-                      .darken(3)
-                      .css(),
-                    backgroundColor: ratingColormap(course.average_rating),
-                  }
-                : na_cell
-            }
-            className={Styles.rating_cell + ' m-auto'}
-          >
-            {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
-          </div>
-        </div>
-        {/* Professor Rating */}
-        <div style={rate_style} className="d-flex">
-          <div
-            // Only show eval data when user is signed in
-            style={
-              course.average_professor
-                ? {
-                    color: ratingColormap(course.average_professor)
-                      .darken(3)
-                      .css(),
-                    backgroundColor: ratingColormap(course.average_professor),
-                  }
-                : na_cell
-            }
-            className={Styles.rating_cell + ' m-auto'}
-          >
-            {course.average_professor
-              ? course.average_professor.toFixed(1)
-              : 'N/A'}
-          </div>
-        </div>
-        {/* Workload Rating */}
-        <div style={rate_style} className="d-flex">
-          <div
-            // Only show eval data when user is signed in
-            style={
-              course.average_workload
-                ? {
-                    color: workloadColormap(course.average_workload)
-                      .darken(3)
-                      .css(),
-                    backgroundColor: workloadColormap(course.average_workload),
-                  }
-                : na_cell
-            }
-            className={Styles.rating_cell + ' m-auto'}
-          >
-            {course.average_workload
-              ? course.average_workload.toFixed(1)
-              : 'N/A'}
-          </div>
-        </div>
-        {/* Enrollment */}
-        <div style={num_style} className="d-flex">
-          <span className="m-auto">
-            {course.enrolled
-              ? course.enrolled
-              : course.last_enrollment && course.last_enrollment_same_professors
-              ? course.last_enrollment
-              : course.last_enrollment
-              ? `~${course.last_enrollment}`
-              : ''}
-          </span>
-        </div>
-
-        {/* Course Professors */}
-        <div style={prof_style} className={Styles.ellipsis_text}>
-          {course.professor_names.length === 0
-            ? 'TBA'
-            : course.professor_names.join(' • ')}
-        </div>
-
-        {/* Course Meets */}
-
-        <div style={meet_style}>
-          <div className={Styles.ellipsis_text}>{course.times_summary}</div>
-        </div>
-
-        {/* Course Location */}
-
-        <div style={loc_style}>
-          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
-        </div>
-
-        {/* Skills and Areas */}
-
-        <div style={sa_style} className="d-flex">
-          <span className={Styles.skills_areas + ' '}>
-            {course.skills.map((skill, index) => (
-              <Badge
-                variant="secondary"
-                className={Styles.tag + ' my-auto'}
-                key={index}
-                style={{
-                  color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill])
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {skill}
-              </Badge>
-            ))}
-            {course.areas.map((area, index) => (
-              <Badge
-                variant="secondary"
-                className={Styles.tag + ' my-auto'}
-                key={index}
-                style={{
-                  color: skillsAreasColors[area],
-                  backgroundColor: chroma(skillsAreasColors[area])
-                    .alpha(0.16)
-                    .css(),
-                }}
-              >
-                {area}
-              </Badge>
-            ))}
-          </span>
-        </div>
-        {/* # FB Friends also shopping */}
-        <div style={num_style} className="d-flex ">
+    <StyledResultsItem
+      className={
+        'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
+        Styles.search_result_item +
+        ' ' +
+        (isLast ? Styles.last_search_result_item : '') +
+        // red background if class is cancelled
+        (course.extra_info !== 'ACTIVE' ? ' ' + Styles.cancelled_class : '')
+      }
+      onClick={() => {
+        showModal(course);
+      }}
+      tabIndex="0"
+    >
+      {multiSeasons && (
+        <div style={szn_style} className="d-flex">
           <OverlayTrigger
             placement="top"
-            delay={{ show: 100, hide: 100 }}
-            overlay={renderFBFriendsTooltip}
+            delay={{ show: 500, hide: 250 }}
+            overlay={season_tooltip}
           >
-            <span className="m-auto">
-              {also_taking.length > 0 ? also_taking.length : ''}
-            </span>
+            <div className={Styles.skills_areas + ' my-auto'}>
+              <Badge
+                variant="secondary"
+                className={
+                  Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
+                }
+                key={season}
+              >
+                <div style={{ display: 'inline-block' }}>{icon}</div>
+                &nbsp;{"'" + year}
+              </Badge>
+            </div>
           </OverlayTrigger>
         </div>
-
-        {/* Bookmark button */}
-        <div className={Styles.worksheet_btn}>
-          <WorksheetToggleButton
-            crn={course.crn}
-            season_code={course.season_code}
-            modal={false}
-          />
+      )}
+      {/* Course Code*/}
+      <div
+        style={code_style}
+        className={Styles.ellipsis_text + ' font-weight-bold'}
+      >
+        {course.course_code}
+        <span className="text-muted">
+          {course.section
+            ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
+            : ''}
+        </span>
+      </div>
+      <OverlayTrigger
+        placement={expanded ? 'right' : 'left'}
+        overlay={renderTitlePopover}
+      >
+        {/* Course Title */}
+        <div style={title_style}>
+          <div className={Styles.ellipsis_text}>{course.title}</div>
         </div>
-        {/* Render conflict icon only when component has been mounted */}
-        {mounted && !isScrolling && (
-          <div className={Styles.conflict_error}>
-            <CourseConflictIcon course={course} />
-          </div>
-        )}
-      </Row>
+      </OverlayTrigger>
+      {/* Class Rating */}
+      <div style={rate_style} className="d-flex">
+        <div
+          // Only show eval data when user is signed in
+          style={
+            course.average_rating
+              ? {
+                  color: ratingColormap(course.average_rating).darken(3).css(),
+                  backgroundColor: ratingColormap(course.average_rating),
+                }
+              : na_cell
+          }
+          className={Styles.rating_cell + ' m-auto'}
+        >
+          {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
+        </div>
+      </div>
+      {/* Professor Rating */}
+      <div style={rate_style} className="d-flex">
+        <div
+          // Only show eval data when user is signed in
+          style={
+            course.average_professor
+              ? {
+                  color: ratingColormap(course.average_professor)
+                    .darken(3)
+                    .css(),
+                  backgroundColor: ratingColormap(course.average_professor),
+                }
+              : na_cell
+          }
+          className={Styles.rating_cell + ' m-auto'}
+        >
+          {course.average_professor
+            ? course.average_professor.toFixed(1)
+            : 'N/A'}
+        </div>
+      </div>
+      {/* Workload Rating */}
+      <div style={rate_style} className="d-flex">
+        <div
+          // Only show eval data when user is signed in
+          style={
+            course.average_workload
+              ? {
+                  color: workloadColormap(course.average_workload)
+                    .darken(3)
+                    .css(),
+                  backgroundColor: workloadColormap(course.average_workload),
+                }
+              : na_cell
+          }
+          className={Styles.rating_cell + ' m-auto'}
+        >
+          {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
+        </div>
+      </div>
+      {/* Enrollment */}
+      <div style={num_style} className="d-flex">
+        <span className="m-auto">
+          {course.enrolled
+            ? course.enrolled
+            : course.last_enrollment && course.last_enrollment_same_professors
+            ? course.last_enrollment
+            : course.last_enrollment
+            ? `~${course.last_enrollment}`
+            : ''}
+        </span>
+      </div>
+
+      {/* Course Professors */}
+      <div style={prof_style} className={Styles.ellipsis_text}>
+        {course.professor_names.length === 0
+          ? 'TBA'
+          : course.professor_names.join(' • ')}
+      </div>
+
+      {/* Course Meets */}
+
+      <div style={meet_style}>
+        <div className={Styles.ellipsis_text}>{course.times_summary}</div>
+      </div>
+
+      {/* Course Location */}
+
+      <div style={loc_style}>
+        <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+      </div>
+
+      {/* Skills and Areas */}
+
+      <div style={sa_style} className="d-flex">
+        <span className={Styles.skills_areas + ' '}>
+          {course.skills.map((skill, index) => (
+            <Badge
+              variant="secondary"
+              className={Styles.tag + ' my-auto'}
+              key={index}
+              style={{
+                color: skillsAreasColors[skill],
+                backgroundColor: chroma(skillsAreasColors[skill])
+                  .alpha(0.16)
+                  .css(),
+              }}
+            >
+              {skill}
+            </Badge>
+          ))}
+          {course.areas.map((area, index) => (
+            <Badge
+              variant="secondary"
+              className={Styles.tag + ' my-auto'}
+              key={index}
+              style={{
+                color: skillsAreasColors[area],
+                backgroundColor: chroma(skillsAreasColors[area])
+                  .alpha(0.16)
+                  .css(),
+              }}
+            >
+              {area}
+            </Badge>
+          ))}
+        </span>
+      </div>
+      {/* # FB Friends also shopping */}
+      <div style={num_style} className="d-flex ">
+        <OverlayTrigger
+          placement="top"
+          delay={{ show: 100, hide: 100 }}
+          overlay={renderFBFriendsTooltip}
+        >
+          <span className="m-auto">
+            {also_taking.length > 0 ? also_taking.length : ''}
+          </span>
+        </OverlayTrigger>
+      </div>
+
+      {/* Bookmark button */}
+      <div className={Styles.worksheet_btn}>
+        <WorksheetToggleButton
+          crn={course.crn}
+          season_code={course.season_code}
+          modal={false}
+        />
+      </div>
+      {/* Render conflict icon only when component has been mounted */}
+      {mounted && !isScrolling && (
+        <div className={Styles.conflict_error}>
+          <CourseConflictIcon course={course} />
+        </div>
+      )}
     </StyledResultsItem>
   );
 };

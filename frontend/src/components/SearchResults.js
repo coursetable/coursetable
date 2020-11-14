@@ -35,7 +35,7 @@ import { FaAppleAlt } from 'react-icons/fa';
 import { FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 
-import { SurfaceComponent_2 } from './StyledComponents';
+import { SurfaceComponent, SurfaceComponent2 } from './StyledComponents';
 
 /**
  * Renders the infinite list of search results
@@ -238,7 +238,7 @@ const SearchResults = ({
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={data.length}
-                  rowHeight={34}
+                  rowHeight={32}
                   rowRenderer={renderListRow}
                 />
               )}
@@ -340,7 +340,7 @@ const SearchResults = ({
         }`}
       >
         {!isMobile && (
-          <SurfaceComponent_2 className={`${Styles.sticky_header}`}>
+          <SurfaceComponent2 className={`${Styles.sticky_header}`}>
             {/* Results Header */}
             <Row
               ref={ref}
@@ -471,9 +471,11 @@ const SearchResults = ({
                 </Col>
               )}
             </Row>
-          </SurfaceComponent_2>
+          </SurfaceComponent2>
         )}
-        <div className={!isList ? 'px-1 pt-3' : Styles.results_list_container}>
+        <SurfaceComponent
+          className={!isList ? 'px-1 pt-3' : Styles.results_list_container}
+        >
           {/* If there are search results, render them */}
           {data.length !== 0 && resultsListing}
           {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
@@ -488,7 +490,7 @@ const SearchResults = ({
               </Spinner>
             </Row>
           )}
-        </div>
+        </SurfaceComponent>
       </Container>
     </div>
   );
