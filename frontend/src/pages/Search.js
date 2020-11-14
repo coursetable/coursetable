@@ -98,7 +98,8 @@ function Search({ location, history }) {
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
   const searchTextInput = useRef(null);
-  const [searchText, setSearchText] = useState('');
+  setObjectIfEmpty('searchText', '');
+  const [searchText, setSearchText] = useState(getObject('searchText'));
   // Is the search form  collapsed?
   setObjectIfEmpty('collapsed_form', false);
   const [collapsed_form, setCollapsedForm] = useState(
@@ -606,10 +607,6 @@ function Search({ location, history }) {
   useEffect(() => {
     setObject('sort_order', sort_order);
   }, [sort_order]);
-
-  useEffect(() => {
-    setObject('multiSeasons', multiSeasons);
-  }, [multiSeasons]);
 
   useEffect(() => {
     setObject('select_sortby', select_sortby);
