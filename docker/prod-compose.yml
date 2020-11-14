@@ -20,6 +20,7 @@ services:
       traefik.http.routers.coursetable.rule: Host(`coursetable.com`)
       traefik.http.routers.coursetable.tls: true
       traefik.http.routers.coursetable.tls.certResolver: ctresolver
+      traefik.http.routers.coursetable.middlewares: gzip-compress@file
     networks:
       - traefik
       - default
@@ -108,7 +109,7 @@ services:
     build: ./php
     volumes:
       - ..:/var/www/html
-    command: sh -c 'php composer.phar install'
+    command: sh -c 'php composer.phar install && tail -f /dev/null'
     working_dir: /var/www/html
 
   php-fpm:
