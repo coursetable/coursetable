@@ -55,6 +55,7 @@
 .list_grid_toggle {
   position: absolute;
   left: 5px;
+  z-index: 2;
 }
 
 :global .sticky {
