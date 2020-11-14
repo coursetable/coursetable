@@ -53,11 +53,17 @@ import {
   StyledHr,
   SecondaryText,
 } from '../components/StyledComponents';
+import styled from 'styled-components';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
 import posthog from 'posthog-js';
 const animatedComponents = makeAnimated();
+const StyledSortBtn = styled.div`
+  &:hover {
+    background-color: ${({ theme }) => theme.select};
+  }
+`;
 
 /**
  * Renders search page
@@ -658,7 +664,7 @@ function Search({ location, history }) {
                     }}
                   />
                 </div>
-                <div
+                <StyledSortBtn
                   className={Styles.sort_btn + ' my-auto'}
                   onClick={handleSortOrder}
                 >
@@ -688,7 +694,7 @@ function Search({ location, history }) {
                       size={20}
                     />
                   )}
-                </div>
+                </StyledSortBtn>
               </Row>
               <StyledHr />
               <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>

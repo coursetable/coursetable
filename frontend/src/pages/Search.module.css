@@ -82,10 +82,6 @@
   transition: 0.3s;
 }
 
-.sort_btn:hover {
-  background-color: rgb(236, 236, 236);
-}
-
 .sort_icon {
   display: block;
 }
