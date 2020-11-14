@@ -3,11 +3,14 @@ export const lightTheme = {
   background: '#FFF',
   surface: '#FFF',
   border: '#f6f6f6',
+  select: 'hsl(0,0%,100%)',
+  multiValue: 'hsl(0,0%,90%)',
 };
 export const darkTheme = {
   text: '#FAFAFA',
   background: '#121212',
   surface: '#242424',
-  third_background: '#4d4d4d',
-  border: '#2c2c2c',
+  border: '#303030',
+  select: '#303030',
+  multiValue: '#525252',
 };

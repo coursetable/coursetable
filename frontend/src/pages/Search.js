@@ -56,7 +56,11 @@ import {
 } from 'react-icons/fc';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
-import { SurfaceComponent, StyledSelect } from '../components/StyledComponents';
+import {
+  SurfaceComponent,
+  StyledSelect,
+  StyledInput,
+} from '../components/StyledComponents';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -634,7 +638,7 @@ function Search({ location, history }) {
                 <div className={Styles.search_bar}>
                   {/* Search Bar */}
                   <InputGroup className={Styles.search_input}>
-                    <FormControl
+                    <StyledInput
                       type="text"
                       value={searchText}
                       onChange={(event) => setSearchText(event.target.value)}
@@ -648,7 +652,8 @@ function Search({ location, history }) {
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`${Styles.selector_container}`}>
                   {/* Sort By Select */}
-                  <Select
+                  <StyledSelect
+                    classNamePrefix={'Select'}
                     value={select_sortby}
                     options={sortbyOptions}
                     // prevent overlap with tooltips
@@ -696,7 +701,8 @@ function Search({ location, history }) {
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {seasonsOptions && (
                     // Seasons Multi-Select
-                    <Select
+                    <StyledSelect
+                      classNamePrefix={'Select'}
                       isMulti
                       value={select_seasons}
                       options={seasonsOptions}
@@ -714,7 +720,8 @@ function Search({ location, history }) {
                 </div>
                 <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
                   {/* Skills/Areas Multi-Select */}
-                  <Select
+                  <StyledSelect
+                    classNamePrefix={'Select'}
                     isMulti
                     value={select_skillsareas}
                     options={skillsAreasOptions}
@@ -731,7 +738,8 @@ function Search({ location, history }) {
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Course Credit Multi-Select */}
-                  <Select
+                  <StyledSelect
+                    classNamePrefix={'Select'}
                     isMulti
                     value={select_credits}
                     options={creditOptions}
@@ -747,7 +755,8 @@ function Search({ location, history }) {
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Yale Subjects Multi-Select */}
-                  <Select
+                  <StyledSelect
+                    classNamePrefix={'Select'}
                     isMulti
                     value={select_subjects}
                     options={subjectOptions}
@@ -764,7 +773,8 @@ function Search({ location, history }) {
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Yale Schools Multi-Select */}
-                  <Select
+                  <StyledSelect
+                    classNamePrefix={'Select'}
                     isMulti
                     value={select_schools}
                     options={schoolOptions}
