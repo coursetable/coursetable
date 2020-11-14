@@ -102,7 +102,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
           placement="right"
           overlay={(props) => renderTitlePopover(props, event.event.listing)}
           // Have a 500ms delay before showing popover so it only pops up when user wants it to
-          delay={{ show: 500, hide: 100 }}
+          delay={{ show: 300, hide: 100 }}
         >
           <div
             style={event_style}
