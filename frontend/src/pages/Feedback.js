@@ -1,19 +1,9 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Form, Button, Collapse } from 'react-bootstrap';
 import styles from './Feedback.module.css';
-import makeAnimated from 'react-select/animated';
 import './Feedback.css';
-
-import { selectStyles } from '../queries/Constants';
-import {
-  StyledSelect,
-  StyledInput,
-  TextComponent,
-} from '../components/StyledComponents';
-import { ThemeContext } from 'styled-components';
-
-// Makes Select forms animated
-const animatedComponents = makeAnimated();
+import CustomSelect from '../components/CustomSelect';
+import { StyledInput, TextComponent } from '../components/StyledComponents';
 
 /**
  * Renders the Feedback page
@@ -40,9 +30,6 @@ function Feedback() {
     setValidated(true);
   };
 
-  const theme = useContext(ThemeContext);
-  const select_styles = selectStyles(theme);
-
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.feedback_header + ' mt-5 mb-1'}>Feedback Form</h1>
@@ -61,8 +48,7 @@ function Feedback() {
           <Form.Label className={styles.form_label}>
             Feedback Type<span style={{ color: '#ff5e5e' }}>{' *'}</span>
           </Form.Label>
-          <StyledSelect
-            classNamePrefix="Select"
+          <CustomSelect
             defaultValue={{ value: 'bug report', label: 'Bug Report' }}
             options={[
               { value: 'Bug Report', label: 'Bug Report' },
@@ -71,7 +57,6 @@ function Feedback() {
             ]}
             onChange={(option) => setIsBug(option.value === 'Bug Report')}
             name="feedback_type"
-            styles={select_styles}
           />
         </Form.Group>
         {/* Hide if not submitting a bug report */}
@@ -94,12 +79,9 @@ function Feedback() {
               <Form.Label className={styles.form_label}>
                 Page(s) Involved?
               </Form.Label>
-              <StyledSelect
-                classNamePrefix="Select"
+              <CustomSelect
                 isMulti
                 name="page[]"
-                components={animatedComponents}
-                styles={select_styles}
                 options={[
                   { value: 'Login', label: 'Login' },
                   { value: 'Home', label: 'Home' },
@@ -119,12 +101,9 @@ function Feedback() {
               <Form.Label className={styles.form_label}>
                 Browser/System(s) Involved?
               </Form.Label>
-              <StyledSelect
-                classNamePrefix="Select"
+              <CustomSelect
                 isMulti
                 name="system[]"
-                components={animatedComponents}
-                styles={select_styles}
                 options={[
                   { value: 'Chrome', label: 'Chrome' },
                   { value: 'Safari', label: 'Safari' },

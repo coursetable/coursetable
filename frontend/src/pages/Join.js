@@ -1,17 +1,8 @@
-import React, { useState, useContext } from 'react';
+import React, { useState } from 'react';
 import { Row, Form, Button } from 'react-bootstrap';
 import styles from './Join.module.css';
-import makeAnimated from 'react-select/animated';
-import { selectStyles } from '../queries/Constants';
-import {
-  StyledSelect,
-  StyledInput,
-  TextComponent,
-} from '../components/StyledComponents';
-import { ThemeContext } from 'styled-components';
-
-// Makes select forms animated
-const animatedComponents = makeAnimated();
+import CustomSelect from '../components/CustomSelect';
+import { StyledInput, TextComponent } from '../components/StyledComponents';
 
 /**
  * Renders the Join Us page
@@ -31,9 +22,6 @@ function Join() {
     // Form has been validated
     setValidated(true);
   };
-
-  const theme = useContext(ThemeContext);
-  const select_styles = selectStyles(theme);
 
   // Formcake submission endpoint
   const submission_endpoint =
@@ -65,12 +53,9 @@ function Join() {
         </Form.Group>
         {/* Role Select */}
         <Form.Group className={styles.form_group}>
-          <StyledSelect
-            classNamePrefix="Select"
+          <CustomSelect
             isMulti
             name="roles[]"
-            components={animatedComponents}
-            styles={select_styles}
             options={[
               { value: 'Frontend', label: 'Front-end Developer' },
               { value: 'Backend', label: 'Back-end Developer' },

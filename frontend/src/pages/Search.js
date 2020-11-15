@@ -4,7 +4,6 @@ import React, {
   useCallback,
   useMemo,
   useRef,
-  useContext,
 } from 'react';
 
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -21,8 +20,6 @@ import {
   areas,
   skills,
   skillsAreasOptions,
-  colorOptionStyles,
-  selectStyles,
   creditOptions,
   schoolOptions,
   subjectOptions,
@@ -30,6 +27,7 @@ import {
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
+import CustomSelect from '../components/CustomSelect';
 
 import { debounce, orderBy } from 'lodash';
 
@@ -49,17 +47,13 @@ import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
 import {
   SurfaceComponent,
-  StyledSelect,
   StyledInput,
   StyledHr,
   TextComponent,
 } from '../components/StyledComponents';
-import styled, { ThemeContext } from 'styled-components';
+import styled from 'styled-components';
 
-// Multi-Select Animations
-import makeAnimated from 'react-select/animated';
 import posthog from 'posthog-js';
-const animatedComponents = makeAnimated();
 const StyledSortBtn = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.banner};
@@ -558,10 +552,6 @@ function Search() {
     if (width < 768 && isList === true) setView(false);
   }, [width, isList]);
 
-  const theme = useContext(ThemeContext);
-  const select_styles = selectStyles(theme);
-  const select_styles_color = colorOptionStyles(theme);
-
   // TODO: add state if courseLoadError is present
   return (
     <div className={Styles.search_base}>
@@ -663,12 +653,10 @@ function Search() {
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`${Styles.selector_container}`}>
                   {/* Sort By Select */}
-                  <StyledSelect
-                    classNamePrefix={'Select'}
+                  <CustomSelect
                     value={select_sortby}
                     options={sortbyOptions}
                     // prevent overlap with tooltips
-                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSortby(options);
@@ -712,91 +700,77 @@ function Search() {
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {seasonsOptions && (
                     // Seasons Multi-Select
-                    <StyledSelect
-                      classNamePrefix={'Select'}
+                    <CustomSelect
                       isMulti
                       value={select_seasons}
                       options={seasonsOptions}
                       placeholder="Last 5 Years"
                       // prevent overlap with tooltips
-                      styles={select_styles}
                       menuPortalTarget={document.body}
                       onChange={(options) => {
                         // Set seasons state
                         setSelectSeasons(options ? options : []);
                       }}
-                      components={animatedComponents}
                     />
                   )}
                 </div>
                 <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
                   {/* Skills/Areas Multi-Select */}
-                  <StyledSelect
-                    classNamePrefix={'Select'}
+                  <CustomSelect
                     isMulti
                     value={select_skillsareas}
                     options={skillsAreasOptions}
                     placeholder="All Skills/Areas"
                     // colors
-                    styles={select_styles_color}
+                    useColors={true}
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSkillsAreas(options);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Course Credit Multi-Select */}
-                  <StyledSelect
-                    classNamePrefix={'Select'}
+                  <CustomSelect
                     isMulti
                     value={select_credits}
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
-                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectCredits(options);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Yale Subjects Multi-Select */}
-                  <StyledSelect
-                    classNamePrefix={'Select'}
+                  <CustomSelect
                     isMulti
                     value={select_subjects}
                     options={subjectOptions}
                     placeholder="All Subjects"
                     isSearchable={true}
                     // prevent overlap with tooltips
-                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSubjects(options ? options : []);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Yale Schools Multi-Select */}
-                  <StyledSelect
-                    classNamePrefix={'Select'}
+                  <CustomSelect
                     isMulti
                     value={select_schools}
                     options={schoolOptions}
                     placeholder="All Schools"
                     // prevent overlap with tooltips
-                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSchools(options ? options : []);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
               </Row>
