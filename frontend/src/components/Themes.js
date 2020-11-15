@@ -3,7 +3,7 @@ export const lightTheme = {
   text: ['#141414', '#7a7a7a'], // [Primary, Secondary]
   background: '#FFF', // White background
   surface: ['#FFF', '#FFF'], // All surfaces are white
-  banner: 'hsl(0,0%,90%)', // For slightly grey surfaces
+  banner: '#f5f5f5', // For slightly grey surfaces
   border: '#f6f6f6', // Used in borders (calendar, and between list items)
   select: '#FFF', // Background color for react-select
   select_hover: '#e1edff', // Blueish tint to use on hover
