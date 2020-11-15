@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
-import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
 import Styles from './CourseModalOverview.module.css';
@@ -11,9 +10,19 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useUser } from '../user';
-import { StyledPopover } from './StyledComponents';
+import {
+  TextComponent,
+  StyledPopover,
+  StyledMultiToggle,
+} from './StyledComponents';
+import styled from 'styled-components';
 
 import CourseModalLoading from './CourseModalLoading';
+
+const StyledCol = styled(Col)`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.select_hover};
+`;
 
 /**
  * Displays course modal when clicking on a course
@@ -195,7 +204,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* Clickable listing button */}
-            <Col
+            <StyledCol
               xs={5}
               className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
               onClick={() => handleSetSeason(evaluations[i])}
@@ -209,7 +218,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                   ? 'Section ' + evaluations[i].section
                   : evaluations[i].professor[0]}
               </div>
-            </Col>
+            </StyledCol>
             {/* Course Rating */}
             <Col
               xs={2}
@@ -342,7 +351,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               {prof_dict.email !== '' ? (
                 <a href={`mailto: ${prof_dict.email}`}>{prof_dict.email}</a>
               ) : (
-                <span className="text-muted">N/A</span>
+                <TextComponent type={1}>N/A</TextComponent>
               )}
             </small>
           </Row>
@@ -636,7 +645,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         <Col md={5} className="px-0 my-0">
           {/* Filter Select */}
           <Row className="m-auto justify-content-center">
-            <MultiToggle
+            <StyledMultiToggle
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}

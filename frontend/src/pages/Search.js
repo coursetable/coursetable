@@ -52,7 +52,7 @@ import {
   StyledSelect,
   StyledInput,
   StyledHr,
-  SecondaryText,
+  TextComponent,
 } from '../components/StyledComponents';
 import styled, { ThemeContext } from 'styled-components';
 
@@ -633,11 +633,11 @@ function Search() {
                   Reset Filters
                 </small>
                 <small className={Styles.num_results + ' ml-auto'}>
-                  <SecondaryText>
+                  <TextComponent type={1}>
                     {coursesLoading
                       ? 'Searching ...'
                       : 'Showing ' + searchData.length + ' results'}
-                  </SecondaryText>
+                  </TextComponent>
                 </small>
               </Row>
               <Row className="mx-auto pt-1 pb-2 px-4">

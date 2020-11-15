@@ -14,7 +14,7 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 import posthog from 'posthog-js';
-import { StyledModal } from './StyledComponents';
+import { StyledModal, TextComponent } from './StyledComponents';
 
 /**
  * Displays course modal when clicking on a course
@@ -95,26 +95,24 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             ''
                           )}
                           {listing.title}
-                          <span className="text-muted">
+                          <TextComponent type={1}>
                             {' (' +
                               toSeasonString(listing.season_code)[2] +
                               ' ' +
                               toSeasonString(listing.season_code)[1] +
                               ')'}
-                          </span>
+                          </TextComponent>
                         </span>
                       </Row>
                     </Modal.Title>
 
                     <Row className={styles.badges + ' mx-auto mt-1 '}>
                       {/* Course Codes */}
-                      <p
-                        className={
-                          styles.course_codes + ' text-muted my-0 pr-2'
-                        }
-                      >
-                        {listing.all_course_codes &&
-                          listing.all_course_codes.join(' • ')}
+                      <p className={styles.course_codes + ' my-0 pr-2'}>
+                        <TextComponent type={1}>
+                          {listing.all_course_codes &&
+                            listing.all_course_codes.join(' • ')}
+                        </TextComponent>
                       </p>
                       {/* Course Skills and Areas */}
                       {listing.skills &&
@@ -178,25 +176,23 @@ const CourseModal = ({ listing, hideModal, show }) => {
                           }
                         >
                           {view[1].title + ' '}
-                          <span className="text-muted">
+                          <TextComponent type={1}>
                             {' (' +
                               toSeasonString(view[0])[2] +
                               ' ' +
                               toSeasonString(view[0])[1] +
                               ')'}
-                          </span>
+                          </TextComponent>
                         </span>
                       </Row>
                     </Modal.Title>
 
                     <Row className={styles.badges + ' mx-auto mt-1 '}>
                       {/* Course Code */}
-                      <p
-                        className={
-                          styles.course_codes + '  my-0 text-muted pr-2'
-                        }
-                      >
-                        {view[1].course_code}
+                      <p className={styles.course_codes + '  my-0 pr-2'}>
+                        <TextComponent type={1}>
+                          {view[1].course_code}
+                        </TextComponent>
                       </p>
                       {/* Course Skills and Areas */}
                       {view[1].skills &&
@@ -236,16 +232,18 @@ const CourseModal = ({ listing, hideModal, show }) => {
                         <p
                           className={
                             styles.course_codes +
-                            '  my-0 text-muted' +
+                            '  my-0 ' +
                             (view[1].skills.length || view[1].areas.length
                               ? ' pl-2 '
                               : '')
                           }
                         >
-                          {'| ' +
-                            view[1].professor.join(', ') +
-                            ' | Section ' +
-                            view[1].section}
+                          <TextComponent type={1}>
+                            {'| ' +
+                              view[1].professor.join(', ') +
+                              ' | Section ' +
+                              view[1].section}
+                          </TextComponent>
                         </p>
                       )}
                     </Row>

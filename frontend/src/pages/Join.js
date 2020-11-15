@@ -6,7 +6,7 @@ import { selectStyles } from '../queries/Constants';
 import {
   StyledSelect,
   StyledInput,
-  SecondaryText,
+  TextComponent,
 } from '../components/StyledComponents';
 import { ThemeContext } from 'styled-components';
 
@@ -41,8 +41,8 @@ function Join() {
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.join_header + ' mt-5 mb-1'}>Join Us!</h1>
-      <p className={styles.join_description + ' mb-3 text-muted'}>
-        <SecondaryText>We'll be in touch.</SecondaryText>
+      <p className={styles.join_description + ' mb-3'}>
+        <TextComponent type={1}>We'll be in touch.</TextComponent>
       </p>
       <Form
         noValidate

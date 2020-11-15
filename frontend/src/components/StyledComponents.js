@@ -7,16 +7,18 @@ import {
   Card,
   Row,
   Popover,
+  Tabs,
 } from 'react-bootstrap';
 import { Calendar } from 'react-big-calendar';
+import MultiToggle from 'react-multi-toggle';
 
 export const SurfaceComponent = styled.div`
   background-color: ${({ theme, layer }) => theme.surface[layer]};
   transition: background-color 0.3s linear;
 `;
 
-export const SecondaryText = styled.span`
-  color: ${({ theme }) => theme.text_secondary};
+export const TextComponent = styled.span`
+  color: ${({ theme, type }) => theme.text[type]};
   transition: 0.3s linear;
 `;
 
@@ -57,14 +59,14 @@ export const StyledSelect = styled(Select)`
   }
 
   .Select__single-value {
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.text[0]};
     transition: 0.3s linear;
   }
 `;
 
 export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
-  color: ${({ theme }) => theme.text};
+  color: ${({ theme }) => theme.text[0]};
   transition: 0.3s linear !important;
   border: ${({ theme }) =>
     theme.theme === 'light'
@@ -77,7 +79,7 @@ export const StyledInput = styled(FormControl)`
   }
 
   &.form-control:focus {
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.text[0]};
   }
 `;
 
@@ -139,7 +141,7 @@ export const StyledCard = styled(Card)`
 
 export const StyledExpandBtn = styled.div`
   background-color: ${({ theme }) => theme.border};
-  color: ${({ theme }) => theme.text_secondary};
+  color: ${({ theme }) => theme.text[1]};
   position: absolute;
   top: 0%;
   z-index: 2;
@@ -150,13 +152,36 @@ export const StyledPopover = styled(Popover)`
   background-color: ${({ theme }) => theme.surface[0]};
   .popover-header {
     background-color: ${({ theme }) => theme.surface[1]};
-    color: ${({ theme }) => theme.text_secondary};
+    color: ${({ theme }) => theme.text[1]};
   }
   .popover-body {
-    color: ${({ theme }) => theme.text};
+    color: ${({ theme }) => theme.text[0]};
   }
   .arrow::after {
     border-right-color: ${({ theme }) => theme.surface[0]};
     border-left-color: ${({ theme }) => theme.surface[0]};
+  }
+`;
+
+export const StyledTabs = styled(Tabs)`
+  background-color: ${({ theme }) => theme.surface[0]};
+  .active {
+    background-color: ${({ theme }) => theme.select_hover + ' !important'};
+    color: ${({ theme }) => theme.text[0] + ' !important'};
+    border-bottom: none;
+  }
+  .nav-item {
+    color: ${({ theme }) => theme.text[0]};
+  }
+  .nav-item:hover {
+    background-color: ${({ theme }) => theme.banner};
+    color: ${({ theme }) => theme.text[0]};
+  }
+`;
+
+export const StyledMultiToggle = styled(MultiToggle)`
+  background-color: ${({ theme }) => theme.surface[1]};
+  .toggleOption {
+    color: ${({ theme }) => theme.text[0]};
   }
 `;

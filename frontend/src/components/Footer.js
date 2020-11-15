@@ -4,7 +4,7 @@ import styles from './Footer.module.css';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import { Container } from 'react-bootstrap';
-import { StyledHr, SecondaryText } from './StyledComponents';
+import { StyledHr, TextComponent } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';
 
@@ -33,13 +33,13 @@ function Footer() {
               {/* Catalog */}
               <li>
                 <NavLink to="/catalog" onClick={scrollToTop}>
-                  <SecondaryText>Catalog</SecondaryText>
+                  <TextComponent type={1}>Catalog</TextComponent>
                 </NavLink>
               </li>
               {/* Worksheet */}
               <li>
                 <NavLink to="/worksheet" onClick={scrollToTop}>
-                  <SecondaryText>Worksheet</SecondaryText>
+                  <TextComponent type={1}>Worksheet</TextComponent>
                 </NavLink>
               </li>
             </ul>
@@ -50,13 +50,13 @@ function Footer() {
               {/* FAQ */}
               <li>
                 <NavLink to="/faq" onClick={scrollToTop}>
-                  <SecondaryText>FAQ</SecondaryText>
+                  <TextComponent type={1}>FAQ</TextComponent>
                 </NavLink>
               </li>
               {/* Feedback */}
               <li>
                 <NavLink to="/feedback" onClick={scrollToTop}>
-                  <SecondaryText>Feedback</SecondaryText>
+                  <TextComponent type={1}>Feedback</TextComponent>
                 </NavLink>
               </li>
             </ul>
@@ -67,13 +67,13 @@ function Footer() {
               {/* Team */}
               <li>
                 <NavLink to="/about" onClick={scrollToTop}>
-                  <SecondaryText>Team</SecondaryText>
+                  <TextComponent type={1}>Team</TextComponent>
                 </NavLink>
               </li>
               {/* Join us */}
               <li>
                 <NavLink to="/joinus" onClick={scrollToTop}>
-                  <SecondaryText>Join Us</SecondaryText>
+                  <TextComponent type={1}>Join Us</TextComponent>
                 </NavLink>
               </li>
               {/* Blog */}
@@ -83,7 +83,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <SecondaryText>Blog</SecondaryText>
+                  <TextComponent type={1}>Blog</TextComponent>
                 </a>
               </li>
               {/* Github */}
@@ -93,7 +93,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <SecondaryText>Github</SecondaryText>
+                  <TextComponent type={1}>Github</TextComponent>
                 </a>
               </li>
             </ul>

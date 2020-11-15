@@ -1,6 +1,7 @@
 import React from 'react';
-import { Tabs, Tab, Row } from 'react-bootstrap';
+import { Tab, Row } from 'react-bootstrap';
 import styles from './EvaluationResponses.module.css';
+import { TextComponent, StyledTabs } from './StyledComponents';
 
 /**
  * Displays Evaluation Comments
@@ -39,7 +40,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
       summary = responses[key].map((response, index) => {
         return (
           <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
+            <TextComponent type={0}>{response}</TextComponent>
           </Row>
         );
       });
@@ -47,7 +48,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
       recommend = responses[key].map((response, index) => {
         return (
           <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
+            <TextComponent type={0}>{response}</TextComponent>
           </Row>
         );
       });
@@ -55,7 +56,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
       skills = responses[key].map((response, index) => {
         return (
           <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
+            <TextComponent type={0}>{response}</TextComponent>
           </Row>
         );
       });
@@ -63,7 +64,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
       strengths = responses[key].map((response, index) => {
         return (
           <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
+            <TextComponent type={0}>{response}</TextComponent>
           </Row>
         );
       });
@@ -72,7 +73,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
 
   return (
     <div>
-      <Tabs
+      <StyledTabs
         variant="tabs"
         transition={false}
         onSelect={() => {
@@ -122,7 +123,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
             {summary}
           </Tab>
         )}
-      </Tabs>
+      </StyledTabs>
       {!num_questions && <strong>No comments for this course</strong>}
     </div>
   );

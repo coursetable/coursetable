@@ -147,7 +147,7 @@ export const selectStyles = (theme) => {
     multiValueLabel: (styles) => {
       return {
         ...styles,
-        color: theme.text,
+        color: theme.text[0],
         transition: '0.3s linear',
       };
     },
@@ -189,7 +189,7 @@ export const selectStyles = (theme) => {
         : isFocused
         ? theme.select_hover
         : null,
-      color: isSelected ? 'white' : theme.text,
+      color: isSelected ? 'white' : theme.text[0],
       ':active': {
         ...base[':active'],
         backgroundColor: !isDisabled && '#85c2ff',

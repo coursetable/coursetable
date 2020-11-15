@@ -8,7 +8,7 @@ import { selectStyles } from '../queries/Constants';
 import {
   StyledSelect,
   StyledInput,
-  SecondaryText,
+  TextComponent,
 } from '../components/StyledComponents';
 import { ThemeContext } from 'styled-components';
 
@@ -47,7 +47,7 @@ function Feedback() {
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.feedback_header + ' mt-5 mb-1'}>Feedback Form</h1>
       <p className={styles.feedback_description + ' mb-3'}>
-        <SecondaryText>Let us know what you think!</SecondaryText>
+        <TextComponent type={1}>Let us know what you think!</TextComponent>
       </p>
       <Form
         noValidate
@@ -81,7 +81,7 @@ function Feedback() {
             <Form.Group className={styles.form_group}>
               <Form.Label className={styles.form_label}>
                 Course(s) Involved?
-                <SecondaryText>{' (Include season)'}</SecondaryText>
+                <TextComponent type={1}>{' (Include season)'}</TextComponent>
               </Form.Label>
               <StyledInput
                 type="text"

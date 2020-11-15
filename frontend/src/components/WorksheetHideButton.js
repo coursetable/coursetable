@@ -42,7 +42,7 @@ const WorksheetHideButton = ({ toggleCourse, crn, season_code, theme }) => {
         {hidden ? (
           <BsEyeSlash color={theme.hidden} size={button_size} />
         ) : (
-          <BsEye color={theme.text} size={button_size} />
+          <BsEye color={theme.text[0]} size={button_size} />
         )}
       </Button>
     </OverlayTrigger>

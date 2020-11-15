@@ -1,7 +1,6 @@
 export const lightTheme = {
   theme: 'light',
-  text: '#141414',
-  text_secondary: '#7a7a7a',
+  text: ['#141414', '#7a7a7a'],
   background: '#FFF',
   surface: ['#FFF', '#FFF'],
   banner: '#e3e3e3',
@@ -13,8 +12,7 @@ export const lightTheme = {
 };
 export const darkTheme = {
   theme: 'dark',
-  text: '#FAFAFA',
-  text_secondary: '#bababa',
+  text: ['#FAFAFA', '#bababa'],
   background: '#121212',
   surface: ['#242424', '#363636'],
   banner: '#363636',

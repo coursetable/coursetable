@@ -62,7 +62,7 @@
   padding: 1rem 1rem 0.5rem 1rem !important;
 }
 
-:global .nav-link.active {
+/* :global .nav-link.active {
   color: #007bff !important;
 }
 
@@ -79,7 +79,7 @@
 :global .nav-link:hover {
   color: #007bff !important;
   background-color: rgb(241, 241, 241) !important;
-}
+} */
 
 :global .modal-dialog {
   transition: transform 0.1s ease-out !important;

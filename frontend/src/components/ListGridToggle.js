@@ -4,7 +4,7 @@ import { FaBars, FaTh } from 'react-icons/fa';
 import styled from 'styled-components';
 
 const StyledToggle = styled.div`
-  color: ${({ theme }) => theme.text_secondary};
+  color: ${({ theme }) => theme.text[1]};
   padding: 7.5px;
   border-radius: 15px;
   transition: 0.3s;

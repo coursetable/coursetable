@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 import styles from './RatingsGraph.module.css';
+import { TextComponent } from './StyledComponents';
 
 /**
  * Displays Evaluation Graphs
@@ -37,7 +38,9 @@ const RatingsGraph = ({ ratings, reverse, labels }) => {
     columns.push(
       <div key={indx} className={styles.bar}>
         {/* Number of votes for each rating */}
-        <p className={styles.value + ' m-0 '}>{rating}</p>
+        <p className={styles.value + ' m-0 '}>
+          <TextComponent type={1}>{rating}</TextComponent>
+        </p>
         {/* Bar */}
         <div
           className={styles.column + ' px-1 mx-auto'}

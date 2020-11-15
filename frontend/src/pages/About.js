@@ -4,7 +4,7 @@ import styles from './About.module.css';
 import { Card, Button, Row } from 'react-bootstrap';
 //import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
-import { SecondaryText, StyledCard } from '../components/StyledComponents';
+import { TextComponent, StyledCard } from '../components/StyledComponents';
 
 import ae from '../images/headshots/aidan-evans.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
@@ -91,7 +91,7 @@ function About() {
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
-      <SecondaryText>
+      <TextComponent type={1}>
         <p className={styles.about_description + ' mb-3 mx-auto'}>
           CourseTable offers a clean and effective way for Yale students to find
           the courses they want, bringing together course information, student
@@ -114,7 +114,7 @@ function About() {
           </a>
           .
         </p>
-      </SecondaryText>
+      </TextComponent>
 
       <Row className="mx-auto">
         <div className="mx-auto">
@@ -137,7 +137,7 @@ function About() {
                 <Card.Body className="p-3">
                   <Card.Title className="mb-1">{person.name}</Card.Title>
                   <Card.Text>
-                    <SecondaryText>{person.role}</SecondaryText>
+                    <TextComponent type={1}>{person.role}</TextComponent>
                   </Card.Text>
                 </Card.Body>
               </StyledCard>

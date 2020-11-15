@@ -11,6 +11,7 @@ import { useApolloClient } from '@apollo/react-hooks';
 import { FiExternalLink } from 'react-icons/fi';
 
 import ChallengeError from '../images/error.svg';
+import { TextComponent } from '../components/StyledComponents';
 
 /**
  * Renders the OCE Challenge page if the user hasn't completed yet
@@ -354,16 +355,18 @@ function Challenge() {
         {/* Page Header */}
         <h1 className={'font-weight-bold mb-2'}>Enable evaluations</h1>
         {/* Page Description */}
-        <p className={styles.challenge_description + ' mb-2 text-muted'}>
-          To confirm that you have access to course evaluations, we ask that you
-          retrieve the number of people who responded to a specific question for
-          three courses (linked below). If your responses match the values in
-          our database, you'll be good to go!
-          <br />
-          If the challenge is not working for you, please{' '}
-          <NavLink to="/feedback">let us know</NavLink> and we can grant you
-          access manually.
-        </p>
+        <TextComponent type={1}>
+          <p className={styles.challenge_description + ' mb-2'}>
+            To confirm that you have access to course evaluations, we ask that
+            you retrieve the number of people who responded to a specific
+            question for three courses (linked below). If your responses match
+            the values in our database, you'll be good to go!
+            <br />
+            If the challenge is not working for you, please{' '}
+            <NavLink to="/feedback">let us know</NavLink> and we can grant you
+            access manually.
+          </p>
+        </TextComponent>
         {/* Track number of attempts */}
         {numTries !== null && (
           <div className="mb-2">

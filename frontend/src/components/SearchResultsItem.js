@@ -19,7 +19,7 @@ import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import {
-  SecondaryText,
+  TextComponent,
   StyledResultsItem,
   StyledPopover,
 } from './StyledComponents';
@@ -202,11 +202,11 @@ const SearchResultsItem = ({
         className={Styles.ellipsis_text + ' font-weight-bold'}
       >
         {course.course_code}
-        <SecondaryText>
+        <TextComponent type={1}>
           {course.section
             ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
             : ''}
-        </SecondaryText>
+        </TextComponent>
       </div>
       <OverlayTrigger
         placement={expanded ? 'right' : 'left'}

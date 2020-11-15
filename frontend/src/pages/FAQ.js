@@ -5,7 +5,7 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-import { SecondaryText } from '../components/StyledComponents';
+import { TextComponent } from '../components/StyledComponents';
 
 import { scrollToTop } from '../utilities';
 
@@ -277,7 +277,7 @@ function FAQ() {
         Frequently Asked Questions
       </h1>
       <p className={styles.faq_description + ' mb-3'}>
-        <SecondaryText>Have another question?</SecondaryText>{' '}
+        <TextComponent type={1}>Have another question?</TextComponent>{' '}
         <NavLink to="/feedback" onClick={scrollToTop}>
           Contact us
         </NavLink>
@@ -291,7 +291,7 @@ function FAQ() {
             </div>
             <Accordion.Collapse eventKey={`${idx}`}>
               <Card.Body className="py-3">
-                <SecondaryText>{faq.contents}</SecondaryText>
+                <TextComponent type={1}>{faq.contents}</TextComponent>
               </Card.Body>
             </Accordion.Collapse>
           </Card>

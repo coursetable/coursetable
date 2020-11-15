@@ -11,7 +11,7 @@ import SeasonDropdown from './SeasonDropdown';
 import FBDropdown from './FBDropdown';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { SecondaryText, StyledBanner, StyledCard } from './StyledComponents';
+import { TextComponent, StyledBanner, StyledCard } from './StyledComponents';
 import { ThemeContext } from 'styled-components';
 
 const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
@@ -58,7 +58,7 @@ function ContextAwareToggle({ eventKey, callback, course }) {
           <Row>{course.course_code}</Row>
           <Row>
             {/* Course Location. NOT LINKING TO YALE CAMPUS MAP RN */}
-            <SecondaryText>
+            <TextComponent type={1}>
               <small>
                 {/* <a
                         target="_blank"
@@ -70,12 +70,12 @@ function ContextAwareToggle({ eventKey, callback, course }) {
                       </a> */}
                 {course.locations_summary}
               </small>
-            </SecondaryText>
+            </TextComponent>
           </Row>
         </Col>
         {/* Course Time */}
         <Col xs="auto" className="p-0">
-          <SecondaryText>{trim(course.times_summary)}</SecondaryText>
+          <TextComponent type={1}>{trim(course.times_summary)}</TextComponent>
         </Col>
       </Row>
     </div>
@@ -230,7 +230,7 @@ function WorksheetAccordion({
                   </Row>
                   {/* Course Professors */}
                   <Row className="mx-auto pb-2" style={{ fontWeight: 500 }}>
-                    <SecondaryText>{course.professors}</SecondaryText>
+                    <TextComponent type={1}>{course.professors}</TextComponent>
                   </Row>
                   {/* Course Description */}
                   <Row className="m-auto">
@@ -251,7 +251,7 @@ function WorksheetAccordion({
                       onClick={() => showModal(course)}
                       className={styles.more_info + ' mt-2 font-weight-bold'}
                     >
-                      <SecondaryText>More Info</SecondaryText>
+                      <TextComponent type={1}>More Info</TextComponent>
                     </StyledBanner>
                   </Row>
                 </Card.Body>

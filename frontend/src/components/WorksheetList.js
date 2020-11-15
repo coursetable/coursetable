@@ -44,7 +44,7 @@ function WorksheetList({
       courses.forEach((course) => {
         // Style for coloring hidden courses
         const color_style = {
-          color: course.hidden ? theme.hidden : theme.text,
+          color: course.hidden ? theme.hidden : theme.text[0],
         };
         // Add listgroup item to items list
         items.push(
