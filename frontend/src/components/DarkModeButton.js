@@ -1,6 +1,7 @@
 import React from 'react';
 import { withTheme } from 'styled-components';
-import { FaSun, FaRegMoon } from 'react-icons/fa';
+import { FaRegMoon } from 'react-icons/fa';
+import { ImSun } from 'react-icons/im';
 
 /**
  * DarkMode Button
@@ -11,7 +12,7 @@ function DarkModeButton({ theme }) {
   return (
     <span className="my-auto">
       {theme.theme === 'dark' ? (
-        <FaSun size={20} style={{ display: 'block' }} />
+        <ImSun size={20} style={{ display: 'block' }} />
       ) : (
         <FaRegMoon size={20} style={{ display: 'block' }} />
       )}

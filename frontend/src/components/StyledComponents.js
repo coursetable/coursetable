@@ -156,7 +156,7 @@ export const StyledExpandBtn = styled.div`
 export const StyledPopover = styled(Popover)`
   background-color: ${({ theme }) => theme.surface[0]};
   .popover-header {
-    background-color: ${({ theme }) => theme.surface[1]};
+    background-color: ${({ theme }) => theme.banner};
     color: ${({ theme }) => theme.text[1]};
   }
   .popover-body {

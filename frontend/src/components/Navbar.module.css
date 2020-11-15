@@ -43,7 +43,7 @@ nav > .nav_brand {
 
 .navbar_dark_mode_btn:hover {
   cursor: pointer;
-  color: rgb(51, 162, 255);
+  color: #007bff;
 }
 
 .icon_circle {
