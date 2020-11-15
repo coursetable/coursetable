@@ -3,6 +3,7 @@ import { Form, InputGroup, Button, Row } from 'react-bootstrap';
 import styles from './Searchbar.module.css';
 import { BsSearch } from 'react-icons/bs';
 import { Redirect } from 'react-router-dom';
+import posthog from 'posthog-js';
 
 /**
  * Renders search bar to search the catalog
@@ -16,8 +17,10 @@ function Searchbar({ bar_size }) {
   let input = useRef();
   // On form submit, set value state to the searched value
   const searched = (event) => {
-    // Metric Tracking of Invidiual Searches
-    //window.umami.trackEvent("Searched - " + input.current.value, "search-text");
+    posthog.capture('search', {
+      from: 'searchbar',
+      value: input.current.value,
+    });
 
     // Prevent page refresh on submit
     event.preventDefault();

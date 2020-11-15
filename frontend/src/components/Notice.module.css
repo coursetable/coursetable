@@ -2,6 +2,7 @@
   min-height: 3em;
   background-color: #f8f8f8;
   color: #495057;
+  border-bottom: 1px solid #4950574d;
 
   display: flex;
   justify-content: space-between;
@@ -16,6 +17,11 @@
   text-align: center;
 }
 
-.banner span {
+.banner .close_button {
   width: 30px;
+  transition: 0.33s ease-out;
+}
+.banner .close_button:hover {
+  cursor: pointer;
+  color: rgb(51, 162, 255);
 }

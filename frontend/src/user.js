@@ -6,7 +6,10 @@ import React, {
   useMemo,
 } from 'react';
 import axios from 'axios';
+import posthog from 'posthog-js';
+import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
+import { useWorksheetInfo } from './queries/GetWorksheetListings';
 
 const UserContext = createContext();
 UserContext.displayName = 'UserContext';
@@ -38,6 +41,8 @@ export const UserProvider = ({ children }) => {
         setNetId(null);
         setWorksheet(null);
         setHasEvals(null);
+        posthog.reset();
+        Sentry.configureScope((scope) => scope.clear());
         console.error(res.data.message);
         if (!suppressError) {
           toast.error(res.data.message);
@@ -47,6 +52,8 @@ export const UserProvider = ({ children }) => {
         setNetId(res.data.netId);
         setHasEvals(res.data.evaluationsEnabled);
         setWorksheet(res.data.data);
+        posthog.identify(res.data.netId);
+        Sentry.setUser({ username: res.data.netId });
       }
     },
     [setWorksheet, setNetId, setHasEvals]
@@ -75,15 +82,19 @@ export const UserProvider = ({ children }) => {
     [setFbLogin, setFbWorksheets]
   );
 
+  // Get user's worksheet information.
+  const worksheetDataObj = useWorksheetInfo(worksheet);
+
   const user = useMemo(() => {
     return {
       netId,
       worksheet,
+      worksheetDataObj,
       hasEvals,
       fbLogin,
       fbWorksheets,
     };
-  }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
+  }, [netId, worksheet, worksheetDataObj, hasEvals, fbLogin, fbWorksheets]);
 
   const store = {
     // Context state.

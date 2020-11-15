@@ -1,4 +1,16 @@
 .select_col {
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
+  position: sticky;
+  top: 64px;
+}
+
+.top_left {
+  left: 0%;
+  transform: rotateZ(90deg) translate(-40%, 40%);
+  transition: 0.3s;
+}
+
+.top_left:hover {
+  transform: rotateZ(90deg) translate(-40%, 40%) scale(1.1);
 }

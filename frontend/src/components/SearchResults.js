@@ -21,7 +21,6 @@ import {
   Col,
   Row,
   Spinner,
-  Fade,
   Tooltip,
   OverlayTrigger,
 } from 'react-bootstrap';
@@ -32,7 +31,7 @@ import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
-import { FaArrowCircleUp, FaAppleAlt } from 'react-icons/fa';
+import { FaAppleAlt } from 'react-icons/fa';
 import { FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 
@@ -43,7 +42,6 @@ import { AiFillStar } from 'react-icons/ai';
  * @prop setView - function to change display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop searched - boolean | has the search started?
  * @prop isLoggedIn - boolean | is the user logged in?
  */
 
@@ -53,7 +51,6 @@ const SearchResults = ({
   setView,
   loading = false,
   multiSeasons = false,
-  searched = true,
   showModal,
   isLoggedIn,
   expanded,
@@ -66,31 +63,59 @@ const SearchResults = ({
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
 
-  // Should we render the scroll up button?
-  const [scroll_visible, setScrollVisible] = useState(false);
-  // Render scroll-up button after scrolling a lot
+  // State that holds width of the row for list view
+  const [ROW_WIDTH, setRowWidth] = useState(0);
+  // Ref to get row width
+  const ref = useRef(null);
   useEffect(() => {
-    window.onscroll = () => {
-      if (window.pageYOffset > 2000 && !scroll_visible) setScrollVisible(true);
-      if (window.pageYOffset < 2000 && scroll_visible) setScrollVisible(false);
-    };
-  });
+    // Set row width
+    if (ref.current) setRowWidth(ref.current.offsetWidth);
+  }, [setRowWidth, width, expanded]);
 
-  // Scroll to top button click handler
-  const scrollTop = () => {
-    window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+  // Spacing for each column in list view
+  let COL_SPACING = {
+    SZN_WIDTH: 80,
+    CODE_WIDTH: 110,
+    RATE_WIDTH: 30,
+    NUM_WIDTH: 30,
+    SA_WIDTH: 100,
+    PADDING: 35,
   };
+  const EXTRA = useMemo(() => {
+    return (
+      ROW_WIDTH -
+      (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
+      COL_SPACING.CODE_WIDTH -
+      2 * COL_SPACING.NUM_WIDTH -
+      COL_SPACING.SA_WIDTH -
+      3 * COL_SPACING.RATE_WIDTH -
+      COL_SPACING.PADDING
+    );
+  }, [COL_SPACING, ROW_WIDTH, multiSeasons]);
+
+  COL_SPACING.PROF_WIDTH = Math.min(EXTRA / 4, 160);
+  COL_SPACING.MEET_WIDTH = Math.min(EXTRA / 4, 160);
+  COL_SPACING.LOC_WIDTH = Math.min(EXTRA / 6, 100);
+  COL_SPACING.TITLE_WIDTH =
+    EXTRA -
+    COL_SPACING.PROF_WIDTH -
+    COL_SPACING.MEET_WIDTH -
+    COL_SPACING.LOC_WIDTH;
+  // Holds HTML for the search results
+  let resultsListing;
 
   // Number of columns to use in grid view
   const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
 
-  // List that holds the HTML for each row in grid view
-  const grid_html = useMemo(() => {
-    let grid = [];
-    const len = data.length;
-    for (let i = 0; i < len; i += num_cols) {
+  // Render functions for React Virtualized List:
+  const renderGridRow = useCallback(
+    ({ index, key, style }) => {
       let row_elements = [];
-      for (let j = i; j < len && j < i + num_cols; j++) {
+      for (
+        let j = index * num_cols;
+        j < data.length && j < (index + 1) * num_cols;
+        j++
+      ) {
         row_elements.push(
           <SearchResultsGridItem
             course={flatten(data[j])}
@@ -102,70 +127,14 @@ const SearchResults = ({
           />
         );
       }
-      grid.push(
-        <Row className="mx-auto" key={i}>
-          {row_elements}
-        </Row>
-      );
-    }
-    return grid;
-  }, [data, showModal, isLoggedIn, multiSeasons, num_cols]);
 
-  // State that holds width of the row for list view
-  const [ROW_WIDTH, setRowWidth] = useState();
-  // Ref to get row width
-  const ref = useRef(null);
-  useEffect(() => {
-    // Set row width
-    if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, width, expanded]);
-
-  // Spacing for each column in list view
-  const COL_SPACING = {
-    SZN_WIDTH: 80,
-    CODE_WIDTH: 110,
-    RATE_WIDTH: 30,
-    NUM_WIDTH: 40,
-    PROF_WIDTH: 150,
-    MEET_WIDTH: 160,
-    LOC_WIDTH: 100,
-    SA_WIDTH: 100,
-    PADDING: 35,
-    NUM_CUT: !multiSeasons ? 580 : 680,
-    PROF_CUT: !multiSeasons ? 730 : 830,
-    MEET_CUT: !multiSeasons ? 830 : 930,
-    LOC_CUT: !multiSeasons ? 930 : 1030,
-    SA_CUT: !multiSeasons ? 1030 : 1130,
-  };
-  const TITLE_WIDTH = useMemo(() => {
-    return (
-      ROW_WIDTH -
-      (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
-      COL_SPACING.CODE_WIDTH -
-      COL_SPACING.LOC_WIDTH -
-      (ROW_WIDTH > COL_SPACING.NUM_CUT ? 2 * COL_SPACING.NUM_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.PROF_CUT ? COL_SPACING.PROF_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.MEET_CUT ? COL_SPACING.MEET_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.SA_CUT ? COL_SPACING.SA_WIDTH : 0) -
-      (ROW_WIDTH > COL_SPACING.LOC_CUT ? COL_SPACING.LOC_WIDTH : 0) -
-      3 * COL_SPACING.RATE_WIDTH -
-      COL_SPACING.PADDING
-    );
-  }, [ROW_WIDTH, COL_SPACING, multiSeasons]);
-
-  // Holds HTML for the search results
-  var resultsListing;
-
-  // Render functions for React Virtualized List:
-  const renderGridRow = useCallback(
-    ({ index, key, style }) => {
       return (
         <div key={key} style={style}>
-          {grid_html[index]}
+          <Row className="mx-auto">{row_elements}</Row>
         </div>
       );
     },
-    [grid_html]
+    [data, showModal, isLoggedIn, multiSeasons, num_cols]
   );
 
   const renderListRow = useCallback(
@@ -173,46 +142,52 @@ const SearchResults = ({
       return (
         <div style={style} key={key}>
           <SearchResultsItemMemo
-            unflat_course={data[index]}
+            course={data[index]}
             showModal={showModal}
             multiSeasons={multiSeasons}
             isLast={index === data.length - 1}
             COL_SPACING={COL_SPACING}
-            TITLE_WIDTH={TITLE_WIDTH}
             ROW_WIDTH={ROW_WIDTH}
             isScrolling={isScrolling}
+            expanded={expanded}
           />
         </div>
       );
     },
-    [data, showModal, multiSeasons, COL_SPACING, TITLE_WIDTH, ROW_WIDTH]
+    [data, showModal, multiSeasons, expanded, COL_SPACING, ROW_WIDTH]
   );
 
-  // if no courses found (either due to query or authentication), render the empty state
-  if (data.length === 0) {
+  if (!isLoggedIn) {
+    // render an auth wall
+    resultsListing = (
+      <div className="text-center py-5">
+        <img
+          alt="Not logged in"
+          className="py-5"
+          src={Authentication}
+          style={{ width: '25%' }}
+        ></img>
+        <h3>
+          Please{' '}
+          <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
+            log in
+          </a>
+        </h3>
+        <div>A valid Yale NetID is required to access course information.</div>
+      </div>
+    );
+  } else if (data.length === 0) {
+    // if no courses found, render the empty state
     resultsListing = (
       <div className="text-center py-5">
         <img
           alt="No courses found."
           className="py-5"
-          src={isLoggedIn ? NoCoursesFound : Authentication}
+          src={NoCoursesFound}
           style={{ width: '25%' }}
         ></img>
-        {isLoggedIn ? (
-          <h3>No courses found</h3>
-        ) : (
-          <h3>
-            Please{' '}
-            <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
-              log in
-            </a>
-          </h3>
-        )}
-        <div>
-          {isLoggedIn
-            ? "We couldn't find any courses matching your search."
-            : 'A valid Yale NetID is required to access course information.'}
-        </div>
+        <h3>No courses found</h3>
+        <div>We couldn't find any courses matching your search.</div>
       </div>
     );
   } else {
@@ -233,7 +208,7 @@ const SearchResults = ({
                   isScrolling={isScrolling}
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
-                  rowCount={grid_html.length}
+                  rowCount={Math.ceil(data.length / num_cols)}
                   rowHeight={178}
                   rowRenderer={renderGridRow}
                 />
@@ -276,7 +251,10 @@ const SearchResults = ({
   const class_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Class Rating</span>
+        <span>
+          Average Course Rating <br />
+          (any professor and all cross-listed courses)
+        </span>
       </Tooltip>
     ),
     []
@@ -286,7 +264,7 @@ const SearchResults = ({
   const prof_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Professor Rating</span>
+        <span>Average Professor Rating</span>
       </Tooltip>
     ),
     []
@@ -296,7 +274,10 @@ const SearchResults = ({
   const workload_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Workload Rating</span>
+        <span>
+          Average Workload Rating <br />
+          (any professor and all cross-listed courses)
+        </span>
       </Tooltip>
     ),
     []
@@ -306,7 +287,12 @@ const SearchResults = ({
   const enrollment_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Class Enrollment</span>
+        <span>
+          Class Enrollment
+          <br />
+          (based on the most recent instance of this course. a ~ means a
+          different professor was teaching)
+        </span>
       </Tooltip>
     ),
     []
@@ -331,7 +317,7 @@ const SearchResults = ({
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${TITLE_WIDTH}px` };
+  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
   const rate_style = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WIDTH}px`,
@@ -379,31 +365,12 @@ const SearchResults = ({
                     Code
                   </div>
                   {/* Course Name */}
-                  <div style={title_style} className={Styles.results_header}>
+                  <div
+                    style={title_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
                     Title
                   </div>
-                  {ROW_WIDTH > COL_SPACING.NUM_CUT && (
-                    <>
-                      <div style={num_style} className={Styles.results_header}>
-                        <OverlayTrigger
-                          placement="bottom"
-                          delay={{ show: 100, hide: 100 }}
-                          overlay={enrollment_tooltip}
-                        >
-                          <span className="m-auto">#</span>
-                        </OverlayTrigger>
-                      </div>
-                      <div style={num_style} className={Styles.results_header}>
-                        <OverlayTrigger
-                          placement="bottom"
-                          delay={{ show: 100, hide: 100 }}
-                          overlay={fb_tooltip}
-                        >
-                          <span className="m-auto">#FB</span>
-                        </OverlayTrigger>
-                      </div>
-                    </>
-                  )}
                   {/* Class Rating */}
                   <div style={rate_style} className={Styles.results_header}>
                     <div className="m-auto">
@@ -448,31 +415,48 @@ const SearchResults = ({
                       </OverlayTrigger>
                     </div>
                   </div>
-                  {/* Course Professors */}
-                  {ROW_WIDTH > COL_SPACING.PROF_CUT && (
-                    <div style={prof_style} className={Styles.results_header}>
-                      Professors
-                    </div>
-                  )}
-                  {/* Course Meeting times and location */}
-                  {ROW_WIDTH > COL_SPACING.MEET_CUT && (
-                    <div style={meet_style} className={Styles.results_header}>
-                      Meets
-                    </div>
-                  )}
-                  {ROW_WIDTH > COL_SPACING.LOC_CUT && (
-                    <div style={loc_style} className={Styles.results_header}>
-                      Location
-                    </div>
-                  )}
-                  {ROW_WIDTH > COL_SPACING.SA_CUT && (
-                    <div
-                      style={sa_style}
-                      className={Styles.results_header + ' pr-2'}
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={enrollment_tooltip}
                     >
-                      Skills/Areas
-                    </div>
-                  )}
+                      <span className="m-auto">#</span>
+                    </OverlayTrigger>
+                  </div>
+                  {/* Course Professors */}
+                  <div
+                    style={prof_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Professors
+                  </div>
+                  {/* Course Meeting times and location */}
+                  <div
+                    style={meet_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Meets
+                  </div>
+                  <div
+                    style={loc_style}
+                    className={Styles.results_header + ' ' + Styles.one_line}
+                  >
+                    Location
+                  </div>
+
+                  <div style={sa_style} className={Styles.results_header}>
+                    Skills/Areas
+                  </div>
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={fb_tooltip}
+                    >
+                      <span className="m-auto">#FB</span>
+                    </OverlayTrigger>
+                  </div>
                 </React.Fragment>
               ) : (
                 // Grid view showing how many search results
@@ -491,10 +475,7 @@ const SearchResults = ({
           {/* If there are search results, render them */}
           {data.length !== 0 && resultsListing}
           {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
-          {data.length === 0 &&
-            (!isLoggedIn || searched) &&
-            !loading &&
-            resultsListing}
+          {data.length === 0 && !loading && resultsListing}
           {/* Render a loading row while performing next query */}
           {loading && (
             <Row
@@ -507,12 +488,6 @@ const SearchResults = ({
           )}
         </div>
       </Container>
-      {/* Scroll up button */}
-      <Fade in={scroll_visible}>
-        <div className={Styles.up_btn}>
-          <FaArrowCircleUp onClick={scrollTop} size={30} />
-        </div>
-      </Fade>
     </div>
   );
 };

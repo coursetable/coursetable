@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-
+import React, { useState, useEffect, useMemo } from 'react';
+import posthog from 'posthog-js';
 import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare } from 'react-icons/fa';
@@ -8,9 +8,10 @@ import FBLoginButton from './FBLoginButton';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
-import { flatten } from '../utilities';
-import { FetchWorksheetLazy } from '../queries/GetWorksheetListings';
-import { preprocess_courses } from '../utilities';
+import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+
+// Season to export classes from
+const CUR_SEASON = '202101';
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
@@ -24,22 +25,20 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   const { user } = useUser();
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
-  // Season to export classes from
-  const CUR_SEASON = '202101';
 
-  // Initialize the lazy query function
-  const [fetchWorksheetListings, { data }] = FetchWorksheetLazy(
-    user.worksheet,
-    CUR_SEASON
-  );
+  const filtered_worksheet = useMemo(() => {
+    return (user.worksheet || []).filter((item) => {
+      return item[0] === CUR_SEASON;
+    });
+  }, [user.worksheet]);
+
+  const { data } = useWorksheetInfo(filtered_worksheet);
 
   // Handle 'export worksheet' button click
   const handleExportClick = () => {
     // Metric Tracking of Worksheet Export
-    window.umami.trackEvent('Worksheet Exported', 'worksheet');
+    posthog.capture('worksheet-export', { component: 'MeDropdown' });
 
-    // Call the lazy query function to fetch listing data for the worksheet
-    fetchWorksheetListings();
     // Start export process
     setExport(true);
   };
@@ -50,23 +49,16 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   useEffect(() => {
     // return if worksheet isn't loaded or it isn't time to export
     if (fetched_data.length === 0 || !export_ics) return;
-    // Preprocess listings data
-    let processed_data = fetched_data.search_listing_info.map((x) => {
-      return flatten(x);
-    });
-    processed_data = processed_data.map((x) => {
-      return preprocess_courses(x);
-    });
     // Generate and download ICS file
-    generateICS(processed_data);
+    generateICS(fetched_data);
     // Reset export_ics state on completion
     setExport(false);
   }, [fetched_data, export_ics]);
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
-    // Metric Tracking of Logging Out
-    window.umami.trackEvent('Account Logout', 'account');
+    posthog.capture('logout');
+    posthog.reset();
 
     // Clear cookies
     document.cookie.split(';').forEach((c) => {

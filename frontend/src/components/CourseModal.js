@@ -13,6 +13,7 @@ import styles from './CourseModal.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
+import posthog from 'posthog-js';
 
 /**
  * Displays course modal when clicking on a course
@@ -39,8 +40,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
 
   // Called when hiding modal
   const handleHide = () => {
-    // Metric Tracking for Hiding the Modal
-    //window.umami.trackEvent("Modal Hidden", "modal");
+    posthog.capture('modal-hide');
 
     // Reset views and filters
     setView(['overview', null]);
@@ -57,11 +57,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
         scrollable={true}
         onHide={handleHide}
         dialogClassName="modal-custom-width"
-        /*
-        TODO: set to 100ms animation
-        Modal.TRANSITION_DURATION = 100;
-        Modal.BACKDROP_TRANSITION_DURATION = 50;
-        */
         animation={false}
         centered
       >

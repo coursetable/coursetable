@@ -15,15 +15,12 @@ services:
     environment:
       FRONTEND_LOC: 'http://frontend:5000'
       PORT: 8039
-    links:
-      - frontend
-      - api
-      - nginx
     labels:
       traefik.enable: true
       traefik.http.routers.coursetable.rule: Host(`coursetable.com`)
       traefik.http.routers.coursetable.tls: true
       traefik.http.routers.coursetable.tls.certResolver: ctresolver
+      traefik.http.routers.coursetable.middlewares: gzip-compress@file
     networks:
       - traefik
       - default
@@ -69,6 +66,7 @@ services:
       context: ../frontend
       args:
         REACT_APP_UMAMI_WEBSITE_ID: 1fbff7d5-794d-456f-aa1a-61d8f5794b74
+        REACT_APP_POSTHOG_TOKEN: KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo
     restart: always
     expose:
       - '5000'
@@ -111,7 +109,7 @@ services:
     build: ./php
     volumes:
       - ..:/var/www/html
-    command: sh -c 'php composer.phar install'
+    command: sh -c 'php composer.phar install && tail -f /dev/null'
     working_dir: /var/www/html
 
   php-fpm:
@@ -136,7 +134,7 @@ services:
     ports:
       - '8075:80'
     volumes:
-      - ../legacy:/usr/share/nginx/html:ro
+      - ../legacy:/usr/share/nginx/html
     labels:
       traefik.enable: true
       traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)

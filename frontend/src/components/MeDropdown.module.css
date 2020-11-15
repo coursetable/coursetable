@@ -20,3 +20,12 @@
   cursor: pointer;
   text-decoration: none !important;
 }
+
+.fb_sync {
+  transition: 0.3s;
+}
+
+.fb_sync:hover {
+  cursor: pointer;
+  transform: rotateZ(90deg);
+}

@@ -2,6 +2,7 @@ import React from 'react';
 
 import logo from '../images/brand/bluebook.svg';
 import wordmark_outlines from '../images/brand/wordmark_outlines.svg';
+import wordmark_outlines_dark from '../images/brand/ct_white.svg';
 import common_styles from '../styles/common.module.css';
 
 /**
@@ -10,7 +11,12 @@ import common_styles from '../styles/common.module.css';
  * @prop condensed - boolean that returns 'CT' if true
  */
 
-function Logo({ variant, icon = true, wordmark = true }) {
+function Logo({
+  variant,
+  icon = true,
+  wordmark = true,
+  useWordmarkDark = false,
+}) {
   return (
     <span
       className={common_styles.coursetable_logo}
@@ -24,7 +30,7 @@ function Logo({ variant, icon = true, wordmark = true }) {
       )}{' '}
       {wordmark && (
         <img
-          src={wordmark_outlines}
+          src={useWordmarkDark ? wordmark_outlines_dark : wordmark_outlines}
           alt="CourseTable"
           className={common_styles.coursetable_logo_wordmark}
         />

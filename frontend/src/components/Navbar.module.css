@@ -2,6 +2,12 @@
   background: white;
 }
 
+.sticky_navbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
 nav > .nav_brand {
   padding-top: 0;
   padding-bottom: 0;
@@ -31,6 +37,16 @@ nav > .nav_brand {
   padding-left: 1rem;
   height: 40px;
   display: flex;
+}
+
+.navbar_dark_mode_btn {
+  padding-right: 1rem !important;
+  transition: 0.33s ease-out;
+}
+
+.navbar_dark_mode_btn:hover {
+  cursor: pointer;
+  color: rgb(51, 162, 255);
 }
 
 .icon_circle {

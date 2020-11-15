@@ -1,14 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
+import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 // import Searchbar from '../components/Searchbar';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
-import { useComponentVisible } from '../utilities';
+import { scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
+import posthog from 'posthog-js';
+
+import {
+  setFetchMethod,
+  enable as enableDarkMode,
+  disable as disableDarkMode,
+} from 'darkreader';
 
 /**
  * Renders the navbar
@@ -32,6 +40,9 @@ function CourseTableNavbar({ isLoggedIn }) {
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
+    posthog.capture('logout');
+    posthog.reset();
+
     // Clear cookies
     document.cookie.split(';').forEach((c) => {
       document.cookie = c
@@ -40,21 +51,44 @@ function CourseTableNavbar({ isLoggedIn }) {
     });
     // Redirect to home page and refresh as well
     window.location.pathname = '/';
-
-    // Metric Tracking of Logging Out
-    window.umami.trackEvent('Account Logout', 'account');
   };
 
+  // DarkMode or LightMode
+  setFetchMethod(window.fetch);
+
+  // Checks user preferences for dark mode
+  if (!window.localStorage.getItem('darkmode')) {
+    let temp =
+      window.matchMedia('(prefers-color-scheme)').media !== 'not all' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
+    window.localStorage.setItem('darkmode', temp ? 'dark' : 'light');
+  }
+
+  const [darkModeEnabled, setDarkModeEnabled] = useState(
+    window.localStorage.getItem('darkmode') === 'dark'
+  );
+
+  // Updates current theme appropriately
+  useEffect(() => {
+    if (darkModeEnabled)
+      enableDarkMode({
+        brightness: 100,
+        contrast: 100,
+        sepia: 5,
+      });
+    else disableDarkMode();
+  }, [darkModeEnabled]);
+
   return (
-    <div>
-      <div className={`shadow-sm ${styles.navbar}`}>
-        <Container fluid>
+    <div className={styles.sticky_navbar}>
+      <div className={`${styles.navbar}`}>
+        <Container fluid className="p-0">
           <Navbar
             expanded={nav_expanded}
             onToggle={(expanded) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className={styles.navbar}
+            className={styles.navbar + ' shadow-sm px-3'}
           >
             {/* Logo in top left */}
             <Nav className={styles.nav_brand + ' navbar-brand py-2'}>
@@ -68,7 +102,7 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo icon={false} />
+                  <Logo icon={false} useWordmarkDark={darkModeEnabled} />
                 </span>
               </NavLink>
             </Nav>
@@ -116,6 +150,21 @@ function CourseTableNavbar({ isLoggedIn }) {
                 >
                   FAQ
                 </NavLink>
+
+                {/* DarkMode Button */}
+                <div
+                  className={styles.navbar_dark_mode_btn + ' d-flex'}
+                  onClick={() => {
+                    window.localStorage.setItem(
+                      'darkmode',
+                      !darkModeEnabled ? 'dark' : 'light'
+                    );
+                    setDarkModeEnabled(!darkModeEnabled);
+                  }}
+                >
+                  <DarkModeButton darkModeEnabled={darkModeEnabled} />
+                </div>
+
                 {/* Catalog Page */}
                 <NavLink
                   to="/catalog"
@@ -123,6 +172,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                   className={
                     styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
                   }
+                  onClick={scrollToTop}
                 >
                   Catalog
                 </NavLink>
@@ -133,6 +183,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                   className={
                     styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
                   }
+                  onClick={scrollToTop}
                 >
                   Worksheet
                 </NavLink>
@@ -172,8 +223,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                     <div
                       className={styles.navbar_links}
                       onClick={() => {
-                        //Metric Tracking of Connecting Facebook
-                        window.umami.trackEvent('Facebook Login', 'facebook');
+                        posthog.capture('login');
 
                         window.location.href =
                           '/legacy_api/index.php?forcelogin=1';

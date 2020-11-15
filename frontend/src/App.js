@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
 
 import Notice from './components/Notice';
@@ -44,25 +44,12 @@ function App() {
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet !== null);
 
-  // Custom route component that routes to login page if not logged in
-  const MyRoute = useCallback(
-    ({ children, isRoutePrivate, ...rest }) => {
-      let contents;
-      if (isRoutePrivate && !isLoggedIn) {
-        contents = <Redirect to="/login" />;
-      } else {
-        contents = children;
-      }
-
-      return <Route {...rest}>{contents}</Route>;
-    },
-    [isLoggedIn]
-  );
+  const MyRoute = Route;
 
   // Render spinner if page loading
   if (loading) {
     return (
-      <Row className="m-auto" style={{ height: '100%' }}>
+      <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
           <span className="sr-only">Loading...</span>
         </Spinner>
@@ -97,13 +84,14 @@ function App() {
         <MyRoute
           exact
           path="/catalog"
-          render={(props) =>
-            user.isLoggedIn && !user.hasEvals ? (
+          render={(props) => {
+            const requires_challenge = isLoggedIn && !user.hasEvals;
+            return requires_challenge ? (
               <Redirect push={true} to="/challenge" />
             ) : (
               <Search {...props} />
-            )
-          }
+            );
+          }}
         />
 
         {/* Auth */}
@@ -150,6 +138,10 @@ function App() {
 
         <MyRoute exact path="/joinus">
           <Join />
+        </MyRoute>
+
+        <MyRoute path="/Table">
+          <Redirect to="/catalog" />
         </MyRoute>
 
         {/* Catch-all Route to NotFound Page */}

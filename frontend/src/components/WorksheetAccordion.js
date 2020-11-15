@@ -12,6 +12,8 @@ import FBDropdown from './FBDropdown';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 
+const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -95,7 +97,6 @@ function WorksheetAccordion({
   setFbPerson,
   cur_person,
 }) {
-  const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // Function to sort courses in chronological order for each day
   const chronologicalOrder = useCallback((a, b) => {
     if (a['start_time'] < b['start_time']) return -1;
@@ -132,7 +133,7 @@ function WorksheetAccordion({
       });
       return parsed_courses;
     },
-    [chronologicalOrder, weekDays]
+    [chronologicalOrder]
   );
 
   // Build HTML for each class that takes place on each day of the week
@@ -258,7 +259,7 @@ function WorksheetAccordion({
       }
       return <Accordion>{accordion_items}</Accordion>;
     },
-    [showModal, weekDays]
+    [showModal]
   );
   // Get courses by day
   const parsed_courses = useMemo(() => {
@@ -271,7 +272,7 @@ function WorksheetAccordion({
 
   return (
     <div className={styles.container}>
-      <Row className={styles.dropdowns + ' m-0'}>
+      <Row className={styles.dropdowns + ' mx-auto'}>
         {/* Season Dropdown */}
         <Col xs={6} className="m-0 p-0">
           <SeasonDropdown
