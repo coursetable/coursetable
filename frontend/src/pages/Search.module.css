@@ -133,12 +133,11 @@
   padding: 7px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  background-color: rgb(198, 232, 255);
 }
 
 .search_tab:hover {
   cursor: pointer;
-  background-color: rgb(174, 221, 253);
+  background-color: rgb(92, 168, 250);
 }
 
 .search_tab_hidden {

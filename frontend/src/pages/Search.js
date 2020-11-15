@@ -66,6 +66,11 @@ const StyledSortBtn = styled.div`
   }
 `;
 
+const StyledSearchTab = styled.div`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgb(198, 232, 255)' : theme.select_hover};
+`;
+
 /**
  * Renders search page
  * @prop location - dictionary that contains search value if search bar was used
@@ -601,7 +606,7 @@ function Search() {
               {!isMobile && (
                 // Render buttons to hide/show the search form
                 <React.Fragment>
-                  <div
+                  <StyledSearchTab
                     className={
                       Styles.search_tab +
                       (collapsed_form
@@ -613,7 +618,7 @@ function Search() {
                     }}
                   >
                     <FaSearch style={{ display: 'block' }} />
-                  </div>
+                  </StyledSearchTab>
                   <div
                     className={Styles.collapse_form_btn}
                     onClick={() => {
