@@ -103,8 +103,8 @@ export const StyledRating = styled.div.attrs(({ theme, rating, colormap }) => ({
       rating && rating > 0
         ? colormap(rating).alpha(theme.rating_alpha)
         : theme.banner,
+    color: rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5',
   },
-  color: rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5',
 }))`
   font-weight: ${({ rating }) => (rating ? 600 : 400)};
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};
