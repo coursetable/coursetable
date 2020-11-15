@@ -2,6 +2,14 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import styles from './RatingsGraph.module.css';
 import { TextComponent } from './StyledComponents';
+import styled from 'styled-components';
+
+const StyledLabel = styled.p`
+  font-size: 10px !important;
+  width: 55px;
+  text-align: center;
+  color: #468ff2;
+`;
 
 /**
  * Displays Evaluation Graphs
@@ -51,15 +59,15 @@ const RatingsGraph = ({ ratings, reverse, labels }) => {
         />
         {/* Rating labels */}
         {ratings.length === 2 && (
-          <p className={styles.value + ' m-0 ' + styles.xaxis_label}>
+          <StyledLabel className={styles.value + ' m-0'}>
             {indx === 0 ? 'yes' : 'no'}
-          </p>
+          </StyledLabel>
         )}
         {ratings.length === 5 && (
-          <p className={styles.value + ' m-0 ' + styles.xaxis_label}>
+          <StyledLabel className={styles.value + ' m-0'}>
             <span className="d-none d-sm-block">{labels[indx]}</span>
             <span className="d-sm-none">{indx + 1}</span>
-          </p>
+          </StyledLabel>
         )}
       </div>
     );
