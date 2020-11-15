@@ -125,6 +125,11 @@ export const StyledCalendar = styled(Calendar)`
 export const StyledModal = styled(Modal)`
   .modal-content {
     background-color: ${({ theme }) => theme.surface[0]};
+    .modal-header {
+      .close {
+        color: ${({ theme }) => theme.text[0]};
+      }
+    }
   }
 `;
 
@@ -181,7 +186,20 @@ export const StyledTabs = styled(Tabs)`
 
 export const StyledMultiToggle = styled(MultiToggle)`
   background-color: ${({ theme }) => theme.surface[1]};
+  border-color: ${({ theme }) => theme.border};
   .toggleOption {
     color: ${({ theme }) => theme.text[0]};
   }
+`;
+
+export const StyledRating = styled.div`
+  background-color: ${({ theme, rating, colormap }) =>
+    rating && rating > 0
+      ? colormap(rating).alpha(theme.rating_alpha)
+      : theme.banner};
+  color: ${({ rating, colormap }) =>
+    rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
+  font-weight: ${({ rating }) => (rating ? 600 : 400)};
+  font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};
+  transition: background-color 0.3s linear;
 `;

@@ -14,6 +14,7 @@ import {
   TextComponent,
   StyledPopover,
   StyledMultiToggle,
+  StyledRating,
 } from './StyledComponents';
 import styled from 'styled-components';
 
@@ -224,73 +225,45 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].rating !== -1
-                      ? ratingColormap(evaluations[i].rating).darken(3).css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].rating !== -1
-                      ? ratingColormap(evaluations[i].rating)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].rating}
+                colormap={ratingColormap}
                 className={`${Styles.rating_cell} ${Styles.expanded_ratings}`}
               >
                 {evaluations[i].rating !== -1
                   ? evaluations[i].rating.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
             {/* Professor Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].professor_rating !== -1
-                      ? ratingColormap(evaluations[i].professor_rating)
-                          .darken(3)
-                          .css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].professor_rating !== -1
-                      ? ratingColormap(evaluations[i].professor_rating)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].professor_rating}
+                colormap={ratingColormap}
                 className={Styles.rating_cell}
               >
                 {evaluations[i].professor_rating !== -1
                   ? evaluations[i].professor_rating.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
             {/* Workload Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].workload !== -1
-                      ? workloadColormap(evaluations[i].workload)
-                          .darken(3)
-                          .css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].workload !== -1
-                      ? workloadColormap(evaluations[i].workload)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].workload}
+                colormap={workloadColormap}
                 className={Styles.rating_cell}
               >
                 {evaluations[i].workload !== -1
                   ? evaluations[i].workload.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
           </Row>
         );

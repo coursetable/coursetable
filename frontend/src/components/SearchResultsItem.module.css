@@ -6,11 +6,7 @@
   position: relative;
   font-size: 13px;
   line-height: 32px;
-  height: 32px;
-  /* border-bottom: solid 1px #f6f6f6;
-  border-top: solid 1px #f6f6f6; */
-  /* border-bottom: solid 1px #2c2c2c;
-  border-top: solid 1px #2c2c2c; */
+  /* height: 32px; */
 }
 
 .last_search_result_item {

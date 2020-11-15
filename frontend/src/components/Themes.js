@@ -9,6 +9,7 @@ export const lightTheme = {
   select_hover: '#e1edff',
   multiValue: 'hsl(0,0%,90%)',
   hidden: '#b9b8b8',
+  rating_alpha: 1,
 };
 export const darkTheme = {
   theme: 'dark',
@@ -21,4 +22,5 @@ export const darkTheme = {
   select_hover: '#446491',
   multiValue: '#525252',
   hidden: '#4d4d4d',
+  rating_alpha: 0.75,
 };
