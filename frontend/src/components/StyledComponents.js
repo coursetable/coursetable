@@ -15,26 +15,26 @@ import MultiToggle from 'react-multi-toggle';
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div`
   background-color: ${({ theme, layer }) => theme.surface[layer]};
-  transition: background-color 0.3s linear;
+  transition: background-color 0.2s linear;
 `;
 
 // Span used to color text. Type is an int that represents primary (0) or secondary (1) color
 export const TextComponent = styled.span`
   color: ${({ theme, type }) => theme.text[type]};
-  transition: 0.3s linear;
+  transition: color 0.2s linear;
 `;
 
 // Div for banner components/any components that are light grey in light mode, dark grey in dark mode
 export const StyledBanner = styled.div`
   background-color: ${({ theme }) => theme.banner};
-  transition: 0.3s linear;
+  transition: background-color 0.2s linear;
 `;
 
 // Row for search results item
 export const StyledResultsItem = styled(Row)`
   border-bottom: solid 1px ${({ theme }) => theme.border};
   border-top: solid 1px ${({ theme }) => theme.border};
-  transition: border 0.3s linear;
+  transition: border 0.2s linear;
   &:hover {
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
@@ -45,7 +45,7 @@ export const StyledResultsItem = styled(Row)`
 export const StyledListItem = styled(ListGroup.Item)`
   background-color: transparent;
   border-color: ${({ theme }) => theme.border};
-  transition: border-color 0.3s linear;
+  transition: border-color 0.2s linear;
   overflow: hidden;
   &:hover {
     cursor: pointer;
@@ -61,12 +61,12 @@ export const StyledSelect = styled(Select)`
       theme.theme === 'light'
         ? '2px solid hsl(0, 0%, 90%)'
         : '2px solid ' + theme.select};
-    transition: 0.3s linear;
+    transition: background-color 0.2s linear, border 0.2s linear;
   }
 
   .Select__single-value {
     color: ${({ theme }) => theme.text[0]};
-    transition: 0.3s linear;
+    transition: color 0.2s linear;
   }
 `;
 
@@ -74,7 +74,7 @@ export const StyledSelect = styled(Select)`
 export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
-  transition: 0.3s linear !important;
+  transition: 0.2s linear !important;
   border: ${({ theme }) =>
     theme.theme === 'light'
       ? '2px solid hsl(0, 0%, 90%)'
@@ -97,31 +97,31 @@ export const StyledCalendar = styled(Calendar)`
       .rbc-time-header {
         .rbc-time-header-content {
           border-color: ${({ theme }) => theme.border};
-          transition: 0.3s linear;
+          transition: border 0.2s linear;
           .rbc-time-header-cell {
             .rbc-header {
               border-color: ${({ theme }) => theme.border};
-              transition: 0.3s linear;
+              transition: border 0.2s linear;
             }
           }
         }
       }
       .rbc-time-content {
         border-color: ${({ theme }) => theme.border};
-        transition: 0.3s linear;
+        transition: border 0.2s linear;
         .rbc-time-gutter {
           .rbc-timeslot-group {
             border-color: ${({ theme }) => theme.border};
-            transition: 0.3s linear;
+            transition: border 0.2s linear;
           }
         }
         .rbc-day-slot {
           .rbc-timeslot-group {
             border-color: ${({ theme }) => theme.border};
-            transition: 0.3s linear;
+            transition: border 0.2s linear;
             .rbc-time-slot {
               border-color: ${({ theme }) => theme.border};
-              transition: 0.3s linear;
+              transition: border 0.2s linear;
             }
           }
         }
@@ -146,13 +146,13 @@ export const StyledModal = styled(Modal)`
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
     theme.theme === 'light' ? '#ededed' : '#404040'};
-  transition: 0.3s linear;
+  transition: border 0.2s linear;
 `;
 
 // Card used in Worksheet mobile and about page
 export const StyledCard = styled(Card)`
   background-color: ${({ theme }) => theme.surface[0]};
-  transition: 0.3s linear;
+  transition: background-color 0.2s linear;
 `;
 
 // Expand buttons in worksheet
@@ -162,7 +162,7 @@ export const StyledExpandBtn = styled.div`
   position: absolute;
   top: 0%;
   z-index: 2;
-  transition: 0.3s linear;
+  transition: 0.2s linear;
 `;
 
 // Popovers in search results item, prof popover in modal, and worksheet calendar
@@ -217,5 +217,5 @@ export const StyledRating = styled.div`
     rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
   font-weight: ${({ rating }) => (rating ? 600 : 400)};
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};
-  transition: background-color 0.3s linear;
+  transition: background-color 0.2s linear;
 `;

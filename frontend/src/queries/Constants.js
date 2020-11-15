@@ -141,14 +141,14 @@ export const selectStyles = (theme) => {
         ...styles,
         borderRadius: '6px',
         backgroundColor: theme.banner,
-        transition: '0.3s linear',
+        transition: '0.2s linear',
       };
     },
     multiValueLabel: (styles) => {
       return {
         ...styles,
         color: theme.text[0],
-        transition: '0.3s linear',
+        transition: '0.2s linear',
       };
     },
     multiValueRemove: (styles) => {
