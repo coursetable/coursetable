@@ -4,8 +4,21 @@ import { Row, Col, ListGroup } from 'react-bootstrap';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
-import { StyledListItem, SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent } from './StyledComponents';
 import { withTheme } from 'styled-components';
+import styled from 'styled-components';
+
+// Listgroup Item for worksheet list item
+const StyledListItem = styled(ListGroup.Item)`
+  background-color: transparent;
+  border-color: ${({ theme }) => theme.border};
+  transition: border-color 0.2s linear;
+  overflow: hidden;
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.select_hover};
+  }
+`;
 
 /**
  * Render worksheet list in default worksheet view

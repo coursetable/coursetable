@@ -10,19 +10,25 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useUser } from '../user';
-import {
-  TextComponent,
-  StyledPopover,
-  StyledMultiToggle,
-  StyledRating,
-} from './StyledComponents';
+import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
+import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
 
 import CourseModalLoading from './CourseModalLoading';
 
+// Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.select_hover};
+`;
+
+// Multitoggle in modal (course, both, prof)
+export const StyledMultiToggle = styled(MultiToggle)`
+  background-color: ${({ theme }) => theme.surface[1]};
+  border-color: ${({ theme }) => theme.border};
+  .toggleOption {
+    color: ${({ theme }) => theme.text[0]};
+  }
 `;
 
 /**

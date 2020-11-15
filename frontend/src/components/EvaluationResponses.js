@@ -1,7 +1,25 @@
 import React from 'react';
-import { Tab, Row } from 'react-bootstrap';
+import { Tab, Row, Tabs } from 'react-bootstrap';
 import styles from './EvaluationResponses.module.css';
-import { TextComponent, StyledTabs } from './StyledComponents';
+import { TextComponent } from './StyledComponents';
+import styled from 'styled-components';
+
+// Tabs of evaluation comments in modal
+const StyledTabs = styled(Tabs)`
+  background-color: ${({ theme }) => theme.surface[0]};
+  .active {
+    background-color: ${({ theme }) => theme.select_hover + ' !important'};
+    color: ${({ theme }) => theme.text[0] + ' !important'};
+    border-bottom: none;
+  }
+  .nav-item {
+    color: ${({ theme }) => theme.text[0]};
+  }
+  .nav-item:hover {
+    background-color: ${({ theme }) => theme.banner};
+    color: ${({ theme }) => theme.text[0]};
+  }
+`;
 
 /**
  * Displays Evaluation Comments

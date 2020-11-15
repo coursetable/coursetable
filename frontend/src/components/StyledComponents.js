@@ -1,16 +1,6 @@
 import styled from 'styled-components';
 import Select from 'react-select';
-import {
-  FormControl,
-  ListGroup,
-  Modal,
-  Card,
-  Row,
-  Popover,
-  Tabs,
-} from 'react-bootstrap';
-import { Calendar } from 'react-big-calendar';
-import MultiToggle from 'react-multi-toggle';
+import { FormControl, Card, Popover } from 'react-bootstrap';
 
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div`
@@ -28,29 +18,6 @@ export const TextComponent = styled.span`
 export const StyledBanner = styled.div`
   background-color: ${({ theme }) => theme.banner};
   transition: background-color 0.2s linear;
-`;
-
-// Row for search results item
-export const StyledResultsItem = styled(Row)`
-  border-bottom: solid 1px ${({ theme }) => theme.border};
-  border-top: solid 1px ${({ theme }) => theme.border};
-  transition: border 0.2s linear;
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ theme }) => theme.select_hover};
-  }
-`;
-
-// Listgroup Item for worksheet list item
-export const StyledListItem = styled(ListGroup.Item)`
-  background-color: transparent;
-  border-color: ${({ theme }) => theme.border};
-  transition: border-color 0.2s linear;
-  overflow: hidden;
-  &:hover {
-    cursor: pointer;
-    background-color: ${({ theme }) => theme.select_hover};
-  }
 `;
 
 // React-select component
@@ -90,58 +57,6 @@ export const StyledInput = styled(FormControl)`
   }
 `;
 
-// Calendar for worksheet
-export const StyledCalendar = styled(Calendar)`
-  &.rbc-calendar {
-    .rbc-time-view {
-      .rbc-time-header {
-        .rbc-time-header-content {
-          border-color: ${({ theme }) => theme.border};
-          transition: border 0.2s linear;
-          .rbc-time-header-cell {
-            .rbc-header {
-              border-color: ${({ theme }) => theme.border};
-              transition: border 0.2s linear;
-            }
-          }
-        }
-      }
-      .rbc-time-content {
-        border-color: ${({ theme }) => theme.border};
-        transition: border 0.2s linear;
-        .rbc-time-gutter {
-          .rbc-timeslot-group {
-            border-color: ${({ theme }) => theme.border};
-            transition: border 0.2s linear;
-          }
-        }
-        .rbc-day-slot {
-          .rbc-timeslot-group {
-            border-color: ${({ theme }) => theme.border};
-            transition: border 0.2s linear;
-            .rbc-time-slot {
-              border-color: ${({ theme }) => theme.border};
-              transition: border 0.2s linear;
-            }
-          }
-        }
-      }
-    }
-  }
-`;
-
-// Course Modal
-export const StyledModal = styled(Modal)`
-  .modal-content {
-    background-color: ${({ theme }) => theme.surface[0]};
-    .modal-header {
-      .close {
-        color: ${({ theme }) => theme.text[0]};
-      }
-    }
-  }
-`;
-
 // Hr tag used to divide stuff in search form and footer
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
@@ -155,7 +70,7 @@ export const StyledCard = styled(Card)`
   transition: background-color 0.2s linear;
 `;
 
-// Expand buttons in worksheet
+// Expand buttons in worksheet and worksheet expanded
 export const StyledExpandBtn = styled.div`
   background-color: ${({ theme }) => theme.border};
   color: ${({ theme }) => theme.text[1]};
@@ -178,32 +93,6 @@ export const StyledPopover = styled(Popover)`
   .arrow::after {
     border-right-color: ${({ theme }) => theme.surface[0]};
     border-left-color: ${({ theme }) => theme.surface[0]};
-  }
-`;
-
-// Tabs of evaluation comments in modal
-export const StyledTabs = styled(Tabs)`
-  background-color: ${({ theme }) => theme.surface[0]};
-  .active {
-    background-color: ${({ theme }) => theme.select_hover + ' !important'};
-    color: ${({ theme }) => theme.text[0] + ' !important'};
-    border-bottom: none;
-  }
-  .nav-item {
-    color: ${({ theme }) => theme.text[0]};
-  }
-  .nav-item:hover {
-    background-color: ${({ theme }) => theme.banner};
-    color: ${({ theme }) => theme.text[0]};
-  }
-`;
-
-// Multitoggle in modal (course, both, prof)
-export const StyledMultiToggle = styled(MultiToggle)`
-  background-color: ${({ theme }) => theme.surface[1]};
-  border-color: ${({ theme }) => theme.border};
-  .toggleOption {
-    color: ${({ theme }) => theme.text[0]};
   }
 `;
 

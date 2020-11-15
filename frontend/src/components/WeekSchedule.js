@@ -6,10 +6,52 @@ import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { StyledCalendar, StyledPopover } from './StyledComponents';
+import { Calendar } from 'react-big-calendar';
+import { StyledPopover } from './StyledComponents';
+import styled from 'styled-components';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 const localizer = momentLocalizer(moment);
+
+// Calendar for worksheet
+const StyledCalendar = styled(Calendar)`
+  &.rbc-calendar {
+    .rbc-time-view {
+      .rbc-time-header {
+        .rbc-time-header-content {
+          border-color: ${({ theme }) => theme.border};
+          transition: border 0.2s linear;
+          .rbc-time-header-cell {
+            .rbc-header {
+              border-color: ${({ theme }) => theme.border};
+              transition: border 0.2s linear;
+            }
+          }
+        }
+      }
+      .rbc-time-content {
+        border-color: ${({ theme }) => theme.border};
+        transition: border 0.2s linear;
+        .rbc-time-gutter {
+          .rbc-timeslot-group {
+            border-color: ${({ theme }) => theme.border};
+            transition: border 0.2s linear;
+          }
+        }
+        .rbc-day-slot {
+          .rbc-timeslot-group {
+            border-color: ${({ theme }) => theme.border};
+            transition: border 0.2s linear;
+            .rbc-time-slot {
+              border-color: ${({ theme }) => theme.border};
+              transition: border 0.2s linear;
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 // TODO: Allow users to change color of courses in calendar?
 
 /**

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-import { Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
+import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
 import {
   ratingColormap,
@@ -17,14 +17,21 @@ import { fbFriendsAlsoTaking } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import {
-  TextComponent,
-  StyledResultsItem,
-  StyledPopover,
-  StyledRating,
-} from './StyledComponents';
+import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './SearchResultsItem.module.css';
+import styled from 'styled-components';
+
+// Row for search results item
+const StyledResultsItem = styled(Row)`
+  border-bottom: solid 1px ${({ theme }) => theme.border};
+  border-top: solid 1px ${({ theme }) => theme.border};
+  transition: border 0.2s linear;
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.select_hover};
+  }
+`;
 
 /**
  * Renders a list item for a search result and expanded worksheet list item

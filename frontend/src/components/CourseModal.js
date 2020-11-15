@@ -14,7 +14,20 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 import posthog from 'posthog-js';
-import { StyledModal, TextComponent } from './StyledComponents';
+import { TextComponent } from './StyledComponents';
+import styled from 'styled-components';
+
+// Course Modal
+const StyledModal = styled(Modal)`
+  .modal-content {
+    background-color: ${({ theme }) => theme.surface[0]};
+    .modal-header {
+      .close {
+        color: ${({ theme }) => theme.text[0]};
+      }
+    }
+  }
+`;
 
 /**
  * Displays course modal when clicking on a course
