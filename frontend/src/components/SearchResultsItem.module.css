@@ -19,9 +19,9 @@
 }
 
 .search_result_item:hover {
-  cursor: pointer;
+  /* cursor: pointer;
   background-color: #e1edff;
-  border-color: #e1edff;
+  border-color: #e1edff; */
 }
 
 .search_result_item:focus,

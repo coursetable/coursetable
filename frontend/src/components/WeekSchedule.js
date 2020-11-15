@@ -6,7 +6,7 @@ import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { StyledCalendar } from './StyledComponents';
+import { StyledCalendar, StyledPopover } from './StyledComponents';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 const localizer = momentLocalizer(moment);
@@ -68,7 +68,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
   // Render popover that contains title, description, and requirements when hovering over course
   const renderTitlePopover = useCallback((props, course) => {
     return (
-      <Popover {...props} id="title_popover">
+      <StyledPopover {...props} id="title_popover">
         <Popover.Title>
           <strong>{course.title}</strong>
         </Popover.Title>
@@ -86,7 +86,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
                 : course.requirements.slice(0, 250) + '...')}
           </div>
         </Popover.Content>
-      </Popover>
+      </StyledPopover>
     );
   }, []);
 

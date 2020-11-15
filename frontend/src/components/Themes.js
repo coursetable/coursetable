@@ -8,7 +8,7 @@ export const lightTheme = {
   banner: '#f8f8f8',
   border: '#f6f6f6',
   select: '#FFF',
-  select_hover: '#c9e4ff',
+  select_hover: '#e1edff',
   multiValue: 'hsl(0,0%,90%)',
   hidden: '#b9b8b8',
 };
@@ -22,7 +22,7 @@ export const darkTheme = {
   banner: '#363636',
   border: '#303030',
   select: '#303030',
-  select_hover: '#003369',
+  select_hover: '#446491',
   multiValue: '#525252',
   hidden: '#4d4d4d',
 };

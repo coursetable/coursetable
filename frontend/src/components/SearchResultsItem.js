@@ -18,7 +18,11 @@ import { fbFriendsAlsoTaking } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
-import { SecondaryText, StyledResultsItem } from './StyledComponents';
+import {
+  SecondaryText,
+  StyledResultsItem,
+  StyledPopover,
+} from './StyledComponents';
 
 import Styles from './SearchResultsItem.module.css';
 
@@ -97,7 +101,7 @@ const SearchResultsItem = ({
   // Render popover that contains title, description, and requirements when hovering over course name
   const renderTitlePopover = (props) => {
     return (
-      <Popover {...props} id="title_popover">
+      <StyledPopover {...props} id="title_popover">
         <Popover.Title>
           <strong>
             {course.extra_info !== 'ACTIVE' ? (
@@ -122,7 +126,7 @@ const SearchResultsItem = ({
                 : course.requirements.slice(0, 250) + '...')}
           </div>
         </Popover.Content>
-      </Popover>
+      </StyledPopover>
     );
   };
 

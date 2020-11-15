@@ -1,6 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useContext } from 'react';
 import { toSeasonString } from '../utilities';
 import { StyledSelect } from './StyledComponents';
+import { ThemeContext } from 'styled-components';
+import { selectStyles } from '../queries/Constants';
 
 /**
  * Render season dropdown
@@ -26,6 +28,9 @@ function SeasonReactSelect({ cur_season, season_codes, onSeasonChange }) {
     return season_options_temp;
   }, [season_codes]);
 
+  const theme = useContext(ThemeContext);
+  const select_styles = selectStyles(theme);
+
   return (
     <StyledSelect
       classNamePrefix={'Select'}
@@ -33,6 +38,7 @@ function SeasonReactSelect({ cur_season, season_codes, onSeasonChange }) {
         value: cur_season,
         label: toSeasonString(cur_season)[0],
       }}
+      styles={select_styles}
       isSearchable={false}
       options={season_options}
       onChange={(option) => {

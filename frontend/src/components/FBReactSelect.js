@@ -1,8 +1,10 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useMemo, useContext } from 'react';
 import Select from 'react-select';
 import { useUser } from '../user';
 import './FBReactSelect.css';
 import { StyledSelect } from './StyledComponents';
+import { ThemeContext } from 'styled-components';
+import { selectStyles } from '../queries/Constants';
 
 /**
  * Render FB React-Select Dropdown in WorksheetSettingsDropdown.js and WorksheetRowDropdown.js
@@ -14,6 +16,8 @@ import { StyledSelect } from './StyledComponents';
 function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
   // Fetch user context data
   const { user } = useUser();
+  const theme = useContext(ThemeContext);
+  const select_styles = selectStyles(theme);
 
   // Does the worksheet contain any courses from the current season?
   const containsCurSeason = useCallback(
@@ -84,6 +88,7 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
         placeholder="Friends' courses"
         isSearchable={true}
         isClearable={cur_person !== 'me'}
+        styles={select_styles}
         options={friend_options}
         onChange={(option) => {
           // Cleared FB friend

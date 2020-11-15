@@ -1,6 +1,13 @@
 import styled from 'styled-components';
 import Select from 'react-select';
-import { FormControl, ListGroup, Modal, Card, Row } from 'react-bootstrap';
+import {
+  FormControl,
+  ListGroup,
+  Modal,
+  Card,
+  Row,
+  Popover,
+} from 'react-bootstrap';
 import { Calendar } from 'react-big-calendar';
 
 export const SurfaceComponent = styled.div`
@@ -21,7 +28,11 @@ export const SecondaryText = styled.span`
 export const StyledResultsItem = styled(Row)`
   border-bottom: solid 1px ${({ theme }) => theme.border};
   border-top: solid 1px ${({ theme }) => theme.border};
-  transition: 0.3s linear;
+  transition: border 0.3s linear;
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.select_hover};
+  }
 `;
 
 export const StyledListItem = styled(ListGroup.Item)`
@@ -122,10 +133,21 @@ export const StyledCard = styled(Card)`
 `;
 
 export const StyledExpandBtn = styled.div`
-  background-color: ${({ theme }) => theme.select};
+  background-color: ${({ theme }) => theme.border};
   color: ${({ theme }) => theme.text_secondary};
   position: absolute;
   top: 0%;
   z-index: 2;
   transition: 0.3s linear;
+`;
+
+export const StyledPopover = styled(Popover)`
+  background-color: ${({ theme }) => theme.surface};
+  .popover-header {
+    background-color: ${({ theme }) => theme.surface_2};
+    color: ${({ theme }) => theme.text_secondary};
+  }
+  .popover-body {
+    color: ${({ theme }) => theme.text};
+  }
 `;

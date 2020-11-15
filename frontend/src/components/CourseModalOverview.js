@@ -11,6 +11,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useUser } from '../user';
+import { StyledPopover } from './StyledComponents';
 
 import CourseModalLoading from './CourseModalLoading';
 
@@ -325,7 +326,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       prof_dict = prof_info[prof_name];
     }
     return (
-      <Popover {...props} id="title_popover" className="d-none d-md-block">
+      <StyledPopover
+        {...props}
+        id="title_popover"
+        className="d-none d-md-block"
+      >
         <Popover.Title>
           <Row className="mx-auto">
             {/* Professor Name */}
@@ -388,7 +393,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
           </Row>
         </Popover.Content>
-      </Popover>
+      </StyledPopover>
     );
   };
 
