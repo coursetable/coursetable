@@ -18,7 +18,17 @@ import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf, FaAppleAlt } from 'react-icons/fa';
-import { SurfaceComponent } from './StyledComponents';
+import { TextComponent } from './StyledComponents';
+import styled from 'styled-components';
+
+const StyledGridItem = styled.div`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgb(245, 245, 245)' : theme.surface[1]};
+  transition: background-color 0.3s linear;
+  &:hover {
+    background-color: ${({ theme }) => theme.select_hover};
+  }
+`;
 
 /**
  * Renders a grid item for a search result
@@ -126,8 +136,7 @@ const SearchResultsGridItem = ({
       className={styles.container + ' px-2 pt-0 pb-3'}
       style={{ overflow: 'hidden' }}
     >
-      <SurfaceComponent
-        layer={1}
+      <StyledGridItem
         onClick={() => {
           showModal(course);
         }}
@@ -184,26 +193,33 @@ const SearchResultsGridItem = ({
           <Col xs={7} className="p-0">
             {/* Course Professors */}
             <Row className="m-auto">
-              <span className={styles.one_line + ' ' + styles.professors}>
+              <TextComponent
+                type={1}
+                className={styles.one_line + ' ' + styles.professors}
+              >
                 {course.professor_names.length > 0
                   ? course.professor_names.join(' • ')
                   : 'Professor: TBA'}
-              </span>
+              </TextComponent>
             </Row>
             {/* Course Times */}
             <Row className="m-auto">
               <small className={styles.one_line + ' ' + styles.small_text}>
-                {course.times_summary === 'TBA'
-                  ? 'Times: TBA'
-                  : course.times_summary}
+                <TextComponent type={1}>
+                  {course.times_summary === 'TBA'
+                    ? 'Times: TBA'
+                    : course.times_summary}
+                </TextComponent>
               </small>
             </Row>
             {/* Course Location */}
             <Row className="m-auto">
               <small className={styles.one_line + ' ' + styles.small_text}>
-                {course.locations_summary === 'TBA'
-                  ? 'Location: TBA'
-                  : course.locations_summary}
+                <TextComponent type={1}>
+                  {course.locations_summary === 'TBA'
+                    ? 'Location: TBA'
+                    : course.locations_summary}
+                </TextComponent>
               </small>
             </Row>
             {/* Course Skills and Areas */}
@@ -342,7 +358,7 @@ const SearchResultsGridItem = ({
             </div>
           </Col>
         </Row>
-      </SurfaceComponent>
+      </StyledGridItem>
       {/* Bookmark Button */}
       <div className={styles.worksheet_btn}>
         {
