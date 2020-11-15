@@ -513,8 +513,6 @@ function Search() {
 
   // Is the search form taller than the window?
   var [tooTall, setTooTall] = React.useState(true);
-  // Is the user on a touch device?
-  var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   // reset the search form
   const handleResetFilters = () => {

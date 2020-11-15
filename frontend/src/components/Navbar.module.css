@@ -24,11 +24,6 @@ nav > .nav_brand {
   transition: 0.1s;
 }
 
-.navbar_dark_mode_btn:hover {
-  cursor: pointer;
-  color: #007bff;
-}
-
 .icon_circle {
   width: 30px;
   height: 30px;
