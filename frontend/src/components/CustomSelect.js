@@ -10,40 +10,18 @@ const animatedComponents = makeAnimated();
 /**
  * Custom Component for React-Select
  * @prop useColors - boolean | should we use the color version of styles?
- * @prop ALL OTHER PROPS ARE REACT-SELECT PROPS. https://react-select.com/props
  */
 
-function CustomSelect({
-  onChange,
-  options,
-  useColors = false,
-  isSearchable,
-  isMulti,
-  isClearable,
-  menuPortalTarget,
-  value,
-  defaultValue,
-  name,
-  placeholder,
-}) {
+function CustomSelect({ useColors = false, ...props }) {
   const theme = useContext(ThemeContext);
   const select_styles = selectStyles(theme);
   const select_styles_color = colorOptionStyles(theme);
   return (
     <StyledSelect
       classNamePrefix={'Select'}
-      styles={useColors ? select_styles_color : select_styles}
-      onChange={onChange}
-      options={options}
-      isSearchable={isSearchable}
-      isMulti={isMulti}
-      isClearable={isClearable}
       components={animatedComponents}
-      menuPortalTarget={menuPortalTarget}
-      value={value}
-      defaultValue={defaultValue}
-      name={name}
-      placeholder={placeholder}
+      styles={useColors ? select_styles_color : select_styles}
+      {...props}
     />
   );
 }
