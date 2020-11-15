@@ -9,7 +9,7 @@ import { TextComponent, StyledTabs } from './StyledComponents';
  * @prop info - dictionary that holds the eval data for each question
  */
 
-const CourseModalEvaluations = ({ crn, info }) => {
+const EvaluationResponses = ({ crn, info }) => {
   // Dictionary that holds the comments for each question
   let responses = {};
   // Loop through each section for this course code
@@ -129,4 +129,4 @@ const CourseModalEvaluations = ({ crn, info }) => {
   );
 };
 
-export default CourseModalEvaluations;
+export default EvaluationResponses;
