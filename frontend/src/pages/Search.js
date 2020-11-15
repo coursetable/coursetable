@@ -40,7 +40,8 @@ import Select from 'react-select';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 
-import { debounce, orderBy } from 'lodash';
+import debounce from 'lodash/debounce';
+import orderBy from 'lodash/orderBy';
 
 import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
