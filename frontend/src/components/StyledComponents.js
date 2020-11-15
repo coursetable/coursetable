@@ -12,21 +12,25 @@ import {
 import { Calendar } from 'react-big-calendar';
 import MultiToggle from 'react-multi-toggle';
 
+// Div used to color the background of surface components
 export const SurfaceComponent = styled.div`
   background-color: ${({ theme, layer }) => theme.surface[layer]};
   transition: background-color 0.3s linear;
 `;
 
+// Span used to color text. Type is an int that represents primary (0) or secondary (1) color
 export const TextComponent = styled.span`
   color: ${({ theme, type }) => theme.text[type]};
   transition: 0.3s linear;
 `;
 
+// Div for banner components/any components that are light grey in light mode, dark grey in dark mode
 export const StyledBanner = styled.div`
   background-color: ${({ theme }) => theme.banner};
   transition: 0.3s linear;
 `;
 
+// Row for search results item
 export const StyledResultsItem = styled(Row)`
   border-bottom: solid 1px ${({ theme }) => theme.border};
   border-top: solid 1px ${({ theme }) => theme.border};
@@ -37,6 +41,7 @@ export const StyledResultsItem = styled(Row)`
   }
 `;
 
+// Listgroup Item for worksheet list item
 export const StyledListItem = styled(ListGroup.Item)`
   background-color: transparent;
   border-color: ${({ theme }) => theme.border};
@@ -48,6 +53,7 @@ export const StyledListItem = styled(ListGroup.Item)`
   }
 `;
 
+// React-select component
 export const StyledSelect = styled(Select)`
   .Select__control {
     background-color: ${({ theme }) => theme.select};
@@ -64,6 +70,7 @@ export const StyledSelect = styled(Select)`
   }
 `;
 
+// FormControl for any typed inputs
 export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
@@ -83,6 +90,7 @@ export const StyledInput = styled(FormControl)`
   }
 `;
 
+// Calendar for worksheet
 export const StyledCalendar = styled(Calendar)`
   &.rbc-calendar {
     .rbc-time-view {
@@ -122,6 +130,7 @@ export const StyledCalendar = styled(Calendar)`
   }
 `;
 
+// Course Modal
 export const StyledModal = styled(Modal)`
   .modal-content {
     background-color: ${({ theme }) => theme.surface[0]};
@@ -133,17 +142,20 @@ export const StyledModal = styled(Modal)`
   }
 `;
 
+// Hr tag used to divide stuff in search form and footer
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
     theme.theme === 'light' ? '#ededed' : '#404040'};
   transition: 0.3s linear;
 `;
 
+// Card used in Worksheet mobile and about page
 export const StyledCard = styled(Card)`
   background-color: ${({ theme }) => theme.surface[0]};
   transition: 0.3s linear;
 `;
 
+// Expand buttons in worksheet
 export const StyledExpandBtn = styled.div`
   background-color: ${({ theme }) => theme.border};
   color: ${({ theme }) => theme.text[1]};
@@ -153,6 +165,7 @@ export const StyledExpandBtn = styled.div`
   transition: 0.3s linear;
 `;
 
+// Popovers in search results item, prof popover in modal, and worksheet calendar
 export const StyledPopover = styled(Popover)`
   background-color: ${({ theme }) => theme.surface[0]};
   .popover-header {
@@ -168,6 +181,7 @@ export const StyledPopover = styled(Popover)`
   }
 `;
 
+// Tabs of evaluation comments in modal
 export const StyledTabs = styled(Tabs)`
   background-color: ${({ theme }) => theme.surface[0]};
   .active {
@@ -184,6 +198,7 @@ export const StyledTabs = styled(Tabs)`
   }
 `;
 
+// Multitoggle in modal (course, both, prof)
 export const StyledMultiToggle = styled(MultiToggle)`
   background-color: ${({ theme }) => theme.surface[1]};
   border-color: ${({ theme }) => theme.border};
@@ -192,6 +207,7 @@ export const StyledMultiToggle = styled(MultiToggle)`
   }
 `;
 
+// Rating bubbles in search results list item and modal
 export const StyledRating = styled.div`
   background-color: ${({ theme, rating, colormap }) =>
     rating && rating > 0
