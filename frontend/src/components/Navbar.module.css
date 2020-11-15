@@ -13,10 +13,6 @@ nav > .nav_brand {
   font-size: 1.6rem;
 }
 
-:global .active {
-  color: #007bff;
-}
-
 .navbar_me {
   padding-left: 1rem;
   height: 40px;
@@ -25,7 +21,7 @@ nav > .nav_brand {
 
 .navbar_dark_mode_btn {
   padding-right: 1rem !important;
-  transition: 0.33s ease-out;
+  transition: 0.1s;
 }
 
 .navbar_dark_mode_btn:hover {

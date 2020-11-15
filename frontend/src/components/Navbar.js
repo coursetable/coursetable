@@ -23,7 +23,7 @@ const StyledMeIcon = styled.div`
 
 const StyledDiv = styled.div`
   padding: 0.5rem 1rem 0.5rem 0rem;
-  transition: 0.33s ease-out;
+  transition: 0.1s;
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
   &:hover {
@@ -32,8 +32,16 @@ const StyledDiv = styled.div`
 `;
 
 const StyledNavLink = styled(NavLink)`
+  padding: 0.5rem 1rem 0.5rem 0rem;
+  transition: 0.1s;
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: 500;
   &:hover {
     text-decoration: none !important;
+    color: #007bff;
+  }
+  &.active {
+    color: #007bff;
   }
 `;
 
@@ -115,7 +123,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                   // Left align about link if not mobile
                   className={!is_mobile ? ' align-self-begin' : ''}
                 >
-                  <StyledDiv>About</StyledDiv>
+                  About
                 </StyledNavLink>
                 {/* FAQs Page */}
                 <StyledNavLink
@@ -123,7 +131,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                   // Left align about link if not mobile
                   className={!is_mobile ? ' mr-auto' : ''}
                 >
-                  <StyledDiv>FAQ</StyledDiv>
+                  FAQ
                 </StyledNavLink>
 
                 {/* DarkMode Button */}
@@ -141,7 +149,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                   className={!is_mobile ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
-                  <StyledDiv>Catalog</StyledDiv>
+                  Catalog
                 </StyledNavLink>
                 {/* Worksheet Page */}
                 <StyledNavLink
@@ -150,7 +158,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                   className={!is_mobile ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
-                  <StyledDiv>Worksheet</StyledDiv>
+                  Worksheet
                 </StyledNavLink>
 
                 {/* Profile Icon. Show if not mobile */}
