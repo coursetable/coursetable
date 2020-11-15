@@ -198,42 +198,33 @@ export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
   return also_taking;
 };
 
+// Checks if object is in storage
+const containsObject = (key, storage) => {
+  return storage.getItem(key) ? true : false;
+};
 // Saves object to storage
-const setObject = (key, obj, storage) => {
+const setObject = (key, obj, storage, if_empty = false) => {
+  if (if_empty && containsObject(key, storage)) return;
   storage.setItem(key, JSON.stringify(obj));
 };
 // Retrieves object from storage
 const getObject = (key, storage) => {
-  if (!storage.getItem(key)) {
-    return false;
-  }
-
   let str_val = storage.getItem(key);
   return str_val === 'undefined' ? undefined : JSON.parse(str_val);
 };
-// Saves object if key not used
-const setObjectIfEmpty = (key, obj, storage) => {
-  if (!getObject(key, storage)) setObject(key, obj, storage);
-};
 
 // session storage functions
-export const setSSObject = (key, obj) => {
-  setObject(key, obj, window.sessionStorage);
+export const setSSObject = (key, obj, if_empty = false) => {
+  setObject(key, obj, window.sessionStorage, if_empty);
 };
 export const getSSObject = (key) => {
-  return getObject(key, obj, window.sessionStorage);
-};
-export const setSSObjectIfEmpty = (key, obj) => {
-  setObjectIfEmpty(key, obj, window.sessionStorage);
+  return getObject(key, window.sessionStorage);
 };
 
 // local storage functions
-export const setLSObject = (key, obj) => {
-  setObject(key, obj, window.localStorage);
+export const setLSObject = (key, obj, if_empty = false) => {
+  setObject(key, obj, window.localStorage, if_empty);
 };
 export const getLSObject = (key) => {
-  return getObject(key, obj, window.localStorage);
-};
-export const setLSObjectIfEmpty = (key, obj) => {
-  setObjectIfEmpty(key, obj, window.localStorage);
+  return getObject(key, window.localStorage);
 };

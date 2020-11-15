@@ -57,7 +57,7 @@ import {
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
 
-import { setSSObject, getSSObject, setSSObjectIfEmpty } from '../utilities.js';
+import { setSSObject, getSSObject } from '../utilities.js';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -83,10 +83,10 @@ function Search({ location, history }) {
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
   const searchTextInput = useRef(null);
-  setSSObjectIfEmpty('searchText', '');
+  setSSObject('searchText', '', true);
   const [searchText, setSearchText] = useState(getSSObject('searchText'));
   // Is the search form  collapsed?
-  setSSObjectIfEmpty('collapsed_form', false);
+  setSSObject('collapsed_form', false, true);
   const [collapsed_form, setCollapsedForm] = useState(
     getSSObject('collapsed_form')
   );
@@ -99,7 +99,7 @@ function Search({ location, history }) {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  setSSObjectIfEmpty('sort_order', 'asc');
+  setSSObject('sort_order', 'asc', true);
   const [sort_order, setSortOrder] = useState(getSSObject('sort_order'));
 
   // Show the modal for the course that was clicked
@@ -128,18 +128,20 @@ function Search({ location, history }) {
   const [isList, setView] = useState(isMobile ? false : true);
 
   // sets search form state defaults in sessionStorage
-  setSSObjectIfEmpty('select_sortby', sortbyOptions[0]);
-  setSSObjectIfEmpty('select_seasons', [
-    { value: '202101', label: 'Spring 2021' },
-  ]);
-  setSSObjectIfEmpty('select_skillsareas', undefined);
-  setSSObjectIfEmpty('select_credits', undefined);
-  setSSObjectIfEmpty('select_schools', []);
-  setSSObjectIfEmpty('select_subjects', []);
-  setSSObjectIfEmpty('hideCancelled', true);
-  setSSObjectIfEmpty('hideFirstYearSeminars', false);
-  setSSObjectIfEmpty('ratingBounds', [1, 5]);
-  setSSObjectIfEmpty('workloadBounds', [1, 5]);
+  setSSObject('select_sortby', sortbyOptions[0], true);
+  setSSObject(
+    'select_seasons',
+    [{ value: '202101', label: 'Spring 2021' }],
+    true
+  );
+  setSSObject('select_skillsareas', undefined, true);
+  setSSObject('select_credits', undefined, true);
+  setSSObject('select_schools', [], true);
+  setSSObject('select_subjects', [], true);
+  setSSObject('hideCancelled', true, true);
+  setSSObject('hideFirstYearSeminars', false, true);
+  setSSObject('ratingBounds', [1, 5], true);
+  setSSObject('workloadBounds', [1, 5], true);
 
   // react-select states for controlled forms
   const [select_sortby, setSelectSortby] = useState(

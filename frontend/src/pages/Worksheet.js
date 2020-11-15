@@ -18,7 +18,7 @@ import NoCoursesFound from '../images/no_courses_found.svg';
 import ServerError from '../images/server_error.svg';
 import posthog from 'posthog-js';
 
-import { setSSObject, getSSObject, setSSObjectIfEmpty } from '../utilities.js';
+import { setSSObject, getSSObject } from '../utilities.js';
 
 /**
  * Renders worksheet page
@@ -28,7 +28,7 @@ function Worksheet() {
   // Get user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  setSSObjectIfEmpty('fb_person', 'me');
+  setSSObject('fb_person', 'me', true);
   const [fb_person, setFbPerson] = useState(getSSObject('fb_person'));
 
   // Worksheet of the current person
@@ -52,7 +52,7 @@ function Worksheet() {
   }, [cur_worksheet]);
 
   // Current season initialized to most recent season
-  setSSObjectIfEmpty('season', season_codes.length > 0 ? season_codes[0] : '');
+  setSSObject('season', season_codes.length > 0 ? season_codes[0] : '', true);
   const [season, setSeason] = useState(getSSObject('season'));
   // Listings data to be fetched from database
   const [listings, setListings] = useState([]);
@@ -63,14 +63,14 @@ function Worksheet() {
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
-  setSSObjectIfEmpty('hidden_courses', []);
+  setSSObject('hidden_courses', [], true);
   const [hidden_courses, setHiddenCourses] = useState(
     getSSObject('hidden_courses')
   );
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState();
   // Currently expanded component (calendar or list or none)
-  setSSObjectIfEmpty('cur_expand', 'none');
+  setSSObject('cur_expand', 'none', true);
   const [cur_expand, setCurExpand] = useState(getSSObject('cur_expand'));
 
   // Saves worksheet settings to sessionStorage on change
