@@ -108,7 +108,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             ''
                           )}
                           {listing.title}
-                          <TextComponent type={1}>
+                          <TextComponent type={2}>
                             {' (' +
                               toSeasonString(listing.season_code)[2] +
                               ' ' +
@@ -122,7 +122,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                     <Row className={styles.badges + ' mx-auto mt-1 '}>
                       {/* Course Codes */}
                       <p className={styles.course_codes + ' my-0 pr-2'}>
-                        <TextComponent type={1}>
+                        <TextComponent type={2}>
                           {listing.all_course_codes &&
                             listing.all_course_codes.join(' • ')}
                         </TextComponent>
@@ -189,7 +189,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                           }
                         >
                           {view[1].title + ' '}
-                          <TextComponent type={1}>
+                          <TextComponent type={2}>
                             {' (' +
                               toSeasonString(view[0])[2] +
                               ' ' +
@@ -203,7 +203,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                     <Row className={styles.badges + ' mx-auto mt-1 '}>
                       {/* Course Code */}
                       <p className={styles.course_codes + '  my-0 pr-2'}>
-                        <TextComponent type={1}>
+                        <TextComponent type={2}>
                           {view[1].course_code}
                         </TextComponent>
                       </p>
@@ -251,7 +251,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                               : '')
                           }
                         >
-                          <TextComponent type={1}>
+                          <TextComponent type={2}>
                             {'| ' +
                               view[1].professor.join(', ') +
                               ' | Section ' +

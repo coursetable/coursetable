@@ -10,14 +10,13 @@
 }
 
 .collapse_text {
-  /* color: rgba(1, 1, 1, 0.6); */
   color: inherit;
   font-weight: 500;
   transition: 0.3s;
 }
 
 .collapse_text:hover {
-  color: #007bff;
+  color: #007bff !important;
   cursor: pointer;
   text-decoration: none !important;
 }

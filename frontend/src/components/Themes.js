@@ -1,6 +1,6 @@
 export const lightTheme = {
   theme: 'light',
-  text: ['#141414', '#7a7a7a'], // [Primary, Secondary]
+  text: ['#141414', '#454545', '#7a7a7a'], // [Primary, Secondary]
   background: '#FFF', // White background
   surface: ['#FFF', '#FFF'], // All surfaces are white
   banner: '#f5f5f5', // For slightly grey surfaces
@@ -13,7 +13,7 @@ export const lightTheme = {
 };
 export const darkTheme = {
   theme: 'dark',
-  text: ['#FAFAFA', '#bababa'], // [Primary, Secondary]
+  text: ['#FAFAFA', '#dbdbdb', '#bababa'], // [Primary, Secondary]
   background: '#121212', // darkest color used in background
   surface: ['#242424', '#363636'], // [Primary, Secondary] secondary is lighter and goes on top
   banner: '#363636', // Used when light mode needs to be greyish. Otherwise, same as secondary surface

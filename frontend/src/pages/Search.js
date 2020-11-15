@@ -628,7 +628,7 @@ function Search() {
                   Reset Filters
                 </small>
                 <small className={Styles.num_results + ' ml-auto'}>
-                  <TextComponent type={1}>
+                  <TextComponent type={2}>
                     {coursesLoading
                       ? 'Searching ...'
                       : 'Showing ' + searchData.length + ' results'}

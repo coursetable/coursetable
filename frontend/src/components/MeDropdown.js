@@ -9,7 +9,7 @@ import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent, TextComponent } from './StyledComponents';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -92,23 +92,26 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                 size={20}
                 style={{ paddingLeft: '2px' }}
               />
-              <a
-                href="https://old.coursetable.com/"
-                className={styles.collapse_text}
-              >
-                Old CourseTable
-              </a>
+              <TextComponent type={1}>
+                <a
+                  href="https://old.coursetable.com/"
+                  className={styles.collapse_text}
+                >
+                  Old CourseTable
+                </a>
+              </TextComponent>
             </Row>
             {/* Export Worksheet button */}
             {isLoggedIn && (
               <Row className=" pb-3 m-auto">
                 <FcCalendar className="mr-2 my-auto" size={20} />
-                <span
+                <TextComponent
+                  type={1}
                   onClick={handleExportClick}
                   className={styles.collapse_text}
                 >
                   Export Worksheet
-                </span>
+                </TextComponent>
               </Row>
             )}
             {/* Connect FB button */}
@@ -131,13 +134,14 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   color="#ed5f5f"
                   style={{ paddingLeft: '2px' }}
                 />
-                <span
+                <TextComponent
+                  type={1}
                   // href="/legacy_api/index.php?logout=1"
                   onClick={handleLogoutClick}
                   className={styles.collapse_text}
                 >
                   Sign Out
-                </span>
+                </TextComponent>
               </Row>
             ) : (
               <Row className=" pb-3 m-auto">
@@ -151,7 +155,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   href="/legacy_api/index.php?forcelogin=1"
                   className={styles.collapse_text}
                 >
-                  Sign In
+                  <TextComponent type={1}>Sign In</TextComponent>
                 </a>
               </Row>
             )}

@@ -17,7 +17,24 @@ import { SurfaceComponent } from '../components/StyledComponents';
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
-  transition: background-color 0.2s linear;
+  color: ${({ theme }) => theme.text[1]};
+  transition: background-color 0.2s linear, color 0.2s linear;
+`;
+
+const StyledDiv = styled.div`
+  padding: 0.5rem 1rem 0.5rem 0rem;
+  transition: 0.33s ease-out;
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: 500;
+  &:hover {
+    color: #007bff;
+  }
+`;
+
+const StyledNavLink = styled(NavLink)`
+  &:hover {
+    text-decoration: none !important;
+  }
 `;
 
 /**
@@ -93,26 +110,21 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
               {/* Close navbar on click in mobile view */}
               <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
                 {/* About Page */}
-                <NavLink
+                <StyledNavLink
                   to="/about"
                   // Left align about link if not mobile
-                  className={
-                    styles.navbar_links +
-                    (!is_mobile ? ' align-self-begin' : '')
-                  }
+                  className={!is_mobile ? ' align-self-begin' : ''}
                 >
-                  About
-                </NavLink>
+                  <StyledDiv>About</StyledDiv>
+                </StyledNavLink>
                 {/* FAQs Page */}
-                <NavLink
+                <StyledNavLink
                   to="/faq"
                   // Left align about link if not mobile
-                  className={
-                    styles.navbar_links + (!is_mobile ? ' mr-auto' : '')
-                  }
+                  className={!is_mobile ? ' mr-auto' : ''}
                 >
-                  FAQ
-                </NavLink>
+                  <StyledDiv>FAQ</StyledDiv>
+                </StyledNavLink>
 
                 {/* DarkMode Button */}
                 <div
@@ -123,27 +135,23 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                 </div>
 
                 {/* Catalog Page */}
-                <NavLink
+                <StyledNavLink
                   to="/catalog"
                   // Right align catalog link if not mobile
-                  className={
-                    styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
-                  }
+                  className={!is_mobile ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
-                  Catalog
-                </NavLink>
+                  <StyledDiv>Catalog</StyledDiv>
+                </StyledNavLink>
                 {/* Worksheet Page */}
-                <NavLink
+                <StyledNavLink
                   to="/worksheet"
                   // Right align worksheet link if not mobile
-                  className={
-                    styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
-                  }
+                  className={!is_mobile ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
-                  Worksheet
-                </NavLink>
+                  <StyledDiv>Worksheet</StyledDiv>
+                </StyledNavLink>
 
                 {/* Profile Icon. Show if not mobile */}
                 <div
@@ -168,17 +176,16 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                 </div>
                 {/* Sign in/out and Facebook buttons. Show if mobile */}
                 <div className="d-md-none">
-                  <div className={styles.navbar_links}>
+                  <StyledDiv>
                     <a
                       href="https://old.coursetable.com/"
-                      style={{ color: 'rgba(1, 1, 1, 0.6)' }}
+                      style={{ color: 'inherit' }}
                     >
                       Old CourseTable
                     </a>
-                  </div>
+                  </StyledDiv>
                   {!isLoggedIn ? (
-                    <div
-                      className={styles.navbar_links}
+                    <StyledDiv
                       onClick={() => {
                         posthog.capture('login');
 
@@ -187,18 +194,15 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                       }}
                     >
                       Sign In
-                    </div>
+                    </StyledDiv>
                   ) : (
                     <>
-                      <div className={styles.navbar_links}>
+                      <StyledDiv>
                         <FBLoginButton />
-                      </div>
-                      <div
-                        className={styles.navbar_links}
-                        onClick={handleLogoutClick}
-                      >
+                      </StyledDiv>
+                      <StyledDiv onClick={handleLogoutClick}>
                         Sign Out
-                      </div>
+                      </StyledDiv>
                     </>
                   )}
                 </div>
