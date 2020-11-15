@@ -97,13 +97,15 @@ export const StyledPopover = styled(Popover)`
 `;
 
 // Rating bubbles in search results list item and modal
-export const StyledRating = styled.div`
-  background-color: ${({ theme, rating, colormap }) =>
-    rating && rating > 0
-      ? colormap(rating).alpha(theme.rating_alpha)
-      : theme.banner};
-  color: ${({ rating, colormap }) =>
-    rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
+export const StyledRating = styled.div.attrs(({ theme, rating, colormap }) => ({
+  style: {
+    backgroundColor:
+      rating && rating > 0
+        ? colormap(rating).alpha(theme.rating_alpha)
+        : theme.banner,
+  },
+  color: rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5',
+}))`
   font-weight: ${({ rating }) => (rating ? 600 : 400)};
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};
   transition: background-color 0.2s linear;

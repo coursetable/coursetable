@@ -331,169 +331,167 @@ const SearchResults = ({
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
-    <div>
-      <Container
-        fluid
-        id="results_container"
-        className={`px-0 ${Styles.results_container} ${
-          expanded ? Styles.results_container_max_width : ''
-        }`}
-      >
-        {!isMobile && (
-          <SurfaceComponent layer={1} className={`${Styles.sticky_header}`}>
-            {/* Results Header */}
-            <Row
-              ref={ref}
+    <Container
+      fluid
+      id="results_container"
+      className={`px-0 ${Styles.results_container} ${
+        expanded ? Styles.results_container_max_width : ''
+      }`}
+    >
+      {!isMobile && (
+        <SurfaceComponent layer={1} className={`${Styles.sticky_header}`}>
+          {/* Results Header */}
+          <Row
+            ref={ref}
+            className={
+              `mx-auto pl-4 pr-2 py-2 shadow-sm ${Styles.results_header_row}` +
+              ' justify-content-between'
+            }
+          >
+            <div
               className={
-                `mx-auto pl-4 pr-2 py-2 shadow-sm ${Styles.results_header_row}` +
-                ' justify-content-between'
+                Styles.list_grid_toggle + ' d-flex ml-auto my-auto p-0'
               }
             >
-              <div
-                className={
-                  Styles.list_grid_toggle + ' d-flex ml-auto my-auto p-0'
-                }
-              >
-                <ListGridToggle isList={isList} setView={setView} />
-              </div>
-              {isList ? (
-                <React.Fragment>
-                  {multiSeasons && (
-                    <div style={szn_style} className={Styles.results_header}>
-                      Season
-                    </div>
-                  )}
-                  <div style={code_style} className={Styles.results_header}>
-                    Code
+              <ListGridToggle isList={isList} setView={setView} />
+            </div>
+            {isList ? (
+              <React.Fragment>
+                {multiSeasons && (
+                  <div style={szn_style} className={Styles.results_header}>
+                    Season
                   </div>
-                  {/* Course Name */}
-                  <div
-                    style={title_style}
-                    className={Styles.results_header + ' ' + Styles.one_line}
-                  >
-                    Title
-                  </div>
-                  {/* Class Rating */}
-                  <div style={rate_style} className={Styles.results_header}>
-                    <div className="m-auto">
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={class_tooltip}
-                      >
-                        <AiFillStar
-                          color="#fac000"
-                          style={{ display: 'block' }}
-                          size={20}
-                        />
-                      </OverlayTrigger>
-                    </div>
-                  </div>
-                  {/* Professor Rating */}
-                  <div style={rate_style} className={Styles.results_header}>
-                    <div className="m-auto">
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={prof_tooltip}
-                      >
-                        <FaAppleAlt
-                          color="#fa6e6e"
-                          style={{ display: 'block' }}
-                          size={16}
-                        />
-                      </OverlayTrigger>
-                    </div>
-                  </div>
-                  {/* Workload Rating */}
-                  <div style={rate_style} className={Styles.results_header}>
-                    <div className="m-auto">
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={workload_tooltip}
-                      >
-                        <FcReading style={{ display: 'block' }} size={20} />
-                      </OverlayTrigger>
-                    </div>
-                  </div>
-                  <div style={num_style} className={Styles.results_header}>
+                )}
+                <div style={code_style} className={Styles.results_header}>
+                  Code
+                </div>
+                {/* Course Name */}
+                <div
+                  style={title_style}
+                  className={Styles.results_header + ' ' + Styles.one_line}
+                >
+                  Title
+                </div>
+                {/* Class Rating */}
+                <div style={rate_style} className={Styles.results_header}>
+                  <div className="m-auto">
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
-                      overlay={enrollment_tooltip}
+                      overlay={class_tooltip}
                     >
-                      <span className="m-auto">#</span>
+                      <AiFillStar
+                        color="#fac000"
+                        style={{ display: 'block' }}
+                        size={20}
+                      />
                     </OverlayTrigger>
                   </div>
-                  {/* Course Professors */}
-                  <div
-                    style={prof_style}
-                    className={Styles.results_header + ' ' + Styles.one_line}
-                  >
-                    Professors
+                </div>
+                {/* Professor Rating */}
+                <div style={rate_style} className={Styles.results_header}>
+                  <div className="m-auto">
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={prof_tooltip}
+                    >
+                      <FaAppleAlt
+                        color="#fa6e6e"
+                        style={{ display: 'block' }}
+                        size={16}
+                      />
+                    </OverlayTrigger>
                   </div>
-                  {/* Course Meeting times and location */}
-                  <div
-                    style={meet_style}
-                    className={Styles.results_header + ' ' + Styles.one_line}
-                  >
-                    Meets
+                </div>
+                {/* Workload Rating */}
+                <div style={rate_style} className={Styles.results_header}>
+                  <div className="m-auto">
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={workload_tooltip}
+                    >
+                      <FcReading style={{ display: 'block' }} size={20} />
+                    </OverlayTrigger>
                   </div>
-                  <div
-                    style={loc_style}
-                    className={Styles.results_header + ' ' + Styles.one_line}
+                </div>
+                <div style={num_style} className={Styles.results_header}>
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 100, hide: 100 }}
+                    overlay={enrollment_tooltip}
                   >
-                    Location
-                  </div>
+                    <span className="m-auto">#</span>
+                  </OverlayTrigger>
+                </div>
+                {/* Course Professors */}
+                <div
+                  style={prof_style}
+                  className={Styles.results_header + ' ' + Styles.one_line}
+                >
+                  Professors
+                </div>
+                {/* Course Meeting times and location */}
+                <div
+                  style={meet_style}
+                  className={Styles.results_header + ' ' + Styles.one_line}
+                >
+                  Meets
+                </div>
+                <div
+                  style={loc_style}
+                  className={Styles.results_header + ' ' + Styles.one_line}
+                >
+                  Location
+                </div>
 
-                  <div style={sa_style} className={Styles.results_header}>
-                    Skills/Areas
-                  </div>
-                  <div style={num_style} className={Styles.results_header}>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={fb_tooltip}
-                    >
-                      <span className="m-auto">#FB</span>
-                    </OverlayTrigger>
-                  </div>
-                </React.Fragment>
-              ) : (
-                // Grid view showing how many search results
-                <Col md={10}>
-                  <div className={Styles.results_header}>
-                    {`Showing ${data.length} course${
-                      data.length === 1 ? '' : 's'
-                    }...`}
-                  </div>
-                </Col>
-              )}
-            </Row>
-          </SurfaceComponent>
-        )}
-        <SurfaceComponent
-          layer={0}
-          className={!isList ? 'px-1 pt-3' : Styles.results_list_container}
-        >
-          {/* If there are search results, render them */}
-          {data.length !== 0 && resultsListing}
-          {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
-          {data.length === 0 && !loading && resultsListing}
-          {/* Render a loading row while performing next query */}
-          {loading && (
-            <Row
-              className={'m-auto ' + (data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
-            >
-              <Spinner className="m-auto" animation="border" role="status">
-                <span className="sr-only">Loading...</span>
-              </Spinner>
-            </Row>
-          )}
+                <div style={sa_style} className={Styles.results_header}>
+                  Skills/Areas
+                </div>
+                <div style={num_style} className={Styles.results_header}>
+                  <OverlayTrigger
+                    placement="bottom"
+                    delay={{ show: 100, hide: 100 }}
+                    overlay={fb_tooltip}
+                  >
+                    <span className="m-auto">#FB</span>
+                  </OverlayTrigger>
+                </div>
+              </React.Fragment>
+            ) : (
+              // Grid view showing how many search results
+              <Col md={10}>
+                <div className={Styles.results_header}>
+                  {`Showing ${data.length} course${
+                    data.length === 1 ? '' : 's'
+                  }...`}
+                </div>
+              </Col>
+            )}
+          </Row>
         </SurfaceComponent>
-      </Container>
-    </div>
+      )}
+      <SurfaceComponent
+        layer={0}
+        className={!isList ? 'px-1 pt-3' : Styles.results_list_container}
+      >
+        {/* If there are search results, render them */}
+        {data.length !== 0 && resultsListing}
+        {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
+        {data.length === 0 && !loading && resultsListing}
+        {/* Render a loading row while performing next query */}
+        {loading && (
+          <Row
+            className={'m-auto ' + (data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
+          >
+            <Spinner className="m-auto" animation="border" role="status">
+              <span className="sr-only">Loading...</span>
+            </Spinner>
+          </Row>
+        )}
+      </SurfaceComponent>
+    </Container>
   );
 };
 
