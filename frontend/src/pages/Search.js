@@ -62,7 +62,7 @@ import posthog from 'posthog-js';
 const animatedComponents = makeAnimated();
 const StyledSortBtn = styled.div`
   &:hover {
-    background-color: ${({ theme }) => theme.select};
+    background-color: ${({ theme }) => theme.banner};
   }
 `;
 
