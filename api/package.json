@@ -14,7 +14,7 @@
     "http-proxy-middleware": "^1.0.4",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
-    "nodemon": "^2.0.4"
+    "nodemon": "^2.0.6"
   },
   "type": "module"
 }
