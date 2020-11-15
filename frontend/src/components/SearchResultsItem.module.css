@@ -9,9 +9,8 @@
   /* height: 32px; */
 }
 
-.last_search_result_item {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+.first_search_result_item {
+  border-top: 1px solid transparent !important;
 }
 
 .search_result_item:focus,

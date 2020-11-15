@@ -6,8 +6,21 @@ import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import { TextComponent } from '../components/StyledComponents';
-
+import styled from 'styled-components';
 import { scrollToTop } from '../utilities';
+
+// Card used in FAQ accordion
+const StyledCard = styled(Card)`
+  background-color: transparent;
+  border: none !important;
+  border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+  transition: border 0.2s linear;
+
+  .active {
+    border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+    color: #007bff;
+  }
+`;
 
 // Custom accordion component
 function ContextAwareToggle({ eventKey, callback, question }) {
@@ -25,7 +38,7 @@ function ContextAwareToggle({ eventKey, callback, question }) {
   return (
     <div
       className={
-        (!isCurrentEventKey ? '' : styles.accordion_hover_header_active) +
+        (!isCurrentEventKey ? '' : 'active') +
         '  d-flex justify-content-between py-3 px-3 ' +
         styles.accordion_hover_header
       }
@@ -285,8 +298,8 @@ function FAQ() {
       </p>
       <Accordion>
         {faqs.map((faq, idx) => (
-          <Card key={idx} className={styles.accordion_card}>
-            <div className={styles.accordion_header}>
+          <StyledCard key={idx}>
+            <div>
               <ContextAwareToggle eventKey={`${idx}`} question={faq.title} />
             </div>
             <Accordion.Collapse eventKey={`${idx}`}>
@@ -294,7 +307,7 @@ function FAQ() {
                 <TextComponent type={1}>{faq.contents}</TextComponent>
               </Card.Body>
             </Accordion.Collapse>
-          </Card>
+          </StyledCard>
         ))}
       </Accordion>
     </div>

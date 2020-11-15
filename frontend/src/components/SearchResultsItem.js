@@ -24,7 +24,6 @@ import styled from 'styled-components';
 
 // Row for search results item
 const StyledResultsItem = styled(Row)`
-  border-bottom: solid 1px ${({ theme }) => theme.border};
   border-top: solid 1px ${({ theme }) => theme.border};
   transition: border 0.2s linear;
   &:hover {
@@ -38,7 +37,7 @@ const StyledResultsItem = styled(Row)`
  * @prop course - listing data for the current course
  * @prop showModal - function that shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop isLast - boolean | is this the last course of the search results?
+ * @prop isFirst - boolean | is this the first course of the search results?
  * @prop COL_SPACING - dictionary with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
  * @prop expanded - boolean | is the catalog expanded or not
@@ -48,7 +47,7 @@ const SearchResultsItem = ({
   course,
   showModal,
   multiSeasons,
-  isLast,
+  isFirst,
   COL_SPACING,
   isScrolling = false,
   expanded,
@@ -172,7 +171,7 @@ const SearchResultsItem = ({
         'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
         Styles.search_result_item +
         ' ' +
-        (isLast ? Styles.last_search_result_item : '') +
+        (isFirst ? Styles.first_search_result_item : '') +
         // red background if class is cancelled
         (course.extra_info !== 'ACTIVE' ? ' ' + Styles.cancelled_class : '')
       }

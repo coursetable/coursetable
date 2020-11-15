@@ -72,7 +72,7 @@ export const StyledCard = styled(Card)`
 
 // Expand buttons in worksheet and worksheet expanded
 export const StyledExpandBtn = styled.div`
-  background-color: ${({ theme }) => theme.border};
+  background-color: ${({ theme }) => theme.multivalue};
   color: ${({ theme }) => theme.text[1]};
   position: absolute;
   top: 0%;

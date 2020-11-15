@@ -4,7 +4,7 @@ export const lightTheme = {
   background: '#FFF', // White background
   surface: ['#FFF', '#FFF'], // All surfaces are white
   banner: '#f5f5f5', // For slightly grey surfaces
-  border: '#f6f6f6', // Used in borders (calendar, and between list items)
+  border: '#ededed', // Used in borders (calendar, and between list items)
   select: '#FFF', // Background color for react-select
   select_hover: '#e1edff', // Blueish tint to use on hover
   multivalue: 'hsl(0,0%,90%)', // Multivalue background-color used in react-select

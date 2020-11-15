@@ -147,7 +147,7 @@ const SearchResults = ({
             course={data[index]}
             showModal={showModal}
             multiSeasons={multiSeasons}
-            isLast={index === data.length - 1}
+            isFirst={index === 0}
             COL_SPACING={COL_SPACING}
             ROW_WIDTH={ROW_WIDTH}
             isScrolling={isScrolling}
@@ -238,7 +238,7 @@ const SearchResults = ({
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={data.length}
-                  rowHeight={34}
+                  rowHeight={33}
                   rowRenderer={renderListRow}
                 />
               )}
