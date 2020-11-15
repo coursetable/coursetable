@@ -9,16 +9,23 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    reviewers:
+      - "hsheth2"
   - package-ecosystem: "npm"
     directory: "/dev_proxy"
     schedule:
       interval: "daily"
+    reviewers:
+      - "hsheth2"
   - package-ecosystem: "npm"
     directory: "/api"
     schedule:
       interval: "daily"
+    reviewers:
+      - "kevinhu"
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
       interval: "daily"
-      
+    reviewers:
+      - "maxyuan6717"
