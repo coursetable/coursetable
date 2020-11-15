@@ -4,6 +4,7 @@ import React, {
   useCallback,
   useMemo,
   useRef,
+  useContext,
 } from 'react';
 
 import { GlobalHotKeys } from 'react-hotkeys';
@@ -53,7 +54,7 @@ import {
   StyledHr,
   SecondaryText,
 } from '../components/StyledComponents';
-import styled from 'styled-components';
+import styled, { ThemeContext } from 'styled-components';
 
 // Multi-Select Animations
 import makeAnimated from 'react-select/animated';
@@ -71,7 +72,7 @@ const StyledSortBtn = styled.div`
  * @prop history - dictionary that is used to reset default search value
  */
 
-function Search({ location, history }) {
+function Search() {
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
@@ -552,6 +553,10 @@ function Search({ location, history }) {
     if (width < 768 && isList === true) setView(false);
   }, [width, isList]);
 
+  const theme = useContext(ThemeContext);
+  const select_styles = selectStyles(theme);
+  const select_styles_color = colorOptionStyles(theme);
+
   // TODO: add state if courseLoadError is present
   return (
     <div className={Styles.search_base}>
@@ -657,7 +662,7 @@ function Search({ location, history }) {
                     value={select_sortby}
                     options={sortbyOptions}
                     // prevent overlap with tooltips
-                    styles={selectStyles}
+                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSortby(options);
@@ -708,7 +713,7 @@ function Search({ location, history }) {
                       options={seasonsOptions}
                       placeholder="Last 5 Years"
                       // prevent overlap with tooltips
-                      styles={selectStyles}
+                      styles={select_styles}
                       menuPortalTarget={document.body}
                       onChange={(options) => {
                         // Set seasons state
@@ -727,7 +732,7 @@ function Search({ location, history }) {
                     options={skillsAreasOptions}
                     placeholder="All Skills/Areas"
                     // colors
-                    styles={colorOptionStyles}
+                    styles={select_styles_color}
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={(options) => {
@@ -745,7 +750,7 @@ function Search({ location, history }) {
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
-                    styles={selectStyles}
+                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectCredits(options);
@@ -763,7 +768,7 @@ function Search({ location, history }) {
                     placeholder="All Subjects"
                     isSearchable={true}
                     // prevent overlap with tooltips
-                    styles={selectStyles}
+                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSubjects(options ? options : []);
@@ -780,7 +785,7 @@ function Search({ location, history }) {
                     options={schoolOptions}
                     placeholder="All Schools"
                     // prevent overlap with tooltips
-                    styles={selectStyles}
+                    styles={select_styles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSchools(options ? options : []);

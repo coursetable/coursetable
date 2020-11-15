@@ -34,7 +34,7 @@
 /* Make this look good in dark mode */
 .search_input input {
   border-radius: 8px;
-  border: none;
+  /* border: 2px solid hsl(0, 0%, 90%); */
 }
 
 .filter_title {

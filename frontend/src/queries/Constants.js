@@ -56,119 +56,146 @@ export const na_cell = {
   fontSize: '12px',
 };
 
-export const colorOptionStyles = {
-  control: (styles) => ({
-    ...styles,
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    cursor: 'pointer',
-    border: 'solid 2px rgba(0,0,0,0.1)',
-  }),
-  option: (styles, { data, isDisabled, isFocused, isSelected }) => {
-    const color = chroma(data.color);
-    return {
+export const colorOptionStyles = (theme) => {
+  return {
+    control: (styles) => ({
       ...styles,
+      backgroundColor: 'white',
+      borderRadius: '8px',
+      cursor: 'pointer',
+      border: 'solid 2px rgba(0,0,0,0.1)',
+    }),
+    option: (styles, { data, isDisabled, isFocused, isSelected }) => {
+      const color = chroma(data.color);
+      return {
+        ...styles,
+        fontWeight: 'bold',
+        backgroundColor: isDisabled
+          ? null
+          : isSelected
+          ? data.color
+          : isFocused
+          ? color.alpha(0.1).css()
+          : null,
+        color: isDisabled
+          ? '#ccc'
+          : isSelected
+          ? chroma.contrast(color, 'white') > 2
+            ? 'white'
+            : 'black'
+          : data.color,
+        cursor: isDisabled ? 'not-allowed' : 'pointer',
+
+        ':active': {
+          ...styles[':active'],
+          backgroundColor:
+            !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
+        },
+      };
+    },
+    multiValue: (styles, { data }) => {
+      const color = chroma(data.color);
+      return {
+        ...styles,
+        backgroundColor: color.alpha(0.16).css(),
+        borderRadius: '6px',
+      };
+    },
+    multiValueLabel: (styles, { data }) => ({
+      ...styles,
+      color: data.color,
       fontWeight: 'bold',
+    }),
+    multiValueRemove: (styles, { data }) => ({
+      ...styles,
+      color: data.color,
+      borderRadius: '6px',
+      ':hover': {
+        backgroundColor: data.color,
+        color: 'white',
+      },
+    }),
+    menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
+    menu: (base) => ({
+      ...base,
+      paddingTop: 0,
+      marginTop: 0,
+      borderRadius: '8px',
+      backgroundColor: theme.select,
+      boxShadow:
+        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+    }),
+    menuList: (base) => ({
+      ...base,
+      paddingTop: 0,
+      paddingBottom: 0,
+      borderRadius: '8px',
+    }),
+  };
+};
+
+export const selectStyles = (theme) => {
+  return {
+    multiValue: (styles) => {
+      return {
+        ...styles,
+        borderRadius: '6px',
+        backgroundColor: theme.multiValue,
+        transition: '0.3s linear',
+      };
+    },
+    multiValueLabel: (styles) => {
+      return {
+        ...styles,
+        color: theme.text,
+        transition: '0.3s linear',
+      };
+    },
+    multiValueRemove: (styles) => {
+      return {
+        ...styles,
+        borderRadius: '6px',
+      };
+    },
+    control: (base) => ({
+      ...base,
+      borderRadius: '8px',
+      cursor: 'pointer',
+      border: 'solid 2px rgba(0,0,0,0.1)',
+    }),
+    menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
+    menu: (base) => ({
+      ...base,
+      paddingTop: 0,
+      marginTop: 0,
+      borderRadius: '8px',
+      backgroundColor: theme.select,
+      boxShadow:
+        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
+    }),
+    menuList: (base) => ({
+      ...base,
+      paddingTop: 0,
+      paddingBottom: 0,
+      borderRadius: '8px',
+    }),
+    option: (base, { isDisabled, isFocused, isSelected }) => ({
+      ...base,
+      cursor: 'pointer',
       backgroundColor: isDisabled
         ? null
         : isSelected
-        ? data.color
+        ? '#007cff'
         : isFocused
-        ? color.alpha(0.1).css()
+        ? theme.select_hover
         : null,
-      color: isDisabled
-        ? '#ccc'
-        : isSelected
-        ? chroma.contrast(color, 'white') > 2
-          ? 'white'
-          : 'black'
-        : data.color,
-      cursor: isDisabled ? 'not-allowed' : 'pointer',
-
+      color: isSelected ? 'white' : theme.text,
       ':active': {
-        ...styles[':active'],
-        backgroundColor:
-          !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
+        ...base[':active'],
+        backgroundColor: !isDisabled && '#85c2ff',
       },
-    };
-  },
-  multiValue: (styles, { data }) => {
-    const color = chroma(data.color);
-    return {
-      ...styles,
-      backgroundColor: color.alpha(0.16).css(),
-      borderRadius: '6px',
-    };
-  },
-  multiValueLabel: (styles, { data }) => ({
-    ...styles,
-    color: data.color,
-    fontWeight: 'bold',
-  }),
-  multiValueRemove: (styles, { data }) => ({
-    ...styles,
-    color: data.color,
-    borderRadius: '6px',
-    ':hover': {
-      backgroundColor: data.color,
-      color: 'white',
-    },
-  }),
-  menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
-  menu: (base) => ({
-    ...base,
-    paddingTop: 0,
-    marginTop: 0,
-    borderRadius: '8px',
-    boxShadow:
-      '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-  }),
-  menuList: (base) => ({
-    ...base,
-    paddingTop: 0,
-    paddingBottom: 0,
-    borderRadius: '8px',
-  }),
-};
-
-export const selectStyles = {
-  multiValue: (styles) => {
-    return {
-      ...styles,
-      borderRadius: '6px',
-    };
-  },
-  multiValueRemove: (styles) => {
-    return {
-      ...styles,
-      borderRadius: '6px',
-    };
-  },
-  control: (base) => ({
-    ...base,
-    borderRadius: '8px',
-    cursor: 'pointer',
-    border: 'solid 2px rgba(0,0,0,0.1)',
-  }),
-  menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
-  menu: (base) => ({
-    ...base,
-    paddingTop: 0,
-    marginTop: 0,
-    borderRadius: '8px',
-    boxShadow:
-      '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-  }),
-  menuList: (base) => ({
-    ...base,
-    paddingTop: 0,
-    paddingBottom: 0,
-    borderRadius: '8px',
-  }),
-  option: (base) => ({
-    ...base,
-    cursor: 'pointer',
-  }),
+    }),
+  };
 };
 
 export const creditOptions = [

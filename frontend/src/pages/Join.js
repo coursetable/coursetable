@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Row, Form, Button } from 'react-bootstrap';
 import styles from './Join.module.css';
 import makeAnimated from 'react-select/animated';
@@ -8,6 +8,7 @@ import {
   StyledInput,
   SecondaryText,
 } from '../components/StyledComponents';
+import { ThemeContext } from 'styled-components';
 
 // Makes select forms animated
 const animatedComponents = makeAnimated();
@@ -30,6 +31,9 @@ function Join() {
     // Form has been validated
     setValidated(true);
   };
+
+  const theme = useContext(ThemeContext);
+  const select_styles = selectStyles(theme);
 
   // Formcake submission endpoint
   const submission_endpoint =
@@ -66,7 +70,7 @@ function Join() {
             isMulti
             name="roles[]"
             components={animatedComponents}
-            styles={selectStyles}
+            styles={select_styles}
             options={[
               { value: 'Frontend', label: 'Front-end Developer' },
               { value: 'Backend', label: 'Back-end Developer' },

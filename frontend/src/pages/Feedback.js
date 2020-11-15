@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { Form, Button, Collapse } from 'react-bootstrap';
 import styles from './Feedback.module.css';
 import makeAnimated from 'react-select/animated';
@@ -10,6 +10,7 @@ import {
   StyledInput,
   SecondaryText,
 } from '../components/StyledComponents';
+import { ThemeContext } from 'styled-components';
 
 // Makes Select forms animated
 const animatedComponents = makeAnimated();
@@ -39,6 +40,9 @@ function Feedback() {
     setValidated(true);
   };
 
+  const theme = useContext(ThemeContext);
+  const select_styles = selectStyles(theme);
+
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.feedback_header + ' mt-5 mb-1'}>Feedback Form</h1>
@@ -67,7 +71,7 @@ function Feedback() {
             ]}
             onChange={(option) => setIsBug(option.value === 'Bug Report')}
             name="feedback_type"
-            styles={selectStyles}
+            styles={select_styles}
           />
         </Form.Group>
         {/* Hide if not submitting a bug report */}
@@ -95,7 +99,7 @@ function Feedback() {
                 isMulti
                 name="page[]"
                 components={animatedComponents}
-                styles={selectStyles}
+                styles={select_styles}
                 options={[
                   { value: 'Login', label: 'Login' },
                   { value: 'Home', label: 'Home' },
@@ -120,7 +124,7 @@ function Feedback() {
                 isMulti
                 name="system[]"
                 components={animatedComponents}
-                styles={selectStyles}
+                styles={select_styles}
                 options={[
                   { value: 'Chrome', label: 'Chrome' },
                   { value: 'Safari', label: 'Safari' },

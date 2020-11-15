@@ -33,21 +33,14 @@ export const StyledListItem = styled(ListGroup.Item)`
 export const StyledSelect = styled(Select)`
   .Select__control {
     background-color: ${({ theme }) => theme.select};
-    border: none;
+    border: ${({ theme }) =>
+      theme.theme === 'light'
+        ? '2px solid hsl(0, 0%, 90%)'
+        : '2px solid ' + theme.select};
     transition: 0.3s linear;
   }
 
   .Select__single-value {
-    color: ${({ theme }) => theme.text};
-    transition: 0.3s linear;
-  }
-
-  .Select__multi-value {
-    background-color: ${({ theme }) => theme.multiValue};
-    transition: 0.3s linear;
-  }
-
-  .Select__multi-value__label {
     color: ${({ theme }) => theme.text};
     transition: 0.3s linear;
   }
@@ -57,17 +50,18 @@ export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text};
   transition: 0.3s linear !important;
-  border: none;
+  border: ${({ theme }) =>
+    theme.theme === 'light'
+      ? '2px solid hsl(0, 0%, 90%)'
+      : '2px solid ' + theme.select};
   border-radius: 8px;
 
   &:focus {
     background-color: ${({ theme }) => theme.select};
-    border: none;
   }
 
   &.form-control:focus {
     color: ${({ theme }) => theme.text};
-    border: none;
   }
 `;
 

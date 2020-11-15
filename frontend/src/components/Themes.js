@@ -7,7 +7,8 @@ export const lightTheme = {
   surface_2: '#FFF',
   banner: '#f8f8f8',
   border: '#f6f6f6',
-  select: '#f0f0f0',
+  select: '#FFF',
+  select_hover: '#c9e4ff',
   multiValue: 'hsl(0,0%,90%)',
   hidden: '#b9b8b8',
 };
@@ -20,7 +21,8 @@ export const darkTheme = {
   surface_2: '#363636',
   banner: '#363636',
   border: '#303030',
-  select: '#4d4d4d',
+  select: '#303030',
+  select_hover: '#003369',
   multiValue: '#525252',
   hidden: '#4d4d4d',
 };
