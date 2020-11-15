@@ -57,7 +57,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
 
   return (
     <div className={styles.sticky_navbar}>
-      <SurfaceComponent>
+      <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
           <Navbar
             expanded={nav_expanded}
@@ -92,19 +92,6 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
             >
               {/* Close navbar on click in mobile view */}
               <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
-                {/* {pathname === '/worksheet' && (
-                  // Display catalog searchbar if on worksheet view. NOT USING RN
-                  <div
-                    className={
-                      'd-none d-md-block ' +
-                      (is_relative
-                        ? styles.search_bar_relative
-                        : styles.search_bar_mid)
-                    }
-                  >
-                    <Searchbar bar_size="md" />
-                  </div>
-                )} */}
                 {/* About Page */}
                 <NavLink
                   to="/about"
@@ -130,18 +117,9 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                 {/* DarkMode Button */}
                 <div
                   className={styles.navbar_dark_mode_btn + ' d-flex'}
-                  // onClick={() => {
-                  //   window.localStorage.setItem(
-                  //     'darkmode',
-                  //     !darkModeEnabled ? 'dark' : 'light'
-                  //   );
-                  //   setDarkModeEnabled(!darkModeEnabled);
-                  // }}
+                  onClick={themeToggler}
                 >
-                  <DarkModeButton
-                    // darkModeEnabled={darkModeEnabled}
-                    toggleTheme={themeToggler}
-                  />
+                  <DarkModeButton />
                 </div>
 
                 {/* Catalog Page */}

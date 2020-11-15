@@ -18,12 +18,6 @@
   border-bottom-right-radius: 8px;
 }
 
-.search_result_item:hover {
-  /* cursor: pointer;
-  background-color: #e1edff;
-  border-color: #e1edff; */
-}
-
 .search_result_item:focus,
 .search_result_item:active {
   outline: none;

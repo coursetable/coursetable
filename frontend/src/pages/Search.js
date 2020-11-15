@@ -581,6 +581,7 @@ function Search() {
           }
         >
           <SurfaceComponent
+            layer={0}
             className={
               Styles.search_container +
               ' ' +

@@ -1,13 +1,7 @@
 import React, { useState } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import styles from './Notice.module.css';
-import styled from 'styled-components';
-
-export const StyledBanner = styled.div`
-  background-color: ${({ theme }) => theme.banner};
-  border-bottom: 1px solid ${({ theme }) => theme.border};
-  transition: 0.3s linear;
-`;
+import { StyledBanner } from './StyledComponents';
 
 function Notice({ children }) {
   const [visible, setVisible] = useState(true);

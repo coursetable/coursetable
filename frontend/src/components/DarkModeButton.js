@@ -7,9 +7,9 @@ import { FaSun, FaRegMoon } from 'react-icons/fa';
  * @prop darkModeEnabled - boolean to determine which image to display (true for "sun"; false for "moon")
  */
 
-function DarkModeButton({ theme, toggleTheme }) {
+function DarkModeButton({ theme }) {
   return (
-    <span className="my-auto" onClick={toggleTheme}>
+    <span className="my-auto">
       {theme.theme === 'dark' ? (
         <FaSun size={20} style={{ display: 'block' }} />
       ) : (

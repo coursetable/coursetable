@@ -11,17 +11,17 @@ import {
 import { Calendar } from 'react-big-calendar';
 
 export const SurfaceComponent = styled.div`
-  background-color: ${({ theme }) => theme.surface};
+  background-color: ${({ theme, layer }) => theme.surface[layer]};
   transition: background-color 0.3s linear;
-`;
-
-export const SurfaceComponent2 = styled.div`
-  background-color: ${({ theme }) => theme.surface_2};
-  transition: 0.3s linear;
 `;
 
 export const SecondaryText = styled.span`
   color: ${({ theme }) => theme.text_secondary};
+  transition: 0.3s linear;
+`;
+
+export const StyledBanner = styled.div`
+  background-color: ${({ theme }) => theme.banner};
   transition: 0.3s linear;
 `;
 
@@ -39,6 +39,11 @@ export const StyledListItem = styled(ListGroup.Item)`
   background-color: transparent;
   border-color: ${({ theme }) => theme.border};
   transition: border-color 0.3s linear;
+  overflow: hidden;
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.select_hover};
+  }
 `;
 
 export const StyledSelect = styled(Select)`
@@ -117,7 +122,7 @@ export const StyledCalendar = styled(Calendar)`
 
 export const StyledModal = styled(Modal)`
   .modal-content {
-    background-color: ${({ theme }) => theme.surface};
+    background-color: ${({ theme }) => theme.surface[0]};
   }
 `;
 
@@ -128,7 +133,7 @@ export const StyledHr = styled.hr`
 `;
 
 export const StyledCard = styled(Card)`
-  background-color: ${({ theme }) => theme.surface};
+  background-color: ${({ theme }) => theme.surface[0]};
   transition: 0.3s linear;
 `;
 
@@ -142,12 +147,16 @@ export const StyledExpandBtn = styled.div`
 `;
 
 export const StyledPopover = styled(Popover)`
-  background-color: ${({ theme }) => theme.surface};
+  background-color: ${({ theme }) => theme.surface[0]};
   .popover-header {
-    background-color: ${({ theme }) => theme.surface_2};
+    background-color: ${({ theme }) => theme.surface[1]};
     color: ${({ theme }) => theme.text_secondary};
   }
   .popover-body {
     color: ${({ theme }) => theme.text};
+  }
+  .arrow::after {
+    border-right-color: ${({ theme }) => theme.surface[0]};
+    border-left-color: ${({ theme }) => theme.surface[0]};
   }
 `;

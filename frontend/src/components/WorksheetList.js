@@ -50,7 +50,7 @@ function WorksheetList({
         items.push(
           <StyledListItem
             key={id++}
-            className={styles.clickable + ' py-1 px-2'}
+            className={'py-1 px-2'}
             onMouseEnter={() => {
               setHoverCourse(course);
             }}
@@ -113,7 +113,7 @@ function WorksheetList({
         cur_person={cur_person}
       />
       {/* List of courses for this season */}
-      <SurfaceComponent className={styles.table}>
+      <SurfaceComponent layer={0} className={styles.table}>
         <ListGroup variant="flush">{items}</ListGroup>
       </SurfaceComponent>
     </div>

@@ -18,7 +18,7 @@ import { FcCloseUpMode, FcReading } from 'react-icons/fc';
 import { AiFillStar } from 'react-icons/ai';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf, FaAppleAlt } from 'react-icons/fa';
-import { SurfaceComponent2 } from './StyledComponents';
+import { SurfaceComponent } from './StyledComponents';
 
 /**
  * Renders a grid item for a search result
@@ -126,7 +126,8 @@ const SearchResultsGridItem = ({
       className={styles.container + ' px-2 pt-0 pb-3'}
       style={{ overflow: 'hidden' }}
     >
-      <SurfaceComponent2
+      <SurfaceComponent
+        layer={1}
         onClick={() => {
           showModal(course);
         }}
@@ -341,7 +342,7 @@ const SearchResultsGridItem = ({
             </div>
           </Col>
         </Row>
-      </SurfaceComponent2>
+      </SurfaceComponent>
       {/* Bookmark Button */}
       <div className={styles.worksheet_btn}>
         {

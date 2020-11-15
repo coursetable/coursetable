@@ -11,26 +11,6 @@
   border-bottom-right-radius: 8px;
 }
 
-.clickable {
-  transition: background-color 0.3s;
-  overflow: hidden;
-}
-
-.clickable:hover {
-  cursor: pointer;
-  background-color: rgba(220, 236, 255, 0.5);
-}
-
-.seasonHeader,
-.seasonHeader:focus {
-  border: none !important;
-  outline: none;
-}
-
-.hidden {
-  /* color: #b9b8b8; */
-}
-
 .list_text {
   overflow: hidden;
   transition: 0.3s;

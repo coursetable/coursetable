@@ -43,7 +43,7 @@ const WorksheetExpandedList = ({
       <Row className="mx-auto">
         {/* Season and FB friends dropdown */}
         <Col md={2} className="p-0">
-          <SurfaceComponent className={styles.select_col + ' p-2'}>
+          <SurfaceComponent layer={0} className={styles.select_col + ' p-2'}>
             <Row className="mx-auto mb-2">
               <div
                 className={

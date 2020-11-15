@@ -274,7 +274,10 @@ function Worksheet() {
               (cur_expand === 'list' ? styles.hidden : '')
             }
           >
-            <SurfaceComponent className={styles.calendar_style_container}>
+            <SurfaceComponent
+              layer={0}
+              className={styles.calendar_style_container}
+            >
               <WeekSchedule
                 showModal={showModal}
                 courses={season_listings}
