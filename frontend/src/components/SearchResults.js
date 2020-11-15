@@ -149,14 +149,13 @@ const SearchResults = ({
             multiSeasons={multiSeasons}
             isFirst={index === 0}
             COL_SPACING={COL_SPACING}
-            ROW_WIDTH={ROW_WIDTH}
             isScrolling={isScrolling}
             expanded={expanded}
           />
         </div>
       );
     },
-    [data, showModal, multiSeasons, expanded, COL_SPACING, ROW_WIDTH]
+    [data, showModal, multiSeasons, expanded, COL_SPACING]
   );
 
   if (!isLoggedIn) {

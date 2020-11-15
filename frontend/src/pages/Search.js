@@ -582,7 +582,7 @@ function Search() {
               ' ' +
               // only make the filters sticky if not on mobile and
               // tall enough
-              (!isTouch && !tooTall ? Styles.sticky : '')
+              (!isMobile && !tooTall ? Styles.sticky : '')
             }
           >
             {/* Search Form */}
