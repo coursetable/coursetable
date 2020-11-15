@@ -140,7 +140,7 @@ export const selectStyles = (theme) => {
       return {
         ...styles,
         borderRadius: '6px',
-        backgroundColor: theme.banner,
+        backgroundColor: theme.multivalue,
         transition: '0.2s linear',
       };
     },

@@ -7,6 +7,7 @@ export const lightTheme = {
   border: '#f6f6f6', // Used in borders (calendar, and between list items)
   select: '#FFF', // Background color for react-select
   select_hover: '#e1edff', // Blueish tint to use on hover
+  multivalue: 'hsl(0,0%,90%)', // Multivalue background-color used in react-select
   hidden: '#b9b8b8', // Color to use when course is hidden
   rating_alpha: 1, // Rating bubble's opacity
 };
@@ -19,6 +20,7 @@ export const darkTheme = {
   border: '#303030', // Used in borders (calendar, and between list items)
   select: '#303030', // Background color for react-select
   select_hover: '#446491', // Blueish tint to use on hover
+  multivalue: '#4d4d4d', // Multivalue background-color used in react-select
   hidden: '#4d4d4d', // Color to use when course is hidden
   rating_alpha: 0.75, // Rating bubble's opacity
 };
