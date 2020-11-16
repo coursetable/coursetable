@@ -179,7 +179,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
     (event) => {
       const border = '1)';
       let style;
-      if (hover_course && hover_course.crn === event.listing.crn) {
+      if (hover_course && hover_course === event.listing.crn) {
         style = {
           backgroundColor: event.listing.color.concat('1)'),
           borderColor: event.listing.color.concat(border),
@@ -225,6 +225,24 @@ function WeekSchedule({ showModal, courses, hover_course }) {
       : moment().hour(18).minute(0).toDate();
   }, [ret_values]);
 
+  const customEventMemo = useMemo(() => {
+    return { event: customEvent };
+  }, [customEvent]);
+
+  const onSelectEventCallback = useCallback(
+    (event) => {
+      return showModal(event.listing);
+    },
+    [showModal]
+  );
+
+  const eventPropGetterCallback = useCallback(
+    (event) => {
+      return eventStyleGetter(event);
+    },
+    [eventStyleGetter]
+  );
+
   return (
     <StyledCalendar
       // Show Mon-Fri
@@ -237,11 +255,9 @@ function WeekSchedule({ showModal, courses, hover_course }) {
       max={maxTime}
       localizer={localizer}
       toolbar={false}
-      onSelectEvent={(event) => showModal(event.listing)}
-      components={{
-        event: customEvent,
-      }}
-      eventPropGetter={(event) => eventStyleGetter(event)}
+      onSelectEvent={onSelectEventCallback}
+      components={customEventMemo}
+      eventPropGetter={eventPropGetterCallback}
       // Display Mon, Tue, Wed, ... at the top
       formats={{
         dayFormat: 'ddd',

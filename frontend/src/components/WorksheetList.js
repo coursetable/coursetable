@@ -65,7 +65,7 @@ function WorksheetList({
             key={id++}
             className={'py-1 px-2'}
             onMouseEnter={() => {
-              setHoverCourse(course);
+              setHoverCourse(course.crn);
             }}
             onMouseLeave={() => {
               setHoverCourse(null);
