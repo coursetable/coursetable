@@ -122,8 +122,8 @@ function Globals({ children }) {
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals((metric) => {
   console.log('web-vitals', metric);
-  const { entries: _, ...reportableMetrics } = metrics;
-  posthog.capture('web-vitals', { ...reportableMetrics });
+  const { entries: _, ...reportableMetric } = metric;
+  posthog.capture('web-vitals', { ...reportableMetric });
 });
 
 export default Globals;
