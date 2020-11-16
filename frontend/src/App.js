@@ -24,9 +24,10 @@ import { Row, Spinner } from 'react-bootstrap';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
+ * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
  */
 
-function App() {
+function App({ themeToggler }) {
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -64,7 +65,7 @@ function App() {
         <a href="https://old.coursetable.com">old site</a> is also still
         available.
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} />
+      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">

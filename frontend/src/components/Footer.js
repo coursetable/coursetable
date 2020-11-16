@@ -4,6 +4,7 @@ import styles from './Footer.module.css';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import { Container } from 'react-bootstrap';
+import { StyledHr, TextComponent } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';
 
@@ -14,8 +15,8 @@ import { scrollToTop } from '../utilities';
 function Footer() {
   return (
     <Container fluid>
-      <hr />
-      <footer className={'py-5 px-5 ' + styles.footer}>
+      <StyledHr />
+      <footer className={styles.footer + ' py-5 px-5'}>
         <div className="row">
           {/* Copyright */}
           <div className="col-12 col-md">
@@ -32,13 +33,13 @@ function Footer() {
               {/* Catalog */}
               <li>
                 <NavLink to="/catalog" onClick={scrollToTop}>
-                  Catalog
+                  <TextComponent type={1}>Catalog</TextComponent>
                 </NavLink>
               </li>
               {/* Worksheet */}
               <li>
                 <NavLink to="/worksheet" onClick={scrollToTop}>
-                  Worksheet
+                  <TextComponent type={1}>Worksheet</TextComponent>
                 </NavLink>
               </li>
             </ul>
@@ -49,13 +50,13 @@ function Footer() {
               {/* FAQ */}
               <li>
                 <NavLink to="/faq" onClick={scrollToTop}>
-                  FAQ
+                  <TextComponent type={1}>FAQ</TextComponent>
                 </NavLink>
               </li>
               {/* Feedback */}
               <li>
                 <NavLink to="/feedback" onClick={scrollToTop}>
-                  Feedback
+                  <TextComponent type={1}>Feedback</TextComponent>
                 </NavLink>
               </li>
             </ul>
@@ -66,13 +67,13 @@ function Footer() {
               {/* Team */}
               <li>
                 <NavLink to="/about" onClick={scrollToTop}>
-                  Team
+                  <TextComponent type={1}>Team</TextComponent>
                 </NavLink>
               </li>
               {/* Join us */}
               <li>
                 <NavLink to="/joinus" onClick={scrollToTop}>
-                  Join us
+                  <TextComponent type={1}>Join Us</TextComponent>
                 </NavLink>
               </li>
               {/* Blog */}
@@ -82,7 +83,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  Blog
+                  <TextComponent type={1}>Blog</TextComponent>
                 </a>
               </li>
               {/* Github */}
@@ -92,7 +93,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  GitHub
+                  <TextComponent type={1}>Github</TextComponent>
                 </a>
               </li>
             </ul>

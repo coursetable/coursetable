@@ -1,6 +1,5 @@
 .container {
   border-radius: 8px;
-  background-color: white;
   max-height: 86vh;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
@@ -10,26 +9,6 @@
   overflow: scroll;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-}
-
-.clickable {
-  transition: background-color 0.3s;
-  overflow: hidden;
-}
-
-.clickable:hover {
-  cursor: pointer;
-  background-color: rgba(220, 236, 255, 0.5);
-}
-
-.seasonHeader,
-.seasonHeader:focus {
-  border: none !important;
-  outline: none;
-}
-
-.hidden {
-  color: #b9b8b8;
 }
 
 .list_text {

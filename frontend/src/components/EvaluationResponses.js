@@ -1,6 +1,31 @@
 import React from 'react';
-import { Tabs, Tab, Row } from 'react-bootstrap';
+import { Tab, Row, Tabs } from 'react-bootstrap';
 import styles from './EvaluationResponses.module.css';
+import { TextComponent } from './StyledComponents';
+import styled from 'styled-components';
+
+// Tabs of evaluation comments in modal
+const StyledTabs = styled(Tabs)`
+  background-color: ${({ theme }) => theme.surface[0]};
+  .active {
+    background-color: ${({ theme }) => theme.surface[0] + ' !important'};
+    color: #007bff !important;
+    border-bottom: none;
+  }
+  .nav-item {
+    color: ${({ theme }) => theme.text[0]};
+  }
+  .nav-item:hover {
+    background-color: ${({ theme }) => theme.banner};
+    color: ${({ theme }) => theme.text[0]};
+  }
+`;
+
+const StyledCommentRow = styled(Row)`
+  font-size: 14px;
+  font-weight: 450;
+  border-bottom: 1px solid ${({ theme }) => theme.border};
+`;
 
 /**
  * Displays Evaluation Comments
@@ -8,7 +33,7 @@ import styles from './EvaluationResponses.module.css';
  * @prop info - dictionary that holds the eval data for each question
  */
 
-const CourseModalEvaluations = ({ crn, info }) => {
+const EvaluationResponses = ({ crn, info }) => {
   // Dictionary that holds the comments for each question
   let responses = {};
   // Loop through each section for this course code
@@ -38,33 +63,33 @@ const CourseModalEvaluations = ({ crn, info }) => {
     if (key.includes('summarize')) {
       summary = responses[key].map((response, index) => {
         return (
-          <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
-          </Row>
+          <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <TextComponent type={1}>{response}</TextComponent>
+          </StyledCommentRow>
         );
       });
     } else if (key.includes('recommend')) {
       recommend = responses[key].map((response, index) => {
         return (
-          <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
-          </Row>
+          <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <TextComponent type={1}>{response}</TextComponent>
+          </StyledCommentRow>
         );
       });
     } else if (key.includes('skills')) {
       skills = responses[key].map((response, index) => {
         return (
-          <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
-          </Row>
+          <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <TextComponent type={1}>{response}</TextComponent>
+          </StyledCommentRow>
         );
       });
     } else if (key.includes('strengths')) {
       strengths = responses[key].map((response, index) => {
         return (
-          <Row key={index} className={styles.response + ' m-auto p-2'}>
-            {response}
-          </Row>
+          <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <TextComponent type={1}>{response}</TextComponent>
+          </StyledCommentRow>
         );
       });
     }
@@ -72,7 +97,7 @@ const CourseModalEvaluations = ({ crn, info }) => {
 
   return (
     <div>
-      <Tabs
+      <StyledTabs
         variant="tabs"
         transition={false}
         onSelect={() => {
@@ -86,8 +111,10 @@ const CourseModalEvaluations = ({ crn, info }) => {
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">
             <Row className={styles.question_header + ' m-auto pt-2'}>
-              Would you recommend this course to another student? Please
-              explain.
+              <TextComponent type={0}>
+                Would you recommend this course to another student? Please
+                explain.
+              </TextComponent>
             </Row>
             {recommend}
           </Tab>
@@ -96,8 +123,10 @@ const CourseModalEvaluations = ({ crn, info }) => {
         {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
             <Row className={styles.question_header + ' m-auto pt-2'}>
-              What knowledge, skills, and insights did you develop by taking
-              this course?
+              <TextComponent type={0}>
+                What knowledge, skills, and insights did you develop by taking
+                this course?
+              </TextComponent>
             </Row>
             {skills}
           </Tab>
@@ -106,8 +135,10 @@ const CourseModalEvaluations = ({ crn, info }) => {
         {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
             <Row className={styles.question_header + ' m-auto pt-2'}>
-              What are the strengths and weaknesses of this course and how could
-              it be improved?
+              <TextComponent type={0}>
+                What are the strengths and weaknesses of this course and how
+                could it be improved?
+              </TextComponent>
             </Row>
             {strengths}
           </Tab>
@@ -116,16 +147,18 @@ const CourseModalEvaluations = ({ crn, info }) => {
         {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
             <Row className={styles.question_header + ' m-auto pt-2'}>
-              How would you summarize this course? Would you recommend it to
-              another student? Why or why not?
+              <TextComponent type={0}>
+                How would you summarize this course? Would you recommend it to
+                another student? Why or why not?
+              </TextComponent>
             </Row>
             {summary}
           </Tab>
         )}
-      </Tabs>
+      </StyledTabs>
       {!num_questions && <strong>No comments for this course</strong>}
     </div>
   );
 };
 
-export default CourseModalEvaluations;
+export default EvaluationResponses;

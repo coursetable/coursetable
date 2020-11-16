@@ -10,6 +10,7 @@ import worksheet_styles from '../pages/Worksheet.module.css';
 import { Col, Row } from 'react-bootstrap';
 import { useUser } from '../user';
 import { FaCompressAlt } from 'react-icons/fa';
+import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
 
 /**
  * Render expanded worksheet list after maximize button is clicked
@@ -42,7 +43,7 @@ const WorksheetExpandedList = ({
       <Row className="mx-auto">
         {/* Season and FB friends dropdown */}
         <Col md={2} className="p-0">
-          <div className={styles.select_col + ' p-2'}>
+          <SurfaceComponent layer={0} className={styles.select_col + ' p-2'}>
             <Row className="mx-auto mb-2">
               <div
                 className={
@@ -72,15 +73,19 @@ const WorksheetExpandedList = ({
                 />
               </div>
             </Row>
-            <FaCompressAlt
+            <StyledExpandBtn
               className={worksheet_styles.expand_btn + ' ' + styles.top_left}
-              size={18}
-              onClick={() => {
-                // Compress list
-                setCurExpand('none');
-              }}
-            />
-          </div>
+            >
+              <FaCompressAlt
+                size={12}
+                className={worksheet_styles.expand_icon}
+                onClick={() => {
+                  // Compress list
+                  setCurExpand('none');
+                }}
+              />
+            </StyledExpandBtn>
+          </SurfaceComponent>
         </Col>
         {/* Worksheet courses in search results format */}
         <Col md={10} className="pr-0 pl-3">
