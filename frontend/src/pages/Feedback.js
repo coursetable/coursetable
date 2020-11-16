@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
 import { Form, Button, Collapse } from 'react-bootstrap';
 import styles from './Feedback.module.css';
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
 import './Feedback.css';
-
-import { selectStyles } from '../queries/Constants';
-
-// Makes Select forms animated
-const animatedComponents = makeAnimated();
+import CustomSelect from '../components/CustomSelect';
+import { StyledInput, TextComponent } from '../components/StyledComponents';
 
 /**
  * Renders the Feedback page
@@ -38,8 +33,8 @@ function Feedback() {
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.feedback_header + ' mt-5 mb-1'}>Feedback Form</h1>
-      <p className={styles.feedback_description + ' mb-3 text-muted'}>
-        Let us know what you think!
+      <p className={styles.feedback_description + ' mb-3'}>
+        <TextComponent type={1}>Let us know what you think!</TextComponent>
       </p>
       <Form
         noValidate
@@ -53,7 +48,7 @@ function Feedback() {
           <Form.Label className={styles.form_label}>
             Feedback Type<span style={{ color: '#ff5e5e' }}>{' *'}</span>
           </Form.Label>
-          <Select
+          <CustomSelect
             defaultValue={{ value: 'bug report', label: 'Bug Report' }}
             options={[
               { value: 'Bug Report', label: 'Bug Report' },
@@ -62,7 +57,6 @@ function Feedback() {
             ]}
             onChange={(option) => setIsBug(option.value === 'Bug Report')}
             name="feedback_type"
-            styles={selectStyles}
           />
         </Form.Group>
         {/* Hide if not submitting a bug report */}
@@ -72,9 +66,9 @@ function Feedback() {
             <Form.Group className={styles.form_group}>
               <Form.Label className={styles.form_label}>
                 Course(s) Involved?
-                <span className="text-muted">{' (Include season)'}</span>
+                <TextComponent type={1}>{' (Include season)'}</TextComponent>
               </Form.Label>
-              <Form.Control
+              <StyledInput
                 type="text"
                 name="course"
                 placeholder="e.g. CPSC 323, Spring 2020"
@@ -85,11 +79,9 @@ function Feedback() {
               <Form.Label className={styles.form_label}>
                 Page(s) Involved?
               </Form.Label>
-              <Select
+              <CustomSelect
                 isMulti
                 name="page[]"
-                components={animatedComponents}
-                styles={selectStyles}
                 options={[
                   { value: 'Login', label: 'Login' },
                   { value: 'Home', label: 'Home' },
@@ -109,11 +101,9 @@ function Feedback() {
               <Form.Label className={styles.form_label}>
                 Browser/System(s) Involved?
               </Form.Label>
-              <Select
+              <CustomSelect
                 isMulti
                 name="system[]"
-                components={animatedComponents}
-                styles={selectStyles}
                 options={[
                   { value: 'Chrome', label: 'Chrome' },
                   { value: 'Safari', label: 'Safari' },
@@ -144,12 +134,13 @@ function Feedback() {
               steps to reproduce the bug
             </span>
           </Form.Label>
-          <Form.Control
+          <StyledInput
             required
             as="textarea"
             name="description"
             rows="4"
             placeholder="What's up?"
+            style={{ width: '100%' }}
           />
           <Form.Control.Feedback type="invalid">
             Please enter a description
@@ -166,7 +157,7 @@ function Feedback() {
               your permission
             </span>
           </Form.Label>
-          <Form.Control
+          <StyledInput
             required
             type="email"
             name="email"

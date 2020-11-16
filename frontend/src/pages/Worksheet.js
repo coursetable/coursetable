@@ -9,6 +9,10 @@ import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
+import {
+  SurfaceComponent,
+  StyledExpandBtn,
+} from '../components/StyledComponents';
 
 import styles from './Worksheet.module.css';
 
@@ -247,7 +251,7 @@ function Worksheet() {
   if (data === undefined || !data.length) return <div>Error with Query</div>;
 
   // Button size for expand icons
-  const expand_btn_size = 18;
+  const expand_btn_size = 12;
 
   return (
     <div className={styles.container}>
@@ -270,34 +274,42 @@ function Worksheet() {
               (cur_expand === 'list' ? styles.hidden : '')
             }
           >
-            <WeekSchedule
-              showModal={showModal}
-              courses={season_listings}
-              hover_course={hover_course}
-              setHoverCourse={setHoverCourse}
-            />
-            {/* Expand/Compress icons for calendar */}
-            <div style={{ zIndex: 420 }}>
-              {cur_expand === 'none' ? (
-                <FaExpandAlt
-                  className={styles.expand_btn + ' ' + styles.top_right}
-                  size={expand_btn_size}
-                  onClick={() => {
-                    // Expand calendar
-                    setCurExpand('calendar');
-                  }}
-                />
-              ) : (
-                <FaCompressAlt
-                  className={styles.expand_btn + ' ' + styles.top_right}
-                  size={expand_btn_size}
-                  onClick={() => {
-                    // Compress calendar
-                    setCurExpand('none');
-                  }}
-                />
-              )}
-            </div>
+            <SurfaceComponent
+              layer={0}
+              className={styles.calendar_style_container}
+            >
+              <WeekSchedule
+                showModal={showModal}
+                courses={season_listings}
+                hover_course={hover_course}
+                setHoverCourse={setHoverCourse}
+              />
+              {/* Expand/Compress icons for calendar */}
+              <StyledExpandBtn
+                className={styles.expand_btn + ' ' + styles.top_right}
+              >
+                {cur_expand === 'none' ? (
+                  <FaExpandAlt
+                    className={styles.expand_icon}
+                    size={expand_btn_size}
+                    style={{ display: 'block' }}
+                    onClick={() => {
+                      // Expand calendar
+                      setCurExpand('calendar');
+                    }}
+                  />
+                ) : (
+                  <FaCompressAlt
+                    className={styles.expand_icon}
+                    size={expand_btn_size}
+                    onClick={() => {
+                      // Compress calendar
+                      setCurExpand('none');
+                    }}
+                  />
+                )}
+              </StyledExpandBtn>
+            </SurfaceComponent>
           </Col>
           {/* List Component*/}
           <Col
@@ -343,11 +355,12 @@ function Worksheet() {
               </div>
             </Fade>
             {/* Expand/Compress Icons for list */}
-
-            <div>
-              {cur_expand === 'none' && (
+            {cur_expand === 'none' && (
+              <StyledExpandBtn
+                className={styles.expand_btn + ' ' + styles.top_left}
+              >
                 <FaExpandAlt
-                  className={styles.expand_btn + ' ' + styles.top_left}
+                  className={styles.expand_icon}
                   size={expand_btn_size}
                   onClick={() => {
                     // Expand the list component
@@ -355,8 +368,8 @@ function Worksheet() {
                     setCurExpand('list');
                   }}
                 />
-              )}
-            </div>
+              </StyledExpandBtn>
+            )}
           </Col>
         </Row>
       </div>

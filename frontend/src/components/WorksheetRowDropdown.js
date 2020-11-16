@@ -4,6 +4,7 @@ import styles from './WorksheetRowDropdown.module.css';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
 import { Row, Col } from 'react-bootstrap';
+import { SurfaceComponent } from './StyledComponents';
 import { useUser } from '../user';
 
 /**
@@ -26,33 +27,35 @@ function WorksheetRowDropdown({
   const { user } = useUser();
 
   return (
-    <Row className={styles.container + ' shadow-sm mx-auto pt-2 pb-2'}>
-      {/* Season Select */}
-      <Col md={6} className="pl-2 pr-1">
-        <div className={styles.select_container + ' ' + styles.hover_effect}>
-          <SeasonReactSelect
-            cur_season={cur_season}
-            season_codes={season_codes}
-            onSeasonChange={onSeasonChange}
-          />
-        </div>
-      </Col>
-      {/* FB Friend Select */}
-      <Col md={6} className="pr-2 pl-1">
-        <div
-          className={
-            styles.select_container +
-            (user.fbLogin ? ' ' + styles.hover_effect : '')
-          }
-        >
-          <FBReactSelect
-            cur_season={cur_season}
-            setFbPerson={setFbPerson}
-            cur_person={cur_person}
-          />
-        </div>
-      </Col>
-    </Row>
+    <SurfaceComponent layer={1} className={styles.container}>
+      <Row className="shadow-sm mx-auto pt-2 pb-2">
+        {/* Season Select */}
+        <Col md={6} className="pl-2 pr-1">
+          <div className={styles.select_container + ' ' + styles.hover_effect}>
+            <SeasonReactSelect
+              cur_season={cur_season}
+              season_codes={season_codes}
+              onSeasonChange={onSeasonChange}
+            />
+          </div>
+        </Col>
+        {/* FB Friend Select */}
+        <Col md={6} className="pr-2 pl-1">
+          <div
+            className={
+              styles.select_container +
+              (user.fbLogin ? ' ' + styles.hover_effect : '')
+            }
+          >
+            <FBReactSelect
+              cur_season={cur_season}
+              setFbPerson={setFbPerson}
+              cur_person={cur_person}
+            />
+          </div>
+        </Col>
+      </Row>
+    </SurfaceComponent>
   );
 }
 

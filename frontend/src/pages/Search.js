@@ -13,32 +13,21 @@ import Styles from './Search.module.css';
 import SearchResults from '../components/SearchResults';
 import CourseModal from '../components/CourseModal';
 
-import {
-  Col,
-  Container,
-  Row,
-  Form,
-  FormControl,
-  InputGroup,
-  Button,
-} from 'react-bootstrap';
+import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 
 import {
   sortbyOptions,
   areas,
   skills,
   skillsAreasOptions,
-  colorOptionStyles,
-  selectStyles,
   creditOptions,
   schoolOptions,
   subjectOptions,
 } from '../queries/Constants';
 
-import Select from 'react-select';
-
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
+import CustomSelect from '../components/CustomSelect';
 
 import { debounce, orderBy } from 'lodash';
 
@@ -56,11 +45,25 @@ import {
 } from 'react-icons/fc';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
+import {
+  SurfaceComponent,
+  StyledInput,
+  StyledHr,
+  TextComponent,
+} from '../components/StyledComponents';
+import styled from 'styled-components';
 
-// Multi-Select Animations
-import makeAnimated from 'react-select/animated';
 import posthog from 'posthog-js';
-const animatedComponents = makeAnimated();
+const StyledSortBtn = styled.div`
+  &:hover {
+    background-color: ${({ theme }) => theme.banner};
+  }
+`;
+
+const StyledSearchTab = styled.div`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgb(198, 232, 255)' : theme.select_hover};
+`;
 
 /**
  * Renders search page
@@ -68,7 +71,7 @@ const animatedComponents = makeAnimated();
  * @prop history - dictionary that is used to reset default search value
  */
 
-function Search({ location, history }) {
+function Search() {
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
@@ -510,8 +513,6 @@ function Search({ location, history }) {
 
   // Is the search form taller than the window?
   var [tooTall, setTooTall] = React.useState(true);
-  // Is the user on a touch device?
-  var isTouch = 'ontouchstart' in window || navigator.msMaxTouchPoints > 0;
 
   // reset the search form
   const handleResetFilters = () => {
@@ -572,16 +573,19 @@ function Search({ location, history }) {
             (!isMobile ? ' order-2' : '')
           }
         >
-          <div
+          <SurfaceComponent
+            layer={0}
             className={
+              Styles.search_container +
+              ' ' +
               // only make the filters sticky if not on mobile and
               // tall enough
-              !isTouch && !tooTall ? Styles.sticky : ''
+              (!isMobile && !tooTall ? Styles.sticky : '')
             }
           >
             {/* Search Form */}
             <Form
-              className={`px-0 ${Styles.search_container}`}
+              className={'px-0'}
               onSubmit={scroll_to_results}
               ref={(ref) => {
                 searchCol = ref;
@@ -590,7 +594,7 @@ function Search({ location, history }) {
               {!isMobile && (
                 // Render buttons to hide/show the search form
                 <React.Fragment>
-                  <div
+                  <StyledSearchTab
                     className={
                       Styles.search_tab +
                       (collapsed_form
@@ -602,7 +606,7 @@ function Search({ location, history }) {
                     }}
                   >
                     <FaSearch style={{ display: 'block' }} />
-                  </div>
+                  </StyledSearchTab>
                   <div
                     className={Styles.collapse_form_btn}
                     onClick={() => {
@@ -621,17 +625,19 @@ function Search({ location, history }) {
                 >
                   Reset Filters
                 </small>
-                <small className={Styles.num_results + ' ml-auto text-muted'}>
-                  {coursesLoading
-                    ? 'Searching ...'
-                    : 'Showing ' + searchData.length + ' results'}
+                <small className={Styles.num_results + ' ml-auto'}>
+                  <TextComponent type={2}>
+                    {coursesLoading
+                      ? 'Searching ...'
+                      : 'Showing ' + searchData.length + ' results'}
+                  </TextComponent>
                 </small>
               </Row>
               <Row className="mx-auto pt-1 pb-2 px-4">
                 <div className={Styles.search_bar}>
                   {/* Search Bar */}
                   <InputGroup className={Styles.search_input}>
-                    <FormControl
+                    <StyledInput
                       type="text"
                       value={searchText}
                       onChange={(event) => setSearchText(event.target.value)}
@@ -645,18 +651,17 @@ function Search({ location, history }) {
               <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
                 <div className={`${Styles.selector_container}`}>
                   {/* Sort By Select */}
-                  <Select
+                  <CustomSelect
                     value={select_sortby}
                     options={sortbyOptions}
                     // prevent overlap with tooltips
-                    styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSortby(options);
                     }}
                   />
                 </div>
-                <div
+                <StyledSortBtn
                   className={Styles.sort_btn + ' my-auto'}
                   onClick={handleSortOrder}
                 >
@@ -686,98 +691,89 @@ function Search({ location, history }) {
                       size={20}
                     />
                   )}
-                </div>
+                </StyledSortBtn>
               </Row>
-              <hr />
+              <StyledHr />
               <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {seasonsOptions && (
                     // Seasons Multi-Select
-                    <Select
+                    <CustomSelect
                       isMulti
                       value={select_seasons}
                       options={seasonsOptions}
                       placeholder="Last 5 Years"
                       // prevent overlap with tooltips
-                      styles={selectStyles}
                       menuPortalTarget={document.body}
                       onChange={(options) => {
                         // Set seasons state
                         setSelectSeasons(options ? options : []);
                       }}
-                      components={animatedComponents}
                     />
                   )}
                 </div>
                 <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
                   {/* Skills/Areas Multi-Select */}
-                  <Select
+                  <CustomSelect
                     isMulti
                     value={select_skillsareas}
                     options={skillsAreasOptions}
                     placeholder="All Skills/Areas"
                     // colors
-                    styles={colorOptionStyles}
+                    useColors={true}
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSkillsAreas(options);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Course Credit Multi-Select */}
-                  <Select
+                  <CustomSelect
                     isMulti
                     value={select_credits}
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
-                    styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectCredits(options);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Yale Subjects Multi-Select */}
-                  <Select
+                  <CustomSelect
                     isMulti
                     value={select_subjects}
                     options={subjectOptions}
                     placeholder="All Subjects"
                     isSearchable={true}
                     // prevent overlap with tooltips
-                    styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSubjects(options ? options : []);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
                 <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   {/* Yale Schools Multi-Select */}
-                  <Select
+                  <CustomSelect
                     isMulti
                     value={select_schools}
                     options={schoolOptions}
                     placeholder="All Schools"
                     // prevent overlap with tooltips
-                    styles={selectStyles}
                     menuPortalTarget={document.body}
                     onChange={(options) => {
                       setSelectSchools(options ? options : []);
                     }}
-                    components={animatedComponents}
                   />
                 </div>
               </Row>
-              <hr />
-              <Row className={`mx-auto pt-0 pb-2 px-2 ${Styles.sliders}`}>
+              <StyledHr />
+              <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
                 <Col>
                   <Container style={{ paddingTop: '1px' }}>
                     {/* Class Rating Slider */}
@@ -821,6 +817,7 @@ function Search({ location, history }) {
                   </div>
                 </Col>
               </Row>
+              <StyledHr className="mb-0" />
               <Row
                 className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
               >
@@ -865,7 +862,7 @@ function Search({ location, history }) {
                 <Button type="submit" />
               </div>
             </Form>
-          </div>
+          </SurfaceComponent>
         </Col>
         {/* Search Results Catalog */}
 

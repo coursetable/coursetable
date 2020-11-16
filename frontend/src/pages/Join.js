@@ -1,12 +1,8 @@
 import React, { useState } from 'react';
 import { Row, Form, Button } from 'react-bootstrap';
 import styles from './Join.module.css';
-import Select from 'react-select';
-import makeAnimated from 'react-select/animated';
-import { selectStyles } from '../queries/Constants';
-
-// Makes select forms animated
-const animatedComponents = makeAnimated();
+import CustomSelect from '../components/CustomSelect';
+import { StyledInput, TextComponent } from '../components/StyledComponents';
 
 /**
  * Renders the Join Us page
@@ -33,8 +29,8 @@ function Join() {
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.join_header + ' mt-5 mb-1'}>Join Us!</h1>
-      <p className={styles.join_description + ' mb-3 text-muted'}>
-        We'll be in touch.
+      <p className={styles.join_description + ' mb-3'}>
+        <TextComponent type={1}>We'll be in touch.</TextComponent>
       </p>
       <Form
         noValidate
@@ -45,7 +41,7 @@ function Join() {
       >
         {/* Email */}
         <Form.Group className={styles.form_group}>
-          <Form.Control
+          <StyledInput
             required
             name="email"
             type="email"
@@ -57,11 +53,9 @@ function Join() {
         </Form.Group>
         {/* Role Select */}
         <Form.Group className={styles.form_group}>
-          <Select
+          <CustomSelect
             isMulti
             name="roles[]"
-            components={animatedComponents}
-            styles={selectStyles}
             options={[
               { value: 'Frontend', label: 'Front-end Developer' },
               { value: 'Backend', label: 'Back-end Developer' },

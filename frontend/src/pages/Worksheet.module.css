@@ -20,8 +20,12 @@
 .calendar {
   height: 86vh;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
-  border-radius: 8px !important;
-  background-color: white;
+  border-radius: 8px;
+}
+
+.calendar_style_container {
+  height: 100%;
+  border-radius: 8px;
 }
 
 /* DISABLE TRANSITION ANIMATIONS */
@@ -38,20 +42,17 @@
 }
 
 .expand_btn {
-  position: absolute;
-  top: 0%;
-  z-index: 2;
-  color: rgb(179, 179, 179);
   padding: 3px;
-  background-color: rgb(238, 238, 238);
   border-radius: 6px;
   transition: 0.3s;
 }
 
 .expand_btn:hover {
-  color: rgb(102, 101, 101);
-  background-color: rgb(200, 200, 200);
   cursor: pointer;
+}
+
+.expand_icon {
+  display: block;
 }
 
 .top_left {
@@ -90,7 +91,6 @@
 :global .css-1fhf3k1-control {
   z-index: calc(420 + 69);
   border: none !important;
-  background-color: transparent !important;
   height: 38px !important;
   cursor: pointer !important;
 }
