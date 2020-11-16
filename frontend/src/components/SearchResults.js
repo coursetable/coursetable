@@ -75,34 +75,37 @@ const SearchResults = ({
   }, [setRowWidth, width, expanded]);
 
   // Spacing for each column in list view
-  let COL_SPACING = {
-    SZN_WIDTH: 80,
-    CODE_WIDTH: 110,
-    RATE_WIDTH: 30,
-    NUM_WIDTH: 30,
-    SA_WIDTH: 100,
-    PADDING: 35,
-  };
-  const EXTRA = useMemo(() => {
-    return (
-      ROW_WIDTH -
-      (multiSeasons ? COL_SPACING.SZN_WIDTH : 0) -
-      COL_SPACING.CODE_WIDTH -
-      2 * COL_SPACING.NUM_WIDTH -
-      COL_SPACING.SA_WIDTH -
-      3 * COL_SPACING.RATE_WIDTH -
-      COL_SPACING.PADDING
-    );
-  }, [COL_SPACING, ROW_WIDTH, multiSeasons]);
+  const COL_SPACING = useMemo(() => {
+    let TEMP_COL_SPACING = {
+      SZN_WIDTH: 80,
+      CODE_WIDTH: 110,
+      RATE_WIDTH: 30,
+      NUM_WIDTH: 30,
+      SA_WIDTH: 100,
+      PADDING: 35,
+    };
 
-  COL_SPACING.PROF_WIDTH = Math.min(EXTRA / 4, 160);
-  COL_SPACING.MEET_WIDTH = Math.min(EXTRA / 4, 160);
-  COL_SPACING.LOC_WIDTH = Math.min(EXTRA / 6, 100);
-  COL_SPACING.TITLE_WIDTH =
-    EXTRA -
-    COL_SPACING.PROF_WIDTH -
-    COL_SPACING.MEET_WIDTH -
-    COL_SPACING.LOC_WIDTH;
+    const EXTRA =
+      ROW_WIDTH -
+      (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
+      TEMP_COL_SPACING.CODE_WIDTH -
+      2 * TEMP_COL_SPACING.NUM_WIDTH -
+      TEMP_COL_SPACING.SA_WIDTH -
+      3 * TEMP_COL_SPACING.RATE_WIDTH -
+      TEMP_COL_SPACING.PADDING;
+
+    TEMP_COL_SPACING.PROF_WIDTH = Math.min(EXTRA / 4, 160);
+    TEMP_COL_SPACING.MEET_WIDTH = Math.min(EXTRA / 4, 160);
+    TEMP_COL_SPACING.LOC_WIDTH = Math.min(EXTRA / 6, 100);
+    TEMP_COL_SPACING.TITLE_WIDTH =
+      EXTRA -
+      TEMP_COL_SPACING.PROF_WIDTH -
+      TEMP_COL_SPACING.MEET_WIDTH -
+      TEMP_COL_SPACING.LOC_WIDTH;
+
+    return TEMP_COL_SPACING;
+  }, [ROW_WIDTH, multiSeasons]);
+
   // Holds HTML for the search results
   let resultsListing;
 

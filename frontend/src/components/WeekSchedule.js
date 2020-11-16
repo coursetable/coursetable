@@ -132,10 +132,12 @@ function WeekSchedule({ showModal, courses, hover_course }) {
     );
   }, []);
 
-  const event_style = {
-    width: '100%',
-    height: '100%',
-  };
+  const event_style = useMemo(() => {
+    return {
+      width: '100%',
+      height: '100%',
+    };
+  }, []);
   // Render the custom data displayed on each calendar event
   const customEvent = useCallback(
     (event) => {

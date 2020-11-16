@@ -135,6 +135,10 @@ const selectStyles = (theme) => {
       cursor: 'pointer',
       border: 'solid 2px rgba(0,0,0,0.1)',
     }),
+    singleValue: (base, { isDisabled }) => ({
+      ...base,
+      color: isDisabled ? theme.text[2] : theme.text[0],
+    }),
     menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
     menu: (base) => ({
       ...base,

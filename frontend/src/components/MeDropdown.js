@@ -33,7 +33,8 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     });
   }, [user.worksheet]);
 
-  const { data } = useWorksheetInfo(filtered_worksheet);
+  let { data } = useWorksheetInfo(filtered_worksheet);
+  if (!data) data = [];
 
   // Handle 'export worksheet' button click
   const handleExportClick = () => {
@@ -44,17 +45,15 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     setExport(true);
   };
 
-  // Variable used in useEffect to be statically checked
-  const fetched_data = data ? data : [];
   // Called when worksheet updates or export_ics changes
   useEffect(() => {
     // return if worksheet isn't loaded or it isn't time to export
-    if (fetched_data.length === 0 || !export_ics) return;
+    if (!data || data.length === 0 || !export_ics) return;
     // Generate and download ICS file
-    generateICS(fetched_data);
+    generateICS(data);
     // Reset export_ics state on completion
     setExport(false);
-  }, [fetched_data, export_ics]);
+  }, [data, export_ics]);
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {

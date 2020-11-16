@@ -106,18 +106,23 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     },
   });
   // Hold list of evaluation dictionaries
-  let evaluations = [];
+  let evaluations = useMemo(() => {
+    return [];
+  }, []);
   // Hold HTML code that displays the list of evaluations
 
   // Holds Prof information for popover
-  let prof_info = {};
-  listing.professor_names.forEach((prof) => {
-    prof_info[prof] = {
-      num_courses: 0,
-      total_rating: 0,
-      email: '',
-    };
-  });
+  let prof_info = useMemo(() => {
+    let prof_info_temp = {};
+    listing.professor_names.forEach((prof) => {
+      prof_info_temp[prof] = {
+        num_courses: 0,
+        total_rating: 0,
+        email: '',
+      };
+    });
+    return prof_info_temp;
+  }, [listing.professor_names]);
   // Count number of profs that overlap between this listing and an eval
   const overlapping_profs = useCallback(
     (eval_profs) => {

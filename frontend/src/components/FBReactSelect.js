@@ -1,5 +1,4 @@
 import React, { useCallback, useMemo } from 'react';
-import Select from 'react-select';
 import { useUser } from '../user';
 import './FBReactSelect.css';
 import CustomSelect from './CustomSelect';
@@ -59,7 +58,7 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
   if (!user.fbLogin) {
     // TODO: replace with a button to connect FB
     return (
-      <Select
+      <CustomSelect
         value={{
           value: cur_person,
           label: 'Connect FB',
