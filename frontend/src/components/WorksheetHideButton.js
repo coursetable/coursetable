@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import './WorksheetToggleButton.css';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -6,21 +6,15 @@ import { withTheme } from 'styled-components';
 
 /**
  * Render the course hide button in the Worksheet List
+ * @prop hidden - boolean | is this course hidden
  * @prop toggleCourse - function to hide/show course
  * @prop crn - int that holds crn for the current course
- * @prop season_code - string that holds the current season code
  */
 
-const WorksheetHideButton = ({ toggleCourse, crn, season_code, theme }) => {
-  // Is this course hidden?
-  const [hidden, setHidden] = useState(false);
+const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
   // Handle hide/show click
-  function toggleWorkSheet(e) {
-    e.preventDefault();
-    // Set hidden course in Worksheet.js
-    toggleCourse(season_code, crn, hidden);
-    // Set hidden course in this component
-    setHidden(!hidden);
+  function toggleWorkSheet() {
+    toggleCourse(crn);
   }
   // Size of toggle button
   const button_size = 18;

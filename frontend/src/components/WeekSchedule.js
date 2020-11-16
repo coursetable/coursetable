@@ -64,9 +64,10 @@ const StyledCalendar = styled(Calendar)`
  * @prop showModal - function to show modal for a particular listing
  * @prop courses - list of dictionaries of listing data
  * @prop hover_course - dictionary of listing that is being hovered over in list view
+ * @prop hidden_courses - dictionary of hidden courses
  */
 
-function WeekSchedule({ showModal, courses, hover_course }) {
+function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback((listings) => {
     // Initialize earliest and latest class times
@@ -78,8 +79,6 @@ function WeekSchedule({ showModal, courses, hover_course }) {
     let id = 0;
     // Iterate over each listing dictionary
     listings.forEach((course) => {
-      // Skip if this course is hidden
-      if (course.hidden) return;
       const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       for (var indx = 0; indx < 5; indx++) {
         const info = course['times_by_day.' + weekDays[indx]];
@@ -179,7 +178,9 @@ function WeekSchedule({ showModal, courses, hover_course }) {
     (event) => {
       const border = '1)';
       let style;
-      if (hover_course && hover_course === event.listing.crn) {
+      if (hidden_courses[event.listing.crn]) {
+        style = { display: 'none' };
+      } else if (hover_course && hover_course === event.listing.crn) {
         style = {
           backgroundColor: event.listing.color.concat('1)'),
           borderColor: event.listing.color.concat(border),
@@ -206,7 +207,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
         style: style,
       };
     },
-    [hover_course]
+    [hover_course, hidden_courses]
   );
 
   const ret_values = useMemo(() => {

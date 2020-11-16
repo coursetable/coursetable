@@ -31,6 +31,7 @@ const StyledListItem = styled(ListGroup.Item)`
  * @prop setHoverCourse - function to darken calendar events of this listing
  * @prop setFbPerson - function to change FB person
  * @prop cur_person - string of current person who's worksheet we are viewing
+ * @prop hidden_courses - dictionary of hidden courses
  */
 
 function WorksheetList({
@@ -44,6 +45,7 @@ function WorksheetList({
   setFbPerson,
   cur_person,
   theme,
+  hidden_courses,
 }) {
   // Build the HTML for the list of courses of a given season
   const buildHtml = useCallback(
@@ -57,7 +59,7 @@ function WorksheetList({
       courses.forEach((course) => {
         // Style for coloring hidden courses
         const color_style = {
-          color: course.hidden ? theme.hidden : theme.text[0],
+          color: hidden_courses[course.crn] ? theme.hidden : theme.text[0],
         };
         // Add listgroup item to items list
         items.push(
@@ -86,6 +88,7 @@ function WorksheetList({
                 <Row className="m-auto">
                   <WorksheetHideButton
                     toggleCourse={toggleCourse}
+                    hidden={hidden_courses[course.crn]}
                     crn={course.crn}
                     season_code={cur_season}
                   />
@@ -108,7 +111,7 @@ function WorksheetList({
 
       return items;
     },
-    [setHoverCourse, toggleCourse, showModal, theme]
+    [setHoverCourse, toggleCourse, showModal, theme, hidden_courses]
   );
 
   const items = useMemo(() => {
