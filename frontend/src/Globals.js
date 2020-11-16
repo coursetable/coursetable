@@ -121,8 +121,9 @@ function Globals({ children }) {
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals((metric) => {
-  const body = JSON.stringify(metric);
-  posthog.capture('web-vitals', { metric, body });
+  console.log('web-vitals', metric);
+  const { entries: _, ...reportableMetric } = metric;
+  posthog.capture('web-vitals', { ...reportableMetric });
 });
 
 export default Globals;
