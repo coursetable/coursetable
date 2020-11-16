@@ -29,7 +29,8 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
 
-import { debounce, orderBy } from 'lodash';
+import debounce from 'lodash/debounce';
+import orderBy from 'lodash/orderBy';
 
 import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
