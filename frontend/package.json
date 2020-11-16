@@ -40,7 +40,7 @@
     "react-multi-toggle": "^1.1.0",
     "react-rating": "^2.0.5",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "3.4.1",
+    "react-scripts": "4.0.0",
     "react-scroll": "^1.8.0",
     "react-select": "^3.1.0",
     "react-sticky-el": "^2.0.5",
