@@ -32,7 +32,6 @@ export const StyledSelect = styled(Select)`
   }
 
   .Select__single-value {
-    color: ${({ theme }) => theme.text[0]};
     transition: color 0.2s linear;
   }
 `;

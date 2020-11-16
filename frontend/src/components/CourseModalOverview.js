@@ -105,19 +105,20 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         : ['bruh'],
     },
   });
-  // Hold list of evaluation dictionaries
-  let evaluations = [];
   // Hold HTML code that displays the list of evaluations
 
   // Holds Prof information for popover
-  let prof_info = {};
-  listing.professor_names.forEach((prof) => {
-    prof_info[prof] = {
-      num_courses: 0,
-      total_rating: 0,
-      email: '',
-    };
-  });
+  let prof_info = useMemo(() => {
+    let prof_info_temp = {};
+    listing.professor_names.forEach((prof) => {
+      prof_info_temp[prof] = {
+        num_courses: 0,
+        total_rating: 0,
+        email: '',
+      };
+    });
+    return prof_info_temp;
+  }, [listing.professor_names]);
   // Count number of profs that overlap between this listing and an eval
   const overlapping_profs = useCallback(
     (eval_profs) => {
@@ -133,6 +134,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Make sure data is loaded
   const items = useMemo(() => {
     if (data) {
+      // Hold list of evaluation dictionaries
+      let evaluations = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
         if (!season.course.evaluation_statistics[0]) return;
@@ -293,15 +296,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       }
       return temp_items;
     }
-  }, [
-    data,
-    evaluations,
-    filter,
-    handleSetSeason,
-    listing,
-    overlapping_profs,
-    prof_info,
-  ]);
+  }, [data, filter, handleSetSeason, listing, overlapping_profs, prof_info]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info

@@ -166,10 +166,8 @@ function WorksheetAccordion({
 
         // Add header for this weekday
         accordion_items.push(
-          <StyledBanner>
-            <h5 className={styles.day_header} key={++id}>
-              {weekDays[i]}
-            </h5>
+          <StyledBanner key={++id}>
+            <h5 className={styles.day_header}>{weekDays[i]}</h5>
           </StyledBanner>
         );
         // Iterate over each course that takes place on this day
