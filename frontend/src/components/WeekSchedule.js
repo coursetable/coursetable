@@ -2,13 +2,56 @@ import React, { useCallback, useMemo } from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import moment from 'moment';
 import './WeekSchedule.css';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
+import { momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import { Calendar } from 'react-big-calendar';
+import { StyledPopover } from './StyledComponents';
+import styled from 'styled-components';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 const localizer = momentLocalizer(moment);
+
+// Calendar for worksheet
+const StyledCalendar = styled(Calendar)`
+  &.rbc-calendar {
+    .rbc-time-view {
+      .rbc-time-header {
+        .rbc-time-header-content {
+          border-color: ${({ theme }) => theme.border};
+          transition: border 0.2s linear;
+          .rbc-time-header-cell {
+            .rbc-header {
+              border-color: ${({ theme }) => theme.border};
+              transition: border 0.2s linear;
+            }
+          }
+        }
+      }
+      .rbc-time-content {
+        border-color: ${({ theme }) => theme.border};
+        transition: border 0.2s linear;
+        .rbc-time-gutter {
+          .rbc-timeslot-group {
+            border-color: ${({ theme }) => theme.border};
+            transition: border 0.2s linear;
+          }
+        }
+        .rbc-day-slot {
+          .rbc-timeslot-group {
+            border-color: ${({ theme }) => theme.border};
+            transition: border 0.2s linear;
+            .rbc-time-slot {
+              border-color: ${({ theme }) => theme.border};
+              transition: border 0.2s linear;
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 // TODO: Allow users to change color of courses in calendar?
 
 /**
@@ -67,7 +110,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
   // Render popover that contains title, description, and requirements when hovering over course
   const renderTitlePopover = useCallback((props, course) => {
     return (
-      <Popover {...props} id="title_popover">
+      <StyledPopover {...props} id="title_popover">
         <Popover.Title>
           <strong>{course.title}</strong>
         </Popover.Title>
@@ -85,7 +128,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
                 : course.requirements.slice(0, 250) + '...')}
           </div>
         </Popover.Content>
-      </Popover>
+      </StyledPopover>
     );
   }, []);
 
@@ -182,7 +225,7 @@ function WeekSchedule({ showModal, courses, hover_course }) {
   }, [ret_values]);
 
   return (
-    <Calendar
+    <StyledCalendar
       // Show Mon-Fri
       defaultView={'work_week'}
       views={['work_week']}

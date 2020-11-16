@@ -7,10 +7,6 @@
   cursor: pointer;
 }
 
-.container:hover .item_container {
-  background-color: rgba(220, 236, 255, 0.5);
-}
-
 .item_container:focus,
 .item_container:active {
   border: none;
@@ -18,7 +14,6 @@
 }
 
 .item_container {
-  background-color: rgb(245, 245, 245);
   border-radius: 8px;
   transition: 0.3s;
 }
@@ -31,17 +26,15 @@
 
 .course_codes {
   font-weight: 500;
-  color: rgb(47, 123, 167);
+  color: rgb(38, 131, 185);
 }
 
 .professors {
   font-weight: 550;
-  color: rgb(78, 78, 78);
 }
 
 .small_text {
   font-weight: 500;
-  color: rgb(78, 78, 78);
 }
 
 .one_line {

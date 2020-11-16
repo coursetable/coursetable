@@ -11,6 +11,8 @@ import SeasonDropdown from './SeasonDropdown';
 import FBDropdown from './FBDropdown';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import { TextComponent, StyledBanner, StyledCard } from './StyledComponents';
+import { ThemeContext } from 'styled-components';
 
 const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
 
@@ -21,7 +23,7 @@ const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 function ContextAwareToggle({ eventKey, callback, course }) {
   // Get current selected item
   const currentEventKey = useContext(AccordionContext);
-
+  const theme = useContext(ThemeContext);
   const decoratedOnClick = useAccordionToggle(
     eventKey,
     () => callback && callback(eventKey)
@@ -40,13 +42,14 @@ function ContextAwareToggle({ eventKey, callback, course }) {
     }
   };
 
+  const style_color = {
+    backgroundColor: theme.select_hover,
+    transition: 'background-color 0.3s',
+  };
+
   return (
     <div
-      className={
-        styles.toggle +
-        ' ' +
-        (!isCurrentEventKey ? '' : styles.accordion_hover_header_active)
-      }
+      style={isCurrentEventKey ? style_color : {}}
       onClick={decoratedOnClick}
     >
       <Row className={styles.header + ' p-2 mx-auto'}>
@@ -55,8 +58,9 @@ function ContextAwareToggle({ eventKey, callback, course }) {
           <Row>{course.course_code}</Row>
           <Row>
             {/* Course Location. NOT LINKING TO YALE CAMPUS MAP RN */}
-            <small className="text-muted">
-              {/* <a
+            <TextComponent type={1}>
+              <small>
+                {/* <a
                         target="_blank"
                         rel="noopener noreferrer"
                         href={course['location_url']}
@@ -64,13 +68,14 @@ function ContextAwareToggle({ eventKey, callback, course }) {
                       >
                         {course.locations_summary}
                       </a> */}
-              {course.locations_summary}
-            </small>
+                {course.locations_summary}
+              </small>
+            </TextComponent>
           </Row>
         </Col>
         {/* Course Time */}
-        <Col xs="auto" className="p-0 text-muted">
-          {trim(course.times_summary)}
+        <Col xs="auto" className="p-0">
+          <TextComponent type={1}>{trim(course.times_summary)}</TextComponent>
         </Col>
       </Row>
     </div>
@@ -161,15 +166,17 @@ function WorksheetAccordion({
 
         // Add header for this weekday
         accordion_items.push(
-          <h5 className={styles.day_header} key={++id}>
-            {weekDays[i]}
-          </h5>
+          <StyledBanner>
+            <h5 className={styles.day_header} key={++id}>
+              {weekDays[i]}
+            </h5>
+          </StyledBanner>
         );
         // Iterate over each course that takes place on this day
         for (let j = 0; j < day.length; j++) {
           const course = day[j];
           accordion_items.push(
-            <Card key={++id} className={styles.card + ' px-0'}>
+            <StyledCard key={++id} className={styles.card + ' px-0'}>
               {/* Custom Accordion Item Header */}
               <ContextAwareToggle
                 eventKey={`${i}_${course.crn}_${course.season_code}`}
@@ -222,11 +229,8 @@ function WorksheetAccordion({
                     </Col>
                   </Row>
                   {/* Course Professors */}
-                  <Row
-                    className="mx-auto pb-2 text-muted"
-                    style={{ fontWeight: 500 }}
-                  >
-                    {course.professors}
+                  <Row className="mx-auto pb-2" style={{ fontWeight: 500 }}>
+                    <TextComponent type={1}>{course.professors}</TextComponent>
                   </Row>
                   {/* Course Description */}
                   <Row className="m-auto">
@@ -243,16 +247,16 @@ function WorksheetAccordion({
                   </Row>
                   {/* Button to trigger course modal */}
                   <Row className="m-auto">
-                    <strong
+                    <StyledBanner
                       onClick={() => showModal(course)}
-                      className={styles.more_info + ' mt-2'}
+                      className={styles.more_info + ' mt-2 font-weight-bold'}
                     >
-                      More Info
-                    </strong>
+                      <TextComponent type={1}>More Info</TextComponent>
+                    </StyledBanner>
                   </Row>
                 </Card.Body>
               </Accordion.Collapse>
-            </Card>
+            </StyledCard>
           );
         }
         dayIndex++;

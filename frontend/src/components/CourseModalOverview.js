@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
-import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/react-hooks';
 import Styles from './CourseModalOverview.module.css';
@@ -11,8 +10,26 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useUser } from '../user';
+import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
+import MultiToggle from 'react-multi-toggle';
+import styled from 'styled-components';
 
 import CourseModalLoading from './CourseModalLoading';
+
+// Button with season and other info that user selects to view evals
+const StyledCol = styled(Col)`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.select_hover};
+`;
+
+// Multitoggle in modal (course, both, prof)
+export const StyledMultiToggle = styled(MultiToggle)`
+  background-color: ${({ theme }) => theme.surface[1]};
+  border-color: ${({ theme }) => theme.border};
+  .toggleOption {
+    color: ${({ theme }) => theme.text[0]};
+  }
+`;
 
 /**
  * Displays course modal when clicking on a course
@@ -194,7 +211,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* Clickable listing button */}
-            <Col
+            <StyledCol
               xs={5}
               className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
               onClick={() => handleSetSeason(evaluations[i])}
@@ -208,79 +225,51 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                   ? 'Section ' + evaluations[i].section
                   : evaluations[i].professor[0]}
               </div>
-            </Col>
+            </StyledCol>
             {/* Course Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].rating !== -1
-                      ? ratingColormap(evaluations[i].rating).darken(3).css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].rating !== -1
-                      ? ratingColormap(evaluations[i].rating)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].rating}
+                colormap={ratingColormap}
                 className={`${Styles.rating_cell} ${Styles.expanded_ratings}`}
               >
                 {evaluations[i].rating !== -1
                   ? evaluations[i].rating.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
             {/* Professor Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].professor_rating !== -1
-                      ? ratingColormap(evaluations[i].professor_rating)
-                          .darken(3)
-                          .css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].professor_rating !== -1
-                      ? ratingColormap(evaluations[i].professor_rating)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].professor_rating}
+                colormap={ratingColormap}
                 className={Styles.rating_cell}
               >
                 {evaluations[i].professor_rating !== -1
                   ? evaluations[i].professor_rating.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
             {/* Workload Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].workload !== -1
-                      ? workloadColormap(evaluations[i].workload)
-                          .darken(3)
-                          .css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].workload !== -1
-                      ? workloadColormap(evaluations[i].workload)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].workload}
+                colormap={workloadColormap}
                 className={Styles.rating_cell}
               >
                 {evaluations[i].workload !== -1
                   ? evaluations[i].workload.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
           </Row>
         );
@@ -325,7 +314,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       prof_dict = prof_info[prof_name];
     }
     return (
-      <Popover {...props} id="title_popover" className="d-none d-md-block">
+      <StyledPopover
+        {...props}
+        id="title_popover"
+        className="d-none d-md-block"
+      >
         <Popover.Title>
           <Row className="mx-auto">
             {/* Professor Name */}
@@ -337,7 +330,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               {prof_dict.email !== '' ? (
                 <a href={`mailto: ${prof_dict.email}`}>{prof_dict.email}</a>
               ) : (
-                <span className="text-muted">N/A</span>
+                <TextComponent type={1}>N/A</TextComponent>
               )}
             </small>
           </Row>
@@ -388,7 +381,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
           </Row>
         </Popover.Content>
-      </Popover>
+      </StyledPopover>
     );
   };
 
@@ -631,7 +624,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         <Col md={5} className="px-0 my-0">
           {/* Filter Select */}
           <Row className="m-auto justify-content-center">
-            <MultiToggle
+            <StyledMultiToggle
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}

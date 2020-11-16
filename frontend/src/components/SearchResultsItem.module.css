@@ -1,25 +1,16 @@
 .search_result_item {
-  background-color: white;
+  /* background-color: white; */
   transition: 0.3s;
   user-select: none;
   overflow: hidden;
   position: relative;
   font-size: 13px;
   line-height: 32px;
-  height: 32px;
-  border-bottom: solid 1px #f6f6f6;
-  border-top: solid 1px #f6f6f6;
+  /* height: 32px; */
 }
 
-.last_search_result_item {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
-}
-
-.search_result_item:hover {
-  cursor: pointer;
-  background-color: #e1edff;
-  border-color: #e1edff;
+.first_search_result_item {
+  border-top: 1px solid transparent !important;
 }
 
 .search_result_item:focus,
@@ -50,7 +41,7 @@
 }
 
 .fall {
-  color: rgb(126, 52, 29) !important;
+  color: rgb(172, 47, 9) !important;
   background-color: rgba(141, 64, 33, 0.404) !important;
 }
 

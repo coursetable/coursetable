@@ -37,7 +37,6 @@
 :global .css-1fhf3k1-control {
   z-index: calc(420 + 69);
   border: none !important;
-  background-color: transparent !important;
   height: 38px !important;
   cursor: pointer !important;
 }
