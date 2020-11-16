@@ -15,29 +15,9 @@
   text-align: center;
 }
 
-.accordion_card {
-  background-color: transparent !important;
-  border: none !important;
-
-  border-bottom: 1px solid rgb(223, 222, 222) !important;
-  border-radius: 0 !important;
-}
-
-.accordion_header {
-  background-color: transparent !important;
-  border: none !important;
-}
-
 .accordion_hover_header {
-  transition: color 0.3s;
+  transition: color 0.2s;
   font-weight: 550;
-  border-bottom: 1px solid white !important;
-  transition: border-bottom 0.3s;
-}
-
-.accordion_hover_header_active {
-  color: #007bff;
-  border-bottom: 1px solid rgb(223, 222, 222) !important;
 }
 
 .accordion_arrow {

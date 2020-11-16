@@ -1,6 +1,6 @@
 .container {
   border-radius: 8px;
-  background-color: white;
+  /* background-color: white; */
   /* min-height: 88vh; */
   overflow: hidden;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
@@ -16,19 +16,19 @@
 }
 
 .day_header {
-  background-color: rgb(213, 229, 252);
+  /* background-color: rgb(213, 229, 252); */
   margin: 0;
   text-align: center;
   font-weight: bold;
 }
 
 .toggle {
-  background-color: white;
-  transition: 0.3s;
+  /* background-color: white; */
+  /* transition: 0.3s; */
 }
 
 .accordion_hover_header_active {
-  background-color: rgb(239, 245, 255);
+  /* background-color: rgb(239, 245, 255); */
 }
 
 .card {
@@ -44,7 +44,7 @@
 }
 
 .more_info {
-  background-color: rgb(223, 223, 223);
+  /* background-color: rgb(223, 223, 223); */
   padding: 6px;
   border-radius: 10px;
 }

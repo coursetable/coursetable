@@ -4,12 +4,12 @@
 }
 
 .search_col {
-  background-color: transparent;
+  /* background-color: transparent; */
   border-radius: 8px;
 }
 
 .search_col_mobile {
-  background-color: transparent;
+  /* background-color: transparent; */
   overflow: scroll;
   z-index: 1;
 }
@@ -21,7 +21,6 @@
 }
 
 .search_container {
-  background-color: white;
   width: 100%;
   border-radius: 0.5rem;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
@@ -34,21 +33,12 @@
 /* Make this look good in dark mode */
 .search_input input {
   border-radius: 8px;
-  border: 2px solid rgba(0, 0, 0, 0.1);
-  transition: 0.1s;
-}
-
-.search_input input:hover {
-  border-color: rgba(0, 0, 0, 0.3);
-}
-
-.search_input input:focus {
-  border-color: #2684ff !important;
+  /* border: 2px solid hsl(0, 0%, 90%); */
 }
 
 .filter_title {
   font-size: 0.9rem;
-  color: rgba(0, 0, 0, 0.75);
+  /* color: rgba(0, 0, 0, 0.75); */
   -webkit-touch-callout: none; /* iOS Safari */
   -webkit-user-select: none; /* Safari */
   -khtml-user-select: none; /* Konqueror HTML */
@@ -89,10 +79,6 @@
   padding: 5px;
   margin-left: auto;
   transition: 0.3s;
-}
-
-.sort_btn:hover {
-  background-color: rgb(236, 236, 236);
 }
 
 .sort_icon {
@@ -146,12 +132,11 @@
   padding: 7px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
-  background-color: rgb(198, 232, 255);
 }
 
 .search_tab:hover {
   cursor: pointer;
-  background-color: rgb(174, 221, 253);
+  background-color: rgb(92, 168, 250);
 }
 
 .search_tab_hidden {
