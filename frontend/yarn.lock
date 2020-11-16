@@ -3962,7 +3962,7 @@ clone-deep@^4.0.1:
     kind-of "^6.0.2"
     shallow-clone "^3.0.0"
 
-clsx@^1.0.1, clsx@^1.0.4:
+clsx@^1.0.1, clsx@^1.0.4, clsx@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/clsx/-/clsx-1.1.1.tgz#98b3134f9abbdf23b2663491ace13c5c03a73188"
   integrity sha512-6/bPho624p3S2pMyvP5kKBPXnI3ufHLObBFCfgx+LkeR5lg2XYy2hqZqUf45ypD8COn2bhgGJSUE+l5dhNBieA==
@@ -10392,12 +10392,12 @@ react-sticky-el@^2.0.5:
     flow-bin "^0.120.1"
     prop-types ">=15.7.2"
 
-react-toastify@^6.0.6:
-  version "6.0.8"
-  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-6.0.8.tgz#84625d81d0fd01902a7f4c6f317eb074cb3bba67"
-  integrity sha512-NSqCNwv+C4IfR+c92PFZiNyeBwOJvigrP2bcRi2f6Hg3WqcHhEHOknbSQOs9QDFuqUjmK3SOrdvScQ3z63ifXg==
+react-toastify@^6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/react-toastify/-/react-toastify-6.1.0.tgz#32ee52477530b9024553586b9072a3326f7618dc"
+  integrity sha512-Ne+wIoO9A+jZlaqGqgeuXDC/DQfqTuJdyoc7G5SsuCHsr8mNRx7W26417YKtHRH0LcnFFd5ii76tGnmm0cMlLg==
   dependencies:
-    classnames "^2.2.6"
+    clsx "^1.1.1"
     prop-types "^15.7.2"
     react-transition-group "^4.4.1"
 
