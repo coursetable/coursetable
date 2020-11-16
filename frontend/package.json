@@ -11,7 +11,7 @@
     "apollo-boost": "^0.4.9",
     "apollo-client": "^2.6.10",
     "async-lock": "^1.2.4",
-    "axios": "^0.19.2",
+    "axios": "^0.21.0",
     "babel-core": "^6.26.3",
     "bootstrap": "^4.5.0",
     "chroma-js": "^2.1.0",
