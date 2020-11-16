@@ -445,10 +445,10 @@ function Search() {
     searchConfig,
   ]);
 
-  const handleSetView = (isList) => {
+  const handleSetView = useCallback((isList) => {
     posthog.capture('catalog-view-toggle', { isList });
     setView(isList);
-  };
+  }, []);
 
   const handleSortOrder = () => {
     if (sort_order === 'asc') setSortOrder('desc');
