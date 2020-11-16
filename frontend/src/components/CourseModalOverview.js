@@ -105,10 +105,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         : ['bruh'],
     },
   });
-  // Hold list of evaluation dictionaries
-  let evaluations = useMemo(() => {
-    return [];
-  }, []);
   // Hold HTML code that displays the list of evaluations
 
   // Holds Prof information for popover
@@ -138,6 +134,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Make sure data is loaded
   const items = useMemo(() => {
     if (data) {
+      // Hold list of evaluation dictionaries
+      let evaluations = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
         if (!season.course.evaluation_statistics[0]) return;
@@ -298,15 +296,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       }
       return temp_items;
     }
-  }, [
-    data,
-    evaluations,
-    filter,
-    handleSetSeason,
-    listing,
-    overlapping_profs,
-    prof_info,
-  ]);
+  }, [data, filter, handleSetSeason, listing, overlapping_profs, prof_info]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
