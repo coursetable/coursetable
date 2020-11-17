@@ -45,6 +45,18 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+const StyledNavToggle = styled(Navbar.Toggle)`
+  border-color: ${({ theme }) => theme.border} !important;
+  .navbar-toggler-icon {
+    background-image: ${({ theme }) =>
+      "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='" +
+      (theme.theme === 'light'
+        ? 'rgba(69, 69, 69, 1)'
+        : 'rgba(219, 219, 219, 1)') +
+      "' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e\")"};
+  }
+`;
+
 /**
  * Renders the navbar
  * @prop isLoggedIn - boolean | is user logged in?
@@ -108,7 +120,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
               </NavLink>
             </Nav>
 
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <StyledNavToggle aria-controls="basic-navbar-nav" />
 
             <Navbar.Collapse
               id="basic-navbar-nav"
