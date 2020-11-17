@@ -65,6 +65,10 @@ const colorOptionStyles = (theme) => {
         },
       };
     },
+    input: (base) => ({
+      ...base,
+      color: theme.text[0],
+    }),
     multiValue: (styles, { data }) => {
       const color = chroma(data.color);
       return {
@@ -138,6 +142,11 @@ const selectStyles = (theme) => {
     singleValue: (base, { isDisabled }) => ({
       ...base,
       color: isDisabled ? theme.text[2] : theme.text[0],
+      transition: '0.2s linear',
+    }),
+    input: (base) => ({
+      ...base,
+      color: theme.text[0],
     }),
     menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
     menu: (base) => ({

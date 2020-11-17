@@ -82,18 +82,13 @@ function App({ themeToggler }) {
         </MyRoute>
 
         {/* Catalog */}
-        <MyRoute
-          exact
-          path="/catalog"
-          render={(props) => {
-            const requires_challenge = isLoggedIn && !user.hasEvals;
-            return requires_challenge ? (
-              <Redirect push={true} to="/challenge" />
-            ) : (
-              <Search {...props} />
-            );
-          }}
-        />
+        <MyRoute exact path="/catalog">
+          {isLoggedIn && !user.hasEvals ? (
+            <Redirect push={true} to="/challenge" />
+          ) : (
+            <Search />
+          )}
+        </MyRoute>
 
         {/* Auth */}
         <MyRoute exact path="/login">

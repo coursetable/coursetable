@@ -10,29 +10,3 @@
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
-
-.list_text {
-  overflow: hidden;
-  transition: 0.3s;
-}
-
-.course_title {
-  display: block;
-  width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bookmark {
-  position: absolute;
-  top: -16px;
-  right: 0%;
-  z-index: 1;
-  transition: 0.3s;
-  justify-content: end;
-}
-
-.bookmark:hover {
-  transform: translateY(10px);
-}

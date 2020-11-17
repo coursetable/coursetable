@@ -65,7 +65,7 @@ function Worksheet() {
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
-  const [hidden_courses, setHiddenCourses] = useState([]);
+  const [hidden_courses, setHiddenCourses] = useState({});
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState();
   // Currently expanded component (calendar or list or none)
@@ -101,36 +101,17 @@ function Worksheet() {
     setCourseModal([false, '']);
   }, []);
 
-  // Check to see if this course is hidden
-  const isHidden = useCallback(
-    (season_code, crn) => {
-      for (let i = 0; i < hidden_courses.length; i++) {
-        if (
-          hidden_courses[i][0] === season_code &&
-          hidden_courses[i][1] === crn
-        )
-          return i;
-      }
-      return -1;
-    },
-    [hidden_courses]
-  );
-
   // Hide/Show this course
   const toggleCourse = useCallback(
-    (season_code, crn, hidden) => {
-      // Hide course
-      if (!hidden) {
-        setHiddenCourses([...hidden_courses, [season_code, crn]]);
-      }
-      // Show course
-      else {
-        let temp = [...hidden_courses];
-        temp.splice(isHidden(season_code, crn), 1);
-        setHiddenCourses(temp);
-      }
+    (crn) => {
+      setHiddenCourses((old_hidden_courses) => {
+        let new_hidden_courses = Object.assign({}, old_hidden_courses);
+        if (old_hidden_courses[crn]) new_hidden_courses[crn] = false;
+        else new_hidden_courses[crn] = true;
+        return new_hidden_courses;
+      });
     },
-    [hidden_courses, isHidden]
+    [setHiddenCourses]
   );
 
   // Function to sort worksheet courses by course code
@@ -167,7 +148,8 @@ function Worksheet() {
     let temp = [...data];
     // Assign color to each course
     for (let i = 0; i < data.length; i++) {
-      temp[i].color = colors[i % colors.length];
+      temp[i].color = colors[i % colors.length].concat('0.85)');
+      temp[i].border = colors[i % colors.length].concat('1)');
     }
     // Sort list by course code
     temp.sort(sortByCourseCode);
@@ -189,13 +171,11 @@ function Worksheet() {
           cur_worksheet
         )
       ) {
-        // Set hidden key of each listing
-        listing.hidden = isHidden(listing.season_code, listing.crn) !== -1;
         season_listings_temp.push(listing);
       }
     });
     return season_listings_temp;
-  }, [listings, cur_worksheet, isHidden, season]);
+  }, [listings, cur_worksheet, season]);
 
   // If user somehow isn't logged in and worksheet is null
   if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
@@ -283,6 +263,7 @@ function Worksheet() {
                 courses={season_listings}
                 hover_course={hover_course}
                 setHoverCourse={setHoverCourse}
+                hidden_courses={hidden_courses}
               />
               {/* Expand/Compress icons for calendar */}
               <StyledExpandBtn
@@ -348,6 +329,7 @@ function Worksheet() {
                   season_codes={season_codes}
                   onSeasonChange={changeSeason}
                   toggleCourse={toggleCourse}
+                  hidden_courses={hidden_courses}
                   setHoverCourse={setHoverCourse}
                   setFbPerson={handleFBPersonChange}
                   cur_person={fb_person}
