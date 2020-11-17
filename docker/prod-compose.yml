@@ -2,16 +2,13 @@ version: '3.2'
 services:
   proxy:
     image: node:latest
+    build: ../proxy
     restart: always
     ports:
       - '8039:8039'
       - '8038:8080'
     expose:
       - 8039
-    volumes:
-      - ../proxy:/app
-    user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
     environment:
       FRONTEND_LOC: 'http://frontend:5000'
       PORT: 8039
