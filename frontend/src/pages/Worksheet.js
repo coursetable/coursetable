@@ -101,22 +101,17 @@ function Worksheet() {
     setCourseModal([false, '']);
   }, []);
 
-  const updateHiddenCourses = useCallback(
-    (crn) => {
-      let new_hidden_courses = Object.assign({}, hidden_courses);
-      if (hidden_courses[crn]) new_hidden_courses[crn] = false;
-      else new_hidden_courses[crn] = true;
-      return new_hidden_courses;
-    },
-    [hidden_courses]
-  );
-
   // Hide/Show this course
   const toggleCourse = useCallback(
     (crn) => {
-      setHiddenCourses(updateHiddenCourses(crn));
+      setHiddenCourses((old_hidden_courses) => {
+        let new_hidden_courses = Object.assign({}, old_hidden_courses);
+        if (old_hidden_courses[crn]) new_hidden_courses[crn] = false;
+        else new_hidden_courses[crn] = true;
+        return new_hidden_courses;
+      });
     },
-    [updateHiddenCourses]
+    [setHiddenCourses]
   );
 
   // Function to sort worksheet courses by course code
