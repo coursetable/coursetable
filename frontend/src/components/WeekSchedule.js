@@ -111,8 +111,9 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
         style = { display: 'none' };
       } else if (hover_course && hover_course === event.listing.crn) {
         style.zIndex = 2;
+        style.filter = 'saturate(130%)';
       } else if (hover_course) {
-        style.opacity = '40%';
+        style.opacity = '30%';
       }
       return {
         style: style,
