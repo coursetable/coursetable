@@ -101,15 +101,22 @@ function Worksheet() {
     setCourseModal([false, '']);
   }, []);
 
-  // Hide/Show this course
-  const toggleCourse = useCallback(
+  const updateHiddenCourses = useCallback(
     (crn) => {
       let new_hidden_courses = Object.assign({}, hidden_courses);
       if (hidden_courses[crn]) new_hidden_courses[crn] = false;
       else new_hidden_courses[crn] = true;
-      setHiddenCourses(new_hidden_courses);
+      return new_hidden_courses;
     },
     [hidden_courses]
+  );
+
+  // Hide/Show this course
+  const toggleCourse = useCallback(
+    (crn) => {
+      setHiddenCourses(updateHiddenCourses(crn));
+    },
+    [updateHiddenCourses]
   );
 
   // Function to sort worksheet courses by course code
@@ -146,7 +153,8 @@ function Worksheet() {
     let temp = [...data];
     // Assign color to each course
     for (let i = 0; i < data.length; i++) {
-      temp[i].color = colors[i % colors.length];
+      temp[i].color = colors[i % colors.length].concat('0.85)');
+      temp[i].border = colors[i % colors.length].concat('1)');
     }
     // Sort list by course code
     temp.sort(sortByCourseCode);
