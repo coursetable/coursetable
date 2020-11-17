@@ -67,7 +67,7 @@ services:
       - '5000'
 
   graphql-engine:
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v1.3.3
     restart: always
     ports:
       - '8085:8080'

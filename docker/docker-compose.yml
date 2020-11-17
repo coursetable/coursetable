@@ -66,7 +66,7 @@ services:
     tty: true # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
 
   graphql-engine:
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v1.3.3
     ports:
       - '8085:8080'
     environment:
