@@ -1,17 +1,13 @@
 version: '3.2'
 services:
   proxy:
-    image: node:latest
+    build: ../proxy
     restart: always
     ports:
       - '8039:8039'
       - '8038:8080'
     expose:
       - 8039
-    volumes:
-      - ../dev_proxy:/app
-    user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
     environment:
       FRONTEND_LOC: 'http://frontend:5000'
       PORT: 8039
@@ -40,14 +36,13 @@ services:
       - default
 
   api:
-    image: node:latest
+    build: ../api
     restart: always
     ports:
       - '4096:4096'
     volumes:
-      - ../api:/app
+      - ../api/static:/app/static
     user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
     environment:
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
       MYSQL_HOST: ${MYSQL_HOST?host}
@@ -72,7 +67,7 @@ services:
       - '5000'
 
   graphql-engine:
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v1.3.3
     restart: always
     ports:
       - '8085:8080'
