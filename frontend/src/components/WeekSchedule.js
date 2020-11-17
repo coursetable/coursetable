@@ -60,44 +60,54 @@ const StyledCalendar = styled(Calendar)`
 
 function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
   // Parse listings dictionaries to generate event dictionaries
-  const parseListings = useCallback((listings) => {
-    // Initialize earliest and latest class times
-    let earliest = moment().hour(20);
-    let latest = moment().hour(0);
-    // List of event dictionaries
-    let parsedCourses = [];
-    // Iterate over each listing dictionary
-    listings.forEach((course, index) => {
-      const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
-      for (var indx = 0; indx < 5; indx++) {
-        const info = course['times_by_day.' + weekDays[indx]];
-        // If the listing takes place on this day
-        if (info !== undefined) {
-          // Get start and end times for the listing
-          const start = moment(info[0][0], 'HH:mm').day(1 + indx);
-          const end = moment(info[0][1], 'HH:mm').day(1 + indx);
-          // Fix any incorrect values
-          if (start.get('hour') < 8) start.add(12, 'h');
-          if (end.get('hour') < 8) end.add(12, 'h');
-          const value = course.course_code;
-          // Add event dictionary to the list
-          parsedCourses[parsedCourses.length] = {
-            title: value,
-            start: start.toDate(),
-            end: end.toDate(),
-            listing: course,
-            id: index,
-          };
-          // Update earliest and latest courses
-          if (start.get('hours') < earliest.get('hours')) earliest = start;
-          if (end.get('hours') > latest.get('hours')) latest = end;
+  const parseListings = useCallback(
+    (listings) => {
+      // Initialize earliest and latest class times
+      let earliest = moment().hour(20);
+      let latest = moment().hour(0);
+      // List of event dictionaries
+      let parsedCourses = [];
+      // Iterate over each listing dictionary
+      listings.forEach((course, index) => {
+        if (hidden_courses[course.crn]) return;
+        const weekDays = [
+          'Monday',
+          'Tuesday',
+          'Wednesday',
+          'Thursday',
+          'Friday',
+        ];
+        for (var indx = 0; indx < 5; indx++) {
+          const info = course['times_by_day.' + weekDays[indx]];
+          // If the listing takes place on this day
+          if (info !== undefined) {
+            // Get start and end times for the listing
+            const start = moment(info[0][0], 'HH:mm').day(1 + indx);
+            const end = moment(info[0][1], 'HH:mm').day(1 + indx);
+            // Fix any incorrect values
+            if (start.get('hour') < 8) start.add(12, 'h');
+            if (end.get('hour') < 8) end.add(12, 'h');
+            const value = course.course_code;
+            // Add event dictionary to the list
+            parsedCourses[parsedCourses.length] = {
+              title: value,
+              start: start.toDate(),
+              end: end.toDate(),
+              listing: course,
+              id: index,
+            };
+            // Update earliest and latest courses
+            if (start.get('hours') < earliest.get('hours')) earliest = start;
+            if (end.get('hours') > latest.get('hours')) latest = end;
+          }
         }
-      }
-    });
-    // Set earliest minute to 0
-    earliest.set({ minute: 0 });
-    return [earliest, latest, parsedCourses];
-  }, []);
+      });
+      // Set earliest minute to 0
+      earliest.set({ minute: 0 });
+      return [earliest, latest, parsedCourses];
+    },
+    [hidden_courses]
+  );
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
@@ -107,9 +117,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
         borderColor: event.listing.border,
         borderWidth: '2px',
       };
-      if (hidden_courses[event.listing.crn]) {
-        style = { display: 'none' };
-      } else if (hover_course && hover_course === event.listing.crn) {
+      if (hover_course && hover_course === event.listing.crn) {
         style.zIndex = 2;
         style.filter = 'saturate(130%)';
       } else if (hover_course) {
@@ -119,7 +127,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
         style: style,
       };
     },
-    [hover_course, hidden_courses]
+    [hover_course]
   );
 
   const ret_values = useMemo(() => {
