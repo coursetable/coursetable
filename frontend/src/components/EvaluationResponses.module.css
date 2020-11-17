@@ -4,6 +4,10 @@
   font-size: 14px;
 }
 
+.sort_by {
+  font-size: 14px;
+}
+
 :global .nav-tabs {
   position: sticky;
   top: -1rem;
