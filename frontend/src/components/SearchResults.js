@@ -368,11 +368,8 @@ const SearchResults = ({
                   Code
                 </div>
                 {/* Course Name */}
-                <div
-                  style={title_style}
-                  className={Styles.results_header + ' ' + Styles.one_line}
-                >
-                  Title
+                <div style={title_style} className={Styles.results_header}>
+                  <span className={Styles.one_line}>Title</span>
                 </div>
                 {/* Class Rating */}
                 <div style={rate_style} className={Styles.results_header}>
@@ -428,24 +425,15 @@ const SearchResults = ({
                   </OverlayTrigger>
                 </div>
                 {/* Course Professors */}
-                <div
-                  style={prof_style}
-                  className={Styles.results_header + ' ' + Styles.one_line}
-                >
-                  Professors
+                <div style={prof_style} className={Styles.results_header}>
+                  <span className={Styles.one_line}>Professors</span>
                 </div>
                 {/* Course Meeting times and location */}
-                <div
-                  style={meet_style}
-                  className={Styles.results_header + ' ' + Styles.one_line}
-                >
-                  Meets
+                <div style={meet_style} className={Styles.results_header}>
+                  <span className={Styles.one_line}>Meets</span>
                 </div>
-                <div
-                  style={loc_style}
-                  className={Styles.results_header + ' ' + Styles.one_line}
-                >
-                  Location
+                <div style={loc_style} className={Styles.results_header}>
+                  <span className={Styles.one_line}>Location</span>
                 </div>
 
                 <div style={sa_style} className={Styles.results_header}>
