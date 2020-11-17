@@ -49,7 +49,7 @@ function WorksheetList({
             cur_season={cur_season}
             showModal={showModal}
             toggleCourse={toggleCourse}
-            setHoverCourse={courses.length > 30 ? null : setHoverCourse}
+            setHoverCourse={setHoverCourse}
             hidden={hidden_courses[course.crn]}
           />
         );

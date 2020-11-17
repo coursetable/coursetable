@@ -43,8 +43,8 @@ function WorksheetListItem({
   return (
     <StyledListItem
       className={'py-1 px-2'}
-      onMouseEnter={() => setHoverCourse && setHoverCourse(course.crn)}
-      onMouseLeave={() => setHoverCourse && setHoverCourse(null)}
+      onMouseEnter={() => setHoverCourse(course.crn)}
+      onMouseLeave={() => setHoverCourse(null)}
     >
       {/* Bookmark Button */}
       <div className={styles.bookmark}>

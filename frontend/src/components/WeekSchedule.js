@@ -75,10 +75,8 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
     let latest = moment().hour(0);
     // List of event dictionaries
     let parsedCourses = [];
-    // Variable used in list keys
-    let id = 0;
     // Iterate over each listing dictionary
-    listings.forEach((course) => {
+    listings.forEach((course, index) => {
       const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
       for (var indx = 0; indx < 5; indx++) {
         const info = course['times_by_day.' + weekDays[indx]];
@@ -97,14 +95,13 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
             start: start.toDate(),
             end: end.toDate(),
             listing: course,
-            id: id,
+            id: index,
           };
           // Update earliest and latest courses
           if (start.get('hours') < earliest.get('hours')) earliest = start;
           if (end.get('hours') > latest.get('hours')) latest = end;
         }
       }
-      id = id + 1;
     });
     // Set earliest minute to 0
     earliest.set({ minute: 0 });
