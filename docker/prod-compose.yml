@@ -1,7 +1,6 @@
 version: '3.2'
 services:
   proxy:
-    image: node:latest
     build: ../proxy
     restart: always
     ports:
@@ -37,14 +36,13 @@ services:
       - default
 
   api:
-    image: node:latest
+    build: ../api
     restart: always
     ports:
       - '4096:4096'
     volumes:
-      - ../api:/app
+      - ../api/static:/app/static
     user: '1000'
-    command: sh -c 'cd /app && yarn && yarn start'
     environment:
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
       MYSQL_HOST: ${MYSQL_HOST?host}
