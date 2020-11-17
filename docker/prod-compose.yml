@@ -9,7 +9,7 @@ services:
     expose:
       - 8039
     volumes:
-      - ../dev_proxy:/app
+      - ../proxy:/app
     user: '1000'
     command: sh -c 'cd /app && yarn && yarn start'
     environment:

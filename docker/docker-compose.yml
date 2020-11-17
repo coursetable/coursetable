@@ -6,7 +6,7 @@ services:
       - '8080:8080'
       - '3001:3001'
     volumes:
-      - ../dev_proxy:/app
+      - ../proxy:/app
     user: '1000'
     command: sh -c 'cd /app && yarn && yarn start'
     links:
