@@ -6,7 +6,8 @@
 
 .table {
   max-height: calc(86vh - 51px);
-  overflow: scroll;
+  overflow-x: hidden;
+  overflow-y: scroll;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
