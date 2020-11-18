@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo, useCallback } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styles from './EvaluationResponses.module.css';
 import { TextComponent } from './StyledComponents';
@@ -7,9 +7,12 @@ import styled from 'styled-components';
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
   background-color: ${({ theme }) => theme.surface[0]};
+  font-weight: 500;
+  position: sticky;
+  top: -1rem;
   .active {
     background-color: ${({ theme }) => theme.surface[0] + ' !important'};
-    color: #007bff !important;
+    color: #468ff2 !important;
     border-bottom: none;
   }
   .nav-item {
@@ -21,10 +24,25 @@ const StyledTabs = styled(Tabs)`
   }
 `;
 
+// Row for each comment
 const StyledCommentRow = styled(Row)`
   font-size: 14px;
   font-weight: 450;
-  border-bottom: 1px solid ${({ theme }) => theme.border};
+  border-bottom: 1px solid ${({ theme }) => theme.multivalue};
+`;
+
+// Bubble to choose sort order
+const StyledSortOption = styled.span`
+  padding: 3px 5px;
+  background-color: ${({ theme, active }) =>
+    active ? 'rgba(92, 168, 250,0.5)' : theme.border};
+  color: ${({ theme, active }) => (active ? theme.text[0] : theme.text[2])};
+  font-weight: 500;
+  &:hover {
+    background-color: ${({ theme, active }) =>
+      active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue};
+    cursor: pointer;
+  }
 `;
 
 /**
@@ -34,69 +52,114 @@ const StyledCommentRow = styled(Row)`
  */
 
 const EvaluationResponses = ({ crn, info }) => {
-  // Dictionary that holds the comments for each question
-  let responses = {};
-  // Loop through each section for this course code
-  info.forEach((section) => {
-    const crn_code = section.crn;
-    // Only fetch comments for this section
-    if (crn_code !== crn) return;
-    const nodes = section.course.evaluation_narratives_aggregate.nodes;
-    // Return if no comments
-    if (!nodes.length) return;
-    // Add comments to responses dictionary
-    nodes.forEach((node) => {
-      if (!responses[node.evaluation_question.question_text])
-        responses[node.evaluation_question.question_text] = [];
-      responses[node.evaluation_question.question_text].push(node.comment);
-    });
-  });
-  // Number of questions
-  const num_questions = Object.keys(responses).length;
-  // Lists that hold the html for the comments for a specific question
-  let recommend = [];
-  let skills = [];
-  let strengths = [];
-  let summary = [];
-  // Populate the lists above
-  for (let key in responses) {
-    if (key.includes('summarize')) {
-      summary = responses[key].map((response, index) => {
-        return (
-          <StyledCommentRow key={index} className={'m-auto p-2'}>
-            <TextComponent type={1}>{response}</TextComponent>
-          </StyledCommentRow>
-        );
-      });
-    } else if (key.includes('recommend')) {
-      recommend = responses[key].map((response, index) => {
-        return (
-          <StyledCommentRow key={index} className={'m-auto p-2'}>
-            <TextComponent type={1}>{response}</TextComponent>
-          </StyledCommentRow>
-        );
-      });
-    } else if (key.includes('skills')) {
-      skills = responses[key].map((response, index) => {
-        return (
-          <StyledCommentRow key={index} className={'m-auto p-2'}>
-            <TextComponent type={1}>{response}</TextComponent>
-          </StyledCommentRow>
-        );
-      });
-    } else if (key.includes('strengths')) {
-      strengths = responses[key].map((response, index) => {
-        return (
-          <StyledCommentRow key={index} className={'m-auto p-2'}>
-            <TextComponent type={1}>{response}</TextComponent>
-          </StyledCommentRow>
-        );
+  // Sort by original order or length?
+  const [sort_order, setSortOrder] = useState('original');
+
+  const sortByLength = useCallback((responses) => {
+    for (let key in responses) {
+      responses[key].sort(function (a, b) {
+        return b.length - a.length;
       });
     }
-  }
+    return responses;
+  }, []);
+
+  // Dictionary that holds the comments for each question
+  const [responses, sorted_responses] = useMemo(() => {
+    let temp_responses = {};
+    // Loop through each section for this course code
+    info.forEach((section) => {
+      const crn_code = section.crn;
+      // Only fetch comments for this section
+      if (crn_code !== crn) return;
+      const nodes = section.course.evaluation_narratives_aggregate.nodes;
+      // Return if no comments
+      if (!nodes.length) return;
+      // Add comments to responses dictionary
+      nodes.forEach((node) => {
+        if (!temp_responses[node.evaluation_question.question_text])
+          temp_responses[node.evaluation_question.question_text] = [];
+        temp_responses[node.evaluation_question.question_text].push(
+          node.comment
+        );
+      });
+    });
+    return [
+      temp_responses,
+      sortByLength(JSON.parse(JSON.stringify(temp_responses))), // Deep copy temp_responses and sort it
+    ];
+  }, [info, crn, sortByLength]);
+
+  // Number of questions
+  const num_questions = Object.keys(responses).length;
+
+  // Generate HTML to hold the responses to each question
+  const [recommend, skills, strengths, summary] = useMemo(() => {
+    // Lists that hold the html for the comments for a specific question
+    let temp_recommend = [];
+    let temp_skills = [];
+    let temp_strengths = [];
+    let temp_summary = [];
+    const cur_responses =
+      sort_order === 'length' ? sorted_responses : responses;
+    // Populate the lists above
+    for (let key in cur_responses) {
+      if (key.includes('summarize')) {
+        temp_summary = cur_responses[key].map((response, index) => {
+          return (
+            <StyledCommentRow key={index} className={'m-auto p-2'}>
+              <TextComponent type={1}>{response}</TextComponent>
+            </StyledCommentRow>
+          );
+        });
+      } else if (key.includes('recommend')) {
+        temp_recommend = cur_responses[key].map((response, index) => {
+          return (
+            <StyledCommentRow key={index} className={'m-auto p-2'}>
+              <TextComponent type={1}>{response}</TextComponent>
+            </StyledCommentRow>
+          );
+        });
+      } else if (key.includes('skills')) {
+        temp_skills = cur_responses[key].map((response, index) => {
+          return (
+            <StyledCommentRow key={index} className={'m-auto p-2'}>
+              <TextComponent type={1}>{response}</TextComponent>
+            </StyledCommentRow>
+          );
+        });
+      } else if (key.includes('strengths')) {
+        temp_strengths = cur_responses[key].map((response, index) => {
+          return (
+            <StyledCommentRow key={index} className={'m-auto p-2'}>
+              <TextComponent type={1}>{response}</TextComponent>
+            </StyledCommentRow>
+          );
+        });
+      }
+    }
+    return [temp_recommend, temp_skills, temp_strengths, temp_summary];
+  }, [responses, sort_order, sorted_responses]);
 
   return (
     <div>
+      <Row className={styles.sort_by + ' mx-auto mb-2 justify-content-center'}>
+        <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
+        <div className={styles.sort_options}>
+          <StyledSortOption
+            active={sort_order === 'original'}
+            onClick={() => setSortOrder('original')}
+          >
+            original order
+          </StyledSortOption>
+          <StyledSortOption
+            active={sort_order === 'length'}
+            onClick={() => setSortOrder('length')}
+          >
+            length
+          </StyledSortOption>
+        </div>
+      </Row>
       <StyledTabs
         variant="tabs"
         transition={false}
