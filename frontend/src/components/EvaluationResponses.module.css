@@ -5,10 +5,10 @@
 }
 
 .sort_by {
-  font-size: 14px;
+  font-size: 15px;
 }
 
-:global .nav-tabs {
-  position: sticky;
-  top: -1rem;
+.sort_options {
+  border-radius: 5px;
+  overflow: hidden;
 }

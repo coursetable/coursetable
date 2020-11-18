@@ -8,6 +8,8 @@ import styled from 'styled-components';
 const StyledTabs = styled(Tabs)`
   background-color: ${({ theme }) => theme.surface[0]};
   font-weight: 500;
+  position: sticky;
+  top: -1rem;
   .active {
     background-color: ${({ theme }) => theme.surface[0] + ' !important'};
     color: #468ff2 !important;
@@ -33,12 +35,12 @@ const StyledCommentRow = styled(Row)`
 const StyledSortOption = styled.span`
   padding: 3px 5px;
   background-color: ${({ theme, active }) =>
-    active ? theme.select_hover : theme.border};
+    active ? 'rgba(92, 168, 250,0.5)' : theme.border};
   color: ${({ theme, active }) => (active ? theme.text[0] : theme.text[2])};
-  border-radius: 5px;
   font-weight: 500;
   &:hover {
-    background-color: ${({ theme }) => theme.select_hover};
+    background-color: ${({ theme, active }) =>
+      active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue};
     cursor: pointer;
   }
 `;
@@ -142,21 +144,21 @@ const EvaluationResponses = ({ crn, info }) => {
   return (
     <div>
       <Row className={styles.sort_by + ' mx-auto mb-2 justify-content-center'}>
-        <span className="font-weight-bold my-auto">Sort comments by:</span>
-        <StyledSortOption
-          className="ml-2"
-          active={sort_order === 'original'}
-          onClick={() => setSortOrder('original')}
-        >
-          original order
-        </StyledSortOption>
-        <StyledSortOption
-          className="ml-2"
-          active={sort_order === 'length'}
-          onClick={() => setSortOrder('length')}
-        >
-          length
-        </StyledSortOption>
+        <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
+        <div className={styles.sort_options}>
+          <StyledSortOption
+            active={sort_order === 'original'}
+            onClick={() => setSortOrder('original')}
+          >
+            original order
+          </StyledSortOption>
+          <StyledSortOption
+            active={sort_order === 'length'}
+            onClick={() => setSortOrder('length')}
+          >
+            length
+          </StyledSortOption>
+        </div>
       </Row>
       <StyledTabs
         variant="tabs"
