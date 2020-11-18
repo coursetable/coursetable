@@ -23,7 +23,7 @@
     "immutable": "3.8.2",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
-    "posthog-js": "^1.5.2",
+    "posthog-js": "^1.6.0",
     "qs": "^6.9.4",
     "rc-slider": "9.6.2",
     "react": "^16.14.0",
