@@ -124,5 +124,6 @@ export const StyledHoverText = styled.span`
   transition: color 0.1s;
   &:hover {
     color: ${({ theme }) => theme.primary};
+    cursor: pointer;
   }
 `;
