@@ -259,13 +259,13 @@ const CourseModal = ({ listing, hideModal, show }) => {
                                 toSeasonString(view[0])[1] +
                                 ')'}
                             </TextComponent>
+                            <StyledMoreInfo
+                              className="mt-auto ml-2"
+                              onClick={handleMoreInfo}
+                            >
+                              More Info
+                            </StyledMoreInfo>
                           </span>
-                          <StyledMoreInfo
-                            className="mt-auto ml-2"
-                            onClick={handleMoreInfo}
-                          >
-                            More Info
-                          </StyledMoreInfo>
                         </Row>
                       </Modal.Title>
 
