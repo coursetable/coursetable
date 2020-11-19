@@ -29,7 +29,7 @@
     "react": "^16.14.0",
     "react-apexcharts": "^1.3.7",
     "react-big-calendar": "^0.28.6",
-    "react-bootstrap": "^1.0.1",
+    "react-bootstrap": "^1.4.0",
     "react-data-grid": "5.0.1",
     "react-data-grid-addons": "5.0.4",
     "react-dom": "^16.13.1",
