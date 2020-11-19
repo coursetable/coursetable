@@ -11,7 +11,7 @@ const StyledToggle = styled.div`
   &:hover {
     cursor: pointer;
     background-color: ${({ theme }) => theme.select};
-    color: #007bff;
+    color: ${({ theme }) => theme.primary};
   }
 `;
 

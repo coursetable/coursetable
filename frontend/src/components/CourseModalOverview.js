@@ -10,7 +10,12 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useUser } from '../user';
-import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
+import {
+  TextComponent,
+  StyledPopover,
+  StyledRating,
+  StyledLink,
+} from './StyledComponents';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
 
@@ -196,6 +201,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           skills: season.skills,
           // Course Areas
           areas: season.areas,
+          // Store course listing
+          listing: season,
         });
       });
       // Sort by season code and section
@@ -392,7 +399,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
           {/* Course Description */}
-          <Row className="m-auto pb-3">
+          <Row className="mx-auto pb-3">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
               text={
@@ -403,26 +410,24 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               onReflow={handleReflow}
             />
             {/* Read More arrow button */}
-            <Row className="m-auto">
-              {clamped && (
-                <span
-                  className={Styles.read_more + ' mx-auto'}
+            {clamped && (
+              <Row className="mx-auto">
+                <StyledLink
+                  className="mx-auto"
                   onClick={() => {
                     setLines(100);
                   }}
                   title="Read More"
                 >
                   <IoIosArrowDown size={20} />
-                </span>
-              )}
-            </Row>
+                </StyledLink>
+              </Row>
+            )}
             {/* Course Requirements */}
             {listing.requirements && (
-              <Row className="m-auto pt-1">
-                <span className={Styles.requirements}>
-                  {listing.requirements}
-                </span>
-              </Row>
+              <span className={Styles.requirements + ' pt-1'}>
+                {listing.requirements}
+              </span>
             )}
           </Row>
           {/* Course Professors */}
@@ -443,7 +448,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                           overlay={renderProfInfoPopover}
                           popperConfig={{ prof_name: prof }}
                         >
-                          <span className={Styles.link}>{prof}</span>
+                          <StyledLink>{prof}</StyledLink>
                         </OverlayTrigger>
                       </React.Fragment>
                     );

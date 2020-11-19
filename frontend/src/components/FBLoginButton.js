@@ -5,7 +5,7 @@ import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { FaSyncAlt } from 'react-icons/fa';
 import posthog from 'posthog-js';
-import { TextComponent } from './StyledComponents';
+import { TextComponent, StyledHoverText } from './StyledComponents';
 
 /**
  * FB login button that shows up in the profile dropdown
@@ -89,7 +89,7 @@ function FBLoginButton() {
           onClick={handleLoginClick}
           className={styles.collapse_text}
         >
-          Connect to FB
+          <StyledHoverText>Connect to FB</StyledHoverText>
         </TextComponent>
       )}
       {logged_in && (
@@ -99,7 +99,7 @@ function FBLoginButton() {
             onClick={handleLogoutClick}
             className={styles.collapse_text}
           >
-            Disconnect FB
+            <StyledHoverText>Disconnect FB</StyledHoverText>
           </TextComponent>
 
           <FaSyncAlt

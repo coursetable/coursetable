@@ -65,26 +65,6 @@
   text-overflow: ellipsis;
 }
 
-.link {
-  color: #007bff;
-}
-
-.link:hover {
-  color: rgb(49, 94, 192);
-  cursor: pointer;
-  text-decoration: underline;
-}
-
-.read_more {
-  color: #007bff;
-  transition: 0.3s;
-}
-
-.read_more:hover {
-  cursor: pointer;
-  color: rgb(49, 94, 192);
-}
-
 .requirements {
   font-weight: 500;
   color: rgb(252, 105, 105);
