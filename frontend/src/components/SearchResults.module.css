@@ -51,6 +51,16 @@
   z-index: 2;
 }
 
+.icon {
+  width: 20px;
+  display: block;
+}
+
+.prof_icon {
+  width: 18px;
+  display: block;
+}
+
 :global .sticky {
   z-index: 1;
 }

@@ -127,3 +127,10 @@ export const StyledHoverText = styled.span`
     cursor: pointer;
   }
 `;
+
+// SVG Icons used in search results for the various ratings
+export const StyledIcon = styled.div`
+  fill: ${({ theme }) => theme.text[0]};
+  transition: fill 0.2s linear;
+  margin: auto;
+`;

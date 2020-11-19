@@ -31,11 +31,11 @@ import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
-import { FaAppleAlt } from 'react-icons/fa';
-import { FcReading } from 'react-icons/fc';
-import { AiFillStar } from 'react-icons/ai';
+import { SurfaceComponent, StyledIcon } from './StyledComponents';
 
-import { SurfaceComponent } from './StyledComponents';
+import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
+import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
+import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
 
 /**
  * Renders the infinite list of search results
@@ -373,47 +373,39 @@ const SearchResults = ({
                 </div>
                 {/* Class Rating */}
                 <div style={rate_style} className={Styles.results_header}>
-                  <div className="m-auto">
+                  <StyledIcon>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
                       overlay={class_tooltip}
                     >
-                      <AiFillStar
-                        color="#fac000"
-                        style={{ display: 'block' }}
-                        size={20}
-                      />
+                      <Star className={Styles.icon} />
                     </OverlayTrigger>
-                  </div>
+                  </StyledIcon>
                 </div>
                 {/* Professor Rating */}
                 <div style={rate_style} className={Styles.results_header}>
-                  <div className="m-auto">
+                  <StyledIcon>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
                       overlay={prof_tooltip}
                     >
-                      <FaAppleAlt
-                        color="#fa6e6e"
-                        style={{ display: 'block' }}
-                        size={16}
-                      />
+                      <Teacher className={Styles.prof_icon} />
                     </OverlayTrigger>
-                  </div>
+                  </StyledIcon>
                 </div>
                 {/* Workload Rating */}
                 <div style={rate_style} className={Styles.results_header}>
-                  <div className="m-auto">
+                  <StyledIcon>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
                       overlay={workload_tooltip}
                     >
-                      <FcReading style={{ display: 'block' }} size={20} />
+                      <Book className={Styles.icon} />
                     </OverlayTrigger>
-                  </div>
+                  </StyledIcon>
                 </div>
                 <div style={num_style} className={Styles.results_header}>
                   <OverlayTrigger
