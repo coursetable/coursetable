@@ -26,6 +26,26 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
         ]
       }
     ) {
+      listing_id
+      description
+      average_professor
+      average_gut_rating
+      times_summary
+      times_by_day
+      locations_summary
+      credits
+      subject
+      number
+      school
+      requirements
+      extra_info
+      syllabus_url
+      flag_info
+      regnotes
+      rp_attr
+      classnotes
+      final_exam
+      fysem
       professor_names
       professor_info
       season_code
