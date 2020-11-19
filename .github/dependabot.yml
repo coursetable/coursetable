@@ -26,6 +26,6 @@ updates:
   - package-ecosystem: "npm"
     directory: "/frontend"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     reviewers:
       - "maxyuan6717"
