@@ -32,7 +32,7 @@
     "react-bootstrap": "^1.4.0",
     "react-data-grid": "5.0.1",
     "react-data-grid-addons": "5.0.4",
-    "react-dom": "^16.13.1",
+    "react-dom": "^16.14.0",
     "react-facebook-login": "^4.1.1",
     "react-hotkeys": "^2.0.0",
     "react-icons": "^3.10.0",
