@@ -93,13 +93,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   };
 
   // Parse for location url and location name
-  let location_url = '',
-    location_name = 'TBD';
+  let location_url = '';
   for (let i in days) {
     const day = days[i];
     if (listing[`times_by_day.${day}`]) {
       location_url = listing[`times_by_day.${day}`][0][3];
-      location_name = listing[`times_by_day.${day}`][0][2];
     }
   }
   // Fetch ratings data for this listing
@@ -484,7 +482,28 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Meets</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.times_summary === 'TBA' ? 'N/A' : listing.times_summary}
+              {listing.times_summary}
+            </Col>
+          </Row>
+          {/* Course Location */}
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Location</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {location_url !== '' ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={location_url}
+                  className="d-flex"
+                >
+                  {listing.locations_summary}
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ) : (
+                listing.locations_summary
+              )}
             </Col>
           </Row>
           {/* Course Section */}
@@ -538,29 +557,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
               {listing.credits}
-            </Col>
-          </Row>
-          {/* Course Location */}
-          <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
-              <span className={Styles.lable_bubble}>Location</span>
-            </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
-              {location_url !== '' ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={location_url}
-                  className="d-flex"
-                >
-                  {location_name}
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
-                </a>
-              ) : location_name === 'TBD' || location_name === '' ? (
-                'N/A'
-              ) : (
-                location_name
-              )}
             </Col>
           </Row>
           {/* Class Notes (classnotes) */}
