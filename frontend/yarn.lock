@@ -10141,10 +10141,14 @@ react-data-grid-addons@5.0.4:
   resolved "https://registry.yarnpkg.com/react-data-grid-addons/-/react-data-grid-addons-5.0.4.tgz#2e07b891bbdb241cae7c9337554e1a59628a9978"
   integrity sha512-bH7d+R04k8D2E9mx12Sm0CsoraDbFQgiRPp8rsF8E8FDCjhw6R1VF1Q2rpmDKfiguz9ol9IXd8Hpo+Bov8OQ8Q==
 
-react-data-grid@5.0.1:
-  version "5.0.1"
-  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-5.0.1.tgz#c9c5313f667f5571a46a2a8292701bad5affcf1c"
-  integrity sha512-6P5PHm4GHSAtiJ7k9lZwIGdql4ZUqGx9ExOc0EHwQjktIp5SIgEPm35Tj+mPWY7ICBC7v73l/7Hu1QbayCul6g==
+react-data-grid@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/react-data-grid/-/react-data-grid-6.1.0.tgz#04f5a3032fd097c54cd494b000a366d5bad6b39d"
+  integrity sha512-N1UtiHvsowEPzhx0VPqQKvGgSza/YNljczbisFDGMjawiGApS2taMv7h+EDXDx49CdaA6ur4eYS0z10x63IUpw==
+  dependencies:
+    object-assign "^4.1.1"
+    react-is-deprecated "^0.1.2"
+    shallowequal "^1.1.0"
 
 react-dev-utils@^11.0.0:
   version "11.0.0"
@@ -10216,6 +10220,11 @@ react-input-autosize@^2.2.2:
   integrity sha512-jQJgYCA3S0j+cuOwzuCd1OjmBmnZLdqQdiLKRYrsMMzbjUrVDS5RvJUDwJqA7sKuksDuzFtm6hZGKFu7Mjk5aw==
   dependencies:
     prop-types "^15.5.8"
+
+react-is-deprecated@^0.1.2:
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/react-is-deprecated/-/react-is-deprecated-0.1.2.tgz#301148f86ea428fe8e673eca7a372160b7579dbd"
+  integrity sha1-MBFI+G6kKP6OZz7KejchYLdXnb0=
 
 react-is@^16.12.0, react-is@^16.3.2, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
