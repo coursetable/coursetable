@@ -399,7 +399,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
           {/* Course Description */}
-          <Row className="m-auto pb-3">
+          <Row className="mx-auto pb-3">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
               text={
@@ -410,8 +410,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               onReflow={handleReflow}
             />
             {/* Read More arrow button */}
-            <Row className="m-auto">
-              {clamped && (
+            {clamped && (
+              <Row className="mx-auto">
                 <StyledLink
                   className="mx-auto"
                   onClick={() => {
@@ -421,15 +421,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 >
                   <IoIosArrowDown size={20} />
                 </StyledLink>
-              )}
-            </Row>
+              </Row>
+            )}
             {/* Course Requirements */}
             {listing.requirements && (
-              <Row className="m-auto pt-1">
-                <span className={Styles.requirements}>
-                  {listing.requirements}
-                </span>
-              </Row>
+              <span className={Styles.requirements + ' pt-1'}>
+                {listing.requirements}
+              </span>
             )}
           </Row>
           {/* Course Professors */}

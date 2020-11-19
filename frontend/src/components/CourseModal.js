@@ -60,7 +60,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
   const [view, setView] = useState(['overview', null]);
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState('both');
-  // Queue for listings that the user has viewed
+  // Stack for listings that the user has viewed
   const [listings, setListings] = useState([]);
   useEffect(() => {
     setListings([listing]);
