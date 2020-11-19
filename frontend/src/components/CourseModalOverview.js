@@ -196,7 +196,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           skills: season.skills,
           // Course Areas
           areas: season.areas,
-          listing: season,
         });
       });
       // Sort by season code and section
