@@ -109,3 +109,20 @@ export const StyledRating = styled.div.attrs(({ theme, rating, colormap }) => ({
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};
   transition: background-color 0.2s linear;
 `;
+
+// Primary Color link
+export const StyledLink = styled.span`
+  color: ${({ theme }) => theme.primary};
+  &:hover {
+    color: ${({ theme }) => theme.primary_hover};
+    cursor: pointer;
+  }
+`;
+
+// Show Primary color on hover
+export const StyledHoverText = styled.span`
+  transition: color 0.1s;
+  &:hover {
+    color: ${({ theme }) => theme.primary};
+  }
+`;

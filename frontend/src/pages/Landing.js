@@ -13,30 +13,18 @@ import {
   FcSearch,
 } from 'react-icons/fc';
 import LandingImage from '../images/landing_page.svg';
-// import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import styled from 'styled-components';
+
+const StyledStat = styled.span`
+  color: ${({ theme }) => theme.primary};
+  transition: color 0.2s linear;
+`;
 
 /**
  * Renders the Landing page for when users aren't logged in
  */
 
 function Landing() {
-  // Get width of window
-  // const { width } = useWindowDimensions();
-  // const isMobile = width < 768;
-
-  // Scroll to feature page
-  // const scrollTo = () => {
-  //   scroller.scrollTo('featurepage', {
-  //     smooth: true,
-  //     duration: 500,
-  //   });
-  // };
-
-  // Scroll to top
-  // const scrollTop = () => {
-  //   window.scrollTo(0, 0);
-  // };
-
   return (
     <div className={styles.container}>
       <Container fluid>
@@ -51,15 +39,16 @@ function Landing() {
                   <Row className={'pb-2 m-auto'}>
                     <span className={styles.feature_text + ' d-inline'}>
                       <FcSearch className="mr-2 my-auto" size={20} />
-                      Browse our catalog of{' '}
-                      <span style={{ color: '#007bff' }}>80,000+</span> classes
+                      Browse our catalog of <StyledStat>
+                        80,000+
+                      </StyledStat>{' '}
+                      classes
                     </span>
                   </Row>
                   <Row className={'pb-2 m-auto'}>
                     <span className={styles.feature_text}>
                       <FcComboChart className="mr-2 my-auto" size={20} />
-                      Read from{' '}
-                      <span style={{ color: '#007bff' }}>600,000+</span> student
+                      Read from <StyledStat>600,000+</StyledStat> student
                       evaluation comments
                     </span>
                   </Row>

@@ -7,6 +7,7 @@ import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
 import posthog from 'posthog-js';
+import styled from 'styled-components';
 
 /**
  * Render worksheet list in default worksheet view
@@ -15,6 +16,13 @@ import posthog from 'posthog-js';
  * @prop season_code - string that holds the current season code
  * @prop modal - boolean | are we rendering in the course modal
  */
+
+const StyledBookmark = styled.span`
+  color: ${({ theme }) => theme.primary};
+  &:hover {
+    opacity: 0.5;
+  }
+`;
 
 function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
   // Fetch user context data and refresh function
@@ -85,17 +93,20 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
     >
       <Button
         variant="toggle"
-        className={'p-0 bookmark_fill ' + (modal ? '' : 'bookmark_move')}
+        className={'p-0 ' + (modal ? '' : 'bookmark_move')}
         onClick={toggleWorkSheet}
       >
         {inWorksheet ? (
-          <BsBookmarkFill
-            className={'bookmark_fill ' + (modal ? '' : 'bookmark_move')}
-            color="#3396ff"
-            size={25}
-          />
+          <StyledBookmark>
+            <BsBookmarkFill
+              className={modal ? '' : 'bookmark_move'}
+              size={25}
+            />
+          </StyledBookmark>
         ) : (
-          <BsBookmark color={'#3396ff'} size={25} style={bookmark_style} />
+          <StyledBookmark>
+            <BsBookmark size={25} style={bookmark_style} />
+          </StyledBookmark>
         )}
       </Button>
     </OverlayTrigger>

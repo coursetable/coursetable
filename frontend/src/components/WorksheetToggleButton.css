@@ -22,10 +22,6 @@
   transform: scale(1) !important;
 }
 
-.bookmark_fill:hover {
-  color: #b6d9ff !important;
-}
-
 .disabled-button {
   cursor: not-allowed !important;
   background-color: transparent !important;

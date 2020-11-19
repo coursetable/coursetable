@@ -1,13 +1,5 @@
 .back_arrow {
-  color: rgb(190, 221, 255);
-  transition: 0.3s;
   height: 30px;
-  display: flex;
-}
-
-.back_arrow:hover {
-  color: #007bff;
-  cursor: pointer;
 }
 
 .badges {
@@ -18,16 +10,6 @@
   height: auto;
   font-size: 16px;
   line-height: 20px;
-}
-
-.more_info {
-  transition: 0.3s;
-}
-
-.more_info:hover {
-  text-decoration: underline;
-  cursor: pointer;
-  color: #007bff;
 }
 
 .cancelled_text {
@@ -61,25 +43,6 @@
   display: flex !important;
   padding: 1rem 1rem 0.5rem 1rem !important;
 }
-
-/* :global .nav-link.active {
-  color: #007bff !important;
-}
-
-:global .nav-link.active:hover {
-  background-color: white !important;
-}
-
-:global .nav-link {
-  color: rgba(1, 1, 1, 0.6) !important;
-  font-weight: 500 !important;
-  transition: 0.3s !important;
-}
-
-:global .nav-link:hover {
-  color: #007bff !important;
-  background-color: rgb(241, 241, 241) !important;
-} */
 
 :global .modal-dialog {
   transition: transform 0.1s ease-out !important;

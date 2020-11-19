@@ -18,7 +18,15 @@ const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
   color: ${({ theme }) => theme.text[1]};
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
   transition: background-color 0.2s linear, color 0.2s linear;
+  &:hover {
+    cursor: pointer;
+    color: ${({ theme }) => theme.primary};
+  }
 `;
 
 const StyledDiv = styled.div`
@@ -27,7 +35,7 @@ const StyledDiv = styled.div`
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
   &:hover {
-    color: #007bff;
+    color: ${({ theme }) => theme.primary};
   }
 `;
 
@@ -38,10 +46,10 @@ const StyledNavLink = styled(NavLink)`
   font-weight: 500;
   &:hover {
     text-decoration: none !important;
-    color: #007bff;
+    color: ${({ theme }) => theme.primary};
   }
   &.active {
-    color: #007bff;
+    color: ${({ theme }) => theme.primary};
   }
 `;
 

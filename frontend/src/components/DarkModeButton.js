@@ -9,7 +9,7 @@ const StyledBtn = styled.span`
   transition: color 0.1s;
   &:hover {
     cursor: pointer;
-    color: #007bff;
+    color: ${({ theme }) => theme.primary};
   }
 `;
 

@@ -5,7 +5,7 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-import { TextComponent } from '../components/StyledComponents';
+import { StyledHoverText, TextComponent } from '../components/StyledComponents';
 import styled from 'styled-components';
 import { scrollToTop } from '../utilities';
 
@@ -18,7 +18,7 @@ const StyledCard = styled(Card)`
 
   .active {
     border-bottom: 1px solid ${({ theme }) => theme.border} !important;
-    color: #007bff;
+    color: ${({ theme }) => theme.primary};
   }
 `;
 
@@ -36,7 +36,7 @@ function ContextAwareToggle({ eventKey, callback, question }) {
   const isCurrentEventKey = currentEventKey === eventKey;
 
   return (
-    <div
+    <StyledHoverText
       className={
         (!isCurrentEventKey ? '' : 'active') +
         '  d-flex justify-content-between py-3 px-3 ' +
@@ -53,7 +53,7 @@ function ContextAwareToggle({ eventKey, callback, question }) {
           styles.accordion_arrow
         }
       />
-    </div>
+    </StyledHoverText>
   );
 }
 
