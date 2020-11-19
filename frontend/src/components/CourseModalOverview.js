@@ -431,6 +431,27 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               </span>
             )}
           </Row>
+          {/* Course Syllabus */}
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Syllabus</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing.syllabus_url ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={listing.syllabus_url}
+                  className="d-flex"
+                >
+                  View Syllabus
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ) : (
+                'N/A'
+              )}
+            </Col>
+          </Row>
           {/* Course Professors */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
@@ -539,27 +560,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 'N/A'
               ) : (
                 location_name
-              )}
-            </Col>
-          </Row>
-          {/* Course Syllabus */}
-          <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
-              <span className={Styles.lable_bubble}>Syllabus</span>
-            </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.syllabus_url ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={listing.syllabus_url}
-                  className="d-flex"
-                >
-                  {listing['course_code']}
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
-                </a>
-              ) : (
-                'N/A'
               )}
             </Col>
           </Row>
