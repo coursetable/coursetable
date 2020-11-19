@@ -10,6 +10,8 @@ export const lightTheme = {
   multivalue: 'hsl(0,0%,90%)', // Multivalue background-color used in react-select
   hidden: '#b9b8b8', // Color to use when course is hidden
   rating_alpha: 1, // Rating bubble's opacity
+  primary: '#468ff2', // Primary color (blue)
+  primary_hover: '#007bff', // Primary hover color (dark blue)
 };
 export const darkTheme = {
   theme: 'dark',
@@ -19,8 +21,10 @@ export const darkTheme = {
   banner: '#363636', // Used when light mode needs to be greyish. Otherwise, same as secondary surface
   border: '#303030', // Used in borders (calendar, and between list items)
   select: '#303030', // Background color for react-select
-  select_hover: '#446491', // Blueish tint to use on hover
+  select_hover: 'rgba(68, 100, 145, 0.75)', // Blueish tint to use on hover
   multivalue: '#4d4d4d', // Multivalue background-color used in react-select
   hidden: '#4d4d4d', // Color to use when course is hidden
   rating_alpha: 0.75, // Rating bubble's opacity
+  primary: '#61adff', // Primary color (lighter blue)
+  primary_hover: '#007bff', // Primary hover color (blue)
 };

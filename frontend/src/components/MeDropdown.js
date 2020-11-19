@@ -9,7 +9,11 @@ import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { SurfaceComponent, TextComponent } from './StyledComponents';
+import {
+  SurfaceComponent,
+  TextComponent,
+  StyledHoverText,
+} from './StyledComponents';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -96,7 +100,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   href="https://old.coursetable.com/"
                   className={styles.collapse_text}
                 >
-                  Old CourseTable
+                  <StyledHoverText>Old CourseTable</StyledHoverText>
                 </a>
               </TextComponent>
             </Row>
@@ -109,7 +113,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   onClick={handleExportClick}
                   className={styles.collapse_text}
                 >
-                  Export Worksheet
+                  <StyledHoverText>Export Worksheet</StyledHoverText>
                 </TextComponent>
               </Row>
             )}
@@ -139,7 +143,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   onClick={handleLogoutClick}
                   className={styles.collapse_text}
                 >
-                  Sign Out
+                  <StyledHoverText>Sign Out</StyledHoverText>
                 </TextComponent>
               </Row>
             ) : (
@@ -154,7 +158,9 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   href="/legacy_api/index.php?forcelogin=1"
                   className={styles.collapse_text}
                 >
-                  <TextComponent type={1}>Sign In</TextComponent>
+                  <TextComponent type={1}>
+                    <StyledHoverText>Sign In</StyledHoverText>
+                  </TextComponent>
                 </a>
               </Row>
             )}

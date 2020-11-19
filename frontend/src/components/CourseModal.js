@@ -14,7 +14,7 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants.js';
 import chroma from 'chroma-js';
 import posthog from 'posthog-js';
-import { TextComponent } from './StyledComponents';
+import { TextComponent, StyledLink } from './StyledComponents';
 import styled from 'styled-components';
 
 // Course Modal
@@ -130,7 +130,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                           />
                         ) : (
                           // If this is the overview of some other eval course, show back button
-                          <div
+                          <StyledLink
                             onClick={() => {
                               // Go back to the evaluations of this course
                               setView([
@@ -141,7 +141,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             className={styles.back_arrow}
                           >
                             <IoMdArrowRoundBack size={30} />
-                          </div>
+                          </StyledLink>
                         ))}
                     </Col>
                     <Col className="p-0 ml-3">
@@ -225,7 +225,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                   <Row className="m-auto">
                     <Col xs="auto" className="my-auto p-0">
                       {/* Back to overview arrow */}
-                      <div
+                      <StyledLink
                         onClick={() => {
                           if (
                             listings.length > 1 &&
@@ -240,7 +240,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                         className={styles.back_arrow}
                       >
                         <IoMdArrowRoundBack size={30} />
-                      </div>
+                      </StyledLink>
                     </Col>
                     <Col className="p-0 ml-3">
                       {/* Course Title */}

@@ -10,7 +10,12 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { useUser } from '../user';
-import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
+import {
+  TextComponent,
+  StyledPopover,
+  StyledRating,
+  StyledLink,
+} from './StyledComponents';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
 
@@ -407,15 +412,15 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             {/* Read More arrow button */}
             <Row className="m-auto">
               {clamped && (
-                <span
-                  className={Styles.read_more + ' mx-auto'}
+                <StyledLink
+                  className="mx-auto"
                   onClick={() => {
                     setLines(100);
                   }}
                   title="Read More"
                 >
                   <IoIosArrowDown size={20} />
-                </span>
+                </StyledLink>
               )}
             </Row>
             {/* Course Requirements */}
@@ -445,7 +450,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                           overlay={renderProfInfoPopover}
                           popperConfig={{ prof_name: prof }}
                         >
-                          <span className={Styles.link}>{prof}</span>
+                          <StyledLink>{prof}</StyledLink>
                         </OverlayTrigger>
                       </React.Fragment>
                     );

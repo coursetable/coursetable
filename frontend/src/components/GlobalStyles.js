@@ -6,11 +6,9 @@ export const GlobalStyles = createGlobalStyle`
     transition: background 0.2s linear, color 0.2s linear;
   }
   a {
-    color: ${({ theme }) =>
-      theme.theme === 'light' ? '#007bff' : '#61adff'};  
+    color: ${({ theme }) => theme.primary};  
     &:hover {
-      color: ${({ theme }) =>
-        theme.theme === 'light' ? '#0066d4' : '#007bff'};  
+      color: ${({ theme }) => theme.primary_hover};  
     }
   }
   `;

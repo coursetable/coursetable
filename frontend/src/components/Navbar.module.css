@@ -32,11 +32,6 @@ nav > .nav_brand {
   transition: 0.3s;
 }
 
-.icon_circle:hover {
-  color: #007bff;
-  cursor: pointer;
-}
-
 .search_bar_mid {
   position: absolute;
   left: 50%;

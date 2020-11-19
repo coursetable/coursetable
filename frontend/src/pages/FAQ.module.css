@@ -24,11 +24,6 @@
   transition: transform 0.4s ease;
 }
 
-.accordion_hover_header:hover {
-  cursor: pointer;
-  color: #007bff;
-}
-
 .accordion_arrow_active {
   transform: rotateZ(90deg);
 }
