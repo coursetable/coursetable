@@ -9,6 +9,7 @@ import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
+import { HiExternalLink } from 'react-icons/hi';
 import { useUser } from '../user';
 import {
   TextComponent,
@@ -529,8 +530,10 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   href={location_url}
+                  className="d-flex"
                 >
                   {location_name}
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
                 </a>
               ) : location_name === 'TBD' || location_name === '' ? (
                 'N/A'
@@ -550,8 +553,10 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                   target="_blank"
                   rel="noopener noreferrer"
                   href={listing.syllabus_url}
+                  className="d-flex"
                 >
                   {listing['course_code']}
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
                 </a>
               ) : (
                 'N/A'
