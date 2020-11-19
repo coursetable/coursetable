@@ -80,6 +80,16 @@
   font-weight: 500;
 }
 
+.icon {
+  width: 16px;
+  display: block;
+}
+
+.prof_icon {
+  width: 15px;
+  display: block;
+}
+
 @media (hover: none) {
   .worksheet_btn {
     top: -10px;

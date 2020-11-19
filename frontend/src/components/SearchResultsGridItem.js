@@ -14,11 +14,13 @@ import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { useUser } from '../user';
 import { fbFriendsAlsoTaking } from '../utilities';
-import { FcCloseUpMode, FcReading } from 'react-icons/fc';
-import { AiFillStar } from 'react-icons/ai';
+import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
-import { FaCanadianMapleLeaf, FaAppleAlt } from 'react-icons/fa';
-import { TextComponent } from './StyledComponents';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { TextComponent, StyledIcon } from './StyledComponents';
+import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
+import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
+import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
 import styled from 'styled-components';
 
 const StyledGridItem = styled.div`
@@ -300,7 +302,9 @@ const SearchResultsGridItem = ({
                       ? course.average_rating.toFixed(RATINGS_PRECISION)
                       : 'N/A'}
                   </div>
-                  <AiFillStar color="#fac000" className="my-auto" />
+                  <StyledIcon>
+                    <Star className={styles.icon} />
+                  </StyledIcon>
                 </Row>
               </OverlayTrigger>
               {/* Professor Rating */}
@@ -326,7 +330,9 @@ const SearchResultsGridItem = ({
                       ? course.professor_avg_rating
                       : 'N/A'}
                   </div>
-                  <FaAppleAlt color="#fa6e6e" className="my-auto" />
+                  <StyledIcon>
+                    <Teacher className={styles.prof_icon} />
+                  </StyledIcon>
                 </Row>
               </OverlayTrigger>
               {/* Workload Rating */}
@@ -352,7 +358,9 @@ const SearchResultsGridItem = ({
                       ? course.average_workload.toFixed(RATINGS_PRECISION)
                       : 'N/A'}
                   </div>
-                  <FcReading className="my-auto" />
+                  <StyledIcon>
+                    <Book className={styles.icon} />
+                  </StyledIcon>
                 </Row>
               </OverlayTrigger>
             </div>
