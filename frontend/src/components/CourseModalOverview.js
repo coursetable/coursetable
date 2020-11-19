@@ -9,6 +9,7 @@ import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
+import { HiExternalLink } from 'react-icons/hi';
 import { useUser } from '../user';
 import {
   TextComponent,
@@ -92,13 +93,16 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   };
 
   // Parse for location url and location name
-  let location_url = '',
-    location_name = 'TBD';
+  let location_url = '';
   for (let i in days) {
     const day = days[i];
+    // This listing was flattened.
     if (listing[`times_by_day.${day}`]) {
       location_url = listing[`times_by_day.${day}`][0][3];
-      location_name = listing[`times_by_day.${day}`][0][2];
+    }
+    // This listing wasn't flattened. Came from pressing "more info" on a course eval
+    if (listing.times_by_day && listing.times_by_day[day]) {
+      location_url = listing.times_by_day[day][0][3];
     }
   }
   // Fetch ratings data for this listing
@@ -430,6 +434,27 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               </span>
             )}
           </Row>
+          {/* Course Syllabus */}
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Syllabus</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing.syllabus_url ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={listing.syllabus_url}
+                  className="d-flex"
+                >
+                  View Syllabus
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ) : (
+                'N/A'
+              )}
+            </Col>
+          </Row>
           {/* Course Professors */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">
@@ -462,7 +487,28 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Meets</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.times_summary === 'TBA' ? 'N/A' : listing.times_summary}
+              {listing.times_summary}
+            </Col>
+          </Row>
+          {/* Course Location */}
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Location</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {location_url !== '' ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={location_url}
+                  className="d-flex"
+                >
+                  {listing.locations_summary}
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ) : (
+                listing.locations_summary
+              )}
             </Col>
           </Row>
           {/* Course Section */}
@@ -516,46 +562,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
               {listing.credits}
-            </Col>
-          </Row>
-          {/* Course Location */}
-          <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
-              <span className={Styles.lable_bubble}>Location</span>
-            </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
-              {location_url !== '' ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={location_url}
-                >
-                  {location_name}
-                </a>
-              ) : location_name === 'TBD' || location_name === '' ? (
-                'N/A'
-              ) : (
-                location_name
-              )}
-            </Col>
-          </Row>
-          {/* Course Syllabus */}
-          <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
-              <span className={Styles.lable_bubble}>Syllabus</span>
-            </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.syllabus_url ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={listing.syllabus_url}
-                >
-                  {listing['course_code']}
-                </a>
-              ) : (
-                'N/A'
-              )}
             </Col>
           </Row>
           {/* Class Notes (classnotes) */}
