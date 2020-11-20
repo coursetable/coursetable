@@ -8,7 +8,7 @@ import React, {
 
 import { GET_SEASON_CODES } from '../queries/QueryStrings';
 
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';

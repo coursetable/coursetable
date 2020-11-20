@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import { toSeasonString, fbFriendsAlsoTaking } from '../utilities';
