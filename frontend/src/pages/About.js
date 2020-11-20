@@ -133,7 +133,7 @@ function About() {
           {people.map((person, idx) => (
             <div className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
               <StyledCard key={idx} style={{ height: '100%' }}>
-                <Card.Img variant="top" src={person.image} />
+                <Card.Img variant="top" src={person.image} alt={person.name} />
                 <Card.Body className="p-3">
                   <Card.Title className="mb-1">{person.name}</Card.Title>
                   <Card.Text>
