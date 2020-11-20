@@ -16,6 +16,7 @@ const StyledSpacer = styled.div`
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 56px;
+  transition: background-color 0.2s linear;
   z-index: 2;
 `;
 
@@ -23,6 +24,7 @@ const StyledSpacer = styled.div`
 const StyledContainer = styled(SurfaceComponent)`
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 `;
 
 /**
