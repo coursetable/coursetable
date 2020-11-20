@@ -1,13 +1,10 @@
 .container {
   border-radius: 8px;
-  max-height: 86vh;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
 .table {
-  max-height: calc(86vh - 51px);
   overflow-x: hidden;
-  overflow-y: scroll;
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
 }
