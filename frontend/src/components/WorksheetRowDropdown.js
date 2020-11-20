@@ -50,7 +50,7 @@ function WorksheetRowDropdown({
 
   return (
     <StyledSpacer className="pt-3">
-      <StyledContainer layer={1}>
+      <StyledContainer layer={1} className="mx-1">
         <Row className="shadow-sm mx-auto pt-2 pb-2">
           {/* Season Select */}
           <Col md={6} className="pl-2 pr-1">

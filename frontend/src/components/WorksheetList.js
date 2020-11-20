@@ -78,7 +78,7 @@ function WorksheetList({
         setCurExpand={setCurExpand}
       />
       {/* List of courses for this season */}
-      <SurfaceComponent layer={0} className={styles.table}>
+      <SurfaceComponent layer={0} className={styles.table + ' mx-1'}>
         <ListGroup variant="flush">{items}</ListGroup>
       </SurfaceComponent>
     </div>
