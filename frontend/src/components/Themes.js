@@ -1,11 +1,11 @@
 export const lightTheme = {
   theme: 'light',
   text: ['#141414', '#454545', '#7a7a7a'], // [Primary, Secondary]
-  background: '#FFF', // White background
-  surface: ['#FFF', '#FFF'], // All surfaces are white
+  background: '#FFFFFF', // White background
+  surface: ['#FFFFFF', '#FFFFFF'], // All surfaces are white
   banner: '#f5f5f5', // For slightly grey surfaces
   border: '#ededed', // Used in borders (calendar, and between list items)
-  select: '#FFF', // Background color for react-select
+  select: '#FFFFFF', // Background color for react-select
   select_hover: '#e1edff', // Blueish tint to use on hover
   multivalue: 'hsl(0,0%,90%)', // Multivalue background-color used in react-select
   hidden: '#b9b8b8', // Color to use when course is hidden

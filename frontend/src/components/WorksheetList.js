@@ -17,6 +17,7 @@ import WorksheetListItem from './WorksheetListItem';
  * @prop setFbPerson - function to change FB person
  * @prop cur_person - string of current person who's worksheet we are viewing
  * @prop hidden_courses - dictionary of hidden courses
+ * @prop setCurExpand - function to change worksheet view
  */
 
 function WorksheetList({
@@ -30,6 +31,7 @@ function WorksheetList({
   setFbPerson,
   cur_person,
   hidden_courses,
+  setCurExpand,
 }) {
   // Build the HTML for the list of courses of a given season
   const buildHtml = useCallback(
@@ -73,9 +75,10 @@ function WorksheetList({
         onSeasonChange={onSeasonChange}
         setFbPerson={setFbPerson}
         cur_person={cur_person}
+        setCurExpand={setCurExpand}
       />
       {/* List of courses for this season */}
-      <SurfaceComponent layer={0} className={styles.table}>
+      <SurfaceComponent layer={0} className={styles.table + ' mx-1'}>
         <ListGroup variant="flush">{items}</ListGroup>
       </SurfaceComponent>
     </div>

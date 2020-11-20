@@ -71,6 +71,15 @@ function Worksheet() {
   // Currently expanded component (calendar or list or none)
   const [cur_expand, setCurExpand] = useState('none');
 
+  const handleCurExpand = useCallback(
+    (view) => {
+      setCurExpand(view);
+      // Scroll back to top when changing views
+      window.scrollTo({ top: 0, left: 0 });
+    },
+    [setCurExpand]
+  );
+
   const handleFBPersonChange = useCallback(
     (new_person) => {
       // Reset listings data when changing FB person
@@ -236,21 +245,16 @@ function Worksheet() {
   return (
     <div className={styles.container}>
       {/* Desktop View */}
-      <div
-        className={
-          (cur_expand !== 'list'
-            ? styles.desktop_container
-            : styles.expanded_list_container) + ' d-none d-md-block'
-        }
-      >
-        <Row className={'m-3'}>
+      <div className={styles.desktop_container + ' d-none d-md-block'}>
+        <Row className={cur_expand === 'list' ? 'm-3' : 'mx-3 mb-3'}>
           {/* Calendar Component */}
           <Col
             // Width of componenet depends on if it is expanded or not
             md={cur_expand === 'calendar' ? 12 : 9}
             className={
               styles.calendar +
-              ' m-0 p-0 ' +
+              ' mt-3 pl-0 ' +
+              (cur_expand === 'calendar' ? 'pr-0 ' : 'pr-4 ') +
               (cur_expand === 'list' ? styles.hidden : '')
             }
           >
@@ -276,7 +280,7 @@ function Worksheet() {
                     style={{ display: 'block' }}
                     onClick={() => {
                       // Expand calendar
-                      setCurExpand('calendar');
+                      handleCurExpand('calendar');
                     }}
                   />
                 ) : (
@@ -285,7 +289,7 @@ function Worksheet() {
                     size={expand_btn_size}
                     onClick={() => {
                       // Compress calendar
-                      setCurExpand('none');
+                      handleCurExpand('none');
                     }}
                   />
                 )}
@@ -297,9 +301,8 @@ function Worksheet() {
             // Width depends on if it is expanded or not
             md={cur_expand === 'list' ? 12 : 3}
             className={
-              styles.table +
-              ' pl-4 ml-auto ' +
-              (cur_expand === 'list' ? ' pr-4 ' : 'pr-0 ') +
+              'ml-auto ' +
+              (cur_expand === 'list' ? ' px-4 ' : 'px-0 ') +
               (cur_expand === 'calendar' ? styles.hidden : '')
             }
           >
@@ -315,7 +318,7 @@ function Worksheet() {
                   onSeasonChange={changeSeason}
                   setFbPerson={handleFBPersonChange}
                   fb_person={fb_person}
-                  setCurExpand={setCurExpand}
+                  setCurExpand={handleCurExpand}
                 />
               </div>
             </Fade>
@@ -333,25 +336,10 @@ function Worksheet() {
                   setHoverCourse={setHoverCourse}
                   setFbPerson={handleFBPersonChange}
                   cur_person={fb_person}
+                  setCurExpand={handleCurExpand}
                 />
               </div>
             </Fade>
-            {/* Expand/Compress Icons for list */}
-            {cur_expand === 'none' && (
-              <StyledExpandBtn
-                className={styles.expand_btn + ' ' + styles.top_left}
-              >
-                <FaExpandAlt
-                  className={styles.expand_icon}
-                  size={expand_btn_size}
-                  onClick={() => {
-                    // Expand the list component
-                    posthog.capture('worksheet-view-list');
-                    setCurExpand('list');
-                  }}
-                />
-              </StyledExpandBtn>
-            )}
           </Col>
         </Row>
       </div>
