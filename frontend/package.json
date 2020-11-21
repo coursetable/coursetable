@@ -18,7 +18,7 @@
     "moment": "^2.29.1",
     "posthog-js": "^1.6.0",
     "qs": "^6.9.4",
-    "rc-slider": "9.6.3",
+    "rc-slider": "9.6.4",
     "rc-tooltip": "^5.0.1",
     "react": "^16.14.0",
     "react-big-calendar": "^0.28.6",
