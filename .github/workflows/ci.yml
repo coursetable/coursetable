@@ -23,8 +23,8 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install --global prettier depcheck
-      - run: cd api && prettier -l .
+      - run: npm install --global yarn && yarn
+      - run: cd api && yarn run lint-check
       - run: cd api && depcheck --json
 
   frontend:

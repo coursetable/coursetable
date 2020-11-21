@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "lint-check": "prettier -l ."
   },
   "nodemonConfig": {
     "ignore": [
