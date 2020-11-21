@@ -1,12 +1,3 @@
-.container {
-  position: -webkit-sticky; /* Safari */
-  position: sticky;
-  top: 0;
-  z-index: 2;
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-}
-
 .select_container {
   width: 100%;
   border-radius: 8px;
@@ -15,4 +6,15 @@
 
 .hover_effect:hover {
   background-color: rgba(220, 236, 255, 0.7);
+}
+
+.top_left {
+  left: 0.25rem;
+  top: 1rem !important;
+  transform: rotateZ(90deg) translate(-40%, 40%);
+  z-index: 10 !important;
+}
+
+.top_left:hover {
+  transform: rotateZ(90deg) translate(-40%, 40%) scale(1.1);
 }

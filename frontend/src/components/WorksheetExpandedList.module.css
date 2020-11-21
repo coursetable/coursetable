@@ -2,7 +2,7 @@
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   border-radius: 8px;
   position: sticky;
-  top: 64px;
+  top: calc(1rem + 56px);
 }
 
 .top_left {

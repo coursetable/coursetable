@@ -1562,7 +1562,7 @@
     "@sentry/types" "5.27.4"
     tslib "^1.9.3"
 
-"@sentry/react@^5.27.3":
+"@sentry/react@^5.27.4":
   version "5.27.4"
   resolved "https://registry.yarnpkg.com/@sentry/react/-/react-5.27.4.tgz#757983dda2b2c8782d4c3a73c85806bb21ec93ed"
   integrity sha512-nRv/u2nP4cQMWu1Gybv7izIl2VwcM6s6P2hco9RlxrCJUpQIUuHRo4yWqDn+G1Xxdr511yY8p4JR+ESBaRGJFg==
