@@ -7,6 +7,7 @@ import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
 import posthog from 'posthog-js';
+import { setSSObject, getSSObject } from '../utilities.js';
 
 /**
  * Render worksheet list in default worksheet view
@@ -42,6 +43,22 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
 
     // Determine if we are adding or removing the course
     const add_remove = inWorksheet ? 'remove' : 'add';
+
+    // removes removed courses from worksheet hidden courses
+    if (inWorksheet) {
+      setSSObject('hidden_courses', [], true);
+      let hidden_courses = getSSObject('hidden_courses');
+      for (let i = 0; i < hidden_courses.length; i++) {
+        if (
+          hidden_courses[i][0] === season_code &&
+          hidden_courses[i][1] === crn
+        ) {
+          hidden_courses.splice(i, 1);
+          setSSObject('hidden_courses', hidden_courses);
+          break;
+        }
+      }
+    }
 
     // User legacy api php to perform worksheet action
     axios
