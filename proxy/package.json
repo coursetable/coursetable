@@ -1,12 +1,18 @@
 {
   "scripts": {
-    "start": "nodemon proxy.js"
+    "start": "nodemon proxy.js",
+    "prod": "NODE_ENV=production node proxy.js",
+    "lint-check": "prettier -l .",
+    "depcheck": "npx depcheck . --json"
   },
   "dependencies": {
     "axios": "^0.21.0",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.6",
-    "morgan": "^1.10.0",
-    "nodemon": "^2.0.6"
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.0"
   }
 }

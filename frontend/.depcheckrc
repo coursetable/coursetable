@@ -1,0 +1,4 @@
+ignores: ["graphql", "typescript", "@types/*"]
+skip-missing: true
+specials: ["bin"]
+

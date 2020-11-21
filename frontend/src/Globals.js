@@ -9,8 +9,7 @@ import { UserProvider } from './user';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { InMemoryCache, ApolloClient } from '@apollo/client';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
 
 import posthog from 'posthog-js';
 import reportWebVitals from './reportWebVitals';

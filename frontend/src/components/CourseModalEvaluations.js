@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
 import { SEARCH_EVALUATION_NARRATIVES } from '../queries/QueryStrings';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
 

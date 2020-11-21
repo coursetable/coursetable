@@ -6,7 +6,7 @@ import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/client';
 
 import { FiExternalLink } from 'react-icons/fi';
 
