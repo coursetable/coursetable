@@ -9,6 +9,11 @@ import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+import {
+  SurfaceComponent,
+  TextComponent,
+  StyledHoverText,
+} from './StyledComponents';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -32,7 +37,8 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     });
   }, [user.worksheet]);
 
-  const { data } = useWorksheetInfo(filtered_worksheet);
+  let { data } = useWorksheetInfo(filtered_worksheet);
+  if (!data) data = [];
 
   // Handle 'export worksheet' button click
   const handleExportClick = () => {
@@ -43,17 +49,15 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     setExport(true);
   };
 
-  // Variable used in useEffect to be statically checked
-  const fetched_data = data ? data : [];
   // Called when worksheet updates or export_ics changes
   useEffect(() => {
     // return if worksheet isn't loaded or it isn't time to export
-    if (fetched_data.length === 0 || !export_ics) return;
+    if (!data || data.length === 0 || !export_ics) return;
     // Generate and download ICS file
-    generateICS(fetched_data);
+    generateICS(data);
     // Reset export_ics state on completion
     setExport(false);
-  }, [fetched_data, export_ics]);
+  }, [data, export_ics]);
 
   // Handle 'sign out' button click
   const handleLogoutClick = () => {
@@ -75,7 +79,11 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     setIsComponentVisible(true);
   };
   return (
-    <div className={styles.collapse_container} onClick={handleDropdownClick}>
+    <SurfaceComponent
+      layer={1}
+      className={styles.collapse_container}
+      onClick={handleDropdownClick}
+    >
       <Collapse in={profile_expanded}>
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
@@ -87,23 +95,26 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                 size={20}
                 style={{ paddingLeft: '2px' }}
               />
-              <a
-                href="https://old.coursetable.com/"
-                className={styles.collapse_text}
-              >
-                Old CourseTable
-              </a>
+              <TextComponent type={1}>
+                <a
+                  href="https://old.coursetable.com/"
+                  className={styles.collapse_text}
+                >
+                  <StyledHoverText>Old CourseTable</StyledHoverText>
+                </a>
+              </TextComponent>
             </Row>
             {/* Export Worksheet button */}
             {isLoggedIn && (
               <Row className=" pb-3 m-auto">
                 <FcCalendar className="mr-2 my-auto" size={20} />
-                <span
+                <TextComponent
+                  type={1}
                   onClick={handleExportClick}
                   className={styles.collapse_text}
                 >
-                  Export Worksheet
-                </span>
+                  <StyledHoverText>Export Worksheet</StyledHoverText>
+                </TextComponent>
               </Row>
             )}
             {/* Connect FB button */}
@@ -126,13 +137,14 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   color="#ed5f5f"
                   style={{ paddingLeft: '2px' }}
                 />
-                <span
+                <TextComponent
+                  type={1}
                   // href="/legacy_api/index.php?logout=1"
                   onClick={handleLogoutClick}
                   className={styles.collapse_text}
                 >
-                  Sign Out
-                </span>
+                  <StyledHoverText>Sign Out</StyledHoverText>
+                </TextComponent>
               </Row>
             ) : (
               <Row className=" pb-3 m-auto">
@@ -146,14 +158,16 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                   href="/legacy_api/index.php?forcelogin=1"
                   className={styles.collapse_text}
                 >
-                  Sign In
+                  <TextComponent type={1}>
+                    <StyledHoverText>Sign In</StyledHoverText>
+                  </TextComponent>
                 </a>
               </Row>
             )}
           </Col>
         </div>
       </Collapse>
-    </div>
+    </SurfaceComponent>
   );
 }
 

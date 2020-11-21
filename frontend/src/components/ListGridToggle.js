@@ -1,6 +1,19 @@
 import React from 'react';
-import styles from './ListGridToggle.module.css';
+// import styles from './ListGridToggle.module.css';
 import { FaBars, FaTh } from 'react-icons/fa';
+import styled from 'styled-components';
+
+const StyledToggle = styled.div`
+  color: ${({ theme }) => theme.text[1]};
+  padding: 7.5px;
+  border-radius: 15px;
+  transition: 0.2s;
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.select};
+    color: ${({ theme }) => theme.primary};
+  }
+`;
 
 /**
  * Toggle button between List and Grid view
@@ -10,16 +23,16 @@ import { FaBars, FaTh } from 'react-icons/fa';
 
 const ListGridToggle = ({ isList, setView }) => {
   return (
-    <div
-      className={styles.btn_container + ' d-flex ml-auto my-auto'}
+    <StyledToggle
+      className={'d-flex ml-auto my-auto'}
       onClick={() => setView(!isList)}
     >
       {!isList ? (
-        <FaBars className={styles.btn + ' m-auto'} size={15} />
+        <FaBars className={'m-auto'} size={15} />
       ) : (
-        <FaTh className={styles.btn + ' m-auto'} size={15} />
+        <FaTh className={'m-auto'} size={15} />
       )}
-    </div>
+    </StyledToggle>
   );
 };
 

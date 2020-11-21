@@ -1,9 +1,9 @@
 import React, { useCallback, useMemo } from 'react';
 import styles from './WorksheetList.module.css';
-import { Row, Col, ListGroup } from 'react-bootstrap';
-import WorksheetToggleButton from './WorksheetToggleButton';
-import WorksheetHideButton from './WorksheetHideButton';
+import { ListGroup } from 'react-bootstrap';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
+import { SurfaceComponent } from './StyledComponents';
+import WorksheetListItem from './WorksheetListItem';
 
 /**
  * Render worksheet list in default worksheet view
@@ -16,6 +16,8 @@ import WorksheetRowDropdown from './WorksheetRowDropdown';
  * @prop setHoverCourse - function to darken calendar events of this listing
  * @prop setFbPerson - function to change FB person
  * @prop cur_person - string of current person who's worksheet we are viewing
+ * @prop hidden_courses - dictionary of hidden courses
+ * @prop setCurExpand - function to change worksheet view
  */
 
 function WorksheetList({
@@ -28,6 +30,8 @@ function WorksheetList({
   setHoverCourse,
   setFbPerson,
   cur_person,
+  hidden_courses,
+  setCurExpand,
 }) {
   // Build the HTML for the list of courses of a given season
   const buildHtml = useCallback(
@@ -36,61 +40,26 @@ function WorksheetList({
       let items = [];
       // Variable for list keys
       let id = 0;
+
       // Iterate over all listings of this season
       courses.forEach((course) => {
         // Add listgroup item to items list
         items.push(
-          <ListGroup.Item
+          <WorksheetListItem
             key={id++}
-            className={styles.clickable + ' py-1 px-2'}
-            onMouseEnter={() => {
-              setHoverCourse(course);
-            }}
-            onMouseLeave={() => {
-              setHoverCourse(null);
-            }}
-          >
-            {/* Bookmark Button */}
-            <div className={styles.bookmark}>
-              <WorksheetToggleButton
-                worksheetView={true}
-                crn={course.crn}
-                season_code={cur_season}
-                modal={false}
-              />
-            </div>
-            <Row className="align-items-center mx-auto">
-              {/* Hide Button */}
-              <Col xs="auto" className="pl-0 pr-2 my-auto">
-                <Row className="m-auto">
-                  <WorksheetHideButton
-                    toggleCourse={toggleCourse}
-                    crn={course.crn}
-                    season_code={cur_season}
-                  />
-                </Row>
-              </Col>
-              {/* Course Code and Title */}
-              <Col
-                className={
-                  (course.hidden ? styles.hidden + ' ' : '') +
-                  styles.list_text +
-                  ' px-0'
-                }
-                onClick={() => showModal(course)}
-              >
-                <strong>{course.course_code}</strong>
-                <br />
-                <span className={styles.course_title}>{course.title}</span>
-              </Col>
-            </Row>
-          </ListGroup.Item>
+            course={course}
+            cur_season={cur_season}
+            showModal={showModal}
+            toggleCourse={toggleCourse}
+            setHoverCourse={setHoverCourse}
+            hidden={hidden_courses[course.crn]}
+          />
         );
       });
 
       return items;
     },
-    [setHoverCourse, toggleCourse, showModal]
+    [setHoverCourse, toggleCourse, showModal, hidden_courses]
   );
 
   const items = useMemo(() => {
@@ -106,11 +75,12 @@ function WorksheetList({
         onSeasonChange={onSeasonChange}
         setFbPerson={setFbPerson}
         cur_person={cur_person}
+        setCurExpand={setCurExpand}
       />
       {/* List of courses for this season */}
-      <div className={styles.table}>
+      <SurfaceComponent layer={0} className={styles.table + ' mx-1'}>
         <ListGroup variant="flush">{items}</ListGroup>
-      </div>
+      </SurfaceComponent>
     </div>
   );
 }

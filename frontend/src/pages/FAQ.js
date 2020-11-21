@@ -5,8 +5,22 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-
+import { StyledHoverText, TextComponent } from '../components/StyledComponents';
+import styled from 'styled-components';
 import { scrollToTop } from '../utilities';
+
+// Card used in FAQ accordion
+const StyledCard = styled(Card)`
+  background-color: transparent;
+  border: none !important;
+  border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+  transition: border 0.2s linear;
+
+  .active {
+    border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+    color: ${({ theme }) => theme.primary};
+  }
+`;
 
 // Custom accordion component
 function ContextAwareToggle({ eventKey, callback, question }) {
@@ -22,9 +36,9 @@ function ContextAwareToggle({ eventKey, callback, question }) {
   const isCurrentEventKey = currentEventKey === eventKey;
 
   return (
-    <div
+    <StyledHoverText
       className={
-        (!isCurrentEventKey ? '' : styles.accordion_hover_header_active) +
+        (!isCurrentEventKey ? '' : 'active') +
         '  d-flex justify-content-between py-3 px-3 ' +
         styles.accordion_hover_header
       }
@@ -39,7 +53,7 @@ function ContextAwareToggle({ eventKey, callback, question }) {
           styles.accordion_arrow
         }
       />
-    </div>
+    </StyledHoverText>
   );
 }
 
@@ -275,8 +289,8 @@ function FAQ() {
       <h1 className={styles.faq_header + ' mt-5 mb-1'}>
         Frequently Asked Questions
       </h1>
-      <p className={styles.faq_description + ' mb-3 text-muted'}>
-        Have another question?{' '}
+      <p className={styles.faq_description + ' mb-3'}>
+        <TextComponent type={1}>Have another question?</TextComponent>{' '}
         <NavLink to="/feedback" onClick={scrollToTop}>
           Contact us
         </NavLink>
@@ -284,14 +298,16 @@ function FAQ() {
       </p>
       <Accordion>
         {faqs.map((faq, idx) => (
-          <Card key={idx} className={styles.accordion_card}>
-            <div className={styles.accordion_header}>
+          <StyledCard key={idx}>
+            <div>
               <ContextAwareToggle eventKey={`${idx}`} question={faq.title} />
             </div>
             <Accordion.Collapse eventKey={`${idx}`}>
-              <Card.Body className="text-muted py-3">{faq.contents}</Card.Body>
+              <Card.Body className="py-3">
+                <TextComponent type={1}>{faq.contents}</TextComponent>
+              </Card.Body>
             </Accordion.Collapse>
-          </Card>
+          </StyledCard>
         ))}
       </Accordion>
     </div>

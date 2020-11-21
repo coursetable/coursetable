@@ -14,10 +14,23 @@ import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { useUser } from '../user';
 import { fbFriendsAlsoTaking } from '../utilities';
-import { FcCloseUpMode, FcReading } from 'react-icons/fc';
-import { AiFillStar } from 'react-icons/ai';
+import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
-import { FaCanadianMapleLeaf, FaAppleAlt } from 'react-icons/fa';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { TextComponent, StyledIcon } from './StyledComponents';
+import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
+import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
+import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
+import styled from 'styled-components';
+
+const StyledGridItem = styled.div`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgb(245, 245, 245)' : theme.surface[1]};
+  transition: background-color 0.2s linear;
+  &:hover {
+    background-color: ${({ theme }) => theme.select_hover};
+  }
+`;
 
 /**
  * Renders a grid item for a search result
@@ -125,7 +138,7 @@ const SearchResultsGridItem = ({
       className={styles.container + ' px-2 pt-0 pb-3'}
       style={{ overflow: 'hidden' }}
     >
-      <div
+      <StyledGridItem
         onClick={() => {
           showModal(course);
         }}
@@ -182,26 +195,33 @@ const SearchResultsGridItem = ({
           <Col xs={7} className="p-0">
             {/* Course Professors */}
             <Row className="m-auto">
-              <span className={styles.one_line + ' ' + styles.professors}>
+              <TextComponent
+                type={1}
+                className={styles.one_line + ' ' + styles.professors}
+              >
                 {course.professor_names.length > 0
                   ? course.professor_names.join(' • ')
                   : 'Professor: TBA'}
-              </span>
+              </TextComponent>
             </Row>
             {/* Course Times */}
             <Row className="m-auto">
               <small className={styles.one_line + ' ' + styles.small_text}>
-                {course.times_summary === 'TBA'
-                  ? 'Times: TBA'
-                  : course.times_summary}
+                <TextComponent type={1}>
+                  {course.times_summary === 'TBA'
+                    ? 'Times: TBA'
+                    : course.times_summary}
+                </TextComponent>
               </small>
             </Row>
             {/* Course Location */}
             <Row className="m-auto">
               <small className={styles.one_line + ' ' + styles.small_text}>
-                {course.locations_summary === 'TBA'
-                  ? 'Location: TBA'
-                  : course.locations_summary}
+                <TextComponent type={1}>
+                  {course.locations_summary === 'TBA'
+                    ? 'Location: TBA'
+                    : course.locations_summary}
+                </TextComponent>
               </small>
             </Row>
             {/* Course Skills and Areas */}
@@ -282,7 +302,9 @@ const SearchResultsGridItem = ({
                       ? course.average_rating.toFixed(RATINGS_PRECISION)
                       : 'N/A'}
                   </div>
-                  <AiFillStar color="#fac000" className="my-auto" />
+                  <StyledIcon>
+                    <Star className={styles.icon} />
+                  </StyledIcon>
                 </Row>
               </OverlayTrigger>
               {/* Professor Rating */}
@@ -308,7 +330,9 @@ const SearchResultsGridItem = ({
                       ? course.professor_avg_rating
                       : 'N/A'}
                   </div>
-                  <FaAppleAlt color="#fa6e6e" className="my-auto" />
+                  <StyledIcon>
+                    <Teacher className={styles.prof_icon} />
+                  </StyledIcon>
                 </Row>
               </OverlayTrigger>
               {/* Workload Rating */}
@@ -334,13 +358,15 @@ const SearchResultsGridItem = ({
                       ? course.average_workload.toFixed(RATINGS_PRECISION)
                       : 'N/A'}
                   </div>
-                  <FcReading className="my-auto" />
+                  <StyledIcon>
+                    <Book className={styles.icon} />
+                  </StyledIcon>
                 </Row>
               </OverlayTrigger>
             </div>
           </Col>
         </Row>
-      </div>
+      </StyledGridItem>
       {/* Bookmark Button */}
       <div className={styles.worksheet_btn}>
         {

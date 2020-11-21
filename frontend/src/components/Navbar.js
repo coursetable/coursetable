@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
@@ -10,20 +10,67 @@ import { BsFillPersonFill } from 'react-icons/bs';
 import { scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
+import styled from 'styled-components';
 import posthog from 'posthog-js';
+import { SurfaceComponent } from '../components/StyledComponents';
 
-import {
-  setFetchMethod,
-  enable as enableDarkMode,
-  disable as disableDarkMode,
-} from 'darkreader';
+const StyledMeIcon = styled.div`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
+  color: ${({ theme }) => theme.text[1]};
+  width: 30px;
+  height: 30px;
+  border-radius: 15px;
+  display: flex;
+  transition: background-color 0.2s linear, color 0.2s linear;
+  &:hover {
+    cursor: pointer;
+    color: ${({ theme }) => theme.primary};
+  }
+`;
+
+const StyledDiv = styled.div`
+  padding: 0.5rem 1rem 0.5rem 0rem;
+  transition: 0.1s;
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: 500;
+  &:hover {
+    color: ${({ theme }) => theme.primary};
+  }
+`;
+
+const StyledNavLink = styled(NavLink)`
+  padding: 0.5rem 1rem 0.5rem 0rem;
+  transition: 0.1s;
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: 500;
+  &:hover {
+    text-decoration: none !important;
+    color: ${({ theme }) => theme.primary};
+  }
+  &.active {
+    color: ${({ theme }) => theme.primary};
+  }
+`;
+
+const StyledNavToggle = styled(Navbar.Toggle)`
+  border-color: ${({ theme }) => theme.border} !important;
+  .navbar-toggler-icon {
+    background-image: ${({ theme }) =>
+      "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='" +
+      (theme.theme === 'light'
+        ? 'rgba(69, 69, 69, 1)'
+        : 'rgba(219, 219, 219, 1)') +
+      "' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e\")"};
+  }
+`;
 
 /**
  * Renders the navbar
  * @prop isLoggedIn - boolean | is user logged in?
  */
 
-function CourseTableNavbar({ isLoggedIn }) {
+function CourseTableNavbar({ isLoggedIn, themeToggler }) {
   // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState(false);
   // Ref to detect outside clicks for profile dropdown
@@ -53,42 +100,16 @@ function CourseTableNavbar({ isLoggedIn }) {
     window.location.pathname = '/';
   };
 
-  // DarkMode or LightMode
-  setFetchMethod(window.fetch);
-
-  // Checks user preferences for dark mode
-  if (!window.localStorage.getItem('darkmode')) {
-    let temp =
-      window.matchMedia('(prefers-color-scheme)').media !== 'not all' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches;
-    window.localStorage.setItem('darkmode', temp ? 'dark' : 'light');
-  }
-
-  const [darkModeEnabled, setDarkModeEnabled] = useState(
-    window.localStorage.getItem('darkmode') === 'dark'
-  );
-
-  // Updates current theme appropriately
-  useEffect(() => {
-    if (darkModeEnabled)
-      enableDarkMode({
-        brightness: 100,
-        contrast: 100,
-        sepia: 5,
-      });
-    else disableDarkMode();
-  }, [darkModeEnabled]);
-
   return (
     <div className={styles.sticky_navbar}>
-      <div className={`${styles.navbar}`}>
+      <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
           <Navbar
             expanded={nav_expanded}
             onToggle={(expanded) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className={styles.navbar + ' shadow-sm px-3'}
+            className={'shadow-sm px-3'}
           >
             {/* Logo in top left */}
             <Nav className={styles.nav_brand + ' navbar-brand py-2'}>
@@ -102,12 +123,12 @@ function CourseTableNavbar({ isLoggedIn }) {
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>
-                  <Logo icon={false} useWordmarkDark={darkModeEnabled} />
+                  <Logo icon={false} />
                 </span>
               </NavLink>
             </Nav>
 
-            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <StyledNavToggle aria-controls="basic-navbar-nav" />
 
             <Navbar.Collapse
               id="basic-navbar-nav"
@@ -116,77 +137,49 @@ function CourseTableNavbar({ isLoggedIn }) {
             >
               {/* Close navbar on click in mobile view */}
               <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
-                {/* {pathname === '/worksheet' && (
-                  // Display catalog searchbar if on worksheet view. NOT USING RN
-                  <div
-                    className={
-                      'd-none d-md-block ' +
-                      (is_relative
-                        ? styles.search_bar_relative
-                        : styles.search_bar_mid)
-                    }
-                  >
-                    <Searchbar bar_size="md" />
-                  </div>
-                )} */}
                 {/* About Page */}
-                <NavLink
+                <StyledNavLink
                   to="/about"
                   // Left align about link if not mobile
-                  className={
-                    styles.navbar_links +
-                    (!is_mobile ? ' align-self-begin' : '')
-                  }
+                  className={!is_mobile ? ' align-self-begin' : ''}
                 >
                   About
-                </NavLink>
+                </StyledNavLink>
                 {/* FAQs Page */}
-                <NavLink
+                <StyledNavLink
                   to="/faq"
                   // Left align about link if not mobile
-                  className={
-                    styles.navbar_links + (!is_mobile ? ' mr-auto' : '')
-                  }
+                  className={!is_mobile ? ' mr-auto' : ''}
                 >
                   FAQ
-                </NavLink>
+                </StyledNavLink>
 
                 {/* DarkMode Button */}
                 <div
                   className={styles.navbar_dark_mode_btn + ' d-flex'}
-                  onClick={() => {
-                    window.localStorage.setItem(
-                      'darkmode',
-                      !darkModeEnabled ? 'dark' : 'light'
-                    );
-                    setDarkModeEnabled(!darkModeEnabled);
-                  }}
+                  onClick={themeToggler}
                 >
-                  <DarkModeButton darkModeEnabled={darkModeEnabled} />
+                  <DarkModeButton />
                 </div>
 
                 {/* Catalog Page */}
-                <NavLink
+                <StyledNavLink
                   to="/catalog"
                   // Right align catalog link if not mobile
-                  className={
-                    styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
-                  }
+                  className={!is_mobile ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
                   Catalog
-                </NavLink>
+                </StyledNavLink>
                 {/* Worksheet Page */}
-                <NavLink
+                <StyledNavLink
                   to="/worksheet"
                   // Right align worksheet link if not mobile
-                  className={
-                    styles.navbar_links + (!is_mobile ? ' align-self-end' : '')
-                  }
+                  className={!is_mobile ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
                   Worksheet
-                </NavLink>
+                </StyledNavLink>
 
                 {/* Profile Icon. Show if not mobile */}
                 <div
@@ -196,7 +189,7 @@ function CourseTableNavbar({ isLoggedIn }) {
                   }
                 >
                   <div className={styles.navbar_me}>
-                    <div
+                    <StyledMeIcon
                       ref={ref_visible}
                       className={styles.icon_circle + ' m-auto'}
                       onClick={() => setIsComponentVisible(!isComponentVisible)}
@@ -206,22 +199,21 @@ function CourseTableNavbar({ isLoggedIn }) {
                         size={20}
                         color={isComponentVisible ? '#007bff' : undefined}
                       />
-                    </div>
+                    </StyledMeIcon>
                   </div>
                 </div>
                 {/* Sign in/out and Facebook buttons. Show if mobile */}
                 <div className="d-md-none">
-                  <div className={styles.navbar_links}>
+                  <StyledDiv>
                     <a
                       href="https://old.coursetable.com/"
-                      style={{ color: 'rgba(1, 1, 1, 0.6)' }}
+                      style={{ color: 'inherit' }}
                     >
                       Old CourseTable
                     </a>
-                  </div>
+                  </StyledDiv>
                   {!isLoggedIn ? (
-                    <div
-                      className={styles.navbar_links}
+                    <StyledDiv
                       onClick={() => {
                         posthog.capture('login');
 
@@ -230,18 +222,15 @@ function CourseTableNavbar({ isLoggedIn }) {
                       }}
                     >
                       Sign In
-                    </div>
+                    </StyledDiv>
                   ) : (
                     <>
-                      <div className={styles.navbar_links}>
+                      <StyledDiv>
                         <FBLoginButton />
-                      </div>
-                      <div
-                        className={styles.navbar_links}
-                        onClick={handleLogoutClick}
-                      >
+                      </StyledDiv>
+                      <StyledDiv onClick={handleLogoutClick}>
                         Sign Out
-                      </div>
+                      </StyledDiv>
                     </>
                   )}
                 </div>
@@ -249,7 +238,7 @@ function CourseTableNavbar({ isLoggedIn }) {
             </Navbar.Collapse>
           </Navbar>
         </Container>
-      </div>
+      </SurfaceComponent>
       {/* Dropdown that has position: absolute */}
       <div>
         <MeDropdown

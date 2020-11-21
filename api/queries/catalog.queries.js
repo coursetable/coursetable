@@ -15,40 +15,40 @@ export const listSeasonsQuery = gql`
 export const catalogBySeasonQuery = gql`
   query catalogBySeason($season: String!) {
     computed_listing_info(where: { season_code: { _eq: $season } }) {
-      listing_id
-      title
-      description
       all_course_codes
-      professor_names
+      areas
+      average_gut_rating
+      average_professor
       average_rating
       average_workload
-      average_professor
-      average_gut_rating
-      times_summary
-      times_by_day
-      locations_summary
-      skills
-      areas
-      credits
+      classnotes
       course_code
-      subject
-      number
-      school
-      requirements
-      season_code
-      extra_info
-      syllabus_url
-      section
+      credits
       crn
+      description
       enrolled
+      extra_info
+      final_exam
+      flag_info
+      fysem
       last_enrollment
       last_enrollment_same_professors
-      flag_info
+      listing_id
+      locations_summary
+      number
+      professor_names
       regnotes
+      requirements
       rp_attr
-      classnotes
-      final_exam
-      fysem
+      school
+      season_code
+      section
+      skills
+      subject
+      syllabus_url
+      times_by_day
+      times_summary
+      title
     }
   }
 `;

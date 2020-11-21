@@ -1,12 +1,11 @@
 import React, { useState, useEffect, useMemo } from 'react';
 
-import { Row, Badge, OverlayTrigger, Popover, Tooltip } from 'react-bootstrap';
+import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
 import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
-  na_cell,
 } from '../queries/Constants.js';
 
 import chroma from 'chroma-js';
@@ -18,15 +17,27 @@ import { fbFriendsAlsoTaking } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './SearchResultsItem.module.css';
+import styled from 'styled-components';
+
+// Row for search results item
+const StyledResultsItem = styled(Row)`
+  border-top: solid 1px ${({ theme }) => theme.border};
+  transition: border 0.2s linear;
+  &:hover {
+    cursor: pointer;
+    background-color: ${({ theme }) => theme.select_hover};
+  }
+`;
 
 /**
  * Renders a list item for a search result and expanded worksheet list item
  * @prop course - listing data for the current course
  * @prop showModal - function that shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop isLast - boolean | is this the last course of the search results?
+ * @prop isFirst - boolean | is this the first course of the search results?
  * @prop COL_SPACING - dictionary with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
  * @prop expanded - boolean | is the catalog expanded or not
@@ -36,7 +47,7 @@ const SearchResultsItem = ({
   course,
   showModal,
   multiSeasons,
-  isLast,
+  isFirst,
   COL_SPACING,
   isScrolling = false,
   expanded,
@@ -96,7 +107,7 @@ const SearchResultsItem = ({
   // Render popover that contains title, description, and requirements when hovering over course name
   const renderTitlePopover = (props) => {
     return (
-      <Popover {...props} id="title_popover">
+      <StyledPopover {...props} id="title_popover">
         <Popover.Title>
           <strong>
             {course.extra_info !== 'ACTIVE' ? (
@@ -121,7 +132,7 @@ const SearchResultsItem = ({
                 : course.requirements.slice(0, 250) + '...')}
           </div>
         </Popover.Content>
-      </Popover>
+      </StyledPopover>
     );
   };
 
@@ -155,12 +166,12 @@ const SearchResultsItem = ({
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
-    <Row
+    <StyledResultsItem
       className={
         'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
         Styles.search_result_item +
         ' ' +
-        (isLast ? Styles.last_search_result_item : '') +
+        (isFirst ? Styles.first_search_result_item : '') +
         // red background if class is cancelled
         (course.extra_info !== 'ACTIVE' ? ' ' + Styles.cancelled_class : '')
       }
@@ -197,11 +208,11 @@ const SearchResultsItem = ({
         className={Styles.ellipsis_text + ' font-weight-bold'}
       >
         {course.course_code}
-        <span className="text-muted">
+        <TextComponent type={1}>
           {course.section
             ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
             : ''}
-        </span>
+        </TextComponent>
       </div>
       <OverlayTrigger
         placement={expanded ? 'right' : 'left'}
@@ -214,60 +225,35 @@ const SearchResultsItem = ({
       </OverlayTrigger>
       {/* Class Rating */}
       <div style={rate_style} className="d-flex">
-        <div
-          // Only show eval data when user is signed in
-          style={
-            course.average_rating
-              ? {
-                  color: ratingColormap(course.average_rating).darken(3).css(),
-                  backgroundColor: ratingColormap(course.average_rating),
-                }
-              : na_cell
-          }
+        <StyledRating
+          rating={course.average_rating}
+          colormap={ratingColormap}
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
-        </div>
+        </StyledRating>
       </div>
       {/* Professor Rating */}
       <div style={rate_style} className="d-flex">
-        <div
-          // Only show eval data when user is signed in
-          style={
-            course.average_professor
-              ? {
-                  color: ratingColormap(course.average_professor)
-                    .darken(3)
-                    .css(),
-                  backgroundColor: ratingColormap(course.average_professor),
-                }
-              : na_cell
-          }
+        <StyledRating
+          rating={course.average_professor}
+          colormap={ratingColormap}
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_professor
             ? course.average_professor.toFixed(1)
             : 'N/A'}
-        </div>
+        </StyledRating>
       </div>
       {/* Workload Rating */}
       <div style={rate_style} className="d-flex">
-        <div
-          // Only show eval data when user is signed in
-          style={
-            course.average_workload
-              ? {
-                  color: workloadColormap(course.average_workload)
-                    .darken(3)
-                    .css(),
-                  backgroundColor: workloadColormap(course.average_workload),
-                }
-              : na_cell
-          }
+        <StyledRating
+          rating={course.average_workload}
+          colormap={workloadColormap}
           className={Styles.rating_cell + ' m-auto'}
         >
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
-        </div>
+        </StyledRating>
       </div>
       {/* Enrollment */}
       <div style={num_style} className="d-flex">
@@ -364,7 +350,7 @@ const SearchResultsItem = ({
           <CourseConflictIcon course={course} />
         </div>
       )}
-    </Row>
+    </StyledResultsItem>
   );
 };
 

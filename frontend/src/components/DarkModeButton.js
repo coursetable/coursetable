@@ -1,22 +1,33 @@
 import React from 'react';
+import { withTheme } from 'styled-components';
+import { FaRegMoon } from 'react-icons/fa';
+import { ImSun } from 'react-icons/im';
+import styled from 'styled-components';
 
-import { FaSun, FaRegMoon } from 'react-icons/fa';
+const StyledBtn = styled.span`
+  color: ${({ theme }) => theme.text[1]};
+  transition: color 0.1s;
+  &:hover {
+    cursor: pointer;
+    color: ${({ theme }) => theme.primary};
+  }
+`;
 
 /**
  * DarkMode Button
- * @prop darkModeEnabled - boolean to determine which image to display (true for "sun"; false for "moon")
+ * @prop theme - current theme of the website
  */
 
-function DarkModeButton({ darkModeEnabled = false }) {
+function DarkModeButton({ theme }) {
   return (
-    <span className="my-auto">
-      {darkModeEnabled ? (
-        <FaSun size={20} style={{ display: 'block' }} />
+    <StyledBtn className="my-auto">
+      {theme.theme === 'dark' ? (
+        <ImSun size={20} style={{ display: 'block' }} />
       ) : (
         <FaRegMoon size={20} style={{ display: 'block' }} />
       )}
-    </span>
+    </StyledBtn>
   );
 }
 
-export default DarkModeButton;
+export default withTheme(DarkModeButton);

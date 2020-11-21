@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+// TODO: move these to a .graphql file and use this
+// https://github.com/apollographql/graphql-tag#importing-graphql-files
 export const GET_SEASON_CODES = gql`
   query GetSeasonCodes {
     # it's a lucky coincidence that
@@ -26,27 +28,47 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
         ]
       }
     ) {
-      professor_names
-      professor_info
-      season_code
-      all_course_codes
-      section
-      crn
-      enrolled
-      last_enrollment
-      last_enrollment_same_professors
-      average_rating
-      average_workload
-      course_code
-      title
-      skills
-      areas
       course {
         evaluation_statistics {
           avg_workload
           avg_rating
         }
       }
+      all_course_codes
+      areas
+      average_gut_rating
+      average_professor
+      average_rating
+      average_workload
+      classnotes
+      course_code
+      credits
+      crn
+      description
+      enrolled
+      extra_info
+      final_exam
+      flag_info
+      fysem
+      last_enrollment
+      last_enrollment_same_professors
+      listing_id
+      locations_summary
+      number
+      professor_info
+      professor_names
+      regnotes
+      requirements
+      rp_attr
+      school
+      season_code
+      section
+      skills
+      subject
+      syllabus_url
+      times_by_day
+      times_summary
+      title
     }
   }
 `;

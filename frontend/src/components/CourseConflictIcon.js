@@ -31,8 +31,11 @@ const CourseConflictIcon = ({ course }) => {
   const conflict = useMemo(() => {
     // Return if worksheet hasn't been loaded or this listing has no times
     if (!data || !times) return false;
-    // There is a conflict or this listing has an invalid time
-    if (times === 'TBA' || checkConflict(data, course, times)) {
+    if (times === 'TBA') {
+      // Ignore any items with an invalid time.
+      return false;
+    } else if (checkConflict(data, course, times)) {
+      // There is a conflict with this listing.
       return true;
     }
     // No conflict
@@ -44,9 +47,7 @@ const CourseConflictIcon = ({ course }) => {
     // Render if this course isn't in the worksheet and there is a conflict
     !inWorksheet && conflict ? (
       <Tooltip id="button-tooltip" {...props}>
-        <small style={{ fontWeight: 500 }}>
-          {times === 'TBA' ? 'Invalid Course Time' : 'Conflicts with worksheet'}
-        </small>
+        <small style={{ fontWeight: 500 }}>Conflicts with worksheet</small>
       </Tooltip>
     ) : (
       <div />

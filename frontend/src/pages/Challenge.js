@@ -6,11 +6,15 @@ import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import styles from './Challenge.module.css';
 import { useUser } from '../user';
 import { toast } from 'react-toastify';
-import { useApolloClient } from '@apollo/react-hooks';
+import { useApolloClient } from '@apollo/client';
 
 import { FiExternalLink } from 'react-icons/fi';
 
 import ChallengeError from '../images/error.svg';
+import {
+  TextComponent,
+  SurfaceComponent,
+} from '../components/StyledComponents';
 
 /**
  * Renders the OCE Challenge page if the user hasn't completed yet
@@ -334,8 +338,14 @@ function Challenge() {
       );
     }
     return (
-      <div className="py-5" style={{ background: '#ffaaa5' }}>
-        <div className="bg-white container col-sm-8 col-md-6 col-lg-4 text-center p-5 rounded shadow">
+      <div
+        className="py-5"
+        style={{ backgroundColor: 'rgba(255, 170, 165, 0.5)' }}
+      >
+        <SurfaceComponent
+          layer={0}
+          className="container col-sm-8 col-md-6 col-lg-4 text-center p-5 rounded shadow"
+        >
           <img
             alt="No courses found."
             className="w-50 md:w-25 py-5"
@@ -343,27 +353,35 @@ function Challenge() {
           />
           <h3>{errorTitle}</h3>
           <div>{errorMessage}</div>
-        </div>
+        </SurfaceComponent>
       </div>
     );
   }
 
   return (
-    <div className="py-5" style={{ background: '#a8d8ea' }}>
-      <div className="bg-white container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow">
+    <div
+      className="py-5"
+      style={{ backgroundColor: 'rgba(168, 216, 234, 0.5)' }}
+    >
+      <SurfaceComponent
+        layer={0}
+        className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow"
+      >
         {/* Page Header */}
         <h1 className={'font-weight-bold mb-2'}>Enable evaluations</h1>
         {/* Page Description */}
-        <p className={styles.challenge_description + ' mb-2 text-muted'}>
-          To confirm that you have access to course evaluations, we ask that you
-          retrieve the number of people who responded to a specific question for
-          three courses (linked below). If your responses match the values in
-          our database, you'll be good to go!
-          <br />
-          If the challenge is not working for you, please{' '}
-          <NavLink to="/feedback">let us know</NavLink> and we can grant you
-          access manually.
-        </p>
+        <TextComponent type={1}>
+          <p className={styles.challenge_description + ' mb-2'}>
+            To confirm that you have access to course evaluations, we ask that
+            you retrieve the number of people who responded to a specific
+            question for three courses (linked below). If your responses match
+            the values in our database, you'll be good to go!
+            <br />
+            If the challenge is not working for you, please{' '}
+            <NavLink to="/feedback">let us know</NavLink> and we can grant you
+            access manually.
+          </p>
+        </TextComponent>
         {/* Track number of attempts */}
         {numTries !== null && (
           <div className="mb-2">
@@ -397,7 +415,7 @@ function Challenge() {
             </Spinner>
           </Row>
         )}
-      </div>
+      </SurfaceComponent>
     </div>
   );
 }

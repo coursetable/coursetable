@@ -4,6 +4,7 @@ import styles from './About.module.css';
 import { Card, Button, Row } from 'react-bootstrap';
 //import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
+import { TextComponent, StyledCard } from '../components/StyledComponents';
 
 import ae from '../images/headshots/aidan-evans.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
@@ -90,29 +91,30 @@ function About() {
   return (
     <div className={styles.container + ' mx-auto'}>
       <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
-
-      <p className={styles.about_description + ' mb-3 mx-auto text-muted'}>
-        CourseTable offers a clean and effective way for Yale students to find
-        the courses they want, bringing together course information, student
-        evaluations, and course demand statistics in an intuitive interface.
-        It's run by a small team of volunteers within the{' '}
-        <a
-          href="http://yalecompsociety.org/"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Yale Computer Society
-        </a>{' '}
-        and is completely{' '}
-        <a
-          href="https://github.com/coursetable"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          open source
-        </a>
-        .
-      </p>
+      <TextComponent type={1}>
+        <p className={styles.about_description + ' mb-3 mx-auto'}>
+          CourseTable offers a clean and effective way for Yale students to find
+          the courses they want, bringing together course information, student
+          evaluations, and course demand statistics in an intuitive interface.
+          It's run by a small team of volunteers within the{' '}
+          <a
+            href="http://yalecompsociety.org/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Yale Computer Society
+          </a>{' '}
+          and is completely{' '}
+          <a
+            href="https://github.com/coursetable"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            open source
+          </a>
+          .
+        </p>
+      </TextComponent>
 
       <Row className="mx-auto">
         <div className="mx-auto">
@@ -130,13 +132,15 @@ function About() {
         <Row className="mx-auto">
           {people.map((person, idx) => (
             <div className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-              <Card key={idx} style={{ height: '100%' }}>
-                <Card.Img variant="top" src={person.image} />
+              <StyledCard key={idx} style={{ height: '100%' }}>
+                <Card.Img variant="top" src={person.image} alt={person.name} />
                 <Card.Body className="p-3">
                   <Card.Title className="mb-1">{person.name}</Card.Title>
-                  <Card.Text className="text-muted">{person.role}</Card.Text>
+                  <Card.Text>
+                    <TextComponent type={1}>{person.role}</TextComponent>
+                  </Card.Text>
                 </Card.Body>
-              </Card>
+              </StyledCard>
             </div>
           ))}
         </Row>

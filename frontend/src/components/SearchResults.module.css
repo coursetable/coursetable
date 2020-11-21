@@ -1,6 +1,5 @@
 .results_container {
   border-radius: 8px;
-  background: white;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 }
 
@@ -18,17 +17,11 @@
   position: sticky !important;
   top: 56px !important;
   z-index: 1;
+  border-radius: 8px 8px 0px 0px;
 }
 
 .results_header_row {
-  border: 0px !important;
-  background-color: white !important;
-  border-radius: 8px 8px 0px 0px !important;
   user-select: none;
-}
-
-.results_header_inner {
-  background-color: white !important;
 }
 
 .results_header {
@@ -56,6 +49,16 @@
   position: absolute;
   left: 5px;
   z-index: 2;
+}
+
+.icon {
+  width: 18px;
+  display: block;
+}
+
+.prof_icon {
+  width: 16px;
+  display: block;
 }
 
 :global .sticky {

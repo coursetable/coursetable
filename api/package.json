@@ -1,6 +1,9 @@
 {
   "scripts": {
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "prod": "NODE_ENV=production node server.js",
+    "lint-check": "prettier -l .",
+    "depcheck": "npx depcheck . --json"
   },
   "nodemonConfig": {
     "ignore": [
@@ -8,13 +11,19 @@
     ]
   },
   "dependencies": {
-    "axios": "^0.20.0",
+    "axios": "^0.21.0",
+    "body-parser": "^1.19.0",
     "express": "^4.17.1",
+    "graphql": "^15.4.0",
+    "graphql-tag": "^2.11.0",
     "graphqurl": "^0.3.3",
-    "http-proxy-middleware": "^1.0.4",
+    "jsonfile": "^6.1.0",
     "morgan": "^1.10.0",
-    "mysql": "^2.18.1",
-    "nodemon": "^2.0.4"
+    "mysql": "^2.18.1"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "nodemon": "^2.0.6",
+    "prettier": "^2.2.0"
+  }
 }

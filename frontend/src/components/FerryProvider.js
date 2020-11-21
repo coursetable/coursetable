@@ -8,7 +8,7 @@ import React, {
 
 import { GET_SEASON_CODES } from '../queries/QueryStrings';
 
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
@@ -22,7 +22,7 @@ const courseDataLock = new AsyncLock();
 let courseLoadAttempted = {};
 let courseData = {};
 const addToCache = (season) => {
-  return courseDataLock.acquire('courseData', () => {
+  return courseDataLock.acquire(`load-${season}`, () => {
     if (season in courseData || season in courseLoadAttempted) {
       // Skip if already loaded, or if we previously tried to load it.
       return;

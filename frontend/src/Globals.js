@@ -9,16 +9,21 @@ import { UserProvider } from './user';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { InMemoryCache, ApolloClient } from '@apollo/client';
-import { ApolloProvider } from '@apollo/react-hooks';
+import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
 
 import posthog from 'posthog-js';
+import reportWebVitals from './reportWebVitals';
 
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './index.css';
+
+import { ThemeProvider } from 'styled-components';
+import { useDarkMode } from './components/UseDarkMode';
+import { GlobalStyles } from './components/GlobalStyles';
+import { lightTheme, darkTheme } from './components/Themes';
 
 const POSTHOG_TOKEN =
   process.env.REACT_APP_POSTHOG_TOKEN ||
@@ -69,6 +74,9 @@ function SPAPageChangeListener({ callback }) {
 }
 
 function Globals({ children }) {
+  // website light/dark theme
+  const [theme, themeToggler] = useDarkMode();
+  const themeMode = theme === 'light' ? lightTheme : darkTheme;
   return (
     <>
       {/* TODO: reenable StrictMode later */}
@@ -80,9 +88,22 @@ function Globals({ children }) {
             <WindowDimensionsProvider>
               <Router>
                 <SPAPageChangeListener />
-                <div id="base" style={{ height: 'auto' }}>
-                  {children}
-                </div>
+                <ThemeProvider theme={themeMode}>
+                  <>
+                    <GlobalStyles />
+                    <div id="base" style={{ height: 'auto' }}>
+                      {/* Clone child and give it the themeToggler prop */}
+                      {React.Children.map(children, (child) => {
+                        if (React.isValidElement(child)) {
+                          return React.cloneElement(child, {
+                            themeToggler: themeToggler,
+                          });
+                        }
+                        return child;
+                      })}
+                    </div>
+                  </>
+                </ThemeProvider>
               </Router>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
               <ToastContainer />
@@ -94,5 +115,14 @@ function Globals({ children }) {
     </>
   );
 }
+
+// If you want to start measuring performance in your app, pass a function
+// to log results (for example: reportWebVitals(console.log))
+// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+reportWebVitals((metric) => {
+  console.log('web-vitals', metric);
+  const { entries: _, ...reportableMetric } = metric;
+  posthog.capture('web-vitals', { ...reportableMetric });
+});
 
 export default Globals;

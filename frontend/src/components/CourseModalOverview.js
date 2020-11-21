@@ -1,8 +1,7 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
-import MultiToggle from 'react-multi-toggle';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
-import { useQuery } from '@apollo/react-hooks';
+import { useQuery } from '@apollo/client';
 import Styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants.js';
 import { toSeasonString, fbFriendsAlsoTaking } from '../utilities';
@@ -10,9 +9,33 @@ import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
+import { HiExternalLink } from 'react-icons/hi';
 import { useUser } from '../user';
+import {
+  TextComponent,
+  StyledPopover,
+  StyledRating,
+  StyledLink,
+} from './StyledComponents';
+import MultiToggle from 'react-multi-toggle';
+import styled from 'styled-components';
 
 import CourseModalLoading from './CourseModalLoading';
+
+// Button with season and other info that user selects to view evals
+const StyledCol = styled(Col)`
+  background-color: ${({ theme }) =>
+    theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.select_hover};
+`;
+
+// Multitoggle in modal (course, both, prof)
+export const StyledMultiToggle = styled(MultiToggle)`
+  background-color: ${({ theme }) => theme.surface[1]};
+  border-color: ${({ theme }) => theme.border};
+  .toggleOption {
+    color: ${({ theme }) => theme.text[0]};
+  }
+`;
 
 /**
  * Displays course modal when clicking on a course
@@ -70,13 +93,16 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   };
 
   // Parse for location url and location name
-  let location_url = '',
-    location_name = 'TBD';
+  let location_url = '';
   for (let i in days) {
     const day = days[i];
+    // This listing was flattened.
     if (listing[`times_by_day.${day}`]) {
       location_url = listing[`times_by_day.${day}`][0][3];
-      location_name = listing[`times_by_day.${day}`][0][2];
+    }
+    // This listing wasn't flattened. Came from pressing "more info" on a course eval
+    if (listing.times_by_day && listing.times_by_day[day]) {
+      location_url = listing.times_by_day[day][0][3];
     }
   }
   // Fetch ratings data for this listing
@@ -88,19 +114,20 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         : ['bruh'],
     },
   });
-  // Hold list of evaluation dictionaries
-  let evaluations = [];
   // Hold HTML code that displays the list of evaluations
 
   // Holds Prof information for popover
-  let prof_info = {};
-  listing.professor_names.forEach((prof) => {
-    prof_info[prof] = {
-      num_courses: 0,
-      total_rating: 0,
-      email: '',
-    };
-  });
+  let prof_info = useMemo(() => {
+    let prof_info_temp = {};
+    listing.professor_names.forEach((prof) => {
+      prof_info_temp[prof] = {
+        num_courses: 0,
+        total_rating: 0,
+        email: '',
+      };
+    });
+    return prof_info_temp;
+  }, [listing.professor_names]);
   // Count number of profs that overlap between this listing and an eval
   const overlapping_profs = useCallback(
     (eval_profs) => {
@@ -116,6 +143,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   // Make sure data is loaded
   const items = useMemo(() => {
     if (data) {
+      // Hold list of evaluation dictionaries
+      let evaluations = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
         if (!season.course.evaluation_statistics[0]) return;
@@ -176,6 +205,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           skills: season.skills,
           // Course Areas
           areas: season.areas,
+          // Store course listing
+          listing: season,
         });
       });
       // Sort by season code and section
@@ -194,7 +225,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* Clickable listing button */}
-            <Col
+            <StyledCol
               xs={5}
               className={Styles.rating_bubble + '  px-0 mr-3 text-center'}
               onClick={() => handleSetSeason(evaluations[i])}
@@ -208,79 +239,51 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                   ? 'Section ' + evaluations[i].section
                   : evaluations[i].professor[0]}
               </div>
-            </Col>
+            </StyledCol>
             {/* Course Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].rating !== -1
-                      ? ratingColormap(evaluations[i].rating).darken(3).css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].rating !== -1
-                      ? ratingColormap(evaluations[i].rating)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].rating}
+                colormap={ratingColormap}
                 className={`${Styles.rating_cell} ${Styles.expanded_ratings}`}
               >
                 {evaluations[i].rating !== -1
                   ? evaluations[i].rating.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
             {/* Professor Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].professor_rating !== -1
-                      ? ratingColormap(evaluations[i].professor_rating)
-                          .darken(3)
-                          .css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].professor_rating !== -1
-                      ? ratingColormap(evaluations[i].professor_rating)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].professor_rating}
+                colormap={ratingColormap}
                 className={Styles.rating_cell}
               >
                 {evaluations[i].professor_rating !== -1
                   ? evaluations[i].professor_rating.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
             {/* Workload Rating */}
             <Col
               xs={2}
               className={`px-1 ml-0 d-flex justify-content-center text-center`}
             >
-              <div
-                style={{
-                  color:
-                    evaluations[i].workload !== -1
-                      ? workloadColormap(evaluations[i].workload)
-                          .darken(3)
-                          .css()
-                      : '#b5b5b5',
-                  backgroundColor:
-                    evaluations[i].workload !== -1
-                      ? workloadColormap(evaluations[i].workload)
-                      : '#ebebeb',
-                }}
+              <StyledRating
+                rating={evaluations[i].workload}
+                colormap={workloadColormap}
                 className={Styles.rating_cell}
               >
                 {evaluations[i].workload !== -1
                   ? evaluations[i].workload.toFixed(1)
                   : 'N/A'}
-              </div>
+              </StyledRating>
             </Col>
           </Row>
         );
@@ -304,15 +307,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       }
       return temp_items;
     }
-  }, [
-    data,
-    evaluations,
-    filter,
-    handleSetSeason,
-    listing,
-    overlapping_profs,
-    prof_info,
-  ]);
+  }, [data, filter, handleSetSeason, listing, overlapping_profs, prof_info]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
@@ -325,7 +320,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       prof_dict = prof_info[prof_name];
     }
     return (
-      <Popover {...props} id="title_popover" className="d-none d-md-block">
+      <StyledPopover
+        {...props}
+        id="title_popover"
+        className="d-none d-md-block"
+      >
         <Popover.Title>
           <Row className="mx-auto">
             {/* Professor Name */}
@@ -337,7 +336,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               {prof_dict.email !== '' ? (
                 <a href={`mailto: ${prof_dict.email}`}>{prof_dict.email}</a>
               ) : (
-                <span className="text-muted">N/A</span>
+                <TextComponent type={1}>N/A</TextComponent>
               )}
             </small>
           </Row>
@@ -388,7 +387,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
           </Row>
         </Popover.Content>
-      </Popover>
+      </StyledPopover>
     );
   };
 
@@ -404,7 +403,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
           {/* Course Description */}
-          <Row className="m-auto pb-3">
+          <Row className="mx-auto pb-3">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
               text={
@@ -415,27 +414,46 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               onReflow={handleReflow}
             />
             {/* Read More arrow button */}
-            <Row className="m-auto">
-              {clamped && (
-                <span
-                  className={Styles.read_more + ' mx-auto'}
+            {clamped && (
+              <Row className="mx-auto">
+                <StyledLink
+                  className="mx-auto"
                   onClick={() => {
                     setLines(100);
                   }}
                   title="Read More"
                 >
                   <IoIosArrowDown size={20} />
-                </span>
-              )}
-            </Row>
-            {/* Course Requirements */}
-            {listing.requirements && (
-              <Row className="m-auto pt-1">
-                <span className={Styles.requirements}>
-                  {listing.requirements}
-                </span>
+                </StyledLink>
               </Row>
             )}
+            {/* Course Requirements */}
+            {listing.requirements && (
+              <span className={Styles.requirements + ' pt-1'}>
+                {listing.requirements}
+              </span>
+            )}
+          </Row>
+          {/* Course Syllabus */}
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Syllabus</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {listing.syllabus_url ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={listing.syllabus_url}
+                  className="d-flex"
+                >
+                  View Syllabus
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ) : (
+                'N/A'
+              )}
+            </Col>
           </Row>
           {/* Course Professors */}
           <Row className="m-auto py-2">
@@ -455,7 +473,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                           overlay={renderProfInfoPopover}
                           popperConfig={{ prof_name: prof }}
                         >
-                          <span className={Styles.link}>{prof}</span>
+                          <StyledLink>{prof}</StyledLink>
                         </OverlayTrigger>
                       </React.Fragment>
                     );
@@ -469,7 +487,28 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Meets</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.times_summary === 'TBA' ? 'N/A' : listing.times_summary}
+              {listing.times_summary}
+            </Col>
+          </Row>
+          {/* Course Location */}
+          <Row className="m-auto py-2">
+            <Col sm={3} xs={4} className="px-0">
+              <span className={Styles.lable_bubble}>Location</span>
+            </Col>
+            <Col sm={9} xs={8} className={Styles.metadata}>
+              {location_url !== '' ? (
+                <a
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  href={location_url}
+                  className="d-flex"
+                >
+                  {listing.locations_summary}
+                  <HiExternalLink size={18} className="ml-1 my-auto" />
+                </a>
+              ) : (
+                listing.locations_summary
+              )}
             </Col>
           </Row>
           {/* Course Section */}
@@ -523,46 +562,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
               {listing.credits}
-            </Col>
-          </Row>
-          {/* Course Location */}
-          <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
-              <span className={Styles.lable_bubble}>Location</span>
-            </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
-              {location_url !== '' ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={location_url}
-                >
-                  {location_name}
-                </a>
-              ) : location_name === 'TBD' || location_name === '' ? (
-                'N/A'
-              ) : (
-                location_name
-              )}
-            </Col>
-          </Row>
-          {/* Course Syllabus */}
-          <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
-              <span className={Styles.lable_bubble}>Syllabus</span>
-            </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.syllabus_url ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={listing.syllabus_url}
-                >
-                  {listing['course_code']}
-                </a>
-              ) : (
-                'N/A'
-              )}
             </Col>
           </Row>
           {/* Class Notes (classnotes) */}
@@ -631,7 +630,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         <Col md={5} className="px-0 my-0">
           {/* Filter Select */}
           <Row className="m-auto justify-content-center">
-            <MultiToggle
+            <StyledMultiToggle
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}
