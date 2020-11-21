@@ -40,9 +40,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install --global yarn prettier depcheck
-      - run: cd frontend && prettier -l .
-      - run: cd frontend && depcheck
+      - run: cd frontend && npm install --global yarn && yarn
+      - run: cd frontend && yarn run lint-check
+      - run: cd frontend && yarn run depcheck
       - run: cd frontend && yarn && yarn build
 
   proxy:
@@ -58,9 +58,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install --global prettier depcheck
-      - run: cd proxy && prettier -l .
-      - run: cd proxy && depcheck
+      - run: cd proxy && npm install --global yarn && yarn
+      - run: cd proxy && yarn run lint-check
+      - run: cd proxy && yarn run depcheck
 
   php:
     runs-on: ubuntu-latest

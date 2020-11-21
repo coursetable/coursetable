@@ -1,6 +1,7 @@
 {
   "scripts": {
     "start": "nodemon server.js",
+    "prod": "NODE_ENV=production node server.js",
     "lint-check": "prettier -l .",
     "depcheck": "depcheck . --json"
   },
