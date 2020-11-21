@@ -25,7 +25,7 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - run: npm install --global prettier depcheck
       - run: cd api && prettier -l .
-      - run: cd api && depcheck
+      - run: cd api && depcheck --json
 
   frontend:
     runs-on: ubuntu-latest
