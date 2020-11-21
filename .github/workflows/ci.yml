@@ -57,7 +57,7 @@ jobs:
       - run: cd frontend && npm install --global yarn && yarn
       - run: cd frontend && yarn run lint-check
       - run: cd frontend && yarn run depcheck
-      - run: cd frontend && yarn && yarn build
+      - run: cd frontend && yarn run build
 
   proxy:
     runs-on: ubuntu-latest
