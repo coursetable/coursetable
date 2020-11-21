@@ -1,4 +1,4 @@
-ignores: ["@types/*"]
+ignores: ["graphql", "@types/*"]
 skip-missing: true
 specials: ["bin"]
 
