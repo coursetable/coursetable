@@ -26,7 +26,7 @@ jobs:
       - uses: actions/cache@v2
         id: yarn-cache
         with:
-          path: ~/.cache/yarn/v6
+          path: ~/.cache/yarn
           key: ${{ runner.os }}-yarn-${{ hashFiles('api/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/cache@v2
         id: yarn-cache
         with:
-          path: ~/.cache/yarn/v6
+          path: ~/.cache/yarn
           key: ${{ runner.os }}-yarn-${{ hashFiles('frontend/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
@@ -75,7 +75,7 @@ jobs:
       - uses: actions/cache@v2
         id: yarn-cache
         with:
-          path: ~/.cache/yarn/v6
+          path: ~/.cache/yarn
           key: ${{ runner.os }}-yarn-${{ hashFiles('proxy/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
