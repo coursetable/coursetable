@@ -1,5 +1,7 @@
 import gql from 'graphql-tag';
 
+// TODO: move these to a .graphql file and use this
+// https://github.com/apollographql/graphql-tag#importing-graphql-files
 export const GET_SEASON_CODES = gql`
   query GetSeasonCodes {
     # it's a lucky coincidence that
