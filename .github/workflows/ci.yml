@@ -23,9 +23,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install --global prettier
-      - run: prettier -l api/
-      - run: npx depcheck api/
+      - run: npm install --global prettier depcheck
+      - run: cd api && prettier -l .
+      - run: cd api && depcheck
 
   frontend:
     runs-on: ubuntu-latest
@@ -40,9 +40,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install --global prettier
-      - run: prettier -l frontend/
-      - run: npx depcheck frontend/ --skip-missing=true --ignores='@types/*'
+      - run: npm install --global prettier depcheck
+      - run: cd frontend && prettier -l .
+      - run: cd frontend && depcheck
 
   proxy:
     runs-on: ubuntu-latest
@@ -57,9 +57,9 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm install --global prettier
-      - run: prettier -l proxy/
-      - run: npx depcheck proxy/
+      - run: npm install --global prettier depcheck
+      - run: cd proxy && prettier -l .
+      - run: cd proxy && depcheck
 
   php:
     runs-on: ubuntu-latest
