@@ -102,7 +102,7 @@ const WorksheetExpandedList = ({
     <div className={styles.container}>
       <Row className="mx-auto">
         {/* Season and FB friends dropdown */}
-        <Col md={2} className="p-0">
+        <Col md={3} className="p-0">
           <SurfaceComponent layer={0} className={styles.select_col + ' p-2'}>
             <Row className="mx-auto">
               <div
@@ -192,7 +192,7 @@ const WorksheetExpandedList = ({
           </SurfaceComponent>
         </Col>
         {/* Worksheet courses in search results format */}
-        <Col md={10} className="pr-0 pl-3">
+        <Col md={9} className="pr-0 pl-3">
           <div className={styles.search_results}>
             <SearchResults
               data={WorksheetData}
