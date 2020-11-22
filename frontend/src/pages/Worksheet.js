@@ -67,7 +67,10 @@ function Worksheet() {
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
-  const [hidden_courses, setHiddenCourses] = useState({});
+  setSSObject('hidden_courses', {}, true);
+  const [hidden_courses, setHiddenCourses] = useState(
+    getSSObject('hidden_courses')
+  );
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState();
   // Currently expanded component (calendar or list or none)

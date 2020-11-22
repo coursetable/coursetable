@@ -56,9 +56,8 @@ import styled from 'styled-components';
 
 import { setSSObject, getSSObject } from '../utilities.js';
 
-// Multi-Select Animations
-import makeAnimated from 'react-select/animated';
 import posthog from 'posthog-js';
+
 const StyledSortBtn = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.banner};

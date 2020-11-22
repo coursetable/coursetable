@@ -54,17 +54,11 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
 
     // removes removed courses from worksheet hidden courses
     if (inWorksheet) {
-      setSSObject('hidden_courses', [], true);
+      setSSObject('hidden_courses', {}, true);
       let hidden_courses = getSSObject('hidden_courses');
-      for (let i = 0; i < hidden_courses.length; i++) {
-        if (
-          hidden_courses[i][0] === season_code &&
-          hidden_courses[i][1] === crn
-        ) {
-          hidden_courses.splice(i, 1);
-          setSSObject('hidden_courses', hidden_courses);
-          break;
-        }
+      if (hidden_courses[crn]) {
+        hidden_courses[crn] = false;
+        setSSObject('hidden_courses', hidden_courses);
       }
     }
 
