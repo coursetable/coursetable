@@ -91,9 +91,11 @@ function Search() {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  const [ordering, setOrdering] = useSessionStorageState('ordering', { course_code: 'asc' });
+  const [ordering, setOrdering] = useState({
+    course_code: 'asc',
+  });
   // State to reset sortby select
-  const [reset_sortby, setResetSortby] = useSessionStorageState('reset_sortby', 0);
+  const [reset_sortby, setResetSortby] = useState(0);
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -124,7 +126,10 @@ function Search() {
   );
 
   // react-select states for controlled forms
-  const [select_seasons, setSelectSeasons] = useSessionStorageState('select_seasons', [
+  const [
+    select_seasons,
+    setSelectSeasons,
+  ] = useSessionStorageState('select_seasons', [
     { value: '202101', label: 'Spring 2021' },
   ]);
   const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
