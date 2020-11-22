@@ -29,6 +29,11 @@ function Feedback() {
     feature: 'I wish...',
     bug: 'When I was...',
   };
+  const radio_labels = {
+    general: 'General',
+    feature: 'Feature Request',
+    bug: 'Bug Report',
+  };
 
   // Handle form submit
   const handleSubmit = (event) => {
@@ -66,36 +71,18 @@ function Feedback() {
             Feedback Type<span style={{ color: '#ff5e5e' }}>{' *'}</span>
           </Form.Label>
           <br />
-          <Form.Check
-            name="feedback_type"
-            type="radio"
-            inline
-            label="General"
-            value="general"
-            id="general"
-            checked={type === 'general'}
-            onClick={handleSelect}
-          />
-          <Form.Check
-            name="feedback_type"
-            type="radio"
-            inline
-            label="Feature Request"
-            value="feature"
-            id="feature"
-            checked={type === 'feature'}
-            onClick={handleSelect}
-          />
-          <Form.Check
-            name="feedback_type"
-            type="radio"
-            inline
-            label="Bug Report"
-            value="bug"
-            id="bug"
-            checked={type === 'bug'}
-            onClick={handleSelect}
-          />
+          {['general', 'feature', 'bug'].map((feedback_type) => (
+            <Form.Check
+              name="feedback_type"
+              type="radio"
+              inline
+              value={feedback_type}
+              id={feedback_type}
+              checked={type === feedback_type}
+              onClick={handleSelect}
+              label={radio_labels[feedback_type]}
+            />
+          ))}
         </Form.Group>
         {/* Hide if not submitting a bug report */}
         <Collapse in={type === 'bug'}>
