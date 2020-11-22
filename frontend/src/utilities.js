@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
+import posthog from 'posthog-js';
 
 // Performing various actions on the listing dictionary
 export const preprocess_courses = (listing) => {
@@ -180,6 +181,20 @@ export const scrollToTop = (event) => {
     window.scrollTo({ top: 0, left: 0 });
   }
 };
+
+export function logout() {
+  posthog.capture('logout');
+  posthog.reset();
+
+  // Clear cookies
+  document.cookie.split(';').forEach((c) => {
+    document.cookie = c
+      .replace(/^ +/, '')
+      .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+  });
+  // Redirect to home page and refresh as well
+  window.location.pathname = '/';
+}
 
 // Fetch the FB friends that are also shopping a specific course
 export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
