@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React, { useMemo, useState, useCallback } from 'react';
 
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
@@ -22,7 +22,7 @@ import NoCoursesFound from '../images/no_courses_found.svg';
 import ServerError from '../images/server_error.svg';
 import posthog from 'posthog-js';
 
-import { setSSObject, getSSObject } from '../utilities.js';
+import { useSessionStorageState } from '../utilities.js';
 
 /**
  * Renders worksheet page
@@ -32,8 +32,7 @@ function Worksheet() {
   // Get user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  setSSObject('fb_person', 'me', true);
-  const [fb_person, setFbPerson] = useState(getSSObject('fb_person'));
+  const [fb_person, setFbPerson] = useSessionStorageState('fb_person', 'me');
 
   // Worksheet of the current person
   const cur_worksheet = useMemo(() => {
@@ -56,8 +55,10 @@ function Worksheet() {
   }, [cur_worksheet]);
 
   // Current season initialized to most recent season
-  setSSObject('season', season_codes.length > 0 ? season_codes[0] : '', true);
-  const [season, setSeason] = useState(getSSObject('season'));
+  const [season, setSeason] = useSessionStorageState(
+    'season',
+    season_codes.length > 0 ? season_codes[0] : ''
+  );
   // Listings data to be fetched from database
   const [listings, setListings] = useState([]);
   // Store the initial worksheet to be cached on the first listings query
@@ -67,32 +68,17 @@ function Worksheet() {
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
-  setSSObject('hidden_courses', {}, true);
-  const [hidden_courses, setHiddenCourses] = useState(
-    getSSObject('hidden_courses')
+  const [hidden_courses, setHiddenCourses] = useSessionStorageState(
+    'hidden_courses',
+    {}
   );
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState();
   // Currently expanded component (calendar or list or none)
-  setSSObject('cur_expand', 'none', true);
-  const [cur_expand, setCurExpand] = useState(getSSObject('cur_expand'));
-
-  // Saves worksheet settings to sessionStorage on change
-  useEffect(() => {
-    setSSObject('fb_person', fb_person);
-  }, [fb_person]);
-
-  useEffect(() => {
-    setSSObject('season', season);
-  }, [season]);
-
-  useEffect(() => {
-    setSSObject('hidden_courses', hidden_courses);
-  }, [hidden_courses]);
-
-  useEffect(() => {
-    setSSObject('cur_expand', cur_expand);
-  }, [cur_expand]);
+  const [cur_expand, setCurExpand] = useSessionStorageState(
+    'cur_expand',
+    'none'
+  );
 
   const handleCurExpand = useCallback(
     (view) => {
@@ -114,14 +100,17 @@ function Worksheet() {
       );
       setFbPerson(new_person);
     },
-    [user]
+    [user, setFbPerson]
   );
 
   // Function to change season
-  const changeSeason = useCallback((season_code) => {
-    posthog.capture('worksheet-season', { new_season: season_code });
-    setSeason(season_code);
-  }, []);
+  const changeSeason = useCallback(
+    (season_code) => {
+      posthog.capture('worksheet-season', { new_season: season_code });
+      setSeason(season_code);
+    },
+    [setSeason]
+  );
 
   // Show course modal for the chosen listing
   const showModal = useCallback((listing) => {

@@ -228,3 +228,13 @@ export const setLSObject = (key, obj, if_empty = false) => {
 export const getLSObject = (key) => {
   return getObject(key, window.localStorage);
 };
+
+// Saves State in Session Storage
+export function useSessionStorageState(key, default_value) {
+  setSSObject(key, default_value, true);
+  const [value, setValue] = useState(getSSObject(key));
+  useEffect(() => {
+    setSSObject(key, value);
+  }, [key, value]);
+  return [value, setValue];
+}

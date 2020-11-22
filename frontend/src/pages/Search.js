@@ -54,7 +54,7 @@ import {
 } from '../components/StyledComponents';
 import styled from 'styled-components';
 
-import { setSSObject, getSSObject } from '../utilities.js';
+import { useSessionStorageState } from '../utilities.js';
 
 import posthog from 'posthog-js';
 
@@ -88,12 +88,11 @@ function Search() {
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
   const searchTextInput = useRef(null);
-  setSSObject('searchText', '', true);
-  const [searchText, setSearchText] = useState(getSSObject('searchText'));
+  const [searchText, setSearchText] = useSessionStorageState('searchText', '');
   // Is the search form  collapsed?
-  setSSObject('collapsed_form', false, true);
-  const [collapsed_form, setCollapsedForm] = useState(
-    getSSObject('collapsed_form')
+  const [collapsed_form, setCollapsedForm] = useSessionStorageState(
+    'collapsed_form',
+    false
   );
   // useEffect(() => {
   //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
@@ -104,8 +103,10 @@ function Search() {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  setSSObject('sort_order', 'asc', true);
-  const [sort_order, setSortOrder] = useState(getSSObject('sort_order'));
+  const [sort_order, setSortOrder] = useSessionStorageState(
+    'sort_order',
+    'asc'
+  );
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -130,58 +131,59 @@ function Search() {
   // const QUERY_SIZE = 30;
 
   // way to display results
-  const [isList, setView] = useState(isMobile ? false : true);
-
-  // sets search form state defaults in sessionStorage
-  setSSObject('select_sortby', sortbyOptions[0], true);
-  setSSObject(
-    'select_seasons',
-    [{ value: '202101', label: 'Spring 2021' }],
-    true
+  const [isList, setView] = useSessionStorageState(
+    'isList',
+    isMobile ? false : true
   );
-  setSSObject('select_skillsareas', undefined, true);
-  setSSObject('select_credits', undefined, true);
-  setSSObject('select_schools', [], true);
-  setSSObject('select_subjects', [], true);
-  setSSObject('hideCancelled', true, true);
-  setSSObject('hideFirstYearSeminars', false, true);
-  setSSObject('ratingBounds', [1, 5], true);
-  setSSObject('workloadBounds', [1, 5], true);
 
   // react-select states for controlled forms
-  const [select_sortby, setSelectSortby] = useState(
-    getSSObject('select_sortby')
+  const [select_sortby, setSelectSortby] = useSessionStorageState(
+    'select_sortby',
+    sortbyOptions[0]
   );
-  const [select_seasons, setSelectSeasons] = useState(
-    getSSObject('select_seasons')
+  const [
+    select_seasons,
+    setSelectSeasons,
+  ] = useSessionStorageState('select_seasons', [
+    { value: '202101', label: 'Spring 2021' },
+  ]);
+  const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
+    'select_skillsareas',
+    undefined
   );
-  const [select_skillsareas, setSelectSkillsAreas] = useState(
-    getSSObject('select_skillsareas')
+  const [select_credits, setSelectCredits] = useSessionStorageState(
+    'select_credits',
+    undefined
   );
-  const [select_credits, setSelectCredits] = useState(
-    getSSObject('select_credits')
+  const [select_schools, setSelectSchools] = useSessionStorageState(
+    'select_schools',
+    []
   );
-  const [select_schools, setSelectSchools] = useState(
-    getSSObject('select_schools')
-  );
-  const [select_subjects, setSelectSubjects] = useState(
-    getSSObject('select_subjects')
+  const [select_subjects, setSelectSubjects] = useSessionStorageState(
+    'select_subjects',
+    []
   );
 
   // Does the user want to hide cancelled courses?
-  const [hideCancelled, setHideCancelled] = useState(
-    getSSObject('hideCancelled')
+  const [hideCancelled, setHideCancelled] = useSessionStorageState(
+    'hideCancelled',
+    true
   );
   // Does the user want to hide first year seminars?
-  const [hideFirstYearSeminars, setHideFirstYearSeminars] = useState(
-    getSSObject('hideFirstYearSeminars')
-  );
+  const [
+    hideFirstYearSeminars,
+    setHideFirstYearSeminars,
+  ] = useSessionStorageState('hideFirstYearSeminars', false);
 
   // Bounds of course and workload ratings (1-5)
-  const [ratingBounds, setRatingBounds] = useState(getSSObject('ratingBounds'));
-  const [workloadBounds, setWorkloadBounds] = useState(
-    getSSObject('workloadBounds')
+  const [ratingBounds, setRatingBounds] = useSessionStorageState(
+    'ratingBounds',
+    [1, 5]
   );
+  const [
+    workloadBounds,
+    setWorkloadBounds,
+  ] = useSessionStorageState('workloadBounds', [1, 5]);
 
   // populate seasons from database
   var seasonsOptions;
@@ -485,10 +487,13 @@ function Search() {
     searchConfig,
   ]);
 
-  const handleSetView = useCallback((isList) => {
-    posthog.capture('catalog-view-toggle', { isList });
-    setView(isList);
-  }, []);
+  const handleSetView = useCallback(
+    (isList) => {
+      posthog.capture('catalog-view-toggle', { isList });
+      setView(isList);
+    },
+    [setView]
+  );
 
   const handleSortOrder = () => {
     if (sort_order === 'asc') setSortOrder('desc');
@@ -589,60 +594,7 @@ function Search() {
   // Switch to grid view if window width changes < 900
   useEffect(() => {
     if (width < 768 && isList === true) setView(false);
-  }, [width, isList]);
-
-  // Saves search form options to sesssionStorage on change
-  useEffect(() => {
-    setSSObject('searchText', searchText);
-  }, [searchText]);
-
-  useEffect(() => {
-    setSSObject('collapsed_form', collapsed_form);
-  }, [collapsed_form]);
-
-  useEffect(() => {
-    setSSObject('sort_order', sort_order);
-  }, [sort_order]);
-
-  useEffect(() => {
-    setSSObject('select_sortby', select_sortby);
-  }, [select_sortby]);
-
-  useEffect(() => {
-    setSSObject('select_seasons', select_seasons);
-  }, [select_seasons]);
-
-  useEffect(() => {
-    setSSObject('select_skillsareas', select_skillsareas);
-  }, [select_skillsareas]);
-
-  useEffect(() => {
-    setSSObject('select_credits', select_credits);
-  }, [select_credits]);
-
-  useEffect(() => {
-    setSSObject('select_schools', select_schools);
-  }, [select_schools]);
-
-  useEffect(() => {
-    setSSObject('select_subjects', select_subjects);
-  }, [select_subjects]);
-
-  useEffect(() => {
-    setSSObject('hideCancelled', hideCancelled);
-  }, [hideCancelled]);
-
-  useEffect(() => {
-    setSSObject('hideFirstYearSeminars', hideFirstYearSeminars);
-  }, [hideFirstYearSeminars]);
-
-  useEffect(() => {
-    setSSObject('ratingBounds', ratingBounds);
-  }, [ratingBounds]);
-
-  useEffect(() => {
-    setSSObject('workloadBounds', workloadBounds);
-  }, [workloadBounds]);
+  }, [width, isList, setView]);
 
   // TODO: add state if courseLoadError is present
   return (
