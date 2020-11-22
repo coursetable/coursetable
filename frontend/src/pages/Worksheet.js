@@ -314,7 +314,7 @@ function Worksheet() {
             md={cur_expand === 'list' ? 12 : 3}
             className={
               'ml-auto ' +
-              (cur_expand === 'list' ? ' px-4 ' : 'px-0 ') +
+              (cur_expand === 'list' ? ' px-2 ' : 'px-0 ') +
               (cur_expand === 'calendar' ? styles.hidden : '')
             }
           >

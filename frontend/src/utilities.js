@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import moment from 'moment';
+import orderBy from 'lodash/orderBy';
 
 // Performing various actions on the listing dictionary
 export const preprocess_courses = (listing) => {
@@ -237,4 +238,19 @@ export const useSessionStorageState = (key, default_value) => {
     setSSObject(key, value);
   }, [key, value]);
   return [value, setValue];
+};
+
+export const sortCourses = (courses, ordering) => {
+  const key = Object.keys(ordering)[0];
+  const order_asc = ordering[key].startsWith('asc');
+  const sorted = orderBy(
+    courses,
+    [
+      (listing) => !!listing[key],
+      (listing) => listing[key],
+      (listing) => listing.course_code,
+    ],
+    ['desc', order_asc ? 'asc' : 'desc', 'asc']
+  );
+  return sorted;
 };
