@@ -16,7 +16,6 @@ import CourseModal from '../components/CourseModal';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 
 import {
-  sortbyOptions,
   areas,
   skills,
   skillsAreasOptions,
@@ -28,9 +27,10 @@ import {
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
+import SortByReactSelect from '../components/SortByReactSelect';
+import { sortCourses } from '../utilities';
 
 import debounce from 'lodash/debounce';
-import orderBy from 'lodash/orderBy';
 
 import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
@@ -38,12 +38,6 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 import { FaSearch } from 'react-icons/fa';
 import { BsX } from 'react-icons/bs';
-import {
-  FcAlphabeticalSortingAz,
-  FcAlphabeticalSortingZa,
-  FcNumericalSorting12,
-  FcNumericalSorting21,
-} from 'react-icons/fc';
 import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
 import {
@@ -55,11 +49,6 @@ import {
 import styled from 'styled-components';
 
 import posthog from 'posthog-js';
-const StyledSortBtn = styled.div`
-  &:hover {
-    background-color: ${({ theme }) => theme.banner};
-  }
-`;
 
 const StyledSearchTab = styled.div`
   background-color: ${({ theme }) =>
@@ -97,7 +86,9 @@ function Search() {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  const [sort_order, setSortOrder] = useState('asc');
+  const [ordering, setOrdering] = useState({ course_code: 'asc' });
+  // State to reset sortby select
+  const [reset_sortby, setResetSortby] = useState(0);
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -125,7 +116,6 @@ function Search() {
   const [isList, setView] = useState(isMobile ? false : true);
 
   // react-select states for controlled forms
-  const [select_sortby, setSelectSortby] = useState(sortbyOptions[0]);
   const [select_seasons, setSelectSeasons] = useState([
     { value: '202101', label: 'Spring 2021' },
   ]);
@@ -182,22 +172,6 @@ function Search() {
   const multiSeasons = required_seasons.length !== 1;
 
   const searchConfig = useMemo(() => {
-    // sorting options
-    let sortParams = select_sortby.value;
-    let ordering = null;
-    if (sortParams === 'course_code') {
-      ordering = { course_code: sort_order };
-    } else if (sortParams === 'course_title') ordering = { title: sort_order };
-    else if (sortParams === 'course_number') ordering = { number: sort_order };
-    else if (sortParams === 'rating') ordering = { average_rating: sort_order };
-    else if (sortParams === 'workload')
-      ordering = { average_workload: sort_order };
-    else if (sortParams === 'professor')
-      ordering = { average_professor: `${sort_order}_nulls_last` };
-    else if (sortParams === 'gut')
-      ordering = { average_gut_rating: `${sort_order}_nulls_last` };
-    else console.error('unknown sort order - ', sortParams);
-
     // skills and areas
     var processedSkillsAreas = select_skillsareas;
     if (processedSkillsAreas != null) {
@@ -281,7 +255,6 @@ function Search() {
     // Variables to use in search query
     const search_variables = {
       search_text: searchText,
-      ordering: ordering,
       // seasons: not included because it is handled by required_seasons
       areas: new Set(processedAreas),
       skills: new Set(processedSkills),
@@ -307,11 +280,9 @@ function Search() {
     hideCancelled,
     hideFirstYearSeminars,
     ratingBounds,
-    sort_order,
     select_credits,
     select_schools,
     select_skillsareas,
-    select_sortby.value,
     select_subjects,
     workloadBounds,
     searchText,
@@ -422,38 +393,20 @@ function Search() {
       });
 
     // Apply sorting order.
-    // Force anything that is null to the bottom.
-    // In case of ties, we fallback to the course code.
-    const key = Object.keys(searchConfig.ordering)[0];
-    const order_asc = searchConfig.ordering[key].startsWith('asc');
-    filtered = orderBy(
-      filtered,
-      [
-        (listing) => !!listing[key],
-        (listing) => listing[key],
-        (listing) => listing.course_code,
-      ],
-      ['desc', order_asc ? 'asc' : 'desc', 'asc']
-    );
-
-    return filtered;
+    return sortCourses(filtered, ordering);
   }, [
     required_seasons,
     coursesLoading,
     courseLoadError,
     courseData,
     searchConfig,
+    ordering,
   ]);
 
   const handleSetView = useCallback((isList) => {
     posthog.capture('catalog-view-toggle', { isList });
     setView(isList);
   }, []);
-
-  const handleSortOrder = () => {
-    if (sort_order === 'asc') setSortOrder('desc');
-    else setSortOrder('asc');
-  };
 
   const scroll_to_results = useCallback(
     (event) => {
@@ -521,13 +474,12 @@ function Search() {
     setHideFirstYearSeminars(false);
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
-    setSelectSortby(sortbyOptions[0]);
     setSelectSeasons([{ value: '202101', label: 'Spring 2021' }]);
     setSelectSkillsAreas(null);
     setSelectCredits(null);
     setSelectSchools([]);
     setSelectSubjects([]);
-    setSortOrder('asc');
+    setResetSortby(reset_sortby + 1);
   };
 
   // check if the search form is too tall
@@ -650,49 +602,10 @@ function Search() {
               </Row>
 
               <Row className="mx-auto py-0 px-4">
-                <div className={`${Styles.selector_container}`}>
-                  {/* Sort By Select */}
-                  <CustomSelect
-                    value={select_sortby}
-                    options={sortbyOptions}
-                    // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
-                    onChange={(options) => {
-                      setSelectSortby(options);
-                    }}
-                  />
-                </div>
-                <StyledSortBtn
-                  className={Styles.sort_btn + ' my-auto'}
-                  onClick={handleSortOrder}
-                >
-                  {select_sortby.value === 'course_code' ||
-                  select_sortby.value === 'course_title' ? (
-                    // Sorting by letters
-                    sort_order === 'asc' ? (
-                      <FcAlphabeticalSortingAz
-                        className={Styles.sort_icon}
-                        size={20}
-                      />
-                    ) : (
-                      <FcAlphabeticalSortingZa
-                        className={Styles.sort_icon}
-                        size={20}
-                      />
-                    )
-                  ) : // Sorting by numbers
-                  sort_order === 'asc' ? (
-                    <FcNumericalSorting12
-                      className={Styles.sort_icon}
-                      size={20}
-                    />
-                  ) : (
-                    <FcNumericalSorting21
-                      className={Styles.sort_icon}
-                      size={20}
-                    />
-                  )}
-                </StyledSortBtn>
+                <SortByReactSelect
+                  setOrdering={setOrdering}
+                  key={reset_sortby}
+                />
               </Row>
               <StyledHr />
               <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>

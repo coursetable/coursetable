@@ -14,7 +14,3 @@
 .top_left:hover {
   transform: rotateZ(90deg) translate(-40%, 40%) scale(1.1);
 }
-
-.sortby_container {
-  width: calc(100% - 35px);
-}
