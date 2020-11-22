@@ -15,7 +15,7 @@ function Thankyou() {
         className="py-5"
         src={ThankYouImage}
         style={{ width: '25%' }}
-      ></img>
+      />
     </div>
   );
 }

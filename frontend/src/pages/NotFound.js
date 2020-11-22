@@ -14,7 +14,7 @@ function NotFound() {
         className="py-5"
         src={NotFoundImage}
         style={{ width: '25%' }}
-      ></img>
+      />
       <h3>Page not found</h3>
       <div>
         If you think this is an error, please{' '}

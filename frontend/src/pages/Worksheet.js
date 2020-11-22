@@ -198,7 +198,7 @@ function Worksheet() {
             className="py-5"
             src={NoCoursesFound}
             style={{ width: '25%' }}
-          ></img>
+          />
           <h3>No courses found</h3>
           <div>Please add courses to your worksheet</div>
         </div>
@@ -226,7 +226,7 @@ function Worksheet() {
             className="py-5"
             src={ServerError}
             style={{ width: '25%' }}
-          ></img>
+          />
           <h3>There seems to be an issue with our server</h3>
           <div>
             Please file a <NavLink to="/feedback">report</NavLink> to let us
