@@ -92,6 +92,7 @@ function ErrorFallback() {
 }
 function CustomErrorBoundary({ children }) {
   if (isDev) {
+    // return <ErrorFallback />;
     return <>{children}</>;
   }
   return (
