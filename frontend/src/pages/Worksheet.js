@@ -8,7 +8,6 @@ import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
 import {
   SurfaceComponent,
   StyledExpandBtn,
@@ -19,7 +18,6 @@ import styles from './Worksheet.module.css';
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 import NoCoursesFound from '../images/no_courses_found.svg';
-import ServerError from '../images/server_error.svg';
 import posthog from 'posthog-js';
 import ErrorPage from '../components/ErrorPage';
 

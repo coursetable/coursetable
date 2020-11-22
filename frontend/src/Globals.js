@@ -82,14 +82,24 @@ function ErrorFallback() {
     </Row>
   );
 }
+function CustomErrorBoundary({ children }) {
+  if (isDev) {
+    return <>{children}</>;
+  }
+  return (
+    <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
+      {children}
+    </Sentry.ErrorBoundary>
+  );
+}
 
 function Globals({ children }) {
   // website light/dark theme
   const [theme, themeToggler] = useDarkMode();
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
   return (
-    <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
-      {/* TODO: reenable StrictMode later */}
+    <CustomErrorBoundary>
+      {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
       <ApolloProvider client={client}>
         <FerryProvider>
@@ -122,7 +132,7 @@ function Globals({ children }) {
         </FerryProvider>
       </ApolloProvider>
       {/* </React.StrictMode> */}
-    </Sentry.ErrorBoundary>
+    </CustomErrorBoundary>
   );
 }
 
@@ -130,7 +140,6 @@ function Globals({ children }) {
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals((metric) => {
-  console.log('web-vitals', metric);
   const { entries: _, ...reportableMetric } = metric;
   posthog.capture('web-vitals', { ...reportableMetric });
 });

@@ -317,7 +317,6 @@ function Search() {
     searchText,
   ]);
 
-  // TODO: debounce + make async
   const searchData = useMemo(() => {
     // Match search results with course data.
     if (coursesLoading || courseLoadError) return [];
@@ -402,8 +401,6 @@ function Search() {
         }
 
         // Handle search text. Each token must match something.
-        // TODO: fuzzy matching?
-        // TODO: search across descriptions?
         for (const token of tokens) {
           if (
             listing.subject.toLowerCase().startsWith(token) ||
