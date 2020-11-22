@@ -649,7 +649,7 @@ function Search() {
                 </div>
               </Row>
 
-              <Row className={`mx-auto py-0 px-4 ${Styles.sort_container}`}>
+              <Row className="mx-auto py-0 px-4">
                 <div className={`${Styles.selector_container}`}>
                   {/* Sort By Select */}
                   <CustomSelect
