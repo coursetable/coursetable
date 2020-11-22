@@ -12,11 +12,23 @@ import { StyledInput, TextComponent } from '../components/StyledComponents';
 function Feedback() {
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
-  // Is the user inputting a bug report?
-  const [isBug, setIsBug] = useState(true);
+  // Feedback type
+  const [type, setType] = useState('general');
   // Formcake submission endpoint
   const submission_endpoint =
     'https://api.formcake.com/api/form/2100a266-5b01-49d8-bec9-0ec2abd4e185/submission';
+
+  const descriptions = {
+    general:
+      'What did you like about your experience on the site? What did you dislike about your experience on the site? Please let us know your honest throughts and opinions.',
+    feature: 'What new features would you like to see implemented in the site?',
+    bug: 'Please be specific and include steps to reproduce the bug.',
+  };
+  const placeholders = {
+    general: 'I like/dislike...',
+    feature: 'I wish...',
+    bug: 'When I was...',
+  };
 
   // Handle form submit
   const handleSubmit = (event) => {
@@ -28,6 +40,11 @@ function Feedback() {
     }
     // Form has been validated
     setValidated(true);
+  };
+
+  // Handle type select
+  const handleSelect = (event) => {
+    setType(event.currentTarget.value);
   };
 
   return (
@@ -48,19 +65,40 @@ function Feedback() {
           <Form.Label className={styles.form_label}>
             Feedback Type<span style={{ color: '#ff5e5e' }}>{' *'}</span>
           </Form.Label>
-          <CustomSelect
-            defaultValue={{ value: 'bug report', label: 'Bug Report' }}
-            options={[
-              { value: 'Bug Report', label: 'Bug Report' },
-              { value: 'Feature Request', label: 'Feature Request' },
-              { value: 'Other', label: 'Other Comments for the Team' },
-            ]}
-            onChange={(option) => setIsBug(option.value === 'Bug Report')}
+          <br />
+          <Form.Check
             name="feedback_type"
+            type="radio"
+            inline
+            label="General"
+            value="general"
+            id="general"
+            checked={type === 'general'}
+            onClick={handleSelect}
+          />
+          <Form.Check
+            name="feedback_type"
+            type="radio"
+            inline
+            label="Feature Request"
+            value="feature"
+            id="feature"
+            checked={type === 'feature'}
+            onClick={handleSelect}
+          />
+          <Form.Check
+            name="feedback_type"
+            type="radio"
+            inline
+            label="Bug Report"
+            value="bug"
+            id="bug"
+            checked={type === 'bug'}
+            onClick={handleSelect}
           />
         </Form.Group>
         {/* Hide if not submitting a bug report */}
-        <Collapse in={isBug}>
+        <Collapse in={type === 'bug'}>
           <div>
             {/* Courses Involved */}
             <Form.Group className={styles.form_group}>
@@ -126,12 +164,11 @@ function Feedback() {
         {/* Description */}
         <Form.Group className={styles.form_group}>
           <Form.Label className={styles.form_label}>
-            Feedback/Bug Description
+            Feedback Description
             <span style={{ color: '#ff5e5e' }}>{' *'}</span>
             <br />
             <span className={styles.form_secondary_label}>
-              If you are filing a bug report, please be specific and include
-              steps to reproduce the bug
+              {descriptions[type]}
             </span>
           </Form.Label>
           <StyledInput
@@ -139,7 +176,7 @@ function Feedback() {
             as="textarea"
             name="description"
             rows="4"
-            placeholder="What's up?"
+            placeholder={placeholders[type]}
             style={{ width: '100%' }}
           />
           <Form.Control.Feedback type="invalid">
@@ -167,7 +204,7 @@ function Feedback() {
             Please enter a valid email address
           </Form.Control.Feedback>
         </Form.Group>
-        {/* Follow up permission checkbox */}
+        {/* Follow up permission switch */}
         <Form.Group className={styles.form_group}>
           <Form.Check
             type="switch"
