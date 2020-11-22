@@ -133,7 +133,6 @@ export async function fetchCatalog(overwrite) {
         console.log(
           `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
         );
-        return;
       }
     }
   );
