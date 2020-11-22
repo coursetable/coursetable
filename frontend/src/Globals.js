@@ -24,6 +24,8 @@ import { ThemeProvider } from 'styled-components';
 import { useDarkMode } from './components/UseDarkMode';
 import { GlobalStyles } from './components/GlobalStyles';
 import { lightTheme, darkTheme } from './components/Themes';
+import ErrorPage from './components/ErrorPage';
+import { Row } from 'react-bootstrap';
 
 const POSTHOG_TOKEN =
   process.env.REACT_APP_POSTHOG_TOKEN ||
@@ -65,7 +67,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-function SPAPageChangeListener({ callback }) {
+function SPAPageChangeListener() {
   const location = useLocation();
   useEffect(() => {
     posthog.capture('$pageview');
@@ -73,12 +75,20 @@ function SPAPageChangeListener({ callback }) {
   return <></>;
 }
 
+function ErrorFallback() {
+  return (
+    <Row className="m-auto" style={{ height: '100vh' }}>
+      <ErrorPage message={'Internal Error'} />
+    </Row>
+  );
+}
+
 function Globals({ children }) {
   // website light/dark theme
   const [theme, themeToggler] = useDarkMode();
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
   return (
-    <>
+    <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
       {/* TODO: reenable StrictMode later */}
       {/* <React.StrictMode> */}
       <ApolloProvider client={client}>
@@ -112,7 +122,7 @@ function Globals({ children }) {
         </FerryProvider>
       </ApolloProvider>
       {/* </React.StrictMode> */}
-    </>
+    </Sentry.ErrorBoundary>
   );
 }
 
