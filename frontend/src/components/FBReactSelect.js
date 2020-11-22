@@ -4,7 +4,7 @@ import './FBReactSelect.css';
 import CustomSelect from './CustomSelect';
 
 /**
- * Render FB React-Select Dropdown in WorksheetSettingsDropdown.js and WorksheetRowDropdown.js
+ * Render FB React-Select Dropdown in WorksheetRowDropdown.js
  * @prop cur_season - string that holds the current season code
  * @prop setFbPerson - function to change FB person
  * @prop cur_person - string of current person who's worksheet we are viewing
