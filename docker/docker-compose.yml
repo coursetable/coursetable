@@ -9,10 +9,6 @@ services:
       - ../proxy:/app
     user: '1000'
     command: sh -c 'cd /app && yarn && yarn start'
-    links:
-      - frontend
-      - api
-      - nginx
 
   api:
     image: node:latest
@@ -35,9 +31,6 @@ services:
         'cd /app && yarn && yarn start',
       ]
     depends_on:
-      - graphql-engine
-      - mysql
-    links:
       - graphql-engine
       - mysql
     environment:
