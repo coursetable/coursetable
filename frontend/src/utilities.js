@@ -57,14 +57,14 @@ export const preprocess_courses = (listing) => {
 
 // Flatten dictionaries to make data more accessible
 export const flatten = (ob) => {
-  var toReturn = {};
+  const toReturn = {};
 
-  for (var i in ob) {
+  for (let i in ob) {
     if (!ob.hasOwnProperty(i)) continue;
 
     if (typeof ob[i] == 'object' && ob[i] !== null && !Array.isArray(ob[i])) {
-      var flatObject = flatten(ob[i]);
-      for (var x in flatObject) {
+      const flatObject = flatten(ob[i]);
+      for (let x in flatObject) {
         if (!flatObject.hasOwnProperty(x)) continue;
 
         toReturn[i + '.' + x] = flatObject[x];

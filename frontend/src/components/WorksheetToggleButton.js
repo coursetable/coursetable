@@ -59,12 +59,15 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
       .then((response) => {
         // console.log(response.data);
         // Refresh user's worksheet
-        userRefresh().catch((err) => {
-          toast.error('Failed to update worksheet');
-          console.error(err);
-        });
+        return userRefresh();
+      })
+      .then(() => {
         // If not in worksheet view, update inWorksheet state
         setInWorksheet(!inWorksheet);
+      })
+      .catch((err) => {
+        toast.error('Failed to update worksheet');
+        console.error(err);
       });
   }
 
