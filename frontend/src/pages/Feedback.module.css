@@ -28,10 +28,6 @@
   font-size: 14px;
 }
 
-.hover_pointer:hover {
-  cursor: pointer;
-}
-
 @media (max-width: 768px) {
   .container {
     width: 80vw;
