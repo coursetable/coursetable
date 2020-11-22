@@ -1,10 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-import axios from 'axios';
 import path from 'path';
 
-import { PORT, FERRY_SECRET } from './config/constants.js';
+import { PORT } from './config/constants.js';
 
 // import routes
 import challenge from './routes/challenge.routes.js';

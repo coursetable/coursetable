@@ -1,4 +1,4 @@
-import { GRAPHQL_ENDPOINT, FERRY_SECRET } from '../config/constants.js';
+import { FERRY_SECRET } from '../config/constants.js';
 
 import { fetchCatalog } from '../utils.js';
 
@@ -30,8 +30,8 @@ export const verifyHeaders = (req, res, next) => {
  * @prop res - express response object
  * @prop next - express next object
  */
-export const refreshCatalog = (req, res, next) => {
-  // always overwrite when callec
+export const refreshCatalog = (req, res) => {
+  // always overwrite when called
   const overwrite = true;
   fetchCatalog(overwrite)
     .then(() => {

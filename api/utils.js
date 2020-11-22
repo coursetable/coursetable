@@ -1,7 +1,6 @@
 import fs from 'fs';
 
 import crypto from 'crypto';
-import jsonfile from 'jsonfile';
 
 import graphqurl from 'graphqurl';
 const { query } = graphqurl;
@@ -21,11 +20,11 @@ import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './config/constants.js';
  * @prop salt - salt value to append to password
  */
 export function encrypt(text, salt) {
-  var cipher = crypto.createCipher(
+  const cipher = crypto.createCipher(
     CHALLENGE_ALGORITHM,
     CHALLENGE_PASSWORD + salt
   );
-  var crypted = cipher.update(text, 'utf8', 'hex');
+  let crypted = cipher.update(text, 'utf8', 'hex');
   crypted += cipher.final('hex');
   return crypted;
 }
@@ -36,11 +35,11 @@ export function encrypt(text, salt) {
  * @prop salt - salt value to append to password
  */
 export function decrypt(text, salt) {
-  var decipher = crypto.createDecipher(
+  const decipher = crypto.createDecipher(
     CHALLENGE_ALGORITHM,
     CHALLENGE_PASSWORD + salt
   );
-  var dec = decipher.update(text, 'hex', 'utf8');
+  let dec = decipher.update(text, 'hex', 'utf8');
   dec += decipher.final('utf8');
   return dec;
 }
