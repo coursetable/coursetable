@@ -230,11 +230,11 @@ export const getLSObject = (key) => {
 };
 
 // Saves State in Session Storage
-export function useSessionStorageState(key, default_value) {
+export const useSessionStorageState = (key, default_value) => {
   setSSObject(key, default_value, true);
   const [value, setValue] = useState(getSSObject(key));
   useEffect(() => {
     setSSObject(key, value);
   }, [key, value]);
   return [value, setValue];
-}
+};
