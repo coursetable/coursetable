@@ -29,6 +29,7 @@ import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/SortByReactSelect';
 import { sortCourses } from '../utilities';
+import { sortbyOptions } from '../queries/Constants';
 
 import debounce from 'lodash/debounce';
 
@@ -48,7 +49,7 @@ import {
 } from '../components/StyledComponents';
 import styled from 'styled-components';
 
-import { useSessionStorageState } from '../utilities.js';
+import { setSSObject, useSessionStorageState } from '../utilities.js';
 
 import posthog from 'posthog-js';
 
@@ -91,11 +92,14 @@ function Search() {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  const [ordering, setOrdering] = useState({
+  const [ordering, setOrdering] = useSessionStorageState('ordering', {
     course_code: 'asc',
   });
   // State to reset sortby select
-  const [reset_sortby, setResetSortby] = useState(0);
+  const [reset_sortby, setResetSortby] = useSessionStorageState(
+    'reset_sortby',
+    0
+  );
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -519,6 +523,9 @@ function Search() {
     setSelectCredits(null);
     setSelectSchools([]);
     setSelectSubjects([]);
+
+    setSSObject('select_sortby', sortbyOptions[0]);
+    setSSObject('sort_order', 'asc');
     setResetSortby(reset_sortby + 1);
   };
 
