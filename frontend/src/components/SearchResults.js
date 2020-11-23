@@ -170,7 +170,7 @@ const SearchResults = ({
           className="py-5"
           src={Authentication}
           style={{ width: '25%' }}
-        ></img>
+        />
         <h3>
           Please{' '}
           <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
@@ -189,7 +189,7 @@ const SearchResults = ({
           className="py-5"
           src={NoCoursesFound}
           style={{ width: '25%' }}
-        ></img>
+        />
         <h3>No courses found</h3>
         <div>We couldn't find any courses matching your search.</div>
       </div>

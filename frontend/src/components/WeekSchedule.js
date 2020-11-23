@@ -77,7 +77,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
           'Thursday',
           'Friday',
         ];
-        for (var indx = 0; indx < 5; indx++) {
+        for (let indx = 0; indx < 5; indx++) {
           const info = course['times_by_day.' + weekDays[indx]];
           // If the listing takes place on this day
           if (info !== undefined) {

@@ -7,7 +7,7 @@ import MeDropdown from './MeDropdown';
 // import Searchbar from '../components/Searchbar';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
-import { scrollToTop, useComponentVisible } from '../utilities';
+import { logout, scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import styled from 'styled-components';
@@ -84,21 +84,6 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
   const { width } = useWindowDimensions();
   const is_mobile = width < 768;
   // const is_relative = width < 1230;
-
-  // Handle 'sign out' button click
-  const handleLogoutClick = () => {
-    posthog.capture('logout');
-    posthog.reset();
-
-    // Clear cookies
-    document.cookie.split(';').forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-    });
-    // Redirect to home page and refresh as well
-    window.location.pathname = '/';
-  };
 
   return (
     <div className={styles.sticky_navbar}>
@@ -228,9 +213,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                       <StyledDiv>
                         <FBLoginButton />
                       </StyledDiv>
-                      <StyledDiv onClick={handleLogoutClick}>
-                        Sign Out
-                      </StyledDiv>
+                      <StyledDiv onClick={logout}>Sign Out</StyledDiv>
                     </>
                   )}
                 </div>
