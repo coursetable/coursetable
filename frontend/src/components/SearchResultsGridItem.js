@@ -68,6 +68,16 @@ const SearchResultsGridItem = ({
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
+  const course_rating = course['course.average_rating_same_professors']
+    ? course['course.average_rating_same_professors'].toFixed(1)
+    : course.average_rating
+    ? course.average_rating.toFixed(1)
+    : null;
+  const course_rating_str = course['course.average_rating_same_professors']
+    ? course_rating
+    : course.average_rating
+    ? `~${course_rating}`
+    : 'N/A';
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB friends that are also shopping this class. NOT USING THIS RN
@@ -277,8 +287,8 @@ const SearchResultsGridItem = ({
               </div>
             </Row>
           </Col>
-          <Col xs="auto" className="p-0 d-flex align-items-end">
-            <div>
+          <Col xs={5} className="p-0 d-flex align-items-end">
+            <div className="ml-auto">
               {/* Class Rating */}
               <OverlayTrigger
                 placement="right"
@@ -291,16 +301,12 @@ const SearchResultsGridItem = ({
                     className={styles.rating + ' mr-1'}
                     style={{
                       color:
-                        course.average_rating && isLoggedIn
-                          ? ratingColormap(course.average_rating)
-                              .darken()
-                              .saturate()
+                        course_rating !== 'N/A'
+                          ? ratingColormap(course_rating).darken().saturate()
                           : '#cccccc',
                     }}
                   >
-                    {course.average_rating && isLoggedIn
-                      ? course.average_rating.toFixed(RATINGS_PRECISION)
-                      : 'N/A'}
+                    {course_rating_str}
                   </div>
                   <StyledIcon>
                     <Star className={styles.icon} />

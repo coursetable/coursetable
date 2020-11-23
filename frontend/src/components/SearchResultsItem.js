@@ -92,6 +92,16 @@ const SearchResultsItem = ({
     );
   }, [season]);
 
+  const course_rating = course['course.average_rating_same_professors']
+    ? course['course.average_rating_same_professors'].toFixed(1)
+    : course.average_rating
+    ? course.average_rating.toFixed(1)
+    : null;
+  const course_rating_str = course['course.average_rating_same_professors']
+    ? course_rating
+    : course.average_rating
+    ? `~${course_rating}`
+    : 'N/A';
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -226,11 +236,11 @@ const SearchResultsItem = ({
       {/* Class Rating */}
       <div style={rate_style} className="d-flex">
         <StyledRating
-          rating={course.average_rating}
+          rating={course_rating}
           colormap={ratingColormap}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
+          {course_rating_str}
         </StyledRating>
       </div>
       {/* Professor Rating */}

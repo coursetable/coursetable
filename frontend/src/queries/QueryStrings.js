@@ -33,6 +33,8 @@ export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
           avg_workload
           avg_rating
         }
+        average_rating_same_professors
+        average_workload_same_professors
       }
       all_course_codes
       areas

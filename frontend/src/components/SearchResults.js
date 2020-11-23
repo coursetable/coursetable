@@ -79,7 +79,7 @@ const SearchResults = ({
     let TEMP_COL_SPACING = {
       SZN_WIDTH: 80,
       CODE_WIDTH: 110,
-      RATE_WIDTH: 30,
+      RATE_WIDTH: 38,
       NUM_WIDTH: 30,
       SA_WIDTH: 100,
       PADDING: 35,
@@ -256,8 +256,10 @@ const SearchResults = ({
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
         <span>
-          Average Course Rating <br />
-          (any professor and all cross-listed courses)
+          Average Course Rating
+          <br />
+          (same professor and all cross-listed courses. If this professor hasn't
+          taught the class before, a ~ denotes the use of all professors)
         </span>
       </Tooltip>
     ),
