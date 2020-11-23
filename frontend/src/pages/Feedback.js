@@ -73,6 +73,7 @@ function Feedback() {
           <br />
           {['general', 'feature', 'bug'].map((feedback_type) => (
             <Form.Check
+              className={styles.hover_pointer}
               name="feedback_type"
               type="radio"
               inline
@@ -194,6 +195,7 @@ function Feedback() {
         {/* Follow up permission switch */}
         <Form.Group className={styles.form_group}>
           <Form.Check
+            className={styles.hover_pointer}
             type="switch"
             id="permission"
             name="permission"
