@@ -7,6 +7,7 @@ import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
 import posthog from 'posthog-js';
+import { setSSObject, getSSObject } from '../utilities.js';
 import styled from 'styled-components';
 
 /**
@@ -51,6 +52,16 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
     // Determine if we are adding or removing the course
     const add_remove = inWorksheet ? 'remove' : 'add';
 
+    // removes removed courses from worksheet hidden courses
+    if (inWorksheet) {
+      setSSObject('hidden_courses', {}, true);
+      let hidden_courses = getSSObject('hidden_courses');
+      if (hidden_courses[crn]) {
+        hidden_courses[crn] = false;
+        setSSObject('hidden_courses', hidden_courses);
+      }
+    }
+
     // User legacy api php to perform worksheet action
     axios
       .get(
@@ -59,12 +70,15 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
       .then((response) => {
         // console.log(response.data);
         // Refresh user's worksheet
-        userRefresh().catch((err) => {
-          toast.error('Failed to update worksheet');
-          console.error(err);
-        });
+        return userRefresh();
+      })
+      .then(() => {
         // If not in worksheet view, update inWorksheet state
         setInWorksheet(!inWorksheet);
+      })
+      .catch((err) => {
+        toast.error('Failed to update worksheet');
+        console.error(err);
       });
   }
 

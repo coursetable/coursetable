@@ -28,7 +28,7 @@ import Student from '../models/student.models.js';
  */
 const constructChallenge = (req, res, evals, challengeTries, netid) => {
   // array of course enrollment counts
-  let ratingIndices = new Array();
+  let ratingIndices = [];
 
   for (const evaluation_rating of evals['data']['evaluation_ratings']) {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
@@ -76,9 +76,7 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
     const crn = x['course']['listings'][0]['crn'];
     const season = x['course']['season_code'];
 
-    const oceUrl = `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=${crn}&term_code=${season}`;
-
-    return oceUrl;
+    return `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=${crn}&term_code=${season}`;
   });
 
   // merged course information object
@@ -110,8 +108,6 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
  */
 export const requestChallenge = (req, res) => {
   const netid = req.header('x-coursetable-netid'); // user's NetID
-
-  const student = new Student();
 
   Student.getChallengeStatus(netid, (statusCode, err, data) => {
     if (err) {
@@ -187,8 +183,6 @@ const checkChallenge = (true_evals, answers) => {
  */
 export const verifyChallenge = (req, res) => {
   const netid = req.header('x-coursetable-netid'); // user's NetID
-
-  const student = new Student();
 
   Student.getChallengeStatus(netid, (statusCode, err, data) => {
     if (err) {

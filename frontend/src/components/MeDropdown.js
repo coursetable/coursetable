@@ -9,6 +9,7 @@ import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+import { logout } from '../utilities';
 import {
   SurfaceComponent,
   TextComponent,
@@ -58,21 +59,6 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
     // Reset export_ics state on completion
     setExport(false);
   }, [data, export_ics]);
-
-  // Handle 'sign out' button click
-  const handleLogoutClick = () => {
-    posthog.capture('logout');
-    posthog.reset();
-
-    // Clear cookies
-    document.cookie.split(';').forEach((c) => {
-      document.cookie = c
-        .replace(/^ +/, '')
-        .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-    });
-    // Redirect to home page and refresh as well
-    window.location.pathname = '/';
-  };
 
   // Keep dropdown open on clicks
   const handleDropdownClick = () => {
@@ -139,8 +125,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
                 />
                 <TextComponent
                   type={1}
-                  // href="/legacy_api/index.php?logout=1"
-                  onClick={handleLogoutClick}
+                  onClick={logout}
                   className={styles.collapse_text}
                 >
                   <StyledHoverText>Sign Out</StyledHoverText>

@@ -121,7 +121,7 @@ function About() {
           <Link to="faq">
             <Button variant="outline-secondary">FAQ</Button>
           </Link>
-          <span style={{ width: '1em', display: 'inline-block' }}></span>
+          <span style={{ width: '1em', display: 'inline-block' }} />
           <Link to="/joinus">
             <Button>Join Us</Button>
           </Link>

@@ -20,7 +20,7 @@ function WorksheetLogin() {
         className="py-5"
         src={Authentication}
         style={{ width: '25%' }}
-      ></img>
+      />
     </div>
   );
 }

@@ -56,8 +56,6 @@ Student.getChallengeStatus = (netid, result) => {
         }
 
         result(200, null, res[0]);
-
-        return;
       }
     );
   });
@@ -93,7 +91,6 @@ Student.incrementChallengeTries = (challengeTries, netid, result) => {
         }
 
         result(200, null, true);
-        return;
       }
     );
   });
@@ -127,7 +124,6 @@ Student.enableEvaluations = (netid, result) => {
         }
 
         result(200, null, true);
-        return;
       }
     );
   });

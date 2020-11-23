@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import SearchResults from './SearchResults';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
@@ -10,7 +10,9 @@ import worksheet_styles from '../pages/Worksheet.module.css';
 import { Col, Row } from 'react-bootstrap';
 import { useUser } from '../user';
 import { FaCompressAlt } from 'react-icons/fa';
+import SortbyReactSelect from './SortByReactSelect';
 import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
+import { sortCourses } from '../utilities';
 
 /**
  * Render expanded worksheet list after maximize button is clicked
@@ -38,13 +40,20 @@ const WorksheetExpandedList = ({
 }) => {
   const { user } = useUser();
   const [isList, setView] = useState(true);
+  // State that determines sort order
+  const [ordering, setOrdering] = useState({ course_code: 'asc' });
+  const WorksheetData = useMemo(() => {
+    // Apply sorting order.
+    return sortCourses(courses, ordering);
+  }, [ordering, courses]);
+
   return (
     <div className={styles.container}>
       <Row className="mx-auto">
         {/* Season and FB friends dropdown */}
-        <Col md={2} className="p-0">
+        <Col md={3} className="p-0">
           <SurfaceComponent layer={0} className={styles.select_col + ' p-2'}>
-            <Row className="mx-auto mb-2">
+            <Row className="mx-auto">
               <div
                 className={
                   select_styles.select_container +
@@ -59,7 +68,7 @@ const WorksheetExpandedList = ({
                 />
               </div>
             </Row>
-            <Row className="mx-auto">
+            <Row className="mx-auto my-2">
               <div
                 className={
                   select_styles.select_container +
@@ -72,6 +81,9 @@ const WorksheetExpandedList = ({
                   cur_person={fb_person}
                 />
               </div>
+            </Row>
+            <Row className="mx-auto">
+              <SortbyReactSelect setOrdering={setOrdering} />
             </Row>
             <StyledExpandBtn
               className={worksheet_styles.expand_btn + ' ' + styles.top_left}
@@ -88,10 +100,10 @@ const WorksheetExpandedList = ({
           </SurfaceComponent>
         </Col>
         {/* Worksheet courses in search results format */}
-        <Col md={10} className="pr-0 pl-3">
+        <Col md={9} className="pr-0 pl-3">
           <div className={styles.search_results}>
             <SearchResults
-              data={courses}
+              data={WorksheetData}
               showModal={showModal}
               expanded={cur_expand !== 'list'}
               isLoggedIn={true}

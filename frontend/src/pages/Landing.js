@@ -86,7 +86,7 @@ function Landing() {
                     alt="Landing page"
                     src={LandingImage}
                     style={{ width: '100%' }}
-                  ></img>
+                  />
                 </div>
               </Col>
             </Row>
