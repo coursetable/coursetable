@@ -49,13 +49,6 @@ export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
 
-export const na_cell = {
-  color: '#b5b5b5',
-  backgroundColor: '#ebebeb',
-  fontWeight: 400,
-  fontSize: '12px',
-};
-
 export const creditOptions = [
   { label: '0.5', value: 0.5 },
   { label: '1', value: 1 },

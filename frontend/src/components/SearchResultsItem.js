@@ -13,7 +13,7 @@ import chroma from 'chroma-js';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking } from '../utilities';
+import { fbFriendsAlsoTaking, getOverallRatings } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -91,6 +91,9 @@ const SearchResultsItem = ({
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
   }, [season]);
+
+  // Fetch overall rating value and string representation
+  const course_rating = useMemo(() => getOverallRatings(course), [course]);
 
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
@@ -226,11 +229,18 @@ const SearchResultsItem = ({
       {/* Class Rating */}
       <div style={rate_style} className="d-flex">
         <StyledRating
-          rating={course.average_rating}
+          rating={course_rating}
           colormap={ratingColormap}
           className={Styles.rating_cell + ' m-auto'}
         >
-          {course.average_rating ? course.average_rating.toFixed(1) : 'N/A'}
+          {
+            // String representation of rating to be displayed
+            course['course.average_rating_same_professors']
+              ? course_rating // Use same professor if possible. Displayed as is
+              : course.average_rating
+              ? `~${course_rating}` // Use all professors otherwise and add tilda ~
+              : 'N/A' // No ratings at all
+          }
         </StyledRating>
       </div>
       {/* Professor Rating */}

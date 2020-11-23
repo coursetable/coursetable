@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import {
@@ -13,7 +13,7 @@ import CourseConflictIcon from './CourseConflictIcon';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking } from '../utilities';
+import { fbFriendsAlsoTaking, getOverallRatings } from '../utilities';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -60,19 +60,23 @@ const SearchResultsGridItem = ({
   const icon_size = 13;
   const seasons = ['spring', 'summer', 'fall'];
   // Determine the icon for this season
-  const icon =
-    season === '1' ? (
+  const icon = useMemo(() => {
+    return season === '1' ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
+  }, [season]);
+
+  // Fetch overall rating value and string representation
+  const course_rating = useMemo(() => getOverallRatings(course), [course]);
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB friends that are also shopping this class. NOT USING THIS RN
-  let also_taking =
-    user.fbLogin && user.fbWorksheets
+  let also_taking = useMemo(() => {
+    return user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
           course.season_code,
           course.crn,
@@ -80,6 +84,7 @@ const SearchResultsGridItem = ({
           user.fbWorksheets.friendInfo
         )
       : [];
+  }, [user.fbLogin, user.fbWorksheets, course]);
 
   // Has the component been mounted yet?
   const [mounted, setMounted] = useState(false);
@@ -277,8 +282,8 @@ const SearchResultsGridItem = ({
               </div>
             </Row>
           </Col>
-          <Col xs="auto" className="p-0 d-flex align-items-end">
-            <div>
+          <Col xs={5} className="p-0 d-flex align-items-end">
+            <div className="ml-auto">
               {/* Class Rating */}
               <OverlayTrigger
                 placement="right"
@@ -290,17 +295,19 @@ const SearchResultsGridItem = ({
                     // Only show eval data when user is signed in
                     className={styles.rating + ' mr-1'}
                     style={{
-                      color:
-                        course.average_rating && isLoggedIn
-                          ? ratingColormap(course.average_rating)
-                              .darken()
-                              .saturate()
-                          : '#cccccc',
+                      color: course_rating
+                        ? ratingColormap(course_rating).darken().saturate()
+                        : '#cccccc',
                     }}
                   >
-                    {course.average_rating && isLoggedIn
-                      ? course.average_rating.toFixed(RATINGS_PRECISION)
-                      : 'N/A'}
+                    {
+                      // String representation of rating to be displayed
+                      course['course.average_rating_same_professors']
+                        ? course_rating // Use same professor if possible. Displayed as is
+                        : course.average_rating
+                        ? `~${course_rating}` // Use all professors otherwise and add tilda ~
+                        : 'N/A' // No ratings at all
+                    }
                   </div>
                   <StyledIcon>
                     <Star className={styles.icon} />
