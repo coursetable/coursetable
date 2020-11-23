@@ -71,10 +71,7 @@ const SearchResultsGridItem = ({
   }, [season]);
 
   // Fetch overall rating value and string representation
-  const [course_rating, course_rating_str] = useMemo(
-    () => getOverallRatings(course),
-    [course]
-  );
+  const course_rating = useMemo(() => getOverallRatings(course), [course]);
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB friends that are also shopping this class. NOT USING THIS RN
@@ -303,7 +300,14 @@ const SearchResultsGridItem = ({
                         : '#cccccc',
                     }}
                   >
-                    {course_rating_str}
+                    {
+                      // String representation of rating to be displayed
+                      course['course.average_rating_same_professors']
+                        ? course_rating // Use same professor if possible. Displayed as is
+                        : course.average_rating
+                        ? `~${course_rating}` // Use all professors otherwise and add tilda ~
+                        : 'N/A' // No ratings at all
+                    }
                   </div>
                   <StyledIcon>
                     <Star className={styles.icon} />
