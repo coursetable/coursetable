@@ -137,5 +137,6 @@ export const StyledHoverText = styled.span`
 export const StyledIcon = styled.div`
   fill: ${({ theme }) => theme.text[0]};
   transition: fill 0.2s linear;
-  margin: auto;
+  margin-top: auto;
+  margin-bottom: auto;
 `;

@@ -374,7 +374,10 @@ const SearchResults = ({
                   <span className={Styles.one_line}>Title</span>
                 </div>
                 {/* Class Rating */}
-                <div style={rate_style} className={Styles.results_header}>
+                <div
+                  style={rate_style}
+                  className={Styles.results_header + ' justify-content-center'}
+                >
                   <StyledIcon>
                     <OverlayTrigger
                       placement="bottom"
@@ -386,7 +389,10 @@ const SearchResults = ({
                   </StyledIcon>
                 </div>
                 {/* Professor Rating */}
-                <div style={rate_style} className={Styles.results_header}>
+                <div
+                  style={rate_style}
+                  className={Styles.results_header + ' justify-content-center'}
+                >
                   <StyledIcon>
                     <OverlayTrigger
                       placement="bottom"
@@ -398,7 +404,10 @@ const SearchResults = ({
                   </StyledIcon>
                 </div>
                 {/* Workload Rating */}
-                <div style={rate_style} className={Styles.results_header}>
+                <div
+                  style={rate_style}
+                  className={Styles.results_header + ' justify-content-center'}
+                >
                   <StyledIcon>
                     <OverlayTrigger
                       placement="bottom"

@@ -300,10 +300,9 @@ const SearchResultsGridItem = ({
                     // Only show eval data when user is signed in
                     className={styles.rating + ' mr-1'}
                     style={{
-                      color:
-                        course_rating !== 'N/A'
-                          ? ratingColormap(course_rating).darken().saturate()
-                          : '#cccccc',
+                      color: course_rating
+                        ? ratingColormap(course_rating).darken().saturate()
+                        : '#cccccc',
                     }}
                   >
                     {course_rating_str}
