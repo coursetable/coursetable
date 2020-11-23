@@ -46,6 +46,11 @@ export const StyledInput = styled(FormControl)`
       ? '2px solid hsl(0, 0%, 90%)'
       : '2px solid ' + theme.select};
   border-radius: 8px;
+  padding: 0.375rem 0.75rem;
+
+  &:hover {
+    border: 2px solid #cccccc;
+  }
 
   &:focus {
     background-color: ${({ theme }) => theme.select};
