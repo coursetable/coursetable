@@ -13,7 +13,7 @@ import chroma from 'chroma-js';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking } from '../utilities';
+import { fbFriendsAlsoTaking, getOverallRatings } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -92,16 +92,12 @@ const SearchResultsItem = ({
     );
   }, [season]);
 
-  const course_rating = course['course.average_rating_same_professors']
-    ? course['course.average_rating_same_professors'].toFixed(1)
-    : course.average_rating
-    ? course.average_rating.toFixed(1)
-    : null;
-  const course_rating_str = course['course.average_rating_same_professors']
-    ? course_rating
-    : course.average_rating
-    ? `~${course_rating}`
-    : 'N/A';
+  // Fetch overall rating value and string representation
+  const [course_rating, course_rating_str] = useMemo(
+    () => getOverallRatings(course),
+    [course]
+  );
+
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import {
@@ -13,7 +13,7 @@ import CourseConflictIcon from './CourseConflictIcon';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { useUser } from '../user';
-import { fbFriendsAlsoTaking } from '../utilities';
+import { fbFriendsAlsoTaking, getOverallRatings } from '../utilities';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -60,29 +60,26 @@ const SearchResultsGridItem = ({
   const icon_size = 13;
   const seasons = ['spring', 'summer', 'fall'];
   // Determine the icon for this season
-  const icon =
-    season === '1' ? (
+  const icon = useMemo(() => {
+    return season === '1' ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
-  const course_rating = course['course.average_rating_same_professors']
-    ? course['course.average_rating_same_professors'].toFixed(1)
-    : course.average_rating
-    ? course.average_rating.toFixed(1)
-    : null;
-  const course_rating_str = course['course.average_rating_same_professors']
-    ? course_rating
-    : course.average_rating
-    ? `~${course_rating}`
-    : 'N/A';
+  }, [season]);
+
+  // Fetch overall rating value and string representation
+  const [course_rating, course_rating_str] = useMemo(
+    () => getOverallRatings(course),
+    [course]
+  );
   // Fetch user context data
   const { user } = useUser();
   // Fetch list of FB friends that are also shopping this class. NOT USING THIS RN
-  let also_taking =
-    user.fbLogin && user.fbWorksheets
+  let also_taking = useMemo(() => {
+    return user.fbLogin && user.fbWorksheets
       ? fbFriendsAlsoTaking(
           course.season_code,
           course.crn,
@@ -90,6 +87,7 @@ const SearchResultsGridItem = ({
           user.fbWorksheets.friendInfo
         )
       : [];
+  }, [user.fbLogin, user.fbWorksheets, course]);
 
   // Has the component been mounted yet?
   const [mounted, setMounted] = useState(false);

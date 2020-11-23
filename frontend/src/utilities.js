@@ -269,3 +269,21 @@ export const sortCourses = (courses, ordering) => {
   );
   return sorted;
 };
+
+export const getOverallRatings = (course) => {
+  // Determine which overall rating to use
+  const course_rating = course['course.average_rating_same_professors']
+    ? course['course.average_rating_same_professors'].toFixed(1) // Use same professor if possible
+    : course.average_rating
+    ? course.average_rating.toFixed(1) // Use all professors otherwise
+    : null; // No ratings at all
+  // String representation of rating to be displayed
+  const course_rating_str = course['course.average_rating_same_professors']
+    ? course_rating // Use same professor if possible. Displayed as is
+    : course.average_rating
+    ? `~${course_rating}` // Use all professors otherwise and add tilda ~
+    : 'N/A'; // No ratings at all
+
+  // Return ratings
+  return [course_rating, course_rating_str];
+};
