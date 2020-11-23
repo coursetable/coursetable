@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { sortbyOptions } from '../queries/Constants';
 import styles from './SortbyReactSelect.module.css';
@@ -11,6 +11,7 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
+import { useSessionStorageState } from '../utilities.js';
 
 const StyledSortBtn = styled.div`
   &:hover {
@@ -25,9 +26,15 @@ const StyledSortBtn = styled.div`
 
 const SortByReactSelect = ({ setOrdering }) => {
   // State that controls sortby select
-  const [select_sortby, setSelectSortby] = useState(sortbyOptions[0]);
+  const [select_sortby, setSelectSortby] = useSessionStorageState(
+    'select_sortby',
+    sortbyOptions[0]
+  );
   // State that determines sort order
-  const [sort_order, setSortOrder] = useState('asc');
+  const [sort_order, setSortOrder] = useSessionStorageState(
+    'sort_order',
+    'asc'
+  );
 
   // Handle changing the sort order
   const handleSortOrder = () => {

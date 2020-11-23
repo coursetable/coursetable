@@ -29,6 +29,7 @@ import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/SortByReactSelect';
 import { sortCourses } from '../utilities';
+import { sortbyOptions } from '../queries/Constants';
 
 import debounce from 'lodash/debounce';
 
@@ -47,6 +48,8 @@ import {
   TextComponent,
 } from '../components/StyledComponents';
 import styled from 'styled-components';
+
+import { setSSObject, useSessionStorageState } from '../utilities.js';
 
 import posthog from 'posthog-js';
 
@@ -74,9 +77,12 @@ function Search() {
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
   const searchTextInput = useRef(null);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useSessionStorageState('searchText', '');
   // Is the search form  collapsed?
-  const [collapsed_form, setCollapsedForm] = useState(false);
+  const [collapsed_form, setCollapsedForm] = useSessionStorageState(
+    'collapsed_form',
+    false
+  );
   // useEffect(() => {
   //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
   //   if (width > 1200 && collapsed_form) setCollapsedForm(false);
@@ -86,9 +92,14 @@ function Search() {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  const [ordering, setOrdering] = useState({ course_code: 'asc' });
+  const [ordering, setOrdering] = useSessionStorageState('ordering', {
+    course_code: 'asc',
+  });
   // State to reset sortby select
-  const [reset_sortby, setResetSortby] = useState(0);
+  const [reset_sortby, setResetSortby] = useSessionStorageState(
+    'reset_sortby',
+    0
+  );
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -113,25 +124,55 @@ function Search() {
   // const QUERY_SIZE = 30;
 
   // way to display results
-  const [isList, setView] = useState(isMobile ? false : true);
+  const [isList, setView] = useSessionStorageState(
+    'isList',
+    isMobile ? false : true
+  );
 
   // react-select states for controlled forms
-  const [select_seasons, setSelectSeasons] = useState([
+  const [
+    select_seasons,
+    setSelectSeasons,
+  ] = useSessionStorageState('select_seasons', [
     { value: '202101', label: 'Spring 2021' },
   ]);
-  const [select_skillsareas, setSelectSkillsAreas] = useState();
-  const [select_credits, setSelectCredits] = useState();
-  const [select_schools, setSelectSchools] = useState([]);
-  const [select_subjects, setSelectSubjects] = useState([]);
+  const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
+    'select_skillsareas',
+    undefined
+  );
+  const [select_credits, setSelectCredits] = useSessionStorageState(
+    'select_credits',
+    undefined
+  );
+  const [select_schools, setSelectSchools] = useSessionStorageState(
+    'select_schools',
+    []
+  );
+  const [select_subjects, setSelectSubjects] = useSessionStorageState(
+    'select_subjects',
+    []
+  );
 
   // Does the user want to hide cancelled courses?
-  const [hideCancelled, setHideCancelled] = useState(true);
+  const [hideCancelled, setHideCancelled] = useSessionStorageState(
+    'hideCancelled',
+    true
+  );
   // Does the user want to hide first year seminars?
-  const [hideFirstYearSeminars, setHideFirstYearSeminars] = useState(false);
+  const [
+    hideFirstYearSeminars,
+    setHideFirstYearSeminars,
+  ] = useSessionStorageState('hideFirstYearSeminars', false);
 
   // Bounds of course and workload ratings (1-5)
-  const [ratingBounds, setRatingBounds] = useState([1, 5]);
-  const [workloadBounds, setWorkloadBounds] = useState([1, 5]);
+  const [ratingBounds, setRatingBounds] = useSessionStorageState(
+    'ratingBounds',
+    [1, 5]
+  );
+  const [
+    workloadBounds,
+    setWorkloadBounds,
+  ] = useSessionStorageState('workloadBounds', [1, 5]);
 
   // populate seasons from database
   var seasonsOptions;
@@ -403,10 +444,13 @@ function Search() {
     ordering,
   ]);
 
-  const handleSetView = useCallback((isList) => {
-    posthog.capture('catalog-view-toggle', { isList });
-    setView(isList);
-  }, []);
+  const handleSetView = useCallback(
+    (isList) => {
+      posthog.capture('catalog-view-toggle', { isList });
+      setView(isList);
+    },
+    [setView]
+  );
 
   const scroll_to_results = useCallback(
     (event) => {
@@ -479,6 +523,9 @@ function Search() {
     setSelectCredits(null);
     setSelectSchools([]);
     setSelectSubjects([]);
+
+    setSSObject('select_sortby', sortbyOptions[0]);
+    setSSObject('sort_order', 'asc');
     setResetSortby(reset_sortby + 1);
   };
 
@@ -501,7 +548,7 @@ function Search() {
   // Switch to grid view if window width changes < 900
   useEffect(() => {
     if (width < 768 && isList === true) setView(false);
-  }, [width, isList]);
+  }, [width, isList, setView]);
 
   // TODO: add state if courseLoadError is present
   return (
