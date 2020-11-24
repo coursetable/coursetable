@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { createBrowserHistory } from 'history';
 
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import FerryProvider from './components/FerryProvider';
@@ -24,6 +25,8 @@ import { ThemeProvider } from 'styled-components';
 import { useDarkMode } from './components/UseDarkMode';
 import { GlobalStyles } from './components/GlobalStyles';
 import { lightTheme, darkTheme } from './components/Themes';
+import ErrorPage from './components/ErrorPage';
+import { Row } from 'react-bootstrap';
 
 const POSTHOG_TOKEN =
   process.env.REACT_APP_POSTHOG_TOKEN ||
@@ -47,11 +50,18 @@ if (POSTHOG_TOKEN !== '') {
   });
 }
 
+const history = createBrowserHistory();
+
 const isDev = process.env.NODE_ENV === 'development';
 Sentry.init({
   dsn:
     'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
-  integrations: [new Integrations.BrowserTracing()],
+  integrations: [
+    new Integrations.BrowserTracing({
+      // Via https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
+      routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+    }),
+  ],
   environment: process.env.NODE_ENV,
 
   // Note: this is currently enabled in development. We can revisit this if it becomes annoying.
@@ -65,7 +75,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-function SPAPageChangeListener({ callback }) {
+function SPAPageChangeListener() {
   const location = useLocation();
   useEffect(() => {
     posthog.capture('$pageview');
@@ -73,20 +83,39 @@ function SPAPageChangeListener({ callback }) {
   return <></>;
 }
 
+function ErrorFallback() {
+  return (
+    <Row className="m-auto" style={{ height: '100vh' }}>
+      <ErrorPage message={'Internal Error'} />
+    </Row>
+  );
+}
+function CustomErrorBoundary({ children }) {
+  if (isDev) {
+    // return <ErrorFallback />;
+    return <>{children}</>;
+  }
+  return (
+    <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
+      {children}
+    </Sentry.ErrorBoundary>
+  );
+}
+
 function Globals({ children }) {
   // website light/dark theme
   const [theme, themeToggler] = useDarkMode();
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
   return (
-    <>
-      {/* TODO: reenable StrictMode later */}
+    <CustomErrorBoundary>
+      {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
       <ApolloProvider client={client}>
         <FerryProvider>
           {/* UserProvider must be inside the FerryProvider */}
           <UserProvider>
             <WindowDimensionsProvider>
-              <Router>
+              <Router history={history}>
                 <SPAPageChangeListener />
                 <ThemeProvider theme={themeMode}>
                   <>
@@ -112,7 +141,7 @@ function Globals({ children }) {
         </FerryProvider>
       </ApolloProvider>
       {/* </React.StrictMode> */}
-    </>
+    </CustomErrorBoundary>
   );
 }
 
@@ -120,7 +149,6 @@ function Globals({ children }) {
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals((metric) => {
-  console.log('web-vitals', metric);
   const { entries: _, ...reportableMetric } = metric;
   posthog.capture('web-vitals', { ...reportableMetric });
 });

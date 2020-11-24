@@ -8,7 +8,6 @@ import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
-import { NavLink } from 'react-router-dom';
 import {
   SurfaceComponent,
   StyledExpandBtn,
@@ -19,8 +18,8 @@ import styles from './Worksheet.module.css';
 import { useUser } from '../user';
 import { isInWorksheet } from '../utilities';
 import NoCoursesFound from '../images/no_courses_found.svg';
-import ServerError from '../images/server_error.svg';
 import posthog from 'posthog-js';
+import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../utilities.js';
 
@@ -232,19 +231,7 @@ function Worksheet() {
   } else if (error) {
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <div className="text-center m-auto">
-          <img
-            alt="No courses found."
-            className="py-5"
-            src={ServerError}
-            style={{ width: '25%' }}
-          />
-          <h3>There seems to be an issue with our server</h3>
-          <div>
-            Please file a <NavLink to="/feedback">report</NavLink> to let us
-            know
-          </div>
-        </div>
+        <ErrorPage message={'There seems to be an issue with our server'} />
       </div>
     );
   }

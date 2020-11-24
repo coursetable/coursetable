@@ -26,7 +26,6 @@ import { Row, Spinner } from 'react-bootstrap';
  * Render navbar and the corresponding page component for the route the user is on
  * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
  */
-
 function App({ themeToggler }) {
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
