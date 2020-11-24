@@ -283,7 +283,7 @@ export const sortCourses = (courses, ordering, num_fb) => {
     [
       (listing) =>
         key !== 'fb'
-          ? !!listing[key]
+          ? !!listing[key] || listing[key] === 0
           : !!num_fb[listing.season_code + listing.crn],
       (listing) =>
         key !== 'fb' ? listing[key] : num_fb[listing.season_code + listing.crn],
