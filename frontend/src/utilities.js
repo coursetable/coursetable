@@ -196,7 +196,7 @@ export function logout() {
   window.location.pathname = '/';
 }
 
-// Fetch the FB friends that are also shopping a specific course
+// Fetch the FB friends that are also shopping a specific course. Used in course modal overview
 export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
   // Return if worksheets are null
   if (!worksheets) return [];
@@ -212,6 +212,26 @@ export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
       also_taking.push(names[friend].name);
   }
   return also_taking;
+};
+
+// Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
+export const getNumFB = (fbWorksheets) => {
+  // List of each friends' worksheets
+  const worksheets = fbWorksheets.worksheets;
+  // List of each friends' names/facebook id
+  const names = fbWorksheets.friendInfo;
+  // Object to return
+  let fb_dict = {};
+  // Iterate over each fb friend's worksheet
+  for (let friend in worksheets) {
+    // Iterate over each course in this friend's worksheet
+    worksheets[friend].forEach((course) => {
+      const key = course[0] + course[1]; // Key of object is season code + crn
+      if (!fb_dict[key]) fb_dict[key] = []; // List doesn't exist for this course so create one
+      fb_dict[key].push(names[friend].name); // Add fb friend's name to this list
+    });
+  }
+  return fb_dict;
 };
 
 // Checks if object is in storage
@@ -255,14 +275,18 @@ export const useSessionStorageState = (key, default_value) => {
   return [value, setValue];
 };
 
-export const sortCourses = (courses, ordering) => {
+export const sortCourses = (courses, ordering, num_fb) => {
   const key = Object.keys(ordering)[0];
   const order_asc = ordering[key].startsWith('asc');
   const sorted = orderBy(
     courses,
     [
-      (listing) => !!listing[key],
-      (listing) => listing[key],
+      (listing) =>
+        key !== 'fb'
+          ? !!listing[key]
+          : !!num_fb[listing.season_code + listing.crn],
+      (listing) =>
+        key !== 'fb' ? listing[key] : num_fb[listing.season_code + listing.crn],
       (listing) => listing.course_code,
     ],
     ['desc', order_asc ? 'asc' : 'desc', 'asc']

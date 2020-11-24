@@ -45,6 +45,7 @@ import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
+ * @prop num_fb = object that holds a list of each fb friend taking a specific course
  */
 
 const SearchResults = ({
@@ -56,6 +57,7 @@ const SearchResults = ({
   showModal,
   isLoggedIn,
   expanded,
+  num_fb,
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -144,6 +146,9 @@ const SearchResults = ({
 
   const renderListRow = useCallback(
     ({ index, key, style, isScrolling }) => {
+      const fb_friends = num_fb[data[index].season_code + data[index].crn]
+        ? num_fb[data[index].season_code + data[index].crn]
+        : [];
       return (
         <div style={style} key={key}>
           <SearchResultsItemMemo
@@ -154,11 +159,12 @@ const SearchResults = ({
             COL_SPACING={COL_SPACING}
             isScrolling={isScrolling}
             expanded={expanded}
+            fb_friends={fb_friends}
           />
         </div>
       );
     },
-    [data, showModal, multiSeasons, expanded, COL_SPACING]
+    [data, showModal, multiSeasons, expanded, COL_SPACING, num_fb]
   );
 
   if (!isLoggedIn) {

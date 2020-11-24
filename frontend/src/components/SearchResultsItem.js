@@ -12,8 +12,7 @@ import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import { useUser } from '../user';
-import { fbFriendsAlsoTaking, getOverallRatings } from '../utilities';
+import { getOverallRatings } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -41,6 +40,7 @@ const StyledResultsItem = styled(Row)`
  * @prop COL_SPACING - dictionary with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
  * @prop expanded - boolean | is the catalog expanded or not
+ * @prop fb_friends - list of fb friends also taking this course
  */
 
 const SearchResultsItem = ({
@@ -51,23 +51,10 @@ const SearchResultsItem = ({
   COL_SPACING,
   isScrolling = false,
   expanded,
+  fb_friends,
 }) => {
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
-
-  // Fetch user context data
-  const { user } = useUser();
-  // Fetch list of FB Friends that are also shopping this class
-  let also_taking = useMemo(() => {
-    return user.fbLogin && user.fbWorksheets
-      ? fbFriendsAlsoTaking(
-          course.season_code,
-          course.crn,
-          user.fbWorksheets.worksheets,
-          user.fbWorksheets.friendInfo
-        )
-      : [];
-  }, [user.fbLogin, user.fbWorksheets, course]);
 
   // Set mounted on mount
   useEffect(() => {
@@ -141,9 +128,9 @@ const SearchResultsItem = ({
 
   // Render tooltip with names of FB friends also shopping
   const renderFBFriendsTooltip = (props) =>
-    also_taking.length > 0 ? (
+    fb_friends.length > 0 ? (
       <Tooltip id="button-tooltip" {...props}>
-        {also_taking.join(' • ')}
+        {fb_friends.join(' • ')}
       </Tooltip>
     ) : (
       <div />
@@ -341,7 +328,7 @@ const SearchResultsItem = ({
           overlay={renderFBFriendsTooltip}
         >
           <span className="m-auto">
-            {also_taking.length > 0 ? also_taking.length : ''}
+            {fb_friends.length > 0 ? fb_friends.length : ''}
           </span>
         </OverlayTrigger>
       </div>

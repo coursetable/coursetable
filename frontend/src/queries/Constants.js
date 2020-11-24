@@ -4,6 +4,7 @@ export const sortbyOptions = [
   { label: 'Sort by Course Code', value: 'course_code' },
   { label: 'Sort by Course Number', value: 'course_number' },
   { label: 'Sort by Course Title', value: 'course_title' },
+  { label: 'Sort by Facebook Friends', value: 'fb' },
   { label: 'Sort by Course Rating', value: 'rating' },
   { label: 'Sort by Professor Rating', value: 'professor' },
   { label: 'Sort by Workload', value: 'workload' },

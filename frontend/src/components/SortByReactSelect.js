@@ -57,6 +57,7 @@ const SortByReactSelect = ({ setOrdering }) => {
       ordering = { average_professor: `${sort_order}_nulls_last` };
     else if (sortParams === 'gut')
       ordering = { average_gut_rating: `${sort_order}_nulls_last` };
+    else if (sortParams === 'fb') ordering = { fb: `${sort_order}_nulls_last` };
     else console.error('unknown sort order - ', sortParams);
     setOrdering(ordering);
   }, [select_sortby, sort_order, setOrdering]);
