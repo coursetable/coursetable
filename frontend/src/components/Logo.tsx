@@ -4,16 +4,16 @@ import logo from '../images/brand/bluebook.svg';
 import wordmark_outlines from '../images/brand/wordmark_outlines.svg';
 import wordmark_outlines_dark from '../images/brand/ct_white.svg';
 import common_styles from '../styles/common.module.css';
-import { withTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 
 /**
  * CourseTable Logo
- * @prop variant - string that determines the color scheme for the logo
- * @prop condensed - boolean that returns 'CT' if true
- * @prop theme - holds dictionary of current dark/light theme styles
+ * @prop icon - should show the icon
+ * @prop wordmark - should show the wordmark
  */
+function Logo({ icon = true, wordmark = true }) {
+  const theme = useTheme();
 
-function Logo({ icon = true, wordmark = true, theme }) {
   return (
     <span
       className={common_styles.coursetable_logo}
@@ -37,4 +37,4 @@ function Logo({ icon = true, wordmark = true, theme }) {
   );
 }
 
-export default withTheme(Logo);
+export default Logo;
