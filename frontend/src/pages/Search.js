@@ -85,14 +85,7 @@ function Search() {
   const searchTextInput = useRef(null);
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
   // Is the search form  collapsed?
-  const [collapsed_form, setCollapsedForm] = useSessionStorageState(
-    'collapsed_form',
-    false
-  );
-  // useEffect(() => {
-  //   if (width < 1200 && !collapsed_form) setCollapsedForm(true);
-  //   if (width > 1200 && collapsed_form) setCollapsedForm(false);
-  // }, [width]);
+  const [collapsed_form, setCollapsedForm] = useState(false);
 
   // State that determines if a course modal needs to be displayed and which course to display
   const [course_modal, setCourseModal] = useState([false, '']);
