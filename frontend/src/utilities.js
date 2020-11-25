@@ -279,7 +279,12 @@ export const useSessionStorageState = (key, default_value) => {
 const helperSort = (listing, key, num_fb) => {
   // Sorting by fb friends
   if (key === 'fb') {
-    return num_fb[listing.season_code + listing.crn];
+    // Concatenate season code and crn to form key
+    const fb_key = listing.season_code + listing.crn;
+    // No friends. return null
+    if (!num_fb[fb_key]) return null;
+    // Has friends. return number of friends
+    return num_fb[fb_key].length;
   }
   // Sorting by course rating
   else if (key === 'average_rating') {
