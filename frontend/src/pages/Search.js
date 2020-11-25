@@ -28,7 +28,7 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/SortByReactSelect';
-import { sortCourses } from '../utilities';
+import { getNumFB, sortCourses } from '../utilities';
 import { sortbyOptions } from '../queries/Constants';
 
 import debounce from 'lodash/debounce';
@@ -69,6 +69,12 @@ function Search() {
   const { user } = useUser();
   // Is the user logged in?
   const isLoggedIn = user.worksheet !== null;
+
+  // Object that holds a list of each fb friend taking a specific course
+  const num_fb = useMemo(() => {
+    if (!user.fbLogin || !user.fbWorksheets) return {};
+    return getNumFB(user.fbWorksheets);
+  }, [user.fbLogin, user.fbWorksheets]);
 
   // Fetch window dimensions
   const { height, width } = useWindowDimensions();
@@ -431,7 +437,7 @@ function Search() {
       });
 
     // Apply sorting order.
-    return sortCourses(filtered, ordering);
+    return sortCourses(filtered, ordering, num_fb);
   }, [
     required_seasons,
     coursesLoading,
@@ -439,6 +445,7 @@ function Search() {
     courseData,
     searchConfig,
     ordering,
+    num_fb,
   ]);
 
   const handleSetView = useCallback(
@@ -844,6 +851,7 @@ function Search() {
               showModal={showModal}
               isLoggedIn={isLoggedIn}
               expanded={collapsed_form}
+              num_fb={num_fb}
             />
           </Element>
         </Col>

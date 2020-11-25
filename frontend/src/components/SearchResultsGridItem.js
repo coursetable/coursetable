@@ -12,8 +12,7 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
-import { useUser } from '../user';
-import { fbFriendsAlsoTaking, getOverallRatings } from '../utilities';
+import { getOverallRatings } from '../utilities';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -72,19 +71,6 @@ const SearchResultsGridItem = ({
 
   // Fetch overall rating value and string representation
   const course_rating = useMemo(() => getOverallRatings(course), [course]);
-  // Fetch user context data
-  const { user } = useUser();
-  // Fetch list of FB friends that are also shopping this class. NOT USING THIS RN
-  let also_taking = useMemo(() => {
-    return user.fbLogin && user.fbWorksheets
-      ? fbFriendsAlsoTaking(
-          course.season_code,
-          course.crn,
-          user.fbWorksheets.worksheets,
-          user.fbWorksheets.friendInfo
-        )
-      : [];
-  }, [user.fbLogin, user.fbWorksheets, course]);
 
   // Has the component been mounted yet?
   const [mounted, setMounted] = useState(false);
@@ -127,13 +113,6 @@ const SearchResultsGridItem = ({
   const workload_tooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       <span>Workload</span>
-    </Tooltip>
-  );
-
-  // Tooltip for hovering over # of FB friends also taking. NOT USING RN
-  const renderFBFriendsTooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      {also_taking.join(' • ')}
     </Tooltip>
   );
 
@@ -390,16 +369,6 @@ const SearchResultsGridItem = ({
         <div className={styles.conflict_error}>
           <CourseConflictIcon course={course} />
         </div>
-      )}
-      {/* # of FB friens also taking this class. NOT USING RN */}
-      {also_taking.length > 0 && 1 === 0 && (
-        <OverlayTrigger
-          placement="top"
-          delay={{ show: 250, hide: 400 }}
-          overlay={renderFBFriendsTooltip}
-        >
-          <div className={styles.fb_friends}>{also_taking.length}</div>
-        </OverlayTrigger>
       )}
     </Col>
   );

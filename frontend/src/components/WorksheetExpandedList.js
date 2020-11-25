@@ -12,7 +12,7 @@ import { useUser } from '../user';
 import { FaCompressAlt } from 'react-icons/fa';
 import SortbyReactSelect from './SortByReactSelect';
 import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
-import { sortCourses } from '../utilities';
+import { getNumFB, sortCourses } from '../utilities';
 
 /**
  * Render expanded worksheet list after maximize button is clicked
@@ -42,10 +42,16 @@ const WorksheetExpandedList = ({
   const [isList, setView] = useState(true);
   // State that determines sort order
   const [ordering, setOrdering] = useState({ course_code: 'asc' });
+  // Object that holds a list of each fb friend taking a specific course
+  const num_fb = useMemo(() => {
+    if (!user.fbLogin || !user.fbWorksheets) return {};
+    return getNumFB(user.fbWorksheets);
+  }, [user.fbLogin, user.fbWorksheets]);
+
   const WorksheetData = useMemo(() => {
     // Apply sorting order.
-    return sortCourses(courses, ordering);
-  }, [ordering, courses]);
+    return sortCourses(courses, ordering, num_fb);
+  }, [ordering, courses, num_fb]);
 
   return (
     <div className={styles.container}>
@@ -109,6 +115,7 @@ const WorksheetExpandedList = ({
               isLoggedIn={true}
               isList={isList}
               setView={setView}
+              num_fb={num_fb}
             />
           </div>
         </Col>
