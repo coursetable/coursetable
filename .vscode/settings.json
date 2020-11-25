@@ -26,7 +26,7 @@
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
   "editor.formatOnSave": true,
-  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsdk": "frontend/node_modules/typescript/lib",
   "search.exclude": {
     "dist/**": true,
     "web/gen/**": true,
@@ -34,8 +34,5 @@
     "**/bower_components": true,
     "**/docker/mysql/database.sql": true
   },
-  "cSpell.words": [
-    "noopener",
-    "noreferrer"
-  ]
+  "cSpell.words": ["noopener", "noreferrer"]
 }
