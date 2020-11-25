@@ -1,7 +1,12 @@
 import React from 'react';
 import ServerError from '../images/server_error.svg';
 
-function ErrorPage({ message }: { message: string }) {
+interface Props {
+  /** Message to display in the error page */
+  message: string;
+}
+
+const ErrorPage: React.VFC<Props> = ({ message }) => {
   return (
     <div className="text-center m-auto">
       <h3>{message}</h3>
@@ -24,6 +29,6 @@ function ErrorPage({ message }: { message: string }) {
       ></img>
     </div>
   );
-}
+};
 
 export default ErrorPage;

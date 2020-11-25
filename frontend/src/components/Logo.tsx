@@ -6,12 +6,17 @@ import wordmark_outlines_dark from '../images/brand/ct_white.svg';
 import common_styles from '../styles/common.module.css';
 import { useTheme } from 'styled-components';
 
+interface Props {
+  /** Should we show the icon */
+  icon?: boolean;
+  /** Should be show the wordmark */
+  wordmark?: boolean;
+}
+
 /**
  * CourseTable Logo
- * @prop icon - should show the icon
- * @prop wordmark - should show the wordmark
  */
-function Logo({ icon = true, wordmark = true }) {
+const Logo: React.VFC<Props> = ({ icon = true, wordmark = true }) => {
   const theme = useTheme();
 
   return (
@@ -35,6 +40,6 @@ function Logo({ icon = true, wordmark = true }) {
       )}
     </span>
   );
-}
+};
 
 export default Logo;
