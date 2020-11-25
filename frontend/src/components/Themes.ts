@@ -1,4 +1,6 @@
-export const lightTheme = {
+import { DefaultTheme } from 'styled-components';
+
+export const lightTheme: DefaultTheme = {
   theme: 'light',
   text: ['#141414', '#454545', '#7a7a7a'], // [Primary, Secondary]
   background: '#FFFFFF', // White background
@@ -13,7 +15,7 @@ export const lightTheme = {
   primary: '#468ff2', // Primary color (blue)
   primary_hover: '#007bff', // Primary hover color (dark blue)
 };
-export const darkTheme = {
+export const darkTheme: DefaultTheme = {
   theme: 'dark',
   text: ['#FAFAFA', '#dbdbdb', '#bababa'], // [Primary, Secondary]
   background: '#121212', // darkest color used in background
