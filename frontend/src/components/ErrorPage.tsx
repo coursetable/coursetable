@@ -1,7 +1,7 @@
 import React from 'react';
 import ServerError from '../images/server_error.svg';
 
-function ErrorPage({ message }) {
+function ErrorPage({ message }: { message: string }) {
   return (
     <div className="text-center m-auto">
       <h3>{message}</h3>
