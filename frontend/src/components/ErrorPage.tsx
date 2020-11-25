@@ -11,7 +11,6 @@ function ErrorPage({ message }: { message: string }) {
           report
         </a>{' '}
         to let us know. You can also{' '}
-        {/* Reload logic via https://stackoverflow.com/a/23680265/5004662. */}
         <a href="#!" onClick={() => window.location.reload()}>
           reload the page
         </a>{' '}
