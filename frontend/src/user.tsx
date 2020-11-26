@@ -10,28 +10,53 @@ import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 
-const UserContext = createContext();
+type Season = string;
+type NetId = string;
+type Worksheet = [Season, string][];
+type FBInfo = {
+  worksheets: {
+    [key in NetId]: Worksheet;
+  };
+  friendInfo: {
+    [key in NetId]: {
+      name: string;
+      facebookId: string;
+    };
+  };
+};
+type Store = {
+  user: {
+    netId: NetId | null;
+    worksheet: Worksheet | null;
+    hasEvals: boolean | null;
+    fbLogin: boolean | null;
+    fbWorksheets: FBInfo | null;
+  };
+  userRefresh(suppressError?: boolean): Promise<void>;
+  fbRefresh(suppressError?: boolean): Promise<void>;
+};
+
+const UserContext = createContext<Store | undefined>(undefined);
 UserContext.displayName = 'UserContext';
 
 /**
  * Stores the user's worksheet, FB login status, and FB friends' worksheets
  */
-
-export const UserProvider = ({ children }) => {
+export const UserProvider: React.FC<{}> = ({ children }) => {
   // User's netId
-  const [netId, setNetId] = useState(null);
+  const [netId, setNetId] = useState<string | null>(null);
   // User's worksheet
-  const [worksheet, setWorksheet] = useState(null);
+  const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
   // User's evals enabled status
-  const [hasEvals, setHasEvals] = useState(null);
+  const [hasEvals, setHasEvals] = useState<boolean | null>(null);
   // User's FB login status
-  const [fbLogin, setFbLogin] = useState(null);
+  const [fbLogin, setFbLogin] = useState<boolean | null>(null);
   // User's FB friends' worksheets
-  const [fbWorksheets, setFbWorksheets] = useState(null);
+  const [fbWorksheets, setFbWorksheets] = useState<FBInfo | null>(null);
 
   // Refresh user worksheet
   const userRefresh = useCallback(
-    async (suppressError = false) => {
+    async (suppressError: boolean = false) => {
       const res = await axios.get(
         '/legacy_api/WorksheetActions.php?action=get&season=all'
       );
@@ -60,7 +85,7 @@ export const UserProvider = ({ children }) => {
 
   // Refresh user FB stuff
   const fbRefresh = useCallback(
-    async (suppressError = false) => {
+    async (suppressError: boolean = false) => {
       const friends_worksheets = await axios.get(
         '/legacy_api/FetchFriendWorksheetsNew.php'
       );
@@ -91,16 +116,19 @@ export const UserProvider = ({ children }) => {
     };
   }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
 
-  const store = {
-    // Context state.
-    user,
+  const store = useMemo(
+    () => ({
+      // Context state.
+      user,
 
-    // Update methods.
-    userRefresh,
-    fbRefresh,
-  };
+      // Update methods.
+      userRefresh,
+      fbRefresh,
+    }),
+    [user, userRefresh, fbRefresh]
+  );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;
 };
 
-export const useUser = () => useContext(UserContext);
+export const useUser = () => useContext(UserContext)!;
