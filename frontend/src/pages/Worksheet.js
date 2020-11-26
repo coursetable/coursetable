@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
@@ -22,6 +22,22 @@ import posthog from 'posthog-js';
 import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../utilities.js';
+
+// Function to sort worksheet courses by course code
+const sortByCourseCode = (a, b) => {
+  if (a.course_code < b.course_code) return -1;
+  return 1;
+};
+
+// List of colors for the calendar events
+const colors = [
+  'rgba(108, 194, 111, ',
+  'rgba(202, 95, 83, ',
+  'rgba(49, 164, 212, ',
+  'rgba(223, 134, 83, ',
+  'rgba(38, 186, 154, ',
+  'rgba(186, 120, 129, ',
+];
 
 /**
  * Renders worksheet page
@@ -58,8 +74,6 @@ function Worksheet() {
     'season',
     season_codes.length > 0 ? season_codes[0] : ''
   );
-  // Listings data to be fetched from database
-  const [listings, setListings] = useState([]);
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
@@ -86,16 +100,9 @@ function Worksheet() {
 
   const handleFBPersonChange = useCallback(
     (new_person) => {
-      // Reset listings data when changing FB person
-      setListings([]);
-      setInitWorksheet(
-        new_person === 'me'
-          ? user.worksheet
-          : user.fbWorksheets.worksheets[new_person]
-      );
       setFbPerson(new_person);
     },
-    [user, setFbPerson]
+    [setFbPerson]
   );
 
   // Function to change season
@@ -130,45 +137,33 @@ function Worksheet() {
     [setHiddenCourses]
   );
 
-  // Function to sort worksheet courses by course code
-  const sortByCourseCode = (a, b) => {
-    if (a.course_code < b.course_code) return -1;
-    return 1;
-  };
-
-  // List of colors for the calendar events
-  const colors = [
-    'rgba(108, 194, 111, ',
-    'rgba(202, 95, 83, ',
-    'rgba(49, 164, 212, ',
-    'rgba(223, 134, 83, ',
-    'rgba(38, 186, 154, ',
-    'rgba(186, 120, 129, ',
-  ];
-
   // Fetch the worksheet info. This is eventually copied into the 'listings' variable.
   const { loading, error, data } = useWorksheetInfo(cur_worksheet, season);
 
+  // Listings data - basically an annotated worksheet.
+  const [listings, setListings] = useState([]);
+
   // Initialize listings state if haven't already
-  if (
-    !listings.length &&
-    !loading &&
-    !error &&
-    cur_worksheet &&
-    cur_worksheet.length &&
-    data &&
-    data.length > 0
-  ) {
-    let temp = [...data];
-    // Assign color to each course
-    for (let i = 0; i < data.length; i++) {
-      temp[i].color = colors[i % colors.length].concat('0.85)');
-      temp[i].border = colors[i % colors.length].concat('1)');
+  useEffect(() => {
+    if (
+      !loading &&
+      !error &&
+      cur_worksheet &&
+      cur_worksheet.length &&
+      data &&
+      data.length > 0
+    ) {
+      let temp = [...data];
+      // Assign color to each course
+      for (let i = 0; i < data.length; i++) {
+        temp[i].color = colors[i % colors.length].concat('0.85)');
+        temp[i].border = colors[i % colors.length].concat('1)');
+      }
+      // Sort list by course code
+      temp.sort(sortByCourseCode);
+      setListings(temp);
     }
-    // Sort list by course code
-    temp.sort(sortByCourseCode);
-    setListings(temp);
-  }
+  }, [loading, error, cur_worksheet, data, setListings]);
 
   // Holds the courses that are in the worksheet and in this current season
   // The listings list might have courses that have been removed from the worksheet because we don't fetch listings data again
