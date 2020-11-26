@@ -28,7 +28,7 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/SortByReactSelect';
-import { getNumFB, sortCourses } from '../utilities';
+import { getNumFB, getOverallRatings, sortCourses } from '../utilities';
 import { sortbyOptions } from '../queries/Constants';
 
 import debounce from 'lodash/debounce';
@@ -351,9 +351,9 @@ function Search() {
         if (
           searchConfig.min_rating !== null &&
           searchConfig.max_rating !== null &&
-          (listing.average_rating === null ||
-            listing.average_rating < searchConfig.min_rating ||
-            listing.average_rating > searchConfig.max_rating)
+          (getOverallRatings(listing) === null ||
+            getOverallRatings(listing) < searchConfig.min_rating ||
+            getOverallRatings(listing) > searchConfig.max_rating)
         ) {
           return false;
         }
