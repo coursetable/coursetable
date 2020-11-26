@@ -28,7 +28,6 @@
   font-size: 14px;
 }
 
-.hover_pointer,
 .hover_pointer label,
 .hover_pointer input {
   cursor: pointer !important;
