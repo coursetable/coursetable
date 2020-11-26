@@ -94,11 +94,8 @@ function Search() {
   const [ordering, setOrdering] = useSessionStorageState('ordering', {
     course_code: 'asc',
   });
-  // State to reset sortby select
-  const [reset_sortby, setResetSortby] = useSessionStorageState(
-    'reset_sortby',
-    0
-  );
+  // State to reset sortby dropdown and rating sliders
+  const [reset_key, setResetKey] = useState(0);
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(
@@ -524,7 +521,7 @@ function Search() {
 
     setSSObject('select_sortby', sortbyOptions[0]);
     setSSObject('sort_order', 'asc');
-    setResetSortby(reset_sortby + 1);
+    setResetKey(reset_key + 1);
   };
 
   // check if the search form is too tall
@@ -647,10 +644,7 @@ function Search() {
               </Row>
 
               <Row className="mx-auto py-0 px-4">
-                <SortByReactSelect
-                  setOrdering={setOrdering}
-                  key={reset_sortby}
-                />
+                <SortByReactSelect setOrdering={setOrdering} key={reset_key} />
               </Row>
               <StyledHr />
               <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
@@ -740,6 +734,7 @@ function Search() {
                       min={1}
                       max={5}
                       step={0.1}
+                      key={reset_key}
                       defaultValue={ratingBounds}
                       // debounce the slider state update
                       // to make it smoother
@@ -761,6 +756,7 @@ function Search() {
                       min={1}
                       max={5}
                       step={0.1}
+                      key={reset_key}
                       defaultValue={workloadBounds}
                       // debounce the slider state update
                       // to make it smoother
