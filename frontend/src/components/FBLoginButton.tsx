@@ -14,16 +14,15 @@ function FBLoginButton() {
   const { user, fbRefresh } = useUser();
   const logged_in = user.fbLogin;
 
-  // Note: window.FB setup via index.html.
+  // Note: window.FB is set up via index.html.
   // Types on window.FB are defined in react-app-env.d.ts.
 
-  const syncFacebook = useCallback(() => {
-    return axios.get('/legacy_api/FetchFacebookData.php').then(({ data }) => {
-      if (!data.success) {
-        throw data.message;
-      }
-      return fbRefresh();
-    });
+  const syncFacebook = useCallback(async () => {
+    const { data } = await axios.get('/legacy_api/FetchFacebookData.php');
+    if (!data.success) {
+      throw data.message;
+    }
+    return await fbRefresh();
   }, [fbRefresh]);
 
   const handleLoginClick = useCallback(() => {
