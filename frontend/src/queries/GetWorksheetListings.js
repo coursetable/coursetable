@@ -6,6 +6,11 @@ export const useWorksheetInfo = (worksheet, season = null) => {
   if (!worksheet) worksheet = [];
 
   const required_seasons = useMemo(() => {
+    if (worksheet.length === 0) {
+      // If the worksheet is empty, we don't want to request data for any
+      // seasons, even if a specific season is requested.
+      return [];
+    }
     if (season !== null) {
       return [season];
     }
