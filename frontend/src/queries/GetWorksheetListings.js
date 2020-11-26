@@ -41,7 +41,7 @@ export const useWorksheetInfo = (worksheet, season = null) => {
     }
 
     return data;
-  }, [courses, worksheet]);
+  }, [season, courses, worksheet]);
 
   return { loading, error, data };
 };
