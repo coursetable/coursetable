@@ -6,7 +6,7 @@ import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
-} from '../queries/Constants.js';
+} from '../queries/Constants';
 
 import chroma from 'chroma-js';
 

@@ -1761,6 +1761,11 @@
   dependencies:
     "@babel/types" "^7.3.0"
 
+"@types/chroma-js@^2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@types/chroma-js/-/chroma-js-2.1.2.tgz#edd640f17dbd13561ace34c13fdc43416b013223"
+  integrity sha512-fpIsY+9doOvRiBLR0xtubHmGBEVhis2z3CSWcxRDy7L2noKWXkT49c1QiU0RZ2YLc8lHitxu13HTuVItXUdD/g==
+
 "@types/classnames@^2.2.10":
   version "2.2.11"
   resolved "https://registry.yarnpkg.com/@types/classnames/-/classnames-2.2.11.tgz#2521cc86f69d15c5b90664e4829d84566052c1cf"

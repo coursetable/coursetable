@@ -3,7 +3,7 @@ import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/client';
 import Styles from './CourseModalOverview.module.css';
-import { ratingColormap, workloadColormap } from '../queries/Constants.js';
+import { ratingColormap, workloadColormap } from '../queries/Constants';
 import { toSeasonString, fbFriendsAlsoTaking } from '../utilities';
 import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';

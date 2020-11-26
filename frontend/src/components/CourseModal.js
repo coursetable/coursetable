@@ -11,7 +11,7 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
 import tag_styles from './SearchResultsItem.module.css';
-import { skillsAreasColors } from '../queries/Constants.js';
+import { skillsAreasColors } from '../queries/Constants';
 import chroma from 'chroma-js';
 import posthog from 'posthog-js';
 import { TextComponent, StyledLink } from './StyledComponents';
