@@ -15,6 +15,7 @@ function FBLoginButton() {
   const logged_in = user.fbLogin;
 
   // Note: window.FB setup via index.html.
+  // Types on window.FB are defined in react-app-env.d.ts.
 
   const syncFacebook = useCallback(() => {
     return axios.get('/legacy_api/FetchFacebookData.php').then(({ data }) => {
@@ -26,37 +27,33 @@ function FBLoginButton() {
   }, [fbRefresh]);
 
   const handleLoginClick = useCallback(() => {
-    const loginCallback = (response) => {
-      // The response object is returned with a status field that lets the
-      // app know the current login status of the person.
-      // Full docs on the response object can be found in the documentation
-      // for FB.getLoginStatus().
-      if (response.status === 'connected') {
-        // Logged into your app and Facebook.
-        console.log('FB connected');
-        posthog.capture('facebook-login', { info: response });
-
-        syncFacebook()
-          .then(() => {
-            toast.success('Successfully connected to FB!');
-          })
-          .catch((err) => {
-            console.error(err);
-            toast.error('Error connecting FB');
-          });
-      } else if (response.status === 'not_authorized') {
-        // The person is logged into Facebook, but not your app.
-        console.log('FB not authorized');
-      } else {
-        // The person is not logged into Facebook, so we're not sure if
-        // they are logged into this app or not.
-        console.log('Not logged into FB');
-      }
-    };
-
     window.FB.login(
       (response) => {
-        loginCallback(response);
+        // The response object is returned with a status field that lets the
+        // app know the current login status of the person.
+        // Full docs on the response object can be found in the documentation
+        // for FB.getLoginStatus().
+        if (response.status === 'connected') {
+          // Logged into your app and Facebook.
+          console.log('FB connected');
+          posthog.capture('facebook-login', { info: response });
+
+          syncFacebook()
+            .then(() => {
+              toast.success('Successfully connected to FB!');
+            })
+            .catch((err) => {
+              console.error(err);
+              toast.error('Error connecting FB');
+            });
+        } else if (response.status === 'not_authorized') {
+          // The person is logged into Facebook, but not your app.
+          console.log('FB not authorized');
+        } else {
+          // The person is not logged into Facebook, so we're not sure if
+          // they are logged into this app or not.
+          console.log('Not logged into FB');
+        }
       },
       {
         scope: 'user_friends',
