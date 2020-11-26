@@ -1,5 +1,5 @@
 import React from 'react';
-import { withTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
 import { FaRegMoon } from 'react-icons/fa';
 import { ImSun } from 'react-icons/im';
 import styled from 'styled-components';
@@ -15,10 +15,9 @@ const StyledBtn = styled.span`
 
 /**
  * DarkMode Button
- * @prop theme - current theme of the website
  */
-
-function DarkModeButton({ theme }) {
+const DarkModeButton: React.VFC<{}> = () => {
+  const theme = useTheme();
   return (
     <StyledBtn className="my-auto">
       {theme.theme === 'dark' ? (
@@ -28,6 +27,6 @@ function DarkModeButton({ theme }) {
       )}
     </StyledBtn>
   );
-}
+};
 
-export default withTheme(DarkModeButton);
+export default DarkModeButton;
