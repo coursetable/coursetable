@@ -150,14 +150,7 @@ function Worksheet() {
 
   // Initialize listings state and color map.
   useEffect(() => {
-    if (
-      !loading &&
-      !error &&
-      cur_worksheet &&
-      cur_worksheet.length &&
-      data &&
-      data.length > 0
-    ) {
+    if (!loading && !error && cur_worksheet && cur_worksheet.length && data) {
       let temp = [...data];
       // Assign color to each course
       for (let i = 0; i < data.length; i++) {
