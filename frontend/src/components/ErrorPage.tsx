@@ -1,10 +1,10 @@
 import React from 'react';
 import ServerError from '../images/server_error.svg';
 
-interface Props {
+type Props = {
   /** Message to display in the error page */
   message: string;
-}
+};
 
 const ErrorPage: React.VFC<Props> = ({ message }) => {
   return (

@@ -6,12 +6,12 @@ import wordmark_outlines_dark from '../images/brand/ct_white.svg';
 import common_styles from '../styles/common.module.css';
 import { useTheme } from 'styled-components';
 
-interface Props {
+type Props = {
   /** Should we show the icon */
   icon?: boolean;
   /** Should be show the wordmark */
   wordmark?: boolean;
-}
+};
 
 /**
  * CourseTable Logo
@@ -21,7 +21,7 @@ const Logo: React.VFC<Props> = ({ icon = true, wordmark = true }) => {
 
   return (
     <span
-      className={common_styles.coursetable_logo}
+      className={common_styles.coursetable_logo_does_not_exist}
       style={{
         display: 'block',
       }}
