@@ -3,6 +3,7 @@ import React, {
   useCallback,
   useContext,
   useEffect,
+  useMemo,
   useState,
 } from 'react';
 
@@ -57,10 +58,15 @@ export const FerryProvider = ({ children }) => {
   // Initialize season query function
   const {
     loading: seasonsLoading,
-    data: seasonsData,
+    data: _seasonsData,
     error: seasonsError,
   } = useQuery(GET_SEASON_CODES);
+  const seasonsData = useMemo(() => {
+    return _seasonsData || { seasons: [] };
+  }, [_seasonsData]);
 
+  // Note that we track requests for force a re-render when
+  // courseData changes.
   const [requests, setRequests] = useState(0);
   const diffRequests = useCallback(
     (diff) => {
@@ -79,7 +85,7 @@ export const FerryProvider = ({ children }) => {
 
   const requestSeasons = useCallback(
     (seasons) => {
-      const requests = seasons.map((season) => {
+      const fetches = seasons.map((season) => {
         // Racy preemptive check of cache.
         // We cannot check courseLoadAttempted here, since that is set prior
         // to the data actually being loaded.
@@ -93,7 +99,7 @@ export const FerryProvider = ({ children }) => {
           diffRequests(-1);
         });
       });
-      Promise.all(requests).catch((err) => {
+      Promise.all(fetches).catch((err) => {
         toast.error('Failed to fetch course information');
         console.error(err);
         addError(err);
@@ -102,16 +108,22 @@ export const FerryProvider = ({ children }) => {
     [diffRequests, addError]
   );
 
+  // If there's any error, we want to immediately stop "loading" and start "erroring".
   const error = seasonsError ? seasonsError : errors[0];
+  const loading = (seasonsLoading || requests !== 0) && !error;
 
-  const store = {
-    // If there's any error, we want to immediately stop "loading" and start "erroring".
-    loading: (seasonsLoading || requests !== 0) && !error,
-    error: error,
-    seasons: seasonsData || { seasons: [] },
-    courses: courseData,
-    requestSeasons,
-  };
+  const store = useMemo(
+    () => ({
+      requests,
+      seasonsLoading,
+      loading,
+      error: error,
+      seasons: seasonsData,
+      courses: courseData,
+      requestSeasons,
+    }),
+    [seasonsLoading, loading, error, requests, seasonsData, requestSeasons]
+  );
 
   return <FerryCtx.Provider value={store}>{children}</FerryCtx.Provider>;
 };
@@ -119,11 +131,15 @@ export const FerryProvider = ({ children }) => {
 export default FerryProvider;
 export const useFerry = () => useContext(FerryCtx);
 export const useCourseData = (seasons) => {
-  const { loading, error, courses, requestSeasons } = useFerry();
+  const { error, courses, requestSeasons } = useFerry();
 
   useEffect(() => {
     requestSeasons(seasons);
   }, [requestSeasons, seasons]);
+
+  // If not everything is loaded, we're still loading.
+  // But if we hit an error, stop loading immediately.
+  const loading = !error && !seasons.every((season) => courses[season]);
 
   return { loading, error, courses };
 };
