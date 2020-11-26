@@ -34,8 +34,24 @@ const StyledRadio = styled(Form.Check)`
   /* Hover effect = dark grey border */
   &:hover {
     input[type='radio']:after {
-      border: 3px solid #bbbbbb;
+      border: 3px solid #bbbbb;
     }
+  }
+`;
+
+// Custom switch toggle
+const StyledSwitch = styled(Form.Check)`
+  /* Default state = grey border and same background as other input components*/
+  .custom-control-input ~ .custom-control-label::before {
+    border-color: #cccccc;
+    background-color: ${({ theme }) => theme.select};
+    transition: background-color 0.2s linear;
+  }
+
+  /* Enabled state = blue border+background */
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: ${({ theme }) => theme.primary};
+    background-color: ${({ theme }) => theme.primary};
   }
 `;
 
@@ -228,7 +244,7 @@ function Feedback() {
         </Form.Group>
         {/* Follow up permission switch */}
         <Form.Group className={styles.form_group}>
-          <Form.Check
+          <StyledSwitch
             className={styles.hover_pointer}
             type="switch"
             id="permission"
