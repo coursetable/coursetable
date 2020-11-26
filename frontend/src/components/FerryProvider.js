@@ -114,6 +114,7 @@ export const FerryProvider = ({ children }) => {
 
   const store = useMemo(
     () => ({
+      requests,
       seasonsLoading,
       loading,
       error: error,
