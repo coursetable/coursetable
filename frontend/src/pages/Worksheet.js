@@ -21,7 +21,6 @@ import posthog from 'posthog-js';
 import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../browserStorage';
-import { isInWorksheet } from '../courseUtilities';
 
 // Function to sort worksheet courses by course code
 const sortByCourseCode = (a, b) => {
@@ -140,10 +139,16 @@ function Worksheet() {
   // Fetch the worksheet info. This is eventually copied into the 'listings' variable.
   const { loading, error, data } = useWorksheetInfo(cur_worksheet, season);
 
-  // Listings data - basically an annotated worksheet.
+  // Cache calendar colors. Reset whenever the season changes.
+  const [colorMap, setColorMap] = useState({});
+  useEffect(() => {
+    setColorMap({});
+  }, [season]);
+
+  // Listings data - basically a color-annotated version of the worksheet info.
   const [listings, setListings] = useState([]);
 
-  // Initialize listings state if haven't already
+  // Initialize listings state and color map.
   useEffect(() => {
     if (
       !loading &&
@@ -156,35 +161,22 @@ function Worksheet() {
       let temp = [...data];
       // Assign color to each course
       for (let i = 0; i < data.length; i++) {
-        temp[i].color = colors[i % colors.length].concat('0.85)');
-        temp[i].border = colors[i % colors.length].concat('1)');
+        let choice = colors[i % colors.length];
+        if (colorMap[temp[i].crn]) {
+          choice = colorMap[temp[i].crn];
+        } else {
+          colorMap[temp[i].crn] = choice;
+        }
+        temp[i].color = choice.concat('0.85)');
+        temp[i].border = choice.concat('1)');
       }
       // Sort list by course code
       temp.sort(sortByCourseCode);
       setListings(temp);
     }
-  }, [loading, error, cur_worksheet, data, setListings]);
+  }, [loading, error, cur_worksheet, data, setListings, colorMap]);
 
-  // Holds the courses that are in the worksheet and in this current season
-  // The listings list might have courses that have been removed from the worksheet because we don't fetch listings data again
-  // So we need to filter for only the course that are in the worksheet as well as by season
-  const season_listings = useMemo(() => {
-    if (!listings.length) return [];
-    let season_listings_temp = [];
-    listings.forEach((listing) => {
-      if (
-        listing.season_code === season &&
-        isInWorksheet(
-          listing.season_code,
-          listing.crn.toString(),
-          cur_worksheet
-        )
-      ) {
-        season_listings_temp.push(listing);
-      }
-    });
-    return season_listings_temp;
-  }, [listings, cur_worksheet, season]);
+  const season_listings = listings;
 
   // If user somehow isn't logged in and worksheet is null
   if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
@@ -205,7 +197,14 @@ function Worksheet() {
       </div>
     );
   // Wait for search query to finish
-  if (loading) {
+  if (error) {
+    console.error(error);
+    return (
+      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
+        <ErrorPage message={'There seems to be an issue with our server'} />
+      </div>
+    );
+  } else if (loading) {
     return (
       <div style={{ height: '93vh' }}>
         <Spinner
@@ -217,15 +216,15 @@ function Worksheet() {
         </Spinner>
       </div>
     );
-  } else if (error) {
+  } else if (data === undefined) {
+    console.error('data is undefined but worksheet is not');
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <ErrorPage message={'There seems to be an issue with our server'} />
+        <ErrorPage message={'Internal error with course data'} />
       </div>
     );
   }
-  // Error with query
-  if (data === undefined || !data.length) return <div>Error with Query</div>;
+  // TODO: add something for when data.length === 0
 
   // Button size for expand icons
   const expand_btn_size = 12;
@@ -237,7 +236,7 @@ function Worksheet() {
         <Row className={cur_expand === 'list' ? 'm-3' : 'mx-3 mb-3'}>
           {/* Calendar Component */}
           <Col
-            // Width of componenet depends on if it is expanded or not
+            // Width of component depends on if it is expanded or not
             md={cur_expand === 'calendar' ? 12 : 9}
             className={
               styles.calendar +
