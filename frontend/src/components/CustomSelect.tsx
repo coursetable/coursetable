@@ -7,7 +7,6 @@ import Select, {
   Props as SelectProps,
   StylesConfig,
 } from 'react-select';
-import { StylesConfigFunction } from 'react-select/src/styles';
 
 // Makes Select forms animated
 const animatedComponents = makeAnimated();
@@ -182,21 +181,21 @@ const selectStyles = (theme: DefaultTheme): StylesConfig => {
       paddingBottom: 0,
       borderRadius: '8px',
     }),
-    option: ((base, { isDisabled, isFocused, isSelected }) => ({
+    option: (base, { isDisabled, isFocused, isSelected }) => ({
       ...base,
       cursor: 'pointer',
       backgroundColor: isDisabled
-        ? null
+        ? undefined
         : isSelected
         ? '#007cff'
         : isFocused
         ? theme.select_hover
-        : null,
+        : undefined,
       color: isSelected ? 'white' : theme.text[0],
       ':active': {
         ...(base as any)[':active'],
         backgroundColor: !isDisabled && '#85c2ff',
       },
-    })) as StylesConfigFunction,
+    }),
   };
 };
