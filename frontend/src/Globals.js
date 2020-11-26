@@ -64,9 +64,9 @@ Sentry.init({
   ],
   environment: process.env.NODE_ENV,
 
-  // Note: this is currently enabled in development. We can revisit this if it becomes annoying.
+  // Note: this is fully enabled in development. We can revisit this if it becomes annoying.
   // We can also adjust the production sample rate depending on our quotas.
-  tracesSampleRate: isDev ? 1.0 : 0.2,
+  tracesSampleRate: isDev ? 1.0 : 0.08,
 });
 
 const client = new ApolloClient({
