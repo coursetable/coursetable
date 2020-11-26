@@ -25,7 +25,6 @@ import {
   OverlayTrigger,
 } from 'react-bootstrap';
 
-import { flatten } from '../utilities';
 import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 
 import NoCoursesFound from '../images/no_courses_found.svg';
@@ -36,6 +35,7 @@ import { SurfaceComponent, StyledIcon } from './StyledComponents';
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
+import { flatten } from '../courseUtilities';
 
 /**
  * Renders the infinite list of search results

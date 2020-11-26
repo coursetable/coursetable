@@ -2,7 +2,7 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import './DropdownShared.css';
-import { toSeasonString } from '../utilities';
+import { toSeasonString } from '../courseUtilities';
 
 /**
  * Render Season Dropdown in mobile view

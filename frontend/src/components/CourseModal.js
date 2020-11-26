@@ -5,7 +5,6 @@ import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import { toSeasonString } from '../utilities';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
@@ -16,6 +15,7 @@ import chroma from 'chroma-js';
 import posthog from 'posthog-js';
 import { TextComponent, StyledLink } from './StyledComponents';
 import styled from 'styled-components';
+import { toSeasonString } from '../courseUtilities';
 
 // Course Modal
 const StyledModal = styled(Modal)`

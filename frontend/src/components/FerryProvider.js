@@ -12,7 +12,7 @@ import { useQuery } from '@apollo/client';
 import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
-import { flatten, preprocess_courses } from '../utilities';
+import { flatten, preprocess_courses } from '../courseUtilities';
 
 const FerryCtx = createContext(null);
 FerryCtx.displayName = 'FerryCtx';

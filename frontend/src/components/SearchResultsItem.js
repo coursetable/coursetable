@@ -12,7 +12,6 @@ import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import { getOverallRatings } from '../utilities';
 import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -20,6 +19,7 @@ import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './SearchResultsItem.module.css';
 import styled from 'styled-components';
+import { getOverallRatings } from '../courseUtilities';
 
 // Row for search results item
 const StyledResultsItem = styled(Row)`

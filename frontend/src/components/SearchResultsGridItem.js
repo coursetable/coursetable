@@ -12,7 +12,6 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
-import { getOverallRatings } from '../utilities';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -21,6 +20,7 @@ import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
 import styled from 'styled-components';
+import { getOverallRatings } from '../courseUtilities';
 
 const StyledGridItem = styled.div`
   background-color: ${({ theme }) =>
