@@ -348,12 +348,13 @@ function Search() {
       )
       .filter((listing) => {
         // Apply filters.
+        const average_rating = getOverallRatings(listing);
         if (
           searchConfig.min_rating !== null &&
           searchConfig.max_rating !== null &&
-          (getOverallRatings(listing) === null ||
-            getOverallRatings(listing) < searchConfig.min_rating ||
-            getOverallRatings(listing) > searchConfig.max_rating)
+          (average_rating === null ||
+            average_rating < searchConfig.min_rating ||
+            average_rating > searchConfig.max_rating)
         ) {
           return false;
         }
