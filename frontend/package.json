@@ -11,6 +11,7 @@
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
     "@types/react-router-dom": "^5.1.6",
+    "@types/react-select": "^3.0.26",
     "@types/styled-components": "^5.1.4",
     "async-lock": "^1.2.4",
     "axios": "^0.21.0",
