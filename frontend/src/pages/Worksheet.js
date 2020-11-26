@@ -21,7 +21,7 @@ import NoCoursesFound from '../images/no_courses_found.svg';
 import posthog from 'posthog-js';
 import ErrorPage from '../components/ErrorPage';
 
-import {useSessionStorageState} from "../browserStorage";
+import { useSessionStorageState } from '../browserStorage';
 
 /**
  * Renders worksheet page

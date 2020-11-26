@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react';
+import { useEffect, useRef, useState } from 'react';
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 import posthog from 'posthog-js';
@@ -85,7 +85,7 @@ export const isInWorksheet = (season_code, crn, worksheet) => {
   return false;
 };
 
-// Conver season code to legible string
+// Convert season code to legible string
 export const toSeasonString = (season_code) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
@@ -148,7 +148,7 @@ export const checkConflict = (listings, course, times) => {
     // Iterate over weekdays
     for (let day = 0; day < 5; day++) {
       const info = listing['times_by_day.' + [weekdays[day]]];
-      // Continue if the new course dosn't meet on this day
+      // Continue if the new course doesn't meet on this day
       if (info === undefined) continue;
       // Get worksheet course's start and end times
       let listing_start = moment(info[0][0], 'HH:mm');

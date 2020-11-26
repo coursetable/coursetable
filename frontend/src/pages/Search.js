@@ -50,7 +50,7 @@ import {
 import styled from 'styled-components';
 
 import posthog from 'posthog-js';
-import {setSSObject, useSessionStorageState} from "../browserStorage";
+import { setSSObject, useSessionStorageState } from '../browserStorage';
 
 const StyledSearchTab = styled.div`
   background-color: ${({ theme }) =>
