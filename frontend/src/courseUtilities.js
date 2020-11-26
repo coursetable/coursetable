@@ -1,9 +1,7 @@
-import { useState, useEffect, useRef } from 'react';
+// Performing various actions on the listing dictionary
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
-import posthog from 'posthog-js';
 
-// Performing various actions on the listing dictionary
 export const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
@@ -54,7 +52,6 @@ export const preprocess_courses = (listing) => {
   }
   return listing;
 };
-
 // Flatten dictionaries to make data more accessible
 export const flatten = (ob) => {
   const toReturn = {};
@@ -75,7 +72,6 @@ export const flatten = (ob) => {
   }
   return toReturn;
 };
-
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (season_code, crn, worksheet) => {
   if (worksheet === null) return false;
@@ -84,8 +80,7 @@ export const isInWorksheet = (season_code, crn, worksheet) => {
   }
   return false;
 };
-
-// Conver season code to legible string
+// Convert season code to legible string
 export const toSeasonString = (season_code) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
@@ -95,34 +90,6 @@ export const toSeasonString = (season_code) => {
     seasons[parseInt(season_code[5])],
   ];
 };
-
-// Detect clicks outside of a component
-export const useComponentVisible = (initialIsVisible) => {
-  // Is the component visible?
-  const [isComponentVisible, setIsComponentVisible] = useState(
-    initialIsVisible
-  );
-  const ref_visible = useRef(null);
-
-  // Handle clicks outside of the component
-  const handleClickOutside = (event) => {
-    // Hide component if user clicked outside of it
-    if (ref_visible.current && !ref_visible.current.contains(event.target)) {
-      setIsComponentVisible(false);
-    }
-  };
-
-  // Add event listener on mount and remove it on dismount
-  useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
-    return () => {
-      document.removeEventListener('click', handleClickOutside, true);
-    };
-  });
-
-  return { ref_visible, isComponentVisible, setIsComponentVisible };
-};
-
 // Unflatten course times for easy use in checkConflict
 export const unflattenTimes = (course) => {
   if (!course) return undefined;
@@ -136,7 +103,6 @@ export const unflattenTimes = (course) => {
   });
   return times_by_day;
 };
-
 // Checks if the a new course conflicts with the user's worksheet
 export const checkConflict = (listings, course, times) => {
   // Iterate over worksheet listings
@@ -148,7 +114,7 @@ export const checkConflict = (listings, course, times) => {
     // Iterate over weekdays
     for (let day = 0; day < 5; day++) {
       const info = listing['times_by_day.' + [weekdays[day]]];
-      // Continue if the new course dosn't meet on this day
+      // Continue if the new course doesn't meet on this day
       if (info === undefined) continue;
       // Get worksheet course's start and end times
       let listing_start = moment(info[0][0], 'HH:mm');
@@ -172,30 +138,6 @@ export const checkConflict = (listings, course, times) => {
   // Conflict doesn't exist
   return false;
 };
-
-export const scrollToTop = (event) => {
-  const newPage =
-    event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
-
-  if (!newPage) {
-    window.scrollTo({ top: 0, left: 0 });
-  }
-};
-
-export function logout() {
-  posthog.capture('logout');
-  posthog.reset();
-
-  // Clear cookies
-  document.cookie.split(';').forEach((c) => {
-    document.cookie = c
-      .replace(/^ +/, '')
-      .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
-  });
-  // Redirect to home page and refresh as well
-  window.location.pathname = '/';
-}
-
 // Fetch the FB friends that are also shopping a specific course. Used in course modal overview
 export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
   // Return if worksheets are null
@@ -213,7 +155,6 @@ export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
   }
   return also_taking;
 };
-
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
 export const getNumFB = (fbWorksheets) => {
   // List of each friends' worksheets
@@ -233,48 +174,6 @@ export const getNumFB = (fbWorksheets) => {
   }
   return fb_dict;
 };
-
-// Checks if object is in storage
-const containsObject = (key, storage) => {
-  return storage.getItem(key) ? true : false;
-};
-// Saves object to storage
-const setObject = (key, obj, storage, if_empty = false) => {
-  if (if_empty && containsObject(key, storage)) return;
-  storage.setItem(key, JSON.stringify(obj));
-};
-// Retrieves object from storage
-const getObject = (key, storage) => {
-  let str_val = storage.getItem(key);
-  return str_val === 'undefined' ? undefined : JSON.parse(str_val);
-};
-
-// session storage functions
-export const setSSObject = (key, obj, if_empty = false) => {
-  setObject(key, obj, window.sessionStorage, if_empty);
-};
-export const getSSObject = (key) => {
-  return getObject(key, window.sessionStorage);
-};
-
-// local storage functions
-export const setLSObject = (key, obj, if_empty = false) => {
-  setObject(key, obj, window.localStorage, if_empty);
-};
-export const getLSObject = (key) => {
-  return getObject(key, window.localStorage);
-};
-
-// Saves State in Session Storage
-export const useSessionStorageState = (key, default_value) => {
-  setSSObject(key, default_value, true);
-  const [value, setValue] = useState(getSSObject(key));
-  useEffect(() => {
-    setSSObject(key, value);
-  }, [key, value]);
-  return [value, setValue];
-};
-
 // Helper function that returns the correct value to sort by
 const helperSort = (listing, key, num_fb) => {
   // Sorting by fb friends
@@ -294,7 +193,6 @@ const helperSort = (listing, key, num_fb) => {
     return listing[key];
   }
 };
-
 // Sort courses in catalog or expanded worksheet
 export const sortCourses = (courses, ordering, num_fb) => {
   // Key to sort the courses by
@@ -313,7 +211,6 @@ export const sortCourses = (courses, ordering, num_fb) => {
   );
   return sorted;
 };
-
 // Get the overall rating for a course
 export const getOverallRatings = (course) => {
   // Determine which overall rating to use

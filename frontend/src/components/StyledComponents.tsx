@@ -3,13 +3,13 @@ import Select from 'react-select';
 import { FormControl, Card, Popover } from 'react-bootstrap';
 
 // Div used to color the background of surface components
-export const SurfaceComponent = styled.div`
+export const SurfaceComponent = styled.div<{ layer: number }>`
   background-color: ${({ theme, layer }) => theme.surface[layer]};
   transition: background-color 0.2s linear;
 `;
 
 // Span used to color text. Type is an int that represents primary (0) or secondary (1) color
-export const TextComponent = styled.span`
+export const TextComponent = styled.span<{ type: number }>`
   color: ${({ theme, type }) => theme.text[type]};
   transition: color 0.2s linear;
 `;
@@ -101,17 +101,18 @@ export const StyledPopover = styled(Popover)`
 `;
 
 // Rating bubbles in search results list item and modal
-export const StyledRating = styled.div.attrs(({ theme, rating, colormap }) => ({
-  style: {
-    backgroundColor:
-      rating && rating > 0
-        ? colormap(rating).alpha(theme.rating_alpha)
-        : theme.banner,
-    color: rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5',
-  },
-}))`
+export const StyledRating = styled.div<{
+  rating: number;
+  colormap: chroma.Scale<chroma.Color>;
+}>`
   font-weight: ${({ rating }) => (rating ? 600 : 400)};
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};
+  background-color: ${({ theme, rating, colormap }) =>
+    rating && rating > 0
+      ? colormap(rating).alpha(theme.rating_alpha).css()
+      : theme.banner};
+  color: ${({ rating, colormap }) =>
+    rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
   transition: background-color 0.2s linear;
 `;
 

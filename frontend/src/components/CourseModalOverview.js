@@ -3,8 +3,7 @@ import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
 import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
 import { useQuery } from '@apollo/client';
 import Styles from './CourseModalOverview.module.css';
-import { ratingColormap, workloadColormap } from '../queries/Constants.js';
-import { toSeasonString, fbFriendsAlsoTaking } from '../utilities';
+import { ratingColormap, workloadColormap } from '../queries/Constants';
 import './MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
@@ -21,6 +20,7 @@ import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
 
 import CourseModalLoading from './CourseModalLoading';
+import { fbFriendsAlsoTaking, toSeasonString } from '../courseUtilities';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
