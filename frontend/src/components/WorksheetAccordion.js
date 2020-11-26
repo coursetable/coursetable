@@ -2,7 +2,7 @@ import React, { useCallback, useContext, useMemo } from 'react';
 import moment from 'moment';
 import styles from './WorksheetAccordion.module.css';
 import tagStyles from './SearchResultsItem.module.css';
-import { skillsAreasColors } from '../queries/Constants.js';
+import { skillsAreasColors } from '../queries/Constants';
 import chroma from 'chroma-js';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';

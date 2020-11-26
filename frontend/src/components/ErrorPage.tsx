@@ -1,7 +1,12 @@
 import React from 'react';
 import ServerError from '../images/server_error.svg';
 
-function ErrorPage({ message }) {
+type Props = {
+  /** Message to display in the error page */
+  message: string;
+};
+
+const ErrorPage: React.VFC<Props> = ({ message }) => {
   return (
     <div className="text-center m-auto">
       <h3>{message}</h3>
@@ -11,7 +16,6 @@ function ErrorPage({ message }) {
           report
         </a>{' '}
         to let us know. You can also{' '}
-        {/* Reload logic via https://stackoverflow.com/a/23680265/5004662. */}
         <a href="#!" onClick={() => window.location.reload()}>
           reload the page
         </a>{' '}
@@ -25,6 +29,6 @@ function ErrorPage({ message }) {
       ></img>
     </div>
   );
-}
+};
 
 export default ErrorPage;

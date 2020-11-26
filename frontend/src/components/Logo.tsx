@@ -4,16 +4,21 @@ import logo from '../images/brand/bluebook.svg';
 import wordmark_outlines from '../images/brand/wordmark_outlines.svg';
 import wordmark_outlines_dark from '../images/brand/ct_white.svg';
 import common_styles from '../styles/common.module.css';
-import { withTheme } from 'styled-components';
+import { useTheme } from 'styled-components';
+
+type Props = {
+  /** Should we show the icon */
+  icon?: boolean;
+  /** Should be show the wordmark */
+  wordmark?: boolean;
+};
 
 /**
  * CourseTable Logo
- * @prop variant - string that determines the color scheme for the logo
- * @prop condensed - boolean that returns 'CT' if true
- * @prop theme - holds dictionary of current dark/light theme styles
  */
+const Logo: React.VFC<Props> = ({ icon = true, wordmark = true }) => {
+  const theme = useTheme();
 
-function Logo({ icon = true, wordmark = true, theme }) {
   return (
     <span
       className={common_styles.coursetable_logo}
@@ -35,6 +40,6 @@ function Logo({ icon = true, wordmark = true, theme }) {
       )}
     </span>
   );
-}
+};
 
-export default withTheme(Logo);
+export default Logo;

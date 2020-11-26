@@ -12,7 +12,7 @@ import { useUser } from '../user';
 import { FaCompressAlt } from 'react-icons/fa';
 import SortbyReactSelect from './SortByReactSelect';
 import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
-import { getNumFB, sortCourses } from '../utilities';
+import { getNumFB, sortCourses } from '../courseUtilities';
 
 /**
  * Render expanded worksheet list after maximize button is clicked

@@ -2,8 +2,12 @@ import React, { useMemo } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { useUser } from '../user';
-import { isInWorksheet, checkConflict, unflattenTimes } from '../utilities';
 import { MdErrorOutline } from 'react-icons/md';
+import {
+  checkConflict,
+  isInWorksheet,
+  unflattenTimes,
+} from '../courseUtilities';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 
 /**

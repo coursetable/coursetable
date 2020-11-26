@@ -1,6 +1,6 @@
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import { toSeasonString } from '../utilities';
+import { toSeasonString } from '../courseUtilities';
 const FileSaver = require('file-saver');
 const ics = require('ics');
 

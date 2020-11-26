@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
-import { toSeasonString } from '../utilities';
 import CustomSelect from './CustomSelect';
+import { toSeasonString } from '../courseUtilities';
 
 /**
  * Render season dropdown

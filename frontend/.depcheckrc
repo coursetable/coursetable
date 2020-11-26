@@ -1,4 +1,4 @@
-ignores: ["graphql", "typescript", "@types/*"]
+ignores: ["graphql", "typescript", "typescript-plugin-css-modules", "@types/*"]
 skip-missing: true
 specials: ["bin"]
 

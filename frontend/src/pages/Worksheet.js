@@ -16,12 +16,12 @@ import {
 import styles from './Worksheet.module.css';
 
 import { useUser } from '../user';
-import { isInWorksheet } from '../utilities';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import posthog from 'posthog-js';
 import ErrorPage from '../components/ErrorPage';
 
-import { useSessionStorageState } from '../utilities.js';
+import { useSessionStorageState } from '../browserStorage';
+import { isInWorksheet } from '../courseUtilities';
 
 // Function to sort worksheet courses by course code
 const sortByCourseCode = (a, b) => {

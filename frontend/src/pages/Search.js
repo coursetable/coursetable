@@ -28,7 +28,6 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/SortByReactSelect';
-import { getNumFB, getOverallRatings, sortCourses } from '../utilities';
 import { sortbyOptions } from '../queries/Constants';
 
 import debounce from 'lodash/debounce';
@@ -49,9 +48,9 @@ import {
 } from '../components/StyledComponents';
 import styled from 'styled-components';
 
-import { setSSObject, useSessionStorageState } from '../utilities.js';
-
 import posthog from 'posthog-js';
+import { setSSObject, useSessionStorageState } from '../browserStorage';
+import { getNumFB, getOverallRatings, sortCourses } from '../courseUtilities';
 
 const StyledSearchTab = styled.div`
   background-color: ${({ theme }) =>
