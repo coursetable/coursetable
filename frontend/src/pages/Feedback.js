@@ -4,6 +4,56 @@ import styles from './Feedback.module.css';
 import './Feedback.css';
 import CustomSelect from '../components/CustomSelect';
 import { StyledInput, TextComponent } from '../components/StyledComponents';
+import styled from 'styled-components';
+
+// Custom radio buttons
+const StyledRadio = styled(Form.Check)`
+  /* Hide previous button */
+  input[type='radio'] {
+    opacity: 0;
+  }
+  /* Default state = grey border and same background as other input components */
+  input[type='radio'] + label:after {
+    width: 15px;
+    height: 15px;
+    border-radius: 100%;
+    top: 2px;
+    left: calc(-100% - 4px);
+    position: relative;
+    background-color: ${({ theme }) => theme.select};
+    content: '';
+    display: inline-block;
+    visibility: visible;
+    border: 3px solid #cccccc;
+    transition: background-color 0.2s linear;
+  }
+  /* Active state = blue border */
+  input[type='radio']:checked + label:after {
+    border: 3px solid ${({ theme }) => theme.primary} !important;
+  }
+  /* Hover effect = dark grey border */
+  &:hover {
+    input[type='radio']:after {
+      border: 3px solid #bbbbb;
+    }
+  }
+`;
+
+// Custom switch toggle
+const StyledSwitch = styled(Form.Check)`
+  /* Default state = grey border and same background as other input components*/
+  .custom-control-input ~ .custom-control-label::before {
+    border-color: #cccccc;
+    background-color: ${({ theme }) => theme.select};
+    transition: background-color 0.2s linear;
+  }
+
+  /* Enabled state = blue border+background */
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: ${({ theme }) => theme.primary};
+    background-color: ${({ theme }) => theme.primary};
+  }
+`;
 
 /**
  * Renders the Feedback page
@@ -72,7 +122,7 @@ function Feedback() {
           </Form.Label>
           <br />
           {['general', 'feature', 'bug'].map((feedback_type) => (
-            <Form.Check
+            <StyledRadio
               className={styles.hover_pointer}
               name="feedback_type"
               type="radio"
@@ -194,7 +244,7 @@ function Feedback() {
         </Form.Group>
         {/* Follow up permission switch */}
         <Form.Group className={styles.form_group}>
-          <Form.Check
+          <StyledSwitch
             className={styles.hover_pointer}
             type="switch"
             id="permission"
