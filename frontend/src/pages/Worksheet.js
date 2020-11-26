@@ -60,10 +60,6 @@ function Worksheet() {
   );
   // Listings data to be fetched from database
   const [listings, setListings] = useState([]);
-  // Store the initial worksheet to be cached on the first listings query
-  const [init_worksheet, setInitWorksheet] = useState(
-    cur_worksheet ? cur_worksheet : []
-  );
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState([false, '']);
   // List of courses that the user has marked hidden
@@ -150,10 +146,8 @@ function Worksheet() {
     'rgba(186, 120, 129, ',
   ];
 
-  // TODO: add season_code to the useWorksheetInfo parameter list so that we
-  // only load the data that we actually need. This is not currently possible
-  // because of the way we handle init_worksheet vs cur_worksheet.
-  const { loading, error, data } = useWorksheetInfo(init_worksheet);
+  // Fetch the worksheet info. This is eventually copied into the 'listings' variable.
+  const { loading, error, data } = useWorksheetInfo(cur_worksheet, season);
 
   // Initialize listings state if haven't already
   if (
