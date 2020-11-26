@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import {useEffect, useRef, useState} from 'react';
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 import posthog from 'posthog-js';
@@ -232,47 +232,6 @@ export const getNumFB = (fbWorksheets) => {
     });
   }
   return fb_dict;
-};
-
-// Checks if object is in storage
-const containsObject = (key, storage) => {
-  return storage.getItem(key) ? true : false;
-};
-// Saves object to storage
-const setObject = (key, obj, storage, if_empty = false) => {
-  if (if_empty && containsObject(key, storage)) return;
-  storage.setItem(key, JSON.stringify(obj));
-};
-// Retrieves object from storage
-const getObject = (key, storage) => {
-  let str_val = storage.getItem(key);
-  return str_val === 'undefined' ? undefined : JSON.parse(str_val);
-};
-
-// session storage functions
-export const setSSObject = (key, obj, if_empty = false) => {
-  setObject(key, obj, window.sessionStorage, if_empty);
-};
-export const getSSObject = (key) => {
-  return getObject(key, window.sessionStorage);
-};
-
-// local storage functions
-export const setLSObject = (key, obj, if_empty = false) => {
-  setObject(key, obj, window.localStorage, if_empty);
-};
-export const getLSObject = (key) => {
-  return getObject(key, window.localStorage);
-};
-
-// Saves State in Session Storage
-export const useSessionStorageState = (key, default_value) => {
-  setSSObject(key, default_value, true);
-  const [value, setValue] = useState(getSSObject(key));
-  useEffect(() => {
-    setSSObject(key, value);
-  }, [key, value]);
-  return [value, setValue];
 };
 
 // Helper function that returns the correct value to sort by

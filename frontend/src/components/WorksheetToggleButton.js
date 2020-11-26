@@ -7,8 +7,8 @@ import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { isInWorksheet } from '../utilities';
 import posthog from 'posthog-js';
-import { setSSObject, getSSObject } from '../utilities.js';
 import styled from 'styled-components';
+import {getSSObject, setSSObject} from "../browserStorage";
 
 /**
  * Render worksheet list in default worksheet view

@@ -11,7 +11,7 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
-import { useSessionStorageState } from '../utilities.js';
+import {useSessionStorageState} from "../browserStorage";
 
 const StyledSortBtn = styled.div`
   &:hover {
