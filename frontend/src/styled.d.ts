@@ -1,6 +1,6 @@
 import 'styled-components';
 
-// From https://styled-components.com/docs/api#typescript.
+// Based on https://styled-components.com/docs/api#typescript.
 declare module 'styled-components' {
   export interface DefaultTheme {
     theme: string;

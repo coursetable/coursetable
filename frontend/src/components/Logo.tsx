@@ -21,7 +21,7 @@ const Logo: React.VFC<Props> = ({ icon = true, wordmark = true }) => {
 
   return (
     <span
-      className={common_styles.coursetable_logo_does_not_exist}
+      className={common_styles.coursetable_logo}
       style={{
         display: 'block',
       }}
