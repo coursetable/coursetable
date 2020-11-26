@@ -4,6 +4,7 @@ import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 import { useUser } from '../user';
 import { isInWorksheet, checkConflict, unflattenTimes } from '../utilities';
 import { MdErrorOutline } from 'react-icons/md';
+import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 
 /**
  * Displays icon when there is a course conflict with worksheet
@@ -22,7 +23,7 @@ const CourseConflictIcon = ({ course }) => {
   }, [course.season_code, course.crn, user.worksheet]);
 
   // Fetch listing info for each listing in user's worksheet
-  const { data } = user.worksheetDataObj;
+  const { data } = useWorksheetInfo(user.worksheet, course.season_code);
 
   // Get listing times
   const times = useMemo(() => unflattenTimes(course), [course]);

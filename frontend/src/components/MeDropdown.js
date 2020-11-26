@@ -32,13 +32,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
 
-  const filtered_worksheet = useMemo(() => {
-    return (user.worksheet || []).filter((item) => {
-      return item[0] === CUR_SEASON;
-    });
-  }, [user.worksheet]);
-
-  let { data } = useWorksheetInfo(filtered_worksheet);
+  let { data } = useWorksheetInfo(user.worksheet || [], CUR_SEASON);
   if (!data) data = [];
 
   // Handle 'export worksheet' button click

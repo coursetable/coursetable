@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useCallback } from 'react';
+import React, { useMemo, useState, useCallback, useEffect } from 'react';
 
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
@@ -153,6 +153,8 @@ function Worksheet() {
   // Perform search query to fetch listing data for each worksheet course
   // Only performs search query once with the initial worksheet and then caches the result
   // This prevents the need to perform another search query and render "loading..." when removing a course
+  // TODO: add season_code to the useWorksheetInfo parameter list so that we
+  // only load the data that we actually need.
   const { loading, error, data } = useWorksheetInfo(init_worksheet);
 
   // Initialize listings state if haven't already

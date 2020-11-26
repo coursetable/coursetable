@@ -105,6 +105,7 @@ export const FerryProvider = ({ children }) => {
   const error = seasonsError ? seasonsError : errors[0];
 
   const store = {
+    seasonsLoading,
     // If there's any error, we want to immediately stop "loading" and start "erroring".
     loading: (seasonsLoading || requests !== 0) && !error,
     error: error,
@@ -119,11 +120,14 @@ export const FerryProvider = ({ children }) => {
 export default FerryProvider;
 export const useFerry = () => useContext(FerryCtx);
 export const useCourseData = (seasons) => {
-  const { loading, error, courses, requestSeasons } = useFerry();
+  const { error, courses, requestSeasons } = useFerry();
 
   useEffect(() => {
     requestSeasons(seasons);
   }, [requestSeasons, seasons]);
+
+  // If not everything is loaded, we're still loading.
+  const loading = !seasons.every((season) => courses[season]);
 
   return { loading, error, courses };
 };
