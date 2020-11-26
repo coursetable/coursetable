@@ -150,11 +150,9 @@ function Worksheet() {
     'rgba(186, 120, 129, ',
   ];
 
-  // Perform search query to fetch listing data for each worksheet course
-  // Only performs search query once with the initial worksheet and then caches the result
-  // This prevents the need to perform another search query and render "loading..." when removing a course
   // TODO: add season_code to the useWorksheetInfo parameter list so that we
-  // only load the data that we actually need.
+  // only load the data that we actually need. This is not currently possible
+  // because of the way we handle init_worksheet vs cur_worksheet.
   const { loading, error, data } = useWorksheetInfo(init_worksheet);
 
   // Initialize listings state if haven't already
