@@ -32,7 +32,6 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
 
-  console.log('rendering MeDropdown', user.worksheet, CUR_SEASON);
   let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
   if (!data) data = [];
 

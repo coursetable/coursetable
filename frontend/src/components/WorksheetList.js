@@ -38,15 +38,13 @@ function WorksheetList({
     (cur_season, courses) => {
       // List to hold HTML
       let items = [];
-      // Variable for list keys
-      let id = 0;
 
       // Iterate over all listings of this season
-      courses.forEach((course) => {
+      courses.forEach((course, id) => {
         // Add listgroup item to items list
         items.push(
           <WorksheetListItem
-            key={id++}
+            key={id}
             course={course}
             cur_season={cur_season}
             showModal={showModal}
