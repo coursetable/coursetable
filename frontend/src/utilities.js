@@ -275,18 +275,38 @@ export const useSessionStorageState = (key, default_value) => {
   return [value, setValue];
 };
 
+// Helper function that returns the correct value to sort by
+const helperSort = (listing, key, num_fb) => {
+  // Sorting by fb friends
+  if (key === 'fb') {
+    // Concatenate season code and crn to form key
+    const fb_key = listing.season_code + listing.crn;
+    // No friends. return null
+    if (!num_fb[fb_key]) return null;
+    // Has friends. return number of friends
+    return num_fb[fb_key].length;
+  }
+  // Sorting by course rating
+  else if (key === 'average_rating') {
+    // Factor in same professors rating if it exists
+    return getOverallRatings(listing);
+  } else {
+    return listing[key];
+  }
+};
+
+// Sort courses in catalog or expanded worksheet
 export const sortCourses = (courses, ordering, num_fb) => {
+  // Key to sort the courses by
   const key = Object.keys(ordering)[0];
+  // Boolean | in ascending order?
   const order_asc = ordering[key].startsWith('asc');
+  // Sort classes
   const sorted = orderBy(
     courses,
     [
-      (listing) =>
-        key !== 'fb'
-          ? !!listing[key] || listing[key] === 0
-          : !!num_fb[listing.season_code + listing.crn],
-      (listing) =>
-        key !== 'fb' ? listing[key] : num_fb[listing.season_code + listing.crn],
+      (listing) => !!helperSort(listing, key, num_fb) || listing[key] === 0,
+      (listing) => helperSort(listing, key, num_fb),
       (listing) => listing.course_code,
     ],
     ['desc', order_asc ? 'asc' : 'desc', 'asc']
@@ -294,6 +314,7 @@ export const sortCourses = (courses, ordering, num_fb) => {
   return sorted;
 };
 
+// Get the overall rating for a course
 export const getOverallRatings = (course) => {
   // Determine which overall rating to use
   const course_rating = course['course.average_rating_same_professors']

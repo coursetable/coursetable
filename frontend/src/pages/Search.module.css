@@ -21,6 +21,7 @@
 }
 
 .search_container {
+  position: relative;
   width: 100%;
   border-radius: 0.5rem;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
@@ -132,6 +133,7 @@
   padding: 7px;
   border-top-right-radius: 10px;
   border-bottom-right-radius: 10px;
+  z-index: 10;
 }
 
 .search_tab:hover {
