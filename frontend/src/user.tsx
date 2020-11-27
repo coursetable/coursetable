@@ -26,11 +26,11 @@ type FBInfo = {
 };
 type Store = {
   user: {
-    netId: NetId | null;
-    worksheet: Worksheet | null;
-    hasEvals: boolean | null;
-    fbLogin: boolean | null;
-    fbWorksheets: FBInfo | null;
+    netId?: NetId;
+    worksheet?: Worksheet;
+    hasEvals?: boolean;
+    fbLogin?: boolean;
+    fbWorksheets?: FBInfo;
   };
   userRefresh(suppressError?: boolean): Promise<void>;
   fbRefresh(suppressError?: boolean): Promise<void>;
@@ -44,15 +44,17 @@ UserContext.displayName = 'UserContext';
  */
 export const UserProvider: React.FC<{}> = ({ children }) => {
   // User's netId
-  const [netId, setNetId] = useState<string | null>(null);
+  const [netId, setNetId] = useState<string | undefined>(undefined);
   // User's worksheet
-  const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
+  const [worksheet, setWorksheet] = useState<Worksheet | undefined>(undefined);
   // User's evals enabled status
-  const [hasEvals, setHasEvals] = useState<boolean | null>(null);
+  const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
   // User's FB login status
-  const [fbLogin, setFbLogin] = useState<boolean | null>(null);
+  const [fbLogin, setFbLogin] = useState<boolean | undefined>(undefined);
   // User's FB friends' worksheets
-  const [fbWorksheets, setFbWorksheets] = useState<FBInfo | null>(null);
+  const [fbWorksheets, setFbWorksheets] = useState<FBInfo | undefined>(
+    undefined
+  );
 
   // Refresh user worksheet
   const userRefresh = useCallback(
@@ -62,9 +64,9 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
       );
       if (!res.data.success) {
         // Error with fetching user's worksheet
-        setNetId(null);
-        setWorksheet(null);
-        setHasEvals(null);
+        setNetId(undefined);
+        setWorksheet(undefined);
+        setHasEvals(undefined);
         posthog.reset();
         Sentry.configureScope((scope) => scope.clear());
         console.error(res.data.message);
@@ -96,7 +98,7 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
           toast.error(friends_worksheets.data.message);
         }
         setFbLogin(false);
-        setFbWorksheets(null);
+        setFbWorksheets(undefined);
       } else {
         // Successfully fetched friends' worksheets
         setFbLogin(true);
