@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from 'graphql-tag';
 import * as Apollo from '@apollo/client';
 export type Maybe<T> = T | null;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -7694,30 +7694,14 @@ export type ListSeasonsQueryVariables = Exact<{
 }>;
 
 
-export type ListSeasonsQuery = (
-  { __typename?: 'query_root' }
-  & { seasons: Array<(
-    { __typename?: 'seasons' }
-    & Pick<Seasons, 'season_code' | 'term' | 'year'>
-  )> }
-);
+export type ListSeasonsQuery = { __typename?: 'query_root', seasons: Array<{ __typename?: 'seasons', season_code: string, term?: Maybe<string>, year?: Maybe<number> }> };
 
 export type CatalogBySeasonQueryVariables = Exact<{
   season: Scalars['String'];
 }>;
 
 
-export type CatalogBySeasonQuery = (
-  { __typename?: 'query_root' }
-  & { computed_listing_info: Array<(
-    { __typename?: 'computed_listing_info' }
-    & Pick<Computed_Listing_Info, 'all_course_codes' | 'areas' | 'average_gut_rating' | 'average_professor' | 'average_rating' | 'average_workload' | 'classnotes' | 'course_code' | 'credits' | 'crn' | 'description' | 'enrolled' | 'extra_info' | 'final_exam' | 'flag_info' | 'fysem' | 'last_enrollment' | 'last_enrollment_same_professors' | 'listing_id' | 'locations_summary' | 'number' | 'professor_names' | 'regnotes' | 'requirements' | 'rp_attr' | 'school' | 'season_code' | 'section' | 'skills' | 'subject' | 'syllabus_url' | 'times_by_day' | 'times_summary' | 'title'>
-    & { course?: Maybe<(
-      { __typename?: 'courses' }
-      & Pick<Courses, 'average_rating_same_professors' | 'average_workload_same_professors'>
-    )> }
-  )> }
-);
+export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes?: Maybe<any>, areas?: Maybe<any>, average_gut_rating?: Maybe<any>, average_professor?: Maybe<any>, average_rating?: Maybe<any>, average_workload?: Maybe<any>, classnotes?: Maybe<string>, course_code?: Maybe<string>, credits?: Maybe<any>, crn?: Maybe<number>, description?: Maybe<string>, enrolled?: Maybe<number>, extra_info?: Maybe<string>, final_exam?: Maybe<string>, flag_info?: Maybe<any>, fysem?: Maybe<boolean>, last_enrollment?: Maybe<number>, last_enrollment_same_professors?: Maybe<boolean>, listing_id?: Maybe<number>, locations_summary?: Maybe<string>, number?: Maybe<string>, professor_names?: Maybe<any>, regnotes?: Maybe<string>, requirements?: Maybe<string>, rp_attr?: Maybe<string>, school?: Maybe<string>, season_code?: Maybe<string>, section?: Maybe<string>, skills?: Maybe<any>, subject?: Maybe<string>, syllabus_url?: Maybe<string>, times_by_day?: Maybe<any>, times_summary?: Maybe<string>, title?: Maybe<string>, course?: Maybe<{ __typename?: 'courses', average_rating_same_professors?: Maybe<any>, average_workload_same_professors?: Maybe<any> }> }> };
 
 export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
   course_code?: Maybe<Scalars['String']>;
@@ -7725,20 +7709,7 @@ export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
 }>;
 
 
-export type SearchAverageAcrossSeasonsQuery = (
-  { __typename?: 'query_root' }
-  & { computed_listing_info: Array<(
-    { __typename?: 'computed_listing_info' }
-    & Pick<Computed_Listing_Info, 'all_course_codes' | 'areas' | 'average_gut_rating' | 'average_professor' | 'average_rating' | 'average_workload' | 'classnotes' | 'course_code' | 'credits' | 'crn' | 'description' | 'enrolled' | 'extra_info' | 'final_exam' | 'flag_info' | 'fysem' | 'last_enrollment' | 'last_enrollment_same_professors' | 'listing_id' | 'locations_summary' | 'number' | 'professor_info' | 'professor_names' | 'regnotes' | 'requirements' | 'rp_attr' | 'school' | 'season_code' | 'section' | 'skills' | 'subject' | 'syllabus_url' | 'times_by_day' | 'times_summary' | 'title'>
-    & { course?: Maybe<(
-      { __typename?: 'courses' }
-      & { evaluation_statistics: Array<(
-        { __typename?: 'evaluation_statistics' }
-        & Pick<Evaluation_Statistics, 'avg_workload' | 'avg_rating'>
-      )> }
-    )> }
-  )> }
-);
+export type SearchAverageAcrossSeasonsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes?: Maybe<any>, areas?: Maybe<any>, average_gut_rating?: Maybe<any>, average_professor?: Maybe<any>, average_rating?: Maybe<any>, average_workload?: Maybe<any>, classnotes?: Maybe<string>, course_code?: Maybe<string>, credits?: Maybe<any>, crn?: Maybe<number>, description?: Maybe<string>, enrolled?: Maybe<number>, extra_info?: Maybe<string>, final_exam?: Maybe<string>, flag_info?: Maybe<any>, fysem?: Maybe<boolean>, last_enrollment?: Maybe<number>, last_enrollment_same_professors?: Maybe<boolean>, listing_id?: Maybe<number>, locations_summary?: Maybe<string>, number?: Maybe<string>, professor_info?: Maybe<any>, professor_names?: Maybe<any>, regnotes?: Maybe<string>, requirements?: Maybe<string>, rp_attr?: Maybe<string>, school?: Maybe<string>, season_code?: Maybe<string>, section?: Maybe<string>, skills?: Maybe<any>, subject?: Maybe<string>, syllabus_url?: Maybe<string>, times_by_day?: Maybe<any>, times_summary?: Maybe<string>, title?: Maybe<string>, course?: Maybe<{ __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload?: Maybe<any>, avg_rating?: Maybe<any> }> }> }> };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code?: Maybe<Scalars['String']>;
@@ -7746,34 +7717,7 @@ export type SearchEvaluationNarrativesQueryVariables = Exact<{
 }>;
 
 
-export type SearchEvaluationNarrativesQuery = (
-  { __typename?: 'query_root' }
-  & { computed_listing_info: Array<(
-    { __typename?: 'computed_listing_info' }
-    & Pick<Computed_Listing_Info, 'crn'>
-    & { course?: Maybe<(
-      { __typename?: 'courses' }
-      & { evaluation_narratives_aggregate: (
-        { __typename?: 'evaluation_narratives_aggregate' }
-        & { nodes: Array<(
-          { __typename?: 'evaluation_narratives' }
-          & Pick<Evaluation_Narratives, 'comment'>
-          & { evaluation_question: (
-            { __typename?: 'evaluation_questions' }
-            & Pick<Evaluation_Questions, 'question_text'>
-          ) }
-        )> }
-      ), evaluation_ratings: Array<(
-        { __typename?: 'evaluation_ratings' }
-        & Pick<Evaluation_Ratings, 'rating'>
-        & { evaluation_question: (
-          { __typename?: 'evaluation_questions' }
-          & Pick<Evaluation_Questions, 'question_text'>
-        ) }
-      )> }
-    )> }
-  )> }
-);
+export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn?: Maybe<number>, course?: Maybe<{ __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment?: Maybe<string>, evaluation_question: { __typename?: 'evaluation_questions', question_text?: Maybe<string> } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating?: Maybe<any>, evaluation_question: { __typename?: 'evaluation_questions', question_text?: Maybe<string> } }> }> }> };
 
 
 export const ListSeasonsDocument = gql`
