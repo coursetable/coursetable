@@ -7689,6 +7689,36 @@ export type Subscription_RootSeasons_By_PkArgs = {
   season_code: Scalars['String'];
 };
 
+export type ListSeasonsQueryVariables = Exact<{
+  season?: Maybe<Array<Scalars['String']>>;
+}>;
+
+
+export type ListSeasonsQuery = (
+  { __typename?: 'query_root' }
+  & { seasons: Array<(
+    { __typename?: 'seasons' }
+    & Pick<Seasons, 'season_code' | 'term' | 'year'>
+  )> }
+);
+
+export type CatalogBySeasonQueryVariables = Exact<{
+  season: Scalars['String'];
+}>;
+
+
+export type CatalogBySeasonQuery = (
+  { __typename?: 'query_root' }
+  & { computed_listing_info: Array<(
+    { __typename?: 'computed_listing_info' }
+    & Pick<Computed_Listing_Info, 'all_course_codes' | 'areas' | 'average_gut_rating' | 'average_professor' | 'average_rating' | 'average_workload' | 'classnotes' | 'course_code' | 'credits' | 'crn' | 'description' | 'enrolled' | 'extra_info' | 'final_exam' | 'flag_info' | 'fysem' | 'last_enrollment' | 'last_enrollment_same_professors' | 'listing_id' | 'locations_summary' | 'number' | 'professor_names' | 'regnotes' | 'requirements' | 'rp_attr' | 'school' | 'season_code' | 'section' | 'skills' | 'subject' | 'syllabus_url' | 'times_by_day' | 'times_summary' | 'title'>
+    & { course?: Maybe<(
+      { __typename?: 'courses' }
+      & Pick<Courses, 'average_rating_same_professors' | 'average_workload_same_professors'>
+    )> }
+  )> }
+);
+
 export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
   course_code?: Maybe<Scalars['String']>;
   professor_name?: Maybe<Array<Scalars['String']>>;
@@ -7746,6 +7776,111 @@ export type SearchEvaluationNarrativesQuery = (
 );
 
 
+export const ListSeasonsDocument = gql`
+    query listSeasons($season: [String!]) {
+  seasons {
+    season_code
+    term
+    year
+  }
+}
+    `;
+
+/**
+ * __useListSeasonsQuery__
+ *
+ * To run a query within a React component, call `useListSeasonsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useListSeasonsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useListSeasonsQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useListSeasonsQuery(baseOptions?: Apollo.QueryHookOptions<ListSeasonsQuery, ListSeasonsQueryVariables>) {
+        return Apollo.useQuery<ListSeasonsQuery, ListSeasonsQueryVariables>(ListSeasonsDocument, baseOptions);
+      }
+export function useListSeasonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListSeasonsQuery, ListSeasonsQueryVariables>) {
+          return Apollo.useLazyQuery<ListSeasonsQuery, ListSeasonsQueryVariables>(ListSeasonsDocument, baseOptions);
+        }
+export type ListSeasonsQueryHookResult = ReturnType<typeof useListSeasonsQuery>;
+export type ListSeasonsLazyQueryHookResult = ReturnType<typeof useListSeasonsLazyQuery>;
+export type ListSeasonsQueryResult = Apollo.QueryResult<ListSeasonsQuery, ListSeasonsQueryVariables>;
+export const CatalogBySeasonDocument = gql`
+    query catalogBySeason($season: String!) {
+  computed_listing_info(where: {season_code: {_eq: $season}}) {
+    all_course_codes
+    areas
+    average_gut_rating
+    average_professor
+    average_rating
+    average_workload
+    course {
+      average_rating_same_professors
+      average_workload_same_professors
+    }
+    classnotes
+    course_code
+    credits
+    crn
+    description
+    enrolled
+    extra_info
+    final_exam
+    flag_info
+    fysem
+    last_enrollment
+    last_enrollment_same_professors
+    listing_id
+    locations_summary
+    number
+    professor_names
+    regnotes
+    requirements
+    rp_attr
+    school
+    season_code
+    section
+    skills
+    subject
+    syllabus_url
+    times_by_day
+    times_summary
+    title
+  }
+}
+    `;
+
+/**
+ * __useCatalogBySeasonQuery__
+ *
+ * To run a query within a React component, call `useCatalogBySeasonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogBySeasonQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useCatalogBySeasonQuery(baseOptions: Apollo.QueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+        return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
+      }
+export function useCatalogBySeasonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+          return Apollo.useLazyQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
+        }
+export type CatalogBySeasonQueryHookResult = ReturnType<typeof useCatalogBySeasonQuery>;
+export type CatalogBySeasonLazyQueryHookResult = ReturnType<typeof useCatalogBySeasonLazyQuery>;
+export type CatalogBySeasonQueryResult = Apollo.QueryResult<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>;
 export const SearchAverageAcrossSeasonsDocument = gql`
     query SearchAverageAcrossSeasons($course_code: String, $professor_name: [String!]) {
   computed_listing_info(

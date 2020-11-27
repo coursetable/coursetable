@@ -4,6 +4,7 @@ documents:
   # - 'src/**/*.{js,jsx}'
   # - 'src/**/!(*.d).{ts,tsx}'
   - 'src/queries/queries.graphql'
+  - '../api/queries/catalog.queries.js'
   # - '!src/generated/**'
 generates:
   src/generated/graphql.tsx:
