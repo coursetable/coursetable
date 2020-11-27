@@ -2,7 +2,6 @@ import React from 'react';
 
 import styles from './About.module.css';
 import { Card, Button, Row } from 'react-bootstrap';
-//import pic from '../images/default_pfp.png';
 import { Link } from 'react-router-dom';
 import { TextComponent, StyledCard } from '../components/StyledComponents';
 
@@ -18,12 +17,12 @@ import my from '../images/headshots/max-yuan.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpeg';
 import hl from '../images/headshots/hao-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
+// import generic from '../images/headshots/default_pfp.png';
 
 /**
  * Renders the about us page
  */
-
-function About() {
+const About: React.VFC = () => {
   // TODO: add a link for each person
   const people = [
     {
@@ -128,7 +127,7 @@ function About() {
         </div>
       </Row>
 
-      <div className={styles.profile_cards + ' my-3'}>
+      <div className="my-3">
         <Row className="mx-auto">
           {people.map((person, idx) => (
             <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
@@ -147,6 +146,6 @@ function About() {
       </div>
     </div>
   );
-}
+};
 
 export default About;
