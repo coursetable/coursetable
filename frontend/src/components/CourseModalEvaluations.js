@@ -1,11 +1,10 @@
 import React from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
-import { SEARCH_EVALUATION_NARRATIVES } from '../queries/QueryStrings';
-import { useQuery } from '@apollo/client';
 import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
 
 import CourseModalLoading from './CourseModalLoading';
+import { useSearchEvaluationNarrativesQuery } from '../generated/graphql';
 
 /**
  * Displays course modal when clicking on a course
@@ -16,7 +15,7 @@ import CourseModalLoading from './CourseModalLoading';
 
 const CourseModalEvaluations = ({ season_code, crn, course_code }) => {
   // Fetch eval data for this listing
-  const { loading, error, data } = useQuery(SEARCH_EVALUATION_NARRATIVES, {
+  const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
       season_code: season_code,
       course_code: course_code ? course_code : 'bruh',

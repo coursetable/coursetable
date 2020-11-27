@@ -1,19 +1,8 @@
 import gql from 'graphql-tag';
 
-// TODO: move these to a .graphql file and use this
-// https://github.com/apollographql/graphql-tag#importing-graphql-files
-// export const GET_SEASON_CODES = gql`
-//   query GetSeasonCodes {
-//     # it's a lucky coincidence that
-//     # 'spring', 'summer', and 'fall' are
-//     # in alphabetical order
-//     seasons(order_by: { year: desc, season_code: desc }) {
-//       season_code
-//       term
-//       year
-//     }
-//   }
-// `;
+// Note: these aren't actually used directly. Instead, we use
+// graphql-codegen to create typescript and apollo bindings.
+// These can be found in the "generated" directory.
 
 export const SEARCH_AVERAGE_ACROSS_SEASONS = gql`
   query SearchAverageAcrossSeasons(
