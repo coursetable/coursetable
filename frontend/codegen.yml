@@ -10,7 +10,6 @@ generates:
     plugins:
       - 'typescript'
       - 'typescript-operations'
-      # - 'typescript-document-nodes'
       - 'typescript-react-apollo'
   src/generated/graphql.schema.json:
     plugins:

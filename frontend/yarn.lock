@@ -1374,16 +1374,6 @@
     tslib "~2.0.1"
     upper-case "2.0.1"
 
-"@graphql-codegen/typescript-document-nodes@1.17.9":
-  version "1.17.9"
-  resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript-document-nodes/-/typescript-document-nodes-1.17.9.tgz#ac4f35b216617d6cf8b4056adc9c36f3b1b63f7c"
-  integrity sha512-4sSztahbc0YzoWbSlu/LA99f+gsXNYmXYucy7oEGdTsIDDAsaXoL/ZA7qzu+CwugPEOrP+3ZQiJqg+Btt6sfNQ==
-  dependencies:
-    "@graphql-codegen/plugin-helpers" "^1.18.2"
-    "@graphql-codegen/visitor-plugin-common" "^1.17.20"
-    auto-bind "~4.0.0"
-    tslib "~2.0.1"
-
 "@graphql-codegen/typescript-operations@1.17.12":
   version "1.17.12"
   resolved "https://registry.yarnpkg.com/@graphql-codegen/typescript-operations/-/typescript-operations-1.17.12.tgz#25e0f0ede1bcd165196f0c161286d745395c7768"
@@ -6597,7 +6587,7 @@ graphql-request@^3.3.0:
     extract-files "^9.0.0"
     form-data "^3.0.0"
 
-graphql-tag@^2.10.3, graphql-tag@^2.11.0:
+graphql-tag@^2.11.0:
   version "2.11.0"
   resolved "https://registry.yarnpkg.com/graphql-tag/-/graphql-tag-2.11.0.tgz#1deb53a01c46a7eb401d6cb59dec86fa1cccbffd"
   integrity sha512-VmsD5pJqWJnQZMUeRwrDhfgoyqcfwEkvtpANqcoUG8/tOLkwNgU9mzub/Mc78OJMhHjx7gfAMTxzdG43VGg3bA==
