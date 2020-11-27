@@ -10,7 +10,6 @@ import React, {
 import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
-import { flatten } from '../courseUtilities';
 import _seasons from '../generated/seasons.json';
 
 const FerryCtx = createContext(null);
@@ -65,7 +64,7 @@ const addToCache = (season) => {
       const data = res.data;
       const info = new Map();
       for (const raw_listing of data) {
-        const listing = preprocess_courses(flatten(raw_listing));
+        const listing = preprocess_courses(raw_listing);
         info.set(listing.crn, listing);
       }
 

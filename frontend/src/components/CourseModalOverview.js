@@ -95,11 +95,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   let location_url = '';
   for (let i in days) {
     const day = days[i];
-    // This listing was flattened.
-    if (listing[`times_by_day.${day}`]) {
-      location_url = listing[`times_by_day.${day}`][0][3];
-    }
-    // This listing wasn't flattened. Came from pressing "more info" on a course eval
     if (listing.times_by_day && listing.times_by_day[day]) {
       location_url = listing.times_by_day[day][0][3];
     }

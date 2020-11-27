@@ -117,7 +117,7 @@ function WorksheetAccordion({
       listings.forEach((course) => {
         // Iterate over each weekday
         for (let indx = 0; indx < 5; indx++) {
-          const info = course['times_by_day.' + weekDays[indx]];
+          const info = course.times_by_day[weekDays[indx]];
           // If this listing meets on this day
           if (info !== undefined) {
             // Get start time

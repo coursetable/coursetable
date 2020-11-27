@@ -35,7 +35,6 @@ import { SurfaceComponent, StyledIcon } from './StyledComponents';
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
-import { flatten } from '../courseUtilities';
 
 /**
  * Renders the infinite list of search results
@@ -125,7 +124,7 @@ const SearchResults = ({
       ) {
         row_elements.push(
           <SearchResultsGridItem
-            course={flatten(data[j])}
+            course={data[j]}
             showModal={showModal}
             isLoggedIn={isLoggedIn}
             num_cols={num_cols}

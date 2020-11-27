@@ -78,7 +78,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
           'Friday',
         ];
         for (let indx = 0; indx < 5; indx++) {
-          const info = course['times_by_day.' + weekDays[indx]];
+          const info = course.times_by_day[weekDays[indx]];
           // If the listing takes place on this day
           if (info !== undefined) {
             // Get start and end times for the listing

@@ -2,26 +2,6 @@
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 
-// Flatten dictionaries to make data more accessible
-export const flatten = (ob) => {
-  const toReturn = {};
-
-  for (let i in ob) {
-    if (!ob.hasOwnProperty(i)) continue;
-
-    if (typeof ob[i] == 'object' && ob[i] !== null && !Array.isArray(ob[i])) {
-      const flatObject = flatten(ob[i]);
-      for (let x in flatObject) {
-        if (!flatObject.hasOwnProperty(x)) continue;
-
-        toReturn[i + '.' + x] = flatObject[x];
-      }
-    } else {
-      toReturn[i] = ob[i];
-    }
-  }
-  return toReturn;
-};
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (season_code, crn, worksheet) => {
   if (worksheet === null) return false;
@@ -48,8 +28,8 @@ export const unflattenTimes = (course) => {
   // Holds the course times for each day of the week
   let times_by_day = [];
   days.forEach((day) => {
-    if (!course[`times_by_day.${day}`]) times_by_day.push(['', '', '', '']);
-    else times_by_day.push(course[`times_by_day.${day}`][0]);
+    if (!course.times_by_day[day]) times_by_day.push(['', '', '', '']);
+    else times_by_day.push(course.times_by_day[day][0]);
   });
   return times_by_day;
 };
@@ -63,7 +43,7 @@ export const checkConflict = (listings, course, times) => {
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     // Iterate over weekdays
     for (let day = 0; day < 5; day++) {
-      const info = listing['times_by_day.' + [weekdays[day]]];
+      const info = listing.times_by_day[weekdays[day]];
       // Continue if the new course doesn't meet on this day
       if (info === undefined) continue;
       // Get worksheet course's start and end times

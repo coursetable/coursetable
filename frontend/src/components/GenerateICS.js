@@ -57,7 +57,7 @@ export const generateICS = (listings_all) => {
     const weekday = weekdays[day.day() - 1];
     // Iterate through listings in the worksheet
     for (const listing of listings) {
-      const info = listing['times_by_day.' + weekday];
+      const info = listing.times_by_day[weekday];
       // Continue if the course doesn't take place on this day of the week
       if (info === undefined) continue;
       // Get start and end times of the listing
