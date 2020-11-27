@@ -30,40 +30,6 @@ const preprocess_courses = (listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
-  // Combine the list of skills into one string
-  if ('course.skills' in listing) {
-    listing['skills'] = listing['course.skills'].join(' ');
-  }
-
-  // Combine the list of areas into one string
-  if ('course.areas' in listing) {
-    listing['areas'] = listing['course.areas'].join(' ');
-  }
-
-  if ('course.evaluation_statistics' in listing) {
-    const ratings = listing['course.evaluation_statistics'];
-
-    if (ratings.length === 1) {
-      const rating = ratings[0];
-      // Trim ratings to one decimal point
-      if ('avg_rating' in rating && rating['avg_rating'] !== null) {
-        listing['avg_rating'] = rating['avg_rating'].toFixed(RATINGS_PRECISION);
-      }
-      if ('avg_workload' in rating && rating['avg_workload'] !== null) {
-        listing['avg_workload'] = rating['avg_workload'].toFixed(
-          RATINGS_PRECISION
-        );
-      }
-
-      // Make enrollment data more accessible
-      if ('enrollment' in rating) {
-        if ('enrolled' in rating['enrollment']) {
-          listing['enrolled'] = rating['enrollment']['enrolled'];
-        }
-      }
-    }
-  }
-
   // Combine array of professors into one string
   if ('professor_names' in listing && listing['professor_names'].length > 0) {
     listing['professors'] = listing['professor_names'].join(', ');
