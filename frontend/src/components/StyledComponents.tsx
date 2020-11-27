@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Select from 'react-select';
 import { FormControl, Card, Popover } from 'react-bootstrap';
 
 // Div used to color the background of surface components
@@ -18,22 +17,6 @@ export const TextComponent = styled.span<{ type: number }>`
 export const StyledBanner = styled.div`
   background-color: ${({ theme }) => theme.banner};
   transition: background-color 0.2s linear;
-`;
-
-// React-select component
-export const StyledSelect = styled(Select)`
-  .Select__control {
-    background-color: ${({ theme }) => theme.select};
-    border: ${({ theme }) =>
-      theme.theme === 'light'
-        ? '2px solid hsl(0, 0%, 90%)'
-        : '2px solid ' + theme.select};
-    transition: background-color 0.2s linear, border 0.2s linear;
-  }
-
-  .Select__single-value {
-    transition: color 0.2s linear;
-  }
 `;
 
 // FormControl for any typed inputs
