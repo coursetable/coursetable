@@ -54,7 +54,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "lint-check": "prettier -l .",
-    "depcheck": "npx depcheck . --json"
+    "depcheck": "npx depcheck . --json",
+    "gen": "cp ../api/static/seasons.json src/generated/seasons.json"
   },
   "eslintConfig": {
     "extends": "react-app"

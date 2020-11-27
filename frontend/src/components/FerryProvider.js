@@ -7,16 +7,23 @@ import React, {
   useState,
 } from 'react';
 
-import { GET_SEASON_CODES } from '../queries/QueryStrings';
-
-import { useQuery } from '@apollo/client';
 import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import { flatten, preprocess_courses } from '../courseUtilities';
+import _seasons from '../generated/seasons.json';
 
 const FerryCtx = createContext(null);
 FerryCtx.displayName = 'FerryCtx';
+
+// Preprocess seasons data.
+// We need to wrap this inside the "seasons" key of an object
+// to maintain compatibility with the previous graphql version.
+// TODO: once typescript is added here, we can easily find all
+// the usages and remove the enclosing object.
+const seasons = {
+  seasons: _seasons.reverse(),
+};
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
@@ -55,16 +62,6 @@ const addToCache = (season) => {
 
 // Fetch all seasons present in the database
 export const FerryProvider = ({ children }) => {
-  // Initialize season query function
-  const {
-    loading: seasonsLoading,
-    data: _seasonsData,
-    error: seasonsError,
-  } = useQuery(GET_SEASON_CODES);
-  const seasonsData = useMemo(() => {
-    return _seasonsData || { seasons: [] };
-  }, [_seasonsData]);
-
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
@@ -109,20 +106,19 @@ export const FerryProvider = ({ children }) => {
   );
 
   // If there's any error, we want to immediately stop "loading" and start "erroring".
-  const error = seasonsError ? seasonsError : errors[0];
-  const loading = (seasonsLoading || requests !== 0) && !error;
+  const error = errors[0];
+  const loading = requests !== 0 && !error;
 
   const store = useMemo(
     () => ({
       requests,
-      seasonsLoading,
       loading,
       error: error,
-      seasons: seasonsData,
+      seasons,
       courses: courseData,
       requestSeasons,
     }),
-    [seasonsLoading, loading, error, requests, seasonsData, requestSeasons]
+    [loading, error, requests, requestSeasons]
   );
 
   return <FerryCtx.Provider value={store}>{children}</FerryCtx.Provider>;
