@@ -222,7 +222,7 @@ const SearchResultsItem = ({
         >
           {
             // String representation of rating to be displayed
-            course['course.average_rating_same_professors']
+            course.average_rating_same_professors
               ? course_rating // Use same professor if possible. Displayed as is
               : course.average_rating
               ? `~${course_rating}` // Use all professors otherwise and add tilda ~

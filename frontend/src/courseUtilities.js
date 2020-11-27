@@ -164,8 +164,8 @@ export const sortCourses = (courses, ordering, num_fb) => {
 // Get the overall rating for a course
 export const getOverallRatings = (course) => {
   // Determine which overall rating to use
-  const course_rating = course['course.average_rating_same_professors']
-    ? course['course.average_rating_same_professors'].toFixed(1) // Use same professor if possible
+  const course_rating = course.average_rating_same_professors
+    ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
     : course.average_rating
     ? course.average_rating.toFixed(1) // Use all professors otherwise
     : null; // No ratings at all

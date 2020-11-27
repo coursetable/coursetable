@@ -21,10 +21,8 @@ export const catalogBySeasonQuery = gql`
       average_professor
       average_rating
       average_workload
-      course {
-        average_rating_same_professors
-        average_workload_same_professors
-      }
+      average_rating_same_professors
+      average_workload_same_professors
       classnotes
       course_code
       credits
