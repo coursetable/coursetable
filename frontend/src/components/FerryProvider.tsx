@@ -27,6 +27,7 @@ type Listing = CatalogBySeasonQuery['computed_listing_info'][0] & {
   // Narrow some types.
   // TODO: use Omit<T> instead.
   season_code?: Season;
+  areas: string[];
   skills: string[];
   // TODO: add some more here
   // times_by_day
@@ -81,7 +82,7 @@ const addToCache = (season: Season): Promise<void> => {
       const info = new Map<Crn, Listing>();
       for (const raw_listing of data) {
         const listing = preprocess_courses(raw_listing);
-        info.set(listing.crn!, listing);
+        info.set(listing.crn, listing);
         // TODO: make certain columns non-nullable
       }
 

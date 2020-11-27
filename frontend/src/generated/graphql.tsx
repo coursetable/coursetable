@@ -11,7 +11,7 @@ export type Scalars = {
   Boolean: boolean;
   Int: number;
   Float: number;
-  float8: any;
+  float8: number;
   json: any;
   jsonb: any;
 };
@@ -82,7 +82,7 @@ export type Computed_Listing_Info = {
   course_code: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
   credits: Maybe<Scalars['float8']>;
-  crn: Maybe<Scalars['Int']>;
+  crn: Scalars['Int'];
   declined: Maybe<Scalars['Int']>;
   description: Maybe<Scalars['String']>;
   enrolled: Maybe<Scalars['Int']>;
@@ -97,8 +97,8 @@ export type Computed_Listing_Info = {
   last_enrollment_season_code: Maybe<Scalars['String']>;
   last_offered_course_id: Maybe<Scalars['Int']>;
   /** An object relationship */
-  listing: Maybe<Listings>;
-  listing_id: Maybe<Scalars['Int']>;
+  listing: Listings;
+  listing_id: Scalars['Int'];
   locations_summary: Maybe<Scalars['String']>;
   no_response: Maybe<Scalars['Int']>;
   number: Maybe<Scalars['String']>;
@@ -1950,6 +1950,10 @@ export type Courses = {
   computed_listing_infos: Array<Computed_Listing_Info>;
   /** An aggregated array relationship */
   computed_listing_infos_aggregate: Computed_Listing_Info_Aggregate;
+  /** An object relationship */
+  course: Maybe<Courses>;
+  /** An object relationship */
+  courseByLastEnrollmentCourseId: Maybe<Courses>;
   /** An array relationship */
   course_flags: Array<Course_Flags>;
   /** An aggregated array relationship */
@@ -1961,6 +1965,14 @@ export type Courses = {
   course_professors: Array<Course_Professors>;
   /** An aggregated array relationship */
   course_professors_aggregate: Course_Professors_Aggregate;
+  /** An array relationship */
+  courses: Array<Courses>;
+  /** An array relationship */
+  coursesByLastEnrollmentCourseId: Array<Courses>;
+  /** An aggregated array relationship */
+  coursesByLastEnrollmentCourseId_aggregate: Courses_Aggregate;
+  /** An aggregated array relationship */
+  courses_aggregate: Courses_Aggregate;
   /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
   /** An array relationship */
@@ -1983,6 +1995,14 @@ export type Courses = {
   evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
   /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Scalars['String']>;
+  /** An array relationship */
+  fasttextSimilarsByTarget: Array<Fasttext_Similars>;
+  /** An aggregated array relationship */
+  fasttextSimilarsByTarget_aggregate: Fasttext_Similars_Aggregate;
+  /** An array relationship */
+  fasttext_similars: Array<Fasttext_Similars>;
+  /** An aggregated array relationship */
+  fasttext_similars_aggregate: Fasttext_Similars_Aggregate;
   /** Final exam information */
   final_exam: Maybe<Scalars['String']>;
   /** True if the course is a first-year seminar. False otherwise. */
@@ -2029,6 +2049,8 @@ export type Courses = {
   school: Maybe<Scalars['String']>;
   /** An object relationship */
   season: Seasons;
+  /** An object relationship */
+  seasonByLastEnrollmentSeasonCode: Maybe<Seasons>;
   /** The season the course is being taught in */
   season_code: Scalars['String'];
   /**
@@ -2043,6 +2065,14 @@ export type Courses = {
   skills: Maybe<Scalars['json']>;
   /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']>;
+  /** An array relationship */
+  tfidfSimilarsByTarget: Array<Tfidf_Similars>;
+  /** An aggregated array relationship */
+  tfidfSimilarsByTarget_aggregate: Tfidf_Similars_Aggregate;
+  /** An array relationship */
+  tfidf_similars: Array<Tfidf_Similars>;
+  /** An aggregated array relationship */
+  tfidf_similars_aggregate: Tfidf_Similars_Aggregate;
   /**
    * Course meeting times by day, with days as keys and
    *         tuples of `(start_time, end_time, location)`
@@ -2127,6 +2157,46 @@ export type CoursesCourse_Professors_AggregateArgs = {
 
 
 /** columns and relationships of "courses" */
+export type CoursesCoursesArgs = {
+  distinct_on: Maybe<Array<Courses_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Courses_Order_By>>;
+  where: Maybe<Courses_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesCoursesByLastEnrollmentCourseIdArgs = {
+  distinct_on: Maybe<Array<Courses_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Courses_Order_By>>;
+  where: Maybe<Courses_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesCoursesByLastEnrollmentCourseId_AggregateArgs = {
+  distinct_on: Maybe<Array<Courses_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Courses_Order_By>>;
+  where: Maybe<Courses_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesCourses_AggregateArgs = {
+  distinct_on: Maybe<Array<Courses_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Courses_Order_By>>;
+  where: Maybe<Courses_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
 export type CoursesDemand_StatisticsArgs = {
   distinct_on: Maybe<Array<Demand_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -2207,6 +2277,46 @@ export type CoursesEvaluation_Statistics_AggregateArgs = {
 
 
 /** columns and relationships of "courses" */
+export type CoursesFasttextSimilarsByTargetArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesFasttextSimilarsByTarget_AggregateArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesFasttext_SimilarsArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesFasttext_Similars_AggregateArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
 export type CoursesListingsArgs = {
   distinct_on: Maybe<Array<Listings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -2229,6 +2339,46 @@ export type CoursesListings_AggregateArgs = {
 /** columns and relationships of "courses" */
 export type CoursesSkillsArgs = {
   path: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesTfidfSimilarsByTargetArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesTfidfSimilarsByTarget_AggregateArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesTfidf_SimilarsArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesTfidf_Similars_AggregateArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
 };
 
 
@@ -2339,10 +2489,14 @@ export type Courses_Bool_Exp = {
   average_workload_same_professors_n: Maybe<Int_Comparison_Exp>;
   classnotes: Maybe<String_Comparison_Exp>;
   computed_listing_infos: Maybe<Computed_Listing_Info_Bool_Exp>;
+  course: Maybe<Courses_Bool_Exp>;
+  courseByLastEnrollmentCourseId: Maybe<Courses_Bool_Exp>;
   course_flags: Maybe<Course_Flags_Bool_Exp>;
   course_home_url: Maybe<String_Comparison_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
   course_professors: Maybe<Course_Professors_Bool_Exp>;
+  courses: Maybe<Courses_Bool_Exp>;
+  coursesByLastEnrollmentCourseId: Maybe<Courses_Bool_Exp>;
   credits: Maybe<Float8_Comparison_Exp>;
   demand_statistics: Maybe<Demand_Statistics_Bool_Exp>;
   description: Maybe<String_Comparison_Exp>;
@@ -2350,6 +2504,8 @@ export type Courses_Bool_Exp = {
   evaluation_ratings: Maybe<Evaluation_Ratings_Bool_Exp>;
   evaluation_statistics: Maybe<Evaluation_Statistics_Bool_Exp>;
   extra_info: Maybe<String_Comparison_Exp>;
+  fasttextSimilarsByTarget: Maybe<Fasttext_Similars_Bool_Exp>;
+  fasttext_similars: Maybe<Fasttext_Similars_Bool_Exp>;
   final_exam: Maybe<String_Comparison_Exp>;
   fysem: Maybe<Boolean_Comparison_Exp>;
   last_enrollment: Maybe<Int_Comparison_Exp>;
@@ -2365,10 +2521,13 @@ export type Courses_Bool_Exp = {
   rp_attr: Maybe<String_Comparison_Exp>;
   school: Maybe<String_Comparison_Exp>;
   season: Maybe<Seasons_Bool_Exp>;
+  seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Bool_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
   short_title: Maybe<String_Comparison_Exp>;
   skills: Maybe<Json_Comparison_Exp>;
   syllabus_url: Maybe<String_Comparison_Exp>;
+  tfidfSimilarsByTarget: Maybe<Tfidf_Similars_Bool_Exp>;
+  tfidf_similars: Maybe<Tfidf_Similars_Bool_Exp>;
   times_by_day: Maybe<Json_Comparison_Exp>;
   times_long_summary: Maybe<String_Comparison_Exp>;
   times_summary: Maybe<String_Comparison_Exp>;
@@ -2411,10 +2570,14 @@ export type Courses_Insert_Input = {
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   classnotes: Maybe<Scalars['String']>;
   computed_listing_infos: Maybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
+  course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  courseByLastEnrollmentCourseId: Maybe<Courses_Obj_Rel_Insert_Input>;
   course_flags: Maybe<Course_Flags_Arr_Rel_Insert_Input>;
   course_home_url: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
   course_professors: Maybe<Course_Professors_Arr_Rel_Insert_Input>;
+  courses: Maybe<Courses_Arr_Rel_Insert_Input>;
+  coursesByLastEnrollmentCourseId: Maybe<Courses_Arr_Rel_Insert_Input>;
   credits: Maybe<Scalars['float8']>;
   demand_statistics: Maybe<Demand_Statistics_Arr_Rel_Insert_Input>;
   description: Maybe<Scalars['String']>;
@@ -2422,6 +2585,8 @@ export type Courses_Insert_Input = {
   evaluation_ratings: Maybe<Evaluation_Ratings_Arr_Rel_Insert_Input>;
   evaluation_statistics: Maybe<Evaluation_Statistics_Arr_Rel_Insert_Input>;
   extra_info: Maybe<Scalars['String']>;
+  fasttextSimilarsByTarget: Maybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
+  fasttext_similars: Maybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
   final_exam: Maybe<Scalars['String']>;
   fysem: Maybe<Scalars['Boolean']>;
   last_enrollment: Maybe<Scalars['Int']>;
@@ -2437,10 +2602,13 @@ export type Courses_Insert_Input = {
   rp_attr: Maybe<Scalars['String']>;
   school: Maybe<Scalars['String']>;
   season: Maybe<Seasons_Obj_Rel_Insert_Input>;
+  seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Obj_Rel_Insert_Input>;
   season_code: Maybe<Scalars['String']>;
   short_title: Maybe<Scalars['String']>;
   skills: Maybe<Scalars['json']>;
   syllabus_url: Maybe<Scalars['String']>;
+  tfidfSimilarsByTarget: Maybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
+  tfidf_similars: Maybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
   times_by_day: Maybe<Scalars['json']>;
   times_long_summary: Maybe<Scalars['String']>;
   times_summary: Maybe<Scalars['String']>;
@@ -2624,10 +2792,14 @@ export type Courses_Order_By = {
   average_workload_same_professors_n: Maybe<Order_By>;
   classnotes: Maybe<Order_By>;
   computed_listing_infos_aggregate: Maybe<Computed_Listing_Info_Aggregate_Order_By>;
+  course: Maybe<Courses_Order_By>;
+  courseByLastEnrollmentCourseId: Maybe<Courses_Order_By>;
   course_flags_aggregate: Maybe<Course_Flags_Aggregate_Order_By>;
   course_home_url: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
   course_professors_aggregate: Maybe<Course_Professors_Aggregate_Order_By>;
+  coursesByLastEnrollmentCourseId_aggregate: Maybe<Courses_Aggregate_Order_By>;
+  courses_aggregate: Maybe<Courses_Aggregate_Order_By>;
   credits: Maybe<Order_By>;
   demand_statistics_aggregate: Maybe<Demand_Statistics_Aggregate_Order_By>;
   description: Maybe<Order_By>;
@@ -2635,6 +2807,8 @@ export type Courses_Order_By = {
   evaluation_ratings_aggregate: Maybe<Evaluation_Ratings_Aggregate_Order_By>;
   evaluation_statistics_aggregate: Maybe<Evaluation_Statistics_Aggregate_Order_By>;
   extra_info: Maybe<Order_By>;
+  fasttextSimilarsByTarget_aggregate: Maybe<Fasttext_Similars_Aggregate_Order_By>;
+  fasttext_similars_aggregate: Maybe<Fasttext_Similars_Aggregate_Order_By>;
   final_exam: Maybe<Order_By>;
   fysem: Maybe<Order_By>;
   last_enrollment: Maybe<Order_By>;
@@ -2650,10 +2824,13 @@ export type Courses_Order_By = {
   rp_attr: Maybe<Order_By>;
   school: Maybe<Order_By>;
   season: Maybe<Seasons_Order_By>;
+  seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Order_By>;
   season_code: Maybe<Order_By>;
   short_title: Maybe<Order_By>;
   skills: Maybe<Order_By>;
   syllabus_url: Maybe<Order_By>;
+  tfidfSimilarsByTarget_aggregate: Maybe<Tfidf_Similars_Aggregate_Order_By>;
+  tfidf_similars_aggregate: Maybe<Tfidf_Similars_Aggregate_Order_By>;
   times_by_day: Maybe<Order_By>;
   times_long_summary: Maybe<Order_By>;
   times_summary: Maybe<Order_By>;
@@ -4881,6 +5058,318 @@ export type Evaluation_Statistics_Variance_Order_By = {
   responses: Maybe<Order_By>;
 };
 
+/** columns and relationships of "fasttext_similars" */
+export type Fasttext_Similars = {
+  __typename?: 'fasttext_similars';
+  /** An object relationship */
+  course: Courses;
+  /** An object relationship */
+  courseBySource: Courses;
+  /** Target course similarity rank relative to all targets of a source */
+  rank: Maybe<Scalars['Int']>;
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+/** aggregated selection of "fasttext_similars" */
+export type Fasttext_Similars_Aggregate = {
+  __typename?: 'fasttext_similars_aggregate';
+  aggregate: Maybe<Fasttext_Similars_Aggregate_Fields>;
+  nodes: Array<Fasttext_Similars>;
+};
+
+/** aggregate fields of "fasttext_similars" */
+export type Fasttext_Similars_Aggregate_Fields = {
+  __typename?: 'fasttext_similars_aggregate_fields';
+  avg: Maybe<Fasttext_Similars_Avg_Fields>;
+  count: Maybe<Scalars['Int']>;
+  max: Maybe<Fasttext_Similars_Max_Fields>;
+  min: Maybe<Fasttext_Similars_Min_Fields>;
+  stddev: Maybe<Fasttext_Similars_Stddev_Fields>;
+  stddev_pop: Maybe<Fasttext_Similars_Stddev_Pop_Fields>;
+  stddev_samp: Maybe<Fasttext_Similars_Stddev_Samp_Fields>;
+  sum: Maybe<Fasttext_Similars_Sum_Fields>;
+  var_pop: Maybe<Fasttext_Similars_Var_Pop_Fields>;
+  var_samp: Maybe<Fasttext_Similars_Var_Samp_Fields>;
+  variance: Maybe<Fasttext_Similars_Variance_Fields>;
+};
+
+
+/** aggregate fields of "fasttext_similars" */
+export type Fasttext_Similars_Aggregate_FieldsCountArgs = {
+  columns: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  distinct: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "fasttext_similars" */
+export type Fasttext_Similars_Aggregate_Order_By = {
+  avg: Maybe<Fasttext_Similars_Avg_Order_By>;
+  count: Maybe<Order_By>;
+  max: Maybe<Fasttext_Similars_Max_Order_By>;
+  min: Maybe<Fasttext_Similars_Min_Order_By>;
+  stddev: Maybe<Fasttext_Similars_Stddev_Order_By>;
+  stddev_pop: Maybe<Fasttext_Similars_Stddev_Pop_Order_By>;
+  stddev_samp: Maybe<Fasttext_Similars_Stddev_Samp_Order_By>;
+  sum: Maybe<Fasttext_Similars_Sum_Order_By>;
+  var_pop: Maybe<Fasttext_Similars_Var_Pop_Order_By>;
+  var_samp: Maybe<Fasttext_Similars_Var_Samp_Order_By>;
+  variance: Maybe<Fasttext_Similars_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "fasttext_similars" */
+export type Fasttext_Similars_Arr_Rel_Insert_Input = {
+  data: Array<Fasttext_Similars_Insert_Input>;
+  on_conflict: Maybe<Fasttext_Similars_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Fasttext_Similars_Avg_Fields = {
+  __typename?: 'fasttext_similars_avg_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Avg_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "fasttext_similars". All fields are combined with a logical 'AND'. */
+export type Fasttext_Similars_Bool_Exp = {
+  _and: Maybe<Array<Maybe<Fasttext_Similars_Bool_Exp>>>;
+  _not: Maybe<Fasttext_Similars_Bool_Exp>;
+  _or: Maybe<Array<Maybe<Fasttext_Similars_Bool_Exp>>>;
+  course: Maybe<Courses_Bool_Exp>;
+  courseBySource: Maybe<Courses_Bool_Exp>;
+  rank: Maybe<Int_Comparison_Exp>;
+  source: Maybe<Int_Comparison_Exp>;
+  target: Maybe<Int_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "fasttext_similars" */
+export enum Fasttext_Similars_Constraint {
+  /** unique or primary key constraint */
+  PkFasttextSimilarsStaged = 'pk_fasttext_similars_staged'
+}
+
+/** input type for incrementing integer column in table "fasttext_similars" */
+export type Fasttext_Similars_Inc_Input = {
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "fasttext_similars" */
+export type Fasttext_Similars_Insert_Input = {
+  course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  courseBySource: Maybe<Courses_Obj_Rel_Insert_Input>;
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** aggregate max on columns */
+export type Fasttext_Similars_Max_Fields = {
+  __typename?: 'fasttext_similars_max_fields';
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** order by max() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Max_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Fasttext_Similars_Min_Fields = {
+  __typename?: 'fasttext_similars_min_fields';
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** order by min() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Min_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "fasttext_similars" */
+export type Fasttext_Similars_Mutation_Response = {
+  __typename?: 'fasttext_similars_mutation_response';
+  /** number of affected rows by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data of the affected rows by the mutation */
+  returning: Array<Fasttext_Similars>;
+};
+
+/** input type for inserting object relation for remote table "fasttext_similars" */
+export type Fasttext_Similars_Obj_Rel_Insert_Input = {
+  data: Fasttext_Similars_Insert_Input;
+  on_conflict: Maybe<Fasttext_Similars_On_Conflict>;
+};
+
+/** on conflict condition type for table "fasttext_similars" */
+export type Fasttext_Similars_On_Conflict = {
+  constraint: Fasttext_Similars_Constraint;
+  update_columns: Array<Fasttext_Similars_Update_Column>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "fasttext_similars" */
+export type Fasttext_Similars_Order_By = {
+  course: Maybe<Courses_Order_By>;
+  courseBySource: Maybe<Courses_Order_By>;
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "fasttext_similars" */
+export type Fasttext_Similars_Pk_Columns_Input = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+/** select columns of table "fasttext_similars" */
+export enum Fasttext_Similars_Select_Column {
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  Source = 'source',
+  /** column name */
+  Target = 'target'
+}
+
+/** input type for updating data in table "fasttext_similars" */
+export type Fasttext_Similars_Set_Input = {
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** aggregate stddev on columns */
+export type Fasttext_Similars_Stddev_Fields = {
+  __typename?: 'fasttext_similars_stddev_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Stddev_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Fasttext_Similars_Stddev_Pop_Fields = {
+  __typename?: 'fasttext_similars_stddev_pop_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Stddev_Pop_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Fasttext_Similars_Stddev_Samp_Fields = {
+  __typename?: 'fasttext_similars_stddev_samp_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Stddev_Samp_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Fasttext_Similars_Sum_Fields = {
+  __typename?: 'fasttext_similars_sum_fields';
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Sum_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** update columns of table "fasttext_similars" */
+export enum Fasttext_Similars_Update_Column {
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  Source = 'source',
+  /** column name */
+  Target = 'target'
+}
+
+/** aggregate var_pop on columns */
+export type Fasttext_Similars_Var_Pop_Fields = {
+  __typename?: 'fasttext_similars_var_pop_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Var_Pop_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Fasttext_Similars_Var_Samp_Fields = {
+  __typename?: 'fasttext_similars_var_samp_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Var_Samp_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Fasttext_Similars_Variance_Fields = {
+  __typename?: 'fasttext_similars_variance_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "fasttext_similars" */
+export type Fasttext_Similars_Variance_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
 /** columns and relationships of "flags" */
 export type Flags = {
   __typename?: 'flags';
@@ -5666,6 +6155,10 @@ export type Mutation_Root = {
   delete_evaluation_statistics: Maybe<Evaluation_Statistics_Mutation_Response>;
   /** delete single row from the table: "evaluation_statistics" */
   delete_evaluation_statistics_by_pk: Maybe<Evaluation_Statistics>;
+  /** delete data from the table: "fasttext_similars" */
+  delete_fasttext_similars: Maybe<Fasttext_Similars_Mutation_Response>;
+  /** delete single row from the table: "fasttext_similars" */
+  delete_fasttext_similars_by_pk: Maybe<Fasttext_Similars>;
   /** delete data from the table: "flags" */
   delete_flags: Maybe<Flags_Mutation_Response>;
   /** delete single row from the table: "flags" */
@@ -5682,6 +6175,10 @@ export type Mutation_Root = {
   delete_seasons: Maybe<Seasons_Mutation_Response>;
   /** delete single row from the table: "seasons" */
   delete_seasons_by_pk: Maybe<Seasons>;
+  /** delete data from the table: "tfidf_similars" */
+  delete_tfidf_similars: Maybe<Tfidf_Similars_Mutation_Response>;
+  /** delete single row from the table: "tfidf_similars" */
+  delete_tfidf_similars_by_pk: Maybe<Tfidf_Similars>;
   /** insert data into the table: "computed_listing_info" */
   insert_computed_listing_info: Maybe<Computed_Listing_Info_Mutation_Response>;
   /** insert a single row into the table: "computed_listing_info" */
@@ -5718,6 +6215,10 @@ export type Mutation_Root = {
   insert_evaluation_statistics: Maybe<Evaluation_Statistics_Mutation_Response>;
   /** insert a single row into the table: "evaluation_statistics" */
   insert_evaluation_statistics_one: Maybe<Evaluation_Statistics>;
+  /** insert data into the table: "fasttext_similars" */
+  insert_fasttext_similars: Maybe<Fasttext_Similars_Mutation_Response>;
+  /** insert a single row into the table: "fasttext_similars" */
+  insert_fasttext_similars_one: Maybe<Fasttext_Similars>;
   /** insert data into the table: "flags" */
   insert_flags: Maybe<Flags_Mutation_Response>;
   /** insert a single row into the table: "flags" */
@@ -5734,6 +6235,10 @@ export type Mutation_Root = {
   insert_seasons: Maybe<Seasons_Mutation_Response>;
   /** insert a single row into the table: "seasons" */
   insert_seasons_one: Maybe<Seasons>;
+  /** insert data into the table: "tfidf_similars" */
+  insert_tfidf_similars: Maybe<Tfidf_Similars_Mutation_Response>;
+  /** insert a single row into the table: "tfidf_similars" */
+  insert_tfidf_similars_one: Maybe<Tfidf_Similars>;
   /** update data of the table: "computed_listing_info" */
   update_computed_listing_info: Maybe<Computed_Listing_Info_Mutation_Response>;
   /** update data of the table: "course_flags" */
@@ -5768,6 +6273,10 @@ export type Mutation_Root = {
   update_evaluation_statistics: Maybe<Evaluation_Statistics_Mutation_Response>;
   /** update single row of the table: "evaluation_statistics" */
   update_evaluation_statistics_by_pk: Maybe<Evaluation_Statistics>;
+  /** update data of the table: "fasttext_similars" */
+  update_fasttext_similars: Maybe<Fasttext_Similars_Mutation_Response>;
+  /** update single row of the table: "fasttext_similars" */
+  update_fasttext_similars_by_pk: Maybe<Fasttext_Similars>;
   /** update data of the table: "flags" */
   update_flags: Maybe<Flags_Mutation_Response>;
   /** update single row of the table: "flags" */
@@ -5784,6 +6293,10 @@ export type Mutation_Root = {
   update_seasons: Maybe<Seasons_Mutation_Response>;
   /** update single row of the table: "seasons" */
   update_seasons_by_pk: Maybe<Seasons>;
+  /** update data of the table: "tfidf_similars" */
+  update_tfidf_similars: Maybe<Tfidf_Similars_Mutation_Response>;
+  /** update single row of the table: "tfidf_similars" */
+  update_tfidf_similars_by_pk: Maybe<Tfidf_Similars>;
 };
 
 
@@ -5892,6 +6405,19 @@ export type Mutation_RootDelete_Evaluation_Statistics_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_Fasttext_SimilarsArgs = {
+  where: Fasttext_Similars_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Fasttext_Similars_By_PkArgs = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_FlagsArgs = {
   where: Flags_Bool_Exp;
 };
@@ -5936,6 +6462,19 @@ export type Mutation_RootDelete_SeasonsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Seasons_By_PkArgs = {
   season_code: Scalars['String'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Tfidf_SimilarsArgs = {
+  where: Tfidf_Similars_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Tfidf_Similars_By_PkArgs = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
 };
 
 
@@ -6066,6 +6605,20 @@ export type Mutation_RootInsert_Evaluation_Statistics_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Fasttext_SimilarsArgs = {
+  objects: Array<Fasttext_Similars_Insert_Input>;
+  on_conflict: Maybe<Fasttext_Similars_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Fasttext_Similars_OneArgs = {
+  object: Fasttext_Similars_Insert_Input;
+  on_conflict: Maybe<Fasttext_Similars_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_FlagsArgs = {
   objects: Array<Flags_Insert_Input>;
   on_conflict: Maybe<Flags_On_Conflict>;
@@ -6118,6 +6671,20 @@ export type Mutation_RootInsert_SeasonsArgs = {
 export type Mutation_RootInsert_Seasons_OneArgs = {
   object: Seasons_Insert_Input;
   on_conflict: Maybe<Seasons_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Tfidf_SimilarsArgs = {
+  objects: Array<Tfidf_Similars_Insert_Input>;
+  on_conflict: Maybe<Tfidf_Similars_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Tfidf_Similars_OneArgs = {
+  object: Tfidf_Similars_Insert_Input;
+  on_conflict: Maybe<Tfidf_Similars_On_Conflict>;
 };
 
 
@@ -6261,6 +6828,22 @@ export type Mutation_RootUpdate_Evaluation_Statistics_By_PkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Fasttext_SimilarsArgs = {
+  _inc: Maybe<Fasttext_Similars_Inc_Input>;
+  _set: Maybe<Fasttext_Similars_Set_Input>;
+  where: Fasttext_Similars_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Fasttext_Similars_By_PkArgs = {
+  _inc: Maybe<Fasttext_Similars_Inc_Input>;
+  _set: Maybe<Fasttext_Similars_Set_Input>;
+  pk_columns: Fasttext_Similars_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_FlagsArgs = {
   _inc: Maybe<Flags_Inc_Input>;
   _set: Maybe<Flags_Set_Input>;
@@ -6321,6 +6904,22 @@ export type Mutation_RootUpdate_Seasons_By_PkArgs = {
   _inc: Maybe<Seasons_Inc_Input>;
   _set: Maybe<Seasons_Set_Input>;
   pk_columns: Seasons_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Tfidf_SimilarsArgs = {
+  _inc: Maybe<Tfidf_Similars_Inc_Input>;
+  _set: Maybe<Tfidf_Similars_Set_Input>;
+  where: Tfidf_Similars_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Tfidf_Similars_By_PkArgs = {
+  _inc: Maybe<Tfidf_Similars_Inc_Input>;
+  _set: Maybe<Tfidf_Similars_Set_Input>;
+  pk_columns: Tfidf_Similars_Pk_Columns_Input;
 };
 
 /** column ordering options */
@@ -6770,6 +7369,12 @@ export type Query_Root = {
   evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
   /** fetch data from the table: "evaluation_statistics" using primary key columns */
   evaluation_statistics_by_pk: Maybe<Evaluation_Statistics>;
+  /** fetch data from the table: "fasttext_similars" */
+  fasttext_similars: Array<Fasttext_Similars>;
+  /** fetch aggregated fields from the table: "fasttext_similars" */
+  fasttext_similars_aggregate: Fasttext_Similars_Aggregate;
+  /** fetch data from the table: "fasttext_similars" using primary key columns */
+  fasttext_similars_by_pk: Maybe<Fasttext_Similars>;
   /** fetch data from the table: "flags" */
   flags: Array<Flags>;
   /** fetch aggregated fields from the table: "flags" */
@@ -6794,6 +7399,12 @@ export type Query_Root = {
   seasons_aggregate: Seasons_Aggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk: Maybe<Seasons>;
+  /** fetch data from the table: "tfidf_similars" */
+  tfidf_similars: Array<Tfidf_Similars>;
+  /** fetch aggregated fields from the table: "tfidf_similars" */
+  tfidf_similars_aggregate: Tfidf_Similars_Aggregate;
+  /** fetch data from the table: "tfidf_similars" using primary key columns */
+  tfidf_similars_by_pk: Maybe<Tfidf_Similars>;
 };
 
 
@@ -7028,6 +7639,33 @@ export type Query_RootEvaluation_Statistics_By_PkArgs = {
 
 
 /** query root */
+export type Query_RootFasttext_SimilarsArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootFasttext_Similars_AggregateArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootFasttext_Similars_By_PkArgs = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+
+/** query root */
 export type Query_RootFlagsArgs = {
   distinct_on: Maybe<Array<Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -7130,11 +7768,42 @@ export type Query_RootSeasons_By_PkArgs = {
   season_code: Scalars['String'];
 };
 
+
+/** query root */
+export type Query_RootTfidf_SimilarsArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootTfidf_Similars_AggregateArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootTfidf_Similars_By_PkArgs = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
 /** columns and relationships of "seasons" */
 export type Seasons = {
   __typename?: 'seasons';
   /** An array relationship */
   courses: Array<Courses>;
+  /** An array relationship */
+  coursesByLastEnrollmentSeasonCode: Array<Courses>;
+  /** An aggregated array relationship */
+  coursesByLastEnrollmentSeasonCode_aggregate: Courses_Aggregate;
   /** An aggregated array relationship */
   courses_aggregate: Courses_Aggregate;
   /** An array relationship */
@@ -7152,6 +7821,26 @@ export type Seasons = {
 
 /** columns and relationships of "seasons" */
 export type SeasonsCoursesArgs = {
+  distinct_on: Maybe<Array<Courses_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Courses_Order_By>>;
+  where: Maybe<Courses_Bool_Exp>;
+};
+
+
+/** columns and relationships of "seasons" */
+export type SeasonsCoursesByLastEnrollmentSeasonCodeArgs = {
+  distinct_on: Maybe<Array<Courses_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Courses_Order_By>>;
+  where: Maybe<Courses_Bool_Exp>;
+};
+
+
+/** columns and relationships of "seasons" */
+export type SeasonsCoursesByLastEnrollmentSeasonCode_AggregateArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
   offset: Maybe<Scalars['Int']>;
@@ -7257,6 +7946,7 @@ export type Seasons_Bool_Exp = {
   _not: Maybe<Seasons_Bool_Exp>;
   _or: Maybe<Array<Maybe<Seasons_Bool_Exp>>>;
   courses: Maybe<Courses_Bool_Exp>;
+  coursesByLastEnrollmentSeasonCode: Maybe<Courses_Bool_Exp>;
   listings: Maybe<Listings_Bool_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
   term: Maybe<String_Comparison_Exp>;
@@ -7277,6 +7967,7 @@ export type Seasons_Inc_Input = {
 /** input type for inserting data into table "seasons" */
 export type Seasons_Insert_Input = {
   courses: Maybe<Courses_Arr_Rel_Insert_Input>;
+  coursesByLastEnrollmentSeasonCode: Maybe<Courses_Arr_Rel_Insert_Input>;
   listings: Maybe<Listings_Arr_Rel_Insert_Input>;
   season_code: Maybe<Scalars['String']>;
   term: Maybe<Scalars['String']>;
@@ -7337,6 +8028,7 @@ export type Seasons_On_Conflict = {
 
 /** ordering options when selecting data from "seasons" */
 export type Seasons_Order_By = {
+  coursesByLastEnrollmentSeasonCode_aggregate: Maybe<Courses_Aggregate_Order_By>;
   courses_aggregate: Maybe<Courses_Aggregate_Order_By>;
   listings_aggregate: Maybe<Listings_Aggregate_Order_By>;
   season_code: Maybe<Order_By>;
@@ -7509,6 +8201,12 @@ export type Subscription_Root = {
   evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
   /** fetch data from the table: "evaluation_statistics" using primary key columns */
   evaluation_statistics_by_pk: Maybe<Evaluation_Statistics>;
+  /** fetch data from the table: "fasttext_similars" */
+  fasttext_similars: Array<Fasttext_Similars>;
+  /** fetch aggregated fields from the table: "fasttext_similars" */
+  fasttext_similars_aggregate: Fasttext_Similars_Aggregate;
+  /** fetch data from the table: "fasttext_similars" using primary key columns */
+  fasttext_similars_by_pk: Maybe<Fasttext_Similars>;
   /** fetch data from the table: "flags" */
   flags: Array<Flags>;
   /** fetch aggregated fields from the table: "flags" */
@@ -7533,6 +8231,12 @@ export type Subscription_Root = {
   seasons_aggregate: Seasons_Aggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk: Maybe<Seasons>;
+  /** fetch data from the table: "tfidf_similars" */
+  tfidf_similars: Array<Tfidf_Similars>;
+  /** fetch aggregated fields from the table: "tfidf_similars" */
+  tfidf_similars_aggregate: Tfidf_Similars_Aggregate;
+  /** fetch data from the table: "tfidf_similars" using primary key columns */
+  tfidf_similars_by_pk: Maybe<Tfidf_Similars>;
 };
 
 
@@ -7767,6 +8471,33 @@ export type Subscription_RootEvaluation_Statistics_By_PkArgs = {
 
 
 /** subscription root */
+export type Subscription_RootFasttext_SimilarsArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootFasttext_Similars_AggregateArgs = {
+  distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Fasttext_Similars_Order_By>>;
+  where: Maybe<Fasttext_Similars_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootFasttext_Similars_By_PkArgs = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+
+/** subscription root */
 export type Subscription_RootFlagsArgs = {
   distinct_on: Maybe<Array<Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -7869,6 +8600,345 @@ export type Subscription_RootSeasons_By_PkArgs = {
   season_code: Scalars['String'];
 };
 
+
+/** subscription root */
+export type Subscription_RootTfidf_SimilarsArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootTfidf_Similars_AggregateArgs = {
+  distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Tfidf_Similars_Order_By>>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootTfidf_Similars_By_PkArgs = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+/** columns and relationships of "tfidf_similars" */
+export type Tfidf_Similars = {
+  __typename?: 'tfidf_similars';
+  /** An object relationship */
+  course: Courses;
+  /** An object relationship */
+  courseBySource: Courses;
+  /** Target course similarity rank relative to all targets of a source */
+  rank: Maybe<Scalars['Int']>;
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+/** aggregated selection of "tfidf_similars" */
+export type Tfidf_Similars_Aggregate = {
+  __typename?: 'tfidf_similars_aggregate';
+  aggregate: Maybe<Tfidf_Similars_Aggregate_Fields>;
+  nodes: Array<Tfidf_Similars>;
+};
+
+/** aggregate fields of "tfidf_similars" */
+export type Tfidf_Similars_Aggregate_Fields = {
+  __typename?: 'tfidf_similars_aggregate_fields';
+  avg: Maybe<Tfidf_Similars_Avg_Fields>;
+  count: Maybe<Scalars['Int']>;
+  max: Maybe<Tfidf_Similars_Max_Fields>;
+  min: Maybe<Tfidf_Similars_Min_Fields>;
+  stddev: Maybe<Tfidf_Similars_Stddev_Fields>;
+  stddev_pop: Maybe<Tfidf_Similars_Stddev_Pop_Fields>;
+  stddev_samp: Maybe<Tfidf_Similars_Stddev_Samp_Fields>;
+  sum: Maybe<Tfidf_Similars_Sum_Fields>;
+  var_pop: Maybe<Tfidf_Similars_Var_Pop_Fields>;
+  var_samp: Maybe<Tfidf_Similars_Var_Samp_Fields>;
+  variance: Maybe<Tfidf_Similars_Variance_Fields>;
+};
+
+
+/** aggregate fields of "tfidf_similars" */
+export type Tfidf_Similars_Aggregate_FieldsCountArgs = {
+  columns: Maybe<Array<Tfidf_Similars_Select_Column>>;
+  distinct: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "tfidf_similars" */
+export type Tfidf_Similars_Aggregate_Order_By = {
+  avg: Maybe<Tfidf_Similars_Avg_Order_By>;
+  count: Maybe<Order_By>;
+  max: Maybe<Tfidf_Similars_Max_Order_By>;
+  min: Maybe<Tfidf_Similars_Min_Order_By>;
+  stddev: Maybe<Tfidf_Similars_Stddev_Order_By>;
+  stddev_pop: Maybe<Tfidf_Similars_Stddev_Pop_Order_By>;
+  stddev_samp: Maybe<Tfidf_Similars_Stddev_Samp_Order_By>;
+  sum: Maybe<Tfidf_Similars_Sum_Order_By>;
+  var_pop: Maybe<Tfidf_Similars_Var_Pop_Order_By>;
+  var_samp: Maybe<Tfidf_Similars_Var_Samp_Order_By>;
+  variance: Maybe<Tfidf_Similars_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "tfidf_similars" */
+export type Tfidf_Similars_Arr_Rel_Insert_Input = {
+  data: Array<Tfidf_Similars_Insert_Input>;
+  on_conflict: Maybe<Tfidf_Similars_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Tfidf_Similars_Avg_Fields = {
+  __typename?: 'tfidf_similars_avg_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Avg_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "tfidf_similars". All fields are combined with a logical 'AND'. */
+export type Tfidf_Similars_Bool_Exp = {
+  _and: Maybe<Array<Maybe<Tfidf_Similars_Bool_Exp>>>;
+  _not: Maybe<Tfidf_Similars_Bool_Exp>;
+  _or: Maybe<Array<Maybe<Tfidf_Similars_Bool_Exp>>>;
+  course: Maybe<Courses_Bool_Exp>;
+  courseBySource: Maybe<Courses_Bool_Exp>;
+  rank: Maybe<Int_Comparison_Exp>;
+  source: Maybe<Int_Comparison_Exp>;
+  target: Maybe<Int_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "tfidf_similars" */
+export enum Tfidf_Similars_Constraint {
+  /** unique or primary key constraint */
+  PkTfidfSimilarsStaged = 'pk_tfidf_similars_staged'
+}
+
+/** input type for incrementing integer column in table "tfidf_similars" */
+export type Tfidf_Similars_Inc_Input = {
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "tfidf_similars" */
+export type Tfidf_Similars_Insert_Input = {
+  course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  courseBySource: Maybe<Courses_Obj_Rel_Insert_Input>;
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** aggregate max on columns */
+export type Tfidf_Similars_Max_Fields = {
+  __typename?: 'tfidf_similars_max_fields';
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** order by max() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Max_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Tfidf_Similars_Min_Fields = {
+  __typename?: 'tfidf_similars_min_fields';
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** order by min() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Min_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "tfidf_similars" */
+export type Tfidf_Similars_Mutation_Response = {
+  __typename?: 'tfidf_similars_mutation_response';
+  /** number of affected rows by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data of the affected rows by the mutation */
+  returning: Array<Tfidf_Similars>;
+};
+
+/** input type for inserting object relation for remote table "tfidf_similars" */
+export type Tfidf_Similars_Obj_Rel_Insert_Input = {
+  data: Tfidf_Similars_Insert_Input;
+  on_conflict: Maybe<Tfidf_Similars_On_Conflict>;
+};
+
+/** on conflict condition type for table "tfidf_similars" */
+export type Tfidf_Similars_On_Conflict = {
+  constraint: Tfidf_Similars_Constraint;
+  update_columns: Array<Tfidf_Similars_Update_Column>;
+  where: Maybe<Tfidf_Similars_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "tfidf_similars" */
+export type Tfidf_Similars_Order_By = {
+  course: Maybe<Courses_Order_By>;
+  courseBySource: Maybe<Courses_Order_By>;
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "tfidf_similars" */
+export type Tfidf_Similars_Pk_Columns_Input = {
+  source: Scalars['Int'];
+  target: Scalars['Int'];
+};
+
+/** select columns of table "tfidf_similars" */
+export enum Tfidf_Similars_Select_Column {
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  Source = 'source',
+  /** column name */
+  Target = 'target'
+}
+
+/** input type for updating data in table "tfidf_similars" */
+export type Tfidf_Similars_Set_Input = {
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** aggregate stddev on columns */
+export type Tfidf_Similars_Stddev_Fields = {
+  __typename?: 'tfidf_similars_stddev_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Stddev_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Tfidf_Similars_Stddev_Pop_Fields = {
+  __typename?: 'tfidf_similars_stddev_pop_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Stddev_Pop_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Tfidf_Similars_Stddev_Samp_Fields = {
+  __typename?: 'tfidf_similars_stddev_samp_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Stddev_Samp_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Tfidf_Similars_Sum_Fields = {
+  __typename?: 'tfidf_similars_sum_fields';
+  rank: Maybe<Scalars['Int']>;
+  source: Maybe<Scalars['Int']>;
+  target: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Sum_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** update columns of table "tfidf_similars" */
+export enum Tfidf_Similars_Update_Column {
+  /** column name */
+  Rank = 'rank',
+  /** column name */
+  Source = 'source',
+  /** column name */
+  Target = 'target'
+}
+
+/** aggregate var_pop on columns */
+export type Tfidf_Similars_Var_Pop_Fields = {
+  __typename?: 'tfidf_similars_var_pop_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Var_Pop_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Tfidf_Similars_Var_Samp_Fields = {
+  __typename?: 'tfidf_similars_var_samp_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Var_Samp_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Tfidf_Similars_Variance_Fields = {
+  __typename?: 'tfidf_similars_variance_fields';
+  rank: Maybe<Scalars['Float']>;
+  source: Maybe<Scalars['Float']>;
+  target: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "tfidf_similars" */
+export type Tfidf_Similars_Variance_Order_By = {
+  rank: Maybe<Order_By>;
+  source: Maybe<Order_By>;
+  target: Maybe<Order_By>;
+};
+
 export type ListSeasonsQueryVariables = Exact<{
   season: Maybe<Array<Scalars['String']>>;
 }>;
@@ -7881,7 +8951,7 @@ export type CatalogBySeasonQueryVariables = Exact<{
 }>;
 
 
-export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: Maybe<any>, areas: Maybe<any>, average_gut_rating: Maybe<any>, average_professor: Maybe<any>, average_rating: Maybe<any>, average_workload: Maybe<any>, average_rating_same_professors: Maybe<any>, average_workload_same_professors: Maybe<any>, classnotes: Maybe<string>, course_code: Maybe<string>, credits: Maybe<any>, crn: Maybe<number>, description: Maybe<string>, enrolled: Maybe<number>, extra_info: Maybe<string>, final_exam: Maybe<string>, flag_info: Maybe<any>, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: Maybe<number>, locations_summary: Maybe<string>, number: Maybe<string>, professor_names: Maybe<any>, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: Maybe<string>, section: Maybe<string>, skills: Maybe<any>, subject: Maybe<string>, syllabus_url: Maybe<string>, times_by_day: Maybe<any>, times_summary: Maybe<string>, title: Maybe<string> }> };
+export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: Maybe<any>, areas: Maybe<any>, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, average_rating_same_professors: Maybe<number>, average_workload_same_professors: Maybe<number>, classnotes: Maybe<string>, course_code: Maybe<string>, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: Maybe<string>, final_exam: Maybe<string>, flag_info: Maybe<any>, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: Maybe<string>, number: Maybe<string>, professor_names: Maybe<any>, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: Maybe<string>, section: Maybe<string>, skills: Maybe<any>, subject: Maybe<string>, syllabus_url: Maybe<string>, times_by_day: Maybe<any>, times_summary: Maybe<string>, title: Maybe<string> }> };
 
 export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
   course_code: Maybe<Scalars['String']>;
@@ -7889,7 +8959,7 @@ export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
 }>;
 
 
-export type SearchAverageAcrossSeasonsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: Maybe<any>, areas: Maybe<any>, average_gut_rating: Maybe<any>, average_professor: Maybe<any>, average_rating: Maybe<any>, average_workload: Maybe<any>, classnotes: Maybe<string>, course_code: Maybe<string>, credits: Maybe<any>, crn: Maybe<number>, description: Maybe<string>, enrolled: Maybe<number>, extra_info: Maybe<string>, final_exam: Maybe<string>, flag_info: Maybe<any>, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: Maybe<number>, locations_summary: Maybe<string>, number: Maybe<string>, professor_info: Maybe<any>, professor_names: Maybe<any>, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: Maybe<string>, section: Maybe<string>, skills: Maybe<any>, subject: Maybe<string>, syllabus_url: Maybe<string>, times_by_day: Maybe<any>, times_summary: Maybe<string>, title: Maybe<string>, course: Maybe<{ __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<any>, avg_rating: Maybe<any> }> }> }> };
+export type SearchAverageAcrossSeasonsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: Maybe<any>, areas: Maybe<any>, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: Maybe<string>, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: Maybe<string>, final_exam: Maybe<string>, flag_info: Maybe<any>, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: Maybe<string>, number: Maybe<string>, professor_info: Maybe<any>, professor_names: Maybe<any>, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: Maybe<string>, section: Maybe<string>, skills: Maybe<any>, subject: Maybe<string>, syllabus_url: Maybe<string>, times_by_day: Maybe<any>, times_summary: Maybe<string>, title: Maybe<string>, course: Maybe<{ __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> }> }> };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code: Maybe<Scalars['String']>;
@@ -7897,7 +8967,7 @@ export type SearchEvaluationNarrativesQueryVariables = Exact<{
 }>;
 
 
-export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn: Maybe<number>, course: Maybe<{ __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment: Maybe<string>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating: Maybe<any>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }> }> };
+export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn: number, course: Maybe<{ __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment: Maybe<string>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating: Maybe<any>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }> }> };
 
 
 export const ListSeasonsDocument = gql`
