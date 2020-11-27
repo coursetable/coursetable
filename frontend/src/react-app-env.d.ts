@@ -5,5 +5,4 @@ declare global {
     FB: typeof FB;
   }
 }
-
 window.FB = window.FB || {};

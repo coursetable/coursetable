@@ -11,21 +11,37 @@ import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import _seasons from '../generated/seasons.json';
-
-const FerryCtx = createContext(null);
-FerryCtx.displayName = 'FerryCtx';
+import { CatalogBySeasonQuery } from '../generated/graphql';
+import { Crn, Season } from '../common';
 
 // Preprocess seasons data.
 // We need to wrap this inside the "seasons" key of an object
 // to maintain compatibility with the previous graphql version.
-// TODO: once typescript is added here, we can easily find all
+// TODO: once typescript is fully added, we can easily find all
 // the usages and remove the enclosing object.
 const seasons = {
   seasons: [..._seasons].reverse(),
 };
 
+type Listing = CatalogBySeasonQuery['computed_listing_info'][0] & {
+  // Narrow some types.
+  // TODO: use Omit<T> instead.
+  season_code?: Season;
+  skills: string[];
+  // TODO: add some more here
+  // times_by_day
+  // professor_names
+  // all_course_codes
+  // areas
+  // a bunch of the average ratings
+
+  // Add a couple types created by the preprocessing step.
+  professors?: string;
+  professor_avg_rating?: number;
+};
+
 // Preprocess course data.
-const preprocess_courses = (listing) => {
+const preprocess_courses = (listing: Listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -44,9 +60,9 @@ const preprocess_courses = (listing) => {
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted = {};
-let courseData = {};
-const addToCache = (season) => {
+let courseLoadAttempted: { [key in Season]: boolean } = {};
+let courseData: { [key in Season]: Map<Crn, Listing> } = {};
+const addToCache = (season: Season): Promise<void> => {
   return courseDataLock.acquire(`load-${season}`, () => {
     if (season in courseData || season in courseLoadAttempted) {
       // Skip if already loaded, or if we previously tried to load it.
@@ -61,11 +77,12 @@ const addToCache = (season) => {
 
     return axios.get(`/api/static/catalogs/${season}.json`).then((res) => {
       // Convert season list into a crn lookup table.
-      const data = res.data;
-      const info = new Map();
+      const data = res.data as Listing[];
+      const info = new Map<Crn, Listing>();
       for (const raw_listing of data) {
         const listing = preprocess_courses(raw_listing);
-        info.set(listing.crn, listing);
+        info.set(listing.crn!, listing);
+        // TODO: make certain columns non-nullable
       }
 
       // Save in global cache. Here we force the creation of a new object.
@@ -77,8 +94,19 @@ const addToCache = (season) => {
   });
 };
 
-// Fetch all seasons present in the database
-export const FerryProvider = ({ children }) => {
+type Store = {
+  requests: number;
+  loading: boolean;
+  error: string | null;
+  seasons: typeof seasons;
+  courses: typeof courseData;
+  requestSeasons(seasons: Season[]): void;
+};
+
+const FerryCtx = createContext<Store | undefined>(undefined);
+FerryCtx.displayName = 'FerryCtx';
+
+export const FerryProvider: React.FC = ({ children }) => {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
@@ -89,7 +117,7 @@ export const FerryProvider = ({ children }) => {
     [setRequests]
   );
 
-  const [errors, setErrors] = useState([]);
+  const [errors, setErrors] = useState<string[]>([]);
   const addError = useCallback(
     (err) => {
       setErrors((errors) => [...errors, err]);
@@ -98,13 +126,13 @@ export const FerryProvider = ({ children }) => {
   );
 
   const requestSeasons = useCallback(
-    (seasons) => {
+    (seasons: Season[]) => {
       const fetches = seasons.map((season) => {
         // Racy preemptive check of cache.
         // We cannot check courseLoadAttempted here, since that is set prior
         // to the data actually being loaded.
         if (season in courseData) {
-          return true;
+          return Promise.resolve();
         }
 
         // Add to cache.
@@ -123,10 +151,10 @@ export const FerryProvider = ({ children }) => {
   );
 
   // If there's any error, we want to immediately stop "loading" and start "erroring".
-  const error = errors[0];
+  const error = errors[0] ?? null;
   const loading = requests !== 0 && !error;
 
-  const store = useMemo(
+  const store: Store = useMemo(
     () => ({
       requests,
       loading,
@@ -142,8 +170,8 @@ export const FerryProvider = ({ children }) => {
 };
 
 export default FerryProvider;
-export const useFerry = () => useContext(FerryCtx);
-export const useCourseData = (seasons) => {
+export const useFerry = () => useContext(FerryCtx)!;
+export const useCourseData = (seasons: Season[]) => {
   const { error, courses, requestSeasons } = useFerry();
 
   useEffect(() => {

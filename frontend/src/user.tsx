@@ -9,9 +9,8 @@ import axios from 'axios';
 import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
+import { NetId, Season } from './common';
 
-type Season = string;
-type NetId = string;
 type Worksheet = [Season, string][];
 type FBInfo = {
   worksheets: {
