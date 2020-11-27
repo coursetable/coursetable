@@ -14,7 +14,6 @@ generates:
       - 'typescript-react-apollo'
     config:
       preResolveTypes: true
-      gqlImport: graphql-tag#gql
   src/generated/graphql.schema.json:
     plugins:
       - 'introspection'
