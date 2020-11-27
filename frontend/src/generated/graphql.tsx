@@ -69,7 +69,13 @@ export type Computed_Listing_Info = {
   average_gut_rating?: Maybe<Scalars['float8']>;
   average_professor?: Maybe<Scalars['float8']>;
   average_rating?: Maybe<Scalars['float8']>;
+  average_rating_n?: Maybe<Scalars['Int']>;
+  average_rating_same_professors?: Maybe<Scalars['float8']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Int']>;
   average_workload?: Maybe<Scalars['float8']>;
+  average_workload_n?: Maybe<Scalars['Int']>;
+  average_workload_same_professors?: Maybe<Scalars['float8']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Int']>;
   classnotes?: Maybe<Scalars['String']>;
   /** An object relationship */
   course?: Maybe<Courses>;
@@ -222,7 +228,13 @@ export type Computed_Listing_Info_Avg_Fields = {
   average_gut_rating?: Maybe<Scalars['Float']>;
   average_professor?: Maybe<Scalars['Float']>;
   average_rating?: Maybe<Scalars['Float']>;
+  average_rating_n?: Maybe<Scalars['Float']>;
+  average_rating_same_professors?: Maybe<Scalars['Float']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Float']>;
   average_workload?: Maybe<Scalars['Float']>;
+  average_workload_n?: Maybe<Scalars['Float']>;
+  average_workload_same_professors?: Maybe<Scalars['Float']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Float']>;
   course_id?: Maybe<Scalars['Float']>;
   credits?: Maybe<Scalars['Float']>;
   crn?: Maybe<Scalars['Float']>;
@@ -242,7 +254,13 @@ export type Computed_Listing_Info_Avg_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -267,7 +285,13 @@ export type Computed_Listing_Info_Bool_Exp = {
   average_gut_rating?: Maybe<Float8_Comparison_Exp>;
   average_professor?: Maybe<Float8_Comparison_Exp>;
   average_rating?: Maybe<Float8_Comparison_Exp>;
+  average_rating_n?: Maybe<Int_Comparison_Exp>;
+  average_rating_same_professors?: Maybe<Float8_Comparison_Exp>;
+  average_rating_same_professors_n?: Maybe<Int_Comparison_Exp>;
   average_workload?: Maybe<Float8_Comparison_Exp>;
+  average_workload_n?: Maybe<Int_Comparison_Exp>;
+  average_workload_same_professors?: Maybe<Float8_Comparison_Exp>;
+  average_workload_same_professors_n?: Maybe<Int_Comparison_Exp>;
   classnotes?: Maybe<String_Comparison_Exp>;
   course?: Maybe<Courses_Bool_Exp>;
   course_code?: Maybe<String_Comparison_Exp>;
@@ -350,7 +374,13 @@ export type Computed_Listing_Info_Inc_Input = {
   average_gut_rating?: Maybe<Scalars['float8']>;
   average_professor?: Maybe<Scalars['float8']>;
   average_rating?: Maybe<Scalars['float8']>;
+  average_rating_n?: Maybe<Scalars['Int']>;
+  average_rating_same_professors?: Maybe<Scalars['float8']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Int']>;
   average_workload?: Maybe<Scalars['float8']>;
+  average_workload_n?: Maybe<Scalars['Int']>;
+  average_workload_same_professors?: Maybe<Scalars['float8']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Int']>;
   course_id?: Maybe<Scalars['Int']>;
   credits?: Maybe<Scalars['float8']>;
   crn?: Maybe<Scalars['Int']>;
@@ -372,7 +402,13 @@ export type Computed_Listing_Info_Insert_Input = {
   average_gut_rating?: Maybe<Scalars['float8']>;
   average_professor?: Maybe<Scalars['float8']>;
   average_rating?: Maybe<Scalars['float8']>;
+  average_rating_n?: Maybe<Scalars['Int']>;
+  average_rating_same_professors?: Maybe<Scalars['float8']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Int']>;
   average_workload?: Maybe<Scalars['float8']>;
+  average_workload_n?: Maybe<Scalars['Int']>;
+  average_workload_same_professors?: Maybe<Scalars['float8']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Int']>;
   classnotes?: Maybe<Scalars['String']>;
   course?: Maybe<Courses_Obj_Rel_Insert_Input>;
   course_code?: Maybe<Scalars['String']>;
@@ -420,7 +456,13 @@ export type Computed_Listing_Info_Max_Fields = {
   average_gut_rating?: Maybe<Scalars['float8']>;
   average_professor?: Maybe<Scalars['float8']>;
   average_rating?: Maybe<Scalars['float8']>;
+  average_rating_n?: Maybe<Scalars['Int']>;
+  average_rating_same_professors?: Maybe<Scalars['float8']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Int']>;
   average_workload?: Maybe<Scalars['float8']>;
+  average_workload_n?: Maybe<Scalars['Int']>;
+  average_workload_same_professors?: Maybe<Scalars['float8']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Int']>;
   classnotes?: Maybe<Scalars['String']>;
   course_code?: Maybe<Scalars['String']>;
   course_id?: Maybe<Scalars['Int']>;
@@ -458,7 +500,13 @@ export type Computed_Listing_Info_Max_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   classnotes?: Maybe<Order_By>;
   course_code?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
@@ -497,7 +545,13 @@ export type Computed_Listing_Info_Min_Fields = {
   average_gut_rating?: Maybe<Scalars['float8']>;
   average_professor?: Maybe<Scalars['float8']>;
   average_rating?: Maybe<Scalars['float8']>;
+  average_rating_n?: Maybe<Scalars['Int']>;
+  average_rating_same_professors?: Maybe<Scalars['float8']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Int']>;
   average_workload?: Maybe<Scalars['float8']>;
+  average_workload_n?: Maybe<Scalars['Int']>;
+  average_workload_same_professors?: Maybe<Scalars['float8']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Int']>;
   classnotes?: Maybe<Scalars['String']>;
   course_code?: Maybe<Scalars['String']>;
   course_id?: Maybe<Scalars['Int']>;
@@ -535,7 +589,13 @@ export type Computed_Listing_Info_Min_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   classnotes?: Maybe<Order_By>;
   course_code?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
@@ -597,7 +657,13 @@ export type Computed_Listing_Info_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   classnotes?: Maybe<Order_By>;
   course?: Maybe<Courses_Order_By>;
   course_code?: Maybe<Order_By>;
@@ -662,7 +728,19 @@ export enum Computed_Listing_Info_Select_Column {
   /** column name */
   AverageRating = 'average_rating',
   /** column name */
+  AverageRatingN = 'average_rating_n',
+  /** column name */
+  AverageRatingSameProfessors = 'average_rating_same_professors',
+  /** column name */
+  AverageRatingSameProfessorsN = 'average_rating_same_professors_n',
+  /** column name */
   AverageWorkload = 'average_workload',
+  /** column name */
+  AverageWorkloadN = 'average_workload_n',
+  /** column name */
+  AverageWorkloadSameProfessors = 'average_workload_same_professors',
+  /** column name */
+  AverageWorkloadSameProfessorsN = 'average_workload_same_professors_n',
   /** column name */
   Classnotes = 'classnotes',
   /** column name */
@@ -746,7 +824,13 @@ export type Computed_Listing_Info_Set_Input = {
   average_gut_rating?: Maybe<Scalars['float8']>;
   average_professor?: Maybe<Scalars['float8']>;
   average_rating?: Maybe<Scalars['float8']>;
+  average_rating_n?: Maybe<Scalars['Int']>;
+  average_rating_same_professors?: Maybe<Scalars['float8']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Int']>;
   average_workload?: Maybe<Scalars['float8']>;
+  average_workload_n?: Maybe<Scalars['Int']>;
+  average_workload_same_professors?: Maybe<Scalars['float8']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Int']>;
   classnotes?: Maybe<Scalars['String']>;
   course_code?: Maybe<Scalars['String']>;
   course_id?: Maybe<Scalars['Int']>;
@@ -792,7 +876,13 @@ export type Computed_Listing_Info_Stddev_Fields = {
   average_gut_rating?: Maybe<Scalars['Float']>;
   average_professor?: Maybe<Scalars['Float']>;
   average_rating?: Maybe<Scalars['Float']>;
+  average_rating_n?: Maybe<Scalars['Float']>;
+  average_rating_same_professors?: Maybe<Scalars['Float']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Float']>;
   average_workload?: Maybe<Scalars['Float']>;
+  average_workload_n?: Maybe<Scalars['Float']>;
+  average_workload_same_professors?: Maybe<Scalars['Float']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Float']>;
   course_id?: Maybe<Scalars['Float']>;
   credits?: Maybe<Scalars['Float']>;
   crn?: Maybe<Scalars['Float']>;
@@ -812,7 +902,13 @@ export type Computed_Listing_Info_Stddev_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -833,7 +929,13 @@ export type Computed_Listing_Info_Stddev_Pop_Fields = {
   average_gut_rating?: Maybe<Scalars['Float']>;
   average_professor?: Maybe<Scalars['Float']>;
   average_rating?: Maybe<Scalars['Float']>;
+  average_rating_n?: Maybe<Scalars['Float']>;
+  average_rating_same_professors?: Maybe<Scalars['Float']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Float']>;
   average_workload?: Maybe<Scalars['Float']>;
+  average_workload_n?: Maybe<Scalars['Float']>;
+  average_workload_same_professors?: Maybe<Scalars['Float']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Float']>;
   course_id?: Maybe<Scalars['Float']>;
   credits?: Maybe<Scalars['Float']>;
   crn?: Maybe<Scalars['Float']>;
@@ -853,7 +955,13 @@ export type Computed_Listing_Info_Stddev_Pop_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -874,7 +982,13 @@ export type Computed_Listing_Info_Stddev_Samp_Fields = {
   average_gut_rating?: Maybe<Scalars['Float']>;
   average_professor?: Maybe<Scalars['Float']>;
   average_rating?: Maybe<Scalars['Float']>;
+  average_rating_n?: Maybe<Scalars['Float']>;
+  average_rating_same_professors?: Maybe<Scalars['Float']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Float']>;
   average_workload?: Maybe<Scalars['Float']>;
+  average_workload_n?: Maybe<Scalars['Float']>;
+  average_workload_same_professors?: Maybe<Scalars['Float']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Float']>;
   course_id?: Maybe<Scalars['Float']>;
   credits?: Maybe<Scalars['Float']>;
   crn?: Maybe<Scalars['Float']>;
@@ -894,7 +1008,13 @@ export type Computed_Listing_Info_Stddev_Samp_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -915,7 +1035,13 @@ export type Computed_Listing_Info_Sum_Fields = {
   average_gut_rating?: Maybe<Scalars['float8']>;
   average_professor?: Maybe<Scalars['float8']>;
   average_rating?: Maybe<Scalars['float8']>;
+  average_rating_n?: Maybe<Scalars['Int']>;
+  average_rating_same_professors?: Maybe<Scalars['float8']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Int']>;
   average_workload?: Maybe<Scalars['float8']>;
+  average_workload_n?: Maybe<Scalars['Int']>;
+  average_workload_same_professors?: Maybe<Scalars['float8']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Int']>;
   course_id?: Maybe<Scalars['Int']>;
   credits?: Maybe<Scalars['float8']>;
   crn?: Maybe<Scalars['Int']>;
@@ -935,7 +1061,13 @@ export type Computed_Listing_Info_Sum_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -963,7 +1095,19 @@ export enum Computed_Listing_Info_Update_Column {
   /** column name */
   AverageRating = 'average_rating',
   /** column name */
+  AverageRatingN = 'average_rating_n',
+  /** column name */
+  AverageRatingSameProfessors = 'average_rating_same_professors',
+  /** column name */
+  AverageRatingSameProfessorsN = 'average_rating_same_professors_n',
+  /** column name */
   AverageWorkload = 'average_workload',
+  /** column name */
+  AverageWorkloadN = 'average_workload_n',
+  /** column name */
+  AverageWorkloadSameProfessors = 'average_workload_same_professors',
+  /** column name */
+  AverageWorkloadSameProfessorsN = 'average_workload_same_professors_n',
   /** column name */
   Classnotes = 'classnotes',
   /** column name */
@@ -1046,7 +1190,13 @@ export type Computed_Listing_Info_Var_Pop_Fields = {
   average_gut_rating?: Maybe<Scalars['Float']>;
   average_professor?: Maybe<Scalars['Float']>;
   average_rating?: Maybe<Scalars['Float']>;
+  average_rating_n?: Maybe<Scalars['Float']>;
+  average_rating_same_professors?: Maybe<Scalars['Float']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Float']>;
   average_workload?: Maybe<Scalars['Float']>;
+  average_workload_n?: Maybe<Scalars['Float']>;
+  average_workload_same_professors?: Maybe<Scalars['Float']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Float']>;
   course_id?: Maybe<Scalars['Float']>;
   credits?: Maybe<Scalars['Float']>;
   crn?: Maybe<Scalars['Float']>;
@@ -1066,7 +1216,13 @@ export type Computed_Listing_Info_Var_Pop_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -1087,7 +1243,13 @@ export type Computed_Listing_Info_Var_Samp_Fields = {
   average_gut_rating?: Maybe<Scalars['Float']>;
   average_professor?: Maybe<Scalars['Float']>;
   average_rating?: Maybe<Scalars['Float']>;
+  average_rating_n?: Maybe<Scalars['Float']>;
+  average_rating_same_professors?: Maybe<Scalars['Float']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Float']>;
   average_workload?: Maybe<Scalars['Float']>;
+  average_workload_n?: Maybe<Scalars['Float']>;
+  average_workload_same_professors?: Maybe<Scalars['Float']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Float']>;
   course_id?: Maybe<Scalars['Float']>;
   credits?: Maybe<Scalars['Float']>;
   crn?: Maybe<Scalars['Float']>;
@@ -1107,7 +1269,13 @@ export type Computed_Listing_Info_Var_Samp_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -1128,7 +1296,13 @@ export type Computed_Listing_Info_Variance_Fields = {
   average_gut_rating?: Maybe<Scalars['Float']>;
   average_professor?: Maybe<Scalars['Float']>;
   average_rating?: Maybe<Scalars['Float']>;
+  average_rating_n?: Maybe<Scalars['Float']>;
+  average_rating_same_professors?: Maybe<Scalars['Float']>;
+  average_rating_same_professors_n?: Maybe<Scalars['Float']>;
   average_workload?: Maybe<Scalars['Float']>;
+  average_workload_n?: Maybe<Scalars['Float']>;
+  average_workload_same_professors?: Maybe<Scalars['Float']>;
+  average_workload_same_professors_n?: Maybe<Scalars['Float']>;
   course_id?: Maybe<Scalars['Float']>;
   credits?: Maybe<Scalars['Float']>;
   crn?: Maybe<Scalars['Float']>;
@@ -1148,7 +1322,13 @@ export type Computed_Listing_Info_Variance_Order_By = {
   average_gut_rating?: Maybe<Order_By>;
   average_professor?: Maybe<Order_By>;
   average_rating?: Maybe<Order_By>;
+  average_rating_n?: Maybe<Order_By>;
+  average_rating_same_professors?: Maybe<Order_By>;
+  average_rating_same_professors_n?: Maybe<Order_By>;
   average_workload?: Maybe<Order_By>;
+  average_workload_n?: Maybe<Order_By>;
+  average_workload_same_professors?: Maybe<Order_By>;
+  average_workload_same_professors_n?: Maybe<Order_By>;
   course_id?: Maybe<Order_By>;
   credits?: Maybe<Order_By>;
   crn?: Maybe<Order_By>;
@@ -7701,7 +7881,7 @@ export type CatalogBySeasonQueryVariables = Exact<{
 }>;
 
 
-export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes?: Maybe<any>, areas?: Maybe<any>, average_gut_rating?: Maybe<any>, average_professor?: Maybe<any>, average_rating?: Maybe<any>, average_workload?: Maybe<any>, classnotes?: Maybe<string>, course_code?: Maybe<string>, credits?: Maybe<any>, crn?: Maybe<number>, description?: Maybe<string>, enrolled?: Maybe<number>, extra_info?: Maybe<string>, final_exam?: Maybe<string>, flag_info?: Maybe<any>, fysem?: Maybe<boolean>, last_enrollment?: Maybe<number>, last_enrollment_same_professors?: Maybe<boolean>, listing_id?: Maybe<number>, locations_summary?: Maybe<string>, number?: Maybe<string>, professor_names?: Maybe<any>, regnotes?: Maybe<string>, requirements?: Maybe<string>, rp_attr?: Maybe<string>, school?: Maybe<string>, season_code?: Maybe<string>, section?: Maybe<string>, skills?: Maybe<any>, subject?: Maybe<string>, syllabus_url?: Maybe<string>, times_by_day?: Maybe<any>, times_summary?: Maybe<string>, title?: Maybe<string>, course?: Maybe<{ __typename?: 'courses', average_rating_same_professors?: Maybe<any>, average_workload_same_professors?: Maybe<any> }> }> };
+export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes?: Maybe<any>, areas?: Maybe<any>, average_gut_rating?: Maybe<any>, average_professor?: Maybe<any>, average_rating?: Maybe<any>, average_workload?: Maybe<any>, average_rating_same_professors?: Maybe<any>, average_workload_same_professors?: Maybe<any>, classnotes?: Maybe<string>, course_code?: Maybe<string>, credits?: Maybe<any>, crn?: Maybe<number>, description?: Maybe<string>, enrolled?: Maybe<number>, extra_info?: Maybe<string>, final_exam?: Maybe<string>, flag_info?: Maybe<any>, fysem?: Maybe<boolean>, last_enrollment?: Maybe<number>, last_enrollment_same_professors?: Maybe<boolean>, listing_id?: Maybe<number>, locations_summary?: Maybe<string>, number?: Maybe<string>, professor_names?: Maybe<any>, regnotes?: Maybe<string>, requirements?: Maybe<string>, rp_attr?: Maybe<string>, school?: Maybe<string>, season_code?: Maybe<string>, section?: Maybe<string>, skills?: Maybe<any>, subject?: Maybe<string>, syllabus_url?: Maybe<string>, times_by_day?: Maybe<any>, times_summary?: Maybe<string>, title?: Maybe<string> }> };
 
 export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
   course_code?: Maybe<Scalars['String']>;
@@ -7764,10 +7944,8 @@ export const CatalogBySeasonDocument = gql`
     average_professor
     average_rating
     average_workload
-    course {
-      average_rating_same_professors
-      average_workload_same_professors
-    }
+    average_rating_same_professors
+    average_workload_same_professors
     classnotes
     course_code
     credits
