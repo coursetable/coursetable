@@ -272,6 +272,8 @@ function WorksheetAccordion({
     return buildHtml(parsed_courses);
   }, [buildHtml, parsed_courses]);
 
+  // TODO: add an empty state
+
   return (
     <div className={styles.container}>
       <Row className={styles.dropdowns + ' mx-auto'}>

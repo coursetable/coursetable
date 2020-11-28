@@ -11,7 +11,7 @@ import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import { NetId, Season } from './common';
 
-type Worksheet = [Season, string][];
+export type Worksheet = [Season, string][];
 type FBInfo = {
   worksheets: {
     [key in NetId]: Worksheet;

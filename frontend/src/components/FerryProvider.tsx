@@ -90,7 +90,6 @@ const addToCache = (season: Season): Promise<void> => {
       for (const raw_listing of data) {
         const listing = preprocess_courses(raw_listing);
         info.set(listing.crn, listing);
-        // TODO: make certain columns non-nullable
       }
 
       // Save in global cache. Here we force the creation of a new object.
