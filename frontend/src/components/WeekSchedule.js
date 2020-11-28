@@ -52,7 +52,7 @@ const StyledCalendar = styled(Calendar)`
 // TODO: Allow users to change color of courses in calendar?
 
 /**
- * Render Worksheet Calendar Componenet
+ * Render Worksheet Calendar component
  * @prop showModal - function to show modal for a particular listing
  * @prop courses - list of dictionaries of listing data
  * @prop hover_course - dictionary of listing that is being hovered over in list view
