@@ -1,10 +1,16 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
-import { weekdays } from './common';
+import { Crn, Season, weekdays } from './common';
+import { Worksheet } from './user';
+import { Listing } from './components/FerryProvider';
 
 // Check if a listing is in the user's worksheet
-export const isInWorksheet = (season_code, crn, worksheet) => {
+export const isInWorksheet = (
+  season_code: Season,
+  crn: Crn,
+  worksheet: Worksheet
+) => {
   if (worksheet === null) return false;
   for (let i = 0; i < worksheet.length; i++) {
     if (worksheet[i][0] === season_code && worksheet[i][1] === crn) return true;
@@ -12,7 +18,7 @@ export const isInWorksheet = (season_code, crn, worksheet) => {
   return false;
 };
 // Convert season code to legible string
-export const toSeasonString = (season_code) => {
+export const toSeasonString = (season_code: Season) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
@@ -22,11 +28,11 @@ export const toSeasonString = (season_code) => {
   ];
 };
 // Unflatten course times for easy use in checkConflict
-export const unflattenTimes = (course) => {
+export const unflattenTimes = (course: Listing) => {
   if (!course) return undefined;
   if (course.times_summary === 'TBA') return 'TBA';
   // Holds the course times for each day of the week
-  let times_by_day = [];
+  const times_by_day = [];
   weekdays.forEach((day) => {
     if (!course.times_by_day[day]) times_by_day.push(['', '', '', '']);
     else times_by_day.push(course.times_by_day[day][0]);

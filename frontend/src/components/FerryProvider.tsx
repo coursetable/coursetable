@@ -45,7 +45,7 @@ type _ListingOverrides = {
   professors?: string;
   professor_avg_rating?: string;
 };
-type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
+export type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
   _ListingOverrides;
 
 // Preprocess course data.
