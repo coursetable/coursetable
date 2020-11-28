@@ -54,17 +54,17 @@ const SortByReactSelect = ({ setOrdering }) => {
     else if (sortParams === 'workload')
       ordering = { average_workload: sort_order };
     else if (sortParams === 'professor')
-      ordering = { average_professor: `${sort_order}` };
+      ordering = { average_professor: sort_order };
     else if (sortParams === 'gut')
-      ordering = { average_gut_rating: `${sort_order}` };
-    else if (sortParams === 'fb') ordering = { fb: `${sort_order}` };
+      ordering = { average_gut_rating: sort_order };
+    else if (sortParams === 'fb') ordering = { fb: sort_order };
     else console.error('unknown sort order - ', sortParams);
     setOrdering(ordering);
   }, [select_sortby, sort_order, setOrdering]);
 
   return (
     <>
-      <div className={`${styles.sortby_container}`}>
+      <div className={styles.sortby_container}>
         {/* Sort By Select */}
         <CustomSelect
           value={select_sortby}
