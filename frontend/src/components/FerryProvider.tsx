@@ -12,7 +12,7 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import _seasons from '../generated/seasons.json';
 import { CatalogBySeasonQuery } from '../generated/graphql';
-import { Crn, Season } from '../common';
+import { Crn, Weekdays, Season } from '../common';
 
 // Preprocess seasons data.
 // We need to wrap this inside the "seasons" key of an object
@@ -23,23 +23,30 @@ const seasons = {
   seasons: [..._seasons].reverse(),
 };
 
-type Listing = CatalogBySeasonQuery['computed_listing_info'][0] & {
-  // Narrow some types.
-  // TODO: use Omit<T> instead.
-  season_code?: Season;
+type _RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
+type _ListingOverrides = {
+  season_code: Season;
+
+  // Narrow some of the JSON types.
+  all_course_codes: string[];
   areas: string[];
   skills: string[];
-  // TODO: add some more here
-  // times_by_day
-  // professor_names
-  // all_course_codes
-  // areas
-  // a bunch of the average ratings
+  professor_names: string[];
+  times_by_day: {
+    [key in Weekdays]?: [
+      string, // start time
+      string, // end time
+      string, // location
+      string // location URL
+    ][]; // an array because there could by multiple times per day
+  };
 
   // Add a couple types created by the preprocessing step.
   professors?: string;
-  professor_avg_rating?: number;
+  professor_avg_rating?: string;
 };
+type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
+  _ListingOverrides;
 
 // Preprocess course data.
 const preprocess_courses = (listing: Listing) => {
