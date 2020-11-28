@@ -79,8 +79,7 @@ const SortByReactSelect = ({ setOrdering }) => {
         className={search_styles.sort_btn + ' my-auto'}
         onClick={handleSortOrder}
       >
-        {select_sortby.value === 'course_code' ||
-        select_sortby.value === 'course_title' ? (
+        {!select_sortby.numeric ? (
           // Sorting by letters
           sort_order === 'asc' ? (
             <FcAlphabeticalSortingAz

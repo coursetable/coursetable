@@ -168,7 +168,7 @@ export const sortCourses = (
       (listing) => helperSort(listing, key, num_fb),
       (listing) => listing.course_code,
     ],
-    ['desc', order_asc ? 'asc' : 'desc', 'asc']
+    ['asc', order_asc ? 'asc' : 'desc', 'asc']
   );
   return sorted;
 };
