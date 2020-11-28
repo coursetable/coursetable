@@ -41,5 +41,5 @@ export const useSessionStorageState = <T>(key: string, default_value: T) => {
   useEffect(() => {
     setSSObject(key, value);
   }, [key, value]);
-  return [value, setValue];
+  return [value, setValue] as const;
 };

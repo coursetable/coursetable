@@ -8,11 +8,12 @@ import React, {
 } from 'react';
 
 import axios from 'axios';
+import { expectType, TypeEqual } from 'ts-expect';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import _seasons from '../generated/seasons.json';
 import { CatalogBySeasonQuery } from '../generated/graphql';
-import { Crn, Weekdays, Season } from '../common';
+import { Crn, Season, Weekdays } from '../common';
 
 // Preprocess seasons data.
 // We need to wrap this inside the "seasons" key of an object
@@ -40,13 +41,22 @@ type _ListingOverrides = {
       string // location URL
     ][]; // an array because there could by multiple times per day
   };
-
+};
+type _ListingAugments = {
   // Add a couple types created by the preprocessing step.
   professors?: string;
   professor_avg_rating?: string;
 };
+expectType<
+  // Make sure we don't override a key that wasn't there originally.
+  TypeEqual<
+    keyof _ListingOverrides,
+    Extract<keyof _RawListingResponse, keyof _ListingOverrides>
+  >
+>(true);
 export type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
-  _ListingOverrides;
+  _ListingOverrides &
+  _ListingAugments;
 
 // Preprocess course data.
 const preprocess_courses = (listing: Listing) => {

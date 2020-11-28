@@ -12,16 +12,17 @@ import { toast } from 'react-toastify';
 import { NetId, Season } from './common';
 
 export type Worksheet = [Season, string][];
-type FBInfo = {
+export type FBFriendInfo = {
+  [key in NetId]: {
+    name: string;
+    facebookId: string;
+  };
+};
+export type FBInfo = {
   worksheets: {
     [key in NetId]: Worksheet;
   };
-  friendInfo: {
-    [key in NetId]: {
-      name: string;
-      facebookId: string;
-    };
-  };
+  friendInfo: FBFriendInfo;
 };
 type Store = {
   user: {
