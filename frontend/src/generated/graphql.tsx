@@ -64,8 +64,8 @@ export type String_Comparison_Exp = {
 /** columns and relationships of "computed_listing_info" */
 export type Computed_Listing_Info = {
   __typename?: 'computed_listing_info';
-  all_course_codes: Maybe<Scalars['jsonb']>;
-  areas: Maybe<Scalars['jsonb']>;
+  all_course_codes: Scalars['jsonb'];
+  areas: Scalars['jsonb'];
   average_gut_rating: Maybe<Scalars['float8']>;
   average_professor: Maybe<Scalars['float8']>;
   average_rating: Maybe<Scalars['float8']>;
@@ -78,18 +78,18 @@ export type Computed_Listing_Info = {
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   classnotes: Maybe<Scalars['String']>;
   /** An object relationship */
-  course: Maybe<Courses>;
-  course_code: Maybe<Scalars['String']>;
-  course_id: Maybe<Scalars['Int']>;
+  course: Courses;
+  course_code: Scalars['String'];
+  course_id: Scalars['Int'];
   credits: Maybe<Scalars['float8']>;
   crn: Scalars['Int'];
   declined: Maybe<Scalars['Int']>;
   description: Maybe<Scalars['String']>;
   enrolled: Maybe<Scalars['Int']>;
   enrollment: Maybe<Scalars['Int']>;
-  extra_info: Maybe<Scalars['String']>;
+  extra_info: Scalars['String'];
   final_exam: Maybe<Scalars['String']>;
-  flag_info: Maybe<Scalars['jsonb']>;
+  flag_info: Scalars['jsonb'];
   fysem: Maybe<Scalars['Boolean']>;
   last_enrollment: Maybe<Scalars['Int']>;
   last_enrollment_course_id: Maybe<Scalars['Int']>;
@@ -99,24 +99,24 @@ export type Computed_Listing_Info = {
   /** An object relationship */
   listing: Listings;
   listing_id: Scalars['Int'];
-  locations_summary: Maybe<Scalars['String']>;
+  locations_summary: Scalars['String'];
   no_response: Maybe<Scalars['Int']>;
-  number: Maybe<Scalars['String']>;
-  professor_info: Maybe<Scalars['jsonb']>;
-  professor_names: Maybe<Scalars['jsonb']>;
+  number: Scalars['String'];
+  professor_info: Scalars['jsonb'];
+  professor_names: Scalars['jsonb'];
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   responses: Maybe<Scalars['Int']>;
   rp_attr: Maybe<Scalars['String']>;
   school: Maybe<Scalars['String']>;
-  season_code: Maybe<Scalars['String']>;
-  section: Maybe<Scalars['String']>;
-  skills: Maybe<Scalars['jsonb']>;
-  subject: Maybe<Scalars['String']>;
+  season_code: Scalars['String'];
+  section: Scalars['String'];
+  skills: Scalars['jsonb'];
+  subject: Scalars['String'];
   syllabus_url: Maybe<Scalars['String']>;
-  times_by_day: Maybe<Scalars['json']>;
-  times_summary: Maybe<Scalars['String']>;
-  title: Maybe<Scalars['String']>;
+  times_by_day: Scalars['json'];
+  times_summary: Scalars['String'];
+  title: Scalars['String'];
 };
 
 
@@ -8951,7 +8951,7 @@ export type CatalogBySeasonQueryVariables = Exact<{
 }>;
 
 
-export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: Maybe<any>, areas: Maybe<any>, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, average_rating_same_professors: Maybe<number>, average_workload_same_professors: Maybe<number>, classnotes: Maybe<string>, course_code: Maybe<string>, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: Maybe<string>, final_exam: Maybe<string>, flag_info: Maybe<any>, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: Maybe<string>, number: Maybe<string>, professor_names: Maybe<any>, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: Maybe<string>, section: Maybe<string>, skills: Maybe<any>, subject: Maybe<string>, syllabus_url: Maybe<string>, times_by_day: Maybe<any>, times_summary: Maybe<string>, title: Maybe<string> }> };
+export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, average_rating_same_professors: Maybe<number>, average_workload_same_professors: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string }> };
 
 export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
   course_code: Maybe<Scalars['String']>;
@@ -8959,7 +8959,7 @@ export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
 }>;
 
 
-export type SearchAverageAcrossSeasonsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: Maybe<any>, areas: Maybe<any>, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: Maybe<string>, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: Maybe<string>, final_exam: Maybe<string>, flag_info: Maybe<any>, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: Maybe<string>, number: Maybe<string>, professor_info: Maybe<any>, professor_names: Maybe<any>, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: Maybe<string>, section: Maybe<string>, skills: Maybe<any>, subject: Maybe<string>, syllabus_url: Maybe<string>, times_by_day: Maybe<any>, times_summary: Maybe<string>, title: Maybe<string>, course: Maybe<{ __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> }> }> };
+export type SearchAverageAcrossSeasonsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_info: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string, course: { __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> } }> };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code: Maybe<Scalars['String']>;
@@ -8967,7 +8967,7 @@ export type SearchEvaluationNarrativesQueryVariables = Exact<{
 }>;
 
 
-export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn: number, course: Maybe<{ __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment: Maybe<string>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating: Maybe<any>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }> }> };
+export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn: number, course: { __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment: Maybe<string>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating: Maybe<any>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> } }> };
 
 
 export const ListSeasonsDocument = gql`
