@@ -6,6 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Calendar } from 'react-big-calendar';
 import styled from 'styled-components';
 import CalendarEvent from './CalendarEvent';
+import { weekdays } from '../common';
 
 const localizer = momentLocalizer(moment);
 
@@ -70,15 +71,8 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
         if (hidden_courses[course.crn]) return;
-        const weekDays = [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-        ];
         for (let indx = 0; indx < 5; indx++) {
-          const info = course.times_by_day[weekDays[indx]];
+          const info = course.times_by_day[weekdays[indx]];
           // If the listing takes place on this day
           if (info !== undefined) {
             // Get start and end times for the listing

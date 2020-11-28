@@ -13,8 +13,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { TextComponent, StyledBanner, StyledCard } from './StyledComponents';
 import { ThemeContext } from 'styled-components';
-
-const weekDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
+import { weekdays } from '../common';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -117,7 +116,7 @@ function WorksheetAccordion({
       listings.forEach((course) => {
         // Iterate over each weekday
         for (let indx = 0; indx < 5; indx++) {
-          const info = course.times_by_day[weekDays[indx]];
+          const info = course.times_by_day[weekdays[indx]];
           // If this listing meets on this day
           if (info !== undefined) {
             // Get start time
@@ -167,7 +166,7 @@ function WorksheetAccordion({
         // Add header for this weekday
         accordion_items.push(
           <StyledBanner key={++id}>
-            <h5 className={styles.day_header}>{weekDays[i]}</h5>
+            <h5 className={styles.day_header}>{weekdays[i]}</h5>
           </StyledBanner>
         );
         // Iterate over each course that takes place on this day
