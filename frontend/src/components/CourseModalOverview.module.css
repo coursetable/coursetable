@@ -70,6 +70,10 @@
   color: rgb(252, 105, 105);
 }
 
+.filter_container:focus {
+  outline: none;
+}
+
 @media (hover: none) {
   .rating_bubble {
     max-height: 3rem;
