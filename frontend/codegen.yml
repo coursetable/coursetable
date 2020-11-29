@@ -1,0 +1,22 @@
+overwrite: true
+schema: 'http://localhost:8085/v1/graphql'
+documents:
+  # - 'src/**/*.{js,jsx}'
+  # - 'src/**/!(*.d).{ts,tsx}'
+  - 'src/queries/queries.graphql'
+  - '../api/queries/catalog.queries.js'
+  # - '!src/generated/**'
+generates:
+  src/generated/graphql.tsx:
+    plugins:
+      - 'typescript'
+      - 'typescript-operations'
+      - 'typescript-react-apollo'
+    config:
+      preResolveTypes: true
+      avoidOptionals: true
+      scalars:
+        float8: number
+  src/generated/graphql.schema.json:
+    plugins:
+      - 'introspection'

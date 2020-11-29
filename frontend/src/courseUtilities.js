@@ -2,76 +2,6 @@
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
 
-export const preprocess_courses = (listing) => {
-  // trim decimal points in ratings floats
-  const RATINGS_PRECISION = 1;
-
-  // Combine the list of skills into one string
-  if ('course.skills' in listing) {
-    listing['skills'] = listing['course.skills'].join(' ');
-  }
-
-  // Combine the list of areas into one string
-  if ('course.areas' in listing) {
-    listing['areas'] = listing['course.areas'].join(' ');
-  }
-
-  if ('course.evaluation_statistics' in listing) {
-    const ratings = listing['course.evaluation_statistics'];
-
-    if (ratings.length === 1) {
-      const rating = ratings[0];
-      // Trim ratings to one decimal point
-      if ('avg_rating' in rating && rating['avg_rating'] !== null) {
-        listing['avg_rating'] = rating['avg_rating'].toFixed(RATINGS_PRECISION);
-      }
-      if ('avg_workload' in rating && rating['avg_workload'] !== null) {
-        listing['avg_workload'] = rating['avg_workload'].toFixed(
-          RATINGS_PRECISION
-        );
-      }
-
-      // Make enrollment data more accessible
-      if ('enrollment' in rating) {
-        if ('enrolled' in rating['enrollment']) {
-          listing['enrolled'] = rating['enrollment']['enrolled'];
-        }
-      }
-    }
-  }
-
-  // Combine array of professors into one string
-  if ('professor_names' in listing && listing['professor_names'].length > 0) {
-    listing['professors'] = listing['professor_names'].join(', ');
-    // for the average professor rating, take the first professor
-    if ('average_professor' in listing && listing['average_professor'] !== null)
-      // Trim professor ratings to one decimal point
-      listing['professor_avg_rating'] = listing['average_professor'].toFixed(
-        RATINGS_PRECISION
-      );
-  }
-  return listing;
-};
-// Flatten dictionaries to make data more accessible
-export const flatten = (ob) => {
-  const toReturn = {};
-
-  for (let i in ob) {
-    if (!ob.hasOwnProperty(i)) continue;
-
-    if (typeof ob[i] == 'object' && ob[i] !== null && !Array.isArray(ob[i])) {
-      const flatObject = flatten(ob[i]);
-      for (let x in flatObject) {
-        if (!flatObject.hasOwnProperty(x)) continue;
-
-        toReturn[i + '.' + x] = flatObject[x];
-      }
-    } else {
-      toReturn[i] = ob[i];
-    }
-  }
-  return toReturn;
-};
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (season_code, crn, worksheet) => {
   if (worksheet === null) return false;
@@ -98,8 +28,8 @@ export const unflattenTimes = (course) => {
   // Holds the course times for each day of the week
   let times_by_day = [];
   days.forEach((day) => {
-    if (!course[`times_by_day.${day}`]) times_by_day.push(['', '', '', '']);
-    else times_by_day.push(course[`times_by_day.${day}`][0]);
+    if (!course.times_by_day[day]) times_by_day.push(['', '', '', '']);
+    else times_by_day.push(course.times_by_day[day][0]);
   });
   return times_by_day;
 };
@@ -113,7 +43,7 @@ export const checkConflict = (listings, course, times) => {
     const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     // Iterate over weekdays
     for (let day = 0; day < 5; day++) {
-      const info = listing['times_by_day.' + [weekdays[day]]];
+      const info = listing.times_by_day[weekdays[day]];
       // Continue if the new course doesn't meet on this day
       if (info === undefined) continue;
       // Get worksheet course's start and end times
@@ -214,8 +144,8 @@ export const sortCourses = (courses, ordering, num_fb) => {
 // Get the overall rating for a course
 export const getOverallRatings = (course) => {
   // Determine which overall rating to use
-  const course_rating = course['course.average_rating_same_professors']
-    ? course['course.average_rating_same_professors'].toFixed(1) // Use same professor if possible
+  const course_rating = course.average_rating_same_professors
+    ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
     : course.average_rating
     ? course.average_rating.toFixed(1) // Use all professors otherwise
     : null; // No ratings at all

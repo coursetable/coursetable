@@ -1,7 +1,5 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
-import { SEARCH_AVERAGE_ACROSS_SEASONS } from '../queries/QueryStrings';
-import { useQuery } from '@apollo/client';
 import Styles from './CourseModalOverview.module.css';
 import { ratingColormap, workloadColormap } from '../queries/Constants';
 import './MultiToggle.css';
@@ -21,6 +19,7 @@ import styled from 'styled-components';
 
 import CourseModalLoading from './CourseModalLoading';
 import { fbFriendsAlsoTaking, toSeasonString } from '../courseUtilities';
+import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
@@ -96,17 +95,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   let location_url = '';
   for (let i in days) {
     const day = days[i];
-    // This listing was flattened.
-    if (listing[`times_by_day.${day}`]) {
-      location_url = listing[`times_by_day.${day}`][0][3];
-    }
-    // This listing wasn't flattened. Came from pressing "more info" on a course eval
     if (listing.times_by_day && listing.times_by_day[day]) {
       location_url = listing.times_by_day[day][0][3];
     }
   }
   // Fetch ratings data for this listing
-  const { loading, error, data } = useQuery(SEARCH_AVERAGE_ACROSS_SEASONS, {
+  const { loading, error, data } = useSearchAverageAcrossSeasonsQuery({
     variables: {
       course_code: listing.course_code ? listing.course_code : 'bruh',
       professor_name: listing.professor_names

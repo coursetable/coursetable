@@ -30,7 +30,9 @@
   "search.exclude": {
     "dist/**": true,
     "web/gen/**": true,
+    "web/lib/**": true,
     "**/node_modules": true,
+    "**/.eslintcache": true,
     "**/bower_components": true,
     "**/docker/mysql/database.sql": true
   },
