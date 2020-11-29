@@ -24,14 +24,17 @@ const StyledSortBtn = styled.div`
  * @prop setOrdering - function to set ordering of courses
  */
 
-const SortByReactSelect = ({ setOrdering }) => {
+const SortByReactSelect = ({
+  setOrdering,
+}: {
+  setOrdering: any /* TODO */;
+}) => {
   // State that controls sortby select
-  const [select_sortby, setSelectSortby] = useSessionStorageState(
-    'select_sortby',
-    sortbyOptions[0]
-  );
+  const [select_sortby, setSelectSortby] = useSessionStorageState<
+    typeof sortbyOptions[number]
+  >('select_sortby', sortbyOptions[0]);
   // State that determines sort order
-  const [sort_order, setSortOrder] = useSessionStorageState(
+  const [sort_order, setSortOrder] = useSessionStorageState<'asc' | 'desc'>(
     'sort_order',
     'asc'
   );
@@ -44,21 +47,24 @@ const SortByReactSelect = ({ setOrdering }) => {
 
   // Set ordering in parent element whenever sortby or order changes
   useEffect(() => {
-    let sortParams = select_sortby.value;
-    let ordering = null;
-    if (sortParams === 'course_code') {
-      ordering = { course_code: sort_order };
-    } else if (sortParams === 'course_title') ordering = { title: sort_order };
-    else if (sortParams === 'course_number') ordering = { number: sort_order };
-    else if (sortParams === 'rating') ordering = { average_rating: sort_order };
-    else if (sortParams === 'workload')
-      ordering = { average_workload: sort_order };
-    else if (sortParams === 'professor')
-      ordering = { average_professor: sort_order };
-    else if (sortParams === 'gut')
-      ordering = { average_gut_rating: sort_order };
-    else if (sortParams === 'fb') ordering = { fb: sort_order };
-    else console.error('unknown sort order - ', sortParams);
+    const sortParams = select_sortby.value;
+    const ordering = {
+      [sortParams]: sort_order,
+    };
+    // if (sortParams === 'course_code') {
+    //   ordering = { course_code: sort_order };
+    // } else if (sortParams === 'title') ordering = { title: sort_order };
+    // else if (sortParams === 'number') ordering = { number: sort_order };
+    // else if (sortParams === 'average_rating')
+    //   ordering = { average_rating: sort_order };
+    // else if (sortParams === 'average_workload')
+    //   ordering = { average_workload: sort_order };
+    // else if (sortParams === 'professor')
+    //   ordering = { average_professor: sort_order };
+    // else if (sortParams === 'average_gut_rating')
+    //   ordering = { average_gut_rating: sort_order };
+    // else if (sortParams === 'fb') ordering = { fb: sort_order };
+    // else console.error('unknown sort order - ', sortParams);
     setOrdering(ordering);
   }, [select_sortby, sort_order, setOrdering]);
 
@@ -71,7 +77,9 @@ const SortByReactSelect = ({ setOrdering }) => {
           options={sortbyOptions}
           menuPortalTarget={document.body}
           onChange={(options) => {
-            setSelectSortby(options);
+            if (options && 'value' in options) {
+              setSelectSortby(options);
+            }
           }}
         />
       </div>

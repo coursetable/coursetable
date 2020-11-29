@@ -1,4 +1,4 @@
-import React from 'react';
+import { useMemo } from 'react';
 import { DefaultTheme, useTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
 import chroma from 'chroma-js';
@@ -8,30 +8,26 @@ import Select, {
   StylesConfig,
 } from 'react-select';
 
-// Makes Select forms animated
-const animatedComponents = makeAnimated();
-
-interface Props extends SelectProps<OptionTypeBase> {
-  useColors: boolean;
-}
-
 /**
  * Custom Component for React-Select
  * @prop useColors - boolean | should we use the color version of styles?
  */
-const CustomSelect: React.FC<Props> = ({ useColors = false, ...props }) => {
+function CustomSelect<T extends OptionTypeBase>({
+  useColors = false,
+  ...props
+}: SelectProps<T> & { useColors?: boolean }) {
   const theme = useTheme();
   const select_styles = selectStyles(theme);
   const select_styles_color = colorOptionStyles(theme);
+
+  // Makes Select forms animated
+  const animatedComponents = useMemo(() => makeAnimated<T>(), []);
+
+  const styles = useColors ? select_styles_color : select_styles;
   return (
-    <Select
-      classNamePrefix={'Select'}
-      components={animatedComponents}
-      styles={useColors ? select_styles_color : select_styles}
-      {...props}
-    />
+    <Select<T> {...props} styles={styles} components={animatedComponents} />
   );
-};
+}
 
 export default CustomSelect;
 
