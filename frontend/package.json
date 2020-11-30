@@ -23,7 +23,7 @@
     "file-saver": "^2.0.2",
     "graphql": "^15.4.0",
     "graphql-tag": "^2.11.0",
-    "ics": "^2.26.1",
+    "ics": "^2.26.2",
     "lodash": "^4.17.20",
     "moment": "^2.29.1",
     "posthog-js": "^1.7.2",
