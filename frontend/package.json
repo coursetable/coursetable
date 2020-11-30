@@ -81,7 +81,7 @@
     "@graphql-codegen/typescript-react-apollo": "2.2.1",
     "@welldone-software/why-did-you-render": "^5.0.0",
     "prettier": "^2.2.0",
-    "source-map-explorer": "^2.5.0",
+    "source-map-explorer": "^2.5.1",
     "typescript-plugin-css-modules": "^2.8.0"
   }
 }
