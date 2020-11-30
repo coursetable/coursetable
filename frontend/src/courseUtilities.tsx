@@ -1,17 +1,27 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import orderBy from 'lodash/orderBy';
+import { Crn, Season, weekdays } from './common';
+import { FBFriendInfo, FBInfo, Worksheet } from './user';
+import { Listing } from './components/FerryProvider';
 
 // Check if a listing is in the user's worksheet
-export const isInWorksheet = (season_code, crn, worksheet) => {
+export const isInWorksheet = (
+  season_code: Season,
+  crn: Crn | string,
+  worksheet: Worksheet
+) => {
   if (worksheet === null) return false;
+  if (typeof crn !== 'string') {
+    crn = crn.toString();
+  }
   for (let i = 0; i < worksheet.length; i++) {
     if (worksheet[i][0] === season_code && worksheet[i][1] === crn) return true;
   }
   return false;
 };
 // Convert season code to legible string
-export const toSeasonString = (season_code) => {
+export const toSeasonString = (season_code: Season) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
@@ -21,26 +31,28 @@ export const toSeasonString = (season_code) => {
   ];
 };
 // Unflatten course times for easy use in checkConflict
-export const unflattenTimes = (course) => {
+export const unflattenTimes = (course: Listing) => {
   if (!course) return undefined;
   if (course.times_summary === 'TBA') return 'TBA';
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // Holds the course times for each day of the week
-  let times_by_day = [];
-  days.forEach((day) => {
-    if (!course.times_by_day[day]) times_by_day.push(['', '', '', '']);
-    else times_by_day.push(course.times_by_day[day][0]);
+  const times_by_day = weekdays.map((day): [string, string, string, string] => {
+    const times_on_day = course.times_by_day[day];
+    if (!times_on_day) return ['', '', '', ''];
+    else return times_on_day[0];
   });
   return times_by_day;
 };
 // Checks if the a new course conflicts with the user's worksheet
-export const checkConflict = (listings, course, times) => {
+export const checkConflict = (
+  listings: Listing[],
+  course: Listing,
+  times: [string, string, string, string][] // index is 0-4, corresponding to weekdays
+) => {
   // Iterate over worksheet listings
   for (let i = 0; i < listings.length; i++) {
     // Continue if they aren't in the same season
     if (listings[i].season_code !== course.season_code) continue;
     const listing = listings[i];
-    const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
     // Iterate over weekdays
     for (let day = 0; day < 5; day++) {
       const info = listing.times_by_day[weekdays[day]];
@@ -69,7 +81,12 @@ export const checkConflict = (listings, course, times) => {
   return false;
 };
 // Fetch the FB friends that are also shopping a specific course. Used in course modal overview
-export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
+export const fbFriendsAlsoTaking = (
+  season_code: Season,
+  crn: Crn,
+  worksheets: Worksheet,
+  names: FBFriendInfo
+) => {
   // Return if worksheets are null
   if (!worksheets) return [];
   // List of FB friends also shopping
@@ -85,14 +102,19 @@ export const fbFriendsAlsoTaking = (season_code, crn, worksheets, names) => {
   }
   return also_taking;
 };
+type NumFBReturn = {
+  // Key is season code + crn
+  // Value is the list of FB friends taking the class
+  [key in string]: string[];
+};
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
-export const getNumFB = (fbWorksheets) => {
+export const getNumFB = (fbWorksheets: FBInfo) => {
   // List of each friends' worksheets
   const worksheets = fbWorksheets.worksheets;
   // List of each friends' names/facebook id
   const names = fbWorksheets.friendInfo;
   // Object to return
-  let fb_dict = {};
+  let fb_dict: NumFBReturn = {};
   // Iterate over each fb friend's worksheet
   for (let friend in worksheets) {
     // Iterate over each course in this friend's worksheet
@@ -105,7 +127,11 @@ export const getNumFB = (fbWorksheets) => {
   return fb_dict;
 };
 // Helper function that returns the correct value to sort by
-const helperSort = (listing, key, num_fb) => {
+const helperSort = (
+  listing: Listing,
+  key: keyof Listing | 'fb',
+  num_fb: NumFBReturn
+) => {
   // Sorting by fb friends
   if (key === 'fb') {
     // Concatenate season code and crn to form key
@@ -124,25 +150,30 @@ const helperSort = (listing, key, num_fb) => {
   }
 };
 // Sort courses in catalog or expanded worksheet
-export const sortCourses = (courses, ordering, num_fb) => {
+export const sortCourses = (
+  courses: Listing[],
+  // TODO: we should be much more strict with this type.
+  ordering: { [key in keyof Listing | 'fb']: 'asc' | 'desc' },
+  num_fb: NumFBReturn
+) => {
   // Key to sort the courses by
-  const key = Object.keys(ordering)[0];
+  const key = Object.keys(ordering)[0] as keyof typeof ordering;
   // Boolean | in ascending order?
   const order_asc = ordering[key].startsWith('asc');
   // Sort classes
   const sorted = orderBy(
     courses,
     [
-      (listing) => !!helperSort(listing, key, num_fb) || listing[key] === 0,
+      (listing) => helperSort(listing, key, num_fb) == null,
       (listing) => helperSort(listing, key, num_fb),
       (listing) => listing.course_code,
     ],
-    ['desc', order_asc ? 'asc' : 'desc', 'asc']
+    ['asc', order_asc ? 'asc' : 'desc', 'asc']
   );
   return sorted;
 };
 // Get the overall rating for a course
-export const getOverallRatings = (course) => {
+export const getOverallRatings = (course: Listing) => {
   // Determine which overall rating to use
   const course_rating = course.average_rating_same_professors
     ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible

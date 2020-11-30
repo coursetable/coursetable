@@ -20,6 +20,7 @@ import styled from 'styled-components';
 import CourseModalLoading from './CourseModalLoading';
 import { fbFriendsAlsoTaking, toSeasonString } from '../courseUtilities';
 import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
+import { weekdays } from '../common';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
@@ -53,8 +54,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   const [clamped, setClamped] = useState(false);
   // Number of description lines to display
   const [lines, setLines] = useState(8);
-  // Variable to store past enrollment data if the course hasn't taken place yet
-  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // List of other friends shopping this class
   let also_taking =
     user.fbLogin && user.fbWorksheets
@@ -93,8 +92,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
   // Parse for location url and location name
   let location_url = '';
-  for (let i in days) {
-    const day = days[i];
+  for (let i in weekdays) {
+    const day = weekdays[i];
     if (listing.times_by_day && listing.times_by_day[day]) {
       location_url = listing.times_by_day[day][0][3];
     }

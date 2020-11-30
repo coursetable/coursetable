@@ -1,19 +1,19 @@
 import chroma from 'chroma-js';
 
 export const sortbyOptions = [
-  { label: 'Sort by Course Code', value: 'course_code' },
-  { label: 'Sort by Course Number', value: 'course_number' },
-  { label: 'Sort by Course Title', value: 'course_title' },
-  { label: 'Sort by Facebook Friends', value: 'fb' },
-  { label: 'Sort by Course Rating', value: 'rating' },
-  { label: 'Sort by Professor Rating', value: 'professor' },
-  { label: 'Sort by Workload', value: 'workload' },
-  { label: 'Sort by Guts (Rating - Workload)', value: 'gut' },
+  { label: 'Sort by Course Code', value: 'course_code', numeric: false },
+  { label: 'Sort by Course Number', value: 'course_number', numeric: true },
+  { label: 'Sort by Course Title', value: 'course_title', numeric: false },
+  { label: 'Sort by Facebook Friends', value: 'fb', numeric: true },
+  { label: 'Sort by Course Rating', value: 'rating', numeric: true },
+  { label: 'Sort by Professor Rating', value: 'professor', numeric: true },
+  { label: 'Sort by Workload', value: 'workload', numeric: true },
+  { label: 'Sort by Guts (Rating - Workload)', value: 'gut', numeric: true },
   // { label: 'Enrollment', value: 'enrollment' },
-];
+] as const;
 
-export const areas = ['Hu', 'So', 'Sc'];
-export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'];
+export const areas = ['Hu', 'So', 'Sc'] as const;
+export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
 
 export const skillsAreasColors = {
   Hu: '#9970AB',
@@ -41,7 +41,7 @@ export const skillsAreasOptions = [
   { label: 'L3', value: 'L3', color: skillsAreasColors['L3'] },
   { label: 'L4', value: 'L4', color: skillsAreasColors['L4'] },
   { label: 'L5', value: 'L5', color: skillsAreasColors['L5'] },
-];
+] as const;
 
 export const ratingColormap = chroma
   .scale(['#f8696b', '#ffeb84', '#63b37b'])
@@ -55,7 +55,7 @@ export const creditOptions = [
   { label: '1', value: 1 },
   { label: '1.5', value: 1.5 },
   { label: '2', value: 2 },
-];
+] as const;
 
 // to get a list of abbreviations, run
 // a distinct_on:school query over computed_course_info
@@ -77,7 +77,7 @@ export const schoolOptions = [
   { label: 'Physician Associate', value: 'PA' },
   { label: 'Public Health', value: 'PH' },
   { label: 'Summer Session', value: 'SU' },
-];
+] as const;
 
 export const questions = [
   'assessment',
@@ -87,7 +87,7 @@ export const questions = [
   'organized',
   'feedback',
   'challenge',
-];
+] as const;
 export const question_text = {
   assessment: 'What is your overall assessment of this course?',
   workload:
@@ -99,7 +99,7 @@ export const question_text = {
   feedback: 'I received clear feedback that improved my learning.',
   challenge:
     'Relative to other courses you have taken at Yale, the level of intellectual challenge of this course was:',
-};
+} as const;
 export const graph_labels = {
   assessment: ['poor', 'fair', 'good', 'very good', 'excellent'],
   workload: ['much less', 'less', 'same', 'greater', 'much greater'],
@@ -120,7 +120,7 @@ export const graph_labels = {
   ],
   challenge: ['much less', 'less', 'same', 'greater', 'much greater'],
   major: [],
-};
+} as const;
 export const graph_titles = {
   assessment: 'Overall',
   workload: 'Workload',
@@ -129,7 +129,7 @@ export const graph_titles = {
   feedback: 'Feedback Clarity',
   challenge: 'Intellectual Challenge',
   major: 'Taking for Major?',
-};
+} as const;
 
 export const subjectOptions = [
   { value: 'ACCT', label: 'ACCT - Accounting' },
@@ -385,4 +385,4 @@ export const subjectOptions = [
   { value: 'YPKU', label: 'YPKU - PKU: Direct Enrollment' },
   { value: 'YSM', label: 'YSM - Yale School of Medicine' },
   { value: 'ZULU', label: 'ZULU - Zulu' },
-];
+] as const;

@@ -1,9 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-const WindowDimensionsCtx = createContext(null);
+type Store = {
+  width: number;
+  height: number;
+};
+
+const WindowDimensionsCtx = createContext<Store | undefined>(undefined);
 
 // Return dimensions of the window
-const WindowDimensionsProvider = ({ children }) => {
+const WindowDimensionsProvider: React.FC = ({ children }) => {
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -29,4 +34,4 @@ const WindowDimensionsProvider = ({ children }) => {
 };
 
 export default WindowDimensionsProvider;
-export const useWindowDimensions = () => useContext(WindowDimensionsCtx);
+export const useWindowDimensions = () => useContext(WindowDimensionsCtx)!;

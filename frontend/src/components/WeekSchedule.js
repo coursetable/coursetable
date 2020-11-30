@@ -6,6 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import { Calendar } from 'react-big-calendar';
 import styled from 'styled-components';
 import CalendarEvent from './CalendarEvent';
+import { weekdays } from '../common';
 
 const localizer = momentLocalizer(moment);
 
@@ -51,7 +52,7 @@ const StyledCalendar = styled(Calendar)`
 // TODO: Allow users to change color of courses in calendar?
 
 /**
- * Render Worksheet Calendar Componenet
+ * Render Worksheet Calendar component
  * @prop showModal - function to show modal for a particular listing
  * @prop courses - list of dictionaries of listing data
  * @prop hover_course - dictionary of listing that is being hovered over in list view
@@ -70,15 +71,8 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
         if (hidden_courses[course.crn]) return;
-        const weekDays = [
-          'Monday',
-          'Tuesday',
-          'Wednesday',
-          'Thursday',
-          'Friday',
-        ];
         for (let indx = 0; indx < 5; indx++) {
-          const info = course.times_by_day[weekDays[indx]];
+          const info = course.times_by_day[weekdays[indx]];
           // If the listing takes place on this day
           if (info !== undefined) {
             // Get start and end times for the listing

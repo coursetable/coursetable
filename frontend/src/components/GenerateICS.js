@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { toast } from 'react-toastify';
+import { weekdays } from '../common';
 import { toSeasonString } from '../courseUtilities';
 const FileSaver = require('file-saver');
 const ics = require('ics');
@@ -23,7 +24,6 @@ const onBreak = (day) => {
 
 // generate ICS file and download it
 export const generateICS = (listings_all) => {
-  const weekdays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'];
   // Season to export
   const cur_season = '202101';
 
