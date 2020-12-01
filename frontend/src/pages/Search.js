@@ -187,7 +187,7 @@ function Search() {
       // If we're not logged in, don't attempt to request any seasons.
       return [];
     }
-    if (select_seasons === null) {
+    if (select_seasons == null) {
       return [];
     }
     if (select_seasons.length === 0) {

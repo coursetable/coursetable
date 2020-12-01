@@ -11,13 +11,14 @@ export const useWorksheetInfo = (worksheet, season = null) => {
       // seasons, even if a specific season is requested.
       return [];
     }
-    if (season !== null) {
-      return [season];
-    }
     const seasons = new Set();
     worksheet.forEach((item) => {
       seasons.add(item[0]);
     });
+    if (season !== null) {
+      if (seasons.has(season)) return [season];
+      else return [];
+    }
     return [...seasons];
   }, [season, worksheet]);
 

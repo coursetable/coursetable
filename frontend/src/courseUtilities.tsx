@@ -11,7 +11,7 @@ export const isInWorksheet = (
   crn: Crn | string,
   worksheet: Worksheet
 ) => {
-  if (worksheet === null) return false;
+  if (worksheet == null) return false;
   if (typeof crn !== 'string') {
     crn = crn.toString();
   }

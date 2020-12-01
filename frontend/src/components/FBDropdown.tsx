@@ -52,7 +52,7 @@ const FBDropdown: React.VFC<Props> = ({
       text = 'Me';
     } else {
       const name = friendInfo[person].name;
-      const count_in_season = friendWorksheets[person].filter(
+      const count_in_season = (friendWorksheets[person] ?? []).filter(
         (worksheet) => worksheet[0] === cur_season
       ).length;
       text = `${name} (${count_in_season})`;
