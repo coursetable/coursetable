@@ -34,10 +34,14 @@ function App({ themeToggler }) {
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
-    // Set loading to false after user info and fb info is fetched
-    Promise.allSettled([userRefresh(true), fbRefresh(true)]).finally(() =>
-      setLoading(false)
-    );
+    const a = userRefresh(true);
+    const b = fbRefresh(true);
+
+    // Basically a polyfill because Promise.allSettled is not available.
+    a.then(() => b).finally(() => {
+      // Set loading to false after user info and fb info is fetched
+      setLoading(false);
+    });
   }, [userRefresh, fbRefresh]);
 
   // Determine if user is logged in
