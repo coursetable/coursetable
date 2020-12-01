@@ -1,6 +1,6 @@
 // import './wdyr';
 import React, { useEffect } from 'react';
-import { BrowserRouter as Router, useLocation } from 'react-router-dom';
+import { Router, useLocation } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 
 import WindowDimensionsProvider from './components/WindowDimensionsProvider';

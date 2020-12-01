@@ -58,52 +58,59 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
 
   // Refresh user worksheet
   const userRefresh = useCallback(
-    async (suppressError: boolean = false) => {
-      const res = await axios.get(
-        '/legacy_api/WorksheetActions.php?action=get&season=all'
-      );
-      if (!res.data.success) {
-        // Error with fetching user's worksheet
-        setNetId(undefined);
-        setWorksheet(undefined);
-        setHasEvals(undefined);
-        posthog.reset();
-        Sentry.configureScope((scope) => scope.clear());
-        console.error(res.data.message);
-        if (!suppressError) {
-          toast.error(res.data.message);
-        }
-      } else {
-        // Successfully fetched worksheet
-        setNetId(res.data.netId);
-        setHasEvals(res.data.evaluationsEnabled);
-        setWorksheet(res.data.data);
-        posthog.identify(res.data.netId);
-        Sentry.setUser({ username: res.data.netId });
-      }
+    (suppressError: boolean = false): Promise<void> => {
+      return axios
+        .get('/legacy_api/WorksheetActions.php?action=get&season=all')
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+
+          // Successfully fetched worksheet
+          setNetId(res.data.netId);
+          setHasEvals(res.data.evaluationsEnabled);
+          setWorksheet(res.data.data);
+          posthog.identify(res.data.netId);
+          Sentry.setUser({ username: res.data.netId });
+        })
+        .catch((err) => {
+          // Error with fetching user's worksheet
+          setNetId(undefined);
+          setWorksheet(undefined);
+          setHasEvals(undefined);
+          posthog.reset();
+          Sentry.configureScope((scope) => scope.clear());
+          console.info(err);
+          if (!suppressError) {
+            toast.error('Error fetching worksheet');
+          }
+        });
     },
     [setWorksheet, setNetId, setHasEvals]
   );
 
   // Refresh user FB stuff
   const fbRefresh = useCallback(
-    async (suppressError: boolean = false) => {
-      const friends_worksheets = await axios.get(
-        '/legacy_api/FetchFriendWorksheetsNew.php'
-      );
-      if (!friends_worksheets.data.success) {
-        // Error with fetching friends' worksheets
-        console.log(friends_worksheets.data.message);
-        if (!suppressError) {
-          toast.error(friends_worksheets.data.message);
-        }
-        setFbLogin(false);
-        setFbWorksheets(undefined);
-      } else {
-        // Successfully fetched friends' worksheets
-        setFbLogin(true);
-        setFbWorksheets(friends_worksheets.data);
-      }
+    (suppressError: boolean = false): Promise<void> => {
+      return axios
+        .get('/legacy_api/FetchFriendWorksheetsNew.php')
+        .then((friends_worksheets) => {
+          if (!friends_worksheets.data.success) {
+            throw new Error(friends_worksheets.data.message);
+          }
+          // Successfully fetched friends' worksheets
+          setFbLogin(true);
+          setFbWorksheets(friends_worksheets.data);
+        })
+        .catch((err) => {
+          // Error with fetching friends' worksheets
+          console.info(err);
+          if (!suppressError) {
+            toast.error('Error updating facebook friends');
+          }
+          setFbLogin(false);
+          setFbWorksheets(undefined);
+        });
     },
     [setFbLogin, setFbWorksheets]
   );

@@ -63,7 +63,7 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
     }
 
     // User legacy api php to perform worksheet action
-    axios
+    return axios
       .get(
         `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${season_code}&ociId=${crn}`
       )
