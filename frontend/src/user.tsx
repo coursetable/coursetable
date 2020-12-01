@@ -58,7 +58,7 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
 
   // Refresh user worksheet
   const userRefresh = useCallback(
-    (suppressError: boolean = false) => {
+    (suppressError: boolean = false): Promise<void> => {
       return axios
         .get('/legacy_api/WorksheetActions.php?action=get&season=all')
         .then((res) => {
@@ -91,7 +91,7 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
 
   // Refresh user FB stuff
   const fbRefresh = useCallback(
-    (suppressError: boolean = false) => {
+    (suppressError: boolean = false): Promise<void> => {
       return axios
         .get('/legacy_api/FetchFriendWorksheetsNew.php')
         .then((friends_worksheets) => {
