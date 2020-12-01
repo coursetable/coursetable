@@ -70,6 +70,14 @@
   color: rgb(252, 105, 105);
 }
 
+.filter_container:focus {
+  outline: none;
+}
+
+.filter_container:focus-visible .evaluations_filter {
+  outline: 2px solid #468ff2;
+}
+
 @media (hover: none) {
   .rating_bubble {
     max-height: 3rem;

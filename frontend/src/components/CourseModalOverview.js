@@ -391,6 +391,26 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     { displayName: `Prof (${items['professor'].length})`, value: 'professor' },
   ];
 
+  // Hold index of each filter option
+  const options_indx = {
+    course: 0,
+    both: 1,
+    professor: 2,
+  };
+
+  // Switch filter if left or right arrow key is pressed
+  const handleKeyDown = (e) => {
+    if (e.keyCode === 37) {
+      // Left arrow key
+      const new_indx = (options_indx[filter] + 2) % 3;
+      setFilter(options[new_indx].value);
+    } else if (e.keyCode === 39) {
+      // Right arrow key
+      const new_indx = (options_indx[filter] + 1) % 3;
+      setFilter(options[new_indx].value);
+    }
+  };
+
   return (
     <Modal.Body>
       <Row className="m-auto">
@@ -622,7 +642,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         {/* Course Evaluations */}
         <Col md={5} className="px-0 my-0">
           {/* Filter Select */}
-          <Row className="m-auto justify-content-center">
+          <Row
+            className={
+              Styles.filter_container + ' m-auto justify-content-center'
+            }
+            onKeyDown={handleKeyDown}
+            tabIndex={0}
+          >
             <StyledMultiToggle
               options={options}
               selectedOption={filter}
