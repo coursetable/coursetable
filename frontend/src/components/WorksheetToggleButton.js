@@ -38,7 +38,7 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
   const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
   if (inWorksheet !== update) setInWorksheet(update);
   // Disabled worksheed add/remove button if not logged in
-  if (user.worksheet === null)
+  if (user.worksheet == null)
     return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
         <BsBookmark size={25} className="disabled-button-icon" />
