@@ -21,6 +21,7 @@ import posthog from 'posthog-js';
 import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../browserStorage';
+import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 
 // Function to sort worksheet courses by course code
 const sortByCourseCode = (a, b) => {
@@ -43,6 +44,10 @@ const colors = [
  */
 
 function Worksheet() {
+  // Fetch width of window
+  const { width } = useWindowDimensions();
+  const is_mobile = width < 768;
+
   // Get user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
@@ -52,7 +57,7 @@ function Worksheet() {
   const cur_worksheet = useMemo(() => {
     return fb_person === 'me'
       ? user.worksheet
-      : user.fbWorksheets.worksheets[fb_person];
+      : user.fbWorksheets.worksheets[fb_person] || [];
   }, [user.worksheet, user.fbWorksheets, fb_person]);
 
   const season_codes = useMemo(() => {
@@ -150,7 +155,7 @@ function Worksheet() {
 
   // Initialize listings state and color map.
   useEffect(() => {
-    if (!loading && !error && cur_worksheet && cur_worksheet.length && data) {
+    if (!loading && !error && cur_worksheet && data) {
       let temp = [...data];
       // Assign color to each course
       for (let i = 0; i < data.length; i++) {
@@ -174,7 +179,10 @@ function Worksheet() {
   // If user somehow isn't logged in and worksheet is null
   if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
-  if (cur_worksheet.length === 0)
+  if (cur_worksheet.length === 0 && !is_mobile && false) {
+    // TODO: remove this part and add an empty state later on.
+    // We don't want to prevent a user from seeing their friend's
+    // worksheets if they haven't added anything to their own worksheet.
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
         <div className="text-center m-auto">
@@ -189,6 +197,7 @@ function Worksheet() {
         </div>
       </div>
     );
+  }
   // Wait for search query to finish
   if (error) {
     console.error(error);
@@ -224,121 +233,124 @@ function Worksheet() {
 
   return (
     <div className={styles.container}>
-      {/* Desktop View */}
-      <div className={styles.desktop_container + ' d-none d-md-block'}>
-        <Row className={cur_expand === 'list' ? 'm-3' : 'mx-3 mb-3'}>
-          {/* Calendar Component */}
-          <Col
-            // Width of component depends on if it is expanded or not
-            md={cur_expand === 'calendar' ? 12 : 9}
-            className={
-              styles.calendar +
-              ' mt-3 pl-0 ' +
-              (cur_expand === 'calendar' ? 'pr-0 ' : 'pr-4 ') +
-              (cur_expand === 'list' ? styles.hidden : '')
-            }
-          >
-            <SurfaceComponent
-              layer={0}
-              className={styles.calendar_style_container}
+      {!is_mobile ? (
+        /* Desktop View */
+        <div className={styles.desktop_container}>
+          <Row className={cur_expand === 'list' ? 'm-3' : 'mx-3 mb-3'}>
+            {/* Calendar Component */}
+            <Col
+              // Width of component depends on if it is expanded or not
+              md={cur_expand === 'calendar' ? 12 : 9}
+              className={
+                styles.calendar +
+                ' mt-3 pl-0 ' +
+                (cur_expand === 'calendar' ? 'pr-0 ' : 'pr-4 ') +
+                (cur_expand === 'list' ? styles.hidden : '')
+              }
             >
-              <WeekSchedule
-                showModal={showModal}
-                courses={season_listings}
-                hover_course={hover_course}
-                setHoverCourse={setHoverCourse}
-                hidden_courses={hidden_courses}
-              />
-              {/* Expand/Compress icons for calendar */}
-              <StyledExpandBtn
-                className={styles.expand_btn + ' ' + styles.top_right}
+              <SurfaceComponent
+                layer={0}
+                className={styles.calendar_style_container}
               >
-                {cur_expand === 'none' ? (
-                  <FaExpandAlt
-                    className={styles.expand_icon}
-                    size={expand_btn_size}
-                    style={{ display: 'block' }}
-                    onClick={() => {
-                      // Expand calendar
-                      handleCurExpand('calendar');
-                    }}
-                  />
-                ) : (
-                  <FaCompressAlt
-                    className={styles.expand_icon}
-                    size={expand_btn_size}
-                    onClick={() => {
-                      // Compress calendar
-                      handleCurExpand('none');
-                    }}
-                  />
-                )}
-              </StyledExpandBtn>
-            </SurfaceComponent>
-          </Col>
-          {/* List Component*/}
-          <Col
-            // Width depends on if it is expanded or not
-            md={cur_expand === 'list' ? 12 : 3}
-            className={
-              'ml-auto ' +
-              (cur_expand === 'list' ? ' px-2 ' : 'px-0 ') +
-              (cur_expand === 'calendar' ? styles.hidden : '')
-            }
-          >
-            {/* Expanded List Component */}
-            <Fade in={cur_expand === 'list'}>
-              <div style={{ display: cur_expand === 'list' ? '' : 'none' }}>
-                <WorksheetExpandedList
-                  courses={season_listings}
+                <WeekSchedule
                   showModal={showModal}
-                  cur_expand={cur_expand}
-                  cur_season={season}
-                  season_codes={season_codes}
-                  onSeasonChange={changeSeason}
-                  setFbPerson={handleFBPersonChange}
-                  fb_person={fb_person}
-                  setCurExpand={handleCurExpand}
-                />
-              </div>
-            </Fade>
-            {/* Default List Component */}
-            <Fade in={cur_expand !== 'list'}>
-              <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
-                <WorksheetList
                   courses={season_listings}
-                  showModal={showModal}
-                  cur_season={season}
-                  season_codes={season_codes}
-                  onSeasonChange={changeSeason}
-                  toggleCourse={toggleCourse}
-                  hidden_courses={hidden_courses}
+                  hover_course={hover_course}
                   setHoverCourse={setHoverCourse}
-                  setFbPerson={handleFBPersonChange}
-                  cur_person={fb_person}
-                  setCurExpand={handleCurExpand}
+                  hidden_courses={hidden_courses}
                 />
-              </div>
-            </Fade>
-          </Col>
-        </Row>
-      </div>
-      {/* Mobile View */}
-      <div className="d-md-none">
-        <Row className={styles.accordion + ' m-0 p-3'}>
-          <Col className="p-0">
-            <WorksheetAccordion
-              onSeasonChange={changeSeason}
-              cur_season={season}
-              season_codes={season_codes}
-              courses={season_listings}
-              showModal={showModal}
-              setFbPerson={handleFBPersonChange}
-              cur_person={fb_person}
-            />
-          </Col>
-        </Row>
-      </div>
+                {/* Expand/Compress icons for calendar */}
+                <StyledExpandBtn
+                  className={styles.expand_btn + ' ' + styles.top_right}
+                >
+                  {cur_expand === 'none' ? (
+                    <FaExpandAlt
+                      className={styles.expand_icon}
+                      size={expand_btn_size}
+                      style={{ display: 'block' }}
+                      onClick={() => {
+                        // Expand calendar
+                        handleCurExpand('calendar');
+                      }}
+                    />
+                  ) : (
+                    <FaCompressAlt
+                      className={styles.expand_icon}
+                      size={expand_btn_size}
+                      onClick={() => {
+                        // Compress calendar
+                        handleCurExpand('none');
+                      }}
+                    />
+                  )}
+                </StyledExpandBtn>
+              </SurfaceComponent>
+            </Col>
+            {/* List Component*/}
+            <Col
+              // Width depends on if it is expanded or not
+              md={cur_expand === 'list' ? 12 : 3}
+              className={
+                'ml-auto ' +
+                (cur_expand === 'list' ? ' px-2 ' : 'px-0 ') +
+                (cur_expand === 'calendar' ? styles.hidden : '')
+              }
+            >
+              {/* Expanded List Component */}
+              <Fade in={cur_expand === 'list'}>
+                <div style={{ display: cur_expand === 'list' ? '' : 'none' }}>
+                  <WorksheetExpandedList
+                    courses={season_listings}
+                    showModal={showModal}
+                    cur_expand={cur_expand}
+                    cur_season={season}
+                    season_codes={season_codes}
+                    onSeasonChange={changeSeason}
+                    setFbPerson={handleFBPersonChange}
+                    fb_person={fb_person}
+                    setCurExpand={handleCurExpand}
+                  />
+                </div>
+              </Fade>
+              {/* Default List Component */}
+              <Fade in={cur_expand !== 'list'}>
+                <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
+                  <WorksheetList
+                    courses={season_listings}
+                    showModal={showModal}
+                    cur_season={season}
+                    season_codes={season_codes}
+                    onSeasonChange={changeSeason}
+                    toggleCourse={toggleCourse}
+                    hidden_courses={hidden_courses}
+                    setHoverCourse={setHoverCourse}
+                    setFbPerson={handleFBPersonChange}
+                    cur_person={fb_person}
+                    setCurExpand={handleCurExpand}
+                  />
+                </div>
+              </Fade>
+            </Col>
+          </Row>
+        </div>
+      ) : (
+        /* Mobile View */
+        <div>
+          <Row className={styles.accordion + ' m-0 p-3'}>
+            <Col className="p-0">
+              <WorksheetAccordion
+                onSeasonChange={changeSeason}
+                cur_season={season}
+                season_codes={season_codes}
+                courses={season_listings}
+                showModal={showModal}
+                setFbPerson={handleFBPersonChange}
+                cur_person={fb_person}
+              />
+            </Col>
+          </Row>
+        </div>
+      )}
       {/* Course Modal */}
       <CourseModal
         hideModal={hideModal}

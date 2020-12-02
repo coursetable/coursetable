@@ -56,6 +56,7 @@ const FBDropdown: React.VFC<Props> = ({
         (worksheet) => worksheet[0] === cur_season
       ).length;
       text = `${name} (${count_in_season})`;
+      if (count_in_season === 0) return null;
     }
     return (
       <Dropdown.Item
@@ -74,7 +75,7 @@ const FBDropdown: React.VFC<Props> = ({
   };
 
   const friend_options = friends.map((person) => (
-    <DropdownItem person={person} />
+    <DropdownItem key={person} person={person} />
   ));
 
   // Set FB person on click
