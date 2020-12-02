@@ -1,4 +1,6 @@
+import { expectType, TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
+import { Listing } from '../components/FerryProvider';
 
 export const sortbyOptions = [
   { label: 'Sort by Course Code', value: 'course_code', numeric: false },
@@ -19,6 +21,11 @@ export const sortbyOptions = [
   },
   // { label: 'Enrollment', value: 'enrollment' },
 ] as const;
+
+// Make sure we can only sort by keys in the listing, or by facebook.
+const _number: number = 0;
+const _sortKeys = sortbyOptions[_number].value;
+expectType<TypeOf<keyof Listing | 'fb', typeof _sortKeys>>(true);
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;

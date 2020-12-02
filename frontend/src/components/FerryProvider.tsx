@@ -8,7 +8,7 @@ import React, {
 } from 'react';
 
 import axios from 'axios';
-import { expectType, TypeEqual } from 'ts-expect';
+import { expectType, TypeOf } from 'ts-expect';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import _seasons from '../generated/seasons.json';
@@ -49,10 +49,7 @@ type _ListingAugments = {
 };
 expectType<
   // Make sure we don't override a key that wasn't there originally.
-  TypeEqual<
-    keyof _ListingOverrides,
-    Extract<keyof _RawListingResponse, keyof _ListingOverrides>
-  >
+  TypeOf<keyof _RawListingResponse, keyof _ListingOverrides>
 >(true);
 export type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
   _ListingOverrides &
