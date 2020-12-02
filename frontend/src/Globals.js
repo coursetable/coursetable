@@ -1,6 +1,7 @@
 // import './wdyr';
 import 'react-app-polyfill/stable';
 import 'core-js/features/promise/all-settled';
+import 'core-js/es/promise/all-settled';
 
 import React, { useEffect } from 'react';
 import { Router, useLocation } from 'react-router-dom';
