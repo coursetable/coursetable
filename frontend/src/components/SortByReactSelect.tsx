@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 
-import { sortbyOptions } from '../queries/Constants';
+import { sortbyOptions, SortKeys } from '../queries/Constants';
 import styles from './SortbyReactSelect.module.css';
 import search_styles from '../pages/Search.module.css';
 import CustomSelect from './CustomSelect';
@@ -27,7 +27,11 @@ const StyledSortBtn = styled.div`
 const SortByReactSelect = ({
   setOrdering,
 }: {
-  setOrdering: any /* TODO */;
+  setOrdering: (
+    ordering: {
+      [key in SortKeys]?: 'asc' | 'desc';
+    }
+  ) => void;
 }) => {
   // State that controls sortby select
   const [select_sortby, setSelectSortby] = useSessionStorageState<
@@ -48,7 +52,9 @@ const SortByReactSelect = ({
   // Set ordering in parent element whenever sortby or order changes
   useEffect(() => {
     const sortParams = select_sortby.value;
-    const ordering = {
+    const ordering: {
+      [key in SortKeys]?: 'asc' | 'desc';
+    } = {
       [sortParams]: sort_order,
     };
     setOrdering(ordering);

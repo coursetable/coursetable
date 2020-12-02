@@ -23,9 +23,10 @@ export const sortbyOptions = [
 ] as const;
 
 // Make sure we can only sort by keys in the listing, or by facebook.
+export type SortKeys = keyof Listing | 'fb';
 const _number: number = 0;
 const _sortKeys = sortbyOptions[_number].value;
-expectType<TypeOf<keyof Listing | 'fb', typeof _sortKeys>>(true);
+expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;

@@ -4,6 +4,7 @@ import orderBy from 'lodash/orderBy';
 import { Crn, Season, weekdays } from './common';
 import { FBFriendInfo, FBInfo, Worksheet } from './user';
 import { Listing } from './components/FerryProvider';
+import { SortKeys } from './queries/Constants';
 
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (
@@ -127,11 +128,7 @@ export const getNumFB = (fbWorksheets: FBInfo) => {
   return fb_dict;
 };
 // Helper function that returns the correct value to sort by
-const helperSort = (
-  listing: Listing,
-  key: keyof Listing | 'fb',
-  num_fb: NumFBReturn
-) => {
+const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
   // Sorting by fb friends
   if (key === 'fb') {
     // Concatenate season code and crn to form key
@@ -152,14 +149,15 @@ const helperSort = (
 // Sort courses in catalog or expanded worksheet
 export const sortCourses = (
   courses: Listing[],
-  // TODO: we should be much more strict with this type.
-  ordering: { [key in keyof Listing | 'fb']: 'asc' | 'desc' },
+  // TODO: we should be much more strict with this type. Specifically,
+  // we should prevent there from being multiple keys.
+  ordering: { [key in SortKeys]?: 'asc' | 'desc' },
   num_fb: NumFBReturn
 ) => {
   // Key to sort the courses by
-  const key = Object.keys(ordering)[0] as keyof typeof ordering;
+  const key = Object.keys(ordering)[0] as SortKeys;
   // Boolean | in ascending order?
-  const order_asc = ordering[key].startsWith('asc');
+  const order_asc = ordering[key]!.startsWith('asc');
   // Sort classes
   const sorted = orderBy(
     courses,
