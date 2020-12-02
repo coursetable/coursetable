@@ -37,8 +37,7 @@ function App({ themeToggler }) {
     const a = userRefresh(true);
     const b = fbRefresh(true);
 
-    // Basically a polyfill because Promise.allSettled is not available.
-    a.then(() => b).finally(() => {
+    Promise.allSettled([a, b]).finally(() => {
       // Set loading to false after user info and fb info is fetched
       setLoading(false);
     });
