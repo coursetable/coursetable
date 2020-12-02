@@ -51,20 +51,6 @@ const SortByReactSelect = ({
     const ordering = {
       [sortParams]: sort_order,
     };
-    // if (sortParams === 'course_code') {
-    //   ordering = { course_code: sort_order };
-    // } else if (sortParams === 'title') ordering = { title: sort_order };
-    // else if (sortParams === 'number') ordering = { number: sort_order };
-    // else if (sortParams === 'average_rating')
-    //   ordering = { average_rating: sort_order };
-    // else if (sortParams === 'average_workload')
-    //   ordering = { average_workload: sort_order };
-    // else if (sortParams === 'professor')
-    //   ordering = { average_professor: sort_order };
-    // else if (sortParams === 'average_gut_rating')
-    //   ordering = { average_gut_rating: sort_order };
-    // else if (sortParams === 'fb') ordering = { fb: sort_order };
-    // else console.error('unknown sort order - ', sortParams);
     setOrdering(ordering);
   }, [select_sortby, sort_order, setOrdering]);
 
