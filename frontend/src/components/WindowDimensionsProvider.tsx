@@ -1,4 +1,13 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  useCallback,
+  useMemo,
+} from 'react';
+
+import debounce from 'lodash/debounce';
 
 type Store = {
   width: number;
@@ -13,19 +22,28 @@ const WindowDimensionsProvider: React.FC = ({ children }) => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
+
+  // Fires whenever the window size changes.
+  // We're using useMemo instead of useCallback here, as per
+  // https://github.com/facebook/react/issues/19240#issuecomment-652945246.
+  const handleResize = useMemo(
+    () =>
+      debounce(() => {
+        setDimensions({
+          width: window.innerWidth,
+          height: window.innerHeight,
+        });
+      }, 200),
+    [setDimensions]
+  );
+
   // Update values on window resize
   useEffect(() => {
-    const handleResize = () => {
-      setDimensions({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
-    };
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);
     };
-  }, []);
+  }, [handleResize]);
   return (
     <WindowDimensionsCtx.Provider value={dimensions}>
       {children}
