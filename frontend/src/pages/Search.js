@@ -159,10 +159,10 @@ function Search() {
     setHideFirstYearSeminars,
   ] = useSessionStorageState('hideFirstYearSeminars', false);
   // Does the user want to hide graduate courses?
-  const [
-    hideGraduateCourses,
-    setHideGraduateCourses,
-  ] = useSessionStorageState('hideGraduateCourses', false);
+  const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
+    'hideGraduateCourses',
+    false
+  );
 
   // Bounds of course and workload ratings (1-5)
   const [ratingBounds, setRatingBounds] = useSessionStorageState(
@@ -389,9 +389,13 @@ function Search() {
         if (
           searchConfig.grad_level !== null &&
           (listing.number === null ||
-            ((listing.number.charAt(0) >= '5' && listing.number.charAt(0) <= '9') ||
-              ((listing.number.charAt(0) < '0' || listing.number.charAt(0) > '9') &&
-                (listing.number.length <= 1 || (listing.number.charAt(1) >= '5' && listing.number.charAt(1) <= '9')))))
+            (listing.number.charAt(0) >= '5' &&
+              listing.number.charAt(0) <= '9') ||
+            ((listing.number.charAt(0) < '0' ||
+              listing.number.charAt(0) > '9') &&
+              (listing.number.length <= 1 ||
+                (listing.number.charAt(1) >= '5' &&
+                  listing.number.charAt(1) <= '9'))))
         ) {
           return false;
         }
@@ -797,7 +801,7 @@ function Search() {
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
                     checked={hideCancelled}
-                    onChange={(e) => { }} // dummy handler to remove warning
+                    onChange={(e) => {}} // dummy handler to remove warning
                   />
                   <Form.Check.Label
                     onClick={() => {
@@ -812,7 +816,7 @@ function Search() {
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
                     checked={hideFirstYearSeminars}
-                    onChange={(e) => { }} // dummy handler to remove warning
+                    onChange={(e) => {}} // dummy handler to remove warning
                   />
                   <Form.Check.Label
                     onClick={() => {
@@ -827,7 +831,7 @@ function Search() {
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
                     checked={hideGraduateCourses}
-                    onChange={(e) => { }} // dummy handler to remove warning
+                    onChange={(e) => {}} // dummy handler to remove warning
                   />
                   <Form.Check.Label
                     onClick={() => {
@@ -857,7 +861,7 @@ function Search() {
             (isMobile
               ? 'p-3 ' + Styles.results_col_mobile
               : (collapsed_form ? 'px-5 py-3 ' : 'px-0 py-3 ') +
-              Styles.results_col)
+                Styles.results_col)
           }
         >
           <Element name="catalog">
