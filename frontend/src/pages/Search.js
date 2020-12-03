@@ -389,7 +389,9 @@ function Search() {
         if (
           searchConfig.grad_level !== null &&
           (listing.number === null ||
-            listing.number >= 500)
+            ((listing.number.charAt(0) >= '5' && listing.number.charAt(0) <= '9') ||
+              ((listing.number.charAt(0) < '0' || listing.number.charAt(0) > '9') &&
+                (listing.number.length <= 1 || (listing.number.charAt(1) >= '5' && listing.number.charAt(1) <= '9')))))
         ) {
           return false;
         }
@@ -805,10 +807,7 @@ function Search() {
                     Hide cancelled courses
                   </Form.Check.Label>
                 </Form.Check>
-              </Row>
-              <Row
-                className={`mx-auto py-1 px-4 justify-content-left ${Styles.light_bg}`}
-              >
+
                 {/* Hide First-Year Seminar Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
@@ -823,10 +822,7 @@ function Search() {
                     Hide first-year seminars
                   </Form.Check.Label>
                 </Form.Check>
-              </Row>
-              <Row
-                className={`mx-auto py-1 px-4 justify-content-left ${Styles.light_bg}`}
-              >
+
                 {/* Hide Graduate-Level Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
