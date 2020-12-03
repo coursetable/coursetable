@@ -389,8 +389,10 @@ function Search() {
         if (
           searchConfig.grad_level !== null &&
           (listing.number === null ||
+            //tests if first character is between 5-9
             (listing.number.charAt(0) >= '5' &&
               listing.number.charAt(0) <= '9') ||
+            //otherwise if first character is not a number (i.e. summer classes), tests whether second character between 5-9
             ((listing.number.charAt(0) < '0' ||
               listing.number.charAt(0) > '9') &&
               (listing.number.length <= 1 ||
