@@ -1,17 +1,20 @@
 import { useMemo } from 'react';
-import { useCourseData } from '../components/FerryProvider';
+import { Season } from '../common';
+import { Listing, useCourseData } from '../components/FerryProvider';
+import { Worksheet } from '../user';
 
 // Search query used in Worksheet.js and CourseConflictIcon.js
-export const useWorksheetInfo = (worksheet, season = null) => {
-  if (!worksheet) worksheet = [];
-
+export const useWorksheetInfo = (
+  worksheet: Worksheet | undefined,
+  season: Season | null = null
+) => {
   const required_seasons = useMemo(() => {
-    if (worksheet.length === 0) {
+    if (!worksheet || worksheet.length === 0) {
       // If the worksheet is empty, we don't want to request data for any
       // seasons, even if a specific season is requested.
       return [];
     }
-    const seasons = new Set();
+    const seasons = new Set<Season>();
     worksheet.forEach((item) => {
       seasons.add(item[0]);
     });
@@ -19,13 +22,14 @@ export const useWorksheetInfo = (worksheet, season = null) => {
       if (seasons.has(season)) return [season];
       else return [];
     }
-    return [...seasons];
+    return Array.from(seasons);
   }, [season, worksheet]);
 
   const { loading, error, courses } = useCourseData(required_seasons);
 
   const data = useMemo(() => {
-    const data = [];
+    const data: Listing[] = [];
+    if (!worksheet) return data;
 
     // Resolve the worksheet items.
     for (let i = 0; i < worksheet.length; i++) {
