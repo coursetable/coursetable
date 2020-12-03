@@ -158,6 +158,11 @@ function Search() {
     hideFirstYearSeminars,
     setHideFirstYearSeminars,
   ] = useSessionStorageState('hideFirstYearSeminars', false);
+  // Does the user want to hide graduate courses?
+  const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
+    'hideGraduateCourses',
+    false
+  );
 
   // Bounds of course and workload ratings (1-5)
   const [ratingBounds, setRatingBounds] = useSessionStorageState(
@@ -303,6 +308,7 @@ function Search() {
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
+      grad_level: hideGraduateCourses ? false : null,
     };
 
     // Track search
@@ -315,6 +321,7 @@ function Search() {
   }, [
     hideCancelled,
     hideFirstYearSeminars,
+    hideGraduateCourses,
     ratingBounds,
     select_credits,
     select_schools,
@@ -375,6 +382,22 @@ function Search() {
         if (
           searchConfig.fy_sem !== null &&
           searchConfig.fy_sem !== listing.fysem
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.grad_level !== null &&
+          (listing.number === null ||
+            //tests if first character is between 5-9
+            (listing.number.charAt(0) >= '5' &&
+              listing.number.charAt(0) <= '9') ||
+            //otherwise if first character is not a number (i.e. summer classes), tests whether second character between 5-9
+            ((listing.number.charAt(0) < '0' ||
+              listing.number.charAt(0) > '9') &&
+              (listing.number.length <= 1 ||
+                (listing.number.charAt(1) >= '5' &&
+                  listing.number.charAt(1) <= '9'))))
         ) {
           return false;
         }
@@ -510,6 +533,7 @@ function Search() {
   const handleResetFilters = () => {
     setHideCancelled(true);
     setHideFirstYearSeminars(false);
+    setHideGraduateCourses(false);
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
     setSelectSeasons([{ value: '202101', label: 'Spring 2021' }]);
@@ -789,10 +813,7 @@ function Search() {
                     Hide cancelled courses
                   </Form.Check.Label>
                 </Form.Check>
-              </Row>
-              <Row
-                className={`mx-auto py-1 px-4 justify-content-left ${Styles.light_bg}`}
-              >
+
                 {/* Hide First-Year Seminar Courses Toggle */}
                 <Form.Check type="switch" className={Styles.toggle_option}>
                   <Form.Check.Input
@@ -805,6 +826,21 @@ function Search() {
                     }}
                   >
                     Hide first-year seminars
+                  </Form.Check.Label>
+                </Form.Check>
+
+                {/* Hide Graduate-Level Courses Toggle */}
+                <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check.Input
+                    checked={hideGraduateCourses}
+                    onChange={(e) => {}} // dummy handler to remove warning
+                  />
+                  <Form.Check.Label
+                    onClick={() => {
+                      setHideGraduateCourses(!hideGraduateCourses);
+                    }}
+                  >
+                    Hide graduate courses
                   </Form.Check.Label>
                 </Form.Check>
               </Row>
