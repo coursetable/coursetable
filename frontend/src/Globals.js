@@ -66,6 +66,7 @@ Sentry.init({
       // Via https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
       routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
     }),
+    new posthog.SentryIntegration(posthog, 'coursetable', 5515218),
   ],
   environment: process.env.NODE_ENV,
 
