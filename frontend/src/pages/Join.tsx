@@ -12,7 +12,7 @@ function Join() {
   // Has form been validated?
   const [validated, setValidated] = useState(false);
   // Handle form submission
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     // Don't submit if form is invalid
     if (form.checkValidity() === false) {
@@ -40,7 +40,7 @@ function Join() {
         action={submission_endpoint}
       >
         {/* Email */}
-        <Form.Group className={styles.form_group}>
+        <Form.Group>
           <StyledInput
             required
             name="email"
@@ -52,7 +52,7 @@ function Join() {
           </Form.Control.Feedback>
         </Form.Group>
         {/* Role Select */}
-        <Form.Group className={styles.form_group}>
+        <Form.Group>
           <CustomSelect
             isMulti
             name="roles[]"
