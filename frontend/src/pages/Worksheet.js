@@ -55,13 +55,15 @@ function Worksheet() {
 
   // Worksheet of the current person
   const cur_worksheet = useMemo(() => {
+    /** @type typeof user.worksheet! */
+    const when_not_defined = []; // TODO: change this to undefined
     if (fb_person === 'me') {
-      return user.worksheet;
+      return user.worksheet ?? when_not_defined;
     }
     const friend_worksheets = user.fbWorksheets?.worksheets;
     return friend_worksheets
-      ? friend_worksheets[fb_person] ?? undefined
-      : undefined;
+      ? friend_worksheets[fb_person] ?? when_not_defined
+      : when_not_defined;
   }, [user.worksheet, user.fbWorksheets, fb_person]);
 
   const season_codes = useMemo(() => {
