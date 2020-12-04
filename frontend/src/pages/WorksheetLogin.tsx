@@ -4,8 +4,7 @@ import Authentication from '../images/authentication.svg';
 /**
  * Renders a login page if user tries to access worksheet page
  */
-
-function WorksheetLogin() {
+const WorksheetLogin: React.VFC = () => {
   return (
     <div className="text-center py-5">
       <h3>
@@ -23,6 +22,6 @@ function WorksheetLogin() {
       />
     </div>
   );
-}
+};
 
 export default WorksheetLogin;

@@ -55,9 +55,13 @@ function Worksheet() {
 
   // Worksheet of the current person
   const cur_worksheet = useMemo(() => {
-    return fb_person === 'me'
-      ? user.worksheet
-      : user.fbWorksheets.worksheets[fb_person] || [];
+    if (fb_person === 'me') {
+      return user.worksheet;
+    }
+    const friend_worksheets = user.fbWorksheets?.worksheets;
+    return friend_worksheets
+      ? friend_worksheets[fb_person] ?? undefined
+      : undefined;
   }, [user.worksheet, user.fbWorksheets, fb_person]);
 
   const season_codes = useMemo(() => {
