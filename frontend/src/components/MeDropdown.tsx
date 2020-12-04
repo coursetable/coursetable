@@ -19,14 +19,25 @@ import {
 // Season to export classes from
 const CUR_SEASON = '202101';
 
+type Props = {
+  /** Is dropdown visible? */
+  profile_expanded: boolean;
+
+  /** Function that changes dropdown visibility */
+  setIsComponentVisible(visible: boolean): void;
+
+  /** Is user logged in? */
+  isLoggedIn: boolean;
+};
+
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
- * @prop profile_expanded - boolean | is dropdown visible?
- * @prop setIsComponentVisible - function that changes dropdown's visibility
- * @prop isLoggedIn - boolean | is user logged in?
  */
-
-function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
+const MeDropdown: React.VFC<Props> = ({
+  profile_expanded,
+  setIsComponentVisible,
+  isLoggedIn,
+}) => {
   // Get user context data
   const { user } = useUser();
   // Are we exporting the user's worksheet?
@@ -67,7 +78,7 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
       <Collapse in={profile_expanded}>
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
-          <Col className={styles.collapse_col + ' px-3 pt-3'}>
+          <Col className="px-3 pt-3">
             {/* Revert to Old CourseTable Link */}
             <Row className=" pb-3 m-auto">
               <FcUndo
@@ -148,6 +159,6 @@ function MeDropdown({ profile_expanded, setIsComponentVisible, isLoggedIn }) {
       </Collapse>
     </SurfaceComponent>
   );
-}
+};
 
 export default MeDropdown;
