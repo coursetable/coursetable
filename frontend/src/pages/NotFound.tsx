@@ -1,12 +1,11 @@
 import React from 'react';
 import NotFoundImage from '../images/not_found.svg';
-import { NavLink } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 /**
  * Renders the NotFound page when a user enters an invalid url
  */
-
-function NotFound() {
+const NotFound: React.VFC = () => {
   return (
     <div className="text-center py-5">
       <img
@@ -18,10 +17,10 @@ function NotFound() {
       <h3>Page not found</h3>
       <div>
         If you think this is an error, please{' '}
-        <NavLink to="/feedback">let us know</NavLink> and we will take a look.
+        <Link to="/feedback">let us know</Link> and we will take a look.
       </div>
     </div>
   );
-}
+};
 
 export default NotFound;

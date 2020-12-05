@@ -60,14 +60,13 @@ const StyledSwitch = styled(Form.Check)`
  */
 
 function Feedback() {
-  // Has the form been validated for submission?
-  const [validated, setValidated] = useState(false);
-  // Feedback type
-  const [type, setType] = useState('general');
   // Formcake submission endpoint
   const submission_endpoint =
     'https://api.formcake.com/api/form/2100a266-5b01-49d8-bec9-0ec2abd4e185/submission';
 
+  // Feedback types and content.
+  const feedback_types = ['general', 'feature', 'bug'] as const;
+  type FeedbackType = typeof feedback_types[number];
   const descriptions = {
     general:
       'What did you like about your experience on the site? What did you dislike about your experience on the site? Please let us know your honest throughts and opinions.',
@@ -85,8 +84,13 @@ function Feedback() {
     bug: 'Bug Report',
   };
 
+  // Has the form been validated for submission?
+  const [validated, setValidated] = useState(false);
+  // Feedback type
+  const [type, setType] = useState<FeedbackType>('general');
+
   // Handle form submit
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     // Don't submit if form is invalid
     if (form.checkValidity() === false) {
@@ -98,8 +102,8 @@ function Feedback() {
   };
 
   // Handle type select
-  const handleSelect = (event) => {
-    setType(event.currentTarget.value);
+  const handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setType(event.currentTarget.value as FeedbackType);
   };
 
   return (
@@ -121,7 +125,7 @@ function Feedback() {
             Feedback Type<span style={{ color: '#ff5e5e' }}>{' *'}</span>
           </Form.Label>
           <br />
-          {['general', 'feature', 'bug'].map((feedback_type) => (
+          {(['general', 'feature', 'bug'] as const).map((feedback_type) => (
             <StyledRadio
               className={styles.hover_pointer}
               name="feedback_type"
@@ -213,7 +217,7 @@ function Feedback() {
             required
             as="textarea"
             name="description"
-            rows="4"
+            rows={4}
             placeholder={placeholders[type]}
             style={{ width: '100%' }}
           />

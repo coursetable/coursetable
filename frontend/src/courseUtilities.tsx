@@ -29,7 +29,7 @@ export const toSeasonString = (season_code: Season) => {
     season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])],
     season_code.substring(0, 4),
     seasons[parseInt(season_code[5])],
-  ];
+  ] as const;
 };
 // Unflatten course times for easy use in checkConflict
 export const unflattenTimes = (course: Listing) => {

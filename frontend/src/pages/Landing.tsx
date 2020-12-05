@@ -1,5 +1,4 @@
 import React from 'react';
-// import { BsChevronDoubleDown } from 'react-icons/bs';
 import { Row, Col, Container } from 'react-bootstrap';
 import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
@@ -26,7 +25,7 @@ const StyledStat = styled.span`
 
 function Landing() {
   return (
-    <div className={styles.container}>
+    <div /*className={styles.container}*/>
       <Container fluid>
         <Element name="splashpage">
           <div className={styles.splashpage + ' mx-auto'}>

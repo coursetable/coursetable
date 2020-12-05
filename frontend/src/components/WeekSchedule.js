@@ -1,9 +1,8 @@
 import React, { useCallback, useMemo } from 'react';
 import moment from 'moment';
 import './WeekSchedule.css';
-import { momentLocalizer } from 'react-big-calendar';
+import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
-import { Calendar } from 'react-big-calendar';
 import styled from 'styled-components';
 import CalendarEvent from './CalendarEvent';
 import { weekdays } from '../common';

@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
  * Renders the Home page
  */
 
-function Home() {
+const Home: React.VFC = () => {
   return (
     <div className={styles.container}>
       <Container fluid>
@@ -54,6 +54,6 @@ function Home() {
       </Container>
     </div>
   );
-}
+};
 
 export default Home;
