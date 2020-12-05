@@ -28,7 +28,12 @@ catalog(app);
 app.use(
   '/api/static',
   verifyNetID,
-  express.static(path.join(path.resolve(), 'static'))
+  express.static(path.join(path.resolve(), 'static'), {
+    cacheControl: true,
+    maxAge: '1h',
+    lastModified: true,
+    etag: true,
+  })
 );
 
 console.log('Updating static catalog');
