@@ -14260,7 +14260,7 @@
           },
           {
             "name": "average_rating_same_professors_n",
-            "description": "[[computed] Number of courses used to compute\n        `average_rating_same_professors`",
+            "description": "[computed] Number of courses used to compute\n        `average_rating_same_professors`",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -14308,7 +14308,7 @@
           },
           {
             "name": "average_workload_same_professors_n",
-            "description": "[[computed] Number of courses used to compute\n        `average_workload_same_professors`",
+            "description": "[computed] Number of courses used to compute\n        `average_workload_same_professors`",
             "args": [],
             "type": {
               "kind": "SCALAR",
@@ -16651,18 +16651,6 @@
             "deprecationReason": null
           },
           {
-            "name": "school",
-            "description": "School (e.g. YC, GS, MG) that the course is taught in",
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "season",
             "description": "An object relationship",
             "args": [],
@@ -18312,16 +18300,6 @@
             "defaultValue": null
           },
           {
-            "name": "school",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "String_comparison_exp",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "season",
             "description": null,
             "type": {
@@ -19021,16 +18999,6 @@
             "defaultValue": null
           },
           {
-            "name": "school",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "season",
             "description": null,
             "type": {
@@ -19449,18 +19417,6 @@
             "deprecationReason": null
           },
           {
-            "name": "school",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "season_code",
             "description": null,
             "args": [],
@@ -19776,16 +19732,6 @@
           },
           {
             "name": "rp_attr",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "school",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -20153,18 +20099,6 @@
             "deprecationReason": null
           },
           {
-            "name": "school",
-            "description": null,
-            "args": [],
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
             "name": "season_code",
             "description": null,
             "args": [],
@@ -20480,16 +20414,6 @@
           },
           {
             "name": "rp_attr",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "school",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -21123,16 +21047,6 @@
             "defaultValue": null
           },
           {
-            "name": "school",
-            "description": null,
-            "type": {
-              "kind": "ENUM",
-              "name": "order_by",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
             "name": "season",
             "description": null,
             "type": {
@@ -21448,12 +21362,6 @@
           },
           {
             "name": "rp_attr",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "school",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -21777,16 +21685,6 @@
           },
           {
             "name": "rp_attr",
-            "description": null,
-            "type": {
-              "kind": "SCALAR",
-              "name": "String",
-              "ofType": null
-            },
-            "defaultValue": null
-          },
-          {
-            "name": "school",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -23278,12 +23176,6 @@
           },
           {
             "name": "rp_attr",
-            "description": "column name",
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
-          {
-            "name": "school",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -39759,6 +39651,18 @@
             "deprecationReason": null
           },
           {
+            "name": "school",
+            "description": "School (e.g. YC, GS, MG) that the course is listed under",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "season",
             "description": "An object relationship",
             "args": [],
@@ -40414,6 +40318,16 @@
             "defaultValue": null
           },
           {
+            "name": "school",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "season",
             "description": null,
             "type": {
@@ -40599,6 +40513,16 @@
             "defaultValue": null
           },
           {
+            "name": "school",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "season",
             "description": null,
             "type": {
@@ -40709,6 +40633,18 @@
             "deprecationReason": null
           },
           {
+            "name": "school",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "season_code",
             "description": null,
             "args": [],
@@ -40798,6 +40734,16 @@
           },
           {
             "name": "number",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "school",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -40907,6 +40853,18 @@
             "deprecationReason": null
           },
           {
+            "name": "school",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "season_code",
             "description": null,
             "args": [],
@@ -40996,6 +40954,16 @@
           },
           {
             "name": "number",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "school",
             "description": null,
             "type": {
               "kind": "ENUM",
@@ -41259,6 +41227,16 @@
             "defaultValue": null
           },
           {
+            "name": "school",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "season",
             "description": null,
             "type": {
@@ -41367,6 +41345,12 @@
             "deprecationReason": null
           },
           {
+            "name": "school",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "season_code",
             "description": "column name",
             "isDeprecated": false,
@@ -41435,6 +41419,16 @@
           },
           {
             "name": "number",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "school",
             "description": null,
             "type": {
               "kind": "SCALAR",
@@ -41864,6 +41858,12 @@
           },
           {
             "name": "number",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "school",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
