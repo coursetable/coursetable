@@ -1923,7 +1923,7 @@ export type Courses = {
    */
   average_rating_same_professors: Maybe<Scalars['float8']>;
   /**
-   * [[computed] Number of courses used to compute
+   * [computed] Number of courses used to compute
    *         `average_rating_same_professors`
    */
   average_rating_same_professors_n: Maybe<Scalars['Int']>;
@@ -1940,7 +1940,7 @@ export type Courses = {
    */
   average_workload_same_professors: Maybe<Scalars['float8']>;
   /**
-   * [[computed] Number of courses used to compute
+   * [computed] Number of courses used to compute
    *         `average_workload_same_professors`
    */
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
@@ -2045,8 +2045,6 @@ export type Courses = {
   requirements: Maybe<Scalars['String']>;
   /** Reading period notes */
   rp_attr: Maybe<Scalars['String']>;
-  /** School (e.g. YC, GS, MG) that the course is taught in */
-  school: Maybe<Scalars['String']>;
   /** An object relationship */
   season: Seasons;
   /** An object relationship */
@@ -2519,7 +2517,6 @@ export type Courses_Bool_Exp = {
   regnotes: Maybe<String_Comparison_Exp>;
   requirements: Maybe<String_Comparison_Exp>;
   rp_attr: Maybe<String_Comparison_Exp>;
-  school: Maybe<String_Comparison_Exp>;
   season: Maybe<Seasons_Bool_Exp>;
   seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Bool_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
@@ -2600,7 +2597,6 @@ export type Courses_Insert_Input = {
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
-  school: Maybe<Scalars['String']>;
   season: Maybe<Seasons_Obj_Rel_Insert_Input>;
   seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Obj_Rel_Insert_Input>;
   season_code: Maybe<Scalars['String']>;
@@ -2642,7 +2638,6 @@ export type Courses_Max_Fields = {
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
-  school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   short_title: Maybe<Scalars['String']>;
   syllabus_url: Maybe<Scalars['String']>;
@@ -2677,7 +2672,6 @@ export type Courses_Max_Order_By = {
   regnotes: Maybe<Order_By>;
   requirements: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
-  school: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   short_title: Maybe<Order_By>;
   syllabus_url: Maybe<Order_By>;
@@ -2713,7 +2707,6 @@ export type Courses_Min_Fields = {
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
-  school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   short_title: Maybe<Scalars['String']>;
   syllabus_url: Maybe<Scalars['String']>;
@@ -2748,7 +2741,6 @@ export type Courses_Min_Order_By = {
   regnotes: Maybe<Order_By>;
   requirements: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
-  school: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   short_title: Maybe<Order_By>;
   syllabus_url: Maybe<Order_By>;
@@ -2822,7 +2814,6 @@ export type Courses_Order_By = {
   regnotes: Maybe<Order_By>;
   requirements: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
-  school: Maybe<Order_By>;
   season: Maybe<Seasons_Order_By>;
   seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Order_By>;
   season_code: Maybe<Order_By>;
@@ -2899,8 +2890,6 @@ export enum Courses_Select_Column {
   /** column name */
   RpAttr = 'rp_attr',
   /** column name */
-  School = 'school',
-  /** column name */
   SeasonCode = 'season_code',
   /** column name */
   ShortTitle = 'short_title',
@@ -2947,7 +2936,6 @@ export type Courses_Set_Input = {
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
-  school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   short_title: Maybe<Scalars['String']>;
   skills: Maybe<Scalars['json']>;
@@ -3154,8 +3142,6 @@ export enum Courses_Update_Column {
   Requirements = 'requirements',
   /** column name */
   RpAttr = 'rp_attr',
-  /** column name */
-  School = 'school',
   /** column name */
   SeasonCode = 'season_code',
   /** column name */
@@ -5724,6 +5710,8 @@ export type Listings = {
   listing_id: Scalars['Int'];
   /** Course number in the given subject (e.g. "120" or "S120") */
   number: Scalars['String'];
+  /** School (e.g. YC, GS, MG) that the course is listed under */
+  school: Maybe<Scalars['String']>;
   /** An object relationship */
   season: Seasons;
   /** When the course/listing is being taught, mapping to `seasons` */
@@ -5832,6 +5820,7 @@ export type Listings_Bool_Exp = {
   crn: Maybe<Int_Comparison_Exp>;
   listing_id: Maybe<Int_Comparison_Exp>;
   number: Maybe<String_Comparison_Exp>;
+  school: Maybe<String_Comparison_Exp>;
   season: Maybe<Seasons_Bool_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
   section: Maybe<String_Comparison_Exp>;
@@ -5862,6 +5851,7 @@ export type Listings_Insert_Input = {
   crn: Maybe<Scalars['Int']>;
   listing_id: Maybe<Scalars['Int']>;
   number: Maybe<Scalars['String']>;
+  school: Maybe<Scalars['String']>;
   season: Maybe<Seasons_Obj_Rel_Insert_Input>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
@@ -5876,6 +5866,7 @@ export type Listings_Max_Fields = {
   crn: Maybe<Scalars['Int']>;
   listing_id: Maybe<Scalars['Int']>;
   number: Maybe<Scalars['String']>;
+  school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
   subject: Maybe<Scalars['String']>;
@@ -5888,6 +5879,7 @@ export type Listings_Max_Order_By = {
   crn: Maybe<Order_By>;
   listing_id: Maybe<Order_By>;
   number: Maybe<Order_By>;
+  school: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   section: Maybe<Order_By>;
   subject: Maybe<Order_By>;
@@ -5901,6 +5893,7 @@ export type Listings_Min_Fields = {
   crn: Maybe<Scalars['Int']>;
   listing_id: Maybe<Scalars['Int']>;
   number: Maybe<Scalars['String']>;
+  school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
   subject: Maybe<Scalars['String']>;
@@ -5913,6 +5906,7 @@ export type Listings_Min_Order_By = {
   crn: Maybe<Order_By>;
   listing_id: Maybe<Order_By>;
   number: Maybe<Order_By>;
+  school: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   section: Maybe<Order_By>;
   subject: Maybe<Order_By>;
@@ -5949,6 +5943,7 @@ export type Listings_Order_By = {
   crn: Maybe<Order_By>;
   listing_id: Maybe<Order_By>;
   number: Maybe<Order_By>;
+  school: Maybe<Order_By>;
   season: Maybe<Seasons_Order_By>;
   season_code: Maybe<Order_By>;
   section: Maybe<Order_By>;
@@ -5974,6 +5969,8 @@ export enum Listings_Select_Column {
   /** column name */
   Number = 'number',
   /** column name */
+  School = 'school',
+  /** column name */
   SeasonCode = 'season_code',
   /** column name */
   Section = 'section',
@@ -5988,6 +5985,7 @@ export type Listings_Set_Input = {
   crn: Maybe<Scalars['Int']>;
   listing_id: Maybe<Scalars['Int']>;
   number: Maybe<Scalars['String']>;
+  school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
   subject: Maybe<Scalars['String']>;
@@ -6065,6 +6063,8 @@ export enum Listings_Update_Column {
   ListingId = 'listing_id',
   /** column name */
   Number = 'number',
+  /** column name */
+  School = 'school',
   /** column name */
   SeasonCode = 'season_code',
   /** column name */
