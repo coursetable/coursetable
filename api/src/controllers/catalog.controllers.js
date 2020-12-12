@@ -1,4 +1,4 @@
-import { FERRY_SECRET } from '../config/constants.ts';
+import { FERRY_SECRET } from '../config/constants';
 
 import { fetchCatalog } from '../utils.js';
 

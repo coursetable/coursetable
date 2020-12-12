@@ -10,7 +10,7 @@ import {
   STATIC_FILE_DIR,
   CHALLENGE_ALGORITHM,
   CHALLENGE_PASSWORD,
-} from './config/constants.ts';
+} from './config/constants';
 
 import {
   listSeasonsQuery,
