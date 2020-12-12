@@ -2,7 +2,7 @@
   "scripts": {
     "start": "ts-node-dev src/server.js",
     "prod": "NODE_ENV=production ts-node src/server.js",
-    "lint-check": "prettier -l src && eslint src",
+    "lint-check": "prettier -l src && eslint src && tsc --noEmit",
     "depcheck": "npx depcheck . --json"
   },
   "nodemonConfig": {
