@@ -18,3 +18,7 @@ export const FERRY_SECRET =
   process.env.FERRY_SECRET !== undefined
     ? process.env.FERRY_SECRET
     : die('ferry secret');
+
+// Location of statically generated files. This is relative
+// to the working directory, which is api.
+export const STATIC_FILE_DIR = './static';
