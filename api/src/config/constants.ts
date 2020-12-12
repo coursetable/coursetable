@@ -1,4 +1,4 @@
-const die = (err) => {
+const die = (err: string) => {
   throw new Error(err);
 };
 
@@ -14,10 +14,7 @@ export const NUM_CHALLENGE_COURSES = 3; // number of courses to select for the c
 export const CHALLENGE_SEASON = '201903'; // season to select the challenge from
 export const MAX_CHALLENGE_REQUESTS = 100; // maximum number of allowed challenge tries
 
-export const FERRY_SECRET =
-  process.env.FERRY_SECRET !== undefined
-    ? process.env.FERRY_SECRET
-    : die('ferry secret');
+export const FERRY_SECRET = process.env.FERRY_SECRET ?? die('ferry secret');
 
 // Location of statically generated files. This is relative
 // to the working directory, which is api.

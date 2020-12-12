@@ -5,14 +5,17 @@ import crypto from 'crypto';
 import graphqurl from 'graphqurl';
 const { query } = graphqurl;
 
-import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from './config/constants.js';
+import {
+  GRAPHQL_ENDPOINT,
+  STATIC_FILE_DIR,
+  CHALLENGE_ALGORITHM,
+  CHALLENGE_PASSWORD,
+} from './config/constants.ts';
 
 import {
   listSeasonsQuery,
   catalogBySeasonQuery,
 } from './queries/catalog.queries.js';
-
-import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './config/constants.js';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.

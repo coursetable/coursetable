@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import path from 'path';
 
-import { PORT, STATIC_FILE_DIR } from './config/constants.js';
+import { PORT, STATIC_FILE_DIR } from './config/constants.ts';
 
 // import routes
 import challenge from './routes/challenge.routes.js';

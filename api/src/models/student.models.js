@@ -1,7 +1,7 @@
 import mysql from 'mysql';
 import mysql_db from './mysql_db.js';
 
-import { MAX_CHALLENGE_REQUESTS } from '../config/constants.js';
+import { MAX_CHALLENGE_REQUESTS } from '../config/constants.ts';
 
 const Student = function (student) {};
 

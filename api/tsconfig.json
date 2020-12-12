@@ -3,11 +3,12 @@
     /* Basic Options */
     // "incremental": true,                   /* Enable incremental compilation */
     "baseUrl": "./src",
-    "outDir": "./built",
     "target": "es5",
     "lib": ["es2020"],
     "allowJs": true,
     // "checkJs": true,
+    "outDir": "./built",
+    "noEmitOnError": true,
 
     /* Strict Type-Checking Options */
     "strict": true /* Enable all strict type-checking options. */,
