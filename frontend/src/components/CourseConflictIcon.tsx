@@ -15,7 +15,6 @@ import { Listing } from './FerryProvider';
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-
 const CourseConflictIcon = ({ course }: { course: Listing }) => {
   const { user } = useUser();
 
