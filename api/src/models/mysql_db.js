@@ -1,5 +1,5 @@
 import mysql from 'mysql';
-import dbConfig from '../config/db.config.js';
+import dbConfig from '../config/db.config.ts';
 
 const mysqlConnection = mysql.createPool({
   host: dbConfig.host,
