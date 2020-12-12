@@ -49,9 +49,9 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
   }, [course, data, times]);
 
   // Renders the conflict tooltip on hover
-  type TooltipProps = React.ComponentPropsWithRef<typeof Tooltip>;
   const renderTooltip = (
-    props: Pick<TooltipProps, Exclude<keyof TooltipProps, 'id'>>
+    // We manually add the "id" attribute, so we omit it here.
+    props: Omit<React.ComponentPropsWithRef<typeof Tooltip>, 'id'>
   ) =>
     // Render if this course isn't in the worksheet and there is a conflict
     !inWorksheet && conflict ? (
