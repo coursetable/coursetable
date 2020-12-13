@@ -20,20 +20,11 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 
 // apply routes
+app.get('/api/ping', (req, res) => {
+  res.json('pong');
+});
 challenge(app);
 catalog(app);
-
-// Mount static files route and require NetID authentication
-app.use(
-  '/api/static',
-  verifyNetID,
-  express.static(path.join(path.resolve(), STATIC_FILE_DIR), {
-    cacheControl: true,
-    maxAge: '1h',
-    lastModified: true,
-    etag: true,
-  })
-);
 
 console.log('Updating static catalog');
 
