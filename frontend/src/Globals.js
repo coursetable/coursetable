@@ -58,6 +58,7 @@ if (POSTHOG_TOKEN !== '') {
 const history = createBrowserHistory();
 
 const isDev = process.env.NODE_ENV === 'development';
+const release = isDev ? 'edge' : process.env.REACT_APP_SENTRY_RELEASE;
 Sentry.init({
   dsn:
     'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
@@ -69,6 +70,10 @@ Sentry.init({
     new posthog.SentryIntegration(posthog, 'coursetable', 5515218),
   ],
   environment: process.env.NODE_ENV,
+
+  // See https://docs.sentry.io/platforms/javascript/configuration/releases/.
+  release: release,
+  autoSessionTracking: true,
 
   // Note: this is fully enabled in development. We can revisit this if it becomes annoying.
   // We can also adjust the production sample rate depending on our quotas.
