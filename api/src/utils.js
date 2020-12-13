@@ -5,14 +5,17 @@ import crypto from 'crypto';
 import graphqurl from 'graphqurl';
 const { query } = graphqurl;
 
-import { GRAPHQL_ENDPOINT } from './config/constants.js';
+import {
+  GRAPHQL_ENDPOINT,
+  STATIC_FILE_DIR,
+  CHALLENGE_ALGORITHM,
+  CHALLENGE_PASSWORD,
+} from './config/constants';
 
 import {
   listSeasonsQuery,
   catalogBySeasonQuery,
 } from './queries/catalog.queries.js';
-
-import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from './config/constants.js';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
@@ -93,7 +96,7 @@ export async function fetchCatalog(overwrite) {
 
   console.log(`Fetched ${seasons.data.seasons.length} seasons`);
   fs.writeFileSync(
-    `./static/seasons.json`,
+    `${STATIC_FILE_DIR}/seasons.json`,
     JSON.stringify(seasons.data.seasons)
   );
 
@@ -101,7 +104,7 @@ export async function fetchCatalog(overwrite) {
   // (if overwrite = true or if file does not exist)
   const processSeasons = await seasons.data.seasons.map(
     async ({ season_code }) => {
-      const output_path = `./static/catalogs/${season_code}.json`;
+      const output_path = `${STATIC_FILE_DIR}/catalogs/${season_code}.json`;
 
       if (!overwrite && fs.existsSync(output_path)) {
         console.log(`Catalog for ${season_code} exists, skipping`);

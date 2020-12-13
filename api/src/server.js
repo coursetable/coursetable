@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import path from 'path';
 
-import { PORT } from './config/constants.js';
+import { PORT, STATIC_FILE_DIR } from './config/constants';
 
 // import routes
 import challenge from './routes/challenge.routes.js';
@@ -28,7 +28,7 @@ catalog(app);
 app.use(
   '/api/static',
   verifyNetID,
-  express.static(path.join(path.resolve(), 'static'), {
+  express.static(path.join(path.resolve(), STATIC_FILE_DIR), {
     cacheControl: true,
     maxAge: '1h',
     lastModified: true,
