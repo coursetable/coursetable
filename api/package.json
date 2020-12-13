@@ -2,8 +2,10 @@
   "scripts": {
     "start": "ts-node-dev src/server.js",
     "prod": "NODE_ENV=production ts-node src/server.js",
-    "lint-check": "prettier -l src && eslint src && tsc --noEmit",
-    "depcheck": "npx depcheck . --json"
+    "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
+    "depcheck": "npx depcheck . --json",
+    "lint": "prettier -l src && (eslint src || true)",
+    "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
   "nodemonConfig": {
     "ignore": [

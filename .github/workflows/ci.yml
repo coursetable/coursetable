@@ -31,8 +31,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: cd api && npm install --global yarn && yarn
-      - run: cd api && yarn run lint-check
-      - run: cd api && yarn run depcheck
+      - run: cd api && yarn run checks
 
   frontend:
     runs-on: ubuntu-latest
