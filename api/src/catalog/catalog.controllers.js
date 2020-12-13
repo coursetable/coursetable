@@ -1,6 +1,6 @@
-import { FERRY_SECRET } from '../config/constants';
+import { FERRY_SECRET } from '../config';
 
-import { fetchCatalog } from '../utils.js';
+import { fetchCatalog } from './catalog.utils';
 
 /**
  * Middleware to verify request headers

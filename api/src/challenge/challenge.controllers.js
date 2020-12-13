@@ -6,14 +6,15 @@ import {
   GRAPHQL_ENDPOINT,
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
-} from '../config/constants';
+} from '../config';
+
+import { requestEvalsQuery, verifyEvalsQuery } from './challenge.queries.js';
 
 import {
-  requestEvalsQuery,
-  verifyEvalsQuery,
-} from '../queries/challenge.queries.js';
-
-import { encrypt, decrypt, getRandomInt } from '../utils.js';
+  encrypt,
+  decrypt,
+  getRandomInt,
+} from '../../challenge/challenge.utils.js/utils.js';
 
 import Student from '../models/student.models.js';
 

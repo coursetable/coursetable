@@ -1,6 +1,6 @@
 import gql from 'graphql-tag';
 
-import { NUM_CHALLENGE_COURSES } from '../config/constants';
+import { NUM_CHALLENGE_COURSES } from '../config';
 
 // query for selecting courses to test
 export const requestEvalsQuery = gql`
