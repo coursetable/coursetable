@@ -1,5 +1,5 @@
 import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
-import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config/constants';
+import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import fs from 'fs';
 import graphqurl from 'graphqurl';
 const { query } = graphqurl;

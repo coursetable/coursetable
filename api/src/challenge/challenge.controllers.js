@@ -6,7 +6,7 @@ import {
   GRAPHQL_ENDPOINT,
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
-} from '../config/constants';
+} from '../config';
 
 import { requestEvalsQuery, verifyEvalsQuery } from './challenge.queries.js';
 

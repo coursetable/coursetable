@@ -1,9 +1,6 @@
 import crypto from 'crypto';
 
-import {
-  CHALLENGE_ALGORITHM,
-  CHALLENGE_PASSWORD,
-} from '../../src/config/constants';
+import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from '../../src/config';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.

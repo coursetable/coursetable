@@ -1,4 +1,4 @@
-import { FERRY_SECRET } from '../config/constants';
+import { FERRY_SECRET } from '../config';
 
 import { fetchCatalog } from './catalog.utils';
 
