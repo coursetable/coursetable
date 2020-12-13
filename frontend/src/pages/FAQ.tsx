@@ -23,7 +23,15 @@ const StyledCard = styled(Card)`
 `;
 
 // Custom accordion component
-function ContextAwareToggle({ eventKey, callback, question }) {
+function ContextAwareToggle({
+  eventKey,
+  callback,
+  question,
+}: {
+  eventKey: string;
+  callback?: (eventKey: string) => void;
+  question: string;
+}) {
   // Current active item
   const currentEventKey = useContext(AccordionContext);
 
@@ -60,7 +68,6 @@ function ContextAwareToggle({ eventKey, callback, question }) {
 /**
  * Renders the FAQ page
  */
-
 function FAQ() {
   const faqs = [
     {

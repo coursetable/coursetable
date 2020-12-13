@@ -9,13 +9,13 @@ import {
   unflattenTimes,
 } from '../courseUtilities';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+import { Listing } from './FerryProvider';
 
 /**
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-
-const CourseConflictIcon = ({ course }) => {
+const CourseConflictIcon = ({ course }: { course: Listing }) => {
   const { user } = useUser();
 
   const inWorksheet = useMemo(() => {
@@ -48,10 +48,13 @@ const CourseConflictIcon = ({ course }) => {
   }, [course, data, times]);
 
   // Renders the conflict tooltip on hover
-  const renderTooltip = (props) =>
+  const renderTooltip = (
+    // We manually add the "id" attribute, so we omit it here.
+    props: Omit<React.ComponentPropsWithRef<typeof Tooltip>, 'id'>
+  ) =>
     // Render if this course isn't in the worksheet and there is a conflict
     !inWorksheet && conflict ? (
-      <Tooltip id="button-tooltip" {...props}>
+      <Tooltip {...props} id="conflict-icon-button-tooltip">
         <small style={{ fontWeight: 500 }}>Conflicts with worksheet</small>
       </Tooltip>
     ) : (

@@ -10,7 +10,7 @@ import { SortKeys } from './queries/Constants';
 export const isInWorksheet = (
   season_code: Season,
   crn: Crn | string,
-  worksheet: Worksheet
+  worksheet?: Worksheet
 ) => {
   if (worksheet == null) return false;
   if (typeof crn !== 'string') {

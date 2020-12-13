@@ -10,7 +10,7 @@ export const useComponentVisible = <T extends HTMLElement>(
   const [isComponentVisible, setIsComponentVisible] = useState(
     initialIsVisible
   );
-  const ref_visible = useRef<T>(null!);
+  const ref_visible = useRef<T>(null);
 
   // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {

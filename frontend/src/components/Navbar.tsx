@@ -4,15 +4,14 @@ import { NavLink } from 'react-router-dom';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
-// import Searchbar from '../components/Searchbar';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { logout, scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import styled from 'styled-components';
 import posthog from 'posthog-js';
-import { SurfaceComponent } from '../components/StyledComponents';
+import { SurfaceComponent } from './StyledComponents';
 
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
@@ -68,9 +67,15 @@ const StyledNavToggle = styled(Navbar.Toggle)`
 /**
  * Renders the navbar
  * @prop isLoggedIn - boolean | is user logged in?
+ * @prop themeToggler - callback which toggles between light and dark mode
  */
-
-function CourseTableNavbar({ isLoggedIn, themeToggler }) {
+function CourseTableNavbar({
+  isLoggedIn,
+  themeToggler,
+}: {
+  isLoggedIn: boolean;
+  themeToggler: () => void;
+}) {
   // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState(false);
   // Ref to detect outside clicks for profile dropdown
@@ -78,7 +83,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
     ref_visible,
     isComponentVisible,
     setIsComponentVisible,
-  } = useComponentVisible(false);
+  } = useComponentVisible<HTMLDivElement>(false);
 
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -180,7 +185,7 @@ function CourseTableNavbar({ isLoggedIn, themeToggler }) {
                       onClick={() => setIsComponentVisible(!isComponentVisible)}
                     >
                       <BsFillPersonFill
-                        className={styles.me_icon + ' m-auto'}
+                        className="m-auto"
                         size={20}
                         color={isComponentVisible ? '#007bff' : undefined}
                       />
