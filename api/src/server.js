@@ -9,10 +9,9 @@ import { PORT, STATIC_FILE_DIR } from './config/constants';
 import challenge from './challenge/challenge.routes.js';
 import catalog from './catalog/catalog.routes.js';
 
-import { verifyNetID } from './utils.js';
-
 // import catalog fetch function (same as /api/catalog/refresh)
-import { fetchCatalog } from './utils.js';
+import { fetchCatalog } from './catalog/catalog.utils';
+import { verifyNetID } from './auth/utils';
 
 const app = express();
 // Enable url-encoding

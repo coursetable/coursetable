@@ -1,6 +1,6 @@
 import { requestChallenge, verifyChallenge } from './challenge.controllers.js';
 
-import { verifyNetID } from '../utils.js';
+import { verifyNetID } from '../auth/utils';
 
 export default (app) => {
   app.get('/api/challenge/request', verifyNetID, requestChallenge);
