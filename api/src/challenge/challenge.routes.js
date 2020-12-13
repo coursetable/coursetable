@@ -1,7 +1,4 @@
-import {
-  requestChallenge,
-  verifyChallenge,
-} from '../controllers/challenge.controllers.js';
+import { requestChallenge, verifyChallenge } from './challenge.controllers.js';
 
 import { verifyNetID } from '../utils.js';
 

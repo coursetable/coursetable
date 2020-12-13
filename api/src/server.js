@@ -6,8 +6,8 @@ import path from 'path';
 import { PORT, STATIC_FILE_DIR } from './config/constants';
 
 // import routes
-import challenge from './routes/challenge.routes.js';
-import catalog from './routes/catalog.routes.js';
+import challenge from './challenge/challenge.routes.js';
+import catalog from './catalog/catalog.routes.js';
 
 import { verifyNetID } from './utils.js';
 

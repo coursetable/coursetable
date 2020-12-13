@@ -15,7 +15,7 @@ import {
 import {
   listSeasonsQuery,
   catalogBySeasonQuery,
-} from './queries/catalog.queries.js';
+} from './catalog/catalog.queries.js';
 
 /**
  * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.

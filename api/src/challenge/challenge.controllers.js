@@ -8,10 +8,7 @@ import {
   MAX_CHALLENGE_REQUESTS,
 } from '../config/constants';
 
-import {
-  requestEvalsQuery,
-  verifyEvalsQuery,
-} from '../queries/challenge.queries.js';
+import { requestEvalsQuery, verifyEvalsQuery } from './challenge.queries.js';
 
 import { encrypt, decrypt, getRandomInt } from '../utils.js';
 
