@@ -10868,10 +10868,10 @@ rc-motion@^2.0.0:
     classnames "^2.2.1"
     rc-util "^5.2.1"
 
-rc-slider@9.6.4:
-  version "9.6.4"
-  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-9.6.4.tgz#19af39ad22927de2f6d524e0a14f3b1cf17ba659"
-  integrity sha512-TgmfOh1Jj9fHsW2eDeldFy4mOKwyHn4krl4K6gqbXhGFND7jVRdfA0m7TDUx3gGeX7A17fM1QZymMO/NRJmoLw==
+rc-slider@9.6.5:
+  version "9.6.5"
+  resolved "https://registry.yarnpkg.com/rc-slider/-/rc-slider-9.6.5.tgz#826cd7ba69d87c48b258baa3422a25b7f8c5620c"
+  integrity sha512-XRUJDK668hy8MwGnHzZlXCQXXIOUnEs4m2vwk1jgDILVBxI0GwGOlC6T499pYY+NEWg8YgdCOAucFs/+X5WHpg==
   dependencies:
     "@babel/runtime" "^7.10.1"
     classnames "^2.2.5"
