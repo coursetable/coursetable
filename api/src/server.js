@@ -14,6 +14,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Enable request logging.
 app.use(morgan('tiny'));
 
+// Trust the proxy.
+// See https://expressjs.com/en/guide/behind-proxies.html.
+app.set('trust proxy', true);
+
 // We use the IIFE pattern so that we can use await.
 (async () => {
   // Setup routes.
