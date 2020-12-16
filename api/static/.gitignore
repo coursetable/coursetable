@@ -1,3 +1,4 @@
-*
+seasons.json
 !.gitignore
-!catalogs/.gitignore
+catalogs/*.json
+!catalogs/.keep
