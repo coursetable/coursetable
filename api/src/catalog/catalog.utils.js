@@ -1,8 +1,7 @@
 import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
 import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import fs from 'fs';
-import graphqurl from 'graphqurl';
-const { query } = graphqurl;
+import { request } from 'graphql-request';
 
 /**
  * Get static catalogs for each season from Hasura,
@@ -12,24 +11,21 @@ export async function fetchCatalog(overwrite) {
   let seasons;
   // get a list of all seasons
   try {
-    seasons = await query({
-      query: listSeasonsQuery,
-      endpoint: GRAPHQL_ENDPOINT,
-    });
+    seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
   } catch (err) {
     console.error(err);
     throw Error(err);
   }
 
-  console.log(`Fetched ${seasons.data.seasons.length} seasons`);
+  console.log(`Fetched ${seasons.seasons.length} seasons`);
   fs.writeFileSync(
     `${STATIC_FILE_DIR}/seasons.json`,
-    JSON.stringify(seasons.data.seasons)
+    JSON.stringify(seasons.seasons)
   );
 
   // for each season, fetch all courses inside it and save
   // (if overwrite = true or if file does not exist)
-  const processSeasons = await seasons.data.seasons.map(
+  const processSeasons = await seasons.seasons.map(
     async ({ season_code }) => {
       const output_path = `${STATIC_FILE_DIR}/catalogs/${season_code}.json`;
 
@@ -41,26 +37,22 @@ export async function fetchCatalog(overwrite) {
       let catalog;
 
       try {
-        catalog = await query({
-          query: catalogBySeasonQuery,
-          endpoint: GRAPHQL_ENDPOINT,
-          variables: {
-            season: season_code,
-          },
+        catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
+          season: season_code,
         });
       } catch (err) {
         console.error(err);
         throw err;
       }
 
-      if (catalog.data.computed_listing_info) {
+      if (catalog.computed_listing_info) {
         fs.writeFileSync(
           output_path,
-          JSON.stringify(catalog.data.computed_listing_info)
+          JSON.stringify(catalog.computed_listing_info)
         );
 
         console.log(
-          `Fetched season ${season_code}: n=${catalog.data.computed_listing_info.length}`
+          `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`
         );
       }
     }
