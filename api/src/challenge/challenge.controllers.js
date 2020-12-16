@@ -1,5 +1,4 @@
-import graphqurl from 'graphqurl';
-const { query } = graphqurl;
+import { request } from 'graphql-request';
 import crypto from 'crypto';
 
 import {
@@ -31,7 +30,7 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
   // array of course enrollment counts
   let ratingIndices = [];
 
-  for (const evaluation_rating of evals['data']['evaluation_ratings']) {
+  for (const evaluation_rating of evals['evaluation_ratings']) {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
     if (!Number.isInteger(evaluation_rating['rating'][ratingIndex])) {
@@ -43,7 +42,7 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
   }
 
   // array of CourseTable question IDs
-  const ratingIds = evals['data']['evaluation_ratings'].map((x) => x['id']);
+  const ratingIds = evals['evaluation_ratings'].map((x) => x['id']);
 
   // construct token object
   const ratingSecrets = ratingIds.map((x, index) => {
@@ -63,16 +62,16 @@ const constructChallenge = (req, res, evals, challengeTries, netid) => {
   const token = encrypt(JSON.stringify(secrets), salt);
 
   // course ids, titles and questions for user
-  const courseIds = evals['data']['evaluation_ratings'].map((x) => x['id']);
-  const courseTitles = evals['data']['evaluation_ratings'].map(
+  const courseIds = evals['evaluation_ratings'].map((x) => x['id']);
+  const courseTitles = evals['evaluation_ratings'].map(
     (x) => x['course']['title']
   );
-  const courseQuestionTexts = evals['data']['evaluation_ratings'].map(
+  const courseQuestionTexts = evals['evaluation_ratings'].map(
     (x) => x['evaluation_question']['question_text']
   );
 
   // Yale OCE urls for user to retrieve answers
-  const oceUrls = evals['data']['evaluation_ratings'].map((x) => {
+  const oceUrls = evals['evaluation_ratings'].map((x) => {
     // courses have multiple CRNs, and any one should be fine
     const crn = x['course']['listings'][0]['crn'];
     const season = x['course']['season_code'];
@@ -123,13 +122,9 @@ export const requestChallenge = (req, res) => {
     // randomly choosing a minimum rating
     const minRating = 1 + Math.random() * 4;
 
-    query({
-      query: requestEvalsQuery,
-      endpoint: GRAPHQL_ENDPOINT,
-      variables: {
-        season: CHALLENGE_SEASON,
-        minRating: minRating,
-      },
+    request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
+      season: CHALLENGE_SEASON,
+      minRating: minRating,
     })
       .then((evals) => {
         return constructChallenge(req, res, evals, challengeTries, netid);
@@ -154,7 +149,7 @@ export const requestChallenge = (req, res) => {
  */
 const checkChallenge = (true_evals, answers) => {
   // the true values in CourseTable to compare against
-  const truth = true_evals['data']['evaluation_ratings'];
+  const truth = true_evals['evaluation_ratings'];
 
   // mapping from question ID to ratings
   let truthById = {};
@@ -262,12 +257,8 @@ export const verifyChallenge = (req, res) => {
           });
         }
 
-        query({
-          query: verifyEvalsQuery,
-          endpoint: GRAPHQL_ENDPOINT,
-          variables: {
-            questionIds: secretRatingIds,
-          },
+        request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+          questionIds: secretRatingIds,
         })
           .then((true_evals) => {
             // if answers are incorrect, respond with error

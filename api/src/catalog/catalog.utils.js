@@ -29,7 +29,7 @@ export async function fetchCatalog(overwrite) {
     async ({ season_code }) => {
       const output_path = `${STATIC_FILE_DIR}/catalogs/${season_code}.json`;
 
-      if (!overwrite && fs.existsSync(output_path)) {
+    if (!overwrite && fs.existsSync(output_path)) {
         console.log(`Catalog for ${season_code} exists, skipping`);
         return;
       }
