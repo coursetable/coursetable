@@ -17,7 +17,10 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Enable request logging.
 app.use(morgan('tiny'));
 // Setup sessions.
-// TODO: use a real session store
+// TODO: use a real session store e.g. redis
+// TODO: add secure attribute
+// TODO: unset http only for now
+// TODO: set a really long time to live
 app.use(session({ secret: 'cats TODO change this' }));
 
 // Trust the proxy.
