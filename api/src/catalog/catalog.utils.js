@@ -25,38 +25,36 @@ export async function fetchCatalog(overwrite) {
 
   // for each season, fetch all courses inside it and save
   // (if overwrite = true or if file does not exist)
-  const processSeasons = await seasons.seasons.map(
-    async ({ season_code }) => {
-      const output_path = `${STATIC_FILE_DIR}/catalogs/${season_code}.json`;
+  const processSeasons = await seasons.seasons.map(async ({ season_code }) => {
+    const output_path = `${STATIC_FILE_DIR}/catalogs/${season_code}.json`;
 
     if (!overwrite && fs.existsSync(output_path)) {
-        console.log(`Catalog for ${season_code} exists, skipping`);
-        return;
-      }
-
-      let catalog;
-
-      try {
-        catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
-          season: season_code,
-        });
-      } catch (err) {
-        console.error(err);
-        throw err;
-      }
-
-      if (catalog.computed_listing_info) {
-        fs.writeFileSync(
-          output_path,
-          JSON.stringify(catalog.computed_listing_info)
-        );
-
-        console.log(
-          `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`
-        );
-      }
+      console.log(`Catalog for ${season_code} exists, skipping`);
+      return;
     }
-  );
+
+    let catalog;
+
+    try {
+      catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
+        season: season_code,
+      });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+
+    if (catalog.computed_listing_info) {
+      fs.writeFileSync(
+        output_path,
+        JSON.stringify(catalog.computed_listing_info)
+      );
+
+      console.log(
+        `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`
+      );
+    }
+  });
 
   return Promise.allSettled(processSeasons);
 }
