@@ -8,7 +8,6 @@ passport.use(
       serverBaseURL: 'http://localhost:4096',
     },
     function (login, done) {
-      console.log('in callback thingy');
       done(null, {
         netId: login,
       });
@@ -16,10 +15,18 @@ passport.use(
   )
 );
 
+passport.serializeUser(function (user, done) {
+  done(null, user.netId);
+});
+
+passport.deserializeUser(function (netId, done) {
+  done(null, {
+    netId,
+  });
+});
+
 const casLogin = function (req, res, next) {
-  console.log('attempting cas login');
   passport.authenticate('cas', function (err, user) {
-    console.log('inside auth');
     if (err) {
       return next(err);
     }
@@ -32,10 +39,10 @@ const casLogin = function (req, res, next) {
         return next(err);
       }
 
-      return res.json('wooter');
+      // TODO: use redirect parameter
+      return res.redirect('/api/auth/check');
     });
   })(req, res, next);
-  console.log('exiting casLogin function');
 };
 
 export default async (app) => {
@@ -43,7 +50,11 @@ export default async (app) => {
   app.use(passport.session());
 
   app.get('/api/auth/check', (req, res) => {
-    res.json('no sir');
+    if (req.user) {
+      res.json({ auth: true, user: req.user });
+    } else {
+      res.json({ auth: false });
+    }
   });
 
   app.get('/api/auth/cas', casLogin);
