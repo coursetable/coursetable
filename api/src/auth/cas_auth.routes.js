@@ -5,6 +5,7 @@ passport.use(
   new CasStrategy(
     {
       ssoBaseURL: 'https://secure.its.yale.edu/cas',
+      // TODO: dynamically set this with req.hostname and req.protocol
       serverBaseURL: 'https://localhost:8080',
     },
     function (login, done) {
