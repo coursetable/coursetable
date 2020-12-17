@@ -18,18 +18,10 @@ services:
       - ../api:/app
       - ./wait-for-it.sh:/wait-for-it.sh
     user: '1000'
+    # make the API wait for mysql and Hasura to start first
     command:
-      # make the API wait for mysql to start first
-      [
-        './wait-for-it.sh',
-        'mysql:3306',
-        '-t',
-        '60',
-        '--',
-        'sh',
-        '-c',
-        'cd /app && yarn && yarn start',
-      ]
+      ./wait-for-it.sh mysql:3306 -t 60 -- ./wait-for-it.sh graphql-engine:8080 -t 60 -- sh -cx 'cd /app && yarn && yarn start'
+
     depends_on:
       - graphql-engine
       - mysql
