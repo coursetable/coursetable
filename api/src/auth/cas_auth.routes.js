@@ -8,7 +8,6 @@ passport.use(
       ssoBaseURL: 'https://secure.its.yale.edu/cas',
     },
     function (profile, done) {
-      console.log('in verify', profile);
       done(null, {
         netId: profile.user,
       });
@@ -42,7 +41,8 @@ const casLogin = function (req, res, next) {
 
       const redirect = req.query['redirect'];
       if (redirect) {
-        res.redirect(`/${redirect}`);
+        // We prefix this with a slash to avoid an open redirect vulnerability.
+        return res.redirect(`/${redirect}`);
       }
 
       // If no redirect is provided, simply redirect to the auth status.
