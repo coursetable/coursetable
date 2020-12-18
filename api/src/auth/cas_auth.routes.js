@@ -4,13 +4,13 @@ import { Strategy as CasStrategy } from 'passport-cas';
 passport.use(
   new CasStrategy(
     {
+      version: 'CAS2.0',
       ssoBaseURL: 'https://secure.its.yale.edu/cas',
-      // TODO: dynamically set this with req.hostname and req.protocol
-      serverBaseURL: 'https://localhost:8080',
     },
-    function (login, done) {
+    function (profile, done) {
+      console.log('in verify', profile);
       done(null, {
-        netId: login,
+        netId: profile.user,
       });
     }
   )
@@ -40,7 +40,12 @@ const casLogin = function (req, res, next) {
         return next(err);
       }
 
-      // TODO: use redirect parameter
+      const redirect = req.query['redirect'];
+      if (redirect) {
+        res.redirect(`/${redirect}`);
+      }
+
+      // If no redirect is provided, simply redirect to the auth status.
       return res.redirect('/api/auth/check');
     });
   })(req, res, next);

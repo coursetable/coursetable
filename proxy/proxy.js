@@ -110,6 +110,7 @@ app.use(
   '/api',
   createProxyMiddleware({
     target: api_uri,
+    xfwd: true,
   })
 );
 
