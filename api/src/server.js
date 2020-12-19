@@ -3,7 +3,7 @@ import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import session from 'express-session';
 
-import { PORT } from './config';
+import { PORT, SESSION_SECRET } from './config';
 
 // import routes
 import challenge from './challenge/challenge.routes.js';
@@ -18,10 +18,25 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(morgan('tiny'));
 // Setup sessions.
 // TODO: use a real session store e.g. redis
-// TODO: add secure attribute
-// TODO: unset http only for now
-// TODO: set a really long time to live
-app.use(session({ secret: 'cats TODO change this' }));
+app.use(
+  session({
+    secret: SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      // Cookie lifetime of one year.
+      maxAge: 365 * 24 * 60 * 60 * 1000,
+
+      // We currently set this to false because our logout process involves
+      // the client-side JS clearing all cookies.
+      httpOnly: false,
+
+      // Not enabling this yet since it could have unintended consequences.
+      // Eventually we should enable this.
+      // secure: true,
+    },
+  })
+);
 
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
