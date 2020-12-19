@@ -1,3 +1,4 @@
+import express, { Express } from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
 
@@ -15,17 +16,22 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user, done) {
+passport.serializeUser(function (user: Express.User, done) {
   done(null, user.netId);
 });
 
-passport.deserializeUser(function (netId, done) {
-  done(null, {
+passport.deserializeUser(function (netId: string, done) {
+  const user: Express.User = {
     netId,
-  });
+  };
+  done(null, user);
 });
 
-const casLogin = function (req, res, next) {
+const casLogin = function (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
   passport.authenticate('cas', function (err, user) {
     if (err) {
       return next(err);
@@ -51,7 +57,7 @@ const casLogin = function (req, res, next) {
   })(req, res, next);
 };
 
-export default async (app) => {
+export default async (app: express.Express) => {
   app.use(passport.initialize());
   app.use(passport.session());
 
