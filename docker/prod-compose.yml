@@ -51,6 +51,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
       MYSQL_DB: yaleplus
       CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
+      SESSION_SECRET: ${SESSION_SECRET?session secret}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry reload secret}
     networks:
       - mysql_default
