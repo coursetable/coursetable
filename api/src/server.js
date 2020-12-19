@@ -20,18 +20,17 @@ app.use(morgan('tiny'));
 app.use(
   session({
     secret: SESSION_SECRET,
-    cookie: {
-      // Cookie lifetime of one year.
-      maxAge: 365 * 24 * 60 * 60 * 1000,
 
-      // We currently set this to false because our logout process involves
-      // the client-side JS clearing all cookies.
-      httpOnly: false,
+    // Cookie lifetime of one year.
+    maxAge: 365 * 24 * 60 * 60 * 1000,
 
-      // Not enabling this yet since it could have unintended consequences.
-      // Eventually we should enable this.
-      // secure: true,
-    },
+    // We currently set this to false because our logout process involves
+    // the client-side JS clearing all cookies.
+    httpOnly: false,
+
+    // Not enabling this yet since it could have unintended consequences.
+    // Eventually we should enable this.
+    // secure: true,
   })
 );
 
