@@ -9,11 +9,7 @@ import {
 
 import { requestEvalsQuery, verifyEvalsQuery } from './challenge.queries.js';
 
-import {
-  encrypt,
-  decrypt,
-  getRandomInt,
-} from '../../challenge/challenge.utils.js/utils.js';
+import { encrypt, decrypt, getRandomInt } from './challenge_utils.js';
 
 import Student from '../models/student.models.js';
 
