@@ -79,4 +79,9 @@ export default async (app: express.Express) => {
   });
 
   app.get('/api/auth/cas', casLogin);
+
+  app.post('/api/auth/logout', (req, res) => {
+    req.logOut();
+    return res.json({ success: true });
+  });
 };
