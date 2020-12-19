@@ -4,6 +4,7 @@ import { ListGroup } from 'react-bootstrap';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
 import { SurfaceComponent } from './StyledComponents';
 import WorksheetListItem from './WorksheetListItem';
+import NoCoursesFound from '../images/no_courses_found.svg';
 
 /**
  * Render worksheet list in default worksheet view
@@ -77,7 +78,24 @@ function WorksheetList({
       />
       {/* List of courses for this season */}
       <SurfaceComponent layer={0} className={styles.table + ' mx-1'}>
-        <ListGroup variant="flush">{items}</ListGroup>
+        {items.length > 0 ? (
+          // There are courses for this season
+          <ListGroup variant="flush">{items}</ListGroup>
+        ) : (
+          // There aren't courses for this season
+          <div style={{ height: '400px', width: '100%' }} className="d-flex">
+            <div className="text-center m-auto">
+              <img
+                alt="No courses found."
+                className="py-5"
+                src={NoCoursesFound}
+                style={{ width: '50%' }}
+              />
+              <h3>No courses found</h3>
+              <div>Please add courses for this season</div>
+            </div>
+          </div>
+        )}
       </SurfaceComponent>
     </div>
   );
