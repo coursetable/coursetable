@@ -22,5 +22,5 @@ foreach (phpCAS::getAttributes() as $key => $value) {
         echo '<li>', $key, ': <strong>', $value, '</strong></li>' . PHP_EOL;
     }
 }
-    ?>
+?>
 </ul>
