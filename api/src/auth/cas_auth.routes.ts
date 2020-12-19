@@ -1,6 +1,8 @@
-import express, { Express } from 'express';
+/// <reference path="./user.d.ts" />
+import express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
+import { User } from '../models/student';
 
 passport.use(
   new CasStrategy(
@@ -16,12 +18,12 @@ passport.use(
   )
 );
 
-passport.serializeUser(function (user: Express.User, done) {
+passport.serializeUser(function (user: User, done) {
   done(null, user.netId);
 });
 
 passport.deserializeUser(function (netId: string, done) {
-  const user: Express.User = {
+  const user: User = {
     netId,
   };
   done(null, user);
@@ -63,7 +65,7 @@ export default async (app: express.Express) => {
 
   app.get('/api/auth/check', (req, res) => {
     if (req.user) {
-      res.json({ auth: true, user: req.user });
+      res.json({ auth: true, id: req.user.netId, user: req.user });
     } else {
       res.json({ auth: false });
     }

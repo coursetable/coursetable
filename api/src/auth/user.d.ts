@@ -1,13 +1,11 @@
 export {};
 
 import 'express';
+import 'passport';
+import { User as UserModel } from '../models/student';
 
 declare global {
-  // eslint-disable-next-line no-unused-vars
   namespace Express {
-    // eslint-disable-next-line no-unused-vars
-    interface User {
-      netId: string;
-    }
+    interface User extends UserModel {}
   }
 }
