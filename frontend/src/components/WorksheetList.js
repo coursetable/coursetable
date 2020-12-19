@@ -5,6 +5,7 @@ import WorksheetRowDropdown from './WorksheetRowDropdown';
 import { SurfaceComponent } from './StyledComponents';
 import WorksheetListItem from './WorksheetListItem';
 import NoCoursesFound from '../images/no_courses_found.svg';
+import { toSeasonString } from '../courseUtilities';
 
 /**
  * Render worksheet list in default worksheet view
@@ -91,8 +92,10 @@ function WorksheetList({
                 src={NoCoursesFound}
                 style={{ width: '50%' }}
               />
-              <h3>No courses found</h3>
-              <div>Please add courses for this season</div>
+              <h3>No courses found for</h3>
+              <h3>
+                {toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}
+              </h3>
             </div>
           </div>
         )}
