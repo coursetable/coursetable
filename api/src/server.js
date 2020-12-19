@@ -1,7 +1,7 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
-import session from 'express-session';
+import session from 'cookie-session';
 
 import { PORT, SESSION_SECRET } from './config';
 
@@ -17,12 +17,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 // Enable request logging.
 app.use(morgan('tiny'));
 // Setup sessions.
-// TODO: use a real session store e.g. redis
 app.use(
   session({
     secret: SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
     cookie: {
       // Cookie lifetime of one year.
       maxAge: 365 * 24 * 60 * 60 * 1000,
