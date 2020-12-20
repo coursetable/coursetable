@@ -4,8 +4,7 @@ import { ListGroup } from 'react-bootstrap';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
 import { SurfaceComponent } from './StyledComponents';
 import WorksheetListItem from './WorksheetListItem';
-import NoCoursesFound from '../images/no_courses_found.svg';
-import { toSeasonString } from '../courseUtilities';
+import NoCourses from './NoCourses';
 
 /**
  * Render worksheet list in default worksheet view
@@ -84,20 +83,7 @@ function WorksheetList({
           <ListGroup variant="flush">{items}</ListGroup>
         ) : (
           // There aren't courses for this season
-          <div style={{ height: '400px', width: '100%' }} className="d-flex">
-            <div className="text-center m-auto">
-              <img
-                alt="No courses found."
-                className="py-5"
-                src={NoCoursesFound}
-                style={{ width: '50%' }}
-              />
-              <h3>No courses found for</h3>
-              <h3>
-                {toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}
-              </h3>
-            </div>
-          </div>
+          <NoCourses cur_season={cur_season} />
         )}
       </SurfaceComponent>
     </div>
