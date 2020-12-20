@@ -6118,6 +6118,11 @@ fbjs@^3.0.0:
     setimmediate "^1.0.5"
     ua-parser-js "^0.7.18"
 
+fflate@^0.4.1:
+  version "0.4.3"
+  resolved "https://registry.yarnpkg.com/fflate/-/fflate-0.4.3.tgz#c8bd6dc9a799777ce8bfdb400ec5d12349833486"
+  integrity sha512-OYWiQ/0IBhsjica76BMIVQhqar3JxSz4g9TxeA+0MjQYpdLv/WzOLKZkP8Ai8LFi57QLaNav6maxnEgIxA/jXw==
+
 figgy-pudding@^3.5.1:
   version "3.5.2"
   resolved "https://registry.yarnpkg.com/figgy-pudding/-/figgy-pudding-3.5.2.tgz#b4eee8148abb01dcf1d1ac34367d59e12fa61d6e"
@@ -10597,9 +10602,11 @@ postcss@^8.1.0:
     source-map "^0.6.1"
 
 posthog-js@^1.7.2:
-  version "1.7.2"
-  resolved "https://registry.yarnpkg.com/posthog-js/-/posthog-js-1.7.2.tgz#edacb90413630f85db0ec317a7d687704b3101fb"
-  integrity sha512-iv/2LTHFRFOrf4xih40Soa1tUNNIcg21LMP7rtUjAeg+TFJEToBPkUgp93b7tT1VXblN2irJHS7ELEo9EriJAQ==
+  version "1.8.0"
+  resolved "https://registry.yarnpkg.com/posthog-js/-/posthog-js-1.8.0.tgz#7529a29662c03e59e8ca0f506e5909adff6f30cc"
+  integrity sha512-5vG6/3Tchbc1xN2VGpeWjGvQm8OVyJjjfcI67fXP4gOw//b2Ve4B2qmg5PM+xCytBaum4XcVOK8hXfdSjhy63A==
+  dependencies:
+    fflate "^0.4.1"
 
 prelude-ls@^1.2.1:
   version "1.2.1"
