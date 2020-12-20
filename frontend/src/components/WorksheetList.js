@@ -4,6 +4,7 @@ import { ListGroup } from 'react-bootstrap';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
 import { SurfaceComponent } from './StyledComponents';
 import WorksheetListItem from './WorksheetListItem';
+import NoCourses from './NoCourses';
 
 /**
  * Render worksheet list in default worksheet view
@@ -77,7 +78,13 @@ function WorksheetList({
       />
       {/* List of courses for this season */}
       <SurfaceComponent layer={0} className={styles.table + ' mx-1'}>
-        <ListGroup variant="flush">{items}</ListGroup>
+        {items.length > 0 ? (
+          // There are courses for this season
+          <ListGroup variant="flush">{items}</ListGroup>
+        ) : (
+          // There aren't courses for this season
+          <NoCourses cur_season={cur_season} />
+        )}
       </SurfaceComponent>
     </div>
   );
