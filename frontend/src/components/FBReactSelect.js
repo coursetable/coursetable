@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { useUser } from '../user';
 import './FBReactSelect.css';
 import CustomSelect from './CustomSelect';
@@ -20,12 +20,6 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
       ? user.fbWorksheets.friendInfo
       : {};
   }, [user.fbLogin, user.fbWorksheets]);
-  // FB Friends worksheets
-  const friendWorksheets = useMemo(() => {
-    return user.fbLogin && user.fbWorksheets
-      ? user.fbWorksheets.worksheets
-      : {};
-  }, [user.fbLogin, user.fbWorksheets]);
   // List of FB friend options. Initialize with me option
   const friend_options = useMemo(() => {
     let friend_options_temp = [];
@@ -41,7 +35,7 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
       return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
     });
     return friend_options_temp;
-  }, [friendInfo, friendWorksheets]);
+  }, [friendInfo]);
 
   if (!user.fbLogin) {
     // TODO: replace with a button to connect FB
