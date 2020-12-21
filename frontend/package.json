@@ -19,7 +19,7 @@
     "@types/react-scroll": "^1.8.2",
     "@types/react-select": "^3.0.26",
     "@types/styled-components": "^5.1.4",
-    "async-lock": "^1.2.4",
+    "async-lock": "^1.2.6",
     "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
     "chroma-js": "^2.1.0",
