@@ -75,6 +75,8 @@ function WorksheetList({
         setFbPerson={setFbPerson}
         cur_person={cur_person}
         setCurExpand={setCurExpand}
+        toggleCourse={toggleCourse}
+        areHidden={Object.keys(hidden_courses).length === courses.length}
       />
       {/* List of courses for this season */}
       <SurfaceComponent layer={0} className={styles.table + ' mx-1'}>

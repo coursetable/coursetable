@@ -134,19 +134,6 @@ function Worksheet() {
     setCourseModal([false, '']);
   }, []);
 
-  // Hide/Show this course
-  const toggleCourse = useCallback(
-    (crn) => {
-      setHiddenCourses((old_hidden_courses) => {
-        let new_hidden_courses = Object.assign({}, old_hidden_courses);
-        if (old_hidden_courses[crn]) new_hidden_courses[crn] = false;
-        else new_hidden_courses[crn] = true;
-        return new_hidden_courses;
-      });
-    },
-    [setHiddenCourses]
-  );
-
   // Fetch the worksheet info. This is eventually copied into the 'listings' variable.
   const { loading, error, data } = useWorksheetInfo(cur_worksheet, season);
 
@@ -179,6 +166,29 @@ function Worksheet() {
       setListings(temp);
     }
   }, [loading, error, cur_worksheet, data, setListings, colorMap]);
+
+  // Hide/Show this course
+  const toggleCourse = useCallback(
+    (crn) => {
+      if (crn === -1) {
+        let new_hidden_courses = {};
+        listings.forEach((listing) => {
+          new_hidden_courses[listing.crn] = true;
+        });
+        setHiddenCourses(new_hidden_courses);
+      } else if (crn === -2) {
+        setHiddenCourses({});
+      } else {
+        setHiddenCourses((old_hidden_courses) => {
+          let new_hidden_courses = Object.assign({}, old_hidden_courses);
+          if (old_hidden_courses[crn]) delete new_hidden_courses[crn];
+          else new_hidden_courses[crn] = true;
+          return new_hidden_courses;
+        });
+      }
+    },
+    [setHiddenCourses, listings]
+  );
 
   const season_listings = listings;
 
