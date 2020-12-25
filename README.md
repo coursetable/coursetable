@@ -5,15 +5,17 @@ Coursetable is made of two big parts:
 1.  **Website**: The site you see when you go to [coursetable.com](https://coursetable.com). The code for this – the front-end site as well as the various back-end scripts that handle user actions – is contained within this repository.
 2.  **Crawler**: The scripts behind the scenes that actually get all the data from Yale’s websites. The code for this is in our [ferry](https://github.com/coursetable/ferry) repository.
 
-## Design:
+## Repository Layout
+
 The various functions of the website are compartmentalized as follows:
 
-- `/api`: An Express server for back-end logic going forward. Currently handles user challenges.
-- `/dev_proxy`: Proxy configuration for relaying connections between services (e.g. authentication headers, CAS cookies, etc.)
+- `/api`: An Express server for backend logic.
+- `/frontend`: The current face of the site, built with React.
+- `/web`: PHP scripts migrated from the old site.
+- `/proxy`: Proxy configuration for relaying connections between services (e.g. authentication headers, CAS cookies, etc.)
 - `/docker`: Configuration files for running everything together in Docker.
-- `/frontend`: The current face of the site, built in React.
-- `/sysadmin`: Administrative tools such as phpMyAdmin. 
-- `/web`: Older PHP scripts migrated from the legacy site. 
+- `/legacy`: Static HTML files from the old site.
+- `/scripts` and `/sysadmin`: Administration scripts and bootstrapping tools.
 
 ## How to develop
 
@@ -30,7 +32,7 @@ The document includes instructions on how to:
 **Contributing code:**
 
 1. Create a branch for your feature. This can usually be done with `git checkout -b <username>/<feature_name>`
-2. *make changes.*
+2. _make changes._
 3. Create some commits and push your changes to the origin.
 4. Create a pull request and add a few reviewers. In the pull request, be sure to reference any relevant issue numbers.
 5. Once the pull request has been approved, merge it into the master branch.
@@ -73,4 +75,3 @@ Check out [How to deploy](docs/how-to-deploy.md)
 ## Debugging Tips
 
 `Fatal error: Uncaught SmartyException: unable to write file [...]`: execute `chmod -R 777 web/gen` in your terminal.
-
