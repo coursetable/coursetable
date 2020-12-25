@@ -33,7 +33,7 @@ The document includes instructions on how to:
 2.  Learn about the code
 3.  Make your first changes
 
-## Workflow
+## Contributing
 
 **Contributing code:**
 
@@ -43,18 +43,20 @@ The document includes instructions on how to:
 4. Create a pull request and add a few reviewers. In the pull request, be sure to reference any relevant issue numbers.
 5. Once the pull request has been approved, merge it into the master branch.
 
-**Issues:**
-
-We use GitHub issues to track bugs and feature requests: https://github.com/coursetable/coursetable/issues.
-
-## Style
+**Style:**
 
 For different languages:
 
-- JavaScript: We use [prettier](https://prettier.io/) to automatically format the code. Make sure you use your editor's integration!
+- TypeScript & JavaScript: We use [prettier](https://prettier.io/) to automatically format the code. Make sure you use your editor's integration!
 - PHP: We use [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) to maintain coding standards; generally, it's 4 spaces for tabs, camelCase for variables, and follow whatever else that's in use right now.
 
 We have automated checks set up that will run for every commit and pull request.
+
+**Roadmap:**
+
+We use GitHub issues to track bugs and feature requests: https://github.com/coursetable/coursetable/issues.
+
+We use GitHub projects to manage everything and do planning: https://github.com/orgs/coursetable/projects/2.
 
 ## (Mostly for Peter and Harry) Steps for rolling out a new server
 
