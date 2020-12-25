@@ -55,15 +55,3 @@ We use GitHub projects to manage everything and do planning: https://github.com/
 ## Setting up and deploying to prod
 
 Check out [How to deploy](docs/how-to-deploy.md).
-
-## Steps for setting up debugging on Windows
-
-1.  Change `web/includes/ProjectCommon.php` to point to a remote database
-2.  Run `composer install` in `web/libs` and in `crawler`
-3.  In your php.ini, make sure cURL, MySQLi, SQLite3 are enabled
-4.  Run `php Build.php` in `web/tools`
-5.  Run `php RegenerateDataFiles.php` in `crawler` to either generate the JSON locally
-
-## Debugging Tips
-
-`Fatal error: Uncaught SmartyException: unable to write file [...]`: execute `chmod -R 777 web/gen` in your terminal.
