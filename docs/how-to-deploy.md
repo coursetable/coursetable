@@ -59,13 +59,20 @@ popd
 pushd ferry
 docker-compose up -d
 ./refresh_courses.sh
-read -p "Add ./cron_script.sh to crontab. Press [enter] when done..."
 popd
 
 # Setup coursetable.
 cd coursetable/docker
 ./deploy.sh
 TODO migrate database over
+
+# Setup cron.
+echo This should be the contents of the crontab:
+cat <<EOF
+44 7 * * * bash -l -c "cd $HOME/ferry && ./cron_script.sh" 2>&1
+23 7 * * * bash -l -c "source $HOME/.profile && cd $HOME/infra/mysql && ./cron_script.sh" 2>&1
+EOF
+read -p "Add those to crontab. Press [enter] when done..."
 ```
 
 # Deploying to the server
