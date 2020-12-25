@@ -58,19 +58,9 @@ We use GitHub issues to track bugs and feature requests: https://github.com/cour
 
 We use GitHub projects to manage everything and do planning: https://github.com/orgs/coursetable/projects/2.
 
-## (Mostly for Peter and Harry) Steps for rolling out a new server
+## Setting up and deploying to prod
 
-1.  Create a SSH key, and add it as a deploy key for both this repository and
-    `install-scripts`.
-2.  Run `cd /home/web && git clone git@gitlab.com:myrtlelime/coursetable.git app`
-3.  Run `install.sh`
-4.  Run `components/gencerts.sh` to generate certificates if needed
-5.  Load the database locally, if needed
-6.  Run `finish-install.sh`
-
-## To rebuild JS on main site
-
-Check out [How to deploy](docs/how-to-deploy.md)
+Check out [How to deploy](docs/how-to-deploy.md).
 
 ## Steps for setting up debugging on Windows
 
