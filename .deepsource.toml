@@ -1,0 +1,25 @@
+version = 1
+
+exclude_patterns = [
+    "web/libs",
+    "legacy/libs",
+    "frontend/src/generated"
+]
+
+[[analyzers]]
+name = "docker"
+enabled = true
+
+  [analyzers.meta]
+  dockerfile_paths = ["**/Dockerfile"]
+
+[[analyzers]]
+name = "javascript"
+enabled = true
+
+  [analyzers.meta]
+  plugins = ["react"]
+  environment = [
+    "nodejs",
+    "browser"
+  ]
