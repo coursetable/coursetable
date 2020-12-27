@@ -2,8 +2,8 @@ version = 1
 
 exclude_patterns = [
     "web/libs/**",
-    "legacy/libs/",
-    "frontend/src/generated/"
+    "legacy/libs/**",
+    "frontend/src/generated/**"
 ]
 
 [[analyzers]]
