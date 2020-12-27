@@ -8,7 +8,6 @@ Thanks for taking the initiative to get started with CourseTable! Here are a few
 We hope you’ll enjoy building something your friends can use as well!
 
 ## Development Environment Setup
----
 
 <details>
   <summary><strong>Mac or Linux</strong></summary>
@@ -117,7 +116,6 @@ We hope you’ll enjoy building something your friends can use as well!
 </details>
 
 ## Aside: a quick explainer on docker-compose
----
 
 `docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
 
@@ -136,7 +134,6 @@ Some useful commands:
 - `docker-compose build` builds all the services. This probably won't be necessary for our development environment, since we're building everything on the fly
 
 ## Running CourseTable
----
 
 Note: if you run into issues, check the troubleshooting section at the bottom.
 
@@ -178,7 +175,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
     > For Windows: You will need to restart the docker_frontend_1 container which you can do in the Docker Desktop app.
 
 ## Troubleshooting
----
+
 - `Fatal error: Uncaught SmartyException: unable to write file`
 
   Execute `chmod -R 777 web/gen` in your terminal.
@@ -198,7 +195,6 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
   This means that PHP hasn't installed all its dependencies yet. Try running `docker-compose restart` and check again.
 
 ## [stale] CourseTable Development Guide
----
 
 Our old development instructions can be found [here](https://docs.google.com/document/d/1M0Gp8Qtaik8roGYYknDDEzAAOwP3YBj0mX1pvCy-uOI/edit?usp=sharing).
 
