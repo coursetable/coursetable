@@ -23,3 +23,13 @@ enabled = true
     "nodejs",
     "browser"
   ]
+  
+  module_system = "es-modules"
+  dialect = "typescript"
+  
+  dependency_file_paths = [
+    "frontend/package.json",
+    "api/package.json",
+    "proxy/package.json"
+  ]
+
