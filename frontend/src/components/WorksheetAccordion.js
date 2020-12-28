@@ -11,9 +11,15 @@ import SeasonDropdown from './SeasonDropdown';
 import FBDropdown from './FBDropdown';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
-import { TextComponent, StyledBanner, StyledCard } from './StyledComponents';
+import {
+  TextComponent,
+  StyledBanner,
+  StyledCard,
+  SurfaceComponent,
+} from './StyledComponents';
 import { ThemeContext } from 'styled-components';
 import { weekdays } from '../common';
+import NoCourses from './NoCourses';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -294,7 +300,13 @@ function WorksheetAccordion({
         </Col>
       </Row>
       {/* Render list of courses */}
-      <div className={styles.accordion_list}>{items}</div>
+      <SurfaceComponent layer={0} className={styles.accordion_list}>
+        {items.props.children.length > 0 ? (
+          items
+        ) : (
+          <NoCourses cur_season={cur_season} />
+        )}
+      </SurfaceComponent>
     </div>
   );
 }

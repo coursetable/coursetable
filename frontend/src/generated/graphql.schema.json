@@ -643,6 +643,18 @@
             "deprecationReason": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "course",
             "description": "An object relationship",
             "args": [],
@@ -1165,6 +1177,18 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sysem",
+            "description": null,
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "isDeprecated": false,
@@ -2380,6 +2404,16 @@
             "defaultValue": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Boolean_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "course",
             "description": null,
             "type": {
@@ -2725,6 +2759,16 @@
             "type": {
               "kind": "INPUT_OBJECT",
               "name": "String_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Boolean_comparison_exp",
               "ofType": null
             },
             "defaultValue": null
@@ -3386,6 +3430,16 @@
             "defaultValue": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "course",
             "description": null,
             "type": {
@@ -3731,6 +3785,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -5854,6 +5918,16 @@
             "defaultValue": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "course",
             "description": null,
             "type": {
@@ -6204,6 +6278,16 @@
             "defaultValue": null
           },
           {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "times_by_day",
             "description": null,
             "type": {
@@ -6396,6 +6480,12 @@
             "deprecationReason": null
           },
           {
+            "name": "colsem",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "course_code",
             "description": "column name",
             "isDeprecated": false,
@@ -6589,6 +6679,12 @@
           },
           {
             "name": "syllabus_url",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sysem",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -6751,6 +6847,16 @@
             "defaultValue": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "course_code",
             "description": null,
             "type": {
@@ -7076,6 +7182,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -9226,6 +9342,12 @@
             "deprecationReason": null
           },
           {
+            "name": "colsem",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "course_code",
             "description": "column name",
             "isDeprecated": false,
@@ -9419,6 +9541,12 @@
           },
           {
             "name": "syllabus_url",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sysem",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -14331,6 +14459,18 @@
             "deprecationReason": null
           },
           {
+            "name": "colsem",
+            "description": "True if the course is a college seminar. False otherwise.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "computed_listing_infos",
             "description": "An array relationship",
             "args": [
@@ -16742,6 +16882,18 @@
             "deprecationReason": null
           },
           {
+            "name": "sysem",
+            "description": "True if the course is a sophomore seminar. False otherwise.",
+            "args": [],
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "tfidfSimilarsByTarget",
             "description": "An array relationship",
             "args": [
@@ -17990,6 +18142,16 @@
             "defaultValue": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Boolean_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "computed_listing_infos",
             "description": null,
             "type": {
@@ -18360,6 +18522,16 @@
             "defaultValue": null
           },
           {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "INPUT_OBJECT",
+              "name": "Boolean_comparison_exp",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "tfidfSimilarsByTarget",
             "description": null,
             "type": {
@@ -18684,6 +18856,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -19054,6 +19236,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -20737,6 +20929,16 @@
             "defaultValue": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "computed_listing_infos_aggregate",
             "description": null,
             "type": {
@@ -21107,6 +21309,16 @@
             "defaultValue": null
           },
           {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "ENUM",
+              "name": "order_by",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "tfidfSimilarsByTarget_aggregate",
             "description": null,
             "type": {
@@ -21265,6 +21477,12 @@
             "deprecationReason": null
           },
           {
+            "name": "colsem",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "course_home_url",
             "description": "column name",
             "isDeprecated": false,
@@ -21386,6 +21604,12 @@
           },
           {
             "name": "syllabus_url",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sysem",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null
@@ -21524,6 +21748,16 @@
             "defaultValue": null
           },
           {
+            "name": "colsem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
             "name": "course_home_url",
             "description": null,
             "type": {
@@ -21729,6 +21963,16 @@
             "type": {
               "kind": "SCALAR",
               "name": "String",
+              "ofType": null
+            },
+            "defaultValue": null
+          },
+          {
+            "name": "sysem",
+            "description": null,
+            "type": {
+              "kind": "SCALAR",
+              "name": "Boolean",
               "ofType": null
             },
             "defaultValue": null
@@ -23079,6 +23323,12 @@
             "deprecationReason": null
           },
           {
+            "name": "colsem",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
             "name": "course_home_url",
             "description": "column name",
             "isDeprecated": false,
@@ -23200,6 +23450,12 @@
           },
           {
             "name": "syllabus_url",
+            "description": "column name",
+            "isDeprecated": false,
+            "deprecationReason": null
+          },
+          {
+            "name": "sysem",
             "description": "column name",
             "isDeprecated": false,
             "deprecationReason": null

@@ -77,6 +77,7 @@ export type Computed_Listing_Info = {
   average_workload_same_professors: Maybe<Scalars['float8']>;
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   classnotes: Maybe<Scalars['String']>;
+  colsem: Maybe<Scalars['Boolean']>;
   /** An object relationship */
   course: Courses;
   course_code: Scalars['String'];
@@ -114,6 +115,7 @@ export type Computed_Listing_Info = {
   skills: Scalars['jsonb'];
   subject: Scalars['String'];
   syllabus_url: Maybe<Scalars['String']>;
+  sysem: Maybe<Scalars['Boolean']>;
   times_by_day: Scalars['json'];
   times_summary: Scalars['String'];
   title: Scalars['String'];
@@ -293,6 +295,7 @@ export type Computed_Listing_Info_Bool_Exp = {
   average_workload_same_professors: Maybe<Float8_Comparison_Exp>;
   average_workload_same_professors_n: Maybe<Int_Comparison_Exp>;
   classnotes: Maybe<String_Comparison_Exp>;
+  colsem: Maybe<Boolean_Comparison_Exp>;
   course: Maybe<Courses_Bool_Exp>;
   course_code: Maybe<String_Comparison_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
@@ -328,6 +331,7 @@ export type Computed_Listing_Info_Bool_Exp = {
   skills: Maybe<Jsonb_Comparison_Exp>;
   subject: Maybe<String_Comparison_Exp>;
   syllabus_url: Maybe<String_Comparison_Exp>;
+  sysem: Maybe<Boolean_Comparison_Exp>;
   times_by_day: Maybe<Json_Comparison_Exp>;
   times_summary: Maybe<String_Comparison_Exp>;
   title: Maybe<String_Comparison_Exp>;
@@ -410,6 +414,7 @@ export type Computed_Listing_Info_Insert_Input = {
   average_workload_same_professors: Maybe<Scalars['float8']>;
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   classnotes: Maybe<Scalars['String']>;
+  colsem: Maybe<Scalars['Boolean']>;
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
   course_code: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
@@ -445,6 +450,7 @@ export type Computed_Listing_Info_Insert_Input = {
   skills: Maybe<Scalars['jsonb']>;
   subject: Maybe<Scalars['String']>;
   syllabus_url: Maybe<Scalars['String']>;
+  sysem: Maybe<Scalars['Boolean']>;
   times_by_day: Maybe<Scalars['json']>;
   times_summary: Maybe<Scalars['String']>;
   title: Maybe<Scalars['String']>;
@@ -665,6 +671,7 @@ export type Computed_Listing_Info_Order_By = {
   average_workload_same_professors: Maybe<Order_By>;
   average_workload_same_professors_n: Maybe<Order_By>;
   classnotes: Maybe<Order_By>;
+  colsem: Maybe<Order_By>;
   course: Maybe<Courses_Order_By>;
   course_code: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
@@ -700,6 +707,7 @@ export type Computed_Listing_Info_Order_By = {
   skills: Maybe<Order_By>;
   subject: Maybe<Order_By>;
   syllabus_url: Maybe<Order_By>;
+  sysem: Maybe<Order_By>;
   times_by_day: Maybe<Order_By>;
   times_summary: Maybe<Order_By>;
   title: Maybe<Order_By>;
@@ -743,6 +751,8 @@ export enum Computed_Listing_Info_Select_Column {
   AverageWorkloadSameProfessorsN = 'average_workload_same_professors_n',
   /** column name */
   Classnotes = 'classnotes',
+  /** column name */
+  Colsem = 'colsem',
   /** column name */
   CourseCode = 'course_code',
   /** column name */
@@ -810,6 +820,8 @@ export enum Computed_Listing_Info_Select_Column {
   /** column name */
   SyllabusUrl = 'syllabus_url',
   /** column name */
+  Sysem = 'sysem',
+  /** column name */
   TimesByDay = 'times_by_day',
   /** column name */
   TimesSummary = 'times_summary',
@@ -832,6 +844,7 @@ export type Computed_Listing_Info_Set_Input = {
   average_workload_same_professors: Maybe<Scalars['float8']>;
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   classnotes: Maybe<Scalars['String']>;
+  colsem: Maybe<Scalars['Boolean']>;
   course_code: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
   credits: Maybe<Scalars['float8']>;
@@ -865,6 +878,7 @@ export type Computed_Listing_Info_Set_Input = {
   skills: Maybe<Scalars['jsonb']>;
   subject: Maybe<Scalars['String']>;
   syllabus_url: Maybe<Scalars['String']>;
+  sysem: Maybe<Scalars['Boolean']>;
   times_by_day: Maybe<Scalars['json']>;
   times_summary: Maybe<Scalars['String']>;
   title: Maybe<Scalars['String']>;
@@ -1111,6 +1125,8 @@ export enum Computed_Listing_Info_Update_Column {
   /** column name */
   Classnotes = 'classnotes',
   /** column name */
+  Colsem = 'colsem',
+  /** column name */
   CourseCode = 'course_code',
   /** column name */
   CourseId = 'course_id',
@@ -1176,6 +1192,8 @@ export enum Computed_Listing_Info_Update_Column {
   Subject = 'subject',
   /** column name */
   SyllabusUrl = 'syllabus_url',
+  /** column name */
+  Sysem = 'sysem',
   /** column name */
   TimesByDay = 'times_by_day',
   /** column name */
@@ -1946,6 +1964,8 @@ export type Courses = {
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   /** Additional class notes */
   classnotes: Maybe<Scalars['String']>;
+  /** True if the course is a college seminar. False otherwise. */
+  colsem: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   computed_listing_infos: Array<Computed_Listing_Info>;
   /** An aggregated array relationship */
@@ -2063,6 +2083,8 @@ export type Courses = {
   skills: Maybe<Scalars['json']>;
   /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']>;
+  /** True if the course is a sophomore seminar. False otherwise. */
+  sysem: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   tfidfSimilarsByTarget: Array<Tfidf_Similars>;
   /** An aggregated array relationship */
@@ -2486,6 +2508,7 @@ export type Courses_Bool_Exp = {
   average_workload_same_professors: Maybe<Float8_Comparison_Exp>;
   average_workload_same_professors_n: Maybe<Int_Comparison_Exp>;
   classnotes: Maybe<String_Comparison_Exp>;
+  colsem: Maybe<Boolean_Comparison_Exp>;
   computed_listing_infos: Maybe<Computed_Listing_Info_Bool_Exp>;
   course: Maybe<Courses_Bool_Exp>;
   courseByLastEnrollmentCourseId: Maybe<Courses_Bool_Exp>;
@@ -2523,6 +2546,7 @@ export type Courses_Bool_Exp = {
   short_title: Maybe<String_Comparison_Exp>;
   skills: Maybe<Json_Comparison_Exp>;
   syllabus_url: Maybe<String_Comparison_Exp>;
+  sysem: Maybe<Boolean_Comparison_Exp>;
   tfidfSimilarsByTarget: Maybe<Tfidf_Similars_Bool_Exp>;
   tfidf_similars: Maybe<Tfidf_Similars_Bool_Exp>;
   times_by_day: Maybe<Json_Comparison_Exp>;
@@ -2566,6 +2590,7 @@ export type Courses_Insert_Input = {
   average_workload_same_professors: Maybe<Scalars['float8']>;
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   classnotes: Maybe<Scalars['String']>;
+  colsem: Maybe<Scalars['Boolean']>;
   computed_listing_infos: Maybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
   courseByLastEnrollmentCourseId: Maybe<Courses_Obj_Rel_Insert_Input>;
@@ -2603,6 +2628,7 @@ export type Courses_Insert_Input = {
   short_title: Maybe<Scalars['String']>;
   skills: Maybe<Scalars['json']>;
   syllabus_url: Maybe<Scalars['String']>;
+  sysem: Maybe<Scalars['Boolean']>;
   tfidfSimilarsByTarget: Maybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
   tfidf_similars: Maybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
   times_by_day: Maybe<Scalars['json']>;
@@ -2783,6 +2809,7 @@ export type Courses_Order_By = {
   average_workload_same_professors: Maybe<Order_By>;
   average_workload_same_professors_n: Maybe<Order_By>;
   classnotes: Maybe<Order_By>;
+  colsem: Maybe<Order_By>;
   computed_listing_infos_aggregate: Maybe<Computed_Listing_Info_Aggregate_Order_By>;
   course: Maybe<Courses_Order_By>;
   courseByLastEnrollmentCourseId: Maybe<Courses_Order_By>;
@@ -2820,6 +2847,7 @@ export type Courses_Order_By = {
   short_title: Maybe<Order_By>;
   skills: Maybe<Order_By>;
   syllabus_url: Maybe<Order_By>;
+  sysem: Maybe<Order_By>;
   tfidfSimilarsByTarget_aggregate: Maybe<Tfidf_Similars_Aggregate_Order_By>;
   tfidf_similars_aggregate: Maybe<Tfidf_Similars_Aggregate_Order_By>;
   times_by_day: Maybe<Order_By>;
@@ -2855,6 +2883,8 @@ export enum Courses_Select_Column {
   AverageWorkloadSameProfessorsN = 'average_workload_same_professors_n',
   /** column name */
   Classnotes = 'classnotes',
+  /** column name */
+  Colsem = 'colsem',
   /** column name */
   CourseHomeUrl = 'course_home_url',
   /** column name */
@@ -2898,6 +2928,8 @@ export enum Courses_Select_Column {
   /** column name */
   SyllabusUrl = 'syllabus_url',
   /** column name */
+  Sysem = 'sysem',
+  /** column name */
   TimesByDay = 'times_by_day',
   /** column name */
   TimesLongSummary = 'times_long_summary',
@@ -2919,6 +2951,7 @@ export type Courses_Set_Input = {
   average_workload_same_professors: Maybe<Scalars['float8']>;
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   classnotes: Maybe<Scalars['String']>;
+  colsem: Maybe<Scalars['Boolean']>;
   course_home_url: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
   credits: Maybe<Scalars['float8']>;
@@ -2940,6 +2973,7 @@ export type Courses_Set_Input = {
   short_title: Maybe<Scalars['String']>;
   skills: Maybe<Scalars['json']>;
   syllabus_url: Maybe<Scalars['String']>;
+  sysem: Maybe<Scalars['Boolean']>;
   times_by_day: Maybe<Scalars['json']>;
   times_long_summary: Maybe<Scalars['String']>;
   times_summary: Maybe<Scalars['String']>;
@@ -3109,6 +3143,8 @@ export enum Courses_Update_Column {
   /** column name */
   Classnotes = 'classnotes',
   /** column name */
+  Colsem = 'colsem',
+  /** column name */
   CourseHomeUrl = 'course_home_url',
   /** column name */
   CourseId = 'course_id',
@@ -3150,6 +3186,8 @@ export enum Courses_Update_Column {
   Skills = 'skills',
   /** column name */
   SyllabusUrl = 'syllabus_url',
+  /** column name */
+  Sysem = 'sysem',
   /** column name */
   TimesByDay = 'times_by_day',
   /** column name */
