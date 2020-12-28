@@ -20,7 +20,7 @@
     "@types/react-select": "^3.0.26",
     "@types/styled-components": "^5.1.4",
     "async-lock": "^1.2.6",
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
     "chroma-js": "^2.1.0",
     "file-saver": "^2.0.2",
