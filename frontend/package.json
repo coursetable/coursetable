@@ -18,7 +18,7 @@
     "@types/react-router-dom": "^5.1.6",
     "@types/react-scroll": "^1.8.2",
     "@types/react-select": "^3.0.26",
-    "@types/styled-components": "^5.1.4",
+    "@types/styled-components": "^5.1.7",
     "async-lock": "^1.2.6",
     "axios": "^0.21.1",
     "bootstrap": "^4.5.3",
