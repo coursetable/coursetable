@@ -83,7 +83,7 @@
     "@graphql-codegen/typescript": "1.19.0",
     "@graphql-codegen/typescript-operations": "1.17.13",
     "@graphql-codegen/typescript-react-apollo": "2.2.1",
-    "@welldone-software/why-did-you-render": "^6.0.3",
+    "@welldone-software/why-did-you-render": "^6.0.4",
     "prettier": "^2.2.1",
     "source-map-explorer": "^2.5.1",
     "typescript-plugin-css-modules": "^3.0.1"
