@@ -103,11 +103,10 @@ export const fbFriendsAlsoTaking = (
   }
   return also_taking;
 };
-type NumFBReturn = {
+type NumFBReturn =
   // Key is season code + crn
   // Value is the list of FB friends taking the class
-  [key in string]: string[];
-};
+  Record<string, string[]>;
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
 export const getNumFB = (fbWorksheets: FBInfo) => {
   // List of each friends' worksheets

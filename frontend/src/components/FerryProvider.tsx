@@ -33,14 +33,17 @@ type _ListingOverrides = {
   areas: string[];
   skills: string[];
   professor_names: string[];
-  times_by_day: {
-    [key in Weekdays]?: [
-      string, // start time
-      string, // end time
-      string, // location
-      string // location URL
-    ][]; // an array because there could by multiple times per day
-  };
+  times_by_day: Partial<
+    Record<
+      Weekdays,
+      [
+        string, // start time
+        string, // end time
+        string, // location
+        string // location URL
+      ][] // an array because there could by multiple times per day
+    >
+  >;
 };
 type _ListingAugments = {
   // Add a couple types created by the preprocessing step.
@@ -75,8 +78,8 @@ const preprocess_courses = (listing: Listing) => {
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted: { [key in Season]: boolean } = {};
-let courseData: { [key in Season]: Map<Crn, Listing> } = {};
+let courseLoadAttempted: { [_ in Season]: boolean } = {};
+let courseData: { [_ in Season]: Map<Crn, Listing> } = {};
 const addToCache = (season: Season): Promise<void> => {
   return courseDataLock.acquire(`load-${season}`, () => {
     if (season in courseData || season in courseLoadAttempted) {
