@@ -178,7 +178,7 @@ const SearchResultsItem = ({
               <Badge
                 variant="secondary"
                 className={`${Styles.tag} ${
-                  Styles[seasons[parseInt(season) - 1]]
+                  Styles[seasons[parseInt(season, 10) - 1]]
                 }`}
                 key={season}
               >

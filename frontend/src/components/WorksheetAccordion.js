@@ -45,6 +45,7 @@ function ContextAwareToggle({ eventKey, callback, course }) {
       if (time_string[i] >= '0' && time_string[i] <= '9')
         return time_string.substr(i, time_string.length - i);
     }
+    return null;
   };
 
   const style_color = {

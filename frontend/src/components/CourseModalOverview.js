@@ -298,6 +298,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       }
       return temp_items;
     }
+    return undefined;
   }, [data, filter, handleSetSeason, listing, overlapping_profs, prof_info]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;

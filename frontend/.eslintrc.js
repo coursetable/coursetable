@@ -49,6 +49,7 @@ module.exports = {
     'no-underscore-dangle': 'warn',
     'no-lonely-if': 'warn',
     'no-param-reassign': 'warn',
+    'no-return-await': 'warn',
     'guard-for-in': 'warn',
     'prefer-destructuring': 'warn',
     'react/prop-types': 'off',
