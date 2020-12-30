@@ -120,7 +120,7 @@ type Store = {
 const FerryCtx = createContext<Store | undefined>(undefined);
 FerryCtx.displayName = 'FerryCtx';
 
-export const FerryProvider: React.FC = ({ children }) => {
+const FerryProvider: React.FC = ({ children }) => {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
