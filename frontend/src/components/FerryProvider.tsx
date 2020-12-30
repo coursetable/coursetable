@@ -81,7 +81,7 @@ const addToCache = (season: Season): Promise<void> => {
   return courseDataLock.acquire(`load-${season}`, () => {
     if (season in courseData || season in courseLoadAttempted) {
       // Skip if already loaded, or if we previously tried to load it.
-      return;
+      return Promise.resolve();
     }
 
     // Log that we attempted to load this.

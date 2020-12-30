@@ -152,7 +152,7 @@ const SearchResultsGridItem = ({
                 >
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
-                      tag_styles[seasons[parseInt(season) - 1]]
+                      tag_styles[seasons[parseInt(season, 10) - 1]]
                     }`}
                   >
                     <Row className="m-auto">

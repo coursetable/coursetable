@@ -26,9 +26,9 @@ export const toSeasonString = (season_code: Season) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
-    `${season_code.substring(0, 4)} ${seasons[parseInt(season_code[5])]}`,
+    `${season_code.substring(0, 4)} ${seasons[parseInt(season_code[5], 10)]}`,
     season_code.substring(0, 4),
-    seasons[parseInt(season_code[5])],
+    seasons[parseInt(season_code[5], 10)],
   ] as const;
 };
 // Unflatten course times for easy use in checkConflict
@@ -95,7 +95,7 @@ export const fbFriendsAlsoTaking = (
   for (const friend in worksheets) {
     if (
       worksheets[friend].find((value) => {
-        return value[0] === season_code && parseInt(value[1]) === crn;
+        return value[0] === season_code && parseInt(value[1], 10) === crn;
       })
     )
       // Found one
