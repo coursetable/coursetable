@@ -61,12 +61,12 @@ const preprocess_courses = (listing: Listing) => {
   const RATINGS_PRECISION = 1;
 
   // Combine array of professors into one string
-  if ('professor_names' in listing && listing['professor_names'].length > 0) {
-    listing['professors'] = listing['professor_names'].join(', ');
+  if ('professor_names' in listing && listing.professor_names.length > 0) {
+    listing.professors = listing.professor_names.join(', ');
     // for the average professor rating, take the first professor
-    if ('average_professor' in listing && listing['average_professor'] !== null)
+    if ('average_professor' in listing && listing.average_professor !== null)
       // Trim professor ratings to one decimal point
-      listing['professor_avg_rating'] = listing['average_professor'].toFixed(
+      listing.professor_avg_rating = listing.average_professor.toFixed(
         RATINGS_PRECISION
       );
   }
@@ -172,7 +172,7 @@ export const FerryProvider: React.FC = ({ children }) => {
     () => ({
       requests,
       loading,
-      error: error,
+      error,
       seasons,
       courses: courseData,
       requestSeasons,

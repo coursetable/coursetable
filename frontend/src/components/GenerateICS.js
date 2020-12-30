@@ -2,6 +2,7 @@ import moment from 'moment';
 import { toast } from 'react-toastify';
 import { weekdays } from '../common';
 import { toSeasonString } from '../courseUtilities';
+
 const FileSaver = require('file-saver');
 const ics = require('ics');
 
@@ -31,7 +32,7 @@ export const generateICS = (listings_all) => {
   const period = [moment('2021-02-01T08:20'), moment('2021-05-07T17:30')];
 
   // Only get courses for the current season that have valid times
-  let listings = [];
+  const listings = [];
   listings_all.forEach((listing) => {
     if (!listing.times_summary || listing.times_summary === 'TBA') return;
     if (listing.season_code === cur_season) listings.push(listing);
@@ -47,7 +48,7 @@ export const generateICS = (listings_all) => {
   }
 
   // List of events to export to ICS
-  let events = [];
+  const events = [];
   // Iterate through each day in the current day
   for (let day = period[0]; day <= period[1]; day.add(1, 'day')) {
     // Skip weekends and breaks
@@ -61,11 +62,11 @@ export const generateICS = (listings_all) => {
       // Continue if the course doesn't take place on this day of the week
       if (info === undefined) continue;
       // Get start and end times of the listing
-      let start = moment(info[0][0], 'HH:mm')
+      const start = moment(info[0][0], 'HH:mm')
         .month(day.month())
         .date(day.date())
         .year(day.year());
-      let end = moment(info[0][1], 'HH:mm')
+      const end = moment(info[0][1], 'HH:mm')
         .month(day.month)
         .date(day.date())
         .year(day.year());
@@ -76,7 +77,7 @@ export const generateICS = (listings_all) => {
       const duration = end.diff(start, 'minutes');
       // Add listing to evenets list
       events.push({
-        title: listing['course_code'],
+        title: listing.course_code,
         description: listing.title,
         location: listing.locations_summary,
         start: [
@@ -99,7 +100,7 @@ export const generateICS = (listings_all) => {
       return;
     }
     // Download to user's computer
-    let blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
+    const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
     FileSaver.saveAs(
       blob,
       `${moment().format('YYYY-MM-DD--hh-mma')}_worksheet.ics`

@@ -1,8 +1,7 @@
 import React from 'react';
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { FaRegMoon } from 'react-icons/fa';
 import { ImSun } from 'react-icons/im';
-import styled from 'styled-components';
 
 const StyledBtn = styled.span`
   color: ${({ theme }) => theme.text[1]};

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
 
+import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -20,7 +21,6 @@ import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
-import { Row, Spinner } from 'react-bootstrap';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -71,7 +71,7 @@ function App({ themeToggler }) {
         {/* Home Page */}
         <MyRoute exact path="/">
           {isLoggedIn ? (
-            /*<Home />*/ <Redirect to="/catalog" />
+            /* <Home /> */ <Redirect to="/catalog" />
           ) : (
             <Redirect to="/login" />
           )}
@@ -85,7 +85,7 @@ function App({ themeToggler }) {
         {/* Catalog */}
         <MyRoute exact path="/catalog">
           {isLoggedIn && !user.hasEvals ? (
-            <Redirect push={true} to="/challenge" />
+            <Redirect push to="/challenge" />
           ) : (
             <Search />
           )}
@@ -111,7 +111,7 @@ function App({ themeToggler }) {
             user.hasEvals ? (
               <Worksheet />
             ) : (
-              <Redirect push={true} to="/challenge" />
+              <Redirect push to="/challenge" />
             )
           ) : (
             <Redirect to="/worksheetlogin" />

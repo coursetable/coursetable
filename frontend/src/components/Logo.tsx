@@ -1,10 +1,10 @@
 import React from 'react';
 
+import { useTheme } from 'styled-components';
 import logo from '../images/brand/bluebook.svg';
 import wordmark_outlines from '../images/brand/wordmark_outlines.svg';
 import wordmark_outlines_dark from '../images/brand/ct_white.svg';
 import common_styles from '../styles/common.module.css';
-import { useTheme } from 'styled-components';
 
 type Props = {
   /** Should we show the icon */

@@ -8,12 +8,18 @@ import React, {
 
 import { GlobalHotKeys } from 'react-hotkeys';
 
+import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
+import debounce from 'lodash/debounce';
+import { Handle, Range } from 'rc-slider';
+import { FaSearch } from 'react-icons/fa';
+import { BsX } from 'react-icons/bs';
+import { Element, scroller } from 'react-scroll';
+import styled from 'styled-components';
+import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
 import SearchResults from '../components/SearchResults';
 import CourseModal from '../components/CourseModal';
-
-import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 
 import {
   areas,
@@ -22,23 +28,17 @@ import {
   creditOptions,
   schoolOptions,
   subjectOptions,
+  sortbyOptions,
 } from '../queries/Constants';
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useCourseData, useFerry } from '../components/FerryProvider';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/SortByReactSelect';
-import { sortbyOptions } from '../queries/Constants';
 
-import debounce from 'lodash/debounce';
-
-import { Handle, Range } from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
-import { FaSearch } from 'react-icons/fa';
-import { BsX } from 'react-icons/bs';
-import { Element, scroller } from 'react-scroll';
 import { useUser } from '../user';
 import {
   SurfaceComponent,
@@ -46,9 +46,7 @@ import {
   StyledHr,
   TextComponent,
 } from '../components/StyledComponents';
-import styled from 'styled-components';
 
-import posthog from 'posthog-js';
 import { setSSObject, useSessionStorageState } from '../browserStorage';
 import { getNumFB, getOverallRatings, sortCourses } from '../courseUtilities';
 
@@ -77,7 +75,7 @@ function Search() {
 
   // Fetch window dimensions
   const { height, width } = useWindowDimensions();
-  let isMobile = width < 768;
+  const isMobile = width < 768;
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
   // Search text for the default search if search bar was used
@@ -119,10 +117,7 @@ function Search() {
   // const QUERY_SIZE = 30;
 
   // way to display results
-  const [isList, setView] = useSessionStorageState(
-    'isList',
-    isMobile ? false : true
-  );
+  const [isList, setView] = useSessionStorageState('isList', !isMobile);
 
   // react-select states for controlled forms
   const [
@@ -175,14 +170,14 @@ function Search() {
   ] = useSessionStorageState('workloadBounds', [1, 5]);
 
   // populate seasons from database
-  var seasonsOptions;
+  let seasonsOptions;
   const { seasons: seasonsData } = useFerry();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map((x) => {
       return {
         value: x.season_code,
         // capitalize term and add year
-        label: x.term.charAt(0).toUpperCase() + x.term.slice(1) + ' ' + x.year,
+        label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
       };
     });
   }
@@ -214,7 +209,7 @@ function Search() {
 
   const searchConfig = useMemo(() => {
     // skills and areas
-    var processedSkillsAreas = select_skillsareas;
+    let processedSkillsAreas = select_skillsareas;
     if (processedSkillsAreas != null) {
       processedSkillsAreas = processedSkillsAreas.map((x) => {
         return x.value;
@@ -249,7 +244,7 @@ function Search() {
     }
 
     // credits to filter
-    var processedCredits = select_credits;
+    let processedCredits = select_credits;
     if (processedCredits != null) {
       processedCredits = processedCredits.map((x) => {
         return x.value;
@@ -261,7 +256,7 @@ function Search() {
     }
 
     // schools to filter
-    var processedSchools = select_schools;
+    let processedSchools = select_schools;
     if (processedSchools != null) {
       processedSchools = processedSchools.map((x) => {
         return x.value;
@@ -274,7 +269,7 @@ function Search() {
     }
 
     // subject to filter
-    var processedSubjects = select_subjects;
+    let processedSubjects = select_subjects;
     if (processedSubjects != null) {
       processedSubjects = processedSubjects.map((x) => {
         return x.value;
@@ -288,9 +283,9 @@ function Search() {
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    var include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
+    const include_all_ratings = ratingBounds[0] === 1 && ratingBounds[1] === 5;
 
-    var include_all_workloads =
+    const include_all_workloads =
       workloadBounds[0] === 1 && workloadBounds[1] === 5;
 
     // Variables to use in search query
@@ -342,7 +337,7 @@ function Search() {
       .filter((x) => !!x)
       .map((token) => token.toLowerCase());
 
-    let filtered = []
+    const filtered = []
       .concat(
         ...required_seasons.map((season_code) => {
           if (!courseData[season_code]) return [];
@@ -389,10 +384,10 @@ function Search() {
         if (
           searchConfig.grad_level !== null &&
           (listing.number === null ||
-            //tests if first character is between 5-9
+            // tests if first character is between 5-9
             (listing.number.charAt(0) >= '5' &&
               listing.number.charAt(0) <= '9') ||
-            //otherwise if first character is not a number (i.e. summer classes), tests whether second character between 5-9
+            // otherwise if first character is not a number (i.e. summer classes), tests whether second character between 5-9
             ((listing.number.charAt(0) < '0' ||
               listing.number.charAt(0) > '9') &&
               (listing.number.length <= 1 ||
@@ -527,7 +522,7 @@ function Search() {
   }, []);
 
   // Is the search form taller than the window?
-  var [tooTall, setTooTall] = React.useState(true);
+  const [tooTall, setTooTall] = React.useState(true);
 
   // reset the search form
   const handleResetFilters = () => {
@@ -549,9 +544,9 @@ function Search() {
 
   // check if the search form is too tall
   // to be sticky
-  var searchCol = React.useRef();
+  let searchCol = React.useRef();
   useEffect(() => {
-    var searchColHeight = searchCol.clientHeight;
+    const searchColHeight = searchCol.clientHeight;
     setTooTall(searchColHeight > height - 56);
   }, [setTooTall, height]);
 
@@ -574,13 +569,13 @@ function Search() {
       <GlobalHotKeys
         keyMap={keyMap}
         handlers={handlers}
-        allowChanges={true} // required for global
+        allowChanges // required for global
         style={{ outline: 'none' }}
       />
       <Row
-        className={
-          'p-0 m-0 ' + (!isMobile ? 'd-flex flex-row-reverse flex-nowrap' : '')
-        }
+        className={`p-0 m-0 ${
+          !isMobile ? 'd-flex flex-row-reverse flex-nowrap' : ''
+        }`}
       >
         <Col
           md={3}
@@ -593,17 +588,15 @@ function Search() {
         >
           <SurfaceComponent
             layer={0}
-            className={
-              Styles.search_container +
-              ' ' +
+            className={`${Styles.search_container} ${
               // only make the filters sticky if not on mobile and
               // tall enough
-              (!isMobile && !tooTall ? Styles.sticky : '')
-            }
+              !isMobile && !tooTall ? Styles.sticky : ''
+            }`}
           >
             {/* Search Form */}
             <Form
-              className={'px-0'}
+              className="px-0"
               onSubmit={scroll_to_results}
               ref={(ref) => {
                 searchCol = ref;
@@ -611,7 +604,7 @@ function Search() {
             >
               {!isMobile && (
                 // Render buttons to hide/show the search form
-                <React.Fragment>
+                <>
                   <StyledSearchTab
                     className={
                       Styles.search_tab +
@@ -633,21 +626,21 @@ function Search() {
                   >
                     <BsX style={{ display: 'block' }} size={20} />
                   </div>
-                </React.Fragment>
+                </>
               )}
               {/* Reset Filters Button */}
               <Row className="mx-auto pt-4 px-4">
                 <small
-                  className={Styles.reset_filters_btn + ' mr-auto'}
+                  className={`${Styles.reset_filters_btn} mr-auto`}
                   onClick={handleResetFilters}
                 >
                   Reset Filters
                 </small>
-                <small className={Styles.num_results + ' ml-auto'}>
+                <small className={`${Styles.num_results} ml-auto`}>
                   <TextComponent type={2}>
                     {coursesLoading
                       ? 'Searching ...'
-                      : 'Showing ' + searchData.length + ' results'}
+                      : `Showing ${searchData.length} results`}
                   </TextComponent>
                 </small>
               </Row>
@@ -683,7 +676,7 @@ function Search() {
                       menuPortalTarget={document.body}
                       onChange={(options) => {
                         // Set seasons state
-                        setSelectSeasons(options ? options : []);
+                        setSelectSeasons(options || []);
                       }}
                     />
                   )}
@@ -696,7 +689,7 @@ function Search() {
                     options={skillsAreasOptions}
                     placeholder="All Skills/Areas"
                     // colors
-                    useColors={true}
+                    useColors
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={(options) => {
@@ -725,11 +718,11 @@ function Search() {
                     value={select_subjects}
                     options={subjectOptions}
                     placeholder="All Subjects"
-                    isSearchable={true}
+                    isSearchable
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelectSubjects(options ? options : []);
+                      setSelectSubjects(options || []);
                     }}
                   />
                 </div>
@@ -743,7 +736,7 @@ function Search() {
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
                     onChange={(options) => {
-                      setSelectSchools(options ? options : []);
+                      setSelectSchools(options || []);
                     }}
                   />
                 </div>
@@ -858,13 +851,12 @@ function Search() {
 
         <Col
           md={collapsed_form ? 12 : 9}
-          className={
-            'm-0 ' +
-            (isMobile
-              ? 'p-3 ' + Styles.results_col_mobile
+          className={`m-0 ${
+            isMobile
+              ? `p-3 ${Styles.results_col_mobile}`
               : (collapsed_form ? 'px-5 py-3 ' : 'px-0 py-3 ') +
-                Styles.results_col)
-          }
+                Styles.results_col
+          }`}
         >
           <Element name="catalog">
             <SearchResults

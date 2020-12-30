@@ -22,7 +22,7 @@ const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
   // Tooltip that displays show/hide message on hover
   const renderTooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
-      <small>{(!hidden ? 'Hide ' : 'Show ') + 'in calendar'}</small>
+      <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
     </Tooltip>
   );
 

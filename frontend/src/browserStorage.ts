@@ -16,7 +16,7 @@ const setObject = <T>(
 };
 // Retrieves object from storage
 const getObject = <T>(key: string, storage: Storage) => {
-  let str_val = storage.getItem(key);
+  const str_val = storage.getItem(key);
   if (str_val == null || str_val === 'undefined') return null;
   return JSON.parse(str_val) as T;
 };

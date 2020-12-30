@@ -26,7 +26,7 @@ export const toSeasonString = (season_code: Season) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
-    season_code.substring(0, 4) + ' ' + seasons[parseInt(season_code[5])],
+    `${season_code.substring(0, 4)} ${seasons[parseInt(season_code[5])]}`,
     season_code.substring(0, 4),
     seasons[parseInt(season_code[5])],
   ] as const;
@@ -39,7 +39,7 @@ export const unflattenTimes = (course: Listing) => {
   const times_by_day = weekdays.map((day): [string, string, string, string] => {
     const times_on_day = course.times_by_day[day];
     if (!times_on_day) return ['', '', '', ''];
-    else return times_on_day[0];
+    return times_on_day[0];
   });
   return times_by_day;
 };
@@ -60,13 +60,13 @@ export const checkConflict = (
       // Continue if the new course doesn't meet on this day
       if (info === undefined) continue;
       // Get worksheet course's start and end times
-      let listing_start = moment(info[0][0], 'HH:mm');
-      let listing_end = moment(info[0][1], 'HH:mm');
+      const listing_start = moment(info[0][0], 'HH:mm');
+      const listing_end = moment(info[0][1], 'HH:mm');
       // Continue if new course has invalid time
       if (times[day][0] === '') continue;
       // Get new course' start and end times
-      let cur_start = moment(times[day][0], 'HH:mm');
-      let cur_end = moment(times[day][1], 'HH:mm');
+      const cur_start = moment(times[day][0], 'HH:mm');
+      const cur_end = moment(times[day][1], 'HH:mm');
       // Fix invalid times
       if (listing_start.hour() < 8) listing_start.add(12, 'h');
       if (listing_end.hour() < 8) listing_end.add(12, 'h');
@@ -91,8 +91,8 @@ export const fbFriendsAlsoTaking = (
   // Return if worksheets are null
   if (!worksheets) return [];
   // List of FB friends also shopping
-  let also_taking = [];
-  for (let friend in worksheets) {
+  const also_taking = [];
+  for (const friend in worksheets) {
     if (
       worksheets[friend].find((value) => {
         return value[0] === season_code && parseInt(value[1]) === crn;
@@ -111,13 +111,13 @@ type NumFBReturn = {
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
 export const getNumFB = (fbWorksheets: FBInfo) => {
   // List of each friends' worksheets
-  const worksheets = fbWorksheets.worksheets;
+  const { worksheets } = fbWorksheets;
   // List of each friends' names/facebook id
   const names = fbWorksheets.friendInfo;
   // Object to return
-  let fb_dict: NumFBReturn = {};
+  const fb_dict: NumFBReturn = {};
   // Iterate over each fb friend's worksheet
-  for (let friend in worksheets) {
+  for (const friend in worksheets) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
@@ -139,12 +139,11 @@ const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
     return num_fb[fb_key].length;
   }
   // Sorting by course rating
-  else if (key === 'average_rating') {
+  if (key === 'average_rating') {
     // Factor in same professors rating if it exists
     return getOverallRatings(listing);
-  } else {
-    return listing[key];
   }
+  return listing[key];
 };
 // Sort courses in catalog or expanded worksheet
 export const sortCourses = (

@@ -1,4 +1,6 @@
 import React, { useState, useMemo } from 'react';
+import { Col, Row } from 'react-bootstrap';
+import { FaCompressAlt } from 'react-icons/fa';
 import SearchResults from './SearchResults';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
@@ -7,9 +9,7 @@ import SeasonReactSelect from './SeasonReactSelect';
 import styles from './WorksheetExpandedList.module.css';
 import select_styles from './WorksheetRowDropdown.module.css';
 import worksheet_styles from '../pages/Worksheet.module.css';
-import { Col, Row } from 'react-bootstrap';
 import { useUser } from '../user';
-import { FaCompressAlt } from 'react-icons/fa';
 import SortbyReactSelect from './SortByReactSelect';
 import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
 import { getNumFB, sortCourses } from '../courseUtilities';
@@ -58,14 +58,10 @@ const WorksheetExpandedList = ({
       <Row className="mx-auto">
         {/* Season and FB friends dropdown */}
         <Col md={3} className="p-0">
-          <SurfaceComponent layer={0} className={styles.select_col + ' p-2'}>
+          <SurfaceComponent layer={0} className={`${styles.select_col} p-2`}>
             <Row className="mx-auto">
               <div
-                className={
-                  select_styles.select_container +
-                  ' ' +
-                  select_styles.hover_effect
-                }
+                className={`${select_styles.select_container} ${select_styles.hover_effect}`}
               >
                 <SeasonReactSelect
                   cur_season={cur_season}
@@ -78,7 +74,7 @@ const WorksheetExpandedList = ({
               <div
                 className={
                   select_styles.select_container +
-                  (user.fbLogin ? ' ' + select_styles.hover_effect : '')
+                  (user.fbLogin ? ` ${select_styles.hover_effect}` : '')
                 }
               >
                 <FBReactSelect
@@ -92,7 +88,7 @@ const WorksheetExpandedList = ({
               <SortbyReactSelect setOrdering={setOrdering} />
             </Row>
             <StyledExpandBtn
-              className={worksheet_styles.expand_btn + ' ' + styles.top_left}
+              className={`${worksheet_styles.expand_btn} ${styles.top_left}`}
             >
               <FaCompressAlt
                 size={12}
@@ -112,7 +108,7 @@ const WorksheetExpandedList = ({
               data={WorksheetData}
               showModal={showModal}
               expanded={cur_expand !== 'list'}
-              isLoggedIn={true}
+              isLoggedIn
               isList={isList}
               setView={setView}
               num_fb={num_fb}

@@ -20,7 +20,7 @@ export const useWorksheetInfo = (
     });
     if (season !== null) {
       if (seasons.has(season)) return [season];
-      else return [];
+      return [];
     }
     return Array.from(seasons);
   }, [season, worksheet]);

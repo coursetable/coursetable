@@ -107,9 +107,9 @@ function Feedback() {
   };
 
   return (
-    <div className={styles.container + ' mx-auto'}>
-      <h1 className={styles.feedback_header + ' mt-5 mb-1'}>Feedback Form</h1>
-      <p className={styles.feedback_description + ' mb-3'}>
+    <div className={`${styles.container} mx-auto`}>
+      <h1 className={`${styles.feedback_header} mt-5 mb-1`}>Feedback Form</h1>
+      <p className={`${styles.feedback_description} mb-3`}>
         <TextComponent type={1}>Let us know what you think!</TextComponent>
       </p>
       <Form
