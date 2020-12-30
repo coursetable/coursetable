@@ -15,7 +15,7 @@ const StyledBtn = styled.span`
 /**
  * DarkMode Button
  */
-const DarkModeButton: React.VFC<{}> = () => {
+const DarkModeButton: React.VFC = () => {
   const theme = useTheme();
   return (
     <StyledBtn className="my-auto">

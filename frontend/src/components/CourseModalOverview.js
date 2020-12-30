@@ -86,7 +86,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   const sortEvals = (a, b) => {
     if (a.season_code > b.season_code) return -1;
     if (a.season_code < b.season_code) return 1;
-    if (parseInt(a.section) < parseInt(b.section)) return -1;
+    if (parseInt(a.section, 10) < parseInt(b.section, 10)) return -1;
     return 1;
   };
 
@@ -475,7 +475,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               {listing.professor_names.length
                 ? listing.professor_names.map((prof, index) => {
                     return (
-                      <React.Fragment key={index}>
+                      <React.Fragment key={prof}>
                         {index ? ' • ' : ''}
                         <OverlayTrigger
                           trigger="click"

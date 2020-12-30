@@ -36,13 +36,21 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+    // TODO: Eventually we want to remove these rules (and default to error).
     '@typescript-eslint/naming-convention': 'warn',
-    'react/no-unescaped-entities': 'warn',
     'import/order': 'warn',
     'no-plusplus': 'warn',
     'no-nested-ternary': 'warn',
-    'react/prop-types': 'warn',
-    'react/jsx-filename-extension': 'warn', // TODO: rename all .js to .jsx
+    'no-restricted-syntax': 'warn',
     'no-continue': 'warn',
+    'guard-for-in': 'warn',
+    'prefer-destructuring': 'warn',
+    'react/prop-types': 'warn',
+    'react/no-unescaped-entities': 'warn',
+    'react/jsx-filename-extension': 'warn', // TODO: rename all .js to .jsx
+    'react/require-default-props': 'warn',
+    'react/jsx-props-no-spreading': 'warn',
+    'react/no-array-index-key': 'warn',
+    'jsx-a11y': 'warn',
   },
 };
