@@ -78,8 +78,8 @@ const preprocess_courses = (listing: Listing) => {
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted: { [_ in Season]: boolean } = {};
-let courseData: { [_ in Season]: Map<Crn, Listing> } = {};
+let courseLoadAttempted: Record<Season, boolean> = {};
+let courseData: Record<Season, Map<Crn, Listing>> = {};
 const addToCache = (season: Season): Promise<void> => {
   return courseDataLock.acquire(`load-${season}`, () => {
     if (season in courseData || season in courseLoadAttempted) {
