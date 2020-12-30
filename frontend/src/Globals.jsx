@@ -6,26 +6,24 @@ import 'core-js/es/promise/all-settled';
 import React, { useEffect } from 'react';
 import { Router, useLocation } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-
+import { ThemeProvider } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
+
 import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
-import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import FerryProvider from './components/FerryProvider';
-
-import { UserProvider } from './user';
-
-import 'react-toastify/dist/ReactToastify.css';
-
-import reportWebVitals from './reportWebVitals';
-
 import { Integrations } from '@sentry/tracing';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+import reportWebVitals from './reportWebVitals';
+import WindowDimensionsProvider from './components/WindowDimensionsProvider';
+import FerryProvider from './components/FerryProvider';
+import { UserProvider } from './user';
+
 import './index.css';
 
-import { ThemeProvider } from 'styled-components';
 import { useDarkMode } from './components/UseDarkMode';
 import { GlobalStyles } from './components/GlobalStyles';
 import { lightTheme, darkTheme } from './components/Themes';

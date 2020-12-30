@@ -210,6 +210,8 @@ function Search() {
   const searchConfig = useMemo(() => {
     // skills and areas
     let processedSkillsAreas = select_skillsareas;
+    let processedSkills;
+    let processedAreas;
     if (processedSkillsAreas != null) {
       processedSkillsAreas = processedSkillsAreas.map((x) => {
         return x.value;
@@ -227,12 +229,8 @@ function Search() {
       }
 
       // separate skills and areas
-      var processedSkills = processedSkillsAreas.filter((x) =>
-        skills.includes(x)
-      );
-      var processedAreas = processedSkillsAreas.filter((x) =>
-        areas.includes(x)
-      );
+      processedSkills = processedSkillsAreas.filter((x) => skills.includes(x));
+      processedAreas = processedSkillsAreas.filter((x) => areas.includes(x));
 
       // set null defaults
       if (processedSkills.length === 0) {

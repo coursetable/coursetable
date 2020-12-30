@@ -42,7 +42,7 @@ UserContext.displayName = 'UserContext';
 /**
  * Stores the user's worksheet, FB login status, and FB friends' worksheets
  */
-export const UserProvider: React.FC<{}> = ({ children }) => {
+export const UserProvider: React.FC = ({ children }) => {
   // User's netId
   const [netId, setNetId] = useState<string | undefined>(undefined);
   // User's worksheet

@@ -36,5 +36,13 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
+    '@typescript-eslint/naming-convention': 'warn',
+    'react/no-unescaped-entities': 'warn',
+    'import/order': 'warn',
+    'no-plusplus': 'warn',
+    'no-nested-ternary': 'warn',
+    'react/prop-types': 'warn',
+    'react/jsx-filename-extension': 'warn', // TODO: rename all .js to .jsx
+    'no-continue': 'warn',
   },
 };
