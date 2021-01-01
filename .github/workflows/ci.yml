@@ -56,7 +56,7 @@ jobs:
       - run: cd frontend && yarn install --frozen-lockfile
       - run: cd frontend && yarn run lint-check
       - run: cd frontend && yarn run depcheck
-      - run: cd frontend && yarn run build
+      - run: cd frontend && rm .eslintrc.js && yarn run build
 
   proxy:
     runs-on: ubuntu-latest
