@@ -11,8 +11,8 @@ import { toSeasonString } from '../courseUtilities';
 
 function SeasonReactSelect({ cur_season, season_codes, onSeasonChange }) {
   // List to hold season dropdown options
-  let season_options = useMemo(() => {
-    let season_options_temp = [];
+  const season_options = useMemo(() => {
+    const season_options_temp = [];
     // Sort season codes from most to least recent
     season_codes.sort();
     season_codes.reverse();

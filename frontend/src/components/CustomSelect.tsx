@@ -1,3 +1,4 @@
+/* eslint-disable react/react-in-jsx-scope */
 import { useMemo } from 'react';
 import { DefaultTheme, useTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
@@ -41,7 +42,7 @@ const colorOptionStyles = (theme: DefaultTheme): StylesConfig => {
       border:
         theme.theme === 'light'
           ? '2px solid hsl(0, 0%, 90%)'
-          : '2px solid ' + theme.select,
+          : `2px solid ${theme.select}`,
       transition: 'background-color 0.2s linear, border 0.2s linear',
     }),
     option: (styles, { data, isDisabled, isFocused, isSelected }) => {

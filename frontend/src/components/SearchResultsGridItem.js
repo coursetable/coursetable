@@ -1,25 +1,25 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
+import chroma from 'chroma-js';
+import { FcCloseUpMode } from 'react-icons/fc';
+import { IoMdSunny } from 'react-icons/io';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import styled from 'styled-components';
 import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
 } from '../queries/Constants';
-import chroma from 'chroma-js';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './SearchResultsGridItem.module.css';
 import tag_styles from './SearchResultsItem.module.css';
-import { FcCloseUpMode } from 'react-icons/fc';
-import { IoMdSunny } from 'react-icons/io';
-import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { TextComponent, StyledIcon } from './StyledComponents';
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
-import styled from 'styled-components';
 import { getOverallRatings } from '../courseUtilities';
 
 const StyledGridItem = styled.div`
@@ -52,7 +52,7 @@ const SearchResultsGridItem = ({
   // Bootstrap column width depending on the number of columns
   const col_width = 12 / num_cols;
   // Season code for this listing
-  const season_code = course.season_code;
+  const { season_code } = course;
   const season = season_code[5];
   const year = season_code.substr(2, 2);
   // Size of season icons
@@ -87,10 +87,10 @@ const SearchResultsGridItem = ({
   const season_tooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       <small>
-        {seasons[season - 1].charAt(0).toUpperCase() +
-          seasons[season - 1].slice(1) +
-          ' ' +
-          season_code.substr(0, 4)}
+        {`${
+          seasons[season - 1].charAt(0).toUpperCase() +
+          seasons[season - 1].slice(1)
+        } ${season_code.substr(0, 4)}`}
       </small>
     </Tooltip>
   );
@@ -119,14 +119,14 @@ const SearchResultsGridItem = ({
   return (
     <Col
       md={col_width}
-      className={styles.container + ' px-2 pt-0 pb-3'}
+      className={`${styles.container} px-2 pt-0 pb-3`}
       style={{ overflow: 'hidden' }}
     >
       <StyledGridItem
         onClick={() => {
           showModal(course);
         }}
-        className={styles.one_line + ' ' + styles.item_container + ' px-3 pb-3'}
+        className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
         tabIndex="0"
       >
         <Row className="m-auto">
@@ -136,9 +136,7 @@ const SearchResultsGridItem = ({
               <small className={styles.course_codes}>
                 {course.course_code ? course.course_code : ''}
                 {course.section
-                  ? ' ' +
-                    (course.section.length > 1 ? '' : '0') +
-                    course.section
+                  ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
                   : ''}
               </small>
             </Row>
@@ -153,16 +151,14 @@ const SearchResultsGridItem = ({
                   overlay={season_tooltip}
                 >
                   <div
-                    className={
-                      styles.season_tag +
-                      ' ml-auto px-1 pb-0 ' +
-                      tag_styles[seasons[parseInt(season) - 1]]
-                    }
+                    className={`${styles.season_tag} ml-auto px-1 pb-0 ${
+                      tag_styles[seasons[parseInt(season, 10) - 1]]
+                    }`}
                   >
                     <Row className="m-auto">
                       {icon}
                       <small style={{ fontWeight: 550 }}>
-                        &nbsp;{"'" + year}
+                        &nbsp;{`'${year}`}
                       </small>
                     </Row>
                   </div>
@@ -181,7 +177,7 @@ const SearchResultsGridItem = ({
             <Row className="m-auto">
               <TextComponent
                 type={1}
-                className={styles.one_line + ' ' + styles.professors}
+                className={`${styles.one_line} ${styles.professors}`}
               >
                 {course.professor_names.length > 0
                   ? course.professor_names.join(' • ')
@@ -190,7 +186,7 @@ const SearchResultsGridItem = ({
             </Row>
             {/* Course Times */}
             <Row className="m-auto">
-              <small className={styles.one_line + ' ' + styles.small_text}>
+              <small className={`${styles.one_line} ${styles.small_text}`}>
                 <TextComponent type={1}>
                   {course.times_summary === 'TBA'
                     ? 'Times: TBA'
@@ -200,7 +196,7 @@ const SearchResultsGridItem = ({
             </Row>
             {/* Course Location */}
             <Row className="m-auto">
-              <small className={styles.one_line + ' ' + styles.small_text}>
+              <small className={`${styles.one_line} ${styles.small_text}`}>
                 <TextComponent type={1}>
                   {course.locations_summary === 'TBA'
                     ? 'Location: TBA'
@@ -248,14 +244,14 @@ const SearchResultsGridItem = ({
                     className={tag_styles.tag}
                     key={key++}
                     style={{
-                      color: skillsAreasColors['Hu'],
-                      backgroundColor: chroma(skillsAreasColors['Hu'])
+                      color: skillsAreasColors.Hu,
+                      backgroundColor: chroma(skillsAreasColors.Hu)
                         .alpha(0.16)
                         .css(),
                       opacity: 0,
                     }}
                   >
-                    {'Hu'}
+                    Hu
                   </Badge>
                 )}
               </div>
@@ -272,7 +268,7 @@ const SearchResultsGridItem = ({
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
-                    className={styles.rating + ' mr-1'}
+                    className={`${styles.rating} mr-1`}
                     style={{
                       color: course_rating
                         ? ratingColormap(course_rating).darken().saturate()
@@ -302,7 +298,7 @@ const SearchResultsGridItem = ({
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
-                    className={styles.rating + ' mr-1'}
+                    className={`${styles.rating} mr-1`}
                     style={{
                       color:
                         course.professor_avg_rating && isLoggedIn
@@ -330,7 +326,7 @@ const SearchResultsGridItem = ({
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
-                    className={styles.rating + ' mr-1'}
+                    className={`${styles.rating} mr-1`}
                     style={{
                       color:
                         course.average_workload && isLoggedIn
@@ -355,14 +351,12 @@ const SearchResultsGridItem = ({
       </StyledGridItem>
       {/* Bookmark Button */}
       <div className={styles.worksheet_btn}>
-        {
-          <WorksheetToggleButton
-            worksheetView={false}
-            crn={course.crn}
-            season_code={course.season_code}
-            modal={false}
-          />
-        }
+        <WorksheetToggleButton
+          worksheetView={false}
+          crn={course.crn}
+          season_code={course.season_code}
+          modal={false}
+        />
       </div>
       {/* Render conflict icon only when component has been mounted */}
       {mounted && (

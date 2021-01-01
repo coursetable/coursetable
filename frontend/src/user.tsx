@@ -41,7 +41,7 @@ UserContext.displayName = 'UserContext';
 /**
  * Stores the user's worksheet, FB login status, and FB friends' worksheets
  */
-export const UserProvider: React.FC<{}> = ({ children }) => {
+export const UserProvider: React.FC = ({ children }) => {
   // User's netId
   const [netId, setNetId] = useState<string | undefined>(undefined);
   // User's worksheet
@@ -57,7 +57,7 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
 
   // Refresh user worksheet
   const userRefresh = useCallback(
-    (suppressError: boolean = false): Promise<void> => {
+    (suppressError = false): Promise<void> => {
       return axios
         .get('/legacy_api/WorksheetActions.php?action=get&season=all')
         .then((res) => {
@@ -90,7 +90,7 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
 
   // Refresh user FB stuff
   const fbRefresh = useCallback(
-    (suppressError: boolean = false): Promise<void> => {
+    (suppressError = false): Promise<void> => {
       return axios
         .get('/legacy_api/FetchFriendWorksheetsNew.php')
         .then((friends_worksheets) => {

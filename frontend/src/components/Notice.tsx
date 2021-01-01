@@ -3,7 +3,7 @@ import { FaTimes } from 'react-icons/fa';
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
 
-const Notice: React.FC<{}> = ({ children }) => {
+const Notice: React.FC = ({ children }) => {
   const [visible, setVisible] = useState(true);
 
   if (!visible) {

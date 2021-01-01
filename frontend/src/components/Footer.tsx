@@ -1,9 +1,9 @@
 import React from 'react';
 
-import styles from './Footer.module.css';
 import { NavLink } from 'react-router-dom';
-import Logo from './Logo';
 import { Container } from 'react-bootstrap';
+import styles from './Footer.module.css';
+import Logo from './Logo';
 import { StyledHr, TextComponent } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';
@@ -16,7 +16,7 @@ function Footer() {
   return (
     <Container fluid>
       <StyledHr />
-      <footer className={styles.footer + ' py-5 px-5'}>
+      <footer className={`${styles.footer} py-5 px-5`}>
         <div className="row">
           {/* Copyright */}
           <div className="col-12 col-md">

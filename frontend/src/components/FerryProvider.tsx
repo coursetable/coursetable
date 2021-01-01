@@ -64,12 +64,12 @@ const preprocess_courses = (listing: Listing) => {
   const RATINGS_PRECISION = 1;
 
   // Combine array of professors into one string
-  if ('professor_names' in listing && listing['professor_names'].length > 0) {
-    listing['professors'] = listing['professor_names'].join(', ');
+  if ('professor_names' in listing && listing.professor_names.length > 0) {
+    listing.professors = listing.professor_names.join(', ');
     // for the average professor rating, take the first professor
-    if ('average_professor' in listing && listing['average_professor'] !== null)
+    if ('average_professor' in listing && listing.average_professor !== null)
       // Trim professor ratings to one decimal point
-      listing['professor_avg_rating'] = listing['average_professor'].toFixed(
+      listing.professor_avg_rating = listing.average_professor.toFixed(
         RATINGS_PRECISION
       );
   }
@@ -84,7 +84,7 @@ const addToCache = (season: Season): Promise<void> => {
   return courseDataLock.acquire(`load-${season}`, () => {
     if (season in courseData || season in courseLoadAttempted) {
       // Skip if already loaded, or if we previously tried to load it.
-      return;
+      return Promise.resolve();
     }
 
     // Log that we attempted to load this.
@@ -123,7 +123,7 @@ type Store = {
 const FerryCtx = createContext<Store | undefined>(undefined);
 FerryCtx.displayName = 'FerryCtx';
 
-export const FerryProvider: React.FC = ({ children }) => {
+const FerryProvider: React.FC = ({ children }) => {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
@@ -175,7 +175,7 @@ export const FerryProvider: React.FC = ({ children }) => {
     () => ({
       requests,
       loading,
-      error: error,
+      error,
       seasons,
       courses: courseData,
       requestSeasons,

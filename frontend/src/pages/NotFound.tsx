@@ -1,6 +1,6 @@
 import React from 'react';
-import NotFoundImage from '../images/not_found.svg';
 import { Link } from 'react-router-dom';
+import NotFoundImage from '../images/not_found.svg';
 
 /**
  * Renders the NotFound page when a user enters an invalid url
