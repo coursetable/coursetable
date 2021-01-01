@@ -37,7 +37,7 @@
     "rc-tooltip": "^5.0.1",
     "react": "^17.0.1",
     "react-app-polyfill": "^2.0.0",
-    "react-big-calendar": "^0.29.0",
+    "react-big-calendar": "^0.30.0",
     "react-bootstrap": "^1.4.0",
     "react-dom": "^17.0.1",
     "react-hotkeys": "^2.0.0",
