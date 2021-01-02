@@ -49,18 +49,28 @@ const authSoft = (req, _, next) => {
 // If the user does not have evals enabled, these requests are also rejected.
 const authHard = (req, res, next) => {
   axios
-    .get(`${php_uri}/AuthStatus.php`, {
+    .get(`${api_uri}/api/auth/check`, {
       headers: {
         cookie: req.headers['cookie'],
       },
     })
-    .then(({ data }) => {
-      if (!data.success) {
+    .then(async ({ data }) => {
+      if (!data.auth) {
         // Return 403 forbidden if the request lacks auth.
         return res.status(403).send('request missing authentication');
       }
 
-      if (!data.evaluationsEnabled) {
+      let evals_enabled = await axios
+        .get(`${php_uri}/CheckEvals.php`, {
+          params: {
+            id: data.id,
+          },
+        })
+        .then((response) => response.data.evaluationsEnabled)
+        .catch((err) => {
+          return next(err);
+        });
+      if (!evals_enabled) {
         // Return 403 forbidden since evals are not enabled.
         return res.status(403).send('you must enable evaluations first');
       }
