@@ -30,14 +30,14 @@ app.use((req, _, next) => {
 // Authentication - set X-COURSETABLE-* headers.
 const authSoft = (req, _, next) => {
   axios
-    .get(`${php_uri}/AuthStatus.php`, {
+    .get(`${api_uri}/api/auth/check`, {
       headers: {
         cookie: req.headers['cookie'] || null,
       },
     })
     .then(({ data }) => {
-      req.headers['x-coursetable-authd'] = data.success;
-      req.headers['x-coursetable-netid'] = data.netId;
+      req.headers['x-coursetable-authd'] = data.auth;
+      req.headers['x-coursetable-netid'] = data.id;
       return next();
     })
     .catch((err) => {
