@@ -60,30 +60,43 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
   const userRefresh = useCallback(
     (suppressError: boolean = false): Promise<void> => {
       return axios
-        .get('/legacy_api/WorksheetActions.php?action=get&season=all')
-        .then((res) => {
-          if (!res.data.success) {
-            throw new Error(res.data.message);
-          }
+        .get('/api/auth/check')
+        .then(({ data }) => {
+          axios
+            .get('/legacy_api/WorksheetActions.php', {
+              params: {
+                action: 'get',
+                season: 'all',
+                id: data.id,
+              },
+            })
+            .then((res) => {
+              if (!res.data.success) {
+                throw new Error(res.data.message);
+              }
 
-          // Successfully fetched worksheet
-          setNetId(res.data.netId);
-          setHasEvals(res.data.evaluationsEnabled);
-          setWorksheet(res.data.data);
-          posthog.identify(res.data.netId);
-          Sentry.setUser({ username: res.data.netId });
+              // Successfully fetched worksheet
+              setNetId(res.data.netId);
+              setHasEvals(res.data.evaluationsEnabled);
+              setWorksheet(res.data.data);
+              posthog.identify(res.data.netId);
+              Sentry.setUser({ username: res.data.netId });
+            })
+            .catch((err) => {
+              // Error with fetching user's worksheet
+              setNetId(undefined);
+              setWorksheet(undefined);
+              setHasEvals(undefined);
+              posthog.reset();
+              Sentry.configureScope((scope) => scope.clear());
+              console.info(err);
+              if (!suppressError) {
+                toast.error('Error fetching worksheet');
+              }
+            });
         })
         .catch((err) => {
-          // Error with fetching user's worksheet
-          setNetId(undefined);
-          setWorksheet(undefined);
-          setHasEvals(undefined);
-          posthog.reset();
-          Sentry.configureScope((scope) => scope.clear());
-          console.info(err);
-          if (!suppressError) {
-            toast.error('Error fetching worksheet');
-          }
+          console.log(err);
         });
     },
     [setWorksheet, setNetId, setHasEvals]

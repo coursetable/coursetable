@@ -38,9 +38,9 @@ const postAuth = (req: express.Request, res: express.Response): void => {
     // We prefix this with a slash to avoid an open redirect vulnerability.
     return res.redirect(`/${redirect}`);
   }
-
+  console.log('no redirect');
   // If no redirect is provided, simply redirect to the auth status.
-  return res.redirect('/api/auth/check');
+  return res.redirect('/catalog');
 };
 
 const casLogin = function (
@@ -74,7 +74,7 @@ export default async (app: express.Express) => {
     if (req.user) {
       res.json({ auth: true, id: req.user.netId, user: req.user });
     } else {
-      res.json({ auth: false });
+      res.json({ auth: false, id: null });
     }
   });
 
