@@ -29,6 +29,7 @@ app.use((req, _, next) => {
 
 // Authentication - set X-COURSETABLE-* headers.
 const authSoft = (req, _, next) => {
+  console.log('authSoft');
   axios
     .get(`${api_uri}/api/auth/check`, {
       headers: {
@@ -36,6 +37,7 @@ const authSoft = (req, _, next) => {
       },
     })
     .then(({ data }) => {
+      console.log(JSON.stringify(data));
       req.headers['x-coursetable-authd'] = data.auth;
       req.headers['x-coursetable-netid'] = data.id;
       return next();
@@ -48,6 +50,7 @@ const authSoft = (req, _, next) => {
 // Authentication - reject all unauthenticated requests.
 // If the user does not have evals enabled, these requests are also rejected.
 const authHard = (req, res, next) => {
+  console.log('authHard');
   axios
     .get(`${api_uri}/api/auth/check`, {
       headers: {
@@ -55,6 +58,7 @@ const authHard = (req, res, next) => {
       },
     })
     .then(async ({ data }) => {
+      console.log(JSON.stringify(data));
       if (!data.auth) {
         // Return 403 forbidden if the request lacks auth.
         return res.status(403).send('request missing authentication');
