@@ -193,7 +193,7 @@ $log = ProjectCommon::createLog('WorksheetAddRemove');
 $yalePlusMysqli = ProjectCommon::createYalePlusMysqli();
 $mysqli = ProjectCommon::createYaleAdvancedOciMysqli();
 
-$netId = $_GET['id'];
+$netId = ProjectCommon::casAuthenticate(false);
 $action = (string) $_GET['action'];
 $season = $_GET['season'];
 
