@@ -8,7 +8,7 @@ if (isset($_GET['logout'])) {
     ProjectCommon::casLogout();
 }
 
-$netId = $_GET['id'];
+$netId = ProjectCommon::casAuthenticate();
 
 
 $log = ProjectCommon::createLog('NetIds.txt');

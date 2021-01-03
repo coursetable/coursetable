@@ -205,7 +205,7 @@ header('Pragma: no-cache');
 
 $yalePlusMysqli = ProjectCommon::createYalePlusMysqli();
 
-$netId = $_GET['id'];
+$netId = ProjectCommon::casAuthenticate(false);
 session_write_close(); // Allows other PHP requests from same NetID to be served while this script runs a long time
 $fb = ProjectCommon::createFacebook();
 $log = ProjectCommon::createLog('FetchFacebookData.txt');
