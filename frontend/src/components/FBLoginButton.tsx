@@ -18,7 +18,10 @@ function FBLoginButton() {
   // Types on window.FB are defined in react-app-env.d.ts.
 
   const syncFacebook = useCallback(async () => {
-    const { data } = await axios.get('/legacy_api/FetchFacebookData.php');
+    const temp_data = await axios.get('/api/auth/check');
+    const { data } = await axios.get('/legacy_api/FetchFacebookData.php', {
+      params: temp_data.data.id,
+    });
     if (!data.success) {
       throw data.message;
     }
@@ -65,15 +68,24 @@ function FBLoginButton() {
     posthog.capture('facebook-logout');
 
     axios
-      .get('/legacy_api/Table.php?disconnect_facebook')
-      .then(() => {
-        return fbRefresh(true);
+      .get('/api/auth/check')
+      .then(({ data }) => {
+        axios
+          .get('/legacy_api/Table.php?disconnect_facebook', {
+            params: { id: data.id },
+          })
+          .then(() => {
+            return fbRefresh(true);
+          })
+          .then(() => {
+            toast.success('FB disconnected');
+          })
+          .catch(() => {
+            toast.error('Error disconnecting FB');
+          });
       })
-      .then(() => {
-        toast.success('FB disconnected');
-      })
-      .catch(() => {
-        toast.error('Error disconnecting FB');
+      .catch((err) => {
+        console.log(err);
       });
   }, [fbRefresh]);
 

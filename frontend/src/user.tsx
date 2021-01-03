@@ -109,23 +109,34 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
   const fbRefresh = useCallback(
     (suppressError: boolean = false): Promise<void> => {
       return axios
-        .get('/legacy_api/FetchFriendWorksheetsNew.php')
-        .then((friends_worksheets) => {
-          if (!friends_worksheets.data.success) {
-            throw new Error(friends_worksheets.data.message);
-          }
-          // Successfully fetched friends' worksheets
-          setFbLogin(true);
-          setFbWorksheets(friends_worksheets.data);
+        .get('/api/auth/check')
+        .then(({ data }) => {
+          axios
+            .get('/legacy_api/FetchFriendWorksheetsNew.php', {
+              params: {
+                id: data.id,
+              },
+            })
+            .then((friends_worksheets) => {
+              if (!friends_worksheets.data.success) {
+                throw new Error(friends_worksheets.data.message);
+              }
+              // Successfully fetched friends' worksheets
+              setFbLogin(true);
+              setFbWorksheets(friends_worksheets.data);
+            })
+            .catch((err) => {
+              // Error with fetching friends' worksheets
+              console.info(err);
+              if (!suppressError) {
+                toast.error('Error updating facebook friends');
+              }
+              setFbLogin(false);
+              setFbWorksheets(undefined);
+            });
         })
         .catch((err) => {
-          // Error with fetching friends' worksheets
-          console.info(err);
-          if (!suppressError) {
-            toast.error('Error updating facebook friends');
-          }
-          setFbLogin(false);
-          setFbWorksheets(undefined);
+          console.log(err);
         });
     },
     [setFbLogin, setFbWorksheets]

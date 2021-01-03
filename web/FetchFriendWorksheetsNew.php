@@ -153,7 +153,7 @@ $yalePlusMysqli = ProjectCommon::createYalePlusMysqli();
 if (isset($argv)) {
     $netId = 'hzy2';
 } else {
-    $netId = ProjectCommon::casAuthenticate(false);
+    $netId = $_GET['id'];
 }
 $season = $_GET['season'];
 
