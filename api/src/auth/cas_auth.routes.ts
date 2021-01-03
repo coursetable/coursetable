@@ -31,7 +31,6 @@ passport.deserializeUser(function (netId: string, done) {
 
 const postAuth = (req: express.Request, res: express.Response): void => {
   const redirect = req.query['redirect'] as string | undefined;
-  console.log(redirect);
   if (redirect && !redirect.startsWith('//')) {
     if (redirect.startsWith('/')) {
       return res.redirect(redirect);

@@ -69,9 +69,6 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
                 season: 'all',
                 id: data.id,
               },
-              headers: {
-                'x-test': 'yes',
-              },
             })
             .then((res) => {
               if (!res.data.success) {

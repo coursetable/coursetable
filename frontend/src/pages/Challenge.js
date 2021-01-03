@@ -263,7 +263,10 @@ function Challenge() {
         <div>
           You need to be logged in via CAS to enable your account.
           <br />
-          <a href="/api/auth/cas" className="btn btn-primary mt-3">
+          <a
+            href="/legacy_api/index.php?forcelogin=1"
+            className="btn btn-primary mt-3"
+          >
             Log in
           </a>
         </div>
@@ -276,7 +279,10 @@ function Challenge() {
         <div>
           Please make sure you are logged in via CAS.
           <br />
-          <a href="/api/auth/cas" className="btn btn-primary mt-3">
+          <a
+            href="/legacy_api/index.php?forcelogin=1"
+            className="btn btn-primary mt-3"
+          >
             Log in
           </a>
         </div>

@@ -64,33 +64,21 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
 
     // User legacy api php to perform worksheet action
     return axios
-      .get('/api/auth/check')
-      .then(({ data }) => {
-        axios
-          .get(`/legacy_api/WorksheetActions.php`, {
-            params: {
-              action: add_remove,
-              season: season_code,
-              ociId: crn,
-              id: data.id,
-            },
-          })
-          .then((response) => {
-            console.log(response.data);
-            // Refresh user's worksheet
-            return userRefresh();
-          })
-          .then(() => {
-            // If not in worksheet view, update inWorksheet state
-            setInWorksheet(!inWorksheet);
-          })
-          .catch((err) => {
-            toast.error('Failed to update worksheet');
-            console.error(err);
-          });
+      .get(
+        `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${season_code}&ociId=${crn}`
+      )
+      .then((response) => {
+        // console.log(response.data);
+        // Refresh user's worksheet
+        return userRefresh();
+      })
+      .then(() => {
+        // If not in worksheet view, update inWorksheet state
+        setInWorksheet(!inWorksheet);
       })
       .catch((err) => {
-        console.log(err);
+        toast.error('Failed to update worksheet');
+        console.error(err);
       });
   }
 
