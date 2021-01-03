@@ -31,7 +31,7 @@ passport.deserializeUser(function (netId: string, done) {
 
 const postAuth = (req: express.Request, res: express.Response): void => {
   const redirect = req.query['redirect'] as string | undefined;
-  console.log(redirect);
+
   if (redirect && !redirect.startsWith('//')) {
     if (redirect.startsWith('/')) {
       return res.redirect(redirect);
@@ -39,7 +39,7 @@ const postAuth = (req: express.Request, res: express.Response): void => {
     // We prefix this with a slash to avoid an open redirect vulnerability.
     return res.redirect(`/${redirect}`);
   }
-  console.log('no redirect');
+
   // If no redirect is provided, simply redirect to the auth status.
   return res.redirect('/catalog');
 };
