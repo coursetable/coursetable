@@ -13,11 +13,6 @@ require_once __DIR__ . '/Config.php';
 // and Table.php
 define('DAYS_BETWEEN_FACEBOOK_UPDATES', 1);
 
-require_once __DIR__ . '/../libs/cas/CAS.php';
-
-phpCAS::client(CAS_VERSION_2_0, 'secure.its.yale.edu', 443, '/cas');
-phpCAS::setNoCasServerValidation();
-
 class ProjectCommon
 {
     public static function createMysqli($db)
