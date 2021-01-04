@@ -62,8 +62,8 @@ const authHard = (req, res, next) => {
 
       let evals_enabled = await axios
         .get(`${php_uri}/CheckEvals.php`, {
-          params: {
-            id: data.id,
+          headers: {
+            'x-coursetable-netid': data.id,
           },
         })
         .then((response) => response.data.evaluationsEnabled)

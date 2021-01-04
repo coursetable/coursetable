@@ -4,7 +4,7 @@ require_once 'includes/ProjectCommon.php';
 $success = false;
 
 $yalePlusMysqli = ProjectCommon::createYalePlusMysqli();
-$netId = $_GET["id"];
+$netId = ProjectCommon::getID();
 $evaluationsEnabled = 0;
 
 if (!empty($netId)) {
