@@ -144,7 +144,10 @@ const MeDropdown: React.VFC<Props> = ({
                   color="#30e36b"
                   style={{ paddingLeft: '2px' }}
                 />
-                <a href="/api/auth/cas" className={styles.collapse_text}>
+                <a
+                  href="/api/auth/cas?redirect=catalog"
+                  className={styles.collapse_text}
+                >
                   <TextComponent type={1}>
                     <StyledHoverText>Sign In</StyledHoverText>
                   </TextComponent>

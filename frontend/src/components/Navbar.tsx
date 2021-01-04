@@ -207,7 +207,7 @@ function CourseTableNavbar({
                       onClick={() => {
                         posthog.capture('login');
 
-                        window.location.href = '/api/auth/cas';
+                        window.location.href = '/api/auth/cas?redirect=catalog';
                       }}
                     >
                       Sign In
