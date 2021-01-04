@@ -86,7 +86,6 @@ const authHard = (req, res, next) => {
 
 // Setup all the proxy routes.
 
-//TODO: remove authSoft eventually
 app.use('/legacy_api', authSoft);
 app.use(
   ['/legacy_api', '/index.php'],
@@ -119,6 +118,8 @@ app.use(
   })
 );
 
+//TODO: remove authSoft from /api calls
+//      (will determine auth info from cookies)
 app.use('/api', authSoft);
 app.use(
   '/api',
