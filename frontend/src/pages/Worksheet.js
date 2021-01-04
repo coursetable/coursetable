@@ -193,7 +193,7 @@ function Worksheet() {
         setHiddenCourses({});
       } else {
         setHiddenCourses((old_hidden_courses) => {
-          const new_hidden_courses = Object.assign({}, old_hidden_courses);
+          const new_hidden_courses = { ...old_hidden_courses };
           if (old_hidden_courses[crn]) delete new_hidden_courses[crn];
           else new_hidden_courses[crn] = true;
           return new_hidden_courses;

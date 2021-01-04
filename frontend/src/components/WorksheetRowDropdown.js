@@ -1,13 +1,12 @@
 import React from 'react';
 
 import { Row, Col } from 'react-bootstrap';
-import { FaExpandAlt } from 'react-icons/fa';
 import styled from 'styled-components';
 import styles from './WorksheetRowDropdown.module.css';
 // import worksheet_styles from '../pages/Worksheet.module.css';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
-import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
+import { SurfaceComponent } from './StyledComponents';
 import { useUser } from '../user';
 
 // Space above row dropdown to hide scrolled courses
@@ -86,7 +85,7 @@ function WorksheetRowDropdown({
             {/* Season Select */}
             <Col md={6} className="pl-2 pr-1">
               <div
-                className={styles.select_container + ' ' + styles.hover_effect}
+                className={`${styles.select_container} ${styles.hover_effect}`}
               >
                 <SeasonReactSelect
                   cur_season={cur_season}
@@ -100,7 +99,7 @@ function WorksheetRowDropdown({
               <div
                 className={
                   styles.select_container +
-                  (user.fbLogin ? ' ' + styles.hover_effect : '')
+                  (user.fbLogin ? styles.hover_effect : '')
                 }
               >
                 <FBReactSelect
