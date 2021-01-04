@@ -18,7 +18,7 @@
     "@types/express": "^4.17.9",
     "@types/morgan": "^1.9.2",
     "@types/mysql": "^2.15.17",
-    "@types/node": "^14.14.17",
+    "@types/node": "^14.14.19",
     "@types/passport": "^1.0.5",
     "body-parser": "^1.19.0",
     "cookie-session": "^1.4.0",
