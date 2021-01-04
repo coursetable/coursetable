@@ -76,9 +76,12 @@ class ProjectCommon
         return self::createMysqli('yaleplus');
     }
 
-    public static function getID() {
+    public static function getID() 
+    {
         $netId = $_SERVER['HTTP_X_COURSETABLE_NETID'];
-        if ($netId != 'null') return $netId;
+        if ($netId != 'null') {
+            return $netId;
+        ;
     }
 
     public static function createLog($name = 'general')
