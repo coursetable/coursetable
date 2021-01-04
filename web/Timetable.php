@@ -2,7 +2,7 @@
 require_once 'includes/ProjectCommon.php';
 
 // Force authentication
-$netId = ProjectCommon::casAuthenticate();
+$netId = ProjectCommon::getID();
 
 $smarty = ProjectCommon::createSmarty();
 $mysqli = ProjectCommon::createYaleAdvancedOciMysqli();

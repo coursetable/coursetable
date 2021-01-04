@@ -4,7 +4,7 @@ require_once 'includes/ProjectCommon.php';
 $mysqli = ProjectCommon::createYalePlusMysqli();
 
 // Force login
-$netId = ProjectCommon::casAuthenticate();
+$netId = ProjectCommon::getID();
 
 // Check if student's tried too many times already
 $sbs = StudentBluebookSetting::findOrCreate($mysqli, $netId, ['challengeTries', 'evaluationsEnabled']);

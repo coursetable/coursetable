@@ -203,7 +203,7 @@ foreach ($ociIds as &$ociId) {
     $ociId = (int) $ociId;
 }
 
-$netId = ProjectCommon::casAuthenticate(true);
+$netId = ProjectCommon::getID();
 $season = (int)$_GET['season'];
 
 $mysqli = ProjectCommon::createYaleplusMysqli();

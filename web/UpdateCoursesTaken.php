@@ -1,7 +1,7 @@
 <?php
 require_once 'includes/ProjectCommon.php';
 
-$netId = ProjectCommon::casAuthenticate();
+$netId = ProjectCommon::getID();
 
 $smarty = ProjectCommon::createSmarty();
 
