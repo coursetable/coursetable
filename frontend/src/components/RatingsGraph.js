@@ -1,8 +1,8 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
+import styled from 'styled-components';
 import styles from './RatingsGraph.module.css';
 import { TextComponent } from './StyledComponents';
-import styled from 'styled-components';
 
 const StyledLabel = styled.p`
   font-size: 10px !important;
@@ -31,7 +31,7 @@ const RatingsGraph = ({ ratings, reverse, labels }) => {
   if (reverse) colors.reverse();
 
   // Holds the bars
-  let columns = [];
+  const columns = [];
   // Variables used for list keys
   let indx = 0;
   // Set minimum bar height
@@ -46,25 +46,25 @@ const RatingsGraph = ({ ratings, reverse, labels }) => {
     columns.push(
       <div key={indx} className={styles.bar}>
         {/* Number of votes for each rating */}
-        <p className={styles.value + ' m-0 '}>
+        <p className={`${styles.value} m-0 `}>
           <TextComponent type={1}>{rating}</TextComponent>
         </p>
         {/* Bar */}
         <div
-          className={styles.column + ' px-1 mx-auto'}
+          className={`${styles.column} px-1 mx-auto`}
           style={{
             backgroundColor: colors[indx],
-            height: height.toString() + 'px',
+            height: `${height.toString()}px`,
           }}
         />
         {/* Rating labels */}
         {ratings.length === 2 && (
-          <StyledLabel className={styles.value + ' m-0'}>
+          <StyledLabel className={`${styles.value} m-0`}>
             {indx === 0 ? 'yes' : 'no'}
           </StyledLabel>
         )}
         {ratings.length === 5 && (
-          <StyledLabel className={styles.value + ' m-0'}>
+          <StyledLabel className={`${styles.value} m-0`}>
             <span className="d-none d-sm-block">{labels[indx]}</span>
             <span className="d-sm-none">{indx + 1}</span>
           </StyledLabel>
@@ -76,10 +76,7 @@ const RatingsGraph = ({ ratings, reverse, labels }) => {
 
   return (
     <Row
-      className={
-        styles.container +
-        ' mx-auto px-3 mb-5 justify-content-center align-items-end'
-      }
+      className={`${styles.container} mx-auto px-3 mb-5 justify-content-center align-items-end`}
     >
       {columns}
     </Row>

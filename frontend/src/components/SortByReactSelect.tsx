@@ -1,9 +1,5 @@
 import React, { useEffect } from 'react';
 
-import { sortbyOptions, SortKeys } from '../queries/Constants';
-import styles from './SortbyReactSelect.module.css';
-import search_styles from '../pages/Search.module.css';
-import CustomSelect from './CustomSelect';
 import {
   FcAlphabeticalSortingAz,
   FcAlphabeticalSortingZa,
@@ -11,6 +7,10 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
+import { sortbyOptions, SortKeys } from '../queries/Constants';
+import styles from './SortbyReactSelect.module.css';
+import search_styles from '../pages/Search.module.css';
+import CustomSelect from './CustomSelect';
 import { useSessionStorageState } from '../browserStorage';
 
 const StyledSortBtn = styled.div`
@@ -76,7 +76,7 @@ const SortByReactSelect = ({
         />
       </div>
       <StyledSortBtn
-        className={search_styles.sort_btn + ' my-auto'}
+        className={`${search_styles.sort_btn} my-auto`}
         onClick={handleSortOrder}
       >
         {!select_sortby.numeric ? (

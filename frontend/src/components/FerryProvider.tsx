@@ -33,14 +33,17 @@ type _ListingOverrides = {
   areas: string[];
   skills: string[];
   professor_names: string[];
-  times_by_day: {
-    [key in Weekdays]?: [
-      string, // start time
-      string, // end time
-      string, // location
-      string // location URL
-    ][]; // an array because there could by multiple times per day
-  };
+  times_by_day: Partial<
+    Record<
+      Weekdays,
+      [
+        string, // start time
+        string, // end time
+        string, // location
+        string // location URL
+      ][] // an array because there could by multiple times per day
+    >
+  >;
 };
 type _ListingAugments = {
   // Add a couple types created by the preprocessing step.
@@ -61,12 +64,12 @@ const preprocess_courses = (listing: Listing) => {
   const RATINGS_PRECISION = 1;
 
   // Combine array of professors into one string
-  if ('professor_names' in listing && listing['professor_names'].length > 0) {
-    listing['professors'] = listing['professor_names'].join(', ');
+  if ('professor_names' in listing && listing.professor_names.length > 0) {
+    listing.professors = listing.professor_names.join(', ');
     // for the average professor rating, take the first professor
-    if ('average_professor' in listing && listing['average_professor'] !== null)
+    if ('average_professor' in listing && listing.average_professor !== null)
       // Trim professor ratings to one decimal point
-      listing['professor_avg_rating'] = listing['average_professor'].toFixed(
+      listing.professor_avg_rating = listing.average_professor.toFixed(
         RATINGS_PRECISION
       );
   }
@@ -75,13 +78,13 @@ const preprocess_courses = (listing: Listing) => {
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted: { [key in Season]: boolean } = {};
-let courseData: { [key in Season]: Map<Crn, Listing> } = {};
+let courseLoadAttempted: Record<Season, boolean> = {};
+let courseData: Record<Season, Map<Crn, Listing>> = {};
 const addToCache = (season: Season): Promise<void> => {
   return courseDataLock.acquire(`load-${season}`, () => {
     if (season in courseData || season in courseLoadAttempted) {
       // Skip if already loaded, or if we previously tried to load it.
-      return;
+      return Promise.resolve();
     }
 
     // Log that we attempted to load this.
@@ -120,7 +123,7 @@ type Store = {
 const FerryCtx = createContext<Store | undefined>(undefined);
 FerryCtx.displayName = 'FerryCtx';
 
-export const FerryProvider: React.FC = ({ children }) => {
+const FerryProvider: React.FC = ({ children }) => {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
@@ -172,7 +175,7 @@ export const FerryProvider: React.FC = ({ children }) => {
     () => ({
       requests,
       loading,
-      error: error,
+      error,
       seasons,
       courses: courseData,
       requestSeasons,

@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { FormControl, Card, Popover } from 'react-bootstrap';
+import chroma from 'chroma-js';
 
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`
@@ -27,7 +28,7 @@ export const StyledInput = styled(FormControl)`
   border: ${({ theme }) =>
     theme.theme === 'light'
       ? '2px solid hsl(0, 0%, 90%)'
-      : '2px solid ' + theme.select};
+      : `2px solid ${theme.select}`};
   border-radius: 8px;
   padding: 0.375rem 0.75rem;
 

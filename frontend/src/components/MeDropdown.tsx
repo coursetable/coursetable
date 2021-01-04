@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
-import styles from './MeDropdown.module.css';
 import { Row, Col, Collapse } from 'react-bootstrap';
-import { FaFacebookSquare } from 'react-icons/fa';
+import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { FcCalendar, FcUndo } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
-import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+
+import styles from './MeDropdown.module.css';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';

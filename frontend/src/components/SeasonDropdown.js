@@ -13,7 +13,7 @@ import { toSeasonString } from '../courseUtilities';
 
 function SeasonDropdown({ onSeasonChange, cur_season, season_codes }) {
   // HTML holding season options
-  let seasons_html = [];
+  const seasons_html = [];
 
   // Populate list of HTML options
   season_codes.forEach((season) => {

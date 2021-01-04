@@ -3,10 +3,10 @@ import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
-import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import posthog from 'posthog-js';
 import styled from 'styled-components';
+import { useUser } from '../user';
 import { getSSObject, setSSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
 
@@ -55,7 +55,7 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
     // removes removed courses from worksheet hidden courses
     if (inWorksheet) {
       setSSObject('hidden_courses', {}, true);
-      let hidden_courses = getSSObject('hidden_courses');
+      const hidden_courses = getSSObject('hidden_courses');
       if (hidden_courses[crn]) {
         hidden_courses[crn] = false;
         setSSObject('hidden_courses', hidden_courses);
@@ -107,7 +107,7 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
     >
       <Button
         variant="toggle"
-        className={'p-0 ' + (modal ? '' : 'bookmark_move')}
+        className={`p-0 ${modal ? '' : 'bookmark_move'}`}
         onClick={toggleWorkSheet}
       >
         {inWorksheet ? (

@@ -1,6 +1,6 @@
-import Globals from './Globals';
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Globals from './Globals';
 
 import App from './App';
 
