@@ -1,8 +1,8 @@
 import React, { useCallback } from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
-import { StyledPopover } from './StyledComponents';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import { StyledPopover } from './StyledComponents';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -23,14 +23,14 @@ function CalendarEvent({ event }) {
           {course.description
             ? course.description.length <= 300
               ? course.description
-              : course.description.slice(0, 300) + '...'
+              : `${course.description.slice(0, 300)}...`
             : 'no description'}
           <br />
           <div className="text-danger">
             {course.requirements &&
               (course.requirements.length <= 250
                 ? course.requirements
-                : course.requirements.slice(0, 250) + '...')}
+                : `${course.requirements.slice(0, 250)}...`)}
           </div>
         </Popover.Content>
       </StyledPopover>
@@ -56,7 +56,7 @@ function CalendarEvent({ event }) {
           <ResponsiveEllipsis
             style={{ whiteSpace: 'pre-wrap' }}
             text={event.listing.title}
-            maxLine={'2'}
+            maxLine="2"
             basedOn="words"
           />
         </span>

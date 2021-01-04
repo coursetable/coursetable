@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
+import { BsFillPersonFill } from 'react-icons/bs';
+import styled from 'styled-components';
+import posthog from 'posthog-js';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 import { useWindowDimensions } from './WindowDimensionsProvider';
-import { BsFillPersonFill } from 'react-icons/bs';
 import { logout, scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
-import styled from 'styled-components';
-import posthog from 'posthog-js';
 import { SurfaceComponent } from './StyledComponents';
 
 const StyledMeIcon = styled.div`
@@ -56,11 +56,11 @@ const StyledNavToggle = styled(Navbar.Toggle)`
   border-color: ${({ theme }) => theme.border} !important;
   .navbar-toggler-icon {
     background-image: ${({ theme }) =>
-      "url(\"data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='" +
-      (theme.theme === 'light'
-        ? 'rgba(69, 69, 69, 1)'
-        : 'rgba(219, 219, 219, 1)') +
-      "' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e\")"};
+      `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='${
+        theme.theme === 'light'
+          ? 'rgba(69, 69, 69, 1)'
+          : 'rgba(219, 219, 219, 1)'
+      }' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e")`};
   }
 `;
 
@@ -99,10 +99,10 @@ function CourseTableNavbar({
             onToggle={(expanded) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className={'shadow-sm px-3'}
+            className="shadow-sm px-3"
           >
             {/* Logo in top left */}
-            <Nav className={styles.nav_brand + ' navbar-brand py-2'}>
+            <Nav className={`${styles.nav_brand} navbar-brand py-2`}>
               <NavLink
                 to="/"
                 activeStyle={{
@@ -146,7 +146,7 @@ function CourseTableNavbar({
 
                 {/* DarkMode Button */}
                 <div
-                  className={styles.navbar_dark_mode_btn + ' d-flex'}
+                  className={`${styles.navbar_dark_mode_btn} d-flex`}
                   onClick={themeToggler}
                 >
                   <DarkModeButton />
@@ -174,14 +174,14 @@ function CourseTableNavbar({
                 {/* Profile Icon. Show if not mobile */}
                 <div
                   // Right align profile icon if not mobile
-                  className={
-                    'd-none d-md-block ' + (!is_mobile ? 'align-self-end' : '')
-                  }
+                  className={`d-none d-md-block ${
+                    !is_mobile ? 'align-self-end' : ''
+                  }`}
                 >
                   <div className={styles.navbar_me}>
                     <StyledMeIcon
                       ref={ref_visible}
-                      className={styles.icon_circle + ' m-auto'}
+                      className={`${styles.icon_circle} m-auto`}
                       onClick={() => setIsComponentVisible(!isComponentVisible)}
                     >
                       <BsFillPersonFill

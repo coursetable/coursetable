@@ -1,8 +1,8 @@
 import React from 'react';
 
-import styles from './About.module.css';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import styles from './About.module.css';
 import { TextComponent, StyledCard } from '../components/StyledComponents';
 
 import ae from '../images/headshots/aidan-evans.jpg';
@@ -88,10 +88,10 @@ const About: React.VFC = () => {
   ];
 
   return (
-    <div className={styles.container + ' mx-auto'}>
-      <h1 className={styles.about_header + ' mt-5 mb-1'}>About Us</h1>
+    <div className={`${styles.container} mx-auto`}>
+      <h1 className={`${styles.about_header} mt-5 mb-1`}>About Us</h1>
       <TextComponent type={1}>
-        <p className={styles.about_description + ' mb-3 mx-auto'}>
+        <p className={`${styles.about_description} mb-3 mx-auto`}>
           CourseTable offers a clean and effective way for Yale students to find
           the courses they want, bringing together course information, student
           evaluations, and course demand statistics in an intuitive interface.

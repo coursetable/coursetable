@@ -82,7 +82,7 @@ services:
     build: ./php
     volumes:
       - ..:/var/www/html
-    command: sh -c 'php composer.phar install'
+    command: sh -c 'php composer.phar install && tail -f /dev/null'
     working_dir: /var/www/html
 
   php-fpm:

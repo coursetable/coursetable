@@ -77,7 +77,7 @@ const SearchResults = ({
 
   // Spacing for each column in list view
   const COL_SPACING = useMemo(() => {
-    let TEMP_COL_SPACING = {
+    const TEMP_COL_SPACING = {
       SZN_WIDTH: 80,
       CODE_WIDTH: 110,
       RATE_WIDTH: 38,
@@ -116,7 +116,7 @@ const SearchResults = ({
   // Render functions for React Virtualized List:
   const renderGridRow = useCallback(
     ({ index, key, style }) => {
-      let row_elements = [];
+      const row_elements = [];
       for (
         let j = index * num_cols;
         j < data.length && j < (index + 1) * num_cols;
@@ -355,14 +355,12 @@ const SearchResults = ({
             }
           >
             <div
-              className={
-                Styles.list_grid_toggle + ' d-flex ml-auto my-auto p-0'
-              }
+              className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
             >
               <ListGridToggle isList={isList} setView={setView} />
             </div>
             {isList ? (
-              <React.Fragment>
+              <>
                 {multiSeasons && (
                   <div style={szn_style} className={Styles.results_header}>
                     Season
@@ -378,7 +376,7 @@ const SearchResults = ({
                 {/* Class Rating */}
                 <div
                   style={rate_style}
-                  className={Styles.results_header + ' justify-content-center'}
+                  className={`${Styles.results_header} justify-content-center`}
                 >
                   <StyledIcon>
                     <OverlayTrigger
@@ -393,7 +391,7 @@ const SearchResults = ({
                 {/* Professor Rating */}
                 <div
                   style={rate_style}
-                  className={Styles.results_header + ' justify-content-center'}
+                  className={`${Styles.results_header} justify-content-center`}
                 >
                   <StyledIcon>
                     <OverlayTrigger
@@ -408,7 +406,7 @@ const SearchResults = ({
                 {/* Workload Rating */}
                 <div
                   style={rate_style}
-                  className={Styles.results_header + ' justify-content-center'}
+                  className={`${Styles.results_header} justify-content-center`}
                 >
                   <StyledIcon>
                     <OverlayTrigger
@@ -453,7 +451,7 @@ const SearchResults = ({
                     <span className="m-auto">#FB</span>
                   </OverlayTrigger>
                 </div>
-              </React.Fragment>
+              </>
             ) : (
               // Grid view showing how many search results
               <Col md={10}>
@@ -477,9 +475,7 @@ const SearchResults = ({
         {data.length === 0 && !loading && resultsListing}
         {/* Render a loading row while performing next query */}
         {loading && (
-          <Row
-            className={'m-auto ' + (data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
-          >
+          <Row className={`m-auto ${data.length === 0 ? 'py-5' : 'pt-0 pb-4'}`}>
             <Spinner className="m-auto" animation="border" role="status">
               <span className="sr-only">Loading...</span>
             </Spinner>

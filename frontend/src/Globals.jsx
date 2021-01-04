@@ -6,27 +6,24 @@ import 'core-js/es/promise/all-settled';
 import React, { useEffect } from 'react';
 import { Router, useLocation } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
-
-import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import FerryProvider from './components/FerryProvider';
-
-import { UserProvider } from './user';
-
+import { ThemeProvider } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-
 import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
 
 import posthog from 'posthog-js';
-import reportWebVitals from './reportWebVitals';
-
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'react-toastify/dist/ReactToastify.css';
+
+import reportWebVitals from './reportWebVitals';
+import WindowDimensionsProvider from './components/WindowDimensionsProvider';
+import FerryProvider from './components/FerryProvider';
+import { UserProvider } from './user';
+
 import './index.css';
 
-import { ThemeProvider } from 'styled-components';
 import { useDarkMode } from './components/UseDarkMode';
 import { GlobalStyles } from './components/GlobalStyles';
 import { lightTheme, darkTheme } from './components/Themes';
@@ -72,7 +69,7 @@ Sentry.init({
   environment: process.env.NODE_ENV,
 
   // See https://docs.sentry.io/platforms/javascript/configuration/releases/.
-  release: release,
+  release,
   autoSessionTracking: true,
 
   // Note: this is fully enabled in development. We can revisit this if it becomes annoying.
@@ -97,7 +94,7 @@ function SPAPageChangeListener() {
 function ErrorFallback() {
   return (
     <Row className="m-auto" style={{ height: '100vh' }}>
-      <ErrorPage message={'Internal Error'} />
+      <ErrorPage message="Internal Error" />
     </Row>
   );
 }
@@ -136,7 +133,7 @@ function Globals({ children }) {
                       {React.Children.map(children, (child) => {
                         if (React.isValidElement(child)) {
                           return React.cloneElement(child, {
-                            themeToggler: themeToggler,
+                            themeToggler,
                           });
                         }
                         return child;
