@@ -84,6 +84,7 @@ const authHard = (req, res, next) => {
 
 // Setup all the proxy routes.
 
+app.use('/legacy_api', authSoft);
 app.use(
   ['/legacy_api', '/index.php'],
   createProxyMiddleware({

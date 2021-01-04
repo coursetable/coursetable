@@ -81,23 +81,9 @@ class ProjectCommon
         return self::createMysqli('yaleplus');
     }
 
-    public static function casAuthenticate($force = true)
-    {
-        if ($force) {
-            phpCAS::forceAuthentication();
-        }
-
-        $netId = null;
-        if (phpCAS::isAuthenticated()) {
-            $netId = phpCAS::getUser();
-        }
-
-        return $netId;
-    }
-
-    public static function casLogout()
-    {
-        phpCAS::logout();
+    public static function getID() {
+        $netId = $_SERVER['HTTP_X_COURSETABLE_NETID'];
+        if ($netId != 'null') return $netId;
     }
 
     public static function createLog($name = 'general')
