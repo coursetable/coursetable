@@ -1,7 +1,7 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { Row, Col, Fade, Spinner } from 'react-bootstrap';
+import { Row, Col, Fade, Spinner, Button } from 'react-bootstrap';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
@@ -14,6 +14,7 @@ import {
 } from '../components/StyledComponents';
 
 import styles from './Worksheet.module.css';
+import styled from 'styled-components';
 
 import { useUser } from '../user';
 import NoCoursesFound from '../images/no_courses_found.svg';
@@ -22,6 +23,18 @@ import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../browserStorage';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+
+const StyledExpandLink = styled(Button)`
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: normal;
+  &:hover {
+    text-decoration: none !important;
+    color: ${({ theme }) => theme.primary};
+  }
+  &:focus {
+    box-shadow: none !important;
+  }
+`;
 
 // Function to sort worksheet courses by course code
 const sortByCourseCode = (a, b) => {
@@ -331,6 +344,7 @@ function Worksheet() {
               {/* Default List Component */}
               <Fade in={cur_expand !== 'list'}>
                 <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
+                  <StyledExpandLink variant='link' className='mt-3' onClick={() => handleCurExpand('list')}>Go to list view</StyledExpandLink>
                   <WorksheetList
                     courses={season_listings}
                     showModal={showModal}

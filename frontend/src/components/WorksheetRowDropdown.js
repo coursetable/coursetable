@@ -79,7 +79,7 @@ function WorksheetRowDropdown({
   const { user } = useUser();
 
   return (
-    <StyledSpacer className="pt-3">
+    <StyledSpacer className="pt-2">
       <StyledContainer layer={1} className="mx-1">
         <div className="shadow-sm pt-2 pb-2">
           <Row className="mx-auto">
@@ -112,7 +112,7 @@ function WorksheetRowDropdown({
             </Col>
           </Row>
           <Row className="mx-auto mt-2">
-            <Col md={6} className="pl-2 pr-1">
+            <Col className="pl-2 pr-2">
               <StyledBtn
                 className={styles.btn}
                 onClick={() => toggleCourse(areHidden ? -2 : -1)}
@@ -120,14 +120,14 @@ function WorksheetRowDropdown({
                 {areHidden ? 'Show' : 'Hide'} All
               </StyledBtn>
             </Col>
-            <Col md={6} className="pr-2 pl-1">
+            {/* <Col md={6} className="pr-2 pl-1">
               <StyledBtn
                 className={styles.btn}
                 onClick={() => setCurExpand('list')}
               >
                 Expand
               </StyledBtn>
-            </Col>
+            </Col> */}
           </Row>
         </div>
 
