@@ -177,10 +177,7 @@ const SearchResults = ({
           style={{ width: '25%' }}
         />
         <h3>
-          Please{' '}
-          <a href="/legacy_api/index.php?forcelogin=1&successurl=catalog">
-            log in
-          </a>
+          Please <a href="/api/auth/cas">log in</a>
         </h3>
         <div>A valid Yale NetID is required to access course information.</div>
       </div>

@@ -65,7 +65,7 @@ function Landing() {
                   </Row>
                   <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
                     <a
-                      href="/legacy_api/index.php?forcelogin=1"
+                      href="/api/auth/cas"
                       className={styles.btn + ' ' + styles.login + ' mr-2'}
                     >
                       Login with CAS
