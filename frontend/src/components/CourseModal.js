@@ -1,20 +1,20 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
+import { IoMdArrowRoundBack } from 'react-icons/io';
+import chroma from 'chroma-js';
+import posthog from 'posthog-js';
+import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 
-import { IoMdArrowRoundBack } from 'react-icons/io';
 import WorksheetToggleButton from './WorksheetToggleButton';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants';
-import chroma from 'chroma-js';
-import posthog from 'posthog-js';
 import { TextComponent, StyledLink } from './StyledComponents';
-import styled from 'styled-components';
 import { toSeasonString } from '../courseUtilities';
 
 // Course Modal
@@ -88,7 +88,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
   const handleMoreInfo = useCallback(() => {
     // Go to overview page of this eval course
     setView(['overview', null]);
-    let new_listing = Object.assign({}, view[1].listing);
+    const new_listing = { ...view[1].listing };
     new_listing.eval = view[1];
     setListings([...listings, new_listing]);
   }, [listings, view]);
@@ -101,7 +101,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
       {cur_listing && (
         <StyledModal
           show={show}
-          scrollable={true}
+          scrollable
           onHide={handleHide}
           dialogClassName="modal-custom-width"
           animation={false}
@@ -122,7 +122,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             worksheetView={false}
                             crn={cur_listing.crn}
                             season_code={cur_listing.season_code}
-                            modal={true}
+                            modal
                           />
                         ) : (
                           // If this is the overview of some other eval course, show back button
@@ -143,7 +143,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                     <Col className="p-0 ml-3">
                       {/* Course Title */}
                       <Modal.Title>
-                        <Row className={'mx-auto mt-1 align-items-center'}>
+                        <Row className="mx-auto mt-1 align-items-center">
                           <span
                             className={
                               isMobile ? 'modal-title-mobile' : 'modal-title'
@@ -158,19 +158,17 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             )}
                             {cur_listing.title}
                             <TextComponent type={2}>
-                              {' (' +
-                                toSeasonString(cur_listing.season_code)[2] +
-                                ' ' +
-                                toSeasonString(cur_listing.season_code)[1] +
-                                ')'}
+                              {` (${
+                                toSeasonString(cur_listing.season_code)[2]
+                              } ${toSeasonString(cur_listing.season_code)[1]})`}
                             </TextComponent>
                           </span>
                         </Row>
                       </Modal.Title>
 
-                      <Row className={styles.badges + ' mx-auto mt-1 '}>
+                      <Row className={`${styles.badges} mx-auto mt-1 `}>
                         {/* Course Codes */}
-                        <p className={styles.course_codes + ' my-0 pr-2'}>
+                        <p className={`${styles.course_codes} my-0 pr-2`}>
                           <TextComponent type={2}>
                             {cur_listing.all_course_codes &&
                               cur_listing.all_course_codes.join(' • ')}
@@ -241,19 +239,17 @@ const CourseModal = ({ listing, hideModal, show }) => {
                     <Col className="p-0 ml-3">
                       {/* Course Title */}
                       <Modal.Title>
-                        <Row className={'mx-auto mt-1 align-items-center'}>
+                        <Row className="mx-auto mt-1 align-items-center">
                           <span
                             className={
                               isMobile ? 'modal-title-mobile' : 'modal-title'
                             }
                           >
-                            {view[1].title + ' '}
+                            {`${view[1].title} `}
                             <TextComponent type={2}>
-                              {' (' +
-                                toSeasonString(view[0])[2] +
-                                ' ' +
-                                toSeasonString(view[0])[1] +
-                                ')'}
+                              {` (${toSeasonString(view[0])[2]} ${
+                                toSeasonString(view[0])[1]
+                              })`}
                             </TextComponent>
                             <StyledMoreInfo
                               className="mt-auto ml-2"
@@ -265,9 +261,9 @@ const CourseModal = ({ listing, hideModal, show }) => {
                         </Row>
                       </Modal.Title>
 
-                      <Row className={styles.badges + ' mx-auto mt-1 '}>
+                      <Row className={`${styles.badges} mx-auto mt-1 `}>
                         {/* Course Code */}
-                        <p className={styles.course_codes + '  my-0 pr-2'}>
+                        <p className={`${styles.course_codes}  my-0 pr-2`}>
                           <TextComponent type={2}>
                             {view[1].course_code}
                           </TextComponent>
@@ -310,19 +306,16 @@ const CourseModal = ({ listing, hideModal, show }) => {
                         {/* Course Professors and Section */}
                         {view[1].professor !== ['TBA'] && (
                           <p
-                            className={
-                              styles.course_codes +
-                              '  my-0 ' +
-                              (view[1].skills.length || view[1].areas.length
+                            className={`${styles.course_codes}  my-0 ${
+                              view[1].skills.length || view[1].areas.length
                                 ? ' pl-2 '
-                                : '')
-                            }
+                                : ''
+                            }`}
                           >
                             <TextComponent type={2}>
-                              {'| ' +
-                                view[1].professor.join(', ') +
-                                ' | Section ' +
-                                view[1].section}
+                              {`| ${view[1].professor.join(', ')} | Section ${
+                                view[1].section
+                              }`}
                             </TextComponent>
                           </p>
                         )}

@@ -26,7 +26,7 @@ const ErrorPage: React.VFC<Props> = ({ message }) => {
         className="py-5"
         src={ServerError}
         style={{ width: '25%' }}
-      ></img>
+      />
     </div>
   );
 };

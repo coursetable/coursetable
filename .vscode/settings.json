@@ -45,5 +45,7 @@
     "noreferrer",
     "toastify",
     "unstyled"
-  ]
+  ],
+  "eslint.packageManager": "yarn",
+  "eslint.workingDirectories": ["api", "frontend", "proxy"]
 }

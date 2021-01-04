@@ -1,8 +1,8 @@
 import React, { useMemo } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
-import { useUser } from '../user';
 import { MdErrorOutline } from 'react-icons/md';
+import { useUser } from '../user';
 import {
   checkConflict,
   isInWorksheet,
@@ -39,7 +39,8 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
     if (times === 'TBA') {
       // Ignore any items with an invalid time.
       return false;
-    } else if (checkConflict(data, course, times)) {
+    }
+    if (checkConflict(data, course, times)) {
       // There is a conflict with this listing.
       return true;
     }

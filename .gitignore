@@ -3,5 +3,4 @@
 .DS_Store
 /nodeBuildLog.txt
 /facebook.env
-node_modules
 /.idea

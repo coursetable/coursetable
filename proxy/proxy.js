@@ -17,7 +17,7 @@ app.use(morgan('tiny'));
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
-  for (const [header, _] of Object.entries(req.headers)) {
+  for (const header of Object.keys(req.headers)) {
     // Headers are automatically made lowercase by express.
     if (header.startsWith('x-coursetable-')) {
       delete req.headers[header];

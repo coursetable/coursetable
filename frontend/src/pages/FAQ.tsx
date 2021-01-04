@@ -2,11 +2,11 @@ import React, { useContext } from 'react';
 import { Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import styles from './FAQ.module.css';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
-import { StyledHoverText, TextComponent } from '../components/StyledComponents';
 import styled from 'styled-components';
+import { StyledHoverText, TextComponent } from '../components/StyledComponents';
+import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities';
 
 // Card used in FAQ accordion
@@ -45,21 +45,19 @@ function ContextAwareToggle({
 
   return (
     <StyledHoverText
-      className={
-        (!isCurrentEventKey ? '' : 'active') +
-        '  d-flex justify-content-between py-3 px-3 ' +
+      className={`${
+        !isCurrentEventKey ? '' : 'active'
+      }  d-flex justify-content-between py-3 px-3 ${
         styles.accordion_hover_header
-      }
+      }`}
       onClick={decoratedOnClick}
     >
       {question}
       <FaChevronRight
         // Rotate arrow when active
-        className={
-          (!isCurrentEventKey ? '' : styles.accordion_arrow_active) +
-          ' my-auto ' +
-          styles.accordion_arrow
-        }
+        className={`${
+          !isCurrentEventKey ? '' : styles.accordion_arrow_active
+        } my-auto ${styles.accordion_arrow}`}
       />
     </StyledHoverText>
   );
@@ -292,11 +290,11 @@ function FAQ() {
   ];
 
   return (
-    <div className={styles.container + ' mx-auto'}>
-      <h1 className={styles.faq_header + ' mt-5 mb-1'}>
+    <div className={`${styles.container} mx-auto`}>
+      <h1 className={`${styles.faq_header} mt-5 mb-1`}>
         Frequently Asked Questions
       </h1>
-      <p className={styles.faq_description + ' mb-3'}>
+      <p className={`${styles.faq_description} mb-3`}>
         <TextComponent type={1}>Have another question?</TextComponent>{' '}
         <NavLink to="/feedback" onClick={scrollToTop}>
           Contact us

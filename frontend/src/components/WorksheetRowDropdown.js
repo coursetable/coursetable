@@ -1,14 +1,14 @@
 import React from 'react';
 
+import { Row, Col } from 'react-bootstrap';
+import { FaExpandAlt } from 'react-icons/fa';
+import styled from 'styled-components';
 import styles from './WorksheetRowDropdown.module.css';
 // import worksheet_styles from '../pages/Worksheet.module.css';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
-import { Row, Col } from 'react-bootstrap';
-import { SurfaceComponent } from './StyledComponents';
-// import { FaExpandAlt } from 'react-icons/fa';
+import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
 import { useUser } from '../user';
-import styled from 'styled-components';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`

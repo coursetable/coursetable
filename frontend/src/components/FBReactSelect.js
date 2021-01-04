@@ -22,9 +22,9 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
   }, [user.fbLogin, user.fbWorksheets]);
   // List of FB friend options. Initialize with me option
   const friend_options = useMemo(() => {
-    let friend_options_temp = [];
+    const friend_options_temp = [];
     // Add FB friend to dropdown if they have worksheet courses in the current season
-    for (let friend in friendInfo) {
+    for (const friend in friendInfo) {
       friend_options_temp.push({
         value: friend,
         label: friendInfo[friend].name,
@@ -45,7 +45,7 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
           value: cur_person,
           label: 'Connect FB',
         }}
-        isDisabled={true}
+        isDisabled
       />
     );
   }
@@ -62,7 +62,7 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
               }
         }
         placeholder="Friends' courses"
-        isSearchable={true}
+        isSearchable
         isClearable={cur_person !== 'me'}
         options={friend_options}
         onChange={(option) => {

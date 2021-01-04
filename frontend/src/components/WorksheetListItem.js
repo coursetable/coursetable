@@ -1,9 +1,9 @@
 import React from 'react';
-import styles from './WorksheetListItem.module.css';
 import { Row, Col, ListGroup } from 'react-bootstrap';
+import styled, { withTheme } from 'styled-components';
+import styles from './WorksheetListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
-import styled, { withTheme } from 'styled-components';
 
 // Listgroup Item for worksheet list item
 const StyledListItem = styled(ListGroup.Item)`
@@ -42,14 +42,14 @@ function WorksheetListItem({
   };
   return (
     <StyledListItem
-      className={'py-1 px-2'}
+      className="py-1 px-2"
       onMouseEnter={() => setHoverCourse(course.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
       {/* Bookmark Button */}
       <div className={styles.bookmark}>
         <WorksheetToggleButton
-          worksheetView={true}
+          worksheetView
           crn={course.crn}
           season_code={cur_season}
           modal={false}
@@ -69,7 +69,7 @@ function WorksheetListItem({
         </Col>
         {/* Course Code and Title */}
         <Col
-          className={styles.list_text + ' px-0'}
+          className={`${styles.list_text} px-0`}
           style={color_style}
           onClick={() => showModal(course)}
         >

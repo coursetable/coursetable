@@ -1,23 +1,23 @@
 import React, { useCallback, useContext, useMemo } from 'react';
 import moment from 'moment';
-import styles from './WorksheetAccordion.module.css';
-import tagStyles from './SearchResultsItem.module.css';
-import { skillsAreasColors } from '../queries/Constants';
 import chroma from 'chroma-js';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
-import SeasonDropdown from './SeasonDropdown';
-import FBDropdown from './FBDropdown';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
+import { ThemeContext } from 'styled-components';
+import SeasonDropdown from './SeasonDropdown';
+import FBDropdown from './FBDropdown';
 import {
   TextComponent,
   StyledBanner,
   StyledCard,
   SurfaceComponent,
 } from './StyledComponents';
-import { ThemeContext } from 'styled-components';
+import { skillsAreasColors } from '../queries/Constants';
+import tagStyles from './SearchResultsItem.module.css';
+import styles from './WorksheetAccordion.module.css';
 import { weekdays } from '../common';
 import NoCourses from './NoCourses';
 
@@ -45,6 +45,7 @@ function ContextAwareToggle({ eventKey, callback, course }) {
       if (time_string[i] >= '0' && time_string[i] <= '9')
         return time_string.substr(i, time_string.length - i);
     }
+    return null;
   };
 
   const style_color = {
@@ -57,7 +58,7 @@ function ContextAwareToggle({ eventKey, callback, course }) {
       style={isCurrentEventKey ? style_color : {}}
       onClick={decoratedOnClick}
     >
-      <Row className={styles.header + ' p-2 mx-auto'}>
+      <Row className={`${styles.header} p-2 mx-auto`}>
         <Col xs="auto" style={{ fontWeight: 500 }}>
           {/* Course Code */}
           <Row>{course.course_code}</Row>
@@ -109,15 +110,15 @@ function WorksheetAccordion({
 }) {
   // Function to sort courses in chronological order for each day
   const chronologicalOrder = useCallback((a, b) => {
-    if (a['start_time'] < b['start_time']) return -1;
-    if (a['start_time'] > b['start_time']) return 1;
+    if (a.start_time < b.start_time) return -1;
+    if (a.start_time > b.start_time) return 1;
     return 0;
   }, []);
 
   // Parse listing dictionaries and determine which courses take place on each weekday
   const parseListings = useCallback(
     (listings) => {
-      let parsed_courses = [[], [], [], [], []];
+      const parsed_courses = [[], [], [], [], []];
       // Iterate over each listing
       listings.forEach((course) => {
         // Iterate over each weekday
@@ -126,12 +127,12 @@ function WorksheetAccordion({
           // If this listing meets on this day
           if (info !== undefined) {
             // Get start time
-            course['start_time'] = moment(info[0][0], 'HH:mm').day(1);
+            course.start_time = moment(info[0][0], 'HH:mm').day(1);
             // Get location url
-            course['location_url'] = info[0][3];
+            course.location_url = info[0][3];
             // Fix start time if needed
-            if (course['start_time'].get('hour') < 8)
-              course['start_time'].add('h', 12);
+            if (course.start_time.get('hour') < 8)
+              course.start_time.add('h', 12);
             // Add listing to this weekday's list
             parsed_courses[indx].push(course);
           }
@@ -158,7 +159,7 @@ function WorksheetAccordion({
       // Unique id for each array item
       let id = 0;
       // List to hold HTML
-      let accordion_items = [];
+      const accordion_items = [];
       // Iterate over each day starting with the current day
       for (let i = today - 1; dayIndex < 5; i = (i + 1) % 5) {
         // List of courses for this day
@@ -179,7 +180,7 @@ function WorksheetAccordion({
         for (let j = 0; j < day.length; j++) {
           const course = day[j];
           accordion_items.push(
-            <StyledCard key={++id} className={styles.card + ' px-0'}>
+            <StyledCard key={++id} className={`${styles.card} px-0`}>
               {/* Custom Accordion Item Header */}
               <ContextAwareToggle
                 eventKey={`${i}_${course.crn}_${course.season_code}`}
@@ -252,7 +253,7 @@ function WorksheetAccordion({
                   <Row className="m-auto">
                     <StyledBanner
                       onClick={() => showModal(course)}
-                      className={styles.more_info + ' mt-2 font-weight-bold'}
+                      className={`${styles.more_info} mt-2 font-weight-bold`}
                     >
                       <TextComponent type={1}>More Info</TextComponent>
                     </StyledBanner>
@@ -281,7 +282,7 @@ function WorksheetAccordion({
 
   return (
     <div className={styles.container}>
-      <Row className={styles.dropdowns + ' mx-auto'}>
+      <Row className={`${styles.dropdowns} mx-auto`}>
         {/* Season Dropdown */}
         <Col xs={6} className="m-0 p-0">
           <SeasonDropdown

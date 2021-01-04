@@ -2,12 +2,13 @@ import React, { useMemo, useState, useCallback, useEffect } from 'react';
 
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner, Button } from 'react-bootstrap';
+import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import posthog from 'posthog-js';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetExpandedList from '../components/WorksheetExpandedList';
 import CourseModal from '../components/CourseModal';
-import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import {
   SurfaceComponent,
   StyledExpandBtn,
@@ -18,7 +19,6 @@ import styled from 'styled-components';
 
 import { useUser } from '../user';
 import NoCoursesFound from '../images/no_courses_found.svg';
-import posthog from 'posthog-js';
 import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../browserStorage';
@@ -80,7 +80,7 @@ function Worksheet() {
   }, [user.worksheet, user.fbWorksheets, fb_person]);
 
   const season_codes = useMemo(() => {
-    let season_codes_temp = [];
+    const season_codes_temp = [];
     if (cur_worksheet) {
       cur_worksheet.forEach((szn) => {
         if (season_codes_temp.indexOf(szn[0]) === -1)
@@ -162,7 +162,7 @@ function Worksheet() {
   // Initialize listings state and color map.
   useEffect(() => {
     if (!loading && !error && cur_worksheet && data) {
-      let temp = [...data];
+      const temp = [...data];
       // Assign color to each course
       for (let i = 0; i < data.length; i++) {
         let choice = colors[i % colors.length];
@@ -184,7 +184,7 @@ function Worksheet() {
   const toggleCourse = useCallback(
     (crn) => {
       if (crn === -1) {
-        let new_hidden_courses = {};
+        const new_hidden_courses = {};
         listings.forEach((listing) => {
           new_hidden_courses[listing.crn] = true;
         });
@@ -193,7 +193,7 @@ function Worksheet() {
         setHiddenCourses({});
       } else {
         setHiddenCourses((old_hidden_courses) => {
-          let new_hidden_courses = Object.assign({}, old_hidden_courses);
+          const new_hidden_courses = Object.assign({}, old_hidden_courses);
           if (old_hidden_courses[crn]) delete new_hidden_courses[crn];
           else new_hidden_courses[crn] = true;
           return new_hidden_courses;
@@ -232,10 +232,11 @@ function Worksheet() {
     console.error(error);
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <ErrorPage message={'There seems to be an issue with our server'} />
+        <ErrorPage message="There seems to be an issue with our server" />
       </div>
     );
-  } else if (loading) {
+  }
+  if (loading) {
     return (
       <div style={{ height: '93vh' }}>
         <Spinner
@@ -247,11 +248,12 @@ function Worksheet() {
         </Spinner>
       </div>
     );
-  } else if (data === undefined) {
+  }
+  if (data === undefined) {
     console.error('data is undefined but worksheet is not');
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <ErrorPage message={'Internal error with course data'} />
+        <ErrorPage message="Internal error with course data" />
       </div>
     );
   }
@@ -270,12 +272,9 @@ function Worksheet() {
             <Col
               // Width of component depends on if it is expanded or not
               md={cur_expand === 'calendar' ? 12 : 9}
-              className={
-                styles.calendar +
-                ' mt-3 pl-0 ' +
-                (cur_expand === 'calendar' ? 'pr-0 ' : 'pr-4 ') +
-                (cur_expand === 'list' ? styles.hidden : '')
-              }
+              className={`${styles.calendar} mt-3 pl-0 ${
+                cur_expand === 'calendar' ? 'pr-0 ' : 'pr-4 '
+              }${cur_expand === 'list' ? styles.hidden : ''}`}
             >
               <SurfaceComponent
                 layer={0}
@@ -290,7 +289,7 @@ function Worksheet() {
                 />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
-                  className={styles.expand_btn + ' ' + styles.top_right}
+                  className={`${styles.expand_btn} ${styles.top_right}`}
                 >
                   {cur_expand === 'none' ? (
                     <FaExpandAlt
@@ -315,15 +314,13 @@ function Worksheet() {
                 </StyledExpandBtn>
               </SurfaceComponent>
             </Col>
-            {/* List Component*/}
+            {/* List Component */}
             <Col
               // Width depends on if it is expanded or not
               md={cur_expand === 'list' ? 12 : 3}
-              className={
-                'ml-auto ' +
-                (cur_expand === 'list' ? ' px-2 ' : 'px-0 ') +
-                (cur_expand === 'calendar' ? styles.hidden : '')
-              }
+              className={`ml-auto ${
+                cur_expand === 'list' ? ' px-2 ' : 'px-0 '
+              }${cur_expand === 'calendar' ? styles.hidden : ''}`}
             >
               {/* Expanded List Component */}
               <Fade in={cur_expand === 'list'}>
@@ -344,7 +341,13 @@ function Worksheet() {
               {/* Default List Component */}
               <Fade in={cur_expand !== 'list'}>
                 <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
-                  <StyledExpandLink variant='link' className='mt-3' onClick={() => handleCurExpand('list')}>Go to list view</StyledExpandLink>
+                  <StyledExpandLink
+                    variant="link"
+                    className="mt-3"
+                    onClick={() => handleCurExpand('list')}
+                  >
+                    Go to list view
+                  </StyledExpandLink>
                   <WorksheetList
                     courses={season_listings}
                     showModal={showModal}
@@ -366,7 +369,7 @@ function Worksheet() {
       ) : (
         /* Mobile View */
         <div>
-          <Row className={styles.accordion + ' m-0 p-3'}>
+          <Row className={`${styles.accordion} m-0 p-3`}>
             <Col className="p-0">
               <WorksheetAccordion
                 onSeasonChange={changeSeason}

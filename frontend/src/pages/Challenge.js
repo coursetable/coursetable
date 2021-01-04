@@ -3,12 +3,12 @@ import qs from 'qs';
 import axios from 'axios';
 import { useHistory, NavLink } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
-import styles from './Challenge.module.css';
-import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
 
 import { FiExternalLink } from 'react-icons/fi';
+import { useUser } from '../user';
+import styles from './Challenge.module.css';
 
 import ChallengeError from '../images/error.svg';
 import {
@@ -26,7 +26,7 @@ function Challenge() {
   // Get user context info and refresh
   const { userRefresh } = useUser();
   // react-router history to redirect to catalog
-  let history = useHistory();
+  const history = useHistory();
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
   // Stores body of response for the /api/challenge/request API call
@@ -94,7 +94,7 @@ function Challenge() {
       const post_body = {
         token: res_body.token,
         salt: res_body.salt,
-        answers: answers,
+        answers,
       };
       // Config header for urlencoded
       const config = {
@@ -196,7 +196,7 @@ function Challenge() {
   // Student response buckets
   const rating_options = ['poor', 'fair', 'good', 'very good', 'excellent'];
   // Holds the html for each form question
-  let question_html = [];
+  const question_html = [];
   if (res_body && res_body.course_info) {
     // Loop over each question
     res_body.course_info.forEach((course, index) => {
@@ -237,7 +237,7 @@ function Challenge() {
             value={answers[index].answer}
             onChange={(event) => {
               // Copy answers state into a new variable
-              let new_answers = [...answers];
+              const new_answers = [...answers];
               // Update new answers
               new_answers[index].courseRatingId = course.courseId;
               new_answers[index].courseRatingIndex = course.courseRatingIndex;
@@ -368,10 +368,10 @@ function Challenge() {
         className="container col-sm-10 col-md-8 col-lg-6 p-5 rounded shadow"
       >
         {/* Page Header */}
-        <h1 className={'font-weight-bold mb-2'}>Enable evaluations</h1>
+        <h1 className="font-weight-bold mb-2">Enable evaluations</h1>
         {/* Page Description */}
         <TextComponent type={1}>
-          <p className={styles.challenge_description + ' mb-2'}>
+          <p className={`${styles.challenge_description} mb-2`}>
             To confirm that you have access to course evaluations, we ask that
             you retrieve the number of people who responded to a specific
             question for three courses (linked below). If your responses match

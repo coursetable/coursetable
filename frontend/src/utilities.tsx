@@ -51,7 +51,7 @@ export function logout() {
   document.cookie.split(';').forEach((c) => {
     document.cookie = c
       .replace(/^ +/, '')
-      .replace(/=.*/, '=;expires=' + new Date().toUTCString() + ';path=/');
+      .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
   });
   // Redirect to home page and refresh as well
   window.location.pathname = '/';
