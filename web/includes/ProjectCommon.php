@@ -81,7 +81,7 @@ class ProjectCommon
         $netId = $_SERVER['HTTP_X_COURSETABLE_NETID'];
         if ($netId != 'null') {
             return $netId;
-        ;
+        }
     }
 
     public static function createLog($name = 'general')
