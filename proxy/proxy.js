@@ -60,7 +60,9 @@ const authHard = (req, res, next) => {
         return res.status(403).send('request missing authentication');
       }
 
-      let evals_enabled = await axios
+      //TODO: perform evals request natively in api
+      //      (maybe see student.models.js?)
+      const evals_enabled = await axios
         .get(`${php_uri}/CheckEvals.php`, {
           headers: {
             'x-coursetable-netid': data.id,
@@ -84,6 +86,7 @@ const authHard = (req, res, next) => {
 
 // Setup all the proxy routes.
 
+//TODO: remove authSoft eventually
 app.use('/legacy_api', authSoft);
 app.use(
   ['/legacy_api', '/index.php'],
