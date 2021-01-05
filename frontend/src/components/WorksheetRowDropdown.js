@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-import { Row, Col } from 'react-bootstrap';
+import { Row, Col, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './WorksheetRowDropdown.module.css';
 // import worksheet_styles from '../pages/Worksheet.module.css';
@@ -8,6 +8,7 @@ import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
 import { SurfaceComponent } from './StyledComponents';
 import { useUser } from '../user';
+import { BsArrowRight, BsEyeSlash, BsEye } from 'react-icons/bs';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -52,6 +53,18 @@ const StyledContainer = styled(SurfaceComponent)`
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 `;
 
+const StyledExpandLink = styled(Button)`
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: normal;
+  &:hover {
+    text-decoration: none !important;
+    color: ${({ theme }) => theme.primary};
+  }
+  &:focus {
+    box-shadow: none !important;
+  }
+`;
+
 /**
  * Render row of season and FB friends dropdowns
  * @prop cur_season - string that holds the current season code
@@ -78,12 +91,23 @@ function WorksheetRowDropdown({
   const { user } = useUser();
 
   return (
-    <StyledSpacer className="pt-2">
+    <StyledSpacer className="pt-3">
       <StyledContainer layer={1} className="mx-1">
-        <div className="shadow-sm pt-2 pb-2">
-          <Row className="mx-auto">
+        <div className="shadow-sm p-2">
+          <Row className="mx-auto justify-content-end">
+            <Col className="px-0">
+              <StyledExpandLink
+                variant="link"
+                className="py-0"
+                onClick={() => setCurExpand('list')}
+              >
+                Go to list view <BsArrowRight size={24} />
+              </StyledExpandLink>
+            </Col>
+          </Row>
+          <Row className="mx-auto mt-2">
             {/* Season Select */}
-            <Col md={6} className="pl-2 pr-1">
+            <Col md={6} className="pl-0 pr-2">
               <div
                 className={`${styles.select_container} ${styles.hover_effect}`}
               >
@@ -95,7 +119,7 @@ function WorksheetRowDropdown({
               </div>
             </Col>
             {/* FB Friend Select */}
-            <Col md={6} className="pr-2 pl-1">
+            <Col md={6} className="px-0">
               <div
                 className={
                   styles.select_container +
@@ -111,12 +135,21 @@ function WorksheetRowDropdown({
             </Col>
           </Row>
           <Row className="mx-auto mt-2">
-            <Col className="pl-2 pr-2">
+            <Col className="px-0">
               <StyledBtn
                 className={styles.btn}
                 onClick={() => toggleCourse(areHidden ? -2 : -1)}
               >
-                {areHidden ? 'Show' : 'Hide'} All
+                {areHidden ? (
+                  <>
+                    <BsEyeSlash /> Show
+                  </>
+                ) : (
+                  <>
+                    <BsEye /> Hide
+                  </>
+                )}{' '}
+                All
               </StyledBtn>
             </Col>
             {/* <Col md={6} className="pr-2 pl-1">
