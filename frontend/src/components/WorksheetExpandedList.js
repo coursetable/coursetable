@@ -7,12 +7,25 @@ import SeasonReactSelect from './SeasonReactSelect';
 import styles from './WorksheetExpandedList.module.css';
 import select_styles from './WorksheetRowDropdown.module.css';
 import worksheet_styles from '../pages/Worksheet.module.css';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Button } from 'react-bootstrap';
 import { useUser } from '../user';
 import { FaCompressAlt } from 'react-icons/fa';
 import SortbyReactSelect from './SortByReactSelect';
 import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
 import { getNumFB, sortCourses } from '../courseUtilities';
+import styled from 'styled-components';
+
+const StyledExpandLink = styled(Button)`
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: normal;
+  &:hover {
+    text-decoration: none !important;
+    color: ${({ theme }) => theme.primary};
+  }
+  &:focus {
+    box-shadow: none !important;
+  }
+`;
 
 /**
  * Render expanded worksheet list after maximize button is clicked
@@ -58,6 +71,7 @@ const WorksheetExpandedList = ({
       <Row className="mx-auto">
         {/* Season and FB friends dropdown */}
         <Col md={3} className="p-0">
+          <StyledExpandLink variant='link' className='mb-2' onClick={() => setCurExpand('none')}>Go to calendar view</StyledExpandLink>
           <SurfaceComponent layer={0} className={styles.select_col + ' p-2'}>
             <Row className="mx-auto">
               <div
@@ -91,7 +105,7 @@ const WorksheetExpandedList = ({
             <Row className="mx-auto">
               <SortbyReactSelect setOrdering={setOrdering} />
             </Row>
-            <StyledExpandBtn
+            {/* <StyledExpandBtn
               className={worksheet_styles.expand_btn + ' ' + styles.top_left}
             >
               <FaCompressAlt
@@ -102,7 +116,7 @@ const WorksheetExpandedList = ({
                   setCurExpand('none');
                 }}
               />
-            </StyledExpandBtn>
+            </StyledExpandBtn> */}
           </SurfaceComponent>
         </Col>
         {/* Worksheet courses in search results format */}
