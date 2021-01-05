@@ -73,7 +73,7 @@ $log = ProjectCommon::createLog('SendCoursesTaken.txt');
 if (isset($argv)) {
     $netId = 'hzy2';
 } else {
-    $netId = ProjectCommon::casAuthenticate(false);
+    $netId = ProjectCommon::getID();
 }
 
 $courses = json_decode($_POST['courses'], true);

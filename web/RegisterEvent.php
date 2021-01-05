@@ -2,7 +2,7 @@
 require_once 'includes/ProjectCommon.php';
 
 $mysqli = ProjectCommon::createYalePlusMysqli();
-$netId = ProjectCommon::casAuthenticate(false);
+$netId = ProjectCommon::getID();
 
 $event = $_GET['event'];
 $data = $_GET['data'];

@@ -207,8 +207,7 @@ function CourseTableNavbar({
                       onClick={() => {
                         posthog.capture('login');
 
-                        window.location.href =
-                          '/legacy_api/index.php?forcelogin=1';
+                        window.location.href = '/api/auth/cas?redirect=catalog';
                       }}
                     >
                       Sign In

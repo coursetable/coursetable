@@ -145,7 +145,7 @@ const MeDropdown: React.VFC<Props> = ({
                   style={{ paddingLeft: '2px' }}
                 />
                 <a
-                  href="/legacy_api/index.php?forcelogin=1"
+                  href="/api/auth/cas?redirect=catalog"
                   className={styles.collapse_text}
                 >
                   <TextComponent type={1}>

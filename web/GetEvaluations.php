@@ -2,7 +2,7 @@
 require_once 'includes/ProjectCommon.php';
 header('Content-Type: application/json');
 
-$netId = ProjectCommon::casAuthenticate();
+$netId = ProjectCommon::getID();
 
 $courseDb = ProjectCommon::createYaleAdvancedOciMysqli();
 $evalDb = $courseDb;

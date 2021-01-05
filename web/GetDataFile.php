@@ -5,7 +5,7 @@ require_once 'includes/ProjectCommon.php';
 if (isset($_SERVER['HTTP_REFERER']) && strpos($_SERVER['HTTP_REFERER'], 'NonYale') !== false) {
     $netId = 'zpx2';
 } else {
-    $netId = ProjectCommon::casAuthenticate();
+    $netId = ProjectCommon::getID();
 }
 
 $mysqli = ProjectCommon::createYalePlusMysqli();

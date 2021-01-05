@@ -5,10 +5,9 @@ $smarty = ProjectCommon::createSmarty();
 
 // Logout if needed
 if (isset($_GET['logout'])) {
-    ProjectCommon::casLogout();
 }
 
-$netId = ProjectCommon::casAuthenticate();
+$netId = ProjectCommon::getID();
 
 
 $log = ProjectCommon::createLog('NetIds.txt');

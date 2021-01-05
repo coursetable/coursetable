@@ -117,7 +117,7 @@ $fieldRenderers['difficulty_average'] = $floatRenderer;
 ini_set('memory_limit', '256M');
 
 // Actually process the data and request
-$netId = ProjectCommon::casAuthenticate(true);
+$netId = ProjectCommon::getID();
 $season = (int)$_GET['season'];
 
 if (!$season) {

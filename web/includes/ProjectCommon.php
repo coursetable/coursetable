@@ -13,11 +13,6 @@ require_once __DIR__ . '/Config.php';
 // and Table.php
 define('DAYS_BETWEEN_FACEBOOK_UPDATES', 1);
 
-require_once __DIR__ . '/../libs/cas/CAS.php';
-
-phpCAS::client(CAS_VERSION_2_0, 'secure.its.yale.edu', 443, '/cas');
-phpCAS::setNoCasServerValidation();
-
 class ProjectCommon
 {
     public static function createMysqli($db)
@@ -81,23 +76,12 @@ class ProjectCommon
         return self::createMysqli('yaleplus');
     }
 
-    public static function casAuthenticate($force = true)
+    public static function getID()
     {
-        if ($force) {
-            phpCAS::forceAuthentication();
+        $netId = $_SERVER['HTTP_X_COURSETABLE_NETID'];
+        if ($netId != 'null') {
+            return $netId;
         }
-
-        $netId = null;
-        if (phpCAS::isAuthenticated()) {
-            $netId = phpCAS::getUser();
-        }
-
-        return $netId;
-    }
-
-    public static function casLogout()
-    {
-        phpCAS::logout();
     }
 
     public static function createLog($name = 'general')

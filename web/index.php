@@ -8,10 +8,9 @@ $logout  = isset($_GET['logout']);
 
 // Logout
 if ($logout) {
-    ProjectCommon::casLogout();
 }
 
-$netId = ProjectCommon::casAuthenticate($forceLogin);
+$netId = ProjectCommon::getID();
 $yalePlusMysqli = ProjectCommon::createYalePlusMysqli();
 $yaleAdvancedOciMysqli = ProjectCommon::createYaleAdvancedOciMysqli();
 

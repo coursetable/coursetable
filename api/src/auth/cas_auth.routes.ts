@@ -29,6 +29,20 @@ passport.deserializeUser(function (netId: string, done) {
   done(null, user);
 });
 
+const postAuth = (req: express.Request, res: express.Response): void => {
+  const redirect = req.query['redirect'] as string | undefined;
+  if (redirect && !redirect.startsWith('//')) {
+    if (redirect.startsWith('/')) {
+      return res.redirect(redirect);
+    }
+    // We prefix this with a slash to avoid an open redirect vulnerability.
+    return res.redirect(`/${redirect}`);
+  }
+
+  // If no redirect is provided, simply redirect to the auth status.
+  return res.redirect('/catalog');
+};
+
 const casLogin = function (
   req: express.Request,
   res: express.Response,
@@ -47,14 +61,7 @@ const casLogin = function (
         return next(err);
       }
 
-      const redirect = req.query['redirect'];
-      if (redirect) {
-        // We prefix this with a slash to avoid an open redirect vulnerability.
-        return res.redirect(`/${redirect}`);
-      }
-
-      // If no redirect is provided, simply redirect to the auth status.
-      return res.redirect('/api/auth/check');
+      return postAuth(req, res);
     });
   })(req, res, next);
 };
@@ -67,9 +74,14 @@ export default async (app: express.Express) => {
     if (req.user) {
       res.json({ auth: true, id: req.user.netId, user: req.user });
     } else {
-      res.json({ auth: false });
+      res.json({ auth: false, id: null });
     }
   });
 
   app.get('/api/auth/cas', casLogin);
+
+  app.post('/api/auth/logout', (req, res) => {
+    req.logOut();
+    return res.json({ success: true });
+  });
 };

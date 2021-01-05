@@ -8,10 +8,7 @@ const WorksheetLogin: React.VFC = () => {
   return (
     <div className="text-center py-5">
       <h3>
-        Please{' '}
-        <a href="/legacy_api/index.php?forcelogin=1&successurl=worksheet">
-          log in
-        </a>
+        Please <a href="/api/auth/cas?redirect=worksheet">log in</a>
       </h3>
       <div>A valid Yale NetID is required to access worksheet information.</div>
       <img

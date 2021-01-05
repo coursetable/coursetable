@@ -30,14 +30,14 @@ app.use((req, _, next) => {
 // Authentication - set X-COURSETABLE-* headers.
 const authSoft = (req, _, next) => {
   axios
-    .get(`${php_uri}/AuthStatus.php`, {
+    .get(`${api_uri}/api/auth/check`, {
       headers: {
         cookie: req.headers['cookie'] || null,
       },
     })
     .then(({ data }) => {
-      req.headers['x-coursetable-authd'] = data.success;
-      req.headers['x-coursetable-netid'] = data.netId;
+      req.headers['x-coursetable-authd'] = data.auth;
+      req.headers['x-coursetable-netid'] = data.id;
       return next();
     })
     .catch((err) => {
@@ -49,18 +49,30 @@ const authSoft = (req, _, next) => {
 // If the user does not have evals enabled, these requests are also rejected.
 const authHard = (req, res, next) => {
   axios
-    .get(`${php_uri}/AuthStatus.php`, {
+    .get(`${api_uri}/api/auth/check`, {
       headers: {
         cookie: req.headers['cookie'],
       },
     })
-    .then(({ data }) => {
-      if (!data.success) {
+    .then(async ({ data }) => {
+      if (!data.auth) {
         // Return 403 forbidden if the request lacks auth.
         return res.status(403).send('request missing authentication');
       }
 
-      if (!data.evaluationsEnabled) {
+      //TODO: perform evals request natively in api
+      //      (maybe see student.models.js?)
+      const evals_enabled = await axios
+        .get(`${php_uri}/CheckEvals.php`, {
+          headers: {
+            'x-coursetable-netid': data.id,
+          },
+        })
+        .then((response) => response.data.evaluationsEnabled)
+        .catch((err) => {
+          return next(err);
+        });
+      if (!evals_enabled) {
         // Return 403 forbidden since evals are not enabled.
         return res.status(403).send('you must enable evaluations first');
       }
@@ -74,6 +86,7 @@ const authHard = (req, res, next) => {
 
 // Setup all the proxy routes.
 
+app.use('/legacy_api', authSoft);
 app.use(
   ['/legacy_api', '/index.php'],
   createProxyMiddleware({
@@ -105,6 +118,8 @@ app.use(
   })
 );
 
+//TODO: remove authSoft from /api calls
+//      (will determine auth info from cookies)
 app.use('/api', authSoft);
 app.use(
   '/api',

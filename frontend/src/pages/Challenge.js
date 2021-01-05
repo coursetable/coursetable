@@ -264,7 +264,7 @@ function Challenge() {
           You need to be logged in via CAS to enable your account.
           <br />
           <a
-            href="/legacy_api/index.php?forcelogin=1"
+            href="/api/auth/cas?redirect=catalog"
             className="btn btn-primary mt-3"
           >
             Log in
@@ -280,7 +280,7 @@ function Challenge() {
           Please make sure you are logged in via CAS.
           <br />
           <a
-            href="/legacy_api/index.php?forcelogin=1"
+            href="/api/auth/cas?redirect=catalog"
             className="btn btn-primary mt-3"
           >
             Log in
