@@ -27,9 +27,9 @@ function Join() {
   const submission_endpoint =
     'https://api.formcake.com/api/form/76c03c68-682d-4402-8237-36c105de4aa6/submission';
   return (
-    <div className={styles.container + ' mx-auto'}>
-      <h1 className={styles.join_header + ' mt-5 mb-1'}>Join Us!</h1>
-      <p className={styles.join_description + ' mb-3'}>
+    <div className={`${styles.container} mx-auto`}>
+      <h1 className={`${styles.join_header} mt-5 mb-1`}>Join Us!</h1>
+      <p className={`${styles.join_description} mb-3`}>
         <TextComponent type={1}>We'll be in touch.</TextComponent>
       </p>
       <Form
@@ -62,7 +62,7 @@ function Join() {
               { value: 'Design', label: 'Designer' },
               { value: 'Other', label: 'Other' },
             ]}
-            placeholder={'Role(s) of Interest'}
+            placeholder="Role(s) of Interest"
           />
         </Form.Group>
         {/* Submit Button */}

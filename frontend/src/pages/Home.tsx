@@ -1,9 +1,9 @@
 import React from 'react';
 import { CardDeck, Card, Container } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import Logo from '../components/Logo';
 import Searchbar from '../components/Searchbar';
 import styles from './Home.module.css';
-import { Link } from 'react-router-dom';
 
 /**
  * Renders the Home page
@@ -15,7 +15,7 @@ const Home: React.VFC = () => {
       <Container fluid>
         <div className={styles.homepage}>
           {/* Logo */}
-          <h1 className={styles.title + ' ' + styles.coursetable_logo}>
+          <h1 className={`${styles.title} ${styles.coursetable_logo}`}>
             <Logo icon={false} />
           </h1>
           {/* Searchbar */}
@@ -27,7 +27,7 @@ const Home: React.VFC = () => {
             Don't have anything specific in mind?{' '}
             <Link to="/catalog">Browse the entire catalog</Link>
           </div>
-          <CardDeck className={styles.carddeck_container + ' mx-auto'}>
+          <CardDeck className={`${styles.carddeck_container} mx-auto`}>
             {/* Most Popular Box */}
             <Card border="primary">
               <Card.Body>

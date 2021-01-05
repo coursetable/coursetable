@@ -6,7 +6,7 @@
     "depcheck": "npx depcheck . --json"
   },
   "dependencies": {
-    "axios": "^0.21.0",
+    "axios": "^0.21.1",
     "express": "^4.17.1",
     "http-proxy-middleware": "^1.0.6",
     "morgan": "^1.10.0"

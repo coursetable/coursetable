@@ -12,16 +12,15 @@ import { toast } from 'react-toastify';
 import { NetId, Season } from './common';
 
 export type Worksheet = [Season, string][];
-export type FBFriendInfo = {
-  [key in NetId]: {
+export type FBFriendInfo = Record<
+  NetId,
+  {
     name: string;
     facebookId: string;
-  };
-};
+  }
+>;
 export type FBInfo = {
-  worksheets: {
-    [key in NetId]: Worksheet;
-  };
+  worksheets: Record<NetId, Worksheet>;
   friendInfo: FBFriendInfo;
 };
 type Store = {
@@ -42,7 +41,7 @@ UserContext.displayName = 'UserContext';
 /**
  * Stores the user's worksheet, FB login status, and FB friends' worksheets
  */
-export const UserProvider: React.FC<{}> = ({ children }) => {
+export const UserProvider: React.FC = ({ children }) => {
   // User's netId
   const [netId, setNetId] = useState<string | undefined>(undefined);
   // User's worksheet
@@ -58,7 +57,7 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
 
   // Refresh user worksheet
   const userRefresh = useCallback(
-    (suppressError: boolean = false): Promise<void> => {
+    (suppressError = false): Promise<void> => {
       return axios
         .get('/legacy_api/WorksheetActions.php?action=get&season=all')
         .then((res) => {
@@ -91,7 +90,7 @@ export const UserProvider: React.FC<{}> = ({ children }) => {
 
   // Refresh user FB stuff
   const fbRefresh = useCallback(
-    (suppressError: boolean = false): Promise<void> => {
+    (suppressError = false): Promise<void> => {
       return axios
         .get('/legacy_api/FetchFriendWorksheetsNew.php')
         .then((friends_worksheets) => {

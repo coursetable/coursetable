@@ -4,15 +4,15 @@ import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
 
 // import Logo from '../components/Logo';
-import styles from './Landing.module.css';
 import {
   FcConferenceCall,
   FcComboChart,
   FcBookmark,
   FcSearch,
 } from 'react-icons/fc';
-import LandingImage from '../images/landing_page.svg';
 import styled from 'styled-components';
+import styles from './Landing.module.css';
+import LandingImage from '../images/landing_page.svg';
 
 const StyledStat = styled.span`
   color: ${({ theme }) => theme.primary};
@@ -25,18 +25,18 @@ const StyledStat = styled.span`
 
 function Landing() {
   return (
-    <div /*className={styles.container}*/>
+    <div /* className={styles.container} */>
       <Container fluid>
         <Element name="splashpage">
-          <div className={styles.splashpage + ' mx-auto'}>
+          <div className={`${styles.splashpage} mx-auto`}>
             <Row className="mx-auto" style={{ minHeight: 'inherit' }}>
               <Col md={6} className="d-flex">
                 <div className="m-auto">
                   <h1 className="font-weight-bold text-md-left mb-4">
                     The best place to shop for classes at Yale.
                   </h1>
-                  <Row className={'pb-2 m-auto'}>
-                    <span className={styles.feature_text + ' d-inline'}>
+                  <Row className="pb-2 m-auto">
+                    <span className={`${styles.feature_text} d-inline`}>
                       <FcSearch className="mr-2 my-auto" size={20} />
                       Browse our catalog of <StyledStat>
                         80,000+
@@ -44,20 +44,20 @@ function Landing() {
                       classes
                     </span>
                   </Row>
-                  <Row className={'pb-2 m-auto'}>
+                  <Row className="pb-2 m-auto">
                     <span className={styles.feature_text}>
                       <FcComboChart className="mr-2 my-auto" size={20} />
                       Read from <StyledStat>600,000+</StyledStat> student
                       evaluation comments
                     </span>
                   </Row>
-                  <Row className={'pb-2 m-auto'}>
+                  <Row className="pb-2 m-auto">
                     <span className={styles.feature_text}>
                       <FcBookmark className="mr-2 my-auto" size={20} />
                       Save and view classes in your worksheet
                     </span>
                   </Row>
-                  <Row className={'m-auto'}>
+                  <Row className="m-auto">
                     <span className={styles.feature_text}>
                       <FcConferenceCall className="mr-2 my-auto" size={20} />
                       See what classes your friends are interested in
@@ -66,13 +66,13 @@ function Landing() {
                   <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
                     <a
                       href="/legacy_api/index.php?forcelogin=1"
-                      className={styles.btn + ' ' + styles.login + ' mr-2'}
+                      className={`${styles.btn} ${styles.login} mr-2`}
                     >
                       Login with CAS
                     </a>
                     <Link
                       to="/about"
-                      className={styles.btn + ' ' + styles.about}
+                      className={`${styles.btn} ${styles.about}`}
                     >
                       About Us
                     </Link>

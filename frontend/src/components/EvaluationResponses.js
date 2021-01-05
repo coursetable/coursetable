@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
+import styled from 'styled-components';
 import styles from './EvaluationResponses.module.css';
 import { TextComponent } from './StyledComponents';
-import styled from 'styled-components';
 
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
@@ -11,7 +11,7 @@ const StyledTabs = styled(Tabs)`
   position: sticky;
   top: -1rem;
   .active {
-    background-color: ${({ theme }) => theme.surface[0] + ' !important'};
+    background-color: ${({ theme }) => `${theme.surface[0]} !important`};
     color: #468ff2 !important;
     border-bottom: none;
   }
@@ -56,7 +56,7 @@ const EvaluationResponses = ({ crn, info }) => {
   const [sort_order, setSortOrder] = useState('original');
 
   const sortByLength = useCallback((responses) => {
-    for (let key in responses) {
+    for (const key in responses) {
       responses[key].sort(function (a, b) {
         return b.length - a.length;
       });
@@ -66,13 +66,13 @@ const EvaluationResponses = ({ crn, info }) => {
 
   // Dictionary that holds the comments for each question
   const [responses, sorted_responses] = useMemo(() => {
-    let temp_responses = {};
+    const temp_responses = {};
     // Loop through each section for this course code
     info.forEach((section) => {
       const crn_code = section.crn;
       // Only fetch comments for this section
       if (crn_code !== crn) return;
-      const nodes = section.course.evaluation_narratives_aggregate.nodes;
+      const { nodes } = section.course.evaluation_narratives_aggregate;
       // Return if no comments
       if (!nodes.length) return;
       // Add comments to responses dictionary
@@ -103,11 +103,11 @@ const EvaluationResponses = ({ crn, info }) => {
     const cur_responses =
       sort_order === 'length' ? sorted_responses : responses;
     // Populate the lists above
-    for (let key in cur_responses) {
+    for (const key in cur_responses) {
       if (key.includes('summarize')) {
         temp_summary = cur_responses[key].map((response, index) => {
           return (
-            <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <StyledCommentRow key={index} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
@@ -115,7 +115,7 @@ const EvaluationResponses = ({ crn, info }) => {
       } else if (key.includes('recommend')) {
         temp_recommend = cur_responses[key].map((response, index) => {
           return (
-            <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <StyledCommentRow key={index} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
@@ -123,7 +123,7 @@ const EvaluationResponses = ({ crn, info }) => {
       } else if (key.includes('skills')) {
         temp_skills = cur_responses[key].map((response, index) => {
           return (
-            <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <StyledCommentRow key={index} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
@@ -131,7 +131,7 @@ const EvaluationResponses = ({ crn, info }) => {
       } else if (key.includes('strengths')) {
         temp_strengths = cur_responses[key].map((response, index) => {
           return (
-            <StyledCommentRow key={index} className={'m-auto p-2'}>
+            <StyledCommentRow key={index} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
@@ -143,7 +143,7 @@ const EvaluationResponses = ({ crn, info }) => {
 
   return (
     <div>
-      <Row className={styles.sort_by + ' mx-auto mb-2 justify-content-center'}>
+      <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
           <StyledSortOption
@@ -173,7 +173,7 @@ const EvaluationResponses = ({ crn, info }) => {
         {/* Recommend Question */}
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">
-            <Row className={styles.question_header + ' m-auto pt-2'}>
+            <Row className={`${styles.question_header} m-auto pt-2`}>
               <TextComponent type={0}>
                 Would you recommend this course to another student? Please
                 explain.
@@ -185,7 +185,7 @@ const EvaluationResponses = ({ crn, info }) => {
         {/* Knowledge/Skills Question */}
         {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
-            <Row className={styles.question_header + ' m-auto pt-2'}>
+            <Row className={`${styles.question_header} m-auto pt-2`}>
               <TextComponent type={0}>
                 What knowledge, skills, and insights did you develop by taking
                 this course?
@@ -197,7 +197,7 @@ const EvaluationResponses = ({ crn, info }) => {
         {/* Strengths/Weaknesses Question */}
         {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
-            <Row className={styles.question_header + ' m-auto pt-2'}>
+            <Row className={`${styles.question_header} m-auto pt-2`}>
               <TextComponent type={0}>
                 What are the strengths and weaknesses of this course and how
                 could it be improved?
@@ -209,7 +209,7 @@ const EvaluationResponses = ({ crn, info }) => {
         {/* Summarize Question */}
         {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
-            <Row className={styles.question_header + ' m-auto pt-2'}>
+            <Row className={`${styles.question_header} m-auto pt-2`}>
               <TextComponent type={0}>
                 How would you summarize this course? Would you recommend it to
                 another student? Why or why not?

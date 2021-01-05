@@ -24,13 +24,13 @@ const StyledToggle = styled.div`
 const ListGridToggle = ({ isList, setView }) => {
   return (
     <StyledToggle
-      className={'d-flex ml-auto my-auto'}
+      className="d-flex ml-auto my-auto"
       onClick={() => setView(!isList)}
     >
       {!isList ? (
-        <FaBars className={'m-auto'} size={15} />
+        <FaBars className="m-auto" size={15} />
       ) : (
-        <FaTh className={'m-auto'} size={15} />
+        <FaTh className="m-auto" size={15} />
       )}
     </StyledToggle>
   );

@@ -66,7 +66,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
       let earliest = moment().hour(20);
       let latest = moment().hour(0);
       // List of event dictionaries
-      let parsedCourses = [];
+      const parsedCourses = [];
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
         if (hidden_courses[course.crn]) return;
@@ -105,7 +105,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event) => {
-      let style = {
+      const style = {
         backgroundColor: event.listing.color,
         borderColor: event.listing.border,
         borderWidth: '2px',
@@ -117,7 +117,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
         style.opacity = '30%';
       }
       return {
-        style: style,
+        style,
       };
     },
     [hover_course]
@@ -156,7 +156,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
   return (
     <StyledCalendar
       // Show Mon-Fri
-      defaultView={'work_week'}
+      defaultView="work_week"
       views={['work_week']}
       events={ret_values[2]}
       // Earliest course time or 8am if no courses

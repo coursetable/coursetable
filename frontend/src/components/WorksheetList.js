@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
-import styles from './WorksheetList.module.css';
 import { ListGroup } from 'react-bootstrap';
+import styles from './WorksheetList.module.css';
 import WorksheetRowDropdown from './WorksheetRowDropdown';
 import { SurfaceComponent } from './StyledComponents';
 import WorksheetListItem from './WorksheetListItem';
@@ -38,7 +38,7 @@ function WorksheetList({
   const buildHtml = useCallback(
     (cur_season, courses) => {
       // List to hold HTML
-      let items = [];
+      const items = [];
 
       // Iterate over all listings of this season
       courses.forEach((course, id) => {
@@ -79,7 +79,7 @@ function WorksheetList({
         areHidden={Object.keys(hidden_courses).length === courses.length}
       />
       {/* List of courses for this season */}
-      <SurfaceComponent layer={0} className={styles.table + ' mx-1'}>
+      <SurfaceComponent layer={0} className={`${styles.table} mx-1`}>
         {items.length > 0 ? (
           // There are courses for this season
           <ListGroup variant="flush">{items}</ListGroup>

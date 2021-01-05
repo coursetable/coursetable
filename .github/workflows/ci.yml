@@ -30,7 +30,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('api/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - run: cd api && npm install --global yarn && yarn
+      - run: cd api && yarn install --frozen-lockfile
       - run: cd api && yarn run checks
 
   frontend:
@@ -53,10 +53,10 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('frontend/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - run: cd frontend && npm install --global yarn && yarn
+      - run: cd frontend && yarn install --frozen-lockfile
       - run: cd frontend && yarn run lint-check
       - run: cd frontend && yarn run depcheck
-      - run: cd frontend && yarn run build
+      - run: cd frontend && CI=false yarn run build
 
   proxy:
     runs-on: ubuntu-latest
@@ -78,7 +78,7 @@ jobs:
           key: ${{ runner.os }}-yarn-${{ hashFiles('proxy/yarn.lock') }}
           restore-keys: |
             ${{ runner.os }}-yarn-
-      - run: cd proxy && npm install --global yarn && yarn
+      - run: cd proxy && yarn install --frozen-lockfile
       - run: cd proxy && yarn run lint-check
       - run: cd proxy && yarn run depcheck
 

@@ -1,10 +1,10 @@
-import React, { Fragment, useCallback } from 'react';
-import styles from './MeDropdown.module.css';
+import React, { useCallback } from 'react';
 import axios from 'axios';
-import { useUser } from '../user';
 import { toast } from 'react-toastify';
 import { FaSyncAlt } from 'react-icons/fa';
 import posthog from 'posthog-js';
+import { useUser } from '../user';
+import styles from './MeDropdown.module.css';
 import { TextComponent, StyledHoverText } from './StyledComponents';
 
 /**
@@ -89,7 +89,7 @@ function FBLoginButton() {
         </TextComponent>
       )}
       {logged_in && (
-        <Fragment>
+        <>
           <TextComponent
             type={1}
             onClick={handleLogoutClick}
@@ -99,13 +99,13 @@ function FBLoginButton() {
           </TextComponent>
 
           <FaSyncAlt
-            className={styles.fb_sync + ' ml-2 my-auto'}
+            className={`${styles.fb_sync} ml-2 my-auto`}
             size={15}
             color="#32CD32"
             title="Refresh FB friends"
             onClick={handleLoginClick}
           />
-        </Fragment>
+        </>
       )}
     </div>
   );

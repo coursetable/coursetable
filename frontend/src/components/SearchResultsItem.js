@@ -2,23 +2,22 @@ import React, { useState, useEffect, useMemo } from 'react';
 
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
+import chroma from 'chroma-js';
+import { IoMdSunny } from 'react-icons/io';
+import { FcCloseUpMode } from 'react-icons/fc';
+import { FaCanadianMapleLeaf } from 'react-icons/fa';
+import styled from 'styled-components';
 import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
 } from '../queries/Constants';
 
-import chroma from 'chroma-js';
-
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import { IoMdSunny } from 'react-icons/io';
-import { FcCloseUpMode } from 'react-icons/fc';
-import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './SearchResultsItem.module.css';
-import styled from 'styled-components';
 import { getOverallRatings } from '../courseUtilities';
 
 // Row for search results item
@@ -62,7 +61,7 @@ const SearchResultsItem = ({
   }, [mounted]);
 
   // Season code for this listing
-  const season_code = course.season_code;
+  const { season_code } = course;
   const season = season_code[5];
   const year = season_code.substr(2, 2);
   // Size of season icons
@@ -86,10 +85,10 @@ const SearchResultsItem = ({
   const season_tooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
       <small>
-        {seasons[season - 1].charAt(0).toUpperCase() +
-          seasons[season - 1].slice(1) +
-          ' ' +
-          season_code.substr(0, 4)}
+        {`${
+          seasons[season - 1].charAt(0).toUpperCase() +
+          seasons[season - 1].slice(1)
+        } ${season_code.substr(0, 4)}`}
       </small>
     </Tooltip>
   );
@@ -112,14 +111,14 @@ const SearchResultsItem = ({
           {course.description
             ? course.description.length <= 500
               ? course.description
-              : course.description.slice(0, 500) + '...'
+              : `${course.description.slice(0, 500)}...`
             : 'no description'}
           <br />
           <div className="text-danger">
             {course.requirements &&
               (course.requirements.length <= 250
                 ? course.requirements
-                : course.requirements.slice(0, 250) + '...')}
+                : `${course.requirements.slice(0, 250)}...`)}
           </div>
         </Popover.Content>
       </StyledPopover>
@@ -157,14 +156,12 @@ const SearchResultsItem = ({
 
   return (
     <StyledResultsItem
-      className={
-        'mx-auto pl-4 pr-2 py-0 justify-content-between ' +
-        Styles.search_result_item +
-        ' ' +
-        (isFirst ? Styles.first_search_result_item : '') +
+      className={`mx-auto pl-4 pr-2 py-0 justify-content-between ${
+        Styles.search_result_item
+      } ${
+        isFirst ? Styles.first_search_result_item : ''
         // red background if class is cancelled
-        (course.extra_info !== 'ACTIVE' ? ' ' + Styles.cancelled_class : '')
-      }
+      }${course.extra_info !== 'ACTIVE' ? ` ${Styles.cancelled_class}` : ''}`}
       onClick={() => {
         showModal(course);
       }}
@@ -177,30 +174,30 @@ const SearchResultsItem = ({
             delay={{ show: 500, hide: 250 }}
             overlay={season_tooltip}
           >
-            <div className={Styles.skills_areas + ' my-auto'}>
+            <div className={`${Styles.skills_areas} my-auto`}>
               <Badge
                 variant="secondary"
-                className={
-                  Styles.tag + ' ' + Styles[seasons[parseInt(season) - 1]]
-                }
+                className={`${Styles.tag} ${
+                  Styles[seasons[parseInt(season, 10) - 1]]
+                }`}
                 key={season}
               >
                 <div style={{ display: 'inline-block' }}>{icon}</div>
-                &nbsp;{"'" + year}
+                &nbsp;{`'${year}`}
               </Badge>
             </div>
           </OverlayTrigger>
         </div>
       )}
-      {/* Course Code*/}
+      {/* Course Code */}
       <div
         style={code_style}
-        className={Styles.ellipsis_text + ' font-weight-bold'}
+        className={`${Styles.ellipsis_text} font-weight-bold`}
       >
         {course.course_code}
         <TextComponent type={1}>
           {course.section
-            ? ' ' + (course.section.length > 1 ? '' : '0') + course.section
+            ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
             : ''}
         </TextComponent>
       </div>
@@ -218,7 +215,7 @@ const SearchResultsItem = ({
         <StyledRating
           rating={course_rating}
           colormap={ratingColormap}
-          className={Styles.rating_cell + ' m-auto'}
+          className={`${Styles.rating_cell} m-auto`}
         >
           {
             // String representation of rating to be displayed
@@ -235,7 +232,7 @@ const SearchResultsItem = ({
         <StyledRating
           rating={course.average_professor}
           colormap={ratingColormap}
-          className={Styles.rating_cell + ' m-auto'}
+          className={`${Styles.rating_cell} m-auto`}
         >
           {course.average_professor
             ? course.average_professor.toFixed(1)
@@ -247,7 +244,7 @@ const SearchResultsItem = ({
         <StyledRating
           rating={course.average_workload}
           colormap={workloadColormap}
-          className={Styles.rating_cell + ' m-auto'}
+          className={`${Styles.rating_cell} m-auto`}
         >
           {course.average_workload ? course.average_workload.toFixed(1) : 'N/A'}
         </StyledRating>
@@ -287,11 +284,11 @@ const SearchResultsItem = ({
       {/* Skills and Areas */}
 
       <div style={sa_style} className="d-flex">
-        <span className={Styles.skills_areas + ' '}>
+        <span className={`${Styles.skills_areas} `}>
           {course.skills.map((skill, index) => (
             <Badge
               variant="secondary"
-              className={Styles.tag + ' my-auto'}
+              className={`${Styles.tag} my-auto`}
               key={index}
               style={{
                 color: skillsAreasColors[skill],
@@ -306,7 +303,7 @@ const SearchResultsItem = ({
           {course.areas.map((area, index) => (
             <Badge
               variant="secondary"
-              className={Styles.tag + ' my-auto'}
+              className={`${Styles.tag} my-auto`}
               key={index}
               style={{
                 color: skillsAreasColors[area],

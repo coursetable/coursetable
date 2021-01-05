@@ -18,7 +18,7 @@ import { TextComponent } from './StyledComponents';
 
 const EvaluationRatings = ({ crn, info }) => {
   // List of dictionaries that holds the ratings for each question as well as the question text
-  let ratings = [];
+  const ratings = [];
   // Loop through each section
   info.forEach((section) => {
     const crn_code = section.crn;
@@ -39,7 +39,7 @@ const EvaluationRatings = ({ crn, info }) => {
   });
 
   // Dictionary with ratings for each question
-  let filtered_ratings = {
+  const filtered_ratings = {
     assessment: [],
     workload: [],
     engagement: [],
@@ -56,14 +56,14 @@ const EvaluationRatings = ({ crn, info }) => {
     });
   });
 
-  let items = [];
+  const items = [];
   questions.forEach((question) => {
     if (filtered_ratings[question].length) {
       items.push(
         <div key={question}>
           <Row className="mx-auto mb-1 pl-1 justify-content-center">
             <strong>{graph_titles[question]}</strong>
-            <small className={styles.question_text + ' text-center'}>
+            <small className={`${styles.question_text} text-center`}>
               <TextComponent type={1}>{question_text[question]}</TextComponent>
             </small>
           </Row>

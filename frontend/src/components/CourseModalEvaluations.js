@@ -16,8 +16,8 @@ const CourseModalEvaluations = ({ season_code, crn, course_code }) => {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
-      season_code: season_code,
-      course_code: course_code ? course_code : 'bruh',
+      season_code,
+      course_code: course_code || 'bruh',
     },
   });
   // Wait until fetched

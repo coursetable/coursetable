@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { Form, InputGroup, Button, Row } from 'react-bootstrap';
-import styles from './Searchbar.module.css';
 import { BsSearch } from 'react-icons/bs';
 import { Redirect } from 'react-router-dom';
 import posthog from 'posthog-js';
+import styles from './Searchbar.module.css';
 
 /**
  * Renders search bar to search the catalog
@@ -14,7 +14,7 @@ function Searchbar({ bar_size }) {
   // State that holds value to be searched
   const [value, setValue] = useState('');
   // Ref to get the value from the search bar
-  let input = useRef();
+  const input = useRef();
   // On form submit, set value state to the searched value
   const searched = (event) => {
     posthog.capture('search', {
@@ -49,7 +49,7 @@ function Searchbar({ bar_size }) {
           <Button
             type="submit"
             variant="outline-secondary"
-            className={styles.search_btn + ' p-0'}
+            className={`${styles.search_btn} p-0`}
             style={{ width: bar_size === 'lg' ? '50px' : '38px' }}
           >
             <Row className="m-auto justify-content-center">
