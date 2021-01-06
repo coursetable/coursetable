@@ -7,80 +7,66 @@ Thanks for taking the initiative to get started with CourseTable! Here are a few
 
 We hope you’ll enjoy building something your friends can use as well!
 
-## Development Environment Setup
+## Initial Development Environment Setup
+
+<details>
+  <summary><strong>Initial setup for Windows only</strong></summary>
+
+Cause Windows is a special little baby, there's some things we got to do to get this working correctly.
+
+1. Install [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started)
+
+1. Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Ubuntu 20.04 LTS)
+
+   Follow Steps 1 - 6 at the link above.
+
+   For Step 6, download [Ubuntu 20.04 LTS](https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1).
+
+</details>
+
+---
 
 **For Everyone**
 
 1. Install [Visual Studio Code](https://code.visualstudio.com/Download)
 
-    > For Windows: When installing, make sure `Add to PATH (requires shell restart)` option is checked. You can make sure that it was added by going to Control Panel -> System and Security -> System -> Advanced System Settings -> Environment Variables... -> Under your user variables double-click `Path`. Here you should see an entry that looks like `C:\Users\<your-user-name-here>\AppData\Local\Programs\Microsoft VS Code\bin`. If you don't, click `New` and add it here.
+   > **For Windows**: When installing, make sure `Add to PATH (requires shell restart)` option is checked. You can make sure that it was added by going to Control Panel -> System and Security -> System -> Advanced System Settings -> Environment Variables... -> Under your user variables double-click `Path`. Here you should see an entry that looks like `C:\Users\<your-user-name-here>\AppData\Local\Programs\Microsoft VS Code\bin`. If you don't, click `New` and add it here.
 
-    Once installed, open VSCode and install the following extensions:
+   Once installed, open VSCode and install the following extensions:
 
-    - [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) (only needed for Windows)
-    - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
-    - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
-    - [GraphQL](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql)
+   - [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) (only needed for Windows)
+   - [Prettier](https://marketplace.visualstudio.com/items?itemName=esbenp.prettier-vscode)
+   - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
+   - [GraphQL](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql)
 
 1. Join our GitHub organization and clone the repository
 
-    Make sure that you're added to the [CourseTable GitHub organization](https://github.com/coursetable).
+   Make sure that you're added to the [CourseTable GitHub organization](https://github.com/coursetable).
 
-    Clone the [coursetable/coursetable repository](https://github.com/coursetable/coursetable) by installing and using [GitHub Desktop](https://desktop.github.com/) or running `git clone git@github.com:coursetable/coursetable.git`.
+   Clone the [coursetable/coursetable repository](https://github.com/coursetable/coursetable) by running `git clone https://github.com/coursetable/coursetable.git`.
+
+   > **For Windows**: Make sure to clone the repository in your Linux filesystem in Ubuntu using Windows Terminal (NOT your Windows filesystem). This will allow React hot reloading to work.
+   > After cloning, cd to the repository. Open the repository in VSCode by running the command `code .`. This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-20.04`. Also, make sure that the bar in the bottom right says `LF` and not `CRLF`.
 
 1. Create `facebook.env`
-  
-    Create the `facebook.env` file with the following contents.
 
-    ```sh
-    FACEBOOK_APP_ID=185745958145518
-    FACEBOOK_APP_SECRET=<redacted>
-    ```
+   Create the `facebook.env` file with the following contents in the directory you just cloned.
 
-    The app secret should be replaced by the actual value - reach out to us to get this. Alternatively, if you don't intend to test anything related to the Facebook integration, you can just leave that value empty.
+   ```sh
+   FACEBOOK_APP_ID=185745958145518
+   FACEBOOK_APP_SECRET=<redacted>
+   ```
+
+   The app secret should be replaced by the actual value - reach out to us to get this. Alternatively, if you don't intend to test anything related to the Facebook integration, you can just leave that value empty.
 
 1. Install Docker
-    - Mac or Windows: Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-      > For Windows: Make sure `Enable WSL 2 Windows Features` is checked during installation.
+   - Mac or Windows: Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
-    - Linux: Install [Docker CE](https://docs.docker.com/engine/install/)
- and [Docker Compose](https://docs.docker.com/compose/install/)
+     > **For Windows**: Make sure `Enable WSL 2 Windows Features` is checked during installation.
 
-<details>
-  <summary><strong>Additional setup for Windows</strong></summary>
-
-  Cause Windows is a special little baby, there's a lot of things we got to do to get this working correctly.
-  
-  1. Install [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started)
-
-  1. Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) (Ubuntu 20.04 LTS)
-
-      Follow Steps 1 - 6 at the link above.
-
-      For Step 6, download [Ubuntu 20.04 LTS](https://www.microsoft.com/en-us/p/ubuntu-2004-lts/9n6svws3rx71?rtc=1).
-
-      Then, cd to the repository in Ubuntu using Windows Terminal. Open the repository in VSCode by running the command `code .`. This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-20.04`.
-
-  1. Change CRLF to LF
-
-      Since Linux uses LF (and Windows uses CRLF) for line endings, run the following commands in the coursetable root directory.
-
-      ```
-      git config core.autocrlf false 
-      git rm --cached -r . 
-      git reset --hard
-      ```
-
-      If you get permission errors, then run the commands again with `sudo` at the beginning of each line.
-
-      Make sure that it changed correctly by opening the repository in VSCode and looking at the bar in the bottom right for `LF`.
-
-  1. Restart Windows Terminal
-
-      Close and reopen Windows Terminal.
-
-</details>
+   - Linux: Install [Docker CE](https://docs.docker.com/engine/install/)
+     and [Docker Compose](https://docs.docker.com/compose/install/)
 
 ## Aside: a quick explainer on docker-compose
 
@@ -106,42 +92,40 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
 1. Cd to the cloned coursetable root directory
 
-    > For Windows: Make sure you are in Ubuntu in Windows Terminal
+   > **For Windows**: Make sure you are in Ubuntu in Windows Terminal
 
 2. Start coursetable
 
-    ```sh
-    cd docker
-    docker-compose up -d
-    docker-compose logs -f
-    ```
+   ```sh
+   cd docker
+   docker-compose up -d
+   docker-compose logs -f
+   ```
 
 3. Wait ~10 minutes. If you’re curious, here's what's going on:
 
-    - Installing Node.js module dependencies
-    - Installing PHP (Composer) packages
-    - Setting up the database schema
-    - Generating some JSON data files
+   - Installing Node.js module dependencies
+   - Installing PHP (Composer) packages
+   - Setting up the database schema
+   - Generating some JSON data files
 
 4. Start again
 
-    Not everything comes up the first time because of our inter-service dependencies. Run these commands. You might need to do this a couple times.
+   Not everything comes up the first time because of our inter-service dependencies. Run these commands. You might need to do this a couple times.
 
-    ```sh
-    # kill the docker-compose logs -f command from above using Cmd (Ctrl) + C
-    docker-compose up -d
-    docker-compose logs -f
-    ```
+   ```sh
+   # kill the docker-compose logs -f command from above using Cmd (Ctrl) + C
+   docker-compose up -d
+   docker-compose logs -f
+   ```
 
 5. Navigate to https://localhost:8080.
 
-    You should have a working CourseTable site! You will have to click ignore on a “self-signed certificate” error in your browser.
+   You should have a working CourseTable site! You will have to click ignore on a “self-signed certificate” error in your browser.
 
 6. Make some changes!
 
-    Most changes you make will automatically get picked up - all you'll need to do is reload.
-
-    > For Windows: If you are working on the frontend, you will need to restart the docker_frontend_1 container (which you can do in the Docker Desktop app) to update the local React server with your changes
+   Most changes you make will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page.
 
 ## Troubleshooting
 
