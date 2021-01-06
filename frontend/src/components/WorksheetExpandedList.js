@@ -72,21 +72,22 @@ const WorksheetExpandedList = ({
       <Row className="mx-auto">
         {/* Worksheet courses in search results format */}
         <Col md={9} className="pr-3 pl-0">
-          <div className={styles.search_results}>
-            <SearchResults
-              data={WorksheetData}
-              showModal={showModal}
-              expanded={cur_expand !== 'list'}
-              isLoggedIn
-              isList={isList}
-              setView={setView}
-              num_fb={num_fb}
-            />
-          </div>
+          <SearchResults
+            data={WorksheetData}
+            showModal={showModal}
+            expanded={cur_expand !== 'list'}
+            isLoggedIn
+            isList={isList}
+            setView={setView}
+            num_fb={num_fb}
+          />
         </Col>
         {/* Season and FB friends dropdown */}
         <Col md={3} className="p-0">
-          <SurfaceComponent layer={0} className={`${styles.select_col} p-2`}>
+          <SurfaceComponent
+            layer={0}
+            className={`${styles.select_col} p-2 mt-3`}
+          >
             <Row className="mx-auto">
               <StyledExpandLink
                 variant="link"

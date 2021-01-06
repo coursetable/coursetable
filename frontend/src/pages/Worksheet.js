@@ -254,13 +254,13 @@ function Worksheet() {
       {!is_mobile ? (
         /* Desktop View */
         <div className={styles.desktop_container}>
-          <Row className={cur_expand === 'list' ? 'm-3' : 'mx-3 mb-3'}>
+          <Row className={cur_expand === 'list' ? 'mx-3' : 'mx-3 mb-3'}>
             {/* Calendar Component */}
             <Col
               // Width of component depends on if it is expanded or not
               md={cur_expand === 'calendar' ? 12 : 9}
-              className={`${styles.calendar} mt-3 pl-0 ${
-                cur_expand === 'calendar' ? 'pr-0 ' : 'pr-4 '
+              className={`mt-3 pl-0 ${
+                cur_expand === 'calendar' ? 'pr-0 ' : 'pr-3 '
               }${cur_expand === 'list' ? styles.hidden : ''}`}
             >
               <SurfaceComponent
@@ -305,9 +305,9 @@ function Worksheet() {
             <Col
               // Width depends on if it is expanded or not
               md={cur_expand === 'list' ? 12 : 3}
-              className={`ml-auto ${
-                cur_expand === 'list' ? ' px-2 ' : 'px-0 '
-              }${cur_expand === 'calendar' ? styles.hidden : ''}`}
+              className={`ml-auto px-0 ${
+                cur_expand === 'calendar' ? styles.hidden : ''
+              }`}
             >
               {/* Expanded List Component */}
               <Fade in={cur_expand === 'list'}>

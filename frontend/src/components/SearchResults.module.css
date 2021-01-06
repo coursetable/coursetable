@@ -10,15 +10,16 @@
 .results_list_container {
   border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
   overflow: hidden;
 }
 
-.sticky_header {
+/* .sticky_header {
   position: sticky !important;
   top: 56px !important;
   z-index: 1;
   border-radius: 8px 8px 0px 0px;
-}
+} */
 
 .results_header_row {
   user-select: none;

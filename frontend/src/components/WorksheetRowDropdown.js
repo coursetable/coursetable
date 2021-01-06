@@ -94,7 +94,7 @@ function WorksheetRowDropdown({
     <StyledSpacer className="pt-3">
       <StyledContainer layer={1} className="mx-1">
         <div className="shadow-sm p-2">
-          <Row className="mx-auto justify-content-end">
+          <Row className="mx-auto">
             <Col className="px-0">
               <StyledExpandLink
                 variant="link"
