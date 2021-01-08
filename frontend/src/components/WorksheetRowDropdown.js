@@ -1,14 +1,14 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 
-import { Row, Col } from 'react-bootstrap';
-import { FaExpandAlt } from 'react-icons/fa';
+import { Row, Col, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './WorksheetRowDropdown.module.css';
-import worksheet_styles from '../pages/Worksheet.module.css';
+// import worksheet_styles from '../pages/Worksheet.module.css';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
-import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
+import { SurfaceComponent } from './StyledComponents';
 import { useUser } from '../user';
+import { BsArrowRight, BsEyeSlash, BsEye } from 'react-icons/bs';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -20,11 +20,49 @@ const StyledSpacer = styled.div`
   z-index: 2;
 `;
 
+const StyledBtn = styled.div`
+  background-color: ${({ theme }) => theme.select};
+  color: ${({ theme }) => theme.text[0]};
+  padding: 5px;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.2s linear !important;
+  border: ${({ theme }) =>
+    theme.theme === 'light'
+      ? '2px solid hsl(0, 0%, 90%)'
+      : '2px solid rgba(0,0,0,0.1)'};
+  border-radius: 8px;
+
+  &:hover {
+    border: 2px solid #cccccc;
+  }
+
+  &:focus {
+    background-color: ${({ theme }) => theme.select};
+  }
+
+  &.form-control:focus {
+    color: ${({ theme }) => theme.text[0]};
+  }
+`;
+
 // Container of row dropdown (without spacer)
 const StyledContainer = styled(SurfaceComponent)`
   border-top-left-radius: 8px;
   border-top-right-radius: 8px;
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+`;
+
+const StyledExpandLink = styled(Button)`
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: normal;
+  &:hover {
+    text-decoration: none !important;
+    color: ${({ theme }) => theme.primary};
+  }
+  &:focus {
+    box-shadow: none !important;
+  }
 `;
 
 /**
@@ -35,6 +73,8 @@ const StyledContainer = styled(SurfaceComponent)`
  * @prop setFbPerson - function to change FB person
  * @prop cur_person - string of current person who's worksheet we are viewing
  * @prop setCurExpand - function to change worksheet view
+ * @prop toggleCourse - function to hide courses
+ * @prop areHidden - boolean | are all courses hidden
  */
 
 function WorksheetRowDropdown({
@@ -44,6 +84,8 @@ function WorksheetRowDropdown({
   setFbPerson,
   cur_person,
   setCurExpand,
+  toggleCourse,
+  areHidden,
 }) {
   // Fetch user context data
   const { user } = useUser();
@@ -51,38 +93,79 @@ function WorksheetRowDropdown({
   return (
     <StyledSpacer className="pt-3">
       <StyledContainer layer={1} className="mx-1">
-        <Row className="shadow-sm mx-auto pt-2 pb-2">
-          {/* Season Select */}
-          <Col md={6} className="pl-2 pr-1">
-            <div
-              className={`${styles.select_container} ${styles.hover_effect}`}
-            >
-              <SeasonReactSelect
-                cur_season={cur_season}
-                season_codes={season_codes}
-                onSeasonChange={onSeasonChange}
-              />
-            </div>
-          </Col>
-          {/* FB Friend Select */}
-          <Col md={6} className="pr-2 pl-1">
-            <div
-              className={
-                styles.select_container +
-                (user.fbLogin ? ` ${styles.hover_effect}` : '')
-              }
-            >
-              <FBReactSelect
-                cur_season={cur_season}
-                setFbPerson={setFbPerson}
-                cur_person={cur_person}
-              />
-            </div>
-          </Col>
-        </Row>
+        <div className="shadow-sm p-2">
+          <Row className="mx-auto">
+            <Col className="px-0">
+              <StyledExpandLink
+                variant="link"
+                className="py-0"
+                onClick={() => setCurExpand('list')}
+              >
+                Go to list view <BsArrowRight size={24} />
+              </StyledExpandLink>
+            </Col>
+          </Row>
+          <Row className="mx-auto mt-2">
+            {/* Season Select */}
+            <Col md={6} className="pl-0 pr-2">
+              <div
+                className={`${styles.select_container} ${styles.hover_effect}`}
+              >
+                <SeasonReactSelect
+                  cur_season={cur_season}
+                  season_codes={season_codes}
+                  onSeasonChange={onSeasonChange}
+                />
+              </div>
+            </Col>
+            {/* FB Friend Select */}
+            <Col md={6} className="px-0">
+              <div
+                className={
+                  styles.select_container +
+                  (user.fbLogin ? styles.hover_effect : '')
+                }
+              >
+                <FBReactSelect
+                  cur_season={cur_season}
+                  setFbPerson={setFbPerson}
+                  cur_person={cur_person}
+                />
+              </div>
+            </Col>
+          </Row>
+          <Row className="mx-auto mt-2">
+            <Col className="px-0">
+              <StyledBtn
+                className={styles.btn}
+                onClick={() => toggleCourse(areHidden ? -2 : -1)}
+              >
+                {areHidden ? (
+                  <>
+                    <BsEyeSlash /> Show
+                  </>
+                ) : (
+                  <>
+                    <BsEye /> Hide
+                  </>
+                )}{' '}
+                All
+              </StyledBtn>
+            </Col>
+            {/* <Col md={6} className="pr-2 pl-1">
+              <StyledBtn
+                className={styles.btn}
+                onClick={() => setCurExpand('list')}
+              >
+                Expand
+              </StyledBtn>
+            </Col> */}
+          </Row>
+        </div>
+
         {/* Expand Worksheet List Button */}
-        <StyledExpandBtn
-          className={`${worksheet_styles.expand_btn} ${styles.top_left}`}
+        {/* <StyledExpandBtn
+          className={worksheet_styles.expand_btn + ' ' + styles.top_left}
         >
           <FaExpandAlt
             size={12}
@@ -92,7 +175,7 @@ function WorksheetRowDropdown({
               setCurExpand('list');
             }}
           />
-        </StyledExpandBtn>
+        </StyledExpandBtn> */}
       </StyledContainer>
     </StyledSpacer>
   );

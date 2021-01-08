@@ -30,11 +30,29 @@ import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
+import styled from 'styled-components';
 import { SurfaceComponent, StyledIcon } from './StyledComponents';
 
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
+
+// Space above row dropdown to hide scrolled courses
+const StyledSpacer = styled.div`
+  background-color: ${({ theme }) => theme.background};
+  position: -webkit-sticky; /* Safari */
+  position: sticky;
+  top: 56px;
+  transition: background-color 0.2s linear;
+  z-index: 2;
+`;
+
+// Container of row dropdown (without spacer)
+const StyledContainer = styled(SurfaceComponent)`
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+`;
 
 /**
  * Renders the infinite list of search results
@@ -337,137 +355,141 @@ const SearchResults = ({
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
-    <Container
-      fluid
-      id="results_container"
-      className={`px-0 ${Styles.results_container} ${
-        expanded ? Styles.results_container_max_width : ''
-      }`}
-    >
+    <>
       {!isMobile && (
-        <SurfaceComponent layer={1} className={`${Styles.sticky_header}`}>
-          {/* Results Header */}
-          <Row
-            ref={ref}
-            className={
-              `mx-auto pl-4 pr-2 py-2 shadow-sm ${Styles.results_header_row}` +
-              ' justify-content-between'
-            }
+        <StyledSpacer className="pt-3">
+          <StyledContainer
+            layer={1}
+            id="results_container"
+            className={`px-0 mx-1 ${
+              expanded ? Styles.results_container_max_width : ''
+            }`}
           >
-            <div
-              className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+            {/* Results Header */}
+            <Row
+              ref={ref}
+              className={
+                `mx-auto pl-4 pr-2 py-2 shadow-sm ${Styles.results_header_row}` +
+                ' justify-content-between'
+              }
             >
-              <ListGridToggle isList={isList} setView={setView} />
-            </div>
-            {isList ? (
-              <>
-                {multiSeasons && (
-                  <div style={szn_style} className={Styles.results_header}>
-                    Season
+              <div
+                className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+              >
+                <ListGridToggle isList={isList} setView={setView} />
+              </div>
+              {isList ? (
+                <>
+                  {multiSeasons && (
+                    <div style={szn_style} className={Styles.results_header}>
+                      Season
+                    </div>
+                  )}
+                  <div style={code_style} className={Styles.results_header}>
+                    Code
                   </div>
-                )}
-                <div style={code_style} className={Styles.results_header}>
-                  Code
-                </div>
-                {/* Course Name */}
-                <div style={title_style} className={Styles.results_header}>
-                  <span className={Styles.one_line}>Title</span>
-                </div>
-                {/* Class Rating */}
-                <div
-                  style={rate_style}
-                  className={`${Styles.results_header} justify-content-center`}
-                >
-                  <StyledIcon>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={class_tooltip}
-                    >
-                      <Star className={Styles.icon} />
-                    </OverlayTrigger>
-                  </StyledIcon>
-                </div>
-                {/* Professor Rating */}
-                <div
-                  style={rate_style}
-                  className={`${Styles.results_header} justify-content-center`}
-                >
-                  <StyledIcon>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={prof_tooltip}
-                    >
-                      <Teacher className={Styles.prof_icon} />
-                    </OverlayTrigger>
-                  </StyledIcon>
-                </div>
-                {/* Workload Rating */}
-                <div
-                  style={rate_style}
-                  className={`${Styles.results_header} justify-content-center`}
-                >
-                  <StyledIcon>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={workload_tooltip}
-                    >
-                      <Book className={Styles.icon} />
-                    </OverlayTrigger>
-                  </StyledIcon>
-                </div>
-                <div style={num_style} className={Styles.results_header}>
-                  <OverlayTrigger
-                    placement="bottom"
-                    delay={{ show: 100, hide: 100 }}
-                    overlay={enrollment_tooltip}
+                  {/* Course Name */}
+                  <div style={title_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Title</span>
+                  </div>
+                  {/* Class Rating */}
+                  <div
+                    style={rate_style}
+                    className={`${Styles.results_header} justify-content-center`}
                   >
-                    <span className="m-auto">#</span>
-                  </OverlayTrigger>
-                </div>
-                {/* Course Professors */}
-                <div style={prof_style} className={Styles.results_header}>
-                  <span className={Styles.one_line}>Professors</span>
-                </div>
-                {/* Course Meeting times and location */}
-                <div style={meet_style} className={Styles.results_header}>
-                  <span className={Styles.one_line}>Meets</span>
-                </div>
-                <div style={loc_style} className={Styles.results_header}>
-                  <span className={Styles.one_line}>Location</span>
-                </div>
+                    <StyledIcon>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={class_tooltip}
+                      >
+                        <Star className={Styles.icon} />
+                      </OverlayTrigger>
+                    </StyledIcon>
+                  </div>
+                  {/* Professor Rating */}
+                  <div
+                    style={rate_style}
+                    className={`${Styles.results_header} justify-content-center`}
+                  >
+                    <StyledIcon>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={prof_tooltip}
+                      >
+                        <Teacher className={Styles.prof_icon} />
+                      </OverlayTrigger>
+                    </StyledIcon>
+                  </div>
+                  {/* Workload Rating */}
+                  <div
+                    style={rate_style}
+                    className={`${Styles.results_header} justify-content-center`}
+                  >
+                    <StyledIcon>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={workload_tooltip}
+                      >
+                        <Book className={Styles.icon} />
+                      </OverlayTrigger>
+                    </StyledIcon>
+                  </div>
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={enrollment_tooltip}
+                    >
+                      <span className="m-auto">#</span>
+                    </OverlayTrigger>
+                  </div>
+                  {/* Course Professors */}
+                  <div style={prof_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Professors</span>
+                  </div>
+                  {/* Course Meeting times and location */}
+                  <div style={meet_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Meets</span>
+                  </div>
+                  <div style={loc_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Location</span>
+                  </div>
 
-                <div style={sa_style} className={Styles.results_header}>
-                  Skills/Areas
-                </div>
-                <div style={num_style} className={Styles.results_header}>
-                  <OverlayTrigger
-                    placement="bottom"
-                    delay={{ show: 100, hide: 100 }}
-                    overlay={fb_tooltip}
-                  >
-                    <span className="m-auto">#FB</span>
-                  </OverlayTrigger>
-                </div>
-              </>
-            ) : (
-              // Grid view showing how many search results
-              <Col md={10}>
-                <div className={Styles.results_header}>
-                  {`Showing ${data.length} course${
-                    data.length === 1 ? '' : 's'
-                  }...`}
-                </div>
-              </Col>
-            )}
-          </Row>
-        </SurfaceComponent>
+                  <div style={sa_style} className={Styles.results_header}>
+                    Skills/Areas
+                  </div>
+                  <div style={num_style} className={Styles.results_header}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={fb_tooltip}
+                    >
+                      <span className="m-auto">#FB</span>
+                    </OverlayTrigger>
+                  </div>
+                </>
+              ) : (
+                // Grid view showing how many search results
+                <Col md={10}>
+                  <div className={Styles.results_header}>
+                    {`Showing ${data.length} course${
+                      data.length === 1 ? '' : 's'
+                    }...`}
+                  </div>
+                </Col>
+              )}
+            </Row>
+          </StyledContainer>
+        </StyledSpacer>
       )}
       <SurfaceComponent
         layer={0}
-        className={!isList ? 'px-1 pt-3' : Styles.results_list_container}
+        className={
+          !isList ? 'px-1 pt-3' : `${Styles.results_list_container} mx-1`
+        }
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
@@ -482,7 +504,7 @@ const SearchResults = ({
           </Row>
         )}
       </SurfaceComponent>
-    </Container>
+    </>
   );
 };
 

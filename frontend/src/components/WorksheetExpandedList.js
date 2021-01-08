@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Button } from 'react-bootstrap';
 import { FaCompressAlt } from 'react-icons/fa';
+import { BsArrowLeft } from 'react-icons/bs';
 import SearchResults from './SearchResults';
 import FBReactSelect from './FBReactSelect';
 import SeasonReactSelect from './SeasonReactSelect';
@@ -13,6 +14,19 @@ import { useUser } from '../user';
 import SortbyReactSelect from './SortByReactSelect';
 import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
 import { getNumFB, sortCourses } from '../courseUtilities';
+import styled from 'styled-components';
+
+const StyledExpandLink = styled(Button)`
+  color: ${({ theme }) => theme.text[1]};
+  font-weight: normal;
+  &:hover {
+    text-decoration: none !important;
+    color: ${({ theme }) => theme.primary};
+  }
+  &:focus {
+    box-shadow: none !important;
+  }
+`;
 
 /**
  * Render expanded worksheet list after maximize button is clicked
@@ -56,10 +70,34 @@ const WorksheetExpandedList = ({
   return (
     <div className={styles.container}>
       <Row className="mx-auto">
+        {/* Worksheet courses in search results format */}
+        <Col md={9} className="pr-3 pl-0">
+          <SearchResults
+            data={WorksheetData}
+            showModal={showModal}
+            expanded={cur_expand !== 'list'}
+            isLoggedIn
+            isList={isList}
+            setView={setView}
+            num_fb={num_fb}
+          />
+        </Col>
         {/* Season and FB friends dropdown */}
         <Col md={3} className="p-0">
-          <SurfaceComponent layer={0} className={`${styles.select_col} p-2`}>
+          <SurfaceComponent
+            layer={0}
+            className={`${styles.select_col} p-2 mt-3`}
+          >
             <Row className="mx-auto">
+              <StyledExpandLink
+                variant="link"
+                className="py-0"
+                onClick={() => setCurExpand('none')}
+              >
+                <BsArrowLeft size={24} /> Go to calendar view
+              </StyledExpandLink>
+            </Row>
+            <Row className="mx-auto mt-2">
               <div
                 className={`${select_styles.select_container} ${select_styles.hover_effect}`}
               >
@@ -70,7 +108,7 @@ const WorksheetExpandedList = ({
                 />
               </div>
             </Row>
-            <Row className="mx-auto my-2">
+            <Row className="mx-auto mt-2">
               <div
                 className={
                   select_styles.select_container +
@@ -84,10 +122,10 @@ const WorksheetExpandedList = ({
                 />
               </div>
             </Row>
-            <Row className="mx-auto">
+            <Row className="mx-auto mt-2">
               <SortbyReactSelect setOrdering={setOrdering} />
             </Row>
-            <StyledExpandBtn
+            {/* <StyledExpandBtn
               className={`${worksheet_styles.expand_btn} ${styles.top_left}`}
             >
               <FaCompressAlt
@@ -98,22 +136,8 @@ const WorksheetExpandedList = ({
                   setCurExpand('none');
                 }}
               />
-            </StyledExpandBtn>
+            </StyledExpandBtn> */}
           </SurfaceComponent>
-        </Col>
-        {/* Worksheet courses in search results format */}
-        <Col md={9} className="pr-0 pl-3">
-          <div className={styles.search_results}>
-            <SearchResults
-              data={WorksheetData}
-              showModal={showModal}
-              expanded={cur_expand !== 'list'}
-              isLoggedIn
-              isList={isList}
-              setView={setView}
-              num_fb={num_fb}
-            />
-          </div>
         </Col>
       </Row>
     </div>

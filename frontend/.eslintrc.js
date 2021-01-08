@@ -34,6 +34,7 @@ module.exports = {
       'error',
       {
         endOfLine: 'auto',
+        singleQuote: true,
       },
     ],
     // TODO: Eventually we want to remove these rules (and default to error).
