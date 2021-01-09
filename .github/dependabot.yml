@@ -10,13 +10,13 @@ updates:
     schedule:
       interval: 'daily'
     reviewers:
-      - 'hsheth2'
+      - 'kevinhu'
   - package-ecosystem: 'npm'
     directory: '/proxy'
     schedule:
       interval: 'daily'
     reviewers:
-      - 'hsheth2'
+      - 'kevinhu'
   - package-ecosystem: 'npm'
     directory: '/api'
     schedule:
