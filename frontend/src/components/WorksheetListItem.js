@@ -21,7 +21,6 @@ const StyledListItem = styled(ListGroup.Item)`
   }
   &:hover .hide {
     opacity: 1;
-    transition: 0.2s opacity;
   }
 `;
 
