@@ -27,14 +27,14 @@ const StyledBtn = styled.div`
   cursor: pointer;
   text-align: center;
   transition: 0.2s linear !important;
-  border: ${({ theme }) =>
-    theme.theme === 'light'
-      ? '2px solid hsl(0, 0%, 90%)'
-      : '2px solid rgba(0,0,0,0.1)'};
+  border: solid 2px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
   &:hover {
-    border: 2px solid #cccccc;
+    border: 2px solid hsl(0, 0%, 70%);
   }
 
   &:focus {
@@ -94,6 +94,7 @@ function WorksheetRowDropdown({
     <StyledSpacer className="pt-3">
       <StyledContainer layer={1} className="mx-1">
         <div className="shadow-sm p-2">
+          {/* Go to list view link */}
           <Row className="mx-auto">
             <Col className="px-0">
               <StyledExpandLink
@@ -135,18 +136,17 @@ function WorksheetRowDropdown({
             </Col>
           </Row>
           <Row className="mx-auto mt-2">
-            <Col className="px-0">
-              <StyledBtn
-                className={styles.btn}
-                onClick={() => toggleCourse(areHidden ? -2 : -1)}
-              >
+            <Col
+              className={`px-0 ${styles.select_container} ${styles.hover_effect}`}
+            >
+              <StyledBtn onClick={() => toggleCourse(areHidden ? -2 : -1)}>
                 {areHidden ? (
                   <>
-                    <BsEyeSlash /> Show
+                    <BsEyeSlash className="my-auto pr-2" size={26} /> Show
                   </>
                 ) : (
                   <>
-                    <BsEye /> Hide
+                    <BsEye className="my-auto pr-2" size={26} /> Hide
                   </>
                 )}{' '}
                 All
