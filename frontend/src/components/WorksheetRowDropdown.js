@@ -150,12 +150,11 @@ function WorksheetRowDropdown({
               <StyledBtn onClick={() => toggleCourse(areHidden ? -2 : -1)}>
                 {areHidden ? (
                   <>
-                    <StyledBsEyeSlash className={`my-auto pr-2`} size={26} />{' '}
-                    Show
+                    <StyledBsEyeSlash className="my-auto pr-2" size={26} /> Show
                   </>
                 ) : (
                   <>
-                    <StyledBsEye className={`my-auto pr-2`} size={26} /> Hide
+                    <StyledBsEye className="my-auto pr-2" size={26} /> Hide
                   </>
                 )}{' '}
                 All

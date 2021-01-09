@@ -57,10 +57,20 @@ function WorksheetListItem({
         />
       </div>
       <Row className="align-items-center mx-auto">
+        {/* Course Code and Title */}
+        <Col
+          className={`${styles.list_text} px-2`}
+          style={color_style}
+          onClick={() => showModal(course)}
+        >
+          <strong>{course.course_code}</strong>
+          <br />
+          <span className={styles.course_title}>{course.title}</span>
+        </Col>
         {/* Hide Button */}
         <Col
           xs="auto"
-          className={`pl-0 pr-2 my-auto ${
+          className={`pl-0 pr-4 my-auto ${
             hover_course === course.crn || hidden ? 'visible' : 'invisible'
           }`}
         >
@@ -72,16 +82,6 @@ function WorksheetListItem({
               season_code={cur_season}
             />
           </Row>
-        </Col>
-        {/* Course Code and Title */}
-        <Col
-          className={`${styles.list_text} px-0`}
-          style={color_style}
-          onClick={() => showModal(course)}
-        >
-          <strong>{course.course_code}</strong>
-          <br />
-          <span className={styles.course_title}>{course.title}</span>
         </Col>
       </Row>
     </StyledListItem>
