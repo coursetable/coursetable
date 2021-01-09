@@ -4,10 +4,6 @@
   transition: 0.3s;
 }
 
-.hover_effect:hover {
-  background-color: rgba(220, 236, 255, 0.7);
-}
-
 .top_left {
   left: 0.25rem;
   top: 1rem !important;

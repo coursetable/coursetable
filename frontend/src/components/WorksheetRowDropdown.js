@@ -20,6 +20,14 @@ const StyledSpacer = styled.div`
   z-index: 2;
 `;
 
+const StyledBsEyeSlash = styled(BsEyeSlash)`
+  transition: 0.3s !important;
+`;
+
+const StyledBsEye = styled(BsEye)`
+  transition: 0.3s !important;
+`;
+
 const StyledBtn = styled.div`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
@@ -35,6 +43,12 @@ const StyledBtn = styled.div`
 
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
+    ${StyledBsEyeSlash} {
+      transform: scale(1.15);
+    }
+    ${StyledBsEye} {
+      transform: scale(1.15);
+    }
   }
 
   &:focus {
@@ -94,7 +108,7 @@ function WorksheetRowDropdown({
     <StyledSpacer className="pt-3">
       <StyledContainer layer={1} className="mx-1">
         <div className="shadow-sm p-2">
-          {/* Go to list view link */}
+          {/* Go to list view Link */}
           <Row className="mx-auto">
             <Col className="px-0">
               <StyledExpandLink
@@ -109,9 +123,7 @@ function WorksheetRowDropdown({
           <Row className="mx-auto mt-2">
             {/* Season Select */}
             <Col md={6} className="pl-0 pr-2">
-              <div
-                className={`${styles.select_container} ${styles.hover_effect}`}
-              >
+              <div className={`${styles.select_container}`}>
                 <SeasonReactSelect
                   cur_season={cur_season}
                   season_codes={season_codes}
@@ -121,12 +133,7 @@ function WorksheetRowDropdown({
             </Col>
             {/* FB Friend Select */}
             <Col md={6} className="px-0">
-              <div
-                className={
-                  styles.select_container +
-                  (user.fbLogin ? styles.hover_effect : '')
-                }
-              >
+              <div className={styles.select_container}>
                 <FBReactSelect
                   cur_season={cur_season}
                   setFbPerson={setFbPerson}
@@ -135,18 +142,20 @@ function WorksheetRowDropdown({
               </div>
             </Col>
           </Row>
+          {/* Hide/Show All Button */}
           <Row className="mx-auto mt-2">
             <Col
-              className={`px-0 ${styles.select_container} ${styles.hover_effect}`}
+              className={`px-0 ${styles.select_container} ${styles.hide_all_btn}`}
             >
               <StyledBtn onClick={() => toggleCourse(areHidden ? -2 : -1)}>
                 {areHidden ? (
                   <>
-                    <BsEyeSlash className="my-auto pr-2" size={26} /> Show
+                    <StyledBsEyeSlash className={`my-auto pr-2`} size={26} />{' '}
+                    Show
                   </>
                 ) : (
                   <>
-                    <BsEye className="my-auto pr-2" size={26} /> Hide
+                    <StyledBsEye className={`my-auto pr-2`} size={26} /> Hide
                   </>
                 )}{' '}
                 All
