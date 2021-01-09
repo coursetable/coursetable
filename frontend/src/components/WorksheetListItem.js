@@ -15,6 +15,14 @@ const StyledListItem = styled(ListGroup.Item)`
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
   }
+  .hide {
+    opacity: 0;
+    transition: 0.2s opacity;
+  }
+  &:hover .hide {
+    opacity: 1;
+    transition: 0.2s opacity;
+  }
 `;
 
 /**
@@ -32,7 +40,6 @@ function WorksheetListItem({
   showModal,
   cur_season,
   toggleCourse,
-  hover_course,
   setHoverCourse,
   hidden,
   theme,
@@ -68,12 +75,7 @@ function WorksheetListItem({
           <span className={styles.course_title}>{course.title}</span>
         </Col>
         {/* Hide Button */}
-        <Col
-          xs="auto"
-          className={`pl-0 pr-4 my-auto ${
-            hover_course === course.crn || hidden ? 'visible' : 'invisible'
-          }`}
-        >
+        <Col xs="auto" className={`pl-0 pr-2 my-auto ${'hide'}`}>
           <Row className="m-auto">
             <WorksheetHideButton
               toggleCourse={toggleCourse}

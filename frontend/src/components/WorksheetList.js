@@ -28,7 +28,6 @@ function WorksheetList({
   season_codes,
   onSeasonChange,
   toggleCourse,
-  hover_course,
   setHoverCourse,
   setFbPerson,
   cur_person,
@@ -51,7 +50,6 @@ function WorksheetList({
             cur_season={cur_season}
             showModal={showModal}
             toggleCourse={toggleCourse}
-            hover_course={hover_course}
             setHoverCourse={setHoverCourse}
             hidden={hidden_courses[course.crn]}
           />
@@ -60,7 +58,7 @@ function WorksheetList({
 
       return items;
     },
-    [hover_course, setHoverCourse, toggleCourse, showModal, hidden_courses]
+    [setHoverCourse, toggleCourse, showModal, hidden_courses]
   );
 
   const items = useMemo(() => {

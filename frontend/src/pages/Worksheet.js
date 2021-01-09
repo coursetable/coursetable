@@ -336,7 +336,6 @@ function Worksheet() {
                     onSeasonChange={changeSeason}
                     toggleCourse={toggleCourse}
                     hidden_courses={hidden_courses}
-                    hover_course={hover_course}
                     setHoverCourse={setHoverCourse}
                     setFbPerson={handleFBPersonChange}
                     cur_person={fb_person}
