@@ -75,7 +75,7 @@ function WorksheetListItem({
           <span className={styles.course_title}>{course.title}</span>
         </Col>
         {/* Hide Button */}
-        <Col xs="auto" className={'pl-0 pr-2 my-auto hidden'}>
+        <Col xs="auto" className="pl-0 pr-2 my-auto hidden">
           <Row className="m-auto">
             <WorksheetHideButton
               toggleCourse={toggleCourse}
