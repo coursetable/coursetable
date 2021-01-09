@@ -32,6 +32,7 @@ function WorksheetListItem({
   showModal,
   cur_season,
   toggleCourse,
+  hover_course,
   setHoverCourse,
   hidden,
   theme,
@@ -57,7 +58,12 @@ function WorksheetListItem({
       </div>
       <Row className="align-items-center mx-auto">
         {/* Hide Button */}
-        <Col xs="auto" className="pl-0 pr-2 my-auto">
+        <Col
+          xs="auto"
+          className={`pl-0 pr-2 my-auto ${
+            hover_course === course.crn || hidden ? 'visible' : 'invisible'
+          }`}
+        >
           <Row className="m-auto">
             <WorksheetHideButton
               toggleCourse={toggleCourse}
