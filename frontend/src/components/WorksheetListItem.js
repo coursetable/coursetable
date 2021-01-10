@@ -66,7 +66,7 @@ function WorksheetListItem({
       <Row className="align-items-center mx-auto">
         {/* Course Code and Title */}
         <Col
-          className={`${styles.list_text} px-2`}
+          className={`${styles.list_text} pl-1 pr-2`}
           style={color_style}
           onClick={() => showModal(course)}
         >
@@ -75,7 +75,10 @@ function WorksheetListItem({
           <span className={styles.course_title}>{course.title}</span>
         </Col>
         {/* Hide Button */}
-        <Col xs="auto" className="pl-0 pr-2 my-auto hidden">
+        <Col
+          xs="auto"
+          className={`pl-0 pr-3 my-auto ${hidden ? 'visible' : 'hidden'}`}
+        >
           <Row className="m-auto">
             <WorksheetHideButton
               toggleCourse={toggleCourse}
