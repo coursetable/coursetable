@@ -28,7 +28,7 @@ const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
 
   return (
     <OverlayTrigger
-      placement="left"
+      placement="bottom"
       delay={{ show: 1000, hide: 250 }}
       overlay={renderTooltip}
     >
