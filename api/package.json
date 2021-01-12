@@ -15,7 +15,7 @@
   "dependencies": {
     "@types/body-parser": "^1.19.0",
     "@types/cookie-session": "^2.0.42",
-    "@types/express": "^4.17.9",
+    "@types/express": "^4.17.10",
     "@types/morgan": "^1.9.2",
     "@types/mysql": "^2.15.17",
     "@types/node": "^14.14.20",
