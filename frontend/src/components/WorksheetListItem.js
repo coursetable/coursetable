@@ -15,6 +15,14 @@ const StyledListItem = styled(ListGroup.Item)`
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
   }
+  /* Hides icon until you hover over the list item */
+  .hidden {
+    opacity: 0;
+    transition: 0.2s opacity;
+  }
+  &:hover .hidden {
+    opacity: 1;
+  }
 `;
 
 /**
@@ -56,8 +64,21 @@ function WorksheetListItem({
         />
       </div>
       <Row className="align-items-center mx-auto">
+        {/* Course Code and Title */}
+        <Col
+          className={`${styles.list_text} pl-1 pr-2`}
+          style={color_style}
+          onClick={() => showModal(course)}
+        >
+          <strong>{course.course_code}</strong>
+          <br />
+          <span className={styles.course_title}>{course.title}</span>
+        </Col>
         {/* Hide Button */}
-        <Col xs="auto" className="pl-0 pr-2 my-auto">
+        <Col
+          xs="auto"
+          className={`pl-0 pr-3 my-auto ${hidden ? 'visible' : 'hidden'}`}
+        >
           <Row className="m-auto">
             <WorksheetHideButton
               toggleCourse={toggleCourse}
@@ -66,16 +87,6 @@ function WorksheetListItem({
               season_code={cur_season}
             />
           </Row>
-        </Col>
-        {/* Course Code and Title */}
-        <Col
-          className={`${styles.list_text} px-0`}
-          style={color_style}
-          onClick={() => showModal(course)}
-        >
-          <strong>{course.course_code}</strong>
-          <br />
-          <span className={styles.course_title}>{course.title}</span>
         </Col>
       </Row>
     </StyledListItem>
