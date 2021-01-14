@@ -120,7 +120,8 @@ const SearchResults = ({
       EXTRA -
       TEMP_COL_SPACING.PROF_WIDTH -
       TEMP_COL_SPACING.MEET_WIDTH -
-      TEMP_COL_SPACING.LOC_WIDTH;
+      TEMP_COL_SPACING.LOC_WIDTH -
+      10;
 
     return TEMP_COL_SPACING;
   }, [ROW_WIDTH, multiSeasons]);
