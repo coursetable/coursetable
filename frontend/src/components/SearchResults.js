@@ -101,7 +101,7 @@ const SearchResults = ({
       RATE_WIDTH: 38,
       NUM_WIDTH: 30,
       SA_WIDTH: 100,
-      PADDING: 35,
+      PADDING: 43,
     };
 
     const EXTRA =
@@ -120,7 +120,8 @@ const SearchResults = ({
       EXTRA -
       TEMP_COL_SPACING.PROF_WIDTH -
       TEMP_COL_SPACING.MEET_WIDTH -
-      TEMP_COL_SPACING.LOC_WIDTH;
+      TEMP_COL_SPACING.LOC_WIDTH -
+      10;
 
     return TEMP_COL_SPACING;
   }, [ROW_WIDTH, multiSeasons]);
@@ -355,15 +356,13 @@ const SearchResults = ({
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
-    <>
+    <div className={expanded ? Styles.results_container_max_width : ''}>
       {!isMobile && (
         <StyledSpacer className="pt-3">
           <StyledContainer
             layer={1}
             id="results_container"
-            className={`px-0 mx-1 ${
-              expanded ? Styles.results_container_max_width : ''
-            }`}
+            className="px-0 mx-1"
           >
             {/* Results Header */}
             <Row
@@ -485,11 +484,11 @@ const SearchResults = ({
           </StyledContainer>
         </StyledSpacer>
       )}
+
       <SurfaceComponent
         layer={0}
-        className={
-          !isList ? 'px-1 pt-3' : `${Styles.results_list_container} mx-1`
-        }
+        className={`
+          mx-1 ${Styles.results_list_container} ${!isList ? 'px-1 pt-3 ' : ''}`}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
@@ -504,7 +503,7 @@ const SearchResults = ({
           </Row>
         )}
       </SurfaceComponent>
-    </>
+    </div>
   );
 };
 

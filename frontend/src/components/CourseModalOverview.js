@@ -415,7 +415,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       <Row className="m-auto">
         <Col md={7} className="px-0 mt-0 mb-3">
           {/* Course Description */}
-          <Row className="mx-auto pb-3">
+          <Row className="mx-auto">
             <ResponsiveEllipsis
               style={{ whiteSpace: 'pre-wrap' }}
               text={
@@ -425,29 +425,31 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               basedOn="words"
               onReflow={handleReflow}
             />
-            {/* Read More arrow button */}
-            {clamped && (
-              <Row className="mx-auto">
-                <StyledLink
-                  className="mx-auto"
-                  onClick={() => {
-                    setLines(100);
-                  }}
-                  title="Read More"
-                >
-                  <IoIosArrowDown size={20} />
-                </StyledLink>
-              </Row>
-            )}
-            {/* Course Requirements */}
-            {listing.requirements && (
+          </Row>
+          {/* Read More arrow button */}
+          {clamped && (
+            <Row className="mx-auto">
+              <StyledLink
+                className="mx-auto"
+                onClick={() => {
+                  setLines(100);
+                }}
+                title="Read More"
+              >
+                <IoIosArrowDown size={20} />
+              </StyledLink>
+            </Row>
+          )}
+          {/* Course Requirements */}
+          {listing.requirements && (
+            <Row className="mx-auto">
               <span className={`${Styles.requirements} pt-1`}>
                 {listing.requirements}
               </span>
-            )}
-          </Row>
+            </Row>
+          )}
           {/* Course Syllabus */}
-          <Row className="m-auto py-2">
+          <Row className="m-auto pt-4 pb-2">
             <Col sm={3} xs={4} className="px-0">
               <span className={Styles.lable_bubble}>Syllabus</span>
             </Col>

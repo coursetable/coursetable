@@ -5,6 +5,7 @@
 
 .results_container_max_width {
   max-width: 1400px;
+  margin: 0px auto;
 }
 
 .results_list_container {
