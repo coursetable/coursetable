@@ -852,7 +852,7 @@ function Search() {
           className={`m-0 ${
             isMobile
               ? `p-3 ${Styles.results_col_mobile}`
-              : (collapsed_form ? 'px-5 py-3 ' : 'px-0 py-3 ') +
+              : (collapsed_form ? 'px-5 pb-3 ' : 'px-0 pb-3 ') +
                 Styles.results_col
           }`}
         >
