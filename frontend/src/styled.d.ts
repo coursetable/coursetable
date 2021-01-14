@@ -4,7 +4,7 @@ import 'styled-components';
 declare module 'styled-components' {
   export interface DefaultTheme {
     theme: string;
-    text: [string, string, string];
+    text: [string, string, string, string];
     background: string;
     surface: [string, string];
     banner: string;

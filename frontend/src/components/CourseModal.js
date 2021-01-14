@@ -19,10 +19,6 @@ import { toSeasonString } from '../courseUtilities';
 
 // Course Modal
 const StyledModal = styled(Modal)`
-  .modal-dialog {
-    margin: 1.75rem 0 1.75rem auto !important;
-  }
-
   .modal-content {
     background-color: ${({ theme }) => theme.surface[0]};
     .modal-header {

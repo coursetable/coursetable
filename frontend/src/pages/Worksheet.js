@@ -8,7 +8,7 @@ import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetExpandedList from '../components/WorksheetExpandedList';
-import CourseModal from '../components/CourseModal';
+import CourseModal from '../components/NewCourseModal';
 import {
   SurfaceComponent,
   StyledExpandBtn,
