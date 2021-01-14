@@ -355,10 +355,14 @@ const SearchResults = ({
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
-    <div className={expanded ? Styles.results_container_max_width : 'mx-1'}>
+    <div className={expanded ? Styles.results_container_max_width : ''}>
       {!isMobile && (
         <StyledSpacer className="pt-3">
-          <StyledContainer layer={1} id="results_container" className={`px-0`}>
+          <StyledContainer
+            layer={1}
+            id="results_container"
+            className="px-0 mx-1"
+          >
             {/* Results Header */}
             <Row
               ref={ref}
@@ -479,11 +483,11 @@ const SearchResults = ({
           </StyledContainer>
         </StyledSpacer>
       )}
+
       <SurfaceComponent
         layer={0}
-        className={`${!isList ? 'px-1 pt-3' : ''} ${
-          Styles.results_list_container
-        } `}
+        className={`
+          mx-1 ${Styles.results_list_container} ${!isList ? 'px-1 pt-3 ' : ''}`}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
