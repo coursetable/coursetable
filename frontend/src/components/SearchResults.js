@@ -481,7 +481,9 @@ const SearchResults = ({
       )}
       <SurfaceComponent
         layer={0}
-        className={!isList ? 'px-1 pt-3' : `${Styles.results_list_container} `}
+        className={`${!isList ? 'px-1 pt-3' : ''} ${
+          Styles.results_list_container
+        } `}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
