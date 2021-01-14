@@ -586,7 +586,7 @@ function Search() {
         >
           <SurfaceComponent
             layer={0}
-            className={`${Styles.search_container} ${
+            className={`ml-1 ${Styles.search_container} ${
               // only make the filters sticky if not on mobile and
               // tall enough
               !isMobile && !tooTall ? Styles.sticky : ''
