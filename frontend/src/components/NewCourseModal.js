@@ -124,7 +124,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                   <Modal.Title>
                     <span>{cur_listing.course_code}</span>
                     <TextComponent type={3} className="ml-2">
-                      {('0' + cur_listing.section.toString()).slice(-2)}
+                      {`0${cur_listing.section.toString()}`.slice(-2)}
                     </TextComponent>
                   </Modal.Title>
                   <Row className="mx-auto mt-1">{cur_listing.title}</Row>

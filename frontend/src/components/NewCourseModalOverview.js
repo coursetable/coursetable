@@ -21,7 +21,11 @@ import {
   StyledRating,
   StyledLink,
 } from './StyledComponents';
-import { ratingColormap, workloadColormap } from '../queries/Constants';
+import {
+  ratingColormap,
+  workloadColormap,
+  skillsAreasColors,
+} from '../queries/Constants';
 import Styles from './CourseModalOverview.module.css';
 import styles from './NewCourseModalOverview.module.css';
 import tag_styles from './SearchResultsItem.module.css';
@@ -31,7 +35,6 @@ import CollapsableText from './CollapsableText';
 import { fbFriendsAlsoTaking, toSeasonString } from '../courseUtilities';
 import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
 import { weekdays } from '../common';
-import { skillsAreasColors } from '../queries/Constants';
 import chroma from 'chroma-js';
 
 // Button with season and other info that user selects to view evals
