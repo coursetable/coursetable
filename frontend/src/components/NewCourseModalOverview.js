@@ -18,6 +18,7 @@ import { ratingColormap, workloadColormap } from '../queries/Constants';
 import Styles from './CourseModalOverview.module.css';
 
 import CourseModalLoading from './CourseModalLoading';
+import CollapsableText from './CollapsableText';
 import { fbFriendsAlsoTaking, toSeasonString } from '../courseUtilities';
 import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
 import { weekdays } from '../common';
@@ -419,22 +420,47 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   };
 
   return (
-    <>
+    <Modal.Body>
       {cross_listed_codes.length > 0 && (
         <Row className="mx-auto mt-2">
           Same as&nbsp;<strong>{cross_listed_codes.join(', ')}</strong>
         </Row>
       )}
       <Row className="mx-auto">
-        <Col md={8} className="px-0">
-          Description
+        <Col md={8} className="pl-0 pr-2">
+          {listing.description && (
+            <CollapsableText header="Description" body={listing.description} />
+          )}
+          {listing.requirements && (
+            <CollapsableText
+              header="Requirements"
+              body={listing.requirements}
+            />
+          )}
+          {listing.classnotes && (
+            <CollapsableText header="Class Notes" body={listing.classnotes} />
+          )}
+          {listing.regnotes && (
+            <CollapsableText header="Registrar Notes" body={listing.regnotes} />
+          )}
+          {listing.rp_attr && (
+            <CollapsableText
+              header="Reading Period Notes"
+              body={listing.rp_attr}
+            />
+          )}
+          {listing.final_exam && listing.final_exam !== 'HTBA' && (
+            <CollapsableText
+              header="Final Exam Notes"
+              body={listing.final_exam}
+            />
+          )}
         </Col>
-        {/* Course Evaluations */}
-        <Col md={4} className="px-0">
+        <Col md={4} className="pr-0 pl-2">
           Metadata
         </Col>
       </Row>
-    </>
+    </Modal.Body>
   );
 };
 

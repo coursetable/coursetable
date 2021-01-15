@@ -123,7 +123,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                 <Col className="p-0">
                   <Modal.Title>
                     <span>{cur_listing.course_code}</span>
-                    <TextComponent type={3} className="ml-1">
+                    <TextComponent type={3} className="ml-2">
                       {('0' + cur_listing.section.toString()).slice(-2)}
                     </TextComponent>
                   </Modal.Title>
@@ -135,16 +135,15 @@ const CourseModal = ({ listing, hideModal, show }) => {
               </Row>
             </Container>
           </Modal.Header>
-          <Modal.Body>
-            {show && (
-              <CourseModalOverview
-                setFilter={setFilter}
-                filter={filter}
-                setSeason={setSeason}
-                listing={cur_listing}
-              />
-            )}
-          </Modal.Body>
+
+          {show && (
+            <CourseModalOverview
+              setFilter={setFilter}
+              filter={filter}
+              setSeason={setSeason}
+              listing={cur_listing}
+            />
+          )}
         </StyledModal>
       )}
     </div>
