@@ -127,26 +127,9 @@ function CourseTableNavbar({
             >
               {/* Close navbar on click in mobile view */}
               <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
-                {/* About Page */}
-                <StyledNavLink
-                  to="/about"
-                  // Left align about link if not mobile
-                  className={!is_mobile ? ' align-self-begin' : ''}
-                >
-                  About
-                </StyledNavLink>
-                {/* FAQs Page */}
-                <StyledNavLink
-                  to="/faq"
-                  // Left align about link if not mobile
-                  className={!is_mobile ? ' mr-auto' : ''}
-                >
-                  FAQ
-                </StyledNavLink>
-
                 {/* DarkMode Button */}
                 <div
-                  className={`${styles.navbar_dark_mode_btn} d-flex`}
+                  className={`${styles.navbar_dark_mode_btn} d-flex ml-auto`}
                   onClick={themeToggler}
                 >
                   <DarkModeButton />
