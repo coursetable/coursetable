@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Nav, Navbar, Container } from 'react-bootstrap';
+import React, { useCallback, useRef, useState } from 'react';
+import { Nav, Navbar, Container, Form, Row, InputGroup } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import styled from 'styled-components';
@@ -11,7 +11,10 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 import { logout, scrollToTop, useComponentVisible } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
-import { SurfaceComponent } from './StyledComponents';
+import { StyledInput, SurfaceComponent } from './StyledComponents';
+import { scroller } from 'react-scroll';
+import { useSessionStorageState } from '../browserStorage';
+import { GlobalHotKeys } from 'react-hotkeys';
 
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
@@ -64,6 +67,34 @@ const StyledNavToggle = styled(Navbar.Toggle)`
   }
 `;
 
+const StyledNavbar = styled(Navbar)`
+  height: 100px;
+  align-items: start;
+`;
+
+const NavbarStyledSearchBar = styled(StyledInput)`
+  border-radius: 4px;
+  height: 100%;
+  font-size: 14px;
+
+  background-color: ${({ theme }) => theme.select};
+  color: ${({ theme }) => theme.text[0]};
+  transition: 0.2s linear !important;
+  border: solid 2px rgba(0, 0, 0, 0.1);
+
+  &:hover {
+    border: 2px solid hsl(0, 0%, 70%);
+  }
+
+  &:focus {
+    background-color: ${({ theme }) => theme.select};
+  }
+
+  &.form-control:focus {
+    color: ${({ theme }) => theme.text[0]};
+  }
+`;
+
 /**
  * Renders the navbar
  * @prop isLoggedIn - boolean | is user logged in?
@@ -77,7 +108,7 @@ function CourseTableNavbar({
   themeToggler: () => void;
 }) {
   // Is navbar expanded in mobile view?
-  const [nav_expanded, setExpand] = useState(false);
+  const [nav_expanded, setExpand] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
   const {
     ref_visible,
@@ -90,13 +121,53 @@ function CourseTableNavbar({
   const is_mobile = width < 768;
   // const is_relative = width < 1230;
 
+  // Search text for the default search if search bar was used
+  const searchTextInput = useRef<HTMLInputElement>(null);
+  const [searchText, setSearchText] = useSessionStorageState('searchText', '');
+
+  const scroll_to_results = useCallback(
+    (event: React.FormEvent<HTMLFormElement>) => {
+      if (event) event.preventDefault();
+
+      // Scroll down to catalog when in mobile view.
+      if (is_mobile) {
+        scroller.scrollTo('catalog', {
+          smooth: true,
+          duration: 500,
+          offset: -56,
+        });
+      }
+    },
+    [is_mobile]
+  );
+
+  // ctrl/cmd-f search hotkey
+  const focusSearch = (e: KeyboardEvent | undefined) => {
+    if (e && searchTextInput.current) {
+      e.preventDefault();
+      searchTextInput.current.focus();
+    }
+  };
+  const keyMap = {
+    FOCUS_SEARCH: ['ctrl+f', 'command+f'],
+  };
+  const handlers = {
+    FOCUS_SEARCH: focusSearch,
+  };
+
   return (
     <div className={styles.sticky_navbar}>
+      <GlobalHotKeys
+        keyMap={keyMap}
+        handlers={handlers}
+        allowChanges // required for global
+        style={{ outline: 'none' }}
+      />
       <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
-          <Navbar
+          <StyledNavbar
             expanded={nav_expanded}
-            onToggle={(expanded) => setExpand(expanded)}
+            onToggle={(expanded: boolean) => setExpand(expanded)}
             // sticky="top"
             expand="md"
             className="shadow-sm px-3"
@@ -119,6 +190,29 @@ function CourseTableNavbar({
             </Nav>
 
             <StyledNavToggle aria-controls="basic-navbar-nav" />
+
+            {/* Search Form */}
+            <Form
+              className={`px-0 ${styles.full_height}`}
+              onSubmit={scroll_to_results}
+            >
+              <Row className={`${styles.half_height} mx-auto`}>
+                <div className={styles.search_bar}>
+                  {/* Search Bar */}
+                  <InputGroup className={styles.full_height}>
+                    <NavbarStyledSearchBar
+                      type="text"
+                      value={searchText}
+                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+                        setSearchText(event.target.value)
+                      }
+                      placeholder="Search by course code, title, prof, or whatever we don't really care"
+                      ref={searchTextInput}
+                    />
+                  </InputGroup>
+                </div>
+              </Row>
+            </Form>
 
             <Navbar.Collapse
               id="basic-navbar-nav"
@@ -206,7 +300,7 @@ function CourseTableNavbar({
                 </div>
               </Nav>
             </Navbar.Collapse>
-          </Navbar>
+          </StyledNavbar>
         </Container>
       </SurfaceComponent>
       {/* Dropdown that has position: absolute */}

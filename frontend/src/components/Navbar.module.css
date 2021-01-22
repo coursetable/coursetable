@@ -14,7 +14,7 @@ nav > .nav_brand {
 }
 
 .navbar_me {
-  padding-left: 1rem;
+  /* padding-left: 1rem; */
   height: 40px;
   display: flex;
 }
@@ -32,7 +32,19 @@ nav > .nav_brand {
   transition: 0.3s;
 }
 
-.search_bar_mid {
+.search_bar {
+  width: 40vw;
+}
+
+.full_height {
+  height: 100%;
+}
+
+.half_height {
+  height: 50%;
+}
+
+/* .search_bar_mid {
   position: absolute;
   left: 50%;
   transform: translate(-50%, 0%);
@@ -41,6 +53,6 @@ nav > .nav_brand {
 
 .search_bar_relative {
   margin: 0 1rem;
-  /* width: 30vw;  */
+  width: 30vw; 
   width: 26vw;
-}
+} */
