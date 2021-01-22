@@ -1,6 +1,7 @@
 .collapse_container {
   width: 200px;
   position: absolute;
+  top: 66px;
   right: 10px;
   /* background-color: white; */
   z-index: calc(420 + 69);
