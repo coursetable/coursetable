@@ -6,8 +6,6 @@ import React, {
   useRef,
 } from 'react';
 
-import { GlobalHotKeys } from 'react-hotkeys';
-
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import debounce from 'lodash/debounce';
 import { Handle, Range } from 'rc-slider';
@@ -487,20 +485,6 @@ function Search() {
     }
   }, [coursesLoading, doneInitialScroll, scroll_to_results]);
 
-  // ctrl/cmd-f search hotkey
-  const focusSearch = (e) => {
-    if (e && searchTextInput) {
-      e.preventDefault();
-      searchTextInput.current.focus();
-    }
-  };
-  const keyMap = {
-    FOCUS_SEARCH: ['ctrl+f', 'command+f'],
-  };
-  const handlers = {
-    FOCUS_SEARCH: focusSearch,
-  };
-
   // Render slider handles for the course and workload rating sliders
   const ratingSliderHandle = useCallback(({ value, dragging, ...e }) => {
     const key = e.className;
@@ -564,12 +548,6 @@ function Search() {
   // TODO: add state if courseLoadError is present
   return (
     <div className={Styles.search_base}>
-      <GlobalHotKeys
-        keyMap={course_modal[0] ? {} : keyMap}
-        handlers={course_modal[0] ? {} : handlers}
-        allowChanges // required for global
-        style={{ outline: 'none' }}
-      />
       <Row
         className={`p-0 m-0 ${
           !isMobile ? 'd-flex flex-row-reverse flex-nowrap' : ''
