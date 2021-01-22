@@ -32,18 +32,6 @@ nav > .nav_brand {
   transition: 0.3s;
 }
 
-.search_bar {
-  width: 40vw;
-}
-
-.full_height {
-  height: 100%;
-}
-
-.half_height {
-  height: 50%;
-}
-
 /* .search_bar_mid {
   position: absolute;
   left: 50%;
