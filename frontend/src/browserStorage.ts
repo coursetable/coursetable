@@ -43,3 +43,12 @@ export const useSessionStorageState = <T>(key: string, default_value: T) => {
   }, [key, value]);
   return [value, setValue] as const;
 };
+// Saves State in Local Storage
+export const useLocalStorageState = <T>(key: string, default_value: T) => {
+  setLSObject<T>(key, default_value, true);
+  const [value, setValue] = useState<T>(getLSObject<T>(key)!);
+  useEffect(() => {
+    setLSObject(key, value);
+  }, [key, value]);
+  return [value, setValue] as const;
+};
