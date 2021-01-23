@@ -34,6 +34,52 @@ export const useComponentVisible = <T extends HTMLElement>(
   return { ref_visible, isComponentVisible, setIsComponentVisible };
 };
 
+// Detect clicks outside of a component
+// Via https://stackoverflow.com/a/54570068/5004662
+export const useComponentVisibleDropdown = <T extends HTMLElement>(
+  initialIsVisible: boolean,
+  callback?: (visible: boolean) => void
+) => {
+  // Is the component visible?
+  const [isComponentVisible, setIsComponentVisible] = useState(
+    initialIsVisible
+  );
+  const ref_toggle = useRef<T>(null);
+  const ref_dropdown = useRef<T>(null);
+
+  // Handle clicks outside of the component
+  const handleClickOutside = (event: Event) => {
+    // Hide component if user clicked outside of it
+    if (
+      ref_toggle.current &&
+      ref_dropdown &&
+      ref_dropdown.current &&
+      !ref_toggle.current.contains(event.target as Node) &&
+      !ref_dropdown.current.contains(event.target as Node)
+    ) {
+      if (callback) {
+        callback(isComponentVisible);
+      }
+      setIsComponentVisible(false);
+    }
+  };
+
+  // Add event listener on mount and remove it on dismount
+  useEffect(() => {
+    document.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.removeEventListener('click', handleClickOutside, true);
+    };
+  });
+
+  return {
+    ref_toggle,
+    ref_dropdown,
+    isComponentVisible,
+    setIsComponentVisible,
+  };
+};
+
 export const scrollToTop: MouseEventHandler = (event) => {
   const newPage =
     event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
