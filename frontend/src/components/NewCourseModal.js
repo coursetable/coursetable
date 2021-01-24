@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
-import { IoMdArrowRoundBack } from 'react-icons/io';
+import { IoMdArrowRoundBack, IoIosArrowDown } from 'react-icons/io';
 import chroma from 'chroma-js';
 import posthog from 'posthog-js';
 import styled from 'styled-components';
@@ -16,6 +16,8 @@ import tag_styles from './SearchResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants';
 import { TextComponent, StyledLink } from './StyledComponents';
 import { toSeasonString } from '../courseUtilities';
+import CourseModalLoading from './CourseModalLoading';
+import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -66,49 +68,45 @@ const CourseModal = ({ listing, hideModal, show }) => {
   const { width } = useWindowDimensions();
   // Switch to mobile view?
   const isMobile = width < 768;
-  // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
-  const [view, setView] = useState(['overview', null]);
-  // Current evaluation filter (both, course, professor)
-  const [filter, setFilter] = useState('both');
-  // Stack for listings that the user has viewed
-  const [listings, setListings] = useState([]);
-  useEffect(() => {
-    setListings([listing]);
-  }, [listing]);
-  // Current listing that we are viewing overview info for
-  const cur_listing =
-    listings.length > 0 ? listings[listings.length - 1] : null;
-
-  // Set which evaluation we are viewing
-  const setSeason = useCallback((evaluation) => {
-    setView([evaluation.season_code, evaluation]);
-  }, []);
 
   // Called when hiding modal
   const handleHide = useCallback(() => {
     posthog.capture('modal-hide');
 
-    // Reset views and filters
-    setView(['overview', null]);
-    setFilter('both');
     hideModal();
   }, [hideModal]);
 
-  // Called when user requests more info about a course from the eval page.
-  const handleMoreInfo = useCallback(() => {
-    // Go to overview page of this eval course
-    setView(['overview', null]);
-    const new_listing = { ...view[1].listing };
-    new_listing.eval = view[1];
-    setListings([...listings, new_listing]);
-  }, [listings, view]);
+  const { loading, error, data } = useSearchAverageAcrossSeasonsQuery({
+    variables: {
+      course_code:
+        listing && listing.course_code ? listing.course_code : 'bruh',
+      professor_name:
+        listing && listing.professor_names ? listing.professor_names : ['bruh'],
+    },
+  });
 
-  // key variable for lists
-  const key = 0;
+  const all_listings = useMemo(() => {
+    const temp_listings = {};
+    if (data) {
+      data.computed_listing_info.forEach((cur_listing) => {
+        if (cur_listing.course_code !== listing.course_code) return;
+        const season = cur_listing.season_code;
+        if (!temp_listings[season]) temp_listings[season] = [];
+        temp_listings[season].push({
+          crn: cur_listing.crn,
+          course_code: cur_listing.course_code,
+          section: cur_listing.section,
+          profs: cur_listing.professor_names,
+          evals: cur_listing.course.evaluation_statistics[0],
+        });
+      });
+    }
+    return temp_listings;
+  }, [data, listing]);
 
   return (
     <div className="d-flex justify-content-center">
-      {cur_listing && (
+      {listing && (
         <StyledModal
           show={show}
           scrollable
@@ -122,12 +120,20 @@ const CourseModal = ({ listing, hideModal, show }) => {
               <Row className="m-auto">
                 <Col className="p-0">
                   <Modal.Title>
-                    <span>{cur_listing.course_code}</span>
-                    <TextComponent type={3} className="ml-2">
-                      {`0${cur_listing.section.toString()}`.slice(-2)}
-                    </TextComponent>
+                    <Row className="mx-auto">
+                      <span>{listing.course_code}</span>
+                      <TextComponent type={3} className="ml-2">
+                        {`0${listing.section.toString()}`.slice(-2)}
+                      </TextComponent>
+                      {all_listings[listing.season_code] &&
+                        all_listings[listing.season_code].length > 1 && (
+                          <TextComponent type={3} className="d-flex ml-1">
+                            <IoIosArrowDown className="m-auto" size={12} />
+                          </TextComponent>
+                        )}
+                    </Row>
                   </Modal.Title>
-                  <Row className="mx-auto mt-1">{cur_listing.title}</Row>
+                  <Row className="mx-auto mt-1">{listing.title}</Row>
                 </Col>
                 <Col xs="auto" className="my-auto p-0">
                   Add
@@ -136,14 +142,15 @@ const CourseModal = ({ listing, hideModal, show }) => {
             </Container>
           </Modal.Header>
 
-          {show && (
-            <CourseModalOverview
-              setFilter={setFilter}
-              filter={filter}
-              setSeason={setSeason}
-              listing={cur_listing}
-            />
-          )}
+          {show &&
+            (loading ? (
+              <CourseModalLoading />
+            ) : (
+              <CourseModalOverview
+                listing={listing}
+                all_listings={all_listings}
+              />
+            ))}
         </StyledModal>
       )}
     </div>
