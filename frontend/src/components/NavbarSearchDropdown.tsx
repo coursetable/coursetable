@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useLayoutEffect, useRef } from 'react';
 import { Collapse } from 'react-bootstrap';
 import { VscTriangleDown } from 'react-icons/vsc';
 import styled from 'styled-components';
@@ -41,6 +41,7 @@ type Props = {
   placeholder: string;
   toggleText: string;
   setActiveDropdown: (dropdown: string) => void;
+  ref_select?: React.MutableRefObject<any>;
 };
 
 /**
@@ -52,15 +53,22 @@ export const NavbarSearchDropdown: React.FC<Props> = ({
   placeholder,
   toggleText,
   setActiveDropdown,
+  ref_select,
 }) => {
-  // Handle clicks that affect active dropdown
-  const handleActiveDropdown = (visible: boolean) => {
-    if (visible) {
-      setActiveDropdown('');
-    } else {
-      setActiveDropdown(name);
-    }
-  };
+  // // Handle clicks that affect active dropdown
+  // const handleActiveDropdown = (visible: boolean) => {
+  //   if (visible) {
+  //     setActiveDropdown('');
+  //   } else {
+  //     setActiveDropdown(name);
+  //     console.log(ref_select);
+  //     if (ref_select && ref_select.current) {
+  //       // e.preventDefault();
+  //       ref_select.current.focus();
+  //       console.log('focused');
+  //     }
+  //   }
+  // };
 
   // Ref to detect outside clicks for profile dropdown
   const {
@@ -68,20 +76,44 @@ export const NavbarSearchDropdown: React.FC<Props> = ({
     ref_dropdown,
     isComponentVisible,
     setIsComponentVisible,
-  } = useComponentVisibleDropdown<HTMLDivElement>(false, handleActiveDropdown);
+  } = useComponentVisibleDropdown<HTMLDivElement>(false);
+
+  const firstUpdate = useRef(true);
+  useLayoutEffect(() => {
+    if (firstUpdate.current) {
+      firstUpdate.current = false;
+    } else {
+      console.log(ref_select);
+      if (ref_select) {
+        ref_select.current.focus();
+        console.log('focused');
+      }
+    }
+  }, [ref_select, isComponentVisible]);
+
+  // const handleClick = () => {
+  //   console.log(ref_select);
+  //   if (ref_select) {
+  //     ref_select.current.focus();
+  //   }
+  //   console.log('focused');
+  // };
+
+  // Handle toggle click
+  const handleToggleClick = () => {
+    setIsComponentVisible(!isComponentVisible);
+    console.log('toggle click:', isComponentVisible);
+  };
 
   console.log('rendering dropdown:', isComponentVisible);
 
+  // if (isComponentVisible) {
+  //   handleClick();
+  // }
+
   return (
     <>
-      <StyledToggle
-        ref={ref_toggle}
-        onClick={() => {
-          handleActiveDropdown(isComponentVisible);
-          setIsComponentVisible(!isComponentVisible);
-          console.log(isComponentVisible);
-        }}
-      >
+      <StyledToggle ref={ref_toggle} onClick={handleToggleClick}>
         {toggleText || placeholder}
         <VscTriangleDown className="ml-1" />
       </StyledToggle>

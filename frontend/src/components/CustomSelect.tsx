@@ -15,13 +15,13 @@ import Select, {
  */
 function CustomSelect<T extends OptionTypeBase>({
   useColors = false,
-  keepMenuOpen = false,
   ...props
-}: SelectProps<T> & { useColors?: boolean }) {
+}: SelectProps<T> & {
+  useColors?: boolean;
+}) {
   const theme = useTheme();
   const select_styles = selectStyles(theme);
   const select_styles_color = colorOptionStyles(theme);
-  const select_styles_menu = menuOpenStyles(theme);
 
   // Makes Select forms animated
   const animatedComponents = useMemo(() => makeAnimated<T>(), []);
@@ -29,9 +29,6 @@ function CustomSelect<T extends OptionTypeBase>({
   let styles: StylesConfig;
   if (useColors) {
     styles = select_styles_color;
-  } else if (keepMenuOpen) {
-    styles = select_styles_menu;
-    console.log('using menu styles');
   } else {
     styles = select_styles;
   }
@@ -178,80 +175,6 @@ const selectStyles = (theme: DefaultTheme): StylesConfig => {
       ...base,
       paddingTop: 0,
       marginTop: 0,
-      borderRadius: '8px',
-      backgroundColor: theme.select,
-      boxShadow:
-        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-    }),
-    menuList: (base) => ({
-      ...base,
-      paddingTop: 0,
-      paddingBottom: 0,
-      borderRadius: '8px',
-    }),
-    option: (base, { isDisabled, isFocused, isSelected }) => ({
-      ...base,
-      cursor: 'pointer',
-      backgroundColor: isDisabled
-        ? undefined
-        : isSelected
-        ? '#007cff'
-        : isFocused
-        ? theme.select_hover
-        : undefined,
-      color: isSelected ? 'white' : theme.text[0],
-      ':active': {
-        ...(base as any)[':active'],
-        backgroundColor: !isDisabled && '#85c2ff',
-      },
-    }),
-  };
-};
-
-const menuOpenStyles = (theme: DefaultTheme): StylesConfig => {
-  return {
-    multiValue: (styles) => {
-      return {
-        ...styles,
-        borderRadius: '6px',
-        backgroundColor: theme.multivalue,
-        transition: '0.2s linear',
-      };
-    },
-    multiValueLabel: (styles) => {
-      return {
-        ...styles,
-        color: theme.text[0],
-        transition: '0.2s linear',
-      };
-    },
-    multiValueRemove: (styles) => {
-      return {
-        ...styles,
-        borderRadius: '6px',
-      };
-    },
-    control: (base) => ({
-      ...base,
-      borderRadius: '8px',
-      cursor: 'pointer',
-      border: 'solid 2px rgba(0,0,0,0.1)',
-      backgroundColor: theme.select,
-      transition: 'background-color 0.2s linear, border 0.2s linear',
-    }),
-    singleValue: (base, { isDisabled }) => ({
-      ...base,
-      color: isDisabled ? theme.text[2] : theme.text[0],
-      transition: 'color 0.2s linear',
-    }),
-    input: (base) => ({
-      ...base,
-      color: theme.text[0],
-    }),
-    menuPortal: (base) => ({ ...base, zIndex: 9999, borderRadius: '8px' }),
-    menu: (base) => ({
-      ...base,
-      position: 'static',
       borderRadius: '8px',
       backgroundColor: theme.select,
       boxShadow:
