@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Form, InputGroup, Row } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
@@ -7,10 +7,11 @@ import styled from 'styled-components';
 import { useSessionStorageState } from '../browserStorage';
 import { StyledInput } from './StyledComponents';
 import { useWindowDimensions } from './WindowDimensionsProvider';
-import { NavbarSearchDropdown } from './NavbarSearchDropdown';
-import CustomSelect from './CustomSelect';
+// import { NavbarSearchDropdown } from './NavbarSearchDropdown';
+// import CustomSelect from './CustomSelect';
 import { useFerry } from './FerryProvider';
 import { ValueType } from 'react-select/src/types';
+import { PopoutSelect } from './PopoutSelect';
 
 const NavbarStyledSearchBar = styled(StyledInput)`
   border-radius: 4px;
@@ -19,8 +20,8 @@ const NavbarStyledSearchBar = styled(StyledInput)`
 `;
 
 type Season = {
-  label: any;
-  value: any;
+  label: string;
+  value: string;
 };
 
 export const NavbarSearch: React.FC = () => {
@@ -32,10 +33,6 @@ export const NavbarSearch: React.FC = () => {
   // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
-
-  // Active dropdown
-  const [activeDropdown, setActiveDropdown] = useState('');
-  console.log('active dropdown: ', activeDropdown);
 
   const defaultSeason: Season = { value: '202101', label: 'Spring 2021' };
   const [
@@ -100,11 +97,8 @@ export const NavbarSearch: React.FC = () => {
         style={{ outline: 'none' }}
       />
       {/* Search Form */}
-      <Form
-        className={`px-0 ${styles.full_height}`}
-        onSubmit={scroll_to_results}
-      >
-        <Row className={`${styles.half_height} mx-auto`}>
+      <Form className="px-0 h-100" onSubmit={scroll_to_results}>
+        <Row className="h-50 mx-auto">
           <div className={styles.search_bar}>
             {/* Search Bar */}
             <InputGroup className={styles.full_height}>
@@ -120,29 +114,42 @@ export const NavbarSearch: React.FC = () => {
             </InputGroup>
           </div>
         </Row>
-        <Row className={`${styles.half_height} mx-auto`}>
-          <NavbarSearchDropdown
+        <Row className="h-50 mx-auto align-items-center">
+          {/* <NavbarSearchDropdown
             name="season"
             placeholder="Season"
             toggleText=""
             setActiveDropdown={setActiveDropdown}
+            ref_select={seasonRef}
           >
-            {/* Seasons Multi-Select */}
             <CustomSelect
               isMulti
+              openMenuOnFocus
               keepMenuOpen
               value={select_seasons}
               options={seasonsOptions}
               placeholder="Last 5 Years"
-              defaultMenuIsOpen
-              menuIsOpen={activeDropdown === 'season'}
+              // defaultMenuIsOpen
+              // menuIsOpen={activeDropdown === 'season'}
               // prevent overlap with tooltips
               menuPortalTarget={document.body}
               onChange={(selectedOption: ValueType<Season>) =>
                 handleSeasonChange(selectedOption as Season[])
               }
+              innerRef={seasonRef}
             />
-          </NavbarSearchDropdown>
+          </NavbarSearchDropdown> */}
+          <PopoutSelect
+            buttonText="Season"
+            isMulti
+            selectedValue={select_seasons}
+            value={select_seasons}
+            options={seasonsOptions}
+            placeholder="Last 5 Years"
+            onChange={(selectedOption: ValueType<Season>) =>
+              handleSeasonChange(selectedOption as Season[])
+            }
+          />
         </Row>
       </Form>
     </>
