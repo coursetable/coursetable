@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 // import { BiSearchAlt2 } from 'react-icons/bi';
 import styled, { useTheme } from 'styled-components';
 
 import { IoMdArrowDropdown } from 'react-icons/io';
+import { useComponentVisibleDropdown } from '../utilities';
 
 const Dropdown = styled.div`
   position: relative;
-`;
-
-const Blanket = styled.div`
-  bottom: 0;
-  left: 0;
-  top: 0;
-  right: 0;
-  position: fixed;
-  z-index: 1;
 `;
 
 const shadow = 'hsla(218, 50%, 10%, 0.1)';
@@ -69,16 +61,22 @@ type Props = {
 };
 
 export const Popout: React.FC<Props> = ({ children, buttonText }) => {
-  const [isOpen, setIsOpen] = useState<boolean>(false);
+  // Ref to detect outside clicks for popout and button
+  const {
+    ref_toggle,
+    ref_dropdown,
+    isComponentVisible,
+    setIsComponentVisible,
+  } = useComponentVisibleDropdown<HTMLDivElement>(false);
 
   const toggleOpen = () => {
-    setIsOpen(!isOpen);
+    setIsComponentVisible(!isComponentVisible);
   };
 
   const theme = useTheme();
 
-  const buttonStyles = (isOpen: boolean) => {
-    if (isOpen) {
+  const buttonStyles = (isComponentVisible: boolean) => {
+    if (isComponentVisible) {
       return {
         backgroundColor: theme.button_active,
         color: theme.primary_hover,
@@ -89,12 +87,15 @@ export const Popout: React.FC<Props> = ({ children, buttonText }) => {
 
   return (
     <Dropdown>
-      <StyledButton onClick={toggleOpen} style={buttonStyles(isOpen)}>
+      <StyledButton
+        onClick={toggleOpen}
+        style={buttonStyles(isComponentVisible)}
+        ref={ref_toggle}
+      >
         {buttonText}
         <IoMdArrowDropdown className="ml-1" />
       </StyledButton>
-      {isOpen ? <Menu>{children}</Menu> : null}
-      {isOpen ? <Blanket onClick={toggleOpen} /> : null}
+      {isComponentVisible ? <Menu ref={ref_dropdown}>{children}</Menu> : null}
     </Dropdown>
   );
 };
