@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { Button } from 'react-bootstrap';
 
 // import { BiSearchAlt2 } from 'react-icons/bi';
 import styled from 'styled-components';
@@ -22,7 +21,7 @@ const Blanket = styled.div`
 const shadow = 'hsla(218, 50%, 10%, 0.1)';
 
 const Menu = styled.div`
-  background: #ffffff;
+  background: ${({ theme }) => theme.select};
   border-radius: 4px;
   box-shadow: 0 0 0 1px ${shadow}, 0 4px 11px ${shadow};
   margin-top: 8px;
@@ -30,11 +29,28 @@ const Menu = styled.div`
   z-index: 1000;
 `;
 
-const StyledButton = styled(Button)`
-  padding: 0 8px;
+const StyledButton = styled.div`
+  background: ${({ theme }) => theme.surface[0]};
+  color: ${({ theme }) => theme.text[0]};
+  border: 0;
+  padding: 6px 8px;
   margin: 6px 0;
   font-weight: 400;
   font-size: 14px;
+  border-radius: 4px;
+  transition: background-color 0.2s linear, border 0.2s linear,
+    color 0.2s linear;
+  cursor: pointer;
+
+  &:hover {
+    background: ${({ theme }) => theme.disabled};
+    color: ${({ theme }) => theme.primary_hover};
+  }
+
+  &:active {
+    background: ${({ theme }) => theme.hidden};
+    color: ${({ theme }) => theme.primary_hover};
+  }
 `;
 
 // const DropdownIndicator = (
@@ -61,7 +77,7 @@ export const Popout: React.FC<Props> = ({ children, buttonText }) => {
 
   return (
     <Dropdown>
-      <StyledButton variant="light" onClick={toggleOpen}>
+      <StyledButton onClick={toggleOpen}>
         {buttonText}
         <IoMdArrowDropdown className="ml-1" />
       </StyledButton>

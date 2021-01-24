@@ -13,6 +13,7 @@ declare module 'styled-components' {
     select_hover: string;
     multivalue: string;
     hidden: string;
+    disabled: string;
     rating_alpha: number;
     primary: string;
     primary_hover: string;
