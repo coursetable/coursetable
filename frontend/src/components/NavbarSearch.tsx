@@ -7,10 +7,9 @@ import styled from 'styled-components';
 import { useSessionStorageState } from '../browserStorage';
 import { StyledInput } from './StyledComponents';
 import { useWindowDimensions } from './WindowDimensionsProvider';
-// import { NavbarSearchDropdown } from './NavbarSearchDropdown';
-// import CustomSelect from './CustomSelect';
 import { useFerry } from './FerryProvider';
 import { ValueType } from 'react-select/src/types';
+import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
 
 const NavbarStyledSearchBar = styled(StyledInput)`
@@ -139,18 +138,17 @@ export const NavbarSearch: React.FC = () => {
               innerRef={seasonRef}
             />
           </NavbarSearchDropdown> */}
-          <PopoutSelect
-            buttonText="Season"
-            width={300}
-            isMulti
-            selectedValue={select_seasons}
-            value={select_seasons}
-            options={seasonsOptions}
-            placeholder="Last 5 Years"
-            onChange={(selectedOption: ValueType<Season>) =>
-              handleSeasonChange(selectedOption as Season[])
-            }
-          />
+          <Popout buttonText="Season">
+            <PopoutSelect
+              isMulti
+              value={select_seasons}
+              options={seasonsOptions}
+              placeholder="Last 5 Years"
+              onChange={(selectedOption: ValueType<Season>) =>
+                handleSeasonChange(selectedOption as Season[])
+              }
+            />
+          </Popout>
         </Row>
       </Form>
     </>
