@@ -27,7 +27,6 @@ const Blanket = styled.div`
 const shadow = 'hsla(218, 50%, 10%, 0.1)';
 
 const Menu = styled.div`
-  width: 300px;
   background: #ffffff;
   border-radius: 4px;
   box-shadow: 0 0 0 1px ${shadow}, 0 4px 11px ${shadow};
@@ -43,9 +42,9 @@ const StyledButton = styled(Button)`
   font-size: 14px;
 `;
 
-const selectStyles = (): StylesConfig => {
+const selectStyles = (width: number): StylesConfig => {
   return {
-    control: (provided) => ({ ...provided, minWidth: 240, margin: 8 }),
+    control: (provided) => ({ ...provided, minWidth: width, margin: 8 }),
     menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
   };
 };
@@ -67,11 +66,13 @@ type Season = {
 
 type Props = {
   buttonText: string;
+  width: number;
   selectedValue: Season[] | null;
 };
 
 export const PopoutSelect: React.FC<SelectProps & Props> = ({
   buttonText,
+  width,
   selectedValue,
   ...props
 }) => {
@@ -81,7 +82,7 @@ export const PopoutSelect: React.FC<SelectProps & Props> = ({
     setIsOpen(!isOpen);
   };
 
-  const styles = selectStyles();
+  const styles = selectStyles(width);
 
   return (
     <Dropdown>

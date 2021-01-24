@@ -141,6 +141,7 @@ export const NavbarSearch: React.FC = () => {
           </NavbarSearchDropdown> */}
           <PopoutSelect
             buttonText="Season"
+            width={300}
             isMulti
             selectedValue={select_seasons}
             value={select_seasons}
