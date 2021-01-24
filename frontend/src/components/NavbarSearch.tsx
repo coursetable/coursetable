@@ -114,30 +114,7 @@ export const NavbarSearch: React.FC = () => {
           </div>
         </Row>
         <Row className="h-50 mx-auto align-items-center">
-          {/* <NavbarSearchDropdown
-            name="season"
-            placeholder="Season"
-            toggleText=""
-            setActiveDropdown={setActiveDropdown}
-            ref_select={seasonRef}
-          >
-            <CustomSelect
-              isMulti
-              openMenuOnFocus
-              keepMenuOpen
-              value={select_seasons}
-              options={seasonsOptions}
-              placeholder="Last 5 Years"
-              // defaultMenuIsOpen
-              // menuIsOpen={activeDropdown === 'season'}
-              // prevent overlap with tooltips
-              menuPortalTarget={document.body}
-              onChange={(selectedOption: ValueType<Season>) =>
-                handleSeasonChange(selectedOption as Season[])
-              }
-              innerRef={seasonRef}
-            />
-          </NavbarSearchDropdown> */}
+          {/* Season Filter Dropdown */}
           <Popout buttonText="Season">
             <PopoutSelect
               isMulti
