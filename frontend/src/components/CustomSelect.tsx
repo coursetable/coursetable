@@ -76,30 +76,8 @@ const popoutStyles = (width: number): StylesConfig => {
   };
 };
 
-const colorStyles = (theme: DefaultTheme): StylesConfig => {
+const colorStyles = (): StylesConfig => {
   return {
-    control: (base, { isDisabled }) => ({
-      ...base,
-      cursor: isDisabled ? 'not-allowed' : 'pointer',
-      backgroundColor: isDisabled ? theme.disabled : theme.select,
-      borderColor: 'rgba(0, 0, 0, 0.1)',
-      borderWidth: '2px',
-      transition:
-        'background-color 0.2s linear, border 0.2s linear, color 0.2s linear',
-    }),
-    menu: (base) => ({
-      ...base,
-      paddingTop: 0,
-      marginTop: 0,
-      boxShadow:
-        '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-    }),
-    menuList: (base) => ({
-      ...base,
-      paddingTop: 0,
-      paddingBottom: 0,
-    }),
-    menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     multiValue: (base, { data }) => {
       const color = chroma(data.color);
       return {
@@ -151,17 +129,12 @@ const colorStyles = (theme: DefaultTheme): StylesConfig => {
         },
       };
     },
-    singleValue: (base, { isDisabled }) => ({
-      ...base,
-      color: isDisabled && theme.text[2],
-      transition: 'color 0.2s linear',
-    }),
   };
 };
 
 type Props = {
-  useColors?: boolean;
   popout?: boolean;
+  useColors?: boolean;
 };
 
 /**
@@ -169,8 +142,8 @@ type Props = {
  * @prop useColors - boolean | should we use the color version of styles?
  */
 function CustomSelect<T extends OptionTypeBase>({
-  useColors = false,
   popout = false,
+  useColors = false,
   ...props
 }: SelectProps<T> & Props) {
   const globalTheme = useTheme();
@@ -205,10 +178,16 @@ function CustomSelect<T extends OptionTypeBase>({
   let styles: StylesConfig;
   if (popout) {
     styles = popoutStyles(400);
-  } else if (useColors) {
-    styles = colorStyles(globalTheme);
   } else {
     styles = defaultStyles(globalTheme);
+  }
+
+  if (useColors) {
+    const temp = colorStyles();
+    styles = {
+      ...styles,
+      ...temp,
+    };
   }
 
   return (
