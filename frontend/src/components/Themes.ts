@@ -12,6 +12,8 @@ export const lightTheme: DefaultTheme = {
   multivalue: 'hsl(0,0%,90%)', // Multivalue background-color used in react-select
   hidden: '#b9b8b8', // Color to use when course is hidden
   disabled: 'rgb(242, 242, 242)', // Disabled color for react-select
+  button_hover: 'rgb(250, 250, 250)', // Button hover color
+  button_active: 'rgb(240, 240, 240)', // Button active color (when pressed)
   rating_alpha: 1, // Rating bubble's opacity
   primary: '#468ff2', // Primary color (blue)
   primary_hover: '#007bff', // Primary hover color (dark blue)
@@ -28,6 +30,8 @@ export const darkTheme: DefaultTheme = {
   multivalue: '#4d4d4d', // Multivalue background-color used in react-select
   hidden: '#4d4d4d', // Color to use when course is hidden
   disabled: 'rgba(242, 242, 242, 0.1)', // Disabled color for react-select
+  button_hover: 'rgba(255, 255, 255, 0.02)', // Button hover color
+  button_active: 'rgba(255, 255, 255, 0.05)', // Button active color (when pressed)
   rating_alpha: 0.75, // Rating bubble's opacity
   primary: '#61adff', // Primary color (lighter blue)
   primary_hover: '#007bff', // Primary hover color (blue)

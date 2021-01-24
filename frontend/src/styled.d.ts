@@ -14,6 +14,8 @@ declare module 'styled-components' {
     multivalue: string;
     hidden: string;
     disabled: string;
+    button_hover: string;
+    button_active: string;
     rating_alpha: number;
     primary: string;
     primary_hover: string;
