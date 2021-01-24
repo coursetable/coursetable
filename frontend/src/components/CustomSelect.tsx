@@ -204,7 +204,7 @@ function CustomSelect<T extends OptionTypeBase>({
 
   let styles: StylesConfig;
   if (popout) {
-    styles = popoutStyles(300);
+    styles = popoutStyles(400);
   } else if (useColors) {
     styles = colorStyles(globalTheme);
   } else {
