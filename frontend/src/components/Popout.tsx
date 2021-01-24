@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 // import { BiSearchAlt2 } from 'react-icons/bi';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 
 import { IoMdArrowDropdown } from 'react-icons/io';
 
@@ -21,7 +21,7 @@ const Blanket = styled.div`
 const shadow = 'hsla(218, 50%, 10%, 0.1)';
 
 const Menu = styled.div`
-  background: ${({ theme }) => theme.select};
+  background-color: ${({ theme }) => theme.select};
   border-radius: 4px;
   box-shadow: 0 0 0 1px ${shadow}, 0 4px 11px ${shadow};
   margin-top: 8px;
@@ -30,7 +30,7 @@ const Menu = styled.div`
 `;
 
 const StyledButton = styled.div`
-  background: ${({ theme }) => theme.surface[0]};
+  background-color: ${({ theme }) => theme.surface[0]};
   color: ${({ theme }) => theme.text[0]};
   border: 0;
   padding: 6px 8px;
@@ -43,12 +43,12 @@ const StyledButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    background: ${({ theme }) => theme.disabled};
+    background-color: ${({ theme }) => theme.disabled};
     color: ${({ theme }) => theme.primary_hover};
   }
 
   &:active {
-    background: ${({ theme }) => theme.hidden};
+    background-color: ${({ theme }) => theme.hidden};
     color: ${({ theme }) => theme.primary_hover};
   }
 `;
@@ -75,9 +75,21 @@ export const Popout: React.FC<Props> = ({ children, buttonText }) => {
     setIsOpen(!isOpen);
   };
 
+  const theme = useTheme();
+
+  const buttonStyles = (isOpen: boolean) => {
+    if (isOpen) {
+      return {
+        backgroundColor: theme.hidden,
+        color: theme.primary_hover,
+      };
+    }
+    return undefined;
+  };
+
   return (
     <Dropdown>
-      <StyledButton onClick={toggleOpen}>
+      <StyledButton onClick={toggleOpen} style={buttonStyles(isOpen)}>
         {buttonText}
         <IoMdArrowDropdown className="ml-1" />
       </StyledButton>
