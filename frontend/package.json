@@ -87,7 +87,7 @@
     "@graphql-codegen/typescript-operations": "1.17.13",
     "@graphql-codegen/typescript-react-apollo": "2.2.1",
     "@typescript-eslint/eslint-plugin": "^4.12.0",
-    "@typescript-eslint/parser": "^4.13.0",
+    "@typescript-eslint/parser": "^4.14.0",
     "@welldone-software/why-did-you-render": "^6.0.5",
     "eslint": "^7.18.0",
     "eslint-config-airbnb": "^18.2.1",
