@@ -43,12 +43,12 @@ const StyledButton = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: ${({ theme }) => theme.disabled};
+    background-color: ${({ theme }) => theme.button_hover};
     color: ${({ theme }) => theme.primary_hover};
   }
 
   &:active {
-    background-color: ${({ theme }) => theme.hidden};
+    background-color: ${({ theme }) => theme.button_active};
     color: ${({ theme }) => theme.primary_hover};
   }
 `;
@@ -80,7 +80,7 @@ export const Popout: React.FC<Props> = ({ children, buttonText }) => {
   const buttonStyles = (isOpen: boolean) => {
     if (isOpen) {
       return {
-        backgroundColor: theme.hidden,
+        backgroundColor: theme.button_active,
         color: theme.primary_hover,
       };
     }
