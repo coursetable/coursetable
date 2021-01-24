@@ -105,7 +105,7 @@ function CourseTableNavbar({
             onToggle={(expanded: boolean) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className="shadow-sm px-3"
+            className="shadow-sm px-3 pb-0"
           >
             {/* Logo in top left */}
             <Nav className={`${styles.nav_brand} navbar-brand py-2`}>
