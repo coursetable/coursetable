@@ -30,7 +30,7 @@ import styles from './NewCourseModalOverview.module.css';
 import tag_styles from './SearchResultsItem.module.css';
 
 import CourseModalLoading from './CourseModalLoading';
-import CourseModalEvaluations from './NewCourseModalEvalutions';
+import CourseModalEvaluations from './NewCourseModalEvaluations';
 import CollapsableText from './CollapsableText';
 import { fbFriendsAlsoTaking, toSeasonString } from '../courseUtilities';
 import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
@@ -307,7 +307,7 @@ const CourseModalOverview = ({ listing, all_listings }) => {
         </Col>
       </Row>
       <Row className="mx-auto mt-3">
-        <CourseModalEvaluations listing={listing} all_listings={all_listings} />
+        <CourseModalEvaluations all_listings={all_listings} />
       </Row>
     </Modal.Body>
   );
