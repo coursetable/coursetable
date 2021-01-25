@@ -22,6 +22,12 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
       transition:
         'background-color 0.2s linear, border 0.2s linear, color 0.2s linear',
     }),
+    dropdownIndicator: (base, state) => {
+      return {
+        ...base,
+        display: state.hasValue ? 'none' : 'flex',
+      };
+    },
     indicatorSeparator: (base) => ({
       ...base,
       display: 'none',
@@ -72,6 +78,12 @@ const popoutStyles = (width: number): StylesConfig => {
       minWidth: width,
       margin: 8,
     }),
+    dropdownIndicator: (base, state) => {
+      return {
+        ...base,
+        display: state.hasValue ? 'none' : 'flex',
+      };
+    },
     indicatorSeparator: (base) => ({
       ...base,
       display: 'none',
