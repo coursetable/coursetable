@@ -69,7 +69,7 @@ function Feedback() {
   type FeedbackType = typeof feedback_types[number];
   const descriptions = {
     general:
-      'What did you like about your experience on the site? What did you dislike about your experience on the site? Please let us know your honest throughts and opinions.',
+      'What did you like about your experience on the site? What did you dislike about your experience on the site? Please let us know your honest thoughts and opinions.',
     feature: 'What new features would you like to see implemented in the site?',
     bug: 'Please be specific and include steps to reproduce the bug.',
   };
