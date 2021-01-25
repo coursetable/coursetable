@@ -14,6 +14,8 @@ export const lightTheme: DefaultTheme = {
   disabled: 'rgb(242, 242, 242)', // Disabled color for react-select
   button_hover: 'rgb(250, 250, 250)', // Button hover color
   button_active: 'rgb(240, 240, 240)', // Button active color (when pressed)
+  icon: 'rgb(204, 204, 204)', // Icon color
+  icon_focus: 'rgb(102, 102, 102)', // Icon focus color
   rating_alpha: 1, // Rating bubble's opacity
   primary: '#468ff2', // Primary color (blue)
   primary_hover: '#007bff', // Primary hover color (dark blue)
@@ -32,6 +34,8 @@ export const darkTheme: DefaultTheme = {
   disabled: 'rgba(242, 242, 242, 0.1)', // Disabled color for react-select
   button_hover: 'rgba(255, 255, 255, 0.02)', // Button hover color
   button_active: 'rgba(255, 255, 255, 0.05)', // Button active color (when pressed)
+  icon: 'rgb(102, 102, 102)', // Icon color
+  icon_focus: 'rgb(204, 204, 204)', // Icon focus color
   rating_alpha: 0.75, // Rating bubble's opacity
   primary: '#61adff', // Primary color (lighter blue)
   primary_hover: '#007bff', // Primary hover color (blue)

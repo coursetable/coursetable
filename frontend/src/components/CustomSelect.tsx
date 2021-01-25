@@ -8,8 +8,45 @@ import Select, {
   Props as SelectProps,
   StylesConfig,
   Theme,
+  mergeStyles,
 } from 'react-select';
 import { ThemeConfig } from 'react-select/src/theme';
+
+const indicatorStyles = (theme: DefaultTheme): StylesConfig => {
+  const icon_focus = chroma(theme.icon_focus);
+  const icon = chroma(theme.icon);
+  const new_icon_focus =
+    theme.theme === 'light' ? icon_focus.darken() : icon_focus.brighten();
+  const new_icon = theme.theme === 'light' ? icon.darken() : icon.brighten();
+
+  return {
+    clearIndicator: (base, state) => {
+      return {
+        ...base,
+        color: state.isFocused ? icon_focus.css() : icon.css(),
+        ':hover': {
+          ...(base as any)[':hover'],
+          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+        },
+      };
+    },
+    dropdownIndicator: (base, state) => {
+      return {
+        ...base,
+        display: state.hasValue ? 'none' : 'flex',
+        color: state.isFocused ? icon_focus.css() : icon.css(),
+        ':hover': {
+          ...(base as any)[':hover'],
+          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+        },
+      };
+    },
+    indicatorSeparator: (base) => ({
+      ...base,
+      display: 'none',
+    }),
+  };
+};
 
 const defaultStyles = (theme: DefaultTheme): StylesConfig => {
   return {
@@ -21,16 +58,6 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
       borderWidth: '2px',
       transition:
         'background-color 0.2s linear, border 0.2s linear, color 0.2s linear',
-    }),
-    dropdownIndicator: (base, state) => {
-      return {
-        ...base,
-        display: state.hasValue ? 'none' : 'flex',
-      };
-    },
-    indicatorSeparator: (base) => ({
-      ...base,
-      display: 'none',
     }),
     menu: (base) => ({
       ...base,
@@ -75,19 +102,16 @@ const popoutStyles = (width: number): StylesConfig => {
     control: (base, { isDisabled }) => ({
       ...base,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
+      borderColor: 'rgba(0, 0, 0, 0.1)',
       minWidth: width,
       margin: 8,
     }),
-    dropdownIndicator: (base, state) => {
+    dropdownIndicator: (base) => {
       return {
         ...base,
-        display: state.hasValue ? 'none' : 'flex',
+        display: 'none',
       };
     },
-    indicatorSeparator: (base) => ({
-      ...base,
-      display: 'none',
-    }),
     menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
     option: (base) => ({
       ...base,
@@ -140,7 +164,6 @@ const colorStyles = (): StylesConfig => {
             ? 'white'
             : 'black'
           : data.color,
-        cursor: isDisabled ? 'not-allowed' : 'pointer',
 
         ':active': {
           ...(base as any)[':active'],
@@ -181,7 +204,7 @@ function CustomSelect<T extends OptionTypeBase>({
       // dangerLight: '', // selectedOptionClearBackground :hover
       neutral0: globalTheme.select, // allBackground & optionText :selected
       neutral10: globalTheme.multivalue, // selectedOptionBackground & disabledBorder
-      neutral20: 'rgba(0, 0, 0, 0.1)', // border & dropdownIcon & clearIcon
+      // neutral20: 'rgba(0, 0, 0, 0.1)', // border & dropdownIcon & clearIcon
       neutral30: 'hsl(0, 0%, 70%)', // border :hover
       // neutral40: '', // dropdownIcon :hover & clearIcon :hover & noOptionsText
       // neutral50: '', // placeholder
@@ -197,17 +220,16 @@ function CustomSelect<T extends OptionTypeBase>({
 
   let styles: StylesConfig;
   if (popout) {
-    styles = popoutStyles(400);
+    styles = mergeStyles(indicatorStyles(globalTheme), popoutStyles(400));
   } else {
-    styles = defaultStyles(globalTheme);
+    styles = mergeStyles(
+      indicatorStyles(globalTheme),
+      defaultStyles(globalTheme)
+    );
   }
 
   if (useColors) {
-    const temp = colorStyles();
-    styles = {
-      ...styles,
-      ...temp,
-    };
+    styles = mergeStyles(styles, colorStyles());
   }
 
   return (
