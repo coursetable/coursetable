@@ -16,6 +16,8 @@ declare module 'styled-components' {
     disabled: string;
     button_hover: string;
     button_active: string;
+    icon: string;
+    icon_focus: string;
     rating_alpha: number;
     primary: string;
     primary_hover: string;
