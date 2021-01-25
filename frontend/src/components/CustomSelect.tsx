@@ -22,6 +22,10 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
       transition:
         'background-color 0.2s linear, border 0.2s linear, color 0.2s linear',
     }),
+    indicatorSeparator: (base) => ({
+      ...base,
+      display: 'none',
+    }),
     menu: (base) => ({
       ...base,
       paddingTop: 0,
@@ -67,6 +71,10 @@ const popoutStyles = (width: number): StylesConfig => {
       cursor: isDisabled ? 'not-allowed' : 'pointer',
       minWidth: width,
       margin: 8,
+    }),
+    indicatorSeparator: (base) => ({
+      ...base,
+      display: 'none',
     }),
     menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
     option: (base) => ({
