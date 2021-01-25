@@ -3,7 +3,7 @@ import React from 'react';
 // import { BiSearchAlt2 } from 'react-icons/bi';
 import styled, { useTheme } from 'styled-components';
 
-import { IoMdArrowDropdown } from 'react-icons/io';
+import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { useComponentVisibleDropdown } from '../utilities';
 
 const Dropdown = styled.div`
@@ -93,7 +93,11 @@ export const Popout: React.FC<Props> = ({ children, buttonText }) => {
         ref={ref_toggle}
       >
         {buttonText}
-        <IoMdArrowDropdown className="ml-1" />
+        {isComponentVisible ? (
+          <IoMdArrowDropup className="ml-1" />
+        ) : (
+          <IoMdArrowDropdown className="ml-1" />
+        )}
       </StyledButton>
       {isComponentVisible ? <Menu ref={ref_dropdown}>{children}</Menu> : null}
     </Dropdown>
