@@ -12,15 +12,26 @@ import { ValueType } from 'react-select/src/types';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
 
+import {
+  // areas,
+  // skills,
+  skillsAreasOptions,
+  // creditOptions,
+  // schoolOptions,
+  subjectOptions,
+  // sortbyOptions,
+} from '../queries/Constants';
+
 const NavbarStyledSearchBar = styled(StyledInput)`
   border-radius: 4px;
   height: 100%;
   font-size: 14px;
 `;
 
-type Season = {
+type Option = {
   label: string;
   value: string;
+  color?: string;
 };
 
 export const NavbarSearch: React.FC = () => {
@@ -33,7 +44,17 @@ export const NavbarSearch: React.FC = () => {
   const searchTextInput = useRef<HTMLInputElement>(null);
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
-  const defaultSeason: Season = { value: '202101', label: 'Spring 2021' };
+  const defaultOptions: Option[] = [];
+  const [select_subjects, setSelectSubjects] = useSessionStorageState(
+    'select_subjects',
+    defaultOptions
+  );
+  const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
+    'select_skillsareas',
+    defaultOptions
+  );
+
+  const defaultSeason: Option = { value: '202101', label: 'Spring 2021' };
   const [
     select_seasons,
     setSelectSeasons,
@@ -82,11 +103,6 @@ export const NavbarSearch: React.FC = () => {
     });
   }
 
-  const handleSeasonChange = (options: Season[]) => {
-    // Set seasons state
-    setSelectSeasons(options || []);
-  };
-
   return (
     <>
       <GlobalHotKeys
@@ -114,6 +130,31 @@ export const NavbarSearch: React.FC = () => {
           </div>
         </Row>
         <Row className="h-50 mx-auto align-items-center">
+          {/* Yale Subjects Filter Dropdown */}
+          <Popout buttonText="Subject">
+            <PopoutSelect
+              isMulti
+              value={select_subjects}
+              options={subjectOptions}
+              placeholder="All Subjects"
+              onChange={(selectedOption: ValueType<Option>) =>
+                setSelectSubjects((selectedOption as Option[]) || [])
+              }
+            />
+          </Popout>
+          {/* Skills/Areas Filter Dropdown */}
+          <Popout buttonText="Skills/Areas">
+            <PopoutSelect
+              useColors
+              isMulti
+              value={select_skillsareas}
+              options={skillsAreasOptions}
+              placeholder="All Skills/Areas"
+              onChange={(selectedOption: ValueType<Option>) =>
+                setSelectSkillsAreas((selectedOption as Option[]) || [])
+              }
+            />
+          </Popout>
           {/* Season Filter Dropdown */}
           <Popout buttonText="Season">
             <PopoutSelect
@@ -121,8 +162,8 @@ export const NavbarSearch: React.FC = () => {
               value={select_seasons}
               options={seasonsOptions}
               placeholder="Last 5 Years"
-              onChange={(selectedOption: ValueType<Season>) =>
-                handleSeasonChange(selectedOption as Season[])
+              onChange={(selectedOption: ValueType<Option>) =>
+                setSelectSeasons((selectedOption as Option[]) || [])
               }
             />
           </Popout>

@@ -1,6 +1,5 @@
 import React from 'react';
 
-// import { BiSearchAlt2 } from 'react-icons/bi';
 import styled, { useTheme } from 'styled-components';
 
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
@@ -44,16 +43,6 @@ const StyledButton = styled.div`
     color: ${({ theme }) => theme.primary_hover};
   }
 `;
-
-// const DropdownIndicator = (
-//   props: ElementConfig<typeof components.DropdownIndicator>
-// ) => {
-//   return (
-//     <components.DropdownIndicator {...props}>
-//       <BiSearchAlt2 />
-//     </components.DropdownIndicator>
-//   );
-// };
 
 type Props = {
   children: React.ReactNode;
