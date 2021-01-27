@@ -54,7 +54,6 @@ const RangeValueLabel = styled.div`
 
 const AdvancedWrapper = styled.div`
   width: 440px;
-  padding: 6px;
 `;
 
 const AdvancedLabel = styled.div`
@@ -64,6 +63,19 @@ const AdvancedLabel = styled.div`
 
 const AdvancedSelect = styled(CustomSelect)`
   width: 80%;
+`;
+
+const Toggle = styled(Form.Check)`
+  margin: 0.25rem 0;
+  user-select: none;
+`;
+
+const ToggleInput = styled(Form.Check.Input)`
+  cursor: pointer !important;
+`;
+
+const ToggleLabel = styled(Form.Check.Label)`
+  cursor: pointer !important;
 `;
 
 type Option = {
@@ -127,6 +139,22 @@ export const NavbarSearch: React.FC = () => {
   const [select_credits, setSelectCredits] = useSessionStorageState(
     'select_credits',
     defaultOptions
+  );
+
+  // Does the user want to hide cancelled courses?
+  const [hideCancelled, setHideCancelled] = useSessionStorageState(
+    'hideCancelled',
+    true
+  );
+  // Does the user want to hide first year seminars?
+  const [
+    hideFirstYearSeminars,
+    setHideFirstYearSeminars,
+  ] = useSessionStorageState('hideFirstYearSeminars', false);
+  // Does the user want to hide graduate courses?
+  const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
+    'hideGraduateCourses',
+    false
   );
 
   const scroll_to_results = useCallback(
@@ -285,7 +313,7 @@ export const NavbarSearch: React.FC = () => {
           {/* Advanced Filter Dropdown */}
           <Popout buttonText="Advanced" arrowIcon={false}>
             <AdvancedWrapper>
-              <Row className="align-items-center justify-content-between mx-auto">
+              <Row className="align-items-center justify-content-between mx-3 mt-3">
                 {/* Yale Schools Multi-Select */}
                 <AdvancedLabel>School:</AdvancedLabel>
                 <AdvancedSelect
@@ -301,7 +329,7 @@ export const NavbarSearch: React.FC = () => {
                   }}
                 />
               </Row>
-              <Row className="align-items-center justify-content-between mx-auto mt-2">
+              <Row className="align-items-center justify-content-between mx-3 mt-3">
                 {/* Course Credit Multi-Select */}
                 <AdvancedLabel>Credit:</AdvancedLabel>
                 <AdvancedSelect
@@ -316,6 +344,52 @@ export const NavbarSearch: React.FC = () => {
                     setSelectCredits((selectedOption as Option[]) || []);
                   }}
                 />
+              </Row>
+              <Row className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4 bg-light">
+                {/* Hide Cancelled Courses Toggle */}
+                <Toggle type="switch">
+                  <ToggleInput
+                    checked={hideCancelled}
+                    onChange={() => {}} // dummy handler to remove warning
+                  />
+                  <ToggleLabel
+                    onClick={() => {
+                      setHideCancelled(!hideCancelled);
+                    }}
+                  >
+                    Hide cancelled courses
+                  </ToggleLabel>
+                </Toggle>
+
+                {/* Hide First-Year Seminar Courses Toggle */}
+                <Toggle type="switch">
+                  <ToggleInput
+                    checked={hideFirstYearSeminars}
+                    onChange={() => {}} // dummy handler to remove warning
+                  />
+                  <ToggleLabel
+                    onClick={() => {
+                      setHideFirstYearSeminars(!hideFirstYearSeminars);
+                    }}
+                  >
+                    Hide first-year seminars
+                  </ToggleLabel>
+                </Toggle>
+
+                {/* Hide Graduate-Level Courses Toggle */}
+                <Toggle type="switch">
+                  <ToggleInput
+                    checked={hideGraduateCourses}
+                    onChange={() => {}} // dummy handler to remove warning
+                  />
+                  <ToggleLabel
+                    onClick={() => {
+                      setHideGraduateCourses(!hideGraduateCourses);
+                    }}
+                  >
+                    Hide graduate courses
+                  </ToggleLabel>
+                </Toggle>
               </Row>
             </AdvancedWrapper>
           </Popout>
