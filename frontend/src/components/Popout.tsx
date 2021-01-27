@@ -47,9 +47,14 @@ const StyledButton = styled.div`
 type Props = {
   children: React.ReactNode;
   buttonText: string;
+  arrowIcon?: boolean;
 };
 
-export const Popout: React.FC<Props> = ({ children, buttonText }) => {
+export const Popout: React.FC<Props> = ({
+  children,
+  buttonText,
+  arrowIcon = true,
+}) => {
   // Ref to detect outside clicks for popout and button
   const {
     ref_toggle,
@@ -82,10 +87,14 @@ export const Popout: React.FC<Props> = ({ children, buttonText }) => {
         ref={ref_toggle}
       >
         {buttonText}
-        {isComponentVisible ? (
-          <IoMdArrowDropup className="ml-1" />
+        {arrowIcon ? (
+          isComponentVisible ? (
+            <IoMdArrowDropup className="ml-1" />
+          ) : (
+            <IoMdArrowDropdown className="ml-1" />
+          )
         ) : (
-          <IoMdArrowDropdown className="ml-1" />
+          <></>
         )}
       </StyledButton>
       {isComponentVisible ? <Menu ref={ref_dropdown}>{children}</Menu> : null}

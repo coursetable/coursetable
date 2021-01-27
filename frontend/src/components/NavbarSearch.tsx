@@ -16,11 +16,12 @@ import {
   // areas,
   // skills,
   skillsAreasOptions,
-  // creditOptions,
-  // schoolOptions,
+  creditOptions,
+  schoolOptions,
   subjectOptions,
   // sortbyOptions,
 } from '../queries/Constants';
+import CustomSelect from './CustomSelect';
 
 const StyledRow = styled(Row)`
   height: 50%;
@@ -49,6 +50,20 @@ const RangeLabel = styled.div`
 
 const RangeValueLabel = styled.div`
   font-size: 12px;
+`;
+
+const AdvancedWrapper = styled.div`
+  width: 440px;
+  padding: 6px;
+`;
+
+const AdvancedLabel = styled.div`
+  font-size: 14px;
+  margin-left: 0.25rem;
+`;
+
+const AdvancedSelect = styled(CustomSelect)`
+  width: 80%;
 `;
 
 type Option = {
@@ -104,6 +119,15 @@ export const NavbarSearch: React.FC = () => {
     select_seasons,
     setSelectSeasons,
   ] = useSessionStorageState('select_seasons', [defaultSeason]);
+
+  const [select_schools, setSelectSchools] = useSessionStorageState(
+    'select_schools',
+    defaultOptions
+  );
+  const [select_credits, setSelectCredits] = useSessionStorageState(
+    'select_credits',
+    defaultOptions
+  );
 
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -257,6 +281,43 @@ export const NavbarSearch: React.FC = () => {
                 setSelectSeasons((selectedOption as Option[]) || [])
               }
             />
+          </Popout>
+          {/* Advanced Filter Dropdown */}
+          <Popout buttonText="Advanced" arrowIcon={false}>
+            <AdvancedWrapper>
+              <Row className="align-items-center justify-content-between mx-auto">
+                {/* Yale Schools Multi-Select */}
+                <AdvancedLabel>School:</AdvancedLabel>
+                <AdvancedSelect
+                  closeMenuOnSelect
+                  isMulti
+                  value={select_schools}
+                  options={schoolOptions}
+                  placeholder="All Schools"
+                  // prevent overlap with tooltips
+                  menuPortalTarget={document.body}
+                  onChange={(selectedOption: ValueType<Option>) => {
+                    setSelectSchools((selectedOption as Option[]) || []);
+                  }}
+                />
+              </Row>
+              <Row className="align-items-center justify-content-between mx-auto mt-2">
+                {/* Course Credit Multi-Select */}
+                <AdvancedLabel>Credit:</AdvancedLabel>
+                <AdvancedSelect
+                  closeMenuOnSelect
+                  isMulti
+                  value={select_credits}
+                  options={creditOptions}
+                  placeholder="All Credits"
+                  // prevent overlap with tooltips
+                  menuPortalTarget={document.body}
+                  onChange={(selectedOption: ValueType<Option>) => {
+                    setSelectCredits((selectedOption as Option[]) || []);
+                  }}
+                />
+              </Row>
+            </AdvancedWrapper>
           </Popout>
         </StyledRow>
       </Form>
