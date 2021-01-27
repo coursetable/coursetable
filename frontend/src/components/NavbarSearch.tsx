@@ -1,8 +1,7 @@
 import React, { useCallback, useRef } from 'react';
-import { Form, InputGroup, Row } from 'react-bootstrap';
+import { Col, Form, InputGroup, Row } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
-import styles from './NavbarSearch.module.css';
 import styled from 'styled-components';
 import { useSessionStorageState } from '../browserStorage';
 import { StyledInput } from './StyledComponents';
@@ -11,6 +10,7 @@ import { useFerry } from './FerryProvider';
 import { ValueType } from 'react-select/src/types';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
+import { Range } from 'rc-slider';
 
 import {
   // areas,
@@ -21,11 +21,44 @@ import {
   subjectOptions,
   // sortbyOptions,
 } from '../queries/Constants';
+import debounce from 'lodash/debounce';
+
+const StyledRow = styled(Row)`
+  height: 50%;
+  width: auto;
+  margin-left: auto;
+  margin-right: auto;
+`;
+
+const SearchWrapper = styled.div`
+  width: 40vw;
+`;
 
 const NavbarStyledSearchBar = styled(StyledInput)`
   border-radius: 4px;
   height: 100%;
   font-size: 14px;
+`;
+
+// const SliderTooltip = styled.div`
+//   font-size: 0.75rem;
+//   width: 1.5rem;
+//   color: white;
+//   background-color: #2d87f3;
+//   text-align: center;
+//   padding: 5px 0;
+//   border-radius: 6px;
+//   font-weight: 600;
+
+//   position: absolute;
+//   z-index: 1;
+//   bottom: 150%;
+//   left: 50%;
+//   margin-left: -0.75rem;
+// `;
+
+const StyledRange = styled(Range)`
+  width: 100px;
 `;
 
 type Option = {
@@ -39,6 +72,9 @@ export const NavbarSearch: React.FC = () => {
   const { width } = useWindowDimensions();
   const is_mobile = width < 768;
   // const is_relative = width < 1230;
+
+  // State to reset sortby dropdown and rating sliders
+  // const [reset_key, setResetKey] = useState(0);
 
   // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
@@ -54,11 +90,29 @@ export const NavbarSearch: React.FC = () => {
     defaultOptions
   );
 
+  // Bounds of course and workload ratings (1-5)
+  const [ratingBounds, setRatingBounds] = useSessionStorageState(
+    'ratingBounds',
+    [1, 5]
+  );
+
+  console.log(ratingBounds);
+
   const defaultSeason: Option = { value: '202101', label: 'Spring 2021' };
   const [
     select_seasons,
     setSelectSeasons,
   ] = useSessionStorageState('select_seasons', [defaultSeason]);
+
+  // // Render slider handles for the course and workload rating sliders
+  // const ratingSliderHandle = useCallback(({ value, dragging, ...e }) => {
+  //   const key = e.className;
+  //   return (
+  //     <Handle {...e} key={key}>
+  //       <SliderTooltip className="shadow">{value}</SliderTooltip>
+  //     </Handle>
+  //   );
+  // }, []);
 
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -113,10 +167,10 @@ export const NavbarSearch: React.FC = () => {
       />
       {/* Search Form */}
       <Form className="px-0 h-100" onSubmit={scroll_to_results}>
-        <Row className="h-50 mx-auto">
-          <div className={styles.search_bar}>
+        <StyledRow>
+          <SearchWrapper>
             {/* Search Bar */}
-            <InputGroup className={styles.full_height}>
+            <InputGroup className="h-100">
               <NavbarStyledSearchBar
                 type="text"
                 value={searchText}
@@ -127,9 +181,9 @@ export const NavbarSearch: React.FC = () => {
                 ref={searchTextInput}
               />
             </InputGroup>
-          </div>
-        </Row>
-        <Row className="h-50 mx-auto align-items-center">
+          </SearchWrapper>
+        </StyledRow>
+        <StyledRow className="align-items-center">
           {/* Yale Subjects Filter Dropdown */}
           <Popout buttonText="Subject">
             <PopoutSelect
@@ -155,6 +209,22 @@ export const NavbarSearch: React.FC = () => {
               }
             />
           </Popout>
+          <Col className="w-auto flex-grow-0">
+            {/* Class Rating Range */}
+            <StyledRange
+              min={1}
+              max={5}
+              step={0.1}
+              // key={reset_key}
+              defaultValue={ratingBounds}
+              // debounce the slider state update
+              // to make it smoother
+              onChange={debounce((value) => {
+                setRatingBounds(value);
+              }, 250)}
+              // handle={ratingSliderHandle}
+            />
+          </Col>
           {/* Season Filter Dropdown */}
           <Popout buttonText="Season">
             <PopoutSelect
@@ -167,7 +237,7 @@ export const NavbarSearch: React.FC = () => {
               }
             />
           </Popout>
-        </Row>
+        </StyledRow>
       </Form>
     </>
   );
