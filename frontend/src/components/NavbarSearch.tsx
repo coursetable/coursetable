@@ -85,6 +85,10 @@ const ToggleLabel = styled(Form.Check.Label)`
   cursor: pointer !important;
 `;
 
+const AdvancedToggleRow = styled(Row)`
+  background-color: ${({ theme }) => theme.button_active};
+`;
+
 type Option = {
   label: string;
   value: string;
@@ -352,7 +356,7 @@ export const NavbarSearch: React.FC = () => {
                   }}
                 />
               </Row>
-              <Row className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4 bg-light">
+              <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
                 {/* Hide Cancelled Courses Toggle */}
                 <Toggle type="switch">
                   <ToggleInput
@@ -397,7 +401,7 @@ export const NavbarSearch: React.FC = () => {
                     Hide graduate courses
                   </ToggleLabel>
                 </Toggle>
-              </Row>
+              </AdvancedToggleRow>
             </AdvancedWrapper>
           </Popout>
         </StyledRow>
