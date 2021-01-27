@@ -243,7 +243,11 @@ export const NavbarSearch: React.FC = () => {
         </StyledRow>
         <StyledRow className="align-items-center">
           {/* Yale Subjects Filter Dropdown */}
-          <Popout buttonText="Subject">
+          <Popout
+            buttonText="Subject"
+            type="subject"
+            select_options={select_subjects}
+          >
             <PopoutSelect
               isMulti
               value={select_subjects}
@@ -255,7 +259,11 @@ export const NavbarSearch: React.FC = () => {
             />
           </Popout>
           {/* Skills/Areas Filter Dropdown */}
-          <Popout buttonText="Skills/Areas">
+          <Popout
+            buttonText="Skills/Areas"
+            type="skills/areas"
+            select_options={select_skillsareas}
+          >
             <PopoutSelect
               useColors
               isMulti
@@ -314,7 +322,11 @@ export const NavbarSearch: React.FC = () => {
             />
           </Col>
           {/* Season Filter Dropdown */}
-          <Popout buttonText="Season">
+          <Popout
+            buttonText="Season"
+            type="season"
+            select_options={select_seasons}
+          >
             <PopoutSelect
               isMulti
               value={select_seasons}
@@ -326,7 +338,7 @@ export const NavbarSearch: React.FC = () => {
             />
           </Popout>
           {/* Advanced Filter Dropdown */}
-          <Popout buttonText="Advanced" arrowIcon={false}>
+          <Popout buttonText="Advanced" arrowIcon={false} type="advanced">
             <AdvancedWrapper>
               <Row className="align-items-center justify-content-between mx-3 mt-3">
                 {/* Yale Schools Multi-Select */}
