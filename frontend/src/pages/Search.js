@@ -158,10 +158,10 @@ function Search() {
   );
 
   // Bounds of course and workload ratings (1-5)
-  const [ratingBounds, setRatingBounds] = useSessionStorageState(
-    'ratingBounds',
-    [1, 5]
-  );
+  const [
+    ratingBounds,
+    setRatingBounds,
+  ] = useSessionStorageState('overallBounds', [1, 5]);
   const [
     workloadBounds,
     setWorkloadBounds,

@@ -125,7 +125,9 @@ export const NavbarSearch: React.FC = () => {
     defaultOverallBounds
   );
   const [overallValueLabels, setOverallValueLabels] = useState(
-    defaultOverallBounds
+    overallBounds !== defaultOverallBounds
+      ? overallBounds
+      : defaultOverallBounds
   );
 
   const defaultWorkloadBounds = [1, 5];
@@ -134,7 +136,9 @@ export const NavbarSearch: React.FC = () => {
     defaultWorkloadBounds
   );
   const [workloadValueLabels, setWorkloadValueLabels] = useState(
-    defaultWorkloadBounds
+    workloadBounds !== defaultWorkloadBounds
+      ? workloadBounds
+      : defaultWorkloadBounds
   );
 
   const defaultSeason: Option = { value: '202101', label: 'Spring 2021' };
