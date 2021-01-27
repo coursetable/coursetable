@@ -31,6 +31,7 @@ const StyledButton = styled.div`
   border-radius: 4px;
   transition: background-color 0.2s linear, border 0.2s linear,
     color 0.2s linear;
+  user-select: none;
   cursor: pointer;
 
   &:hover {
