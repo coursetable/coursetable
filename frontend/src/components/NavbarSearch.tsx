@@ -1,4 +1,4 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import { Col, Form, InputGroup, Row } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
@@ -21,7 +21,6 @@ import {
   subjectOptions,
   // sortbyOptions,
 } from '../queries/Constants';
-import debounce from 'lodash/debounce';
 
 const StyledRow = styled(Row)`
   height: 50%;
@@ -40,25 +39,16 @@ const NavbarStyledSearchBar = styled(StyledInput)`
   font-size: 14px;
 `;
 
-// const SliderTooltip = styled.div`
-//   font-size: 0.75rem;
-//   width: 1.5rem;
-//   color: white;
-//   background-color: #2d87f3;
-//   text-align: center;
-//   padding: 5px 0;
-//   border-radius: 6px;
-//   font-weight: 600;
-
-//   position: absolute;
-//   z-index: 1;
-//   bottom: 150%;
-//   left: 50%;
-//   margin-left: -0.75rem;
-// `;
-
 const StyledRange = styled(Range)`
   width: 100px;
+`;
+
+const RangeLabel = styled.div`
+  font-size: 14px;
+`;
+
+const RangeValueLabel = styled.div`
+  font-size: 12px;
 `;
 
 type Option = {
@@ -91,28 +81,29 @@ export const NavbarSearch: React.FC = () => {
   );
 
   // Bounds of course and workload ratings (1-5)
-  const [ratingBounds, setRatingBounds] = useSessionStorageState(
-    'ratingBounds',
-    [1, 5]
+  const defaultOverallBounds = [1, 5];
+  const [overallBounds, setOverallBounds] = useSessionStorageState(
+    'overallBounds',
+    defaultOverallBounds
+  );
+  const [overallValueLabels, setOverallValueLabels] = useState(
+    defaultOverallBounds
   );
 
-  console.log(ratingBounds);
+  const defaultWorkloadBounds = [1, 5];
+  const [workloadBounds, setWorkloadBounds] = useSessionStorageState(
+    'workloadBounds',
+    defaultWorkloadBounds
+  );
+  const [workloadValueLabels, setWorkloadValueLabels] = useState(
+    defaultWorkloadBounds
+  );
 
   const defaultSeason: Option = { value: '202101', label: 'Spring 2021' };
   const [
     select_seasons,
     setSelectSeasons,
   ] = useSessionStorageState('select_seasons', [defaultSeason]);
-
-  // // Render slider handles for the course and workload rating sliders
-  // const ratingSliderHandle = useCallback(({ value, dragging, ...e }) => {
-  //   const key = e.className;
-  //   return (
-  //     <Handle {...e} key={key}>
-  //       <SliderTooltip className="shadow">{value}</SliderTooltip>
-  //     </Handle>
-  //   );
-  // }, []);
 
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -209,20 +200,50 @@ export const NavbarSearch: React.FC = () => {
               }
             />
           </Popout>
-          <Col className="w-auto flex-grow-0">
-            {/* Class Rating Range */}
+          <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+            {/* Overall Rating Range */}
+            <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+              <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
+              <RangeLabel className="flex-grow-1 text-center">
+                Overall
+              </RangeLabel>
+              <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
+            </div>
             <StyledRange
               min={1}
               max={5}
               step={0.1}
               // key={reset_key}
-              defaultValue={ratingBounds}
-              // debounce the slider state update
-              // to make it smoother
-              onChange={debounce((value) => {
-                setRatingBounds(value);
-              }, 250)}
-              // handle={ratingSliderHandle}
+              defaultValue={overallBounds}
+              onChange={(value) => {
+                setOverallValueLabels(value);
+              }}
+              onAfterChange={(value) => {
+                setOverallBounds(value);
+              }}
+            />
+          </Col>
+          <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+            {/* Workload Rating Range */}
+            <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+              <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
+              <RangeLabel className="flex-grow-1 text-center">
+                Workload
+              </RangeLabel>
+              <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
+            </div>
+            <StyledRange
+              min={1}
+              max={5}
+              step={0.1}
+              // key={reset_key}
+              defaultValue={workloadBounds}
+              onChange={(value) => {
+                setWorkloadValueLabels(value);
+              }}
+              onAfterChange={(value) => {
+                setWorkloadBounds(value);
+              }}
             />
           </Col>
           {/* Season Filter Dropdown */}
