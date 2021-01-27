@@ -42,14 +42,19 @@ const NavbarStyledSearchBar = styled(StyledInput)`
 
 const StyledRange = styled(Range)`
   width: 100px;
+  cursor: pointer;
 `;
 
 const RangeLabel = styled.div`
   font-size: 14px;
+  user-select: none;
+  cursor: default;
 `;
 
 const RangeValueLabel = styled.div`
   font-size: 12px;
+  user-select: none;
+  cursor: default;
 `;
 
 const AdvancedWrapper = styled.div`
@@ -59,6 +64,8 @@ const AdvancedWrapper = styled.div`
 const AdvancedLabel = styled.div`
   font-size: 14px;
   margin-left: 0.25rem;
+  user-select: none;
+  cursor: default;
 `;
 
 const AdvancedSelect = styled(CustomSelect)`
