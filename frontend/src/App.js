@@ -61,10 +61,11 @@ function App({ themeToggler }) {
   return (
     <>
       <Notice>
-        CourseTable v2.0 is under construction, but{' '}
-        <Link to="/feedback">feedback</Link> is welcome. The{' '}
-        <a href="https://old.coursetable.com">old site</a> is also still
-        available.
+        Interested in joining our team? Apply{' '}
+        <a href="https://docs.google.com/forms/d/1Z48Kz_IlCyZcxYxf345RsKslQaF4G_fxs-m-r8HHlwQ/viewform?edit_requested=true">
+          here
+        </a>
+        !
       </Notice>
       <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
       <Switch>
