@@ -73,7 +73,7 @@ const About: React.VFC = () => {
     {
       name: 'Josh Chough',
       image: jc,
-      role: 'Design',
+      role: 'Development & Design',
     },
     {
       name: 'Aidan Evans',
