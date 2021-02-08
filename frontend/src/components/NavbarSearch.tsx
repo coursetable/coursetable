@@ -1,9 +1,8 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useCallback, useRef } from 'react';
 import { Col, Form, InputGroup, Row } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled from 'styled-components';
-import { useSessionStorageState } from '../browserStorage';
 import { StyledInput } from './StyledComponents';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useFerry } from './FerryProvider';
@@ -22,6 +21,7 @@ import {
   // sortbyOptions,
 } from '../queries/Constants';
 import CustomSelect from './CustomSelect';
+import { useSearch, Option } from '../searchContext';
 
 const StyledRow = styled(Row)`
   height: 50%;
@@ -89,12 +89,6 @@ const AdvancedToggleRow = styled(Row)`
   background-color: ${({ theme }) => theme.button_active};
 `;
 
-type Option = {
-  label: string;
-  value: string;
-  color?: string;
-};
-
 export const NavbarSearch: React.FC = () => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -106,71 +100,36 @@ export const NavbarSearch: React.FC = () => {
 
   // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
-  const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
-  const defaultOptions: Option[] = [];
-  const [select_subjects, setSelectSubjects] = useSessionStorageState(
-    'select_subjects',
-    defaultOptions
-  );
-  const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
-    'select_skillsareas',
-    defaultOptions
-  );
-
-  // Bounds of course and workload ratings (1-5)
-  const defaultOverallBounds = [1, 5];
-  const [overallBounds, setOverallBounds] = useSessionStorageState(
-    'overallBounds',
-    defaultOverallBounds
-  );
-  const [overallValueLabels, setOverallValueLabels] = useState(
-    overallBounds !== defaultOverallBounds
-      ? overallBounds
-      : defaultOverallBounds
-  );
-
-  const defaultWorkloadBounds = [1, 5];
-  const [workloadBounds, setWorkloadBounds] = useSessionStorageState(
-    'workloadBounds',
-    defaultWorkloadBounds
-  );
-  const [workloadValueLabels, setWorkloadValueLabels] = useState(
-    workloadBounds !== defaultWorkloadBounds
-      ? workloadBounds
-      : defaultWorkloadBounds
-  );
-
-  const defaultSeason: Option = { value: '202101', label: 'Spring 2021' };
-  const [
+  // Get search context data
+  const {
+    searchText,
+    select_subjects,
+    select_skillsareas,
+    overallBounds,
+    overallValueLabels,
+    workloadBounds,
+    workloadValueLabels,
     select_seasons,
-    setSelectSeasons,
-  ] = useSessionStorageState('select_seasons', [defaultSeason]);
-
-  const [select_schools, setSelectSchools] = useSessionStorageState(
-    'select_schools',
-    defaultOptions
-  );
-  const [select_credits, setSelectCredits] = useSessionStorageState(
-    'select_credits',
-    defaultOptions
-  );
-
-  // Does the user want to hide cancelled courses?
-  const [hideCancelled, setHideCancelled] = useSessionStorageState(
-    'hideCancelled',
-    true
-  );
-  // Does the user want to hide first year seminars?
-  const [
+    select_schools,
+    select_credits,
+    hideCancelled,
     hideFirstYearSeminars,
+    hideGraduateCourses,
+    setSearchText,
+    setSelectSubjects,
+    setSelectSkillsAreas,
+    setOverallBounds,
+    setOverallValueLabels,
+    setWorkloadBounds,
+    setWorkloadValueLabels,
+    setSelectSeasons,
+    setSelectSchools,
+    setSelectCredits,
+    setHideCancelled,
     setHideFirstYearSeminars,
-  ] = useSessionStorageState('hideFirstYearSeminars', false);
-  // Does the user want to hide graduate courses?
-  const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
-    'hideGraduateCourses',
-    false
-  );
+    setHideGraduateCourses,
+  } = useSearch();
 
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
