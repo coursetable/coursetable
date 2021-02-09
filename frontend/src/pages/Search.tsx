@@ -129,9 +129,7 @@ function Search() {
     select_subjects,
     select_skillsareas,
     overallBounds,
-    overallValueLabels,
     workloadBounds,
-    workloadValueLabels,
     select_seasons,
     select_schools,
     select_credits,
@@ -489,9 +487,7 @@ function Search() {
     const key = e.className;
     return (
       <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.overall_tooltip}`}>
-          {overallValueLabels}
-        </div>
+        <div className={`shadow ${Styles.overall_tooltip}`}>{value}</div>
       </Handle>
     );
   }, []);
@@ -499,9 +495,7 @@ function Search() {
     const key = e.className;
     return (
       <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.workload_tooltip}`}>
-          {workloadValueLabels}
-        </div>
+        <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
       </Handle>
     );
   }, []);
