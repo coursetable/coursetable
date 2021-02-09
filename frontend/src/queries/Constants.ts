@@ -30,6 +30,8 @@ expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
+export type AreasType = typeof areas[number];
+export type SkillsType = typeof skills[number];
 
 export const skillsAreasColors = {
   Hu: '#9970AB',
