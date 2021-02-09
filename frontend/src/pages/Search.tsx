@@ -272,7 +272,7 @@ function Search() {
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    const include_all_ratings =
+    const include_all_overalls =
       overallBounds[0] === 1 && overallBounds[1] === 5;
 
     const include_all_workloads =
@@ -287,8 +287,8 @@ function Search() {
       credits: new Set(processedCredits),
       schools: new Set(processedSchools),
       subjects: new Set(processedSubjects),
-      min_rating: include_all_ratings ? null : overallBounds[0],
-      max_rating: include_all_ratings ? null : overallBounds[1],
+      min_overall: include_all_overalls ? null : overallBounds[0],
+      max_overall: include_all_overalls ? null : overallBounds[1],
       min_workload: include_all_workloads ? null : workloadBounds[0],
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
@@ -336,13 +336,13 @@ function Search() {
 
     const filtered = listings.filter((listing) => {
       // Apply filters.
-      const average_rating = Number(getOverallRatings(listing));
+      const average_overall = Number(getOverallRatings(listing));
       if (
-        searchConfig.min_rating !== null &&
-        searchConfig.max_rating !== null &&
-        (average_rating === null ||
-          average_rating < searchConfig.min_rating ||
-          average_rating > searchConfig.max_rating)
+        searchConfig.min_overall !== null &&
+        searchConfig.max_overall !== null &&
+        (average_overall === null ||
+          average_overall < searchConfig.min_overall ||
+          average_overall > searchConfig.max_overall)
       ) {
         return false;
       }
@@ -485,11 +485,13 @@ function Search() {
   }, [coursesLoading, doneInitialScroll, scroll_to_results]);
 
   // Render slider handles for the course and workload rating sliders
-  const ratingSliderHandle = useCallback(({ value, dragging, ...e }) => {
+  const overallSliderHandle = useCallback(({ value, dragging, ...e }) => {
     const key = e.className;
     return (
       <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.rating_tooltip}`}>{value}</div>
+        <div className={`shadow ${Styles.overall_tooltip}`}>
+          {overallValueLabels}
+        </div>
       </Handle>
     );
   }, []);
@@ -497,7 +499,9 @@ function Search() {
     const key = e.className;
     return (
       <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
+        <div className={`shadow ${Styles.workload_tooltip}`}>
+          {workloadValueLabels}
+        </div>
       </Handle>
     );
   }, []);
@@ -729,7 +733,7 @@ function Search() {
                       onAfterChange={(value) => {
                         setOverallBounds(value);
                       }}
-                      handle={ratingSliderHandle}
+                      handle={overallSliderHandle}
                       className={Styles.slider}
                     />
                   </Container>
