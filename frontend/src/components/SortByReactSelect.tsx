@@ -12,6 +12,7 @@ import styles from './SortbyReactSelect.module.css';
 import search_styles from '../pages/Search.module.css';
 import CustomSelect from './CustomSelect';
 import { useSessionStorageState } from '../browserStorage';
+import { sortType } from '../searchContext';
 
 const StyledSortBtn = styled.div`
   &:hover {
@@ -29,7 +30,7 @@ const SortByReactSelect = ({
 }: {
   setOrdering: (
     ordering: {
-      [key in SortKeys]?: 'asc' | 'desc';
+      [key in SortKeys]?: sortType;
     }
   ) => void;
 }) => {
@@ -38,7 +39,7 @@ const SortByReactSelect = ({
     typeof sortbyOptions[number]
   >('select_sortby', sortbyOptions[0]);
   // State that determines sort order
-  const [sort_order, setSortOrder] = useSessionStorageState<'asc' | 'desc'>(
+  const [sort_order, setSortOrder] = useSessionStorageState<sortType>(
     'sort_order',
     'asc'
   );
@@ -53,7 +54,7 @@ const SortByReactSelect = ({
   useEffect(() => {
     const sortParams = select_sortby.value;
     const ordering: {
-      [key in SortKeys]?: 'asc' | 'desc';
+      [key in SortKeys]?: sortType;
     } = {
       [sortParams]: sort_order,
     };

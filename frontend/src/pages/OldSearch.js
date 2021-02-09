@@ -76,9 +76,7 @@ function Search() {
   const isMobile = width < 768;
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
-  // Search text for the default search if search bar was used
-  const searchTextInput = useRef(null);
-  const [searchText, setSearchText] = useSessionStorageState('searchText', '');
+
   // Is the search form  collapsed?
   const [collapsed_form, setCollapsedForm] = useState(false);
 
@@ -113,6 +111,9 @@ function Search() {
 
   // number of search results to return
   // const QUERY_SIZE = 30;
+
+  // Search text for the default search if search bar was used
+  const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
   // way to display results
   const [isList, setView] = useSessionStorageState('isList', !isMobile);
@@ -629,7 +630,6 @@ function Search() {
                       value={searchText}
                       onChange={(event) => setSearchText(event.target.value)}
                       placeholder="Search by course code, title, or prof"
-                      ref={searchTextInput}
                     />
                   </InputGroup>
                 </div>
