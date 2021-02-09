@@ -7,6 +7,8 @@ export type Option = {
   color?: string;
 };
 
+export type sortType = 'desc' | 'asc' | undefined;
+
 type Store = {
   searchText: string;
   select_subjects: Option[];
@@ -39,13 +41,24 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
+const defaultOptions: Option[] = [];
+const defaultOverallBounds = [1, 5];
+const defaultWorkloadBounds = [1, 5];
+const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
+
+export const defaultFilters = {
+  defaultOptions,
+  defaultOverallBounds,
+  defaultWorkloadBounds,
+  defaultSeason,
+};
+
 /**
  * Stores the user's search, filters, and sorts
  */
 export const SearchProvider: React.FC = ({ children }) => {
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
-  const defaultOptions: Option[] = [];
   const [select_subjects, setSelectSubjects] = useSessionStorageState(
     'select_subjects',
     defaultOptions
@@ -56,7 +69,6 @@ export const SearchProvider: React.FC = ({ children }) => {
   );
 
   // Bounds of course and workload ratings (1-5)
-  const defaultOverallBounds = [1, 5];
   const [overallBounds, setOverallBounds] = useSessionStorageState(
     'overallBounds',
     defaultOverallBounds
@@ -67,7 +79,6 @@ export const SearchProvider: React.FC = ({ children }) => {
       : defaultOverallBounds
   );
 
-  const defaultWorkloadBounds = [1, 5];
   const [workloadBounds, setWorkloadBounds] = useSessionStorageState(
     'workloadBounds',
     defaultWorkloadBounds
@@ -78,11 +89,10 @@ export const SearchProvider: React.FC = ({ children }) => {
       : defaultWorkloadBounds
   );
 
-  const defaultSeason: Option = { value: '202101', label: 'Spring 2021' };
-  const [
-    select_seasons,
-    setSelectSeasons,
-  ] = useSessionStorageState('select_seasons', [defaultSeason]);
+  const [select_seasons, setSelectSeasons] = useSessionStorageState(
+    'select_seasons',
+    defaultSeason
+  );
 
   const [select_schools, setSelectSchools] = useSessionStorageState(
     'select_schools',
