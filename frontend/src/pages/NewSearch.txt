@@ -44,7 +44,7 @@ import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
 import { useUser } from '../user';
-import { useSearch, Option, sortType, defaultFilters } from '../searchContext';
+import { useSearch, Option, SortType, defaultFilters } from '../searchContext';
 import {
   SurfaceComponent,
   StyledInput,
@@ -91,7 +91,7 @@ function Search() {
   const [course_modal, setCourseModal] = useState([false, '']);
 
   // State that determines sort order
-  const defaultSort: sortType = 'asc';
+  const defaultSort: SortType = 'asc';
   const [ordering, setOrdering] = useSessionStorageState('ordering', {
     course_code: defaultSort,
   });
