@@ -25,7 +25,9 @@ const StyledButton = styled.div`
   color: ${({ theme }) => theme.text[0]};
   border: 0;
   padding: 6px 8px;
-  margin: 6px 0;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-right: 6px;
   font-weight: 400;
   font-size: 14px;
   border-radius: 4px;
@@ -57,6 +59,7 @@ type Props = {
   type: string;
   arrowIcon?: boolean;
   select_options?: Option[];
+  className?: string;
 };
 
 export const Popout: React.FC<Props> = ({
@@ -65,6 +68,7 @@ export const Popout: React.FC<Props> = ({
   type,
   arrowIcon = true,
   select_options,
+  className,
 }) => {
   // Ref to detect outside clicks for popout and button
   const {
@@ -130,6 +134,7 @@ export const Popout: React.FC<Props> = ({
         onClick={toggleOpen}
         style={buttonStyles(isComponentVisible)}
         ref={ref_toggle}
+        className={className}
       >
         {toggleText}
         {arrowIcon ? (
