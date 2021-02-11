@@ -1,5 +1,5 @@
 import React, { useCallback, useRef } from 'react';
-import { Col, Form, InputGroup, Row } from 'react-bootstrap';
+import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled from 'styled-components';
@@ -89,6 +89,13 @@ const AdvancedToggleRow = styled(Row)`
   background-color: ${({ theme }) => theme.button_active};
 `;
 
+const FilterGroup = styled.div``;
+
+const StyledButton = styled(Button)`
+  padding: 0.25rem 0.375rem;
+  font-size: 12px;
+`;
+
 export const NavbarSearch: React.FC = () => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -103,6 +110,7 @@ export const NavbarSearch: React.FC = () => {
 
   // Get search context data
   const {
+    canReset,
     searchText,
     select_subjects,
     select_skillsareas,
@@ -116,6 +124,7 @@ export const NavbarSearch: React.FC = () => {
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
+    setCanReset,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -129,6 +138,7 @@ export const NavbarSearch: React.FC = () => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
+    handleResetFilters,
   } = useSearch();
 
   const scroll_to_results = useCallback(
@@ -191,194 +201,214 @@ export const NavbarSearch: React.FC = () => {
               <NavbarStyledSearchBar
                 type="text"
                 value={searchText}
-                onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                  setSearchText(event.target.value)
-                }
+                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+                  setSearchText(event.target.value);
+                  setCanReset(true);
+                }}
                 placeholder="Search by course code, title, prof, or whatever we don't really care"
                 ref={searchTextInput}
               />
             </InputGroup>
           </SearchWrapper>
         </StyledRow>
-        <StyledRow className="align-items-center">
-          {/* Yale Subjects Filter Dropdown */}
-          <Popout
-            buttonText="Subject"
-            type="subject"
-            select_options={select_subjects}
-          >
-            <PopoutSelect
-              isMulti
-              value={select_subjects}
-              options={subjectOptions}
-              placeholder="All Subjects"
-              onChange={(selectedOption: ValueType<Option>) =>
-                setSelectSubjects((selectedOption as Option[]) || [])
-              }
-            />
-          </Popout>
-          {/* Skills/Areas Filter Dropdown */}
-          <Popout
-            buttonText="Skills/Areas"
-            type="skills/areas"
-            select_options={select_skillsareas}
-          >
-            <PopoutSelect
-              useColors
-              isMulti
-              value={select_skillsareas}
-              options={skillsAreasOptions}
-              placeholder="All Skills/Areas"
-              onChange={(selectedOption: ValueType<Option>) =>
-                setSelectSkillsAreas((selectedOption as Option[]) || [])
-              }
-            />
-          </Popout>
-          <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
-            {/* Overall Rating Range */}
-            <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-              <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
-              <RangeLabel className="flex-grow-1 text-center">
-                Overall
-              </RangeLabel>
-              <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
-            </div>
-            <StyledRange
-              min={1}
-              max={5}
-              step={0.1}
-              // key={reset_key}
-              defaultValue={overallBounds}
-              onChange={(value) => {
-                setOverallValueLabels(value);
-              }}
-              onAfterChange={(value) => {
-                setOverallBounds(value);
-              }}
-            />
-          </Col>
-          <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
-            {/* Workload Rating Range */}
-            <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-              <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
-              <RangeLabel className="flex-grow-1 text-center">
-                Workload
-              </RangeLabel>
-              <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
-            </div>
-            <StyledRange
-              min={1}
-              max={5}
-              step={0.1}
-              // key={reset_key}
-              defaultValue={workloadBounds}
-              onChange={(value) => {
-                setWorkloadValueLabels(value);
-              }}
-              onAfterChange={(value) => {
-                setWorkloadBounds(value);
-              }}
-            />
-          </Col>
-          {/* Season Filter Dropdown */}
-          <Popout
-            buttonText="Season"
-            type="season"
-            select_options={select_seasons}
-          >
-            <PopoutSelect
-              isMulti
-              value={select_seasons}
-              options={seasonsOptions}
-              placeholder="Last 5 Years"
-              onChange={(selectedOption: ValueType<Option>) =>
-                setSelectSeasons((selectedOption as Option[]) || [])
-              }
-            />
-          </Popout>
-          {/* Advanced Filter Dropdown */}
-          <Popout buttonText="Advanced" arrowIcon={false} type="advanced">
-            <AdvancedWrapper>
-              <Row className="align-items-center justify-content-between mx-3 mt-3">
-                {/* Yale Schools Multi-Select */}
-                <AdvancedLabel>School:</AdvancedLabel>
-                <AdvancedSelect
-                  closeMenuOnSelect
-                  isMulti
-                  value={select_schools}
-                  options={schoolOptions}
-                  placeholder="All Schools"
-                  // prevent overlap with tooltips
-                  menuPortalTarget={document.body}
-                  onChange={(selectedOption: ValueType<Option>) => {
-                    setSelectSchools((selectedOption as Option[]) || []);
-                  }}
-                />
-              </Row>
-              <Row className="align-items-center justify-content-between mx-3 mt-3">
-                {/* Course Credit Multi-Select */}
-                <AdvancedLabel>Credit:</AdvancedLabel>
-                <AdvancedSelect
-                  closeMenuOnSelect
-                  isMulti
-                  value={select_credits}
-                  options={creditOptions}
-                  placeholder="All Credits"
-                  // prevent overlap with tooltips
-                  menuPortalTarget={document.body}
-                  onChange={(selectedOption: ValueType<Option>) => {
-                    setSelectCredits((selectedOption as Option[]) || []);
-                  }}
-                />
-              </Row>
-              <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
-                {/* Hide Cancelled Courses Toggle */}
-                <Toggle type="switch">
-                  <ToggleInput
-                    checked={hideCancelled}
-                    onChange={() => {}} // dummy handler to remove warning
-                  />
-                  <ToggleLabel
-                    onClick={() => {
-                      setHideCancelled(!hideCancelled);
+        <StyledRow className="align-items-center justify-content-between">
+          <FilterGroup className="d-flex align-items-center">
+            {/* Yale Subjects Filter Dropdown */}
+            <Popout
+              buttonText="Subject"
+              type="subject"
+              select_options={select_subjects}
+            >
+              <PopoutSelect
+                isMulti
+                value={select_subjects}
+                options={subjectOptions}
+                placeholder="All Subjects"
+                onChange={(selectedOption: ValueType<Option>) => {
+                  setSelectSubjects((selectedOption as Option[]) || []);
+                  setCanReset(true);
+                }}
+              />
+            </Popout>
+            {/* Skills/Areas Filter Dropdown */}
+            <Popout
+              buttonText="Skills/Areas"
+              type="skills/areas"
+              select_options={select_skillsareas}
+              className="mr-0"
+            >
+              <PopoutSelect
+                useColors
+                isMulti
+                value={select_skillsareas}
+                options={skillsAreasOptions}
+                placeholder="All Skills/Areas"
+                onChange={(selectedOption: ValueType<Option>) => {
+                  setSelectSkillsAreas((selectedOption as Option[]) || []);
+                  setCanReset(true);
+                }}
+              />
+            </Popout>
+            <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+              {/* Overall Rating Range */}
+              <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
+                <RangeLabel className="flex-grow-1 text-center">
+                  Overall
+                </RangeLabel>
+                <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
+              </div>
+              <StyledRange
+                min={1}
+                max={5}
+                step={0.1}
+                // key={reset_key}
+                defaultValue={overallBounds}
+                onChange={(value) => {
+                  setOverallValueLabels(value);
+                }}
+                onAfterChange={(value) => {
+                  setOverallBounds(value);
+                  setCanReset(true);
+                }}
+              />
+            </Col>
+            <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+              {/* Workload Rating Range */}
+              <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
+                <RangeLabel className="flex-grow-1 text-center">
+                  Workload
+                </RangeLabel>
+                <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
+              </div>
+              <StyledRange
+                min={1}
+                max={5}
+                step={0.1}
+                // key={reset_key}
+                defaultValue={workloadBounds}
+                onChange={(value) => {
+                  setWorkloadValueLabels(value);
+                }}
+                onAfterChange={(value) => {
+                  setWorkloadBounds(value);
+                  setCanReset(true);
+                }}
+              />
+            </Col>
+            {/* Season Filter Dropdown */}
+            <Popout
+              buttonText="Season"
+              type="season"
+              select_options={select_seasons}
+            >
+              <PopoutSelect
+                isMulti
+                value={select_seasons}
+                options={seasonsOptions}
+                placeholder="Last 5 Years"
+                onChange={(selectedOption: ValueType<Option>) => {
+                  setSelectSeasons((selectedOption as Option[]) || []);
+                  setCanReset(true);
+                }}
+              />
+            </Popout>
+            {/* Advanced Filter Dropdown */}
+            <Popout buttonText="Advanced" arrowIcon={false} type="advanced">
+              <AdvancedWrapper>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Yale Schools Multi-Select */}
+                  <AdvancedLabel>School:</AdvancedLabel>
+                  <AdvancedSelect
+                    closeMenuOnSelect
+                    isMulti
+                    value={select_schools}
+                    options={schoolOptions}
+                    placeholder="All Schools"
+                    // prevent overlap with tooltips
+                    menuPortalTarget={document.body}
+                    onChange={(selectedOption: ValueType<Option>) => {
+                      setSelectSchools((selectedOption as Option[]) || []);
+                      setCanReset(true);
                     }}
-                  >
-                    Hide cancelled courses
-                  </ToggleLabel>
-                </Toggle>
+                  />
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Course Credit Multi-Select */}
+                  <AdvancedLabel>Credit:</AdvancedLabel>
+                  <AdvancedSelect
+                    closeMenuOnSelect
+                    isMulti
+                    value={select_credits}
+                    options={creditOptions}
+                    placeholder="All Credits"
+                    // prevent overlap with tooltips
+                    menuPortalTarget={document.body}
+                    onChange={(selectedOption: ValueType<Option>) => {
+                      setSelectCredits((selectedOption as Option[]) || []);
+                      setCanReset(true);
+                    }}
+                  />
+                </Row>
+                <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
+                  {/* Hide Cancelled Courses Toggle */}
+                  <Toggle type="switch">
+                    <ToggleInput
+                      checked={hideCancelled}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <ToggleLabel
+                      onClick={() => {
+                        setHideCancelled(!hideCancelled);
+                        setCanReset(true);
+                      }}
+                    >
+                      Hide cancelled courses
+                    </ToggleLabel>
+                  </Toggle>
+                  {/* Hide First-Year Seminar Courses Toggle */}
+                  <Toggle type="switch">
+                    <ToggleInput
+                      checked={hideFirstYearSeminars}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <ToggleLabel
+                      onClick={() => {
+                        setHideFirstYearSeminars(!hideFirstYearSeminars);
+                        setCanReset(true);
+                      }}
+                    >
+                      Hide first-year seminars
+                    </ToggleLabel>
+                  </Toggle>
+                  {/* Hide Graduate-Level Courses Toggle */}
+                  <Toggle type="switch">
+                    <ToggleInput
+                      checked={hideGraduateCourses}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <ToggleLabel
+                      onClick={() => {
+                        setHideGraduateCourses(!hideGraduateCourses);
+                        setCanReset(true);
+                      }}
+                    >
+                      Hide graduate courses
+                    </ToggleLabel>
+                  </Toggle>
+                </AdvancedToggleRow>
+              </AdvancedWrapper>
+            </Popout>
+          </FilterGroup>
 
-                {/* Hide First-Year Seminar Courses Toggle */}
-                <Toggle type="switch">
-                  <ToggleInput
-                    checked={hideFirstYearSeminars}
-                    onChange={() => {}} // dummy handler to remove warning
-                  />
-                  <ToggleLabel
-                    onClick={() => {
-                      setHideFirstYearSeminars(!hideFirstYearSeminars);
-                    }}
-                  >
-                    Hide first-year seminars
-                  </ToggleLabel>
-                </Toggle>
-
-                {/* Hide Graduate-Level Courses Toggle */}
-                <Toggle type="switch">
-                  <ToggleInput
-                    checked={hideGraduateCourses}
-                    onChange={() => {}} // dummy handler to remove warning
-                  />
-                  <ToggleLabel
-                    onClick={() => {
-                      setHideGraduateCourses(!hideGraduateCourses);
-                    }}
-                  >
-                    Hide graduate courses
-                  </ToggleLabel>
-                </Toggle>
-              </AdvancedToggleRow>
-            </AdvancedWrapper>
-          </Popout>
+          <StyledButton
+            variant="danger"
+            onClick={handleResetFilters}
+            disabled={!canReset}
+          >
+            Reset Filters
+          </StyledButton>
         </StyledRow>
       </Form>
     </>
