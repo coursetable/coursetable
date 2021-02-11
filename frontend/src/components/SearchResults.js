@@ -42,16 +42,20 @@ const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
   position: -webkit-sticky; /* Safari */
   position: sticky;
-  top: 56px;
+  top: 100px;
   transition: background-color 0.2s linear;
   z-index: 2;
 `;
 
 // Container of row dropdown (without spacer)
 const StyledContainer = styled(SurfaceComponent)`
-  border-top-left-radius: 8px;
-  border-top-right-radius: 8px;
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+  transition: 0.2s linear;
+  border-top: 2px solid ${({ theme }) => theme.border};
+  border-bottom: 2px solid ${({ theme }) => theme.border};
+`;
+
+const StyledRow = styled(Row)`
+  max-width: 1600px;
 `;
 
 /**
@@ -358,17 +362,17 @@ const SearchResults = ({
   return (
     <div className={expanded ? Styles.results_container_max_width : ''}>
       {!isMobile && (
-        <StyledSpacer className="pt-3">
+        <StyledSpacer>
           <StyledContainer
-            layer={1}
+            layer={0}
             id="results_container"
-            className="px-0 mx-1"
+            className="px-0 mx-0"
           >
             {/* Results Header */}
-            <Row
+            <StyledRow
               ref={ref}
               className={
-                `mx-auto pl-4 pr-2 py-2 shadow-sm ${Styles.results_header_row}` +
+                `mx-auto pl-4 pr-2 py-2 ${Styles.results_header_row}` +
                 ' justify-content-between'
               }
             >
@@ -480,15 +484,16 @@ const SearchResults = ({
                   </div>
                 </Col>
               )}
-            </Row>
+            </StyledRow>
           </StyledContainer>
         </StyledSpacer>
       )}
 
       <SurfaceComponent
         layer={0}
-        className={`
-          mx-1 ${Styles.results_list_container} ${!isList ? 'px-1 pt-3 ' : ''}`}
+        className={`${Styles.results_list_container} ${
+          !isList ? 'px-1 pt-3 ' : ''
+        }`}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
