@@ -39,6 +39,7 @@ export type OptType =
   | undefined;
 
 type Store = {
+  canReset: boolean;
   searchText: string;
   select_subjects: Option[];
   select_skillsareas: Option[];
@@ -59,6 +60,7 @@ type Store = {
   multiSeasons: boolean;
   isLoggedIn: boolean;
   num_fb: Record<string, string[]>;
+  setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
   setSelectSkillsAreas: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -97,6 +99,8 @@ export const defaultFilters = {
  * Stores the user's search, filters, and sorts
  */
 export const SearchProvider: React.FC = ({ children }) => {
+  const [canReset, setCanReset] = useSessionStorageState('canReset', false);
+
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
   const [select_subjects, setSelectSubjects] = useSessionStorageState(
@@ -492,6 +496,8 @@ export const SearchProvider: React.FC = ({ children }) => {
     setSSObject('select_sortby', sortbyOptions[0]);
     setSSObject('sort_order', 'asc');
     setResetKey(reset_key + 1);
+
+    setCanReset(false);
   }, [
     reset_key,
     setSelectSubjects,
@@ -504,6 +510,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
+    setCanReset,
   ]);
 
   // perform default search on load
@@ -511,12 +518,14 @@ export const SearchProvider: React.FC = ({ children }) => {
     // only execute after seasons have been loaded
     if (defaultSearch && seasonsOptions) {
       setDefaultSearch(false);
+      setCanReset(false);
     }
-  }, [seasonsOptions, defaultSearch]);
+  }, [seasonsOptions, defaultSearch, setCanReset]);
 
   const store = useMemo(
     () => ({
       // Context state.
+      canReset,
       searchText,
       select_subjects,
       select_skillsareas,
@@ -539,6 +548,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       num_fb,
 
       // Update methods.
+      setCanReset,
       setSearchText,
       setSelectSubjects,
       setSelectSkillsAreas,
@@ -556,6 +566,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       handleResetFilters,
     }),
     [
+      canReset,
       searchText,
       select_subjects,
       select_skillsareas,
@@ -576,6 +587,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       multiSeasons,
       isLoggedIn,
       num_fb,
+      setCanReset,
       setSearchText,
       setSelectSubjects,
       setSelectSkillsAreas,
