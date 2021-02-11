@@ -159,7 +159,7 @@ const SearchResults = ({
 
       return (
         <div key={key} style={style}>
-          <Row className="mx-auto">{row_elements}</Row>
+          <StyledRow className="mx-auto">{row_elements}</StyledRow>
         </div>
       );
     },
