@@ -405,6 +405,7 @@ const SearchResults = ({
                       Season
                     </div>
                   )}
+                  {/* Course Code */}
                   <div style={code_style} className={Styles.results_header}>
                     Code
                   </div>

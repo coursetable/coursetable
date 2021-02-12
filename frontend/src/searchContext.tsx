@@ -482,6 +482,7 @@ export const SearchProvider: React.FC = ({ children }) => {
   ]);
 
   const handleResetFilters = useCallback(() => {
+    setSearchText('');
     setHideCancelled(true);
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
@@ -500,6 +501,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setCanReset(false);
   }, [
     reset_key,
+    setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
     setOverallBounds,
