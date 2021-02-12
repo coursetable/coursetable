@@ -4,14 +4,14 @@
 }
 
 .results_container_max_width {
-  max-width: 1400px;
-  margin: 0px auto;
+  /* max-width: 1400px; */
+  width: 100%;
 }
 
 .results_list_container {
-  border-bottom-left-radius: 8px;
+  /* border-bottom-left-radius: 8px;
   border-bottom-right-radius: 8px;
-  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2); */
   overflow: hidden;
 }
 
@@ -29,7 +29,7 @@
 .results_header {
   line-height: 30px;
   display: flex;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
 }
 
