@@ -58,6 +58,10 @@ const StyledRow = styled(Row)`
   max-width: 1600px;
 `;
 
+const getColWidth = (calculated, min = 0, max = 1000000) => {
+  return Math.max(Math.min(calculated, max), min);
+};
+
 /**
  * Renders the infinite list of search results
  * @prop data - list that holds the search results
@@ -101,10 +105,11 @@ const SearchResults = ({
   const COL_SPACING = useMemo(() => {
     const TEMP_COL_SPACING = {
       SZN_WIDTH: 80,
-      CODE_WIDTH: 110,
-      RATE_WIDTH: 38,
-      NUM_WIDTH: 30,
-      SA_WIDTH: 100,
+      CODE_WIDTH: 100,
+      RATE_OVERALL_WIDTH: 120,
+      RATE_WORKLOAD_WIDTH: 120,
+      RATE_PROF_WIDTH: 40,
+      NUM_WIDTH: 60,
       PADDING: 43,
     };
 
@@ -113,16 +118,20 @@ const SearchResults = ({
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
       2 * TEMP_COL_SPACING.NUM_WIDTH -
-      TEMP_COL_SPACING.SA_WIDTH -
-      3 * TEMP_COL_SPACING.RATE_WIDTH -
+      TEMP_COL_SPACING.RATE_OVERALL_WIDTH -
+      TEMP_COL_SPACING.RATE_WORKLOAD_WIDTH -
+      TEMP_COL_SPACING.RATE_PROF_WIDTH -
       TEMP_COL_SPACING.PADDING;
 
-    TEMP_COL_SPACING.PROF_WIDTH = Math.min(EXTRA / 4, 160);
-    TEMP_COL_SPACING.MEET_WIDTH = Math.min(EXTRA / 4, 160);
-    TEMP_COL_SPACING.LOC_WIDTH = Math.min(EXTRA / 6, 100);
+    TEMP_COL_SPACING.PROF_WIDTH =
+      getColWidth(EXTRA / 8, undefined, 180) + TEMP_COL_SPACING.RATE_PROF_WIDTH;
+    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, undefined, 160);
+    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, undefined, 160);
+    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, undefined, 100);
     TEMP_COL_SPACING.TITLE_WIDTH =
       EXTRA -
       TEMP_COL_SPACING.PROF_WIDTH -
+      TEMP_COL_SPACING.SA_WIDTH -
       TEMP_COL_SPACING.MEET_WIDTH -
       TEMP_COL_SPACING.LOC_WIDTH -
       10;
@@ -349,9 +358,17 @@ const SearchResults = ({
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
   const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
-  const rate_style = {
+  const rate_overall_style = {
     whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_WIDTH}px`,
+    width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
+  };
+  const rate_workload_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
+  };
+  const rate_prof_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_PROF_WIDTH}px`,
   };
   const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
@@ -397,7 +414,7 @@ const SearchResults = ({
                   </div>
                   {/* Class Rating */}
                   <div
-                    style={rate_style}
+                    style={rate_overall_style}
                     className={`${Styles.results_header} justify-content-center`}
                   >
                     <StyledIcon>
@@ -411,8 +428,8 @@ const SearchResults = ({
                     </StyledIcon>
                   </div>
                   {/* Professor Rating */}
-                  <div
-                    style={rate_style}
+                  {/* <div
+                    style={rate_prof_style}
                     className={`${Styles.results_header} justify-content-center`}
                   >
                     <StyledIcon>
@@ -424,10 +441,10 @@ const SearchResults = ({
                         <Teacher className={Styles.prof_icon} />
                       </OverlayTrigger>
                     </StyledIcon>
-                  </div>
+                  </div> */}
                   {/* Workload Rating */}
                   <div
-                    style={rate_style}
+                    style={rate_workload_style}
                     className={`${Styles.results_header} justify-content-center`}
                   >
                     <StyledIcon>
@@ -440,6 +457,19 @@ const SearchResults = ({
                       </OverlayTrigger>
                     </StyledIcon>
                   </div>
+                  {/* Course Professors */}
+                  <div style={prof_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Professors</span>
+                  </div>
+                  {/* Skills/Areas */}
+                  <div style={sa_style} className={Styles.results_header}>
+                    Skills/Areas
+                  </div>
+                  {/* Course Meeting times and location */}
+                  <div style={meet_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Meets</span>
+                  </div>
+                  {/* Enrollment Number */}
                   <div style={num_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
@@ -449,21 +479,11 @@ const SearchResults = ({
                       <span className="m-auto">#</span>
                     </OverlayTrigger>
                   </div>
-                  {/* Course Professors */}
-                  <div style={prof_style} className={Styles.results_header}>
-                    <span className={Styles.one_line}>Professors</span>
-                  </div>
-                  {/* Course Meeting times and location */}
-                  <div style={meet_style} className={Styles.results_header}>
-                    <span className={Styles.one_line}>Meets</span>
-                  </div>
+                  {/* Location */}
                   <div style={loc_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Location</span>
                   </div>
-
-                  <div style={sa_style} className={Styles.results_header}>
-                    Skills/Areas
-                  </div>
+                  {/* FB */}
                   <div style={num_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
