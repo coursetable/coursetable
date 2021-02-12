@@ -223,65 +223,64 @@ const SearchResultsItem = ({
           </div>
         </OverlayTrigger>
         {/* Class Rating */}
-        <div style={rate_overall_style} className="d-flex">
+        <div className="d-flex">
           <StyledRating
             rating={course_rating}
             colormap={ratingColormap}
-            className={`${Styles.rating_cell} my-auto`}
+            className={`${Styles.rating_cell}`}
+            style={rate_overall_style}
           >
             {
               // String representation of rating to be displayed
               course.average_rating_same_professors
                 ? course_rating // Use same professor if possible. Displayed as is
                 : course.average_rating
-                ? `~` // Use all professors otherwise and add tilda ~
+                ? `~${course_rating}` // Use all professors otherwise and add tilda ~
                 : 'N/A' // No ratings at all
             }
           </StyledRating>
-        </div>
-        {/* Professor Rating */}
-        {/* <div style={rate_prof_style} className="d-flex">
-          <StyledRating
-            rating={course.average_professor}
-            colormap={ratingColormap}
-            className={`${Styles.rating_cell} m-auto`}
-          >
-            {course.average_professor
-              ? course.average_professor.toFixed(1)
-              : 'N/A'}
-          </StyledRating>
-        </div> */}
-        {/* Workload Rating */}
-        <div style={rate_workload_style} className="d-flex">
           <StyledRating
             rating={course.average_workload}
             colormap={workloadColormap}
-            className={`${Styles.rating_cell} my-auto`}
+            className={`${Styles.rating_cell}`}
+            style={rate_workload_style}
           >
             {course.average_workload
               ? course.average_workload.toFixed(1)
               : 'N/A'}
           </StyledRating>
-        </div>
-        {/* Course Professors & Professor Rating */}
-        <div style={prof_style} className="d-flex align-items-center">
-          <div style={rate_prof_style} className="mr-1">
-            <StyledRating
-              rating={course.average_professor}
-              colormap={ratingColormap}
-              className={Styles.rating_cell}
-            >
-              {course.average_professor
-                ? course.average_professor.toFixed(1)
-                : 'N/A'}
-            </StyledRating>
+          {/* Course Professors & Professor Rating */}
+          <div style={prof_style} className="d-flex align-items-center">
+            <div style={rate_prof_style} className="mr-2 h-100">
+              <StyledRating
+                rating={course.average_professor}
+                colormap={ratingColormap}
+                className={Styles.rating_cell}
+              >
+                {course.average_professor
+                  ? course.average_professor.toFixed(1)
+                  : 'N/A'}
+              </StyledRating>
+            </div>
+            <div className={Styles.ellipsis_text}>
+              {course.professor_names.length === 0
+                ? 'TBA'
+                : course.professor_names.join(' • ')}
+            </div>
           </div>
-          <div className={Styles.ellipsis_text}>
-            {course.professor_names.length === 0
-              ? 'TBA'
-              : course.professor_names.join(' • ')}
-          </div>
         </div>
+        {/* Workload Rating */}
+        {/* <div style={rate_workload_style} className="d-flex">
+          <StyledRating
+            rating={course.average_workload}
+            colormap={workloadColormap}
+            className={`${Styles.rating_cell}`}
+          >
+            {course.average_workload
+              ? course.average_workload.toFixed(1)
+              : 'N/A'}
+          </StyledRating>
+        </div> */}
         {/* Enrollment */}
         <div style={num_style} className="d-flex">
           <span className="my-auto">

@@ -92,9 +92,10 @@ export const StyledRating = styled.div<{
     rating && rating > 0
       ? colormap(rating).alpha(theme.rating_alpha).css()
       : theme.banner};
-  color: ${({ rating, colormap }) =>
-    rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
-  transition: background-color 0.2s linear;
+  color: ${({ rating, theme }) =>
+    // rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
+    rating && rating > 0 ? theme.text[0] : '#b5b5b5'};
+  transition: 0.2s linear;
 `;
 
 // Primary Color link

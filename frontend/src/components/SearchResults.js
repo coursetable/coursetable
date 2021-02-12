@@ -412,35 +412,37 @@ const SearchResults = ({
                   <div style={title_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Title</span>
                   </div>
-                  {/* Overall Rating */}
-                  <div
-                    style={rate_overall_style}
-                    className={Styles.results_header}
-                  >
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={class_tooltip}
+                  <div className="d-flex">
+                    {/* Overall Rating */}
+                    <div
+                      style={rate_overall_style}
+                      className={Styles.results_header}
                     >
-                      <span className={Styles.one_line}>Overall</span>
-                    </OverlayTrigger>
-                  </div>
-                  {/* Workload Rating */}
-                  <div
-                    style={rate_workload_style}
-                    className={Styles.results_header}
-                  >
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={workload_tooltip}
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={class_tooltip}
+                      >
+                        <span className={Styles.one_line}>Overall</span>
+                      </OverlayTrigger>
+                    </div>
+                    {/* Workload Rating */}
+                    <div
+                      style={rate_workload_style}
+                      className={Styles.results_header}
                     >
-                      <span className={Styles.one_line}>Workload</span>
-                    </OverlayTrigger>
-                  </div>
-                  {/* Course Professors */}
-                  <div style={prof_style} className={Styles.results_header}>
-                    <span className={Styles.one_line}>Professors</span>
+                      <OverlayTrigger
+                        placement="bottom"
+                        delay={{ show: 100, hide: 100 }}
+                        overlay={workload_tooltip}
+                      >
+                        <span className={Styles.one_line}>Workload</span>
+                      </OverlayTrigger>
+                    </div>
+                    {/* Course Professors & Professor Rating */}
+                    <div style={prof_style} className={Styles.results_header}>
+                      <span className={Styles.one_line}>Professors</span>
+                    </div>
                   </div>
                   {/* Enrollment Number */}
                   <div style={num_style} className={Styles.results_header}>
