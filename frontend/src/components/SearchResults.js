@@ -412,62 +412,35 @@ const SearchResults = ({
                   <div style={title_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Title</span>
                   </div>
-                  {/* Class Rating */}
+                  {/* Overall Rating */}
                   <div
                     style={rate_overall_style}
-                    className={`${Styles.results_header} justify-content-center`}
+                    className={Styles.results_header}
                   >
-                    <StyledIcon>
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={class_tooltip}
-                      >
-                        <Star className={Styles.icon} />
-                      </OverlayTrigger>
-                    </StyledIcon>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={class_tooltip}
+                    >
+                      <span className={Styles.one_line}>Overall</span>
+                    </OverlayTrigger>
                   </div>
-                  {/* Professor Rating */}
-                  {/* <div
-                    style={rate_prof_style}
-                    className={`${Styles.results_header} justify-content-center`}
-                  >
-                    <StyledIcon>
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={prof_tooltip}
-                      >
-                        <Teacher className={Styles.prof_icon} />
-                      </OverlayTrigger>
-                    </StyledIcon>
-                  </div> */}
                   {/* Workload Rating */}
                   <div
                     style={rate_workload_style}
-                    className={`${Styles.results_header} justify-content-center`}
+                    className={Styles.results_header}
                   >
-                    <StyledIcon>
-                      <OverlayTrigger
-                        placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
-                        overlay={workload_tooltip}
-                      >
-                        <Book className={Styles.icon} />
-                      </OverlayTrigger>
-                    </StyledIcon>
+                    <OverlayTrigger
+                      placement="bottom"
+                      delay={{ show: 100, hide: 100 }}
+                      overlay={workload_tooltip}
+                    >
+                      <span className={Styles.one_line}>Workload</span>
+                    </OverlayTrigger>
                   </div>
                   {/* Course Professors */}
                   <div style={prof_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Professors</span>
-                  </div>
-                  {/* Skills/Areas */}
-                  <div style={sa_style} className={Styles.results_header}>
-                    Skills/Areas
-                  </div>
-                  {/* Course Meeting times and location */}
-                  <div style={meet_style} className={Styles.results_header}>
-                    <span className={Styles.one_line}>Meets</span>
                   </div>
                   {/* Enrollment Number */}
                   <div style={num_style} className={Styles.results_header}>
@@ -476,8 +449,16 @@ const SearchResults = ({
                       delay={{ show: 100, hide: 100 }}
                       overlay={enrollment_tooltip}
                     >
-                      <span className="m-auto">#</span>
+                      <span className={Styles.one_line}>#</span>
                     </OverlayTrigger>
+                  </div>
+                  {/* Skills/Areas */}
+                  <div style={sa_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Skills/Areas</span>
+                  </div>
+                  {/* Course Meeting times and location */}
+                  <div style={meet_style} className={Styles.results_header}>
+                    <span className={Styles.one_line}>Meets</span>
                   </div>
                   {/* Location */}
                   <div style={loc_style} className={Styles.results_header}>
@@ -490,7 +471,7 @@ const SearchResults = ({
                       delay={{ show: 100, hide: 100 }}
                       overlay={fb_tooltip}
                     >
-                      <span className="m-auto">#FB</span>
+                      <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
                   </div>
                 </>

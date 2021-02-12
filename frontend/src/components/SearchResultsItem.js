@@ -227,7 +227,7 @@ const SearchResultsItem = ({
           <StyledRating
             rating={course_rating}
             colormap={ratingColormap}
-            className={`${Styles.rating_cell} m-auto`}
+            className={`${Styles.rating_cell} my-auto`}
           >
             {
               // String representation of rating to be displayed
@@ -256,7 +256,7 @@ const SearchResultsItem = ({
           <StyledRating
             rating={course.average_workload}
             colormap={workloadColormap}
-            className={`${Styles.rating_cell} m-auto`}
+            className={`${Styles.rating_cell} my-auto`}
           >
             {course.average_workload
               ? course.average_workload.toFixed(1)
@@ -269,7 +269,7 @@ const SearchResultsItem = ({
             <StyledRating
               rating={course.average_professor}
               colormap={ratingColormap}
-              className={`${Styles.rating_cell}`}
+              className={Styles.rating_cell}
             >
               {course.average_professor
                 ? course.average_professor.toFixed(1)
@@ -281,6 +281,18 @@ const SearchResultsItem = ({
               ? 'TBA'
               : course.professor_names.join(' • ')}
           </div>
+        </div>
+        {/* Enrollment */}
+        <div style={num_style} className="d-flex">
+          <span className="my-auto">
+            {course.enrolled
+              ? course.enrolled
+              : course.last_enrollment && course.last_enrollment_same_professors
+              ? course.last_enrollment
+              : course.last_enrollment
+              ? `~${course.last_enrollment}`
+              : ''}
+          </span>
         </div>
         {/* Skills and Areas */}
         <div style={sa_style} className="d-flex">
@@ -321,18 +333,6 @@ const SearchResultsItem = ({
         <div style={meet_style}>
           <div className={Styles.ellipsis_text}>{course.times_summary}</div>
         </div>
-        {/* Enrollment */}
-        <div style={num_style} className="d-flex">
-          <span className="m-auto">
-            {course.enrolled
-              ? course.enrolled
-              : course.last_enrollment && course.last_enrollment_same_professors
-              ? course.last_enrollment
-              : course.last_enrollment
-              ? `~${course.last_enrollment}`
-              : ''}
-          </span>
-        </div>
         {/* Course Location */}
         <div style={loc_style}>
           <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
@@ -344,7 +344,7 @@ const SearchResultsItem = ({
             delay={{ show: 100, hide: 100 }}
             overlay={renderFBFriendsTooltip}
           >
-            <span className="m-auto">
+            <span className="my-auto">
               {fb_friends.length > 0 ? fb_friends.length : ''}
             </span>
           </OverlayTrigger>
