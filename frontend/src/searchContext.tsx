@@ -518,9 +518,9 @@ export const SearchProvider: React.FC = ({ children }) => {
     // only execute after seasons have been loaded
     if (defaultSearch && seasonsOptions) {
       setDefaultSearch(false);
-      setCanReset(false);
+      // setCanReset(false);
     }
-  }, [seasonsOptions, defaultSearch, setCanReset]);
+  }, [seasonsOptions, defaultSearch]);
 
   const store = useMemo(
     () => ({
