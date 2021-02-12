@@ -16,7 +16,7 @@ import styled from 'styled-components';
 import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
-import SearchResults from '../components/SearchResults';
+import CatalogResults from '../components/CatalogResults';
 import CourseModal from '../components/CourseModal';
 
 import {
@@ -163,7 +163,7 @@ function Search() {
           }`}
         >
           <Element name="catalog" className="d-flex justify-content-center">
-            <SearchResults
+            <CatalogResults
               data={searchData}
               isList={isList}
               setView={handleSetView}
