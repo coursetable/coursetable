@@ -148,9 +148,17 @@ const SearchResultsItem = ({
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
   const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
-  const rate_style = {
+  const rate_overall_style = {
     whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_WIDTH}px`,
+    width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
+  };
+  const rate_workload_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
+  };
+  const rate_prof_style = {
+    whiteSpace: 'nowrap',
+    width: `${COL_SPACING.RATE_PROF_WIDTH}px`,
   };
   const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
@@ -215,7 +223,7 @@ const SearchResultsItem = ({
           </div>
         </OverlayTrigger>
         {/* Class Rating */}
-        <div style={rate_style} className="d-flex">
+        <div style={rate_overall_style} className="d-flex">
           <StyledRating
             rating={course_rating}
             colormap={ratingColormap}
@@ -232,7 +240,7 @@ const SearchResultsItem = ({
           </StyledRating>
         </div>
         {/* Professor Rating */}
-        <div style={rate_style} className="d-flex">
+        {/* <div style={rate_prof_style} className="d-flex">
           <StyledRating
             rating={course.average_professor}
             colormap={ratingColormap}
@@ -242,9 +250,9 @@ const SearchResultsItem = ({
               ? course.average_professor.toFixed(1)
               : 'N/A'}
           </StyledRating>
-        </div>
+        </div> */}
         {/* Workload Rating */}
-        <div style={rate_style} className="d-flex">
+        <div style={rate_workload_style} className="d-flex">
           <StyledRating
             rating={course.average_workload}
             colormap={workloadColormap}
@@ -255,31 +263,24 @@ const SearchResultsItem = ({
               : 'N/A'}
           </StyledRating>
         </div>
-        {/* Enrollment */}
-        <div style={num_style} className="d-flex">
-          <span className="m-auto">
-            {course.enrolled
-              ? course.enrolled
-              : course.last_enrollment && course.last_enrollment_same_professors
-              ? course.last_enrollment
-              : course.last_enrollment
-              ? `~${course.last_enrollment}`
-              : ''}
-          </span>
-        </div>
-        {/* Course Professors */}
-        <div style={prof_style} className={Styles.ellipsis_text}>
-          {course.professor_names.length === 0
-            ? 'TBA'
-            : course.professor_names.join(' • ')}
-        </div>
-        {/* Course Meets */}
-        <div style={meet_style}>
-          <div className={Styles.ellipsis_text}>{course.times_summary}</div>
-        </div>
-        {/* Course Location */}
-        <div style={loc_style}>
-          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+        {/* Course Professors & Professor Rating */}
+        <div style={prof_style} className="d-flex align-items-center">
+          <div style={rate_prof_style} className="mr-1">
+            <StyledRating
+              rating={course.average_professor}
+              colormap={ratingColormap}
+              className={`${Styles.rating_cell}`}
+            >
+              {course.average_professor
+                ? course.average_professor.toFixed(1)
+                : 'N/A'}
+            </StyledRating>
+          </div>
+          <div className={Styles.ellipsis_text}>
+            {course.professor_names.length === 0
+              ? 'TBA'
+              : course.professor_names.join(' • ')}
+          </div>
         </div>
         {/* Skills and Areas */}
         <div style={sa_style} className="d-flex">
@@ -315,6 +316,26 @@ const SearchResultsItem = ({
               </Badge>
             ))}
           </span>
+        </div>
+        {/* Course Meets */}
+        <div style={meet_style}>
+          <div className={Styles.ellipsis_text}>{course.times_summary}</div>
+        </div>
+        {/* Enrollment */}
+        <div style={num_style} className="d-flex">
+          <span className="m-auto">
+            {course.enrolled
+              ? course.enrolled
+              : course.last_enrollment && course.last_enrollment_same_professors
+              ? course.last_enrollment
+              : course.last_enrollment
+              ? `~${course.last_enrollment}`
+              : ''}
+          </span>
+        </div>
+        {/* Course Location */}
+        <div style={loc_style}>
+          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
         {/* # FB Friends also shopping */}
         <div style={num_style} className="d-flex ">
