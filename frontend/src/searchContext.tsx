@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
-import { setSSObject, useSessionStorageState } from './browserStorage';
+import { useSessionStorageState } from './browserStorage';
 import { Listing, useCourseData, useFerry } from './components/FerryProvider';
 import { getNumFB, getOverallRatings, sortCourses } from './courseUtilities';
 import {
@@ -25,6 +25,7 @@ export type Option = {
   label: string;
   value: string;
   color?: string;
+  numeric?: boolean;
 };
 
 export type SortType = 'desc' | 'asc' | undefined;
@@ -53,6 +54,8 @@ type Store = {
   hideCancelled: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
+  select_sortby: Option;
+  sort_order: SortType;
   ordering: OrderingType;
   seasonsOptions: OptType;
   coursesLoading: boolean;
@@ -74,6 +77,8 @@ type Store = {
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
+  setSelectSortby: React.Dispatch<React.SetStateAction<Option>>;
+  setSortOrder: React.Dispatch<React.SetStateAction<SortType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
 };
@@ -85,6 +90,8 @@ const defaultOptions: Option[] = [];
 const defaultOverallBounds = [1, 5];
 const defaultWorkloadBounds = [1, 5];
 const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
+const defaultSortOption: Option = sortbyOptions[0];
+const defaultSortOrder: SortType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
 export const defaultFilters = {
@@ -92,6 +99,8 @@ export const defaultFilters = {
   defaultOverallBounds,
   defaultWorkloadBounds,
   defaultSeason,
+  defaultSortOption,
+  defaultSortOrder,
   defaultOrdering,
 };
 
@@ -177,6 +186,16 @@ export const SearchProvider: React.FC = ({ children }) => {
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
 
+  // State that controls sortby select
+  const [select_sortby, setSelectSortby] = useSessionStorageState(
+    'select_sortby',
+    defaultSortOption
+  );
+  // State that determines sort order
+  const [sort_order, setSortOrder] = useSessionStorageState<SortType>(
+    'sort_order',
+    defaultSortOrder
+  );
   // State that determines sort order
   const [ordering, setOrdering] = useSessionStorageState(
     'ordering',
@@ -494,8 +513,10 @@ export const SearchProvider: React.FC = ({ children }) => {
     setSelectSchools(defaultOptions);
     setSelectSubjects(defaultOptions);
 
-    setSSObject('select_sortby', sortbyOptions[0]);
-    setSSObject('sort_order', 'asc');
+    setSelectSortby(defaultSortOption);
+    setSortOrder(defaultSortOrder);
+    setOrdering(defaultOrdering);
+
     setResetKey(reset_key + 1);
 
     setCanReset(false);
@@ -512,6 +533,9 @@ export const SearchProvider: React.FC = ({ children }) => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
+    setSelectSortby,
+    setSortOrder,
+    setOrdering,
     setCanReset,
   ]);
 
@@ -523,6 +547,17 @@ export const SearchProvider: React.FC = ({ children }) => {
       // setCanReset(false);
     }
   }, [seasonsOptions, defaultSearch]);
+
+  // Set ordering in parent element whenever sortby or order changes
+  useEffect(() => {
+    const sortParams = select_sortby.value;
+    const newOrdering: {
+      [key in SortKeys]?: SortType;
+    } = {
+      [sortParams]: sort_order,
+    };
+    setOrdering(newOrdering);
+  }, [select_sortby, sort_order, setOrdering]);
 
   const store = useMemo(
     () => ({
@@ -541,6 +576,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
+      select_sortby,
+      sort_order,
       ordering,
       seasonsOptions,
       coursesLoading,
@@ -564,6 +601,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       setHideCancelled,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
+      setSelectSortby,
+      setSortOrder,
       setOrdering,
       handleResetFilters,
     }),
@@ -582,6 +621,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
+      select_sortby,
+      sort_order,
       ordering,
       seasonsOptions,
       coursesLoading,
@@ -603,6 +644,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       setHideCancelled,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
+      setSelectSortby,
+      setSortOrder,
       setOrdering,
       handleResetFilters,
     ]
