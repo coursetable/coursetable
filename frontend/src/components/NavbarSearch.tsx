@@ -402,6 +402,7 @@ export const NavbarSearch: React.FC = () => {
             </Popout>
           </FilterGroup>
 
+          {/* Reset Filters Button */}
           <StyledButton
             variant="danger"
             onClick={handleResetFilters}
