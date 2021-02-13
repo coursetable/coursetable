@@ -6,7 +6,7 @@ import {
   FcNumericalSorting12,
   FcNumericalSorting21,
 } from 'react-icons/fc';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { useSearch, Option, defaultFilters, SortType } from '../searchContext';
 
 const StyledSortBtn = styled.div`
@@ -44,6 +44,8 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
     setCanReset,
   } = useSearch();
 
+  const globalTheme = useTheme();
+
   // Handle changing the sort order
   const handleSortOrder = () => {
     if (select_sortby.value !== selectOption.value) {
@@ -73,7 +75,11 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
 
   return (
     <>
-      <StyledSortBtn className="ml-1 my-auto" onClick={handleSortOrder}>
+      <StyledSortBtn
+        style={{ backgroundColor: active ? globalTheme.button_active : '' }}
+        className="ml-1 my-auto"
+        onClick={handleSortOrder}
+      >
         {!selectOption.numeric ? (
           // Sorting by letters
           localSortOrder === 'asc' ? (
