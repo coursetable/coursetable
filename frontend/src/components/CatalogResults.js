@@ -36,6 +36,8 @@ import { SurfaceComponent, StyledIcon } from './StyledComponents';
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
+import CatalogColumnSort from './CatalogColumnSort';
+import { sortbyOptions } from '../queries/Constants';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -408,10 +410,12 @@ const CatalogResults = ({
                   {/* Course Code */}
                   <div style={code_style} className={Styles.results_header}>
                     Code
+                    <CatalogColumnSort selectOption={sortbyOptions[0]} />
                   </div>
                   {/* Course Name */}
                   <div style={title_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Title</span>
+                    <CatalogColumnSort selectOption={sortbyOptions[2]} />
                   </div>
                   <div className="d-flex">
                     {/* Overall Rating */}
@@ -426,6 +430,7 @@ const CatalogResults = ({
                       >
                         <span className={Styles.one_line}>Overall</span>
                       </OverlayTrigger>
+                      <CatalogColumnSort selectOption={sortbyOptions[4]} />
                     </div>
                     {/* Workload Rating */}
                     <div
@@ -439,10 +444,12 @@ const CatalogResults = ({
                       >
                         <span className={Styles.one_line}>Workload</span>
                       </OverlayTrigger>
+                      <CatalogColumnSort selectOption={sortbyOptions[6]} />
                     </div>
                     {/* Course Professors & Professor Rating */}
                     <div style={prof_style} className={Styles.results_header}>
                       <span className={Styles.one_line}>Professors</span>
+                      <CatalogColumnSort selectOption={sortbyOptions[5]} />
                     </div>
                   </div>
                   {/* Enrollment Number */}
@@ -476,6 +483,7 @@ const CatalogResults = ({
                     >
                       <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
+                    <CatalogColumnSort selectOption={sortbyOptions[3]} />
                   </div>
                 </>
               ) : (
