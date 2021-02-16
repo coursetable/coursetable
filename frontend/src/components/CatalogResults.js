@@ -330,9 +330,9 @@ const CatalogResults = ({
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
         <span>
-          Class Enrollment
+          Previous Class Enrollment
           <br />
-          (based on the most recent instance of this course. a ~ means a
+          (based on the most recent past instance of this course. a ~ means a
           different professor was teaching)
         </span>
       </Tooltip>
@@ -461,6 +461,7 @@ const CatalogResults = ({
                     >
                       <span className={Styles.one_line}>#</span>
                     </OverlayTrigger>
+                    <CatalogColumnSort selectOption={sortbyOptions[8]} />
                   </div>
                   {/* Skills/Areas */}
                   <div style={sa_style} className={Styles.results_header}>

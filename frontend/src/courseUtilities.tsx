@@ -159,6 +159,9 @@ const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
     // Factor in same professors rating if it exists
     return getOverallRatings(listing);
   }
+  if (listing[key] === 0) {
+    return null;
+  }
   return listing[key];
 };
 // Sort courses in catalog or expanded worksheet
