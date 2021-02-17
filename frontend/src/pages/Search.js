@@ -137,8 +137,7 @@ function Search() {
       scroll_to_results();
       setDoneInitialScroll(true);
     }
-    console.log(searchData[0]);
-  }, [coursesLoading, doneInitialScroll, scroll_to_results, searchData]);
+  }, [coursesLoading, doneInitialScroll, scroll_to_results]);
 
   // Switch to grid view if window width changes < 900
   useEffect(() => {

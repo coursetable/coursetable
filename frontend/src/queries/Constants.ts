@@ -20,6 +20,7 @@ export const sortbyOptions = [
     numeric: true,
   },
   { label: 'Last Enrollment', value: 'last_enrollment', numeric: true },
+  { label: 'Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
 // Make sure we can only sort by keys in the listing, or by facebook.

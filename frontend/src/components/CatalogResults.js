@@ -470,6 +470,7 @@ const CatalogResults = ({
                   {/* Course Meeting times and location */}
                   <div style={meet_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Meets</span>
+                    <CatalogColumnSort selectOption={sortbyOptions[9]} />
                   </div>
                   {/* Location */}
                   <div style={loc_style} className={Styles.results_header}>
