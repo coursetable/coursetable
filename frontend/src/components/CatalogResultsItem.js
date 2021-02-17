@@ -28,6 +28,7 @@ const StyledResultsItem = styled(Row)`
 const StyledSpacer = styled.div`
   border-top: solid 1px ${({ theme }) => theme.border};
   transition: border 0.2s linear;
+  outline: none !important;
   &:hover {
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
