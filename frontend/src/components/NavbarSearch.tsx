@@ -124,6 +124,7 @@ export const NavbarSearch: React.FC = () => {
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
+    reset_key,
     setCanReset,
     setSearchText,
     setSelectSubjects,
@@ -262,7 +263,7 @@ export const NavbarSearch: React.FC = () => {
                 min={1}
                 max={5}
                 step={0.1}
-                // key={reset_key}
+                key={reset_key}
                 defaultValue={overallBounds}
                 onChange={(value) => {
                   setOverallValueLabels(value);
@@ -286,7 +287,7 @@ export const NavbarSearch: React.FC = () => {
                 min={1}
                 max={5}
                 step={0.1}
-                // key={reset_key}
+                key={reset_key}
                 defaultValue={workloadBounds}
                 onChange={(value) => {
                   setWorkloadValueLabels(value);

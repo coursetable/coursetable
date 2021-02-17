@@ -63,6 +63,7 @@ type Store = {
   multiSeasons: boolean;
   isLoggedIn: boolean;
   num_fb: Record<string, string[]>;
+  reset_key: number;
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -506,7 +507,9 @@ export const SearchProvider: React.FC = ({ children }) => {
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
     setOverallBounds(defaultOverallBounds);
+    setOverallValueLabels(defaultOverallBounds);
     setWorkloadBounds(defaultWorkloadBounds);
+    setWorkloadValueLabels(defaultWorkloadBounds);
     setSelectSeasons(defaultSeason);
     setSelectSkillsAreas(defaultOptions);
     setSelectCredits(defaultOptions);
@@ -585,6 +588,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       multiSeasons,
       isLoggedIn,
       num_fb,
+      reset_key,
 
       // Update methods.
       setCanReset,
@@ -630,6 +634,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       multiSeasons,
       isLoggedIn,
       num_fb,
+      reset_key,
       setCanReset,
       setSearchText,
       setSelectSubjects,
