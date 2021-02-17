@@ -10,5 +10,7 @@ export const weekdays = [
   'Wednesday',
   'Thursday',
   'Friday',
+  'Saturday',
+  'Sunday',
 ] as const;
 export type Weekdays = typeof weekdays[number];
