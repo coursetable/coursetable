@@ -21,5 +21,6 @@ declare module 'styled-components' {
     rating_alpha: number;
     primary: string;
     primary_hover: string;
+    row_odd: string;
   }
 }

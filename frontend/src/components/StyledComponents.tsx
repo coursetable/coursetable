@@ -91,7 +91,7 @@ export const StyledRating = styled.div<{
   background-color: ${({ theme, rating, colormap }) =>
     rating && rating > 0
       ? colormap(rating).alpha(theme.rating_alpha).css()
-      : theme.banner};
+      : 'inherit'};
   color: ${({ rating }) =>
     // rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
     rating && rating > 0 ? '#141414' : '#b5b5b5'};
