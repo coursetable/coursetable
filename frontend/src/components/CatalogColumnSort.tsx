@@ -15,7 +15,7 @@ const StyledSortBtn = styled.div`
   padding: 2px;
   transition: 0.3s;
   &:hover {
-    background-color: ${({ theme }) => theme.banner};
+    background-color: ${({ theme }) => theme.button_active};
   }
 `;
 
@@ -76,7 +76,7 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
   return (
     <>
       <StyledSortBtn
-        style={{ backgroundColor: active ? globalTheme.button_active : '' }}
+        style={{ backgroundColor: active ? globalTheme.select_hover : '' }}
         className="ml-1 my-auto"
         onClick={handleSortOrder}
       >

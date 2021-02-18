@@ -38,6 +38,7 @@ import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
 import CatalogColumnSort from './CatalogColumnSort';
 import { sortbyOptions } from '../queries/Constants';
+import { useSearch } from '../searchContext';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -96,6 +97,9 @@ const CatalogResults = ({
 
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState(0);
+
+  const { reset_key } = useSearch();
+
   // Ref to get row width
   const ref = useRef(null);
   useEffect(() => {
@@ -414,12 +418,18 @@ const CatalogResults = ({
                   {/* Course Code */}
                   <div style={code_style} className={Styles.results_header}>
                     Code
-                    <CatalogColumnSort selectOption={sortbyOptions[0]} />
+                    <CatalogColumnSort
+                      selectOption={sortbyOptions[0]}
+                      key={reset_key}
+                    />
                   </div>
                   {/* Course Name */}
                   <div style={title_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Title</span>
-                    <CatalogColumnSort selectOption={sortbyOptions[2]} />
+                    <CatalogColumnSort
+                      selectOption={sortbyOptions[2]}
+                      key={reset_key}
+                    />
                   </div>
                   <div className="d-flex">
                     {/* Overall Rating */}
@@ -434,7 +444,10 @@ const CatalogResults = ({
                       >
                         <span className={Styles.one_line}>Overall</span>
                       </OverlayTrigger>
-                      <CatalogColumnSort selectOption={sortbyOptions[4]} />
+                      <CatalogColumnSort
+                        selectOption={sortbyOptions[4]}
+                        key={reset_key}
+                      />
                     </div>
                     {/* Workload Rating */}
                     <div
@@ -448,12 +461,18 @@ const CatalogResults = ({
                       >
                         <span className={Styles.one_line}>Work</span>
                       </OverlayTrigger>
-                      <CatalogColumnSort selectOption={sortbyOptions[6]} />
+                      <CatalogColumnSort
+                        selectOption={sortbyOptions[6]}
+                        key={reset_key}
+                      />
                     </div>
                     {/* Course Professors & Professor Rating */}
                     <div style={prof_style} className={Styles.results_header}>
                       <span className={Styles.one_line}>Professors</span>
-                      <CatalogColumnSort selectOption={sortbyOptions[5]} />
+                      <CatalogColumnSort
+                        selectOption={sortbyOptions[5]}
+                        key={reset_key}
+                      />
                     </div>
                   </div>
                   {/* Enrollment Number */}
@@ -465,7 +484,10 @@ const CatalogResults = ({
                     >
                       <span className={Styles.one_line}>#</span>
                     </OverlayTrigger>
-                    <CatalogColumnSort selectOption={sortbyOptions[8]} />
+                    <CatalogColumnSort
+                      selectOption={sortbyOptions[8]}
+                      key={reset_key}
+                    />
                   </div>
                   {/* Skills/Areas */}
                   <div style={sa_style} className={Styles.results_header}>
@@ -474,7 +496,10 @@ const CatalogResults = ({
                   {/* Course Meeting times and location */}
                   <div style={meet_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Meets</span>
-                    <CatalogColumnSort selectOption={sortbyOptions[9]} />
+                    <CatalogColumnSort
+                      selectOption={sortbyOptions[9]}
+                      key={reset_key}
+                    />
                   </div>
                   {/* Location */}
                   <div style={loc_style} className={Styles.results_header}>
@@ -489,7 +514,10 @@ const CatalogResults = ({
                     >
                       <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
-                    <CatalogColumnSort selectOption={sortbyOptions[3]} />
+                    <CatalogColumnSort
+                      selectOption={sortbyOptions[3]}
+                      key={reset_key}
+                    />
                   </div>
                 </>
               ) : (
