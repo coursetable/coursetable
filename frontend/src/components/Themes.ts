@@ -19,6 +19,7 @@ export const lightTheme: DefaultTheme = {
   rating_alpha: 1, // Rating bubble's opacity
   primary: '#468ff2', // Primary color (blue)
   primary_hover: '#007bff', // Primary hover color (dark blue)
+  row_odd: '#f9f9f9', // Odd row background color
 };
 export const darkTheme: DefaultTheme = {
   theme: 'dark',
@@ -39,4 +40,5 @@ export const darkTheme: DefaultTheme = {
   rating_alpha: 0.75, // Rating bubble's opacity
   primary: '#61adff', // Primary color (lighter blue)
   primary_hover: '#007bff', // Primary hover color (blue)
+  row_odd: '#202020', // Odd row background color
 };

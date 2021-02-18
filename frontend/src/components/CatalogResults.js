@@ -30,7 +30,7 @@ import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { SurfaceComponent, StyledIcon } from './StyledComponents';
 
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
@@ -99,6 +99,8 @@ const CatalogResults = ({
   const [ROW_WIDTH, setRowWidth] = useState(0);
 
   const { reset_key } = useSearch();
+
+  const globalTheme = useTheme();
 
   // Ref to get row width
   const ref = useRef(null);
@@ -189,8 +191,16 @@ const CatalogResults = ({
       const fb_friends = num_fb[data[index].season_code + data[index].crn]
         ? num_fb[data[index].season_code + data[index].crn]
         : [];
+      // Alternating row item background colors
+      const extraStyles =
+        index % 2 === 0
+          ? { backgroundColor: globalTheme.surface[0] }
+          : { backgroundColor: globalTheme.row_odd };
       return (
-        <div style={style} key={key}>
+        <div
+          style={{ ...style, ...extraStyles, transition: '0.2s linear' }}
+          key={key}
+        >
           <CatalogResultsItemMemo
             course={data[index]}
             showModal={showModal}
@@ -204,7 +214,7 @@ const CatalogResults = ({
         </div>
       );
     },
-    [data, showModal, multiSeasons, expanded, COL_SPACING, num_fb]
+    [data, showModal, multiSeasons, expanded, COL_SPACING, num_fb, globalTheme]
   );
 
   if (!isLoggedIn) {
