@@ -108,10 +108,11 @@ const CatalogResults = ({
     const TEMP_COL_SPACING = {
       SZN_WIDTH: 80,
       CODE_WIDTH: 100,
-      RATE_OVERALL_WIDTH: 120,
-      RATE_WORKLOAD_WIDTH: 120,
+      RATE_OVERALL_WIDTH: 92,
+      RATE_WORKLOAD_WIDTH: 92,
       RATE_PROF_WIDTH: 40,
-      NUM_WIDTH: 60,
+      ENROLL_WIDTH: 40,
+      FB_WIDTH: 60,
       PADDING: 43,
     };
 
@@ -119,17 +120,19 @@ const CatalogResults = ({
       ROW_WIDTH -
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
-      2 * TEMP_COL_SPACING.NUM_WIDTH -
+      TEMP_COL_SPACING.ENROLL_WIDTH -
+      TEMP_COL_SPACING.FB_WIDTH -
       TEMP_COL_SPACING.RATE_OVERALL_WIDTH -
       TEMP_COL_SPACING.RATE_WORKLOAD_WIDTH -
       TEMP_COL_SPACING.RATE_PROF_WIDTH -
       TEMP_COL_SPACING.PADDING;
 
     TEMP_COL_SPACING.PROF_WIDTH =
-      getColWidth(EXTRA / 8, undefined, 180) + TEMP_COL_SPACING.RATE_PROF_WIDTH;
-    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, undefined, 160);
-    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, undefined, 160);
-    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, undefined, 100);
+      getColWidth(EXTRA / 7, undefined, undefined) +
+      TEMP_COL_SPACING.RATE_PROF_WIDTH;
+    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 96.5, 126);
+    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, 138, 150);
+    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, 70, undefined);
     TEMP_COL_SPACING.TITLE_WIDTH =
       EXTRA -
       TEMP_COL_SPACING.PROF_WIDTH -
@@ -375,7 +378,8 @@ const CatalogResults = ({
   const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const num_style = { width: `${COL_SPACING.NUM_WIDTH}px` };
+  const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
+  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
@@ -442,7 +446,7 @@ const CatalogResults = ({
                         delay={{ show: 100, hide: 100 }}
                         overlay={workload_tooltip}
                       >
-                        <span className={Styles.one_line}>Workload</span>
+                        <span className={Styles.one_line}>Work</span>
                       </OverlayTrigger>
                       <CatalogColumnSort selectOption={sortbyOptions[6]} />
                     </div>
@@ -453,7 +457,7 @@ const CatalogResults = ({
                     </div>
                   </div>
                   {/* Enrollment Number */}
-                  <div style={num_style} className={Styles.results_header}>
+                  <div style={enroll_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
@@ -477,7 +481,7 @@ const CatalogResults = ({
                     <span className={Styles.one_line}>Location</span>
                   </div>
                   {/* FB */}
-                  <div style={num_style} className={Styles.results_header}>
+                  <div style={fb_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}

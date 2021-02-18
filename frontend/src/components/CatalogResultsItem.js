@@ -159,12 +159,13 @@ const CatalogResultsItem = ({
   };
   const rate_prof_style = {
     whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_PROF_WIDTH}px`,
+    minWidth: `${COL_SPACING.RATE_PROF_WIDTH}px`,
   };
   const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const num_style = { width: `${COL_SPACING.NUM_WIDTH}px` };
+  const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
+  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
@@ -228,7 +229,7 @@ const CatalogResultsItem = ({
           <StyledRating
             rating={course_rating}
             colormap={ratingColormap}
-            className={`${Styles.rating_cell}`}
+            className={Styles.rating_cell}
             style={rate_overall_style}
           >
             {
@@ -243,7 +244,7 @@ const CatalogResultsItem = ({
           <StyledRating
             rating={course.average_workload}
             colormap={workloadColormap}
-            className={`${Styles.rating_cell}`}
+            className={Styles.rating_cell}
             style={rate_workload_style}
           >
             {course.average_workload
@@ -275,7 +276,7 @@ const CatalogResultsItem = ({
           <StyledRating
             rating={course.average_workload}
             colormap={workloadColormap}
-            className={`${Styles.rating_cell}`}
+            className={Styles.rating_cell}
           >
             {course.average_workload
               ? course.average_workload.toFixed(1)
@@ -283,7 +284,7 @@ const CatalogResultsItem = ({
           </StyledRating>
         </div> */}
         {/* Enrollment */}
-        <div style={num_style} className="d-flex">
+        <div style={enroll_style} className="d-flex">
           <span className="my-auto">
             {course.enrolled
               ? course.enrolled
@@ -338,7 +339,7 @@ const CatalogResultsItem = ({
           <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
         {/* # FB Friends also shopping */}
-        <div style={num_style} className="d-flex ">
+        <div style={fb_style} className="d-flex ">
           <OverlayTrigger
             placement="top"
             delay={{ show: 100, hide: 100 }}
