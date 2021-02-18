@@ -1,8 +1,6 @@
 import mysql from 'mysql';
 import mysql_db from './mysql_db.js';
 
-import { MAX_CHALLENGE_REQUESTS } from '../config';
-
 const Student = function (student) {};
 
 /**
@@ -24,7 +22,7 @@ Student.getChallengeStatus = (netid, result) => {
       return;
     }
     connection.query(
-      `SELECT challengeTries,evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
+      `SELECT evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
         netid
       )}`,
       (err, res) => {
@@ -41,7 +39,6 @@ Student.getChallengeStatus = (netid, result) => {
           return;
         }
 
-        const challengeTries = res[0]['challengeTries'];
         const evaluationsEnabled = res[0]['evaluationsEnabled'];
 
         // check if already enabled
@@ -49,48 +46,8 @@ Student.getChallengeStatus = (netid, result) => {
           result(403, 'ALREADY_ENABLED', null);
           return;
         }
-        // limit number of challenge requests
-        if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
-          result(429, 'MAX_TRIES_REACHED', null);
-          return;
-        }
 
         result(200, null, res[0]);
-      }
-    );
-  });
-};
-
-/**
- * Increment the number of challenge attempts for a student
- * to 1+ the provided value.
- *
- * @prop challengeTries - number of challenge attempts
- * @prop netid - student's netID
- * @prop result - return object
- *
- * @return {response_code, error_message, success_boolean}
- */
-Student.incrementChallengeTries = (challengeTries, netid, result) => {
-  mysql_db.getConnection(function (err, connection) {
-    if (err) {
-      console.error(err);
-      result(500, err, null);
-      return;
-    }
-    connection.query(
-      `UPDATE StudentBluebookSettings SET challengeTries=${
-        challengeTries + 1
-      } WHERE netid=${mysql.escape(netid)}`,
-      (err, res) => {
-        connection.release(); //put connection back in pool
-        if (err) {
-          console.error('incrementChallengeTries error: ', err);
-          result(500, err, null);
-          return;
-        }
-
-        result(200, null, true);
       }
     );
   });
