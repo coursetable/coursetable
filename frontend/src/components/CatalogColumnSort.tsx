@@ -11,8 +11,8 @@ import { useSearch, Option, defaultFilters, SortType } from '../searchContext';
 
 const StyledSortBtn = styled.div`
   cursor: pointer;
-  border-radius: 8px;
-  padding: 5px;
+  border-radius: 4px;
+  padding: 2px;
   transition: 0.3s;
   &:hover {
     background-color: ${({ theme }) => theme.banner};
