@@ -47,7 +47,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.1",
     "react-scroll": "^1.8.0",
-    "react-select": "^3.2.0",
+    "react-select": "^4.1.0",
     "react-toastify": "^6.2.0",
     "react-virtualized": "^9.22.3",
     "styled-components": "^5.2.1",
