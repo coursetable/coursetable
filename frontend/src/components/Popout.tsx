@@ -84,19 +84,26 @@ export const Popout: React.FC<Props> = ({
 
   const theme = useTheme();
 
-  const buttonStyles = (isComponentVisible: boolean) => {
-    if (isComponentVisible) {
+  const [toggleText, setToggleText] = useState(buttonText);
+  const [active, setActive] = useState(false);
+
+  const buttonStyles = (open: boolean) => {
+    if (open) {
       return {
         backgroundColor: theme.button_active,
+        color: theme.primary_hover,
+      };
+    }
+    if (active) {
+      return {
         color: theme.primary_hover,
       };
     }
     return undefined;
   };
 
-  const [toggleText, setToggleText] = useState(buttonText);
-
   useEffect(() => {
+    // Dynamically set popout button text based on selected options
     if (select_options && select_options.length > 0) {
       const options = select_options.map((option) => {
         if (type === 'season') {
@@ -123,8 +130,10 @@ export const Popout: React.FC<Props> = ({
             : options[0];
       }
       setToggleText(text);
+      setActive(true);
     } else {
       setToggleText(buttonText);
+      setActive(false);
     }
   }, [select_options, buttonText, type]);
 
