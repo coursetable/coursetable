@@ -1,8 +1,8 @@
-import React, { useCallback, useRef } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
-import styled from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { StyledInput } from './StyledComponents';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useFerry } from './FerryProvider';
@@ -142,6 +142,28 @@ export const NavbarSearch: React.FC = () => {
     handleResetFilters,
   } = useSearch();
 
+  const [activeOverall, setActiveOverall] = useState(false);
+  const [activeWorkload, setActiveWorkload] = useState(false);
+
+  const globalTheme = useTheme();
+
+  useEffect(() => {
+    if (!canReset) {
+      setActiveOverall(false);
+      setActiveWorkload(false);
+    }
+  }, [canReset]);
+
+  const activeStyle = useCallback(
+    (active: boolean) => {
+      if (active) {
+        return { color: globalTheme.primary_hover };
+      }
+      return undefined;
+    },
+    [globalTheme]
+  );
+
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       if (event) event.preventDefault();
@@ -254,7 +276,10 @@ export const NavbarSearch: React.FC = () => {
               {/* Overall Rating Range */}
               <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
                 <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
-                <RangeLabel className="flex-grow-1 text-center">
+                <RangeLabel
+                  className="flex-grow-1 text-center"
+                  style={activeStyle(activeOverall)}
+                >
                   Overall
                 </RangeLabel>
                 <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
@@ -271,6 +296,7 @@ export const NavbarSearch: React.FC = () => {
                 onAfterChange={(value) => {
                   setOverallBounds(value);
                   setCanReset(true);
+                  setActiveOverall(true);
                 }}
               />
             </Col>
@@ -278,7 +304,10 @@ export const NavbarSearch: React.FC = () => {
               {/* Workload Rating Range */}
               <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
                 <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
-                <RangeLabel className="flex-grow-1 text-center">
+                <RangeLabel
+                  className="flex-grow-1 text-center"
+                  style={activeStyle(activeWorkload)}
+                >
                   Workload
                 </RangeLabel>
                 <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
@@ -295,6 +324,7 @@ export const NavbarSearch: React.FC = () => {
                 onAfterChange={(value) => {
                   setWorkloadBounds(value);
                   setCanReset(true);
+                  setActiveWorkload(true);
                 }}
               />
             </Col>
