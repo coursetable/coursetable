@@ -69,6 +69,7 @@ export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
 
+// Maybe the number type is causing the error?
 export const creditOptions = [
   { label: '0.5', value: 0.5 },
   { label: '1', value: 1 },
