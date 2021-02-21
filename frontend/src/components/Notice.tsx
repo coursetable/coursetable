@@ -1,11 +1,14 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
-import { useLocalStorageState } from '../browserStorage';
+import { useSessionStorageState } from '../browserStorage';
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
 
 const Notice: React.FC = ({ children }) => {
-  const [visible, setVisible] = useLocalStorageState('noticeVisibility', true);
+  const [visible, setVisible] = useSessionStorageState(
+    'noticeVisibility',
+    true
+  );
 
   if (!visible) {
     return <></>;
