@@ -43,7 +43,6 @@ const StyledSpacer = styled.div`
  * @prop isFirst - boolean | is this the first course of the search results?
  * @prop COL_SPACING - dictionary with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
- * @prop expanded - boolean | is the catalog expanded or not
  * @prop fb_friends - list of fb friends also taking this course
  */
 
@@ -54,7 +53,6 @@ const CatalogResultsItem = ({
   isFirst,
   COL_SPACING,
   isScrolling = false,
-  expanded,
   fb_friends,
 }) => {
   // Has the component been mounted?
@@ -215,10 +213,7 @@ const CatalogResultsItem = ({
               : ''}
           </TextComponent>
         </div>
-        <OverlayTrigger
-          placement={expanded ? 'right' : 'left'}
-          overlay={renderTitlePopover}
-        >
+        <OverlayTrigger placement="right" overlay={renderTitlePopover}>
           {/* Course Title */}
           <div style={title_style}>
             <div className={Styles.ellipsis_text}>{course.title}</div>

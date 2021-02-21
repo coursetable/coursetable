@@ -84,13 +84,13 @@ const CatalogResults = ({
   multiSeasons = false,
   showModal,
   isLoggedIn,
-  expanded,
   num_fb,
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
+  const isTablet = !isMobile && width < 1130;
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
@@ -107,7 +107,7 @@ const CatalogResults = ({
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, width, expanded]);
+  }, [setRowWidth, width]);
 
   // Spacing for each column in list view
   const COL_SPACING = useMemo(() => {
@@ -208,13 +208,12 @@ const CatalogResults = ({
             isFirst={index === 0}
             COL_SPACING={COL_SPACING}
             isScrolling={isScrolling}
-            expanded={expanded}
             fb_friends={fb_friends}
           />
         </div>
       );
     },
-    [data, showModal, multiSeasons, expanded, COL_SPACING, num_fb, globalTheme]
+    [data, showModal, multiSeasons, COL_SPACING, num_fb, globalTheme]
   );
 
   if (!isLoggedIn) {
@@ -397,8 +396,8 @@ const CatalogResults = ({
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   return (
-    <div className={expanded ? Styles.results_container_max_width : ''}>
-      {!isMobile && (
+    <div className={Styles.results_container_max_width}>
+      {!isMobile && !isTablet && (
         <StyledSpacer>
           <StyledContainer
             layer={0}

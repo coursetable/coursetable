@@ -65,11 +65,6 @@ const StyledNavToggle = styled(Navbar.Toggle)`
   }
 `;
 
-const StyledNavbar = styled(Navbar)`
-  height: 100px;
-  align-items: start;
-`;
-
 /**
  * Renders the navbar
  * @prop isLoggedIn - boolean | is user logged in?
@@ -93,19 +88,32 @@ function CourseTableNavbar({
 
   // Fetch width of window
   const { width } = useWindowDimensions();
-  const is_mobile = width < 768;
+  const isMobile = width < 768;
+  const isTablet = !isMobile && width < 1130;
   // const is_relative = width < 1230;
+
+  const navbar_style = (mobile: boolean) => {
+    if (!mobile) {
+      return {
+        height: '100px',
+        alignItems: 'start',
+        paddingBottom: '0px',
+      };
+    }
+    return undefined;
+  };
 
   return (
     <div className={styles.sticky_navbar}>
       <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
-          <StyledNavbar
+          <Navbar
             expanded={nav_expanded}
             onToggle={(expanded: boolean) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className="shadow-sm px-3 pb-0"
+            className="shadow-sm px-3"
+            style={navbar_style(isMobile || isTablet)}
           >
             {/* Logo in top left */}
             <Nav className={`${styles.nav_brand} navbar-brand py-2`}>
@@ -126,18 +134,22 @@ function CourseTableNavbar({
 
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
-            <NavbarSearch />
+            {!isMobile && !isTablet && !isTablet && <NavbarSearch />}
 
             <Navbar.Collapse
               id="basic-navbar-nav"
               // Make navbar display: flex when not mobile. If mobile, normal formatting
-              className={!is_mobile ? 'd-flex' : 'justify-content-end'}
+              className={
+                !isMobile && !isTablet ? 'd-flex' : 'justify-content-end'
+              }
             >
               {/* Close navbar on click in mobile view */}
               <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
                 {/* DarkMode Button */}
                 <div
-                  className={`${styles.navbar_dark_mode_btn} d-flex ml-auto`}
+                  className={`${styles.navbar_dark_mode_btn} d-flex ${
+                    !isMobile ? 'ml-auto' : ''
+                  }`}
                   onClick={themeToggler}
                 >
                   <DarkModeButton />
@@ -147,7 +159,7 @@ function CourseTableNavbar({
                 <StyledNavLink
                   to="/catalog"
                   // Right align catalog link if not mobile
-                  className={!is_mobile ? ' align-self-end' : ''}
+                  className={!isMobile && !isTablet ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
                   Catalog
@@ -156,17 +168,30 @@ function CourseTableNavbar({
                 <StyledNavLink
                   to="/worksheet"
                   // Right align worksheet link if not mobile
-                  className={!is_mobile ? ' align-self-end' : ''}
+                  className={!isMobile && !isTablet ? ' align-self-end' : ''}
                   onClick={scrollToTop}
                 >
                   Worksheet
                 </StyledNavLink>
 
+                {isMobile && (
+                  <>
+                    {/* About Page */}
+                    <StyledNavLink to="/about" onClick={scrollToTop}>
+                      About
+                    </StyledNavLink>
+                    {/* FAQ Page */}
+                    <StyledNavLink to="/faq" onClick={scrollToTop}>
+                      FAQ
+                    </StyledNavLink>
+                  </>
+                )}
+
                 {/* Profile Icon. Show if not mobile */}
                 <div
                   // Right align profile icon if not mobile
                   className={`d-none d-md-block ${
-                    !is_mobile ? 'align-self-end' : ''
+                    !isMobile && !isTablet ? 'align-self-end' : ''
                   }`}
                 >
                   <div className={styles.navbar_me}>
@@ -214,7 +239,7 @@ function CourseTableNavbar({
                 </div>
               </Nav>
             </Navbar.Collapse>
-          </StyledNavbar>
+          </Navbar>
         </Container>
       </SurfaceComponent>
       {/* Dropdown that has position: absolute */}
