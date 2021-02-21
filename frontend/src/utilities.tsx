@@ -66,9 +66,17 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
 
   // Add event listener on mount and remove it on dismount
   useEffect(() => {
-    document.addEventListener('click', handleClickOutside, true);
+    document.body.children[1].addEventListener(
+      'click',
+      handleClickOutside,
+      true
+    );
     return () => {
-      document.removeEventListener('click', handleClickOutside, true);
+      document.body.children[1].removeEventListener(
+        'click',
+        handleClickOutside,
+        true
+      );
     };
   });
 
