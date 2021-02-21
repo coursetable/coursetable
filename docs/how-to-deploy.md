@@ -103,3 +103,13 @@ tmux
 ssh -R 3306:localhost:3306 root@linode.coursetable.com
 # ctrl-b + d to detach session
 ```
+
+**beta**
+
+```sh
+cd ~/beta
+git pull
+cd docker
+docker-compose up -f beta-frontend.yaml -d --build
+```
+
