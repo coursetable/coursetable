@@ -1,11 +1,8 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
-import { FaSearch } from 'react-icons/fa';
-import { BsX } from 'react-icons/bs';
 import { Element, scroller } from 'react-scroll';
-import styled from 'styled-components';
 import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
@@ -37,11 +34,6 @@ import { useSessionStorageState } from '../browserStorage';
 import { useSearch, Option } from '../searchContext';
 import { ValueType } from 'react-select/src/types';
 
-const StyledSearchTab = styled.div`
-  background-color: ${({ theme }) =>
-    theme.theme === 'light' ? 'rgb(198, 232, 255)' : theme.select_hover};
-`;
-
 /**
  * Renders search page
  * @prop location - dictionary that contains search value if search bar was used
@@ -50,11 +42,9 @@ const StyledSearchTab = styled.div`
 
 const Search: React.FC = () => {
   // Fetch window dimensions
-  const { height, width } = useWindowDimensions();
+  const { width } = useWindowDimensions();
   const isMobile = width < 768;
-
-  // Is the search form  collapsed?
-  const [collapsed_form, setCollapsedForm] = useState(true);
+  const isTablet = !isMobile && width < 1130;
 
   // State that determines if a course modal needs to be displayed and which course to display
   const [course_modal, setCourseModal] = useState([false, '']);
@@ -82,7 +72,10 @@ const Search: React.FC = () => {
   // const QUERY_SIZE = 30;
 
   // way to display results
-  const [isList, setView] = useSessionStorageState('isList', !isMobile);
+  const [isList, setView] = useSessionStorageState(
+    'isList',
+    !isMobile && !isTablet
+  );
 
   // Get search context data
   const {
@@ -134,7 +127,7 @@ const Search: React.FC = () => {
       if (event) event.preventDefault();
 
       // Scroll down to catalog when in mobile view.
-      if (isMobile) {
+      if (isMobile || isTablet) {
         scroller.scrollTo('catalog', {
           smooth: true,
           duration: 500,
@@ -142,7 +135,7 @@ const Search: React.FC = () => {
         });
       }
     },
-    [isMobile]
+    [isMobile, isTablet]
   );
 
   // Scroll to the bottom when courses finish loading on initial load.
@@ -172,147 +165,106 @@ const Search: React.FC = () => {
     );
   }, []);
 
-  // Is the search form taller than the window?
-  const [tooTall, setTooTall] = React.useState(true);
-
-  // check if the search form is too tall
-  // to be sticky
-  const searchCol = useRef<HTMLFormElement>(null);
+  // Switch to grid view if mobile or tablet
   useEffect(() => {
-    if (searchCol.current) {
-      const searchColHeight = searchCol.current.clientHeight;
-      setTooTall(searchColHeight > height - 56);
+    if ((isMobile || isTablet) && isList === true) {
+      setView(false);
+    } else if (!isMobile && !isTablet && isList === false) {
+      setView(true);
     }
-  }, [setTooTall, height]);
-
-  // Switch to grid view if window width changes < 900
-  useEffect(() => {
-    if (width < 768 && isList === true) setView(false);
-  }, [width, isList, setView]);
+  }, [isMobile, isTablet, isList, setView]);
 
   // TODO: add state if courseLoadError is present
   return (
     <div className={Styles.search_base}>
       <Row
         className={`p-0 m-0 ${
-          !isMobile ? 'd-flex flex-row-reverse flex-nowrap' : ''
+          !isMobile && !isTablet ? 'd-flex flex-row-reverse flex-nowrap' : ''
         }`}
       >
         {/* Search Form */}
-        <Col
-          md={3}
-          className={
-            (isMobile
-              ? `p-3 ${Styles.search_col_mobile}`
-              : `pl-0 pr-3 pt-3 ${Styles.search_col}`) +
-            (!isMobile ? ' order-2' : '')
-          }
-        >
-          <SurfaceComponent
-            layer={0}
-            className={`ml-1 ${Styles.search_container} ${
-              // only make the filters sticky if not on mobile and
-              // tall enough
-              !isMobile && !tooTall ? Styles.sticky : ''
-            }`}
-          >
-            <Form className="px-0" onSubmit={scroll_to_results} ref={searchCol}>
-              {!isMobile && (
-                // Render buttons to hide/show the search form
-                <>
-                  <StyledSearchTab
-                    className={
-                      Styles.search_tab +
-                      (collapsed_form
-                        ? ''
-                        : ' '.concat(Styles.search_tab_hidden))
-                    }
-                    onClick={() => {
-                      setCollapsedForm(false);
-                    }}
+        {(isMobile || isTablet) && (
+          <Col className={`p-3 ${Styles.search_col_mobile}`}>
+            <SurfaceComponent
+              layer={0}
+              className={`ml-1 ${Styles.search_container}`}
+            >
+              <Form className="px-0" onSubmit={scroll_to_results}>
+                {/* Reset Filters Button */}
+                <Row className="mx-auto pt-4 px-4">
+                  <small
+                    className={`${Styles.reset_filters_btn} mr-auto`}
+                    onClick={handleResetFilters}
                   >
-                    <FaSearch style={{ display: 'block' }} />
-                  </StyledSearchTab>
-                  <div
-                    className={Styles.collapse_form_btn}
-                    onClick={() => {
-                      setCollapsedForm(true);
-                    }}
-                  >
-                    <BsX style={{ display: 'block' }} size={20} />
+                    Reset Filters
+                  </small>
+                  <small className={`${Styles.num_results} ml-auto`}>
+                    <TextComponent type={2}>
+                      {coursesLoading
+                        ? 'Searching ...'
+                        : `Showing ${searchData.length} results`}
+                    </TextComponent>
+                  </small>
+                </Row>
+                <Row className="mx-auto pt-1 pb-2 px-4">
+                  <div className={Styles.search_bar}>
+                    {/* Search Bar */}
+                    <InputGroup className={Styles.search_input}>
+                      <StyledInput
+                        type="text"
+                        value={searchText}
+                        onChange={(
+                          event: React.ChangeEvent<HTMLInputElement>
+                        ) => setSearchText(event.target.value)}
+                        placeholder="Search by course code, title, or prof"
+                      />
+                    </InputGroup>
                   </div>
-                </>
-              )}
-              {/* Reset Filters Button */}
-              <Row className="mx-auto pt-4 px-4">
-                <small
-                  className={`${Styles.reset_filters_btn} mr-auto`}
-                  onClick={handleResetFilters}
-                >
-                  Reset Filters
-                </small>
-                <small className={`${Styles.num_results} ml-auto`}>
-                  <TextComponent type={2}>
-                    {coursesLoading
-                      ? 'Searching ...'
-                      : `Showing ${searchData.length} results`}
-                  </TextComponent>
-                </small>
-              </Row>
-              <Row className="mx-auto pt-1 pb-2 px-4">
-                <div className={Styles.search_bar}>
-                  {/* Search Bar */}
-                  <InputGroup className={Styles.search_input}>
-                    <StyledInput
-                      type="text"
-                      value={searchText}
-                      onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-                        setSearchText(event.target.value)
-                      }
-                      placeholder="Search by course code, title, or prof"
-                    />
-                  </InputGroup>
-                </div>
-              </Row>
+                </Row>
 
-              <Row className="mx-auto py-0 px-4">
-                <SortByReactSelect setOrdering={setOrdering} key={reset_key} />
-              </Row>
-              <StyledHr />
-              <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  {seasonsOptions && (
-                    // Seasons Multi-Select
+                <Row className="mx-auto py-0 px-4">
+                  <SortByReactSelect
+                    setOrdering={setOrdering}
+                    key={reset_key}
+                  />
+                </Row>
+                <StyledHr />
+                <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
+                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                    {seasonsOptions && (
+                      // Seasons Multi-Select
+                      <CustomSelect
+                        isMulti
+                        value={select_seasons}
+                        options={seasonsOptions}
+                        placeholder="Last 5 Years"
+                        // prevent overlap with tooltips
+                        menuPortalTarget={document.body}
+                        onChange={(selectedOption: ValueType<Option>) =>
+                          setSelectSeasons((selectedOption as Option[]) || [])
+                        }
+                      />
+                    )}
+                  </div>
+                  <div
+                    className={`col-md-12 p-0  ${Styles.selector_container}`}
+                  >
+                    {/* Skills/Areas Multi-Select */}
                     <CustomSelect
                       isMulti
-                      value={select_seasons}
-                      options={seasonsOptions}
-                      placeholder="Last 5 Years"
+                      value={select_skillsareas}
+                      options={skillsAreasOptions}
+                      placeholder="All Skills/Areas"
+                      // colors
+                      useColors
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption: ValueType<Option>) =>
-                        setSelectSeasons((selectedOption as Option[]) || [])
+                        setSelectSkillsAreas((selectedOption as Option[]) || [])
                       }
                     />
-                  )}
-                </div>
-                <div className={`col-md-12 p-0  ${Styles.selector_container}`}>
-                  {/* Skills/Areas Multi-Select */}
-                  <CustomSelect
-                    isMulti
-                    value={select_skillsareas}
-                    options={skillsAreasOptions}
-                    placeholder="All Skills/Areas"
-                    // colors
-                    useColors
-                    // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
-                    onChange={(selectedOption: ValueType<Option>) =>
-                      setSelectSkillsAreas((selectedOption as Option[]) || [])
-                    }
-                  />
-                </div>
-                {/* <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  </div>
+                  {/* <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                   Course Credit Multi-Select
                   <CustomSelect
                     isMulti
@@ -326,150 +278,151 @@ const Search: React.FC = () => {
                     }}
                   />
                 </div> */}
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  {/* Yale Subjects Multi-Select */}
-                  <CustomSelect
-                    isMulti
-                    value={select_subjects}
-                    options={subjectOptions}
-                    placeholder="All Subjects"
-                    isSearchable
-                    // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
-                    onChange={(selectedOption: ValueType<Option>) =>
-                      setSelectSubjects((selectedOption as Option[]) || [])
-                    }
-                  />
-                </div>
-                <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  {/* Yale Schools Multi-Select */}
-                  <CustomSelect
-                    isMulti
-                    value={select_schools}
-                    options={schoolOptions}
-                    placeholder="All Schools"
-                    // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
-                    onChange={(selectedOption: ValueType<Option>) => {
-                      setSelectSchools((selectedOption as Option[]) || []);
-                    }}
-                  />
-                </div>
-              </Row>
-              <StyledHr />
-              <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
-                <Col>
-                  <Container style={{ paddingTop: '1px' }}>
-                    {/* Class Rating Slider */}
-                    <Range
-                      min={1}
-                      max={5}
-                      step={0.1}
-                      key={reset_key}
-                      defaultValue={overallBounds}
-                      onChange={(value) => {
-                        setOverallValueLabels(value);
-                      }}
-                      onAfterChange={(value) => {
-                        setOverallBounds(value);
-                      }}
-                      handle={overallSliderHandle}
-                      className={Styles.slider}
+                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                    {/* Yale Subjects Multi-Select */}
+                    <CustomSelect
+                      isMulti
+                      value={select_subjects}
+                      options={subjectOptions}
+                      placeholder="All Subjects"
+                      isSearchable
+                      // prevent overlap with tooltips
+                      menuPortalTarget={document.body}
+                      onChange={(selectedOption: ValueType<Option>) =>
+                        setSelectSubjects((selectedOption as Option[]) || [])
+                      }
                     />
-                  </Container>
-                  <div className={`text-center ${Styles.filter_title}`}>
-                    Overall rating
                   </div>
-                </Col>
-                <Col>
-                  <Container>
-                    {/* Workload Rating Slider */}
-                    <Range
-                      min={1}
-                      max={5}
-                      step={0.1}
-                      key={reset_key}
-                      defaultValue={workloadBounds}
-                      onChange={(value) => {
-                        setWorkloadValueLabels(value);
+                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                    {/* Yale Schools Multi-Select */}
+                    <CustomSelect
+                      isMulti
+                      value={select_schools}
+                      options={schoolOptions}
+                      placeholder="All Schools"
+                      // prevent overlap with tooltips
+                      menuPortalTarget={document.body}
+                      onChange={(selectedOption: ValueType<Option>) => {
+                        setSelectSchools((selectedOption as Option[]) || []);
                       }}
-                      onAfterChange={(value) => {
-                        setWorkloadBounds(value);
-                      }}
-                      handle={workloadSliderHandle}
-                      className={Styles.slider}
                     />
-                  </Container>
-                  <div className={`text-center ${Styles.filter_title}`}>
-                    Workload
                   </div>
-                </Col>
-              </Row>
-              <StyledHr className="mb-0" />
-              <Row
-                className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
-              >
-                {/* Hide Cancelled Courses Toggle */}
-                <Form.Check type="switch" className={Styles.toggle_option}>
-                  <Form.Check.Input
-                    checked={hideCancelled}
-                    onChange={() => {}} // dummy handler to remove warning
-                  />
-                  <Form.Check.Label
-                    onClick={() => {
-                      setHideCancelled(!hideCancelled);
-                    }}
-                  >
-                    Hide cancelled courses
-                  </Form.Check.Label>
-                </Form.Check>
+                </Row>
+                <StyledHr />
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                  <Col>
+                    <Container style={{ paddingTop: '1px' }}>
+                      {/* Class Rating Slider */}
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        key={reset_key}
+                        defaultValue={overallBounds}
+                        onChange={(value) => {
+                          setOverallValueLabels(value);
+                        }}
+                        onAfterChange={(value) => {
+                          setOverallBounds(value);
+                        }}
+                        handle={overallSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Overall rating
+                    </div>
+                  </Col>
+                  <Col>
+                    <Container>
+                      {/* Workload Rating Slider */}
+                      <Range
+                        min={1}
+                        max={5}
+                        step={0.1}
+                        key={reset_key}
+                        defaultValue={workloadBounds}
+                        onChange={(value) => {
+                          setWorkloadValueLabels(value);
+                        }}
+                        onAfterChange={(value) => {
+                          setWorkloadBounds(value);
+                        }}
+                        handle={workloadSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Workload
+                    </div>
+                  </Col>
+                </Row>
+                <StyledHr className="mb-0" />
+                <Row
+                  className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
+                >
+                  {/* Hide Cancelled Courses Toggle */}
+                  <Form.Check type="switch" className={Styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideCancelled}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideCancelled(!hideCancelled);
+                      }}
+                    >
+                      Hide cancelled courses
+                    </Form.Check.Label>
+                  </Form.Check>
 
-                {/* Hide First-Year Seminar Courses Toggle */}
-                <Form.Check type="switch" className={Styles.toggle_option}>
-                  <Form.Check.Input
-                    checked={hideFirstYearSeminars}
-                    onChange={() => {}} // dummy handler to remove warning
-                  />
-                  <Form.Check.Label
-                    onClick={() => {
-                      setHideFirstYearSeminars(!hideFirstYearSeminars);
-                    }}
-                  >
-                    Hide first-year seminars
-                  </Form.Check.Label>
-                </Form.Check>
+                  {/* Hide First-Year Seminar Courses Toggle */}
+                  <Form.Check type="switch" className={Styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideFirstYearSeminars}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideFirstYearSeminars(!hideFirstYearSeminars);
+                      }}
+                    >
+                      Hide first-year seminars
+                    </Form.Check.Label>
+                  </Form.Check>
 
-                {/* Hide Graduate-Level Courses Toggle */}
-                <Form.Check type="switch" className={Styles.toggle_option}>
-                  <Form.Check.Input
-                    checked={hideGraduateCourses}
-                    onChange={() => {}} // dummy handler to remove warning
-                  />
-                  <Form.Check.Label
-                    onClick={() => {
-                      setHideGraduateCourses(!hideGraduateCourses);
-                    }}
-                  >
-                    Hide graduate courses
-                  </Form.Check.Label>
-                </Form.Check>
-              </Row>
-              <div className={Styles.useless_btn}>
-                {/* The form requires a button with type submit in order to process
+                  {/* Hide Graduate-Level Courses Toggle */}
+                  <Form.Check type="switch" className={Styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideGraduateCourses}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideGraduateCourses(!hideGraduateCourses);
+                      }}
+                    >
+                      Hide graduate courses
+                    </Form.Check.Label>
+                  </Form.Check>
+                </Row>
+                <div className={Styles.useless_btn}>
+                  {/* The form requires a button with type submit in order to process
                     events when someone hits enter to submit. We want this functionality
                     so we can scroll to the results on mobile when they hit enter,
                     and hence have a hidden button here. */}
-                <Button type="submit" />
-              </div>
-            </Form>
-          </SurfaceComponent>
-        </Col>
+                  <Button type="submit" />
+                </div>
+              </Form>
+            </SurfaceComponent>
+          </Col>
+        )}
 
         {/* Search Results Catalog */}
         <Col
-          md={collapsed_form ? 12 : 9}
+          md={12}
           className={`m-0 ${
-            isMobile
+            isMobile || isTablet
               ? `p-3 ${Styles.results_col_mobile}`
               : `px-0 pb-3 ${Styles.results_col}`
           }`}
@@ -483,7 +436,6 @@ const Search: React.FC = () => {
               multiSeasons={multiSeasons}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
-              expanded={collapsed_form}
               num_fb={num_fb}
             />
           </Element>
