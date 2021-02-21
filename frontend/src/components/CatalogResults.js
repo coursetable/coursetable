@@ -397,7 +397,7 @@ const CatalogResults = ({
 
   return (
     <div className={Styles.results_container_max_width}>
-      {!isMobile && !isTablet && (
+      {!isMobile && !isTablet && isLoggedIn && (
         <StyledSpacer>
           <StyledContainer
             layer={0}
