@@ -19,8 +19,8 @@ export const sortbyOptions = [
     value: 'average_gut_rating',
     numeric: true,
   },
-  { label: 'Last Enrollment', value: 'last_enrollment', numeric: true },
-  { label: 'Days & Times', value: 'times_by_day', numeric: true },
+  { label: 'Sort by Last Enrollment', value: 'last_enrollment', numeric: true },
+  { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
 // Make sure we can only sort by keys in the listing, or by facebook.
