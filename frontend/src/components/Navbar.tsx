@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
@@ -92,8 +92,11 @@ function CourseTableNavbar({
   const isTablet = !isMobile && width < 1130;
   // const is_relative = width < 1230;
 
-  const navbar_style = (mobile: boolean) => {
-    if (!mobile) {
+  const [show_search, setShowSearch] = useState(false);
+  const [onCatalog, setOnCatalog] = useState(false);
+
+  const navbar_style = () => {
+    if (show_search) {
       return {
         height: '100px',
         alignItems: 'start',
@@ -102,6 +105,35 @@ function CourseTableNavbar({
     }
     return undefined;
   };
+
+  // Handles initial load onCatalog
+  useEffect(() => {
+    const catalogLink = document.querySelector('#catalog-link');
+    if (catalogLink?.classList.contains('active')) {
+      setOnCatalog(true);
+    } else {
+      setOnCatalog(false);
+    }
+  }, []);
+
+  // Decides whether to show search or not
+  useEffect(() => {
+    if (!isMobile && !isTablet && isLoggedIn && onCatalog) {
+      setShowSearch(true);
+    } else {
+      setShowSearch(false);
+    }
+  }, [isMobile, isTablet, isLoggedIn, onCatalog]);
+
+  const onNavLinkClick = (
+    event: React.MouseEvent<Element, MouseEvent>,
+    catalog: boolean
+  ) => {
+    setOnCatalog(catalog);
+    scrollToTop(event);
+  };
+
+  console.log(onCatalog);
 
   return (
     <div className={styles.sticky_navbar}>
@@ -113,7 +145,7 @@ function CourseTableNavbar({
             // sticky="top"
             expand="md"
             className="shadow-sm px-3"
-            style={navbar_style(isMobile || isTablet)}
+            style={navbar_style()}
           >
             {/* Logo in top left */}
             <Nav className={`${styles.nav_brand} navbar-brand py-2`}>
@@ -134,7 +166,7 @@ function CourseTableNavbar({
 
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
-            {!isMobile && !isTablet && !isTablet && <NavbarSearch />}
+            {show_search && <NavbarSearch />}
 
             <Navbar.Collapse
               id="basic-navbar-nav"
@@ -155,33 +187,56 @@ function CourseTableNavbar({
                   <DarkModeButton />
                 </div>
 
-                {/* Catalog Page */}
-                <StyledNavLink
-                  to="/catalog"
-                  // Right align catalog link if not mobile
-                  className={!isMobile && !isTablet ? ' align-self-end' : ''}
-                  onClick={scrollToTop}
-                >
-                  Catalog
-                </StyledNavLink>
-                {/* Worksheet Page */}
-                <StyledNavLink
-                  to="/worksheet"
-                  // Right align worksheet link if not mobile
-                  className={!isMobile && !isTablet ? ' align-self-end' : ''}
-                  onClick={scrollToTop}
-                >
-                  Worksheet
-                </StyledNavLink>
+                {isLoggedIn && (
+                  <>
+                    {/* Catalog Page */}
+                    <StyledNavLink
+                      to="/catalog"
+                      // Right align catalog link if not mobile
+                      className={
+                        !isMobile && !isTablet ? ' align-self-end' : ''
+                      }
+                      onClick={(event) => {
+                        onNavLinkClick(event, true);
+                      }}
+                      id="catalog-link"
+                    >
+                      Catalog
+                    </StyledNavLink>
+                    {/* Worksheet Page */}
+                    <StyledNavLink
+                      to="/worksheet"
+                      // Right align worksheet link if not mobile
+                      className={
+                        !isMobile && !isTablet ? ' align-self-end' : ''
+                      }
+                      onClick={(event) => {
+                        onNavLinkClick(event, false);
+                      }}
+                    >
+                      Worksheet
+                    </StyledNavLink>
+                  </>
+                )}
 
                 {isMobile && (
                   <>
                     {/* About Page */}
-                    <StyledNavLink to="/about" onClick={scrollToTop}>
+                    <StyledNavLink
+                      to="/about"
+                      onClick={(event) => {
+                        onNavLinkClick(event, false);
+                      }}
+                    >
                       About
                     </StyledNavLink>
                     {/* FAQ Page */}
-                    <StyledNavLink to="/faq" onClick={scrollToTop}>
+                    <StyledNavLink
+                      to="/faq"
+                      onClick={(event) => {
+                        onNavLinkClick(event, false);
+                      }}
+                    >
                       FAQ
                     </StyledNavLink>
                   </>
@@ -248,6 +303,7 @@ function CourseTableNavbar({
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
+          onNavLinkClick={onNavLinkClick}
         />
       </div>
     </div>
