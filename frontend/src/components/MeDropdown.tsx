@@ -86,46 +86,50 @@ const MeDropdown: React.VFC<Props> = ({
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
           <Col className="px-3 pt-3">
-            {/* About page Link */}
-            <Row className=" pb-3 m-auto">
-              <FcInfo
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px' }}
-              />
-              <TextComponent type={1}>
-                <NavLink
-                  to="/about"
-                  // Left align about link if not mobile
-                  className={styles.collapse_text}
-                  onClick={(event) => {
-                    onNavLinkClick(event, false);
-                  }}
-                >
-                  <StyledHoverText>About</StyledHoverText>
-                </NavLink>
-              </TextComponent>
-            </Row>
-            {/* FAQ page Link */}
-            <Row className=" pb-3 m-auto">
-              <FcQuestions
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px' }}
-              />
-              <TextComponent type={1}>
-                <NavLink
-                  to="/faq"
-                  // Left align about link if not mobile
-                  className={styles.collapse_text}
-                  onClick={(event) => {
-                    onNavLinkClick(event, false);
-                  }}
-                >
-                  <StyledHoverText>FAQ</StyledHoverText>
-                </NavLink>
-              </TextComponent>
-            </Row>
+            {isLoggedIn && (
+              <>
+                {/* About page Link */}
+                <Row className=" pb-3 m-auto">
+                  <FcInfo
+                    className="mr-2 my-auto"
+                    size={20}
+                    style={{ paddingLeft: '2px' }}
+                  />
+                  <TextComponent type={1}>
+                    <NavLink
+                      to="/about"
+                      // Left align about link if not mobile
+                      className={styles.collapse_text}
+                      onClick={(event) => {
+                        onNavLinkClick(event, false);
+                      }}
+                    >
+                      <StyledHoverText>About</StyledHoverText>
+                    </NavLink>
+                  </TextComponent>
+                </Row>
+                {/* FAQ page Link */}
+                <Row className=" pb-3 m-auto">
+                  <FcQuestions
+                    className="mr-2 my-auto"
+                    size={20}
+                    style={{ paddingLeft: '2px' }}
+                  />
+                  <TextComponent type={1}>
+                    <NavLink
+                      to="/faq"
+                      // Left align about link if not mobile
+                      className={styles.collapse_text}
+                      onClick={(event) => {
+                        onNavLinkClick(event, false);
+                      }}
+                    >
+                      <StyledHoverText>FAQ</StyledHoverText>
+                    </NavLink>
+                  </TextComponent>
+                </Row>
+              </>
+            )}
             {/* Revert to Old CourseTable Link */}
             <Row className=" pb-3 m-auto">
               <FcUndo
