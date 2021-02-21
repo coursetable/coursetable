@@ -1,10 +1,10 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
-import orderBy from 'lodash/orderBy';
-import { Crn, Season, weekdays } from './common';
+import { Crn, Season, Weekdays, weekdays } from './common';
 import { FBFriendInfo, FBInfo, Worksheet } from './user';
 import { Listing } from './components/FerryProvider';
 import { SortKeys } from './queries/Constants';
+import { isEmpty, orderBy } from 'lodash';
 
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (
@@ -142,6 +142,15 @@ const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
     // Factor in same professors rating if it exists
     return getOverallRatings(listing);
   }
+  // Sorting by days & times
+  if (key === 'times_by_day') {
+    // Calculate day and time score for sorting
+    return calculateDayTime(listing);
+  }
+  // If value is 0, return null
+  if (listing[key] === 0) {
+    return null;
+  }
   return listing[key];
 };
 // Sort courses in catalog or expanded worksheet
@@ -179,4 +188,35 @@ export const getOverallRatings = (course: Listing) => {
 
   // Return rating
   return course_rating;
+};
+// Calculate day and time score
+const calculateDayTime = (course: Listing) => {
+  // If no times then return null
+  if (isEmpty(course.times_by_day)) {
+    return null;
+  }
+
+  // Get the first day's times
+  const times_by_day = course.times_by_day;
+  const first_day = Object.keys(times_by_day)[0] as Weekdays;
+  const day_times = times_by_day[first_day];
+
+  if (day_times) {
+    // Get the start time
+    let temp = '';
+    day_times[0][0].split(':').forEach((val) => {
+      temp += val;
+    });
+    const start_time = Number(temp);
+
+    // Calculate the day score
+    const day_score = weekdays.indexOf(first_day) * 10000;
+
+    // Calculate the total score and return
+    const score = day_score + start_time;
+    return score;
+  }
+
+  // If first day doesn't have any times then return null
+  return null;
 };

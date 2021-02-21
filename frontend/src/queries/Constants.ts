@@ -19,7 +19,8 @@ export const sortbyOptions = [
     value: 'average_gut_rating',
     numeric: true,
   },
-  // { label: 'Enrollment', value: 'enrollment' },
+  { label: 'Sort by Last Enrollment', value: 'last_enrollment', numeric: true },
+  { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
 // Make sure we can only sort by keys in the listing, or by facebook.
@@ -30,6 +31,8 @@ expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
+export type AreasType = typeof areas[number];
+export type SkillsType = typeof skills[number];
 
 export const skillsAreasColors = {
   Hu: '#9970AB',
@@ -66,6 +69,7 @@ export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
 
+// Maybe the number type is causing the error?
 export const creditOptions = [
   { label: '0.5', value: 0.5 },
   { label: '1', value: 1 },

@@ -178,7 +178,7 @@
   left: 0 !important;
 }
 
-.rating_tooltip,
+.overall_tooltip,
 .workload_tooltip {
   font-size: 0.75rem;
   width: 1.5rem;
@@ -197,7 +197,7 @@
 }
 
 /* arrow */
-.rating_tooltip::after,
+.overall_tooltip::after,
 .workload_tooltip::after {
   content: '';
   position: absolute;

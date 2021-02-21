@@ -25,15 +25,12 @@ export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
   transition: 0.2s linear !important;
-  border: ${({ theme }) =>
-    theme.theme === 'light'
-      ? '2px solid hsl(0, 0%, 90%)'
-      : `2px solid ${theme.select}`};
+  border: solid 2px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0.375rem 0.75rem;
 
   &:hover {
-    border: 2px solid #cccccc;
+    border: 2px solid hsl(0, 0%, 70%);
   }
 
   &:focus {
@@ -94,10 +91,11 @@ export const StyledRating = styled.div<{
   background-color: ${({ theme, rating, colormap }) =>
     rating && rating > 0
       ? colormap(rating).alpha(theme.rating_alpha).css()
-      : theme.banner};
-  color: ${({ rating, colormap }) =>
-    rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
-  transition: background-color 0.2s linear;
+      : 'inherit'};
+  color: ${({ rating }) =>
+    // rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
+    rating && rating > 0 ? '#141414' : '#b5b5b5'};
+  transition: 0.2s linear;
 `;
 
 // Primary Color link
