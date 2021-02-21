@@ -219,7 +219,7 @@ function CourseTableNavbar({
                   </>
                 )}
 
-                {isMobile && (
+                {(isMobile || !isLoggedIn) && (
                   <>
                     {/* About Page */}
                     <StyledNavLink
