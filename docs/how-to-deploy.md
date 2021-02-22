@@ -110,6 +110,6 @@ ssh -R 3306:localhost:3306 root@linode.coursetable.com
 cd ~/beta
 git pull
 cd docker
-docker-compose up -f beta-frontend.yaml -d --build
+docker-compose -f beta-frontend.yaml up -d --build
 ```
 
