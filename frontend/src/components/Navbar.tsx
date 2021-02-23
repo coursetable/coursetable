@@ -8,7 +8,12 @@ import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 import { useWindowDimensions } from './WindowDimensionsProvider';
-import { logout, scrollToTop, useComponentVisible } from '../utilities';
+import {
+  breakpoints,
+  logout,
+  scrollToTop,
+  useComponentVisible,
+} from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import { SurfaceComponent } from './StyledComponents';
@@ -44,6 +49,8 @@ const StyledNavLink = styled(NavLink)`
   transition: 0.1s;
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
+  font-size: 1rem;
+  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
   &:hover {
     text-decoration: none !important;
     color: ${({ theme }) => theme.primary};
@@ -89,7 +96,7 @@ function CourseTableNavbar({
   // Fetch width of window
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1130;
+  const isTablet = !isMobile && width < 1080;
   // const is_relative = width < 1230;
 
   const [show_search, setShowSearch] = useState(false);
@@ -98,7 +105,7 @@ function CourseTableNavbar({
   const navbar_style = () => {
     if (show_search) {
       return {
-        height: '100px',
+        height: width > 1320 ? '100px' : '88px',
         alignItems: 'start',
         paddingBottom: '0px',
       };
@@ -192,10 +199,6 @@ function CourseTableNavbar({
                     {/* Catalog Page */}
                     <StyledNavLink
                       to="/catalog"
-                      // Right align catalog link if not mobile
-                      className={
-                        !isMobile && !isTablet ? ' align-self-end' : ''
-                      }
                       onClick={(event) => {
                         onNavLinkClick(event, true);
                       }}
@@ -206,10 +209,6 @@ function CourseTableNavbar({
                     {/* Worksheet Page */}
                     <StyledNavLink
                       to="/worksheet"
-                      // Right align worksheet link if not mobile
-                      className={
-                        !isMobile && !isTablet ? ' align-self-end' : ''
-                      }
                       onClick={(event) => {
                         onNavLinkClick(event, false);
                       }}

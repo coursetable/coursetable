@@ -96,6 +96,8 @@ export const StyledRating = styled.div<{
     // rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
     rating && rating > 0 ? '#141414' : '#b5b5b5'};
   transition: 0.2s linear;
+  display: flex;
+  align-items: center;
 `;
 
 // Primary Color link

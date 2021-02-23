@@ -44,7 +44,7 @@ const Search: React.FC = () => {
   // Fetch window dimensions
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1130;
+  const isTablet = !isMobile && width < 1080;
 
   // State that determines if a course modal needs to be displayed and which course to display
   const [course_modal, setCourseModal] = useState([false, '']);

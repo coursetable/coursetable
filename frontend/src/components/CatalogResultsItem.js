@@ -19,10 +19,19 @@ import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './CatalogResultsItem.module.css';
 import { getOverallRatings } from '../courseUtilities';
+import { breakpoints } from '../utilities';
 
 // Row for search results item
 const StyledResultsItem = styled(Row)`
   max-width: 1600px;
+  transition: 0.3s;
+  user-select: none;
+  overflow: hidden;
+  position: relative;
+  font-size: 13px;
+  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
+  line-height: 32px;
+  ${breakpoints('line-height', 'px', [{ 1320: 28 }])};
 `;
 
 const StyledSpacer = styled.div`
@@ -33,6 +42,23 @@ const StyledSpacer = styled.div`
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
   }
+`;
+
+const RatingCell = styled(StyledRating)`
+  width: 100%;
+  height: 100%;
+  padding: 3px 10px;
+  line-height: 1.5;
+  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
+`;
+
+const Tag = styled(Badge)`
+  margin: 1px;
+  font-size: 13px;
+  ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
+  font-weight: 600 !important;
+  padding: 4px 6px !important;
+  border-radius: 6px !important;
 `;
 
 /**
@@ -176,9 +202,7 @@ const CatalogResultsItem = ({
       }}
       tabIndex="0"
     >
-      <StyledResultsItem
-        className={`mx-auto pl-4 pr-2 py-0 justify-content-between ${Styles.search_result_item}`}
-      >
+      <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
         {multiSeasons && (
           <div style={szn_style} className="d-flex">
             <OverlayTrigger
@@ -187,16 +211,14 @@ const CatalogResultsItem = ({
               overlay={season_tooltip}
             >
               <div className={`${Styles.skills_areas} my-auto`}>
-                <Badge
+                <Tag
                   variant="secondary"
-                  className={`${Styles.tag} ${
-                    Styles[seasons[parseInt(season, 10) - 1]]
-                  }`}
+                  className={Styles[seasons[parseInt(season, 10) - 1]]}
                   key={season}
                 >
                   <div style={{ display: 'inline-block' }}>{icon}</div>
                   &nbsp;{`'${year}`}
-                </Badge>
+                </Tag>
               </div>
             </OverlayTrigger>
           </div>
@@ -221,10 +243,9 @@ const CatalogResultsItem = ({
         </OverlayTrigger>
         {/* Class Rating */}
         <div className="d-flex">
-          <StyledRating
+          <RatingCell
             rating={course_rating}
             colormap={ratingColormap}
-            className={Styles.rating_cell}
             style={rate_overall_style}
           >
             {
@@ -235,29 +256,28 @@ const CatalogResultsItem = ({
                 ? `~${course_rating}` // Use all professors otherwise and add tilda ~
                 : 'N/A' // No ratings at all
             }
-          </StyledRating>
-          <StyledRating
+          </RatingCell>
+          {/* Workload Rating */}
+          <RatingCell
             rating={course.average_workload}
             colormap={workloadColormap}
-            className={Styles.rating_cell}
             style={rate_workload_style}
           >
             {course.average_workload
               ? course.average_workload.toFixed(1)
               : 'N/A'}
-          </StyledRating>
+          </RatingCell>
           {/* Course Professors & Professor Rating */}
           <div style={prof_style} className="d-flex align-items-center">
             <div style={rate_prof_style} className="mr-2 h-100">
-              <StyledRating
+              <RatingCell
                 rating={course.average_professor}
                 colormap={ratingColormap}
-                className={Styles.rating_cell}
               >
                 {course.average_professor
                   ? course.average_professor.toFixed(1)
                   : 'N/A'}
-              </StyledRating>
+              </RatingCell>
             </div>
             <div className={Styles.ellipsis_text}>
               {course.professor_names.length === 0
@@ -266,18 +286,6 @@ const CatalogResultsItem = ({
             </div>
           </div>
         </div>
-        {/* Workload Rating */}
-        {/* <div style={rate_workload_style} className="d-flex">
-          <StyledRating
-            rating={course.average_workload}
-            colormap={workloadColormap}
-            className={Styles.rating_cell}
-          >
-            {course.average_workload
-              ? course.average_workload.toFixed(1)
-              : 'N/A'}
-          </StyledRating>
-        </div> */}
         {/* Enrollment */}
         <div style={enroll_style} className="d-flex">
           <span className="my-auto">
@@ -294,9 +302,9 @@ const CatalogResultsItem = ({
         <div style={sa_style} className="d-flex">
           <span className={`${Styles.skills_areas} `}>
             {course.skills.map((skill, index) => (
-              <Badge
+              <Tag
                 variant="secondary"
-                className={`${Styles.tag} my-auto`}
+                className="my-auto"
                 key={index}
                 style={{
                   color: skillsAreasColors[skill],
@@ -306,12 +314,12 @@ const CatalogResultsItem = ({
                 }}
               >
                 {skill}
-              </Badge>
+              </Tag>
             ))}
             {course.areas.map((area, index) => (
-              <Badge
+              <Tag
                 variant="secondary"
-                className={`${Styles.tag} my-auto`}
+                className="my-auto"
                 key={index}
                 style={{
                   color: skillsAreasColors[area],
@@ -321,7 +329,7 @@ const CatalogResultsItem = ({
                 }}
               >
                 {area}
-              </Badge>
+              </Tag>
             ))}
           </span>
         </div>

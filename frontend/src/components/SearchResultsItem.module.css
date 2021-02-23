@@ -93,10 +93,7 @@
 .rating_cell {
   width: 95%;
   text-align: center;
-  font-weight: 600;
   border-radius: 6px;
-  display: flex;
-  align-items: center;
   justify-content: center;
   padding: 3px 4px;
   line-height: 1.5;

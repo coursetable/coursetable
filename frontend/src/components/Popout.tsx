@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import styled, { useTheme } from 'styled-components';
 
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
-import { useComponentVisibleDropdown } from '../utilities';
+import { breakpoints, useComponentVisibleDropdown } from '../utilities';
 
 const Dropdown = styled.div`
   position: relative;
@@ -30,6 +30,7 @@ const StyledButton = styled.div`
   margin-right: 6px;
   font-weight: 400;
   font-size: 14px;
+  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
   border-radius: 4px;
   transition: background-color 0.2s linear, border 0.2s linear,
     color 0.2s linear;
