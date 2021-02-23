@@ -249,6 +249,16 @@ export const NavbarSearch: React.FC = () => {
     ]
   );
 
+  const searchbar_style = useMemo(() => {
+    if (searchText) {
+      return {
+        backgroundColor: globalTheme.select_hover,
+        borderColor: globalTheme.primary,
+      };
+    }
+    return undefined;
+  }, [searchText, globalTheme]);
+
   return (
     <>
       <GlobalHotKeys
@@ -266,6 +276,7 @@ export const NavbarSearch: React.FC = () => {
               <NavbarStyledSearchBar
                 type="text"
                 value={searchText}
+                style={searchbar_style}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchText(event.target.value);
                   setCanReset(true);
