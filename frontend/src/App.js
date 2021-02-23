@@ -60,14 +60,6 @@ function App({ themeToggler }) {
   }
   return (
     <>
-      <Notice>
-        Interested in joining our team of developers and designers? Apply{' '}
-        <a href="https://docs.google.com/forms/d/1Z48Kz_IlCyZcxYxf345RsKslQaF4G_fxs-m-r8HHlwQ/viewform?edit_requested=true">
-          here
-        </a>
-        ! 💖 &nbsp;What about a study group tool? Fill out this{' '}
-        <a href="https://forms.gle/mY2bvA8JA2d1Zsk89">survey</a>!
-      </Notice>
       <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
       <Switch>
         {/* Home Page */}
