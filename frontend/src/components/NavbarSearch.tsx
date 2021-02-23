@@ -1,4 +1,10 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
@@ -229,6 +235,20 @@ export const NavbarSearch: React.FC = () => {
     });
   }
 
+  const advanced_options = useMemo(
+    () => ({
+      selects: { select_schools, select_credits },
+      toggles: { hideCancelled, hideFirstYearSeminars, hideGraduateCourses },
+    }),
+    [
+      select_schools,
+      select_credits,
+      hideCancelled,
+      hideFirstYearSeminars,
+      hideGraduateCourses,
+    ]
+  );
+
   return (
     <>
       <GlobalHotKeys
@@ -374,7 +394,12 @@ export const NavbarSearch: React.FC = () => {
               />
             </Popout>
             {/* Advanced Filter Dropdown */}
-            <Popout buttonText="Advanced" arrowIcon={false} type="advanced">
+            <Popout
+              buttonText="Advanced"
+              arrowIcon={false}
+              type="advanced"
+              select_options={advanced_options}
+            >
               <AdvancedWrapper>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}

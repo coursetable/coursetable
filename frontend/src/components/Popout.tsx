@@ -59,7 +59,9 @@ type Props = {
   buttonText: string;
   type: string;
   arrowIcon?: boolean;
-  select_options?: Option[];
+  select_options?:
+    | Option[]
+    | Record<string, Record<string, Option[] | boolean>>;
   className?: string;
 };
 
@@ -105,33 +107,62 @@ export const Popout: React.FC<Props> = ({
 
   useEffect(() => {
     // Dynamically set popout button text based on selected options
-    if (select_options && select_options.length > 0) {
-      const options = select_options.map((option) => {
+    if (select_options) {
+      if (Array.isArray(select_options) && select_options.length > 0) {
+        const options = select_options.map((option) => {
+          if (type === 'season') {
+            return option.label;
+          }
+          return option.value;
+        });
+        let text;
         if (type === 'season') {
-          return option.label;
+          text =
+            options.length > 1
+              ? `${options[0]} + ${options.length - 1}`
+              : options[0];
+        } else {
+          text =
+            options.length > 3
+              ? `${options[0]}, ${options[1]}, ${options[2]} + ${
+                  options.length - 3
+                }`
+              : options.length === 3
+              ? `${options[0]}, ${options[1]}, ${options[2]}`
+              : options.length === 2
+              ? `${options[0]}, ${options[1]}`
+              : options[0];
         }
-        return option.value;
-      });
-      let text;
-      if (type === 'season') {
-        text =
-          options.length > 1
-            ? `${options[0]} + ${options.length - 1}`
-            : options[0];
-      } else {
-        text =
-          options.length > 3
-            ? `${options[0]}, ${options[1]}, ${options[2]} + ${
-                options.length - 3
-              }`
-            : options.length === 3
-            ? `${options[0]}, ${options[1]}, ${options[2]}`
-            : options.length === 2
-            ? `${options[0]}, ${options[1]}`
-            : options[0];
+        setToggleText(text);
+        setActive(true);
+      } else if (
+        select_options !== null &&
+        typeof select_options === 'object' &&
+        type === 'advanced'
+      ) {
+        let activeFilters = 0;
+        for (const [key, value] of Object.entries(select_options)) {
+          for (const optionValue of Object.values(value)) {
+            if (
+              key === 'selects' &&
+              Array.isArray(optionValue) &&
+              optionValue.length > 0
+            ) {
+              activeFilters++;
+            } else if (
+              key === 'toggles' &&
+              typeof optionValue === 'boolean' &&
+              optionValue
+            ) {
+              activeFilters++;
+            }
+          }
+        }
+        const text =
+          activeFilters > 0 ? `Advanced: ${activeFilters}` : buttonText;
+        setToggleText(text);
+        setActive(activeFilters > 0);
       }
-      setToggleText(text);
-      setActive(true);
     } else {
       setToggleText(buttonText);
       setActive(false);
