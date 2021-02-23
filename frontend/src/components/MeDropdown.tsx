@@ -9,7 +9,7 @@ import styles from './MeDropdown.module.css';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { logout } from '../utilities';
+import { logout, scrollToTop } from '../utilities';
 import {
   SurfaceComponent,
   TextComponent,
@@ -29,11 +29,6 @@ type Props = {
 
   /** Is user logged in? */
   isLoggedIn: boolean;
-
-  onNavLinkClick(
-    event: React.MouseEvent<Element, MouseEvent>,
-    catalog: boolean
-  ): void;
 };
 
 /**
@@ -43,7 +38,6 @@ const MeDropdown: React.VFC<Props> = ({
   profile_expanded,
   setIsComponentVisible,
   isLoggedIn,
-  onNavLinkClick,
 }) => {
   // Get user context data
   const { user } = useUser();
@@ -100,9 +94,7 @@ const MeDropdown: React.VFC<Props> = ({
                       to="/about"
                       // Left align about link if not mobile
                       className={styles.collapse_text}
-                      onClick={(event) => {
-                        onNavLinkClick(event, false);
-                      }}
+                      onClick={scrollToTop}
                     >
                       <StyledHoverText>About</StyledHoverText>
                     </NavLink>
@@ -120,9 +112,7 @@ const MeDropdown: React.VFC<Props> = ({
                       to="/faq"
                       // Left align about link if not mobile
                       className={styles.collapse_text}
-                      onClick={(event) => {
-                        onNavLinkClick(event, false);
-                      }}
+                      onClick={scrollToTop}
                     >
                       <StyledHoverText>FAQ</StyledHoverText>
                     </NavLink>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import styled from 'styled-components';
 import posthog from 'posthog-js';
@@ -72,6 +72,11 @@ const StyledNavToggle = styled(Navbar.Toggle)`
   }
 `;
 
+type Props = {
+  isLoggedIn: boolean;
+  themeToggler: () => void;
+};
+
 /**
  * Renders the navbar
  * @prop isLoggedIn - boolean | is user logged in?
@@ -80,10 +85,8 @@ const StyledNavToggle = styled(Navbar.Toggle)`
 function CourseTableNavbar({
   isLoggedIn,
   themeToggler,
-}: {
-  isLoggedIn: boolean;
-  themeToggler: () => void;
-}) {
+  location,
+}: RouteComponentProps & Props) {
   // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
@@ -113,15 +116,14 @@ function CourseTableNavbar({
     return undefined;
   };
 
-  // Handles initial load onCatalog
+  // Handles onCatalog
   useEffect(() => {
-    const catalogLink = document.querySelector('#catalog-link');
-    if (catalogLink?.classList.contains('active')) {
+    if (location && location.pathname === '/catalog') {
       setOnCatalog(true);
     } else {
       setOnCatalog(false);
     }
-  }, []);
+  }, [location]);
 
   // Decides whether to show search or not
   useEffect(() => {
@@ -131,16 +133,6 @@ function CourseTableNavbar({
       setShowSearch(false);
     }
   }, [isMobile, isTablet, isLoggedIn, onCatalog]);
-
-  const onNavLinkClick = (
-    event: React.MouseEvent<Element, MouseEvent>,
-    catalog: boolean
-  ) => {
-    setOnCatalog(catalog);
-    scrollToTop(event);
-  };
-
-  console.log(onCatalog);
 
   return (
     <div className={styles.sticky_navbar}>
@@ -199,20 +191,13 @@ function CourseTableNavbar({
                     {/* Catalog Page */}
                     <StyledNavLink
                       to="/catalog"
-                      onClick={(event) => {
-                        onNavLinkClick(event, true);
-                      }}
+                      onClick={scrollToTop}
                       id="catalog-link"
                     >
                       Catalog
                     </StyledNavLink>
                     {/* Worksheet Page */}
-                    <StyledNavLink
-                      to="/worksheet"
-                      onClick={(event) => {
-                        onNavLinkClick(event, false);
-                      }}
-                    >
+                    <StyledNavLink to="/worksheet" onClick={scrollToTop}>
                       Worksheet
                     </StyledNavLink>
                   </>
@@ -221,21 +206,11 @@ function CourseTableNavbar({
                 {(isMobile || !isLoggedIn) && (
                   <>
                     {/* About Page */}
-                    <StyledNavLink
-                      to="/about"
-                      onClick={(event) => {
-                        onNavLinkClick(event, false);
-                      }}
-                    >
+                    <StyledNavLink to="/about" onClick={scrollToTop}>
                       About
                     </StyledNavLink>
                     {/* FAQ Page */}
-                    <StyledNavLink
-                      to="/faq"
-                      onClick={(event) => {
-                        onNavLinkClick(event, false);
-                      }}
-                    >
+                    <StyledNavLink to="/faq" onClick={scrollToTop}>
                       FAQ
                     </StyledNavLink>
                   </>
@@ -302,11 +277,10 @@ function CourseTableNavbar({
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
-          onNavLinkClick={onNavLinkClick}
         />
       </div>
     </div>
   );
 }
 
-export default CourseTableNavbar;
+export default withRouter(CourseTableNavbar);
