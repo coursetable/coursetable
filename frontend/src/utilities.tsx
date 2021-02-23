@@ -1,5 +1,6 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import posthog from 'posthog-js';
+import { css } from 'styled-components';
 
 // Detect clicks outside of a component
 // Via https://stackoverflow.com/a/54570068/5004662
@@ -110,3 +111,24 @@ export function logout() {
   // Redirect to home page and refresh as well
   window.location.pathname = '/';
 }
+
+export const breakpoints = (
+  cssProp = 'padding', // the CSS property to apply to the breakpoints
+  cssPropUnits = 'px', // the units of the CSS property (can set equal to "" and apply units to values directly)
+  values: { [key: number]: number }[] = [], // array of objects, e.g. [{ 800: 60 }, ...] <-- 800 (key) = screen breakpoint, 60 (value) = CSS prop breakpoint
+  mediaQueryType = 'max-width' // media query breakpoint type, i.e.: max-width, min-width, max-height, min-height
+) => {
+  const breakpointProps = values.reduce((mediaQueries, value) => {
+    const [screenBreakpoint, cssPropBreakpoint] = [
+      Object.keys(value)[0],
+      Object.values(value)[0],
+    ];
+    mediaQueries += `
+    @media screen and (${mediaQueryType}: ${screenBreakpoint}px) {
+      ${cssProp}: ${cssPropBreakpoint}${cssPropUnits} !important;
+    }
+    `;
+    return mediaQueries;
+  }, '');
+  return css(([breakpointProps] as unknown) as TemplateStringsArray);
+};

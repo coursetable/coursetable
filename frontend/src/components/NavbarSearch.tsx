@@ -22,6 +22,7 @@ import {
 } from '../queries/Constants';
 import CustomSelect from './CustomSelect';
 import { useSearch, Option } from '../searchContext';
+import { breakpoints } from '../utilities';
 
 const StyledRow = styled(Row)`
   height: 50%;
@@ -38,6 +39,7 @@ const NavbarStyledSearchBar = styled(StyledInput)`
   border-radius: 4px;
   height: 100%;
   font-size: 14px;
+  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
 `;
 
 const StyledRange = styled(Range)`
@@ -47,12 +49,14 @@ const StyledRange = styled(Range)`
 
 const RangeLabel = styled.div`
   font-size: 14px;
+  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
   user-select: none;
   cursor: default;
 `;
 
 const RangeValueLabel = styled.div`
   font-size: 12px;
+  ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
   user-select: none;
   cursor: default;
 `;
@@ -63,6 +67,7 @@ const AdvancedWrapper = styled.div`
 
 const AdvancedLabel = styled.div`
   font-size: 14px;
+  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
   margin-left: 0.25rem;
   user-select: none;
   cursor: default;
@@ -94,6 +99,7 @@ const FilterGroup = styled.div``;
 const StyledButton = styled(Button)`
   padding: 0.25rem 0.375rem;
   font-size: 12px;
+  ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
 `;
 
 export const NavbarSearch: React.FC = () => {
@@ -163,6 +169,22 @@ export const NavbarSearch: React.FC = () => {
     },
     [globalTheme]
   );
+
+  const range_handle_style = useCallback(() => {
+    if (width > 1320) {
+      return undefined;
+    }
+    const styles: React.CSSProperties = { height: '12px', width: '12px' };
+    return [styles, styles];
+  }, [width]);
+
+  const range_rail_style = useCallback(() => {
+    if (width > 1320) {
+      return {};
+    }
+    const styles: React.CSSProperties = { marginTop: '-1px' };
+    return styles;
+  }, [width]);
 
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
@@ -289,6 +311,9 @@ export const NavbarSearch: React.FC = () => {
                 max={5}
                 step={0.1}
                 key={reset_key}
+                handleStyle={range_handle_style()}
+                railStyle={range_rail_style()}
+                trackStyle={[range_rail_style()]}
                 defaultValue={overallBounds}
                 onChange={(value) => {
                   setOverallValueLabels(value);
@@ -317,6 +342,9 @@ export const NavbarSearch: React.FC = () => {
                 max={5}
                 step={0.1}
                 key={reset_key}
+                handleStyle={range_handle_style()}
+                railStyle={range_rail_style()}
+                trackStyle={[range_rail_style()]}
                 defaultValue={workloadBounds}
                 onChange={(value) => {
                   setWorkloadValueLabels(value);

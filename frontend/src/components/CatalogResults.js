@@ -39,6 +39,7 @@ import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
 import CatalogColumnSort from './CatalogColumnSort';
 import { sortbyOptions } from '../queries/Constants';
 import { useSearch } from '../searchContext';
+import { breakpoints } from '../utilities';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -46,6 +47,7 @@ const StyledSpacer = styled.div`
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 100px;
+  ${breakpoints('top', 'px', [{ 1320: 88 }])};
   transition: background-color 0.2s linear;
   z-index: 2;
 `;
@@ -59,6 +61,15 @@ const StyledContainer = styled(SurfaceComponent)`
 
 const StyledRow = styled(Row)`
   max-width: 1600px;
+`;
+
+const ResultsHeader = styled.div`
+  line-height: 30px;
+  ${breakpoints('line-height', 'px', [{ 1320: 24 }])};
+  display: flex;
+  font-size: 14px;
+  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
+  font-weight: 600;
 `;
 
 const getColWidth = (calculated, min = 0, max = 1000000) => {
@@ -90,7 +101,7 @@ const CatalogResults = ({
   const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1130;
+  const isTablet = !isMobile && width < 1080;
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
@@ -112,11 +123,11 @@ const CatalogResults = ({
   // Spacing for each column in list view
   const COL_SPACING = useMemo(() => {
     const TEMP_COL_SPACING = {
-      SZN_WIDTH: 80,
-      CODE_WIDTH: 100,
-      RATE_OVERALL_WIDTH: 92,
-      RATE_WORKLOAD_WIDTH: 92,
-      RATE_PROF_WIDTH: 40,
+      SZN_WIDTH: 60,
+      CODE_WIDTH: width > 1320 ? 110 : 90,
+      RATE_OVERALL_WIDTH: width > 1320 ? 92 : 82,
+      RATE_WORKLOAD_WIDTH: width > 1320 ? 92 : 82,
+      RATE_PROF_WIDTH: width > 1320 ? 40 : 36,
       ENROLL_WIDTH: 40,
       FB_WIDTH: 60,
       PADDING: 43,
@@ -148,7 +159,7 @@ const CatalogResults = ({
       10;
 
     return TEMP_COL_SPACING;
-  }, [ROW_WIDTH, multiSeasons]);
+  }, [ROW_WIDTH, multiSeasons, width]);
 
   // Holds HTML for the search results
   let resultsListing;
@@ -192,13 +203,17 @@ const CatalogResults = ({
         ? num_fb[data[index].season_code + data[index].crn]
         : [];
       // Alternating row item background colors
-      const extraStyles =
+      const colorStyles =
         index % 2 === 0
           ? { backgroundColor: globalTheme.surface[0] }
           : { backgroundColor: globalTheme.row_odd };
       return (
         <div
-          style={{ ...style, ...extraStyles, transition: '0.2s linear' }}
+          style={{
+            ...style,
+            ...colorStyles,
+            transition: '0.2s linear',
+          }}
           key={key}
         >
           <CatalogResultsItemMemo
@@ -292,7 +307,7 @@ const CatalogResults = ({
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={data.length}
-                  rowHeight={33}
+                  rowHeight={width > 1320 ? 33 : 28}
                   rowRenderer={renderListRow}
                 />
               )}
@@ -407,10 +422,9 @@ const CatalogResults = ({
             {/* Results Header */}
             <StyledRow
               ref={ref}
-              className={
-                `mx-auto pl-4 pr-2 py-2 ${Styles.results_header_row}` +
-                ' justify-content-between'
-              }
+              className={`mx-auto pl-4 pr-2 ${width > 1320 ? 'py-2' : 'py-1'} ${
+                Styles.results_header_row
+              } justify-content-between`}
             >
               <div
                 className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
@@ -420,32 +434,27 @@ const CatalogResults = ({
               {isList ? (
                 <>
                   {multiSeasons && (
-                    <div style={szn_style} className={Styles.results_header}>
-                      Season
-                    </div>
+                    <ResultsHeader style={szn_style}>Season</ResultsHeader>
                   )}
                   {/* Course Code */}
-                  <div style={code_style} className={Styles.results_header}>
+                  <ResultsHeader style={code_style}>
                     Code
                     <CatalogColumnSort
                       selectOption={sortbyOptions[0]}
                       key={reset_key}
                     />
-                  </div>
+                  </ResultsHeader>
                   {/* Course Name */}
-                  <div style={title_style} className={Styles.results_header}>
+                  <ResultsHeader style={title_style}>
                     <span className={Styles.one_line}>Title</span>
                     <CatalogColumnSort
                       selectOption={sortbyOptions[2]}
                       key={reset_key}
                     />
-                  </div>
+                  </ResultsHeader>
                   <div className="d-flex">
                     {/* Overall Rating */}
-                    <div
-                      style={rate_overall_style}
-                      className={Styles.results_header}
-                    >
+                    <ResultsHeader style={rate_overall_style}>
                       <OverlayTrigger
                         placement="bottom"
                         delay={{ show: 100, hide: 100 }}
@@ -457,12 +466,9 @@ const CatalogResults = ({
                         selectOption={sortbyOptions[4]}
                         key={reset_key}
                       />
-                    </div>
+                    </ResultsHeader>
                     {/* Workload Rating */}
-                    <div
-                      style={rate_workload_style}
-                      className={Styles.results_header}
-                    >
+                    <ResultsHeader style={rate_workload_style}>
                       <OverlayTrigger
                         placement="bottom"
                         delay={{ show: 100, hide: 100 }}
@@ -474,18 +480,18 @@ const CatalogResults = ({
                         selectOption={sortbyOptions[6]}
                         key={reset_key}
                       />
-                    </div>
+                    </ResultsHeader>
                     {/* Course Professors & Professor Rating */}
-                    <div style={prof_style} className={Styles.results_header}>
+                    <ResultsHeader style={prof_style}>
                       <span className={Styles.one_line}>Professors</span>
                       <CatalogColumnSort
                         selectOption={sortbyOptions[5]}
                         key={reset_key}
                       />
-                    </div>
+                    </ResultsHeader>
                   </div>
                   {/* Enrollment Number */}
-                  <div style={enroll_style} className={Styles.results_header}>
+                  <ResultsHeader style={enroll_style}>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
@@ -497,25 +503,25 @@ const CatalogResults = ({
                       selectOption={sortbyOptions[8]}
                       key={reset_key}
                     />
-                  </div>
+                  </ResultsHeader>
                   {/* Skills/Areas */}
-                  <div style={sa_style} className={Styles.results_header}>
+                  <ResultsHeader style={sa_style}>
                     <span className={Styles.one_line}>Skills/Areas</span>
-                  </div>
+                  </ResultsHeader>
                   {/* Course Meeting times and location */}
-                  <div style={meet_style} className={Styles.results_header}>
+                  <ResultsHeader style={meet_style}>
                     <span className={Styles.one_line}>Meets</span>
                     <CatalogColumnSort
                       selectOption={sortbyOptions[9]}
                       key={reset_key}
                     />
-                  </div>
+                  </ResultsHeader>
                   {/* Location */}
-                  <div style={loc_style} className={Styles.results_header}>
+                  <ResultsHeader style={loc_style}>
                     <span className={Styles.one_line}>Location</span>
-                  </div>
+                  </ResultsHeader>
                   {/* FB */}
-                  <div style={fb_style} className={Styles.results_header}>
+                  <ResultsHeader style={fb_style}>
                     <OverlayTrigger
                       placement="bottom"
                       delay={{ show: 100, hide: 100 }}
@@ -527,16 +533,16 @@ const CatalogResults = ({
                       selectOption={sortbyOptions[3]}
                       key={reset_key}
                     />
-                  </div>
+                  </ResultsHeader>
                 </>
               ) : (
                 // Grid view showing how many search results
                 <Col md={10}>
-                  <div className={Styles.results_header}>
+                  <ResultsHeader>
                     {`Showing ${data.length} course${
                       data.length === 1 ? '' : 's'
                     }...`}
-                  </div>
+                  </ResultsHeader>
                 </Col>
               )}
             </StyledRow>
