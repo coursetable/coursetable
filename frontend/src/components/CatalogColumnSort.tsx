@@ -41,7 +41,6 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
     sort_order,
     setSelectSortby,
     setSortOrder,
-    setCanReset,
   } = useSearch();
 
   const globalTheme = useTheme();
@@ -50,7 +49,6 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
   const handleSortOrder = () => {
     if (select_sortby.value !== selectOption.value) {
       setSelectSortby(selectOption);
-      setCanReset(true);
     }
     if (localSortOrder === 'asc') {
       setSortOrder('desc');
