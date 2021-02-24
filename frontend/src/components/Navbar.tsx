@@ -2,6 +2,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
 import posthog from 'posthog-js';
 import Logo from './Logo';
@@ -16,9 +17,10 @@ import {
 } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
-import { SurfaceComponent, TextComponent } from './StyledComponents';
+import { SurfaceComponent, SmallTextComponent } from './StyledComponents';
 import { NavbarSearch } from './NavbarSearch';
 import { useSearch } from '../searchContext';
+import { DateTime, Duration } from 'luxon';
 
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
@@ -99,10 +101,12 @@ function CourseTableNavbar({
 
   const { searchData, coursesLoading, duration } = useSearch();
 
+  const [updated, setUpdated] = useState(-1);
+
   // Fetch width of window
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1080;
+  const isTablet = !isMobile && width < 1100;
   // const is_relative = width < 1230;
 
   const [show_search, setShowSearch] = useState(false);
@@ -153,6 +157,18 @@ function CourseTableNavbar({
     }
   }, [isMobile, isTablet, isLoggedIn, onCatalog]);
 
+  useEffect(() => {
+    const dt = DateTime.now().setZone('America/New_York');
+    let dt_update;
+    if (dt.hour < 3) {
+      dt_update = dt.plus(Duration.fromObject({ days: -1 })).set({ hour: 3 });
+    } else {
+      dt_update = dt.set({ hour: 3 });
+    }
+    const diff = dt.diff(dt_update, 'hours').as('hours');
+    setUpdated(diff);
+  }, []);
+
   return (
     <div className={styles.sticky_navbar}>
       <SurfaceComponent layer={0}>
@@ -196,7 +212,27 @@ function CourseTableNavbar({
                 style={!isMobile && !isTablet ? { flexGrow: 0 } : undefined}
               >
                 {/* Close navbar on click in mobile view */}
-                <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
+                <Nav
+                  onClick={() => setExpand(false)}
+                  className={`${
+                    !isMobile ? 'align-items-center' : 'align-items-start pt-2'
+                  } position-relative`}
+                  style={{ width: '100%' }}
+                >
+                  {!isMobile && (
+                    <SmallTextComponent
+                      type={2}
+                      className="position-absolute d-flex align-items-center text-right"
+                      style={
+                        !isMobile && !isTablet
+                          ? { left: '-130px' }
+                          : { right: '234px' }
+                      }
+                    >
+                      <MdUpdate className="mr-1" />
+                      Updated {updated} hrs ago
+                    </SmallTextComponent>
+                  )}
                   {/* DarkMode Button */}
                   <div
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
@@ -289,13 +325,11 @@ function CourseTableNavbar({
                 </Nav>
               </Navbar.Collapse>
               {show_search && (
-                <small className="mb-2">
-                  <TextComponent type={2}>
-                    {coursesLoading
-                      ? 'Searching ...'
-                      : `Showing ${searchData.length} results (${duration} seconds)`}
-                  </TextComponent>
-                </small>
+                <SmallTextComponent type={2} className="mb-2">
+                  {coursesLoading
+                    ? 'Searching ...'
+                    : `Showing ${searchData.length} results (${duration} seconds)`}
+                </SmallTextComponent>
               )}
             </NavCollapseWrapper>
           </Navbar>
