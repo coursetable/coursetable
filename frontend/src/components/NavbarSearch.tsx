@@ -28,7 +28,7 @@ import {
   // sortbyOptions,
 } from '../queries/Constants';
 import CustomSelect from './CustomSelect';
-import { useSearch, Option } from '../searchContext';
+import { useSearch, Option, defaultFilters } from '../searchContext';
 import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
 
@@ -318,6 +318,9 @@ export const NavbarSearch: React.FC = () => {
             <Popout
               buttonText="Subject"
               type="subject"
+              onReset={() => {
+                setSelectSubjects(defaultFilters.defaultOptions);
+              }}
               select_options={select_subjects}
             >
               <PopoutSelect
@@ -335,6 +338,9 @@ export const NavbarSearch: React.FC = () => {
             <Popout
               buttonText="Skills/Areas"
               type="skills/areas"
+              onReset={() => {
+                setSelectSkillsAreas(defaultFilters.defaultOptions);
+              }}
               select_options={select_skillsareas}
               className="mr-0"
             >
@@ -416,6 +422,10 @@ export const NavbarSearch: React.FC = () => {
             <Popout
               buttonText="Season"
               type="season"
+              onReset={() => {
+                setSelectSeasons(defaultFilters.defaultOptions);
+                setCanReset(true);
+              }}
               select_options={select_seasons}
             >
               <PopoutSelect
@@ -434,6 +444,14 @@ export const NavbarSearch: React.FC = () => {
               buttonText="Advanced"
               arrowIcon={false}
               type="advanced"
+              onReset={() => {
+                setSelectSchools(defaultFilters.defaultOptions);
+                setSelectCredits(defaultFilters.defaultOptions);
+                setHideCancelled(false);
+                setHideFirstYearSeminars(false);
+                setHideGraduateCourses(false);
+                setCanReset(true);
+              }}
               select_options={advanced_options}
             >
               <AdvancedWrapper>

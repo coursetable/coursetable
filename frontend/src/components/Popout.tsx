@@ -1,9 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
+import { IoClose } from 'react-icons/io5';
 import { breakpoints, useComponentVisibleDropdown } from '../utilities';
+import chroma from 'chroma-js';
 
 const Dropdown = styled.div`
   position: relative;
@@ -48,6 +50,18 @@ const StyledButton = styled.div`
   }
 `;
 
+const CloseIcon = styled(IoClose)`
+  z-index: 1000;
+  cursor: pointer;
+  color: ${({ theme }) => theme.icon_focus};
+  &:hover {
+    color: ${({ theme }) =>
+      theme.theme === 'light'
+        ? chroma(theme.icon_focus).darken().css()
+        : chroma(theme.icon_focus).brighten().css()};
+  }
+`;
+
 type Option = {
   label: string;
   value: string;
@@ -58,6 +72,7 @@ type Props = {
   children: React.ReactNode;
   buttonText: string;
   type: string;
+  onReset: () => void;
   arrowIcon?: boolean;
   select_options?:
     | Option[]
@@ -69,6 +84,7 @@ export const Popout: React.FC<Props> = ({
   children,
   buttonText,
   type,
+  onReset,
   arrowIcon = true,
   select_options,
   className,
@@ -162,12 +178,23 @@ export const Popout: React.FC<Props> = ({
           activeFilters > 0 ? `Advanced: ${activeFilters}` : buttonText;
         setToggleText(text);
         setActive(activeFilters > 0);
+      } else {
+        setToggleText(buttonText);
+        setActive(false);
       }
     } else {
       setToggleText(buttonText);
       setActive(false);
     }
   }, [select_options, buttonText, type]);
+
+  const onClose = useCallback(
+    (e) => {
+      e.stopPropagation();
+      onReset();
+    },
+    [onReset]
+  );
 
   return (
     <Dropdown>
@@ -178,7 +205,9 @@ export const Popout: React.FC<Props> = ({
         className={className}
       >
         {toggleText}
-        {arrowIcon ? (
+        {active ? (
+          <CloseIcon className="ml-1" onClick={onClose} />
+        ) : arrowIcon ? (
           isComponentVisible ? (
             <IoMdArrowDropup className="ml-1" />
           ) : (
