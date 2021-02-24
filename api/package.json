@@ -31,7 +31,7 @@
     "passport": "^0.4.1",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "ts-node": "^9.1.1",
-    "typescript": "^4.1.5"
+    "typescript": "^4.2.2"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.15.2",
