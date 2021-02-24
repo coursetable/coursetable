@@ -16,6 +16,7 @@ import { ValueType } from 'react-select/src/types';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
 import { Range } from 'rc-slider';
+import { IoClose } from 'react-icons/io5';
 
 import {
   // areas,
@@ -29,6 +30,7 @@ import {
 import CustomSelect from './CustomSelect';
 import { useSearch, Option } from '../searchContext';
 import { breakpoints } from '../utilities';
+import chroma from 'chroma-js';
 
 const StyledRow = styled(Row)`
   height: 50%;
@@ -39,6 +41,8 @@ const StyledRow = styled(Row)`
 
 const SearchWrapper = styled.div`
   width: 40vw;
+  display: flex;
+  align-items: center;
 `;
 
 const NavbarStyledSearchBar = styled(StyledInput)`
@@ -106,6 +110,19 @@ const StyledButton = styled(Button)`
   padding: 0.25rem 0.375rem;
   font-size: 12px;
   ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
+`;
+
+const CloseIcon = styled(IoClose)`
+  z-index: 1000;
+  margin-left: -30px;
+  cursor: pointer;
+  color: ${({ theme }) => theme.icon_focus};
+  &:hover {
+    color: ${({ theme }) =>
+      theme.theme === 'light'
+        ? chroma(theme.icon_focus).darken().css()
+        : chroma(theme.icon_focus).brighten().css()};
+  }
 `;
 
 export const NavbarSearch: React.FC = () => {
@@ -285,6 +302,14 @@ export const NavbarSearch: React.FC = () => {
                 ref={searchTextInput}
               />
             </InputGroup>
+            {searchText && (
+              <CloseIcon
+                size={18}
+                onClick={() => {
+                  setSearchText('');
+                }}
+              />
+            )}
           </SearchWrapper>
         </StyledRow>
         <StyledRow className="align-items-center justify-content-between">
