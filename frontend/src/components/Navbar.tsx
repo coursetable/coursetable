@@ -209,7 +209,11 @@ function CourseTableNavbar({
                 className={
                   !isMobile && !isTablet ? 'd-flex' : 'justify-content-end'
                 }
-                style={!isMobile && !isTablet ? { flexGrow: 0 } : undefined}
+                style={
+                  !isMobile && !isTablet && show_search
+                    ? { flexGrow: 0 }
+                    : undefined
+                }
               >
                 {/* Close navbar on click in mobile view */}
                 <Nav
@@ -219,14 +223,18 @@ function CourseTableNavbar({
                   } position-relative`}
                   style={{ width: '100%' }}
                 >
-                  {!isMobile && (
+                  {!isMobile && onCatalog && (
                     <SmallTextComponent
                       type={2}
-                      className="position-absolute d-flex align-items-center text-right"
+                      className={`${
+                        !isTablet ? 'position-absolute' : 'ml-auto mr-3'
+                      } d-flex align-items-center text-right`}
                       style={
-                        !isMobile && !isTablet
-                          ? { left: '-130px' }
-                          : { right: '234px' }
+                        !isTablet
+                          ? width > 1320
+                            ? { left: '-130px' }
+                            : { left: '-120px' }
+                          : undefined
                       }
                     >
                       <MdUpdate className="mr-1" />
@@ -236,7 +244,7 @@ function CourseTableNavbar({
                   {/* DarkMode Button */}
                   <div
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
-                      !isMobile ? 'ml-auto' : ''
+                      !isMobile && !onCatalog ? 'ml-auto' : ''
                     }`}
                     onClick={themeToggler}
                   >
