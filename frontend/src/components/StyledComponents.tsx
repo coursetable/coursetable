@@ -24,7 +24,6 @@ export const StyledBanner = styled.div`
 export const StyledInput = styled(FormControl)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
-  transition: 0.2s linear !important;
   border: solid 2px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0.375rem 0.75rem;
