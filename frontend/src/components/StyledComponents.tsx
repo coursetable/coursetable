@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { FormControl, Card, Popover } from 'react-bootstrap';
 import chroma from 'chroma-js';
+import { breakpoints } from '../utilities';
 
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`
@@ -12,6 +13,12 @@ export const SurfaceComponent = styled.div<{ layer: number }>`
 export const TextComponent = styled.span<{ type: number }>`
   color: ${({ theme, type }) => theme.text[type]};
   transition: color 0.2s linear;
+`;
+
+// Small text component
+export const SmallTextComponent = styled(TextComponent)`
+  font-size: 70%;
+  ${breakpoints('font-size', '%', [{ 1320: 64 }])};
 `;
 
 // Div for banner components/any components that are light grey in light mode, dark grey in dark mode

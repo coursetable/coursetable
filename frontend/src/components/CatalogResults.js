@@ -101,7 +101,7 @@ const CatalogResults = ({
   const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1080;
+  const isTablet = !isMobile && width < 1100;
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
