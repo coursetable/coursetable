@@ -39,7 +39,9 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    - [ESLint](https://marketplace.visualstudio.com/items?itemName=dbaeumer.vscode-eslint)
    - [GraphQL](https://marketplace.visualstudio.com/items?itemName=GraphQL.vscode-graphql)
 
-1. Join our GitHub organization and clone the repository
+   > **For Windows**: In the Extensions tab in VSCode, you should see a `LOCAL - INSTALLED` section and a `WSL: UBUNTU-20.04 - INSTALLED` section. VSCode separates the extensions you've installed locally on your Windows system and remotely on your WSL Ubuntu system. When installing new extensions, make sure to click `Install in WSL: Ubuntu-20.04`.
+
+2. Join our GitHub organization and clone the repository
 
    Make sure that you're added to the [CourseTable GitHub organization](https://github.com/coursetable).
 
@@ -48,7 +50,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    > **For Windows**: Make sure to clone the repository in your Linux filesystem in Ubuntu using Windows Terminal (NOT your Windows filesystem). This will allow React hot reloading to work.
    > After cloning, cd to the repository. Open the repository in VSCode by running the command `code .`. This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-20.04`. Also, make sure that the bar in the bottom right says `LF` and not `CRLF`.
 
-1. Create `facebook.env`
+3. Create `facebook.env`
 
    Create the `facebook.env` file with the following contents in the directory you just cloned.
 
@@ -59,7 +61,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    The app secret should be replaced by the actual value - reach out to us to get this. Alternatively, if you don't intend to test anything related to the Facebook integration, you can just leave that value empty.
 
-1. Install Docker
+4. Install Docker
 
    - Mac or Windows: Install [Docker Desktop](https://www.docker.com/products/docker-desktop)
 
@@ -146,6 +148,38 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 - `Fatal error: Uncaught Error: Failed opening required '/usr/share/nginx/html/web/includes/../../vendor/autoload.php'`
 
   This means that PHP hasn't installed all its dependencies yet. Try running `docker-compose restart` and check again.
+
+## Installing packages
+
+<details>
+  <summary><strong>Windows or Linux</strong></summary>
+
+To be honest, I haven't tried this on Linux but it should technically be the same as WSL right? If you're having problems, let us know.
+
+1. Install [nvm, node.js, and npm](https://docs.microsoft.com/en-us/windows/nodejs/setup-on-wsl2#install-nvm-nodejs-and-npm)
+
+   Follow Steps 1 - 9 at the link above.
+
+   > For Windows: If you get an error that looks like this `bash: /mnt/c/Program Files/nodejs/npm: /bin/sh^M: bad interpreter: No such file or directory`, then try following the instructions [here](https://hackmd.io/@badging/wsl2#Troubleshooting-PATH).
+
+1. Run `npm install --global yarn`
+
+1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
+
+1. Install your package by running `yarn add <package>`
+
+</details>
+
+<details>
+  <summary><strong>MacOS</strong></summary>
+
+1. Run `brew install yarn` (Why's it so easy for Mac users this isn't fair.)
+
+1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
+
+1. Install your package by running `yarn add <package>`
+
+</details>
 
 ## [stale] CourseTable Development Guide
 
