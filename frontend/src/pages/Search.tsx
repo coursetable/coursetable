@@ -169,8 +169,6 @@ const Search: React.FC = () => {
   useEffect(() => {
     if ((isMobile || isTablet) && isList === true) {
       setView(false);
-    } else if (!isMobile && !isTablet && isList === false) {
-      setView(true);
     }
   }, [isMobile, isTablet, isList, setView]);
 
