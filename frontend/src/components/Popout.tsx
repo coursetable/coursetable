@@ -34,8 +34,7 @@ const StyledButton = styled.div`
   font-size: 14px;
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
   border-radius: 4px;
-  transition: background-color 0.2s linear, border 0.2s linear,
-    color 0.2s linear;
+  transition: border 0.2s linear, color 0.2s linear;
   user-select: none;
   cursor: pointer;
 
