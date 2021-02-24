@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import posthog from 'posthog-js';
 import React, {
   createContext,
@@ -91,6 +92,9 @@ const defaultOptions: Option[] = [];
 const defaultOverallBounds = [1, 5];
 const defaultWorkloadBounds = [1, 5];
 const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
+const defaultHideCancelled = true;
+const defaultHideFirstYearSeminars = false;
+const defaultHideGraduateCourses = false;
 const defaultSortOption: Option = sortbyOptions[0];
 const defaultSortOrder: SortType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
@@ -100,6 +104,9 @@ export const defaultFilters = {
   defaultOverallBounds,
   defaultWorkloadBounds,
   defaultSeason,
+  defaultHideCancelled,
+  defaultHideFirstYearSeminars,
+  defaultHideGraduateCourses,
   defaultSortOption,
   defaultSortOrder,
   defaultOrdering,
@@ -160,17 +167,20 @@ export const SearchProvider: React.FC = ({ children }) => {
   // Does the user want to hide cancelled courses?
   const [hideCancelled, setHideCancelled] = useSessionStorageState(
     'hideCancelled',
-    true
+    defaultHideCancelled
   );
   // Does the user want to hide first year seminars?
   const [
     hideFirstYearSeminars,
     setHideFirstYearSeminars,
-  ] = useSessionStorageState('hideFirstYearSeminars', false);
+  ] = useSessionStorageState(
+    'hideFirstYearSeminars',
+    defaultHideFirstYearSeminars
+  );
   // Does the user want to hide graduate courses?
   const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
     'hideGraduateCourses',
-    false
+    defaultHideGraduateCourses
   );
 
   // Fetch user context data
@@ -547,7 +557,6 @@ export const SearchProvider: React.FC = ({ children }) => {
     // only execute after seasons have been loaded
     if (defaultSearch && seasonsOptions) {
       setDefaultSearch(false);
-      // setCanReset(false);
     }
   }, [seasonsOptions, defaultSearch]);
 
@@ -561,6 +570,44 @@ export const SearchProvider: React.FC = ({ children }) => {
     };
     setOrdering(newOrdering);
   }, [select_sortby, sort_order, setOrdering]);
+
+  // Check if can or can't reset
+  useEffect(() => {
+    if (
+      !_.isEqual(searchText, '') ||
+      !_.isEqual(select_subjects, defaultOptions) ||
+      !_.isEqual(select_skillsareas, defaultOptions) ||
+      !_.isEqual(overallBounds, defaultOverallBounds) ||
+      !_.isEqual(workloadBounds, defaultWorkloadBounds) ||
+      !_.isEqual(select_seasons, defaultSeason) ||
+      !_.isEqual(select_schools, defaultOptions) ||
+      !_.isEqual(select_credits, defaultOptions) ||
+      !_.isEqual(hideCancelled, defaultHideCancelled) ||
+      !_.isEqual(hideFirstYearSeminars, defaultHideFirstYearSeminars) ||
+      !_.isEqual(hideGraduateCourses, defaultHideGraduateCourses) ||
+      !_.isEqual(ordering, defaultOrdering)
+    ) {
+      setCanReset(true);
+    } else {
+      setCanReset(false);
+    }
+  }, [
+    searchText,
+    select_subjects,
+    select_skillsareas,
+    overallBounds,
+    workloadBounds,
+    select_seasons,
+    select_schools,
+    select_credits,
+    hideCancelled,
+    hideFirstYearSeminars,
+    hideGraduateCourses,
+    ordering,
+    setCanReset,
+  ]);
+
+  console.log(canReset);
 
   const store = useMemo(
     () => ({

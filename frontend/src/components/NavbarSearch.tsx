@@ -154,7 +154,6 @@ export const NavbarSearch: React.FC = () => {
     hideFirstYearSeminars,
     hideGraduateCourses,
     reset_key,
-    setCanReset,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -296,7 +295,6 @@ export const NavbarSearch: React.FC = () => {
                 style={searchbar_style}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchText(event.target.value);
-                  setCanReset(true);
                 }}
                 placeholder="Search by course code, title, prof, or whatever we don't really care"
                 ref={searchTextInput}
@@ -330,7 +328,6 @@ export const NavbarSearch: React.FC = () => {
                 placeholder="All Subjects"
                 onChange={(selectedOption: ValueType<Option>) => {
                   setSelectSubjects((selectedOption as Option[]) || []);
-                  setCanReset(true);
                 }}
               />
             </Popout>
@@ -352,7 +349,6 @@ export const NavbarSearch: React.FC = () => {
                 placeholder="All Skills/Areas"
                 onChange={(selectedOption: ValueType<Option>) => {
                   setSelectSkillsAreas((selectedOption as Option[]) || []);
-                  setCanReset(true);
                 }}
               />
             </Popout>
@@ -382,7 +378,7 @@ export const NavbarSearch: React.FC = () => {
                 }}
                 onAfterChange={(value) => {
                   setOverallBounds(value);
-                  setCanReset(true);
+
                   setActiveOverall(true);
                 }}
               />
@@ -413,7 +409,7 @@ export const NavbarSearch: React.FC = () => {
                 }}
                 onAfterChange={(value) => {
                   setWorkloadBounds(value);
-                  setCanReset(true);
+
                   setActiveWorkload(true);
                 }}
               />
@@ -424,7 +420,6 @@ export const NavbarSearch: React.FC = () => {
               type="season"
               onReset={() => {
                 setSelectSeasons(defaultFilters.defaultOptions);
-                setCanReset(true);
               }}
               select_options={select_seasons}
             >
@@ -435,7 +430,6 @@ export const NavbarSearch: React.FC = () => {
                 placeholder="Last 5 Years"
                 onChange={(selectedOption: ValueType<Option>) => {
                   setSelectSeasons((selectedOption as Option[]) || []);
-                  setCanReset(true);
                 }}
               />
             </Popout>
@@ -450,7 +444,6 @@ export const NavbarSearch: React.FC = () => {
                 setHideCancelled(false);
                 setHideFirstYearSeminars(false);
                 setHideGraduateCourses(false);
-                setCanReset(true);
               }}
               select_options={advanced_options}
             >
@@ -468,7 +461,6 @@ export const NavbarSearch: React.FC = () => {
                     menuPortalTarget={document.body}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectSchools((selectedOption as Option[]) || []);
-                      setCanReset(true);
                     }}
                   />
                 </Row>
@@ -485,7 +477,6 @@ export const NavbarSearch: React.FC = () => {
                     menuPortalTarget={document.body}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
-                      setCanReset(true);
                     }}
                   />
                 </Row>
@@ -499,7 +490,6 @@ export const NavbarSearch: React.FC = () => {
                     <ToggleLabel
                       onClick={() => {
                         setHideCancelled(!hideCancelled);
-                        setCanReset(true);
                       }}
                     >
                       Hide cancelled courses
@@ -514,7 +504,6 @@ export const NavbarSearch: React.FC = () => {
                     <ToggleLabel
                       onClick={() => {
                         setHideFirstYearSeminars(!hideFirstYearSeminars);
-                        setCanReset(true);
                       }}
                     >
                       Hide first-year seminars
@@ -529,7 +518,6 @@ export const NavbarSearch: React.FC = () => {
                     <ToggleLabel
                       onClick={() => {
                         setHideGraduateCourses(!hideGraduateCourses);
-                        setCanReset(true);
                       }}
                     >
                       Hide graduate courses
