@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
@@ -16,8 +16,9 @@ import {
 } from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent, TextComponent } from './StyledComponents';
 import { NavbarSearch } from './NavbarSearch';
+import { useSearch } from '../searchContext';
 
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
@@ -96,6 +97,8 @@ function CourseTableNavbar({
     setIsComponentVisible,
   } = useComponentVisible<HTMLDivElement>(false);
 
+  const { searchData, coursesLoading } = useSearch();
+
   // Fetch width of window
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
@@ -115,6 +118,22 @@ function CourseTableNavbar({
     }
     return undefined;
   };
+
+  const NavCollapseWrapper: React.FC<{
+    children: React.ReactNode;
+  }> = useCallback(
+    ({ children }) => {
+      if (!isMobile && !isTablet && show_search) {
+        return (
+          <div className="ml-auto d-flex flex-column align-items-end justify-content-between h-100">
+            {children}
+          </div>
+        );
+      }
+      return <>{children}</>;
+    },
+    [isMobile, isTablet, show_search]
+  );
 
   // Handles onCatalog
   useEffect(() => {
@@ -167,107 +186,118 @@ function CourseTableNavbar({
 
             {show_search && <NavbarSearch />}
 
-            <Navbar.Collapse
-              id="basic-navbar-nav"
-              // Make navbar display: flex when not mobile. If mobile, normal formatting
-              className={
-                !isMobile && !isTablet ? 'd-flex' : 'justify-content-end'
-              }
-            >
-              {/* Close navbar on click in mobile view */}
-              <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
-                {/* DarkMode Button */}
-                <div
-                  className={`${styles.navbar_dark_mode_btn} d-flex ${
-                    !isMobile ? 'ml-auto' : ''
-                  }`}
-                  onClick={themeToggler}
-                >
-                  <DarkModeButton />
-                </div>
-
-                {isLoggedIn && (
-                  <>
-                    {/* Catalog Page */}
-                    <StyledNavLink
-                      to="/catalog"
-                      onClick={scrollToTop}
-                      id="catalog-link"
-                    >
-                      Catalog
-                    </StyledNavLink>
-                    {/* Worksheet Page */}
-                    <StyledNavLink to="/worksheet" onClick={scrollToTop}>
-                      Worksheet
-                    </StyledNavLink>
-                  </>
-                )}
-
-                {(isMobile || !isLoggedIn) && (
-                  <>
-                    {/* About Page */}
-                    <StyledNavLink to="/about" onClick={scrollToTop}>
-                      About
-                    </StyledNavLink>
-                    {/* FAQ Page */}
-                    <StyledNavLink to="/faq" onClick={scrollToTop}>
-                      FAQ
-                    </StyledNavLink>
-                  </>
-                )}
-
-                {/* Profile Icon. Show if not mobile */}
-                <div
-                  // Right align profile icon if not mobile
-                  className={`d-none d-md-block ${
-                    !isMobile && !isTablet ? 'align-self-end' : ''
-                  }`}
-                >
-                  <div className={styles.navbar_me}>
-                    <StyledMeIcon
-                      ref={ref_visible}
-                      className={`${styles.icon_circle} m-auto`}
-                      onClick={() => setIsComponentVisible(!isComponentVisible)}
-                    >
-                      <BsFillPersonFill
-                        className="m-auto"
-                        size={20}
-                        color={isComponentVisible ? '#007bff' : undefined}
-                      />
-                    </StyledMeIcon>
+            <NavCollapseWrapper>
+              <Navbar.Collapse
+                id="basic-navbar-nav"
+                // Make navbar display: flex when not mobile. If mobile, normal formatting
+                className={
+                  !isMobile && !isTablet ? 'd-flex' : 'justify-content-end'
+                }
+                style={!isMobile && !isTablet ? { flexGrow: 0 } : undefined}
+              >
+                {/* Close navbar on click in mobile view */}
+                <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
+                  {/* DarkMode Button */}
+                  <div
+                    className={`${styles.navbar_dark_mode_btn} d-flex ${
+                      !isMobile ? 'ml-auto' : ''
+                    }`}
+                    onClick={themeToggler}
+                  >
+                    <DarkModeButton />
                   </div>
-                </div>
-                {/* Sign in/out and Facebook buttons. Show if mobile */}
-                <div className="d-md-none">
-                  <StyledDiv>
-                    <a
-                      href="https://old.coursetable.com/"
-                      style={{ color: 'inherit' }}
-                    >
-                      Old CourseTable
-                    </a>
-                  </StyledDiv>
-                  {!isLoggedIn ? (
-                    <StyledDiv
-                      onClick={() => {
-                        posthog.capture('login');
-
-                        window.location.href = '/api/auth/cas?redirect=catalog';
-                      }}
-                    >
-                      Sign In
-                    </StyledDiv>
-                  ) : (
+                  {isLoggedIn && (
                     <>
-                      <StyledDiv>
-                        <FBLoginButton />
-                      </StyledDiv>
-                      <StyledDiv onClick={logout}>Sign Out</StyledDiv>
+                      {/* Catalog Page */}
+                      <StyledNavLink
+                        to="/catalog"
+                        onClick={scrollToTop}
+                        id="catalog-link"
+                      >
+                        Catalog
+                      </StyledNavLink>
+                      {/* Worksheet Page */}
+                      <StyledNavLink to="/worksheet" onClick={scrollToTop}>
+                        Worksheet
+                      </StyledNavLink>
                     </>
                   )}
-                </div>
-              </Nav>
-            </Navbar.Collapse>
+                  {(isMobile || !isLoggedIn) && (
+                    <>
+                      {/* About Page */}
+                      <StyledNavLink to="/about" onClick={scrollToTop}>
+                        About
+                      </StyledNavLink>
+                      {/* FAQ Page */}
+                      <StyledNavLink to="/faq" onClick={scrollToTop}>
+                        FAQ
+                      </StyledNavLink>
+                    </>
+                  )}
+                  {/* Profile Icon. Show if not mobile */}
+                  <div
+                    // Right align profile icon if not mobile
+                    className={`d-none d-md-block ${
+                      !isMobile && !isTablet ? 'align-self-end' : ''
+                    }`}
+                  >
+                    <div className={styles.navbar_me}>
+                      <StyledMeIcon
+                        ref={ref_visible}
+                        className={`${styles.icon_circle} m-auto`}
+                        onClick={() =>
+                          setIsComponentVisible(!isComponentVisible)
+                        }
+                      >
+                        <BsFillPersonFill
+                          className="m-auto"
+                          size={20}
+                          color={isComponentVisible ? '#007bff' : undefined}
+                        />
+                      </StyledMeIcon>
+                    </div>
+                  </div>
+                  {/* Sign in/out and Facebook buttons. Show if mobile */}
+                  <div className="d-md-none">
+                    <StyledDiv>
+                      <a
+                        href="https://old.coursetable.com/"
+                        style={{ color: 'inherit' }}
+                      >
+                        Old CourseTable
+                      </a>
+                    </StyledDiv>
+                    {!isLoggedIn ? (
+                      <StyledDiv
+                        onClick={() => {
+                          posthog.capture('login');
+                          window.location.href =
+                            '/api/auth/cas?redirect=catalog';
+                        }}
+                      >
+                        Sign In
+                      </StyledDiv>
+                    ) : (
+                      <>
+                        <StyledDiv>
+                          <FBLoginButton />
+                        </StyledDiv>
+                        <StyledDiv onClick={logout}>Sign Out</StyledDiv>
+                      </>
+                    )}
+                  </div>
+                </Nav>
+              </Navbar.Collapse>
+              {show_search && (
+                <small className="mb-2">
+                  <TextComponent type={2}>
+                    {coursesLoading
+                      ? 'Searching ...'
+                      : `Showing ${searchData.length} results`}
+                  </TextComponent>
+                </small>
+              )}
+            </NavCollapseWrapper>
           </Navbar>
         </Container>
       </SurfaceComponent>
