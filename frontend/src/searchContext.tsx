@@ -65,6 +65,7 @@ type Store = {
   isLoggedIn: boolean;
   num_fb: Record<string, string[]>;
   reset_key: number;
+  duration: number;
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -83,6 +84,7 @@ type Store = {
   setSortOrder: React.Dispatch<React.SetStateAction<SortType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
+  setStartTime: React.Dispatch<React.SetStateAction<number>>;
 };
 
 const SearchContext = createContext<Store | undefined>(undefined);
@@ -214,6 +216,9 @@ export const SearchProvider: React.FC = ({ children }) => {
   );
   // State to reset sortby dropdown and rating sliders
   const [reset_key, setResetKey] = useState(0);
+
+  const [start_time, setStartTime] = useState(Date.now());
+  const [duration, setDuration] = useState(0);
 
   // populate seasons from database
   let seasonsOptions: OptType;
@@ -533,6 +538,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setResetKey(reset_key + 1);
 
     setCanReset(false);
+    setStartTime(Date.now());
   }, [
     reset_key,
     setSearchText,
@@ -591,6 +597,9 @@ export const SearchProvider: React.FC = ({ children }) => {
     } else {
       setCanReset(false);
     }
+    if (!coursesLoading && searchData) {
+      setDuration(Math.abs(Date.now() - start_time) / 1000);
+    }
   }, [
     searchText,
     select_subjects,
@@ -604,10 +613,11 @@ export const SearchProvider: React.FC = ({ children }) => {
     hideFirstYearSeminars,
     hideGraduateCourses,
     ordering,
+    coursesLoading,
+    searchData,
+    start_time,
     setCanReset,
   ]);
-
-  console.log(canReset);
 
   const store = useMemo(
     () => ({
@@ -636,6 +646,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       isLoggedIn,
       num_fb,
       reset_key,
+      duration,
 
       // Update methods.
       setCanReset,
@@ -656,6 +667,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setSortOrder,
       setOrdering,
       handleResetFilters,
+      setStartTime,
     }),
     [
       canReset,
@@ -682,6 +694,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       isLoggedIn,
       num_fb,
       reset_key,
+      duration,
       setCanReset,
       setSearchText,
       setSelectSubjects,
@@ -700,6 +713,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setSortOrder,
       setOrdering,
       handleResetFilters,
+      setStartTime,
     ]
   );
 

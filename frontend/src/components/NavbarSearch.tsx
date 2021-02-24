@@ -168,6 +168,7 @@ export const NavbarSearch: React.FC = () => {
     setHideFirstYearSeminars,
     setHideGraduateCourses,
     handleResetFilters,
+    setStartTime,
   } = useSearch();
 
   const [activeOverall, setActiveOverall] = useState(false);
@@ -295,6 +296,7 @@ export const NavbarSearch: React.FC = () => {
                 style={searchbar_style}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchText(event.target.value);
+                  setStartTime(Date.now());
                 }}
                 placeholder="Search by course code, title, prof, or whatever we don't really care"
                 ref={searchTextInput}
@@ -305,6 +307,7 @@ export const NavbarSearch: React.FC = () => {
                 size={18}
                 onClick={() => {
                   setSearchText('');
+                  setStartTime(Date.now());
                 }}
               />
             )}
@@ -318,6 +321,7 @@ export const NavbarSearch: React.FC = () => {
               type="subject"
               onReset={() => {
                 setSelectSubjects(defaultFilters.defaultOptions);
+                setStartTime(Date.now());
               }}
               select_options={select_subjects}
             >
@@ -328,6 +332,7 @@ export const NavbarSearch: React.FC = () => {
                 placeholder="All Subjects"
                 onChange={(selectedOption: ValueType<Option>) => {
                   setSelectSubjects((selectedOption as Option[]) || []);
+                  setStartTime(Date.now());
                 }}
               />
             </Popout>
@@ -337,6 +342,7 @@ export const NavbarSearch: React.FC = () => {
               type="skills/areas"
               onReset={() => {
                 setSelectSkillsAreas(defaultFilters.defaultOptions);
+                setStartTime(Date.now());
               }}
               select_options={select_skillsareas}
               className="mr-0"
@@ -349,6 +355,7 @@ export const NavbarSearch: React.FC = () => {
                 placeholder="All Skills/Areas"
                 onChange={(selectedOption: ValueType<Option>) => {
                   setSelectSkillsAreas((selectedOption as Option[]) || []);
+                  setStartTime(Date.now());
                 }}
               />
             </Popout>
@@ -378,6 +385,7 @@ export const NavbarSearch: React.FC = () => {
                 }}
                 onAfterChange={(value) => {
                   setOverallBounds(value);
+                  setStartTime(Date.now());
 
                   setActiveOverall(true);
                 }}
@@ -409,6 +417,7 @@ export const NavbarSearch: React.FC = () => {
                 }}
                 onAfterChange={(value) => {
                   setWorkloadBounds(value);
+                  setStartTime(Date.now());
 
                   setActiveWorkload(true);
                 }}
@@ -420,6 +429,7 @@ export const NavbarSearch: React.FC = () => {
               type="season"
               onReset={() => {
                 setSelectSeasons(defaultFilters.defaultOptions);
+                setStartTime(Date.now());
               }}
               select_options={select_seasons}
             >
@@ -430,6 +440,7 @@ export const NavbarSearch: React.FC = () => {
                 placeholder="Last 5 Years"
                 onChange={(selectedOption: ValueType<Option>) => {
                   setSelectSeasons((selectedOption as Option[]) || []);
+                  setStartTime(Date.now());
                 }}
               />
             </Popout>
@@ -444,6 +455,7 @@ export const NavbarSearch: React.FC = () => {
                 setHideCancelled(false);
                 setHideFirstYearSeminars(false);
                 setHideGraduateCourses(false);
+                setStartTime(Date.now());
               }}
               select_options={advanced_options}
             >
@@ -461,6 +473,7 @@ export const NavbarSearch: React.FC = () => {
                     menuPortalTarget={document.body}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectSchools((selectedOption as Option[]) || []);
+                      setStartTime(Date.now());
                     }}
                   />
                 </Row>
@@ -477,6 +490,7 @@ export const NavbarSearch: React.FC = () => {
                     menuPortalTarget={document.body}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
+                      setStartTime(Date.now());
                     }}
                   />
                 </Row>
@@ -490,6 +504,7 @@ export const NavbarSearch: React.FC = () => {
                     <ToggleLabel
                       onClick={() => {
                         setHideCancelled(!hideCancelled);
+                        setStartTime(Date.now());
                       }}
                     >
                       Hide cancelled courses
@@ -504,6 +519,7 @@ export const NavbarSearch: React.FC = () => {
                     <ToggleLabel
                       onClick={() => {
                         setHideFirstYearSeminars(!hideFirstYearSeminars);
+                        setStartTime(Date.now());
                       }}
                     >
                       Hide first-year seminars
@@ -518,6 +534,7 @@ export const NavbarSearch: React.FC = () => {
                     <ToggleLabel
                       onClick={() => {
                         setHideGraduateCourses(!hideGraduateCourses);
+                        setStartTime(Date.now());
                       }}
                     >
                       Hide graduate courses

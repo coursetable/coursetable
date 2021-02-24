@@ -97,7 +97,7 @@ function CourseTableNavbar({
     setIsComponentVisible,
   } = useComponentVisible<HTMLDivElement>(false);
 
-  const { searchData, coursesLoading } = useSearch();
+  const { searchData, coursesLoading, duration } = useSearch();
 
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -293,7 +293,7 @@ function CourseTableNavbar({
                   <TextComponent type={2}>
                     {coursesLoading
                       ? 'Searching ...'
-                      : `Showing ${searchData.length} results`}
+                      : `Showing ${searchData.length} results (${duration} seconds)`}
                   </TextComponent>
                 </small>
               )}
