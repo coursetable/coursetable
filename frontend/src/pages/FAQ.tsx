@@ -14,7 +14,6 @@ const StyledCard = styled(Card)`
   background-color: transparent;
   border: none !important;
   border-bottom: 1px solid ${({ theme }) => theme.border} !important;
-  transition: border 0.2s linear;
 
   .active {
     border-bottom: 1px solid ${({ theme }) => theme.border} !important;

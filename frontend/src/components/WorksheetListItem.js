@@ -9,7 +9,6 @@ import WorksheetHideButton from './WorksheetHideButton';
 const StyledListItem = styled(ListGroup.Item)`
   background-color: transparent;
   border-color: ${({ theme }) => theme.border};
-  transition: border-color 0.2s linear;
   overflow: hidden;
   &:hover {
     cursor: pointer;
@@ -18,7 +17,7 @@ const StyledListItem = styled(ListGroup.Item)`
   /* Hides icon until you hover over the list item */
   .hidden {
     opacity: 0;
-    transition: 0.2s opacity;
+    transition: 0.05s opacity;
   }
   &:hover .hidden {
     opacity: 1;

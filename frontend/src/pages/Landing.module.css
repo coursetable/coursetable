@@ -29,7 +29,7 @@
 
 .feature_text {
   font-weight: 500;
-  transition: 0.3s;
+  transition: transform 0.3s;
   cursor: default;
   text-align: left;
 }
@@ -43,7 +43,7 @@
   border-radius: 10px;
   font-weight: 500;
   color: white;
-  transition: 0.3s;
+  transition: transform 0.3s, filter 0.3s;
 }
 
 .login {

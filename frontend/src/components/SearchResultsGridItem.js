@@ -25,7 +25,6 @@ import { getOverallRatings } from '../courseUtilities';
 const StyledGridItem = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgb(245, 245, 245)' : theme.surface[1]};
-  transition: background-color 0.2s linear;
   &:hover {
     background-color: ${({ theme }) => theme.select_hover};
   }

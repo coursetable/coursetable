@@ -24,7 +24,6 @@ import { breakpoints } from '../utilities';
 // Row for search results item
 const StyledResultsItem = styled(Row)`
   max-width: 1600px;
-  transition: 0.3s;
   user-select: none;
   overflow: hidden;
   position: relative;
@@ -36,7 +35,6 @@ const StyledResultsItem = styled(Row)`
 
 const StyledSpacer = styled.div`
   border-top: solid 1px ${({ theme }) => theme.border};
-  transition: border 0.2s linear;
   outline: none !important;
   &:hover {
     cursor: pointer;

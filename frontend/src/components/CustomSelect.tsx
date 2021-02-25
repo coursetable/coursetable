@@ -56,8 +56,7 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
       backgroundColor: isDisabled ? theme.disabled : theme.select,
       borderColor: 'rgba(0, 0, 0, 0.1)',
       borderWidth: '2px',
-      transition:
-        'background-color 0.2s linear, border 0.2s linear, color 0.2s linear',
+      transition: 'none',
     }),
     menu: (base) => ({
       ...base,
@@ -75,13 +74,11 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
     multiValue: (base) => {
       return {
         ...base,
-        transition: '0.2s linear',
       };
     },
     multiValueLabel: (base) => {
       return {
         ...base,
-        transition: '0.2s linear',
       };
     },
     option: (base, { isSelected }) => ({
@@ -92,7 +89,6 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
     singleValue: (base, { isDisabled }) => ({
       ...base,
       color: isDisabled && theme.text[2],
-      transition: 'color 0.2s linear',
     }),
   };
 };
@@ -127,14 +123,12 @@ const colorStyles = (): StylesConfig => {
       return {
         ...base,
         backgroundColor: color.alpha(0.16).css(),
-        transition: '0.2s linear',
       };
     },
     multiValueLabel: (base, { data }) => ({
       ...base,
       color: data.color,
       fontWeight: 'bold',
-      transition: '0.2s linear',
     }),
     multiValueRemove: (base, { data }) => ({
       ...base,
@@ -143,7 +137,6 @@ const colorStyles = (): StylesConfig => {
         backgroundColor: data.color,
         color: 'white',
       },
-      transition: '0.2s linear',
     }),
     option: (base, { data, isDisabled, isFocused, isSelected }) => {
       const color = chroma(data.color);

@@ -6,13 +6,11 @@ import { breakpoints } from '../utilities';
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`
   background-color: ${({ theme, layer }) => theme.surface[layer]};
-  transition: background-color 0.2s linear;
 `;
 
 // Span used to color text. Type is an int that represents primary (0) or secondary (1) color
 export const TextComponent = styled.span<{ type: number }>`
   color: ${({ theme, type }) => theme.text[type]};
-  transition: color 0.2s linear;
 `;
 
 // Small text component
@@ -24,7 +22,6 @@ export const SmallTextComponent = styled(TextComponent)`
 // Div for banner components/any components that are light grey in light mode, dark grey in dark mode
 export const StyledBanner = styled.div`
   background-color: ${({ theme }) => theme.banner};
-  transition: background-color 0.2s linear;
 `;
 
 // FormControl for any typed inputs
@@ -52,13 +49,11 @@ export const StyledInput = styled(FormControl)`
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
     theme.theme === 'light' ? '#ededed' : '#404040'};
-  transition: border 0.2s linear;
 `;
 
 // Card used in Worksheet mobile and about page
 export const StyledCard = styled(Card)`
   background-color: ${({ theme }) => theme.surface[0]};
-  transition: background-color 0.2s linear;
 `;
 
 // Expand buttons in worksheet and worksheet expanded
@@ -68,7 +63,7 @@ export const StyledExpandBtn = styled.div`
   position: absolute;
   top: 0%;
   z-index: 2;
-  transition: 0.2s linear;
+  transition: transform 0.05s linear;
 `;
 
 // Popovers in search results item, prof popover in modal, and worksheet calendar
@@ -101,7 +96,6 @@ export const StyledRating = styled.div<{
   color: ${({ rating }) =>
     // rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
     rating && rating > 0 ? '#141414' : '#b5b5b5'};
-  transition: 0.2s linear;
   display: flex;
   align-items: center;
 `;
@@ -117,7 +111,6 @@ export const StyledLink = styled.span`
 
 // Show Primary color on hover
 export const StyledHoverText = styled.span`
-  transition: color 0.1s;
   &:hover {
     color: ${({ theme }) => theme.primary};
     cursor: pointer;
@@ -127,7 +120,6 @@ export const StyledHoverText = styled.span`
 // SVG Icons used in search results for the various ratings
 export const StyledIcon = styled.div`
   fill: ${({ theme }) => theme.text[0]};
-  transition: fill 0.2s linear;
   margin-top: auto;
   margin-bottom: auto;
 `;

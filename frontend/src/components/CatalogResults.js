@@ -48,13 +48,11 @@ const StyledSpacer = styled.div`
   position: sticky;
   top: 100px;
   ${breakpoints('top', 'px', [{ 1320: 88 }])};
-  transition: background-color 0.2s linear;
   z-index: 2;
 `;
 
 // Container of row dropdown (without spacer)
 const StyledContainer = styled(SurfaceComponent)`
-  transition: 0.2s linear;
   border-top: 2px solid ${({ theme }) => theme.border};
   border-bottom: 2px solid ${({ theme }) => theme.border};
 `;
@@ -212,7 +210,6 @@ const CatalogResults = ({
           style={{
             ...style,
             ...colorStyles,
-            transition: '0.2s linear',
           }}
           key={key}
         >

@@ -13,7 +13,6 @@ const StyledSortBtn = styled.div`
   cursor: pointer;
   border-radius: 4px;
   padding: 2px;
-  transition: 0.3s;
   &:hover {
     background-color: ${({ theme }) => theme.button_active};
   }

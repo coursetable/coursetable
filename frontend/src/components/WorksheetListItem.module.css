@@ -1,6 +1,5 @@
 .list_text {
   overflow: hidden;
-  transition: color 0.3s;
 }
 
 .course_title {
@@ -16,7 +15,7 @@
   top: -16px;
   right: 0%;
   z-index: 1;
-  transition: color 0.3s, transform 0.3s;
+  transition: transform 0.3s;
   justify-content: end;
 }
 

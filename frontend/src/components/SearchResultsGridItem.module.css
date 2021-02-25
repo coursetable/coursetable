@@ -1,5 +1,5 @@
 .container {
-  transition: 0.3s;
+  transition: 0.1s;
 }
 
 .container:hover {
@@ -15,7 +15,6 @@
 
 .item_container {
   border-radius: 8px;
-  transition: 0.3s;
 }
 
 .season_tag {

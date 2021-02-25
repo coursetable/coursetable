@@ -19,7 +19,6 @@
   /* NO RATING BUBBLE ANIMATION */
   max-height: 3rem;
 
-  transition: background-color 0.3s;
   transition: max-height 0.2s ease-out;
 }
 

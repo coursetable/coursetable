@@ -16,16 +16,15 @@ const StyledSpacer = styled.div`
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 56px;
-  transition: background-color 0.2s linear;
   z-index: 2;
 `;
 
 const StyledBsEyeSlash = styled(BsEyeSlash)`
-  transition: 0.3s !important;
+  transition: transform 0.3s !important;
 `;
 
 const StyledBsEye = styled(BsEye)`
-  transition: 0.3s !important;
+  transition: transform 0.3s !important;
 `;
 
 const StyledBtn = styled.div`
@@ -34,7 +33,6 @@ const StyledBtn = styled.div`
   padding: 5px;
   cursor: pointer;
   text-align: center;
-  transition: 0.2s linear !important;
   border: solid 2px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   display: flex;
@@ -70,6 +68,7 @@ const StyledContainer = styled(SurfaceComponent)`
 const StyledExpandLink = styled(Button)`
   color: ${({ theme }) => theme.text[1]};
   font-weight: normal;
+  transition: none;
   &:hover {
     text-decoration: none !important;
     color: ${({ theme }) => theme.primary};
