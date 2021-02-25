@@ -38,6 +38,7 @@ const StyledBtn = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  user-select: none;
 
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
@@ -159,30 +160,8 @@ function WorksheetRowDropdown({
                 All
               </StyledBtn>
             </Col>
-            {/* <Col md={6} className="pr-2 pl-1">
-              <StyledBtn
-                className={styles.btn}
-                onClick={() => setCurExpand('list')}
-              >
-                Expand
-              </StyledBtn>
-            </Col> */}
           </Row>
         </div>
-
-        {/* Expand Worksheet List Button */}
-        {/* <StyledExpandBtn
-          className={worksheet_styles.expand_btn + ' ' + styles.top_left}
-        >
-          <FaExpandAlt
-            size={12}
-            className={worksheet_styles.expand_icon}
-            onClick={() => {
-              // Expand list
-              setCurExpand('list');
-            }}
-          />
-        </StyledExpandBtn> */}
       </StyledContainer>
     </StyledSpacer>
   );
