@@ -1,6 +1,5 @@
 .search_result_item {
   /* background-color: white; */
-  transition: 0.3s;
   user-select: none;
   overflow: hidden;
   position: relative;

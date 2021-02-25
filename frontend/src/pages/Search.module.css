@@ -79,7 +79,6 @@
   border-radius: 8px;
   padding: 5px;
   margin-left: auto;
-  transition: 0.3s;
 }
 
 .sort_icon {
@@ -101,7 +100,6 @@
   width: 100%;
   border-radius: 0px 0px 8px 8px !important;
   padding: 0.5rem !important;
-  transition: 0.3s;
 }
 
 .secondary_submit:hover {
@@ -125,7 +123,6 @@
 
 .search_tab {
   position: absolute;
-  transition: 0.3s;
   transition-delay: 0.3s;
   transition-property: right, opacity;
   top: 10px;
@@ -212,7 +209,6 @@
 .reset_filters_btn {
   color: #e23e57;
   font-weight: 500;
-  transition: 0.3s;
 }
 
 .reset_filters_btn:hover {

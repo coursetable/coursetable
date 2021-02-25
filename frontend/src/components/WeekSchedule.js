@@ -16,32 +16,25 @@ const StyledCalendar = styled(Calendar)`
       .rbc-time-header {
         .rbc-time-header-content {
           border-color: ${({ theme }) => theme.border};
-          transition: border 0.2s linear;
           .rbc-time-header-cell {
             .rbc-header {
               border-color: ${({ theme }) => theme.border};
-              transition: border 0.2s linear;
             }
           }
         }
       }
       .rbc-time-content {
         border-color: ${({ theme }) => theme.border};
-        transition: border 0.2s linear;
         .rbc-time-gutter {
           .rbc-timeslot-group {
             border-color: ${({ theme }) => theme.border};
-            transition: border 0.2s linear;
           }
         }
         .rbc-day-slot {
           .rbc-timeslot-group {
             border-color: ${({ theme }) => theme.border};
-            transition: border 0.2s linear;
             .rbc-time-slot {
               border-color: ${({ theme }) => theme.border};
-              transition: border 0.2s linear;
-            }
           }
         }
       }

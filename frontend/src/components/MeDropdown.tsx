@@ -83,7 +83,7 @@ const MeDropdown: React.VFC<Props> = ({
             {isLoggedIn && (
               <>
                 {/* About page Link */}
-                <Row className=" pb-3 m-auto">
+                <Row className="pb-3 m-auto">
                   <FcInfo
                     className="mr-2 my-auto"
                     size={20}
@@ -101,7 +101,7 @@ const MeDropdown: React.VFC<Props> = ({
                   </TextComponent>
                 </Row>
                 {/* FAQ page Link */}
-                <Row className=" pb-3 m-auto">
+                <Row className="pb-3 m-auto">
                   <FcQuestions
                     className="mr-2 my-auto"
                     size={20}
@@ -121,7 +121,7 @@ const MeDropdown: React.VFC<Props> = ({
               </>
             )}
             {/* Revert to Old CourseTable Link */}
-            <Row className=" pb-3 m-auto">
+            <Row className="pb-3 m-auto">
               <FcUndo
                 className="mr-2 my-auto"
                 size={20}
@@ -138,7 +138,7 @@ const MeDropdown: React.VFC<Props> = ({
             </Row>
             {/* Export Worksheet button */}
             {isLoggedIn && (
-              <Row className=" pb-3 m-auto">
+              <Row className="pb-3 m-auto">
                 <FcCalendar className="mr-2 my-auto" size={20} />
                 <TextComponent
                   type={1}
@@ -151,7 +151,7 @@ const MeDropdown: React.VFC<Props> = ({
             )}
             {/* Connect FB button */}
             {isLoggedIn && (
-              <Row className=" pb-3 m-auto">
+              <Row className="pb-3 m-auto">
                 <FaFacebookSquare
                   className="mr-2 my-auto"
                   size={20}
@@ -162,7 +162,7 @@ const MeDropdown: React.VFC<Props> = ({
             )}
             {/* Sign In/Out button */}
             {isLoggedIn ? (
-              <Row className=" pb-3 m-auto">
+              <Row className="pb-3 m-auto">
                 <FaSignOutAlt
                   className="mr-2 my-auto"
                   size={20}
@@ -178,7 +178,7 @@ const MeDropdown: React.VFC<Props> = ({
                 </TextComponent>
               </Row>
             ) : (
-              <Row className=" pb-3 m-auto">
+              <Row className="pb-3 m-auto">
                 <FaSignInAlt
                   className="mr-2 my-auto"
                   size={20}

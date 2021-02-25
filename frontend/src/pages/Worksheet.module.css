@@ -41,7 +41,6 @@
 .expand_btn {
   padding: 3px;
   border-radius: 6px;
-  transition: 0.3s;
 }
 
 .expand_btn:hover {

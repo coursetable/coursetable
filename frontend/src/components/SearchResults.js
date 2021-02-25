@@ -43,7 +43,6 @@ const StyledSpacer = styled.div`
   position: -webkit-sticky; /* Safari */
   position: sticky;
   top: 56px;
-  transition: background-color 0.2s linear;
   z-index: 2;
 `;
 

@@ -30,7 +30,6 @@ const StyledMeIcon = styled.div`
   height: 30px;
   border-radius: 15px;
   display: flex;
-  transition: background-color 0.2s linear, color 0.2s linear;
   &:hover {
     cursor: pointer;
     color: ${({ theme }) => theme.primary};
@@ -39,7 +38,6 @@ const StyledMeIcon = styled.div`
 
 const StyledDiv = styled.div`
   padding: 0.5rem 1rem 0.5rem 0rem;
-  transition: 0.1s;
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
   &:hover {
@@ -49,7 +47,6 @@ const StyledDiv = styled.div`
 
 const StyledNavLink = styled(NavLink)`
   padding: 0.5rem 1rem 0.5rem 0rem;
-  transition: 0.1s;
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
   font-size: 1rem;

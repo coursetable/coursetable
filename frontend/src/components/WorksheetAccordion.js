@@ -50,7 +50,6 @@ function ContextAwareToggle({ eventKey, callback, course }) {
 
   const style_color = {
     backgroundColor: theme.select_hover,
-    transition: 'background-color 0.3s',
   };
 
   return (

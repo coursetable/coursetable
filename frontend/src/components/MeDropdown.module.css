@@ -13,7 +13,6 @@
 .collapse_text {
   color: inherit;
   font-weight: 500;
-  transition: 0.1s;
 }
 
 .collapse_text:hover {
@@ -22,7 +21,7 @@
 }
 
 .fb_sync {
-  transition: 0.3s;
+  transition: transform 0.3s;
 }
 
 .fb_sync:hover {

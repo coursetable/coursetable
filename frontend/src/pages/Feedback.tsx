@@ -25,7 +25,6 @@ const StyledRadio = styled(Form.Check)`
     display: inline-block;
     visibility: visible;
     border: 3px solid #cccccc;
-    transition: background-color 0.2s linear;
   }
   /* Active state = blue border */
   input[type='radio']:checked + label:after {
@@ -45,7 +44,6 @@ const StyledSwitch = styled(Form.Check)`
   .custom-control-input ~ .custom-control-label::before {
     border-color: #cccccc;
     background-color: ${({ theme }) => theme.select};
-    transition: background-color 0.2s linear;
   }
 
   /* Enabled state = blue border+background */

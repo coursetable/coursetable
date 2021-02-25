@@ -29,7 +29,6 @@ nav > .nav_brand {
   height: 30px;
   border-radius: 15px;
   display: flex;
-  transition: 0.3s;
 }
 
 /* .search_bar_mid {

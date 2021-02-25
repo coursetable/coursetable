@@ -23,7 +23,6 @@ import { getOverallRatings } from '../courseUtilities';
 // Row for search results item
 const StyledResultsItem = styled(Row)`
   border-top: solid 1px ${({ theme }) => theme.border};
-  transition: border 0.2s linear;
   &:hover {
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
