@@ -1,6 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
+import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
@@ -9,6 +10,7 @@ import styled from 'styled-components';
 import { useUser } from '../user';
 import { getSSObject, setSSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 /**
  * Render worksheet list in default worksheet view
@@ -18,8 +20,8 @@ import { isInWorksheet } from '../courseUtilities';
  * @prop modal - boolean | are we rendering in the course modal
  */
 
-const StyledBookmark = styled.span`
-  color: ${({ theme }) => theme.primary};
+const StyledButton = styled(Button)`
+  color: ${({ theme }) => theme.primary}!important;
   &:hover {
     opacity: 0.5;
   }
@@ -34,10 +36,13 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
   // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(worksheet_check);
 
+  // Fetch width of window
+  const { width } = useWindowDimensions();
+
   // Reset inWorksheet state on every rerender
   const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
   if (inWorksheet !== update) setInWorksheet(update);
-  // Disabled worksheed add/remove button if not logged in
+  // Disabled worksheet add/remove button if not logged in
   if (user.worksheet == null)
     return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
@@ -98,31 +103,29 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
     </Tooltip>
   );
 
-  const bookmark_style = { transition: '0.3s' };
   return (
     <OverlayTrigger
       placement="top"
-      delay={{ show: 1000, hide: 250 }}
+      delay={{ show: 250, hide: 50 }}
       overlay={renderTooltip}
     >
-      <Button
+      <StyledButton
         variant="toggle"
-        className={`p-0 ${modal ? '' : 'bookmark_move'}`}
+        className="py-auto px-1 d-flex align-items-center"
         onClick={toggleWorkSheet}
       >
-        {inWorksheet ? (
-          <StyledBookmark>
-            <BsBookmarkFill
-              className={modal ? '' : 'bookmark_move'}
-              size={25}
-            />
-          </StyledBookmark>
+        {modal ? (
+          inWorksheet ? (
+            <BsBookmarkFill size={25} className="scale_icon" />
+          ) : (
+            <BsBookmark size={25} className="scale_icon" />
+          )
+        ) : inWorksheet ? (
+          <FaMinus size={width > 1320 ? 16 : 14} />
         ) : (
-          <StyledBookmark>
-            <BsBookmark size={25} style={bookmark_style} />
-          </StyledBookmark>
+          <FaPlus size={width > 1320 ? 16 : 14} />
         )}
-      </Button>
+      </StyledButton>
     </OverlayTrigger>
   );
 }
