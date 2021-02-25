@@ -53,15 +53,6 @@ function WorksheetListItem({
       onMouseEnter={() => setHoverCourse(course.crn)}
       onMouseLeave={() => setHoverCourse(null)}
     >
-      {/* Bookmark Button */}
-      <div className={styles.bookmark}>
-        <WorksheetToggleButton
-          worksheetView
-          crn={course.crn}
-          season_code={cur_season}
-          modal={false}
-        />
-      </div>
       <Row className="align-items-center mx-auto">
         {/* Course Code and Title */}
         <Col
@@ -74,19 +65,23 @@ function WorksheetListItem({
           <span className={styles.course_title}>{course.title}</span>
         </Col>
         {/* Hide Button */}
-        <Col
-          xs="auto"
-          className={`pl-0 pr-3 my-auto ${hidden ? 'visible' : 'hidden'}`}
-        >
-          <Row className="m-auto">
-            <WorksheetHideButton
-              toggleCourse={toggleCourse}
-              hidden={hidden}
-              crn={course.crn}
-              season_code={cur_season}
-            />
-          </Row>
-        </Col>
+        <div className={`mr-1 my-auto ${hidden ? 'visible' : 'hidden'}`}>
+          <WorksheetHideButton
+            toggleCourse={toggleCourse}
+            hidden={hidden}
+            crn={course.crn}
+            season_code={cur_season}
+          />
+        </div>
+        {/* Bookmark Button */}
+        <div className="my-auto">
+          <WorksheetToggleButton
+            worksheetView
+            crn={course.crn}
+            season_code={cur_season}
+            modal={false}
+          />
+        </div>
       </Row>
     </StyledListItem>
   );

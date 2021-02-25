@@ -1,11 +1,6 @@
 .btn-toggle {
   background-color: transparent;
   border-width: 0;
-  transition: 0.3s !important;
-}
-
-.btn-toggle:hover {
-  transform: scale(1.15);
 }
 
 .btn-toggle:active,
@@ -13,13 +8,12 @@
   box-shadow: none !important;
 }
 
-.bookmark_move,
-.bookmark_fill {
-  transition: 0.3s;
+.scale_icon {
+  transition: 0.1s !important;
 }
 
-.bookmark_move:hover {
-  transform: scale(1) !important;
+.scale_icon:hover {
+  transform: scale(1.15);
 }
 
 .disabled-button {

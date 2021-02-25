@@ -9,16 +9,3 @@
   overflow: hidden;
   text-overflow: ellipsis;
 }
-
-.bookmark {
-  position: absolute;
-  top: -16px;
-  right: 0%;
-  z-index: 1;
-  transition: transform 0.3s;
-  justify-content: end;
-}
-
-.bookmark:hover {
-  transform: translateY(10px);
-}

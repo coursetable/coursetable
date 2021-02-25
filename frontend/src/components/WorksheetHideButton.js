@@ -29,14 +29,26 @@ const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
   return (
     <OverlayTrigger
       placement="bottom"
-      delay={{ show: 1000, hide: 250 }}
+      delay={{ show: 250, hide: 50 }}
       overlay={renderTooltip}
     >
-      <Button variant="toggle" onClick={toggleWorkSheet} className="p-0">
+      <Button
+        variant="toggle"
+        onClick={toggleWorkSheet}
+        className="p-1 d-flex align-items-center"
+      >
         {hidden ? (
-          <BsEyeSlash color={theme.hidden} size={button_size} />
+          <BsEyeSlash
+            color={theme.hidden}
+            size={button_size}
+            className="scale_icon"
+          />
         ) : (
-          <BsEye color={theme.text[0]} size={button_size} />
+          <BsEye
+            color={theme.text[0]}
+            size={button_size}
+            className="scale_icon"
+          />
         )}
       </Button>
     </OverlayTrigger>
