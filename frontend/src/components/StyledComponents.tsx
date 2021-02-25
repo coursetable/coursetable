@@ -111,6 +111,7 @@ export const StyledLink = styled.span`
 
 // Show Primary color on hover
 export const StyledHoverText = styled.span`
+  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
   &:hover {
     color: ${({ theme }) => theme.primary};
     cursor: pointer;

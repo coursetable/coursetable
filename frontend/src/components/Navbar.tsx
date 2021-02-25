@@ -40,6 +40,7 @@ const StyledDiv = styled.div`
   padding: 0.5rem 1rem 0.5rem 0rem;
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
+  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
   &:hover {
     color: ${({ theme }) => theme.primary};
   }
