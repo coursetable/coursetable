@@ -18,6 +18,8 @@ const StyledCalendar = styled(Calendar)`
           border-color: ${({ theme }) => theme.border};
           .rbc-time-header-cell {
             .rbc-header {
+              user-select: none;
+              cursor: default;
               border-color: ${({ theme }) => theme.border};
             }
           }
@@ -27,6 +29,8 @@ const StyledCalendar = styled(Calendar)`
         border-color: ${({ theme }) => theme.border};
         .rbc-time-gutter {
           .rbc-timeslot-group {
+            user-select: none;
+            cursor: default;
             border-color: ${({ theme }) => theme.border};
           }
         }

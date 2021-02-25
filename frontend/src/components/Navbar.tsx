@@ -41,6 +41,7 @@ const StyledDiv = styled.div`
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
+  user-select: none;
   &:hover {
     color: ${({ theme }) => theme.primary};
   }
@@ -49,6 +50,8 @@ const StyledDiv = styled.div`
 const StyledNavLink = styled(NavLink)`
   padding: 0.5rem 1rem 0.5rem 0rem;
   color: ${({ theme }) => theme.text[1]};
+  user-select: none;
+  cursor: pointer;
   font-weight: 500;
   font-size: 1rem;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};

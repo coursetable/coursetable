@@ -57,6 +57,7 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
       borderColor: 'rgba(0, 0, 0, 0.1)',
       borderWidth: '2px',
       transition: 'none',
+      userSelect: 'none',
     }),
     menu: (base) => ({
       ...base,
