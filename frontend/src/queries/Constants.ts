@@ -2,6 +2,37 @@ import { expectType, TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
 import { Listing } from '../components/FerryProvider';
 
+// Phrases for search speed [40 character limit]
+export const searchSpeed = {
+  fast: [
+    'fast',
+    'kinda fast',
+    'not too slow',
+    'you try loading this many courses',
+    'not not not fast',
+    'faster than Handsome Dan',
+  ],
+  faster: [
+    'faster',
+    'really fast',
+    'blazing fast',
+    'faster than Zoom',
+    'not not fast',
+  ],
+  fastest: [
+    'fastest',
+    'wicked fast',
+    'faster than Usain',
+    'faster than Yale One-Day-Breaks',
+    'faster than drivers on Elm St',
+    'faster than the speed of light',
+    'faster than seniors when they see a gut',
+    'faster than Higgins on paintball',
+    'faster than YPopUp getting reserved',
+    "faster than durfee's tenders selling out",
+  ],
+};
+
 export const sortbyOptions = [
   { label: 'Sort by Course Code', value: 'course_code', numeric: false },
   { label: 'Sort by Course Number', value: 'number', numeric: true },
