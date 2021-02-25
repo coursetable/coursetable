@@ -99,7 +99,7 @@ const CatalogResults = ({
   const { width } = useWindowDimensions();
 
   const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1100;
+  const isTablet = !isMobile && width < 1200;
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
@@ -163,7 +163,7 @@ const CatalogResults = ({
   let resultsListing;
 
   // Number of columns to use in grid view
-  const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
+  const num_cols = width < 1200 ? (width < 768 ? 1 : 2) : 3;
 
   // Render functions for React Virtualized List:
   const renderGridRow = useCallback(

@@ -129,7 +129,7 @@ const SearchResults = ({
   let resultsListing;
 
   // Number of columns to use in grid view
-  const num_cols = width < 1100 ? (width < 768 ? 1 : 2) : 3;
+  const num_cols = width < 1200 ? (width < 768 ? 1 : 2) : 3;
 
   // Render functions for React Virtualized List:
   const renderGridRow = useCallback(

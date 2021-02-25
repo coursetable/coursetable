@@ -19,6 +19,7 @@ import {
   SkillsType,
   sortbyOptions,
   SortKeys,
+  searchSpeed,
 } from './queries/Constants';
 import { useUser } from './user';
 
@@ -66,6 +67,7 @@ type Store = {
   num_fb: Record<string, string[]>;
   reset_key: number;
   duration: number;
+  speed: string;
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -219,6 +221,7 @@ export const SearchProvider: React.FC = ({ children }) => {
 
   const [start_time, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
+  const [speed, setSpeed] = useState('fast');
 
   // populate seasons from database
   let seasonsOptions: OptType;
@@ -598,7 +601,16 @@ export const SearchProvider: React.FC = ({ children }) => {
       setCanReset(false);
     }
     if (!coursesLoading && searchData) {
-      setDuration(Math.abs(Date.now() - start_time) / 1000);
+      const durInSecs = Math.abs(Date.now() - start_time) / 1000;
+      setDuration(durInSecs);
+      const sp = _.sample(
+        searchSpeed[
+          durInSecs > 1 ? 'fast' : durInSecs > 0.5 ? 'faster' : 'fastest'
+        ]
+      );
+      if (sp) {
+        setSpeed(sp);
+      }
     }
   }, [
     searchText,
@@ -647,6 +659,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       num_fb,
       reset_key,
       duration,
+      speed,
 
       // Update methods.
       setCanReset,
@@ -695,6 +708,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       num_fb,
       reset_key,
       duration,
+      speed,
       setCanReset,
       setSearchText,
       setSelectSubjects,

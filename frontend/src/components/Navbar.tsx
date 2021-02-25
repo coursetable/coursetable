@@ -100,14 +100,14 @@ function CourseTableNavbar({
     setIsComponentVisible,
   } = useComponentVisible<HTMLDivElement>(false);
 
-  const { searchData, coursesLoading, duration } = useSearch();
+  const { searchData, coursesLoading, speed } = useSearch();
 
   const [updated, setUpdated] = useState(-1);
 
   // Fetch width of window
   const { width } = useWindowDimensions();
   const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1100;
+  const isTablet = !isMobile && width < 1200;
   // const is_relative = width < 1230;
 
   const [show_search, setShowSearch] = useState(false);
@@ -334,10 +334,19 @@ function CourseTableNavbar({
                 </Nav>
               </Navbar.Collapse>
               {show_search && (
-                <SmallTextComponent type={2} className="mb-2">
+                <SmallTextComponent
+                  type={2}
+                  className="mb-2 text-right"
+                  style={{
+                    maxWidth: width < 1320 ? '220px' : 'none',
+                    whiteSpace: 'pre-line',
+                  }}
+                >
                   {coursesLoading
                     ? 'Searching ...'
-                    : `Showing ${searchData.length} results (${duration} seconds)`}
+                    : `Showing ${searchData.length} results${
+                        width < 1320 && speed.length > 20 ? '\n' : ' '
+                      }(${speed})`}
                 </SmallTextComponent>
               )}
             </NavCollapseWrapper>
