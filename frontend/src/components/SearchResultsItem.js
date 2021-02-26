@@ -30,7 +30,7 @@ const StyledResultsItem = styled(Row)`
 `;
 
 /**
- * Renders a list item for a search result and expanded worksheet list item
+ * Renders a list item for an expanded worksheet list item
  * @prop course - listing data for the current course
  * @prop showModal - function that shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
@@ -134,6 +134,7 @@ const SearchResultsItem = ({
       <div />
     );
 
+  // Column width styles
   const szn_style = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
@@ -166,6 +167,7 @@ const SearchResultsItem = ({
       }}
       tabIndex="0"
     >
+      {/* Season */}
       {multiSeasons && (
         <div style={szn_style} className="d-flex">
           <OverlayTrigger
@@ -269,19 +271,16 @@ const SearchResultsItem = ({
       </div>
 
       {/* Course Meets */}
-
       <div style={meet_style}>
         <div className={Styles.ellipsis_text}>{course.times_summary}</div>
       </div>
 
       {/* Course Location */}
-
       <div style={loc_style}>
         <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
       </div>
 
       {/* Skills and Areas */}
-
       <div style={sa_style} className="d-flex">
         <span className={`${Styles.skills_areas} `}>
           {course.skills.map((skill, index) => (
@@ -329,7 +328,7 @@ const SearchResultsItem = ({
         </OverlayTrigger>
       </div>
 
-      {/* Bookmark button */}
+      {/* Add/remove from worksheet button */}
       <div className={Styles.worksheet_btn}>
         <WorksheetToggleButton
           crn={course.crn}

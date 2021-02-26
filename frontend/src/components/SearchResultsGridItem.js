@@ -22,6 +22,7 @@ import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
 import { getOverallRatings } from '../courseUtilities';
 
+// Grid Item wrapper
 const StyledGridItem = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgb(245, 245, 245)' : theme.surface[1]};
@@ -32,10 +33,10 @@ const StyledGridItem = styled.div`
 
 /**
  * Renders a grid item for a search result
- * @prop course - listing data for the current course
- * @prop showModal - function that shows the course modal for this listing
+ * @prop course - object | listing data for the current course
+ * @prop showModal - function | shows the course modal for this listing
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_cols - integer that holds how many columns in grid view
+ * @prop num_cols - number | integer that holds how many columns in grid view
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  */
 
@@ -348,7 +349,7 @@ const SearchResultsGridItem = ({
           </Col>
         </Row>
       </StyledGridItem>
-      {/* Bookmark Button */}
+      {/* Add/remove from worksheet button */}
       <div className={styles.worksheet_btn}>
         <WorksheetToggleButton
           worksheetView={false}

@@ -1,18 +1,10 @@
 import React from 'react';
 import { Props as SelectProps } from 'react-select';
 import CustomSelect from './CustomSelect';
-// import { BiSearchAlt2 } from 'react-icons/bi';
 
-// const DropdownIndicator = (
-//   props: ElementConfig<typeof components.DropdownIndicator>
-// ) => {
-//   return (
-//     <components.DropdownIndicator {...props}>
-//       <BiSearchAlt2 />
-//     </components.DropdownIndicator>
-//   );
-// };
-
+/**
+ * Popout select component for select filters in popout dropdowns
+ */
 export const PopoutSelect: React.FC<SelectProps> = ({ ...props }) => {
   return (
     <CustomSelect
@@ -20,7 +12,6 @@ export const PopoutSelect: React.FC<SelectProps> = ({ ...props }) => {
       {...props}
       autoFocus
       backspaceRemovesValue={false}
-      // components={{ DropdownIndicator, IndicatorSeparator: null }}
       controlShouldRenderValue
       hideSelectedOptions
       isClearable

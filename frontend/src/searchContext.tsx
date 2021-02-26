@@ -23,6 +23,7 @@ import {
 } from './queries/Constants';
 import { useUser } from './user';
 
+// Option type for all the filter options
 export type Option = {
   label: string;
   value: string;
@@ -30,12 +31,13 @@ export type Option = {
   numeric?: boolean;
 };
 
-export type SortType = 'desc' | 'asc' | undefined;
+export type SortOrderType = 'desc' | 'asc' | undefined;
 
 export type OrderingType = {
-  [key in SortKeys]?: SortType;
+  [key in SortKeys]?: SortOrderType;
 };
 
+// This is a type for weird TS errors
 export type OptType =
   | OptionsType<Option>
   | GroupedOptionsType<Option>
@@ -57,7 +59,7 @@ type Store = {
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
   select_sortby: Option;
-  sort_order: SortType;
+  sort_order: SortOrderType;
   ordering: OrderingType;
   seasonsOptions: OptType;
   coursesLoading: boolean;
@@ -83,7 +85,7 @@ type Store = {
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectSortby: React.Dispatch<React.SetStateAction<Option>>;
-  setSortOrder: React.Dispatch<React.SetStateAction<SortType>>;
+  setSortOrder: React.Dispatch<React.SetStateAction<SortOrderType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
@@ -92,21 +94,20 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
+// Default filter and sorting values
 const defaultOptions: Option[] = [];
-const defaultOverallBounds = [1, 5];
-const defaultWorkloadBounds = [1, 5];
+const defaultBounds = [1, 5];
 const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
 const defaultHideCancelled = true;
 const defaultHideFirstYearSeminars = false;
 const defaultHideGraduateCourses = false;
 const defaultSortOption: Option = sortbyOptions[0];
-const defaultSortOrder: SortType = 'asc';
+const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
 export const defaultFilters = {
   defaultOptions,
-  defaultOverallBounds,
-  defaultWorkloadBounds,
+  defaultBounds,
   defaultSeason,
   defaultHideCancelled,
   defaultHideFirstYearSeminars,
@@ -120,7 +121,10 @@ export const defaultFilters = {
  * Stores the user's search, filters, and sorts
  */
 export const SearchProvider: React.FC = ({ children }) => {
-  const [canReset, setCanReset] = useSessionStorageState('canReset', false);
+  // Search on page render?
+  const [defaultSearch, setDefaultSearch] = useState(true);
+
+  /* Filtering */
 
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
@@ -128,30 +132,26 @@ export const SearchProvider: React.FC = ({ children }) => {
     'select_subjects',
     defaultOptions
   );
+
   const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
     'select_skillsareas',
     defaultOptions
   );
 
-  // Bounds of course and workload ratings (1-5)
   const [overallBounds, setOverallBounds] = useSessionStorageState(
     'overallBounds',
-    defaultOverallBounds
+    defaultBounds
   );
   const [overallValueLabels, setOverallValueLabels] = useState(
-    overallBounds !== defaultOverallBounds
-      ? overallBounds
-      : defaultOverallBounds
+    overallBounds !== defaultBounds ? overallBounds : defaultBounds
   );
 
   const [workloadBounds, setWorkloadBounds] = useSessionStorageState(
     'workloadBounds',
-    defaultWorkloadBounds
+    defaultBounds
   );
   const [workloadValueLabels, setWorkloadValueLabels] = useState(
-    workloadBounds !== defaultWorkloadBounds
-      ? workloadBounds
-      : defaultWorkloadBounds
+    workloadBounds !== defaultBounds ? workloadBounds : defaultBounds
   );
 
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
@@ -163,17 +163,17 @@ export const SearchProvider: React.FC = ({ children }) => {
     'select_schools',
     defaultOptions
   );
+
   const [select_credits, setSelectCredits] = useSessionStorageState(
     'select_credits',
     defaultOptions
   );
 
-  // Does the user want to hide cancelled courses?
   const [hideCancelled, setHideCancelled] = useSessionStorageState(
     'hideCancelled',
     defaultHideCancelled
   );
-  // Does the user want to hide first year seminars?
+
   const [
     hideFirstYearSeminars,
     setHideFirstYearSeminars,
@@ -181,11 +181,44 @@ export const SearchProvider: React.FC = ({ children }) => {
     'hideFirstYearSeminars',
     defaultHideFirstYearSeminars
   );
-  // Does the user want to hide graduate courses?
+
   const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
     'hideGraduateCourses',
     defaultHideGraduateCourses
   );
+
+  /* Sorting */
+
+  // Sort option state
+  const [select_sortby, setSelectSortby] = useSessionStorageState(
+    'select_sortby',
+    defaultSortOption
+  );
+
+  // Sort order state
+  const [sort_order, setSortOrder] = useSessionStorageState<SortOrderType>(
+    'sort_order',
+    defaultSortOrder
+  );
+
+  // Combination of sort option and sort order
+  const [ordering, setOrdering] = useSessionStorageState(
+    'ordering',
+    defaultOrdering
+  );
+
+  /* Resetting */
+
+  // State to determine if user can reset or not
+  const [canReset, setCanReset] = useSessionStorageState('canReset', false);
+  // State to cause components to reload when filters are reset
+  const [reset_key, setResetKey] = useState(0);
+
+  /* Search speed */
+
+  const [start_time, setStartTime] = useState(Date.now());
+  const [duration, setDuration] = useState(0);
+  const [speed, setSpeed] = useState('fast');
 
   // Fetch user context data
   const { user } = useUser();
@@ -197,31 +230,6 @@ export const SearchProvider: React.FC = ({ children }) => {
     if (!user.fbLogin || !user.fbWorksheets) return {};
     return getNumFB(user.fbWorksheets);
   }, [user.fbLogin, user.fbWorksheets]);
-
-  // Search on page render?
-  const [defaultSearch, setDefaultSearch] = useState(true);
-
-  // State that controls sortby select
-  const [select_sortby, setSelectSortby] = useSessionStorageState(
-    'select_sortby',
-    defaultSortOption
-  );
-  // State that determines sort order
-  const [sort_order, setSortOrder] = useSessionStorageState<SortType>(
-    'sort_order',
-    defaultSortOrder
-  );
-  // State that determines sort order
-  const [ordering, setOrdering] = useSessionStorageState(
-    'ordering',
-    defaultOrdering
-  );
-  // State to reset sortby dropdown and rating sliders
-  const [reset_key, setResetKey] = useState(0);
-
-  const [start_time, setStartTime] = useState(Date.now());
-  const [duration, setDuration] = useState(0);
-  const [speed, setSpeed] = useState('fast');
 
   // populate seasons from database
   let seasonsOptions: OptType;
@@ -262,6 +270,7 @@ export const SearchProvider: React.FC = ({ children }) => {
   // (if multiple seasons are queried, the season is indicated)
   const multiSeasons = required_seasons.length !== 1;
 
+  // Search configuration of filters
   const searchConfig = useMemo(() => {
     // skills and areas
     let processedSkillsAreas;
@@ -384,6 +393,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     searchText,
   ]);
 
+  // Filtered and sorted courses
   const searchData = useMemo(() => {
     // Match search results with course data.
     if (coursesLoading || courseLoadError) return [];
@@ -519,15 +529,16 @@ export const SearchProvider: React.FC = ({ children }) => {
     num_fb,
   ]);
 
+  // For resetting all filters and sorts
   const handleResetFilters = useCallback(() => {
     setSearchText('');
     setHideCancelled(true);
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
-    setOverallBounds(defaultOverallBounds);
-    setOverallValueLabels(defaultOverallBounds);
-    setWorkloadBounds(defaultWorkloadBounds);
-    setWorkloadValueLabels(defaultWorkloadBounds);
+    setOverallBounds(defaultBounds);
+    setOverallValueLabels(defaultBounds);
+    setWorkloadBounds(defaultBounds);
+    setWorkloadValueLabels(defaultBounds);
     setSelectSeasons(defaultSeason);
     setSelectSkillsAreas(defaultOptions);
     setSelectCredits(defaultOptions);
@@ -573,7 +584,7 @@ export const SearchProvider: React.FC = ({ children }) => {
   useEffect(() => {
     const sortParams = select_sortby.value;
     const newOrdering: {
-      [key in SortKeys]?: SortType;
+      [key in SortKeys]?: SortOrderType;
     } = {
       [sortParams]: sort_order,
     };
@@ -586,8 +597,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       !_.isEqual(searchText, '') ||
       !_.isEqual(select_subjects, defaultOptions) ||
       !_.isEqual(select_skillsareas, defaultOptions) ||
-      !_.isEqual(overallBounds, defaultOverallBounds) ||
-      !_.isEqual(workloadBounds, defaultWorkloadBounds) ||
+      !_.isEqual(overallBounds, defaultBounds) ||
+      !_.isEqual(workloadBounds, defaultBounds) ||
       !_.isEqual(select_seasons, defaultSeason) ||
       !_.isEqual(select_schools, defaultOptions) ||
       !_.isEqual(select_credits, defaultOptions) ||
@@ -600,6 +611,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     } else {
       setCanReset(false);
     }
+    // Calculate & determine search speed
     if (!coursesLoading && searchData) {
       const durInSecs = Math.abs(Date.now() - start_time) / 1000;
       setDuration(durInSecs);
@@ -631,6 +643,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setCanReset,
   ]);
 
+  // Store object returned in context provider
   const store = useMemo(
     () => ({
       // Context state.
