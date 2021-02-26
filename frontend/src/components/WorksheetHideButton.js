@@ -7,10 +7,9 @@ import { withTheme } from 'styled-components';
 /**
  * Render the course hide button in the Worksheet List
  * @prop hidden - boolean | is this course hidden
- * @prop toggleCourse - function to hide/show course
- * @prop crn - int that holds crn for the current course
+ * @prop toggleCourse - function | to hide/show course
+ * @prop crn - number | integer that holds crn for the current course
  */
-
 const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
   // Handle hide/show click
   function toggleWorkSheet() {

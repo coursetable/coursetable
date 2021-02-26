@@ -26,14 +26,13 @@ const StyledListItem = styled(ListGroup.Item)`
 
 /**
  * Render worksheet list item in default worksheet view
- * @prop course - current listing
- * @prop showModal - function to show modal for a certain listing
- * @prop cur_season - string that holds the current season code
- * @prop toggleCourse - function to hide/show course
- * @prop setHoverCourse - function to darken calendar events of this listing
- * @prop hidden - dictionary of hidden courses
+ * @prop course - object | current listing
+ * @prop showModal - function | to show modal for a certain listing
+ * @prop cur_season - string | holds the current season code
+ * @prop toggleCourse - function | to hide/show course
+ * @prop setHoverCourse - function | to darken calendar events of this listing
+ * @prop hidden - object | dictionary of hidden courses
  */
-
 function WorksheetListItem({
   course,
   showModal,
@@ -73,7 +72,7 @@ function WorksheetListItem({
             season_code={cur_season}
           />
         </div>
-        {/* Bookmark Button */}
+        {/* Add/remove from worksheet button */}
         <div className="my-auto">
           <WorksheetToggleButton
             worksheetView

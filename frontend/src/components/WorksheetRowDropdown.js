@@ -19,14 +19,17 @@ const StyledSpacer = styled.div`
   z-index: 2;
 `;
 
+// Hide icon
 const StyledBsEyeSlash = styled(BsEyeSlash)`
   transition: transform 0.3s !important;
 `;
 
+// Show icon
 const StyledBsEye = styled(BsEye)`
   transition: transform 0.3s !important;
 `;
 
+// Show/hide all button
 const StyledBtn = styled.div`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
@@ -66,6 +69,7 @@ const StyledContainer = styled(SurfaceComponent)`
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 `;
 
+// Change view link
 const StyledExpandLink = styled(Button)`
   color: ${({ theme }) => theme.text[1]};
   font-weight: normal;
@@ -80,17 +84,16 @@ const StyledExpandLink = styled(Button)`
 `;
 
 /**
- * Render row of season and FB friends dropdowns
- * @prop cur_season - string that holds the current season code
- * @prop season_codes - list of season codes
- * @prop onSeasonChange - function to change season
- * @prop setFbPerson - function to change FB person
- * @prop cur_person - string of current person who's worksheet we are viewing
- * @prop setCurExpand - function to change worksheet view
- * @prop toggleCourse - function to hide courses
+ * Render row of season and FB friends dropdowns on worksheet
+ * @prop cur_season - string | holds the current season code
+ * @prop season_codes - array | list of season codes
+ * @prop onSeasonChange - function | to change season
+ * @prop setFbPerson - function | to change FB person
+ * @prop cur_person - string | current person who's worksheet we are viewing
+ * @prop setCurExpand - function | to change worksheet view
+ * @prop toggleCourse - function | to hide courses
  * @prop areHidden - boolean | are all courses hidden
  */
-
 function WorksheetRowDropdown({
   cur_season,
   season_codes,

@@ -35,11 +35,8 @@ import { useSearch, Option } from '../searchContext';
 import { ValueType } from 'react-select/src/types';
 
 /**
- * Renders search page
- * @prop location - dictionary that contains search value if search bar was used
- * @prop history - dictionary that is used to reset default search value
+ * Renders catalog page
  */
-
 const Search: React.FC = () => {
   // Fetch window dimensions
   const { width } = useWindowDimensions();
@@ -180,7 +177,7 @@ const Search: React.FC = () => {
           !isMobile && !isTablet ? 'd-flex flex-row-reverse flex-nowrap' : ''
         }`}
       >
-        {/* Search Form */}
+        {/* Search Form for mobile and tablet only */}
         {(isMobile || isTablet) && (
           <Col className={`p-3 ${Styles.search_col_mobile}`}>
             <SurfaceComponent
@@ -188,14 +185,15 @@ const Search: React.FC = () => {
               className={`ml-1 ${Styles.search_container}`}
             >
               <Form className="px-0" onSubmit={scroll_to_results}>
-                {/* Reset Filters Button */}
                 <Row className="mx-auto pt-4 px-4">
+                  {/* Reset Filters Button */}
                   <small
                     className={`${Styles.reset_filters_btn} mr-auto`}
                     onClick={handleResetFilters}
                   >
                     Reset Filters
                   </small>
+                  {/* Number of results shown text */}
                   <small className={`${Styles.num_results} ml-auto`}>
                     <TextComponent type={2}>
                       {coursesLoading
@@ -204,9 +202,9 @@ const Search: React.FC = () => {
                     </TextComponent>
                   </small>
                 </Row>
+                {/* Search Bar */}
                 <Row className="mx-auto pt-1 pb-2 px-4">
                   <div className={Styles.search_bar}>
-                    {/* Search Bar */}
                     <InputGroup className={Styles.search_input}>
                       <StyledInput
                         type="text"
@@ -219,7 +217,7 @@ const Search: React.FC = () => {
                     </InputGroup>
                   </div>
                 </Row>
-
+                {/* Sort by option and order */}
                 <Row className="mx-auto py-0 px-4">
                   <SortByReactSelect
                     setOrdering={setOrdering}
@@ -228,9 +226,9 @@ const Search: React.FC = () => {
                 </Row>
                 <StyledHr />
                 <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
+                  {/* Seasons Multi-Select */}
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
                     {seasonsOptions && (
-                      // Seasons Multi-Select
                       <CustomSelect
                         isMulti
                         value={select_seasons}
@@ -244,10 +242,10 @@ const Search: React.FC = () => {
                       />
                     )}
                   </div>
+                  {/* Skills/Areas Multi-Select */}
                   <div
                     className={`col-md-12 p-0  ${Styles.selector_container}`}
                   >
-                    {/* Skills/Areas Multi-Select */}
                     <CustomSelect
                       isMulti
                       value={select_skillsareas}
@@ -262,8 +260,8 @@ const Search: React.FC = () => {
                       }
                     />
                   </div>
+                  {/* Course Credit Multi-Select */}
                   {/* <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                  Course Credit Multi-Select
                   <CustomSelect
                     isMulti
                     value={select_credits}
@@ -276,8 +274,8 @@ const Search: React.FC = () => {
                     }}
                   />
                 </div> */}
+                  {/* Yale Subjects Multi-Select */}
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    {/* Yale Subjects Multi-Select */}
                     <CustomSelect
                       isMulti
                       value={select_subjects}
@@ -291,8 +289,8 @@ const Search: React.FC = () => {
                       }
                     />
                   </div>
+                  {/* Yale Schools Multi-Select */}
                   <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
-                    {/* Yale Schools Multi-Select */}
                     <CustomSelect
                       isMulti
                       value={select_schools}
@@ -308,9 +306,9 @@ const Search: React.FC = () => {
                 </Row>
                 <StyledHr />
                 <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                  {/* Class Rating Slider */}
                   <Col>
                     <Container style={{ paddingTop: '1px' }}>
-                      {/* Class Rating Slider */}
                       <Range
                         min={1}
                         max={5}
@@ -331,9 +329,9 @@ const Search: React.FC = () => {
                       Overall rating
                     </div>
                   </Col>
+                  {/* Workload Rating Slider */}
                   <Col>
                     <Container>
-                      {/* Workload Rating Slider */}
                       <Range
                         min={1}
                         max={5}
@@ -416,7 +414,7 @@ const Search: React.FC = () => {
           </Col>
         )}
 
-        {/* Search Results Catalog */}
+        {/* Catalog Search Results */}
         <Col
           md={12}
           className={`m-0 ${

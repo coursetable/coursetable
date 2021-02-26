@@ -19,19 +19,18 @@ import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
 
 import {
-  // areas,
-  // skills,
   skillsAreasOptions,
   creditOptions,
   schoolOptions,
   subjectOptions,
-  // sortbyOptions,
 } from '../queries/Constants';
 import CustomSelect from './CustomSelect';
 import { useSearch, Option, defaultFilters } from '../searchContext';
 import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
+import _ from 'lodash';
 
+// Row in navbar search
 const StyledRow = styled(Row)`
   height: 50%;
   width: auto;
@@ -39,12 +38,14 @@ const StyledRow = styled(Row)`
   margin-right: auto;
 `;
 
+// Wrapper for search bar
 const SearchWrapper = styled.div`
   width: 40vw;
   display: flex;
   align-items: center;
 `;
 
+// Search bar
 const NavbarStyledSearchBar = styled(StyledInput)`
   border-radius: 4px;
   height: 100%;
@@ -52,11 +53,13 @@ const NavbarStyledSearchBar = styled(StyledInput)`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
 `;
 
+// Range filter
 const StyledRange = styled(Range)`
   width: 100px;
   cursor: pointer;
 `;
 
+// Range filter label
 const RangeLabel = styled.div`
   font-size: 14px;
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
@@ -64,6 +67,7 @@ const RangeLabel = styled.div`
   cursor: default;
 `;
 
+// Range filter value label
 const RangeValueLabel = styled.div`
   font-size: 12px;
   ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
@@ -71,10 +75,12 @@ const RangeValueLabel = styled.div`
   cursor: default;
 `;
 
+// Wrapper for advanced filters dropdown
 const AdvancedWrapper = styled.div`
   width: 440px;
 `;
 
+// Advanced filters label in dropdown
 const AdvancedLabel = styled.div`
   font-size: 14px;
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
@@ -83,35 +89,43 @@ const AdvancedLabel = styled.div`
   cursor: default;
 `;
 
+// Advanced select in dropdown
 const AdvancedSelect = styled(CustomSelect)`
   width: 80%;
 `;
 
+// Row for toggles in advanced filters
+const AdvancedToggleRow = styled(Row)`
+  background-color: ${({ theme }) => theme.button_active};
+`;
+
+// Advanced filter toggle
 const Toggle = styled(Form.Check)`
   margin: 0.25rem 0;
   user-select: none;
 `;
 
+// Advanced filter toggle input
 const ToggleInput = styled(Form.Check.Input)`
   cursor: pointer !important;
 `;
 
+// Advanced filter toggle label
 const ToggleLabel = styled(Form.Check.Label)`
   cursor: pointer !important;
 `;
 
-const AdvancedToggleRow = styled(Row)`
-  background-color: ${({ theme }) => theme.button_active};
-`;
-
+// Filter group wrapper
 const FilterGroup = styled.div``;
 
+// Reset button
 const StyledButton = styled(Button)`
   padding: 0.25rem 0.375rem;
   font-size: 12px;
   ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
 `;
 
+// Clear search bar button
 const CloseIcon = styled(IoClose)`
   z-index: 1000;
   margin-left: -30px;
@@ -125,14 +139,13 @@ const CloseIcon = styled(IoClose)`
   }
 `;
 
+/**
+ * Search form for the desktop catalog in the navbar
+ */
 export const NavbarSearch: React.FC = () => {
   // Fetch width of window
   const { width } = useWindowDimensions();
   const is_mobile = width < 768;
-  // const is_relative = width < 1230;
-
-  // State to reset sortby dropdown and rating sliders
-  // const [reset_key, setResetKey] = useState(0);
 
   // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
@@ -171,18 +184,27 @@ export const NavbarSearch: React.FC = () => {
     setStartTime,
   } = useSearch();
 
+  // Active state for overall and workload range filters
   const [activeOverall, setActiveOverall] = useState(false);
   const [activeWorkload, setActiveWorkload] = useState(false);
 
   const globalTheme = useTheme();
 
+  // Handle active state for overall and workload range filters
   useEffect(() => {
-    if (!canReset) {
+    if (canReset && !_.isEqual(overallBounds, defaultFilters.defaultBounds)) {
+      setActiveOverall(true);
+    } else {
       setActiveOverall(false);
+    }
+    if (canReset && !_.isEqual(workloadBounds, defaultFilters.defaultBounds)) {
+      setActiveWorkload(true);
+    } else {
       setActiveWorkload(false);
     }
-  }, [canReset]);
+  }, [canReset, overallBounds, workloadBounds]);
 
+  // Active styles for overall and workload range filters
   const activeStyle = useCallback(
     (active: boolean) => {
       if (active) {
@@ -193,6 +215,7 @@ export const NavbarSearch: React.FC = () => {
     [globalTheme]
   );
 
+  // Responsive styles for overall and workload range filters
   const range_handle_style = useCallback(() => {
     if (width > 1320) {
       return undefined;
@@ -200,7 +223,6 @@ export const NavbarSearch: React.FC = () => {
     const styles: React.CSSProperties = { height: '12px', width: '12px' };
     return [styles, styles];
   }, [width]);
-
   const range_rail_style = useCallback(() => {
     if (width > 1320) {
       return {};
@@ -209,11 +231,11 @@ export const NavbarSearch: React.FC = () => {
     return styles;
   }, [width]);
 
+  // Scroll down to catalog when in mobile view.
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       if (event) event.preventDefault();
 
-      // Scroll down to catalog when in mobile view.
       if (is_mobile) {
         scroller.scrollTo('catalog', {
           smooth: true,
@@ -252,6 +274,7 @@ export const NavbarSearch: React.FC = () => {
     });
   }
 
+  // Consolidate all advanced filters' selected options
   const advanced_options = useMemo(
     () => ({
       selects: { select_schools, select_credits },
@@ -266,6 +289,7 @@ export const NavbarSearch: React.FC = () => {
     ]
   );
 
+  // Styles for active search bar
   const searchbar_style = useMemo(() => {
     if (searchText) {
       return {
@@ -286,6 +310,7 @@ export const NavbarSearch: React.FC = () => {
       />
       {/* Search Form */}
       <Form className="px-0 h-100" onSubmit={scroll_to_results}>
+        {/* Top row */}
         <StyledRow>
           <SearchWrapper>
             {/* Search Bar */}
@@ -313,6 +338,7 @@ export const NavbarSearch: React.FC = () => {
             )}
           </SearchWrapper>
         </StyledRow>
+        {/* Bottom row */}
         <StyledRow className="align-items-center justify-content-between">
           <FilterGroup className="d-flex align-items-center">
             {/* Yale Subjects Filter Dropdown */}
@@ -386,8 +412,6 @@ export const NavbarSearch: React.FC = () => {
                 onAfterChange={(value) => {
                   setOverallBounds(value);
                   setStartTime(Date.now());
-
-                  setActiveOverall(true);
                 }}
               />
             </Col>
@@ -418,8 +442,6 @@ export const NavbarSearch: React.FC = () => {
                 onAfterChange={(value) => {
                   setWorkloadBounds(value);
                   setStartTime(Date.now());
-
-                  setActiveWorkload(true);
                 }}
               />
             </Col>

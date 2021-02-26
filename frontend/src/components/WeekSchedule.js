@@ -49,10 +49,10 @@ const StyledCalendar = styled(Calendar)`
 
 /**
  * Render Worksheet Calendar component
- * @prop showModal - function to show modal for a particular listing
- * @prop courses - list of dictionaries of listing data
- * @prop hover_course - dictionary of listing that is being hovered over in list view
- * @prop hidden_courses - dictionary of hidden courses
+ * @prop showModal - function | to show modal for a particular listing
+ * @prop courses - array | list of dictionaries of listing data
+ * @prop hover_course - object | dictionary of listing that is being hovered over in list view
+ * @prop hidden_courses - object | dictionary of hidden courses
  */
 
 function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {

@@ -21,7 +21,7 @@ import Styles from './CatalogResultsItem.module.css';
 import { getOverallRatings } from '../courseUtilities';
 import { breakpoints } from '../utilities';
 
-// Row for search results item
+// Row for catalog results item
 const StyledResultsItem = styled(Row)`
   max-width: 1600px;
   user-select: none;
@@ -33,6 +33,7 @@ const StyledResultsItem = styled(Row)`
   ${breakpoints('line-height', 'px', [{ 1320: 28 }])};
 `;
 
+// Wrapper for row
 const StyledSpacer = styled.div`
   border-top: solid 1px ${({ theme }) => theme.border};
   outline: none !important;
@@ -42,6 +43,7 @@ const StyledSpacer = styled.div`
   }
 `;
 
+// Rating cell within the row
 const RatingCell = styled(StyledRating)`
   width: 100%;
   height: 100%;
@@ -50,6 +52,7 @@ const RatingCell = styled(StyledRating)`
   ${breakpoints('font-size', 'px', [{ 1320: 11 }])};
 `;
 
+// Season and skills/areas tag
 const Tag = styled(Badge)`
   margin: 1px;
   font-size: 13px;
@@ -60,14 +63,14 @@ const Tag = styled(Badge)`
 `;
 
 /**
- * Renders a list item for a search result and expanded worksheet list item
- * @prop course - listing data for the current course
- * @prop showModal - function that shows the course modal for this listing
+ * Renders a list item for a catalog search result
+ * @prop course - object | listing data for the current course
+ * @prop showModal - function | shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop isFirst - boolean | is this the first course of the search results?
- * @prop COL_SPACING - dictionary with widths of each column
+ * @prop isFirst - boolean | is this the first course of the catalog results?
+ * @prop COL_SPACING - object | with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
- * @prop fb_friends - list of fb friends also taking this course
+ * @prop fb_friends - array | of fb friends also taking this course
  */
 
 const CatalogResultsItem = ({
@@ -162,6 +165,7 @@ const CatalogResultsItem = ({
       <div />
     );
 
+  // Column width styles
   const szn_style = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
@@ -200,7 +204,9 @@ const CatalogResultsItem = ({
       }}
       tabIndex="0"
     >
+      {/* Catalog Results Row Item */}
       <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
+        {/* Season */}
         {multiSeasons && (
           <div style={szn_style} className="d-flex">
             <OverlayTrigger
@@ -239,8 +245,8 @@ const CatalogResultsItem = ({
             <div className={Styles.ellipsis_text}>{course.title}</div>
           </div>
         </OverlayTrigger>
-        {/* Class Rating */}
         <div className="d-flex">
+          {/* Overall Rating */}
           <RatingCell
             rating={course_rating}
             colormap={ratingColormap}
@@ -265,7 +271,7 @@ const CatalogResultsItem = ({
               ? course.average_workload.toFixed(1)
               : 'N/A'}
           </RatingCell>
-          {/* Course Professors & Professor Rating */}
+          {/* Professor Rating & Course Professors */}
           <div style={prof_style} className="d-flex align-items-center">
             <div style={rate_prof_style} className="mr-2 h-100">
               <RatingCell
@@ -284,7 +290,7 @@ const CatalogResultsItem = ({
             </div>
           </div>
         </div>
-        {/* Enrollment */}
+        {/* Previous Enrollment */}
         <div style={enroll_style} className="d-flex">
           <span className="my-auto">
             {course.enrolled
@@ -331,7 +337,7 @@ const CatalogResultsItem = ({
             ))}
           </span>
         </div>
-        {/* Course Meets */}
+        {/* Course Meeting Days & Times */}
         <div style={meet_style}>
           <div className={Styles.ellipsis_text}>{course.times_summary}</div>
         </div>
@@ -351,7 +357,7 @@ const CatalogResultsItem = ({
             </span>
           </OverlayTrigger>
         </div>
-        {/* Bookmark button */}
+        {/* Add/remove from worksheet button */}
         <div className={Styles.worksheet_btn}>
           <WorksheetToggleButton
             crn={course.crn}

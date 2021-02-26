@@ -21,18 +21,16 @@ import { NavLink } from 'react-router-dom';
 const CUR_SEASON = '202101';
 
 type Props = {
-  /** Is dropdown visible? */
   profile_expanded: boolean;
-
-  /** Function that changes dropdown visibility */
   setIsComponentVisible(visible: boolean): void;
-
-  /** Is user logged in? */
   isLoggedIn: boolean;
 };
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
+ * @prop profile_expanded - is dropdown visible?
+ * @prop setIsComponentVisible - function that changes dropdown visibility
+ * @prop isLoggedIn - is user logged in?
  */
 const MeDropdown: React.VFC<Props> = ({
   profile_expanded,
@@ -92,7 +90,6 @@ const MeDropdown: React.VFC<Props> = ({
                   <TextComponent type={1}>
                     <NavLink
                       to="/about"
-                      // Left align about link if not mobile
                       className={styles.collapse_text}
                       onClick={scrollToTop}
                     >
@@ -110,7 +107,6 @@ const MeDropdown: React.VFC<Props> = ({
                   <TextComponent type={1}>
                     <NavLink
                       to="/faq"
-                      // Left align about link if not mobile
                       className={styles.collapse_text}
                       onClick={scrollToTop}
                     >

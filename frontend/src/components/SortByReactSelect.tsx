@@ -12,8 +12,9 @@ import styles from './SortbyReactSelect.module.css';
 import search_styles from '../pages/Search.module.css';
 import CustomSelect from './CustomSelect';
 import { useSessionStorageState } from '../browserStorage';
-import { OrderingType, SortType } from '../searchContext';
+import { OrderingType, SortOrderType } from '../searchContext';
 
+// Toggle sort order button
 const StyledSortBtn = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.banner};
@@ -21,7 +22,7 @@ const StyledSortBtn = styled.div`
 `;
 
 /**
- * Render expanded worksheet list after maximize button is clicked
+ * Sorting select and toggle button
  * @prop setOrdering - function to set ordering of courses
  */
 
@@ -35,7 +36,7 @@ const SortByReactSelect = ({
     typeof sortbyOptions[number]
   >('select_sortby', sortbyOptions[0]);
   // State that determines sort order
-  const [sort_order, setSortOrder] = useSessionStorageState<SortType>(
+  const [sort_order, setSortOrder] = useSessionStorageState<SortOrderType>(
     'sort_order',
     'asc'
   );
@@ -50,7 +51,7 @@ const SortByReactSelect = ({
   useEffect(() => {
     const sortParams = select_sortby.value;
     const ordering: {
-      [key in SortKeys]?: SortType;
+      [key in SortKeys]?: SortOrderType;
     } = {
       [sortParams]: sort_order,
     };
@@ -59,8 +60,8 @@ const SortByReactSelect = ({
 
   return (
     <>
+      {/* Sort By Select */}
       <div className={styles.sortby_container}>
-        {/* Sort By Select */}
         <CustomSelect
           value={select_sortby}
           options={sortbyOptions}
@@ -72,6 +73,7 @@ const SortByReactSelect = ({
           }}
         />
       </div>
+      {/* Toggle sort order button */}
       <StyledSortBtn
         className={`${search_styles.sort_btn} my-auto`}
         onClick={handleSortOrder}

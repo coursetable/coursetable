@@ -35,8 +35,7 @@ export const useComponentVisible = <T extends HTMLElement>(
   return { ref_visible, isComponentVisible, setIsComponentVisible };
 };
 
-// Detect clicks outside of a component
-// Via https://stackoverflow.com/a/54570068/5004662
+// Detect clicks outside of a toggle and dropdown component
 export const useComponentVisibleDropdown = <T extends HTMLElement>(
   initialIsVisible: boolean,
   callback?: (visible: boolean) => void
@@ -112,6 +111,7 @@ export function logout() {
   window.location.pathname = '/';
 }
 
+// Helper function for setting breakpoint styles in styled-components
 export const breakpoints = (
   cssProp = 'padding', // the CSS property to apply to the breakpoints
   cssPropUnits = 'px', // the units of the CSS property (can set equal to "" and apply units to values directly)

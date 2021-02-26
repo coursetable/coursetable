@@ -7,13 +7,14 @@ import { IoClose } from 'react-icons/io5';
 import { breakpoints, useComponentVisibleDropdown } from '../utilities';
 import chroma from 'chroma-js';
 
-const Dropdown = styled.div`
+// Entire popout component
+const PopoutWrapper = styled.div`
   position: relative;
 `;
 
+// Actual part that drops down
 const shadow = 'hsla(218, 50%, 10%, 0.1)';
-
-const Menu = styled.div`
+const Dropdown = styled.div`
   background-color: ${({ theme }) => theme.select};
   border-radius: 4px;
   box-shadow: 0 0 0 1px ${shadow}, 0 4px 11px ${shadow};
@@ -22,6 +23,7 @@ const Menu = styled.div`
   z-index: 1000;
 `;
 
+// Popout button
 const StyledButton = styled.div`
   background-color: ${({ theme }) => theme.surface[0]};
   color: ${({ theme }) => theme.text[0]};
@@ -48,7 +50,8 @@ const StyledButton = styled.div`
   }
 `;
 
-const CloseIcon = styled(IoClose)`
+// Clear filter button
+const ClearIcon = styled(IoClose)`
   z-index: 1000;
   cursor: pointer;
   color: ${({ theme }) => theme.icon_focus};
@@ -78,6 +81,16 @@ type Props = {
   className?: string;
 };
 
+/**
+ * Popout component for filters in the navbar search
+ * @prop children
+ * @prop buttonText - default placeholder for popout button
+ * @prop type - type of filter
+ * @prop onReset - reset filter function
+ * @prop arrowIcon - whether there is an arrow icon in the popout button
+ * @prop select_options - selected options for filter
+ * @prop className - additional styles for popout button
+ */
 export const Popout: React.FC<Props> = ({
   children,
   buttonText,
@@ -87,7 +100,7 @@ export const Popout: React.FC<Props> = ({
   select_options,
   className,
 }) => {
-  // Ref to detect outside clicks for popout and button
+  // Ref to detect outside clicks for popout button and dropdown
   const {
     ref_toggle,
     ref_dropdown,
@@ -95,15 +108,19 @@ export const Popout: React.FC<Props> = ({
     setIsComponentVisible,
   } = useComponentVisibleDropdown<HTMLDivElement>(false);
 
+  // Open popout handler
   const toggleOpen = () => {
     setIsComponentVisible(!isComponentVisible);
   };
 
   const theme = useTheme();
 
+  // Dynamic text state for active popout button
   const [toggleText, setToggleText] = useState(buttonText);
+  // Active state
   const [active, setActive] = useState(false);
 
+  // Popout button styles for open and active states
   const buttonStyles = (open: boolean) => {
     if (open) {
       return {
@@ -119,8 +136,8 @@ export const Popout: React.FC<Props> = ({
     return undefined;
   };
 
+  // Dynamically set popout button text based on selected options
   useEffect(() => {
-    // Dynamically set popout button text based on selected options
     if (select_options) {
       if (Array.isArray(select_options) && select_options.length > 0) {
         const options = select_options.map((option) => {
@@ -186,8 +203,10 @@ export const Popout: React.FC<Props> = ({
     }
   }, [select_options, buttonText, type]);
 
-  const onClose = useCallback(
+  // Clear filter handler
+  const onClear = useCallback(
     (e) => {
+      // Prevent parent popout button onClick from firing and opening dropdown
       e.stopPropagation();
       onReset();
     },
@@ -195,7 +214,8 @@ export const Popout: React.FC<Props> = ({
   );
 
   return (
-    <Dropdown>
+    <PopoutWrapper>
+      {/* Popout Button */}
       <StyledButton
         onClick={toggleOpen}
         style={buttonStyles(isComponentVisible)}
@@ -204,7 +224,7 @@ export const Popout: React.FC<Props> = ({
       >
         {toggleText}
         {active ? (
-          <CloseIcon className="ml-1" onClick={onClose} />
+          <ClearIcon className="ml-1" onClick={onClear} />
         ) : arrowIcon ? (
           isComponentVisible ? (
             <IoMdArrowDropup className="ml-1" />
@@ -215,7 +235,10 @@ export const Popout: React.FC<Props> = ({
           <></>
         )}
       </StyledButton>
-      {isComponentVisible ? <Menu ref={ref_dropdown}>{children}</Menu> : null}
-    </Dropdown>
+      {/* Dropdown */}
+      {isComponentVisible ? (
+        <Dropdown ref={ref_dropdown}>{children}</Dropdown>
+      ) : null}
+    </PopoutWrapper>
   );
 };

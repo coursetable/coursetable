@@ -1,5 +1,10 @@
 import { DefaultTheme } from 'styled-components';
 
+/**
+ * CAUTION: Some unrelated elements/components may depend on certain colors below.
+ * When altering the values below, ensure that it is only for the element you want and search for all of that color's uses throughout the codebase.
+ */
+
 export const lightTheme: DefaultTheme = {
   theme: 'light',
   text: ['#141414', '#454545', '#7a7a7a'], // [Primary, Secondary, lighter secondary]

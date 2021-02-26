@@ -4,7 +4,11 @@ import { useSessionStorageState } from '../browserStorage';
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
 
+/**
+ * Notice banner at the top of the website
+ */
 const Notice: React.FC = ({ children }) => {
+  // Save visibility in session storage
   const [visible, setVisible] = useSessionStorageState(
     'noticeVisibility',
     true
