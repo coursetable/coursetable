@@ -12,14 +12,6 @@ import { getSSObject, setSSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
-/**
- * Render worksheet list in default worksheet view
- * @prop worksheetView - boolean | are we in the worksheet view?
- * @prop crn - integer that holds the crn of the current course
- * @prop season_code - string that holds the current season code
- * @prop modal - boolean | are we rendering in the course modal
- */
-
 const StyledButton = styled(Button)`
   color: ${({ theme }) => theme.primary}!important;
   &:hover {
@@ -27,6 +19,13 @@ const StyledButton = styled(Button)`
   }
 `;
 
+/**
+ * Toggle button to add course to or remove from worksheet
+ * @prop worksheetView - boolean | are we in the worksheet view?
+ * @prop crn - number | integer that holds the crn of the current course
+ * @prop season_code - string | holds the current season code
+ * @prop modal - boolean | are we rendering in the course modal
+ */
 function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
@@ -114,6 +113,7 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
         className="py-auto px-1 d-flex align-items-center"
         onClick={toggleWorkSheet}
       >
+        {/* Show bookmark icon on modal and +/- everywhere else */}
         {modal ? (
           inWorksheet ? (
             <BsBookmarkFill size={25} className="scale_icon" />

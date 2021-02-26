@@ -57,10 +57,12 @@ const StyledContainer = styled(SurfaceComponent)`
   border-bottom: 2px solid ${({ theme }) => theme.border};
 `;
 
+// Restrict the row width
 const StyledRow = styled(Row)`
   max-width: 1600px;
 `;
 
+// Column header
 const ResultsHeader = styled.div`
   line-height: 30px;
   ${breakpoints('line-height', 'px', [{ 1320: 24 }])};
@@ -70,19 +72,20 @@ const ResultsHeader = styled.div`
   font-weight: 600;
 `;
 
+// Function to calculate column width within a max and min
 const getColWidth = (calculated, min = 0, max = 1000000) => {
   return Math.max(Math.min(calculated, max), min);
 };
 
 /**
- * Renders the infinite list of search results
- * @prop data - list that holds the search results
- * @prop isList - boolean that determines display format (list or grid)
- * @prop setView - function to change display format
+ * Renders the infinite list of catalog search results
+ * @prop data - array | that holds the search results
+ * @prop isList - boolean | determines display format (list or grid)
+ * @prop setView - function | changes display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_fb = object that holds a list of each fb friend taking a specific course
+ * @prop num_fb = object | holds a list of each fb friend taking a specific course
  */
 
 const CatalogResults = ({
@@ -98,6 +101,7 @@ const CatalogResults = ({
   // Fetch width of window
   const { width } = useWindowDimensions();
 
+  // Check if mobile or tablet
   const isMobile = width < 768;
   const isTablet = !isMobile && width < 1200;
 
@@ -107,6 +111,7 @@ const CatalogResults = ({
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState(0);
 
+  // Fetch reset_key from search context
   const { reset_key } = useSearch();
 
   const globalTheme = useTheme();
@@ -163,9 +168,9 @@ const CatalogResults = ({
   let resultsListing;
 
   // Number of columns to use in grid view
-  const num_cols = width < 1200 ? (width < 768 ? 1 : 2) : 3;
+  const num_cols = isMobile ? 1 : isTablet ? 2 : 3;
 
-  // Render functions for React Virtualized List:
+  // Grid render function for React Virtualized List
   const renderGridRow = useCallback(
     ({ index, key, style }) => {
       const row_elements = [];
@@ -195,6 +200,7 @@ const CatalogResults = ({
     [data, showModal, isLoggedIn, multiSeasons, num_cols]
   );
 
+  // List render function for React Virtualized List
   const renderListRow = useCallback(
     ({ index, key, style, isScrolling }) => {
       const fb_friends = num_fb[data[index].season_code + data[index].crn]
@@ -315,7 +321,7 @@ const CatalogResults = ({
     }
   }
 
-  // Tooltip for hovering over class rating
+  // Tooltip for hovering over course rating
   const class_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
@@ -416,13 +422,14 @@ const CatalogResults = ({
             id="results_container"
             className="px-0 mx-0"
           >
-            {/* Results Header */}
+            {/* Column Headers */}
             <StyledRow
               ref={ref}
               className={`mx-auto pl-4 pr-2 ${width > 1320 ? 'py-2' : 'py-1'} ${
                 Styles.results_header_row
               } justify-content-between`}
             >
+              {/* View Toggle */}
               <div
                 className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
@@ -478,7 +485,7 @@ const CatalogResults = ({
                         key={reset_key}
                       />
                     </ResultsHeader>
-                    {/* Course Professors & Professor Rating */}
+                    {/* Professor Rating & Course Professors */}
                     <ResultsHeader style={prof_style}>
                       <span className={Styles.one_line}>Professors</span>
                       <CatalogColumnSort
@@ -487,7 +494,7 @@ const CatalogResults = ({
                       />
                     </ResultsHeader>
                   </div>
-                  {/* Enrollment Number */}
+                  {/* Previous Enrollment Number */}
                   <ResultsHeader style={enroll_style}>
                     <OverlayTrigger
                       placement="bottom"
@@ -505,7 +512,7 @@ const CatalogResults = ({
                   <ResultsHeader style={sa_style}>
                     <span className={Styles.one_line}>Skills/Areas</span>
                   </ResultsHeader>
-                  {/* Course Meeting times and location */}
+                  {/* Course Meeting Days & Times */}
                   <ResultsHeader style={meet_style}>
                     <span className={Styles.one_line}>Meets</span>
                     <CatalogColumnSort
@@ -533,7 +540,7 @@ const CatalogResults = ({
                   </ResultsHeader>
                 </>
               ) : (
-                // Grid view showing how many search results
+                // Showing how many search results for grid view
                 <Col md={10}>
                   <ResultsHeader>
                     {`Showing ${data.length} course${

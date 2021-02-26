@@ -7,7 +7,12 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
-import { useSearch, Option, defaultFilters, SortType } from '../searchContext';
+import {
+  useSearch,
+  Option,
+  defaultFilters,
+  SortOrderType,
+} from '../searchContext';
 
 const StyledSortBtn = styled.div`
   cursor: pointer;
@@ -23,15 +28,18 @@ type Props = {
 };
 
 /**
- * Render expanded worksheet list after maximize button is clicked
- * @prop setOrdering - function to set ordering of courses
+ * Renders column sort toggle button on catalog
+ * @prop selectOption - sortbyOption from Constants to sort by
  */
 
 const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
-  const [localSortOrder, setLocalSortOrder] = useState<SortType>(
+  // Local sort order state
+  const [localSortOrder, setLocalSortOrder] = useState<SortOrderType>(
     defaultFilters.defaultSortOrder
   );
+  // First time state
   const [firstTime, setFirstTime] = useState(true);
+  // Whether or not this toggle is actively sorting
   const [active, setActive] = useState(false);
 
   // Get search context data
@@ -46,18 +54,22 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
 
   // Handle changing the sort order
   const handleSortOrder = () => {
+    // If not sorting by this option previously, start sorting this option
     if (select_sortby.value !== selectOption.value) {
       setSelectSortby(selectOption);
-    }
-    if (localSortOrder === 'asc') {
-      setSortOrder('desc');
-      setLocalSortOrder('desc');
     } else {
-      setSortOrder('asc');
-      setLocalSortOrder('asc');
+      // Toggle sort order
+      if (localSortOrder === 'asc') {
+        setSortOrder('desc');
+        setLocalSortOrder('desc');
+      } else {
+        setSortOrder('asc');
+        setLocalSortOrder('asc');
+      }
     }
   };
 
+  // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime && select_sortby.value === selectOption.value) {
       setLocalSortOrder(sort_order);

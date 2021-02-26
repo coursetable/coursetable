@@ -89,13 +89,13 @@ function ContextAwareToggle({ eventKey, callback, course }) {
 
 /**
  * Render worksheet list in mobile view in accordion format
- * @prop onSeasonChange - function to change season
- * @prop cur_season - string that holds the current season code
- * @prop season_codes - list of season codes
- * @prop courses - list of listings dictionaries
- * @prop showModal - function to show modal for a certain listing
- * @prop setFbPerson - function to change FB person
- * @prop cur_person - string of current person who's worksheet we are viewing
+ * @prop onSeasonChange - function | to change season
+ * @prop cur_season - string | holds the current season code
+ * @prop season_codes - array | list of season codes
+ * @prop courses - array | list of listings dictionaries
+ * @prop showModal - function | to show modal for a certain listing
+ * @prop setFbPerson - function | to change FB person
+ * @prop cur_person - string | current person who's worksheet we are viewing
  */
 
 function WorksheetAccordion({

@@ -21,6 +21,7 @@ export const isInWorksheet = (
   }
   return false;
 };
+
 // Convert season code to legible string
 export const toSeasonString = (season_code: Season) => {
   if (!season_code) return ['', '', ''];
@@ -31,6 +32,7 @@ export const toSeasonString = (season_code: Season) => {
     seasons[parseInt(season_code[5], 10)],
   ] as const;
 };
+
 // Unflatten course times for easy use in checkConflict
 export const unflattenTimes = (course: Listing) => {
   if (!course) return undefined;
@@ -43,6 +45,7 @@ export const unflattenTimes = (course: Listing) => {
   });
   return times_by_day;
 };
+
 // Checks if the a new course conflicts with the user's worksheet
 export const checkConflict = (
   listings: Listing[],
@@ -81,6 +84,7 @@ export const checkConflict = (
   // Conflict doesn't exist
   return false;
 };
+
 // Fetch the FB friends that are also shopping a specific course. Used in course modal overview
 export const fbFriendsAlsoTaking = (
   season_code: Season,
@@ -126,6 +130,7 @@ export const getNumFB = (fbWorksheets: FBInfo) => {
   }
   return fb_dict;
 };
+
 // Helper function that returns the correct value to sort by
 const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
   // Sorting by fb friends
@@ -153,6 +158,7 @@ const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
   }
   return listing[key];
 };
+
 // Sort courses in catalog or expanded worksheet
 export const sortCourses = (
   courses: Listing[],
@@ -177,6 +183,7 @@ export const sortCourses = (
   );
   return sorted;
 };
+
 // Get the overall rating for a course
 export const getOverallRatings = (course: Listing) => {
   // Determine which overall rating to use
@@ -189,6 +196,7 @@ export const getOverallRatings = (course: Listing) => {
   // Return rating
   return course_rating;
 };
+
 // Calculate day and time score
 const calculateDayTime = (course: Listing) => {
   // If no times then return null

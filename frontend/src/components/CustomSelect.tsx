@@ -12,6 +12,7 @@ import Select, {
 } from 'react-select';
 import { ThemeConfig } from 'react-select/src/theme';
 
+// Styles for the select indicators
 const indicatorStyles = (theme: DefaultTheme): StylesConfig => {
   const icon_focus = chroma(theme.icon_focus);
   const icon = chroma(theme.icon);
@@ -48,6 +49,7 @@ const indicatorStyles = (theme: DefaultTheme): StylesConfig => {
   };
 };
 
+// Styles for default select
 const defaultStyles = (theme: DefaultTheme): StylesConfig => {
   return {
     control: (base, { isDisabled }) => ({
@@ -94,6 +96,7 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
   };
 };
 
+// Styles for popout select
 const popoutStyles = (width: number): StylesConfig => {
   return {
     control: (base, { isDisabled }) => ({
@@ -117,6 +120,7 @@ const popoutStyles = (width: number): StylesConfig => {
   };
 };
 
+// Styles for skills/areas select
 const colorStyles = (): StylesConfig => {
   return {
     multiValue: (base, { data }) => {
@@ -176,7 +180,8 @@ type Props = {
 
 /**
  * Custom Component for React-Select
- * @prop useColors - boolean | should we use the color version of styles?
+ * @prop popout - rendering on a popout?
+ * @prop useColors - use the color styles?
  */
 function CustomSelect<T extends OptionTypeBase>({
   popout = false,
@@ -185,6 +190,7 @@ function CustomSelect<T extends OptionTypeBase>({
 }: SelectProps<T> & Props) {
   const globalTheme = useTheme();
 
+  // All the default theme colors
   const themeStyles: ThemeConfig = (theme: Theme): Theme => ({
     ...theme,
     borderRadius: 8,
@@ -212,6 +218,7 @@ function CustomSelect<T extends OptionTypeBase>({
   // Makes Select forms animated
   const animatedComponents = useMemo(() => makeAnimated<T>(), []);
 
+  // Configure styles
   let styles: StylesConfig;
   if (popout) {
     styles = mergeStyles(indicatorStyles(globalTheme), popoutStyles(400));
@@ -221,7 +228,6 @@ function CustomSelect<T extends OptionTypeBase>({
       defaultStyles(globalTheme)
     );
   }
-
   if (useColors) {
     styles = mergeStyles(styles, colorStyles());
   }

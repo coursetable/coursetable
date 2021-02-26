@@ -22,6 +22,7 @@ import { NavbarSearch } from './NavbarSearch';
 import { useSearch } from '../searchContext';
 import { DateTime, Duration } from 'luxon';
 
+// Profile icon
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
@@ -36,6 +37,7 @@ const StyledMeIcon = styled.div`
   }
 `;
 
+// Sign in/out & FB btns
 const StyledDiv = styled.div`
   padding: 0.5rem 1rem 0.5rem 0rem;
   color: ${({ theme }) => theme.text[1]};
@@ -47,6 +49,7 @@ const StyledDiv = styled.div`
   }
 `;
 
+// Nav links
 const StyledNavLink = styled(NavLink)`
   padding: 0.5rem 1rem 0.5rem 0rem;
   color: ${({ theme }) => theme.text[1]};
@@ -64,6 +67,7 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
+// Nav toggle for mobile
 const StyledNavToggle = styled(Navbar.Toggle)`
   border-color: ${({ theme }) => theme.border} !important;
   .navbar-toggler-icon {
@@ -83,8 +87,9 @@ type Props = {
 
 /**
  * Renders the navbar
- * @prop isLoggedIn - boolean | is user logged in?
- * @prop themeToggler - callback which toggles between light and dark mode
+ * @prop isLoggedIn - is user logged in?
+ * @prop themeToggler - which toggles between light and dark mode
+ * @prop location - object | provides the location info from react-router-dom
  */
 function CourseTableNavbar({
   isLoggedIn,
@@ -100,8 +105,10 @@ function CourseTableNavbar({
     setIsComponentVisible,
   } = useComponentVisible<HTMLDivElement>(false);
 
+  // Fetch from search
   const { searchData, coursesLoading, speed } = useSearch();
 
+  // Last updated state
   const [updated, setUpdated] = useState(-1);
 
   // Fetch width of window
@@ -110,9 +117,12 @@ function CourseTableNavbar({
   const isTablet = !isMobile && width < 1200;
   // const is_relative = width < 1230;
 
+  // Show navbar search state
   const [show_search, setShowSearch] = useState(false);
+  // On catalog state
   const [onCatalog, setOnCatalog] = useState(false);
 
+  // Navbar styling for navbar search
   const navbar_style = () => {
     if (show_search) {
       return {
@@ -124,6 +134,7 @@ function CourseTableNavbar({
     return undefined;
   };
 
+  //  Wrapper for nav collapse for # of results shown text
   const NavCollapseWrapper: React.FC<{
     children: React.ReactNode;
   }> = useCallback(
@@ -158,6 +169,7 @@ function CourseTableNavbar({
     }
   }, [isMobile, isTablet, isLoggedIn, onCatalog]);
 
+  // Calculate time since last updated
   useEffect(() => {
     const dt = DateTime.now().setZone('America/New_York');
     let dt_update;
@@ -199,11 +211,14 @@ function CourseTableNavbar({
               </NavLink>
             </Nav>
 
+            {/* Mobile nav toggle */}
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
+            {/* Desktop navbar search */}
             {show_search && <NavbarSearch />}
 
             <NavCollapseWrapper>
+              {/* Navbar collapse */}
               <Navbar.Collapse
                 id="basic-navbar-nav"
                 // Make navbar display: flex when not mobile. If mobile, normal formatting
@@ -224,6 +239,7 @@ function CourseTableNavbar({
                   } position-relative`}
                   style={{ width: '100%' }}
                 >
+                  {/* Last updated ago text */}
                   {!isMobile && onCatalog && (
                     <SmallTextComponent
                       type={2}
@@ -283,7 +299,7 @@ function CourseTableNavbar({
                   <div
                     // Right align profile icon if not mobile
                     className={`d-none d-md-block ${
-                      !isMobile && !isTablet ? 'align-self-end' : ''
+                      !isMobile ? 'align-self-end' : ''
                     }`}
                   >
                     <div className={styles.navbar_me}>
@@ -333,6 +349,7 @@ function CourseTableNavbar({
                   </div>
                 </Nav>
               </Navbar.Collapse>
+              {/* Number of results shown & seach speed text */}
               {show_search && (
                 <SmallTextComponent
                   type={2}
@@ -353,7 +370,7 @@ function CourseTableNavbar({
           </Navbar>
         </Container>
       </SurfaceComponent>
-      {/* Dropdown that has position: absolute */}
+      {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
           profile_expanded={isComponentVisible}

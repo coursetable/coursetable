@@ -54,14 +54,14 @@ const StyledContainer = styled(SurfaceComponent)`
 `;
 
 /**
- * Renders the infinite list of search results
- * @prop data - list that holds the search results
- * @prop isList - boolean that determines display format (list or grid)
- * @prop setView - function to change display format
+ * Renders the list of courses in worksheet list view
+ * @prop data - array | list that holds the search results
+ * @prop isList - boolean | determines display format (list or grid)
+ * @prop setView - function | to change display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_fb = object that holds a list of each fb friend taking a specific course
+ * @prop num_fb = object | holds a list of each fb friend taking a specific course
  */
 
 const SearchResults = ({
@@ -78,6 +78,7 @@ const SearchResults = ({
   // Fetch width of window
   const { width } = useWindowDimensions();
 
+  // Checks if on mobile
   const isMobile = width < 768;
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
@@ -160,7 +161,6 @@ const SearchResults = ({
     },
     [data, showModal, isLoggedIn, multiSeasons, num_cols]
   );
-
   const renderListRow = useCallback(
     ({ index, key, style, isScrolling }) => {
       const fb_friends = num_fb[data[index].season_code + data[index].crn]
@@ -371,6 +371,7 @@ const SearchResults = ({
                 ' justify-content-between'
               }
             >
+              {/* View Toggle */}
               <div
                 className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
@@ -378,11 +379,13 @@ const SearchResults = ({
               </div>
               {isList ? (
                 <>
+                  {/* Season */}
                   {multiSeasons && (
                     <div style={szn_style} className={Styles.results_header}>
                       Season
                     </div>
                   )}
+                  {/* Course Code */}
                   <div style={code_style} className={Styles.results_header}>
                     Code
                   </div>
@@ -390,7 +393,7 @@ const SearchResults = ({
                   <div style={title_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Title</span>
                   </div>
-                  {/* Class Rating */}
+                  {/* Course Rating */}
                   <div
                     style={rate_style}
                     className={`${Styles.results_header} justify-content-center`}
@@ -435,6 +438,7 @@ const SearchResults = ({
                       </OverlayTrigger>
                     </StyledIcon>
                   </div>
+                  {/* Previous Enrollment */}
                   <div style={num_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
@@ -448,17 +452,19 @@ const SearchResults = ({
                   <div style={prof_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Professors</span>
                   </div>
-                  {/* Course Meeting times and location */}
+                  {/* Course Meeting Days & Times */}
                   <div style={meet_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Meets</span>
                   </div>
+                  {/* Location */}
                   <div style={loc_style} className={Styles.results_header}>
                     <span className={Styles.one_line}>Location</span>
                   </div>
-
+                  {/* Skills/Areas */}
                   <div style={sa_style} className={Styles.results_header}>
                     Skills/Areas
                   </div>
+                  {/* FB */}
                   <div style={num_style} className={Styles.results_header}>
                     <OverlayTrigger
                       placement="bottom"
