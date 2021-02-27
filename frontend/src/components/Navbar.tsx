@@ -19,7 +19,7 @@ import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from './StyledComponents';
 import { NavbarSearch } from './NavbarSearch';
-import { useSearch } from '../searchContext';
+// import { useSearch } from '../searchContext';
 import { DateTime, Duration } from 'luxon';
 
 // Profile icon
@@ -106,10 +106,10 @@ function CourseTableNavbar({
   } = useComponentVisible<HTMLDivElement>(false);
 
   // Fetch from search
-  const { searchData, coursesLoading, speed } = useSearch();
+  // const { searchData, coursesLoading, speed } = useSearch();
 
   // Last updated state
-  const [updated, setUpdated] = useState(-1);
+  const [lastUpdated, setLastUpdated] = useState('0 hrs');
 
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -174,12 +174,22 @@ function CourseTableNavbar({
     const dt = DateTime.now().setZone('America/New_York');
     let dt_update;
     if (dt.hour < 3) {
-      dt_update = dt.plus(Duration.fromObject({ days: -1 })).set({ hour: 3 });
+      dt_update = dt
+        .plus(Duration.fromObject({ days: -1 }))
+        .set({ hour: 3, minute: 0, second: 0 });
     } else {
-      dt_update = dt.set({ hour: 3 });
+      dt_update = dt.set({ hour: 3, minute: 0, second: 0 });
     }
-    const diff = dt.diff(dt_update, 'hours').as('hours');
-    setUpdated(diff);
+    const diffInSecs = dt.diff(dt_update).as('seconds');
+    if (diffInSecs < 60) {
+      setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
+    } else if (diffInSecs < 3600) {
+      const diffInMins = Math.floor(diffInSecs / 60);
+      setLastUpdated(`${diffInMins} min${diffInMins > 1 ? 's' : ''}`);
+    } else {
+      const diffInHrs = Math.floor(diffInSecs / 3600);
+      setLastUpdated(`${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`);
+    }
   }, []);
 
   return (
@@ -211,6 +221,17 @@ function CourseTableNavbar({
               </NavLink>
             </Nav>
 
+            {/* Last updated ago text for tablet */}
+            {isTablet && onCatalog && (
+              <SmallTextComponent
+                type={2}
+                className="d-flex align-items-center"
+              >
+                <MdUpdate className="mr-1" />
+                Updated {lastUpdated} ago
+              </SmallTextComponent>
+            )}
+
             {/* Mobile nav toggle */}
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
@@ -239,29 +260,10 @@ function CourseTableNavbar({
                   } position-relative`}
                   style={{ width: '100%' }}
                 >
-                  {/* Last updated ago text */}
-                  {!isMobile && onCatalog && (
-                    <SmallTextComponent
-                      type={2}
-                      className={`${
-                        !isTablet ? 'position-absolute' : 'ml-auto mr-3'
-                      } d-flex align-items-center text-right`}
-                      style={
-                        !isTablet
-                          ? width > 1320
-                            ? { left: '-130px' }
-                            : { left: '-120px' }
-                          : undefined
-                      }
-                    >
-                      <MdUpdate className="mr-1" />
-                      Updated {updated} hrs ago
-                    </SmallTextComponent>
-                  )}
                   {/* DarkMode Button */}
                   <div
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
-                      !isMobile && !onCatalog ? 'ml-auto' : ''
+                      !isMobile ? 'ml-auto' : ''
                     }`}
                     onClick={themeToggler}
                   >
@@ -349,21 +351,11 @@ function CourseTableNavbar({
                   </div>
                 </Nav>
               </Navbar.Collapse>
-              {/* Number of results shown & seach speed text */}
+              {/* Last updated ago text for desktop */}
               {show_search && (
-                <SmallTextComponent
-                  type={2}
-                  className="mb-2 text-right"
-                  style={{
-                    maxWidth: width < 1320 ? '220px' : 'none',
-                    whiteSpace: 'pre-line',
-                  }}
-                >
-                  {coursesLoading
-                    ? 'Searching ...'
-                    : `Showing ${searchData.length} results${
-                        width < 1320 && speed.length > 20 ? '\n' : ' '
-                      }(${speed})`}
+                <SmallTextComponent type={2} className="mb-2 text-right">
+                  <MdUpdate className="mr-1" />
+                  Updated {lastUpdated} ago
                 </SmallTextComponent>
               )}
             </NavCollapseWrapper>

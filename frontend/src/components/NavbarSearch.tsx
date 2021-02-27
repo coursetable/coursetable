@@ -9,7 +9,7 @@ import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
-import { StyledInput } from './StyledComponents';
+import { SmallTextComponent, StyledInput } from './StyledComponents';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import { useFerry } from './FerryProvider';
 import { ValueType } from 'react-select/src/types';
@@ -167,6 +167,9 @@ export const NavbarSearch: React.FC = () => {
     hideFirstYearSeminars,
     hideGraduateCourses,
     reset_key,
+    searchData,
+    coursesLoading,
+    speed,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -337,6 +340,21 @@ export const NavbarSearch: React.FC = () => {
               />
             )}
           </SearchWrapper>
+          {/* Number of results shown & seach speed text */}
+          <SmallTextComponent
+            type={2}
+            className="ml-2 mb-1 d-flex align-items-end"
+            style={{
+              maxWidth: '220px',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {coursesLoading
+              ? 'Searching ...'
+              : `Showing ${searchData.length} results${
+                  speed.length > 20 ? '\n' : ' '
+                }(${speed})`}
+          </SmallTextComponent>
         </StyledRow>
         {/* Bottom row */}
         <StyledRow className="align-items-center justify-content-between">
