@@ -13,7 +13,10 @@ import Select, {
 import { ThemeConfig } from 'react-select/src/theme';
 
 // Styles for the select indicators
-const indicatorStyles = (theme: DefaultTheme): StylesConfig => {
+const indicatorStyles = (
+  theme: DefaultTheme,
+  isMulti: boolean
+): StylesConfig => {
   const icon_focus = chroma(theme.icon_focus);
   const icon = chroma(theme.icon);
   const new_icon_focus =
@@ -34,7 +37,7 @@ const indicatorStyles = (theme: DefaultTheme): StylesConfig => {
     dropdownIndicator: (base, state) => {
       return {
         ...base,
-        display: state.hasValue ? 'none' : 'flex',
+        display: isMulti && state.hasValue ? 'none' : 'flex',
         color: state.isFocused ? icon_focus.css() : icon.css(),
         ':hover': {
           ...(base as any)[':hover'],
@@ -65,6 +68,7 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
       ...base,
       paddingTop: 0,
       marginTop: 0,
+      borderRadius: '8px',
       boxShadow:
         '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
     }),
@@ -72,6 +76,7 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
       ...base,
       paddingTop: 0,
       paddingBottom: 0,
+      borderRadius: '8px',
     }),
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     multiValue: (base) => {
@@ -176,16 +181,19 @@ const colorStyles = (): StylesConfig => {
 type Props = {
   popout?: boolean;
   useColors?: boolean;
+  isMulti?: boolean;
 };
 
 /**
  * Custom Component for React-Select
  * @prop popout - rendering on a popout?
  * @prop useColors - use the color styles?
+ * @prop isMulti - multi select?
  */
 function CustomSelect<T extends OptionTypeBase>({
   popout = false,
   useColors = false,
+  isMulti = false,
   ...props
 }: SelectProps<T> & Props) {
   const globalTheme = useTheme();
@@ -221,10 +229,13 @@ function CustomSelect<T extends OptionTypeBase>({
   // Configure styles
   let styles: StylesConfig;
   if (popout) {
-    styles = mergeStyles(indicatorStyles(globalTheme), popoutStyles(400));
+    styles = mergeStyles(
+      indicatorStyles(globalTheme, isMulti),
+      popoutStyles(400)
+    );
   } else {
     styles = mergeStyles(
-      indicatorStyles(globalTheme),
+      indicatorStyles(globalTheme, isMulti),
       defaultStyles(globalTheme)
     );
   }
@@ -235,6 +246,7 @@ function CustomSelect<T extends OptionTypeBase>({
   return (
     <Select<T>
       {...props}
+      isMulti={isMulti}
       styles={styles}
       components={animatedComponents}
       theme={themeStyles}
