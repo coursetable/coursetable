@@ -176,9 +176,9 @@ function CourseTableNavbar({
     if (dt.hour < 3) {
       dt_update = dt
         .plus(Duration.fromObject({ days: -1 }))
-        .set({ hour: 3, minute: 0, second: 0 });
+        .set({ hour: 3, minute: 30, second: 0 });
     } else {
-      dt_update = dt.set({ hour: 3, minute: 0, second: 0 });
+      dt_update = dt.set({ hour: 3, minute: 30, second: 0 });
     }
     const diffInSecs = dt.diff(dt_update).as('seconds');
     if (diffInSecs < 60) {
