@@ -146,7 +146,7 @@ function Globals({ children }) {
                 </Router>
               </SearchProvider>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
-              <ToastContainer />
+              <ToastContainer toastClassName="rounded" />
             </WindowDimensionsProvider>
           </UserProvider>
         </FerryProvider>
