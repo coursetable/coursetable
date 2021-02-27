@@ -1,17 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8" />
 
-    <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
+<head>
+  <meta charset="utf-8" />
 
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#ffffff" />
-    <meta
-      name="description"
-      content="CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It's run by a small team of volunteers within the Yale Computer Society and is completely open source."
-    />
-    <!--
+  <link rel="icon" type="image/png" href="%PUBLIC_URL%/favicon.png" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#ffffff" />
+  <meta name="description"
+    content="CourseTable offers a clean and effective way for Yale students to find the courses they want, bringing together course information, student evaluations, and course demand statistics in an intuitive interface. It's run by a small team of volunteers within the Yale Computer Society and is completely open source." />
+  <!--
       Notice the use of %PUBLIC_URL% in the tags above.
       It will be replaced with the URL of the `public` folder during the build.
       Only files inside the `public` folder can be referenced from the HTML.
@@ -21,22 +20,17 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
 
-    <!-- Umami Analytics -->
-    <link rel="preconnect" href="https://umami.coursetable.com" />
-    <script
-      async
-      defer
-      data-website-id="%REACT_APP_UMAMI_WEBSITE_ID%"
-      src="https://umami.coursetable.com/umami.js"
-    ></script>
+  <!-- Umami Analytics -->
+  <link rel="preconnect" href="https://umami.coursetable.com" />
+  <script async defer data-website-id="%BETA_UMAMI_ID%" src="https://umami.coursetable.com/umami.js"></script>
 
-    <title>CourseTable</title>
-  </head>
+  <title>CourseTable</title>
+</head>
 
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-    <!--
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+  <!--
       This HTML file is a template.
       If you open it directly in the browser, you will see an empty page.
 
@@ -46,23 +40,19 @@
       To begin the development, run `npm start` or `yarn start`.
       To create a production bundle, use `npm run build` or `yarn build`.
     -->
-  </body>
+</body>
 
-  <script>
-    window.fbAsyncInit = function () {
-      window.FB.init({
-        appId: '185745958145518', // The app ID for CourseTable
-        // status: true,
-        cookie: true, // enable cookies to allow the server to access the session
-        xfbml: true, // parse social plugins on this page
-        version: 'v7.0',
-      });
-    };
-  </script>
-  <script
-    async
-    defer
-    crossorigin="anonymous"
-    src="https://connect.facebook.net/en_US/sdk.js"
-  ></script>
+<script>
+  window.fbAsyncInit = function () {
+    window.FB.init({
+      appId: '185745958145518', // The app ID for CourseTable
+      // status: true,
+      cookie: true, // enable cookies to allow the server to access the session
+      xfbml: true, // parse social plugins on this page
+      version: 'v7.0',
+    });
+  };
+</script>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+
 </html>
