@@ -221,6 +221,17 @@ function CourseTableNavbar({
               </NavLink>
             </Nav>
 
+            {/* Last updated ago text for tablet */}
+            {isTablet && onCatalog && (
+              <SmallTextComponent
+                type={2}
+                className="d-flex align-items-center"
+              >
+                <MdUpdate className="mr-1" />
+                Updated {lastUpdated} ago
+              </SmallTextComponent>
+            )}
+
             {/* Mobile nav toggle */}
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
@@ -249,16 +260,6 @@ function CourseTableNavbar({
                   } position-relative`}
                   style={{ width: '100%' }}
                 >
-                  {/* Last updated ago text for tablet */}
-                  {/* {isTablet && onCatalog && (
-                    <SmallTextComponent
-                      type={2}
-                      className="ml-auto mr-3 d-flex align-items-center text-right"
-                    >
-                      <MdUpdate className="mr-1" />
-                      Updated {lastUpdated} ago
-                    </SmallTextComponent>
-                  )} */}
                   {/* DarkMode Button */}
                   <div
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
