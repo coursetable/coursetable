@@ -2,7 +2,7 @@ import { expectType, TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
 import { Listing } from '../components/FerryProvider';
 
-// Phrases for search speed [40 character limit]
+// Phrases for search speed [50 character limit]
 export const searchSpeed = {
   fast: [
     'fast',
@@ -30,6 +30,10 @@ export const searchSpeed = {
     'faster than Higgins on paintball',
     'faster than YPopUp getting reserved',
     "faster than durfee's tenders selling out",
+    'faster than sonic the hedgehog',
+    'faster than an art-stem double major drops art',
+    'faster than switching your major to CS',
+    'faster than you can sell out to consulting',
   ],
 };
 
