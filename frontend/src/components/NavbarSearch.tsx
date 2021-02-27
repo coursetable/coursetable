@@ -357,7 +357,7 @@ export const NavbarSearch: React.FC = () => {
           </SmallTextComponent>
         </StyledRow>
         {/* Bottom row */}
-        <StyledRow className="align-items-center justify-content-between">
+        <StyledRow className="align-items-center">
           <FilterGroup className="d-flex align-items-center">
             {/* Yale Subjects Filter Dropdown */}
             <Popout
