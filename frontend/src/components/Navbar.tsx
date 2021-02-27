@@ -173,7 +173,7 @@ function CourseTableNavbar({
   useEffect(() => {
     const dt = DateTime.now().setZone('America/New_York');
     let dt_update;
-    if (dt.hour < 3) {
+    if (dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)) {
       dt_update = dt
         .plus(Duration.fromObject({ days: -1 }))
         .set({ hour: 3, minute: 30, second: 0 });
