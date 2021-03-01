@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import { FcCalendar, FcUndo, FcInfo, FcQuestions } from 'react-icons/fc';
+import {
+  FcCalendar,
+  FcUndo,
+  FcInfo,
+  FcQuestions,
+  FcFeedback,
+} from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
@@ -116,6 +122,23 @@ const MeDropdown: React.VFC<Props> = ({
                 </Row>
               </>
             )}
+            {/* Feedback page Link */}
+            <Row className="pb-3 m-auto">
+              <FcFeedback
+                className="mr-2 my-auto"
+                size={20}
+                style={{ paddingLeft: '2px' }}
+              />
+              <TextComponent type={1}>
+                <NavLink
+                  to="/feedback"
+                  className={styles.collapse_text}
+                  onClick={scrollToTop}
+                >
+                  <StyledHoverText>Feedback</StyledHoverText>
+                </NavLink>
+              </TextComponent>
+            </Row>
             {/* Revert to Old CourseTable Link */}
             <Row className="pb-3 m-auto">
               <FcUndo
