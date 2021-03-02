@@ -23,6 +23,7 @@ import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
 import { useLocalStorageState } from './browserStorage';
+import { useWindowDimensions } from './components/WindowDimensionsProvider';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -30,6 +31,13 @@ import { useLocalStorageState } from './browserStorage';
  * @prop location - object | provides the location info from react-router-dom
  */
 function App({ themeToggler, location }) {
+  // Fetch width of window
+  const { width } = useWindowDimensions();
+
+  // Check if mobile or tablet
+  const isMobile = width < 768;
+  const isTablet = !isMobile && width < 1200;
+
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -63,6 +71,8 @@ function App({ themeToggler, location }) {
   // Handle whether or not to open tutorial
   useEffect(() => {
     if (
+      !isMobile &&
+      !isTablet &&
       isLoggedIn &&
       !shownTutorial &&
       location &&
@@ -70,7 +80,14 @@ function App({ themeToggler, location }) {
     ) {
       setIsTutorialOpen(true);
     }
-  }, [isLoggedIn, shownTutorial, location, setIsTutorialOpen]);
+  }, [
+    isMobile,
+    isTablet,
+    isLoggedIn,
+    shownTutorial,
+    location,
+    setIsTutorialOpen,
+  ]);
 
   // Render spinner if page loading
   if (loading) {

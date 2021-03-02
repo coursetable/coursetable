@@ -23,6 +23,7 @@ import {
   StyledHoverText,
 } from './StyledComponents';
 import { NavLink } from 'react-router-dom';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -47,6 +48,13 @@ const MeDropdown: React.VFC<Props> = ({
   isLoggedIn,
   setIsTutorialOpen,
 }) => {
+  // Fetch width of window
+  const { width } = useWindowDimensions();
+
+  // Check if mobile or tablet
+  const isMobile = width < 768;
+  const isTablet = !isMobile && width < 1200;
+
   // Get user context data
   const { user } = useUser();
   // Are we exporting the user's worksheet?
@@ -143,8 +151,8 @@ const MeDropdown: React.VFC<Props> = ({
                 </NavLink>
               </TextComponent>
             </Row>
-            {/* Try tutorial */}
-            {isLoggedIn && (
+            {/* Try tutorial only on desktop */}
+            {!isMobile && !isTablet && isLoggedIn && (
               <Row className="pb-3 m-auto">
                 <FcPuzzle
                   className="mr-2 my-auto"
