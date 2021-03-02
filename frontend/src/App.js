@@ -92,7 +92,11 @@ function App({ themeToggler, location }) {
         ! 💖 &nbsp;What about a study group tool? Fill out this{' '}
         <a href="https://forms.gle/mY2bvA8JA2d1Zsk89">survey</a>!
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        themeToggler={themeToggler}
+        setIsTutorialOpen={setIsTutorialOpen}
+      />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">
@@ -178,6 +182,7 @@ function App({ themeToggler, location }) {
           return !['/catalog'].includes(location.pathname) && <Footer />;
         }}
       />
+      {/* Tutorial for first-time users */}
       <Tutorial
         isTutorialOpen={isTutorialOpen}
         setIsTutorialOpen={setIsTutorialOpen}

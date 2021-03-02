@@ -83,17 +83,20 @@ const StyledNavToggle = styled(Navbar.Toggle)`
 type Props = {
   isLoggedIn: boolean;
   themeToggler: () => void;
+  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
  * Renders the navbar
  * @prop isLoggedIn - is user logged in?
  * @prop themeToggler - which toggles between light and dark mode
+ * @prop setIsTutorialOpen - opens tutorial
  * @prop location - object | provides the location info from react-router-dom
  */
 function CourseTableNavbar({
   isLoggedIn,
   themeToggler,
+  setIsTutorialOpen,
   location,
 }: RouteComponentProps & Props) {
   // Is navbar expanded in mobile view?
@@ -368,6 +371,7 @@ function CourseTableNavbar({
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
+          setIsTutorialOpen={setIsTutorialOpen}
         />
       </div>
     </div>

@@ -118,12 +118,17 @@ export const Tutorial: React.FC<Props> = ({
         setShownTutorial(true);
         setIsTutorialOpen(false);
       }}
+      startAt={0}
       accentColor={globalTheme.primary}
       rounded={6}
       showCloseButton={false}
       closeWithMask={false}
       showNavigationNumber={false}
-      lastStepNextButton={<Button>Finish Tutorial</Button>}
+      lastStepNextButton={
+        <Button style={{ backgroundColor: globalTheme.primary }}>
+          Finish Tutorial
+        </Button>
+      }
     />
   );
 };
