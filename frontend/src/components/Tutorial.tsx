@@ -128,6 +128,7 @@ export const Tutorial: React.FC<Props> = ({
       showCloseButton={false}
       closeWithMask={false}
       showNavigationNumber={false}
+      showNumber={false}
       lastStepNextButton={
         <Button style={{ backgroundColor: globalTheme.primary_hover }}>
           Finish Tutorial
