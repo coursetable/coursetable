@@ -518,7 +518,7 @@ export const NavbarSearch: React.FC = () => {
                     options={schoolOptions}
                     placeholder="All Schools"
                     // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
+                    menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectSchools((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
@@ -535,7 +535,7 @@ export const NavbarSearch: React.FC = () => {
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
+                    menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
