@@ -90,7 +90,7 @@ export const Tutorial: React.FC<Props> = ({
           <a
             target="_blank"
             rel="noopener noreferrer"
-            href="http://coursetable.com/feedback"
+            href="https://coursetable.com/feedback"
           >
             <strong>Feedback page</strong>
           </a>
