@@ -129,6 +129,7 @@ export const Tutorial: React.FC<Props> = ({
           Finish Tutorial
         </Button>
       }
+      disableKeyboardNavigation={['esc']}
     />
   );
 };
