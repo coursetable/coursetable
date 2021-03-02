@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import Tour from 'reactour';
+import styled, { useTheme } from 'styled-components';
 
-import { Row, Spinner } from 'react-bootstrap';
+import { Row, Spinner, Button } from 'react-bootstrap';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -22,6 +24,10 @@ import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
 
+const TourButton = styled(Button)`
+  width: auto;
+`;
+
 /**
  * Render navbar and the corresponding page component for the route the user is on
  * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
@@ -31,6 +37,95 @@ function App({ themeToggler }) {
   const [loading, setLoading] = useState(true);
   // User context data
   const { user, userRefresh, fbRefresh } = useUser();
+
+  // React tour state
+  const [isTourOpen, setIsTourOpen] = useState(true);
+
+  const globalTheme = useTheme();
+
+  // Change react tour styling based on theme
+  const step_style = useMemo(
+    () => ({
+      maxWidth: '356px',
+      backgroundColor: globalTheme.background,
+      color: globalTheme.text[0],
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+    }),
+    [globalTheme]
+  );
+
+  // React tour steps
+  const steps = [
+    {
+      selector: '',
+      content: 'Welcome to CourseTable!',
+      style: step_style,
+    },
+    {
+      selector: '[data-tour="catalog-1"]',
+      content: 'You can search and filter courses in the navbar.',
+      style: step_style,
+    },
+    {
+      selector: '[data-tour="catalog-2"]',
+      content:
+        'Click on a filter to show a dropdown where you can select multiple options.',
+      style: step_style,
+      observe: '[data-tour="catalog-2-observe"]',
+      action: (node) => node.focus(),
+    },
+    {
+      selector: '[data-tour="catalog-3"]',
+      content: 'Slide the range handles to filter by a range of values.',
+      style: step_style,
+    },
+    {
+      selector: '[data-tour="catalog-4"]',
+      content: () => (
+        <div>
+          Click on <strong>Advanced</strong> to see more advanced filters.
+        </div>
+      ),
+      style: step_style,
+      observe: '[data-tour="catalog-4-observe"]',
+      action: (node) => node.focus(),
+    },
+    {
+      selector: '[data-tour="catalog-5"]',
+      content:
+        'Click on a column toggle to sort by that column (ascending/descending).',
+      style: step_style,
+    },
+    {
+      selector: '',
+      content: () => (
+        <div>
+          If you have any problems, you can leave feedback on our{' '}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="http://coursetable.com/feedback"
+          >
+            <strong>Feedback page</strong>
+          </a>{' '}
+          .
+        </div>
+      ),
+      style: step_style,
+    },
+    {
+      selector: '',
+      content: () => (
+        <div>
+          That's it! Click <strong>Finish Tour</strong> to start using
+          CourseTable!
+        </div>
+      ),
+      style: step_style,
+    },
+  ];
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
@@ -154,6 +249,17 @@ function App({ themeToggler }) {
         render={({ location }) => {
           return !['/catalog'].includes(location.pathname) && <Footer />;
         }}
+      />
+      <Tour
+        steps={steps}
+        isOpen={isTourOpen}
+        onRequestClose={() => setIsTourOpen(false)}
+        accentColor={globalTheme.primary}
+        rounded={6}
+        showCloseButton={false}
+        closeWithMask={false}
+        showNavigationNumber={false}
+        lastStepNextButton={<TourButton>Finish Tour</TourButton>}
       />
     </>
   );

@@ -428,6 +428,7 @@ const CatalogResults = ({
               className={`mx-auto pl-4 pr-2 ${width > 1320 ? 'py-2' : 'py-1'} ${
                 Styles.results_header_row
               } justify-content-between`}
+              data-tour="catalog-5"
             >
               {/* View Toggle */}
               <div
