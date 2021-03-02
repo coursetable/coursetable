@@ -89,7 +89,11 @@ function App({ themeToggler, location }) {
         Become a Beta Tester{' '}
         <a href="https://forms.gle/UtD5YnZ7MzxYLTux6">here</a>!
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        themeToggler={themeToggler}
+        setIsTutorialOpen={setIsTutorialOpen}
+      />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">
@@ -179,6 +183,7 @@ function App({ themeToggler, location }) {
           return !['/catalog'].includes(location.pathname) && <Footer />;
         }}
       />
+      {/* Tutorial for first-time users */}
       <Tutorial
         isTutorialOpen={isTutorialOpen}
         setIsTutorialOpen={setIsTutorialOpen}
