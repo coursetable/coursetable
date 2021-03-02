@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
@@ -25,16 +25,14 @@ import { useUser } from './user';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
- * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
+ * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
+ * @prop location - object | provides the location info from react-router-dom
  */
-function App({ themeToggler }) {
+function App({ themeToggler, location }) {
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
   const { user, userRefresh, fbRefresh } = useUser();
-
-  // React tour state
-  const [isTourOpen, setIsTourOpen] = useState(true);
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
@@ -51,6 +49,16 @@ function App({ themeToggler }) {
   const isLoggedIn = Boolean(user.worksheet != null);
 
   const MyRoute = Route;
+
+  // React tour state
+  const [isTourOpen, setIsTourOpen] = useState(false);
+
+  // Handle whether or not to open tutorial
+  useEffect(() => {
+    if (isLoggedIn && location && location.pathname === '/catalog') {
+      setIsTourOpen(true);
+    }
+  }, [isLoggedIn, location, setIsTourOpen]);
 
   // Render spinner if page loading
   if (loading) {
@@ -164,4 +172,4 @@ function App({ themeToggler }) {
   );
 }
 
-export default App;
+export default withRouter(App);
