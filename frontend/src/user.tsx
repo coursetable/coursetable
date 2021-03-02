@@ -28,6 +28,7 @@ type Store = {
     netId?: NetId;
     worksheet?: Worksheet;
     hasEvals?: boolean;
+    onWhitelist?: boolean;
     fbLogin?: boolean;
     fbWorksheets?: FBInfo;
   };
@@ -48,6 +49,10 @@ export const UserProvider: React.FC = ({ children }) => {
   const [worksheet, setWorksheet] = useState<Worksheet | undefined>(undefined);
   // User's evals enabled status
   const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
+  // User's beta enabled status
+  const [onWhitelist, setOnWhitelist] = useState<boolean | undefined>(
+    undefined
+  );
   // User's FB login status
   const [fbLogin, setFbLogin] = useState<boolean | undefined>(undefined);
   // User's FB friends' worksheets
@@ -68,6 +73,7 @@ export const UserProvider: React.FC = ({ children }) => {
           // Successfully fetched worksheet
           setNetId(res.data.netId);
           setHasEvals(res.data.evaluationsEnabled);
+          setOnWhitelist(res.data.betaEnabled);
           setWorksheet(res.data.data);
           posthog.identify(res.data.netId);
           Sentry.setUser({ username: res.data.netId });
@@ -77,6 +83,7 @@ export const UserProvider: React.FC = ({ children }) => {
           setNetId(undefined);
           setWorksheet(undefined);
           setHasEvals(undefined);
+          setOnWhitelist(undefined);
           posthog.reset();
           Sentry.configureScope((scope) => scope.clear());
           console.info(err);
@@ -85,7 +92,7 @@ export const UserProvider: React.FC = ({ children }) => {
           }
         });
     },
-    [setWorksheet, setNetId, setHasEvals]
+    [setWorksheet, setNetId, setHasEvals, setOnWhitelist]
   );
 
   // Refresh user FB stuff
@@ -119,10 +126,11 @@ export const UserProvider: React.FC = ({ children }) => {
       netId,
       worksheet,
       hasEvals,
+      onWhitelist,
       fbLogin,
       fbWorksheets,
     };
-  }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
+  }, [netId, worksheet, hasEvals, onWhitelist, fbLogin, fbWorksheets]);
 
   const store = useMemo(
     () => ({
