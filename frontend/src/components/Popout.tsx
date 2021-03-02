@@ -79,7 +79,7 @@ type Props = {
     | Option[]
     | Record<string, Record<string, Option[] | boolean>>;
   className?: string;
-  data_tour?: number;
+  data_tutorial?: number;
 };
 
 /**
@@ -91,7 +91,7 @@ type Props = {
  * @prop arrowIcon - whether there is an arrow icon in the popout button
  * @prop select_options - selected options for filter
  * @prop className - additional styles for popout button
- * @prop data_tour - react tour step number
+ * @prop data_tutorial - tutorial step number
  */
 export const Popout: React.FC<Props> = ({
   children,
@@ -101,7 +101,7 @@ export const Popout: React.FC<Props> = ({
   arrowIcon = true,
   select_options,
   className,
-  data_tour,
+  data_tutorial,
 }) => {
   // Ref to detect outside clicks for popout button and dropdown
   const {
@@ -217,14 +217,16 @@ export const Popout: React.FC<Props> = ({
   );
 
   return (
-    <PopoutWrapper data-tour={data_tour ? `catalog-${data_tour}-observe` : ''}>
+    <PopoutWrapper
+      data-tutorial={data_tutorial ? `catalog-${data_tutorial}-observe` : ''}
+    >
       {/* Popout Button */}
       <StyledButton
         onClick={toggleOpen}
         style={buttonStyles(isComponentVisible)}
         ref={ref_toggle}
         className={className}
-        data-tour={data_tour ? `catalog-${data_tour}` : ''}
+        data-tutorial={data_tutorial ? `catalog-${data_tutorial}` : ''}
       >
         {toggleText}
         {active ? (

@@ -317,7 +317,7 @@ export const NavbarSearch: React.FC = () => {
       <Form
         className="px-0 h-100"
         onSubmit={scroll_to_results}
-        data-tour="catalog-1"
+        data-tutorial="catalog-1"
       >
         {/* Top row */}
         <StyledRow>
@@ -371,7 +371,7 @@ export const NavbarSearch: React.FC = () => {
                 setStartTime(Date.now());
               }}
               select_options={select_subjects}
-              data_tour={2}
+              data_tutorial={2}
             >
               <PopoutSelect
                 isMulti
@@ -409,7 +409,7 @@ export const NavbarSearch: React.FC = () => {
             </Popout>
             <div
               className="w-auto flex-grow-0 d-flex align-items-center"
-              data-tour="catalog-3"
+              data-tutorial="catalog-3"
             >
               <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
                 {/* Overall Rating Range */}
@@ -507,7 +507,7 @@ export const NavbarSearch: React.FC = () => {
                 setStartTime(Date.now());
               }}
               select_options={advanced_options}
-              data_tour={4}
+              data_tutorial={4}
             >
               <AdvancedWrapper>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">

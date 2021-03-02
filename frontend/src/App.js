@@ -5,7 +5,7 @@ import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import { CustomTour } from './components/CustomTour';
+import { Tutorial } from './components/Tutorial';
 
 import Landing from './pages/Landing';
 // import Home from './pages/Home';
@@ -50,15 +50,15 @@ function App({ themeToggler, location }) {
 
   const MyRoute = Route;
 
-  // React tour state
-  const [isTourOpen, setIsTourOpen] = useState(false);
+  // Tutorial state
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
 
   // Handle whether or not to open tutorial
   useEffect(() => {
     if (isLoggedIn && location && location.pathname === '/catalog') {
-      setIsTourOpen(true);
+      setIsTutorialOpen(true);
     }
-  }, [isLoggedIn, location, setIsTourOpen]);
+  }, [isLoggedIn, location, setIsTutorialOpen]);
 
   // Render spinner if page loading
   if (loading) {
@@ -167,7 +167,10 @@ function App({ themeToggler, location }) {
           return !['/catalog'].includes(location.pathname) && <Footer />;
         }}
       />
-      <CustomTour isTourOpen={isTourOpen} setIsTourOpen={setIsTourOpen} />
+      <Tutorial
+        isTutorialOpen={isTutorialOpen}
+        setIsTutorialOpen={setIsTutorialOpen}
+      />
     </>
   );
 }

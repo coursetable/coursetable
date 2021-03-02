@@ -4,21 +4,24 @@ import { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 
 type Props = {
-  isTourOpen: boolean;
-  setIsTourOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isTutorialOpen: boolean;
+  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
- * Custom React Tour component
+ * Custom Tutorial component using react tour
  */
 
-export const CustomTour: React.FC<Props> = ({ isTourOpen, setIsTourOpen }) => {
+export const Tutorial: React.FC<Props> = ({
+  isTutorialOpen,
+  setIsTutorialOpen,
+}) => {
   const globalTheme = useTheme();
 
   // Change react tour helper styling based on theme
   const helper_style: React.CSSProperties = useMemo(
     () => ({
-      maxWidth: '356px',
+      maxWidth: '380px',
       backgroundColor: globalTheme.background,
       color: globalTheme.text[0],
       display: 'flex',
@@ -37,40 +40,41 @@ export const CustomTour: React.FC<Props> = ({ isTourOpen, setIsTourOpen }) => {
   const steps: ReactourStep[] = [
     {
       selector: '',
-      content: 'Welcome to CourseTable!',
+      content:
+        'Welcome to CourseTable! This tutorial will teach you the basics of using the new catalog.',
       style: helper_style,
     },
     {
-      selector: '[data-tour="catalog-1"]',
+      selector: '[data-tutorial="catalog-1"]',
       content: 'You can search and filter courses in the navbar.',
       style: helper_style,
     },
     {
-      selector: '[data-tour="catalog-2"]',
+      selector: '[data-tutorial="catalog-2"]',
       content:
         'Click on a filter to show a dropdown where you can select multiple options.',
       style: helper_style,
-      observe: '[data-tour="catalog-2-observe"]',
+      observe: '[data-tutorial="catalog-2-observe"]',
       action: focusElement,
     },
     {
-      selector: '[data-tour="catalog-3"]',
+      selector: '[data-tutorial="catalog-3"]',
       content: 'Slide the range handles to filter by a range of values.',
       style: helper_style,
     },
     {
-      selector: '[data-tour="catalog-4"]',
+      selector: '[data-tutorial="catalog-4"]',
       content: () => (
         <div>
           Click on <strong>Advanced</strong> to see more advanced filters.
         </div>
       ),
       style: helper_style,
-      observe: '[data-tour="catalog-4-observe"]',
+      observe: '[data-tutorial="catalog-4-observe"]',
       action: focusElement,
     },
     {
-      selector: '[data-tour="catalog-5"]',
+      selector: '[data-tutorial="catalog-5"]',
       content:
         'Click on a column toggle to sort by that column (ascending/descending).',
       style: helper_style,
@@ -96,7 +100,7 @@ export const CustomTour: React.FC<Props> = ({ isTourOpen, setIsTourOpen }) => {
       selector: '',
       content: () => (
         <div>
-          That's it! Click <strong>Finish Tour</strong> to start using
+          That's it! Click <strong>Finish Tutorial</strong> to start using
           CourseTable!
         </div>
       ),
@@ -107,14 +111,14 @@ export const CustomTour: React.FC<Props> = ({ isTourOpen, setIsTourOpen }) => {
   return (
     <Tour
       steps={steps}
-      isOpen={isTourOpen}
-      onRequestClose={() => setIsTourOpen(false)}
+      isOpen={isTutorialOpen}
+      onRequestClose={() => setIsTutorialOpen(false)}
       accentColor={globalTheme.primary}
       rounded={6}
       showCloseButton={false}
       closeWithMask={false}
       showNavigationNumber={false}
-      lastStepNextButton={<Button>Finish Tour</Button>}
+      lastStepNextButton={<Button>Finish Tutorial</Button>}
     />
   );
 };
