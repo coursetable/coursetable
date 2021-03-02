@@ -1,8 +1,36 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import Tour, { ReactourStep } from 'reactour';
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
+
+// Next button for tutorial
+const NextButton = styled(Button)`
+  background-color: ${({ theme }) => theme.primary_hover};
+  border-color: transparent !important;
+  box-shadow: none !important;
+  &:focus {
+    background-color: ${({ theme }) => theme.primary_hover};
+  }
+`;
+
+// Back button for tutorial
+const PrevButton = styled(Button)`
+  background-color: transparent;
+  border-color: transparent !important;
+  color: ${({ theme }) => theme.text[2]} !important;
+  box-shadow: none !important;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.button_active};
+  }
+  &:active {
+    background-color: ${({ theme }) => theme.button_active} !important;
+  }
+  &:focus {
+    background-color: transparent;
+  }
+`;
 
 type Props = {
   isTutorialOpen: boolean;
@@ -21,6 +49,16 @@ export const Tutorial: React.FC<Props> = ({
   shownTutorial,
   setShownTutorial,
 }) => {
+  // Current step state
+  const [currentStep, setCurrentStep] = useState(0);
+
+  // Whenever the tutorial is closed, reset the currentStep
+  useEffect(() => {
+    if (!isTutorialOpen) {
+      setCurrentStep(0);
+    }
+  }, [isTutorialOpen]);
+
   const globalTheme = useTheme();
 
   // Change react tour helper styling based on theme
@@ -37,7 +75,7 @@ export const Tutorial: React.FC<Props> = ({
       styles = {
         ...styles,
         paddingRight: '40px',
-        maxWidth: '390px',
+        maxWidth: '432px',
         alignItems: 'center',
       };
     }
@@ -121,6 +159,26 @@ export const Tutorial: React.FC<Props> = ({
     },
   ];
 
+  // Handle prev button styling
+  const prevButton = useMemo(() => {
+    if (currentStep === 0) {
+      return <div style={{ display: 'none' }} />;
+    }
+    if (!shownTutorial) {
+      return (
+        <PrevButton
+          style={{
+            marginRight: '-40px',
+          }}
+        >
+          Back
+        </PrevButton>
+      );
+    }
+    return <PrevButton>Back</PrevButton>;
+  }, [currentStep, shownTutorial]);
+
+  // Disable/enable body scroll callbacks
   const disableBody = useCallback((target) => disableBodyScroll(target), []);
   const enableBody = useCallback((target) => enableBodyScroll(target), []);
 
@@ -141,11 +199,12 @@ export const Tutorial: React.FC<Props> = ({
       closeWithMask={false}
       showNavigationNumber={false}
       showNumber={false}
-      lastStepNextButton={
-        <Button style={{ backgroundColor: globalTheme.primary_hover }}>
-          Finish Tutorial
-        </Button>
+      nextButton={
+        <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>
       }
+      prevButton={prevButton}
+      lastStepNextButton={<NextButton>Finish Tutorial</NextButton>}
+      getCurrentStep={(curr) => setCurrentStep(curr)}
       disableKeyboardNavigation={['esc']}
       onAfterOpen={disableBody}
       onBeforeClose={enableBody}
