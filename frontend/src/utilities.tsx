@@ -50,6 +50,7 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
   // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
+    console.log(event);
     if (
       ref_toggle.current &&
       ref_dropdown &&
