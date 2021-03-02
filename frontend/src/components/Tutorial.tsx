@@ -92,7 +92,7 @@ export const Tutorial: React.FC<Props> = ({
             href="http://coursetable.com/feedback"
           >
             <strong>Feedback page</strong>
-          </a>{' '}
+          </a>
           .
         </div>
       ),
@@ -119,13 +119,13 @@ export const Tutorial: React.FC<Props> = ({
         setIsTutorialOpen(false);
       }}
       startAt={0}
-      accentColor={globalTheme.primary}
+      accentColor={globalTheme.primary_hover}
       rounded={6}
       showCloseButton={false}
       closeWithMask={false}
       showNavigationNumber={false}
       lastStepNextButton={
-        <Button style={{ backgroundColor: globalTheme.primary }}>
+        <Button style={{ backgroundColor: globalTheme.primary_hover }}>
           Finish Tutorial
         </Button>
       }
