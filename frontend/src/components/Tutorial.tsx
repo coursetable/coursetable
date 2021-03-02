@@ -197,6 +197,7 @@ export const Tutorial: React.FC<Props> = ({
       disableDotsNavigation={!shownTutorial}
       showNavigation={shownTutorial}
       closeWithMask={shownTutorial}
+      disableFocusLock
       showNavigationNumber={false}
       showNumber={false}
       nextButton={
