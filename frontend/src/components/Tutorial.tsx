@@ -6,6 +6,7 @@ import { Button } from 'react-bootstrap';
 type Props = {
   isTutorialOpen: boolean;
   setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -15,6 +16,7 @@ type Props = {
 export const Tutorial: React.FC<Props> = ({
   isTutorialOpen,
   setIsTutorialOpen,
+  setShownTutorial,
 }) => {
   const globalTheme = useTheme();
 
@@ -112,7 +114,10 @@ export const Tutorial: React.FC<Props> = ({
     <Tour
       steps={steps}
       isOpen={isTutorialOpen}
-      onRequestClose={() => setIsTutorialOpen(false)}
+      onRequestClose={() => {
+        setShownTutorial(true);
+        setIsTutorialOpen(false);
+      }}
       accentColor={globalTheme.primary}
       rounded={6}
       showCloseButton={false}
