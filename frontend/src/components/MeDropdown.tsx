@@ -144,26 +144,28 @@ const MeDropdown: React.VFC<Props> = ({
               </TextComponent>
             </Row>
             {/* Try tutorial */}
-            <Row className="pb-3 m-auto">
-              <FcPuzzle
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px' }}
-              />
-              <TextComponent type={1}>
-                <NavLink
-                  to="/catalog"
-                  className={styles.collapse_text}
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    scrollToTop(e);
-                    setIsTutorialOpen(true);
-                  }}
-                >
-                  <StyledHoverText>Tutorial</StyledHoverText>
-                </NavLink>
-              </TextComponent>
-            </Row>
+            {isLoggedIn && (
+              <Row className="pb-3 m-auto">
+                <FcPuzzle
+                  className="mr-2 my-auto"
+                  size={20}
+                  style={{ paddingLeft: '2px' }}
+                />
+                <TextComponent type={1}>
+                  <NavLink
+                    to="/catalog"
+                    className={styles.collapse_text}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToTop(e);
+                      setIsTutorialOpen(true);
+                    }}
+                  >
+                    <StyledHoverText>Tutorial</StyledHoverText>
+                  </NavLink>
+                </TextComponent>
+              </Row>
+            )}
             {/* Revert to Old CourseTable Link */}
             <Row className="pb-3 m-auto">
               <FcUndo
