@@ -22,6 +22,7 @@ import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
+import { useLocalStorageState } from './browserStorage';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -53,12 +54,23 @@ function App({ themeToggler, location }) {
   // Tutorial state
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
 
+  // First tutorial state
+  const [shownTutorial, setShownTutorial] = useLocalStorageState(
+    'shownTutorial',
+    false
+  );
+
   // Handle whether or not to open tutorial
   useEffect(() => {
-    if (isLoggedIn && location && location.pathname === '/catalog') {
+    if (
+      isLoggedIn &&
+      !shownTutorial &&
+      location &&
+      location.pathname === '/catalog'
+    ) {
       setIsTutorialOpen(true);
     }
-  }, [isLoggedIn, location, setIsTutorialOpen]);
+  }, [isLoggedIn, shownTutorial, location, setIsTutorialOpen]);
 
   // Render spinner if page loading
   if (loading) {
@@ -170,6 +182,7 @@ function App({ themeToggler, location }) {
       <Tutorial
         isTutorialOpen={isTutorialOpen}
         setIsTutorialOpen={setIsTutorialOpen}
+        setShownTutorial={setShownTutorial}
       />
     </>
   );
