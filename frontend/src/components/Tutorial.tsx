@@ -2,6 +2,7 @@ import React, { useCallback, useMemo } from 'react';
 import Tour, { ReactourStep } from 'reactour';
 import { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
+import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 type Props = {
   isTutorialOpen: boolean;
@@ -110,6 +111,9 @@ export const Tutorial: React.FC<Props> = ({
     },
   ];
 
+  const disableBody = useCallback((target) => disableBodyScroll(target), []);
+  const enableBody = useCallback((target) => enableBodyScroll(target), []);
+
   return (
     <Tour
       steps={steps}
@@ -130,6 +134,8 @@ export const Tutorial: React.FC<Props> = ({
         </Button>
       }
       disableKeyboardNavigation={['esc']}
+      onAfterOpen={disableBody}
+      onBeforeClose={enableBody}
     />
   );
 };
