@@ -187,6 +187,7 @@ function App({ themeToggler, location }) {
       <Tutorial
         isTutorialOpen={isTutorialOpen}
         setIsTutorialOpen={setIsTutorialOpen}
+        shownTutorial={shownTutorial}
         setShownTutorial={setShownTutorial}
       />
     </>

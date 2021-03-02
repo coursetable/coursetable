@@ -7,6 +7,7 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 type Props = {
   isTutorialOpen: boolean;
   setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  shownTutorial: boolean;
   setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -17,22 +18,31 @@ type Props = {
 export const Tutorial: React.FC<Props> = ({
   isTutorialOpen,
   setIsTutorialOpen,
+  shownTutorial,
   setShownTutorial,
 }) => {
   const globalTheme = useTheme();
 
   // Change react tour helper styling based on theme
-  const helper_style: React.CSSProperties = useMemo(
-    () => ({
+  const helper_style: React.CSSProperties = useMemo(() => {
+    let styles: React.CSSProperties = {
       maxWidth: '380px',
       backgroundColor: globalTheme.background,
       color: globalTheme.text[0],
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center',
-    }),
-    [globalTheme]
-  );
+      alignItems: 'flex-end',
+    };
+    if (shownTutorial) {
+      styles = {
+        ...styles,
+        paddingRight: '40px',
+        maxWidth: '390px',
+        alignItems: 'center',
+      };
+    }
+    return styles;
+  }, [globalTheme, shownTutorial]);
 
   // Focus element callback
   const focusElement = useCallback((node) => {
@@ -125,7 +135,9 @@ export const Tutorial: React.FC<Props> = ({
       startAt={0}
       accentColor={globalTheme.primary_hover}
       rounded={6}
-      showCloseButton={false}
+      showCloseButton={shownTutorial}
+      disableDotsNavigation={!shownTutorial}
+      showNavigation={shownTutorial}
       closeWithMask={false}
       showNavigationNumber={false}
       showNumber={false}
