@@ -565,8 +565,8 @@ function Search() {
   return (
     <div className={Styles.search_base}>
       <GlobalHotKeys
-        keyMap={keyMap}
-        handlers={handlers}
+        keyMap={course_modal[0] ? {} : keyMap}
+        handlers={course_modal[0] ? {} : handlers}
         allowChanges // required for global
         style={{ outline: 'none' }}
       />
