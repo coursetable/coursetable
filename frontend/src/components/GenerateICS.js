@@ -1,10 +1,12 @@
+/* eslint @typescript-eslint/no-var-requires: "off" */
+
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import ics from 'ics';
 import { weekdays } from '../common';
 import { toSeasonString } from '../courseUtilities';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
+const ics = require('ics');
 const FileSaver = require('file-saver');
 
 // Is this day during a break?
