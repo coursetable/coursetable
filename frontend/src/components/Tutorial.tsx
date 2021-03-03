@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { Link } from 'react-router-dom';
 import Tour, { ReactourStep } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
@@ -135,13 +136,9 @@ export const Tutorial: React.FC<Props> = ({
       content: () => (
         <div>
           If you have any problems, you can leave feedback on our{' '}
-          <a
-            target="_blank"
-            rel="noopener noreferrer"
-            href="https://coursetable.com/feedback"
-          >
+          <Link target="_blank" rel="noopener noreferrer" to="/feedback">
             <strong>Feedback page</strong>
-          </a>
+          </Link>
           .
         </div>
       ),
