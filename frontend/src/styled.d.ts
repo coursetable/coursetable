@@ -20,6 +20,7 @@ declare module 'styled-components' {
     icon_focus: string;
     rating_alpha: number;
     primary: string;
+    primary_light: string;
     primary_hover: string;
     row_odd: string;
   }
