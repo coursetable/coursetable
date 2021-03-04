@@ -84,14 +84,6 @@
 }
 
 @media (hover: none) {
-  .worksheet_btn {
-    top: -10px;
-  }
-
-  .worksheet_btn:hover {
-    transform: none;
-  }
-
   .container:hover {
     transform: none;
     cursor: none;
