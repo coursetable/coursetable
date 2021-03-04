@@ -19,6 +19,7 @@ import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
+import BetaBlocked from './pages/BetaBlocked';
 
 import { useUser } from './user';
 
@@ -86,10 +87,16 @@ function App({ themeToggler }) {
 
         {/* Catalog */}
         <MyRoute exact path="/catalog">
-          {isLoggedIn && !user.hasEvals ? (
-            <Redirect push to="/challenge" />
+          {isLoggedIn ? (
+            !user.hasEvals ? (
+              <Redirect push to="/challenge" />
+            ) : !user.onWhitelist ? (
+              <Redirect push to="/betablocked" />
+            ) : (
+              <Search />
+            )
           ) : (
-            <Search />
+            <Redirect to="/login" />
           )}
         </MyRoute>
 
@@ -107,13 +114,30 @@ function App({ themeToggler }) {
           <Challenge />
         </MyRoute>
 
+        {/* Beta Blocked */}
+        <MyRoute exact path="/betablocked">
+          {isLoggedIn ? (
+            !user.hasEvals ? (
+              <Redirect push to="/challenge" />
+            ) : !user.onWhitelist ? (
+              <BetaBlocked />
+            ) : (
+              <Redirect push to="/catalog" />
+            )
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </MyRoute>
+
         {/* Worksheet */}
         <MyRoute exact path="/worksheet">
           {isLoggedIn ? (
-            user.hasEvals ? (
-              <Worksheet />
-            ) : (
+            !user.hasEvals ? (
               <Redirect push to="/challenge" />
+            ) : !user.onWhitelist ? (
+              <Redirect push to="/betablocked" />
+            ) : (
+              <Worksheet />
             )
           ) : (
             <Redirect to="/worksheetlogin" />
