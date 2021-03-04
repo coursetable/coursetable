@@ -23,12 +23,14 @@ import {
   creditOptions,
   schoolOptions,
   subjectOptions,
+  sortbyOptions,
 } from '../queries/Constants';
 import CustomSelect from './CustomSelect';
 import { useSearch, Option, defaultFilters } from '../searchContext';
 import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';
+import CatalogColumnSort from './CatalogColumnSort';
 
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -529,6 +531,14 @@ export const NavbarSearch: React.FC = () => {
                       setSelectCredits((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
                     }}
+                  />
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Sort by Guts */}
+                  <AdvancedLabel>{sortbyOptions[7].label}:</AdvancedLabel>
+                  <CatalogColumnSort
+                    selectOption={sortbyOptions[7]}
+                    key={reset_key}
                   />
                 </Row>
                 <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
