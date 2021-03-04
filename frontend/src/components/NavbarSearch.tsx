@@ -603,13 +603,13 @@ export const NavbarSearch: React.FC = () => {
             </Popout>
           </FilterGroup>
 
-          {/* Reset Filters Button */}
+          {/* Reset Filters & Sorting Button */}
           <StyledButton
             variant="danger"
             onClick={handleResetFilters}
             disabled={!canReset}
           >
-            Reset Filters
+            Reset
           </StyledButton>
         </StyledRow>
       </Form>
