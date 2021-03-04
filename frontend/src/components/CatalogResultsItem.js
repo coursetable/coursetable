@@ -36,7 +36,6 @@ const StyledResultsItem = styled(Row)`
 
 // Wrapper for row
 const StyledSpacer = styled.div`
-  border-top: solid 1px ${({ theme }) => theme.border};
   outline: none !important;
   background-color: ${({ theme, inWorksheet }) =>
     inWorksheet ? theme.primary_light : 'inherit'};
