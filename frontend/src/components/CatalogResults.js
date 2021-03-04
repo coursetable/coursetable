@@ -310,7 +310,7 @@ const CatalogResults = ({
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={data.length}
-                  rowHeight={width > 1320 ? 33 : 28}
+                  rowHeight={width > 1320 ? 32 : 28}
                   rowRenderer={renderListRow}
                 />
               )}
