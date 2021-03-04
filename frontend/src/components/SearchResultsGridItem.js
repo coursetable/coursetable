@@ -24,8 +24,12 @@ import { getOverallRatings } from '../courseUtilities';
 
 // Grid Item wrapper
 const StyledGridItem = styled.div`
-  background-color: ${({ theme }) =>
-    theme.theme === 'light' ? 'rgb(245, 245, 245)' : theme.surface[1]};
+  background-color: ${({ theme, inWorksheet }) =>
+    inWorksheet
+      ? theme.primary_light
+      : theme.theme === 'light'
+      ? 'rgb(245, 245, 245)'
+      : theme.surface[1]};
   &:hover {
     background-color: ${({ theme }) => theme.select_hover};
   }
@@ -83,6 +87,9 @@ const SearchResultsGridItem = ({
   // Variable used in list keys
   let key = 0;
 
+  // Is the current course in the worksheet?
+  const [courseInWorksheet, setCourseInWorksheet] = useState(false);
+
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -128,6 +135,7 @@ const SearchResultsGridItem = ({
         }}
         className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
         tabIndex="0"
+        inWorksheet={courseInWorksheet}
       >
         <Row className="m-auto">
           {/* Course Code */}
@@ -356,6 +364,7 @@ const SearchResultsGridItem = ({
           crn={course.crn}
           season_code={course.season_code}
           modal={false}
+          setCourseInWorksheet={setCourseInWorksheet}
         />
       </div>
       {/* Render conflict icon only when component has been mounted */}
