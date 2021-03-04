@@ -13,7 +13,7 @@ export const lightTheme: DefaultTheme = {
   banner: '#f5f5f5', // For slightly grey surfaces
   border: '#ededed', // Used in borders (calendar, and between list items)
   select: '#FFFFFF', // Background color for react-select
-  select_hover: '#e1edff', // Blueish tint to use on hover
+  select_hover: 'rgba(70, 143, 242, 0.3)', // Blueish tint to use on hover
   multivalue: 'hsl(0,0%,90%)', // Multivalue background-color used in react-select
   hidden: '#b9b8b8', // Color to use when course is hidden
   disabled: 'rgb(242, 242, 242)', // Disabled color for react-select
@@ -23,6 +23,7 @@ export const lightTheme: DefaultTheme = {
   icon_focus: 'rgb(102, 102, 102)', // Icon focus color
   rating_alpha: 1, // Rating bubble's opacity
   primary: '#468ff2', // Primary color (blue)
+  primary_light: 'rgba(70, 143, 242, 0.15)', // Primary color (lighter blue)
   primary_hover: '#007bff', // Primary hover color (dark blue)
   row_odd: '#f9f9f9', // Odd row background color
 };
@@ -43,7 +44,8 @@ export const darkTheme: DefaultTheme = {
   icon: 'rgb(102, 102, 102)', // Icon color
   icon_focus: 'rgb(204, 204, 204)', // Icon focus color
   rating_alpha: 0.75, // Rating bubble's opacity
-  primary: '#61adff', // Primary color (lighter blue)
+  primary: '#61adff', // Primary color (blue)
+  primary_light: 'rgba(68, 100, 145, 0.25)', // Primary color (lighter blue)
   primary_hover: '#007bff', // Primary hover color (blue)
   row_odd: '#202020', // Odd row background color
 };

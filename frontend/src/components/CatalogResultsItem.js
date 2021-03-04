@@ -18,8 +18,9 @@ import CourseConflictIcon from './CourseConflictIcon';
 import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './CatalogResultsItem.module.css';
-import { getOverallRatings } from '../courseUtilities';
+import { getOverallRatings, isInWorksheet } from '../courseUtilities';
 import { breakpoints } from '../utilities';
+import { useUser } from '../user';
 
 // Row for catalog results item
 const StyledResultsItem = styled(Row)`
@@ -35,8 +36,10 @@ const StyledResultsItem = styled(Row)`
 
 // Wrapper for row
 const StyledSpacer = styled.div`
-  border-top: solid 1px ${({ theme }) => theme.border};
   outline: none !important;
+  background-color: ${({ theme, inWorksheet }) =>
+    inWorksheet ? theme.primary_light : 'inherit'};
+
   &:hover {
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
@@ -155,6 +158,9 @@ const CatalogResultsItem = ({
     );
   };
 
+  // Is the current course in the worksheet?
+  const [courseInWorksheet, setCourseInWorksheet] = useState(false);
+
   // Render tooltip with names of FB friends also shopping
   const renderFBFriendsTooltip = (props) =>
     fb_friends.length > 0 ? (
@@ -203,6 +209,7 @@ const CatalogResultsItem = ({
         showModal(course);
       }}
       tabIndex="0"
+      inWorksheet={courseInWorksheet}
     >
       {/* Catalog Results Row Item */}
       <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
@@ -363,6 +370,7 @@ const CatalogResultsItem = ({
             crn={course.crn}
             season_code={course.season_code}
             modal={false}
+            setCourseInWorksheet={setCourseInWorksheet}
           />
         </div>
         {/* Render conflict icon only when component has been mounted */}
