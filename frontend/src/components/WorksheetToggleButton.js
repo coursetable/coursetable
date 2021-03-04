@@ -25,22 +25,35 @@ const StyledButton = styled(Button)`
  * @prop crn - number | integer that holds the crn of the current course
  * @prop season_code - string | holds the current season code
  * @prop modal - boolean | are we rendering in the course modal
+ * @prop setCourseInWorksheet - function | to set if current course is in user's worksheet for parent component
  */
-function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
+function WorksheetToggleButton({
+  worksheetView,
+  crn,
+  season_code,
+  modal,
+  setCourseInWorksheet = null,
+}) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
+
   const worksheet_check = useMemo(() => {
     return isInWorksheet(season_code, crn.toString(), user.worksheet);
   }, [user.worksheet, season_code, crn]);
   // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(worksheet_check);
+  if (setCourseInWorksheet) setCourseInWorksheet(worksheet_check);
 
   // Fetch width of window
   const { width } = useWindowDimensions();
 
   // Reset inWorksheet state on every rerender
   const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
-  if (inWorksheet !== update) setInWorksheet(update);
+  if (inWorksheet !== update) {
+    setInWorksheet(update);
+    if (setCourseInWorksheet) setCourseInWorksheet(update);
+  }
+
   // Disabled worksheet add/remove button if not logged in
   if (user.worksheet == null)
     return (
