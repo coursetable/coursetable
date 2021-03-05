@@ -29,13 +29,13 @@ function Footer() {
               &copy; {new Date().getFullYear()}
             </small>
 
-            <div>
+            <a href="https://vercel.com/?utm_source=coursetable&utm_campaign=oss">
               <img
                 style={{ height: '2rem' }}
                 src={VercelBanner}
                 alt="Powered by Vercel"
               />
-            </div>
+            </a>
           </div>
           <div className="col-6 col-md">
             <h5>Explore</h5>
