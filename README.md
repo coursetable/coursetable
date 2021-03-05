@@ -55,3 +55,5 @@ We use GitHub projects to manage everything and do planning: https://github.com/
 ## Setting up and deploying to prod
 
 Check out [How to deploy](docs/how-to-deploy.md).
+
+[![powered-by-vercel](/Users/kevinhu/github/coursetable/frontend/src/images/powered-by-vercel.svg)](https://vercel.com/?utm_source=coursetable&utm_campaign=oss)
