@@ -56,4 +56,4 @@ We use GitHub projects to manage everything and do planning: https://github.com/
 
 Check out [How to deploy](docs/how-to-deploy.md).
 
-[![powered-by-vercel](/Users/kevinhu/github/coursetable/frontend/src/images/powered-by-vercel.svg)](https://vercel.com/?utm_source=coursetable&utm_campaign=oss)
+[![powered-by-vercel](frontend/src/images/vercel.svg)](https://vercel.com/?utm_source=coursetable&utm_campaign=oss)
