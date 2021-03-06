@@ -8,7 +8,12 @@ import { Router, useLocation } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { ThemeProvider } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
-import { InMemoryCache, ApolloClient, ApolloProvider } from '@apollo/client';
+import {
+  InMemoryCache,
+  ApolloClient,
+  ApolloProvider,
+  createHttpLink,
+} from '@apollo/client';
 
 import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
@@ -71,10 +76,16 @@ Sentry.init({
   tracesSampleRate: isDev ? 1.0 : 0.08,
 });
 
-const client = new ApolloClient({
+const link = createHttpLink({
   uri: `${API_ENDPOINT}/ferry/v1/graphql`,
+  credentials: 'include',
+});
+
+const client = new ApolloClient({
+  // uri: `${API_ENDPOINT}/ferry/v1/graphql`,
   // default cache for now
   cache: new InMemoryCache(),
+  link,
 });
 
 function SPAPageChangeListener() {

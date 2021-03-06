@@ -20,6 +20,9 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 import catalog from './catalog/catalog.routes';
 import cas_auth, { casCheck, evalsCheck } from './auth/cas_auth.routes';
 
+import passport from 'passport';
+import { passportConfig } from './auth/cas_auth.routes';
+
 const app = express();
 
 app.use(cors(CORS_OPTIONS));
@@ -70,31 +73,6 @@ app.use(
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
 
-// restrict GraphQL access for authenticated Yale students only
-app.use('/ferry', casCheck, evalsCheck);
-app.use(
-  '/ferry',
-  createProxyMiddleware({
-    target: 'http://graphql-engine:8080',
-    pathRewrite: {
-      '^/ferry': '/', // remove base path
-    },
-    ws: true,
-  })
-);
-
-// app.use('/legacy_api', casCheck);
-app.use(
-  ['/legacy_api', '/index.php'],
-  createProxyMiddleware({
-    target: PHP_URI,
-    pathRewrite: {
-      '^/legacy_api': '/', // remove base path
-    },
-    xfwd: true,
-  })
-);
-
 // Serve with SSL.
 https
   .createServer(
@@ -110,12 +88,58 @@ https
 
 // We use the IIFE pattern so that we can use await.
 (async () => {
+  /* Configuring passport */
+  passportConfig(passport);
+  app.use(passport.initialize());
+  app.use(passport.session());
+
+  app.get('/api/auth/test', (req, res) => {
+    if (req.user) {
+      res.json({ auth: true, id: req.user.netId, user: req.user });
+    } else {
+      res.json({ auth: false, id: null });
+    }
+  });
+
   // Setup routes.
   app.get('/api/ping', (req, res) => {
     res.json('pong');
   });
   await catalog(app);
   await cas_auth(app);
+
+  app.use('/legacy_api', casCheck);
+  app.use(
+    ['/legacy_api', '/index.php'],
+    createProxyMiddleware({
+      target: PHP_URI,
+      pathRewrite: {
+        '^/legacy_api': '/', // remove base path
+      },
+      xfwd: true,
+    })
+  );
+
+  // restrict GraphQL access for authenticated Yale students only
+  app.use(
+    '/ferry',
+    (req, res, next) => {
+      console.log(req.user);
+      return next();
+    },
+    casCheck,
+    evalsCheck
+  );
+  app.use(
+    '/ferry',
+    createProxyMiddleware({
+      target: 'http://graphql-engine:8080',
+      pathRewrite: {
+        '^/ferry': '/', // remove base path
+      },
+      ws: true,
+    })
+  );
 
   // Once routes have been created, start listening.
   app.listen(INSECURE_PORT, () => {

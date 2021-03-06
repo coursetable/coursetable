@@ -4,6 +4,8 @@ import express from 'express';
 import { STATIC_FILE_DIR } from '../config';
 import { fetchCatalog } from './catalog.utils';
 
+import cas_auth, { casCheck, evalsCheck } from '../auth/cas_auth.routes';
+
 export default async (app: express.Express) => {
   // Enable static catalog refresh on demand.
   // After the crawler runs, we hit this route to refresh the static files.
@@ -12,7 +14,7 @@ export default async (app: express.Express) => {
   // Mount static files route and require NetID authentication
   app.use(
     '/api/static',
-    verifyNetID,
+    casCheck,
     express.static(STATIC_FILE_DIR, {
       cacheControl: true,
       maxAge: '1h',

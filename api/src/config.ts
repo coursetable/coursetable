@@ -21,6 +21,9 @@ export const MYSQL_COURSES_CONFIG = {
   database: process.env.COURSES_DB || die('courses db'),
 };
 
+export const YALIES_API_KEY =
+  process.env.YALIES_API_KEY || die('yalies api key');
+
 export const GRAPHQL_ENDPOINT =
   process.env.GRAPHQL_ENDPOINT || die('graphql endpoint');
 
@@ -33,12 +36,7 @@ export const FRONTEND_ENDPOINT = isDev
   : process.env.FRONTEND_ENDPOINT;
 
 export const CORS_OPTIONS = {
-  origin: [
-    'http://localhost:3000',
-    'https://coursetable.com',
-    'https://beta.coursetable.com',
-    'https://alpha.coursetable.com',
-  ],
+  origin: FRONTEND_ENDPOINT,
   credentials: true,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
 };

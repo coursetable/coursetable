@@ -26,6 +26,7 @@ services:
       CHALLENGE_PASSWORD: thisisapassword2
       SESSION_SECRET: "this is a dumb secret"
       FERRY_SECRET: "" # we want this empty in development so no auth is required to refresh
+      YALIES_API_KEY: ${YALIES_API_KEY?password}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
