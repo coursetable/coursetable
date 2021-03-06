@@ -61,7 +61,8 @@ export const UserProvider: React.FC = ({ children }) => {
     (suppressError = false): Promise<void> => {
       return axios
         .get(
-          `${API_ENDPOINT}/legacy_api/WorksheetActions.php?action=get&season=all`
+          `${API_ENDPOINT}/legacy_api/WorksheetActions.php?action=get&season=all`,
+          { withCredentials: true }
         )
         .then((res) => {
           if (!res.data.success) {
@@ -95,7 +96,9 @@ export const UserProvider: React.FC = ({ children }) => {
   const fbRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
-        .get(`${API_ENDPOINT}/legacy_api/FetchFriendWorksheetsNew.php`)
+        .get(`${API_ENDPOINT}/legacy_api/FetchFriendWorksheetsNew.php`, {
+          withCredentials: true,
+        })
         .then((friends_worksheets) => {
           if (!friends_worksheets.data.success) {
             throw new Error(friends_worksheets.data.message);

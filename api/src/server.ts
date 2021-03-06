@@ -83,7 +83,7 @@ app.use(
   })
 );
 
-app.use('/legacy_api', casCheck);
+// app.use('/legacy_api', casCheck);
 app.use(
   ['/legacy_api', '/index.php'],
   createProxyMiddleware({
