@@ -82,8 +82,7 @@ const casSignup = function (
         return next(err);
       }
 
-      const userEntry = Student.findOrCreate(user.netId);
-      console.log(userEntry);
+      const userEntry = Student.findOrCreate(user.netId, () => {});
     });
   })(req, res, next);
 };
@@ -112,12 +111,13 @@ export const evalsCheck = (
   next: express.NextFunction
 ) => {
   if (req.user) {
-    const hasEvals = Student.getEvalsStatus(req.user.netId);
-    if (!hasEvals) {
-      return res.status(401).json({ message: 'Not authorized' });
-    } else {
-      return next();
-    }
+    Student.getEvalsStatus(req.user.netId, (statusCode, err, hasEvals) => {
+      if (!hasEvals) {
+        return res.status(401).json({ message: 'Not authorized' });
+      } else {
+        return next();
+      }
+    });
   } else {
     return res.status(401).json({ message: 'Not authorized' });
   }
