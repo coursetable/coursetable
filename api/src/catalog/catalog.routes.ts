@@ -4,7 +4,7 @@ import express from 'express';
 import { STATIC_FILE_DIR } from '../config';
 import { fetchCatalog } from './catalog.utils';
 
-export default async (app) => {
+export default async (app: express.Express) => {
   // Enable static catalog refresh on demand.
   // After the crawler runs, we hit this route to refresh the static files.
   app.get('/api/catalog/refresh', verifyHeaders, refreshCatalog);
