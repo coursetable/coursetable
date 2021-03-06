@@ -2,14 +2,26 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import morgan from 'morgan';
 import session from 'cookie-session';
+import fs from 'fs';
+import https from 'https';
 
-import { PORT, SESSION_SECRET } from './config';
+import { PORT, INSECURE_PORT, SESSION_SECRET } from './config';
+
+const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import routes
 import catalog from './catalog/catalog.routes.js';
-import cas_auth from './auth/cas_auth.routes';
+import cas_auth, { casCheck } from './auth/cas_auth.routes';
 
 const app = express();
+
+// Redirection routes for historical pages.
+app.get('/Blog', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/Blog.html');
+});
+app.get('/recommendations.htm', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/recommendations.htm');
+});
 
 // Enable url-encoding
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -37,6 +49,36 @@ app.use(
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
 
+const authHard = (req, res, next) => {
+  console.log(req.user);
+  console.log('e');
+};
+
+app.use('/ferry', casAuth);
+app.use(
+  '/ferry',
+  createProxyMiddleware({
+    target: 'http://graphql-engine:8080',
+    pathRewrite: {
+      '^/ferry': '/', // remove base path
+    },
+    ws: true,
+  })
+);
+
+// Serve with SSL.
+https
+  .createServer(
+    {
+      key: fs.readFileSync('server.key'),
+      cert: fs.readFileSync('server.cert'),
+    },
+    app
+  )
+  .listen(PORT, () => {
+    console.log(`Secure dev proxy listening on port ${PORT}`);
+  });
+
 // We use the IIFE pattern so that we can use await.
 (async () => {
   // Setup routes.
@@ -47,7 +89,7 @@ app.set('trust proxy', true);
   await cas_auth(app);
 
   // Once routes have been created, start listening.
-  app.listen(PORT, () => {
-    console.log(`API listening on port ${PORT}`);
+  app.listen(INSECURE_PORT, () => {
+    console.log(`Insecure API listening on port ${INSECURE_PORT}`);
   });
 })();

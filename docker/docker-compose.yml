@@ -1,19 +1,10 @@
 version: "3.2"
 services:
-  proxy:
-    image: node:latest
-    ports:
-      - "8080:8080"
-      - "3001:3001"
-    volumes:
-      - ../proxy:/app
-    user: "1000"
-    command: sh -c 'cd /app && yarn && yarn start'
-
   api:
     image: node:latest
     ports:
       - "4096:4096"
+      - "3001:3001"
     volumes:
       - ../api:/app
       - ./wait-for-it.sh:/wait-for-it.sh

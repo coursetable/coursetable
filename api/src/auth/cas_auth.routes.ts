@@ -66,6 +66,26 @@ const casLogin = function (
   })(req, res, next);
 };
 
+// middleware function for requiring cas authentication
+export const casCheck = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  passport.authenticate('cas', function (err, user) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return next(new Error('CAS auth but no user'));
+    }
+
+    console.log(user);
+
+    return next();
+  })(req, res, next);
+};
+
 export default async (app: express.Express) => {
   app.use(passport.initialize());
   app.use(passport.session());

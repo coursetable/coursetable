@@ -3,6 +3,7 @@ const die = (err: string) => {
 };
 
 export const PORT = 4096;
+export const INSECURE_PORT = process.env.PORT || 3001;
 
 export const MYSQL_DB_CONFIG = {
   host: process.env.MYSQL_HOST || die('mysql host'),
@@ -14,6 +15,8 @@ export const MYSQL_DB_CONFIG = {
 
 export const GRAPHQL_ENDPOINT =
   process.env.GRAPHQL_ENDPOINT || die('graphql endpoint');
+
+const PHP_URI = 'http://nginx:8080';
 
 // Secret for session cookie signing.
 export const SESSION_SECRET =
