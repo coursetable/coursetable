@@ -12,13 +12,14 @@ import {
   SESSION_SECRET,
   CORS_OPTIONS,
   PHP_URI,
+  STATIC_FILE_DIR,
 } from './config';
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import routes
 import catalog from './catalog/catalog.routes';
-import cas_auth, { casCheck, evalsCheck } from './auth/cas_auth.routes';
+import cas_auth, { casCheck } from './auth/cas_auth.routes';
 
 import passport from 'passport';
 import { passportConfig } from './auth/cas_auth.routes';
@@ -101,6 +102,19 @@ https
     }
   });
 
+  app.use('/api/static', casCheck);
+
+  // Mount static files route and require NetID authentication
+  app.use(
+    '/api/static',
+    express.static(STATIC_FILE_DIR, {
+      cacheControl: true,
+      maxAge: '1h',
+      lastModified: true,
+      etag: true,
+    })
+  );
+
   // Setup routes.
   app.get('/api/ping', (req, res) => {
     res.json('pong');
@@ -121,15 +135,7 @@ https
   );
 
   // restrict GraphQL access for authenticated Yale students only
-  app.use(
-    '/ferry',
-    (req, res, next) => {
-      console.log(req.user);
-      return next();
-    },
-    casCheck,
-    evalsCheck
-  );
+  app.use('/ferry', casCheck);
   app.use(
     '/ferry',
     createProxyMiddleware({

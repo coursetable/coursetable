@@ -96,7 +96,9 @@ const addToCache = (season: Season): Promise<void> => {
     };
 
     return axios
-      .get(`${API_ENDPOINT}/api/static/catalogs/${season}.json`)
+      .get(`${API_ENDPOINT}/api/static/catalogs/${season}.json`, {
+        withCredentials: true,
+      })
       .then((res) => {
         // Convert season list into a crn lookup table.
         const data = res.data as Listing[];
