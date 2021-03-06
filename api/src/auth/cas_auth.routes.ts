@@ -123,6 +123,23 @@ export const evalsCheck = (
   }
 };
 
+export const authSoft = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  passport.authenticate('cas', function (err, user) {
+    if (user) {
+      req.headers['x-coursetable-authd'] = 'true';
+      req.headers['x-coursetable-netid'] = user.netId;
+      return next();
+    } else {
+      req.headers['x-coursetable-authd'] = 'false';
+      req.headers['x-coursetable-netid'] = 'null';
+    }
+  });
+};
+
 // actual authentication routes
 export default async (app: express.Express) => {
   app.use(passport.initialize());
@@ -137,7 +154,6 @@ export default async (app: express.Express) => {
   });
 
   app.get('/api/auth/cas', casLogin);
-
   app.get('/api/auth/signup', casSignup);
 
   app.post('/api/auth/logout', (req, res) => {
