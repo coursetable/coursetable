@@ -1,5 +1,5 @@
 import mysql from 'mysql';
-import mysql_db from './mysql_db.js';
+import { studentsDatabase } from './mysql_db.js';
 
 const Student = function (student?: any) {};
 
@@ -7,7 +7,7 @@ Student.findOrCreate = (
   netid: string,
   result: (statusCode: number, err: any, data: any) => void
 ) => {
-  mysql_db.getConnection(function (err, connection) {
+  studentsDatabase.getConnection(function (err, connection) {
     if (err) {
       console.error(err);
       result(500, err, null);
@@ -62,7 +62,7 @@ Student.getEvalsStatus = (
   netid: string,
   result: (statusCode: number, err: any, data: any) => void
 ) => {
-  mysql_db.getConnection(function (err, connection) {
+  studentsDatabase.getConnection(function (err, connection) {
     if (err) {
       console.error(err);
       result(500, err, null);
@@ -110,7 +110,7 @@ Student.enableEvaluations = (
   netid: string,
   result: (statusCode: number, err: any, data: any) => void
 ) => {
-  mysql_db.getConnection(function (err, connection) {
+  studentsDatabase.getConnection(function (err, connection) {
     if (err) {
       console.error(err);
       result(500, err, null);

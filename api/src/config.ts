@@ -5,12 +5,20 @@ const die = (err: string) => {
 export const PORT = 4096;
 export const INSECURE_PORT = process.env.PORT || 3001;
 
-export const MYSQL_DB_CONFIG = {
+export const MYSQL_STUDENTS_CONFIG = {
   host: process.env.MYSQL_HOST || die('mysql host'),
   port: parseInt(process.env.MYSQL_PORT || die('mysql port'), 10),
   user: process.env.MYSQL_USER || die('mysql username'),
   password: process.env.MYSQL_PASSWORD || die('mysql password'),
-  database: process.env.MYSQL_DB || die('mysql db'),
+  database: process.env.STUDENTS_DB || die('students db'),
+};
+
+export const MYSQL_COURSES_CONFIG = {
+  host: process.env.MYSQL_HOST || die('mysql host'),
+  port: parseInt(process.env.MYSQL_PORT || die('mysql port'), 10),
+  user: process.env.MYSQL_USER || die('mysql username'),
+  password: process.env.MYSQL_PASSWORD || die('mysql password'),
+  database: process.env.COURSES_DB || die('courses db'),
 };
 
 export const GRAPHQL_ENDPOINT =

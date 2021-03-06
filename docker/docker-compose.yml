@@ -21,7 +21,8 @@ services:
       MYSQL_PORT: 3306
       MYSQL_USER: root
       MYSQL_PASSWORD: GoCourseTable
-      MYSQL_DB: yaleplus
+      STUDENTS_DB: yaleplus
+      COURSES_DB: yale_advanced_oci
       CHALLENGE_PASSWORD: thisisapassword2
       SESSION_SECRET: "this is a dumb secret"
       FERRY_SECRET: "" # we want this empty in development so no auth is required to refresh

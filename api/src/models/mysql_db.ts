@@ -1,12 +1,5 @@
 import mysql from 'mysql';
-import { MYSQL_DB_CONFIG as dbConfig } from '../config';
+import { MYSQL_STUDENTS_CONFIG, MYSQL_COURSES_CONFIG } from '../config';
 
-const mysqlConnection = mysql.createPool({
-  host: dbConfig.host,
-  port: dbConfig.port,
-  user: dbConfig.user,
-  password: dbConfig.password,
-  database: dbConfig.database,
-});
-
-export default mysqlConnection;
+export const studentsDatabase = mysql.createPool(MYSQL_STUDENTS_CONFIG);
+export const coursesDatabase = mysql.createPool(MYSQL_COURSES_CONFIG);
