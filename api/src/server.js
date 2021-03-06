@@ -4,8 +4,9 @@ import morgan from 'morgan';
 import session from 'cookie-session';
 import fs from 'fs';
 import https from 'https';
+import cors from 'cors';
 
-import { PORT, INSECURE_PORT, SESSION_SECRET } from './config';
+import { PORT, INSECURE_PORT, SESSION_SECRET, CORS_OPTIONS } from './config';
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -14,6 +15,8 @@ import catalog from './catalog/catalog.routes.js';
 import cas_auth, { casCheck, evalsCheck } from './auth/cas_auth.routes';
 
 const app = express();
+
+app.use(cors(CORS_OPTIONS));
 
 // Redirection routes for historical pages.
 app.get('/Blog', (_, res) => {

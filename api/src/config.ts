@@ -18,6 +18,16 @@ export const GRAPHQL_ENDPOINT =
 
 const PHP_URI = 'http://nginx:8080';
 
+export const CORS_OPTIONS = {
+  origin: [
+    'http://localhost:3000',
+    'https://coursetable.com',
+    'https://beta.coursetable.com',
+    'https://alpha.coursetable.com',
+  ],
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
+
 // Secret for session cookie signing.
 export const SESSION_SECRET =
   process.env.SESSION_SECRET ?? die('session secret');
