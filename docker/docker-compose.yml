@@ -1,23 +1,23 @@
-version: '3.2'
+version: "3.2"
 services:
   proxy:
     image: node:latest
     ports:
-      - '8080:8080'
-      - '3001:3001'
+      - "8080:8080"
+      - "3001:3001"
     volumes:
       - ../proxy:/app
-    user: '1000'
+    user: "1000"
     command: sh -c 'cd /app && yarn && yarn start'
 
   api:
     image: node:latest
     ports:
-      - '4096:4096'
+      - "4096:4096"
     volumes:
       - ../api:/app
       - ./wait-for-it.sh:/wait-for-it.sh
-    user: '1000'
+    user: "1000"
     # make the API wait for mysql and Hasura to start first
     command: ./wait-for-it.sh mysql:3306 -t 60 -- ./wait-for-it.sh graphql-engine:8080 -t 60 -- sh -cx 'cd /app && yarn && yarn start'
 
@@ -32,31 +32,16 @@ services:
       MYSQL_PASSWORD: GoCourseTable
       MYSQL_DB: yaleplus
       CHALLENGE_PASSWORD: thisisapassword2
-      SESSION_SECRET: 'this is a dumb secret'
-      FERRY_SECRET: '' # we want this empty in development so no auth is required to refresh
-
-  frontend:
-    image: node:latest
-    ports:
-      - '3000:3000'
-    expose:
-      - '3000'
-    volumes:
-      - ../frontend:/app
-    environment:
-      REACT_APP_UMAMI_WEBSITE_ID: 603e532b-7def-4cf0-ab2c-031157aa7966
-      REACT_APP_POSTHOG_TOKEN: 'nothing' # dummy value to make posthog happy
-    user: '1000'
-    command: sh -c 'cd /app && yarn && FORCE_COLOR=true yarn start | cat'
-    tty: true # https://github.com/facebook/create-react-app/issues/8688#issuecomment-602110747
+      SESSION_SECRET: "this is a dumb secret"
+      FERRY_SECRET: "" # we want this empty in development so no auth is required to refresh
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
     ports:
-      - '8085:8080'
+      - "8085:8080"
     environment:
       HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@ocean.coursetable.com:5432/postgres
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'true' # set to "false" to disable console
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
@@ -64,9 +49,9 @@ services:
   nginx:
     build: ./nginx
     ports:
-      - '8079:8080'
+      - "8079:8080"
     expose:
-      - '8080'
+      - "8080"
     volumes:
       - ..:/usr/share/nginx/html
       # Overwrite the default configuration. Our conf is based on it
@@ -97,7 +82,7 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
-      - '3306:3306'
+      - "3306:3306"
     volumes:
       # This will get used to initialize the database: see
       # "Initializing a fresh instance"
@@ -112,11 +97,11 @@ services:
       PMA_HOST: mysql
       MYSQL_ROOT_PASSWORD: GoCourseTable
     ports:
-      - '8081:80'
+      - "8081:80"
 
   legacy:
     image: nginx
     ports:
-      - '8075:80'
+      - "8075:80"
     volumes:
       - ../legacy:/usr/share/nginx/html:ro
