@@ -11,7 +11,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import routes
 import catalog from './catalog/catalog.routes.js';
-import cas_auth, { casCheck } from './auth/cas_auth.routes';
+import cas_auth, { casCheck, evalsCheck } from './auth/cas_auth.routes';
 
 const app = express();
 
@@ -49,12 +49,8 @@ app.use(
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
 
-const authHard = (req, res, next) => {
-  console.log(req.user);
-  console.log('e');
-};
-
-app.use('/ferry', casAuth);
+// restrict GraphQL access for authenticated Yale students only
+app.use('/ferry', casCheck, evalsCheck);
 app.use(
   '/ferry',
   createProxyMiddleware({

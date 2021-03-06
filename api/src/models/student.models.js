@@ -54,6 +54,53 @@ Student.getChallengeStatus = (netid, result) => {
 };
 
 /**
+ * Get the challenge attempt count and whether or not
+ * evaluations are enabled for a user.
+ *
+ * Note that an error is raised if evaluations are enabled.
+ *
+ * @prop netid - student's netID
+ * @prop result - return object
+ *
+ * @return {response_code, error_message, response_data}
+ */
+Student.getEvalsStatus = (netid) => {
+  mysql_db.getConnection(function (err, connection) {
+    if (err) {
+      console.error(err);
+
+      return;
+    }
+    connection.query(
+      `SELECT evaluationsEnabled FROM StudentBluebookSettings WHERE netid=${mysql.escape(
+        netid
+      )}`,
+      (err, res) => {
+        connection.release(); //put connection back in pool
+        if (err) {
+          console.error('findChallenge error: ', err);
+          return;
+        }
+
+        // affirm single user retrieved
+        if (res.length !== 1) {
+          return;
+        }
+
+        const evaluationsEnabled = res[0]['evaluationsEnabled'];
+
+        // check if already enabled
+        if (evaluationsEnabled === 1) {
+          return true;
+        }
+
+        return false;
+      }
+    );
+  });
+};
+
+/**
  * Enable evaluations access for a user.
  *
  * @prop netid - student's netID

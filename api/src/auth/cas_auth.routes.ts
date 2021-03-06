@@ -3,6 +3,7 @@ import express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
 import { User } from '../models/student';
+import Student from '../models/student.models';
 
 passport.use(
   new CasStrategy(
@@ -80,12 +81,28 @@ export const casCheck = (
       return next(new Error('CAS auth but no user'));
     }
 
-    console.log(user);
-
     return next();
   })(req, res, next);
 };
 
+export const evalsCheck = (
+  req: any,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  if (req.user) {
+    const hasEvals = Student.getEvalsStatus(req.user.netId);
+    if (!hasEvals) {
+      return res.status(401).json({ message: 'Not authorized' });
+    } else {
+      return next();
+    }
+  } else {
+    return res.status(401).json({ message: 'Not authorized' });
+  }
+};
+
+// actual authentication routes
 export default async (app: express.Express) => {
   app.use(passport.initialize());
   app.use(passport.session());
@@ -101,6 +118,11 @@ export default async (app: express.Express) => {
   app.get('/api/auth/cas', casLogin);
 
   app.post('/api/auth/logout', (req, res) => {
+    req.logOut();
+    return res.json({ success: true });
+  });
+
+  app.get('/api/auth/logout', (req, res) => {
     req.logOut();
     return res.json({ success: true });
   });
