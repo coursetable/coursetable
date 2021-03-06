@@ -10,6 +10,7 @@ import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import { NetId, Season } from './common';
+import { API_ENDPOINT } from './config';
 
 export type Worksheet = [Season, string][];
 export type FBFriendInfo = Record<
@@ -59,7 +60,9 @@ export const UserProvider: React.FC = ({ children }) => {
   const userRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
-        .get('/legacy_api/WorksheetActions.php?action=get&season=all')
+        .get(
+          `${API_ENDPOINT}/legacy_api/WorksheetActions.php?action=get&season=all`
+        )
         .then((res) => {
           if (!res.data.success) {
             throw new Error(res.data.message);
@@ -92,7 +95,7 @@ export const UserProvider: React.FC = ({ children }) => {
   const fbRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
-        .get('/legacy_api/FetchFriendWorksheetsNew.php')
+        .get(`${API_ENDPOINT}/legacy_api/FetchFriendWorksheetsNew.php`)
         .then((friends_worksheets) => {
           if (!friends_worksheets.data.success) {
             throw new Error(friends_worksheets.data.message);

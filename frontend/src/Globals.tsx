@@ -22,6 +22,8 @@ import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import FerryProvider from './components/FerryProvider';
 import { UserProvider } from './user';
 
+import { isDev, API_ENDPOINT, POSTHOG_TOKEN, POSTHOG_OPTIONS } from './config';
+
 import './index.css';
 
 import { useDarkMode } from './components/UseDarkMode';
@@ -30,31 +32,22 @@ import { lightTheme, darkTheme } from './components/Themes';
 import ErrorPage from './components/ErrorPage';
 import { Row } from 'react-bootstrap';
 
-const POSTHOG_TOKEN =
-  process.env.REACT_APP_POSTHOG_TOKEN ||
-  console.error('posthog token not set') /* always false */ ||
-  'dummy';
-// /* testing posthog in development only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
-const posthog_options = {
-  api_host: 'https://hog.coursetable.com',
-  capture_pageview: false,
-};
+// @ts-ignore
 window.posthog = posthog; // save posthog in window object
 if (POSTHOG_TOKEN !== '') {
   posthog.init(POSTHOG_TOKEN, {
-    ...posthog_options,
+    ...POSTHOG_OPTIONS,
   });
 } else {
   // Disable capturing.
   posthog.init('[disable]', {
-    ...posthog_options,
+    ...POSTHOG_OPTIONS,
     opt_out_capturing_by_default: true,
   });
 }
 
 const history = createBrowserHistory();
 
-const isDev = process.env.NODE_ENV === 'development';
 const release = isDev ? 'edge' : process.env.REACT_APP_SENTRY_RELEASE;
 Sentry.init({
   dsn:
@@ -64,6 +57,7 @@ Sentry.init({
       // Via https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
       routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
     }),
+    // @ts-ignore
     new posthog.SentryIntegration(posthog, 'coursetable', 5515218),
   ],
   environment: process.env.NODE_ENV,
@@ -78,7 +72,7 @@ Sentry.init({
 });
 
 const client = new ApolloClient({
-  uri: '/ferry/v1/graphql',
+  uri: `${API_ENDPOINT}/ferry/v1/graphql`,
   // default cache for now
   cache: new InMemoryCache(),
 });
@@ -98,7 +92,7 @@ function ErrorFallback() {
     </Row>
   );
 }
-function CustomErrorBoundary({ children }) {
+const CustomErrorBoundary: React.FC = ({ children }) => {
   if (isDev) {
     // return <ErrorFallback />;
     return <>{children}</>;
@@ -108,9 +102,9 @@ function CustomErrorBoundary({ children }) {
       {children}
     </Sentry.ErrorBoundary>
   );
-}
+};
 
-function Globals({ children }) {
+const Globals: React.FC = ({ children }) => {
   // website light/dark theme
   const [theme, themeToggler] = useDarkMode();
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
@@ -151,7 +145,7 @@ function Globals({ children }) {
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>
   );
-}
+};
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
