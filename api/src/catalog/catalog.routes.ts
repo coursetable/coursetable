@@ -1,4 +1,4 @@
-import { verifyHeaders, refreshCatalog } from './catalog.controllers.js';
+import { verifyHeaders, refreshCatalog } from './catalog.controllers';
 import { verifyNetID } from '../auth/utils';
 import express from 'express';
 import { STATIC_FILE_DIR } from '../config';
@@ -23,6 +23,6 @@ export default async (app: express.Express) => {
 
   // Generate the static catalog on start.
   console.log('Updating static catalog');
-  const overwriteCatalog = process.env.OVERWRITE_CATALOG || false;
+  const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
   await fetchCatalog(overwriteCatalog);
 };

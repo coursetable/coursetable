@@ -12,6 +12,9 @@ const frontend_uri = process.env.FRONTEND_LOC || 'http://frontend:3000';
 const api_uri = process.env.CHALLENGE_LOC || 'http://api:4096';
 const php_uri = 'http://nginx:8080';
 
+// Enable request logging.
+app.use(morgan('tiny'));
+
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
   for (const header of Object.keys(req.headers)) {
@@ -94,6 +97,14 @@ app.use(
     xfwd: true,
   })
 );
+
+// Redirection routes for historical pages.
+app.get('/Blog', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/Blog.html');
+});
+app.get('/recommendations.htm', (_, res) => {
+  res.redirect('https://legacy.coursetable.com/recommendations.htm');
+});
 
 app.use('/ferry', authHard);
 app.use(

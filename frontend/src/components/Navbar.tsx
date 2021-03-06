@@ -13,6 +13,8 @@ import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import { SurfaceComponent } from './StyledComponents';
 
+import { API_ENDPOINT } from '../config';
+
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
@@ -207,7 +209,7 @@ function CourseTableNavbar({
                       onClick={() => {
                         posthog.capture('login');
 
-                        window.location.href = '/api/auth/cas?redirect=catalog';
+                        window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
                       }}
                     >
                       Sign In

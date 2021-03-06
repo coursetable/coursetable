@@ -1,5 +1,5 @@
 import mysql from 'mysql';
-import { studentsDatabase } from './mysql_db.js';
+import { studentsDatabase } from './mysql_db';
 
 const Student = function (student?: any) {};
 

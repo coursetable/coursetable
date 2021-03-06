@@ -17,7 +17,7 @@ import {
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import routes
-import catalog from './catalog/catalog.routes.js';
+import catalog from './catalog/catalog.routes';
 import cas_auth, { casCheck, evalsCheck } from './auth/cas_auth.routes';
 
 const app = express();
