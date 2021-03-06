@@ -39,9 +39,6 @@ const postAuth = (req: express.Request, res: express.Response): void => {
     // We prefix this with a slash to avoid an open redirect vulnerability.
     return res.redirect(`/${redirect}`);
   }
-
-  // If no redirect is provided, simply redirect to the auth status.
-  return res.redirect('/catalog');
 };
 
 const casLogin = function (
@@ -63,6 +60,30 @@ const casLogin = function (
       }
 
       return postAuth(req, res);
+    });
+  })(req, res, next);
+};
+
+const casSignup = function (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) {
+  passport.authenticate('cas', function (err, user) {
+    if (err) {
+      return next(err);
+    }
+    if (!user) {
+      return next(new Error('CAS auth but no user'));
+    }
+
+    req.logIn(user, function (err) {
+      if (err) {
+        return next(err);
+      }
+
+      const userEntry = Student.findOrCreate(user.netId);
+      console.log(userEntry);
     });
   })(req, res, next);
 };
@@ -116,6 +137,8 @@ export default async (app: express.Express) => {
   });
 
   app.get('/api/auth/cas', casLogin);
+
+  app.get('/api/auth/signup', casSignup);
 
   app.post('/api/auth/logout', (req, res) => {
     req.logOut();

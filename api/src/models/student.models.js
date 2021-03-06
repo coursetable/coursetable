@@ -3,6 +3,46 @@ import mysql_db from './mysql_db.js';
 
 const Student = function (student) {};
 
+Student.findOrCreate = (netid) => {
+  mysql_db.getConnection(function (err, connection) {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    connection.query(
+      `SELECT * FROM StudentBluebookSettings WHERE netid=${mysql.escape(
+        netid
+      )}`,
+      (err, res) => {
+        connection.release(); //put connection back in pool
+        if (err) {
+          console.error('findOrCreate find error: ', err);
+          return;
+        }
+
+        // create default user if not exists
+        if (res.length === 0) {
+          connection.query(
+            `INSERT INTO StudentBluebookSettings (netId, shareCoursesEnabled, facebookLastUpdated, noticeLastSeen, timesNoticeSeen, evaluationsEnabled) VALUES (${mysql.escape(
+              netid
+            )}, 0, 0, 0, 0, 0)`,
+            (err, res) => {
+              if (err) {
+                console.error('findOrCreate create error: ', err);
+                return;
+              }
+
+              return res;
+            }
+          );
+        }
+
+        return res[0];
+      }
+    );
+  });
+};
+
 /**
  * Get the challenge attempt count and whether or not
  * evaluations are enabled for a user.
