@@ -5,6 +5,8 @@ import { Strategy as CasStrategy } from 'passport-cas';
 import { User } from '../models/student';
 import Student from '../models/student.models';
 
+import { FRONTEND_ENDPOINT } from '../config';
+
 passport.use(
   new CasStrategy(
     {
@@ -34,10 +36,10 @@ const postAuth = (req: express.Request, res: express.Response): void => {
   const redirect = req.query['redirect'] as string | undefined;
   if (redirect && !redirect.startsWith('//')) {
     if (redirect.startsWith('/')) {
-      return res.redirect(redirect);
+      return res.redirect(`${FRONTEND_ENDPOINT}${redirect}`);
     }
     // We prefix this with a slash to avoid an open redirect vulnerability.
-    return res.redirect(`/${redirect}`);
+    return res.redirect(`${FRONTEND_ENDPOINT}/${redirect}`);
   }
 };
 

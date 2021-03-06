@@ -26,6 +26,12 @@ export const GRAPHQL_ENDPOINT =
 
 export const PHP_URI = 'http://nginx:8080';
 
+export const isDev = process.env.NODE_ENV !== 'production';
+
+export const FRONTEND_ENDPOINT = isDev
+  ? 'http://localhost:3000'
+  : process.env.FRONTEND_ENDPOINT;
+
 export const CORS_OPTIONS = {
   origin: [
     'http://localhost:3000',
