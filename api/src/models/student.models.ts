@@ -83,6 +83,7 @@ Student.getEvalsStatus = (
         // affirm single user retrieved
         if (res.length !== 1) {
           result(500, 'User does not exist', null);
+          return;
         }
 
         const evaluationsEnabled = res[0]['evaluationsEnabled'];
@@ -90,9 +91,11 @@ Student.getEvalsStatus = (
         // check if already enabled
         if (evaluationsEnabled === 1) {
           result(200, null, true);
+          return;
         }
 
         result(500, err, null);
+        return;
       }
     );
   });

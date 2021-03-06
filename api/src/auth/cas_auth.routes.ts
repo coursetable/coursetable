@@ -16,51 +16,46 @@ export const passportConfig = (passport: passport.PassportStatic) => {
         version: 'CAS2.0',
         ssoBaseURL: 'https://secure.its.yale.edu/cas',
       },
-      // function (profile, done) {
-      //   axios
-      //     .post(
-      //       'https://yalies.io/api/people',
-      //       {
-      //         filters: {
-      //           netId: profile.user,
-      //         },
-      //       },
-      //       {
-      //         headers: {
-      //           Authorization: `Bearer ${YALIES_API_KEY}`,
-      //           'Content-Type': 'application/json',
-      //         },
-      //       }
-      //     )
-      //     .then(({ data }) => {
-      //       // if no user found, do not grant access
-      //       if (data === null || data.length === 0) {
-      //         return done(null, {
-      //           netId: profile.user,
-      //           evals: false,
-      //         });
-      //       }
-
-      //       // otherwise, add the user to the cookie
-      //       const user = data[0];
-      //       return done(null, {
-      //         netId: profile.user,
-      //         evals: true,
-      //         profile: user,
-      //       });
-      //     })
-      //     .catch((err) => {
-      //       console.error(err);
-      //       return done(null, {
-      //         netId: profile.user,
-      //         evals: false,
-      //       });
-      //     });
-      // }
       function (profile, done) {
-        done(null, {
-          netId: profile.user,
-        });
+        axios
+          .post(
+            'https://yalies.io/api/people',
+            {
+              filters: {
+                netId: profile.user,
+              },
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${YALIES_API_KEY}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+          .then(({ data }) => {
+            // if no user found, do not grant access
+            if (data === null || data.length === 0) {
+              return done(null, {
+                netId: profile.user,
+                evals: false,
+              });
+            }
+
+            // otherwise, add the user to the cookie
+            const user = data[0];
+            return done(null, {
+              netId: profile.user,
+              evals: true,
+              profile: user,
+            });
+          })
+          .catch((err) => {
+            console.error(err);
+            return done(null, {
+              netId: profile.user,
+              evals: false,
+            });
+          });
       }
     )
   );
@@ -71,15 +66,9 @@ export const passportConfig = (passport: passport.PassportStatic) => {
 
   // when deserializing, ping Yalies to get the user's profile
   passport.deserializeUser(function (netId: string, done) {
-    // Student.getEvalsStatus(netId, (statusCode, err, hasEvals) => {
-    //   return done(null, { netId, evals: hasEvals });
-    // });
-    // return done(null, { netId, evals: true });
-    const user: User = {
-      netId,
-      evals: true,
-    };
-    done(null, user);
+    return Student.getEvalsStatus(netId, (statusCode, err, hasEvals) => {
+      done(null, { netId, evals: hasEvals });
+    });
   });
 };
 
