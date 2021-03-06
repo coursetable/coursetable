@@ -6,7 +6,6 @@ import session from 'cookie-session';
 import { PORT, SESSION_SECRET } from './config';
 
 // import routes
-import challenge from './challenge/challenge.routes.js';
 import catalog from './catalog/catalog.routes.js';
 import cas_auth from './auth/cas_auth.routes';
 
@@ -44,7 +43,6 @@ app.set('trust proxy', true);
   app.get('/api/ping', (req, res) => {
     res.json('pong');
   });
-  await challenge(app);
   await catalog(app);
   await cas_auth(app);
 
