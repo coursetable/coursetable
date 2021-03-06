@@ -19,7 +19,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware');
 
 // import routes
 import catalog from './catalog/catalog.routes';
-import cas_auth, { casCheck } from './auth/cas_auth.routes';
+import cas_auth, { authSoft, authHard } from './auth/cas_auth.routes';
 
 import passport from 'passport';
 import { passportConfig } from './auth/cas_auth.routes';
@@ -102,7 +102,7 @@ https
     }
   });
 
-  app.use('/api/static', casCheck);
+  app.use('/api/static', authHard);
 
   // Mount static files route and require NetID authentication
   app.use(
@@ -122,7 +122,7 @@ https
   await catalog(app);
   await cas_auth(app);
 
-  app.use('/legacy_api', casCheck);
+  app.use('/legacy_api', authSoft);
   app.use(
     ['/legacy_api', '/index.php'],
     createProxyMiddleware({
@@ -135,7 +135,7 @@ https
   );
 
   // restrict GraphQL access for authenticated Yale students only
-  app.use('/ferry', casCheck);
+  app.use('/ferry', authHard);
   app.use(
     '/ferry',
     createProxyMiddleware({

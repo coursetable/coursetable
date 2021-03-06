@@ -4,8 +4,6 @@ import express from 'express';
 import { STATIC_FILE_DIR } from '../config';
 import { fetchCatalog } from './catalog.utils';
 
-import cas_auth, { casCheck } from '../auth/cas_auth.routes';
-
 export default async (app: express.Express) => {
   // Enable static catalog refresh on demand.
   // After the crawler runs, we hit this route to refresh the static files.

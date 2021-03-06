@@ -111,13 +111,12 @@ const casLogin = function (
   })(req, res, next);
 };
 
-// middleware function for requiring cas authentication
-export const casCheck = (
+// middleware function for requiring user account
+export const authSoft = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ) => {
-  console.log('USER', req.user);
   if (req.user) {
     // add headers for legacy API compatibility
     req.headers['x-coursetable-authd'] = 'true';
@@ -126,6 +125,22 @@ export const casCheck = (
     return next();
   }
   return next(new Error('CAS auth but no user'));
+};
+
+// middleware function for requiring user account + access to evaluations
+export const authHard = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
+  if (req.user && req.user.evals) {
+    // add headers for legacy API compatibility
+    req.headers['x-coursetable-authd'] = 'true';
+    req.headers['x-coursetable-netid'] = req.user.netId;
+
+    return next();
+  }
+  return next(new Error('CAS auth but no user / no evals access'));
 };
 
 // actual authentication routes
