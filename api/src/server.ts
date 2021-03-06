@@ -6,7 +6,13 @@ import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
 
-import { PORT, INSECURE_PORT, SESSION_SECRET, CORS_OPTIONS } from './config';
+import {
+  PORT,
+  INSECURE_PORT,
+  SESSION_SECRET,
+  CORS_OPTIONS,
+  PHP_URI,
+} from './config';
 
 const { createProxyMiddleware } = require('http-proxy-middleware');
 
@@ -17,6 +23,18 @@ import cas_auth, { casCheck, evalsCheck } from './auth/cas_auth.routes';
 const app = express();
 
 app.use(cors(CORS_OPTIONS));
+
+// Strip all headers matching X-COURSETABLE-* from incoming requests.
+app.use((req, _, next) => {
+  for (const header of Object.keys(req.headers)) {
+    // Headers are automatically made lowercase by express.
+    if (header.startsWith('x-coursetable-')) {
+      delete req.headers[header];
+    }
+  }
+
+  next();
+});
 
 // Redirection routes for historical pages.
 app.get('/Blog', (_, res) => {
@@ -62,6 +80,18 @@ app.use(
       '^/ferry': '/', // remove base path
     },
     ws: true,
+  })
+);
+
+app.use('/legacy_api', casCheck);
+app.use(
+  ['/legacy_api', '/index.php'],
+  createProxyMiddleware({
+    target: PHP_URI,
+    pathRewrite: {
+      '^/legacy_api': '/', // remove base path
+    },
+    xfwd: true,
   })
 );
 

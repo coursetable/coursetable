@@ -24,7 +24,7 @@ export const MYSQL_COURSES_CONFIG = {
 export const GRAPHQL_ENDPOINT =
   process.env.GRAPHQL_ENDPOINT || die('graphql endpoint');
 
-const PHP_URI = 'http://nginx:8080';
+export const PHP_URI = 'http://nginx:8080';
 
 export const CORS_OPTIONS = {
   origin: [
