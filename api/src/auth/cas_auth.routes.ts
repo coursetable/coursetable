@@ -2,6 +2,7 @@
  * @file Routes for passport-CAS authentication with Yale.
  */
 
+/// <reference path="./user.d.ts" />
 import express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
