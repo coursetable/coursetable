@@ -64,7 +64,10 @@ services:
     working_dir: /var/www/html
 
   php-fpm:
-    env_file: ../facebook.env
+    # env_file: ../facebook.env
+    environment:
+      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID?fb_app_id}
+      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET?fb_app_secret}
     build: ./php
     volumes:
       - ..:/usr/share/nginx/html
