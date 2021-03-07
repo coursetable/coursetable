@@ -49,6 +49,7 @@ export const checkConflict = (
   course: Listing,
   times: [string, string, string, string][] // index is 0-4, corresponding to weekdays
 ) => {
+  const conflicts: Listing[] = [];
   // Iterate over worksheet listings
   for (let i = 0; i < listings.length; i++) {
     // Continue if they aren't in the same season
@@ -73,13 +74,15 @@ export const checkConflict = (
       if (cur_start.hour() < 8) cur_start.add(12, 'h');
       if (cur_end.hour() < 8) cur_end.add(12, 'h');
       // Conflict exists
-      if (!(listing_start > cur_end || cur_start > listing_end)) {
-        return true;
+      if (
+        !(listing_start > cur_end || cur_start > listing_end) &&
+        !conflicts.includes(listings[i])
+      ) {
+        conflicts.push(listings[i]);
       }
     }
   }
-  // Conflict doesn't exist
-  return false;
+  return conflicts;
 };
 // Fetch the FB friends that are also shopping a specific course. Used in course modal overview
 export const fbFriendsAlsoTaking = (

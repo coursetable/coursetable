@@ -40,9 +40,9 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
       // Ignore any items with an invalid time.
       return false;
     }
-    if (checkConflict(data, course, times)) {
+    if (checkConflict(data, course, times).length > 0) {
       // There is a conflict with this listing.
-      return true;
+      return checkConflict(data, course, times);
     }
     // No conflict
     return false;
@@ -54,9 +54,12 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
     props: Omit<React.ComponentPropsWithRef<typeof Tooltip>, 'id'>
   ) =>
     // Render if this course isn't in the worksheet and there is a conflict
-    !inWorksheet && conflict ? (
+    !inWorksheet && conflict !== false ? (
       <Tooltip {...props} id="conflict-icon-button-tooltip">
-        <small style={{ fontWeight: 500 }}>Conflicts with worksheet</small>
+        <small style={{ fontWeight: 500 }}>
+          Conflicts with: <br />
+          {conflict.map((x) => `${x.course_code}`).join(', ')}
+        </small>
       </Tooltip>
     ) : (
       <div />
@@ -64,7 +67,7 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
 
   return (
     // Smooth fade in and out transition
-    <Fade in={!inWorksheet && conflict}>
+    <Fade in={!inWorksheet && conflict !== false}>
       <div>
         <OverlayTrigger
           placement="top"
