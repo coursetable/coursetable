@@ -21,25 +21,11 @@ services:
       - traefik
       - default
 
-  alternate:
-    image: schmunk42/nginx-redirect
-    restart: always
-    environment:
-      SERVER_REDIRECT: coursetable.com
-    labels:
-      traefik.enable: true
-      traefik.http.routers.coursetable-alt.rule: Host(`www.coursetable.com`, `beta.coursetable.com`)
-      traefik.http.routers.coursetable-alt.tls: true
-      traefik.http.routers.coursetable-alt.tls.certResolver: ctresolver
-    networks:
-      - traefik
-      - default
-
   api:
     build: ../api
     restart: always
     ports:
-      - '4096:4096'
+      - '8080:4096'
     volumes:
       - ../api/static:/app/static
     user: '1000'
@@ -137,6 +123,31 @@ services:
       traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
       traefik.http.routers.coursetable-legacy.tls: true
       traefik.http.routers.coursetable-legacy.tls.certResolver: ctresolver
+    networks:
+      - traefik
+      - default
+
+  mysql:
+    image: mariadb:latest
+    restart: always
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
+    ports:
+      - '3306:3306'
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    depends_on:
+      - mysql
+    restart: always
+    environment:
+      PMA_HOST: mysql
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
+    ports:
+      - '8081:80'
     networks:
       - traefik
       - default
