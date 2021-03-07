@@ -2,7 +2,6 @@
  * @file Routes for passport-CAS authentication with Yale.
  */
 
-/// <reference path="./user.d.ts" />
 import express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
@@ -13,14 +12,14 @@ import axios from 'axios';
 
 import { FRONTEND_ENDPOINT, YALIES_API_KEY } from '../config';
 
-export const passportConfig = (passport: passport.PassportStatic) => {
+export const passportConfig = (passport: passport.PassportStatic): void => {
   passport.use(
     new CasStrategy(
       {
         version: 'CAS2.0',
         ssoBaseURL: 'https://secure.its.yale.edu/cas',
       },
-      function (profile, done) {
+      (profile, done) => {
         // on completion, check Yalies.io for user profile
         axios
           .post(
@@ -65,12 +64,12 @@ export const passportConfig = (passport: passport.PassportStatic) => {
     )
   );
 
-  passport.serializeUser(function (user: User, done) {
+  passport.serializeUser(function (user: User, done): void {
     return done(null, user.netId);
   });
 
   // when deserializing, ping Yalies to get the user's profile
-  passport.deserializeUser(function (netId: string, done) {
+  passport.deserializeUser(function (netId: string, done): void {
     return Student.getEvalsStatus(netId, (statusCode, err, hasEvals) => {
       done(null, { netId, evals: hasEvals });
     });
@@ -91,11 +90,11 @@ const postAuth = (req: express.Request, res: express.Response): void => {
   return res.redirect(`${FRONTEND_ENDPOINT}/catalog`);
 };
 
-const casLogin = function (
+const casLogin = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) {
+): void => {
   passport.authenticate('cas', function (err, user) {
     if (err) {
       return next(err);
@@ -121,7 +120,7 @@ export const authSoft = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): void => {
   if (req.user) {
     // add headers for legacy API compatibility
     req.headers['x-coursetable-authd'] = 'true';
@@ -137,7 +136,7 @@ export const authHard = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): void => {
   if (req.user && req.user.evals) {
     // add headers for legacy API compatibility
     req.headers['x-coursetable-authd'] = 'true';
