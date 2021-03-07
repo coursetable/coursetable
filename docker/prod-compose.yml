@@ -21,7 +21,8 @@ services:
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
-      MYSQL_DB: yaleplus
+      STUDENTS_DB: yaleplus
+      COURSES_DB: yale_advanced_oci
       CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
       SESSION_SECRET: ${SESSION_SECRET?session secret}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry reload secret}
