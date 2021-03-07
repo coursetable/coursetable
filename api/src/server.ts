@@ -18,14 +18,13 @@ import {
   STATIC_FILE_DIR,
 } from './config';
 
-const { createProxyMiddleware } = require('http-proxy-middleware');
+import { createProxyMiddleware } from 'http-proxy-middleware';
 
 // import routes
 import catalog from './catalog/catalog.routes';
-import cas_auth, { authSoft, authHard } from './auth/cas_auth.routes';
+import cas_auth, { authSoft, authHard, passportConfig } from './auth/cas_auth.routes';
 
 import passport from 'passport';
-import { passportConfig } from './auth/cas_auth.routes';
 
 import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
@@ -38,12 +37,19 @@ Sentry.init({
   tracesSampleRate: 1.0,
 });
 
+// Initialize the app
 const app = express();
 
+// Enable Cross-Origin Resource Sharing
+// (i.e. let the frontend call the API when it's on a different domain)
 app.use(cors(CORS_OPTIONS));
-
 // Enable request logging.
 app.use(morgan);
+// Enable url-encoding
+app.use(bodyParser.urlencoded({ extended: true }));
+// Trust the proxy.
+// See https://expressjs.com/en/guide/behind-proxies.html.
+app.set('trust proxy', true);
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
@@ -53,7 +59,6 @@ app.use((req, _, next) => {
       delete req.headers[header];
     }
   }
-
   next();
 });
 
@@ -65,8 +70,6 @@ app.get('/recommendations.htm', (_, res) => {
   res.redirect('https://legacy.coursetable.com/recommendations.htm');
 });
 
-// Enable url-encoding
-app.use(bodyParser.urlencoded({ extended: true }));
 
 // Setup sessions.
 app.use(
@@ -86,9 +89,6 @@ app.use(
   })
 );
 
-// Trust the proxy.
-// See https://expressjs.com/en/guide/behind-proxies.html.
-app.set('trust proxy', true);
 
 // Serve with SSL.
 https
@@ -105,24 +105,19 @@ https
 
 // We use the IIFE pattern so that we can use await.
 (async () => {
-  /* Configuring passport */
+  // Configuring passport
   passportConfig(passport);
   app.use(passport.initialize());
   app.use(passport.session());
 
-  app.get('/api/auth/test', (req, res) => {
-    if (req.user) {
-      res.json({ auth: true, id: req.user.netId, user: req.user });
-    } else {
-      res.json({ auth: false, id: null });
-    }
-  });
-
-  app.use('/api/static', authHard);
+  // Activate catalog and CAS authentication
+  await catalog(app);
+  await cas_auth(app);
 
   // Mount static files route and require NetID authentication
   app.use(
     '/api/static',
+    authHard,
     express.static(STATIC_FILE_DIR, {
       cacheControl: true,
       maxAge: '1h',
@@ -135,8 +130,6 @@ https
   app.get('/api/ping', (req, res) => {
     res.json('pong');
   });
-  await catalog(app);
-  await cas_auth(app);
 
   app.use('/legacy_api', authSoft);
   app.use(
@@ -150,7 +143,7 @@ https
     })
   );
 
-  // restrict GraphQL access for authenticated Yale students only
+  // Restrict GraphQL access for authenticated Yale students only
   app.use('/ferry', authHard);
   app.use(
     '/ferry',
