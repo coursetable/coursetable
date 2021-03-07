@@ -1,3 +1,7 @@
+/**
+ * @file Routes for catalog
+ */
+
 import { verifyHeaders, refreshCatalog } from './catalog.controllers';
 import { verifyNetID } from '../auth/utils';
 import express from 'express';

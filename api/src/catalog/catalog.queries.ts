@@ -1,3 +1,7 @@
+/**
+ * @file Queries for updating static catalog files.
+ */
+
 import gql from 'graphql-tag';
 
 // query for getting catalog data by season

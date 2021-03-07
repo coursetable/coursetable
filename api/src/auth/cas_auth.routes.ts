@@ -1,3 +1,7 @@
+/**
+ * @file Routes for passport-CAS authentication with Yale.
+ */
+
 /// <reference path="./user.d.ts" />
 import express from 'express';
 import passport from 'passport';
@@ -17,6 +21,8 @@ export const passportConfig = (passport: passport.PassportStatic) => {
         ssoBaseURL: 'https://secure.its.yale.edu/cas',
       },
       function (profile, done) {
+
+        // on completion, check Yalies.io for user profile
         axios
           .post(
             'https://yalies.io/api/people',

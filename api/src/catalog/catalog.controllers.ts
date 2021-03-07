@@ -1,3 +1,7 @@
+/**
+ * @file Catalog fetch scripts.
+ */
+
 import { FERRY_SECRET } from '../config';
 import express from 'express';
 

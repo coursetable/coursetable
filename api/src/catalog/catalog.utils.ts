@@ -1,3 +1,7 @@
+/**
+ * @file Utilities used for fetching catalog files.
+ */
+
 import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
 import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import fs from 'fs';

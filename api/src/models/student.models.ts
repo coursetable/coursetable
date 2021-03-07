@@ -1,3 +1,6 @@
+/**
+ * @file Models for working with users.
+ */
 import mysql from 'mysql';
 import { studentsDatabase } from './mysql_db';
 
@@ -5,6 +8,14 @@ import winston from "../logging/winston"
 
 const Student = function (student?: any) { };
 
+/**
+ * Find or create a user.
+ *
+ * @prop netid - student's netID
+ * @prop result - return object
+ *
+ * @return {response_code, error_message, success_boolean}
+ */
 Student.findOrCreate = (
   netid: string,
   result: (statusCode: number, err: any, data: any) => void

@@ -1,10 +1,19 @@
+/**
+ * @file Global server configurations
+ */
+
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
 
+// If running in dev mode
+export const isDev = process.env.NODE_ENV !== 'production';
+
+// Networking
 export const PORT = 4096;
 export const INSECURE_PORT = process.env.PORT || 3001;
 
+// MySQL config for students database
 export const MYSQL_STUDENTS_CONFIG = {
   host: process.env.MYSQL_HOST || die('mysql host'),
   port: parseInt(process.env.MYSQL_PORT || die('mysql port'), 10),
@@ -13,6 +22,7 @@ export const MYSQL_STUDENTS_CONFIG = {
   database: process.env.STUDENTS_DB || die('students db'),
 };
 
+// MySQL config for courses database (just worksheets)
 export const MYSQL_COURSES_CONFIG = {
   host: process.env.MYSQL_HOST || die('mysql host'),
   port: parseInt(process.env.MYSQL_PORT || die('mysql port'), 10),
@@ -21,20 +31,23 @@ export const MYSQL_COURSES_CONFIG = {
   database: process.env.COURSES_DB || die('courses db'),
 };
 
+// API key for interfacing with the yalies.io API
 export const YALIES_API_KEY =
   process.env.YALIES_API_KEY || die('yalies api key');
 
+// Ferry GraphQL endpoint
 export const GRAPHQL_ENDPOINT =
   process.env.GRAPHQL_ENDPOINT || die('graphql endpoint');
 
+// Legacy PHP URI
 export const PHP_URI = 'http://nginx:8080';
 
-export const isDev = process.env.NODE_ENV !== 'production';
-
+// Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
   ? 'http://localhost:3000'
   : process.env.FRONTEND_ENDPOINT;
 
+// CORS options so frontend can interface with server
 export const CORS_OPTIONS = {
   origin: FRONTEND_ENDPOINT,
   credentials: true,

@@ -1,3 +1,5 @@
+import express from 'express';
+
 /**
  * Middleware to verify request headers
  *
@@ -5,7 +7,6 @@
  * @prop res - express response object
  * @prop next - express next object
  */
-import express from 'express';
 
 export const verifyNetID = (
   req: express.Request,

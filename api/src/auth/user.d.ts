@@ -1,3 +1,7 @@
+/**
+ * @file User type declarations.
+ */
+
 export { };
 
 import 'express';
