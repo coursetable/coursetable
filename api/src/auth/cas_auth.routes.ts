@@ -21,7 +21,6 @@ export const passportConfig = (passport: passport.PassportStatic) => {
         ssoBaseURL: 'https://secure.its.yale.edu/cas',
       },
       function (profile, done) {
-
         // on completion, check Yalies.io for user profile
         axios
           .post(

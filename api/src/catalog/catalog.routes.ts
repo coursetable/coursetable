@@ -8,7 +8,7 @@ import express from 'express';
 import { STATIC_FILE_DIR } from '../config';
 import { fetchCatalog } from './catalog.utils';
 
-import winston from "../logging/winston"
+import winston from '../logging/winston';
 
 export default async (app: express.Express) => {
   // Enable static catalog refresh on demand.

@@ -4,9 +4,9 @@
 import mysql from 'mysql';
 import { studentsDatabase } from './mysql_db';
 
-import winston from "../logging/winston"
+import winston from '../logging/winston';
 
-const Student = function (student?: any) { };
+const Student = function (student?: any) {};
 
 /**
  * Find or create a user.

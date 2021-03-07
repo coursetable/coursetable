@@ -5,7 +5,7 @@
 import { FERRY_SECRET } from '../config';
 import express from 'express';
 
-import winston from "../logging/winston"
+import winston from '../logging/winston';
 
 import { fetchCatalog } from './catalog.utils';
 

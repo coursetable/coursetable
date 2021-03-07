@@ -7,7 +7,7 @@ import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import fs from 'fs';
 import { request } from 'graphql-request';
 
-import winston from "../logging/winston"
+import winston from '../logging/winston';
 
 /**
  * Get static catalogs for each season from Hasura,
