@@ -1,7 +1,9 @@
 import mysql from 'mysql';
 import { coursesDatabase } from './mysql_db.js';
 
-const Worksheet = function (student?: any) {};
+import winston from "../logging/winston"
+
+const Worksheet = function (student?: any) { };
 
 Worksheet.add = (
   netid: string,
@@ -11,7 +13,7 @@ Worksheet.add = (
 ) => {
   coursesDatabase.getConnection(function (err, connection) {
     if (err) {
-      console.error(err);
+      winston.error(err);
       result(500, err, null);
     }
     connection.query(
@@ -21,7 +23,7 @@ Worksheet.add = (
       (err, res) => {
         connection.release(); //put connection back in pool
         if (err) {
-          console.error('Worksheet.add error: ', err);
+          winston.error('Worksheet.add error: ', err);
           return;
         }
 
@@ -39,7 +41,7 @@ Worksheet.remove = (
 ) => {
   coursesDatabase.getConnection(function (err, connection) {
     if (err) {
-      console.error(err);
+      winston.error(err);
       result(500, err, null);
     }
     connection.query(
@@ -51,7 +53,7 @@ Worksheet.remove = (
       (err, res) => {
         connection.release(); //put connection back in pool
         if (err) {
-          console.error('Worksheet.add error: ', err);
+          winston.error('Worksheet.add error: ', err);
           return;
         }
 

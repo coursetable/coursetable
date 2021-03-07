@@ -1,7 +1,9 @@
 import mysql from 'mysql';
 import { studentsDatabase } from './mysql_db';
 
-const Student = function (student?: any) {};
+import winston from "../logging/winston"
+
+const Student = function (student?: any) { };
 
 Student.findOrCreate = (
   netid: string,
@@ -9,7 +11,7 @@ Student.findOrCreate = (
 ) => {
   studentsDatabase.getConnection(function (err, connection) {
     if (err) {
-      console.error(err);
+      winston.error(err);
       result(500, err, null);
     }
     connection.query(
@@ -19,7 +21,7 @@ Student.findOrCreate = (
       (err, res) => {
         connection.release(); //put connection back in pool
         if (err) {
-          console.error('findOrCreate find error: ', err);
+          winston.error('findOrCreate find error: ', err);
           return;
         }
 
@@ -31,7 +33,7 @@ Student.findOrCreate = (
             )}, 0, 0, 0, 0, 0)`,
             (err, res) => {
               if (err) {
-                console.error('findOrCreate create error: ', err);
+                winston.error('findOrCreate create error: ', err);
                 result(500, err, null);
                 return;
               }
@@ -64,7 +66,7 @@ Student.getEvalsStatus = (
 ) => {
   studentsDatabase.getConnection(function (err, connection) {
     if (err) {
-      console.error(err);
+      winston.error(err);
       result(500, err, null);
       return;
     }
@@ -75,7 +77,7 @@ Student.getEvalsStatus = (
       (err, res) => {
         connection.release(); //put connection back in pool
         if (err) {
-          console.error('findChallenge error: ', err);
+          winston.error('findChallenge error: ', err);
           result(500, err, null);
           return;
         }
@@ -115,7 +117,7 @@ Student.enableEvaluations = (
 ) => {
   studentsDatabase.getConnection(function (err, connection) {
     if (err) {
-      console.error(err);
+      winston.error(err);
       result(500, err, null);
       return;
     }
@@ -126,7 +128,7 @@ Student.enableEvaluations = (
       (err, res) => {
         connection.release(); //put connection back in pool
         if (err) {
-          console.error('enableEvaluations error: ', err);
+          winston.error('enableEvaluations error: ', err);
           result(500, err, null);
           return;
         }
