@@ -10,8 +10,10 @@ import https from 'https';
 import cors from 'cors';
 
 import {
-  PORT,
+  SECURE_PORT,
   INSECURE_PORT,
+  KEY_PATH,
+  CERT_PATH,
   SESSION_SECRET,
   CORS_OPTIONS,
   PHP_URI,
@@ -97,13 +99,13 @@ app.use(
 https
   .createServer(
     {
-      key: fs.readFileSync('server.key'),
-      cert: fs.readFileSync('server.cert'),
+      key: fs.readFileSync(KEY_PATH),
+      cert: fs.readFileSync(CERT_PATH),
     },
     app
   )
-  .listen(PORT, () => {
-    console.log(`Secure dev proxy listening on port ${PORT}`);
+  .listen(SECURE_PORT, () => {
+    console.log(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
 // We use the IIFE pattern so that we can use await.

@@ -10,8 +10,12 @@ const die = (err: string) => {
 export const isDev = process.env.NODE_ENV !== 'production';
 
 // Networking
-export const PORT = 4096;
-export const INSECURE_PORT = process.env.PORT || 3001;
+export const SECURE_PORT = process.env.SECURE_PORT || 4096;
+export const INSECURE_PORT = process.env.INSECURE_PORT || 3001;
+
+// Keys for SSL
+export const KEY_PATH = process.env.KEY_PATH || 'server.key'
+export const CERT_PATH = process.env.CERT_PATH || 'server.cert'
 
 // MySQL config for students database
 export const MYSQL_STUDENTS_CONFIG = {
