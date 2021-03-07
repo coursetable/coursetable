@@ -27,9 +27,23 @@ import cas_auth, { authSoft, authHard } from './auth/cas_auth.routes';
 import passport from 'passport';
 import { passportConfig } from './auth/cas_auth.routes';
 
+import * as Sentry from '@sentry/node';
+import * as Tracing from '@sentry/tracing';
+
+Sentry.init({
+  dsn: "https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141",
+
+  // We recommend adjusting this value in production, or using tracesSampler
+  // for finer control
+  tracesSampleRate: 1.0,
+});
+
 const app = express();
 
 app.use(cors(CORS_OPTIONS));
+
+// Enable request logging.
+app.use(morgan);
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
@@ -53,8 +67,6 @@ app.get('/recommendations.htm', (_, res) => {
 
 // Enable url-encoding
 app.use(bodyParser.urlencoded({ extended: true }));
-// Enable request logging.
-app.use(morgan);
 
 // Setup sessions.
 app.use(
