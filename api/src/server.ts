@@ -1,6 +1,9 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import morgan from 'morgan';
+
+import morgan from './logging/morgan';
+import winston from './logging/winston';
+
 import session from 'cookie-session';
 import fs from 'fs';
 import https from 'https';
@@ -51,7 +54,8 @@ app.get('/recommendations.htm', (_, res) => {
 // Enable url-encoding
 app.use(bodyParser.urlencoded({ extended: true }));
 // Enable request logging.
-app.use(morgan('tiny'));
+app.use(morgan);
+
 // Setup sessions.
 app.use(
   session({

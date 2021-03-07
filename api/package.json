@@ -13,6 +13,7 @@
     ]
   },
   "dependencies": {
+    "@types/app-root-path": "^1.2.4",
     "@types/body-parser": "^1.19.0",
     "@types/cookie-session": "^2.0.42",
     "@types/cors": "^2.8.10",
@@ -21,6 +22,7 @@
     "@types/mysql": "^2.15.18",
     "@types/node": "^14.14.31",
     "@types/passport": "^1.0.6",
+    "app-root-path": "^3.0.0",
     "body-parser": "^1.19.0",
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
@@ -34,7 +36,8 @@
     "passport": "^0.4.1",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "ts-node": "^9.1.1",
-    "typescript": "^4.2.2"
+    "typescript": "^4.2.2",
+    "winston": "^3.3.3"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^4.16.1",
