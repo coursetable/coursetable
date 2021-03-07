@@ -42,6 +42,16 @@ const StepContent = styled.div`
   margin-bottom: 1rem;
 `;
 
+// Step video
+const StepVideo = styled.video`
+  width: 118% !important;
+  margin-left: -30px;
+  margin-top: -24px;
+  margin-bottom: 20px;
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+`;
+
 type Props = {
   isTutorialOpen: boolean;
   setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -54,6 +64,7 @@ type Step = {
   header: string;
   text: string | (() => JSX.Element);
   observe?: boolean;
+  video?: boolean;
 };
 
 // Steps content
@@ -64,24 +75,27 @@ const stepsContent: Step[] = [
     text: 'This tutorial will teach you the basics of using the new catalog.',
   },
   {
-    selector: '[data-tutorial="catalog-1"]',
+    selector: 'catalog-1',
     header: '🗺️ Explore all the courses offered at Yale',
     text: 'Search and filter courses in the navbar at the top.',
+    video: true,
   },
   {
-    selector: '[data-tutorial="catalog-2"]',
+    selector: 'catalog-2',
     header: '🎯 Filter for exactly what you want',
     text:
       'Click on a filter to pop out a dropdown where you can select multiple options.',
     observe: true,
+    video: true,
   },
   {
-    selector: '[data-tutorial="catalog-3"]',
+    selector: 'catalog-3',
     header: '💪 Don’t work hard to find good courses',
     text: 'Slide the range handles to filter by a range of values.',
+    video: true,
   },
   {
-    selector: '[data-tutorial="catalog-4"]',
+    selector: 'catalog-4',
     header: '🌠 Take it to the next level',
     text: () => (
       <>
@@ -89,12 +103,14 @@ const stepsContent: Step[] = [
       </>
     ),
     observe: true,
+    video: true,
   },
   {
-    selector: '[data-tutorial="catalog-5"]',
+    selector: 'catalog-5',
     header: '🔍 Control how you see possibilities',
     text:
       'Click on a column toggle to sort by that column (ascending/descending).',
+    video: true,
   },
   {
     selector: '',
@@ -171,10 +187,15 @@ export const Tutorial: React.FC<Props> = ({
 
   // Generate react tour steps
   const steps: ReactourStep[] = stepsContent.map(
-    ({ selector, header, text, observe }) => {
+    ({ selector, header, text, observe, video }) => {
       // Create step content
       const content = () => (
         <StepContent>
+          {video && (
+            <StepVideo autoPlay loop key={selector}>
+              <source src={`./videos/${selector}.mp4`} type="video/mp4" />
+            </StepVideo>
+          )}
           <h6 className="mt-2">{header}</h6>
           {typeof text === 'string' ? text : text()}
         </StepContent>
@@ -182,18 +203,14 @@ export const Tutorial: React.FC<Props> = ({
 
       // Create step object
       let step: ReactourStep = {
-        selector,
+        selector: selector && `[data-tutorial="${selector}"]`,
         content,
         style: helper_style,
       };
 
       // Add observe selector and action if observing
       if (observe) {
-        const end_selector_index = selector.lastIndexOf('"');
-        const observe_selector = `${selector.slice(
-          0,
-          end_selector_index
-        )}-observe${selector.slice(end_selector_index)}`;
+        const observe_selector = `[data-tutorial="${selector}-observe"]`;
         step = { ...step, observe: observe_selector, action: focusElement };
       }
 
@@ -235,7 +252,7 @@ export const Tutorial: React.FC<Props> = ({
       startAt={0}
       accentColor={globalTheme.primary_hover}
       rounded={6}
-      showCloseButton={shownTutorial}
+      showCloseButton={false}
       disableDotsNavigation={!shownTutorial}
       showNavigation={shownTutorial}
       closeWithMask={shownTutorial}
