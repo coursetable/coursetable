@@ -153,6 +153,6 @@ https
 
   // Once routes have been created, start listening.
   app.listen(INSECURE_PORT, () => {
-    console.log(`Insecure API listening on port ${INSECURE_PORT}`);
+    winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
   });
 })();

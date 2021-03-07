@@ -1,6 +1,8 @@
 import { FERRY_SECRET } from '../config';
 import express from 'express';
 
+import winston from "../logging/winston"
+
 import { fetchCatalog } from './catalog.utils';
 
 /**
@@ -45,7 +47,7 @@ export const refreshCatalog = (req: express.Request, res: express.Response) => {
       });
     })
     .catch((err) => {
-      console.error(err);
+      winston.error(err);
       return res.status(500).json(err);
     });
 };

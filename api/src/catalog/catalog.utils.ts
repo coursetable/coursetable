@@ -3,6 +3,8 @@ import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import fs from 'fs';
 import { request } from 'graphql-request';
 
+import winston from "../logging/winston"
+
 /**
  * Get static catalogs for each season from Hasura,
  * @prop overwrite - whether or not to skip existing catalogs.
@@ -13,11 +15,11 @@ export async function fetchCatalog(overwrite: boolean) {
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
   } catch (err) {
-    console.error(err);
+    winston.error(err);
     throw Error(err);
   }
 
-  console.log(`Fetched ${seasons.seasons.length} seasons`);
+  winston.info(`Fetched ${seasons.seasons.length} seasons`);
   fs.writeFileSync(
     `${STATIC_FILE_DIR}/seasons.json`,
     JSON.stringify(seasons.seasons)
@@ -30,7 +32,7 @@ export async function fetchCatalog(overwrite: boolean) {
       const output_path = `${STATIC_FILE_DIR}/catalogs/${season_code}.json`;
 
       if (!overwrite && fs.existsSync(output_path)) {
-        console.log(`Catalog for ${season_code} exists, skipping`);
+        winston.info(`Catalog for ${season_code} exists, skipping`);
         return;
       }
 
@@ -41,7 +43,7 @@ export async function fetchCatalog(overwrite: boolean) {
           season: season_code,
         });
       } catch (err) {
-        console.error(err);
+        winston.error(err);
         throw err;
       }
 
@@ -51,7 +53,7 @@ export async function fetchCatalog(overwrite: boolean) {
           JSON.stringify(catalog.computed_listing_info)
         );
 
-        console.log(
+        winston.info(
           `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`
         );
       }
