@@ -50,12 +50,15 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
   // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
+    const portal = document.querySelector('#portal');
     if (
       ref_toggle.current &&
       ref_dropdown &&
       ref_dropdown.current &&
       !ref_toggle.current.contains(event.target as Node) &&
-      !ref_dropdown.current.contains(event.target as Node)
+      !ref_dropdown.current.contains(event.target as Node) &&
+      portal &&
+      !portal.contains(event.target as Node)
     ) {
       if (callback) {
         callback(isComponentVisible);
@@ -66,17 +69,9 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
 
   // Add event listener on mount and remove it on dismount
   useEffect(() => {
-    document.body.children[1].addEventListener(
-      'click',
-      handleClickOutside,
-      true
-    );
+    document.body.addEventListener('click', handleClickOutside, true);
     return () => {
-      document.body.children[1].removeEventListener(
-        'click',
-        handleClickOutside,
-        true
-      );
+      document.body.removeEventListener('click', handleClickOutside, true);
     };
   });
 

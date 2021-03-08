@@ -8,6 +8,7 @@ import {
   FcInfo,
   FcQuestions,
   FcFeedback,
+  FcPuzzle,
 } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 
@@ -22,6 +23,7 @@ import {
   StyledHoverText,
 } from './StyledComponents';
 import { NavLink } from 'react-router-dom';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -30,6 +32,7 @@ type Props = {
   profile_expanded: boolean;
   setIsComponentVisible(visible: boolean): void;
   isLoggedIn: boolean;
+  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -37,12 +40,21 @@ type Props = {
  * @prop profile_expanded - is dropdown visible?
  * @prop setIsComponentVisible - function that changes dropdown visibility
  * @prop isLoggedIn - is user logged in?
+ * @prop setIsTutorialOpen - opens tutorial
  */
 const MeDropdown: React.VFC<Props> = ({
   profile_expanded,
   setIsComponentVisible,
   isLoggedIn,
+  setIsTutorialOpen,
 }) => {
+  // Fetch width of window
+  const { width } = useWindowDimensions();
+
+  // Check if mobile or tablet
+  const isMobile = width < 768;
+  const isTablet = !isMobile && width < 1200;
+
   // Get user context data
   const { user } = useUser();
   // Are we exporting the user's worksheet?
@@ -139,6 +151,29 @@ const MeDropdown: React.VFC<Props> = ({
                 </NavLink>
               </TextComponent>
             </Row>
+            {/* Try tutorial only on desktop */}
+            {!isMobile && !isTablet && isLoggedIn && (
+              <Row className="pb-3 m-auto">
+                <FcPuzzle
+                  className="mr-2 my-auto"
+                  size={20}
+                  style={{ paddingLeft: '2px' }}
+                />
+                <TextComponent type={1}>
+                  <NavLink
+                    to="/catalog"
+                    className={styles.collapse_text}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToTop(e);
+                      setIsTutorialOpen(true);
+                    }}
+                  >
+                    <StyledHoverText>Tutorial</StyledHoverText>
+                  </NavLink>
+                </TextComponent>
+              </Row>
+            )}
             {/* Revert to Old CourseTable Link */}
             <Row className="pb-3 m-auto">
               <FcUndo

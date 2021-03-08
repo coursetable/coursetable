@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import { Tutorial } from './components/Tutorial';
 
 import Landing from './pages/Landing';
 // import Home from './pages/Home';
@@ -21,12 +22,22 @@ import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
+import { useLocalStorageState } from './browserStorage';
+import { useWindowDimensions } from './components/WindowDimensionsProvider';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
- * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
+ * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
+ * @prop location - object | provides the location info from react-router-dom
  */
-function App({ themeToggler }) {
+function App({ themeToggler, location }) {
+  // Fetch width of window
+  const { width } = useWindowDimensions();
+
+  // Check if mobile or tablet
+  const isMobile = width < 768;
+  const isTablet = !isMobile && width < 1200;
+
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -48,6 +59,36 @@ function App({ themeToggler }) {
 
   const MyRoute = Route;
 
+  // Tutorial state
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+
+  // First tutorial state
+  const [shownTutorial, setShownTutorial] = useLocalStorageState(
+    'shownTutorial',
+    false
+  );
+
+  // Handle whether or not to open tutorial
+  useEffect(() => {
+    if (
+      !isMobile &&
+      !isTablet &&
+      isLoggedIn &&
+      !shownTutorial &&
+      location &&
+      location.pathname === '/catalog'
+    ) {
+      setIsTutorialOpen(true);
+    }
+  }, [
+    isMobile,
+    isTablet,
+    isLoggedIn,
+    shownTutorial,
+    location,
+    setIsTutorialOpen,
+  ]);
+
   // Render spinner if page loading
   if (loading) {
     return (
@@ -68,7 +109,11 @@ function App({ themeToggler }) {
         ! 💖 &nbsp;What about a study group tool? Fill out this{' '}
         <a href="https://forms.gle/mY2bvA8JA2d1Zsk89">survey</a>!
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        themeToggler={themeToggler}
+        setIsTutorialOpen={setIsTutorialOpen}
+      />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">
@@ -158,8 +203,15 @@ function App({ themeToggler }) {
           return !['/catalog'].includes(location.pathname) && <Footer />;
         }}
       />
+      {/* Tutorial for first-time users */}
+      <Tutorial
+        isTutorialOpen={isTutorialOpen}
+        setIsTutorialOpen={setIsTutorialOpen}
+        shownTutorial={shownTutorial}
+        setShownTutorial={setShownTutorial}
+      />
     </>
   );
 }
 
-export default App;
+export default withRouter(App);

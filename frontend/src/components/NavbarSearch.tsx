@@ -314,7 +314,11 @@ export const NavbarSearch: React.FC = () => {
         style={{ outline: 'none' }}
       />
       {/* Search Form */}
-      <Form className="px-0 h-100" onSubmit={scroll_to_results}>
+      <Form
+        className="px-0 h-100"
+        onSubmit={scroll_to_results}
+        data-tutorial="catalog-1"
+      >
         {/* Top row */}
         <StyledRow>
           <SearchWrapper>
@@ -367,6 +371,7 @@ export const NavbarSearch: React.FC = () => {
                 setStartTime(Date.now());
               }}
               select_options={select_subjects}
+              data_tutorial={2}
             >
               <PopoutSelect
                 isMulti
@@ -402,66 +407,71 @@ export const NavbarSearch: React.FC = () => {
                 }}
               />
             </Popout>
-            <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
-              {/* Overall Rating Range */}
-              <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
-                <RangeLabel
-                  className="flex-grow-1 text-center"
-                  style={activeStyle(activeOverall)}
-                >
-                  Overall
-                </RangeLabel>
-                <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
-              </div>
-              <StyledRange
-                min={1}
-                max={5}
-                step={0.1}
-                key={reset_key}
-                handleStyle={range_handle_style()}
-                railStyle={range_rail_style()}
-                trackStyle={[range_rail_style()]}
-                defaultValue={overallBounds}
-                onChange={(value) => {
-                  setOverallValueLabels(value);
-                }}
-                onAfterChange={(value) => {
-                  setOverallBounds(value);
-                  setStartTime(Date.now());
-                }}
-              />
-            </Col>
-            <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
-              {/* Workload Rating Range */}
-              <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
-                <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
-                <RangeLabel
-                  className="flex-grow-1 text-center"
-                  style={activeStyle(activeWorkload)}
-                >
-                  Workload
-                </RangeLabel>
-                <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
-              </div>
-              <StyledRange
-                min={1}
-                max={5}
-                step={0.1}
-                key={reset_key}
-                handleStyle={range_handle_style()}
-                railStyle={range_rail_style()}
-                trackStyle={[range_rail_style()]}
-                defaultValue={workloadBounds}
-                onChange={(value) => {
-                  setWorkloadValueLabels(value);
-                }}
-                onAfterChange={(value) => {
-                  setWorkloadBounds(value);
-                  setStartTime(Date.now());
-                }}
-              />
-            </Col>
+            <div
+              className="w-auto flex-grow-0 d-flex align-items-center"
+              data-tutorial="catalog-3"
+            >
+              <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+                {/* Overall Rating Range */}
+                <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                  <RangeValueLabel>{overallValueLabels[0]}</RangeValueLabel>
+                  <RangeLabel
+                    className="flex-grow-1 text-center"
+                    style={activeStyle(activeOverall)}
+                  >
+                    Overall
+                  </RangeLabel>
+                  <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
+                </div>
+                <StyledRange
+                  min={1}
+                  max={5}
+                  step={0.1}
+                  key={reset_key}
+                  handleStyle={range_handle_style()}
+                  railStyle={range_rail_style()}
+                  trackStyle={[range_rail_style()]}
+                  defaultValue={overallBounds}
+                  onChange={(value) => {
+                    setOverallValueLabels(value);
+                  }}
+                  onAfterChange={(value) => {
+                    setOverallBounds(value);
+                    setStartTime(Date.now());
+                  }}
+                />
+              </Col>
+              <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+                {/* Workload Rating Range */}
+                <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                  <RangeValueLabel>{workloadValueLabels[0]}</RangeValueLabel>
+                  <RangeLabel
+                    className="flex-grow-1 text-center"
+                    style={activeStyle(activeWorkload)}
+                  >
+                    Workload
+                  </RangeLabel>
+                  <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
+                </div>
+                <StyledRange
+                  min={1}
+                  max={5}
+                  step={0.1}
+                  key={reset_key}
+                  handleStyle={range_handle_style()}
+                  railStyle={range_rail_style()}
+                  trackStyle={[range_rail_style()]}
+                  defaultValue={workloadBounds}
+                  onChange={(value) => {
+                    setWorkloadValueLabels(value);
+                  }}
+                  onAfterChange={(value) => {
+                    setWorkloadBounds(value);
+                    setStartTime(Date.now());
+                  }}
+                />
+              </Col>
+            </div>
             {/* Season Filter Dropdown */}
             <Popout
               buttonText="Season"
@@ -497,6 +507,7 @@ export const NavbarSearch: React.FC = () => {
                 setStartTime(Date.now());
               }}
               select_options={advanced_options}
+              data_tutorial={4}
             >
               <AdvancedWrapper>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
@@ -509,7 +520,7 @@ export const NavbarSearch: React.FC = () => {
                     options={schoolOptions}
                     placeholder="All Schools"
                     // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
+                    menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectSchools((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
@@ -526,7 +537,7 @@ export const NavbarSearch: React.FC = () => {
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
+                    menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
