@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
-import Tour, { ReactourStep } from 'reactour';
+import Tour, { ReactourStep, ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
@@ -44,7 +44,7 @@ const StepContent = styled.div`
 
 // Step video
 const StepVideo = styled.video`
-  width: 118% !important;
+  width: 116% !important;
   margin-left: -30px;
   margin-top: -24px;
   margin-bottom: 20px;
@@ -72,6 +72,7 @@ type Step = {
   observe?: boolean;
   video?: boolean;
   image?: string;
+  position?: ReactourStepPosition;
 };
 
 // Steps content
@@ -112,6 +113,7 @@ const stepsContent: Step[] = [
     ),
     observe: true,
     video: true,
+    position: 'bottom',
   },
   {
     selector: 'catalog-5',
@@ -182,7 +184,6 @@ export const Tutorial: React.FC<Props> = ({
     if (shownTutorial) {
       styles = {
         ...styles,
-        paddingRight: '40px',
         maxWidth: '432px',
         alignItems: 'center',
       };
@@ -197,7 +198,7 @@ export const Tutorial: React.FC<Props> = ({
 
   // Generate react tour steps
   const steps: ReactourStep[] = stepsContent.map(
-    ({ selector, header, text, observe, video, image }) => {
+    ({ selector, header, text, observe, video, image, position }) => {
       // Create step content
       const content = () => (
         <StepContent>
@@ -231,8 +232,8 @@ export const Tutorial: React.FC<Props> = ({
         step = { ...step, observe: observe_selector, action: focusElement };
       }
 
-      if (!selector) {
-        step = { ...step, position: [160, 250] };
+      if (position) {
+        step = { ...step, position };
       }
 
       return step;
