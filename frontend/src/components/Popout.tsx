@@ -119,7 +119,9 @@ export const Popout: React.FC<Props> = ({
   const theme = useTheme();
 
   // Dynamic text state for active popout button
-  const [toggleText, setToggleText] = useState(buttonText);
+  const [toggleText, setToggleText] = useState<string | JSX.Element[]>(
+    buttonText
+  );
   // Active state
   const [active, setActive] = useState(false);
 
@@ -143,30 +145,32 @@ export const Popout: React.FC<Props> = ({
   useEffect(() => {
     if (select_options) {
       if (Array.isArray(select_options) && select_options.length > 0) {
-        const options = select_options.map((option) => {
-          if (type === 'season') {
-            return option.label;
+        const maxOptions = type === 'season' ? 1 : 3;
+        const top_options =
+          select_options.length > maxOptions
+            ? (select_options.slice(0, maxOptions) as Option[])
+            : (select_options as Option[]);
+        const text = top_options.map((option, index) => {
+          const optionLabel = type === 'season' ? option.label : option.value;
+          const colorStyle =
+            type === 'skills/areas' ? { color: option.color } : undefined;
+          const span = (
+            <span style={colorStyle} key={optionLabel}>
+              {optionLabel}
+            </span>
+          );
+          if (top_options.length > 1 && index < maxOptions - 1) {
+            return <>{span}, </>;
           }
-          return option.value;
+          if (select_options.length > maxOptions) {
+            return (
+              <>
+                {span} + {select_options.length - maxOptions}
+              </>
+            );
+          }
+          return span;
         });
-        let text;
-        if (type === 'season') {
-          text =
-            options.length > 1
-              ? `${options[0]} + ${options.length - 1}`
-              : options[0];
-        } else {
-          text =
-            options.length > 3
-              ? `${options[0]}, ${options[1]}, ${options[2]} + ${
-                  options.length - 3
-                }`
-              : options.length === 3
-              ? `${options[0]}, ${options[1]}, ${options[2]}`
-              : options.length === 2
-              ? `${options[0]}, ${options[1]}`
-              : options[0];
-        }
         setToggleText(text);
         setActive(true);
       } else if (
