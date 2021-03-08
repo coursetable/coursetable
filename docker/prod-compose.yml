@@ -17,6 +17,8 @@ services:
       - mysql
     environment:
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
+      NODE_ENV: production
       MYSQL_HOST: ${MYSQL_HOST?host}
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
