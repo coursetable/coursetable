@@ -202,7 +202,11 @@ export const Tutorial: React.FC<Props> = ({
       const content = () => (
         <StepContent>
           {image && (
-            <StepImage src={`./images/${image}.png`} alt={image} height="362" />
+            <StepImage
+              src={`./images/${image}-${globalTheme.theme}.png`}
+              alt={image}
+              height="362"
+            />
           )}
           {video && (
             <StepVideo autoPlay loop key={selector}>
