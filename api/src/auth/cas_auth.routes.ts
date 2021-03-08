@@ -1,7 +1,6 @@
 /**
  * @file Routes for passport-CAS authentication with Yale.
  */
-
 /// <reference path="./user.d.ts" />
 import express from 'express';
 import passport from 'passport';
@@ -27,7 +26,7 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
             'https://yalies.io/api/people',
             {
               filters: {
-                netId: profile.user,
+                netid: profile.user,
               },
             },
             {
@@ -48,11 +47,9 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
 
             // otherwise, add the user to the cookie
             const user = data[0];
-            return done(null, {
-              netId: profile.user,
-              evals: true,
-              profile: user,
-            });
+            Student.enableEvaluations(profile.user, (statusCode, err, data) => {
+              done(null, { netId: profile.user, evals: true });
+            })
           })
           .catch((err) => {
             console.error(err);
