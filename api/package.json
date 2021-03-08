@@ -1,7 +1,7 @@
 {
   "scripts": {
     "start": "ts-node-dev src/server.ts",
-    "prod": "NODE_ENV=production ts-node src/server.ts",
+    "prod": "ts-node src/server.ts",
     "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
     "depcheck": "npx depcheck . --json",
     "lint": "prettier -l src && (eslint src || true)",
