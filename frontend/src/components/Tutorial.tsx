@@ -52,6 +52,12 @@ const StepVideo = styled.video`
   border-top-right-radius: 6px;
 `;
 
+// Step image
+const StepImage = styled.img`
+  width: 100% !important;
+  margin-bottom: 20px;
+`;
+
 type Props = {
   isTutorialOpen: boolean;
   setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -65,6 +71,7 @@ type Step = {
   text: string | (() => JSX.Element);
   observe?: boolean;
   video?: boolean;
+  image?: string;
 };
 
 // Steps content
@@ -73,6 +80,7 @@ const stepsContent: Step[] = [
     selector: '',
     header: '📘 Welcome to CourseTable! 📘',
     text: 'This tutorial will teach you the basics of using the new catalog.',
+    image: 'enter',
   },
   {
     selector: 'catalog-1',
@@ -124,6 +132,7 @@ const stepsContent: Step[] = [
         .
       </>
     ),
+    image: 'feedback',
   },
   {
     selector: '',
@@ -134,6 +143,7 @@ const stepsContent: Step[] = [
         CourseTable!
       </>
     ),
+    image: 'finish',
   },
 ];
 
@@ -187,10 +197,13 @@ export const Tutorial: React.FC<Props> = ({
 
   // Generate react tour steps
   const steps: ReactourStep[] = stepsContent.map(
-    ({ selector, header, text, observe, video }) => {
+    ({ selector, header, text, observe, video, image }) => {
       // Create step content
       const content = () => (
         <StepContent>
+          {image && (
+            <StepImage src={`./images/${image}.png`} alt={image} height="362" />
+          )}
           {video && (
             <StepVideo autoPlay loop key={selector}>
               <source src={`./videos/${selector}.mp4`} type="video/mp4" />
@@ -212,6 +225,10 @@ export const Tutorial: React.FC<Props> = ({
       if (observe) {
         const observe_selector = `[data-tutorial="${selector}-observe"]`;
         step = { ...step, observe: observe_selector, action: focusElement };
+      }
+
+      if (!selector) {
+        step = { ...step, position: [160, 250] };
       }
 
       return step;
