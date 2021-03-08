@@ -85,47 +85,57 @@ export const skillsAreasColors = {
 
 export const skillsAreasOptions = [
   {
-    label: 'Hu - Humanities & Arts [A]',
-    value: 'Hu',
-    color: skillsAreasColors.Hu,
+    label: 'Areas',
+    options: [
+      {
+        label: 'Hu - Humanities & Arts',
+        value: 'Hu',
+        color: skillsAreasColors.Hu,
+      },
+      {
+        label: 'So - Social Sciences',
+        value: 'So',
+        color: skillsAreasColors.So,
+      },
+      { label: 'Sc - Sciences', value: 'Sc', color: skillsAreasColors.Sc },
+    ],
   },
   {
-    label: 'So - Social Sciences [A]',
-    value: 'So',
-    color: skillsAreasColors.So,
-  },
-  { label: 'Sc - Sciences [A]', value: 'Sc', color: skillsAreasColors.Sc },
-  {
-    label: 'QR - Quantitative Reasoning [S]',
-    value: 'QR',
-    color: skillsAreasColors.QR,
-  },
-  { label: 'WR - Writing [S]', value: 'WR', color: skillsAreasColors.WR },
-  { label: 'L - All Language [S]', value: 'L', color: skillsAreasColors.L },
-  {
-    label: 'L1 - Language Level 1 [S]',
-    value: 'L1',
-    color: skillsAreasColors.L1,
-  },
-  {
-    label: 'L2 - Language Level 2 [S]',
-    value: 'L2',
-    color: skillsAreasColors.L2,
-  },
-  {
-    label: 'L3 - Language Level 3 [S]',
-    value: 'L3',
-    color: skillsAreasColors.L3,
-  },
-  {
-    label: 'L4 - Language Level 4 [S]',
-    value: 'L4',
-    color: skillsAreasColors.L4,
-  },
-  {
-    label: 'L5 - Language Level 5 [S]',
-    value: 'L5',
-    color: skillsAreasColors.L5,
+    label: 'Skills',
+    options: [
+      {
+        label: 'QR - Quantitative Reasoning',
+        value: 'QR',
+        color: skillsAreasColors.QR,
+      },
+      { label: 'WR - Writing', value: 'WR', color: skillsAreasColors.WR },
+      { label: 'L - All Language', value: 'L', color: skillsAreasColors.L },
+      {
+        label: 'L1 - Language Level 1',
+        value: 'L1',
+        color: skillsAreasColors.L1,
+      },
+      {
+        label: 'L2 - Language Level 2',
+        value: 'L2',
+        color: skillsAreasColors.L2,
+      },
+      {
+        label: 'L3 - Language Level 3',
+        value: 'L3',
+        color: skillsAreasColors.L3,
+      },
+      {
+        label: 'L4 - Language Level 4',
+        value: 'L4',
+        color: skillsAreasColors.L4,
+      },
+      {
+        label: 'L5 - Language Level 5',
+        value: 'L5',
+        color: skillsAreasColors.L5,
+      },
+    ],
   },
 ] as const;
 
