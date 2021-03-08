@@ -5,6 +5,7 @@ import { MdErrorOutline } from 'react-icons/md';
 import { useUser } from '../user';
 import {
   checkConflict,
+  checkCrossListed,
   isInWorksheet,
   unflattenTimes,
 } from '../courseUtilities';
@@ -40,13 +41,20 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
       // Ignore any items with an invalid time.
       return false;
     }
-    if (checkConflict(data, course, times)) {
+    if (checkConflict(data, course, times).length > 0) {
       // There is a conflict with this listing.
-      return true;
+      return checkConflict(data, course, times);
     }
     // No conflict
     return false;
   }, [course, data, times]);
+
+  // Update conflict status whenever the user's worksheet changes
+  const crossListed = useMemo(() => {
+    // Return if worksheet hasn't been loaded, otherwise return the cross-listed class
+    if (!data) return false;
+    return checkCrossListed(data, course);
+  }, [course, data]);
 
   // Renders the conflict tooltip on hover
   const renderTooltip = (
@@ -54,9 +62,18 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
     props: Omit<React.ComponentPropsWithRef<typeof Tooltip>, 'id'>
   ) =>
     // Render if this course isn't in the worksheet and there is a conflict
-    !inWorksheet && conflict ? (
+    !inWorksheet && conflict !== false ? (
       <Tooltip {...props} id="conflict-icon-button-tooltip">
-        <small style={{ fontWeight: 500 }}>Conflicts with worksheet</small>
+        <small style={{ fontWeight: 500 }}>
+          Conflicts with: <br />
+          {conflict.map((x) => `${x.course_code}`).join(', ')} <br />
+        </small>
+        {crossListed !== false ? (
+          // Show only if the class is cross-listed with another class in the worksheet
+          <small>(cross-listed with {crossListed})</small>
+        ) : (
+          ''
+        )}
       </Tooltip>
     ) : (
       <div />
@@ -64,7 +81,7 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
 
   return (
     // Smooth fade in and out transition
-    <Fade in={!inWorksheet && conflict}>
+    <Fade in={!inWorksheet && conflict !== false}>
       <div>
         <OverlayTrigger
           placement="top"
