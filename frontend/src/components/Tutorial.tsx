@@ -44,7 +44,6 @@ const StepContent = styled.div`
 
 // Step video
 const StepVideo = styled.video`
-  width: 116% !important;
   margin-left: -30px;
   margin-top: -24px;
   margin-bottom: 20px;
@@ -117,7 +116,7 @@ const stepsContent: Step[] = [
   },
   {
     selector: 'catalog-5',
-    header: '🔍 Control how you see possibilities',
+    header: '🔍 Control how you see the possibilities',
     text:
       'Click on a column toggle to sort by that column (ascending/descending).',
     video: true,
@@ -127,7 +126,7 @@ const stepsContent: Step[] = [
     header: '📢 We gotchu fam',
     text: () => (
       <>
-        If you have any problems, you can leave feedback on our{' '}
+        If you have any problems or new ideas, you can leave feedback on our{' '}
         <Link target="_blank" rel="noopener noreferrer" to="/feedback">
           <strong>Feedback page</strong>
         </Link>
@@ -174,7 +173,7 @@ export const Tutorial: React.FC<Props> = ({
   // Change react tour helper styling based on theme
   const helper_style: React.CSSProperties = useMemo(() => {
     let styles: React.CSSProperties = {
-      maxWidth: '380px',
+      maxWidth: '432px',
       backgroundColor: globalTheme.background,
       color: globalTheme.text[0],
       display: 'flex',
@@ -184,7 +183,6 @@ export const Tutorial: React.FC<Props> = ({
     if (shownTutorial) {
       styles = {
         ...styles,
-        maxWidth: '432px',
         alignItems: 'center',
       };
     }
@@ -210,7 +208,7 @@ export const Tutorial: React.FC<Props> = ({
             />
           )}
           {video && (
-            <StepVideo autoPlay loop key={selector} height="270">
+            <StepVideo autoPlay loop key={selector} width="116%" height="270">
               <source src={`./videos/${selector}.mp4`} type="video/mp4" />
             </StepVideo>
           )}
