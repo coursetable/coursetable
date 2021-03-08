@@ -66,6 +66,11 @@ services:
     environment:
       FACEBOOK_APP_ID: ${FACEBOOK_APP_ID?fb_app_id}
       FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET?fb_app_secret}
+      MYSQL_HOST: ${MYSQL_HOST?host}
+      MYSQL_PORT: ${MYSQL_PORT?port}
+      MYSQL_USERNAME: ${MYSQL_USERNAME?username}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
+      MYSQL_DATABASE: yale_advanced_oci
     build: ./php
     volumes:
       - ..:/usr/share/nginx/html
