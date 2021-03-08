@@ -123,7 +123,7 @@ const stepsContent: Step[] = [
     video: true,
   },
   {
-    selector: '',
+    selector: 'catalog-6',
     header: '📢 We gotchu fam',
     text: () => (
       <>
@@ -134,7 +134,7 @@ const stepsContent: Step[] = [
         .
       </>
     ),
-    image: 'feedback',
+    video: true,
   },
   {
     selector: '',
@@ -210,7 +210,7 @@ export const Tutorial: React.FC<Props> = ({
             />
           )}
           {video && (
-            <StepVideo autoPlay loop key={selector}>
+            <StepVideo autoPlay loop key={selector} height="270">
               <source src={`./videos/${selector}.mp4`} type="video/mp4" />
             </StepVideo>
           )}
