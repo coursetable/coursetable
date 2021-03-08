@@ -1,5 +1,8 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import posthog from 'posthog-js';
+import axios from 'axios';
+
+import { API_ENDPOINT } from './config';
 
 // Detect clicks outside of a component
 // Via https://stackoverflow.com/a/54570068/5004662
@@ -47,12 +50,18 @@ export function logout() {
   posthog.capture('logout');
   posthog.reset();
 
-  // Clear cookies
-  document.cookie.split(';').forEach((c) => {
-    document.cookie = c
-      .replace(/^ +/, '')
-      .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
-  });
-  // Redirect to home page and refresh as well
-  window.location.pathname = '/';
+  axios
+    .get(`${API_ENDPOINT}/api/auth/logout`, {
+      withCredentials: true,
+    })
+    .then(() => {
+      // Clear cookies
+      document.cookie.split(';').forEach((c) => {
+        document.cookie = c
+          .replace(/^ +/, '')
+          .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+      });
+      // Redirect to home page and refresh as well
+      window.location.pathname = '/';
+    });
 }
