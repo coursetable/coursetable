@@ -384,9 +384,9 @@ export const NavbarSearch: React.FC = () => {
                 }}
               />
             </Popout>
-            {/* Skills/Areas Filter Dropdown */}
+            {/* Areas/Skills Filter Dropdown */}
             <Popout
-              buttonText="Skills/Areas"
+              buttonText="Areas/Skills"
               type="skills/areas"
               onReset={() => {
                 setSelectSkillsAreas(defaultFilters.defaultOptions);
@@ -400,7 +400,7 @@ export const NavbarSearch: React.FC = () => {
                 isMulti
                 value={select_skillsareas}
                 options={skillsAreasOptions}
-                placeholder="All Skills/Areas"
+                placeholder="All Areas/Skills"
                 onChange={(selectedOption: ValueType<Option>) => {
                   setSelectSkillsAreas((selectedOption as Option[]) || []);
                   setStartTime(Date.now());
@@ -603,13 +603,13 @@ export const NavbarSearch: React.FC = () => {
             </Popout>
           </FilterGroup>
 
-          {/* Reset Filters Button */}
+          {/* Reset Filters & Sorting Button */}
           <StyledButton
             variant="danger"
             onClick={handleResetFilters}
             disabled={!canReset}
           >
-            Reset Filters
+            Reset
           </StyledButton>
         </StyledRow>
       </Form>

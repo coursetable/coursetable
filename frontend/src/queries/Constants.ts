@@ -84,17 +84,59 @@ export const skillsAreasColors = {
 };
 
 export const skillsAreasOptions = [
-  { label: 'Hu', value: 'Hu', color: skillsAreasColors.Hu },
-  { label: 'So', value: 'So', color: skillsAreasColors.So },
-  { label: 'Sc', value: 'Sc', color: skillsAreasColors.Sc },
-  { label: 'QR', value: 'QR', color: skillsAreasColors.QR },
-  { label: 'WR', value: 'WR', color: skillsAreasColors.WR },
-  { label: 'L (all)', value: 'L', color: skillsAreasColors.L },
-  { label: 'L1', value: 'L1', color: skillsAreasColors.L1 },
-  { label: 'L2', value: 'L2', color: skillsAreasColors.L2 },
-  { label: 'L3', value: 'L3', color: skillsAreasColors.L3 },
-  { label: 'L4', value: 'L4', color: skillsAreasColors.L4 },
-  { label: 'L5', value: 'L5', color: skillsAreasColors.L5 },
+  {
+    label: 'Areas',
+    options: [
+      {
+        label: 'Hu - Humanities & Arts',
+        value: 'Hu',
+        color: skillsAreasColors.Hu,
+      },
+      {
+        label: 'So - Social Sciences',
+        value: 'So',
+        color: skillsAreasColors.So,
+      },
+      { label: 'Sc - Sciences', value: 'Sc', color: skillsAreasColors.Sc },
+    ],
+  },
+  {
+    label: 'Skills',
+    options: [
+      {
+        label: 'QR - Quantitative Reasoning',
+        value: 'QR',
+        color: skillsAreasColors.QR,
+      },
+      { label: 'WR - Writing', value: 'WR', color: skillsAreasColors.WR },
+      { label: 'L - All Language', value: 'L', color: skillsAreasColors.L },
+      {
+        label: 'L1 - Language Level 1',
+        value: 'L1',
+        color: skillsAreasColors.L1,
+      },
+      {
+        label: 'L2 - Language Level 2',
+        value: 'L2',
+        color: skillsAreasColors.L2,
+      },
+      {
+        label: 'L3 - Language Level 3',
+        value: 'L3',
+        color: skillsAreasColors.L3,
+      },
+      {
+        label: 'L4 - Language Level 4',
+        value: 'L4',
+        color: skillsAreasColors.L4,
+      },
+      {
+        label: 'L5 - Language Level 5',
+        value: 'L5',
+        color: skillsAreasColors.L5,
+      },
+    ],
+  },
 ] as const;
 
 export const ratingColormap = chroma
@@ -118,19 +160,19 @@ export const creditOptions = [
 // school labels were filled in manually
 export const schoolOptions = [
   { label: 'Yale College', value: 'YC' },
-  { label: 'Architecture', value: 'AC' },
-  { label: 'Art', value: 'AT' },
-  { label: 'Arts and Sciences', value: 'GS' },
-  { label: 'Divinity', value: 'DI' },
-  { label: 'Drama', value: 'DR' },
-  { label: 'Forestry', value: 'FS' },
-  { label: 'Law', value: 'LW' },
-  { label: 'Medicine', value: 'MD' },
-  { label: 'Management', value: 'MG' },
-  { label: 'Music', value: 'MU' },
-  { label: 'Nursing', value: 'NR' },
-  { label: 'Physician Associate', value: 'PA' },
-  { label: 'Public Health', value: 'PH' },
+  { label: 'School of Architecture', value: 'AC' },
+  { label: 'School of Fine Arts', value: 'AT' },
+  { label: 'Graduate School of Arts and Sciences', value: 'GS' },
+  { label: 'Divinity School', value: 'DI' },
+  { label: 'School of Drama', value: 'DR' },
+  { label: 'School of the Environment', value: 'FS' },
+  { label: 'Law School', value: 'LW' },
+  { label: 'School of Medicine', value: 'MD' },
+  { label: 'School of Management', value: 'MG' },
+  { label: 'School of Music', value: 'MU' },
+  { label: 'School of Nursing', value: 'NR' },
+  { label: 'Physician Associate Program', value: 'PA' },
+  { label: 'School of Public Health', value: 'PH' },
   { label: 'Summer Session', value: 'SU' },
 ] as const;
 
