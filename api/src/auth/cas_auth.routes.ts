@@ -20,44 +20,57 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
         ssoBaseURL: 'https://secure.its.yale.edu/cas',
       },
       (profile, done) => {
-        // on completion, check Yalies.io for user profile
-        axios
-          .post(
-            'https://yalies.io/api/people',
-            {
-              filters: {
-                netid: profile.user,
+        // find or create the user
+        Student.findOrCreate(profile.user, () => {
+          // on completion, check Yalies.io for user profile
+          axios
+            .post(
+              'https://yalies.io/api/people',
+              {
+                filters: {
+                  netid: profile.user,
+                },
               },
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${YALIES_API_KEY}`,
-                'Content-Type': 'application/json',
-              },
-            }
-          )
-          .then(({ data }) => {
-            // if no user found, do not grant access
-            if (data === null || data.length === 0) {
+              {
+                headers: {
+                  Authorization: `Bearer ${YALIES_API_KEY}`,
+                  'Content-Type': 'application/json',
+                },
+              }
+            )
+            .then(({ data }) => {
+              // if no user found, do not grant access
+              if (data === null || data.length === 0 || data.school) {
+                return done(null, {
+                  netId: profile.user,
+                  evals: false,
+                });
+              }
+
+              const user = data[0];
+
+              // otherwise, add the user to the cookie if school is specified
+              if (user.school || user.school_code) {
+                Student.enableEvaluations(
+                  profile.user,
+                  (statusCode, err, data) => {
+                    return done(null, { netId: profile.user, evals: true });
+                  }
+                );
+              }
+              // otherwise, user isn't a Yale student
+              else {
+                return done(null, { netId: profile.user, evals: false });
+              }
+            })
+            .catch((err) => {
+              console.error(err);
               return done(null, {
                 netId: profile.user,
                 evals: false,
               });
-            }
-
-            // otherwise, add the user to the cookie
-            const user = data[0];
-            Student.enableEvaluations(profile.user, (statusCode, err, data) => {
-              done(null, { netId: profile.user, evals: true });
-            })
-          })
-          .catch((err) => {
-            console.error(err);
-            return done(null, {
-              netId: profile.user,
-              evals: false,
             });
-          });
+        });
       }
     )
   );
@@ -106,9 +119,7 @@ const casLogin = (
         return next(err);
       }
 
-      Student.findOrCreate(user.netId, () => {
-        return postAuth(req, res);
-      });
+      return postAuth(req, res);
     });
   })(req, res, next);
 };
