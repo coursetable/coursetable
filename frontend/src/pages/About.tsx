@@ -142,6 +142,20 @@ const About: React.VFC = () => {
     },
   ];
 
+  const create_cards = (person: any, idx: any) => (
+    <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
+      <StyledCard style={{ height: '100%' }}>
+        <Card.Img variant="top" src={person.image} alt={person.name} />
+        <Card.Body className="p-3">
+          <Card.Title className="mb-1">{person.name}</Card.Title>
+          <Card.Text>
+            <TextComponent type={1}>{person.role}</TextComponent>
+          </Card.Text>
+        </Card.Body>
+      </StyledCard>
+    </div>
+  );
+
   return (
     <div className={`${styles.container} mx-auto`}>
       <h1 className={`${styles.about_header} mt-5 mb-1`}>About Us</h1>
@@ -183,40 +197,12 @@ const About: React.VFC = () => {
       </Row>
 
       <div className="my-3">
-        <Row className="mx-auto">
-          {current.map((person, idx) => (
-            <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-              <StyledCard style={{ height: '100%' }}>
-                <Card.Img variant="top" src={person.image} alt={person.name} />
-                <Card.Body className="p-3">
-                  <Card.Title className="mb-1">{person.name}</Card.Title>
-                  <Card.Text>
-                    <TextComponent type={1}>{person.role}</TextComponent>
-                  </Card.Text>
-                </Card.Body>
-              </StyledCard>
-            </div>
-          ))}
-        </Row>
+        <Row className="mx-auto">{current.map(create_cards)}</Row>
       </div>
 
       <h1 className={`${styles.about_header} mt-5 mb-1`}>CourseTable Alumni</h1>
       <div className="my-3">
-        <Row className="mx-auto">
-          {alumni.map((person, idx) => (
-            <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-              <StyledCard style={{ height: '100%' }}>
-                <Card.Img variant="top" src={person.image} alt={person.name} />
-                <Card.Body className="p-3">
-                  <Card.Title className="mb-1">{person.name}</Card.Title>
-                  <Card.Text>
-                    <TextComponent type={1}>{person.role}</TextComponent>
-                  </Card.Text>
-                </Card.Body>
-              </StyledCard>
-            </div>
-          ))}
-        </Row>
+        <Row className="mx-auto">{alumni.map(create_cards)}</Row>
       </div>
     </div>
   );
