@@ -16,6 +16,14 @@ import ag from '../images/headshots/abhijit-gupta.jpg';
 import my from '../images/headshots/max-yuan.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpeg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
+import eb from '../images/headshots/erik-boesen.jpg';
+import eh from '../images/headshots/evan-hu.jpg';
+import nk from '../images/headshots/nalin-khanna.jpg';
+import ss from '../images/headshots/shayna-sragovicz.jpg';
+import lt from '../images/headshots/leck-tang.jpg';
+import az from '../images/headshots/anna-zhang.jpg';
+import ls from '../images/headshots/lauren-song.jpg';
+import js from '../images/headshots/josephine-shin.jpg';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -78,6 +86,46 @@ const About: React.VFC = () => {
       name: 'Deyuan Li',
       image: dl,
       role: 'Development',
+    },
+    {
+      name: 'Erik Boesen',
+      image: eb,
+      role: 'Development',
+    },
+    {
+      name: 'Evan Hu',
+      image: eh,
+      role: 'Development',
+    },
+    {
+      name: 'Nalin Khanna',
+      image: nk,
+      role: 'Development',
+    },
+    {
+      name: 'Josephine Shin',
+      image: js,
+      role: 'Design',
+    },
+    {
+      name: 'Lauren Song',
+      image: ls,
+      role: 'Design',
+    },
+    {
+      name: 'Shayna Sragovicz',
+      image: ss,
+      role: 'Development',
+    },
+    {
+      name: 'Leck Tang',
+      image: lt,
+      role: 'Development',
+    },
+    {
+      name: 'Anna Zhang',
+      image: az,
+      role: 'Design',
     },
   ];
 
