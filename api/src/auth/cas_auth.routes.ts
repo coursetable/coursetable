@@ -94,7 +94,6 @@ const postAuth = (req: express.Request, res: express.Response): void => {
     if (!redirect.startsWith('/')) {
       redirect = `/${redirect}`;
     }
-    //
     return res.redirect(`${FRONTEND_ENDPOINT}${redirect}`);
   }
 
