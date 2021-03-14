@@ -6,6 +6,10 @@ const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
 
+const getEnv = (name: string) => {
+  return process.env[name] || die(name);
+};
+
 // If running in dev mode
 export const isDev = process.env.NODE_ENV !== 'production';
 
@@ -14,34 +18,32 @@ export const SECURE_PORT = process.env.SECURE_PORT || 4096;
 export const INSECURE_PORT = process.env.INSECURE_PORT || 3001;
 
 // Keys for SSL
-export const KEY_PATH = process.env.KEY_PATH || 'server.key'
-export const CERT_PATH = process.env.CERT_PATH || 'server.cert'
+export const KEY_PATH = getEnv('KEY_PATH');
+export const CERT_PATH = getEnv('CERT_PATH');
 
 // MySQL config for students database
 export const MYSQL_STUDENTS_CONFIG = {
-  host: process.env.MYSQL_HOST || die('mysql host'),
-  port: parseInt(process.env.MYSQL_PORT || die('mysql port'), 10),
-  user: process.env.MYSQL_USER || die('mysql username'),
-  password: process.env.MYSQL_PASSWORD || die('mysql password'),
-  database: process.env.STUDENTS_DB || die('students db'),
+  host: getEnv('MYSQL_HOST'),
+  port: parseInt(getEnv('MYSQL_PORT'), 10),
+  user: getEnv('MYSQL_USER'),
+  password: getEnv('MYSQL_PASSWORD'),
+  database: getEnv('STUDENTS_DB'),
 };
 
 // MySQL config for courses database (just worksheets)
 export const MYSQL_COURSES_CONFIG = {
-  host: process.env.MYSQL_HOST || die('mysql host'),
-  port: parseInt(process.env.MYSQL_PORT || die('mysql port'), 10),
-  user: process.env.MYSQL_USER || die('mysql username'),
-  password: process.env.MYSQL_PASSWORD || die('mysql password'),
-  database: process.env.COURSES_DB || die('courses db'),
+  host: getEnv('MYSQL_HOST'),
+  port: parseInt(getEnv('MYSQL_PORT'), 10),
+  user: getEnv('MYSQL_USER'),
+  password: getEnv('MYSQL_PASSWORD'),
+  database: getEnv('COURSES_DB'),
 };
 
 // API key for interfacing with the yalies.io API
-export const YALIES_API_KEY =
-  process.env.YALIES_API_KEY || die('yalies api key');
+export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
 
 // Ferry GraphQL endpoint
-export const GRAPHQL_ENDPOINT =
-  process.env.GRAPHQL_ENDPOINT || die('graphql endpoint');
+export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
 
 // Legacy PHP URI
 export const PHP_URI = 'http://nginx:8080';
@@ -59,12 +61,11 @@ export const CORS_OPTIONS = {
 };
 
 // Secret for session cookie signing.
-export const SESSION_SECRET =
-  process.env.SESSION_SECRET ?? die('session secret');
+export const SESSION_SECRET = getEnv('SESSION_SECRET');
 
 // Note that an existing but empty FERRY_SECRET is meaningful,
 // as it enables us to bypass the header requirement in development.
-export const FERRY_SECRET = process.env.FERRY_SECRET ?? die('ferry secret');
+export const FERRY_SECRET = getEnv('FERRY_SECRET');
 
 // Location of statically generated files. This is relative
 // to the working directory, which is api.

@@ -25,8 +25,8 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 // import routes
 import catalog from './catalog/catalog.routes';
 import cas_auth, {
-  authSoft,
-  authHard,
+  authBasic,
+  authWithEvals,
   passportConfig,
 } from './auth/cas_auth.routes';
 
@@ -122,7 +122,7 @@ https
   // Mount static files route and require NetID authentication
   app.use(
     '/api/static',
-    authHard,
+    authWithEvals,
     express.static(STATIC_FILE_DIR, {
       cacheControl: true,
       maxAge: '1h',
@@ -136,7 +136,7 @@ https
     res.json('pong');
   });
 
-  app.use('/legacy_api', authSoft);
+  app.use('/legacy_api', authBasic);
   app.use(
     ['/legacy_api', '/index.php'],
     createProxyMiddleware({
@@ -149,7 +149,7 @@ https
   );
 
   // Restrict GraphQL access for authenticated Yale students only
-  app.use('/ferry', authHard);
+  app.use('/ferry', authWithEvals);
   app.use(
     '/ferry',
     createProxyMiddleware({

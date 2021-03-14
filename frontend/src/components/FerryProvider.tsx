@@ -61,7 +61,7 @@ export type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
   _ListingAugments;
 
 // Preprocess course data.
-const preprocess_courses = (listing: Listing) => {
+const preprocessCourses = (listing: Listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -103,8 +103,8 @@ const addToCache = (season: Season): Promise<void> => {
         // Convert season list into a crn lookup table.
         const data = res.data as Listing[];
         const info = new Map<Crn, Listing>();
-        for (const raw_listing of data) {
-          const listing = preprocess_courses(raw_listing);
+        for (const rawListing of data) {
+          const listing = preprocessCourses(rawListing);
           info.set(listing.crn, listing);
         }
 

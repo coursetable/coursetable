@@ -40,7 +40,7 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
             )
             .then(({ data }) => {
               // if no user found, do not grant access
-              if (data === null || data.length === 0 || data.school) {
+              if (data === null || data.length === 0) {
                 return done(null, {
                   netId: profile.user,
                   evals: false,
@@ -50,7 +50,7 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
               const user = data[0];
 
               // otherwise, add the user to the cookie if school is specified
-              if (user.school || user.school_code) {
+              if (user.school_code) {
                 Student.enableEvaluations(
                   profile.user,
                   (statusCode, err, data) => {
@@ -88,13 +88,14 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
 };
 
 const postAuth = (req: express.Request, res: express.Response): void => {
-  const redirect = req.query['redirect'] as string | undefined;
+  let redirect = req.query['redirect'] as string | undefined;
   if (redirect && !redirect.startsWith('//')) {
-    if (redirect.startsWith('/')) {
-      return res.redirect(`${FRONTEND_ENDPOINT}${redirect}`);
+    // prefix the redirect with a slash to avoid an open redirect vulnerability.
+    if (!redirect.startsWith('/')) {
+      redirect = `/${redirect}`;
     }
-    // We prefix this with a slash to avoid an open redirect vulnerability.
-    return res.redirect(`${FRONTEND_ENDPOINT}/${redirect}`);
+    //
+    return res.redirect(`${FRONTEND_ENDPOINT}${redirect}`);
   }
 
   // If no redirect is provided, simply redirect to the auth status.
@@ -125,7 +126,7 @@ const casLogin = (
 };
 
 // middleware function for requiring user account
-export const authSoft = (
+export const authBasic = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
@@ -141,7 +142,7 @@ export const authSoft = (
 };
 
 // middleware function for requiring user account + access to evaluations
-export const authHard = (
+export const authWithEvals = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
