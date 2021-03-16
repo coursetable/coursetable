@@ -1,4 +1,11 @@
+/**
+ * @file Catalog fetch scripts.
+ */
+
 import { FERRY_SECRET } from '../config';
+import express from 'express';
+
+import winston from '../logging/winston';
 
 import { fetchCatalog } from './catalog.utils';
 
@@ -9,7 +16,11 @@ import { fetchCatalog } from './catalog.utils';
  * @prop res - express response object
  * @prop next - express next object
  */
-export const verifyHeaders = (req, res, next) => {
+export const verifyHeaders = (
+  req: express.Request,
+  res: express.Response,
+  next: express.NextFunction
+) => {
   // get authentication headers
   const authd = req.header('x-ferry-secret'); // if user is logged in
 
@@ -30,7 +41,7 @@ export const verifyHeaders = (req, res, next) => {
  * @prop res - express response object
  * @prop next - express next object
  */
-export const refreshCatalog = (req, res) => {
+export const refreshCatalog = (req: express.Request, res: express.Response) => {
   // always overwrite when called
   const overwrite = true;
   fetchCatalog(overwrite)
@@ -40,7 +51,7 @@ export const refreshCatalog = (req, res) => {
       });
     })
     .catch((err) => {
-      console.error(err);
+      winston.error(err);
       return res.status(500).json(err);
     });
 };

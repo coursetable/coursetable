@@ -5,9 +5,9 @@ import { Link } from 'react-router-dom';
 import styles from './About.module.css';
 import { TextComponent, StyledCard } from '../components/StyledComponents';
 
+// Current Member Headshots
 import ae from '../images/headshots/aidan-evans.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
-import hs from '../images/headshots/harshal-sheth.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
 import dl from '../images/headshots/deyuan-li.jpg';
 import kh from '../images/headshots/kevin-hu.jpg';
@@ -15,8 +15,20 @@ import ma from '../images/headshots/murad-avliyakulov.jpg';
 import ag from '../images/headshots/abhijit-gupta.jpg';
 import my from '../images/headshots/max-yuan.jpg';
 import sh from '../images/headshots/sidney-hirschman.jpeg';
-import hl from '../images/headshots/hao-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
+import eb from '../images/headshots/erik-boesen.jpg';
+import eh from '../images/headshots/evan-hu.jpg';
+import nk from '../images/headshots/nalin-khanna.jpg';
+import ss from '../images/headshots/shayna-sragovicz.jpg';
+import lt from '../images/headshots/leck-tang.jpg';
+import az from '../images/headshots/anna-zhang.jpg';
+import ls from '../images/headshots/lauren-song.jpg';
+import js from '../images/headshots/josephine-shin.jpg';
+
+// Alumni Headshots
+import hs from '../images/headshots/harshal-sheth.jpg';
+import hl from '../images/headshots/hao-li.jpg';
+
 // import generic from '../images/headshots/default_pfp.png';
 
 /**
@@ -24,11 +36,16 @@ import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
  */
 const About: React.VFC = () => {
   // TODO: add a link for each person
-  const people = [
+  const current = [
     {
-      name: 'Harshal Sheth',
-      image: hs,
-      role: 'CourseTable Lead',
+      name: 'Kevin Hu',
+      image: kh,
+      role: 'CourseTable Co-Lead',
+    },
+    {
+      name: 'Max Yuan',
+      image: my,
+      role: 'CourseTable Co-Lead',
     },
     {
       name: 'Michelle M. Li',
@@ -36,23 +53,8 @@ const About: React.VFC = () => {
       role: 'Design Lead',
     },
     {
-      name: 'Kevin Hu',
-      image: kh,
-      role: 'Backend Dev Lead',
-    },
-    {
-      name: 'Max Yuan',
-      image: my,
-      role: 'Frontend Dev Lead',
-    },
-    {
       name: 'Murad Avliyakulov',
       image: ma,
-      role: 'Development',
-    },
-    {
-      name: 'Hao Li',
-      image: hl,
       role: 'Development',
     },
     {
@@ -85,7 +87,74 @@ const About: React.VFC = () => {
       image: dl,
       role: 'Development',
     },
+    {
+      name: 'Erik Boesen',
+      image: eb,
+      role: 'Development',
+    },
+    {
+      name: 'Evan Hu',
+      image: eh,
+      role: 'Development',
+    },
+    {
+      name: 'Nalin Khanna',
+      image: nk,
+      role: 'Development',
+    },
+    {
+      name: 'Josephine Shin',
+      image: js,
+      role: 'Design',
+    },
+    {
+      name: 'Lauren Song',
+      image: ls,
+      role: 'Design',
+    },
+    {
+      name: 'Shayna Sragovicz',
+      image: ss,
+      role: 'Development',
+    },
+    {
+      name: 'Leck Tang',
+      image: lt,
+      role: 'Development',
+    },
+    {
+      name: 'Anna Zhang',
+      image: az,
+      role: 'Design',
+    },
   ];
+
+  const alumni = [
+    {
+      name: 'Harshal Sheth',
+      image: hs,
+      role: 'CourseTable Lead',
+    },
+    {
+      name: 'Hao Li',
+      image: hl,
+      role: 'Development',
+    },
+  ];
+
+  const create_cards = (person: any, idx: any) => (
+    <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
+      <StyledCard style={{ height: '100%' }}>
+        <Card.Img variant="top" src={person.image} alt={person.name} />
+        <Card.Body className="p-3">
+          <Card.Title className="mb-1">{person.name}</Card.Title>
+          <Card.Text>
+            <TextComponent type={1}>{person.role}</TextComponent>
+          </Card.Text>
+        </Card.Body>
+      </StyledCard>
+    </div>
+  );
 
   return (
     <div className={`${styles.container} mx-auto`}>
@@ -128,21 +197,12 @@ const About: React.VFC = () => {
       </Row>
 
       <div className="my-3">
-        <Row className="mx-auto">
-          {people.map((person, idx) => (
-            <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
-              <StyledCard style={{ height: '100%' }}>
-                <Card.Img variant="top" src={person.image} alt={person.name} />
-                <Card.Body className="p-3">
-                  <Card.Title className="mb-1">{person.name}</Card.Title>
-                  <Card.Text>
-                    <TextComponent type={1}>{person.role}</TextComponent>
-                  </Card.Text>
-                </Card.Body>
-              </StyledCard>
-            </div>
-          ))}
-        </Row>
+        <Row className="mx-auto">{current.map(create_cards)}</Row>
+      </div>
+
+      <h1 className={`${styles.about_header} mt-5 mb-1`}>CourseTable Alumni</h1>
+      <div className="my-3">
+        <Row className="mx-auto">{alumni.map(create_cards)}</Row>
       </div>
     </div>
   );

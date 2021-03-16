@@ -17,7 +17,6 @@ import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
-import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 
 import { useUser } from './user';
@@ -83,11 +82,7 @@ function App({ themeToggler }) {
 
         {/* Catalog */}
         <MyRoute exact path="/catalog">
-          {isLoggedIn && !user.hasEvals ? (
-            <Redirect push to="/challenge" />
-          ) : (
-            <Search />
-          )}
+          <Search />
         </MyRoute>
 
         {/* Auth */}
@@ -101,7 +96,7 @@ function App({ themeToggler }) {
 
         {/* OCE Challenge */}
         <MyRoute exact path="/challenge">
-          <Challenge />
+          <Redirect to="/" />
         </MyRoute>
 
         {/* Worksheet */}
