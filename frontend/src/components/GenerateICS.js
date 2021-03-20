@@ -70,7 +70,7 @@ export const generateICS = (listings_all) => {
         .date(day.date())
         .year(day.year());
       const end = moment(info[0][1], 'HH:mm')
-        .month(day.month)
+        .month(day.month())
         .date(day.date())
         .year(day.year());
       // Correct hour
