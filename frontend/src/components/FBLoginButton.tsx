@@ -20,12 +20,12 @@ function FBLoginButton() {
   // Types on window.FB are defined in react-app-env.d.ts.
 
   const syncFacebook = useCallback(async () => {
-    const { data } = await axios.get(
-      `${API_ENDPOINT}/legacy_api/FetchFacebookData.php`,
-      {
-        withCredentials: true,
-      }
-    );
+    const { data } = await axios.get(`${API_ENDPOINT}/api/facebook/friends`, {
+      withCredentials: true,
+      headers: {
+        'fb-token': FB.getAuthResponse()?.accessToken,
+      },
+    });
     if (!data.success) {
       throw data.message;
     }
@@ -35,6 +35,7 @@ function FBLoginButton() {
   const handleLoginClick = useCallback(() => {
     window.FB.login(
       (response) => {
+        console.log(response.authResponse.accessToken);
         // The response object is returned with a status field that lets the
         // app know the current login status of the person.
         // Full docs on the response object can be found in the documentation

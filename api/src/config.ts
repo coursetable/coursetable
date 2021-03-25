@@ -21,6 +21,9 @@ export const INSECURE_PORT = process.env.INSECURE_PORT || 4096;
 export const KEY_PATH = getEnv('KEY_PATH');
 export const CERT_PATH = getEnv('CERT_PATH');
 
+// Facebook Graph API endpoint
+export const FACEBOOK_API_ENDPOINT = getEnv('FACEBOOK_API_ENDPOINT');
+
 // MySQL config for students database
 export const MYSQL_STUDENTS_CONFIG = {
   host: getEnv('MYSQL_HOST'),

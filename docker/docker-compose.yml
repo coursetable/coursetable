@@ -29,6 +29,7 @@ services:
       YALIES_API_KEY: ${YALIES_API_KEY?password}
       CERT_PATH: ${CERT_PATH?cert_path}
       KEY_PATH: ${KEY_PATH?key_path}
+      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3

@@ -31,12 +31,13 @@ services:
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
       CERT_PATH: ${CERT_PATH?cert_path}
       KEY_PATH: ${KEY_PATH?key_path}
+      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry db}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
