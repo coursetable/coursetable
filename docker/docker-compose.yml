@@ -27,6 +27,8 @@ services:
       SESSION_SECRET: "this is a dumb secret"
       FERRY_SECRET: "" # we want this empty in development so no auth is required to refresh
       YALIES_API_KEY: ${YALIES_API_KEY?password}
+      CERT_PATH: ${CERT_PATH?cert_path}
+      KEY_PATH: ${KEY_PATH?key_path}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3

@@ -14,8 +14,8 @@ const getEnv = (name: string) => {
 export const isDev = process.env.NODE_ENV !== 'production';
 
 // Networking
-export const SECURE_PORT = process.env.SECURE_PORT || 4096;
-export const INSECURE_PORT = process.env.INSECURE_PORT || 3001;
+export const SECURE_PORT = process.env.SECURE_PORT || 3001;
+export const INSECURE_PORT = process.env.INSECURE_PORT || 4096;
 
 // Keys for SSL
 export const KEY_PATH = getEnv('KEY_PATH');
@@ -50,7 +50,7 @@ export const PHP_URI = 'http://nginx:8080';
 
 // Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
-  ? 'http://localhost:3000'
+  ? 'https://localhost:3000'
   : process.env.FRONTEND_ENDPOINT;
 
 // CORS options so frontend can interface with server
@@ -65,7 +65,7 @@ export const SESSION_SECRET = getEnv('SESSION_SECRET');
 
 // Note that an existing but empty FERRY_SECRET is meaningful,
 // as it enables us to bypass the header requirement in development.
-export const FERRY_SECRET = getEnv('FERRY_SECRET');
+export const FERRY_SECRET = process.env['FERRY_SECRET'];
 
 // Location of statically generated files. This is relative
 // to the working directory, which is api.
