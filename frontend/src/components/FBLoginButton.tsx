@@ -22,7 +22,7 @@ function FBLoginButton() {
     if (!data.success) {
       throw data.message;
     }
-    return await fbRefresh();
+    await fbRefresh();
   }, [fbRefresh]);
 
   const handleLoginClick = useCallback(() => {
