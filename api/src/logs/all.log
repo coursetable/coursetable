@@ -1,0 +1,2974 @@
+2021-03-07 02:16:14:1614 info: Insecure API listening on port 3001
+2021-03-07 02:16:51:1651 info: Insecure API listening on port 3001
+2021-03-07 02:17:01:171 info: Insecure API listening on port 3001
+2021-03-07 02:17:35:1735 info: Updating static catalog
+2021-03-07 02:17:36:1736 info: Insecure API listening on port 3001
+2021-03-07 02:17:45:1745 info: Updating static catalog
+2021-03-07 02:17:45:1745 info: Catalog for 200903 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201001 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201002 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201003 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201101 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201102 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201103 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201201 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201202 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201203 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201301 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201302 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201303 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201401 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201402 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201403 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201501 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201502 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201503 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201601 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201602 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201603 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201701 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201702 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201703 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201801 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201802 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201803 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201901 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201902 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 201903 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 202001 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 202002 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 202003 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 202101 exists, skipping
+2021-03-07 02:17:45:1745 info: Catalog for 202102 exists, skipping
+2021-03-07 02:17:45:1745 info: Insecure API listening on port 3001
+2021-03-07 02:17:55:1755 info: Updating static catalog
+2021-03-07 02:17:55:1755 info: Fetched 36 seasons
+2021-03-07 02:17:55:1755 info: Catalog for 200903 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201001 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201002 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201003 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201101 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201102 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201103 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201201 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201202 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201203 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201301 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201302 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201303 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201401 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201402 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201403 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201501 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201502 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201503 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201601 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201602 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201603 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201701 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201702 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201703 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201801 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201802 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201803 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201901 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201902 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 201903 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 202001 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 202002 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 202003 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 202101 exists, skipping
+2021-03-07 02:17:55:1755 info: Catalog for 202102 exists, skipping
+2021-03-07 02:17:55:1755 info: Insecure API listening on port 3001
+2021-03-07 02:18:56:1856 info: Updating static catalog
+2021-03-07 02:18:56:1856 info: Fetched 36 seasons
+2021-03-07 02:18:56:1856 info: Catalog for 200903 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201001 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201002 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201003 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201101 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201102 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201103 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201201 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201202 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201203 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201301 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201302 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201303 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201401 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201402 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201403 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201501 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201502 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201503 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201601 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201602 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201603 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201701 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201702 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201703 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201801 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201802 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201803 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201901 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201902 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 201903 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 202001 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 202002 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 202003 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 202101 exists, skipping
+2021-03-07 02:18:56:1856 info: Catalog for 202102 exists, skipping
+2021-03-07 02:18:56:1856 info: Insecure API listening on port 3001
+2021-03-07 02:19:17:1917 info: Updating static catalog
+2021-03-07 02:19:17:1917 info: Fetched 36 seasons
+2021-03-07 02:19:17:1917 info: Catalog for 200903 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201001 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201002 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201003 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201101 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201102 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201103 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201201 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201202 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201203 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201301 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201302 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201303 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201401 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201402 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201403 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201501 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201502 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201503 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201601 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201602 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201603 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201701 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201702 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201703 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201801 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201802 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201803 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201901 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201902 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 201903 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 202001 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 202002 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 202003 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 202101 exists, skipping
+2021-03-07 02:19:17:1917 info: Catalog for 202102 exists, skipping
+2021-03-07 02:19:17:1917 info: Insecure API listening on port 3001
+2021-03-07 02:21:44:2144 info: Updating static catalog
+2021-03-07 02:21:44:2144 info: Fetched 36 seasons
+2021-03-07 02:21:44:2144 info: Catalog for 200903 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201001 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201002 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201003 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201101 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201102 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201103 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201201 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201202 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201203 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201301 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201302 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201303 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201401 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201402 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201403 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201501 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201502 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201503 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201601 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201602 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201603 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201701 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201702 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201703 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201801 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201802 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201803 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201901 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201902 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 201903 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 202001 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 202002 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 202003 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 202101 exists, skipping
+2021-03-07 02:21:44:2144 info: Catalog for 202102 exists, skipping
+2021-03-07 02:21:44:2144 info: Insecure API listening on port 3001
+2021-03-07 02:22:47:2247 info: Updating static catalog
+2021-03-07 02:22:47:2247 info: Fetched 36 seasons
+2021-03-07 02:22:47:2247 info: Catalog for 200903 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201001 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201002 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201003 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201101 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201102 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201103 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201201 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201202 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201203 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201301 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201302 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201303 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201401 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201402 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201403 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201501 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201502 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201503 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201601 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201602 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201603 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201701 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201702 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201703 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201801 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201802 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201803 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201901 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201902 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 201903 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 202001 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 202002 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 202003 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 202101 exists, skipping
+2021-03-07 02:22:47:2247 info: Catalog for 202102 exists, skipping
+2021-03-07 02:22:47:2247 info: Insecure API listening on port 3001
+2021-03-07 02:23:05:235 info: Updating static catalog
+2021-03-07 02:23:05:235 info: Fetched 36 seasons
+2021-03-07 02:23:05:235 info: Catalog for 200903 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201001 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201002 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201003 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201101 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201102 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201103 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201201 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201202 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201203 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201301 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201302 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201303 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201401 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201402 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201403 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201501 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201502 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201503 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201601 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201602 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201603 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201701 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201702 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201703 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201801 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201802 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201803 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201901 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201902 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 201903 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 202001 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 202002 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 202003 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 202101 exists, skipping
+2021-03-07 02:23:05:235 info: Catalog for 202102 exists, skipping
+2021-03-07 02:23:05:235 info: Insecure API listening on port 3001
+2021-03-07 02:23:44:2344 info: Updating static catalog
+2021-03-07 02:23:44:2344 info: Fetched 36 seasons
+2021-03-07 02:23:44:2344 info: Catalog for 200903 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201001 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201002 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201003 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201101 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201102 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201103 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201201 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201202 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201203 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201301 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201302 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201303 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201401 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201402 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201403 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201501 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201502 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201503 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201601 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201602 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201603 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201701 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201702 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201703 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201801 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201802 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201803 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201901 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201902 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 201903 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 202001 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 202002 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 202003 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 202101 exists, skipping
+2021-03-07 02:23:44:2344 info: Catalog for 202102 exists, skipping
+2021-03-07 02:23:44:2344 info: Insecure API listening on port 3001
+2021-03-07 02:23:55:2355 info: Updating static catalog
+2021-03-07 02:23:56:2356 info: Fetched 36 seasons
+2021-03-07 02:23:56:2356 info: Catalog for 200903 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201001 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201002 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201003 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201101 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201102 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201103 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201201 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201202 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201203 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201301 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201302 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201303 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201401 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201402 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201403 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201501 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201502 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201503 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201601 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201602 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201603 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201701 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201702 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201703 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201801 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201802 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201803 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201901 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201902 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 201903 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 202001 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 202002 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 202003 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 202101 exists, skipping
+2021-03-07 02:23:56:2356 info: Catalog for 202102 exists, skipping
+2021-03-07 02:23:56:2356 info: Insecure API listening on port 3001
+2021-03-07 02:24:02:242 info: Updating static catalog
+2021-03-07 02:24:02:242 info: Fetched 36 seasons
+2021-03-07 02:24:02:242 info: Catalog for 200903 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201001 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201002 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201003 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201101 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201102 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201103 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201201 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201202 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201203 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201301 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201302 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201303 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201401 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201402 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201403 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201501 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201502 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201503 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201601 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201602 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201603 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201701 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201702 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201703 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201801 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201802 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201803 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201901 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201902 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 201903 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 202001 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 202002 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 202003 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 202101 exists, skipping
+2021-03-07 02:24:02:242 info: Catalog for 202102 exists, skipping
+2021-03-07 02:24:02:242 info: Insecure API listening on port 3001
+2021-03-07 02:24:07:247 info: Updating static catalog
+2021-03-07 02:24:07:247 info: Fetched 36 seasons
+2021-03-07 02:24:07:247 info: Catalog for 200903 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201001 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201002 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201003 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201101 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201102 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201103 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201201 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201202 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201203 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201301 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201302 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201303 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201401 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201402 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201403 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201501 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201502 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201503 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201601 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201602 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201603 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201701 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201702 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201703 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201801 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201802 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201803 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201901 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201902 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 201903 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 202001 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 202002 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 202003 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 202101 exists, skipping
+2021-03-07 02:24:07:247 info: Catalog for 202102 exists, skipping
+2021-03-07 02:24:07:247 info: Insecure API listening on port 3001
+2021-03-07 02:24:11:2411 info: Updating static catalog
+2021-03-07 02:24:11:2411 info: Fetched 36 seasons
+2021-03-07 02:24:11:2411 info: Catalog for 200903 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201001 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201002 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201003 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201101 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201102 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201103 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201201 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201202 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201203 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201301 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201302 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201303 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201401 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201402 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201403 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201501 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201502 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201503 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201601 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201602 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201603 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201701 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201702 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201703 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201801 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201802 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201803 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201901 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201902 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 201903 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 202001 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 202002 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 202003 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 202101 exists, skipping
+2021-03-07 02:24:11:2411 info: Catalog for 202102 exists, skipping
+2021-03-07 02:24:11:2411 info: Insecure API listening on port 3001
+2021-03-07 02:24:24:2424 info: Updating static catalog
+2021-03-07 02:24:24:2424 info: Fetched 36 seasons
+2021-03-07 02:24:24:2424 info: Catalog for 200903 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201001 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201002 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201003 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201101 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201102 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201103 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201201 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201202 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201203 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201301 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201302 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201303 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201401 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201402 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201403 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201501 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201502 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201503 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201601 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201602 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201603 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201701 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201702 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201703 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201801 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201802 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201803 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201901 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201902 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 201903 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 202001 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 202002 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 202003 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 202101 exists, skipping
+2021-03-07 02:24:24:2424 info: Catalog for 202102 exists, skipping
+2021-03-07 02:24:24:2424 info: Insecure API listening on port 3001
+2021-03-07 02:25:14:2514 info: Updating static catalog
+2021-03-07 02:25:14:2514 info: Fetched 36 seasons
+2021-03-07 02:25:14:2514 info: Catalog for 200903 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201001 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201002 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201003 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201101 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201102 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201103 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201201 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201202 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201203 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201301 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201302 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201303 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201401 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201402 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201403 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201501 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201502 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201503 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201601 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201602 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201603 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201701 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201702 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201703 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201801 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201802 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201803 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201901 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201902 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 201903 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 202001 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 202002 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 202003 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 202101 exists, skipping
+2021-03-07 02:25:14:2514 info: Catalog for 202102 exists, skipping
+2021-03-07 02:25:14:2514 info: Insecure API listening on port 3001
+2021-03-07 02:25:27:2527 info: Updating static catalog
+2021-03-07 02:25:27:2527 info: Fetched 36 seasons
+2021-03-07 02:25:27:2527 info: Catalog for 200903 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201001 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201002 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201003 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201101 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201102 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201103 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201201 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201202 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201203 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201301 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201302 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201303 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201401 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201402 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201403 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201501 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201502 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201503 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201601 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201602 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201603 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201701 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201702 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201703 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201801 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201802 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201803 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201901 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201902 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 201903 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 202001 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 202002 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 202003 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 202101 exists, skipping
+2021-03-07 02:25:27:2527 info: Catalog for 202102 exists, skipping
+2021-03-07 02:25:27:2527 info: Insecure API listening on port 3001
+2021-03-07 02:25:47:2547 info: Updating static catalog
+2021-03-07 02:25:47:2547 info: Fetched 36 seasons
+2021-03-07 02:25:47:2547 info: Catalog for 200903 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201001 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201002 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201003 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201101 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201102 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201103 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201201 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201202 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201203 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201301 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201302 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201303 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201401 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201402 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201403 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201501 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201502 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201503 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201601 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201602 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201603 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201701 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201702 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201703 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201801 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201802 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201803 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201901 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201902 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 201903 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 202001 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 202002 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 202003 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 202101 exists, skipping
+2021-03-07 02:25:47:2547 info: Catalog for 202102 exists, skipping
+2021-03-07 02:25:47:2547 info: Insecure API listening on port 3001
+2021-03-07 02:27:13:2713 info: Updating static catalog
+2021-03-07 02:27:14:2714 info: Fetched 36 seasons
+2021-03-07 02:27:14:2714 info: Catalog for 200903 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201001 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201002 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201003 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201101 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201102 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201103 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201201 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201202 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201203 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201301 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201302 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201303 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201401 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201402 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201403 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201501 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201502 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201503 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201601 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201602 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201603 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201701 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201702 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201703 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201801 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201802 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201803 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201901 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201902 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 201903 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 202001 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 202002 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 202003 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 202101 exists, skipping
+2021-03-07 02:27:14:2714 info: Catalog for 202102 exists, skipping
+2021-03-07 02:27:14:2714 info: Insecure API listening on port 3001
+2021-03-07 02:27:35:2735 info: Updating static catalog
+2021-03-07 02:27:35:2735 info: Fetched 36 seasons
+2021-03-07 02:27:35:2735 info: Catalog for 200903 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201001 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201002 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201003 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201101 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201102 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201103 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201201 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201202 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201203 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201301 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201302 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201303 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201401 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201402 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201403 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201501 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201502 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201503 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201601 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201602 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201603 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201701 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201702 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201703 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201801 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201802 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201803 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201901 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201902 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 201903 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 202001 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 202002 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 202003 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 202101 exists, skipping
+2021-03-07 02:27:35:2735 info: Catalog for 202102 exists, skipping
+2021-03-07 02:27:35:2735 info: Insecure API listening on port 3001
+2021-03-07 02:37:42:3742 info: Updating static catalog
+2021-03-07 02:37:43:3743 info: Fetched 36 seasons
+2021-03-07 02:37:43:3743 info: Catalog for 200903 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201001 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201002 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201003 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201101 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201102 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201103 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201201 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201202 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201203 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201301 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201302 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201303 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201401 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201402 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201403 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201501 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201502 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201503 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201601 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201602 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201603 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201701 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201702 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201703 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201801 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201802 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201803 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201901 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201902 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 201903 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 202001 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 202002 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 202003 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 202101 exists, skipping
+2021-03-07 02:37:43:3743 info: Catalog for 202102 exists, skipping
+2021-03-07 02:37:43:3743 info: Insecure API listening on port 3001
+2021-03-07 02:37:55:3755 http: GET / 404 139 - 49.592 ms
+
+2021-03-07 02:38:34:3834 info: Updating static catalog
+2021-03-07 02:38:35:3835 info: Fetched 36 seasons
+2021-03-07 02:38:35:3835 info: Catalog for 200903 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201001 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201002 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201003 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201101 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201102 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201103 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201201 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201202 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201203 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201301 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201302 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201303 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201401 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201402 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201403 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201501 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201502 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201503 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201601 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201602 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201603 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201701 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201702 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201703 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201801 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201802 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201803 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201901 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201902 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 201903 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 202001 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 202002 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 202003 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 202101 exists, skipping
+2021-03-07 02:38:35:3835 info: Catalog for 202102 exists, skipping
+2021-03-07 02:38:35:3835 info: Insecure API listening on port 3001
+2021-03-07 02:39:12:3912 info: Updating static catalog
+2021-03-07 02:39:12:3912 info: Fetched 36 seasons
+2021-03-07 02:39:12:3912 info: Catalog for 200903 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201001 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201002 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201003 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201101 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201102 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201103 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201201 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201202 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201203 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201301 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201302 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201303 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201401 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201402 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201403 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201501 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201502 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201503 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201601 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201602 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201603 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201701 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201702 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201703 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201801 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201802 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201803 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201901 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201902 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 201903 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 202001 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 202002 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 202003 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 202101 exists, skipping
+2021-03-07 02:39:12:3912 info: Catalog for 202102 exists, skipping
+2021-03-07 02:39:12:3912 info: Insecure API listening on port 3001
+2021-03-07 02:39:13:3913 info: Updating static catalog
+2021-03-07 02:39:13:3913 info: Fetched 36 seasons
+2021-03-07 02:39:13:3913 info: Catalog for 200903 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201001 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201002 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201003 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201101 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201102 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201103 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201201 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201202 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201203 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201301 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201302 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201303 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201401 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201402 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201403 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201501 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201502 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201503 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201601 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201602 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201603 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201701 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201702 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201703 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201801 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201802 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201803 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201901 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201902 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 201903 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 202001 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 202002 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 202003 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 202101 exists, skipping
+2021-03-07 02:39:13:3913 info: Catalog for 202102 exists, skipping
+2021-03-07 02:39:13:3913 info: Insecure API listening on port 3001
+2021-03-07 02:44:27:4427 info: Updating static catalog
+2021-03-07 02:44:27:4427 info: Fetched 36 seasons
+2021-03-07 02:44:27:4427 info: Catalog for 200903 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201001 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201002 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201003 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201101 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201102 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201103 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201201 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201202 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201203 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201301 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201302 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201303 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201401 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201402 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201403 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201501 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201502 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201503 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201601 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201602 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201603 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201701 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201702 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201703 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201801 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201802 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201803 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201901 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201902 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 201903 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 202001 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 202002 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 202003 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 202101 exists, skipping
+2021-03-07 02:44:27:4427 info: Catalog for 202102 exists, skipping
+2021-03-07 02:44:27:4427 info: Insecure API listening on port 3001
+2021-03-07 02:44:30:4430 info: Updating static catalog
+2021-03-07 02:44:30:4430 info: Fetched 36 seasons
+2021-03-07 02:44:30:4430 info: Catalog for 200903 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201001 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201002 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201003 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201101 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201102 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201103 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201201 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201202 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201203 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201301 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201302 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201303 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201401 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201402 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201403 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201501 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201502 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201503 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201601 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201602 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201603 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201701 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201702 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201703 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201801 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201802 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201803 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201901 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201902 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 201903 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 202001 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 202002 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 202003 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 202101 exists, skipping
+2021-03-07 02:44:30:4430 info: Catalog for 202102 exists, skipping
+2021-03-07 02:44:30:4430 info: Insecure API listening on port 3001
+2021-03-07 02:45:09:459 info: Updating static catalog
+2021-03-07 02:45:09:459 info: Fetched 36 seasons
+2021-03-07 02:45:09:459 info: Catalog for 200903 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201001 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201002 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201003 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201101 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201102 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201103 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201201 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201202 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201203 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201301 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201302 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201303 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201401 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201402 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201403 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201501 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201502 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201503 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201601 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201602 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201603 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201701 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201702 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201703 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201801 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201802 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201803 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201901 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201902 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 201903 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 202001 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 202002 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 202003 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 202101 exists, skipping
+2021-03-07 02:45:09:459 info: Catalog for 202102 exists, skipping
+2021-03-07 02:45:09:459 info: Insecure API listening on port 3001
+2021-03-07 02:45:32:4532 info: Updating static catalog
+2021-03-07 02:45:32:4532 info: Fetched 36 seasons
+2021-03-07 02:45:32:4532 info: Catalog for 200903 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201001 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201002 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201003 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201101 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201102 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201103 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201201 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201202 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201203 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201301 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201302 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201303 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201401 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201402 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201403 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201501 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201502 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201503 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201601 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201602 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201603 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201701 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201702 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201703 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201801 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201802 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201803 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201901 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201902 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 201903 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 202001 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 202002 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 202003 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 202101 exists, skipping
+2021-03-07 02:45:32:4532 info: Catalog for 202102 exists, skipping
+2021-03-07 02:45:32:4532 info: Insecure API listening on port 3001
+2021-03-07 02:46:02:462 info: Updating static catalog
+2021-03-07 02:46:02:462 info: Fetched 36 seasons
+2021-03-07 02:46:02:462 info: Catalog for 200903 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201001 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201002 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201003 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201101 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201102 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201103 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201201 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201202 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201203 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201301 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201302 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201303 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201401 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201402 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201403 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201501 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201502 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201503 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201601 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201602 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201603 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201701 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201702 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201703 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201801 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201802 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201803 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201901 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201902 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 201903 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 202001 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 202002 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 202003 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 202101 exists, skipping
+2021-03-07 02:46:02:462 info: Catalog for 202102 exists, skipping
+2021-03-07 02:46:02:462 info: Insecure API listening on port 3001
+2021-03-07 02:46:12:4612 info: Updating static catalog
+2021-03-07 02:46:12:4612 info: Fetched 36 seasons
+2021-03-07 02:46:12:4612 info: Catalog for 200903 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201001 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201002 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201003 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201101 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201102 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201103 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201201 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201202 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201203 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201301 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201302 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201303 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201401 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201402 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201403 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201501 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201502 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201503 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201601 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201602 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201603 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201701 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201702 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201703 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201801 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201802 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201803 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201901 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201902 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 201903 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 202001 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 202002 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 202003 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 202101 exists, skipping
+2021-03-07 02:46:12:4612 info: Catalog for 202102 exists, skipping
+2021-03-07 02:46:12:4612 info: Insecure API listening on port 3001
+2021-03-07 02:46:49:4649 info: Updating static catalog
+2021-03-07 02:46:49:4649 info: Fetched 36 seasons
+2021-03-07 02:46:49:4649 info: Catalog for 200903 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201001 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201002 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201003 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201101 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201102 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201103 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201201 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201202 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201203 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201301 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201302 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201303 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201401 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201402 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201403 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201501 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201502 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201503 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201601 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201602 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201603 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201701 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201702 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201703 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201801 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201802 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201803 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201901 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201902 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 201903 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 202001 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 202002 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 202003 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 202101 exists, skipping
+2021-03-07 02:46:49:4649 info: Catalog for 202102 exists, skipping
+2021-03-07 02:46:49:4649 info: Insecure API listening on port 3001
+2021-03-07 02:47:27:4727 info: Updating static catalog
+2021-03-07 02:47:27:4727 info: Fetched 36 seasons
+2021-03-07 02:47:27:4727 info: Catalog for 200903 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201001 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201002 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201003 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201101 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201102 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201103 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201201 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201202 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201203 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201301 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201302 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201303 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201401 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201402 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201403 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201501 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201502 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201503 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201601 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201602 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201603 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201701 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201702 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201703 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201801 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201802 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201803 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201901 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201902 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 201903 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 202001 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 202002 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 202003 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 202101 exists, skipping
+2021-03-07 02:47:27:4727 info: Catalog for 202102 exists, skipping
+2021-03-07 02:47:28:4728 info: Insecure API listening on port 3001
+2021-03-07 02:47:37:4737 info: Updating static catalog
+2021-03-07 02:47:37:4737 info: Fetched 36 seasons
+2021-03-07 02:47:37:4737 info: Catalog for 200903 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201001 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201002 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201003 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201101 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201102 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201103 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201201 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201202 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201203 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201301 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201302 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201303 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201401 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201402 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201403 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201501 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201502 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201503 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201601 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201602 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201603 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201701 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201702 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201703 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201801 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201802 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201803 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201901 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201902 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 201903 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 202001 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 202002 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 202003 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 202101 exists, skipping
+2021-03-07 02:47:37:4737 info: Catalog for 202102 exists, skipping
+2021-03-07 02:47:37:4737 info: Insecure API listening on port 3001
+2021-03-07 02:55:06:556 info: Updating static catalog
+2021-03-07 02:55:06:556 info: Fetched 36 seasons
+2021-03-07 02:55:06:556 info: Catalog for 200903 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201001 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201002 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201003 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201101 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201102 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201103 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201201 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201202 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201203 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201301 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201302 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201303 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201401 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201402 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201403 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201501 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201502 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201503 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201601 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201602 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201603 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201701 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201702 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201703 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201801 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201802 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201803 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201901 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201902 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 201903 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 202001 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 202002 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 202003 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 202101 exists, skipping
+2021-03-07 02:55:06:556 info: Catalog for 202102 exists, skipping
+2021-03-07 02:55:06:556 info: Insecure API listening on port 3001
+2021-03-07 20:21:13:2113 error: uncaughtException: ⨯ Unable to compile TypeScript:
+src/auth/cas_auth.routes.ts(67,26): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(fn: (user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: import("/app/src/models/student").User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(user: Express.User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'user' are incompatible.
+        Type 'User' is missing the following properties from type 'User': netId, evals
+  Overload 2 of 2, '(fn: (req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'req' are incompatible.
+        Type 'IncomingMessage' is missing the following properties from type 'User': netId, evals
+src/auth/cas_auth.routes.ts(127,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(140,28): error TS2339: Property 'evals' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(143,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(157,43): error TS2339: Property 'netId' does not exist on type 'User'.
+
+Error: ⨯ Unable to compile TypeScript:
+src/auth/cas_auth.routes.ts(67,26): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(fn: (user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: import("/app/src/models/student").User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(user: Express.User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'user' are incompatible.
+        Type 'User' is missing the following properties from type 'User': netId, evals
+  Overload 2 of 2, '(fn: (req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'req' are incompatible.
+        Type 'IncomingMessage' is missing the following properties from type 'User': netId, evals
+src/auth/cas_auth.routes.ts(127,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(140,28): error TS2339: Property 'evals' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(143,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(157,43): error TS2339: Property 'netId' does not exist on type 'User'.
+
+    at Object.<anonymous> (/app/src/auth/cas_auth.routes.ts:1:7)
+    at Module._compile (node:internal/modules/cjs/loader:1092:14)
+    at Module._compile (/app/node_modules/source-map-support/source-map-support.js:547:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-550165582403608.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1121:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-550165582403608.js:114:20)
+    at require.extensions.<computed> (/tmp/ts-node-dev-hook-550165582403608.js:71:20)
+    at Object.nodeDevHook [as .ts] (/app/node_modules/ts-node-dev/lib/hook.js:63:13)
+    at Module.load (node:internal/modules/cjs/loader:972:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:813:14)
+2021-03-07 21:55:56:5556 info: Updating static catalog
+2021-03-07 21:55:57:5557 info: Fetched 36 seasons
+2021-03-07 21:55:57:5557 info: Catalog for 200903 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201001 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201002 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201003 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201101 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201102 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201103 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201201 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201202 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201203 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201301 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201302 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201303 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201401 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201402 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201403 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201501 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201502 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201503 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201601 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201602 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201603 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201701 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201702 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201703 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201801 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201802 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201803 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201901 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201902 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 201903 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 202001 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 202002 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 202003 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 202101 exists, skipping
+2021-03-07 21:55:57:5557 info: Catalog for 202102 exists, skipping
+2021-03-07 21:55:57:5557 info: Insecure API listening on port 3001
+2021-03-07 22:16:42:1642 info: Updating static catalog
+2021-03-07 22:16:42:1642 info: Fetched 36 seasons
+2021-03-07 22:16:42:1642 info: Catalog for 200903 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201001 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201002 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201003 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201101 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201102 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201103 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201201 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201202 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201203 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201301 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201302 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201303 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201401 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201402 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201403 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201501 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201502 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201503 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201601 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201602 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201603 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201701 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201702 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201703 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201801 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201802 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201803 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201901 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201902 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 201903 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 202001 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 202002 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 202003 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 202101 exists, skipping
+2021-03-07 22:16:42:1642 info: Catalog for 202102 exists, skipping
+2021-03-07 22:16:42:1642 info: Insecure API listening on port 3001
+2021-03-07 22:17:36:1736 http: GET / 404 139 - 23.042 ms
+
+2021-03-07 22:52:12:5212 info: Updating static catalog
+2021-03-07 22:52:12:5212 info: Fetched 36 seasons
+2021-03-07 22:52:12:5212 info: Catalog for 200903 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201001 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201002 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201003 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201101 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201102 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201103 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201201 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201202 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201203 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201301 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201302 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201303 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201401 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201402 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201403 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201501 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201502 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201503 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201601 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201602 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201603 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201701 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201702 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201703 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201801 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201802 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201803 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201901 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201902 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 201903 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 202001 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 202002 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 202003 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 202101 exists, skipping
+2021-03-07 22:52:12:5212 info: Catalog for 202102 exists, skipping
+2021-03-07 22:52:12:5212 info: Insecure API listening on port 3001
+2021-03-07 22:52:23:5223 info: Updating static catalog
+2021-03-07 22:52:23:5223 info: Fetched 36 seasons
+2021-03-07 22:52:23:5223 info: Catalog for 200903 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201001 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201002 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201003 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201101 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201102 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201103 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201201 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201202 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201203 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201301 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201302 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201303 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201401 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201402 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201403 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201501 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201502 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201503 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201601 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201602 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201603 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201701 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201702 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201703 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201801 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201802 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201803 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201901 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201902 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 201903 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 202001 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 202002 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 202003 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 202101 exists, skipping
+2021-03-07 22:52:23:5223 info: Catalog for 202102 exists, skipping
+2021-03-07 22:52:23:5223 info: Insecure API listening on port 3001
+2021-03-07 22:53:23:5323 info: Updating static catalog
+2021-03-07 22:53:23:5323 info: Fetched 36 seasons
+2021-03-07 22:53:23:5323 info: Catalog for 200903 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201001 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201002 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201003 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201101 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201102 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201103 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201201 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201202 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201203 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201301 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201302 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201303 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201401 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201402 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201403 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201501 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201502 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201503 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201601 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201602 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201603 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201701 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201702 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201703 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201801 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201802 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201803 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201901 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201902 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 201903 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 202001 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 202002 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 202003 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 202101 exists, skipping
+2021-03-07 22:53:23:5323 info: Catalog for 202102 exists, skipping
+2021-03-07 22:53:23:5323 info: Insecure API listening on port 3001
+2021-03-07 22:53:44:5344 info: Updating static catalog
+2021-03-07 22:53:44:5344 info: Fetched 36 seasons
+2021-03-07 22:53:44:5344 info: Catalog for 200903 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201001 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201002 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201003 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201101 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201102 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201103 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201201 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201202 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201203 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201301 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201302 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201303 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201401 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201402 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201403 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201501 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201502 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201503 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201601 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201602 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201603 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201701 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201702 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201703 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201801 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201802 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201803 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201901 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201902 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 201903 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 202001 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 202002 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 202003 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 202101 exists, skipping
+2021-03-07 22:53:44:5344 info: Catalog for 202102 exists, skipping
+2021-03-07 22:53:44:5344 info: Insecure API listening on port 3001
+2021-03-07 23:41:34:4134 info: Updating static catalog
+2021-03-07 23:41:34:4134 info: Fetched 36 seasons
+2021-03-07 23:41:34:4134 info: Catalog for 200903 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201001 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201002 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201003 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201101 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201102 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201103 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201201 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201202 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201203 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201301 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201302 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201303 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201401 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201402 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201403 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201501 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201502 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201503 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201601 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201602 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201603 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201701 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201702 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201703 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201801 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201802 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201803 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201901 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201902 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 201903 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 202001 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 202002 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 202003 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 202101 exists, skipping
+2021-03-07 23:41:34:4134 info: Catalog for 202102 exists, skipping
+2021-03-07 23:41:34:4134 info: Insecure API listening on port 3001
+2021-03-08 00:27:46:2746 info: Updating static catalog
+2021-03-08 00:27:46:2746 info: Fetched 36 seasons
+2021-03-08 00:27:46:2746 info: Catalog for 200903 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201001 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201002 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201003 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201101 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201102 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201103 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201201 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201202 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201203 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201301 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201302 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201303 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201401 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201402 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201403 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201501 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201502 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201503 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201601 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201602 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201603 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201701 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201702 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201703 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201801 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201802 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201803 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201901 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201902 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 201903 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 202001 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 202002 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 202003 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 202101 exists, skipping
+2021-03-08 00:27:46:2746 info: Catalog for 202102 exists, skipping
+2021-03-08 00:27:46:2746 info: Insecure API listening on port 3001
+2021-03-08 00:29:38:2938 http: GET / 404 139 - 16.381 ms
+
+2021-03-08 00:30:14:3014 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 162.070 ms
+
+2021-03-08 00:30:14:3014 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 174.028 ms
+
+2021-03-08 00:30:14:3014 http: GET /api/static/catalogs/202101.json 500 1053 - 13.772 ms
+
+2021-03-08 00:30:47:3047 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.318 ms
+
+2021-03-08 00:30:47:3047 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 4.367 ms
+
+2021-03-08 00:30:49:3049 http: GET /api/auth/cas?redirect=catalog 302 0 - 4.638 ms
+
+2021-03-08 00:30:51:3051 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535475-egt062C1HXjqyf5jOxoS4I9E9tI-vm-cas6prdapp-01 302 102 - 1294.837 ms
+
+2021-03-08 00:30:52:3052 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 38.622 ms
+
+2021-03-08 00:30:52:3052 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 37.974 ms
+
+2021-03-08 00:30:52:3052 http: GET /api/static/catalogs/202101.json 500 1053 - 4.645 ms
+
+2021-03-08 00:35:29:3529 info: Updating static catalog
+2021-03-08 00:35:30:3530 info: Fetched 36 seasons
+2021-03-08 00:35:30:3530 info: Catalog for 200903 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201001 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201002 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201003 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201101 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201102 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201103 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201201 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201202 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201203 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201301 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201302 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201303 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201401 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201402 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201403 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201501 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201502 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201503 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201601 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201602 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201603 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201701 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201702 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201703 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201801 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201802 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201803 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201901 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201902 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 201903 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 202001 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 202002 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 202003 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 202101 exists, skipping
+2021-03-08 00:35:30:3530 info: Catalog for 202102 exists, skipping
+2021-03-08 00:35:30:3530 info: Insecure API listening on port 3001
+2021-03-08 00:35:33:3533 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 44.153 ms
+
+2021-03-08 00:35:33:3533 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 37.472 ms
+
+2021-03-08 00:35:33:3533 http: GET /api/static/catalogs/202101.json 500 1053 - 5.440 ms
+
+2021-03-08 00:35:38:3538 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.701 ms
+
+2021-03-08 00:35:38:3538 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.843 ms
+
+2021-03-08 00:35:40:3540 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.542 ms
+
+2021-03-08 00:35:42:3542 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535722-RySNJ-ppfbTSjfV7nnqBJ4zt7CE-vm-cas6prdapp-01 302 102 - 992.728 ms
+
+2021-03-08 00:35:42:3542 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 33.950 ms
+
+2021-03-08 00:35:42:3542 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 36.743 ms
+
+2021-03-08 00:35:42:3542 http: GET /api/static/catalogs/202101.json 500 1053 - 4.457 ms
+
+2021-03-08 00:35:45:3545 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 32.245 ms
+
+2021-03-08 00:35:45:3545 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 30.895 ms
+
+2021-03-08 00:35:45:3545 http: GET /api/static/catalogs/202101.json 500 1053 - 5.770 ms
+
+2021-03-08 00:36:05:365 info: Updating static catalog
+2021-03-08 00:36:06:366 info: Fetched 36 seasons
+2021-03-08 00:36:06:366 info: Catalog for 200903 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201001 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201002 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201003 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201101 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201102 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201103 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201201 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201202 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201203 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201301 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201302 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201303 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201401 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201402 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201403 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201501 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201502 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201503 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201601 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201602 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201603 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201701 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201702 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201703 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201801 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201802 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201803 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201901 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201902 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 201903 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 202001 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 202002 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 202003 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 202101 exists, skipping
+2021-03-08 00:36:06:366 info: Catalog for 202102 exists, skipping
+2021-03-08 00:36:06:366 info: Insecure API listening on port 3001
+2021-03-08 00:36:11:3611 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 13.573 ms
+
+2021-03-08 00:36:11:3611 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.059 ms
+
+2021-03-08 00:36:12:3612 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.181 ms
+
+2021-03-08 00:36:14:3614 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535755-Ib9k3HGexbWRosk8r-6cVMJx-ss-vm-cas6prdapp-01 302 102 - 929.501 ms
+
+2021-03-08 00:36:14:3614 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 37.487 ms
+
+2021-03-08 00:36:14:3614 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 36.329 ms
+
+2021-03-08 00:36:14:3614 http: GET /api/static/catalogs/202101.json 500 1053 - 4.467 ms
+
+2021-03-08 00:36:41:3641 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.544 ms
+
+2021-03-08 00:36:41:3641 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.664 ms
+
+2021-03-08 00:36:43:3643 http: GET /api/auth/cas?redirect=catalog 302 0 - 0.742 ms
+
+2021-03-08 00:36:44:3644 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535789-9-SqypNXTymVCHXf4FmLdOnny-w-vm-cas6prdapp-01 302 102 - 772.658 ms
+
+2021-03-08 00:36:44:3644 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 31.405 ms
+
+2021-03-08 00:36:44:3644 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 30.927 ms
+
+2021-03-08 00:36:44:3644 http: GET /api/static/catalogs/202101.json 500 1053 - 4.975 ms
+
+2021-03-08 00:37:05:375 info: Updating static catalog
+2021-03-08 00:37:05:375 info: Fetched 36 seasons
+2021-03-08 00:37:05:375 info: Catalog for 200903 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201001 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201002 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201003 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201101 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201102 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201103 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201201 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201202 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201203 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201301 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201302 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201303 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201401 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201402 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201403 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201501 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201502 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201503 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201601 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201602 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201603 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201701 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201702 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201703 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201801 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201802 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201803 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201901 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201902 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 201903 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 202001 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 202002 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 202003 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 202101 exists, skipping
+2021-03-08 00:37:05:375 info: Catalog for 202102 exists, skipping
+2021-03-08 00:37:05:375 info: Insecure API listening on port 3001
+2021-03-08 00:37:51:3751 info: Updating static catalog
+2021-03-08 00:37:51:3751 info: Fetched 36 seasons
+2021-03-08 00:37:51:3751 info: Catalog for 200903 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201001 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201002 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201003 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201101 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201102 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201103 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201201 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201202 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201203 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201301 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201302 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201303 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201401 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201402 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201403 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201501 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201502 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201503 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201601 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201602 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201603 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201701 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201702 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201703 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201801 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201802 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201803 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201901 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201902 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 201903 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 202001 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 202002 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 202003 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 202101 exists, skipping
+2021-03-08 00:37:51:3751 info: Catalog for 202102 exists, skipping
+2021-03-08 00:37:51:3751 info: Insecure API listening on port 3001
+2021-03-08 00:37:56:3756 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 12.899 ms
+
+2021-03-08 00:37:56:3756 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 2.639 ms
+
+2021-03-08 00:37:57:3757 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.543 ms
+
+2021-03-08 00:38:00:380 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535871-Wcax9IjbhDvHU9I2gY-8aIuZ9S0-vm-cas6prdapp-01 302 102 - 2157.089 ms
+
+2021-03-08 00:38:00:380 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 75.331 ms
+
+2021-03-08 00:38:00:380 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 72.167 ms
+
+2021-03-08 00:38:00:380 http: GET /api/static/catalogs/202101.json 500 1053 - 4.914 ms
+
+2021-03-08 00:38:33:3833 info: Updating static catalog
+2021-03-08 00:38:33:3833 info: Fetched 36 seasons
+2021-03-08 00:38:33:3833 info: Catalog for 200903 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201001 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201002 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201003 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201101 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201102 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201103 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201201 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201202 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201203 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201301 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201302 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201303 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201401 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201402 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201403 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201501 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201502 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201503 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201601 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201602 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201603 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201701 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201702 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201703 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201801 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201802 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201803 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201901 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201902 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 201903 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 202001 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 202002 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 202003 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 202101 exists, skipping
+2021-03-08 00:38:33:3833 info: Catalog for 202102 exists, skipping
+2021-03-08 00:38:33:3833 info: Insecure API listening on port 3001
+2021-03-08 00:38:43:3843 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 13.028 ms
+
+2021-03-08 00:38:43:3843 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.167 ms
+
+2021-03-08 00:38:44:3844 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.881 ms
+
+2021-03-08 00:38:45:3845 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535913-YXziyVtsd3IP0stSCNI7eXEzfuA-vm-cas6prdapp-01 302 102 - 1004.961 ms
+
+2021-03-08 00:38:46:3846 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 54.586 ms
+
+2021-03-08 00:38:46:3846 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 63.399 ms
+
+2021-03-08 00:38:46:3846 http: GET /api/static/catalogs/202101.json 500 1053 - 5.332 ms
+
+2021-03-08 00:39:20:3920 info: Updating static catalog
+2021-03-08 00:39:20:3920 info: Fetched 36 seasons
+2021-03-08 00:39:20:3920 info: Catalog for 200903 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201001 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201002 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201003 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201101 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201102 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201103 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201201 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201202 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201203 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201301 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201302 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201303 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201401 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201402 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201403 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201501 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201502 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201503 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201601 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201602 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201603 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201701 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201702 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201703 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201801 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201802 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201803 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201901 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201902 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 201903 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 202001 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 202002 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 202003 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 202101 exists, skipping
+2021-03-08 00:39:20:3920 info: Catalog for 202102 exists, skipping
+2021-03-08 00:39:20:3920 info: Insecure API listening on port 3001
+2021-03-08 00:39:22:3922 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 31.482 ms
+
+2021-03-08 00:39:22:3922 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 44.030 ms
+
+2021-03-08 00:39:22:3922 http: GET /api/static/catalogs/202101.json 500 1053 - 6.202 ms
+
+2021-03-08 00:39:29:3929 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.453 ms
+
+2021-03-08 00:39:29:3929 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 2.131 ms
+
+2021-03-08 00:39:30:3930 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.514 ms
+
+2021-03-08 00:39:32:3932 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535957-3kmXWyPH5r4jgfBx-nSKBAvWiMM-vm-cas6prdapp-01 302 102 - 957.464 ms
+
+2021-03-08 00:39:32:3932 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 32.833 ms
+
+2021-03-08 00:39:32:3932 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 35.819 ms
+
+2021-03-08 00:39:32:3932 http: GET /api/static/catalogs/202101.json 500 1053 - 5.532 ms
+
+2021-03-08 00:40:14:4014 info: Updating static catalog
+2021-03-08 00:40:14:4014 info: Fetched 36 seasons
+2021-03-08 00:40:15:4015 info: Catalog for 200903 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201001 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201002 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201003 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201101 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201102 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201103 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201201 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201202 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201203 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201301 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201302 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201303 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201401 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201402 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201403 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201501 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201502 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201503 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201601 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201602 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201603 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201701 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201702 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201703 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201801 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201802 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201803 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201901 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201902 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 201903 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 202001 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 202002 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 202003 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 202101 exists, skipping
+2021-03-08 00:40:15:4015 info: Catalog for 202102 exists, skipping
+2021-03-08 00:40:15:4015 info: Insecure API listening on port 3001
+2021-03-08 00:40:20:4020 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 6.654 ms
+
+2021-03-08 00:40:20:4020 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 3.384 ms
+
+2021-03-08 00:40:24:4024 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.766 ms
+
+2021-03-08 00:40:25:4025 http: GET /api/auth/cas?redirect=catalog&ticket=ST-535988-BmYtO7-BI8jEmsGHFVeZg-fh040-vm-cas6prdapp-01 302 102 - 994.917 ms
+
+2021-03-08 00:40:25:4025 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 35.349 ms
+
+2021-03-08 00:40:25:4025 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 35.687 ms
+
+2021-03-08 00:40:26:4026 http: GET /api/static/catalogs/202101.json 500 1053 - 4.406 ms
+
+2021-03-08 00:40:44:4044 info: Updating static catalog
+2021-03-08 00:40:44:4044 info: Fetched 36 seasons
+2021-03-08 00:40:44:4044 info: Catalog for 200903 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201001 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201002 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201003 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201101 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201102 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201103 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201201 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201202 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201203 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201301 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201302 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201303 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201401 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201402 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201403 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201501 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201502 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201503 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201601 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201602 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201603 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201701 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201702 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201703 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201801 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201802 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201803 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201901 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201902 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 201903 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 202001 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 202002 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 202003 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 202101 exists, skipping
+2021-03-08 00:40:44:4044 info: Catalog for 202102 exists, skipping
+2021-03-08 00:40:44:4044 info: Insecure API listening on port 3001
+2021-03-08 00:40:48:4048 info: Updating static catalog
+2021-03-08 00:40:48:4048 info: Fetched 36 seasons
+2021-03-08 00:40:48:4048 info: Catalog for 200903 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201001 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201002 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201003 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201101 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201102 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201103 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201201 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201202 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201203 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201301 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201302 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201303 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201401 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201402 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201403 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201501 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201502 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201503 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201601 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201602 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201603 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201701 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201702 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201703 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201801 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201802 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201803 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201901 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201902 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 201903 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 202001 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 202002 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 202003 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 202101 exists, skipping
+2021-03-08 00:40:48:4048 info: Catalog for 202102 exists, skipping
+2021-03-08 00:40:48:4048 info: Insecure API listening on port 3001
+2021-03-08 00:40:52:4052 info: Updating static catalog
+2021-03-08 00:40:52:4052 info: Fetched 36 seasons
+2021-03-08 00:40:52:4052 info: Catalog for 200903 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201001 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201002 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201003 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201101 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201102 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201103 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201201 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201202 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201203 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201301 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201302 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201303 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201401 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201402 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201403 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201501 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201502 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201503 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201601 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201602 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201603 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201701 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201702 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201703 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201801 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201802 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201803 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201901 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201902 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 201903 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 202001 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 202002 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 202003 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 202101 exists, skipping
+2021-03-08 00:40:52:4052 info: Catalog for 202102 exists, skipping
+2021-03-08 00:40:52:4052 info: Insecure API listening on port 3001
+2021-03-08 00:40:56:4056 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 14.272 ms
+
+2021-03-08 00:40:56:4056 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 2.560 ms
+
+2021-03-08 00:40:57:4057 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.516 ms
+
+2021-03-08 00:40:59:4059 http: GET /api/auth/cas?redirect=catalog&ticket=ST-536007-unhesAKt3ZXV9iTo7brDrjRIjis-vm-cas6prdapp-01 302 102 - 1014.548 ms
+
+2021-03-08 00:40:59:4059 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 42.680 ms
+
+2021-03-08 00:40:59:4059 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 41.547 ms
+
+2021-03-08 00:40:59:4059 http: GET /api/static/catalogs/202101.json 500 1053 - 4.324 ms
+
+2021-03-08 00:43:34:4334 info: Updating static catalog
+2021-03-08 00:43:34:4334 info: Fetched 36 seasons
+2021-03-08 00:43:34:4334 info: Catalog for 200903 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201001 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201002 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201003 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201101 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201102 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201103 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201201 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201202 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201203 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201301 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201302 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201303 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201401 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201402 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201403 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201501 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201502 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201503 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201601 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201602 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201603 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201701 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201702 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201703 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201801 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201802 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201803 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201901 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201902 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 201903 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 202001 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 202002 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 202003 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 202101 exists, skipping
+2021-03-08 00:43:34:4334 info: Catalog for 202102 exists, skipping
+2021-03-08 00:43:34:4334 info: Insecure API listening on port 3001
+2021-03-08 00:43:57:4357 http: GET /api/auth/cas 302 0 - 25.595 ms
+
+2021-03-08 00:43:58:4358 http: GET /api/auth/cas?ticket=ST-536187-8eatko7nJ7rxe8cu9fUK2gzJR4w-vm-cas6prdapp-01 302 102 - 924.834 ms
+
+2021-03-08 00:43:59:4359 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 50.676 ms
+
+2021-03-08 00:43:59:4359 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 53.736 ms
+
+2021-03-08 00:43:59:4359 http: GET /api/static/catalogs/202101.json 500 1053 - 10.088 ms
+
+2021-03-08 00:44:13:4413 info: Updating static catalog
+2021-03-08 00:44:13:4413 info: Fetched 36 seasons
+2021-03-08 00:44:13:4413 info: Catalog for 200903 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201001 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201002 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201003 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201101 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201102 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201103 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201201 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201202 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201203 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201301 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201302 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201303 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201401 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201402 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201403 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201501 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201502 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201503 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201601 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201602 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201603 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201701 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201702 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201703 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201801 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201802 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201803 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201901 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201902 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 201903 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 202001 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 202002 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 202003 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 202101 exists, skipping
+2021-03-08 00:44:13:4413 info: Catalog for 202102 exists, skipping
+2021-03-08 00:44:13:4413 info: Insecure API listening on port 3001
+2021-03-08 00:44:53:4453 info: Updating static catalog
+2021-03-08 00:44:53:4453 info: Fetched 36 seasons
+2021-03-08 00:44:53:4453 info: Catalog for 200903 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201001 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201002 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201003 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201101 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201102 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201103 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201201 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201202 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201203 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201301 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201302 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201303 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201401 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201402 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201403 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201501 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201502 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201503 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201601 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201602 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201603 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201701 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201702 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201703 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201801 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201802 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201803 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201901 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201902 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 201903 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 202001 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 202002 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 202003 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 202101 exists, skipping
+2021-03-08 00:44:53:4453 info: Catalog for 202102 exists, skipping
+2021-03-08 00:44:53:4453 info: Insecure API listening on port 3001
+2021-03-08 00:49:38:4938 info: Updating static catalog
+2021-03-08 00:49:38:4938 info: Fetched 36 seasons
+2021-03-08 00:49:38:4938 info: Catalog for 200903 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201001 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201002 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201003 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201101 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201102 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201103 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201201 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201202 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201203 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201301 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201302 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201303 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201401 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201402 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201403 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201501 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201502 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201503 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201601 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201602 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201603 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201701 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201702 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201703 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201801 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201802 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201803 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201901 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201902 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 201903 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 202001 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 202002 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 202003 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 202101 exists, skipping
+2021-03-08 00:49:38:4938 info: Catalog for 202102 exists, skipping
+2021-03-08 00:49:38:4938 info: Insecure API listening on port 3001
+2021-03-08 00:50:07:507 info: Updating static catalog
+2021-03-08 00:50:07:507 info: Fetched 36 seasons
+2021-03-08 00:50:07:507 info: Catalog for 200903 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201001 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201002 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201003 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201101 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201102 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201103 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201201 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201202 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201203 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201301 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201302 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201303 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201401 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201402 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201403 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201501 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201502 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201503 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201601 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201602 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201603 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201701 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201702 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201703 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201801 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201802 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201803 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201901 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201902 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 201903 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 202001 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 202002 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 202003 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 202101 exists, skipping
+2021-03-08 00:50:07:507 info: Catalog for 202102 exists, skipping
+2021-03-08 00:50:07:507 info: Insecure API listening on port 3001
+2021-03-08 00:50:14:5014 info: Updating static catalog
+2021-03-08 00:50:14:5014 info: Fetched 36 seasons
+2021-03-08 00:50:14:5014 info: Catalog for 200903 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201001 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201002 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201003 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201101 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201102 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201103 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201201 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201202 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201203 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201301 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201302 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201303 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201401 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201402 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201403 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201501 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201502 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201503 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201601 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201602 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201603 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201701 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201702 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201703 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201801 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201802 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201803 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201901 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201902 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 201903 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 202001 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 202002 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 202003 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 202101 exists, skipping
+2021-03-08 00:50:14:5014 info: Catalog for 202102 exists, skipping
+2021-03-08 00:50:14:5014 info: Insecure API listening on port 3001
+2021-03-08 00:50:15:5015 http: GET /api/test 200 4 - 302.261 ms
+
+2021-03-08 00:50:32:5032 info: Updating static catalog
+2021-03-08 00:50:32:5032 info: Fetched 36 seasons
+2021-03-08 00:50:32:5032 info: Catalog for 200903 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201001 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201002 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201003 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201101 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201102 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201103 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201201 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201202 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201203 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201301 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201302 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201303 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201401 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201402 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201403 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201501 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201502 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201503 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201601 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201602 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201603 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201701 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201702 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201703 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201801 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201802 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201803 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201901 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201902 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 201903 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 202001 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 202002 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 202003 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 202101 exists, skipping
+2021-03-08 00:50:32:5032 info: Catalog for 202102 exists, skipping
+2021-03-08 00:50:32:5032 info: Insecure API listening on port 3001
+2021-03-08 00:50:33:5033 http: GET /api/test 200 724 - 441.334 ms
+
+2021-03-08 00:50:54:5054 error: uncaughtException: ⨯ Unable to compile TypeScript:
+src/auth/cas_auth.routes.ts(67,26): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(fn: (user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: import("/app/src/models/student").User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(user: Express.User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'user' are incompatible.
+        Type 'User' is missing the following properties from type 'User': netId, evals
+  Overload 2 of 2, '(fn: (req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'req' are incompatible.
+        Type 'IncomingMessage' is missing the following properties from type 'User': netId, evals
+src/auth/cas_auth.routes.ts(127,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(140,28): error TS2339: Property 'evals' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(143,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(157,43): error TS2339: Property 'netId' does not exist on type 'User'.
+
+Error: ⨯ Unable to compile TypeScript:
+src/auth/cas_auth.routes.ts(67,26): error TS2769: No overload matches this call.
+  Overload 1 of 2, '(fn: (user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: import("/app/src/models/student").User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(user: Express.User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'user' are incompatible.
+        Type 'User' is missing the following properties from type 'User': netId, evals
+  Overload 2 of 2, '(fn: (req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void): void', gave the following error.
+    Argument of type '(user: User, done: (err: any, id?: unknown) => void) => void' is not assignable to parameter of type '(req: IncomingMessage, user: User, done: (err: any, id?: unknown) => void) => void'.
+      Types of parameters 'user' and 'req' are incompatible.
+        Type 'IncomingMessage' is missing the following properties from type 'User': netId, evals
+src/auth/cas_auth.routes.ts(127,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(140,28): error TS2339: Property 'evals' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(143,51): error TS2339: Property 'netId' does not exist on type 'User'.
+src/auth/cas_auth.routes.ts(157,43): error TS2339: Property 'netId' does not exist on type 'User'.
+
+    at Object.<anonymous> (/app/src/auth/cas_auth.routes.ts:1:7)
+    at Module._compile (node:internal/modules/cjs/loader:1092:14)
+    at Module._compile (/app/node_modules/source-map-support/source-map-support.js:547:25)
+    at Module.m._compile (/tmp/ts-node-dev-hook-8980194794698497.js:69:33)
+    at Module._extensions..js (node:internal/modules/cjs/loader:1121:10)
+    at require.extensions..jsx.require.extensions..js (/tmp/ts-node-dev-hook-8980194794698497.js:114:20)
+    at require.extensions.<computed> (/tmp/ts-node-dev-hook-8980194794698497.js:71:20)
+    at Object.nodeDevHook [as .ts] (/app/node_modules/ts-node-dev/lib/hook.js:63:13)
+    at Module.load (node:internal/modules/cjs/loader:972:32)
+    at Function.Module._load (node:internal/modules/cjs/loader:813:14)
+2021-03-08 00:51:23:5123 info: Updating static catalog
+2021-03-08 00:51:24:5124 info: Fetched 36 seasons
+2021-03-08 00:51:24:5124 info: Catalog for 200903 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201001 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201002 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201003 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201101 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201102 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201103 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201201 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201202 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201203 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201301 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201302 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201303 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201401 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201402 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201403 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201501 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201502 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201503 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201601 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201602 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201603 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201701 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201702 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201703 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201801 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201802 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201803 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201901 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201902 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 201903 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 202001 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 202002 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 202003 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 202101 exists, skipping
+2021-03-08 00:51:24:5124 info: Catalog for 202102 exists, skipping
+2021-03-08 00:51:24:5124 info: Insecure API listening on port 3001
+2021-03-08 00:51:41:5141 info: Updating static catalog
+2021-03-08 00:51:41:5141 info: Fetched 36 seasons
+2021-03-08 00:51:41:5141 info: Catalog for 200903 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201001 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201002 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201003 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201101 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201102 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201103 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201201 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201202 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201203 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201301 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201302 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201303 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201401 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201402 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201403 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201501 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201502 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201503 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201601 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201602 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201603 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201701 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201702 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201703 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201801 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201802 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201803 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201901 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201902 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 201903 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 202001 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 202002 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 202003 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 202101 exists, skipping
+2021-03-08 00:51:41:5141 info: Catalog for 202102 exists, skipping
+2021-03-08 00:51:41:5141 info: Insecure API listening on port 3001
+2021-03-08 00:51:51:5151 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 50.279 ms
+
+2021-03-08 00:51:51:5151 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 42.718 ms
+
+2021-03-08 00:51:51:5151 http: GET /api/static/catalogs/202101.json 500 1053 - 6.239 ms
+
+2021-03-08 00:51:55:5155 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.539 ms
+
+2021-03-08 00:51:55:5155 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 2.009 ms
+
+2021-03-08 00:51:56:5156 http: GET /api/auth/cas?redirect=catalog 302 0 - 3.724 ms
+
+2021-03-08 00:51:58:5158 http: GET /api/auth/cas?redirect=catalog&ticket=ST-536586-pBiYXr4lwBWFQ6ClGE3JElVYN7Y-vm-cas6prdapp-01 302 102 - 985.286 ms
+
+2021-03-08 00:51:58:5158 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 29.415 ms
+
+2021-03-08 00:51:58:5158 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 20.806 ms
+
+2021-03-08 00:51:58:5158 http: GET /api/static/catalogs/202101.json 500 1053 - 4.867 ms
+
+2021-03-08 00:52:42:5242 info: Updating static catalog
+2021-03-08 00:52:42:5242 info: Fetched 36 seasons
+2021-03-08 00:52:42:5242 info: Catalog for 200903 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201001 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201002 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201003 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201101 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201102 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201103 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201201 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201202 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201203 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201301 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201302 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201303 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201401 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201402 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201403 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201501 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201502 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201503 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201601 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201602 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201603 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201701 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201702 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201703 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201801 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201802 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201803 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201901 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201902 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 201903 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 202001 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 202002 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 202003 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 202101 exists, skipping
+2021-03-08 00:52:42:5242 info: Catalog for 202102 exists, skipping
+2021-03-08 00:52:42:5242 info: Insecure API listening on port 3001
+2021-03-08 00:52:48:5248 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 14.757 ms
+
+2021-03-08 00:52:48:5248 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 2.646 ms
+
+2021-03-08 00:52:50:5250 http: GET /api/auth/cas?redirect=catalog 302 0 - 3.258 ms
+
+2021-03-08 00:52:51:5251 http: GET /api/auth/cas?redirect=catalog&ticket=ST-536639-Ztf9FukSfNXit3wlN6xMo8Hk7oY-vm-cas6prdapp-01 302 102 - 1186.120 ms
+
+2021-03-08 00:52:52:5252 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 38.107 ms
+
+2021-03-08 00:52:52:5252 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 37.069 ms
+
+2021-03-08 00:52:52:5252 http: GET /api/static/catalogs/202101.json 200 4107229 - 21.996 ms
+
+2021-03-08 01:02:04:24 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 3.290 ms
+
+2021-03-08 01:02:04:24 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 10.833 ms
+
+2021-03-08 01:02:08:28 http: GET /api/auth/cas?redirect=catalog 302 0 - 6.410 ms
+
+2021-03-08 01:02:10:210 http: GET /api/auth/cas?redirect=catalog&ticket=ST-537190-FrrMfxehZU9134JCs27x6Qg70TA-vm-cas6prdapp-01 302 102 - 981.955 ms
+
+2021-03-08 01:02:10:210 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 69.870 ms
+
+2021-03-08 01:02:10:210 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 68.453 ms
+
+2021-03-08 01:02:15:215 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 0.921 ms
+
+2021-03-08 01:02:15:215 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.805 ms
+
+2021-03-08 01:02:28:228 http: GET /api/auth/cas?redirect=catalog 302 0 - 0.543 ms
+
+2021-03-08 01:02:29:229 http: GET /api/auth/cas?redirect=catalog&ticket=ST-537224-pNi-TQNjghbRH9K9ifO3Qsqpi7E-vm-cas6prdapp-01 302 102 - 881.723 ms
+
+2021-03-08 01:02:29:229 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 39.962 ms
+
+2021-03-08 01:02:29:229 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 41.668 ms
+
+2021-03-08 01:02:34:234 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 4.318 ms
+
+2021-03-08 01:02:34:234 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 2.118 ms
+
+2021-03-08 01:12:14:1214 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 2.239 ms
+
+2021-03-08 01:12:14:1214 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.700 ms
+
+2021-03-08 01:12:17:1217 http: GET /api/auth/cas?redirect=catalog 302 0 - 0.790 ms
+
+2021-03-08 01:12:19:1219 http: GET /api/auth/cas?redirect=catalog&ticket=ST-537753-o5AoCn788XEKbRuQjiliKkFVA8Y-vm-cas6prdapp-01 302 102 - 865.753 ms
+
+2021-03-08 01:12:19:1219 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 49.714 ms
+
+2021-03-08 01:12:19:1219 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 66.778 ms
+
+2021-03-08 01:12:22:1222 http: GET /api/auth/logout 200 16 - 15.740 ms
+
+2021-03-08 01:12:22:1222 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.599 ms
+
+2021-03-08 01:12:22:1222 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.118 ms
+
+2021-03-10 01:42:35:4235 info: Updating static catalog
+2021-03-10 01:42:35:4235 info: Fetched 36 seasons
+2021-03-10 01:42:35:4235 info: Catalog for 200903 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201001 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201002 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201003 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201101 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201102 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201103 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201201 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201202 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201203 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201301 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201302 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201303 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201401 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201402 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201403 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201501 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201502 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201503 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201601 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201602 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201603 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201701 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201702 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201703 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201801 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201802 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201803 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201901 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201902 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 201903 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 202001 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 202002 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 202003 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 202101 exists, skipping
+2021-03-10 01:42:35:4235 info: Catalog for 202102 exists, skipping
+2021-03-10 01:42:35:4235 info: Insecure API listening on port 3001
+2021-03-10 01:47:05:475 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.715 ms
+
+2021-03-10 01:47:21:4721 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702139-n-iV0Sf4KOH1CQRpMNqHoOsLORU-vm-cas6prdapp-01 302 102 - 2034.757 ms
+
+2021-03-10 01:47:21:4721 error: uncaughtException: Cannot set headers after they are sent to the client
+Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    at new NodeError (node:internal/errors:329:5)
+    at ServerResponse.setHeader (node:_http_outgoing:573:11)
+    at ServerResponse.header (/app/node_modules/express/lib/response.js:771:10)
+    at ServerResponse.location (/app/node_modules/express/lib/response.js:888:15)
+    at ServerResponse.redirect (/app/node_modules/express/lib/response.js:926:18)
+    at postAuth (/app/src/auth/cas_auth.routes.ts:94:16)
+    at /app/src/auth/cas_auth.routes.ts:120:16
+    at Query.<anonymous> (/app/src/models/student.models.ts:52:15)
+    at Query.<anonymous> (/app/node_modules/mysql/lib/Connection.js:526:10)
+    at Query._callback (/app/node_modules/mysql/lib/Connection.js:488:16)
+2021-03-10 01:47:42:4742 info: Updating static catalog
+2021-03-10 01:47:42:4742 info: Fetched 36 seasons
+2021-03-10 01:47:42:4742 info: Catalog for 200903 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201001 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201002 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201003 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201101 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201102 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201103 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201201 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201202 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201203 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201301 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201302 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201303 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201401 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201402 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201403 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201501 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201502 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201503 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201601 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201602 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201603 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201701 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201702 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201703 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201801 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201802 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201803 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201901 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201902 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 201903 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 202001 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 202002 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 202003 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 202101 exists, skipping
+2021-03-10 01:47:42:4742 info: Catalog for 202102 exists, skipping
+2021-03-10 01:47:42:4742 info: Insecure API listening on port 3001
+2021-03-10 01:47:49:4749 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 84.075 ms
+
+2021-03-10 01:47:49:4749 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 95.394 ms
+
+2021-03-10 01:47:49:4749 http: GET /api/static/catalogs/202101.json 500 1053 - 6.793 ms
+
+2021-03-10 01:48:19:4819 http: GET /api/auth/logout 200 16 - 7.374 ms
+
+2021-03-10 01:48:19:4819 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.051 ms
+
+2021-03-10 01:48:19:4819 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.200 ms
+
+2021-03-10 01:48:20:4820 http: GET /api/auth/cas?redirect=catalog 302 0 - 2.542 ms
+
+2021-03-10 01:48:23:4823 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702173-QD8z6qyzb-Mj1DYRmyYCzcB-bLs-vm-cas6prdapp-01 302 102 - 2100.647 ms
+
+2021-03-10 01:48:23:4823 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 47.806 ms
+
+2021-03-10 01:48:23:4823 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 54.553 ms
+
+2021-03-10 01:48:23:4823 http: GET /api/static/catalogs/202101.json 200 4107229 - 13.649 ms
+
+2021-03-10 01:48:30:4830 http: GET /api/auth/logout 304 - - 4.303 ms
+
+2021-03-10 01:48:31:4831 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 2.185 ms
+
+2021-03-10 01:48:31:4831 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.552 ms
+
+2021-03-10 01:48:39:4839 http: GET /api/auth/cas?redirect=catalog 302 0 - 0.686 ms
+
+2021-03-10 01:48:40:4840 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702185-z2TXm0IzdYyHOCC0o5y-6GkOKXc-vm-cas6prdapp-01 302 102 - 836.355 ms
+
+2021-03-10 01:48:40:4840 error: uncaughtException: Cannot set headers after they are sent to the client
+Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    at new NodeError (node:internal/errors:329:5)
+    at ServerResponse.setHeader (node:_http_outgoing:573:11)
+    at ServerResponse.header (/app/node_modules/express/lib/response.js:771:10)
+    at ServerResponse.location (/app/node_modules/express/lib/response.js:888:15)
+    at ServerResponse.redirect (/app/node_modules/express/lib/response.js:926:18)
+    at postAuth (/app/src/auth/cas_auth.routes.ts:94:16)
+    at /app/src/auth/cas_auth.routes.ts:120:16
+    at Query.<anonymous> (/app/src/models/student.models.ts:52:15)
+    at Query.<anonymous> (/app/node_modules/mysql/lib/Connection.js:526:10)
+    at Query._callback (/app/node_modules/mysql/lib/Connection.js:488:16)
+2021-03-10 01:50:00:500 info: Updating static catalog
+2021-03-10 01:50:00:500 info: Fetched 36 seasons
+2021-03-10 01:50:00:500 info: Catalog for 200903 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201001 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201002 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201003 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201101 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201102 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201103 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201201 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201202 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201203 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201301 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201302 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201303 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201401 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201402 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201403 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201501 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201502 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201503 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201601 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201602 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201603 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201701 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201702 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201703 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201801 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201802 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201803 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201901 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201902 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 201903 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 202001 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 202002 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 202003 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 202101 exists, skipping
+2021-03-10 01:50:00:500 info: Catalog for 202102 exists, skipping
+2021-03-10 01:50:00:500 info: Insecure API listening on port 3001
+2021-03-10 01:50:02:502 http: GET /api/auth/cas?redirect=catalog 302 0 - 16.304 ms
+
+2021-03-10 01:50:04:504 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702234-9jdqRDNs0XvRNFwMUxIkDirBwl0-vm-cas6prdapp-01 302 102 - 947.085 ms
+
+2021-03-10 01:50:04:504 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 29.338 ms
+
+2021-03-10 01:50:04:504 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 50.964 ms
+
+2021-03-10 01:50:07:507 http: GET /api/auth/logout 304 - - 5.769 ms
+
+2021-03-10 01:50:07:507 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 14.530 ms
+
+2021-03-10 01:50:07:507 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.160 ms
+
+2021-03-10 01:50:08:508 http: GET /api/auth/cas?redirect=catalog 302 0 - 0.898 ms
+
+2021-03-10 01:50:09:509 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702236-6n3SesXQRLcIYqv5CCSb3z-183g-vm-cas6prdapp-01 302 102 - 819.422 ms
+
+2021-03-10 01:50:10:5010 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 32.123 ms
+
+2021-03-10 01:50:10:5010 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 28.456 ms
+
+2021-03-10 01:50:12:5012 http: GET /api/auth/logout 304 - - 3.807 ms
+
+2021-03-10 01:50:13:5013 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.145 ms
+
+2021-03-10 01:50:13:5013 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 0.676 ms
+
+2021-03-10 01:50:20:5020 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.105 ms
+
+2021-03-10 01:50:20:5020 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.591 ms
+
+2021-03-10 01:50:21:5021 http: GET /api/auth/cas?redirect=catalog 302 0 - 0.718 ms
+
+2021-03-10 01:50:22:5022 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702245-5pHWe2o5aggc3jPV7rxMDWM2uKQ-vm-cas6prdapp-01 302 102 - 847.741 ms
+
+2021-03-10 01:50:22:5022 error: uncaughtException: Cannot set headers after they are sent to the client
+Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the client
+    at new NodeError (node:internal/errors:329:5)
+    at ServerResponse.setHeader (node:_http_outgoing:573:11)
+    at ServerResponse.header (/app/node_modules/express/lib/response.js:771:10)
+    at ServerResponse.location (/app/node_modules/express/lib/response.js:888:15)
+    at ServerResponse.redirect (/app/node_modules/express/lib/response.js:926:18)
+    at postAuth (/app/src/auth/cas_auth.routes.ts:94:16)
+    at /app/src/auth/cas_auth.routes.ts:120:16
+    at Query.<anonymous> (/app/src/models/student.models.ts:52:15)
+    at Query.<anonymous> (/app/node_modules/mysql/lib/Connection.js:526:10)
+    at Query._callback (/app/node_modules/mysql/lib/Connection.js:488:16)
+2021-03-10 01:52:18:5218 info: Updating static catalog
+2021-03-10 01:52:18:5218 info: Fetched 36 seasons
+2021-03-10 01:52:18:5218 info: Catalog for 200903 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201001 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201002 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201003 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201101 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201102 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201103 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201201 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201202 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201203 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201301 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201302 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201303 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201401 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201402 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201403 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201501 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201502 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201503 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201601 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201602 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201603 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201701 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201702 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201703 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201801 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201802 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201803 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201901 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201902 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 201903 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 202001 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 202002 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 202003 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 202101 exists, skipping
+2021-03-10 01:52:18:5218 info: Catalog for 202102 exists, skipping
+2021-03-10 01:52:18:5218 info: Insecure API listening on port 3001
+2021-03-10 01:52:21:5221 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 34.950 ms
+
+2021-03-10 01:52:21:5221 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 46.321 ms
+
+2021-03-10 01:52:24:5224 http: GET /api/auth/logout 200 16 - 6.245 ms
+
+2021-03-10 01:52:25:5225 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 13.293 ms
+
+2021-03-10 01:52:25:5225 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 2.065 ms
+
+2021-03-10 01:52:27:5227 http: GET /api/auth/cas?redirect=catalog 302 0 - 3.467 ms
+
+2021-03-10 01:52:29:5229 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702315-QR2Am1qE5RHNj31ieD7CXIEYac4-vm-cas6prdapp-01 302 102 - 1001.188 ms
+
+2021-03-10 01:52:29:5229 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 36.242 ms
+
+2021-03-10 01:52:29:5229 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 36.737 ms
+
+2021-03-10 01:52:38:5238 http: GET /api/auth/logout 304 - - 4.920 ms
+
+2021-03-10 01:52:39:5239 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.521 ms
+
+2021-03-10 01:52:39:5239 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.363 ms
+
+2021-03-10 01:52:40:5240 http: GET /legacy_api/FetchFriendWorksheetsNew.php 500 1089 - 1.408 ms
+
+2021-03-10 01:52:40:5240 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 500 1089 - 1.168 ms
+
+2021-03-10 01:52:44:5244 http: GET /api/auth/cas?redirect=catalog 302 0 - 0.640 ms
+
+2021-03-10 01:52:45:5245 http: GET /api/auth/cas?redirect=catalog&ticket=ST-702320-3xN7mVQ-S-mcAEpo3prQwx25zUk-vm-cas6prdapp-01 302 102 - 869.337 ms
+
+2021-03-10 01:52:46:5246 http: GET /legacy_api/FetchFriendWorksheetsNew.php 200 - - 36.831 ms
+
+2021-03-10 01:52:46:5246 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 35.938 ms
+
