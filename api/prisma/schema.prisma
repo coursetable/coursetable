@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:GoCourseTable@mysql:3306/yaleplus"
+  url      = env("MYSQL_URL")
 }
 
 model BluebookEvents {

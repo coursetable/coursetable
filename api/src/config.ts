@@ -2,6 +2,8 @@
  * @file Global server configurations
  */
 
+const { PrismaClient } = require('@prisma/client');
+
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
@@ -41,6 +43,30 @@ export const MYSQL_COURSES_CONFIG = {
   password: getEnv('MYSQL_PASSWORD'),
   database: getEnv('COURSES_DB'),
 };
+
+const studentDatabase = new PrismaClient({
+  datasources: {
+    db: {
+      url: `mysql://${getEnv('MYSQL_HOST')}:${getEnv(
+        'MYSQL_PASSWORD'
+      )}@${getEnv('MYSQL_HOST')}:${getEnv('MYSQL_PORT')}/${getEnv(
+        'STUDENTS_DB'
+      )}`,
+    },
+  },
+});
+
+// const coursesDatabase = new PrismaClient({
+//   datasources: {
+//     db: {
+//       url: `mysql://${getEnv('MYSQL_HOST')}:${getEnv(
+//         'MYSQL_PASSWORD'
+//       )}@${getEnv('MYSQL_HOST')}:${getEnv('MYSQL_PORT')}/${getEnv(
+//         'COURSES_DB'
+//       )}`,
+//     },
+//   },
+// });
 
 // API key for interfacing with the yalies.io API
 export const YALIES_API_KEY = getEnv('YALIES_API_KEY');

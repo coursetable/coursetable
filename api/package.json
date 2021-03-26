@@ -1,6 +1,6 @@
 {
   "scripts": {
-    "prestart": "yarn prisma validate && yarn prisma introspect",
+    "prestart": "yarn prisma validate && yarn prisma introspect && yarn prisma generate",
     "start": "ts-node-dev src/server.ts",
     "prod": "ts-node src/server.ts",
     "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
@@ -14,6 +14,7 @@
     ]
   },
   "dependencies": {
+    "@prisma/client": "^2.19.0",
     "@sentry/node": "^6.2.1",
     "@sentry/tracing": "^6.2.1",
     "@types/app-root-path": "^1.2.4",

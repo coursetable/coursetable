@@ -17,10 +17,11 @@ services:
       - mysql
     environment:
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
-      MYSQL_HOST: mysql
-      MYSQL_PORT: 3306
-      MYSQL_USER: root
-      MYSQL_PASSWORD: GoCourseTable
+      MYSQL_HOST: ${MYSQL_HOST?host}
+      MYSQL_PORT: ${MYSQL_PORT?port}
+      MYSQL_USER: ${MYSQL_USERNAME?username}
+      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
+      MYSQL_URL: ${MYSQL_URL?mysql_url}
       STUDENTS_DB: yaleplus
       COURSES_DB: yale_advanced_oci
       CHALLENGE_PASSWORD: thisisapassword2
