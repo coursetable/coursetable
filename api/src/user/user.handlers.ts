@@ -2,13 +2,9 @@
 
 import express from 'express';
 
-import axios from 'axios';
-
-import { FACEBOOK_API_ENDPOINT } from '../config';
-
 import winston from '../logging/winston';
 
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -31,8 +27,8 @@ export const toggleBookmark = async (
     await prisma.worksheetCourses.create({
       data: {
         net_id: netId,
-        oci_id: parseInt(ociId),
-        season: parseInt(season),
+        oci_id: parseInt(ociId, 10),
+        season: parseInt(season, 10),
       },
     });
   }
@@ -41,8 +37,8 @@ export const toggleBookmark = async (
     await prisma.worksheetCourses.deleteMany({
       where: {
         net_id: netId,
-        oci_id: parseInt(ociId),
-        season: parseInt(season),
+        oci_id: parseInt(ociId, 10),
+        season: parseInt(season, 10),
       },
     });
   }

@@ -14,8 +14,10 @@ import axios from 'axios';
 
 import { FRONTEND_ENDPOINT, YALIES_API_KEY } from '../config';
 
-export const passportConfig = (passport: passport.PassportStatic): void => {
-  passport.use(
+export const passportConfig = (
+  passportInstance: passport.PassportStatic
+): void => {
+  passportInstance.use(
     new CasStrategy(
       {
         version: 'CAS2.0',

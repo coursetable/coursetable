@@ -3,9 +3,7 @@
  */
 
 import { verifyHeaders, refreshCatalog } from './catalog.controllers';
-import { verifyNetID } from '../auth/utils';
 import express from 'express';
-import { STATIC_FILE_DIR } from '../config';
 import { fetchCatalog } from './catalog.utils';
 
 import winston from '../logging/winston';

@@ -35,7 +35,7 @@ import user from './user/user.routes';
 import passport from 'passport';
 
 import * as Sentry from '@sentry/node';
-import * as Tracing from '@sentry/tracing';
+// import * as Tracing from '@sentry/tracing';
 
 Sentry.init({
   dsn:

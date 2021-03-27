@@ -8,7 +8,7 @@ import { FACEBOOK_API_ENDPOINT } from '../config';
 
 import winston from '../logging/winston';
 
-import { PrismaClient, Prisma } from '@prisma/client';
+import { PrismaClient } from '@prisma/client';
 
 const ME_FIELDS = 'id,name,first_name,middle_name,last_name';
 const FRIEND_FIELDS = 'id,name,first_name,middle_name,last_name';
