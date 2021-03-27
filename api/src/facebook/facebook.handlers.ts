@@ -153,15 +153,54 @@ export const getFriendsWorksheets = async (
     },
   });
 
+  const friendNetIds = friends.map((friend) => friend.netId);
+
   // Get friends' worksheets from NetIDs
   winston.info('Getting worksheets of Facebook friends');
   const friendWorksheets = await prisma.worksheetCourses.findMany({
     where: {
       net_id: {
-        in: friends.map((friend) => friend.netId),
+        in: friendNetIds,
       },
     },
   });
 
-  return res.status(200).json(friendWorksheets);
+  // Get friends' worksheets from NetIDs
+  winston.info('Getting info of Facebook friends');
+  const friendInfos = await prisma.students.findMany({
+    where: {
+      netId: {
+        in: friendNetIds,
+      },
+    },
+  });
+
+  // map netId to worksheets (list of [season, oci_id])
+  const worksheetsByFriend: { [key: string]: [string, number][] } = {};
+
+  friendWorksheets.forEach(({ net_id, oci_id, season }) => {
+    if (net_id in worksheetsByFriend) {
+      worksheetsByFriend[net_id].push([String(season), oci_id]);
+    } else {
+      worksheetsByFriend[net_id] = [[String(season), oci_id]];
+    }
+  });
+
+  // map netId to friend name and Facebook ID
+  const infoByFriend: {
+    [key: string]: { name: string; facebookId: string };
+  } = {};
+
+  friendInfos.forEach(({ netId, facebookId, facebookDataJson }) => {
+    infoByFriend[netId] = {
+      name: JSON.parse(facebookDataJson).name,
+      facebookId: String(facebookId),
+    };
+  });
+
+  return res.status(200).json({
+    success: true,
+    worksheets: worksheetsByFriend,
+    friendInfo: infoByFriend,
+  });
 };

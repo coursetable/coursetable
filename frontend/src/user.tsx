@@ -8,7 +8,7 @@ import React, {
 import axios from 'axios';
 // import posthog from 'posthog-js';
 // import * as Sentry from '@sentry/react';
-// import { toast } from 'react-toastify';
+import { toast } from 'react-toastify';
 import { NetId, Season } from './common';
 import { API_ENDPOINT } from './config';
 
@@ -103,31 +103,29 @@ export const UserProvider: React.FC = ({ children }) => {
   // Refresh user FB stuff
   const fbRefresh = useCallback(
     (suppressError = false): Promise<void> => {
-      // return axios
-      //   .get(`${API_ENDPOINT}/legacy_api/FetchFriendWorksheetsNew.php`, {
-      //     withCredentials: true,
-      //   })
-      //   .then((friends_worksheets) => {
-      //     if (!friends_worksheets.data.success) {
-      //       throw new Error(friends_worksheets.data.message);
-      //     }
-      //     // Successfully fetched friends' worksheets
-      //     setFbLogin(true);
-      //     setFbWorksheets(friends_worksheets.data);
-      //   })
-      //   .catch((err) => {
-      //     // Error with fetching friends' worksheets
-      //     if (!suppressError) {
-      //       console.info(err);
-      //       toast.error('Error updating Facebook friends');
-      //     }
-      //     setFbLogin(false);
-      //     setFbWorksheets(undefined);
-      //   });
-      return axios.get(`${API_ENDPOINT}/api/ping`);
+      return axios
+        .get(`${API_ENDPOINT}/api/facebook/worksheets`, {
+          withCredentials: true,
+        })
+        .then((friends_worksheets) => {
+          if (!friends_worksheets.data.success) {
+            throw new Error(friends_worksheets.data.message);
+          }
+          // Successfully fetched friends' worksheets
+          setFbLogin(true);
+          setFbWorksheets(friends_worksheets.data);
+        })
+        .catch((err) => {
+          // Error with fetching friends' worksheets
+          if (!suppressError) {
+            console.info(err);
+            toast.error('Error updating Facebook friends');
+          }
+          setFbLogin(false);
+          setFbWorksheets(undefined);
+        });
     },
-    []
-    // [setFbLogin, setFbWorksheets]
+    [setFbLogin, setFbWorksheets]
   );
 
   const user = useMemo(() => {
