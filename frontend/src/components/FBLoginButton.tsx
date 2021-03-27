@@ -21,7 +21,7 @@ function FBLoginButton() {
 
   const syncFacebook = useCallback(async () => {
     const { data } = await axios.post(
-      `${API_ENDPOINT}/api/facebook/friends`,
+      `${API_ENDPOINT}/api/facebook/update`,
       {},
       {
         withCredentials: true,
