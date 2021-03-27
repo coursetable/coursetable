@@ -29,8 +29,8 @@ import cas_auth, {
   authWithEvals,
   passportConfig,
 } from './auth/auth.routes';
-
 import facebook from './facebook/facebook.routes';
+import user from './user/user.routes';
 
 import passport from 'passport';
 
@@ -121,6 +121,7 @@ https
   await catalog(app);
   await cas_auth(app);
   await facebook(app);
+  await user(app);
 
   // Mount static files route and require NetID authentication
   app.use(
