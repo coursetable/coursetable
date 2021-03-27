@@ -56,6 +56,7 @@ app.use(cors(CORS_OPTIONS));
 app.use(morgan);
 // Enable url-encoding
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);

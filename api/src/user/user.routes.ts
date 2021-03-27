@@ -2,10 +2,11 @@ import express from 'express';
 
 import cookieParser from 'cookie-parser';
 
-import { getUserWorksheet } from './user.handlers';
+import { toggleBookmark, getUserWorksheet } from './user.handlers';
 
 // actual authentication routes
 export default async (app: express.Express) => {
   app.use(cookieParser());
+  app.post('/api/user/toggleBookmark', toggleBookmark);
   app.get('/api/user/worksheets', getUserWorksheet);
 };
