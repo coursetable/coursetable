@@ -64,3 +64,13 @@ model Students {
 
   @@index([facebookId], name: "facebookId")
 }
+
+model WorksheetCourses {
+  id     Int    @id @default(autoincrement()) @db.UnsignedMediumInt
+  net_id String @db.Char(8)
+  oci_id Int    @db.UnsignedMediumInt
+  season Int    @db.UnsignedMediumInt
+
+  @@unique([net_id, oci_id, season], name: "net_id_oci_id_season")
+  @@index([net_id], name: "net_id")
+}

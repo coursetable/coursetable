@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 27, 2021 at 04:29 PM
+-- Generation Time: Mar 27, 2021 at 04:43 PM
 -- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP Version: 7.4.16
 
@@ -107,6 +107,19 @@ CREATE TABLE `Students` (
   `facebookDataJson` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `WorksheetCourses`
+--
+
+CREATE TABLE `WorksheetCourses` (
+  `id` mediumint(8) UNSIGNED NOT NULL,
+  `net_id` char(8) NOT NULL,
+  `oci_id` mediumint(8) UNSIGNED NOT NULL,
+  `season` mediumint(8) UNSIGNED NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 --
 -- Indexes for dumped tables
 --
@@ -152,6 +165,14 @@ ALTER TABLE `Students`
   ADD KEY `facebookId` (`facebookId`);
 
 --
+-- Indexes for table `WorksheetCourses`
+--
+ALTER TABLE `WorksheetCourses`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `net_id_oci_id_season` (`net_id`,`oci_id`,`season`),
+  ADD KEY `net_id` (`net_id`);
+
+--
 -- AUTO_INCREMENT for dumped tables
 --
 
@@ -166,45 +187,11 @@ ALTER TABLE `StudentCoursesTaken`
 --
 ALTER TABLE `StudentFacebookFriends`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59251421;
---
--- Database: `yale_advanced_oci`
---
-CREATE DATABASE IF NOT EXISTS `yale_advanced_oci` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `yale_advanced_oci`;
-
--- --------------------------------------------------------
 
 --
--- Table structure for table `worksheet_courses`
+-- AUTO_INCREMENT for table `WorksheetCourses`
 --
-
-CREATE TABLE `worksheet_courses` (
-  `id` mediumint(8) UNSIGNED NOT NULL,
-  `net_id` char(8) NOT NULL,
-  `oci_id` mediumint(8) UNSIGNED NOT NULL,
-  `season` mediumint(8) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `worksheet_courses`
---
-ALTER TABLE `worksheet_courses`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `net_id_oci_id_season` (`net_id`,`oci_id`,`season`),
-  ADD KEY `net_id` (`net_id`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `worksheet_courses`
---
-ALTER TABLE `worksheet_courses`
+ALTER TABLE `WorksheetCourses`
   MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1213985;
 COMMIT;
 
