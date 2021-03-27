@@ -72,14 +72,17 @@ const getFriends = async (
       const facebookId = parseInt(friend.id, 10);
 
       return prisma.studentFacebookFriends.upsert({
+        // update (do not create a new friend) when one already matches the netId and Facebook ID
         where: {
           netId_friendFacebookId: { netId, facebookId },
         },
+        // basic info for creation
         create: {
           netId,
           name: friend.name,
           facebookId,
         },
+        // update people's names if they've changed
         update: {
           name: friend.name,
         },
