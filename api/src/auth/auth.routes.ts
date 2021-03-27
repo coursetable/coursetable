@@ -90,7 +90,7 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
 };
 
 const postAuth = (req: express.Request, res: express.Response): void => {
-  let redirect = req.query['redirect'] as string | undefined;
+  let redirect = req.query.redirect as string | undefined;
   if (redirect && !redirect.startsWith('//')) {
     // prefix the redirect with a slash to avoid an open redirect vulnerability.
     if (!redirect.startsWith('/')) {

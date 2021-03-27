@@ -8,11 +8,11 @@ import { FACEBOOK_API_ENDPOINT } from '../config';
 
 import winston from '../logging/winston';
 
+import { PrismaClient, Prisma } from '@prisma/client';
+
 const ME_FIELDS = 'id,name,first_name,middle_name,last_name';
 const FRIEND_FIELDS = 'id,name,first_name,middle_name,last_name';
 const FRIENDS_PAGE_LIMIT = 500;
-
-import { PrismaClient, Prisma } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
@@ -58,7 +58,7 @@ export const updateFriends = async (
     },
   });
 
-  let userFriends: any[] = [];
+  let userFriends: { id: string; name: string }[] = [];
 
   // Cursor pointing to the next page of friends
   let after = '';

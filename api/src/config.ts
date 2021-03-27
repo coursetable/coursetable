@@ -94,7 +94,7 @@ export const SESSION_SECRET = getEnv('SESSION_SECRET');
 
 // Note that an existing but empty FERRY_SECRET is meaningful,
 // as it enables us to bypass the header requirement in development.
-export const FERRY_SECRET = process.env['FERRY_SECRET'];
+export const { FERRY_SECRET } = process.env;
 
 // Location of statically generated files. This is relative
 // to the working directory, which is api.

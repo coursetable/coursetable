@@ -30,7 +30,7 @@ Student.findOrCreate = (
         netid
       )}`,
       (err, res) => {
-        connection.release(); //put connection back in pool
+        connection.release(); // put connection back in pool
         if (err) {
           winston.error('findOrCreate find error: ', err);
           return;
@@ -86,7 +86,7 @@ Student.getEvalsStatus = (
         netid
       )}`,
       (err, res) => {
-        connection.release(); //put connection back in pool
+        connection.release(); // put connection back in pool
         if (err) {
           winston.error('findChallenge error: ', err);
           result(500, err, null);
@@ -99,7 +99,7 @@ Student.getEvalsStatus = (
           return;
         }
 
-        const evaluationsEnabled = res[0]['evaluationsEnabled'];
+        const { evaluationsEnabled } = res[0];
 
         // check if already enabled
         if (evaluationsEnabled === 1) {
@@ -108,7 +108,6 @@ Student.getEvalsStatus = (
         }
 
         result(500, err, null);
-        return;
       }
     );
   });
@@ -137,7 +136,7 @@ Student.enableEvaluations = (
         netid
       )}`,
       (err, res) => {
-        connection.release(); //put connection back in pool
+        connection.release(); // put connection back in pool
         if (err) {
           winston.error('enableEvaluations error: ', err);
           result(500, err, null);
