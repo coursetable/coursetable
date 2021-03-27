@@ -111,7 +111,7 @@ export const UserProvider: React.FC = ({ children }) => {
           // Error with fetching friends' worksheets
           if (!suppressError) {
             console.info(err);
-            toast.error('Error updating facebook friends');
+            toast.error('Error updating Facebook friends');
           }
           setFbLogin(false);
           setFbWorksheets(undefined);

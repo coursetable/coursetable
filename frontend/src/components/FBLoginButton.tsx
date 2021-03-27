@@ -20,12 +20,16 @@ function FBLoginButton() {
   // Types on window.FB are defined in react-app-env.d.ts.
 
   const syncFacebook = useCallback(async () => {
-    const { data } = await axios.get(`${API_ENDPOINT}/api/facebook/friends`, {
-      withCredentials: true,
-      headers: {
-        'fb-token': FB.getAuthResponse()?.accessToken,
-      },
-    });
+    const { data } = await axios.post(
+      `${API_ENDPOINT}/api/facebook/friends`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          'fb-token': FB.getAuthResponse()?.accessToken,
+        },
+      }
+    );
     if (!data.success) {
       throw data.message;
     }

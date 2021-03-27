@@ -25,15 +25,16 @@ async function asyncForEach(
   }
 }
 
-const getFriends = async (
+const updateFriends = async (
   req: express.Request,
   res: express.Response
 ): Promise<express.Response> => {
   winston.info(`Fetching Facebook friends`);
 
   if (!req.user) {
-    return res.status(401);
+    return res.status(401).json({ success: false });
   }
+
   const { netId } = req.user;
 
   // User's Facebook token for fetching their friends
@@ -62,7 +63,7 @@ const getFriends = async (
       after = data.paging.cursors.after;
     } catch (err) {
       winston.error(`Facebook Graph API error: ${err}`);
-      return res.status(500);
+      return res.status(500).json({ success: false });
       break;
     }
   }
@@ -89,17 +90,17 @@ const getFriends = async (
       });
     });
 
-    const result = await prisma.$transaction(updateFriends);
+    await prisma.$transaction(updateFriends);
 
     return res.json({ success: true });
   } catch (err) {
     winston.error(`Error with upserting Facebook friends: ${err}`);
-    return res.status(500);
+    return res.status(500).json({ success: false });
   }
 };
 
 // actual authentication routes
 export default async (app: express.Express) => {
   app.use(cookieParser());
-  app.get('/api/facebook/friends', getFriends);
+  app.post('/api/facebook/friends', updateFriends);
 };
