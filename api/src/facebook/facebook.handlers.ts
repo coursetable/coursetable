@@ -124,22 +124,32 @@ export const getFriendsWorksheets = async (
   winston.info(`Fetching Facebook friends' worksheets`);
 
   if (!req.user) {
-    return res.status(401).json({ success: false });
+    return res.status(401).json();
   }
 
   const { netId } = req.user;
 
-  const facebookFriends = await prisma.studentFacebookFriends.findMany({
+  // Get Facebook ID of user
+  winston.info("Getting user's Facebook ID");
+  const studentProfile = await prisma.students.findUnique({
     where: {
-      netId: {
-        equals: netId,
-      },
+      netId,
     },
   });
 
-  const friendIds = facebookFriends.map((x) => Number(x.facebookId));
+  const userFacebookId = studentProfile?.facebookId;
 
-  // winston.info(facebookFriends);
+  if (!userFacebookId) {
+    return res.status(401).json();
+  }
 
-  return res.status(200).json(friendIds);
+  // Get NetIDs of Facebook friends
+  winston.info('Getting NetIDs of Facebook friends');
+  const friends = await prisma.studentFacebookFriends.findMany({
+    where: {
+      facebookId: userFacebookId,
+    },
+  });
+
+  return res.status(200).json();
 };
