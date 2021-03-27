@@ -34,13 +34,14 @@ const getFriends = async (
   if (!req.user) {
     return res.status(401);
   }
-
   const { netId } = req.user;
 
+  // User's Facebook token for fetching their friends
   const fbToken = req.headers['fb-token'];
 
   let userFriends: any[] = [];
 
+  // Cursor pointing to the next page of friends
   let after = '';
 
   while (after !== undefined) {
@@ -61,31 +62,37 @@ const getFriends = async (
       after = data.paging.cursors.after;
     } catch (err) {
       winston.error(`Facebook Graph API error: ${err}`);
+      return res.status(500);
       break;
     }
   }
 
-  await asyncForEach(userFriends, async (friend) => {
-    winston.info(JSON.stringify(friend));
+  try {
+    const updateFriends = userFriends.map((friend) => {
+      const facebookId = parseInt(friend.id, 10);
 
-    const facebookId = parseInt(friend.id, 10);
-
-    const create = await prisma.studentFacebookFriends.upsert({
-      where: {
-        netId_friendFacebookId: { netId, facebookId },
-      },
-      create: {
-        netId,
-        name: friend.name,
-        facebookId,
-      },
-      update: {
-        name: friend.name,
-      },
+      return prisma.studentFacebookFriends.upsert({
+        where: {
+          netId_friendFacebookId: { netId, facebookId },
+        },
+        create: {
+          netId,
+          name: friend.name,
+          facebookId,
+        },
+        update: {
+          name: friend.name,
+        },
+      });
     });
-  });
 
-  return res.json(userFriends);
+    const result = await prisma.$transaction(updateFriends);
+
+    return res.json({ status: 'success' });
+  } catch (err) {
+    winston.error(`Error with upserting Facebook friends: ${err}`);
+    return res.status(500);
+  }
 };
 
 // actual authentication routes
