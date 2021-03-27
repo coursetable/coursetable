@@ -107,7 +107,7 @@ https
     app
   )
   .listen(SECURE_PORT, () => {
-    console.log(`Secure dev proxy listening on port ${SECURE_PORT}`);
+    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
 // We use the IIFE pattern so that we can use await.

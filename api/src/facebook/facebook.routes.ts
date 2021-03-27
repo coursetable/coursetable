@@ -91,7 +91,7 @@ const getFriends = async (
 
     const result = await prisma.$transaction(updateFriends);
 
-    return res.json({ status: 'success' });
+    return res.json({ success: true });
   } catch (err) {
     winston.error(`Error with upserting Facebook friends: ${err}`);
     return res.status(500);

@@ -8,6 +8,8 @@ import { Strategy as CasStrategy } from 'passport-cas';
 import { User } from '../models/student';
 import Student from '../models/student.models';
 
+import winston from '../logging/winston';
+
 import axios from 'axios';
 
 import { FRONTEND_ENDPOINT, YALIES_API_KEY } from '../config';
@@ -64,7 +66,7 @@ export const passportConfig = (passport: passport.PassportStatic): void => {
               }
             })
             .catch((err) => {
-              console.error(err);
+              winston.error(err);
               return done(null, {
                 netId: profile.user,
                 evals: false,
