@@ -47,7 +47,7 @@ export const toggleBookmark = async (
     });
   }
 
-  return res.json();
+  return res.json({ success: true });
 };
 
 export const getUserWorksheet = async (
