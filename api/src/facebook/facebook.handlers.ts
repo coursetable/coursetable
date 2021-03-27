@@ -137,6 +137,8 @@ export const getFriendsWorksheets = async (
     },
   });
 
+  winston.info(studentProfile);
+
   const userFacebookId = studentProfile?.facebookId;
 
   if (!userFacebookId) {
@@ -151,5 +153,15 @@ export const getFriendsWorksheets = async (
     },
   });
 
-  return res.status(200).json();
+  // Get friends' worksheets from NetIDs
+  winston.info('Getting worksheets of Facebook friends');
+  const friendWorksheets = await prisma.worksheetCourses.findMany({
+    where: {
+      net_id: {
+        in: friends.map((friend) => friend.netId),
+      },
+    },
+  });
+
+  return res.status(200).json(friendWorksheets);
 };

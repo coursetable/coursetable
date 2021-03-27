@@ -6,9 +6,9 @@ import React, {
   useMemo,
 } from 'react';
 import axios from 'axios';
-import posthog from 'posthog-js';
-import * as Sentry from '@sentry/react';
-import { toast } from 'react-toastify';
+// import posthog from 'posthog-js';
+// import * as Sentry from '@sentry/react';
+// import { toast } from 'react-toastify';
 import { NetId, Season } from './common';
 import { API_ENDPOINT } from './config';
 
@@ -59,65 +59,75 @@ export const UserProvider: React.FC = ({ children }) => {
   // Refresh user worksheet
   const userRefresh = useCallback(
     (suppressError = false): Promise<void> => {
-      return axios
-        .get(
-          `${API_ENDPOINT}/legacy_api/WorksheetActions.php?action=get&season=all`,
-          { withCredentials: true }
-        )
-        .then((res) => {
-          if (!res.data.success) {
-            throw new Error(res.data.message);
-          }
+      // return axios
+      //   .get(
+      //     `${API_ENDPOINT}/legacy_api/WorksheetActions.php?action=get&season=all`,
+      //     { withCredentials: true }
+      //   )
+      //   .then((res) => {
+      //     if (!res.data.success) {
+      //       throw new Error(res.data.message);
+      //     }
 
-          // Successfully fetched worksheet
-          setNetId(res.data.netId);
-          setHasEvals(res.data.evaluationsEnabled);
-          setWorksheet(res.data.data);
-          posthog.identify(res.data.netId);
-          Sentry.setUser({ username: res.data.netId });
-        })
-        .catch((err) => {
-          // Error with fetching user's worksheet
-          setNetId(undefined);
-          setWorksheet(undefined);
-          setHasEvals(undefined);
-          posthog.reset();
-          Sentry.configureScope((scope) => scope.clear());
-          console.info(err);
-          if (!suppressError) {
-            toast.error('Error fetching worksheet');
-          }
-        });
+      //     // Successfully fetched worksheet
+      //     setNetId(res.data.netId);
+      //     setHasEvals(res.data.evaluationsEnabled);
+      //     setWorksheet(res.data.data);
+      //     posthog.identify(res.data.netId);
+      //     Sentry.setUser({ username: res.data.netId });
+      //   })
+      //   .catch((err) => {
+      //     // Error with fetching user's worksheet
+      //     setNetId(undefined);
+      //     setWorksheet(undefined);
+      //     setHasEvals(undefined);
+      //     posthog.reset();
+      //     Sentry.configureScope((scope) => scope.clear());
+      //     console.info(err);
+      //     if (!suppressError) {
+      //       toast.error('Error fetching worksheet');
+      //     }
+      //   });
+      return axios.get(`${API_ENDPOINT}/api/ping`).then((res) => {
+        setNetId('kh779');
+        setWorksheet([]);
+        setHasEvals(true);
+        setFbLogin(true);
+        setFbWorksheets(undefined);
+      });
     },
-    [setWorksheet, setNetId, setHasEvals]
+    []
+    // [setWorksheet, setNetId, setHasEvals]
   );
 
   // Refresh user FB stuff
   const fbRefresh = useCallback(
     (suppressError = false): Promise<void> => {
-      return axios
-        .get(`${API_ENDPOINT}/legacy_api/FetchFriendWorksheetsNew.php`, {
-          withCredentials: true,
-        })
-        .then((friends_worksheets) => {
-          if (!friends_worksheets.data.success) {
-            throw new Error(friends_worksheets.data.message);
-          }
-          // Successfully fetched friends' worksheets
-          setFbLogin(true);
-          setFbWorksheets(friends_worksheets.data);
-        })
-        .catch((err) => {
-          // Error with fetching friends' worksheets
-          if (!suppressError) {
-            console.info(err);
-            toast.error('Error updating Facebook friends');
-          }
-          setFbLogin(false);
-          setFbWorksheets(undefined);
-        });
+      // return axios
+      //   .get(`${API_ENDPOINT}/legacy_api/FetchFriendWorksheetsNew.php`, {
+      //     withCredentials: true,
+      //   })
+      //   .then((friends_worksheets) => {
+      //     if (!friends_worksheets.data.success) {
+      //       throw new Error(friends_worksheets.data.message);
+      //     }
+      //     // Successfully fetched friends' worksheets
+      //     setFbLogin(true);
+      //     setFbWorksheets(friends_worksheets.data);
+      //   })
+      //   .catch((err) => {
+      //     // Error with fetching friends' worksheets
+      //     if (!suppressError) {
+      //       console.info(err);
+      //       toast.error('Error updating Facebook friends');
+      //     }
+      //     setFbLogin(false);
+      //     setFbWorksheets(undefined);
+      //   });
+      return axios.get(`${API_ENDPOINT}/api/ping`);
     },
-    [setFbLogin, setFbWorksheets]
+    []
+    // [setFbLogin, setFbWorksheets]
   );
 
   const user = useMemo(() => {
