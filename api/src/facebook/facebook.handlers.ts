@@ -1,3 +1,7 @@
+/**
+ * @file Routes for linking accounts with Facebook.
+ */
+
 import express from 'express';
 
 import axios from 'axios';
@@ -14,6 +18,12 @@ const FRIENDS_PAGE_LIMIT = 500;
 
 const prisma = new PrismaClient();
 
+/**
+ * Fetch and create/update user's Facebook friends.
+ *
+ * @param req - express request object
+ * @param res - express response object
+ */
 export const updateFriends = async (
   req: express.Request,
   res: express.Response
@@ -122,6 +132,12 @@ export const updateFriends = async (
   }
 };
 
+/**
+ * Get worksheets of user's friends.
+ *
+ * @param req - express request object
+ * @param res - express response object
+ */
 export const getFriendsWorksheets = async (
   req: express.Request,
   res: express.Response
@@ -141,8 +157,6 @@ export const getFriendsWorksheets = async (
       netId,
     },
   });
-
-  winston.info(studentProfile);
 
   const userFacebookId = studentProfile?.facebookId;
 
@@ -182,7 +196,6 @@ export const getFriendsWorksheets = async (
 
   // map netId to worksheets (list of [season, oci_id])
   const worksheetsByFriend: { [key: string]: [string, number][] } = {};
-
   friendWorksheets.forEach(({ net_id, oci_id, season }) => {
     if (net_id in worksheetsByFriend) {
       worksheetsByFriend[net_id].push([String(season), oci_id]);
@@ -195,7 +208,6 @@ export const getFriendsWorksheets = async (
   const infoByFriend: {
     [key: string]: { name: string; facebookId: string };
   } = {};
-
   friendInfos.forEach(
     ({ netId: friendNetId, facebookId, facebookDataJson }) => {
       infoByFriend[friendNetId] = {

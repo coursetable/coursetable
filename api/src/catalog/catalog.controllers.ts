@@ -12,9 +12,9 @@ import { fetchCatalog } from './catalog.utils';
 /**
  * Middleware to verify request headers
  *
- * @prop req - express request object
- * @prop res - express response object
- * @prop next - express next object
+ * @param req - express request object
+ * @param res - express response object
+ * @param next - express next object
  */
 export const verifyHeaders = (
   req: express.Request,
@@ -37,9 +37,9 @@ export const verifyHeaders = (
 /**
  * Endpoint to refresh static catalog JSONs
  *
- * @prop req - express request object
- * @prop res - express response object
- * @prop next - express next object
+ * @param req - express request object
+ * @param res - express response object
+ * @param next - express next object
  */
 export const refreshCatalog = (
   req: express.Request,
@@ -47,6 +47,8 @@ export const refreshCatalog = (
 ): void => {
   // always overwrite when called
   const overwrite = true;
+
+  // fetch the catalog files and confirm success
   fetchCatalog(overwrite)
     .then(() => {
       return res.status(200).json({
