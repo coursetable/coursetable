@@ -17,7 +17,7 @@
 }
 
 :global .modal-custom-width {
-  max-width: 800px !important;
+  max-width: 1000px !important;
   /* max-width: none !important; */
 }
 

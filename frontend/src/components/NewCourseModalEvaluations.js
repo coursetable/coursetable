@@ -7,6 +7,7 @@ import styled from 'styled-components';
 import { LineChart, PieChart } from 'react-chartkick';
 import 'chart.js';
 import { useSearchEvaluationNarrativesQuery } from '../generated/graphql';
+import NewEvaluationRatings from './NewEvaluationRatings';
 
 const StyledSeasonHeader = styled(Row)`
   border-top: 1px solid ${({ theme }) => theme.text[3]};
@@ -54,6 +55,7 @@ const CourseModalEvaluations = ({ all_listings }) => {
     },
   });
   console.log(data);
+
   return (
     <>
       <Col sm={3} className="pr-2">
@@ -89,13 +91,21 @@ const CourseModalEvaluations = ({ all_listings }) => {
         })}
       </Col>
       <Col sm={9} className="pl-2">
-        <LineChart
-          round={2}
-          data={[
-            { name: 'Workload', data: workloads },
-            { name: 'Overall', data: overalls },
-          ]}
-        />
+        {selected ? (
+          data ? (
+            <NewEvaluationRatings info={data.computed_listing_info[0]} />
+          ) : (
+            <div>Loading...</div>
+          )
+        ) : (
+          <LineChart
+            round={2}
+            data={[
+              { name: 'Workload', data: workloads },
+              { name: 'Overall', data: overalls },
+            ]}
+          />
+        )}
       </Col>
     </>
   );
