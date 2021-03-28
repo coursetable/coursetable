@@ -6,7 +6,6 @@ import express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
 import { User } from '../models/student';
-import Student from '../models/student.models';
 
 import winston from '../logging/winston';
 
@@ -115,10 +114,8 @@ export const passportConfig = async (
       })
       .then((student) => {
         winston.info(student);
+        done(null, { netId, evals: !!student?.evaluationsEnabled });
       });
-    return Student.getEvalsStatus(netId, (statusCode, err, hasEvals) => {
-      done(null, { netId, evals: hasEvals });
-    });
   });
 };
 

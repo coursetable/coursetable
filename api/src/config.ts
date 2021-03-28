@@ -2,8 +2,6 @@
  * @file Global server configurations
  */
 
-const { PrismaClient } = require('@prisma/client');
-
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
@@ -25,48 +23,6 @@ export const CERT_PATH = getEnv('CERT_PATH');
 
 // Facebook Graph API endpoint
 export const FACEBOOK_API_ENDPOINT = getEnv('FACEBOOK_API_ENDPOINT');
-
-// MySQL config for students database
-export const MYSQL_STUDENTS_CONFIG = {
-  host: getEnv('MYSQL_HOST'),
-  port: parseInt(getEnv('MYSQL_PORT'), 10),
-  user: getEnv('MYSQL_USER'),
-  password: getEnv('MYSQL_PASSWORD'),
-  database: getEnv('STUDENTS_DB'),
-};
-
-// MySQL config for courses database (just worksheets)
-export const MYSQL_COURSES_CONFIG = {
-  host: getEnv('MYSQL_HOST'),
-  port: parseInt(getEnv('MYSQL_PORT'), 10),
-  user: getEnv('MYSQL_USER'),
-  password: getEnv('MYSQL_PASSWORD'),
-  database: getEnv('COURSES_DB'),
-};
-
-const studentDatabase = new PrismaClient({
-  datasources: {
-    db: {
-      url: `mysql://${getEnv('MYSQL_HOST')}:${getEnv(
-        'MYSQL_PASSWORD'
-      )}@${getEnv('MYSQL_HOST')}:${getEnv('MYSQL_PORT')}/${getEnv(
-        'STUDENTS_DB'
-      )}`,
-    },
-  },
-});
-
-// const coursesDatabase = new PrismaClient({
-//   datasources: {
-//     db: {
-//       url: `mysql://${getEnv('MYSQL_HOST')}:${getEnv(
-//         'MYSQL_PASSWORD'
-//       )}@${getEnv('MYSQL_HOST')}:${getEnv('MYSQL_PORT')}/${getEnv(
-//         'COURSES_DB'
-//       )}`,
-//     },
-//   },
-// });
 
 // API key for interfacing with the yalies.io API
 export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
