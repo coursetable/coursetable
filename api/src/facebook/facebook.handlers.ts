@@ -71,6 +71,11 @@ export const updateFriends = async (
   // Cursor pointing to the next page of friends
   let after: string | undefined = '';
 
+  /**
+   * Update friends array from fetched Facebook data.
+   *
+   * @param friendsData - response object from Facebook API
+   */
   const updateFriendsCursor = (friendsData: {
     data: { id: string; name: string }[];
     paging: { cursors: { before: string; after: string } };

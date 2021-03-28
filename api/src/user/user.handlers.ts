@@ -6,6 +6,12 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+/**
+ * Toggle a bookmarked course in a worksheet.
+ *
+ * @param req - express request object
+ * @param res - express response object
+ */
 export const toggleBookmark = async (
   req: express.Request,
   res: express.Response
@@ -22,6 +28,9 @@ export const toggleBookmark = async (
 
   // Add a bookmarked course
   if (action === 'add') {
+    winston.info(
+      `Bookmarking course ${ociId} in season ${season} for user ${netId}`
+    );
     await prisma.worksheetCourses.create({
       data: {
         net_id: netId,
@@ -32,6 +41,9 @@ export const toggleBookmark = async (
   }
   // Remove a bookmarked course
   else if (action === 'remove') {
+    winston.info(
+      `Removing bookmark for course ${ociId} in season ${season} for user ${netId}`
+    );
     await prisma.worksheetCourses.deleteMany({
       where: {
         net_id: netId,
@@ -44,6 +56,12 @@ export const toggleBookmark = async (
   return res.json({ success: true });
 };
 
+/**
+ * Get a user's personal worksheet.
+ *
+ * @param req - express request object
+ * @param res - express response object
+ */
 export const getUserWorksheet = async (
   req: express.Request,
   res: express.Response
@@ -57,7 +75,7 @@ export const getUserWorksheet = async (
   const { netId } = req.user;
 
   // Get user info
-  winston.info("Getting user's profile");
+  winston.info(`Getting profile for user ${netId}`);
   const studentProfile = await prisma.studentBluebookSettings.findUnique({
     where: {
       netId,
@@ -65,7 +83,7 @@ export const getUserWorksheet = async (
   });
 
   // Get worksheets
-  winston.info("Getting user's worksheets");
+  winston.info(`Getting worksheets for user ${netId}`);
   const worksheets = await prisma.worksheetCourses.findMany({
     where: {
       net_id: netId,
