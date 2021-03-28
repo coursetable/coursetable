@@ -20,7 +20,7 @@ const CollapsableText = ({ header, body, init = true }) => {
   return (
     <>
       <StyledToggle
-        className="mx-auto mt-3"
+        className="mx-auto py-1"
         onClick={() => {
           setIsCollapsed(!isCollapsed);
         }}
@@ -36,7 +36,9 @@ const CollapsableText = ({ header, body, init = true }) => {
       </StyledToggle>
       <StyledHr className="my-0" />
       <Collapse in={!isCollapsed}>
-        <Row className={`mx-auto mt-1 ${styles.body_text}`}>{body}</Row>
+        <div>
+          <Row className={`mx-auto mt-1 mb-2 ${styles.body_text}`}>{body}</Row>
+        </div>
       </Collapse>
     </>
   );

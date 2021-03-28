@@ -6,6 +6,7 @@ import styles from './NewCourseModalEvaluations.module.css';
 import styled from 'styled-components';
 import { LineChart, PieChart } from 'react-chartkick';
 import 'chart.js';
+import { useSearchEvaluationNarrativesQuery } from '../generated/graphql';
 
 const StyledSeasonHeader = styled(Row)`
   border-top: 1px solid ${({ theme }) => theme.text[3]};
@@ -20,6 +21,7 @@ const StyledSeasonHeader = styled(Row)`
   }
   &.last {
     border-bottom: 1px solid ${({ theme }) => theme.text[3]};
+    margin-bottom: 2rem;
   }
   &.selected {
     font-size: 22px;
@@ -44,6 +46,14 @@ const CourseModalEvaluations = ({ all_listings }) => {
   // console.log(all_listings);
   // console.log(workloads);
   // console.log(overalls);
+  // Fetch eval data for this listing
+  const { loading, error, data } = useSearchEvaluationNarrativesQuery({
+    variables: {
+      season_code: selected ? selected.season_code : 'lmao',
+      crn: selected ? selected.crn : 69,
+    },
+  });
+  console.log(data);
   return (
     <>
       <Col sm={3} className="pr-2">
@@ -58,10 +68,14 @@ const CourseModalEvaluations = ({ all_listings }) => {
                   index === all_listings[cur_season].length - 1
                     ? 'last'
                     : ''
-                } ${cur_listing.crn === selected ? 'selected' : ''}`}
+                } ${
+                  selected && cur_listing.crn === selected.crn ? 'selected' : ''
+                }`}
                 onClick={() => {
                   setSelected(
-                    cur_listing.crn === selected ? null : cur_listing.crn
+                    selected && cur_listing.crn === selected.crn
+                      ? null
+                      : cur_listing
                   );
                 }}
               >

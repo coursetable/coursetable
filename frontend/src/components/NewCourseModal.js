@@ -98,6 +98,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
           section: cur_listing.section,
           profs: cur_listing.professor_names,
           evals: cur_listing.course.evaluation_statistics[0],
+          season_code: cur_listing.season_code,
         });
       });
     }

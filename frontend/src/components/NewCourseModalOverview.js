@@ -133,7 +133,7 @@ const CourseModalOverview = ({ listing, all_listings }) => {
           )}
         </Col>
         <Col md={4} className="pr-0 pl-4">
-          <Row className={`mx-auto mt-3 ${styles.metadata_header}`}>
+          <Row className={`mx-auto mt-1 ${styles.metadata_header}`}>
             <TextComponent type={2}>Professor</TextComponent>
           </Row>
           <Row className="mx-auto">
