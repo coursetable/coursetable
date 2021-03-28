@@ -29,7 +29,7 @@ const StyledCol = styled(Col)`
 `;
 
 // Unclickable version of StyledCol for courses with no evaluations
-const StyledCol_unclickable = styled(Col)`
+const StyledColUnclickable = styled(Col)`
   background-color: ${({ theme }) => theme.surface};
 `;
 
@@ -232,7 +232,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 </div>
               </StyledCol>
             ) : (
-              <StyledCol_unclickable
+              <StyledColUnclickable
                 xs={5}
                 className={`${Styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
                 style={{ flex: 'none' }}
@@ -245,7 +245,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                     ? `Section ${evaluations[i].section}`
                     : evaluations[i].professor[0]}
                 </div>
-              </StyledCol_unclickable>
+              </StyledColUnclickable>
             )}
             {/* Course Rating */}
             <Col
