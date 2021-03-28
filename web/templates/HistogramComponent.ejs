@@ -1,0 +1,37 @@
+<%#
+	HistogramComponent.ejs
+	
+	Type: template component
+	Usage: Makes a bar graph as a part of a table, showing data
+
+	Variables:
+		data: data point of 'label' => count
+		round: digits to round the display to (defaults to 0)
+		barClasses: class of the bar, of 'label' => 'class1 class2'
+		
+%>
+<%
+var round;
+if (!round) {
+	round = 0;
+}
+var maxCount = 0;
+forEach(data, function(label, count) {
+	maxCount = Math.max(maxCount, count);
+});
+
+var barClasses;
+%>
+
+<% forEach(data, function(label, count) { %>
+	<tr>
+		<td class="chart-legend"><%= label %></td>
+		<td>
+			<%= include('Bar.ejs', {
+				data: count,
+				max: maxCount,
+				barClasses: 'square-chart-bar' + (barClasses ? ' ' + barClasses[label] : '')
+			}) %>
+		</td>
+	</tr>
+<% }); %>

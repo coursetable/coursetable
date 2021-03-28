@@ -1,0 +1,24 @@
+<%#
+	EvaluationBarGraph.ejs
+
+	Type: template component
+	Usage: Small bar graphs for showing course statistics
+
+	Variables:
+		evaluation: array containing average.rating, average.workload
+		tooltip: title to use in tooltip (e.g., "Same professor and class")
+		btnClass: extra classes for the button
+%>
+<%
+var nameStrings = [];
+for (var j = 0; j < evaluation.names.length; j++) {
+	var name = evaluation.names[j];
+	nameStrings.push(name.subject + '\xa0' + name.number);
+}
+%>
+<button class="btn <%= btnClass %> span5 eval-button"
+		id="show-eval<%= evaluation.id %>"
+		title="<%= tooltip %> (<%= nameStrings.join(' / ') %>)">
+	<%= evaluation.year %> <%= evaluation.term %>
+	<div>See details</div>
+</button>

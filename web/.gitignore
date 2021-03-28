@@ -1,0 +1,6 @@
+tools/logs/*
+.idea
+.dropbox
+/node_modules
+/gen
+.idea/

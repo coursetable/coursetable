@@ -1,0 +1,44 @@
+/* mtt stands for myrtlelime timetable */
+.mtt-table {
+  width: 100%;
+  position: relative;
+}
+
+.mtt-cell {
+  width: 20%;
+  height: 40px;
+  padding: 0;
+  margin: 0;
+}
+
+.mtt-table td {
+  border-right: 1px solid #ccc;
+  vertical-align: top;
+}
+
+.mtt-row td {
+  border-bottom: 1px solid #eee;
+}
+
+.mtt-left-label {
+  vertical-align: top;
+  padding: 5px;
+}
+
+.mtt-day {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.mtt-event {
+  position: absolute;
+  width: 100%;
+  overflow: hidden;
+  margin-top: 1px;
+  margin-left: 1px;
+}
+
+.mtt-header th {
+  border-bottom: 1px solid #ccc;
+}

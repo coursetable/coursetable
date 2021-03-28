@@ -1,0 +1,742 @@
+{
+  "course_name_id": "84914",
+  "subject": "ENGL",
+  "number": "121",
+  "section": "1",
+  "oci_id": "20795",
+  "title": "Styles of Acad & Prof Prose: T...",
+  "long_title": "Styles of Acad & Prof Prose: Thinking&Writing about the Law",
+  "description": "A seminar and workshop in the conventions of good writing in a specific field. Each section focuses on one academic or professional kind of writing and explores its distinctive features through a variety of written and oral assignments, in which students both analyze and practice writing in the field. Section topics, which change yearly, are listed at the beginning of each term on the English departmental website. This course may be repeated for credit in a section that treats a different genre or style of writing; may not be repeated for credit toward the major.\u00a0Preregistration required; see under English Department.",
+  "requirements": "Prerequisite: ENGL 114, 115, 120, or another writing-intensive course at Yale.",
+  "exam_group": 201902110,
+  "extra_info": "",
+  "syllabus_url": "https://yale.instructure.com/courses/44528/assignments/syllabus",
+  "course_home_url": "",
+  "row": 1260,
+  "exam_timestamp": "19691231000000",
+  "professors": ["Andrew Ehrgood"],
+  "skills": ["WR"],
+  "areas": [],
+  "flags": [],
+  "average": {
+    "same_both": {
+      "rating": 4.74,
+      "workload": 3.99,
+      "engagement": 4.69,
+      "organization": 4.71,
+      "feedback": 4.9,
+      "challenge": 4.27
+    },
+    "same_class": {
+      "rating": 4.43,
+      "workload": 3.46,
+      "engagement": 4.45,
+      "organization": 4.6,
+      "feedback": 4.68,
+      "challenge": 3.65
+    },
+    "same_professors": {
+      "rating": 4.7,
+      "workload": 3.77,
+      "engagement": 4.6,
+      "organization": 4.75,
+      "feedback": 4.89,
+      "challenge": 4.09
+    }
+  },
+  "num_students": "17",
+  "num_students_is_same_prof": true,
+  "evaluations": {
+    "same_both": [
+      {
+        "id": "48565",
+        "season": "201803",
+        "year": 2018,
+        "term": "Fall",
+        "enrollment": "17",
+        "average": {
+          "engagement": 5,
+          "rating": 5,
+          "organization": 4.923,
+          "feedback": 4.923,
+          "challenge": 4.538,
+          "workload": 4.308
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201803" }]
+      },
+      {
+        "id": "43983",
+        "season": "201703",
+        "year": 2017,
+        "term": "Fall",
+        "enrollment": "16",
+        "average": {
+          "engagement": 4.643,
+          "rating": 4.929,
+          "organization": 4.786,
+          "feedback": 5,
+          "challenge": 4.2,
+          "workload": 4.133
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201703" }]
+      },
+      {
+        "id": "41848",
+        "season": "201701",
+        "year": 2017,
+        "term": "Spring",
+        "enrollment": "16",
+        "average": {
+          "engagement": 4.429,
+          "rating": 4.571,
+          "organization": 4.429,
+          "feedback": 4.786,
+          "challenge": 4.071,
+          "workload": 4.143
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201701" }]
+      },
+      {
+        "id": "37082",
+        "season": "201601",
+        "year": 2016,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": { "workload": 4.333, "rating": 4.917, "major": 1.833 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201601" }]
+      },
+      {
+        "id": "31994",
+        "season": "201501",
+        "year": 2015,
+        "term": "Spring",
+        "enrollment": "14",
+        "average": { "workload": 3.643, "rating": 4.857, "major": 1.929 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201501" }]
+      },
+      {
+        "id": "29417",
+        "season": "201403",
+        "year": 2014,
+        "term": "Fall",
+        "enrollment": "14",
+        "average": { "workload": 4.5, "rating": 4.625, "major": 2 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201403" }]
+      },
+      {
+        "id": "26822",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "17",
+        "average": { "workload": 3.727, "rating": 4.636, "major": 2 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201401" }]
+      },
+      {
+        "id": "24204",
+        "season": "201303",
+        "year": 2013,
+        "term": "Fall",
+        "enrollment": "16",
+        "average": { "workload": 3.6, "rating": 4.6, "major": 1.857 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201303" }]
+      },
+      {
+        "id": "21377",
+        "season": "201301",
+        "year": 2013,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": { "workload": 3.867, "rating": 4.6, "major": 1.933 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201301" }]
+      },
+      {
+        "id": "12793",
+        "season": "201103",
+        "year": 2011,
+        "term": "Fall",
+        "enrollment": "13",
+        "average": { "workload": 3.667, "rating": 4.667, "major": 1.889 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201103" }]
+      }
+    ],
+    "same_class": [
+      {
+        "id": "48564",
+        "season": "201803",
+        "year": 2018,
+        "term": "Fall",
+        "enrollment": "6",
+        "average": {
+          "engagement": 4.75,
+          "rating": 4.75,
+          "organization": 5,
+          "feedback": 5,
+          "challenge": 4.25,
+          "workload": 4
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201803" }]
+      },
+      {
+        "id": "46097",
+        "season": "201801",
+        "year": 2018,
+        "term": "Spring",
+        "enrollment": "14",
+        "average": {
+          "engagement": 4.364,
+          "rating": 4.5,
+          "organization": 4.364,
+          "feedback": 4.636,
+          "challenge": 3.727,
+          "workload": 3.545
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201801" }]
+      },
+      {
+        "id": "46096",
+        "season": "201801",
+        "year": 2018,
+        "term": "Spring",
+        "enrollment": "12",
+        "average": {
+          "engagement": 4.6,
+          "rating": 4.7,
+          "organization": 4.6,
+          "feedback": 4.5,
+          "challenge": 3.2,
+          "workload": 3.4
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201801" }]
+      },
+      {
+        "id": "46095",
+        "season": "201801",
+        "year": 2018,
+        "term": "Spring",
+        "enrollment": "5",
+        "average": {
+          "engagement": 5,
+          "rating": 4.5,
+          "organization": 5,
+          "feedback": 5,
+          "challenge": 4,
+          "workload": 3.5
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201801" }]
+      },
+      {
+        "id": "46094",
+        "season": "201801",
+        "year": 2018,
+        "term": "Spring",
+        "enrollment": "6",
+        "average": {
+          "engagement": 4,
+          "rating": 4.8,
+          "organization": 4.8,
+          "feedback": 5,
+          "challenge": 3.2,
+          "workload": 2.4
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201801" }]
+      },
+      {
+        "id": "46093",
+        "season": "201801",
+        "year": 2018,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": {
+          "engagement": 4.5,
+          "rating": 4.643,
+          "organization": 4.429,
+          "feedback": 4.571,
+          "challenge": 3.786,
+          "workload": 3.786
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201801" }]
+      },
+      {
+        "id": "43984",
+        "season": "201703",
+        "year": 2017,
+        "term": "Fall",
+        "enrollment": "13",
+        "average": {
+          "engagement": 4.727,
+          "rating": 4.583,
+          "organization": 4.75,
+          "feedback": 4.636,
+          "challenge": 3.091,
+          "workload": 3.455
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201703" }]
+      },
+      {
+        "id": "41853",
+        "season": "201701",
+        "year": 2017,
+        "term": "Spring",
+        "enrollment": "12",
+        "average": {
+          "engagement": 4.25,
+          "rating": 4.667,
+          "organization": 4.667,
+          "feedback": 4.75,
+          "challenge": 3.75,
+          "workload": 3.583
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201701" }]
+      },
+      {
+        "id": "41852",
+        "season": "201701",
+        "year": 2017,
+        "term": "Spring",
+        "enrollment": "8",
+        "average": {
+          "engagement": 4.143,
+          "rating": 4.286,
+          "organization": 4.143,
+          "feedback": 4.143,
+          "challenge": 3.143,
+          "workload": 2.571
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201701" }]
+      },
+      {
+        "id": "41850",
+        "season": "201701",
+        "year": 2017,
+        "term": "Spring",
+        "enrollment": "10",
+        "average": {
+          "engagement": 3.667,
+          "rating": 4,
+          "organization": 4,
+          "feedback": 3.889,
+          "challenge": 2.667,
+          "workload": 2.778
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201701" }]
+      },
+      {
+        "id": "41849",
+        "season": "201701",
+        "year": 2017,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": {
+          "engagement": 4.214,
+          "rating": 4.571,
+          "organization": 4.5,
+          "feedback": 4.643,
+          "challenge": 3.429,
+          "workload": 3.357
+        },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201701" }]
+      },
+      {
+        "id": "37088",
+        "season": "201601",
+        "year": 2016,
+        "term": "Spring",
+        "enrollment": "16",
+        "average": { "workload": 3.4, "rating": 4.467, "major": 1.6 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201601" }]
+      },
+      {
+        "id": "37087",
+        "season": "201601",
+        "year": 2016,
+        "term": "Spring",
+        "enrollment": "7",
+        "average": { "workload": 3.5, "rating": 3.833, "major": 2 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201601" }]
+      },
+      {
+        "id": "37086",
+        "season": "201601",
+        "year": 2016,
+        "term": "Spring",
+        "enrollment": "12",
+        "average": { "workload": 3.625, "rating": 4.778, "major": 1.625 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201601" }]
+      },
+      {
+        "id": "37085",
+        "season": "201601",
+        "year": 2016,
+        "term": "Spring",
+        "enrollment": "11",
+        "average": { "workload": 3.182, "rating": 4.727, "major": 1.727 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201601" }]
+      },
+      {
+        "id": "37083",
+        "season": "201601",
+        "year": 2016,
+        "term": "Spring",
+        "enrollment": "10",
+        "average": { "workload": 3.111, "rating": 4.667, "major": 1.625 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201601" }]
+      },
+      {
+        "id": "31999",
+        "season": "201501",
+        "year": 2015,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": { "workload": 3.7, "rating": 4.5, "major": 1.6 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201501" }]
+      },
+      {
+        "id": "31998",
+        "season": "201501",
+        "year": 2015,
+        "term": "Spring",
+        "enrollment": "14",
+        "average": { "workload": 3.273, "rating": 4, "major": 1.818 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201501" }]
+      },
+      {
+        "id": "31997",
+        "season": "201501",
+        "year": 2015,
+        "term": "Spring",
+        "enrollment": "10",
+        "average": { "workload": 3.7, "rating": 4.8, "major": 1.7 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201501" }]
+      },
+      {
+        "id": "31996",
+        "season": "201501",
+        "year": 2015,
+        "term": "Spring",
+        "enrollment": "11",
+        "average": { "workload": 3.111, "rating": 4.333, "major": 1.889 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201501" }]
+      },
+      {
+        "id": "31995",
+        "season": "201501",
+        "year": 2015,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": { "workload": 3.231, "rating": 4.231, "major": 1.538 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201501" }]
+      },
+      {
+        "id": "26828",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "13",
+        "average": { "workload": 3.083, "rating": 3.583, "major": 1.667 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201401" }]
+      },
+      {
+        "id": "26827",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "7",
+        "average": { "workload": 4, "rating": 4.286, "major": 1.429 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201401" }]
+      },
+      {
+        "id": "26826",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "7",
+        "average": { "workload": 3.333, "rating": 4.667, "major": 1.5 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201401" }]
+      },
+      {
+        "id": "26825",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "14",
+        "average": { "workload": 3, "rating": 4.545, "major": 1.727 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201401" }]
+      },
+      {
+        "id": "26824",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "13",
+        "average": { "workload": 3.5, "rating": 4.417, "major": 1.917 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201401" }]
+      },
+      {
+        "id": "26823",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": { "workload": 3.667, "rating": 4.4, "major": 1.2 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201401" }]
+      },
+      {
+        "id": "24207",
+        "season": "201303",
+        "year": 2013,
+        "term": "Fall",
+        "enrollment": "8",
+        "average": { "workload": 3.714, "rating": 4.714, "major": 1.857 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201303" }]
+      },
+      {
+        "id": "24206",
+        "season": "201303",
+        "year": 2013,
+        "term": "Fall",
+        "enrollment": "15",
+        "average": { "workload": 3.615, "rating": 4.308, "major": 1.75 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201303" }]
+      },
+      {
+        "id": "24205",
+        "season": "201303",
+        "year": 2013,
+        "term": "Fall",
+        "enrollment": "8",
+        "average": { "workload": 3.5, "rating": 4.333, "major": 1.333 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201303" }]
+      },
+      {
+        "id": "21380",
+        "season": "201301",
+        "year": 2013,
+        "term": "Spring",
+        "enrollment": "13",
+        "average": { "workload": 2.6, "rating": 3.7, "major": 1.9 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201301" }]
+      },
+      {
+        "id": "21379",
+        "season": "201301",
+        "year": 2013,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": { "workload": 3.077, "rating": 4.769, "major": 1.538 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201301" }]
+      },
+      {
+        "id": "21378",
+        "season": "201301",
+        "year": 2013,
+        "term": "Spring",
+        "enrollment": "14",
+        "average": { "workload": 3.818, "rating": 4, "major": 1.818 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201301" }]
+      },
+      {
+        "id": "18497",
+        "season": "201203",
+        "year": 2012,
+        "term": "Fall",
+        "enrollment": "15",
+        "average": { "workload": 2.8, "rating": 4.067, "major": 1.733 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201203" }]
+      },
+      {
+        "id": "18496",
+        "season": "201203",
+        "year": 2012,
+        "term": "Fall",
+        "enrollment": "10",
+        "average": { "workload": 3.6, "rating": 4.5, "major": 1.8 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201203" }]
+      },
+      {
+        "id": "18495",
+        "season": "201203",
+        "year": 2012,
+        "term": "Fall",
+        "enrollment": "15",
+        "average": { "workload": 3.4, "rating": 3.4, "major": 1.933 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201203" }]
+      },
+      {
+        "id": "15584",
+        "season": "201201",
+        "year": 2012,
+        "term": "Spring",
+        "enrollment": "12",
+        "average": { "workload": 3, "rating": 4.583, "major": 1.583 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201201" }]
+      },
+      {
+        "id": "15583",
+        "season": "201201",
+        "year": 2012,
+        "term": "Spring",
+        "enrollment": "6",
+        "average": { "workload": 3.6, "rating": 4.6, "major": 1.2 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201201" }]
+      },
+      {
+        "id": "15582",
+        "season": "201201",
+        "year": 2012,
+        "term": "Spring",
+        "enrollment": "11",
+        "average": { "workload": 2.909, "rating": 4.636, "major": 1.727 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201201" }]
+      },
+      {
+        "id": "15581",
+        "season": "201201",
+        "year": 2012,
+        "term": "Spring",
+        "enrollment": "8",
+        "average": { "workload": 2.5, "rating": 3.875, "major": 1.857 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201201" }]
+      },
+      {
+        "id": "15580",
+        "season": "201201",
+        "year": 2012,
+        "term": "Spring",
+        "enrollment": "15",
+        "average": { "workload": 3.214, "rating": 3.643, "major": 1.571 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201201" }]
+      },
+      {
+        "id": "12794",
+        "season": "201103",
+        "year": 2011,
+        "term": "Fall",
+        "enrollment": "10",
+        "average": { "workload": 3.778, "rating": 3.556, "major": 1.889 },
+        "names": [{ "subject": "ENGL", "number": "121", "season": "201103" }]
+      }
+    ],
+    "same_professors": [
+      {
+        "id": "46085",
+        "season": "201801",
+        "year": 2018,
+        "term": "Spring",
+        "enrollment": "16",
+        "average": {
+          "engagement": 4.467,
+          "rating": 4.867,
+          "organization": 4.867,
+          "feedback": 4.8,
+          "challenge": 3.933,
+          "workload": 3.667
+        },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201801" }]
+      },
+      {
+        "id": "39516",
+        "season": "201603",
+        "year": 2016,
+        "term": "Fall",
+        "enrollment": "14",
+        "average": {
+          "engagement": 4.462,
+          "rating": 4.692,
+          "organization": 4.769,
+          "feedback": 4.923,
+          "challenge": 3.692,
+          "workload": 3.538
+        },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201603" }]
+      },
+      {
+        "id": "34556",
+        "season": "201503",
+        "year": 2015,
+        "term": "Fall",
+        "enrollment": "16",
+        "average": { "workload": 3.267, "rating": 4.6, "major": 1.733 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201503" }]
+      },
+      {
+        "id": "34544",
+        "season": "201503",
+        "year": 2015,
+        "term": "Fall",
+        "enrollment": "17",
+        "average": { "workload": 3.2, "rating": 4.733, "major": 1.857 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201503" }]
+      },
+      {
+        "id": "26809",
+        "season": "201401",
+        "year": 2014,
+        "term": "Spring",
+        "enrollment": "14",
+        "average": { "workload": 3.357, "rating": 4.571, "major": 1.643 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201401" }]
+      },
+      {
+        "id": "24190",
+        "season": "201303",
+        "year": 2013,
+        "term": "Fall",
+        "enrollment": "15",
+        "average": { "workload": 3.833, "rating": 4.833, "major": 1.75 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201303" }]
+      },
+      {
+        "id": "21365",
+        "season": "201301",
+        "year": 2013,
+        "term": "Spring",
+        "enrollment": "17",
+        "average": { "workload": 3.733, "rating": 4.667, "major": 1.6 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201301" }]
+      },
+      {
+        "id": "18483",
+        "season": "201203",
+        "year": 2012,
+        "term": "Fall",
+        "enrollment": "15",
+        "average": { "workload": 3.867, "rating": 4.733, "major": 1.786 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201203" }]
+      },
+      {
+        "id": "18482",
+        "season": "201203",
+        "year": 2012,
+        "term": "Fall",
+        "enrollment": "16",
+        "average": { "workload": 3.133, "rating": 4.333, "major": 1.929 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201203" }]
+      },
+      {
+        "id": "15575",
+        "season": "201201",
+        "year": 2012,
+        "term": "Spring",
+        "enrollment": "21",
+        "average": { "workload": 3.85, "rating": 4.5, "major": 1.6 },
+        "names": [{ "subject": "ENGL", "number": "120", "season": "201201" }]
+      }
+    ]
+  },
+  "locations_summary": "LC 213",
+  "location_times": { "LC 213": ["M 14.30", "W 14.30"] },
+  "times": {
+    "summary": "MW 14.30-15.45",
+    "long_summary": "MW 14.30-15.45 (LC 213)",
+    "by_day": {
+      "Monday": [["14.3", "15.45", "LC 213"]],
+      "Wednesday": [["14.3", "15.45", "LC 213"]]
+    }
+  },
+  "codes": [
+    { "subject": "ENGL", "number": "121", "section": "1", "row_id": 1259 }
+  ],
+  "oci_ids": ["20795"],
+  "row_id": 1259
+}
