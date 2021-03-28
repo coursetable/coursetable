@@ -87,9 +87,8 @@ export const passportConfig = async (
               });
             }
             // otherwise, user isn't a Yale student
-            else {
-              return done(null, { netId: profile.user, evals: false });
-            }
+
+            return done(null, { netId: profile.user, evals: false });
           })
           .catch((err) => {
             winston.error(err);
@@ -102,12 +101,12 @@ export const passportConfig = async (
     )
   );
 
-  passport.serializeUser(function (user: User, done): void {
+  passport.serializeUser((user: User, done): void => {
     return done(null, user.netId);
   });
 
   // when deserializing, ping Yalies to get the user's profile
-  passport.deserializeUser(function (netId: string, done): void {
+  passport.deserializeUser((netId: string, done): void => {
     prisma.studentBluebookSettings
       .findUnique({
         where: {
@@ -142,17 +141,17 @@ const casLogin = (
   res: express.Response,
   next: express.NextFunction
 ): void => {
-  passport.authenticate('cas', function (err, user) {
-    if (err) {
-      return next(err);
+  passport.authenticate('cas', (casError, user) => {
+    if (casError) {
+      return next(casError);
     }
     if (!user) {
       return next(new Error('CAS auth but no user'));
     }
 
-    req.logIn(user, function (err) {
-      if (err) {
-        return next(err);
+    return req.logIn(user, (loginError) => {
+      if (loginError) {
+        return next(loginError);
       }
 
       return postAuth(req, res);

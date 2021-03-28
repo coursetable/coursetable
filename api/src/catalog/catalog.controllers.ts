@@ -31,7 +31,7 @@ export const verifyHeaders = (
     });
   }
 
-  next();
+  return next();
 };
 
 /**
@@ -41,7 +41,10 @@ export const verifyHeaders = (
  * @prop res - express response object
  * @prop next - express next object
  */
-export const refreshCatalog = (req: express.Request, res: express.Response) => {
+export const refreshCatalog = (
+  req: express.Request,
+  res: express.Response
+): void => {
   // always overwrite when called
   const overwrite = true;
   fetchCatalog(overwrite)
