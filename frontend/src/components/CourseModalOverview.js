@@ -206,14 +206,22 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Loop through each listing with evals
       for (let i = 0; i < evaluations.length; i++) {
+        const hasEvals = evaluations[i].rating !== -1;
+        const evalStyle = hasEvals
+          ? Styles.rating_bubble
+          : Styles.rating_bubble_unclickable;
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* Clickable listing button */}
             <StyledCol
               xs={5}
-              className={`${Styles.rating_bubble}  px-0 mr-3 text-center`}
-              onClick={() => handleSetSeason(evaluations[i])}
-              style={{ flex: 'none' }}
+              className={`${evalStyle}  px-0 mr-3 text-center`}
+              onClick={hasEvals ? () => handleSetSeason(evaluations[i]) : null}
+              style={
+                hasEvals
+                  ? { flex: 'none' }
+                  : { flex: 'none', background: '#d3d3d3' }
+              }
             >
               <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
               <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
