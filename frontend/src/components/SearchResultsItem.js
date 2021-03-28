@@ -339,7 +339,7 @@ const SearchResultsItem = ({
         />
       </div>
       {/* Render conflict icon only when component has been mounted */}
-      {mounted && !isScrolling && (
+      {mounted && (
         <div className={Styles.conflict_error}>
           <CourseConflictIcon course={course} />
         </div>
