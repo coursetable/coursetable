@@ -17,9 +17,14 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+/**
+ * Passport configuration for authentication
+ * @param passportInstance: passport instance.
+ */
 export const passportConfig = async (
   passportInstance: passport.PassportStatic
 ): Promise<void> => {
+  // strategy for integrating with CAS
   passportInstance.use(
     new CasStrategy(
       {
@@ -27,9 +32,7 @@ export const passportConfig = async (
         ssoBaseURL: 'https://secure.its.yale.edu/cas',
       },
       async (profile, done) => {
-        // find or create the user
-
-        // Get user info
+        // Create or update user's profile
         winston.info("Creating user's profile");
         await prisma.studentBluebookSettings.upsert({
           where: {
@@ -45,6 +48,7 @@ export const passportConfig = async (
           },
         });
 
+        winston.info("Getting user's enrollment status from Yalies.io");
         axios
           .post(
             'https://yalies.io/api/people',
@@ -73,7 +77,7 @@ export const passportConfig = async (
 
             // otherwise, add the user to the cookie if school is specified
             if (user.school_code) {
-              winston.info('Enabling evaluations');
+              winston.info(`Enabling evaluations for ${profile.user}`);
               await prisma.studentBluebookSettings.update({
                 where: {
                   netId: profile.user,
@@ -85,8 +89,8 @@ export const passportConfig = async (
                 evals: true,
               });
             }
-            // otherwise, user isn't a Yale student
 
+            // otherwise, user isn't a Yale student
             return done(null, { netId: profile.user, evals: false });
           })
           .catch((err) => {
@@ -100,11 +104,20 @@ export const passportConfig = async (
     )
   );
 
+  /**
+   * Serialization function for identifying a user.
+   * @param user: user to encode.
+   * @param done: callback function to be executed after serialization.
+   */
   passport.serializeUser((user: User, done): void => {
     return done(null, user.netId);
   });
 
-  // when deserializing, ping Yalies to get the user's profile
+  /**
+   * Deserialization function for identifying a user.
+   * @param netId: netId of user to get info for.
+   * @param done: callback function to be executed after deserialization.
+   */
   passport.deserializeUser((netId: string, done): void => {
     prisma.studentBluebookSettings
       .findUnique({
@@ -119,6 +132,11 @@ export const passportConfig = async (
   });
 };
 
+/**
+ * Redirects to be executed after login.
+ * @param req: express request.
+ * @param res: express response.
+ */
 const postAuth = (req: express.Request, res: express.Response): void => {
   let redirect = req.query.redirect as string | undefined;
   if (redirect && !redirect.startsWith('//')) {
@@ -133,12 +151,20 @@ const postAuth = (req: express.Request, res: express.Response): void => {
   return res.redirect(`${FRONTEND_ENDPOINT}/catalog`);
 };
 
+/**
+ * Login handler.
+ * @param req: express request.
+ * @param res: express response.
+ * @param next: express next function.
+ */
 const casLogin = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
 ): void => {
+  // Authenticate with passport
   passport.authenticate('cas', (casError, user) => {
+    // handle auth errors or missing users
     if (casError) {
       return next(casError);
     }
@@ -146,17 +172,24 @@ const casLogin = (
       return next(new Error('CAS auth but no user'));
     }
 
+    // log in the user
     return req.logIn(user, (loginError) => {
       if (loginError) {
         return next(loginError);
       }
 
+      // redirect if authentication successful
       return postAuth(req, res);
     });
   })(req, res, next);
 };
 
-// middleware function for requiring user account
+/**
+ * Middleware for requiring user account to be present.
+ * @param req: express request.
+ * @param res: express response.
+ * @param next: express next function.
+ */
 export const authBasic = (
   req: express.Request,
   res: express.Response,
@@ -172,7 +205,12 @@ export const authBasic = (
   return next(new Error('CAS auth but no user'));
 };
 
-// middleware function for requiring user account + access to evaluations
+/**
+ * Middleware for requiring user account to be present as well as evaluations access.
+ * @param req: express request.
+ * @param res: express response.
+ * @param next: express next function.
+ */
 export const authWithEvals = (
   req: express.Request,
   res: express.Response,
@@ -188,11 +226,15 @@ export const authWithEvals = (
   return next(new Error('CAS auth but no user / no evals access'));
 };
 
-// actual authentication routes
+/**
+ * Set up authentication routes.
+ * @param app: express app instance.
+ */
 export default async (app: express.Express): Promise<void> => {
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Endpoint to print out user access
   app.get('/api/auth/check', (req, res) => {
     if (req.user) {
       res.json({ auth: true, id: req.user.netId, user: req.user });
@@ -201,8 +243,10 @@ export default async (app: express.Express): Promise<void> => {
     }
   });
 
+  // CAS portal redirects
   app.get('/api/auth/cas', casLogin);
 
+  // Logouts
   app.get('/api/auth/logout', (req, res) => {
     req.logOut();
     return res.json({ success: true });
