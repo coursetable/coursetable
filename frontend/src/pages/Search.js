@@ -381,7 +381,8 @@ function Search() {
 
         if (
           searchConfig.discussion_section !== null &&
-          listing.title === 'Discussion Section'
+          (listing.title === 'Discussion Section' ||
+            listing.title === 'Discussion section')
         ) {
           return false;
         }
