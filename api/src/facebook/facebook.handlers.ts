@@ -59,24 +59,32 @@ export const updateFriends = async (
   let userFriends: { id: string; name: string }[] = [];
 
   // Cursor pointing to the next page of friends
-  let after = '';
+  let after: string | undefined = '';
+
+  const updateFriendsCursor = (friendsData: {
+    data: { id: string; name: string }[];
+    paging: { cursors: { before: string; after: string } };
+  }) => {
+    userFriends = userFriends.concat(friendsData.data);
+
+    // break by setting after to undefined
+    if (friendsData.data.length === 0 || !friendsData.paging) {
+      after = undefined;
+    }
+
+    // otherwise, update the cursor
+    after = friendsData.paging.cursors.after;
+  };
 
   while (after !== undefined) {
     try {
       winston.info(`Fetching Facebook friends page`);
 
-      const { data } = await axios({
-        url: `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`,
-        method: 'get',
-      });
-
-      userFriends = userFriends.concat(data.data);
-
-      if (data.length === 0 || !data.paging) {
-        break;
-      }
-
-      after = data.paging.cursors.after;
+      axios
+        .get(
+          `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`
+        )
+        .then(({ data }) => updateFriendsCursor(data));
     } catch (err) {
       winston.error(`Facebook Graph API error: ${err}`);
       return res.status(500).json({ success: false });
