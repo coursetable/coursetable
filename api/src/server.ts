@@ -59,12 +59,12 @@ app.set('trust proxy', true);
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
-  for (const header of Object.keys(req.headers)) {
-    // Headers are automatically made lowercase by express.
+  Object.keys(req.headers).forEach((header) => {
     if (header.startsWith('x-coursetable-')) {
       delete req.headers[header];
     }
-  }
+  });
+
   next();
 });
 
