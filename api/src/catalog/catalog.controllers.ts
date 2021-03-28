@@ -20,7 +20,7 @@ export const verifyHeaders = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): void | express.Response => {
   // get authentication headers
   const authd = req.header('x-ferry-secret'); // if user is logged in
 

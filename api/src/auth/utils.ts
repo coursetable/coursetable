@@ -12,7 +12,7 @@ export const verifyNetID = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction
-) => {
+): express.Response | void => {
   // get authentication headers
   const netid = req.header('x-coursetable-netid'); // user's NetID
   const authd = req.header('x-coursetable-authd'); // if user is logged in

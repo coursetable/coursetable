@@ -14,67 +14,90 @@ import axios from 'axios';
 
 import { FRONTEND_ENDPOINT, YALIES_API_KEY } from '../config';
 
-export const passportConfig = (
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
+
+export const passportConfig = async (
   passportInstance: passport.PassportStatic
-): void => {
+): Promise<void> => {
   passportInstance.use(
     new CasStrategy(
       {
         version: 'CAS2.0',
         ssoBaseURL: 'https://secure.its.yale.edu/cas',
       },
-      (profile, done) => {
+      async (profile, done) => {
         // find or create the user
-        Student.findOrCreate(profile.user, () => {
-          // on completion, check Yalies.io for user profile
-          axios
-            .post(
-              'https://yalies.io/api/people',
-              {
-                filters: {
-                  netid: profile.user,
-                },
+
+        // Get user info
+        winston.info("Creating user's profile");
+        await prisma.studentBluebookSettings.upsert({
+          where: {
+            netId: profile.user,
+          },
+          update: {},
+          create: {
+            netId: profile.user,
+            facebookLastUpdated: 0,
+            noticeLastSeen: 0,
+            timesNoticeSeen: 0,
+            evaluationsEnabled: false,
+          },
+        });
+
+        axios
+          .post(
+            'https://yalies.io/api/people',
+            {
+              filters: {
+                netid: profile.user,
               },
-              {
-                headers: {
-                  Authorization: `Bearer ${YALIES_API_KEY}`,
-                  'Content-Type': 'application/json',
-                },
-              }
-            )
-            .then(({ data }) => {
-              // if no user found, do not grant access
-              if (data === null || data.length === 0) {
-                return done(null, {
-                  netId: profile.user,
-                  evals: false,
-                });
-              }
-
-              const user = data[0];
-
-              // otherwise, add the user to the cookie if school is specified
-              if (user.school_code) {
-                Student.enableEvaluations(
-                  profile.user,
-                  (statusCode, err, data) => {
-                    return done(null, { netId: profile.user, evals: true });
-                  }
-                );
-              }
-              // otherwise, user isn't a Yale student
-              else {
-                return done(null, { netId: profile.user, evals: false });
-              }
-            })
-            .catch((err) => {
-              winston.error(err);
+            },
+            {
+              headers: {
+                Authorization: `Bearer ${YALIES_API_KEY}`,
+                'Content-Type': 'application/json',
+              },
+            }
+          )
+          .then(async ({ data }) => {
+            // if no user found, do not grant access
+            if (data === null || data.length === 0) {
               return done(null, {
                 netId: profile.user,
                 evals: false,
               });
+            }
+
+            const user = data[0];
+
+            // otherwise, add the user to the cookie if school is specified
+            if (user.school_code) {
+              winston.info('Enabling evaluations');
+              await prisma.studentBluebookSettings.update({
+                where: {
+                  netId: profile.user,
+                },
+                data: { evaluationsEnabled: true },
+              });
+              return done(null, {
+                netId: profile.user,
+                evals: true,
+              });
+            }
+            // otherwise, user isn't a Yale student
+            else {
+              return done(null, { netId: profile.user, evals: false });
+            }
+          })
+          .catch((err) => {
+            winston.error(err);
+            return done(null, {
+              netId: profile.user,
+              evals: false,
             });
-        });
+          });
       }
     )
   );
@@ -161,7 +184,7 @@ export const authWithEvals = (
 };
 
 // actual authentication routes
-export default async (app: express.Express) => {
+export default async (app: express.Express): Promise<void> => {
   app.use(passport.initialize());
   app.use(passport.session());
 
