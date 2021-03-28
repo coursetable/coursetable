@@ -43,8 +43,7 @@ const Search: React.FC = () => {
   const isMobile = width < 768;
   const isTablet = !isMobile && width < 1200;
 
-  // State that determines if a course modal needs to be displayed and which course to display
-  const [course_modal, setCourseModal] = useState([false, '']);
+  const { course_modal, setCourseModal } = useSearch();
 
   // Show the modal for the course that was clicked
   const showModal = useCallback(

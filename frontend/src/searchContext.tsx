@@ -70,6 +70,7 @@ type Store = {
   reset_key: number;
   duration: number;
   speed: string;
+  course_modal: (string | boolean)[];
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -89,6 +90,7 @@ type Store = {
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
+  setCourseModal: React.Dispatch<React.SetStateAction<(string | boolean)[]>>;
 };
 
 const SearchContext = createContext<Store | undefined>(undefined);
@@ -219,6 +221,9 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [start_time, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState('fast');
+
+  // State that determines if a course modal needs to be displayed and which course to display
+  const [course_modal, setCourseModal] = useState([false, '']);
 
   // Fetch user context data
   const { user } = useUser();
@@ -673,6 +678,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       reset_key,
       duration,
       speed,
+      course_modal,
 
       // Update methods.
       setCanReset,
@@ -694,6 +700,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setOrdering,
       handleResetFilters,
       setStartTime,
+      setCourseModal,
     }),
     [
       canReset,
@@ -722,6 +729,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       reset_key,
       duration,
       speed,
+      course_modal,
       setCanReset,
       setSearchText,
       setSelectSubjects,
@@ -741,6 +749,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setOrdering,
       handleResetFilters,
       setStartTime,
+      setCourseModal,
     ]
   );
 

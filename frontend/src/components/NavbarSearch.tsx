@@ -172,6 +172,7 @@ export const NavbarSearch: React.FC = () => {
     searchData,
     coursesLoading,
     speed,
+    course_modal,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -308,8 +309,8 @@ export const NavbarSearch: React.FC = () => {
   return (
     <>
       <GlobalHotKeys
-        keyMap={keyMap} // TODO: Add changes from a66c8c837ae2e56c47666121c1e377826a12151b to disable GlobalHotKeys if modal is open
-        handlers={handlers}
+        keyMap={course_modal[0] ? {} : keyMap}
+        handlers={course_modal[0] ? {} : handlers}
         allowChanges // required for global
         style={{ outline: 'none' }}
       />
