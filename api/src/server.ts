@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 
 import morgan from './logging/morgan';
 import winston from './logging/winston';
@@ -51,8 +50,8 @@ app.use(cors(CORS_OPTIONS));
 // Enable request logging.
 app.use(morgan);
 // Enable url-encoding
-app.use(bodyParser.urlencoded({ extended: true }));
-app.use(bodyParser.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
