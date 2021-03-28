@@ -1,5 +1,5 @@
 /**
- * @file Routes for linking accounts with Facebook.
+ * @file Handlers for linking accounts with Facebook.
  */
 
 import express from 'express';

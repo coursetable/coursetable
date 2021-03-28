@@ -1,5 +1,8 @@
-import express from 'express';
+/**
+ * @file Routes for linking accounts with Facebook.
+ */
 
+import express from 'express';
 import cookieParser from 'cookie-parser';
 
 import { updateFriends, getFriendsWorksheets } from './facebook.handlers';

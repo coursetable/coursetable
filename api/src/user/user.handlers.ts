@@ -1,3 +1,7 @@
+/**
+ * @file Handlers for working with user accounts.
+ */
+
 import express from 'express';
 
 import winston from '../logging/winston';

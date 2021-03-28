@@ -23,7 +23,8 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 
 // import routes
 import catalog from './catalog/catalog.routes';
-import cas_auth, { authWithEvals, passportConfig } from './auth/auth.routes';
+import { authWithEvals, passportConfig } from './auth/auth.handlers';
+import cas_auth from './auth/auth.routes';
 import facebook from './facebook/facebook.routes';
 import user from './user/user.routes';
 
