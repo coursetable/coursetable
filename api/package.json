@@ -1,7 +1,7 @@
 {
   "scripts": {
     "prestart": "yarn prisma validate && yarn prisma introspect && yarn prisma generate",
-    "start": "ts-node-dev --debug --exit-child src/server.ts",
+    "start": "ts-node-dev --debug --files --exit-child src/server.ts",
     "prod": "ts-node src/server.ts",
     "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
     "depcheck": "npx depcheck . --json",

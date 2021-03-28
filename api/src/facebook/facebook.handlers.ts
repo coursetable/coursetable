@@ -1,5 +1,3 @@
-/// <reference path="../auth/user.d.ts" />
-
 import express from 'express';
 
 import axios from 'axios';
@@ -87,7 +85,7 @@ export const updateFriends = async (
   }
 
   try {
-    const updateFriends = userFriends.map((friend) => {
+    const upsertFriends = userFriends.map((friend) => {
       const facebookId = parseInt(friend.id, 10);
 
       return prisma.studentFacebookFriends.upsert({
@@ -108,7 +106,7 @@ export const updateFriends = async (
       });
     });
 
-    await prisma.$transaction(updateFriends);
+    await prisma.$transaction(upsertFriends);
 
     return res.json({ success: true });
   } catch (err) {
@@ -191,12 +189,14 @@ export const getFriendsWorksheets = async (
     [key: string]: { name: string; facebookId: string };
   } = {};
 
-  friendInfos.forEach(({ netId, facebookId, facebookDataJson }) => {
-    infoByFriend[netId] = {
-      name: JSON.parse(facebookDataJson).name,
-      facebookId: String(facebookId),
-    };
-  });
+  friendInfos.forEach(
+    ({ netId: friendNetId, facebookId, facebookDataJson }) => {
+      infoByFriend[friendNetId] = {
+        name: JSON.parse(facebookDataJson).name,
+        facebookId: String(facebookId),
+      };
+    }
+  );
 
   return res.status(200).json({
     success: true,
