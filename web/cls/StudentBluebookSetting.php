@@ -4,7 +4,7 @@ class StudentBluebookSetting extends SQLTableBase
     protected $tableName = 'StudentBluebookSettings';
     protected $keys = array('netId');
 
-    public static function findOrCreate($mysqli, $netId, $columns = ['evaluationsEnabled', 'betaEnabled'])
+    public static function findOrCreate($mysqli, $netId, $columns = ['evaluationsEnabled'])
     {
         $sbs = new StudentBluebookSetting($mysqli);
         $sbs->retrieve('netId', $netId, $columns);
@@ -20,8 +20,7 @@ class StudentBluebookSetting extends SQLTableBase
                 'timesNoticeSeen' => 0,
                 'viewException' => 0,
                 'challengeTries' => 0,
-                'evaluationsEnabled' => 0,
-                'betaEnabled' => 0
+                'evaluationsEnabled' => 0
             ]);
             $sbs->commit();
         }
