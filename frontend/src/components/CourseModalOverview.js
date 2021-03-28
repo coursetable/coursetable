@@ -235,7 +235,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <StyledColUnclickable
                 xs={5}
                 className={`${Styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
-                style={{ flex: 'none' }}
+                style={{ flex: 'none', color: '#b5b5b5' }}
               >
                 <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
                 <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
