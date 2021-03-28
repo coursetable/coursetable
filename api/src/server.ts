@@ -141,7 +141,6 @@ https
     res.json('pong');
   });
 
-  app.use('/legacy_api', authBasic);
   app.use(
     ['/legacy_api', '/index.php'],
     createProxyMiddleware({

@@ -1,5 +1,3 @@
-/// <reference path="../auth/user.d.ts" />
-
 import express from 'express';
 
 import winston from '../logging/winston';

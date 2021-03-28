@@ -4,11 +4,14 @@
 
 import 'express';
 import 'passport';
-import { User as UserModel } from '../models/student';
 
 export {};
 declare global {
   namespace Express {
-    type User = UserModel;
+    interface User {
+      netId: string;
+      evals: boolean;
+      profile?: any;
+    }
   }
 }

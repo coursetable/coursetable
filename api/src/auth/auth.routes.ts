@@ -1,7 +1,7 @@
 /**
  * @file Routes for passport-CAS authentication with Yale.
  */
-/// <reference path="./user.d.ts" />
+
 import express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
@@ -108,6 +108,15 @@ export const passportConfig = async (
 
   // when deserializing, ping Yalies to get the user's profile
   passport.deserializeUser(function (netId: string, done): void {
+    prisma.studentBluebookSettings
+      .findUnique({
+        where: {
+          netId,
+        },
+      })
+      .then((student) => {
+        winston.info(student);
+      });
     return Student.getEvalsStatus(netId, (statusCode, err, hasEvals) => {
       done(null, { netId, evals: hasEvals });
     });
