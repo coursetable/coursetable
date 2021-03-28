@@ -4,6 +4,8 @@ import { toSeasonString } from '../courseUtilities';
 import { TextComponent } from './StyledComponents';
 import styles from './NewCourseModalEvaluations.module.css';
 import styled from 'styled-components';
+import { LineChart, PieChart } from 'react-chartkick';
+import 'chart.js';
 
 const StyledSeasonHeader = styled(Row)`
   border-top: 1px solid ${({ theme }) => theme.text[3]};
@@ -20,7 +22,7 @@ const StyledSeasonHeader = styled(Row)`
     border-bottom: 1px solid ${({ theme }) => theme.text[3]};
   }
   &.selected {
-    font-size: 25px;
+    font-size: 22px;
     font-weight: 600;
     color: ${({ theme }) => theme.text[1]};
   }
@@ -29,6 +31,19 @@ const StyledSeasonHeader = styled(Row)`
 const CourseModalEvaluations = ({ all_listings }) => {
   const [selected, setSelected] = useState(null);
   const seasons = Object.keys(all_listings).reverse();
+  const workloads = [];
+  const overalls = [];
+  for (const season in all_listings) {
+    const evals = all_listings[season][0].evals;
+    workloads.push([
+      toSeasonString(season)[0],
+      evals ? evals.avg_workload : null,
+    ]);
+    overalls.push([toSeasonString(season)[0], evals ? evals.avg_rating : null]);
+  }
+  // console.log(all_listings);
+  // console.log(workloads);
+  // console.log(overalls);
   return (
     <>
       <Col sm={3} className="pr-2">
@@ -37,6 +52,7 @@ const CourseModalEvaluations = ({ all_listings }) => {
           return all_listings[cur_season].map((cur_listing, index) =>
             cur_listing.evals ? (
               <StyledSeasonHeader
+                key={index}
                 className={`mx-auto justify-content-center ${
                   season_index === seasons.length - 1 &&
                   index === all_listings[cur_season].length - 1
@@ -59,7 +75,13 @@ const CourseModalEvaluations = ({ all_listings }) => {
         })}
       </Col>
       <Col sm={9} className="pl-2">
-        Eval stuff
+        <LineChart
+          round={2}
+          data={[
+            { name: 'Workload', data: workloads },
+            { name: 'Overall', data: overalls },
+          ]}
+        />
       </Col>
     </>
   );
