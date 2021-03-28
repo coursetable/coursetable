@@ -140,7 +140,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       const evaluations = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
-        if (!season.course.evaluation_statistics[0]) return;
         // Stores the average rating for all profs teaching this course and populates prof_info
         let average_professor_rating = 0;
         if (season.professor_info) {
@@ -167,15 +166,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         }
         evaluations.push({
           // Course rating
-          rating:
-            season.course.evaluation_statistics[0].avg_rating != null
-              ? season.course.evaluation_statistics[0].avg_rating
-              : -1,
+          rating: season.course.evaluation_statistics[0]
+            ? season.course.evaluation_statistics[0].avg_rating || -1
+            : -1,
           // Workload rating
-          workload:
-            season.course.evaluation_statistics[0].avg_workload != null
-              ? season.course.evaluation_statistics[0].avg_workload
-              : -1,
+          workload: season.course.evaluation_statistics[0]
+            ? season.course.evaluation_statistics[0].avg_workload || -1
+            : -1,
           // Professor rating
           professor_rating: average_professor_rating || -1,
           // Season code
@@ -209,10 +206,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Loop through each listing with evals
       for (let i = 0; i < evaluations.length; i++) {
-        // Skip listings that have no ratings (therefore prolly don't have comments and graphs)
-        if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
-          continue;
-
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* Clickable listing button */}
