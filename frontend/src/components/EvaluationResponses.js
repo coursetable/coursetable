@@ -329,6 +329,7 @@ const EvaluationResponses = ({ crn, info }) => {
               marginLeft: '5px',
               marginRight: '5px',
             }}
+            onClick={() => setKeyword(x)}
           >
             {x}
           </div>
@@ -338,6 +339,7 @@ const EvaluationResponses = ({ crn, info }) => {
         variant="tabs"
         transition={false}
         onSelect={(k) => {
+          setKeyword('');
           if (k === 'recommended') {
             setData(recommend_comments.current);
             setDataDefault(recommend_comments.current);
