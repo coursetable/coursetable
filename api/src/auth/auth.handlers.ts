@@ -126,7 +126,6 @@ export const passportConfig = async (
         },
       })
       .then((student) => {
-        winston.info(student);
         done(null, { netId, evals: !!student?.evaluationsEnabled });
       });
   });
