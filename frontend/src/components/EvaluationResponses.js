@@ -1,4 +1,10 @@
-import React, { useState, useMemo, useCallback, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+} from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import natural from 'natural';
@@ -78,6 +84,11 @@ const EvaluationResponses = ({ crn, info }) => {
   // Sort by original order or length?
   const [sort_order, setSortOrder] = useState('original');
 
+  // Hooks for filtering evaluations in the searchbar
+  const [data, setData] = useState([]);
+  const [dataDefault, setDataDefault] = useState([]);
+  const [keyword, setKeyword] = useState('');
+
   const sortByLength = useCallback((responses) => {
     for (const key in responses) {
       responses[key].sort(function (a, b) {
@@ -129,6 +140,9 @@ const EvaluationResponses = ({ crn, info }) => {
         }
       });
     });
+    // Save comments to display and filter
+    setData(comments);
+    setDataDefault(comments);
     // Get all the adjectives from all the evaluations in the current panel selection
     const adjectives = [];
     for (let i = 0; i < comments.length; i++) {
@@ -164,33 +178,33 @@ const EvaluationResponses = ({ crn, info }) => {
     // Populate the lists above
     for (const key in cur_responses) {
       if (key.includes('summarize')) {
-        temp_summary = cur_responses[key].map((response, index) => {
+        temp_summary = data.map((response) => {
           return (
-            <StyledCommentRow key={index} className="m-auto p-2">
+            <StyledCommentRow key={response} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
         });
       } else if (key.includes('recommend')) {
-        temp_recommend = cur_responses[key].map((response, index) => {
+        temp_recommend = data.map((response) => {
           return (
-            <StyledCommentRow key={index} className="m-auto p-2">
+            <StyledCommentRow key={response} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
         });
       } else if (key.includes('skills')) {
-        temp_skills = cur_responses[key].map((response, index) => {
+        temp_skills = data.map((response) => {
           return (
-            <StyledCommentRow key={index} className="m-auto p-2">
+            <StyledCommentRow key={response} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
         });
       } else if (key.includes('strengths')) {
-        temp_strengths = cur_responses[key].map((response, index) => {
+        temp_strengths = data.map((response) => {
           return (
-            <StyledCommentRow key={index} className="m-auto p-2">
+            <StyledCommentRow key={response} className="m-auto p-2">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
@@ -198,7 +212,18 @@ const EvaluationResponses = ({ crn, info }) => {
       }
     }
     return [temp_recommend, temp_skills, temp_strengths, temp_summary];
-  }, [responses, sort_order, sorted_responses]);
+  }, [responses, sort_order, sorted_responses, data]);
+
+  // Hook to filter evaluations based on search term
+  useEffect(() => {
+    const updateKeyword = (word) => {
+      const filtered = dataDefault.filter((x) => {
+        return x.toLowerCase().includes(word.toLowerCase());
+      });
+      setData(filtered);
+    };
+    updateKeyword(keyword);
+  }, [dataDefault, keyword]);
 
   return (
     <div>
@@ -235,11 +260,12 @@ const EvaluationResponses = ({ crn, info }) => {
         <input
           type="text"
           className="form-control"
-          textAlign="left"
           width="100%"
           autoComplete="off"
           placeholder="Search for..."
           name="keyword"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
         />
       </div>
       <div
@@ -279,51 +305,69 @@ const EvaluationResponses = ({ crn, info }) => {
         }}
       >
         {/* Recommend Question */}
-        {recommend.length !== 0 && (
-          <Tab eventKey="recommended" title="Recommend?">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
-                Would you recommend this course to another student? Please
-                explain.
-              </TextComponent>
-            </Row>
-            {recommend}
-          </Tab>
-        )}
+        <Tab eventKey="recommended" title="Recommend?">
+          {recommend.length !== 0 ? (
+            <div>
+              <Row className={`${styles.question_header} m-auto pt-2`}>
+                <TextComponent type={0}>
+                  Would you recommend this course to another student? Please
+                  explain.
+                </TextComponent>
+              </Row>
+              {recommend}
+            </div>
+          ) : (
+            'No results'
+          )}
+        </Tab>
         {/* Knowledge/Skills Question */}
-        {skills.length !== 0 && (
-          <Tab eventKey="knowledge/skills" title="Skills">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
-                What knowledge, skills, and insights did you develop by taking
-                this course?
-              </TextComponent>
-            </Row>
-            {skills}
-          </Tab>
-        )}
+        <Tab eventKey="knowledge/skills" title="Skills">
+          {skills.length !== 0 ? (
+            <div>
+              <Row className={`${styles.question_header} m-auto pt-2`}>
+                <TextComponent type={0}>
+                  What knowledge, skills, and insights did you develop by taking
+                  this course?
+                </TextComponent>
+              </Row>
+              {skills}
+            </div>
+          ) : (
+            'No results'
+          )}
+        </Tab>
         {/* Strengths/Weaknesses Question */}
-        {strengths.length !== 0 && (
-          <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
-                What are the strengths and weaknesses of this course and how
-                could it be improved?
-              </TextComponent>
-            </Row>
-            {strengths}
-          </Tab>
-        )}
+        <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
+          {strengths.length !== 0 ? (
+            <div>
+              <Row className={`${styles.question_header} m-auto pt-2`}>
+                <TextComponent type={0}>
+                  What are the strengths and weaknesses of this course and how
+                  could it be improved?
+                </TextComponent>
+              </Row>
+              {strengths}
+            </div>
+          ) : (
+            'No results'
+          )}
+        </Tab>
         {/* Summarize Question */}
-        {summary.length !== 0 && (
+        {!recommend && !skills && !strengths && (
           <Tab eventKey="summary" title="Summary">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
-              <TextComponent type={0}>
-                How would you summarize this course? Would you recommend it to
-                another student? Why or why not?
-              </TextComponent>
-            </Row>
-            {summary}
+            {summary.length !== 0 ? (
+              <div>
+                <Row className={`${styles.question_header} m-auto pt-2`}>
+                  <TextComponent type={0}>
+                    How would you summarize this course? Would you recommend it
+                    to another student? Why or why not?
+                  </TextComponent>
+                </Row>
+                {summary}
+              </div>
+            ) : (
+              'No results'
+            )}
           </Tab>
         )}
       </StyledTabs>
