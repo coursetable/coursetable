@@ -65,6 +65,9 @@ export const ratingColormap = chroma
 export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
+export const evalsColormap = chroma
+  .scale(['#f8696b', '#ffeb84', '#63b37b'])
+  .domain([-1, 1]);
 
 export const creditOptions = [
   { label: '0.5', value: 0.5 },

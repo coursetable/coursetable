@@ -1,8 +1,31 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo, useCallback, useRef } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
+import natural from 'natural';
+
 import styles from './EvaluationResponses.module.css';
 import { TextComponent } from './StyledComponents';
+import { evalsColormap } from '../queries/Constants';
+
+// Set up parameters for natural
+const language = 'EN';
+const defaultCategory = 'N';
+const defaultCategoryCapitalized = 'NNP';
+const lexicon = new natural.Lexicon(
+  language,
+  defaultCategory,
+  defaultCategoryCapitalized
+);
+const ruleSet = new natural.RuleSet('EN');
+const tagger = new natural.BrillPOSTagger(lexicon, ruleSet);
+
+// Natural's tokenizer (same as split in javascript)
+const tokenizer = new natural.WordTokenizer();
+
+// Natural's sentiment analysis
+const Analyzer = natural.SentimentAnalyzer;
+const stemmer = natural.PorterStemmer;
+const analyzer = new Analyzer('English', stemmer, 'senticon');
 
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
@@ -64,9 +87,25 @@ const EvaluationResponses = ({ crn, info }) => {
     return responses;
   }, []);
 
+  // Used to sort frequency of adjectives in each evaluation
+  const sortByFrequency = (array) => {
+    const frequency = {};
+    array.forEach((value) => {
+      frequency[value] = 0;
+    });
+    const uniques = array.filter((value) => {
+      return ++frequency[value] === 1;
+    });
+    return uniques.sort((a, b) => {
+      return frequency[b] - frequency[a];
+    });
+  };
+
+  const sorted_adjectives = useRef(null);
   // Dictionary that holds the comments for each question
   const [responses, sorted_responses] = useMemo(() => {
     const temp_responses = {};
+    const comments = [];
     // Loop through each section for this course code
     info.forEach((section) => {
       const crn_code = section.crn;
@@ -82,13 +121,33 @@ const EvaluationResponses = ({ crn, info }) => {
         temp_responses[node.evaluation_question.question_text].push(
           node.comment
         );
+        if (
+          node.evaluation_question.question_text.substring(0, 19) ===
+          'Would you recommend'
+        ) {
+          comments.push(node.comment);
+        }
       });
     });
+    // Get all the adjectives from all the evaluations in the current panel selection
+    const adjectives = [];
+    for (let i = 0; i < comments.length; i++) {
+      const sentence = tagger.tag(tokenizer.tokenize(comments[i]));
+      for (let j = 0; j < sentence.taggedWords.length; j++) {
+        if (sentence.taggedWords[j].tag === 'JJ') {
+          adjectives.push(sentence.taggedWords[j].token);
+        }
+      }
+    }
+    sorted_adjectives.current = sortByFrequency(adjectives);
     return [
       temp_responses,
       sortByLength(JSON.parse(JSON.stringify(temp_responses))), // Deep copy temp_responses and sort it
     ];
   }, [info, crn, sortByLength]);
+
+  // First 15 most popular adjectives in the panel, used with natural later
+  const popular_adjectives = sorted_adjectives.current.slice(0, 15);
 
   // Number of questions
   const num_questions = Object.keys(responses).length;
@@ -160,6 +219,20 @@ const EvaluationResponses = ({ crn, info }) => {
           </StyledSortOption>
         </div>
       </Row>
+      {popular_adjectives.map((x) => {
+        return (
+          <div
+            key={x}
+            style={{
+              color: evalsColormap(analyzer.getSentiment([x]))
+                .darken()
+                .saturate(),
+            }}
+          >
+            {x}
+          </div>
+        );
+      })}
       <StyledTabs
         variant="tabs"
         transition={false}
