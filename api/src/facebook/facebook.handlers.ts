@@ -71,39 +71,52 @@ export const updateFriends = async (
   // Cursor pointing to the next page of friends
   let after: string | undefined = '';
 
-  /**
-   * Update friends array from fetched Facebook data.
-   *
-   * @param friendsData - response object from Facebook API
-   */
-  const updateFriendsCursor = (friendsData: {
-    data: { id: string; name: string }[];
-    paging: { cursors: { before: string; after: string } };
-  }) => {
-    userFriends = userFriends.concat(friendsData.data);
+  // /**
+  //  * Update friends array from fetched Facebook data.
+  //  *
+  //  * @param friendsData - response object from Facebook API
+  //  */
+  // const updateFriendsCursor = (friendsData: {
+  //   data: { id: string; name: string }[];
+  //   paging: { cursors: { before: string; after: string } };
+  // }) => {
+  //   userFriends = userFriends.concat(friendsData.data);
 
-    // break by setting after to undefined
-    if (friendsData.data.length === 0 || !friendsData.paging) {
-      after = undefined;
-    }
+  //   // break by setting after to undefined
+  //   if (friendsData.data.length === 0 || !friendsData.paging) {
+  //     after = undefined;
+  //   }
 
-    // otherwise, update the cursor
-    after = friendsData.paging.cursors.after;
-  };
+  //   // otherwise, update the cursor
+  //   after = friendsData.paging.cursors.after;
+  // };
 
   while (after !== undefined) {
-    try {
-      winston.info(`Fetching Facebook friends page`);
+    winston.info(`Fetching Facebook friends page`);
 
-      axios
-        .get(
-          `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`
-        )
-        .then(({ data }) => updateFriendsCursor(data));
-    } catch (err) {
-      winston.error(`Facebook Graph API error: ${err}`);
-      return res.status(500).json({ success: false });
-    }
+    await axios
+      .get(
+        `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`
+      )
+      .then(({ data: friendsData }) => {
+        userFriends = userFriends.concat(friendsData.data);
+
+        // break by setting after to undefined
+        if (
+          friendsData.data.length === 0 ||
+          !friendsData.paging ||
+          !friendsData.paging.cursors
+        ) {
+          after = undefined;
+        } else {
+          // otherwise, update the cursor
+          after = friendsData.paging.cursors.after;
+        }
+      })
+      .catch((err) => {
+        winston.error(`Facebook Graph API error: ${err}`);
+        return res.status(500).json({ success: false });
+      });
   }
 
   try {
