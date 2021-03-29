@@ -203,13 +203,13 @@ const EvaluationResponses = ({ crn, info }) => {
   return (
     <div>
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
-        <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
+        <span className="font-weight-bold my-auto mr-2">Sort by:</span>
         <div className={styles.sort_options}>
           <StyledSortOption
             active={sort_order === 'original'}
             onClick={() => setSortOrder('original')}
           >
-            original order
+            original
           </StyledSortOption>
           <StyledSortOption
             active={sort_order === 'length'}
@@ -217,8 +217,31 @@ const EvaluationResponses = ({ crn, info }) => {
           >
             length
           </StyledSortOption>
+          <StyledSortOption
+            active={sort_order === 'positive'}
+            onClick={() => setSortOrder('positive')}
+          >
+            positive
+          </StyledSortOption>
+          <StyledSortOption
+            active={sort_order === 'negative'}
+            onClick={() => setSortOrder('negative')}
+          >
+            negative
+          </StyledSortOption>
         </div>
       </Row>
+      <div className="input-group">
+        <input
+          type="text"
+          className="form-control"
+          textAlign="left"
+          width="100%"
+          autoComplete="off"
+          placeholder="Search for..."
+          name="keyword"
+        />
+      </div>
       <div
         style={{
           display: 'flex',
@@ -227,6 +250,7 @@ const EvaluationResponses = ({ crn, info }) => {
           overflow: 'hidden',
           maxHeight: '3.6em',
           lineHeight: '1.8em',
+          marginBottom: '2px',
         }}
       >
         {popular_adjectives.map((x) => (
