@@ -48,7 +48,7 @@ const NewRatingsGraph = ({ ratings, reverse, labels }) => {
     const width = rating ? (rating / max_val) * MAX_WIDTH : 0;
     if (indx === 1 && ratings.length === 2) indx = 4;
     rows.push(
-      <Row className="mx-auto my-1">
+      <Row className="mx-auto my-1" key={indx}>
         <StyledBar
           style={{ backgroundColor: colors[indx], width: `${width}%` }}
         />
@@ -102,8 +102,9 @@ const NewRatingsGraph = ({ ratings, reverse, labels }) => {
 
     <Row className="mx-auto">
       <Col md={4} className="px-0">
-        {labels.reverse().map((label) => (
+        {labels.reverse().map((label, index) => (
           <Row
+            key={index}
             className="mx-auto my-1 justify-content-end"
             style={{ height: '16px' }}
           >

@@ -3,7 +3,11 @@ import { Form, Button, Collapse } from 'react-bootstrap';
 import styles from './Feedback.module.css';
 import './Feedback.css';
 import CustomSelect from '../components/CustomSelect';
-import { StyledInput, TextComponent } from '../components/StyledComponents';
+import {
+  StyledInput,
+  TextComponent,
+  StyledSwitch,
+} from '../components/StyledComponents';
 import styled from 'styled-components';
 
 // Custom radio buttons
@@ -36,22 +40,6 @@ const StyledRadio = styled(Form.Check)`
     input[type='radio']:after {
       border: 3px solid #bbbbb;
     }
-  }
-`;
-
-// Custom switch toggle
-const StyledSwitch = styled(Form.Check)`
-  /* Default state = grey border and same background as other input components*/
-  .custom-control-input ~ .custom-control-label::before {
-    border-color: #cccccc;
-    background-color: ${({ theme }) => theme.select};
-    transition: background-color 0.2s linear;
-  }
-
-  /* Enabled state = blue border+background */
-  .custom-control-input:checked ~ .custom-control-label::before {
-    border-color: ${({ theme }) => theme.primary};
-    background-color: ${({ theme }) => theme.primary};
   }
 `;
 

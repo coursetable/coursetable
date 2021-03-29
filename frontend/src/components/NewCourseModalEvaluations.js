@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Row } from 'react-bootstrap';
+import { Col, Row, Spinner } from 'react-bootstrap';
 import { toSeasonString } from '../courseUtilities';
 import { TextComponent } from './StyledComponents';
 import styles from './NewCourseModalEvaluations.module.css';
@@ -95,7 +95,11 @@ const CourseModalEvaluations = ({ all_listings }) => {
           data ? (
             <NewEvaluationRatings info={data.computed_listing_info[0]} />
           ) : (
-            <div>Loading...</div>
+            <Row className="mx-auto my-4 justify-content-center">
+              <Spinner animation="border" role="status">
+                <span className="sr-only">Loading...</span>
+              </Spinner>
+            </Row>
           )
         ) : (
           <LineChart

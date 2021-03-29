@@ -1,5 +1,5 @@
-import React from 'react';
-import { Row, Col } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Row, Col, Form } from 'react-bootstrap';
 import NewRatingsGraph from './NewRatingsGraph';
 import {
   questions,
@@ -7,7 +7,8 @@ import {
   graph_titles,
   question_text,
 } from '../queries/Constants';
-import { TextComponent } from './StyledComponents';
+import { TextComponent, StyledSwitch } from './StyledComponents';
+import switch_styles from '../pages/Feedback.module.css';
 
 /**
  * Displays Evaluation Graphs
@@ -49,9 +50,10 @@ const NewEvaluationRatings = ({ info }) => {
         filtered_ratings[question] = rating.values;
     });
   });
+  const [full_question, setFullQuestion] = useState(false);
 
   const items = [];
-  questions.forEach((question) => {
+  questions.forEach((question, index) => {
     if (filtered_ratings[question].length) {
       // items.push(
       //   <div key={question}>
@@ -69,14 +71,22 @@ const NewEvaluationRatings = ({ info }) => {
       //   </div>
       // );
       items.push(
-        <Col md={6} className="mb-4">
+        <Col md={6} className="mb-4" key={index}>
           <Row className="mx-auto mb-1">
             <strong>{graph_titles[question]}</strong>
-            <small
-              style={{ fontSize: '12px', fontStyle: 'italic', fontWeight: 300 }}
-            >
-              <TextComponent type={1}>{question_text[question]}</TextComponent>
-            </small>
+            {full_question && (
+              <small
+                style={{
+                  fontSize: '12px',
+                  fontStyle: 'italic',
+                  fontWeight: 300,
+                }}
+              >
+                <TextComponent type={1}>
+                  {question_text[question]}
+                </TextComponent>
+              </small>
+            )}
           </Row>
           <NewRatingsGraph
             ratings={filtered_ratings[question]}
@@ -88,7 +98,27 @@ const NewEvaluationRatings = ({ info }) => {
     }
   });
 
-  return <Row className="mx-auto">{items}</Row>;
+  return (
+    <>
+      <Form.Group
+        className="mb-1"
+        style={{ cursor: 'pointer !important', paddingLeft: '15px' }}
+      >
+        <StyledSwitch
+          className={switch_styles.hover_pointer}
+          type="switch"
+          id="full"
+          name="full"
+          label="Display full question from evaluation form"
+          onChange={() => {
+            setFullQuestion(!full_question);
+          }}
+          checked={full_question}
+        />
+      </Form.Group>
+      <Row className="mx-auto">{items}</Row>
+    </>
+  );
 };
 
 export default NewEvaluationRatings;

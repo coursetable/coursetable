@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FormControl, Card, Popover } from 'react-bootstrap';
+import { FormControl, Card, Popover, Form } from 'react-bootstrap';
 import chroma from 'chroma-js';
 
 // Div used to color the background of surface components
@@ -124,4 +124,20 @@ export const StyledIcon = styled.div`
   transition: fill 0.2s linear;
   margin-top: auto;
   margin-bottom: auto;
+`;
+
+// Custom switch toggle
+export const StyledSwitch = styled(Form.Check)`
+  /* Default state = grey border and same background as other input components*/
+  .custom-control-input ~ .custom-control-label::before {
+    border-color: #cccccc;
+    background-color: ${({ theme }) => theme.select};
+    transition: background-color 0.2s linear;
+  }
+
+  /* Enabled state = blue border+background */
+  .custom-control-input:checked ~ .custom-control-label::before {
+    border-color: ${({ theme }) => theme.primary};
+    background-color: ${({ theme }) => theme.primary};
+  }
 `;
