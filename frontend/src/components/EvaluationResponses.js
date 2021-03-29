@@ -189,51 +189,21 @@ const EvaluationResponses = ({ crn, info }) => {
   const num_questions = Object.keys(responses).length;
 
   // Generate HTML to hold the responses to each question
-  const [recommend, skills, strengths, summary] = useMemo(() => {
-    // Lists that hold the html for the comments for a specific question
-    let temp_recommend = [];
-    let temp_skills = [];
-    let temp_strengths = [];
+  const [evals] = useMemo(() => {
     let temp_summary = [];
     const cur_responses =
       sort_order === 'length' ? sorted_responses : responses;
     // Populate the lists above
     for (const key in cur_responses) {
-      if (key.includes('summarize')) {
-        temp_summary = data.map((response) => {
-          return (
-            <StyledCommentRow key={response} className="m-auto p-2">
-              <TextComponent type={1}>{response}</TextComponent>
-            </StyledCommentRow>
-          );
-        });
-      } else if (key.includes('recommend')) {
-        temp_recommend = data.map((response) => {
-          return (
-            <StyledCommentRow key={response} className="m-auto p-2">
-              <TextComponent type={1}>{response}</TextComponent>
-            </StyledCommentRow>
-          );
-        });
-      } else if (key.includes('skills')) {
-        temp_skills = data.map((response) => {
-          return (
-            <StyledCommentRow key={response} className="m-auto p-2">
-              <TextComponent type={1}>{response}</TextComponent>
-            </StyledCommentRow>
-          );
-        });
-      } else if (key.includes('strengths')) {
-        temp_strengths = data.map((response) => {
-          return (
-            <StyledCommentRow key={response} className="m-auto p-2">
-              <TextComponent type={1}>{response}</TextComponent>
-            </StyledCommentRow>
-          );
-        });
-      }
+      temp_summary = data.map((response) => {
+        return (
+          <StyledCommentRow key={response} className="m-auto p-2">
+            <TextComponent type={1}>{response}</TextComponent>
+          </StyledCommentRow>
+        );
+      });
     }
-    return [temp_recommend, temp_skills, temp_strengths, temp_summary];
+    return [temp_summary];
   }, [responses, sort_order, sorted_responses, data]);
 
   // Hook to filter evaluations based on search term
@@ -364,7 +334,7 @@ const EvaluationResponses = ({ crn, info }) => {
       >
         {/* Recommend Question */}
         <Tab eventKey="recommended" title="Recommend?">
-          {recommend.length !== 0 ? (
+          {evals.length !== 0 ? (
             <div>
               <Row className={`${styles.question_header} m-auto pt-2`}>
                 <TextComponent type={0}>
@@ -372,7 +342,7 @@ const EvaluationResponses = ({ crn, info }) => {
                   explain.
                 </TextComponent>
               </Row>
-              {recommend}
+              {evals}
             </div>
           ) : (
             'No results'
@@ -380,7 +350,7 @@ const EvaluationResponses = ({ crn, info }) => {
         </Tab>
         {/* Knowledge/Skills Question */}
         <Tab eventKey="knowledge/skills" title="Skills">
-          {skills.length !== 0 ? (
+          {evals.length !== 0 ? (
             <div>
               <Row className={`${styles.question_header} m-auto pt-2`}>
                 <TextComponent type={0}>
@@ -388,7 +358,7 @@ const EvaluationResponses = ({ crn, info }) => {
                   this course?
                 </TextComponent>
               </Row>
-              {skills}
+              {evals}
             </div>
           ) : (
             'No results'
@@ -396,7 +366,7 @@ const EvaluationResponses = ({ crn, info }) => {
         </Tab>
         {/* Strengths/Weaknesses Question */}
         <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
-          {strengths.length !== 0 ? (
+          {evals.length !== 0 ? (
             <div>
               <Row className={`${styles.question_header} m-auto pt-2`}>
                 <TextComponent type={0}>
@@ -404,30 +374,32 @@ const EvaluationResponses = ({ crn, info }) => {
                   could it be improved?
                 </TextComponent>
               </Row>
-              {strengths}
+              {evals}
             </div>
           ) : (
             'No results'
           )}
         </Tab>
         {/* Summarize Question */}
-        {!recommend && !skills && !strengths && (
-          <Tab eventKey="summary" title="Summary">
-            {summary.length !== 0 ? (
-              <div>
-                <Row className={`${styles.question_header} m-auto pt-2`}>
-                  <TextComponent type={0}>
-                    How would you summarize this course? Would you recommend it
-                    to another student? Why or why not?
-                  </TextComponent>
-                </Row>
-                {summary}
-              </div>
-            ) : (
-              'No results'
-            )}
-          </Tab>
-        )}
+        {!recommend_comments.current &&
+          !skills_comments.current &&
+          !strengths_comments.current && (
+            <Tab eventKey="summary" title="Summary">
+              {evals.length !== 0 ? (
+                <div>
+                  <Row className={`${styles.question_header} m-auto pt-2`}>
+                    <TextComponent type={0}>
+                      How would you summarize this course? Would you recommend
+                      it to another student? Why or why not?
+                    </TextComponent>
+                  </Row>
+                  {evals}
+                </div>
+              ) : (
+                'No results'
+              )}
+            </Tab>
+          )}
       </StyledTabs>
       {!num_questions && <strong>No comments for this course</strong>}
     </div>
