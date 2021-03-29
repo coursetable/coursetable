@@ -219,20 +219,31 @@ const EvaluationResponses = ({ crn, info }) => {
           </StyledSortOption>
         </div>
       </Row>
-      {popular_adjectives.map((x) => {
-        return (
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          justifyContent: 'space-evenly',
+          overflow: 'hidden',
+          maxHeight: '3.6em',
+          lineHeight: '1.8em',
+        }}
+      >
+        {popular_adjectives.map((x) => (
           <div
             key={x}
             style={{
               color: evalsColormap(analyzer.getSentiment([x]))
                 .darken()
                 .saturate(),
+              marginLeft: '5px',
+              marginRight: '5px',
             }}
           >
             {x}
           </div>
-        );
-      })}
+        ))}
+      </div>
       <StyledTabs
         variant="tabs"
         transition={false}
