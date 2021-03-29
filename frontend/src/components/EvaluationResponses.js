@@ -87,6 +87,7 @@ const EvaluationResponses = ({ crn, info }) => {
   // Hooks for filtering evaluations in the searchbar
   const [data, setData] = useState([]);
   const [dataDefault, setDataDefault] = useState([]);
+  const [dataDefault2, setDataDefault2] = useState([]);
   const [keyword, setKeyword] = useState('');
 
   const sortByLength = useCallback((responses) => {
@@ -112,11 +113,55 @@ const EvaluationResponses = ({ crn, info }) => {
     });
   };
 
-  const sorted_adjectives = useRef(null);
+  const summarize_comments = useRef(null);
+  const recommend_comments = useRef(null);
+  const skills_comments = useRef(null);
+  const strengths_comments = useRef(null);
+
+  useEffect(() => {
+    const summarize_arr = [];
+    const recommend_arr = [];
+    const skills_arr = [];
+    const strengths_arr = [];
+    const firstRender = () => {
+      info.forEach((section) => {
+        const crn_code = section.crn;
+        // Only fetch comments for this section
+        if (crn_code !== crn) return;
+        const { nodes } = section.course.evaluation_narratives_aggregate;
+        // Return if no comments
+        if (!nodes.length) return;
+        // Add comments to responses dictionary
+        nodes.forEach((node) => {
+          if (node.evaluation_question.question_text.includes('summarize')) {
+            summarize_arr.push(node.comment);
+          }
+          if (node.evaluation_question.question_text.includes('recommend')) {
+            recommend_arr.push(node.comment);
+          }
+          if (node.evaluation_question.question_text.includes('skills')) {
+            skills_arr.push(node.comment);
+          }
+          if (node.evaluation_question.question_text.includes('strengths')) {
+            strengths_arr.push(node.comment);
+          }
+        });
+      });
+    };
+    firstRender();
+    summarize_comments.current = summarize_arr;
+    recommend_comments.current = recommend_arr;
+    skills_comments.current = skills_arr;
+    strengths_comments.current = strengths_arr;
+    // Save comments to display and filter
+    setData(recommend_arr);
+    setDataDefault(recommend_arr);
+    setDataDefault2(recommend_arr);
+  }, [crn, info]);
+
   // Dictionary that holds the comments for each question
   const [responses, sorted_responses] = useMemo(() => {
     const temp_responses = {};
-    const comments = [];
     // Loop through each section for this course code
     info.forEach((section) => {
       const crn_code = section.crn;
@@ -132,36 +177,13 @@ const EvaluationResponses = ({ crn, info }) => {
         temp_responses[node.evaluation_question.question_text].push(
           node.comment
         );
-        if (
-          node.evaluation_question.question_text.substring(0, 19) ===
-          'Would you recommend'
-        ) {
-          comments.push(node.comment);
-        }
       });
     });
-    // Save comments to display and filter
-    setData(comments);
-    setDataDefault(comments);
-    // Get all the adjectives from all the evaluations in the current panel selection
-    const adjectives = [];
-    for (let i = 0; i < comments.length; i++) {
-      const sentence = tagger.tag(tokenizer.tokenize(comments[i]));
-      for (let j = 0; j < sentence.taggedWords.length; j++) {
-        if (sentence.taggedWords[j].tag === 'JJ') {
-          adjectives.push(sentence.taggedWords[j].token);
-        }
-      }
-    }
-    sorted_adjectives.current = sortByFrequency(adjectives);
     return [
       temp_responses,
       sortByLength(JSON.parse(JSON.stringify(temp_responses))), // Deep copy temp_responses and sort it
     ];
-  }, [info, crn, sortByLength]);
-
-  // First 15 most popular adjectives in the panel, used with natural later
-  const popular_adjectives = sorted_adjectives.current.slice(0, 15);
+  }, [info, sortByLength, crn]);
 
   // Number of questions
   const num_questions = Object.keys(responses).length;
@@ -225,6 +247,24 @@ const EvaluationResponses = ({ crn, info }) => {
     updateKeyword(keyword);
   }, [dataDefault, keyword]);
 
+  const popular_adjectives = useRef(null);
+  useEffect(() => {
+    const adjectives = [];
+    const getEvals = () => {
+      // Get all the adjectives from every evaluation in the current panel selection
+      for (let i = 0; i < dataDefault2.length; i++) {
+        const sentence = tagger.tag(tokenizer.tokenize(dataDefault2[i]));
+        for (let j = 0; j < sentence.taggedWords.length; j++) {
+          if (sentence.taggedWords[j].tag === 'JJ') {
+            adjectives.push(sentence.taggedWords[j].token);
+          }
+        }
+      }
+    };
+    getEvals();
+    popular_adjectives.current = sortByFrequency(adjectives).slice(0, 15);
+  }, [dataDefault2]);
+
   return (
     <div>
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
@@ -279,7 +319,7 @@ const EvaluationResponses = ({ crn, info }) => {
           marginBottom: '2px',
         }}
       >
-        {popular_adjectives.map((x) => (
+        {popular_adjectives.current?.map((x) => (
           <div
             key={x}
             style={{
@@ -297,11 +337,27 @@ const EvaluationResponses = ({ crn, info }) => {
       <StyledTabs
         variant="tabs"
         transition={false}
-        onSelect={() => {
-          // Scroll to top of modal when a different tab is selected
-          document
-            .querySelector('.modal-body')
-            .scrollTo({ top: 0, left: 0, behavior: 'smooth' });
+        onSelect={(k) => {
+          if (k === 'recommended') {
+            setData(recommend_comments.current);
+            setDataDefault(recommend_comments.current);
+            setDataDefault2(recommend_comments.current);
+          }
+          if (k === 'knowledge/skills') {
+            setData(skills_comments.current);
+            setDataDefault(skills_comments.current);
+            setDataDefault2(skills_comments.current);
+          }
+          if (k === 'strengths/weaknesses') {
+            setData(strengths_comments.current);
+            setDataDefault(strengths_comments.current);
+            setDataDefault2(strengths_comments.current);
+          }
+          if (k === 'summary') {
+            setData(summarize_comments.current);
+            setDataDefault(summarize_comments.current);
+            setDataDefault2(summarize_comments.current);
+          }
         }}
       >
         {/* Recommend Question */}
