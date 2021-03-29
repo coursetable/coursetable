@@ -138,6 +138,45 @@ export const updateFriends = async (
 };
 
 /**
+ * Delete user's conneccted Facebook info (friends and account ID)
+ *
+ * @param req - express request object
+ * @param res - express response object
+ */
+export const disconnectFacebook = async (
+  req: express.Request,
+  res: express.Response
+): Promise<express.Response> => {
+  winston.info(`Disconnecting Facebook`);
+
+  if (!req.user) {
+    return res.status(401).json({ success: false });
+  }
+
+  const { netId } = req.user;
+
+  try {
+    winston.info(`Removing Facebook friends for user ${netId}`);
+    await prisma.studentFacebookFriends.deleteMany({
+      where: {
+        netId,
+      },
+    });
+
+    winston.info(`Removing Facebook account info for user ${netId}`);
+    await prisma.students.deleteMany({
+      where: {
+        netId,
+      },
+    });
+    return res.json({ success: false });
+  } catch (err) {
+    winston.error(`Error with disconnecting Facebook: ${err}`);
+    return res.status(500).json({ success: false });
+  }
+};
+
+/**
  * Get worksheets of user's friends.
  *
  * @param req - express request object

@@ -75,9 +75,13 @@ function FBLoginButton() {
     posthog.capture('facebook-logout');
 
     axios
-      .get(`${API_ENDPOINT}/legacy_api/Table.php?disconnect_facebook`, {
-        withCredentials: true,
-      })
+      .post(
+        `${API_ENDPOINT}/api/facebook/disconnect`,
+        {},
+        {
+          withCredentials: true,
+        }
+      )
       .then(() => {
         return fbRefresh(true);
       })

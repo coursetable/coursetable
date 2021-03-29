@@ -5,7 +5,11 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
 
-import { updateFriends, getFriendsWorksheets } from './facebook.handlers';
+import {
+  updateFriends,
+  getFriendsWorksheets,
+  disconnectFacebook,
+} from './facebook.handlers';
 
 /**
  * Set up Facebook routes.
@@ -14,5 +18,6 @@ import { updateFriends, getFriendsWorksheets } from './facebook.handlers';
 export default async (app: express.Express): Promise<void> => {
   app.use(cookieParser());
   app.post('/api/facebook/update', updateFriends);
+  app.post('/api/facebook/disconnect', disconnectFacebook);
   app.get('/api/facebook/worksheets', getFriendsWorksheets);
 };

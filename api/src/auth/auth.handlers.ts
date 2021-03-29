@@ -110,6 +110,7 @@ export const passportConfig = async (
    * @param done: callback function to be executed after serialization.
    */
   passport.serializeUser((user: User, done): void => {
+    winston.info('Serializing user');
     return done(null, user.netId);
   });
 
