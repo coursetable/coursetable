@@ -119,18 +119,20 @@ export const passportConfig = async (
    * @param netId: netId of user to get info for.
    * @param done: callback function to be executed after deserialization.
    */
-  passport.deserializeUser((netId: string, done): void => {
-    winston.info(`Deserializing user ${netId}`);
-    prisma.studentBluebookSettings
-      .findUnique({
-        where: {
-          netId,
-        },
-      })
-      .then((student) => {
-        done(null, { netId, evals: !!student?.evaluationsEnabled });
-      });
-  });
+  passport.deserializeUser(
+    async (netId: string, done): Promise<void> => {
+      winston.info(`Deserializing user ${netId}`);
+      await prisma.studentBluebookSettings
+        .findUnique({
+          where: {
+            netId,
+          },
+        })
+        .then((student) => {
+          done(null, { netId, evals: !!student?.evaluationsEnabled });
+        });
+    }
+  );
 };
 
 /**
