@@ -88,7 +88,7 @@ const SuggestedWord = styled.div`
   margin-left: 5px;
   margin-right: 5px;
   &:hover {
-    font-weight: bold;
+    text-decoration: underline;
     cursor: pointer;
   }
 `;
@@ -157,7 +157,7 @@ const EvaluationResponses = ({ crn, info }) => {
       });
     });
     // Save comments
-    [setData, setDataSearch, setDataSort, setDataDependent].map((fn) =>
+    [setData, setDataSearch, setDataSort, setDataDependent].forEach((fn) =>
       fn(recommendList)
     );
     return [summarizeList, recommendList, skillsList, strengthsList];
@@ -181,6 +181,22 @@ const EvaluationResponses = ({ crn, info }) => {
     if (sortOrder === 'original') setData(arr);
     if (sortOrder === 'length')
       setData([...arr].sort((a, b) => b.length - a.length));
+    if (sortOrder === 'positive')
+      setData(
+        [...arr]
+          .map((x) => [x, analyzer.getSentiment(tokenizer.tokenize(x))])
+          .sort(([a, b], [c, d]) => d - b || a - c)
+          .map((a) => a[0])
+          .flat(1)
+      );
+    if (sortOrder === 'negative')
+      setData(
+        [...arr]
+          .map((x) => [x, analyzer.getSentiment(tokenizer.tokenize(x))])
+          .sort(([a, b], [c, d]) => b - d || c - a)
+          .map((a) => a[0])
+          .flat(1)
+      );
   }, [dataDependent, dataSort, keyword, sortOrder]);
 
   // SEARCH -- Hook to filter evaluations based on search
