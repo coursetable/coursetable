@@ -242,7 +242,7 @@ const EvaluationResponses = ({ crn, info }) => {
       <div className="input-group">
         <input
           type="text"
-          className="form-control"
+          className="form-control shadow-none"
           width="100%"
           autoComplete="off"
           placeholder="Search for..."
@@ -250,6 +250,14 @@ const EvaluationResponses = ({ crn, info }) => {
           value={keyword}
           onChange={(e) => setKeyword(e.target.value)}
         />
+        <button
+          type="button"
+          className="btn bg-transparent shadow-none"
+          style={{ marginLeft: '-40px', zIndex: '100' }}
+          onClick={() => setKeyword('')}
+        >
+          X
+        </button>
       </div>
       <div
         style={{
