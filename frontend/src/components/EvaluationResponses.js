@@ -68,6 +68,31 @@ const StyledSortOption = styled.span`
   }
 `;
 
+// Section for keyword suggestions
+const StyledSuggestions = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-evenly;
+  overflow: hidden;
+  max-height: 3.6em;
+  line-height: 1.8em;
+  margin-bottom: 2px;
+`;
+
+// Styling for suggested words
+const SuggestedWord = styled.div`
+  color: ${({ word }) =>
+    evalsColormap(analyzer.getSentiment([word]))
+      .darken()
+      .saturate()};
+  margin-left: 5px;
+  margin-right: 5px;
+  &:hover {
+    font-weight: bold;
+    cursor: pointer;
+  }
+`;
+
 /**
  * Displays Evaluation Comments
  * @prop crn - integer that holds current listing's crn
@@ -138,16 +163,16 @@ const EvaluationResponses = ({ crn, info }) => {
     return [summarizeList, recommendList, skillsList, strengthsList];
   }, [crn, info]);
 
-  // Generate HTML to display all the evaluations from data
+  // Generate JSX to display all the evaluations from data
   const [evals] = useMemo(() => {
-    const temp_summary = data.map((response) => {
+    const display = data.map((response) => {
       return (
         <StyledCommentRow key={response} className="m-auto p-2">
           <TextComponent type={1}>{response}</TextComponent>
         </StyledCommentRow>
       );
     });
-    return [temp_summary];
+    return [display];
   }, [data]);
 
   // SORT -- Hook to determine which evaluations to show based on sort
@@ -170,7 +195,7 @@ const EvaluationResponses = ({ crn, info }) => {
     updateKeyword(keyword);
   }, [dataSearch, keyword]);
 
-  // SUGGESTIONS -- Hook to filter evaluations based on search
+  // SUGGESTIONS -- Hook to gather suggestions based on current panel
   const [suggestions] = useMemo(() => {
     let adjectives = [];
     let verbs = [];
@@ -189,7 +214,6 @@ const EvaluationResponses = ({ crn, info }) => {
         ...taggedWords.filter((w) => w.tag === 'JJ').map((w) => w.token),
       ];
     });
-
     // Suggestions are adjectives for every panel except the skill panel
     if (curPanel === 'knowledge/skills') {
       popularWords = sortByFrequency(verbs).slice(0, 15);
@@ -199,37 +223,31 @@ const EvaluationResponses = ({ crn, info }) => {
     return [popularWords];
   }, [curPanel, dataSort]);
 
+  // Component for cleaner render of sort options, can also apply to tabs
+  const SortOption = ({ sortby }) => {
+    return (
+      <StyledSortOption
+        active={sortOrder === sortby}
+        onClick={() => setSortOrder(sortby)}
+      >
+        {sortby}
+      </StyledSortOption>
+    );
+  };
+
   return (
-    <div>
+    <>
+      {/* Selections for sorting */}
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
         <span className="font-weight-bold my-auto mr-2">Sort by:</span>
         <div className={styles.sort_options}>
-          <StyledSortOption
-            active={sortOrder === 'original'}
-            onClick={() => setSortOrder('original')}
-          >
-            original
-          </StyledSortOption>
-          <StyledSortOption
-            active={sortOrder === 'length'}
-            onClick={() => setSortOrder('length')}
-          >
-            length
-          </StyledSortOption>
-          <StyledSortOption
-            active={sortOrder === 'positive'}
-            onClick={() => setSortOrder('positive')}
-          >
-            positive
-          </StyledSortOption>
-          <StyledSortOption
-            active={sortOrder === 'negative'}
-            onClick={() => setSortOrder('negative')}
-          >
-            negative
-          </StyledSortOption>
+          <SortOption sortby="original" />
+          <SortOption sortby="length" />
+          <SortOption sortby="positive" />
+          <SortOption sortby="negative" />
         </div>
       </Row>
+      {/* Selections for searching */}
       <div className="input-group">
         <input
           type="text"
@@ -250,33 +268,15 @@ const EvaluationResponses = ({ crn, info }) => {
           X
         </button>
       </div>
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          justifyContent: 'space-evenly',
-          overflow: 'hidden',
-          maxHeight: '3.6em',
-          lineHeight: '1.8em',
-          marginBottom: '2px',
-        }}
-      >
+      {/* Selections for suggested words */}
+      <StyledSuggestions>
         {suggestions?.map((x) => (
-          <div
-            key={x}
-            style={{
-              color: evalsColormap(analyzer.getSentiment([x]))
-                .darken()
-                .saturate(),
-              marginLeft: '5px',
-              marginRight: '5px',
-            }}
-            onClick={() => setKeyword(x)}
-          >
+          <SuggestedWord key={x} word={x} onClick={() => setKeyword(x)}>
             {x}
-          </div>
+          </SuggestedWord>
         ))}
-      </div>
+      </StyledSuggestions>
+      {/* Selections for panels */}
       <StyledTabs
         variant="tabs"
         transition={false}
@@ -360,7 +360,7 @@ const EvaluationResponses = ({ crn, info }) => {
           </Tab>
         )}
       </StyledTabs>
-    </div>
+    </>
   );
 };
 
