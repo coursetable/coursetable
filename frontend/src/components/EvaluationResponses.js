@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useMemo,
-  useCallback,
-  useRef,
-} from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import natural from 'natural';
@@ -89,15 +83,7 @@ const EvaluationResponses = ({ crn, info }) => {
   const [dataDefault, setDataDefault] = useState([]);
   const [dataDefault2, setDataDefault2] = useState([]);
   const [keyword, setKeyword] = useState('');
-
-  const sortByLength = useCallback((responses) => {
-    for (const key in responses) {
-      responses[key].sort(function (a, b) {
-        return b.length - a.length;
-      });
-    }
-    return responses;
-  }, []);
+  const [dataChange, setDataChange] = useState([]);
 
   // Used to sort frequency of adjectives in each evaluation
   const sortByFrequency = (array) => {
@@ -157,54 +143,40 @@ const EvaluationResponses = ({ crn, info }) => {
     setData(recommend_arr);
     setDataDefault(recommend_arr);
     setDataDefault2(recommend_arr);
+    setDataChange(recommend_arr);
   }, [crn, info]);
 
-  // Dictionary that holds the comments for each question
-  const [responses, sorted_responses] = useMemo(() => {
-    const temp_responses = {};
-    // Loop through each section for this course code
-    info.forEach((section) => {
-      const crn_code = section.crn;
-      // Only fetch comments for this section
-      if (crn_code !== crn) return;
-      const { nodes } = section.course.evaluation_narratives_aggregate;
-      // Return if no comments
-      if (!nodes.length) return;
-      // Add comments to responses dictionary
-      nodes.forEach((node) => {
-        if (!temp_responses[node.evaluation_question.question_text])
-          temp_responses[node.evaluation_question.question_text] = [];
-        temp_responses[node.evaluation_question.question_text].push(
-          node.comment
+  useEffect(() => {
+    if (keyword === '') {
+      if (sort_order === 'original') setData(dataDefault2);
+      if (sort_order === 'length')
+        setData(
+          [...dataDefault2].sort((a, b) => {
+            return b.length - a.length;
+          })
         );
-      });
-    });
-    return [
-      temp_responses,
-      sortByLength(JSON.parse(JSON.stringify(temp_responses))), // Deep copy temp_responses and sort it
-    ];
-  }, [info, sortByLength, crn]);
-
-  // Number of questions
-  const num_questions = Object.keys(responses).length;
+    } else {
+      if (sort_order === 'original') setData(dataChange);
+      if (sort_order === 'length')
+        setData(
+          [...dataChange].sort((a, b) => {
+            return b.length - a.length;
+          })
+        );
+    }
+  }, [dataChange, dataDefault2, keyword, sort_order]);
 
   // Generate HTML to hold the responses to each question
   const [evals] = useMemo(() => {
-    let temp_summary = [];
-    const cur_responses =
-      sort_order === 'length' ? sorted_responses : responses;
-    // Populate the lists above
-    for (const key in cur_responses) {
-      temp_summary = data.map((response) => {
-        return (
-          <StyledCommentRow key={response} className="m-auto p-2">
-            <TextComponent type={1}>{response}</TextComponent>
-          </StyledCommentRow>
-        );
-      });
-    }
+    const temp_summary = data.map((response) => {
+      return (
+        <StyledCommentRow key={response} className="m-auto p-2">
+          <TextComponent type={1}>{response}</TextComponent>
+        </StyledCommentRow>
+      );
+    });
     return [temp_summary];
-  }, [responses, sort_order, sorted_responses, data]);
+  }, [data]);
 
   // Hook to filter evaluations based on search term
   useEffect(() => {
@@ -213,6 +185,7 @@ const EvaluationResponses = ({ crn, info }) => {
         return x.toLowerCase().includes(word.toLowerCase());
       });
       setData(filtered);
+      setDataChange(filtered);
     };
     updateKeyword(keyword);
   }, [dataDefault, keyword]);
@@ -314,21 +287,25 @@ const EvaluationResponses = ({ crn, info }) => {
             setData(recommend_comments.current);
             setDataDefault(recommend_comments.current);
             setDataDefault2(recommend_comments.current);
+            setDataChange(recommend_comments.current);
           }
           if (k === 'knowledge/skills') {
             setData(skills_comments.current);
             setDataDefault(skills_comments.current);
             setDataDefault2(skills_comments.current);
+            setDataChange(skills_comments.current);
           }
           if (k === 'strengths/weaknesses') {
             setData(strengths_comments.current);
             setDataDefault(strengths_comments.current);
             setDataDefault2(strengths_comments.current);
+            setDataChange(strengths_comments.current);
           }
           if (k === 'summary') {
             setData(summarize_comments.current);
             setDataDefault(summarize_comments.current);
             setDataDefault2(summarize_comments.current);
+            setDataChange(summarize_comments.current);
           }
         }}
       >
@@ -401,7 +378,6 @@ const EvaluationResponses = ({ crn, info }) => {
             </Tab>
           )}
       </StyledTabs>
-      {!num_questions && <strong>No comments for this course</strong>}
     </div>
   );
 };
