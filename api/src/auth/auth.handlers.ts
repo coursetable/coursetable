@@ -110,7 +110,7 @@ export const passportConfig = async (
    * @param done: callback function to be executed after serialization.
    */
   passport.serializeUser((user: User, done): void => {
-    winston.info('Serializing user');
+    winston.info(`Serializing user ${user}`);
     return done(null, user.netId);
   });
 
@@ -120,6 +120,7 @@ export const passportConfig = async (
    * @param done: callback function to be executed after deserialization.
    */
   passport.deserializeUser((netId: string, done): void => {
+    winston.info(`Deserializing user ${netId}`);
     prisma.studentBluebookSettings
       .findUnique({
         where: {
@@ -138,8 +139,10 @@ export const passportConfig = async (
  * @param res: express response.
  */
 const postAuth = (req: express.Request, res: express.Response): void => {
+  winston.info('Executing post-authentication redirect');
   let redirect = req.query.redirect as string | undefined;
   if (redirect && !redirect.startsWith('//')) {
+    winston.info(`Redirecting to ${redirect}`);
     // prefix the redirect with a slash to avoid an open redirect vulnerability.
     if (!redirect.startsWith('/')) {
       redirect = `/${redirect}`;
@@ -147,6 +150,7 @@ const postAuth = (req: express.Request, res: express.Response): void => {
     return res.redirect(`${FRONTEND_ENDPOINT}${redirect}`);
   }
 
+  winston.info(`Redirecting to /catalog fallback`);
   // If no redirect is provided, simply redirect to the auth status.
   return res.redirect(`${FRONTEND_ENDPOINT}/catalog`);
 };
@@ -162,6 +166,7 @@ export const casLogin = (
   res: express.Response,
   next: express.NextFunction
 ): void => {
+  winston.info('Logging in with CAS');
   // Authenticate with passport
   passport.authenticate('cas', (casError, user) => {
     // handle auth errors or missing users
@@ -173,6 +178,7 @@ export const casLogin = (
     }
 
     // log in the user
+    winston.info(`"Logging in ${user}`);
     return req.logIn(user, (loginError) => {
       if (loginError) {
         return next(loginError);
@@ -195,6 +201,7 @@ export const authBasic = (
   res: express.Response,
   next: express.NextFunction
 ): void => {
+  winston.info('Intercepting basic authentication');
   if (req.user) {
     // add headers for legacy API compatibility
     req.headers['x-coursetable-authd'] = 'true';
@@ -216,6 +223,7 @@ export const authWithEvals = (
   res: express.Response,
   next: express.NextFunction
 ): void => {
+  winston.info('Intercepting with-evals authentication');
   if (req.user && req.user.evals) {
     // add headers for legacy API compatibility
     req.headers['x-coursetable-authd'] = 'true';
