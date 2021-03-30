@@ -284,28 +284,16 @@ const EvaluationResponses = ({ crn, info }) => {
         onSelect={(k) => {
           setKeyword('');
           if (k === 'recommended') {
-            setData(recommend_comments.current);
-            setDataDefault(recommend_comments.current);
             setDataDefault2(recommend_comments.current);
-            setDataChange(recommend_comments.current);
           }
           if (k === 'knowledge/skills') {
-            setData(skills_comments.current);
-            setDataDefault(skills_comments.current);
             setDataDefault2(skills_comments.current);
-            setDataChange(skills_comments.current);
           }
           if (k === 'strengths/weaknesses') {
-            setData(strengths_comments.current);
-            setDataDefault(strengths_comments.current);
             setDataDefault2(strengths_comments.current);
-            setDataChange(strengths_comments.current);
           }
           if (k === 'summary') {
-            setData(summarize_comments.current);
-            setDataDefault(summarize_comments.current);
             setDataDefault2(summarize_comments.current);
-            setDataChange(summarize_comments.current);
           }
         }}
       >
