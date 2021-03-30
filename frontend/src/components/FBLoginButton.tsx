@@ -86,10 +86,10 @@ function FBLoginButton() {
         return fbRefresh(true);
       })
       .then(() => {
-        toast.success('FB disconnected');
+        toast.success('Facebook disconnected!');
       })
       .catch(() => {
-        toast.error('Error disconnecting FB');
+        toast.error('Error disconnecting Facebook!');
       });
   }, [fbRefresh]);
 
