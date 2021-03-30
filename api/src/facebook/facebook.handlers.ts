@@ -98,8 +98,8 @@ export const updateFriends = async (
     // can be parallelized, but this is an exception because the next loop
     // depends on the cursor returned by this one.
 
-    // eslint-disable-next-line no-await-in-loop
     try {
+      // eslint-disable-next-line no-await-in-loop
       await axios
         .get(
           `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`
