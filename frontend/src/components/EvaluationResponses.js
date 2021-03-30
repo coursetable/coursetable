@@ -82,9 +82,9 @@ const EvaluationResponses = ({ crn, info }) => {
 
   // Keep track of sorted/filtered/suggested data
   const [data, setData] = useState([]);
-  const [dataDefault, setDataDefault] = useState([]);
-  const [dataDefault2, setDataDefault2] = useState([]);
-  const [dataChange, setDataChange] = useState([]);
+  const [dataSearch, setDataSearch] = useState([]);
+  const [dataSort, setDataSort] = useState([]);
+  const [dataDependent, setDataDependent] = useState([]);
 
   // Function to sort frequency of adjectives in each evaluation
   const sortByFrequency = (array) => {
@@ -119,26 +119,22 @@ const EvaluationResponses = ({ crn, info }) => {
       // Return if no comments
       if (!nodes.length) return;
       // Add comments to relevant list
-      nodes.forEach((node) => {
-        if (node.evaluation_question.question_text.includes('summarize')) {
-          summarizeList.push(node.comment);
-        }
-        if (node.evaluation_question.question_text.includes('recommend')) {
-          recommendList.push(node.comment);
-        }
-        if (node.evaluation_question.question_text.includes('skills')) {
-          skillsList.push(node.comment);
-        }
-        if (node.evaluation_question.question_text.includes('strengths')) {
-          strengthsList.push(node.comment);
-        }
+      nodes.forEach(({ comment, evaluation_question }) => {
+        Object.entries({
+          summarize: summarizeList,
+          recommend: recommendList,
+          skills: skillsList,
+          strengths: strengthsList,
+        }).forEach(
+          ([k, v]) =>
+            evaluation_question.question_text.includes(k) && v.push(comment)
+        );
       });
     });
     // Save comments
-    setData(recommendList);
-    setDataDefault(recommendList);
-    setDataDefault2(recommendList);
-    setDataChange(recommendList);
+    [setData, setDataSearch, setDataSort, setDataDependent].map((fn) =>
+      fn(recommendList)
+    );
     return [summarizeList, recommendList, skillsList, strengthsList];
   }, [crn, info]);
 
@@ -156,69 +152,52 @@ const EvaluationResponses = ({ crn, info }) => {
 
   // SORT -- Hook to determine which evaluations to show based on sort
   useEffect(() => {
-    if (keyword === '') {
-      if (sortOrder === 'original') setData(dataDefault2);
-      if (sortOrder === 'length')
-        setData(
-          [...dataDefault2].sort((a, b) => {
-            return b.length - a.length;
-          })
-        );
-    } else {
-      if (sortOrder === 'original') setData(dataChange);
-      if (sortOrder === 'length')
-        setData(
-          [...dataChange].sort((a, b) => {
-            return b.length - a.length;
-          })
-        );
-    }
-  }, [dataChange, dataDefault2, keyword, sortOrder]);
+    const arr = keyword === '' ? dataSort : dataDependent;
+    if (sortOrder === 'original') setData(arr);
+    if (sortOrder === 'length')
+      setData([...arr].sort((a, b) => b.length - a.length));
+  }, [dataDependent, dataSort, keyword, sortOrder]);
 
   // SEARCH -- Hook to filter evaluations based on search
   useEffect(() => {
     const updateKeyword = (word) => {
-      const filtered = dataDefault.filter((x) => {
+      const filtered = dataSearch.filter((x) => {
         return x.toLowerCase().includes(word.toLowerCase());
       });
       setData(filtered);
-      setDataChange(filtered);
+      setDataDependent(filtered);
     };
     updateKeyword(keyword);
-  }, [dataDefault, keyword]);
+  }, [dataSearch, keyword]);
 
   // SUGGESTIONS -- Hook to filter evaluations based on search
   const [suggestions] = useMemo(() => {
-    const adjectives = [];
-    const verbs = [];
+    let adjectives = [];
+    let verbs = [];
     let popularWords = [];
-    const getEvals = () => {
-      // Get every suggestion from evaluations in the current panel selection
-      for (let i = 0; i < dataDefault2.length; i++) {
-        const sentence = tagger.tag(tokenizer.tokenize(dataDefault2[i]));
-        for (let j = 0; j < sentence.taggedWords.length; j++) {
-          if (sentence.taggedWords[j].tag === 'JJ') {
-            adjectives.push(sentence.taggedWords[j].token);
-          }
-          // include the verb base form, present tense, and past tense
-          if (
-            sentence.taggedWords[j].tag === 'VB' ||
-            sentence.taggedWords[j].tag === 'VBP' ||
-            sentence.taggedWords[j].tag === 'VBD'
-          ) {
-            verbs.push(sentence.taggedWords[j].token);
-          }
-        }
-      }
-    };
-    getEvals();
+    // Get every suggestion from evaluations in the current panel selection
+    dataSort.forEach((d) => {
+      const { taggedWords } = tagger.tag(tokenizer.tokenize(d));
+      verbs = [
+        ...verbs,
+        ...taggedWords
+          .filter((w) => ['VB', 'VBP', 'VBD'].includes(w.tag))
+          .map((w) => w.token),
+      ];
+      adjectives = [
+        ...adjectives,
+        ...taggedWords.filter((w) => w.tag === 'JJ').map((w) => w.token),
+      ];
+    });
+
+    // Suggestions are adjectives for every panel except the skill panel
     if (curPanel === 'knowledge/skills') {
       popularWords = sortByFrequency(verbs).slice(0, 15);
     } else {
       popularWords = sortByFrequency(adjectives).slice(0, 15);
     }
     return [popularWords];
-  }, [curPanel, dataDefault2]);
+  }, [curPanel, dataSort]);
 
   return (
     <div>
@@ -304,22 +283,14 @@ const EvaluationResponses = ({ crn, info }) => {
         onSelect={(k) => {
           setKeyword('');
           setCurPanel(k);
-          if (k === 'recommended') {
-            setDataDefault(recommendComments);
-            setDataDefault2(recommendComments);
-          }
-          if (k === 'knowledge/skills') {
-            setDataDefault(skillsComments);
-            setDataDefault2(skillsComments);
-          }
-          if (k === 'strengths/weaknesses') {
-            setDataDefault(strengthsComments);
-            setDataDefault2(strengthsComments);
-          }
-          if (k === 'summary') {
-            setDataDefault(summarizeComments);
-            setDataDefault2(summarizeComments);
-          }
+          const d = {
+            recommended: recommendComments,
+            'knowledge/skills': skillsComments,
+            'strengths/weaknesses': strengthsComments,
+            summary: summarizeComments,
+          };
+          setDataSearch(d[k]);
+          setDataSort(d[k]);
         }}
       >
         {/* Recommend Question */}
