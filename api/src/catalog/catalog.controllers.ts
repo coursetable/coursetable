@@ -21,6 +21,7 @@ export const verifyHeaders = (
   res: express.Response,
   next: express.NextFunction
 ): void | express.Response => {
+  winston.info('Verifying headers');
   // get authentication headers
   const authd = req.header('x-ferry-secret'); // if user is logged in
 
@@ -45,6 +46,7 @@ export const refreshCatalog = (
   req: express.Request,
   res: express.Response
 ): void => {
+  winston.info('Refreshing catalog');
   // always overwrite when called
   const overwrite = true;
 

@@ -94,7 +94,7 @@ export const passportConfig = async (
             return done(null, { netId: profile.user, evals: false });
           })
           .catch((err) => {
-            winston.error(err);
+            winston.error(`Yalies connection error: ${err}`);
             return done(null, {
               netId: profile.user,
               evals: false,
