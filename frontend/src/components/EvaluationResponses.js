@@ -307,15 +307,19 @@ const EvaluationResponses = ({ crn, info }) => {
           setKeyword('');
           setCurPanel(k);
           if (k === 'recommended') {
+            setDataDefault(recommend_comments.current);
             setDataDefault2(recommend_comments.current);
           }
           if (k === 'knowledge/skills') {
+            setDataDefault(skills_comments.current);
             setDataDefault2(skills_comments.current);
           }
           if (k === 'strengths/weaknesses') {
+            setDataDefault(strengths_comments.current);
             setDataDefault2(strengths_comments.current);
           }
           if (k === 'summary') {
+            setDataDefault(summarize_comments.current);
             setDataDefault2(summarize_comments.current);
           }
         }}
