@@ -84,6 +84,7 @@ const EvaluationResponses = ({ crn, info }) => {
   const [dataDefault2, setDataDefault2] = useState([]);
   const [keyword, setKeyword] = useState('');
   const [dataChange, setDataChange] = useState([]);
+  const [curPanel, setCurPanel] = useState('');
 
   // Used to sort frequency of adjectives in each evaluation
   const sortByFrequency = (array) => {
@@ -193,6 +194,7 @@ const EvaluationResponses = ({ crn, info }) => {
   const popular_adjectives = useRef(null);
   useEffect(() => {
     const adjectives = [];
+    const verbs = [];
     const getEvals = () => {
       // Get all the adjectives from every evaluation in the current panel selection
       for (let i = 0; i < dataDefault2.length; i++) {
@@ -201,12 +203,24 @@ const EvaluationResponses = ({ crn, info }) => {
           if (sentence.taggedWords[j].tag === 'JJ') {
             adjectives.push(sentence.taggedWords[j].token);
           }
+          // includes the verb base form, present tense, and past tense
+          if (
+            sentence.taggedWords[j].tag === 'VB' ||
+            sentence.taggedWords[j].tag === 'VBP' ||
+            sentence.taggedWords[j].tag === 'VBD'
+          ) {
+            verbs.push(sentence.taggedWords[j].token);
+          }
         }
       }
     };
     getEvals();
-    popular_adjectives.current = sortByFrequency(adjectives).slice(0, 15);
-  }, [dataDefault2]);
+    if (curPanel === 'knowledge/skills') {
+      popular_adjectives.current = sortByFrequency(verbs).slice(0, 15);
+    } else {
+      popular_adjectives.current = sortByFrequency(adjectives).slice(0, 15);
+    }
+  }, [curPanel, dataDefault2]);
 
   return (
     <div>
@@ -291,6 +305,7 @@ const EvaluationResponses = ({ crn, info }) => {
         transition={false}
         onSelect={(k) => {
           setKeyword('');
+          setCurPanel(k);
           if (k === 'recommended') {
             setDataDefault2(recommend_comments.current);
           }
