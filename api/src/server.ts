@@ -1,5 +1,4 @@
 import express from 'express';
-import bodyParser from 'body-parser';
 
 import morgan from './logging/morgan';
 import winston from './logging/winston';
@@ -24,16 +23,14 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 
 // import routes
 import catalog from './catalog/catalog.routes';
-import cas_auth, {
-  authBasic,
-  authWithEvals,
-  passportConfig,
-} from './auth/cas_auth.routes';
+import { authWithEvals, passportConfig } from './auth/auth.handlers';
+import cas_auth from './auth/auth.routes';
+import facebook from './facebook/facebook.routes';
+import user from './user/user.routes';
 
 import passport from 'passport';
 
 import * as Sentry from '@sentry/node';
-import * as Tracing from '@sentry/tracing';
 
 Sentry.init({
   dsn:
@@ -53,19 +50,20 @@ app.use(cors(CORS_OPTIONS));
 // Enable request logging.
 app.use(morgan);
 // Enable url-encoding
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 // Trust the proxy.
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
-  for (const header of Object.keys(req.headers)) {
-    // Headers are automatically made lowercase by express.
+  Object.keys(req.headers).forEach((header) => {
     if (header.startsWith('x-coursetable-')) {
       delete req.headers[header];
     }
-  }
+  });
+
   next();
 });
 
@@ -105,7 +103,7 @@ https
     app
   )
   .listen(SECURE_PORT, () => {
-    console.log(`Secure dev proxy listening on port ${SECURE_PORT}`);
+    winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
 // We use the IIFE pattern so that we can use await.
@@ -118,6 +116,8 @@ https
   // Activate catalog and CAS authentication
   await catalog(app);
   await cas_auth(app);
+  await facebook(app);
+  await user(app);
 
   // Mount static files route and require NetID authentication
   app.use(
@@ -136,7 +136,6 @@ https
     res.json('pong');
   });
 
-  app.use('/legacy_api', authBasic);
   app.use(
     ['/legacy_api', '/index.php'],
     createProxyMiddleware({

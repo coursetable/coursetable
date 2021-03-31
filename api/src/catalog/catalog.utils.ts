@@ -11,9 +11,11 @@ import winston from '../logging/winston';
 
 /**
  * Get static catalogs for each season from Hasura,
- * @prop overwrite - whether or not to skip existing catalogs.
+ * @param overwrite - whether or not to skip existing catalogs.
  */
-export async function fetchCatalog(overwrite: boolean) {
+export async function fetchCatalog(
+  overwrite: boolean
+): Promise<{ [x: string]: PromiseSettledResult<unknown> }> {
   let seasons;
   // get a list of all seasons
   try {

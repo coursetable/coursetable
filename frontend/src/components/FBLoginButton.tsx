@@ -7,6 +7,8 @@ import { useUser } from '../user';
 import styles from './MeDropdown.module.css';
 import { TextComponent, StyledHoverText } from './StyledComponents';
 
+import { API_ENDPOINT } from '../config';
+
 /**
  * FB login button that shows up in the profile dropdown
  */
@@ -18,7 +20,16 @@ function FBLoginButton() {
   // Types on window.FB are defined in react-app-env.d.ts.
 
   const syncFacebook = useCallback(async () => {
-    const { data } = await axios.get('/legacy_api/FetchFacebookData.php');
+    const { data } = await axios.post(
+      `${API_ENDPOINT}/api/facebook/update`,
+      {},
+      {
+        withCredentials: true,
+        headers: {
+          'fb-token': FB.getAuthResponse()?.accessToken,
+        },
+      }
+    );
     if (!data.success) {
       throw data.message;
     }
@@ -34,7 +45,6 @@ function FBLoginButton() {
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
           // Logged into your app and Facebook.
-          console.log('FB connected');
           posthog.capture('facebook-login', { info: response });
 
           syncFacebook()
@@ -65,15 +75,21 @@ function FBLoginButton() {
     posthog.capture('facebook-logout');
 
     axios
-      .get('/legacy_api/Table.php?disconnect_facebook')
+      .post(
+        `${API_ENDPOINT}/api/facebook/disconnect`,
+        {},
+        {
+          withCredentials: true,
+        }
+      )
       .then(() => {
         return fbRefresh(true);
       })
       .then(() => {
-        toast.success('FB disconnected');
+        toast.success('Facebook disconnected!');
       })
       .catch(() => {
-        toast.error('Error disconnecting FB');
+        toast.error('Error disconnecting Facebook!');
       });
   }, [fbRefresh]);
 

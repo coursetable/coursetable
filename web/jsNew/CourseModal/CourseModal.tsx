@@ -248,9 +248,16 @@ export default class CourseModal extends React.PureComponent<Props> {
               </p>
 
               {!evaluationsEnabled && (
-                <div className="smaller">
-                  Evaluations are not enabled.
-                </div>
+                <a
+                  className="btn btn-info eval-button bottom10 btn-block"
+                  href="/EnableEvaluations"
+                >
+                  Turn on evaluations
+                  <div className="smaller">
+                    Evaluations are not yet enabled! Click to enable the
+                    snappiest evaluations ever.
+                  </div>
+                </a>
               )}
 
               {evaluationsEnabled &&

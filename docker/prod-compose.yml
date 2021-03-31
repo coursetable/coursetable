@@ -23,6 +23,7 @@ services:
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
+      MYSQL_URL: ${MYSQL_URL?mysql_url}
       STUDENTS_DB: yaleplus
       COURSES_DB: yale_advanced_oci
       CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
@@ -31,12 +32,13 @@ services:
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
       CERT_PATH: ${CERT_PATH?cert_path}
       KEY_PATH: ${KEY_PATH?key_path}
+      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry db}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
@@ -52,28 +54,6 @@ services:
       - mysql
     links:
       - php-fpm
-
-  # Ensure php deps are installed
-  php:
-    build: ./php
-    volumes:
-      - ..:/var/www/html
-    command: sh -c 'php composer.phar install && tail -f /dev/null'
-    working_dir: /var/www/html
-
-  php-fpm:
-    # env_file: ../facebook.env
-    environment:
-      FACEBOOK_APP_ID: ${FACEBOOK_APP_ID?fb_app_id}
-      FACEBOOK_APP_SECRET: ${FACEBOOK_APP_SECRET?fb_app_secret}
-      MYSQL_HOST: ${MYSQL_HOST?host}
-      MYSQL_PORT: ${MYSQL_PORT?port}
-      MYSQL_USERNAME: ${MYSQL_USERNAME?username}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
-      MYSQL_DATABASE: yale_advanced_oci
-    build: ./php
-    volumes:
-      - ..:/usr/share/nginx/html
 
   mysql:
     build: ./mysql

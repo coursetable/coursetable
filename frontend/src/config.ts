@@ -1,7 +1,7 @@
 export const isDev = process.env.NODE_ENV === 'development';
 
 export const API_ENDPOINT = isDev
-  ? 'http://localhost:3001'
+  ? 'https://localhost:3001'
   : process.env.REACT_APP_API_ENDPOINT;
 
 // /* testing posthog in development only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';

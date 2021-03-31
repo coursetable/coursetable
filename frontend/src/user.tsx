@@ -60,10 +60,7 @@ export const UserProvider: React.FC = ({ children }) => {
   const userRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
-        .get(
-          `${API_ENDPOINT}/legacy_api/WorksheetActions.php?action=get&season=all`,
-          { withCredentials: true }
-        )
+        .get(`${API_ENDPOINT}/api/user/worksheets`, { withCredentials: true })
         .then((res) => {
           if (!res.data.success) {
             throw new Error(res.data.message);
@@ -96,7 +93,7 @@ export const UserProvider: React.FC = ({ children }) => {
   const fbRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
-        .get(`${API_ENDPOINT}/legacy_api/FetchFriendWorksheetsNew.php`, {
+        .get(`${API_ENDPOINT}/api/facebook/worksheets`, {
           withCredentials: true,
         })
         .then((friends_worksheets) => {
@@ -111,7 +108,7 @@ export const UserProvider: React.FC = ({ children }) => {
           // Error with fetching friends' worksheets
           if (!suppressError) {
             console.info(err);
-            toast.error('Error updating facebook friends');
+            toast.error('Error updating Facebook friends');
           }
           setFbLogin(false);
           setFbWorksheets(undefined);

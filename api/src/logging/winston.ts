@@ -31,7 +31,10 @@ const format = winston.format.combine(
   winston.format.timestamp({ format: 'YYYY-MM-DD HH:mm:ss:ms' }),
   winston.format.printf(
     (info) => `${info.timestamp} ${info.level}: ${info.message}`
-  )
+  ),
+  // support object logging
+  winston.format.splat(),
+  winston.format.json()
 );
 
 const transports = [
