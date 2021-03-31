@@ -7,6 +7,6 @@
   "require": {
     "querypath/querypath": "^3.0",
     "facebook/graph-sdk": "^5.7",
-    "eluceo/ical": "^0.16.1"
+    "eluceo/ical": "^2.0.0"
   }
 }
