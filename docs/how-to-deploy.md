@@ -95,15 +95,6 @@ git pull # Get changes onto server
 ./refresh_courses.sh # Rerun the pipeline
 ```
 
-**old coursetable**
-
-```sh
-# Run these on the prod server after coursetable has been deployed.
-tmux
-ssh -R 3306:localhost:3306 root@linode.coursetable.com
-# ctrl-b + d to detach session
-```
-
 **beta**
 
 ```sh
