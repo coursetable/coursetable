@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+doppler setup -p coursetable -c prd
+
 VERSION=`sentry-cli releases propose-version`
 export SENTRY_ORG=coursetable
 export SENTRY_PROJECT=coursetable
@@ -12,8 +14,8 @@ export SENTRY_RELEASE_VERSION=${VERSION}
 sentry-cli releases new "$VERSION"
 sentry-cli releases set-commits "$VERSION" --auto
 
-docker-compose build
+doppler run --command "docker-compose build"
 sentry-cli releases finalize "$VERSION"
 
-docker-compose up -d
+doppler run --command "docker-compose up -d"
 sentry-cli releases deploys "$VERSION" new -e production

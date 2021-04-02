@@ -19,7 +19,7 @@ services:
       CERT_PATH: ${CERT_PATH?cert_path}
       CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
       FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
-      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry reload secret}
+      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
       FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
       KEY_PATH: ${KEY_PATH?key_path}
@@ -29,7 +29,7 @@ services:
       MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
       MYSQL_URL: ${MYSQL_URL?mysql_url}
       NODE_ENV: production
-      SESSION_SECRET: ${SESSION_SECRET?session secret}
+      SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
 
@@ -38,23 +38,11 @@ services:
     ports:
       - "8085:8080"
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry db}
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-
-  nginx:
-    build: ./nginx
-    volumes:
-      - ..:/usr/share/nginx/html
-      # Overwrite the default configuration. Our conf is based on it
-      - ../sysadmin/nginx/docker:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - php-fpm
-      - mysql
-    links:
-      - php-fpm
 
   mysql:
     build: ./mysql
