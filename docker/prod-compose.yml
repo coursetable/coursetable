@@ -16,23 +16,22 @@ services:
       - graphql-engine
       - mysql
     environment:
-      GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      CERT_PATH: ${CERT_PATH?cert_path}
+      CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
+      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
+      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry reload secret}
       FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
-      NODE_ENV: production
+      GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      KEY_PATH: ${KEY_PATH?key_path}
       MYSQL_HOST: ${MYSQL_HOST?host}
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
       MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
       MYSQL_URL: ${MYSQL_URL?mysql_url}
-      STUDENTS_DB: yaleplus
-      COURSES_DB: yale_advanced_oci
-      CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
+      NODE_ENV: production
       SESSION_SECRET: ${SESSION_SECRET?session secret}
-      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry reload secret}
+      STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
-      CERT_PATH: ${CERT_PATH?cert_path}
-      KEY_PATH: ${KEY_PATH?key_path}
-      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
