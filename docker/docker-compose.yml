@@ -17,6 +17,8 @@ services:
       - mysql
     environment:
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
+      NODE_ENV: production
       MYSQL_HOST: ${MYSQL_HOST?host}
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
@@ -24,10 +26,10 @@ services:
       MYSQL_URL: ${MYSQL_URL?mysql_url}
       STUDENTS_DB: yaleplus
       COURSES_DB: yale_advanced_oci
-      CHALLENGE_PASSWORD: thisisapassword2
-      SESSION_SECRET: "this is a dumb secret"
-      FERRY_SECRET: "" # we want this empty in development so no auth is required to refresh
-      YALIES_API_KEY: ${YALIES_API_KEY?password}
+      CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
+      SESSION_SECRET: ${SESSION_SECRET?session secret}
+      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry reload secret}
+      YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
       CERT_PATH: ${CERT_PATH?cert_path}
       KEY_PATH: ${KEY_PATH?key_path}
       FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
@@ -37,17 +39,29 @@ services:
     ports:
       - "8085:8080"
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: postgres://postgres:thisisapassword@ocean.coursetable.com:5432/postgres
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry db}
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
 
+  nginx:
+    build: ./nginx
+    volumes:
+      - ..:/usr/share/nginx/html
+      # Overwrite the default configuration. Our conf is based on it
+      - ../sysadmin/nginx/docker:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - php-fpm
+      - mysql
+    links:
+      - php-fpm
+
   mysql:
     build: ./mysql
     command: --default-authentication-plugin=mysql_native_password
     environment:
-      MYSQL_ROOT_PASSWORD: GoCourseTable
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD?password}
     ports:
       - "3306:3306"
     volumes:
@@ -62,7 +76,7 @@ services:
       - mysql
     environment:
       PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: GoCourseTable
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD?password}
     ports:
       - "8081:80"
 
