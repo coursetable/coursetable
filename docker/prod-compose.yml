@@ -25,7 +25,7 @@ services:
       MYSQL_HOST: ${MYSQL_HOST?host}
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
       MYSQL_URL: ${MYSQL_URL?mysql_url}
       NODE_ENV: production
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
