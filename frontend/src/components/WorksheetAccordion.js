@@ -20,6 +20,7 @@ import tagStyles from './SearchResultsItem.module.css';
 import styles from './WorksheetAccordion.module.css';
 import { weekdays } from '../common';
 import NoCourses from './NoCourses';
+import { useWorksheet } from '../worksheetContext';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -89,22 +90,11 @@ function ContextAwareToggle({ eventKey, callback, course }) {
 
 /**
  * Render worksheet list in mobile view in accordion format
- * @prop onSeasonChange - function | to change season
- * @prop cur_season - string | holds the current season code
- * @prop courses - array | list of listings dictionaries
- * @prop showModal - function | to show modal for a certain listing
- * @prop setFbPerson - function | to change FB person
- * @prop cur_person - string | current person who's worksheet we are viewing
  */
 
-function WorksheetAccordion({
-  onSeasonChange,
-  cur_season,
-  courses,
-  showModal,
-  setFbPerson,
-  cur_person,
-}) {
+function WorksheetAccordion() {
+  const { courses, showModal } = useWorksheet();
+
   // Function to sort courses in chronological order for each day
   const chronologicalOrder = useCallback((a, b) => {
     if (a.start_time < b.start_time) return -1;
@@ -282,27 +272,16 @@ function WorksheetAccordion({
       <Row className={`${styles.dropdowns} mx-auto`}>
         {/* Season Dropdown */}
         <Col xs={6} className="m-0 p-0">
-          <SeasonDropdown
-            onSeasonChange={onSeasonChange}
-            cur_season={cur_season}
-          />
+          <SeasonDropdown />
         </Col>
         {/* FB Dropdown */}
         <Col xs={6} className="m-0 p-0">
-          <FBDropdown
-            cur_season={cur_season}
-            setFbPerson={setFbPerson}
-            cur_person={cur_person}
-          />
+          <FBDropdown />
         </Col>
       </Row>
       {/* Render list of courses */}
       <SurfaceComponent layer={0} className={styles.accordion_list}>
-        {items.props.children.length > 0 ? (
-          items
-        ) : (
-          <NoCourses cur_season={cur_season} />
-        )}
+        {items.props.children.length > 0 ? items : <NoCourses />}
       </SurfaceComponent>
     </div>
   );

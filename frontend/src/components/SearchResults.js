@@ -16,14 +16,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 import Styles from './SearchResults.module.css';
 import './SearchResults.css';
 
-import {
-  Container,
-  Col,
-  Row,
-  Spinner,
-  Tooltip,
-  OverlayTrigger,
-} from 'react-bootstrap';
+import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 
@@ -70,7 +63,6 @@ const SearchResults = ({
   setView,
   loading = false,
   multiSeasons = false,
-  showModal,
   isLoggedIn,
   expanded,
   num_fb,
@@ -144,7 +136,6 @@ const SearchResults = ({
         row_elements.push(
           <SearchResultsGridItem
             course={data[j]}
-            showModal={showModal}
             isLoggedIn={isLoggedIn}
             num_cols={num_cols}
             multiSeasons={multiSeasons}
@@ -159,7 +150,7 @@ const SearchResults = ({
         </div>
       );
     },
-    [data, showModal, isLoggedIn, multiSeasons, num_cols]
+    [data, isLoggedIn, multiSeasons, num_cols]
   );
   const renderListRow = useCallback(
     ({ index, key, style, isScrolling }) => {
@@ -170,7 +161,6 @@ const SearchResults = ({
         <div style={style} key={key}>
           <SearchResultsItemMemo
             course={data[index]}
-            showModal={showModal}
             multiSeasons={multiSeasons}
             isFirst={index === 0}
             COL_SPACING={COL_SPACING}
@@ -181,7 +171,7 @@ const SearchResults = ({
         </div>
       );
     },
-    [data, showModal, multiSeasons, expanded, COL_SPACING, num_fb]
+    [data, multiSeasons, expanded, COL_SPACING, num_fb]
   );
 
   if (!isLoggedIn) {

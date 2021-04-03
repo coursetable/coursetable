@@ -2,17 +2,17 @@ import React, { useMemo } from 'react';
 import { useUser } from '../user';
 import './FBReactSelect.css';
 import CustomSelect from './CustomSelect';
+import { useWorksheet } from '../worksheetContext';
 
 /**
  * Render FB React-Select Dropdown in WorksheetRowDropdown.js
- * @prop cur_season - string that holds the current season code
- * @prop setFbPerson - function to change FB person
- * @prop cur_person - string of current person who's worksheet we are viewing
  */
 
-function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
+function FBReactSelect() {
   // Fetch user context data
   const { user } = useUser();
+
+  const { fb_person, handleFBPersonChange } = useWorksheet();
 
   // FB Friends names
   const friendInfo = useMemo(() => {
@@ -42,7 +42,7 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
     return (
       <CustomSelect
         value={{
-          value: cur_person,
+          value: fb_person,
           label: 'Connect FB',
         }}
         isDisabled
@@ -54,22 +54,22 @@ function FBReactSelect({ cur_season, setFbPerson, cur_person }) {
     <div className="fb_select">
       <CustomSelect
         value={
-          cur_person === 'me'
+          fb_person === 'me'
             ? null
             : {
-                value: cur_person,
-                label: friendInfo[cur_person].name,
+                value: fb_person,
+                label: friendInfo[fb_person].name,
               }
         }
         placeholder="Friends' courses"
         isSearchable
-        isClearable={cur_person !== 'me'}
+        isClearable={fb_person !== 'me'}
         options={friend_options}
         onChange={(option) => {
           // Cleared FB friend
-          if (!option) setFbPerson('me');
+          if (!option) handleFBPersonChange('me');
           // Selected FB friend
-          else setFbPerson(option.value);
+          else handleFBPersonChange(option.value);
         }}
       />
     </div>

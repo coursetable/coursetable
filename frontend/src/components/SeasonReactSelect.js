@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
 import CustomSelect from './CustomSelect';
 import { toSeasonString } from '../courseUtilities';
+import { useWorksheet } from '../worksheetContext';
 
 /**
  * Render season dropdown
- * @prop cur_season - string that holds the current season code
- * @prop season_options - list of season codes
- * @prop onSeasonChange - function to change season
  */
 
-function SeasonReactSelect({ cur_season, season_options, onSeasonChange }) {
+function SeasonReactSelect() {
+  const { cur_season, season_options, changeSeason } = useWorksheet();
+
   return (
     <CustomSelect
       value={{
@@ -19,7 +19,7 @@ function SeasonReactSelect({ cur_season, season_options, onSeasonChange }) {
       isSearchable={false}
       options={season_options}
       onChange={(option) => {
-        onSeasonChange(option.value);
+        changeSeason(option.value);
       }}
     />
   );

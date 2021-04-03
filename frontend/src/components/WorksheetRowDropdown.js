@@ -9,6 +9,7 @@ import SeasonReactSelect from './SeasonReactSelect';
 import { SurfaceComponent } from './StyledComponents';
 import { useUser } from '../user';
 import { BsArrowRight, BsEyeSlash, BsEye } from 'react-icons/bs';
+import { useWorksheet } from '../worksheetContext';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -85,27 +86,12 @@ const StyledExpandLink = styled(Button)`
 
 /**
  * Render row of season and FB friends dropdowns on worksheet
- * @prop cur_season - string | holds the current season code
- * @prop season_options - array | list of season codes
- * @prop onSeasonChange - function | to change season
- * @prop setFbPerson - function | to change FB person
- * @prop cur_person - string | current person who's worksheet we are viewing
- * @prop setCurExpand - function | to change worksheet view
- * @prop toggleCourse - function | to hide courses
- * @prop areHidden - boolean | are all courses hidden
  */
-function WorksheetRowDropdown({
-  cur_season,
-  season_options,
-  onSeasonChange,
-  setFbPerson,
-  cur_person,
-  setCurExpand,
-  toggleCourse,
-  areHidden,
-}) {
+function WorksheetRowDropdown({ areHidden }) {
   // Fetch user context data
   const { user } = useUser();
+
+  const { toggleCourse, handleCurExpand } = useWorksheet();
 
   return (
     <StyledSpacer className="pt-3">
@@ -117,7 +103,7 @@ function WorksheetRowDropdown({
               <StyledExpandLink
                 variant="link"
                 className="py-0"
-                onClick={() => setCurExpand('list')}
+                onClick={() => handleCurExpand('list')}
               >
                 Go to list view <BsArrowRight size={24} />
               </StyledExpandLink>
@@ -127,21 +113,13 @@ function WorksheetRowDropdown({
             {/* Season Select */}
             <Col md={6} className="pl-0 pr-2">
               <div className={`${styles.select_container}`}>
-                <SeasonReactSelect
-                  cur_season={cur_season}
-                  season_options={season_options}
-                  onSeasonChange={onSeasonChange}
-                />
+                <SeasonReactSelect />
               </div>
             </Col>
             {/* FB Friend Select */}
             <Col md={6} className="px-0">
               <div className={styles.select_container}>
-                <FBReactSelect
-                  cur_season={cur_season}
-                  setFbPerson={setFbPerson}
-                  cur_person={cur_person}
-                />
+                <FBReactSelect />
               </div>
             </Col>
           </Row>

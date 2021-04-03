@@ -6,6 +6,7 @@ import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
 import CalendarEvent from './CalendarEvent';
 import { weekdays } from '../common';
+import { useWorksheet } from '../worksheetContext';
 
 const localizer = momentLocalizer(moment);
 
@@ -49,13 +50,11 @@ const StyledCalendar = styled(Calendar)`
 
 /**
  * Render Worksheet Calendar component
- * @prop showModal - function | to show modal for a particular listing
- * @prop courses - array | list of dictionaries of listing data
- * @prop hover_course - object | dictionary of listing that is being hovered over in list view
- * @prop hidden_courses - object | dictionary of hidden courses
  */
 
-function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
+function WeekSchedule() {
+  const { showModal, courses, hover_course, hidden_courses } = useWorksheet();
+
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback(
     (listings) => {

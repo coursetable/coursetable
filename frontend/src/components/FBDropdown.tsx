@@ -1,22 +1,12 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { NetId, Season } from '../common';
+import { NetId } from '../common';
 import { useUser } from '../user';
+import { useWorksheet } from '../worksheetContext';
 
 import './DropdownShared.css';
 
 type Person = NetId | 'me';
-
-type Props = {
-  /** Holds the current season code */
-  cur_season: Season;
-
-  /** Function to switch to a FB friend's worksheet */
-  setFbPerson(netId: Person): void;
-
-  /** The current person who's worksheet you are viewing */
-  cur_person: Person;
-};
 
 /**
  * Render FB Dropdown in mobile view.
@@ -25,13 +15,11 @@ type Props = {
  * any classes in this season. In the list, we include the number of
  * listings they have in their worksheet in the given semester.
  */
-const FBDropdown: React.VFC<Props> = ({
-  cur_season,
-  setFbPerson,
-  cur_person,
-}) => {
+const FBDropdown: React.VFC = () => {
   // Fetch user context data
   const { user } = useUser();
+
+  const { cur_season, fb_person, handleFBPersonChange } = useWorksheet();
 
   // Generate friend netId list, sorted by name.
   const friendInfo = (user.fbLogin && user.fbWorksheets?.friendInfo) || {};
@@ -64,8 +52,8 @@ const FBDropdown: React.VFC<Props> = ({
         className="d-flex"
         // Styling if this is the current person
         style={{
-          backgroundColor: person === cur_person ? '#007bff' : '',
-          color: person === cur_person ? 'white' : 'black',
+          backgroundColor: person === fb_person ? '#007bff' : '',
+          color: person === fb_person ? 'white' : 'black',
         }}
       >
         <div className="mx-auto">{text}</div>
@@ -80,7 +68,7 @@ const FBDropdown: React.VFC<Props> = ({
   // Set FB person on click
   const handleSelect = (fb_person: Person | null) => {
     if (fb_person) {
-      setFbPerson(fb_person);
+      handleFBPersonChange(fb_person);
     }
   };
 
@@ -88,7 +76,7 @@ const FBDropdown: React.VFC<Props> = ({
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={cur_person === 'me' ? 'Me' : friendInfo[cur_person].name}
+        title={fb_person === 'me' ? 'Me' : friendInfo[fb_person].name}
         onSelect={handleSelect}
       >
         {friend_options}

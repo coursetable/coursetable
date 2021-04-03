@@ -1,6 +1,5 @@
 import React, { useState, useMemo } from 'react';
 import { Col, Row, Button } from 'react-bootstrap';
-import { FaCompressAlt } from 'react-icons/fa';
 import { BsArrowLeft } from 'react-icons/bs';
 import SearchResults from './SearchResults';
 import FBReactSelect from './FBReactSelect';
@@ -9,12 +8,12 @@ import SeasonReactSelect from './SeasonReactSelect';
 // import { useEffect, useState, useRef, useMemo } from 'react';
 import styles from './WorksheetExpandedList.module.css';
 import select_styles from './WorksheetRowDropdown.module.css';
-import worksheet_styles from '../pages/Worksheet.module.css';
 import { useUser } from '../user';
 import SortbyReactSelect from './SortByReactSelect';
-import { SurfaceComponent, StyledExpandBtn } from './StyledComponents';
+import { SurfaceComponent } from './StyledComponents';
 import { getNumFB, sortCourses } from '../courseUtilities';
 import styled from 'styled-components';
+import { useWorksheet } from '../worksheetContext';
 
 const StyledExpandLink = styled(Button)`
   color: ${({ theme }) => theme.text[1]};
@@ -30,28 +29,9 @@ const StyledExpandLink = styled(Button)`
 
 /**
  * Render expanded worksheet list after maximize button is clicked
- * @prop courses - list of listings dictionaries
- * @prop showModal - function to show modal for a certain listing
- * @prop cur_expand - string | Determines whether or not the list is expanded
- * @prop cur_season - string that holds the current season code
- * @prop season_options - list of season codes
- * @prop onSeasonChange - function to change season
- * @prop setFbPerson - function to change FB person
- * @prop fb_person - string of current person who's worksheet we are viewing
- * @prop setCurExpand - function to minimize the expanded list view
  */
 
-const WorksheetExpandedList = ({
-  courses,
-  showModal,
-  cur_expand,
-  cur_season,
-  season_options,
-  onSeasonChange,
-  setFbPerson,
-  fb_person,
-  setCurExpand,
-}) => {
+const WorksheetExpandedList = () => {
   const { user } = useUser();
   const [isList, setView] = useState(true);
   // State that determines sort order
@@ -61,6 +41,8 @@ const WorksheetExpandedList = ({
     if (!user.fbLogin || !user.fbWorksheets) return {};
     return getNumFB(user.fbWorksheets);
   }, [user.fbLogin, user.fbWorksheets]);
+
+  const { courses, cur_expand, handleCurExpand } = useWorksheet();
 
   const WorksheetData = useMemo(() => {
     // Apply sorting order.
@@ -74,7 +56,6 @@ const WorksheetExpandedList = ({
         <Col md={9} className="pr-3 pl-0">
           <SearchResults
             data={WorksheetData}
-            showModal={showModal}
             expanded={cur_expand !== 'list'}
             isLoggedIn
             isList={isList}
@@ -92,7 +73,7 @@ const WorksheetExpandedList = ({
               <StyledExpandLink
                 variant="link"
                 className="py-0"
-                onClick={() => setCurExpand('none')}
+                onClick={() => handleCurExpand('none')}
               >
                 <BsArrowLeft size={24} /> Go to calendar view
               </StyledExpandLink>
@@ -101,11 +82,7 @@ const WorksheetExpandedList = ({
               <div
                 className={`${select_styles.select_container} ${select_styles.hover_effect}`}
               >
-                <SeasonReactSelect
-                  cur_season={cur_season}
-                  season_options={season_options}
-                  onSeasonChange={onSeasonChange}
-                />
+                <SeasonReactSelect />
               </div>
             </Row>
             <Row className="mx-auto mt-2">
@@ -115,11 +92,7 @@ const WorksheetExpandedList = ({
                   (user.fbLogin ? ` ${select_styles.hover_effect}` : '')
                 }
               >
-                <FBReactSelect
-                  cur_season={cur_season}
-                  setFbPerson={setFbPerson}
-                  cur_person={fb_person}
-                />
+                <FBReactSelect />
               </div>
             </Row>
             <Row className="mx-auto mt-2">
@@ -133,7 +106,7 @@ const WorksheetExpandedList = ({
                 className={worksheet_styles.expand_icon}
                 onClick={() => {
                   // Compress list
-                  setCurExpand('none');
+                  handleCurExpand('none');
                 }}
               />
             </StyledExpandBtn> */}

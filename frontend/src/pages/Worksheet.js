@@ -1,8 +1,7 @@
-import React, { useMemo, useState, useCallback, useEffect } from 'react';
+import React from 'react';
 
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
-import posthog from 'posthog-js';
 import WeekSchedule from '../components/WeekSchedule';
 import WorksheetList from '../components/WorksheetList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
@@ -15,11 +14,9 @@ import {
 
 import styles from './Worksheet.module.css';
 
-import { useUser } from '../user';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import ErrorPage from '../components/ErrorPage';
 
-import { useSessionStorageState } from '../browserStorage';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import { useWorksheet } from '../worksheetContext';
 
@@ -33,34 +30,13 @@ function Worksheet() {
   const is_mobile = width < 768;
 
   const {
-    // Context state.
-    season_options,
     cur_worksheet,
-    cur_season,
-    fb_person,
-    courses,
-    hidden_courses,
-    hover_course,
     cur_expand,
     worksheetLoading,
     worksheetError,
     worksheetData,
-    select_sortby,
-    sort_order,
-    ordering,
     course_modal,
-
-    // Update methods.
-    changeSeason,
-    handleFBPersonChange,
-    setHoverCourse,
     handleCurExpand,
-    toggleCourse,
-    setSelectSortby,
-    setSortOrder,
-    setOrdering,
-    setCourseModal,
-    showModal,
     hideModal,
   } = useWorksheet();
 
@@ -139,13 +115,7 @@ function Worksheet() {
                 layer={0}
                 className={styles.calendar_style_container}
               >
-                <WeekSchedule
-                  showModal={showModal}
-                  courses={courses}
-                  hover_course={hover_course}
-                  setHoverCourse={setHoverCourse}
-                  hidden_courses={hidden_courses}
-                />
+                <WeekSchedule />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
                   className={`${styles.expand_btn} ${styles.top_right}`}
@@ -184,35 +154,13 @@ function Worksheet() {
               {/* Expanded List Component */}
               <Fade in={cur_expand === 'list'}>
                 <div style={{ display: cur_expand === 'list' ? '' : 'none' }}>
-                  <WorksheetExpandedList
-                    courses={courses}
-                    showModal={showModal}
-                    cur_expand={cur_expand}
-                    cur_season={cur_season}
-                    season_options={season_options}
-                    onSeasonChange={changeSeason}
-                    setFbPerson={handleFBPersonChange}
-                    fb_person={fb_person}
-                    setCurExpand={handleCurExpand}
-                  />
+                  <WorksheetExpandedList />
                 </div>
               </Fade>
               {/* Default List Component */}
               <Fade in={cur_expand !== 'list'}>
                 <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
-                  <WorksheetList
-                    courses={courses}
-                    showModal={showModal}
-                    cur_season={cur_season}
-                    season_options={season_options}
-                    onSeasonChange={changeSeason}
-                    toggleCourse={toggleCourse}
-                    hidden_courses={hidden_courses}
-                    setHoverCourse={setHoverCourse}
-                    setFbPerson={handleFBPersonChange}
-                    cur_person={fb_person}
-                    setCurExpand={handleCurExpand}
-                  />
+                  <WorksheetList />
                 </div>
               </Fade>
             </Col>
@@ -223,14 +171,7 @@ function Worksheet() {
         <div>
           <Row className={`${styles.accordion} m-0 p-3`}>
             <Col className="p-0">
-              <WorksheetAccordion
-                onSeasonChange={changeSeason}
-                cur_season={cur_season}
-                courses={courses}
-                showModal={showModal}
-                setFbPerson={handleFBPersonChange}
-                cur_person={fb_person}
-              />
+              <WorksheetAccordion />
             </Col>
           </Row>
         </div>

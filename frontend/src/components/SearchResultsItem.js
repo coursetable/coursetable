@@ -19,6 +19,7 @@ import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './SearchResultsItem.module.css';
 import { getOverallRatings } from '../courseUtilities';
+import { useWorksheet } from '../worksheetContext';
 
 // Row for search results item
 const StyledResultsItem = styled(Row)`
@@ -32,7 +33,6 @@ const StyledResultsItem = styled(Row)`
 /**
  * Renders a list item for an expanded worksheet list item
  * @prop course - listing data for the current course
- * @prop showModal - function that shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isFirst - boolean | is this the first course of the search results?
  * @prop COL_SPACING - dictionary with widths of each column
@@ -43,7 +43,6 @@ const StyledResultsItem = styled(Row)`
 
 const SearchResultsItem = ({
   course,
-  showModal,
   multiSeasons,
   isFirst,
   COL_SPACING,
@@ -58,6 +57,8 @@ const SearchResultsItem = ({
   useEffect(() => {
     if (!mounted) setMounted(true);
   }, [mounted]);
+
+  const { showModal } = useWorksheet();
 
   // Season code for this listing
   const { season_code } = course;

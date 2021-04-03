@@ -4,6 +4,7 @@ import styled, { withTheme } from 'styled-components';
 import styles from './WorksheetListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
+import { useWorksheet } from '../worksheetContext';
 
 // Listgroup Item for worksheet list item
 const StyledListItem = styled(ListGroup.Item)`
@@ -27,21 +28,16 @@ const StyledListItem = styled(ListGroup.Item)`
 /**
  * Render worksheet list item in default worksheet view
  * @prop course - object | current listing
- * @prop showModal - function | to show modal for a certain listing
- * @prop cur_season - string | holds the current season code
- * @prop toggleCourse - function | to hide/show course
- * @prop setHoverCourse - function | to darken calendar events of this listing
  * @prop hidden - object | dictionary of hidden courses
  */
-function WorksheetListItem({
-  course,
-  showModal,
-  cur_season,
-  toggleCourse,
-  setHoverCourse,
-  hidden,
-  theme,
-}) {
+function WorksheetListItem({ course, hidden, theme }) {
+  const {
+    showModal,
+    cur_season,
+    toggleCourse,
+    setHoverCourse,
+  } = useWorksheet();
+
   // Style for coloring hidden courses
   const color_style = {
     color: hidden ? theme.hidden : theme.text[0],

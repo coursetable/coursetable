@@ -11,8 +11,8 @@ import { useWorksheet } from '../worksheetContext';
  * @prop cur_season - string that holds the current season code
  */
 
-function SeasonDropdown({ onSeasonChange, cur_season }) {
-  const { season_codes } = useWorksheet();
+function SeasonDropdown() {
+  const { season_codes, cur_season, changeSeason } = useWorksheet();
 
   // HTML holding season options
   const seasons_html = [];
@@ -40,7 +40,7 @@ function SeasonDropdown({ onSeasonChange, cur_season }) {
       <DropdownButton
         variant="dark"
         title={toSeasonString(cur_season)[0]}
-        onSelect={onSeasonChange}
+        onSelect={changeSeason}
       >
         {seasons_html}
       </DropdownButton>

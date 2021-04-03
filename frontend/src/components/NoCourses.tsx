@@ -1,13 +1,11 @@
 import React from 'react';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import { toSeasonString } from '../courseUtilities';
+import { useWorksheet } from '../worksheetContext';
 
-type Props = {
-  /** Message to display in the error page */
-  cur_season: string;
-};
+const NoCourses: React.VFC = () => {
+  const { cur_season } = useWorksheet();
 
-const NoCourses: React.VFC<Props> = ({ cur_season }) => {
   return (
     <div style={{ width: '100%' }} className="d-flex">
       <div className="text-center m-auto">
