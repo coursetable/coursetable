@@ -13,7 +13,6 @@ services:
 
     depends_on:
       - graphql-engine
-      - mysql
     environment:
       CERT_PATH: ${CERT_PATH?cert_path}
       CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
