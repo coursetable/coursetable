@@ -2,7 +2,7 @@
   "scripts": {
     "prestart": "yarn prisma validate && yarn prisma introspect && yarn prisma generate",
     "start": "npx ts-node-dev --debug --files --exit-child src/server.ts",
-    "prod": "npx ts-node src/server.ts",
+    "prod": "npx ts-node --files src/server.ts",
     "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
     "depcheck": "npx depcheck . --json",
     "lint": "prettier -l src && yarn eslint ./src",
