@@ -61,7 +61,7 @@ services:
     build:
       context: ../frontend
       args:
-        REACT_APP_UMAMI_WEBSITE_ID: 1fbff7d5-794d-456f-aa1a-61d8f5794b74
+        REACT_APP_UMAMI_WEBSITE_ID: 169b59ec-90fc-4dff-b682-a3713a2ce360
         REACT_APP_POSTHOG_TOKEN: JBthuPpdaiJJGwHtoETN0Shc08K5b3VhSG2TweKm6nc
         REACT_APP_SENTRY_RELEASE: ${SENTRY_RELEASE_VERSION?missing release version}
     restart: always
