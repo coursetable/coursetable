@@ -14,6 +14,7 @@ import { SurfaceComponent } from './StyledComponents';
 import { getNumFB, sortCourses } from '../courseUtilities';
 import styled from 'styled-components';
 import { useWorksheet } from '../worksheetContext';
+import { useSearch } from '../searchContext';
 
 const StyledExpandLink = styled(Button)`
   color: ${({ theme }) => theme.text[1]};
@@ -34,15 +35,10 @@ const StyledExpandLink = styled(Button)`
 const WorksheetExpandedList = () => {
   const { user } = useUser();
   const [isList, setView] = useState(true);
-  // State that determines sort order
-  const [ordering, setOrdering] = useState({ course_code: 'asc' });
-  // Object that holds a list of each fb friend taking a specific course
-  const num_fb = useMemo(() => {
-    if (!user.fbLogin || !user.fbWorksheets) return {};
-    return getNumFB(user.fbWorksheets);
-  }, [user.fbLogin, user.fbWorksheets]);
 
   const { courses, cur_expand, handleCurExpand } = useWorksheet();
+
+  const { ordering, num_fb } = useSearch();
 
   const WorksheetData = useMemo(() => {
     // Apply sorting order.
@@ -96,20 +92,8 @@ const WorksheetExpandedList = () => {
               </div>
             </Row>
             <Row className="mx-auto mt-2">
-              <SortbyReactSelect setOrdering={setOrdering} />
+              <SortbyReactSelect />
             </Row>
-            {/* <StyledExpandBtn
-              className={`${worksheet_styles.expand_btn} ${styles.top_left}`}
-            >
-              <FaCompressAlt
-                size={12}
-                className={worksheet_styles.expand_icon}
-                onClick={() => {
-                  // Compress list
-                  handleCurExpand('none');
-                }}
-              />
-            </StyledExpandBtn> */}
           </SurfaceComponent>
         </Col>
       </Row>

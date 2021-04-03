@@ -12,7 +12,7 @@ import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { useSessionStorageState } from './browserStorage';
 import { Listing } from './components/FerryProvider';
 import { toSeasonString } from './courseUtilities';
-import { sortbyOptions, SortKeys } from './queries/Constants';
+import { sortbyOptions } from './queries/Constants';
 import { useWorksheetInfo } from './queries/GetWorksheetListings';
 import { useUser, Worksheet } from './user';
 
@@ -22,12 +22,6 @@ export type Option = {
   value: string;
   color?: string;
   numeric?: boolean;
-};
-
-export type SortOrderType = 'desc' | 'asc' | undefined;
-
-export type OrderingType = {
-  [key in SortKeys]?: SortOrderType;
 };
 
 // This is a type for weird TS errors
@@ -51,18 +45,12 @@ type Store = {
   worksheetLoading: boolean;
   worksheetError: string | null;
   worksheetData: Listing[];
-  select_sortby: Option;
-  sort_order: SortOrderType;
-  ordering: OrderingType;
   course_modal: (string | boolean | Listing)[];
   changeSeason: (season_code: string) => void;
   handleFBPersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleCurExpand: (view: string) => void;
   toggleCourse: (crn: number) => void;
-  setSelectSortby: React.Dispatch<React.SetStateAction<Option>>;
-  setSortOrder: React.Dispatch<React.SetStateAction<SortOrderType>>;
-  setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   setCourseModal: React.Dispatch<
     React.SetStateAction<(string | boolean | Listing)[]>
   >;
@@ -77,15 +65,11 @@ WorksheetContext.displayName = 'WorksheetContext';
 const defaultOptions: Option[] = [];
 const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
 const defaultSortOption: Option = sortbyOptions[0];
-const defaultSortOrder: SortOrderType = 'asc';
-const defaultOrdering: OrderingType = { course_code: 'asc' };
 
 export const defaultFilters = {
   defaultOptions,
   defaultSeason,
   defaultSortOption,
-  defaultSortOrder,
-  defaultOrdering,
 };
 
 // List of colors for the calendar events
@@ -102,28 +86,6 @@ const colors = [
  * Stores the user's worksheet filters and sorts
  */
 export const WorksheetProvider: React.FC = ({ children }) => {
-  /* Sorting */
-
-  // Sort option state
-  const [select_sortby, setSelectSortby] = useSessionStorageState(
-    'select_sortby',
-    defaultSortOption
-  );
-
-  // Sort order state
-  const [sort_order, setSortOrder] = useSessionStorageState<SortOrderType>(
-    'sort_order',
-    defaultSortOrder
-  );
-
-  // Combination of sort option and sort order
-  const [ordering, setOrdering] = useSessionStorageState(
-    'ordering',
-    defaultOrdering
-  );
-
-  /* Other */
-
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
@@ -266,17 +228,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     sortByCourseCode,
   ]);
 
-  // Set ordering in parent element whenever sortby or order changes
-  useEffect(() => {
-    const sortParams = select_sortby.value;
-    const newOrdering: {
-      [key in SortKeys]?: SortOrderType;
-    } = {
-      [sortParams]: sort_order,
-    };
-    setOrdering(newOrdering);
-  }, [select_sortby, sort_order, setOrdering]);
-
   /* Functions */
 
   // Hide/Show this course
@@ -353,9 +304,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       worksheetLoading,
       worksheetError,
       worksheetData,
-      select_sortby,
-      sort_order,
-      ordering,
       course_modal,
 
       // Update methods.
@@ -364,9 +312,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       setHoverCourse,
       handleCurExpand,
       toggleCourse,
-      setSelectSortby,
-      setSortOrder,
-      setOrdering,
       setCourseModal,
       showModal,
       hideModal,
@@ -384,18 +329,12 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       worksheetLoading,
       worksheetError,
       worksheetData,
-      select_sortby,
-      sort_order,
-      ordering,
       course_modal,
       changeSeason,
       handleFBPersonChange,
       setHoverCourse,
       handleCurExpand,
       toggleCourse,
-      setSelectSortby,
-      setSortOrder,
-      setOrdering,
       setCourseModal,
       showModal,
       hideModal,

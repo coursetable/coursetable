@@ -106,7 +106,6 @@ const Search: React.FC = () => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
-    setOrdering,
     handleResetFilters,
   } = useSearch();
 
@@ -218,10 +217,7 @@ const Search: React.FC = () => {
                 </Row>
                 {/* Sort by option and order */}
                 <Row className="mx-auto py-0 px-4">
-                  <SortByReactSelect
-                    setOrdering={setOrdering}
-                    key={reset_key}
-                  />
+                  <SortByReactSelect key={reset_key} />
                 </Row>
                 <StyledHr />
                 <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>

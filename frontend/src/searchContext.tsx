@@ -20,6 +20,7 @@ import {
   sortbyOptions,
   SortKeys,
   searchSpeed,
+  SortByOption,
 } from './queries/Constants';
 import { useUser } from './user';
 
@@ -58,7 +59,7 @@ type Store = {
   hideCancelled: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
-  select_sortby: Option;
+  select_sortby: SortByOption;
   sort_order: SortOrderType;
   ordering: OrderingType;
   seasonsOptions: OptType;
@@ -85,7 +86,7 @@ type Store = {
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectSortby: React.Dispatch<React.SetStateAction<Option>>;
+  setSelectSortby: React.Dispatch<React.SetStateAction<SortByOption>>;
   setSortOrder: React.Dispatch<React.SetStateAction<SortOrderType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
@@ -103,7 +104,7 @@ const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
 const defaultHideCancelled = true;
 const defaultHideFirstYearSeminars = false;
 const defaultHideGraduateCourses = false;
-const defaultSortOption: Option = sortbyOptions[0];
+const defaultSortOption: SortByOption = sortbyOptions[0];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
@@ -192,7 +193,7 @@ export const SearchProvider: React.FC = ({ children }) => {
   /* Sorting */
 
   // Sort option state
-  const [select_sortby, setSelectSortby] = useSessionStorageState(
+  const [select_sortby, setSelectSortby] = useSessionStorageState<SortByOption>(
     'select_sortby',
     defaultSortOption
   );
