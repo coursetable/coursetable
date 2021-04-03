@@ -60,6 +60,12 @@ const StyledRange = styled(Range)<{ isTablet: boolean }>`
   cursor: pointer;
 `;
 
+// Enrollment range filter
+const StyledEnrollRange = styled(Range)`
+  width: 250px;
+  cursor: pointer;
+`;
+
 // Range filter label
 const RangeLabel = styled.div`
   font-size: 14px;
@@ -163,6 +169,8 @@ export const NavbarCatalogSearch: React.FC = () => {
     workloadBounds,
     workloadValueLabels,
     select_seasons,
+    enrollBounds,
+    enrollValueLabels,
     select_schools,
     select_credits,
     hideCancelled,
@@ -183,6 +191,8 @@ export const NavbarCatalogSearch: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
+    setEnrollBounds,
+    setEnrollValueLabels,
     setSelectSchools,
     setSelectCredits,
     setHideCancelled,
@@ -196,6 +206,7 @@ export const NavbarCatalogSearch: React.FC = () => {
   // Active state for overall and workload range filters
   const [activeOverall, setActiveOverall] = useState(false);
   const [activeWorkload, setActiveWorkload] = useState(false);
+  const [activeEnrollment, setActiveEnrollment] = useState(false);
 
   const globalTheme = useTheme();
 
@@ -211,7 +222,15 @@ export const NavbarCatalogSearch: React.FC = () => {
     } else {
       setActiveWorkload(false);
     }
-  }, [canReset, overallBounds, workloadBounds]);
+    if (
+      canReset &&
+      !_.isEqual(enrollBounds, defaultFilters.defaultEnrollBounds)
+    ) {
+      setActiveEnrollment(true);
+    } else {
+      setActiveEnrollment(false);
+    }
+  }, [canReset, overallBounds, workloadBounds, enrollBounds]);
 
   // Active styles for overall and workload range filters
   const activeStyle = useCallback(
@@ -527,6 +546,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                 setHideFirstYearSeminars(false);
                 setHideGraduateCourses(false);
                 setStartTime(Date.now());
+                setEnrollBounds(defaultFilters.defaultEnrollBounds);
               }}
               select_options={advanced_options}
               data_tutorial={4}
@@ -590,6 +610,30 @@ export const NavbarCatalogSearch: React.FC = () => {
                     </Row>
                   </>
                 )}
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  <AdvancedLabel style={activeStyle(activeEnrollment)}>
+                    # Enrolled:
+                  </AdvancedLabel>
+                  <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
+                  <StyledEnrollRange
+                    min={0}
+                    max={600}
+                    step={30}
+                    key={reset_key}
+                    handleStyle={range_handle_style()}
+                    railStyle={range_rail_style()}
+                    trackStyle={[range_rail_style()]}
+                    defaultValue={enrollBounds}
+                    onChange={(value) => {
+                      setEnrollValueLabels(value);
+                    }}
+                    onAfterChange={(value) => {
+                      setEnrollBounds(value);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                  <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
+                </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}
                   <AdvancedLabel>School:</AdvancedLabel>

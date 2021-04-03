@@ -176,7 +176,8 @@
 }
 
 .overall_tooltip,
-.workload_tooltip {
+.workload_tooltip,
+.enrollment_tooltip {
   font-size: 0.75rem;
   width: 1.5rem;
   color: white;
@@ -195,7 +196,8 @@
 
 /* arrow */
 .overall_tooltip::after,
-.workload_tooltip::after {
+.workload_tooltip::after,
+.enrollment_tooltip::after {
   content: '';
   position: absolute;
   top: 100%;

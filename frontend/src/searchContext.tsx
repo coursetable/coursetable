@@ -63,6 +63,8 @@ type Store = {
   workloadBounds: number[];
   workloadValueLabels: number[];
   select_seasons: Option[];
+  enrollBounds: number[];
+  enrollValueLabels: number[];
   select_schools: Option[];
   select_credits: Option[];
   hideCancelled: boolean;
@@ -91,6 +93,8 @@ type Store = {
   setWorkloadBounds: React.Dispatch<React.SetStateAction<number[]>>;
   setWorkloadValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSeasons: React.Dispatch<React.SetStateAction<Option[]>>;
+  setEnrollBounds: React.Dispatch<React.SetStateAction<number[]>>;
+  setEnrollValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSchools: React.Dispatch<React.SetStateAction<Option[]>>;
   setSelectCredits: React.Dispatch<React.SetStateAction<Option[]>>;
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -135,6 +139,7 @@ const defaultSeason: Option[] = [
 const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
+const defaultEnrollBounds = [0, 600];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
@@ -142,6 +147,7 @@ export const defaultFilters = {
   defaultOption,
   defaultOptions,
   defaultBounds,
+  defaultEnrollBounds,
   defaultSeason,
   defaultTrue,
   defaultFalse,
@@ -190,6 +196,14 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
     'select_seasons',
     defaultSeason
+  );
+
+  const [enrollBounds, setEnrollBounds] = useSessionStorageState(
+    'enrollBounds',
+    defaultEnrollBounds
+  );
+  const [enrollValueLabels, setEnrollValueLabels] = useState(
+    enrollBounds !== defaultEnrollBounds ? enrollBounds : defaultEnrollBounds
   );
 
   const [select_schools, setSelectSchools] = useSessionStorageState(
@@ -395,6 +409,9 @@ export const SearchProvider: React.FC = ({ children }) => {
     const include_all_workloads =
       workloadBounds[0] === 1 && workloadBounds[1] === 5;
 
+    const include_all_enrollments =
+      enrollBounds[0] === 0 && enrollBounds[1] === 600;
+
     // Variables to use in search query
     const search_variables = {
       search_text: searchText,
@@ -408,6 +425,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       max_overall: include_all_overalls ? null : overallBounds[1],
       min_workload: include_all_workloads ? null : workloadBounds[0],
       max_workload: include_all_workloads ? null : workloadBounds[1],
+      min_enrollment: include_all_enrollments ? null : enrollBounds[0],
+      max_enrollment: include_all_enrollments ? null : enrollBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
       discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
@@ -432,6 +451,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     select_skillsareas,
     select_subjects,
     workloadBounds,
+    enrollBounds,
     searchText,
   ]);
 
@@ -474,6 +494,16 @@ export const SearchProvider: React.FC = ({ children }) => {
         (average_workload === null ||
           _.round(average_workload, 1) < searchConfig.min_workload ||
           _.round(average_workload, 1) > searchConfig.max_workload)
+      ) {
+        return false;
+      }
+
+      if (
+        searchConfig.min_enrollment !== null &&
+        searchConfig.max_enrollment !== null &&
+        (listing.last_enrollment === null ||
+          listing.last_enrollment < searchConfig.min_enrollment ||
+          listing.last_enrollment > searchConfig.max_enrollment)
       ) {
         return false;
       }
@@ -602,6 +632,8 @@ export const SearchProvider: React.FC = ({ children }) => {
     setSelectSeasons(defaultSeason);
     setSelectSkillsAreas(defaultOptions);
     setSelectCredits(defaultOptions);
+    setEnrollBounds(defaultEnrollBounds);
+    setEnrollValueLabels(defaultEnrollBounds);
     setSelectSchools(defaultOptions);
     setSelectSubjects(defaultOptions);
 
@@ -621,6 +653,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setOverallBounds,
     setWorkloadBounds,
     setSelectSeasons,
+    setEnrollBounds,
     setSelectSchools,
     setSelectCredits,
     setHideCancelled,
@@ -680,6 +713,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       !_.isEqual(overallBounds, defaultBounds) ||
       !_.isEqual(workloadBounds, defaultBounds) ||
       !_.isEqual(select_seasons, defaultSeason) ||
+      !_.isEqual(enrollBounds, defaultEnrollBounds) ||
       !_.isEqual(select_schools, defaultOptions) ||
       !_.isEqual(select_credits, defaultOptions) ||
       !_.isEqual(hideCancelled, defaultTrue) ||
@@ -711,6 +745,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     select_skillsareas,
     overallBounds,
     workloadBounds,
+    enrollBounds,
     select_seasons,
     select_schools,
     select_credits,
@@ -738,6 +773,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       workloadBounds,
       workloadValueLabels,
       select_seasons,
+      enrollBounds,
+      enrollValueLabels,
       select_schools,
       select_credits,
       hideCancelled,
@@ -768,6 +805,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       setWorkloadBounds,
       setWorkloadValueLabels,
       setSelectSeasons,
+      setEnrollBounds,
+      setEnrollValueLabels,
       setSelectSchools,
       setSelectCredits,
       setHideCancelled,
@@ -792,6 +831,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       workloadBounds,
       workloadValueLabels,
       select_seasons,
+      enrollBounds,
+      enrollValueLabels,
       select_schools,
       select_credits,
       hideCancelled,
@@ -820,6 +861,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       setWorkloadBounds,
       setWorkloadValueLabels,
       setSelectSeasons,
+      setEnrollBounds,
+      setEnrollValueLabels,
       setSelectSchools,
       setSelectCredits,
       setHideCancelled,

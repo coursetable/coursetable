@@ -55,6 +55,7 @@ const Search: React.FC = () => {
     overallBounds,
     workloadBounds,
     select_seasons,
+    enrollBounds,
     select_schools,
     // select_credits,
     hideCancelled,
@@ -77,6 +78,8 @@ const Search: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
+    setEnrollBounds,
+    setEnrollValueLabels,
     setSelectSchools,
     // setSelectCredits,
     setHideCancelled,
@@ -135,6 +138,14 @@ const Search: React.FC = () => {
     return (
       <Handle {...e} key={key}>
         <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
+      </Handle>
+    );
+  }, []);
+  const enrollmentSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
+    return (
+      <Handle {...e} key={key}>
+        <div className={`shadow ${Styles.enrollment_tooltip}`}>{value}</div>
       </Handle>
     );
   }, []);
@@ -324,6 +335,30 @@ const Search: React.FC = () => {
                     </Container>
                     <div className={`text-center ${Styles.filter_title}`}>
                       Workload
+                    </div>
+                  </Col>
+                </Row>
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                  <Col>
+                    <Container>
+                      <Range
+                        min={0}
+                        max={600}
+                        step={30}
+                        key={reset_key}
+                        defaultValue={enrollBounds}
+                        onChange={(value) => {
+                          setEnrollValueLabels(value);
+                        }}
+                        onAfterChange={(value) => {
+                          setEnrollBounds(value);
+                        }}
+                        handle={enrollmentSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      # Enrolled
                     </div>
                   </Col>
                 </Row>
