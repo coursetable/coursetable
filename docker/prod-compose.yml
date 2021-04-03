@@ -31,6 +31,16 @@ services:
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
+    labels:
+      traefik.enable: true
+      traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)
+      traefik.http.routers.coursetable.tls: true
+      traefik.http.routers.coursetable.tls.certResolver: ctresolver
+      traefik.http.routers.coursetable.middlewares: gzip-compress@file
+    networks:
+      - traefik
+      - mysql_default
+      - default
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
@@ -40,29 +50,30 @@ services:
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
-
-  mysql:
-    build: ./mysql
-    command: --default-authentication-plugin=mysql_native_password
-    environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD?password}
-    volumes:
-      # This will get used to initialize the database: see
-      # "Initializing a fresh instance"
-      # in https://hub.docker.com/_/mariadb
-      - ./mysql/database.sql:/docker-entrypoint-initdb.d/00-database.sql
-
-  phpmyadmin:
-    build: ./phpmyadmin
-    depends_on:
-      - mysql
-    environment:
-      PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD?password}
-    ports:
-      - "8081:80"
+    networks:
+      - ferry_default
+      - default
 
   legacy:
     image: nginx
+    restart: always
+    ports:
+      - "8075:80"
     volumes:
       - ../legacy:/usr/share/nginx/html:ro
+    labels:
+      traefik.enable: true
+      traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
+      traefik.http.routers.coursetable-legacy.tls: true
+      traefik.http.routers.coursetable-legacy.tls.certResolver: ctresolver
+    networks:
+      - traefik
+      - default
+
+networks:
+  traefik:
+    external: true
+  ferry_default:
+    external: true
+  mysql_default:
+    external: true
