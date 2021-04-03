@@ -86,7 +86,7 @@ const StyledExpandLink = styled(Button)`
 /**
  * Render row of season and FB friends dropdowns on worksheet
  * @prop cur_season - string | holds the current season code
- * @prop season_codes - array | list of season codes
+ * @prop season_options - array | list of season codes
  * @prop onSeasonChange - function | to change season
  * @prop setFbPerson - function | to change FB person
  * @prop cur_person - string | current person who's worksheet we are viewing
@@ -96,7 +96,7 @@ const StyledExpandLink = styled(Button)`
  */
 function WorksheetRowDropdown({
   cur_season,
-  season_codes,
+  season_options,
   onSeasonChange,
   setFbPerson,
   cur_person,
@@ -129,7 +129,7 @@ function WorksheetRowDropdown({
               <div className={`${styles.select_container}`}>
                 <SeasonReactSelect
                   cur_season={cur_season}
-                  season_codes={season_codes}
+                  season_options={season_options}
                   onSeasonChange={onSeasonChange}
                 />
               </div>

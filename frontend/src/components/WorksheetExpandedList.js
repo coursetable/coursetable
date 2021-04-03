@@ -34,7 +34,7 @@ const StyledExpandLink = styled(Button)`
  * @prop showModal - function to show modal for a certain listing
  * @prop cur_expand - string | Determines whether or not the list is expanded
  * @prop cur_season - string that holds the current season code
- * @prop season_codes - list of season codes
+ * @prop season_options - list of season codes
  * @prop onSeasonChange - function to change season
  * @prop setFbPerson - function to change FB person
  * @prop fb_person - string of current person who's worksheet we are viewing
@@ -46,7 +46,7 @@ const WorksheetExpandedList = ({
   showModal,
   cur_expand,
   cur_season,
-  season_codes,
+  season_options,
   onSeasonChange,
   setFbPerson,
   fb_person,
@@ -103,7 +103,7 @@ const WorksheetExpandedList = ({
               >
                 <SeasonReactSelect
                   cur_season={cur_season}
-                  season_codes={season_codes}
+                  season_options={season_options}
                   onSeasonChange={onSeasonChange}
                 />
               </div>

@@ -22,6 +22,7 @@ import WindowDimensionsProvider from './components/WindowDimensionsProvider';
 import FerryProvider from './components/FerryProvider';
 import { UserProvider } from './user';
 import { SearchProvider } from './searchContext';
+import { WorksheetProvider } from './worksheetContext';
 
 import './index.css';
 
@@ -125,25 +126,27 @@ function Globals({ children }) {
           <UserProvider>
             <WindowDimensionsProvider>
               <SearchProvider>
-                <Router history={history}>
-                  <SPAPageChangeListener />
-                  <ThemeProvider theme={themeMode}>
-                    <>
-                      <GlobalStyles />
-                      <div id="base" style={{ height: 'auto' }}>
-                        {/* Clone child and give it the themeToggler prop */}
-                        {React.Children.map(children, (child) => {
-                          if (React.isValidElement(child)) {
-                            return React.cloneElement(child, {
-                              themeToggler,
-                            });
-                          }
-                          return child;
-                        })}
-                      </div>
-                    </>
-                  </ThemeProvider>
-                </Router>
+                <WorksheetProvider>
+                  <Router history={history}>
+                    <SPAPageChangeListener />
+                    <ThemeProvider theme={themeMode}>
+                      <>
+                        <GlobalStyles />
+                        <div id="base" style={{ height: 'auto' }}>
+                          {/* Clone child and give it the themeToggler prop */}
+                          {React.Children.map(children, (child) => {
+                            if (React.isValidElement(child)) {
+                              return React.cloneElement(child, {
+                                themeToggler,
+                              });
+                            }
+                            return child;
+                          })}
+                        </div>
+                      </>
+                    </ThemeProvider>
+                  </Router>
+                </WorksheetProvider>
               </SearchProvider>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
               <ToastContainer toastClassName="rounded" />

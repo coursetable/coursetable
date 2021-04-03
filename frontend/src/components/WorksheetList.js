@@ -11,7 +11,7 @@ import NoCourses from './NoCourses';
  * @prop courses - list of listings dictionaries
  * @prop showModal - function to show modal for a certain listing
  * @prop cur_season - string that holds the current season code
- * @prop season_codes - list of season codes
+ * @prop season_options - list of season codes
  * @prop onSeasonChange - function to change season
  * @prop toggleCourse - function to hide/show course
  * @prop setHoverCourse - function to darken calendar events of this listing
@@ -25,7 +25,7 @@ function WorksheetList({
   courses,
   showModal,
   cur_season,
-  season_codes,
+  season_options,
   onSeasonChange,
   toggleCourse,
   setHoverCourse,
@@ -70,7 +70,7 @@ function WorksheetList({
       {/* Season and FB friends dropdown */}
       <WorksheetRowDropdown
         cur_season={cur_season}
-        season_codes={season_codes}
+        season_options={season_options}
         onSeasonChange={onSeasonChange}
         setFbPerson={setFbPerson}
         cur_person={cur_person}

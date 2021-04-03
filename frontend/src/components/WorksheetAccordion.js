@@ -91,7 +91,6 @@ function ContextAwareToggle({ eventKey, callback, course }) {
  * Render worksheet list in mobile view in accordion format
  * @prop onSeasonChange - function | to change season
  * @prop cur_season - string | holds the current season code
- * @prop season_codes - array | list of season codes
  * @prop courses - array | list of listings dictionaries
  * @prop showModal - function | to show modal for a certain listing
  * @prop setFbPerson - function | to change FB person
@@ -101,7 +100,6 @@ function ContextAwareToggle({ eventKey, callback, course }) {
 function WorksheetAccordion({
   onSeasonChange,
   cur_season,
-  season_codes,
   courses,
   showModal,
   setFbPerson,
@@ -287,7 +285,6 @@ function WorksheetAccordion({
           <SeasonDropdown
             onSeasonChange={onSeasonChange}
             cur_season={cur_season}
-            season_codes={season_codes}
           />
         </Col>
         {/* FB Dropdown */}

@@ -49,6 +49,8 @@ type _ListingAugments = {
   // Add a couple types created by the preprocessing step.
   professors?: string;
   professor_avg_rating?: string;
+  color?: string;
+  border?: string;
 };
 expectType<
   // Make sure we don't override a key that wasn't there originally.

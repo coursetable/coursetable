@@ -1,6 +1,5 @@
 import React, { useMemo, useState, useCallback, useEffect } from 'react';
 
-import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import posthog from 'posthog-js';
@@ -22,22 +21,7 @@ import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../browserStorage';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
-
-// Function to sort worksheet courses by course code
-const sortByCourseCode = (a, b) => {
-  if (a.course_code < b.course_code) return -1;
-  return 1;
-};
-
-// List of colors for the calendar events
-const colors = [
-  'rgba(108, 194, 111, ',
-  'rgba(202, 95, 83, ',
-  'rgba(49, 164, 212, ',
-  'rgba(223, 134, 83, ',
-  'rgba(38, 186, 154, ',
-  'rgba(186, 120, 129, ',
-];
+import { useWorksheet } from '../worksheetContext';
 
 /**
  * Renders worksheet page
@@ -48,149 +32,37 @@ function Worksheet() {
   const { width } = useWindowDimensions();
   const is_mobile = width < 768;
 
-  // Get user context data
-  const { user } = useUser();
-  // Current user who's worksheet we are viewing
-  const [fb_person, setFbPerson] = useSessionStorageState('fb_person', 'me');
+  const {
+    // Context state.
+    season_options,
+    cur_worksheet,
+    cur_season,
+    fb_person,
+    courses,
+    hidden_courses,
+    hover_course,
+    cur_expand,
+    worksheetLoading,
+    worksheetError,
+    worksheetData,
+    select_sortby,
+    sort_order,
+    ordering,
+    course_modal,
 
-  // Worksheet of the current person
-  const cur_worksheet = useMemo(() => {
-    /** @type typeof user.worksheet! */
-    const when_not_defined = []; // TODO: change this to undefined
-    if (fb_person === 'me') {
-      return user.worksheet ?? when_not_defined;
-    }
-    const friend_worksheets = user.fbWorksheets?.worksheets;
-    return friend_worksheets
-      ? friend_worksheets[fb_person] ?? when_not_defined
-      : when_not_defined;
-  }, [user.worksheet, user.fbWorksheets, fb_person]);
-
-  const season_codes = useMemo(() => {
-    const season_codes_temp = [];
-    if (cur_worksheet) {
-      cur_worksheet.forEach((szn) => {
-        if (season_codes_temp.indexOf(szn[0]) === -1)
-          season_codes_temp.push(szn[0]);
-      });
-    }
-    season_codes_temp.sort();
-    season_codes_temp.reverse();
-    return season_codes_temp;
-  }, [cur_worksheet]);
-
-  // Current season initialized to most recent season
-  const [season, setSeason] = useSessionStorageState(
-    'season',
-    season_codes.length > 0 ? season_codes[0] : ''
-  );
-  // Determines when to show course modal and for what listing
-  const [course_modal, setCourseModal] = useState([false, '']);
-  // List of courses that the user has marked hidden
-  const [hidden_courses, setHiddenCourses] = useSessionStorageState(
-    'hidden_courses',
-    {}
-  );
-  // The current listing that the user is hovering over
-  const [hover_course, setHoverCourse] = useState();
-  // Currently expanded component (calendar or list or none)
-  const [cur_expand, setCurExpand] = useSessionStorageState(
-    'cur_expand',
-    'none'
-  );
-
-  const handleCurExpand = useCallback(
-    (view) => {
-      setCurExpand(view);
-      // Scroll back to top when changing views
-      window.scrollTo({ top: 0, left: 0 });
-    },
-    [setCurExpand]
-  );
-
-  const handleFBPersonChange = useCallback(
-    (new_person) => {
-      setFbPerson(new_person);
-    },
-    [setFbPerson]
-  );
-
-  // Function to change season
-  const changeSeason = useCallback(
-    (season_code) => {
-      posthog.capture('worksheet-season', { new_season: season_code });
-      setSeason(season_code);
-    },
-    [setSeason]
-  );
-
-  // Show course modal for the chosen listing
-  const showModal = useCallback((listing) => {
-    setCourseModal([true, listing]);
-  }, []);
-
-  // Hide course modal
-  const hideModal = useCallback(() => {
-    setCourseModal([false, '']);
-  }, []);
-
-  // Fetch the worksheet info. This is eventually copied into the 'listings' variable.
-  const { loading, error, data } = useWorksheetInfo(cur_worksheet, season);
-
-  // Cache calendar colors. Reset whenever the season changes.
-  const [colorMap, setColorMap] = useState({});
-  useEffect(() => {
-    setColorMap({});
-  }, [season]);
-
-  // Listings data - basically a color-annotated version of the worksheet info.
-  const [listings, setListings] = useState([]);
-
-  // Initialize listings state and color map.
-  useEffect(() => {
-    if (!loading && !error && cur_worksheet && data) {
-      const temp = [...data];
-      // Assign color to each course
-      for (let i = 0; i < data.length; i++) {
-        let choice = colors[i % colors.length];
-        if (colorMap[temp[i].crn]) {
-          choice = colorMap[temp[i].crn];
-        } else {
-          colorMap[temp[i].crn] = choice;
-        }
-        temp[i].color = choice.concat('0.85)');
-        temp[i].border = choice.concat('1)');
-      }
-      // Sort list by course code
-      temp.sort(sortByCourseCode);
-      setListings(temp);
-    }
-  }, [loading, error, cur_worksheet, data, setListings, colorMap]);
-
-  // Hide/Show this course
-  const toggleCourse = useCallback(
-    (crn) => {
-      if (crn === -1) {
-        const new_hidden_courses = {};
-        listings.forEach((listing) => {
-          new_hidden_courses[listing.crn] = true;
-        });
-        setHiddenCourses(new_hidden_courses);
-      } else if (crn === -2) {
-        setHiddenCourses({});
-      } else {
-        setHiddenCourses((old_hidden_courses) => {
-          const new_hidden_courses = { ...old_hidden_courses };
-          if (old_hidden_courses[crn]) delete new_hidden_courses[crn];
-          else new_hidden_courses[crn] = true;
-          return new_hidden_courses;
-        });
-      }
-    },
-    [setHiddenCourses, listings]
-  );
-
-  const season_listings = listings;
+    // Update methods.
+    changeSeason,
+    handleFBPersonChange,
+    setHoverCourse,
+    handleCurExpand,
+    toggleCourse,
+    setSelectSortby,
+    setSortOrder,
+    setOrdering,
+    setCourseModal,
+    showModal,
+    hideModal,
+  } = useWorksheet();
 
   // If user somehow isn't logged in and worksheet is null
   if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
@@ -215,15 +87,15 @@ function Worksheet() {
     );
   }
   // Wait for search query to finish
-  if (error) {
-    console.error(error);
+  if (worksheetError) {
+    console.error(worksheetError);
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
         <ErrorPage message="There seems to be an issue with our server" />
       </div>
     );
   }
-  if (loading) {
+  if (worksheetLoading) {
     return (
       <div style={{ height: '93vh' }}>
         <Spinner
@@ -236,7 +108,7 @@ function Worksheet() {
       </div>
     );
   }
-  if (data === undefined) {
+  if (worksheetData === undefined) {
     console.error('data is undefined but worksheet is not');
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
@@ -269,7 +141,7 @@ function Worksheet() {
               >
                 <WeekSchedule
                   showModal={showModal}
-                  courses={season_listings}
+                  courses={courses}
                   hover_course={hover_course}
                   setHoverCourse={setHoverCourse}
                   hidden_courses={hidden_courses}
@@ -313,11 +185,11 @@ function Worksheet() {
               <Fade in={cur_expand === 'list'}>
                 <div style={{ display: cur_expand === 'list' ? '' : 'none' }}>
                   <WorksheetExpandedList
-                    courses={season_listings}
+                    courses={courses}
                     showModal={showModal}
                     cur_expand={cur_expand}
-                    cur_season={season}
-                    season_codes={season_codes}
+                    cur_season={cur_season}
+                    season_options={season_options}
                     onSeasonChange={changeSeason}
                     setFbPerson={handleFBPersonChange}
                     fb_person={fb_person}
@@ -329,10 +201,10 @@ function Worksheet() {
               <Fade in={cur_expand !== 'list'}>
                 <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
                   <WorksheetList
-                    courses={season_listings}
+                    courses={courses}
                     showModal={showModal}
-                    cur_season={season}
-                    season_codes={season_codes}
+                    cur_season={cur_season}
+                    season_options={season_options}
                     onSeasonChange={changeSeason}
                     toggleCourse={toggleCourse}
                     hidden_courses={hidden_courses}
@@ -353,9 +225,8 @@ function Worksheet() {
             <Col className="p-0">
               <WorksheetAccordion
                 onSeasonChange={changeSeason}
-                cur_season={season}
-                season_codes={season_codes}
-                courses={season_listings}
+                cur_season={cur_season}
+                courses={courses}
                 showModal={showModal}
                 setFbPerson={handleFBPersonChange}
                 cur_person={fb_person}

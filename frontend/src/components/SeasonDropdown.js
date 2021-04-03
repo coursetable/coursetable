@@ -3,15 +3,17 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import './DropdownShared.css';
 import { toSeasonString } from '../courseUtilities';
+import { useWorksheet } from '../worksheetContext';
 
 /**
  * Render Season Dropdown in mobile view
  * @prop onSeasonChange - function to switch seasons
  * @prop cur_season - string that holds the current season code
- * @prop season_codes - list of all season codes present in worksheet
  */
 
-function SeasonDropdown({ onSeasonChange, cur_season, season_codes }) {
+function SeasonDropdown({ onSeasonChange, cur_season }) {
+  const { season_codes } = useWorksheet();
+
   // HTML holding season options
   const seasons_html = [];
 
