@@ -4,7 +4,7 @@ set -euo pipefail
 
 VERSION=`sentry-cli releases propose-version`
 export SENTRY_ORG=coursetable
-export SENTRY_PROJECT=coursetable
+export SENTRY_PROJECT=frontend
 
 export COMPOSE_FILE=prod-compose.yml
 export SENTRY_RELEASE_VERSION=${VERSION}
