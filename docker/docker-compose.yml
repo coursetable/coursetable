@@ -44,7 +44,7 @@ services:
     volumes:
       - ../frontend:/app
     environment:
-      REACT_APP_UMAMI_WEBSITE_ID: 603e532b-7def-4cf0-ab2c-031157aa7966
+      REACT_APP_UMAMI_WEBSITE_ID: 7af237ac-d4a6-49b7-8ccf-97b6320fe840
       REACT_APP_POSTHOG_TOKEN: 'nothing' # dummy value to make posthog happy
     user: '1000'
     command: sh -c 'cd /app && yarn && FORCE_COLOR=true yarn start | cat'
