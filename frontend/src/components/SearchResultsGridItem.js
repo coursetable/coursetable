@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -71,14 +71,6 @@ const SearchResultsGridItem = ({
 
   // Fetch overall rating value and string representation
   const course_rating = useMemo(() => getOverallRatings(course), [course]);
-
-  // Has the component been mounted yet?
-  const [mounted, setMounted] = useState(false);
-
-  // Set mounted on mount
-  useEffect(() => {
-    if (!mounted) setMounted(true);
-  }, [mounted]);
 
   // Variable used in list keys
   let key = 0;
@@ -358,12 +350,10 @@ const SearchResultsGridItem = ({
           modal={false}
         />
       </div>
-      {/* Render conflict icon only when component has been mounted */}
-      {mounted && (
-        <div className={styles.conflict_error}>
-          <CourseConflictIcon course={course} />
-        </div>
-      )}
+      {/* Render conflict icon */}
+      <div className={styles.conflict_error}>
+        <CourseConflictIcon course={course} />
+      </div>
     </Col>
   );
 };

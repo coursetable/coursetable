@@ -11,7 +11,8 @@
   font-weight: 600;
 }
 
-.rating_bubble {
+.rating_bubble,
+.rating_bubble_unclickable {
   /* background-color: rgb(190, 221, 255); */
   border-radius: 8px;
   /* HAVE RATING BUBBLE ANIMATION */
@@ -27,6 +28,12 @@
   background-color: rgb(92, 168, 250);
   max-height: 50px;
   cursor: pointer;
+  transition: max-height 0.2s ease-in;
+}
+
+.rating_bubble_unclickable:hover {
+  max-height: 50px;
+  cursor: not-allowed;
   transition: max-height 0.2s ease-in;
 }
 
