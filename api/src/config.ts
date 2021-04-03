@@ -20,6 +20,7 @@ export const INSECURE_PORT = process.env.INSECURE_PORT || 4096;
 // Keys for SSL
 export const KEY_PATH = getEnv('KEY_PATH');
 export const CERT_PATH = getEnv('CERT_PATH');
+export const CA_PATH = process.env['CA_PATH'];
 
 // Facebook Graph API endpoint
 export const FACEBOOK_API_ENDPOINT = getEnv('FACEBOOK_API_ENDPOINT');
