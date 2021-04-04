@@ -15,6 +15,8 @@ import _seasons from '../generated/seasons.json';
 import { CatalogBySeasonQuery } from '../generated/graphql';
 import { Crn, Season, Weekdays } from '../common';
 
+import { API_ENDPOINT } from '../config';
+
 // Preprocess seasons data.
 // We need to wrap this inside the "seasons" key of an object
 // to maintain compatibility with the previous graphql version.
@@ -59,7 +61,7 @@ export type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
   _ListingAugments;
 
 // Preprocess course data.
-const preprocess_courses = (listing: Listing) => {
+const preprocessCourses = (listing: Listing) => {
   // trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
@@ -93,21 +95,25 @@ const addToCache = (season: Season): Promise<void> => {
       [season]: true,
     };
 
-    return axios.get(`/api/static/catalogs/${season}.json`).then((res) => {
-      // Convert season list into a crn lookup table.
-      const data = res.data as Listing[];
-      const info = new Map<Crn, Listing>();
-      for (const raw_listing of data) {
-        const listing = preprocess_courses(raw_listing);
-        info.set(listing.crn, listing);
-      }
+    return axios
+      .get(`${API_ENDPOINT}/api/static/catalogs/${season}.json`, {
+        withCredentials: true,
+      })
+      .then((res) => {
+        // Convert season list into a crn lookup table.
+        const data = res.data as Listing[];
+        const info = new Map<Crn, Listing>();
+        for (const rawListing of data) {
+          const listing = preprocessCourses(rawListing);
+          info.set(listing.crn, listing);
+        }
 
-      // Save in global cache. Here we force the creation of a new object.
-      courseData = {
-        ...courseData,
-        [season]: info,
-      };
-    });
+        // Save in global cache. Here we force the creation of a new object.
+        courseData = {
+          ...courseData,
+          [season]: info,
+        };
+      });
   });
 };
 

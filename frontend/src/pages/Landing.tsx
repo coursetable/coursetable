@@ -3,6 +3,8 @@ import { Row, Col, Container } from 'react-bootstrap';
 import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
 
+import { API_ENDPOINT } from '../config';
+
 // import Logo from '../components/Logo';
 import {
   FcConferenceCall,
@@ -64,7 +66,7 @@ function Landing() {
                   </Row>
                   <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
                     <a
-                      href="/api/auth/cas?redirect=catalog"
+                      href={`${API_ENDPOINT}/api/auth/cas?redirect=catalog`}
                       className={`${styles.btn} ${styles.login} mr-2`}
                     >
                       Login with CAS

@@ -12,6 +12,8 @@ import { getSSObject, setSSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
+import { API_ENDPOINT } from '../config';
+
 const StyledButton = styled(Button)`
   color: ${({ theme }) => theme.primary}!important;
   &:hover {
@@ -79,13 +81,19 @@ function WorksheetToggleButton({
       }
     }
 
-    // User legacy api php to perform worksheet action
+    // Call the endpoint
     return axios
-      .get(
-        `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${season_code}&ociId=${crn}`
+      .post(
+        `${API_ENDPOINT}/api/user/toggleBookmark`,
+        { action: add_remove, season: season_code, ociId: crn },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       )
       .then((response) => {
-        // console.log(response.data);
         // Refresh user's worksheet
         return userRefresh();
       })

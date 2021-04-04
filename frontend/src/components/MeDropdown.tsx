@@ -25,6 +25,8 @@ import {
 import { NavLink } from 'react-router-dom';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
+import { API_ENDPOINT } from '../config';
+
 // Season to export classes from
 const CUR_SEASON = '202101';
 
@@ -240,7 +242,7 @@ const MeDropdown: React.VFC<Props> = ({
                   style={{ paddingLeft: '2px' }}
                 />
                 <a
-                  href="/api/auth/cas?redirect=catalog"
+                  href={`${API_ENDPOINT}/api/auth/cas?redirect=catalog`}
                   className={styles.collapse_text}
                 >
                   <TextComponent type={1}>

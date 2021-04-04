@@ -28,6 +28,11 @@ const StyledCol = styled(Col)`
     theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.select_hover};
 `;
 
+// Unclickable version of StyledCol for courses with no evaluations
+const StyledColUnclickable = styled(Col)`
+  background-color: ${({ theme }) => theme.surface};
+`;
+
 // Multitoggle in modal (course, both, prof)
 export const StyledMultiToggle = styled(MultiToggle)`
   background-color: ${({ theme }) => theme.surface[1]};
@@ -140,7 +145,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       const evaluations = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
-        if (!season.course.evaluation_statistics[0]) return;
         // Stores the average rating for all profs teaching this course and populates prof_info
         let average_professor_rating = 0;
         if (season.professor_info) {
@@ -167,15 +171,13 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         }
         evaluations.push({
           // Course rating
-          rating:
-            season.course.evaluation_statistics[0].avg_rating != null
-              ? season.course.evaluation_statistics[0].avg_rating
-              : -1,
+          rating: season.course.evaluation_statistics[0]
+            ? season.course.evaluation_statistics[0].avg_rating || -1
+            : -1,
           // Workload rating
-          workload:
-            season.course.evaluation_statistics[0].avg_workload != null
-              ? season.course.evaluation_statistics[0].avg_workload
-              : -1,
+          workload: season.course.evaluation_statistics[0]
+            ? season.course.evaluation_statistics[0].avg_workload || -1
+            : -1,
           // Professor rating
           professor_rating: average_professor_rating || -1,
           // Season code
@@ -209,28 +211,42 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Loop through each listing with evals
       for (let i = 0; i < evaluations.length; i++) {
-        // Skip listings that have no ratings (therefore prolly don't have comments and graphs)
-        if (evaluations[i].rating === -1 && evaluations[i].workload === -1)
-          continue;
-
+        const hasEvals = evaluations[i].rating !== -1;
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
-            {/* Clickable listing button */}
-            <StyledCol
-              xs={5}
-              className={`${Styles.rating_bubble}  px-0 mr-3 text-center`}
-              onClick={() => handleSetSeason(evaluations[i])}
-              style={{ flex: 'none' }}
-            >
-              <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
-              <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
-                {filter === 'professor'
-                  ? evaluations[i].course_code[0]
-                  : filter === 'both'
-                  ? `Section ${evaluations[i].section}`
-                  : evaluations[i].professor[0]}
-              </div>
-            </StyledCol>
+            {/* The listing button, either clickable or greyed out based on whether evaluations exist */}
+            {hasEvals ? (
+              <StyledCol
+                xs={5}
+                className={`${Styles.rating_bubble}  px-0 mr-3 text-center`}
+                onClick={() => handleSetSeason(evaluations[i])}
+                style={{ flex: 'none' }}
+              >
+                <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+                <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
+                  {filter === 'professor'
+                    ? evaluations[i].course_code[0]
+                    : filter === 'both'
+                    ? `Section ${evaluations[i].section}`
+                    : evaluations[i].professor[0]}
+                </div>
+              </StyledCol>
+            ) : (
+              <StyledColUnclickable
+                xs={5}
+                className={`${Styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
+                style={{ flex: 'none', color: '#b5b5b5' }}
+              >
+                <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+                <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
+                  {filter === 'professor'
+                    ? evaluations[i].course_code[0]
+                    : filter === 'both'
+                    ? `Section ${evaluations[i].section}`
+                    : evaluations[i].professor[0]}
+                </div>
+              </StyledColUnclickable>
+            )}
             {/* Course Rating */}
             <Col
               xs={2}

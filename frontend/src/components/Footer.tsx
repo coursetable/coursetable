@@ -8,6 +8,8 @@ import { StyledHr, TextComponent } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';
 
+import VercelBanner from '../images/powered-by-vercel.svg';
+
 /**
  * Footer
  */
@@ -26,6 +28,14 @@ function Footer() {
             <small className="d-block mb-3">
               &copy; {new Date().getFullYear()}
             </small>
+
+            <a href="https://vercel.com/?utm_source=coursetable&utm_campaign=oss">
+              <img
+                style={{ height: '2rem' }}
+                src={VercelBanner}
+                alt="Powered by Vercel"
+              />
+            </a>
           </div>
           <div className="col-6 col-md">
             <h5>Explore</h5>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
@@ -51,14 +51,6 @@ const SearchResultsItem = ({
   expanded,
   fb_friends,
 }) => {
-  // Has the component been mounted?
-  const [mounted, setMounted] = useState(false);
-
-  // Set mounted on mount
-  useEffect(() => {
-    if (!mounted) setMounted(true);
-  }, [mounted]);
-
   // Season code for this listing
   const { season_code } = course;
   const season = season_code[5];
@@ -336,12 +328,10 @@ const SearchResultsItem = ({
           modal={false}
         />
       </div>
-      {/* Render conflict icon only when component has been mounted */}
-      {mounted && !isScrolling && (
-        <div className={Styles.conflict_error}>
-          <CourseConflictIcon course={course} />
-        </div>
-      )}
+      {/* Render conflict icon */}
+      <div className={Styles.conflict_error}>
+        <CourseConflictIcon course={course} />
+      </div>
     </StyledResultsItem>
   );
 };
