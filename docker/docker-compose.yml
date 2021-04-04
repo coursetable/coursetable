@@ -7,7 +7,7 @@ services:
       - "3001:3001"
     volumes:
       - ../api:/app
-      - ./wait-for-it.sh:/app/wait-for-it.sh
+      - ./wait-for-it.sh:/wait-for-it.sh
     # make the API wait for mysql and Hasura to start first
     command: ./wait-for-it.sh mysql:3306 -t 60 -- ./wait-for-it.sh graphql-engine:8080 -t 60 -- sh -cx 'cd /app && yarn install && yarn start'
 
