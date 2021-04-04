@@ -98,8 +98,8 @@ app.use(
 https
   .createServer(
     {
-      key: fs.readFileSync(KEY_PATH),
-      cert: fs.readFileSync(CERT_PATH),
+      key: fs.readFileSync('./keys/server.key'),
+      cert: fs.readFileSync('./keys/server.cert'),
       ca: CA_PATH && fs.readFileSync(CA_PATH),
     },
     app
