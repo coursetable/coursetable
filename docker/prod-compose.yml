@@ -2,6 +2,7 @@ version: "3.2"
 services:
   api:
     image: node:latest
+    restart: always
     ports:
       - "8039:8039"
       - "8038:8080"
