@@ -55,21 +55,6 @@ const NewEvaluationRatings = ({ info }) => {
   const items = [];
   questions.forEach((question, index) => {
     if (filtered_ratings[question].length) {
-      // items.push(
-      //   <div key={question}>
-      //     <Row className="mx-auto mb-1 pl-1 justify-content-center">
-      //       <strong>{graph_titles[question]}</strong>
-      //       <small className={`${styles.question_text} text-center`}>
-      //         <TextComponent type={1}>{question_text[question]}</TextComponent>
-      //       </small>
-      //     </Row>
-      //     <NewRatingsGraph
-      //       ratings={filtered_ratings[question]}
-      //       reverse={question === 'major' || question === 'workload'}
-      //       labels={graph_labels[question]}
-      //     />
-      //   </div>
-      // );
       items.push(
         <Col md={6} className="mb-4" key={index}>
           <Row className="mx-auto mb-1">

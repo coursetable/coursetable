@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { FormControl, Card, Popover, Form } from 'react-bootstrap';
+import { FormControl, Card, Popover, Form, Tabs } from 'react-bootstrap';
 import chroma from 'chroma-js';
 
 // Div used to color the background of surface components

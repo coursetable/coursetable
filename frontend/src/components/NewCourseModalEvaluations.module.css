@@ -1,0 +1,12 @@
+.season_col {
+  overflow: scroll;
+  max-height: 75vh;
+  position: sticky;
+  top: 0rem;
+}
+
+.question_header {
+  color: inherit;
+  font-weight: 600;
+  font-size: 14px;
+}
