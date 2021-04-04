@@ -79,22 +79,6 @@ const MeDropdown: React.VFC<Props> = ({
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
           <Col className="px-3 pt-3">
-            {/* Revert to Old CourseTable Link */}
-            <Row className=" pb-3 m-auto">
-              <FcUndo
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px' }}
-              />
-              <TextComponent type={1}>
-                <a
-                  href="https://old.coursetable.com/"
-                  className={styles.collapse_text}
-                >
-                  <StyledHoverText>Old CourseTable</StyledHoverText>
-                </a>
-              </TextComponent>
-            </Row>
             {/* Export Worksheet button */}
             {isLoggedIn && (
               <Row className=" pb-3 m-auto">

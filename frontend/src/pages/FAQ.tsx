@@ -106,9 +106,7 @@ function FAQ() {
           <NavLink to="/feedback" onClick={scrollToTop}>
             let us know
           </NavLink>
-          . You can also revert to the{' '}
-          <a href="https://old.coursetable.com/">old CourseTable site</a> if you
-          prefer it.
+          .
         </>
       ),
     },
