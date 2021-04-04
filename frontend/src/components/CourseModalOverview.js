@@ -211,6 +211,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
 
       // Loop through each listing with evals
       for (let i = 0; i < evaluations.length; i++) {
+        // Skip listings in the current season that have no evals
+        if (evaluations[i].season_code === '202103') continue;
         const hasEvals = evaluations[i].rating !== -1;
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
