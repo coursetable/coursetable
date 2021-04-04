@@ -124,7 +124,7 @@ function Search() {
     select_seasons,
     setSelectSeasons,
   ] = useSessionStorageState('select_seasons', [
-    { value: '202101', label: 'Spring 2021' },
+    { value: '202103', label: 'Fall 2021' },
   ]);
   const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
     'select_skillsareas',
@@ -545,7 +545,7 @@ function Search() {
     setHideGraduateCourses(false);
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
-    setSelectSeasons([{ value: '202101', label: 'Spring 2021' }]);
+    setSelectSeasons([{ value: '202103', label: 'Fall 2021' }]);
     setSelectSkillsAreas(null);
     setSelectCredits(null);
     setSelectSchools([]);

@@ -196,14 +196,6 @@ function CourseTableNavbar({
                 </div>
                 {/* Sign in/out and Facebook buttons. Show if mobile */}
                 <div className="d-md-none">
-                  <StyledDiv>
-                    <a
-                      href="https://old.coursetable.com/"
-                      style={{ color: 'inherit' }}
-                    >
-                      Old CourseTable
-                    </a>
-                  </StyledDiv>
                   {!isLoggedIn ? (
                     <StyledDiv
                       onClick={() => {
