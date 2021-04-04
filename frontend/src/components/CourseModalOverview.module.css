@@ -33,7 +33,7 @@
 
 .rating_bubble_unclickable:hover {
   max-height: 50px;
-  cursor: not-allowed;
+  cursor: default;
   transition: max-height 0.2s ease-in;
 }
 
