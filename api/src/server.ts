@@ -41,18 +41,15 @@ Sentry.init({
 
 // Initialize the app
 const app = express();
+// Trust the proxy.
+// See https://expressjs.com/en/guide/behind-proxies.html.
+app.set('trust proxy', true);
+// Enable url-encoding
+app.use(express.urlencoded({ extended: true }));
 
 // Enable Cross-Origin Resource Sharing
 // (i.e. let the frontend call the API when it's on a different domain)
 app.use(cors(CORS_OPTIONS));
-// Enable request logging.
-app.use(morgan);
-// Enable url-encoding
-app.use(express.urlencoded({ extended: true }));
-app.use(express.json());
-// Trust the proxy.
-// See https://expressjs.com/en/guide/behind-proxies.html.
-app.set('trust proxy', true);
 
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
@@ -111,6 +108,24 @@ https
   app.use(passport.initialize());
   app.use(passport.session());
 
+  // Restrict GraphQL access for authenticated Yale students only
+  app.use('/ferry', authWithEvals);
+  app.use(
+    '/ferry',
+    createProxyMiddleware({
+      target: 'http://graphql-engine:8080',
+      pathRewrite: {
+        '^/ferry/': '/', // remove base path
+      },
+      ws: true,
+    })
+  );
+  // Enable request logging.
+  app.use(morgan);
+
+  // figure out how to make this work with Ferry (has to go after Ferry currently)
+  app.use(express.json());
+
   // Activate catalog and CAS authentication
   await catalog(app);
   await cas_auth(app);
@@ -133,30 +148,6 @@ https
   app.get('/api/ping', (req, res) => {
     res.json('pong');
   });
-
-  app.use(
-    ['/legacy_api', '/index.php'],
-    createProxyMiddleware({
-      target: PHP_URI,
-      pathRewrite: {
-        '^/legacy_api': '/', // remove base path
-      },
-      xfwd: true,
-    })
-  );
-
-  // Restrict GraphQL access for authenticated Yale students only
-  app.use('/ferry', authWithEvals);
-  app.use(
-    '/ferry',
-    createProxyMiddleware({
-      target: 'http://graphql-engine:8080',
-      pathRewrite: {
-        '^/ferry': '/', // remove base path
-      },
-      ws: true,
-    })
-  );
 
   // Once routes have been created, start listening.
   app.listen(INSECURE_PORT, () => {
