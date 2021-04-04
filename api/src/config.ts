@@ -14,8 +14,8 @@ const getEnv = (name: string) => {
 export const isDev = process.env.NODE_ENV !== 'production';
 
 // Networking
-export const SECURE_PORT = process.env.SECURE_PORT || 3001;
-export const INSECURE_PORT = process.env.INSECURE_PORT || 4096;
+export const SECURE_PORT = getEnv('SECURE_PORT');
+export const INSECURE_PORT = getEnv('INSECURE_PORT');
 
 // Facebook Graph API endpoint
 export const FACEBOOK_API_ENDPOINT = getEnv('FACEBOOK_API_ENDPOINT');
