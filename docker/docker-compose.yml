@@ -3,10 +3,8 @@ services:
   api:
     image: node:latest
     ports:
-      - "8039:8039"
-      - "8038:8080"
-    expose:
-      - 8039
+      - "4096:4096"
+      - "3001:3001"
     volumes:
       - ../api:/app
       - ./wait-for-it.sh:/wait-for-it.sh
