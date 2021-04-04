@@ -29,6 +29,8 @@ services:
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
+      SECURE_PORT: ${SECURE_PORT?secure_port}
+      INSECURE_PORT: ${INSECURE_PORT?insecure_port}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
