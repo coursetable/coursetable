@@ -11,9 +11,6 @@ import cors from 'cors';
 import {
   SECURE_PORT,
   INSECURE_PORT,
-  KEY_PATH,
-  CERT_PATH,
-  CA_PATH,
   SESSION_SECRET,
   CORS_OPTIONS,
   PHP_URI,
@@ -100,7 +97,6 @@ https
     {
       key: fs.readFileSync('./keys/server.key'),
       cert: fs.readFileSync('./keys/server.cert'),
-      ca: CA_PATH && fs.readFileSync(CA_PATH),
     },
     app
   )

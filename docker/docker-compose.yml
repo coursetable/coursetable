@@ -15,13 +15,11 @@ services:
       - graphql-engine
       - mysql
     environment:
-      CERT_PATH: ${CERT_PATH?cert_path}
       CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
       FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
       FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
-      KEY_PATH: ${KEY_PATH?key_path}
       MYSQL_HOST: ${MYSQL_HOST?host}
       MYSQL_PORT: ${MYSQL_PORT?port}
       MYSQL_USER: ${MYSQL_USERNAME?username}
