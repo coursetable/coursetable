@@ -96,11 +96,11 @@ export const passportConfig = async (
             });
             return done(null, {
               netId: profile.user,
-              evals: true,
+              evals: !!user.school_code,
+              email: user.email,
+              firstName: user.first_name,
+              lastName: user.last_name,
             });
-
-            // otherwise, user isn't a Yale student
-            return done(null, { netId: profile.user, evals: false });
           })
           .catch((err) => {
             winston.error(`Yalies connection error: ${err}`);

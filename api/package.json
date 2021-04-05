@@ -39,6 +39,7 @@
     "graphql-request": "^3.4.0",
     "graphql-tag": "^2.11.0",
     "http-proxy-middleware": "^1.0.6",
+    "jsonwebtoken": "^8.5.1",
     "morgan": "^1.10.0",
     "mysql": "^2.18.1",
     "passport": "^0.4.1",
