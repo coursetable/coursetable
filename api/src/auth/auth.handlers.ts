@@ -144,6 +144,13 @@ export const passportConfig = async (
   );
 };
 
+const ALLOWED_ORIGINS = [
+  'https://localhost:3000',
+  'https://coursetable.com',
+  'https://beta.coursetable.com',
+  'https://beta.coursetable.com',
+  'https://api.coursetable.com',
+];
 /**
  * Redirects to be executed after login.
  * @param req: express request.
@@ -152,18 +159,17 @@ export const passportConfig = async (
 const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
   let redirect = req.query.redirect as string | undefined;
+
   if (redirect && !redirect.startsWith('//')) {
     winston.info(`Redirecting to ${redirect}`);
     // prefix the redirect with a slash to avoid an open redirect vulnerability.
-    if (!redirect.startsWith('/')) {
-      redirect = `/${redirect}`;
+    if (!ALLOWED_ORIGINS.includes(redirect)) {
+      winston.error('Redirect not in allowed origins');
     }
-    return res.redirect(`${FRONTEND_ENDPOINT}${redirect}`);
+    return res.redirect(redirect);
   }
 
-  winston.info(`Redirecting to /catalog fallback`);
-  // If no redirect is provided, simply redirect to the auth status.
-  return res.redirect(`${FRONTEND_ENDPOINT}/catalog`);
+  winston.error(`No redirect provided`);
 };
 
 /**

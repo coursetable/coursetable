@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import { Switch, Route, IndexRoute, Redirect, Link } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
@@ -128,7 +128,7 @@ function App({ themeToggler }) {
         </MyRoute>
 
         <MyRoute exact path="/feedback">
-          <Feedback />
+          <Route path="*" component={CannyContainer} />
         </MyRoute>
 
         <MyRoute exact path="/joinus">

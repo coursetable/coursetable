@@ -42,6 +42,7 @@ const MeDropdown: React.VFC<Props> = ({
 }) => {
   // Get user context data
   const { user } = useUser();
+
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
 
@@ -131,7 +132,7 @@ const MeDropdown: React.VFC<Props> = ({
                   style={{ paddingLeft: '2px' }}
                 />
                 <a
-                  href={`${API_ENDPOINT}/api/auth/cas?redirect=catalog`}
+                  href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
                   className={styles.collapse_text}
                 >
                   <TextComponent type={1}>
