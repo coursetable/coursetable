@@ -75,20 +75,29 @@ export const passportConfig = async (
 
             const user = data[0];
 
-            // otherwise, add the user to the cookie if school is specified
-            if (user.school_code) {
-              winston.info(`Enabling evaluations for ${profile.user}`);
-              await prisma.studentBluebookSettings.update({
-                where: {
-                  netId: profile.user,
-                },
-                data: { evaluationsEnabled: true },
-              });
-              return done(null, {
+            winston.info(`Updating evaluations for ${profile.user}`);
+            await prisma.studentBluebookSettings.update({
+              where: {
                 netId: profile.user,
-                evals: true,
-              });
-            }
+              },
+              data: {
+                // enable evaluations if user has a school code
+                evaluationsEnabled: !!user.school_code,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                upi: user.upi,
+                school: user.school,
+                year: user.year,
+                college: user.college,
+                major: user.major,
+                curriculum: user.curriculum,
+              },
+            });
+            return done(null, {
+              netId: profile.user,
+              evals: true,
+            });
 
             // otherwise, user isn't a Yale student
             return done(null, { netId: profile.user, evals: false });
