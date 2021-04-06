@@ -22,15 +22,15 @@ const extractHostname = (url: string): string => {
   // find & remove protocol (http, ftp, etc.) and get hostname
 
   if (url.indexOf('//') > -1) {
-    hostname = url.split('/')[2];
+    [, , hostname] = url.split('/');
   } else {
-    hostname = url.split('/')[0];
+    [hostname] = url.split('/');
   }
 
   // find & remove port number
-  hostname = hostname.split(':')[0];
+  [hostname] = hostname.split(':');
   // find & remove "?"
-  hostname = hostname.split('?')[0];
+  [hostname] = hostname.split('?');
 
   return hostname;
 };
@@ -194,6 +194,7 @@ const postAuth = (req: express.Request, res: express.Response): void => {
     return res.redirect('https://coursetable.com');
   }
   winston.error(`No redirect provided`);
+  return res.redirect('https://coursetable.com');
 };
 
 /**
