@@ -259,10 +259,17 @@ export const getFriendsWorksheets = async (
   } = {};
   friendInfos.forEach(
     ({ netId: friendNetId, facebookId, facebookDataJson }) => {
-      infoByFriend[friendNetId] = {
-        name: JSON.parse(facebookDataJson).name,
-        facebookId: String(facebookId),
-      };
+      if (facebookDataJson && facebookDataJson !== '') {
+        infoByFriend[friendNetId] = {
+          name: JSON.parse(facebookDataJson).name,
+          facebookId: String(facebookId),
+        };
+      } else {
+        infoByFriend[friendNetId] = {
+          name: friendNetId,
+          facebookId: String(facebookId),
+        };
+      }
     }
   );
 

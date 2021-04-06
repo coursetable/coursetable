@@ -14,11 +14,11 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
-import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import WorksheetLogin from './pages/WorksheetLogin';
+import CannyContainer from './pages/Canny';
 
 import { useUser } from './user';
 import { useLocalStorageState } from './browserStorage';
@@ -105,6 +105,14 @@ function App({ themeToggler, location }) {
         themeToggler={themeToggler}
         setIsTutorialOpen={setIsTutorialOpen}
       />
+      <Notice>
+        Want to try out the latest features and shape the future of CourseTable?
+        Become a Beta Tester{' '}
+        <a href="https://forms.gle/UtD5YnZ7MzxYLTux6">here</a>, or{' '}
+        <a href="https://www.linkedin.com/company/coursetable">follow us</a> on
+        LinkedIn for the latest updates.
+      </Notice>
+      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">
@@ -141,12 +149,8 @@ function App({ themeToggler, location }) {
 
         {/* Worksheet */}
         <MyRoute exact path="/worksheet">
-          {isLoggedIn ? (
-            !user.hasEvals ? (
-              <Redirect push to="/challenge" />
-            ) : (
-              <Worksheet />
-            )
+          {isLoggedIn && user.hasEvals ? (
+            <Worksheet />
           ) : (
             <Redirect to="/worksheetlogin" />
           )}
@@ -163,8 +167,12 @@ function App({ themeToggler, location }) {
           <FAQ />
         </MyRoute>
 
-        <MyRoute exact path="/feedback">
-          <Feedback />
+        <MyRoute exact path="/feedback/">
+          <Route path="*" component={CannyContainer} />
+        </MyRoute>
+
+        <MyRoute exact path="/feedback/:board">
+          <Route path="*" component={CannyContainer} />
         </MyRoute>
 
         <MyRoute exact path="/joinus">

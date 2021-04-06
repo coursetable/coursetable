@@ -5,7 +5,6 @@ import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import {
   FcCalendar,
   FcUndo,
-  FcInfo,
   FcQuestions,
   FcFeedback,
   FcPuzzle,
@@ -59,6 +58,7 @@ const MeDropdown: React.VFC<Props> = ({
 
   // Get user context data
   const { user } = useUser();
+
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
 
@@ -176,22 +176,6 @@ const MeDropdown: React.VFC<Props> = ({
                 </TextComponent>
               </Row>
             )}
-            {/* Revert to Old CourseTable Link */}
-            <Row className="pb-3 m-auto">
-              <FcUndo
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px' }}
-              />
-              <TextComponent type={1}>
-                <a
-                  href="https://old.coursetable.com/"
-                  className={styles.collapse_text}
-                >
-                  <StyledHoverText>Old CourseTable</StyledHoverText>
-                </a>
-              </TextComponent>
-            </Row>
             {/* Export Worksheet button */}
             {isLoggedIn && (
               <Row className="pb-3 m-auto">
@@ -242,7 +226,7 @@ const MeDropdown: React.VFC<Props> = ({
                   style={{ paddingLeft: '2px' }}
                 />
                 <a
-                  href={`${API_ENDPOINT}/api/auth/cas?redirect=catalog`}
+                  href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
                   className={styles.collapse_text}
                 >
                   <TextComponent type={1}>

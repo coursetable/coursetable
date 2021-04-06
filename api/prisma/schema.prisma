@@ -27,6 +27,16 @@ model StudentBluebookSettings {
   viewException       Int     @default(0) @db.UnsignedTinyInt
   challengeTries      Int     @default(0) @db.UnsignedSmallInt
   evaluationsEnabled  Boolean
+  betaEnabled         Boolean @default(false)
+  first_name          String? @db.VarChar(256)
+  last_name           String? @db.VarChar(256)
+  email               String? @db.VarChar(256)
+  upi                 Int?
+  school              String? @db.VarChar(256)
+  year                Int?
+  college             String? @db.VarChar(256)
+  major               String? @db.VarChar(256)
+  curriculum          String? @db.VarChar(256)
 }
 
 model StudentCoursesTaken {
@@ -46,6 +56,7 @@ model StudentFacebookFriends {
   facebookId BigInt @db.UnsignedBigInt
 
   @@unique([netId, facebookId], name: "netId_friendFacebookId")
+  @@index([facebookId], name: "facebookId")
   @@index([netId], name: "netId")
 }
 

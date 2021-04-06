@@ -13,7 +13,6 @@ import {
   INSECURE_PORT,
   SESSION_SECRET,
   CORS_OPTIONS,
-  PHP_URI,
   STATIC_FILE_DIR,
 } from './config';
 
@@ -24,6 +23,7 @@ import catalog from './catalog/catalog.routes';
 import { authWithEvals, passportConfig } from './auth/auth.handlers';
 import cas_auth from './auth/auth.routes';
 import facebook from './facebook/facebook.routes';
+import canny from './canny/canny.routes';
 import user from './user/user.routes';
 
 import passport from 'passport';
@@ -130,6 +130,7 @@ https
   await catalog(app);
   await cas_auth(app);
   await facebook(app);
+  await canny(app);
   await user(app);
 
   // Mount static files route and require NetID authentication

@@ -198,7 +198,11 @@ const SearchResults = ({
         />
         <h3>
           Please{' '}
-          <a href={`${API_ENDPOINT}/api/auth/cas?redirect=catalog`}>log in</a>
+          <a
+            href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
+          >
+            log in
+          </a>
         </h3>
         <div>A valid Yale NetID is required to access course information.</div>
       </div>
