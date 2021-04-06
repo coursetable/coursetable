@@ -817,7 +817,7 @@ function Search() {
                       setHideCancelled(!hideCancelled);
                     }}
                   >
-                    Hide cancelled courses
+                    Hide cancelled/closed courses
                   </Form.Check.Label>
                 </Form.Check>
 
