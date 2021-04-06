@@ -4,11 +4,11 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 
 import CannyBoard from './CannyBoard';
 
-import Authentication from '../images/authentication.svg';
+import Authentication from '../../images/authentication.svg';
 
-import { API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../../config';
 
-import { useUser } from '../user';
+import { useUser } from '../../user';
 
 export const boards = {
   features: {

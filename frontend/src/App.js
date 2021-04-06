@@ -6,7 +6,7 @@ import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 
-import CannyContainer from './components/CannyContainer';
+import CannyContainer from './components/canny/CannyContainer';
 
 import Landing from './pages/Landing';
 // import Home from './pages/Home';

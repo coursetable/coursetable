@@ -2,7 +2,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 
-import { API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../../config';
 
 import { toast } from 'react-toastify';
 
