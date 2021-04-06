@@ -11,7 +11,11 @@ const WorksheetLogin: React.VFC = () => {
     <div className="text-center py-5">
       <h3>
         Please{' '}
-        <a href={`${API_ENDPOINT}/api/auth/cas?redirect=worksheet`}>log in</a>
+        <a
+          href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/worksheet`}
+        >
+          log in
+        </a>
       </h3>
       <div>A valid Yale NetID is required to access worksheet information.</div>
       <img

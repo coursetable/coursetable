@@ -6,10 +6,9 @@ import { API_ENDPOINT } from '../config';
 
 import { toast } from 'react-toastify';
 
-import {boards} from "./CannyContainer"
+import { boards } from './CannyContainer';
 
-const CannyBoard = ({board}) => {
-
+const CannyBoard = ({ board }) => {
   useEffect(() => {
     (function (w, d, i, s) {
       function l() {
@@ -42,7 +41,7 @@ const CannyBoard = ({board}) => {
       })
       .then(({ data }) => {
         Canny('render', {
-          boardToken:board.token,
+          boardToken: board.token,
           basePath: `/feedback/${board.value}`,
           ssoToken: data.token,
         });
@@ -50,11 +49,9 @@ const CannyBoard = ({board}) => {
       .catch((err) => {
         toast.error('Please sign in to view and submit feedback');
       });
-  },[board]);
+  }, [board]);
 
-  return (
-    <div data-canny></div>
-  );
+  return <div data-canny></div>;
 };
 
 export default CannyBoard;

@@ -36,7 +36,7 @@ const CannyContainer: React.VFC = () => {
         <h3>
           Please{' '}
           <a
-            href={`${API_ENDPOINT}/api/auth/cas?redirect=${'https://localhost:3000/feedback'}`}
+            href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/feedback`}
           >
             log in
           </a>

@@ -67,7 +67,7 @@ function Landing() {
                   </Row>
                   <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
                     <a
-                      href={`${API_ENDPOINT}/api/auth/cas?redirect=catalog`}
+                      href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
                       className={`${styles.btn} ${styles.login} mr-2`}
                     >
                       Login with CAS
