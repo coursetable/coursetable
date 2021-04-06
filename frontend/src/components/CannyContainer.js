@@ -1,10 +1,18 @@
 /* eslint-disable */
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect } from 'react';
+
+import {API_ENDPOINT} from "../config"
+
+import { toast } from 'react-toastify';
+
 
 const BoardToken = '1ce2e740-4310-1893-6927-1e2edad7785e';
 
-export default class CannyContainer extends React.Component {
-  componentDidMount() {
+
+const CannyContainer = () => {
+
+  useEffect(() => {
     (function (w, d, i, s) {
       function l() {
         if (!d.getElementById(i)) {
@@ -30,14 +38,20 @@ export default class CannyContainer extends React.Component {
       }
     })(window, document, 'canny-jssdk', 'script');
 
-    Canny('render', {
-      boardToken: BoardToken,
-      basePath: null, // See step 2
-      ssoToken: null, // See step 3
-    });
-  }
+    axios.get(`${API_ENDPOINT}/api/canny/token`, {
+      withCredentials: true,
+    }).then(({data})=>{
+      Canny('render', {
+        boardToken: BoardToken,
+        basePath: "/feedback",
+        ssoToken: data.token,
+      });
+    }).catch((err)=>{
+      toast.error('Error signing in to Canny');
+    })
+  });
 
-  render() {
-    return <div data-canny />;
-  }
-}
+  return <div data-canny />;
+};
+
+export default CannyContainer;

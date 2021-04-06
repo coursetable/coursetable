@@ -11,7 +11,7 @@ import winston from '../logging/winston';
 
 import axios from 'axios';
 
-import { FRONTEND_ENDPOINT, YALIES_API_KEY } from '../config';
+import { YALIES_API_KEY } from '../config';
 
 import { PrismaClient } from '@prisma/client';
 
@@ -138,7 +138,14 @@ export const passportConfig = async (
           },
         })
         .then((student) => {
-          done(null, { netId, evals: !!student?.evaluationsEnabled });
+          done(null, {
+            netId,
+            evals: !!student?.evaluationsEnabled,
+            // convert nulls to undefined
+            email: student?.email || undefined,
+            firstName: student?.first_name || undefined,
+            lastName: student?.last_name || undefined,
+          });
         });
     }
   );
