@@ -1,16 +1,12 @@
 /* eslint-disable */
 import axios from 'axios';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
-import {API_ENDPOINT} from "../config"
+import { API_ENDPOINT } from '../config';
 
 import { toast } from 'react-toastify';
 
-
-const BoardToken = '1ce2e740-4310-1893-6927-1e2edad7785e';
-
-
-const CannyContainer = () => {
+const CannyBoard = ({boardToken}) => {
 
   useEffect(() => {
     (function (w, d, i, s) {
@@ -38,20 +34,27 @@ const CannyContainer = () => {
       }
     })(window, document, 'canny-jssdk', 'script');
 
-    axios.get(`${API_ENDPOINT}/api/canny/token`, {
-      withCredentials: true,
-    }).then(({data})=>{
-      Canny('render', {
-        boardToken: BoardToken,
-        basePath: "/feedback",
-        ssoToken: data.token,
+    axios
+      .get(`${API_ENDPOINT}/api/canny/token`, {
+        withCredentials: true,
+      })
+      .then(({ data }) => {
+        Canny('render', {
+          boardToken,
+          basePath: '/feedback',
+          ssoToken: data.token,
+        });
+      })
+      .catch((err) => {
+        toast.error('Please sign in to view and submit feedback');
       });
-    }).catch((err)=>{
-      toast.error('Error signing in to Canny');
-    })
-  });
+  },[boardToken]);
 
-  return <div data-canny />;
+  return (
+    <div class="m-4">
+      <div data-canny></div>
+    </div>
+  );
 };
 
-export default CannyContainer;
+export default CannyBoard;

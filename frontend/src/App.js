@@ -127,8 +127,20 @@ function App({ themeToggler }) {
           <FAQ />
         </MyRoute>
 
-        <MyRoute exact path="/feedback">
-          <Route path="*" component={CannyContainer} />
+        <MyRoute exact path="/feedback/">
+          {isLoggedIn ? (
+            <Route path="*" component={CannyContainer} />
+          ) : (
+            <Redirect to="/login" />
+          )}
+        </MyRoute>
+
+        <MyRoute exact path="/feedback/:board">
+          {isLoggedIn ? (
+            <Route path="*" component={CannyContainer} />
+          ) : (
+            <Redirect to="/login" />
+          )}
         </MyRoute>
 
         <MyRoute exact path="/joinus">

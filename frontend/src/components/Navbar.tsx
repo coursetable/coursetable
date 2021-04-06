@@ -137,6 +137,14 @@ function CourseTableNavbar({
                 >
                   About
                 </StyledNavLink>
+                {/* Feedback Page */}
+                <StyledNavLink
+                  to="/feedback"
+                  // Left align about link if not mobile
+                  className={!is_mobile ? ' align-self-begin' : ''}
+                >
+                  Feedback
+                </StyledNavLink>
                 {/* FAQs Page */}
                 <StyledNavLink
                   to="/faq"
