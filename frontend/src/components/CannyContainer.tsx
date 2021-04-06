@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 
 import CannyBoard from './CannyBoard';
 
@@ -29,6 +29,8 @@ const CannyContainer: React.VFC = () => {
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
+
+  const location = useLocation();
 
   if (!isLoggedIn) {
     return (
@@ -59,18 +61,25 @@ const CannyContainer: React.VFC = () => {
         role="group"
         aria-label="Select feedback board"
       >
-        {Object.entries(boards).map(([boardName, board]) => (
-          // use HTML links instead of react-router ones to force the Canny widget to reload
-          <a href={`/feedback/${boardName}`}>
-            <button
-              type="button"
-              className="btn btn-secondary mr-2"
+        {Object.entries(boards).map(([boardName, board]) => {
+          const isActive =
+            location.pathname === `/feedback/${boardName}/` ||
+            location.pathname === `/feedback/${boardName}`;
+
+          return (
+            // use HTML links instead of react-router ones to force the Canny widget to reload
+            <a
+              role="button"
+              className={`btn  ${
+                isActive ? 'btn-primary' : 'btn-outline-primary'
+              }`}
               key={board.token}
+              href={`/feedback/${boardName}`}
             >
               {board.label}
-            </button>
-          </a>
-        ))}
+            </a>
+          );
+        })}
       </div>
       <Switch>
         {Object.entries(boards).map(([boardName, board]) => (
