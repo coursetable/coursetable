@@ -1,5 +1,5 @@
 /**
- * @file Routes for linking accounts with Facebook.
+ * @file Routes for getting Canny authentication info.
  */
 
 import express from 'express';
@@ -7,7 +7,7 @@ import express from 'express';
 import { cannyIdentify } from './canny.handlers';
 
 /**
- * Set up Facebook routes.
+ * Set up Canny routes.
  * @param app: express app instance.
  */
 export default async (app: express.Express): Promise<void> => {
