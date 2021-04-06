@@ -30,6 +30,15 @@ const StyledResultsItem = styled(Row)`
   }
 `;
 
+const extra_info_map = {
+  ACTIVE: 'ACTIVE',
+  MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
+  CANCELLED: 'CANCELLED',
+  MOVED_TO_FALL_TERM: 'MOVED TO FALL',
+  CLOSED: 'CLOSED',
+  NUMBER_CHANGED: 'NUMBER CHANGED',
+};
+
 /**
  * Renders a list item for a search result and expanded worksheet list item
  * @prop course - listing data for the current course
@@ -92,7 +101,9 @@ const SearchResultsItem = ({
         <Popover.Title>
           <strong>
             {course.extra_info !== 'ACTIVE' ? (
-              <span className={Styles.cancelled_text}>CANCELLED </span>
+              <span className={Styles.cancelled_text}>
+                {extra_info_map[course.extra_info]}{' '}
+              </span>
             ) : (
               ''
             )}
