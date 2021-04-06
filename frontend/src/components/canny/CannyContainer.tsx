@@ -65,9 +65,17 @@ const CannyContainer: React.VFC = () => {
         aria-label="Select feedback board"
       >
         {Object.entries(boards).map(([boardName, board]) => {
-          const isActive =
-            location.pathname === `/feedback/${boardName}/` ||
-            location.pathname === `/feedback/${boardName}`;
+          let isActive = [
+            `/feedback/${boardName}/`,
+            `/feedback/${boardName}`,
+          ].includes(location.pathname);
+
+          // highlight default board
+          if (boardName === 'features') {
+            isActive =
+              isActive ||
+              [`/feedback/`, `/feedback`].includes(location.pathname);
+          }
 
           return (
             // use HTML links instead of react-router ones to force the Canny widget to reload
