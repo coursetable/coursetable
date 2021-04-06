@@ -43,6 +43,15 @@ const StyledMoreInfo = styled.span`
   }
 `;
 
+const extra_info_map = {
+  ACTIVE: 'ACTIVE',
+  MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
+  CANCELLED: 'CANCELLED',
+  MOVED_TO_FALL_TERM: 'MOVED TO FALL',
+  CLOSED: 'CLOSED',
+  NUMBER_CHANGED: 'NUMBER CHANGED',
+};
+
 /**
  * Displays course modal when clicking on a course
  * @prop listing - dictionary that holds listing info
@@ -95,6 +104,8 @@ const CourseModal = ({ listing, hideModal, show }) => {
 
   // key variable for lists
   let key = 0;
+
+  console.log(cur_listing);
 
   return (
     <div className="d-flex justify-content-center">
@@ -151,7 +162,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                           >
                             {cur_listing.extra_info !== 'ACTIVE' ? (
                               <span className={styles.cancelled_text}>
-                                CANCELLED{' '}
+                                {extra_info_map[cur_listing.extra_info]}{' '}
                               </span>
                             ) : (
                               ''
