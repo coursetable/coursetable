@@ -4,6 +4,12 @@ import { Route, Switch } from 'react-router-dom';
 
 import CannyBoard from './CannyBoard';
 
+import Authentication from '../images/authentication.svg';
+
+import { API_ENDPOINT } from '../config';
+
+import { useUser } from '../user';
+
 export const boards = {
   features: {
     value: 'features',
@@ -18,6 +24,34 @@ export const boards = {
 };
 
 const CannyContainer: React.VFC = () => {
+  // User context data
+  const { user } = useUser();
+
+  // Determine if user is logged in
+  const isLoggedIn = Boolean(user.worksheet != null);
+
+  if (!isLoggedIn) {
+    return (
+      <div className="text-center py-5">
+        <h3>
+          Please{' '}
+          <a
+            href={`${API_ENDPOINT}/api/auth/cas?redirect=${'https://localhost:3000/feedback'}`}
+          >
+            log in
+          </a>
+        </h3>
+        <div>A valid Yale NetID is required to view and submit feedback.</div>
+        <img
+          alt="Not logged in"
+          className="py-5"
+          src={Authentication}
+          style={{ width: '25%' }}
+        />
+      </div>
+    );
+  }
+
   return (
     <div className="min-vh-100 m-4">
       <div

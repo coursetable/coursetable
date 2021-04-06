@@ -17,6 +17,24 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+const extractHostname = (url: string): string => {
+  var hostname;
+  //find & remove protocol (http, ftp, etc.) and get hostname
+
+  if (url.indexOf('//') > -1) {
+    hostname = url.split('/')[2];
+  } else {
+    hostname = url.split('/')[0];
+  }
+
+  //find & remove port number
+  hostname = hostname.split(':')[0];
+  //find & remove "?"
+  hostname = hostname.split('?')[0];
+
+  return hostname;
+};
+
 /**
  * Passport configuration for authentication
  * @param passportInstance: passport instance.
@@ -151,13 +169,7 @@ export const passportConfig = async (
   );
 };
 
-const ALLOWED_ORIGINS = [
-  'https://localhost:3000',
-  'https://coursetable.com',
-  'https://beta.coursetable.com',
-  'https://beta.coursetable.com',
-  'https://api.coursetable.com',
-];
+const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
 /**
  * Redirects to be executed after login.
  * @param req: express request.
@@ -167,15 +179,21 @@ const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
   let redirect = req.query.redirect as string | undefined;
 
+  const hostName = extractHostname(redirect || 'coursetable.com/catalog');
+
   if (redirect && !redirect.startsWith('//')) {
     winston.info(`Redirecting to ${redirect}`);
     // prefix the redirect with a slash to avoid an open redirect vulnerability.
-    if (!ALLOWED_ORIGINS.includes(redirect)) {
+    if (
+      ALLOWED_ORIGINS.includes(hostName) ||
+      hostName.endsWith('.coursetable.com')
+    ) {
+      return res.redirect(redirect);
+    } else {
       winston.error('Redirect not in allowed origins');
+      return res.redirect('https://coursetable.com');
     }
-    return res.redirect(redirect);
   }
-
   winston.error(`No redirect provided`);
 };
 

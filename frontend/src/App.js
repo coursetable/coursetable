@@ -105,12 +105,8 @@ function App({ themeToggler }) {
 
         {/* Worksheet */}
         <MyRoute exact path="/worksheet">
-          {isLoggedIn ? (
-            user.hasEvals ? (
-              <Worksheet />
-            ) : (
-              <Redirect push to="/challenge" />
-            )
+          {isLoggedIn && user.hasEvals ? (
+            <Worksheet />
           ) : (
             <Redirect to="/worksheetlogin" />
           )}
@@ -128,19 +124,11 @@ function App({ themeToggler }) {
         </MyRoute>
 
         <MyRoute exact path="/feedback/">
-          {isLoggedIn ? (
-            <Route path="*" component={CannyContainer} />
-          ) : (
-            <Redirect to="/login" />
-          )}
+          <Route path="*" component={CannyContainer} />
         </MyRoute>
 
         <MyRoute exact path="/feedback/:board">
-          {isLoggedIn ? (
-            <Route path="*" component={CannyContainer} />
-          ) : (
-            <Redirect to="/login" />
-          )}
+          <Route path="*" component={CannyContainer} />
         </MyRoute>
 
         <MyRoute exact path="/joinus">
