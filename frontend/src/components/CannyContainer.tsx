@@ -19,7 +19,7 @@ export const boards = {
 
 const CannyContainer: React.VFC = () => {
   return (
-    <div className="m-4">
+    <div className="min-vh-100 m-4">
       <div
         className="btn-group mb-4"
         role="group"
