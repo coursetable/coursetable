@@ -6,8 +6,6 @@ import jwt from 'jsonwebtoken';
 
 import { User } from '../models/student';
 
-var PrivateKey = 'd508c798-d0fd-6528-3c55-35a7ef90203a';
-
 import winston from '../logging/winston';
 
 import axios from 'axios';
@@ -16,10 +14,12 @@ import { YALIES_API_KEY } from '../config';
 
 import { PrismaClient } from '@prisma/client';
 
+const PrivateKey = 'd508c798-d0fd-6528-3c55-35a7ef90203a';
+
 const prisma = new PrismaClient();
 
 const createCannyToken = (user: User) => {
-  var userData = {
+  const userData = {
     email: user.email,
     id: user.netId,
     name: `${user.firstName} ${user.lastName}`,
@@ -38,7 +38,7 @@ export const cannyIdentify = async (
   const { netId } = req.user;
 
   winston.info("Getting user's enrollment status from Yalies.io");
-  return await axios
+  return axios
     .post(
       'https://yalies.io/api/people',
       {

@@ -1,4 +1,14 @@
-ignores: ["graphql", "@graphql-codegen/*", "graphql-tag", "typescript", "typescript-plugin-css-modules", "@types/*", "@typescript-eslint/*", "eslint-*"]
+ignores: [
+  "@sentry/tracing",
+  "graphql",
+  "@graphql-codegen/*",
+  "graphql-tag",
+  "typescript",
+  "typescript-plugin-css-modules",
+  "@types/*",
+  "@typescript-eslint/*",
+  "eslint-*",
+]
 skip-missing: true
 specials: ["bin"]
 

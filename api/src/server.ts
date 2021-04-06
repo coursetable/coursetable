@@ -13,7 +13,6 @@ import {
   INSECURE_PORT,
   SESSION_SECRET,
   CORS_OPTIONS,
-  PHP_URI,
   STATIC_FILE_DIR,
 } from './config';
 

@@ -18,8 +18,8 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 
 const extractHostname = (url: string): string => {
-  var hostname;
-  //find & remove protocol (http, ftp, etc.) and get hostname
+  let hostname;
+  // find & remove protocol (http, ftp, etc.) and get hostname
 
   if (url.indexOf('//') > -1) {
     hostname = url.split('/')[2];
@@ -27,9 +27,9 @@ const extractHostname = (url: string): string => {
     hostname = url.split('/')[0];
   }
 
-  //find & remove port number
+  // find & remove port number
   hostname = hostname.split(':')[0];
-  //find & remove "?"
+  // find & remove "?"
   hostname = hostname.split('?')[0];
 
   return hostname;
@@ -177,7 +177,7 @@ const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
  */
 const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
-  let redirect = req.query.redirect as string | undefined;
+  const redirect = req.query.redirect as string | undefined;
 
   const hostName = extractHostname(redirect || 'coursetable.com/catalog');
 
@@ -189,10 +189,9 @@ const postAuth = (req: express.Request, res: express.Response): void => {
       hostName.endsWith('.coursetable.com')
     ) {
       return res.redirect(redirect);
-    } else {
-      winston.error('Redirect not in allowed origins');
-      return res.redirect('https://coursetable.com');
     }
+    winston.error('Redirect not in allowed origins');
+    return res.redirect('https://coursetable.com');
   }
   winston.error(`No redirect provided`);
 };
