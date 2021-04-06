@@ -26,6 +26,9 @@ export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
 // Ferry GraphQL endpoint
 export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
 
+// Secret for Canny SSO
+export const CANNY_KEY = getEnv('CANNY_KEY');
+
 // Legacy PHP URI
 export const PHP_URI = 'http://nginx:8080';
 

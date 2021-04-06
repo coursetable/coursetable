@@ -141,9 +141,17 @@ function CourseTableNavbar({
                 <StyledNavLink
                   to="/faq"
                   // Left align about link if not mobile
-                  className={!is_mobile ? ' mr-auto' : ''}
+                  className={!is_mobile ? ' align-self-begin' : ''}
                 >
                   FAQ
+                </StyledNavLink>
+                {/* Feedback Page */}
+                <StyledNavLink
+                  to="/feedback"
+                  // Left align about link if not mobile
+                  className={!is_mobile ? ' mr-auto' : ''}
+                >
+                  Feedback
                 </StyledNavLink>
 
                 {/* DarkMode Button */}
@@ -201,7 +209,7 @@ function CourseTableNavbar({
                       onClick={() => {
                         posthog.capture('login');
 
-                        window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
+                        window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
                       }}
                     >
                       Sign In

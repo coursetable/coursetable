@@ -13,11 +13,11 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
-import Feedback from './pages/Feedback';
 import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import WorksheetLogin from './pages/WorksheetLogin';
+import CannyContainer from './pages/Canny';
 
 import { useUser } from './user';
 
@@ -103,12 +103,8 @@ function App({ themeToggler }) {
 
         {/* Worksheet */}
         <MyRoute exact path="/worksheet">
-          {isLoggedIn ? (
-            user.hasEvals ? (
-              <Worksheet />
-            ) : (
-              <Redirect push to="/challenge" />
-            )
+          {isLoggedIn && user.hasEvals ? (
+            <Worksheet />
           ) : (
             <Redirect to="/worksheetlogin" />
           )}
@@ -125,8 +121,12 @@ function App({ themeToggler }) {
           <FAQ />
         </MyRoute>
 
-        <MyRoute exact path="/feedback">
-          <Feedback />
+        <MyRoute exact path="/feedback/">
+          <Route path="*" component={CannyContainer} />
+        </MyRoute>
+
+        <MyRoute exact path="/feedback/:board">
+          <Route path="*" component={CannyContainer} />
         </MyRoute>
 
         <MyRoute exact path="/joinus">

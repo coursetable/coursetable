@@ -11,11 +11,29 @@ import winston from '../logging/winston';
 
 import axios from 'axios';
 
-import { FRONTEND_ENDPOINT, YALIES_API_KEY } from '../config';
+import { YALIES_API_KEY } from '../config';
 
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
+
+const extractHostname = (url: string): string => {
+  let hostname;
+  // find & remove protocol (http, ftp, etc.) and get hostname
+
+  if (url.indexOf('//') > -1) {
+    [, , hostname] = url.split('/');
+  } else {
+    [hostname] = url.split('/');
+  }
+
+  // find & remove port number
+  [hostname] = hostname.split(':');
+  // find & remove "?"
+  [hostname] = hostname.split('?');
+
+  return hostname;
+};
 
 /**
  * Passport configuration for authentication
@@ -75,23 +93,32 @@ export const passportConfig = async (
 
             const user = data[0];
 
-            // otherwise, add the user to the cookie if school is specified
-            if (user.school_code) {
-              winston.info(`Enabling evaluations for ${profile.user}`);
-              await prisma.studentBluebookSettings.update({
-                where: {
-                  netId: profile.user,
-                },
-                data: { evaluationsEnabled: true },
-              });
-              return done(null, {
+            winston.info(`Updating evaluations for ${profile.user}`);
+            await prisma.studentBluebookSettings.update({
+              where: {
                 netId: profile.user,
-                evals: true,
-              });
-            }
-
-            // otherwise, user isn't a Yale student
-            return done(null, { netId: profile.user, evals: false });
+              },
+              data: {
+                // enable evaluations if user has a school code
+                evaluationsEnabled: !!user.school_code,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                email: user.email,
+                upi: user.upi,
+                school: user.school,
+                year: user.year,
+                college: user.college,
+                major: user.major,
+                curriculum: user.curriculum,
+              },
+            });
+            return done(null, {
+              netId: profile.user,
+              evals: !!user.school_code,
+              email: user.email,
+              firstName: user.first_name,
+              lastName: user.last_name,
+            });
           })
           .catch((err) => {
             winston.error(`Yalies connection error: ${err}`);
@@ -129,12 +156,20 @@ export const passportConfig = async (
           },
         })
         .then((student) => {
-          done(null, { netId, evals: !!student?.evaluationsEnabled });
+          done(null, {
+            netId,
+            evals: !!student?.evaluationsEnabled,
+            // convert nulls to undefined
+            email: student?.email || undefined,
+            firstName: student?.first_name || undefined,
+            lastName: student?.last_name || undefined,
+          });
         });
     }
   );
 };
 
+const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
 /**
  * Redirects to be executed after login.
  * @param req: express request.
@@ -142,19 +177,24 @@ export const passportConfig = async (
  */
 const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
-  let redirect = req.query.redirect as string | undefined;
+  const redirect = req.query.redirect as string | undefined;
+
+  const hostName = extractHostname(redirect || 'coursetable.com/catalog');
+
   if (redirect && !redirect.startsWith('//')) {
     winston.info(`Redirecting to ${redirect}`);
     // prefix the redirect with a slash to avoid an open redirect vulnerability.
-    if (!redirect.startsWith('/')) {
-      redirect = `/${redirect}`;
+    if (
+      ALLOWED_ORIGINS.includes(hostName) ||
+      hostName.endsWith('.coursetable.com')
+    ) {
+      return res.redirect(redirect);
     }
-    return res.redirect(`${FRONTEND_ENDPOINT}${redirect}`);
+    winston.error('Redirect not in allowed origins');
+    return res.redirect('https://coursetable.com');
   }
-
-  winston.info(`Redirecting to /catalog fallback`);
-  // If no redirect is provided, simply redirect to the auth status.
-  return res.redirect(`${FRONTEND_ENDPOINT}/catalog`);
+  winston.error(`No redirect provided`);
+  return res.redirect('https://coursetable.com');
 };
 
 /**
