@@ -41,6 +41,8 @@ import { sortbyOptions } from '../queries/Constants';
 import { useSearch } from '../searchContext';
 import { breakpoints } from '../utilities';
 
+import { API_ENDPOINT } from '../config';
+
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
@@ -245,7 +247,12 @@ const CatalogResults = ({
           style={{ width: '25%' }}
         />
         <h3>
-          Please <a href="/api/auth/cas?redirect=catalog">log in</a>
+          Please{' '}
+          <a
+            href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/worksheet`}
+          >
+            log in
+          </a>
         </h3>
         <div>A valid Yale NetID is required to access course information.</div>
       </div>
