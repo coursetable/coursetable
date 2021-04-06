@@ -1,24 +1,23 @@
 /* eslint-disable */
-import React, { useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React from 'react';
+import { Route, Switch } from 'react-router-dom';
 
 import CannyBoard from './CannyBoard';
 
-const boards = {
+export const boards = {
   features: {
+    value: 'features',
     label: 'Feature requests',
     token: '1ce2e740-4310-1893-6927-1e2edad7785e',
   },
-  bugs: { label: 'Bugs', token: 'e550a33f-5bad-b6e4-14c4-67875166064c' },
+  bugs: {
+    value: 'bugs',
+    label: 'Bugs',
+    token: 'e550a33f-5bad-b6e4-14c4-67875166064c',
+  },
 };
 
 const CannyContainer: React.VFC = () => {
-  const [selectedBoard, setSelectedBoard] = useState(boards.features);
-
-  const params = useParams();
-
-  console.log(params);
-
   return (
     <div className="m-4">
       <div
@@ -26,20 +25,34 @@ const CannyContainer: React.VFC = () => {
         role="group"
         aria-label="Select feedback board"
       >
-        {Object.entries(boards).map(([_, board]) => (
-          <button
-            type="button"
-            className="btn btn-secondary"
-            key={board.token}
-            onClick={() => {
-              setSelectedBoard(board);
-            }}
-          >
-            {board.label}
-          </button>
+        {Object.entries(boards).map(([boardName, board]) => (
+          // use HTML links instead of react-router ones to force the Canny widget to reload
+          <a href={`/feedback/${boardName}`}>
+            <button
+              type="button"
+              className="btn btn-secondary mr-2"
+              key={board.token}
+            >
+              {board.label}
+            </button>
+          </a>
         ))}
       </div>
-      <CannyBoard boardToken={selectedBoard.token} />
+      <Switch>
+        {Object.entries(boards).map(([boardName, board]) => (
+          <Route
+            exact
+            path={`/feedback/${boardName}`}
+            render={(props) => <CannyBoard board={board} />}
+          />
+        ))}
+        {/* Fallback route */}
+        <Route
+          exact
+          path={`/feedback`}
+          render={(props) => <CannyBoard board={boards.features} />}
+        />
+      </Switch>
     </div>
   );
 };
