@@ -2,31 +2,30 @@
  * @file Handlers for generating JWT tokens for Canny.
  */
 import express from 'express';
-import jwt from 'jsonwebtoken';
+
+import { YALIES_API_KEY, CANNY_KEY } from '../config';
 
 import { User } from '../models/student';
 
 import winston from '../logging/winston';
-
 import axios from 'axios';
-
-import { YALIES_API_KEY } from '../config';
+import jwt from 'jsonwebtoken';
 
 import { PrismaClient } from '@prisma/client';
 
-const PrivateKey = 'd508c798-d0fd-6528-3c55-35a7ef90203a';
-
 const prisma = new PrismaClient();
 
+// Create a JWT-signed Canny token with user info
 const createCannyToken = (user: User) => {
   const userData = {
     email: user.email,
     id: user.netId,
     name: `${user.firstName} ${user.lastName}`,
   };
-  return jwt.sign(userData, PrivateKey, { algorithm: 'HS256' });
+  return jwt.sign(userData, CANNY_KEY, { algorithm: 'HS256' });
 };
 
+// Identify a user for Canny
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response
@@ -37,6 +36,8 @@ export const cannyIdentify = async (
 
   const { netId } = req.user;
 
+  // Make another request to Yalies.io to get most up-to-date info
+  // (also done upon login, but our cookies last a while)
   winston.info("Getting user's enrollment status from Yalies.io");
   return axios
     .post(
