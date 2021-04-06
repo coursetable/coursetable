@@ -19,7 +19,6 @@ export const boards = {
   },
 };
 
-
 const CannyBoard = ({ board }) => {
   useEffect(() => {
     (function (w, d, i, s) {
