@@ -137,21 +137,21 @@ function CourseTableNavbar({
                 >
                   About
                 </StyledNavLink>
-                {/* Feedback Page */}
-                <StyledNavLink
-                  to="/feedback"
-                  // Left align about link if not mobile
-                  className={!is_mobile ? ' align-self-begin' : ''}
-                >
-                  Feedback
-                </StyledNavLink>
                 {/* FAQs Page */}
                 <StyledNavLink
                   to="/faq"
                   // Left align about link if not mobile
-                  className={!is_mobile ? ' mr-auto' : ''}
+                  className={!is_mobile ? ' align-self-begin' : ''}
                 >
                   FAQ
+                </StyledNavLink>
+                {/* Feedback Page */}
+                <StyledNavLink
+                  to="/feedback"
+                  // Left align about link if not mobile
+                  className={!is_mobile ? ' mr-auto' : ''}
+                >
+                  Feedback
                 </StyledNavLink>
 
                 {/* DarkMode Button */}
