@@ -32,6 +32,7 @@ jobs:
             ${{ runner.os }}-yarn-
       - run: cd api && yarn install --frozen-lockfile
       - run: cd api && yarn run checks
+      - run: cd api && yarn run lint
 
   frontend:
     runs-on: ubuntu-latest
