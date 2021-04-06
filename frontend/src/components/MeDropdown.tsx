@@ -4,7 +4,7 @@ import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import {
   FcCalendar,
-  FcUndo,
+  FcInfo,
   FcQuestions,
   FcFeedback,
   FcPuzzle,

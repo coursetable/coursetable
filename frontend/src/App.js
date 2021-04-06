@@ -100,11 +100,6 @@ function App({ themeToggler, location }) {
   }
   return (
     <>
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        themeToggler={themeToggler}
-        setIsTutorialOpen={setIsTutorialOpen}
-      />
       <Notice>
         Want to try out the latest features and shape the future of CourseTable?
         Become a Beta Tester{' '}
@@ -112,7 +107,11 @@ function App({ themeToggler, location }) {
         <a href="https://www.linkedin.com/company/coursetable">follow us</a> on
         LinkedIn for the latest updates.
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        themeToggler={themeToggler}
+        setIsTutorialOpen={setIsTutorialOpen}
+      />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">

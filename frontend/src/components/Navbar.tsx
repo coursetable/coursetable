@@ -288,6 +288,14 @@ function CourseTableNavbar({
                       <StyledNavLink to="/worksheet" onClick={scrollToTop}>
                         Worksheet
                       </StyledNavLink>
+                      {/* Catalog Page */}
+                      <StyledNavLink
+                        to="/feedback"
+                        onClick={scrollToTop}
+                        id="feedback-link"
+                      >
+                        Feedback
+                      </StyledNavLink>
                     </>
                   )}
                   {(isMobile || !isLoggedIn) && (
