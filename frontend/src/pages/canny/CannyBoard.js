@@ -6,7 +6,19 @@ import { API_ENDPOINT } from '../../config';
 
 import { toast } from 'react-toastify';
 
-import { boards } from './CannyContainer';
+export const boards = {
+  features: {
+    value: 'features',
+    label: 'Feature requests',
+    token: '1ce2e740-4310-1893-6927-1e2edad7785e',
+  },
+  bugs: {
+    value: 'bugs',
+    label: 'Bugs',
+    token: 'e550a33f-5bad-b6e4-14c4-67875166064c',
+  },
+};
+
 
 const CannyBoard = ({ board }) => {
   useEffect(() => {

@@ -2,28 +2,13 @@
 import React from 'react';
 import { Route, Switch, useLocation } from 'react-router-dom';
 
-import CannyBoard from './CannyBoard';
+import CannyBoard, { boards } from './canny/CannyBoard';
 
-import Authentication from '../../images/authentication.svg';
+import Authentication from '../images/authentication.svg';
+import { API_ENDPOINT } from '../config';
+import { useUser } from '../user';
 
-import { API_ENDPOINT } from '../../config';
-
-import { useUser } from '../../user';
-
-export const boards = {
-  features: {
-    value: 'features',
-    label: 'Feature requests',
-    token: '1ce2e740-4310-1893-6927-1e2edad7785e',
-  },
-  bugs: {
-    value: 'bugs',
-    label: 'Bugs',
-    token: 'e550a33f-5bad-b6e4-14c4-67875166064c',
-  },
-};
-
-const CannyContainer: React.VFC = () => {
+const Canny: React.VFC = () => {
   // User context data
   const { user } = useUser();
 
@@ -111,4 +96,4 @@ const CannyContainer: React.VFC = () => {
   );
 };
 
-export default CannyContainer;
+export default Canny;

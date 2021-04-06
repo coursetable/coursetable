@@ -16,7 +16,7 @@ services:
     depends_on:
       - graphql-engine
     environment:
-      CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
+      CANNY_KEY: ${CANNY_KEY?canny_key}
       FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
       FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
