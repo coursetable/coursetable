@@ -25,7 +25,7 @@ services:
       MYSQL_USER: ${MYSQL_USERNAME?username}
       MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
       MYSQL_URL: ${MYSQL_URL?mysql_url}
-      NODE_ENV: production
+      NODE_ENV: development
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
