@@ -59,9 +59,6 @@ export const passportConfig = async (
           update: {},
           create: {
             netId: profile.user,
-            facebookLastUpdated: 0,
-            noticeLastSeen: 0,
-            timesNoticeSeen: 0,
             evaluationsEnabled: false,
           },
         });

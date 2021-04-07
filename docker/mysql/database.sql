@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Apr 07, 2021 at 01:24 AM
+-- Generation Time: Apr 07, 2021 at 01:33 AM
 -- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP Version: 7.4.16
 
@@ -31,13 +31,6 @@ USE `yaleplus`;
 
 CREATE TABLE `StudentBluebookSettings` (
   `netId` char(8) NOT NULL,
-  `shareCoursesEnabled` tinyint(1) NOT NULL DEFAULT 1,
-  `facebookLastUpdated` int(10) UNSIGNED NOT NULL COMMENT 'Last time at which the student''s Facebook friends were fetched',
-  `seenDisclaimer` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Whether the student has seen the disclaimer saying to not shop classes based on purely evaluations',
-  `noticeLastSeen` int(10) UNSIGNED NOT NULL COMMENT 'Timestamp of when the notice was last seen',
-  `timesNoticeSeen` tinyint(3) UNSIGNED NOT NULL,
-  `viewException` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Whether to allow the particular NetID to access CourseTable even if they''re not a Yale College student',
-  `challengeTries` smallint(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'How many times the student has tried to get access to a Bluebook data file',
   `evaluationsEnabled` tinyint(1) UNSIGNED NOT NULL,
   `first_name` varchar(256) DEFAULT NULL COMMENT 'User''s first name',
   `last_name` varchar(256) DEFAULT NULL COMMENT 'User''s last name',
