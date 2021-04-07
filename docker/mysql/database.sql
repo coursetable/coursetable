@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 27, 2021 at 04:43 PM
+-- Generation Time: Apr 07, 2021 at 01:15 AM
 -- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP Version: 7.4.16
 
@@ -51,7 +51,16 @@ CREATE TABLE `StudentBluebookSettings` (
   `timesNoticeSeen` tinyint(3) UNSIGNED NOT NULL,
   `viewException` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Whether to allow the particular NetID to access CourseTable even if they''re not a Yale College student',
   `challengeTries` smallint(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'How many times the student has tried to get access to a Bluebook data file',
-  `evaluationsEnabled` tinyint(1) UNSIGNED NOT NULL
+  `evaluationsEnabled` tinyint(1) UNSIGNED NOT NULL,
+  `first_name` varchar(256) DEFAULT NULL COMMENT 'User''s first name',
+  `last_name` varchar(256) DEFAULT NULL COMMENT 'User''s last name',
+  `email` varchar(256) DEFAULT NULL COMMENT 'User''s email address',
+  `upi` int(11) DEFAULT NULL COMMENT 'Universal Personal Identifier used by Yale Directory',
+  `school` varchar(256) DEFAULT NULL COMMENT 'User''s school',
+  `year` int(11) DEFAULT NULL COMMENT 'User''s year of graduation',
+  `college` varchar(256) DEFAULT NULL COMMENT 'User''s residential college',
+  `major` varchar(256) DEFAULT NULL COMMENT ' User''s major',
+  `curriculum` varchar(256) DEFAULT NULL COMMENT 'User''s curriculum (for grad students)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
