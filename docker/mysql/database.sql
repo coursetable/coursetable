@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Apr 07, 2021 at 01:15 AM
+-- Generation Time: Apr 07, 2021 at 01:24 AM
 -- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP Version: 7.4.16
 
@@ -22,19 +22,6 @@ SET time_zone = "+00:00";
 --
 CREATE DATABASE IF NOT EXISTS `yaleplus` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
 USE `yaleplus`;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `BluebookEvents`
---
-
-CREATE TABLE `BluebookEvents` (
-  `netId` char(8) NOT NULL,
-  `time` int(10) UNSIGNED NOT NULL,
-  `event` varchar(32) NOT NULL,
-  `data` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
 
@@ -66,20 +53,6 @@ CREATE TABLE `StudentBluebookSettings` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `StudentCoursesTaken`
---
-
-CREATE TABLE `StudentCoursesTaken` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `netId` char(8) NOT NULL DEFAULT '0',
-  `subject` char(4) NOT NULL DEFAULT '0',
-  `number` char(6) NOT NULL DEFAULT '0',
-  `season` mediumint(8) UNSIGNED NOT NULL DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `StudentFacebookFriends`
 --
 
@@ -88,20 +61,6 @@ CREATE TABLE `StudentFacebookFriends` (
   `netId` char(8) NOT NULL,
   `name` varchar(255) NOT NULL,
   `facebookId` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `StudentPetitions`
---
-
-CREATE TABLE `StudentPetitions` (
-  `netId` char(8) NOT NULL,
-  `name` varchar(30) NOT NULL COMMENT 'User-inputted name',
-  `comment` varchar(4095) NOT NULL,
-  `public` tinyint(1) UNSIGNED NOT NULL,
-  `time` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -134,23 +93,10 @@ CREATE TABLE `WorksheetCourses` (
 --
 
 --
--- Indexes for table `BluebookEvents`
---
-ALTER TABLE `BluebookEvents`
-  ADD PRIMARY KEY (`netId`,`time`);
-
---
 -- Indexes for table `StudentBluebookSettings`
 --
 ALTER TABLE `StudentBluebookSettings`
   ADD PRIMARY KEY (`netId`);
-
---
--- Indexes for table `StudentCoursesTaken`
---
-ALTER TABLE `StudentCoursesTaken`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `netId` (`netId`) USING HASH;
 
 --
 -- Indexes for table `StudentFacebookFriends`
@@ -159,12 +105,6 @@ ALTER TABLE `StudentFacebookFriends`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `netId_friendFacebookId` (`netId`,`facebookId`),
   ADD KEY `netId` (`netId`);
-
---
--- Indexes for table `StudentPetitions`
---
-ALTER TABLE `StudentPetitions`
-  ADD PRIMARY KEY (`netId`);
 
 --
 -- Indexes for table `Students`
@@ -184,12 +124,6 @@ ALTER TABLE `WorksheetCourses`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `StudentCoursesTaken`
---
-ALTER TABLE `StudentCoursesTaken`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17412;
 
 --
 -- AUTO_INCREMENT for table `StudentFacebookFriends`
