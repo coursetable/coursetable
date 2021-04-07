@@ -8,44 +8,18 @@ datasource db {
   url      = env("MYSQL_URL")
 }
 
-model BluebookEvents {
-  netId String @db.Char(8)
-  time  Int    @db.UnsignedInt
-  event String @db.VarChar(32)
-  data  String @db.VarChar(255)
-
-  @@id([netId, time])
-}
-
 model StudentBluebookSettings {
-  netId               String  @id @db.Char(8)
-  shareCoursesEnabled Boolean @default(true)
-  facebookLastUpdated Int     @db.UnsignedInt
-  seenDisclaimer      Boolean @default(false)
-  noticeLastSeen      Int     @db.UnsignedInt
-  timesNoticeSeen     Int     @db.UnsignedTinyInt
-  viewException       Int     @default(0) @db.UnsignedTinyInt
-  challengeTries      Int     @default(0) @db.UnsignedSmallInt
-  evaluationsEnabled  Boolean
-  first_name          String? @db.VarChar(256)
-  last_name           String? @db.VarChar(256)
-  email               String? @db.VarChar(256)
-  upi                 Int?
-  school              String? @db.VarChar(256)
-  year                Int?
-  college             String? @db.VarChar(256)
-  major               String? @db.VarChar(256)
-  curriculum          String? @db.VarChar(256)
-}
-
-model StudentCoursesTaken {
-  id      Int    @id @default(autoincrement()) @db.UnsignedInt
-  netId   String @default("0") @db.Char(8)
-  subject String @default("0") @db.Char(4)
-  number  String @default("0") @db.Char(6)
-  season  Int    @default(0) @db.UnsignedMediumInt
-
-  @@index([netId], name: "netId")
+  netId              String  @id @db.Char(8)
+  evaluationsEnabled Boolean
+  first_name         String? @db.VarChar(256)
+  last_name          String? @db.VarChar(256)
+  email              String? @db.VarChar(256)
+  upi                Int?
+  school             String? @db.VarChar(256)
+  year               Int?
+  college            String? @db.VarChar(256)
+  major              String? @db.VarChar(256)
+  curriculum         String? @db.VarChar(256)
 }
 
 model StudentFacebookFriends {
@@ -56,14 +30,6 @@ model StudentFacebookFriends {
 
   @@unique([netId, facebookId], name: "netId_friendFacebookId")
   @@index([netId], name: "netId")
-}
-
-model StudentPetitions {
-  netId   String  @id @db.Char(8)
-  name    String  @db.VarChar(30)
-  comment String  @db.VarChar(4095)
-  public  Boolean
-  time    Int     @db.UnsignedInt
 }
 
 model Students {

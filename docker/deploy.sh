@@ -17,5 +17,5 @@ sentry-cli releases set-commits "$VERSION" --auto
 doppler run --command "docker-compose build"
 sentry-cli releases finalize "$VERSION"
 
-doppler run --command "docker-compose up -d"
+doppler run --command "docker-compose up -d --build"
 sentry-cli releases deploys "$VERSION" new -e production
