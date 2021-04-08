@@ -171,9 +171,9 @@ function FAQ() {
       title: "Can I use CourseTable's data for a project?",
       contents: (
         <>
-          Sure. Shoot us an <a href="mailto: harshal.sheth@yale.edu">email</a>{' '}
-          with a brief description of your project, and we'll get back to you
-          shortly.
+          Sure. Shoot us an{' '}
+          <a href="mailto: coursetable.at.yale@gmail.com">email</a> with a brief
+          description of your project, and we'll get back to you shortly.
         </>
       ),
     },
