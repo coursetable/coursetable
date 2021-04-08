@@ -129,6 +129,10 @@ function App({ themeToggler }) {
           <Route path="*" component={CannyContainer} />
         </MyRoute>
 
+        <MyRoute exact path="/feedback/:board/*">
+          <Route path="*" component={CannyContainer} />
+        </MyRoute>
+
         <MyRoute exact path="/joinus">
           <Join />
         </MyRoute>
