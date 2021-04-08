@@ -13,6 +13,8 @@ import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import { SurfaceComponent } from './StyledComponents';
 
+import { API_ENDPOINT } from '../config';
+
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
@@ -139,9 +141,17 @@ function CourseTableNavbar({
                 <StyledNavLink
                   to="/faq"
                   // Left align about link if not mobile
-                  className={!is_mobile ? ' mr-auto' : ''}
+                  className={!is_mobile ? ' align-self-begin' : ''}
                 >
                   FAQ
+                </StyledNavLink>
+                {/* Feedback Page */}
+                <StyledNavLink
+                  to="/feedback"
+                  // Left align about link if not mobile
+                  className={!is_mobile ? ' mr-auto' : ''}
+                >
+                  Feedback
                 </StyledNavLink>
 
                 {/* DarkMode Button */}
@@ -194,20 +204,12 @@ function CourseTableNavbar({
                 </div>
                 {/* Sign in/out and Facebook buttons. Show if mobile */}
                 <div className="d-md-none">
-                  <StyledDiv>
-                    <a
-                      href="https://old.coursetable.com/"
-                      style={{ color: 'inherit' }}
-                    >
-                      Old CourseTable
-                    </a>
-                  </StyledDiv>
                   {!isLoggedIn ? (
                     <StyledDiv
                       onClick={() => {
                         posthog.capture('login');
 
-                        window.location.href = '/api/auth/cas?redirect=catalog';
+                        window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
                       }}
                     >
                       Sign In

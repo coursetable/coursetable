@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import { FcCalendar, FcUndo } from 'react-icons/fc';
+import { FcCalendar } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
@@ -15,6 +15,8 @@ import {
   TextComponent,
   StyledHoverText,
 } from './StyledComponents';
+
+import { API_ENDPOINT } from '../config';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -40,6 +42,7 @@ const MeDropdown: React.VFC<Props> = ({
 }) => {
   // Get user context data
   const { user } = useUser();
+
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
 
@@ -79,22 +82,6 @@ const MeDropdown: React.VFC<Props> = ({
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
           <Col className="px-3 pt-3">
-            {/* Revert to Old CourseTable Link */}
-            <Row className=" pb-3 m-auto">
-              <FcUndo
-                className="mr-2 my-auto"
-                size={20}
-                style={{ paddingLeft: '2px' }}
-              />
-              <TextComponent type={1}>
-                <a
-                  href="https://old.coursetable.com/"
-                  className={styles.collapse_text}
-                >
-                  <StyledHoverText>Old CourseTable</StyledHoverText>
-                </a>
-              </TextComponent>
-            </Row>
             {/* Export Worksheet button */}
             {isLoggedIn && (
               <Row className=" pb-3 m-auto">
@@ -145,7 +132,7 @@ const MeDropdown: React.VFC<Props> = ({
                   style={{ paddingLeft: '2px' }}
                 />
                 <a
-                  href="/api/auth/cas?redirect=catalog"
+                  href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
                   className={styles.collapse_text}
                 >
                   <TextComponent type={1}>

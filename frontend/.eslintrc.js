@@ -38,6 +38,7 @@ module.exports = {
       },
     ],
     // TODO: Eventually we want to remove these rules (and default to error).
+    '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/naming-convention': 'off',
     '@typescript-eslint/no-shadow': 'warn',
     '@typescript-eslint/no-use-before-define': 'warn',

@@ -1,35 +1,61 @@
+/**
+ * @file Global server configurations
+ */
+
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
 
-export const PORT = 4096;
-
-export const MYSQL_DB_CONFIG = {
-  host: process.env.MYSQL_HOST || die('mysql host'),
-  port: parseInt(process.env.MYSQL_PORT || die('mysql port'), 10),
-  user: process.env.MYSQL_USER || die('mysql username'),
-  password: process.env.MYSQL_PASSWORD || die('mysql password'),
-  database: process.env.MYSQL_DB || die('mysql db'),
+const getEnv = (name: string) => {
+  return process.env[name] || die(name);
 };
 
-export const GRAPHQL_ENDPOINT =
-  process.env.GRAPHQL_ENDPOINT || die('graphql endpoint');
+// If running in dev mode
+export const isDev = process.env.NODE_ENV !== 'production';
 
-export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
-export const CHALLENGE_PASSWORD =
-  process.env.CHALLENGE_PASSWORD || die('challenge password');
+// Networking
+export const SECURE_PORT = getEnv('SECURE_PORT');
+export const INSECURE_PORT = getEnv('INSECURE_PORT');
 
-export const NUM_CHALLENGE_COURSES = 3; // number of courses to select for the challenge
-export const CHALLENGE_SEASON = '201903'; // season to select the challenge from
-export const MAX_CHALLENGE_REQUESTS = 100; // maximum number of allowed challenge tries
+// Facebook Graph API endpoint
+export const FACEBOOK_API_ENDPOINT = getEnv('FACEBOOK_API_ENDPOINT');
+
+// API key for interfacing with the yalies.io API
+export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
+
+// Ferry GraphQL endpoint
+export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
+
+// Secret for Canny SSO
+export const CANNY_KEY = getEnv('CANNY_KEY');
+
+// Legacy PHP URI
+export const PHP_URI = 'http://nginx:8080';
+
+// Frontend server endpoint (used for redirects)
+export const FRONTEND_ENDPOINT = isDev
+  ? 'https://localhost:3000'
+  : process.env.FRONTEND_ENDPOINT;
+
+// CORS options so frontend can interface with server
+export const CORS_OPTIONS = {
+  origin: [
+    'https://localhost:3000',
+    'https://coursetable.com',
+    'https://www.coursetable.com',
+    /\.coursetable\.com$/,
+    /\.vercel\.app$/,
+  ],
+  credentials: true,
+  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+};
 
 // Secret for session cookie signing.
-export const SESSION_SECRET =
-  process.env.SESSION_SECRET ?? die('session secret');
+export const SESSION_SECRET = getEnv('SESSION_SECRET');
 
 // Note that an existing but empty FERRY_SECRET is meaningful,
 // as it enables us to bypass the header requirement in development.
-export const FERRY_SECRET = process.env.FERRY_SECRET ?? die('ferry secret');
+export const { FERRY_SECRET } = process.env;
 
 // Location of statically generated files. This is relative
 // to the working directory, which is api.

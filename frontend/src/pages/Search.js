@@ -124,7 +124,7 @@ function Search() {
     select_seasons,
     setSelectSeasons,
   ] = useSessionStorageState('select_seasons', [
-    { value: '202101', label: 'Spring 2021' },
+    { value: '202103', label: 'Fall 2021' },
   ]);
   const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
     'select_skillsareas',
@@ -148,6 +148,11 @@ function Search() {
     'hideCancelled',
     true
   );
+  // Does the user want to hide discussion sections?
+  const [
+    hideDiscussionSections,
+    setHideDiscussionSections,
+  ] = useSessionStorageState('hideDiscussionSections', true);
   // Does the user want to hide first year seminars?
   const [
     hideFirstYearSeminars,
@@ -300,6 +305,7 @@ function Search() {
       min_workload: include_all_workloads ? null : workloadBounds[0],
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
+      discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
       grad_level: hideGraduateCourses ? false : null,
     };
@@ -313,6 +319,7 @@ function Search() {
     return search_variables;
   }, [
     hideCancelled,
+    hideDiscussionSections,
     hideFirstYearSeminars,
     hideGraduateCourses,
     ratingBounds,
@@ -368,6 +375,14 @@ function Search() {
         if (
           searchConfig.extra_info !== null &&
           searchConfig.extra_info !== listing.extra_info
+        ) {
+          return false;
+        }
+
+        if (
+          searchConfig.discussion_section !== null &&
+          (listing.title === 'Discussion Section' ||
+            listing.title === 'Discussion section')
         ) {
           return false;
         }
@@ -525,11 +540,12 @@ function Search() {
   // reset the search form
   const handleResetFilters = () => {
     setHideCancelled(true);
+    setHideDiscussionSections(true);
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
     setRatingBounds([1, 5]);
     setWorkloadBounds([1, 5]);
-    setSelectSeasons([{ value: '202101', label: 'Spring 2021' }]);
+    setSelectSeasons([{ value: '202103', label: 'Fall 2021' }]);
     setSelectSkillsAreas(null);
     setSelectCredits(null);
     setSelectSchools([]);
@@ -801,7 +817,22 @@ function Search() {
                       setHideCancelled(!hideCancelled);
                     }}
                   >
-                    Hide cancelled courses
+                    Hide cancelled/closed courses
+                  </Form.Check.Label>
+                </Form.Check>
+
+                {/* Hide Discussion Sections Toggle */}
+                <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check.Input
+                    checked={hideDiscussionSections}
+                    onChange={(e) => {}} // dummy handler to remove warning
+                  />
+                  <Form.Check.Label
+                    onClick={() => {
+                      setHideDiscussionSections(!hideDiscussionSections);
+                    }}
+                  >
+                    Hide discussion sections
                   </Form.Check.Label>
                 </Form.Check>
 

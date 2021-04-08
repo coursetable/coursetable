@@ -10,6 +10,8 @@ import { useUser } from '../user';
 import { getSSObject, setSSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
 
+import { API_ENDPOINT } from '../config';
+
 /**
  * Render worksheet list in default worksheet view
  * @prop worksheetView - boolean | are we in the worksheet view?
@@ -62,13 +64,19 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
       }
     }
 
-    // User legacy api php to perform worksheet action
+    // Call the endpoint
     return axios
-      .get(
-        `/legacy_api/WorksheetActions.php?action=${add_remove}&season=${season_code}&ociId=${crn}`
+      .post(
+        `${API_ENDPOINT}/api/user/toggleBookmark`,
+        { action: add_remove, season: season_code, ociId: crn },
+        {
+          withCredentials: true,
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        }
       )
       .then((response) => {
-        // console.log(response.data);
         // Refresh user's worksheet
         return userRefresh();
       })

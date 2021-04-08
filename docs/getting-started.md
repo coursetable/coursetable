@@ -48,16 +48,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    > **For Windows**: Make sure to clone the repository in your Linux filesystem in Ubuntu using Windows Terminal (NOT your Windows filesystem). This will allow React hot reloading to work.
    > After cloning, cd to the repository. Open the repository in VSCode by running the command `code .`. This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-20.04`. Also, make sure that the bar in the bottom right says `LF` and not `CRLF`.
 
-1. Create `facebook.env`
-
-   Create the `facebook.env` file with the following contents in the directory you just cloned.
-
-   ```sh
-   FACEBOOK_APP_ID=185745958145518
-   FACEBOOK_APP_SECRET=<redacted>
-   ```
-
-   The app secret should be replaced by the actual value - reach out to us to get this. Alternatively, if you don't intend to test anything related to the Facebook integration, you can just leave that value empty.
+1. Install Doppler (and make sure you've been added to the organization there – if not, contact one of the project leads): see https://docs.doppler.com/docs/enclave-installation. We use Doppler to manage our secrets such as API keys.
 
 1. Install Docker
 
@@ -90,42 +81,62 @@ Some useful commands:
 
 Note: if you run into issues, check the troubleshooting section at the bottom.
 
-1. Cd to the cloned coursetable root directory
+1. `cd` to the cloned coursetable root directory
 
    > **For Windows**: Make sure you are in Ubuntu in Windows Terminal
 
-2. Start coursetable
+2. Initialize Doppler.
+
+   ```bash
+   # log in
+   #  - select "Scope login to current directory if you're using Doppler elsewhere"
+   doppler login
+   ```
+
+3. Start the backend:
 
    ```sh
    cd docker
-   docker-compose up -d
-   docker-compose logs -f
+   ./start.sh
    ```
 
-3. Wait ~10 minutes. If you’re curious, here's what's going on:
+4. Wait ~2-3 minutes. If you’re curious, here's what's going on:
 
    - Installing Node.js module dependencies
    - Installing PHP (Composer) packages
    - Setting up the database schema
    - Generating some JSON data files
 
-4. Start again
+5. Start again:
 
    Not everything comes up the first time because of our inter-service dependencies. Run these commands. You might need to do this a couple times.
 
    ```sh
    # kill the docker-compose logs -f command from above using Cmd (Ctrl) + C
-   docker-compose up -d
+
+   # first, enter an environment with Doppler secrets injected so docker is happy
+   doppler run --command "/bin/sh"
+
+   docker-compose up
    docker-compose logs -f
+
+   # exit the Doppler environment
+   exit
    ```
 
-5. Navigate to https://localhost:8080.
+6. Start the frontend (first `cd` to `frontend`)
 
-   You should have a working CourseTable site! You will have to click ignore on a “self-signed certificate” error in your browser.
+   ```sh
+   ./start.sh
+   ```
 
-6. Make some changes!
+7. Navigate to https://localhost:3000.
 
-   Most changes you make will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page.
+   You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally)
+
+8. Make some changes!
+
+   Most changes you make (i.e. to the API server or frontend) will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page. If you plan on making changes to the database, please
 
 ## Troubleshooting
 

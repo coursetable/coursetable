@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useMemo } from 'react';
 
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
@@ -30,6 +30,15 @@ const StyledResultsItem = styled(Row)`
   }
 `;
 
+const extra_info_map = {
+  ACTIVE: 'ACTIVE',
+  MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
+  CANCELLED: 'CANCELLED',
+  MOVED_TO_FALL_TERM: 'MOVED TO FALL',
+  CLOSED: 'CLOSED',
+  NUMBER_CHANGED: 'NUMBER CHANGED',
+};
+
 /**
  * Renders a list item for a search result and expanded worksheet list item
  * @prop course - listing data for the current course
@@ -52,14 +61,6 @@ const SearchResultsItem = ({
   expanded,
   fb_friends,
 }) => {
-  // Has the component been mounted?
-  const [mounted, setMounted] = useState(false);
-
-  // Set mounted on mount
-  useEffect(() => {
-    if (!mounted) setMounted(true);
-  }, [mounted]);
-
   // Season code for this listing
   const { season_code } = course;
   const season = season_code[5];
@@ -100,7 +101,9 @@ const SearchResultsItem = ({
         <Popover.Title>
           <strong>
             {course.extra_info !== 'ACTIVE' ? (
-              <span className={Styles.cancelled_text}>CANCELLED </span>
+              <span className={Styles.cancelled_text}>
+                {extra_info_map[course.extra_info]}{' '}
+              </span>
             ) : (
               ''
             )}
@@ -338,12 +341,10 @@ const SearchResultsItem = ({
           modal={false}
         />
       </div>
-      {/* Render conflict icon only when component has been mounted */}
-      {mounted && !isScrolling && (
-        <div className={Styles.conflict_error}>
-          <CourseConflictIcon course={course} />
-        </div>
-      )}
+      {/* Render conflict icon */}
+      <div className={Styles.conflict_error}>
+        <CourseConflictIcon course={course} />
+      </div>
     </StyledResultsItem>
   );
 };

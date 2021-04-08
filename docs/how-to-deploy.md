@@ -1,4 +1,4 @@
-# (Mostly for Harshal) Bootstrapping a new server
+# Bootstrapping a new server
 
 ### Server Setup
 
@@ -47,18 +47,19 @@ git clone git@github.com:coursetable/infra.git
 
 # Setup infra.
 pushd infra
-(cd traefik && docker-compose up -d)
-(cd under-maintenance && docker-compose up -d)
-(cd old_proxy && docker-compose up -d)
-(cd mysql && docker-compose up -d)
-(cd analytics && docker-compose up -d)
-(cd posthog && docker-compose up -d)
+doppler setup -p coursetable -c prd
+(cd traefik && doppler run --command "docker-compose up -d")
+(cd under-maintenance && doppler run --command "docker-compose up -d")
+(cd mysql && doppler run --command "docker-compose up -d")
+(cd analytics && doppler run --command "docker-compose up -d")
+(cd posthog && doppler run --command "docker-compose up -d")
 popd
 
 # Setup ferry.
 pushd ferry
-docker-compose up -d
-./refresh_courses.sh
+doppler setup -p coursetable -c prd
+doppler run --command "docker-compose up -d"
+doppler run --command "./refresh_courses.sh"
 popd
 
 # Setup coursetable.
@@ -92,5 +93,5 @@ git pull # Get changes onto server
 # Run these on the prod server.
 cd ~/ferry
 git pull # Get changes onto server
-./refresh_courses.sh # Rerun the pipeline
+doppler run --command "./refresh_courses.sh" # Rerun the pipeline
 ```
