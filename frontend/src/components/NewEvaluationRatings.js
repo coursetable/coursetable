@@ -8,7 +8,7 @@ import {
   question_text,
 } from '../queries/Constants';
 import { TextComponent, StyledSwitch } from './StyledComponents';
-import switch_styles from '../pages/Feedback.module.css';
+import switch_styles from './NewEvaluationRatings.module.css';
 
 /**
  * Displays Evaluation Graphs
