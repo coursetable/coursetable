@@ -61,7 +61,10 @@ function App({ themeToggler }) {
     <>
       <Notice>
         Got a feature in mind or caught a bug? Check out our new{' '}
-        <a href="/feedback">feedback page</a>!
+        <a href="/feedback" className="text-light">
+          <u>feedback page</u>
+        </a>
+        !
       </Notice>
       <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
       <Switch>

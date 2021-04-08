@@ -18,6 +18,7 @@ export const TextComponent = styled.span<{ type: number }>`
 export const StyledBanner = styled.div`
   background-color: ${({ theme }) => theme.banner};
   transition: background-color 0.2s linear;
+  color: #ffffff;
 `;
 
 // FormControl for any typed inputs
