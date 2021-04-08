@@ -242,7 +242,7 @@ function FAQ() {
           <p>
             In 2014,{' '}
             <a
-              href="https://legacy.coursetable.com/Blog.html"
+              href="https://web.archive.org/web/20210224091423/https://www.nytimes.com/2014/01/22/nyregion/yale-students-tangle-with-university-over-yale-blue-book-website.html"
               target="_blank"
               rel="noopener noreferrer"
             >
