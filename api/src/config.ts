@@ -44,6 +44,7 @@ export const CORS_OPTIONS = {
     'https://coursetable.com',
     'https://www.coursetable.com',
     /\.coursetable\.com$/,
+    /\.vercel\.app$/,
   ],
   credentials: true,
   optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
