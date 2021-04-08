@@ -32,6 +32,8 @@ export type Option = {
   numeric?: boolean;
 };
 
+export const isOption = (x: any): x is Option => 'label' in x && 'value' in x;
+
 export type SortOrderType = 'desc' | 'asc' | undefined;
 
 export type OrderingType = {
@@ -98,6 +100,7 @@ const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
 // Default filter and sorting values
+const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
 const defaultBounds = [1, 5];
 const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
@@ -109,6 +112,7 @@ const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
 export const defaultFilters = {
+  defaultOption,
   defaultOptions,
   defaultBounds,
   defaultSeason,

@@ -6,6 +6,7 @@ import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import { breakpoints, useComponentVisibleDropdown } from '../utilities';
 import chroma from 'chroma-js';
+import { isOption } from '../searchContext';
 
 // Entire popout component
 const PopoutWrapper = styled.div`
@@ -73,13 +74,18 @@ type Props = {
   children: React.ReactNode;
   buttonText: string;
   type: string;
-  onReset: () => void;
+  isDisabled?: boolean;
+  onReset?: () => void;
   arrowIcon?: boolean;
+  clearIcon?: boolean;
   select_options?:
     | Option[]
-    | Record<string, Record<string, Option[] | boolean>>;
+    | Record<string, Record<string, Option[] | boolean>>
+    | Option
+    | null;
   className?: string;
   data_tutorial?: number;
+  disabledButtonText?: string;
 };
 
 /**
@@ -87,21 +93,27 @@ type Props = {
  * @prop children
  * @prop buttonText - default placeholder for popout button
  * @prop type - type of filter
+ * @prop isDisabled - whether or not popout is disabled
  * @prop onReset - reset filter function
  * @prop arrowIcon - whether there is an arrow icon in the popout button
- * @prop select_options - selected options for filter
+ * @prop clearIcon - whether there is an clear icon in the popout button
+ * @prop select_options - selected option(s) for filter
  * @prop className - additional styles for popout button
  * @prop data_tutorial - tutorial step number
+ * @prop disabledButtonText - default placeholder for disabled popout button
  */
 export const Popout: React.FC<Props> = ({
   children,
   buttonText,
   type,
+  isDisabled = false,
   onReset,
   arrowIcon = true,
+  clearIcon = true,
   select_options,
   className,
   data_tutorial,
+  disabledButtonText,
 }) => {
   // Ref to detect outside clicks for popout button and dropdown
   const {
@@ -143,7 +155,10 @@ export const Popout: React.FC<Props> = ({
 
   // Dynamically set popout button text based on selected options
   useEffect(() => {
-    if (select_options) {
+    if (isDisabled && disabledButtonText) {
+      setToggleText(disabledButtonText);
+      setActive(false);
+    } else if (select_options) {
       if (Array.isArray(select_options) && select_options.length > 0) {
         const maxOptions = type === 'season' ? 1 : 3;
         const top_options =
@@ -200,6 +215,14 @@ export const Popout: React.FC<Props> = ({
           activeFilters > 0 ? `Advanced: ${activeFilters}` : buttonText;
         setToggleText(text);
         setActive(activeFilters > 0);
+      } else if (
+        select_options !== null &&
+        typeof select_options === 'object' &&
+        !Array.isArray(select_options) &&
+        isOption(select_options)
+      ) {
+        setToggleText(select_options.label);
+        setActive(true);
       } else {
         setToggleText(buttonText);
         setActive(false);
@@ -208,14 +231,16 @@ export const Popout: React.FC<Props> = ({
       setToggleText(buttonText);
       setActive(false);
     }
-  }, [select_options, buttonText, type]);
+  }, [select_options, buttonText, type, disabledButtonText, isDisabled]);
 
   // Clear filter handler
   const onClear = useCallback(
     (e) => {
       // Prevent parent popout button onClick from firing and opening dropdown
       e.stopPropagation();
-      onReset();
+      if (onReset) {
+        onReset();
+      }
     },
     [onReset]
   );
@@ -233,13 +258,19 @@ export const Popout: React.FC<Props> = ({
         data-tutorial={data_tutorial ? `catalog-${data_tutorial}` : ''}
       >
         {toggleText}
-        {active ? (
+        {active && clearIcon ? (
           <ClearIcon className="ml-1" onClick={onClear} />
         ) : arrowIcon ? (
           isComponentVisible ? (
-            <IoMdArrowDropup className="ml-1" />
+            <IoMdArrowDropup
+              className="ml-1"
+              style={{ color: theme.icon_focus }}
+            />
           ) : (
-            <IoMdArrowDropdown className="ml-1" />
+            <IoMdArrowDropdown
+              className="ml-1"
+              style={{ color: theme.icon_focus }}
+            />
           )
         ) : (
           <></>

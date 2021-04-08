@@ -4,11 +4,6 @@
   z-index: 3;
 }
 
-nav > .nav_brand {
-  padding-top: 0;
-  padding-bottom: 0;
-}
-
 .nav_logo {
   font-size: 1.6rem;
 }

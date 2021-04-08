@@ -11,7 +11,6 @@ import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
 import { SmallTextComponent, StyledInput } from './StyledComponents';
 import { useWindowDimensions } from './WindowDimensionsProvider';
-import { useFerry } from './FerryProvider';
 import { ValueType } from 'react-select/src/types';
 import { Popout } from './Popout';
 import { PopoutSelect } from './PopoutSelect';
@@ -142,9 +141,9 @@ const CloseIcon = styled(IoClose)`
 `;
 
 /**
- * Search form for the desktop catalog in the navbar
+ * Catalog search form for the desktop in the navbar
  */
-export const NavbarSearch: React.FC = () => {
+export const NavbarCatalogSearch: React.FC = () => {
   // Fetch width of window
   const { width } = useWindowDimensions();
   const is_mobile = width < 768;
@@ -170,6 +169,7 @@ export const NavbarSearch: React.FC = () => {
     hideGraduateCourses,
     reset_key,
     searchData,
+    seasonsOptions,
     coursesLoading,
     speed,
     course_modal,
@@ -266,19 +266,6 @@ export const NavbarSearch: React.FC = () => {
   const handlers = {
     FOCUS_SEARCH: focusSearch,
   };
-
-  // populate seasons from database
-  let seasonsOptions;
-  const { seasons: seasonsData } = useFerry();
-  if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map((x) => {
-      return {
-        value: x.season_code,
-        // capitalize term and add year
-        label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
-      };
-    });
-  }
 
   // Consolidate all advanced filters' selected options
   const advanced_options = useMemo(

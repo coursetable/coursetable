@@ -8,27 +8,14 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { useSessionStorageState } from './browserStorage';
 import { Listing } from './components/FerryProvider';
 import { toSeasonString } from './courseUtilities';
-import { sortbyOptions } from './queries/Constants';
+// import { sortbyOptions } from './queries/Constants';
 import { useWorksheetInfo } from './queries/GetWorksheetListings';
 import { useUser, Worksheet } from './user';
-
-// Option type for all the filter options
-export type Option = {
-  label: string;
-  value: string;
-  color?: string;
-  numeric?: boolean;
-};
-
-// This is a type for weird TS errors
-export type OptType =
-  | OptionsType<Option>
-  | GroupedOptionsType<Option>
-  | undefined;
+import { Season } from './common';
+import { OptType, Option } from './searchContext';
 
 export type HiddenCourses = Record<number, boolean>;
 
@@ -36,7 +23,7 @@ type Store = {
   season_codes: string[];
   season_options: OptType;
   cur_worksheet: Worksheet;
-  cur_season: string;
+  cur_season: Season;
   fb_person: string;
   courses: Listing[];
   hidden_courses: HiddenCourses;
@@ -46,7 +33,7 @@ type Store = {
   worksheetError: string | null;
   worksheetData: Listing[];
   course_modal: (string | boolean | Listing)[];
-  changeSeason: (season_code: string) => void;
+  changeSeason: (season_code: Season) => void;
   handleFBPersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleCurExpand: (view: string) => void;
@@ -60,17 +47,6 @@ type Store = {
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
-
-// Default filter and sorting values
-const defaultOptions: Option[] = [];
-const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
-const defaultSortOption: Option = sortbyOptions[0];
-
-export const defaultFilters = {
-  defaultOptions,
-  defaultSeason,
-  defaultSortOption,
-};
 
 // List of colors for the calendar events
 const colors = [
@@ -167,7 +143,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   }, [season_codes]);
 
   // Current season initialized to most recent season
-  const [cur_season, setCurSeason] = useSessionStorageState<string>(
+  const [cur_season, setCurSeason] = useSessionStorageState<Season>(
     'cur_season',
     season_codes.length > 0 ? season_codes[0] : ''
   );
@@ -271,7 +247,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
 
   // Function to change season
   const changeSeason = useCallback(
-    (season_code: string) => {
+    (season_code: Season) => {
       posthog.capture('worksheet-season', { new_season: season_code });
       setCurSeason(season_code);
     },

@@ -18,11 +18,12 @@ import {
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from './StyledComponents';
-import { NavbarSearch } from './NavbarSearch';
+import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 // import { useSearch } from '../searchContext';
 import { DateTime, Duration } from 'luxon';
 
 import { API_ENDPOINT } from '../config';
+import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
 // Profile icon
 const StyledMeIcon = styled.div`
@@ -82,6 +83,12 @@ const StyledNavToggle = styled(Navbar.Toggle)`
   }
 `;
 
+// Nav logo
+const NavLogo = styled(Nav)`
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+`;
+
 type Props = {
   isLoggedIn: boolean;
   themeToggler: () => void;
@@ -124,15 +131,14 @@ function CourseTableNavbar({
 
   // Show navbar search state
   const [show_search, setShowSearch] = useState(false);
-  // On catalog state
-  const [onCatalog, setOnCatalog] = useState(false);
+  // Page state
+  const [page, setPage] = useState('');
 
   // Navbar styling for navbar search
   const navbar_style = () => {
-    if (show_search) {
+    if (show_search && page === 'catalog') {
       return {
         height: width > 1320 ? '100px' : '88px',
-        alignItems: 'start',
         paddingBottom: '0px',
       };
     }
@@ -156,23 +162,25 @@ function CourseTableNavbar({
     [isMobile, isTablet, show_search]
   );
 
-  // Handles onCatalog
+  // Handles page
   useEffect(() => {
     if (location && location.pathname === '/catalog') {
-      setOnCatalog(true);
+      setPage('catalog');
+    } else if (location && location.pathname === '/worksheet') {
+      setPage('worksheet');
     } else {
-      setOnCatalog(false);
+      setPage('');
     }
   }, [location]);
 
   // Decides whether to show search or not
   useEffect(() => {
-    if (!isMobile && !isTablet && isLoggedIn && onCatalog) {
+    if (!isMobile && !isTablet && isLoggedIn && page) {
       setShowSearch(true);
     } else {
       setShowSearch(false);
     }
-  }, [isMobile, isTablet, isLoggedIn, onCatalog]);
+  }, [isMobile, isTablet, isLoggedIn, page]);
 
   // Calculate time since last updated
   useEffect(() => {
@@ -206,11 +214,11 @@ function CourseTableNavbar({
             onToggle={(expanded: boolean) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className="shadow-sm px-3"
+            className="shadow-sm px-3 align-items-start"
             style={navbar_style()}
           >
             {/* Logo in top left */}
-            <Nav className={`${styles.nav_brand} navbar-brand py-2`}>
+            <NavLogo className="navbar-brand">
               <NavLink
                 to="/"
                 activeStyle={{
@@ -224,10 +232,10 @@ function CourseTableNavbar({
                   <Logo icon={false} />
                 </span>
               </NavLink>
-            </Nav>
+            </NavLogo>
 
             {/* Last updated ago text for tablet */}
-            {isTablet && onCatalog && (
+            {isTablet && page === 'catalog' && (
               <SmallTextComponent
                 type={2}
                 className="d-flex align-items-center"
@@ -241,7 +249,11 @@ function CourseTableNavbar({
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
             {/* Desktop navbar search */}
-            {show_search && <NavbarSearch />}
+            {show_search && page === 'catalog' ? (
+              <NavbarCatalogSearch />
+            ) : (
+              page === 'worksheet' && <NavbarWorksheetSearch />
+            )}
 
             <NavCollapseWrapper>
               {/* Navbar collapse */}
@@ -261,7 +273,7 @@ function CourseTableNavbar({
                 <Nav
                   onClick={() => setExpand(false)}
                   className={`${
-                    !isMobile ? 'align-items-center' : 'align-items-start pt-2'
+                    isMobile && 'align-items-start pt-2'
                   } position-relative`}
                   style={{ width: '100%' }}
                 >
@@ -364,7 +376,7 @@ function CourseTableNavbar({
                 </Nav>
               </Navbar.Collapse>
               {/* Last updated ago text for desktop */}
-              {show_search && (
+              {show_search && page === 'catalog' && (
                 <SmallTextComponent type={2} className="mb-2 text-right">
                   <MdUpdate className="mr-1" />
                   Updated {lastUpdated} ago
