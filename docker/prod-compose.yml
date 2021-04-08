@@ -1,142 +1,75 @@
-version: '3.2'
+version: "3.2"
 services:
-  proxy:
-    build: ../proxy
+  api:
+    build: ../api
+    image: node:latest
     restart: always
     ports:
-      - '8039:8039'
-      - '8038:8080'
+      - "8039:8039"
+      - "8038:8080"
     expose:
       - 8039
+    volumes:
+      - ../api:/app
+      - ./wait-for-it.sh:/app/wait-for-it.sh
+
+    depends_on:
+      - graphql-engine
     environment:
-      FRONTEND_LOC: 'http://frontend:5000'
-      PORT: 8039
+      CANNY_KEY: ${CANNY_KEY?canny_key}
+      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
+      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
+      FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
+      GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
+      MYSQL_HOST: ${MYSQL_HOST?host}
+      MYSQL_PORT: ${MYSQL_PORT?port}
+      MYSQL_USER: ${MYSQL_USERNAME?username}
+      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
+      MYSQL_URL: ${MYSQL_URL?mysql_url}
+      NODE_ENV: production
+      SESSION_SECRET: ${SESSION_SECRET?session_secret}
+      STUDENTS_DB: yaleplus
+      YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
+      SECURE_PORT: ${SECURE_PORT?secure_port}
+      INSECURE_PORT: ${INSECURE_PORT?insecure_port}
     labels:
       traefik.enable: true
-      traefik.http.routers.coursetable.rule: Host(`coursetable.com`)
+      traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)
       traefik.http.routers.coursetable.tls: true
       traefik.http.routers.coursetable.tls.certResolver: ctresolver
       traefik.http.routers.coursetable.middlewares: gzip-compress@file
     networks:
       - traefik
-      - default
-
-  alternate:
-    image: schmunk42/nginx-redirect
-    restart: always
-    environment:
-      SERVER_REDIRECT: coursetable.com
-    labels:
-      traefik.enable: true
-      traefik.http.routers.coursetable-alt.rule: Host(`www.coursetable.com`, `beta.coursetable.com`)
-      traefik.http.routers.coursetable-alt.tls: true
-      traefik.http.routers.coursetable-alt.tls.certResolver: ctresolver
-    networks:
-      - traefik
-      - default
-
-  api:
-    build: ../api
-    restart: always
-    ports:
-      - '4096:4096'
-    volumes:
-      - ../api/static:/app/static
-    user: '1000'
-    environment:
-      GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
-      MYSQL_HOST: ${MYSQL_HOST?host}
-      MYSQL_PORT: ${MYSQL_PORT?port}
-      MYSQL_USER: ${MYSQL_USERNAME?username}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
-      MYSQL_DB: yaleplus
-      CHALLENGE_PASSWORD: ${CHALLENGE_ENC_PASSWORD?challenge password}
-      SESSION_SECRET: ${SESSION_SECRET?session secret}
-      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry reload secret}
-    networks:
       - mysql_default
       - default
-
-  frontend:
-    build:
-      context: ../frontend
-      args:
-        REACT_APP_UMAMI_WEBSITE_ID: 1fbff7d5-794d-456f-aa1a-61d8f5794b74
-        REACT_APP_POSTHOG_TOKEN: JBthuPpdaiJJGwHtoETN0Shc08K5b3VhSG2TweKm6nc
-        REACT_APP_SENTRY_RELEASE: ${SENTRY_RELEASE_VERSION?missing release version}
-    restart: always
-    expose:
-      - '5000'
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3
     restart: always
     ports:
-      - '8085:8080'
+      - "8085:8080"
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry db}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
+      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
+      ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
     networks:
       - ferry_default
-      - default
-
-  nginx:
-    build: ./nginx
-    restart: always
-    ports:
-      - '8079:8080'
-    expose:
-      - '8080'
-    volumes:
-      - ..:/usr/share/nginx/html
-      # Overwrite the default configuration. Our conf is based on it
-      - ../sysadmin/nginx/docker:/etc/nginx/conf.d/default.conf
-    depends_on:
-      - php-fpm
-    links:
-      - php-fpm
-    networks:
-      - mysql_default
-      - default
-
-  # Ensure php deps are installed
-  php:
-    build: ./php
-    volumes:
-      - ..:/var/www/html
-    command: sh -c 'php composer.phar install && tail -f /dev/null'
-    working_dir: /var/www/html
-
-  php-fpm:
-    build: ./php
-    restart: always
-    env_file: ../facebook.env
-    environment:
-      MYSQL_HOST: ${MYSQL_HOST?host}
-      MYSQL_PORT: ${MYSQL_PORT?port}
-      MYSQL_USERNAME: ${MYSQL_USERNAME?username}
-      MYSQL_PASSWORD: ${MYSQL_PASSWORD?password}
-      MYSQL_DATABASE: yale_advanced_oci
-    volumes:
-      - ..:/usr/share/nginx/html
-    networks:
-      - mysql_default
       - default
 
   legacy:
     image: nginx
     restart: always
     ports:
-      - '8075:80'
+      - "8075:80"
     volumes:
-      - ../legacy:/usr/share/nginx/html
-    labels:
-      traefik.enable: true
-      traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
-      traefik.http.routers.coursetable-legacy.tls: true
-      traefik.http.routers.coursetable-legacy.tls.certResolver: ctresolver
+      - ../legacy:/usr/share/nginx/html:ro
+    # labels:
+    #   traefik.enable: true
+    #   traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
+    #   traefik.http.routers.coursetable-legacy.tls: true
+    #   traefik.http.routers.coursetable-legacy.tls.certResolver: ctresolver
     networks:
       - traefik
       - default

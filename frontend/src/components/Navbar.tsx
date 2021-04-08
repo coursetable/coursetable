@@ -22,6 +22,8 @@ import { NavbarSearch } from './NavbarSearch';
 // import { useSearch } from '../searchContext';
 import { DateTime, Duration } from 'luxon';
 
+import { API_ENDPOINT } from '../config';
+
 // Profile icon
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
@@ -286,6 +288,14 @@ function CourseTableNavbar({
                       <StyledNavLink to="/worksheet" onClick={scrollToTop}>
                         Worksheet
                       </StyledNavLink>
+                      {/* Catalog Page */}
+                      <StyledNavLink
+                        to="/feedback"
+                        onClick={scrollToTop}
+                        id="feedback-link"
+                      >
+                        Feedback
+                      </StyledNavLink>
                     </>
                   )}
                   {(isMobile || !isLoggedIn) && (
@@ -337,8 +347,7 @@ function CourseTableNavbar({
                       <StyledDiv
                         onClick={() => {
                           posthog.capture('login');
-                          window.location.href =
-                            '/api/auth/cas?redirect=catalog';
+                          window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
                         }}
                       >
                         Sign In

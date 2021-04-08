@@ -1,0 +1,51 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["createMany"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("MYSQL_URL")
+}
+
+model StudentBluebookSettings {
+  netId              String  @id @db.Char(8)
+  evaluationsEnabled Boolean
+  first_name         String? @db.VarChar(256)
+  last_name          String? @db.VarChar(256)
+  email              String? @db.VarChar(256)
+  upi                Int?
+  school             String? @db.VarChar(256)
+  year               Int?
+  college            String? @db.VarChar(256)
+  major              String? @db.VarChar(256)
+  curriculum         String? @db.VarChar(256)
+}
+
+model StudentFacebookFriends {
+  id         BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  netId      String @db.Char(8)
+  name       String @db.VarChar(255)
+  facebookId BigInt @db.UnsignedBigInt
+
+  @@unique([netId, facebookId], name: "netId_friendFacebookId")
+  @@index([netId], name: "netId")
+}
+
+model Students {
+  netId            String @id @default("") @db.Char(8)
+  facebookId       BigInt @db.UnsignedBigInt
+  facebookDataJson String @db.Text
+
+  @@index([facebookId], name: "facebookId")
+}
+
+model WorksheetCourses {
+  id     Int    @id @default(autoincrement()) @db.UnsignedMediumInt
+  net_id String @db.Char(8)
+  oci_id Int    @db.UnsignedMediumInt
+  season Int    @db.UnsignedMediumInt
+
+  @@unique([net_id, oci_id, season], name: "net_id_oci_id_season")
+  @@index([net_id], name: "net_id")
+}

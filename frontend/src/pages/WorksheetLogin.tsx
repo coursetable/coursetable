@@ -1,6 +1,8 @@
 import React from 'react';
 import Authentication from '../images/authentication.svg';
 
+import { API_ENDPOINT } from '../config';
+
 /**
  * Renders a login page if user tries to access worksheet page
  */
@@ -8,7 +10,12 @@ const WorksheetLogin: React.VFC = () => {
   return (
     <div className="text-center py-5">
       <h3>
-        Please <a href="/api/auth/cas?redirect=worksheet">log in</a>
+        Please{' '}
+        <a
+          href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/worksheet`}
+        >
+          log in
+        </a>
       </h3>
       <div>A valid Yale NetID is required to access worksheet information.</div>
       <img

@@ -3,6 +3,8 @@ import { Row, Col, Container } from 'react-bootstrap';
 import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
 
+import { API_ENDPOINT } from '../config';
+
 // import Logo from '../components/Logo';
 import {
   FcConferenceCall,
@@ -64,7 +66,7 @@ function Landing() {
                   </Row>
                   <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
                     <a
-                      href="/api/auth/cas?redirect=catalog"
+                      href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
                       className={`${styles.btn} ${styles.login} mr-2`}
                     >
                       Login with CAS
@@ -88,61 +90,8 @@ function Landing() {
                 </div>
               </Col>
             </Row>
-            {/* <div onClick={scrollTo} className={styles.chevron}>
-              <BsChevronDoubleDown size={30} />
-            </div> */}
           </div>
         </Element>
-        {/* <Element name="featurepage">
-          <div className={styles.feature_page}>
-            <div className={styles.page_separator + ' mx-auto'} />
-            <h1 className={styles.whyCourseTable}>Why CourseTable?</h1>
-            <Row
-              className={styles.feature_row + ' mx-auto justify-content-center'}
-            >
-              <Col lg={3} className={' mb-3 mx-2 p-0'}>
-                <div className={styles.feature + ' mx-auto'}>
-                  <p className={styles.feature_header + ' m-0 pt-2'}>
-                    Feature 1
-                  </p>
-                </div>
-              </Col>
-              <Col lg={3} className={' mb-3 mx-2 p-0'}>
-                <div className={styles.feature + ' mx-auto'}>
-                  <p className={styles.feature_header + ' m-0 pt-2'}>
-                    Feature 2
-                  </p>
-                </div>
-              </Col>
-              <Col lg={3} className={' mb-3 mx-2 p-0'}>
-                <div className={styles.feature + ' mx-auto'}>
-                  <p className={styles.feature_header + ' m-0 pt-2'}>
-                    Feature 3
-                  </p>
-                </div>
-              </Col>
-            </Row>
-            <Row
-              className={
-                (isMobile
-                  ? styles.get_started_row_mobile
-                  : styles.get_started_row) + ' mx-auto justify-content-center'
-              }
-            >
-              {/* Catalog Button * /}
-              <Link to="/catalog">
-                <Button
-                  variant="success"
-                  size="lg"
-                  className={styles.btns}
-                  onClick={scrollTop}
-                >
-                  See Catalog
-                </Button>
-              </Link>
-            </Row>
-          </div>
-        </Element> */}
       </Container>
     </div>
   );
