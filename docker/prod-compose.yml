@@ -12,7 +12,7 @@ services:
     volumes:
       - ../api:/app
       - ./wait-for-it.sh:/app/wait-for-it.sh
-
+    user: "1000"
     depends_on:
       - graphql-engine
     environment:
