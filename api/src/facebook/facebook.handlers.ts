@@ -174,7 +174,7 @@ export const disconnectFacebook = async (
         netId,
       },
     });
-    return res.json({ success: false });
+    return res.json({ success: true });
   } catch (err) {
     winston.error(`Error with disconnecting Facebook: ${err}`);
     return res.status(500).json({ success: false });
