@@ -5,7 +5,7 @@ export const lightTheme: DefaultTheme = {
   text: ['#141414', '#454545', '#7a7a7a'], // [Primary, Secondary, lighter secondary]
   background: '#FFFFFF', // White background
   surface: ['#FFFFFF', '#FFFFFF'], // All surfaces are white
-  banner: '#0086FA', // For highlighted banner
+  banner: '#f5f5f5', // For slightly grey surfaces
   border: '#ededed', // Used in borders (calendar, and between list items)
   select: '#FFFFFF', // Background color for react-select
   select_hover: '#e1edff', // Blueish tint to use on hover
@@ -20,7 +20,7 @@ export const darkTheme: DefaultTheme = {
   text: ['#FAFAFA', '#dbdbdb', '#bababa'], // [Primary, Secondary, darker secondary]
   background: '#121212', // darkest color used in background
   surface: ['#242424', '#363636'], // [Primary, Secondary] secondary is lighter and goes on top
-  banner: '#0086FA', // Used when light mode needs to be greyish. Otherwise, same as secondary surface
+  banner: '#363636', // Used when light mode needs to be greyish. Otherwise, same as secondary surface
   border: '#303030', // Used in borders (calendar, and between list items)
   select: '#303030', // Background color for react-select
   select_hover: 'rgba(68, 100, 145, 0.75)', // Blueish tint to use on hover
