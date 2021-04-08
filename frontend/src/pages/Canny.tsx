@@ -50,10 +50,9 @@ const Canny: React.VFC = () => {
         aria-label="Select feedback board"
       >
         {Object.entries(boards).map(([boardName, board]) => {
-          let isActive = [
-            `/feedback/${boardName}/`,
-            `/feedback/${boardName}`,
-          ].includes(location.pathname);
+          let isActive =
+            location.pathname.startsWith(`/feedback/${boardName}/`) ||
+            location.pathname.startsWith(`/feedback/${boardName}`);
 
           // highlight default board
           if (boardName === 'features') {
@@ -78,6 +77,14 @@ const Canny: React.VFC = () => {
         })}
       </div>
       <Switch>
+        {/* Match route wildcards for post-specific URLs */}
+        {Object.entries(boards).map(([boardName, board]) => (
+          <Route
+            exact
+            path={`/feedback/${boardName}/*`}
+            render={(props) => <CannyBoard board={board} />}
+          />
+        ))}
         {Object.entries(boards).map(([boardName, board]) => (
           <Route
             exact

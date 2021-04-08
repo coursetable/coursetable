@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Mar 27, 2021 at 04:43 PM
+-- Generation Time: Apr 07, 2021 at 01:33 AM
 -- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
 -- PHP Version: 7.4.16
 
@@ -26,46 +26,21 @@ USE `yaleplus`;
 -- --------------------------------------------------------
 
 --
--- Table structure for table `BluebookEvents`
---
-
-CREATE TABLE `BluebookEvents` (
-  `netId` char(8) NOT NULL,
-  `time` int(10) UNSIGNED NOT NULL,
-  `event` varchar(32) NOT NULL,
-  `data` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `StudentBluebookSettings`
 --
 
 CREATE TABLE `StudentBluebookSettings` (
   `netId` char(8) NOT NULL,
-  `shareCoursesEnabled` tinyint(1) NOT NULL DEFAULT 1,
-  `facebookLastUpdated` int(10) UNSIGNED NOT NULL COMMENT 'Last time at which the student''s Facebook friends were fetched',
-  `seenDisclaimer` tinyint(1) NOT NULL DEFAULT 0 COMMENT 'Whether the student has seen the disclaimer saying to not shop classes based on purely evaluations',
-  `noticeLastSeen` int(10) UNSIGNED NOT NULL COMMENT 'Timestamp of when the notice was last seen',
-  `timesNoticeSeen` tinyint(3) UNSIGNED NOT NULL,
-  `viewException` tinyint(3) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'Whether to allow the particular NetID to access CourseTable even if they''re not a Yale College student',
-  `challengeTries` smallint(5) UNSIGNED NOT NULL DEFAULT 0 COMMENT 'How many times the student has tried to get access to a Bluebook data file',
-  `evaluationsEnabled` tinyint(1) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `StudentCoursesTaken`
---
-
-CREATE TABLE `StudentCoursesTaken` (
-  `id` int(10) UNSIGNED NOT NULL,
-  `netId` char(8) NOT NULL DEFAULT '0',
-  `subject` char(4) NOT NULL DEFAULT '0',
-  `number` char(6) NOT NULL DEFAULT '0',
-  `season` mediumint(8) UNSIGNED NOT NULL DEFAULT 0
+  `evaluationsEnabled` tinyint(1) UNSIGNED NOT NULL,
+  `first_name` varchar(256) DEFAULT NULL COMMENT 'User''s first name',
+  `last_name` varchar(256) DEFAULT NULL COMMENT 'User''s last name',
+  `email` varchar(256) DEFAULT NULL COMMENT 'User''s email address',
+  `upi` int(11) DEFAULT NULL COMMENT 'Universal Personal Identifier used by Yale Directory',
+  `school` varchar(256) DEFAULT NULL COMMENT 'User''s school',
+  `year` int(11) DEFAULT NULL COMMENT 'User''s year of graduation',
+  `college` varchar(256) DEFAULT NULL COMMENT 'User''s residential college',
+  `major` varchar(256) DEFAULT NULL COMMENT ' User''s major',
+  `curriculum` varchar(256) DEFAULT NULL COMMENT 'User''s curriculum (for grad students)'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -79,20 +54,6 @@ CREATE TABLE `StudentFacebookFriends` (
   `netId` char(8) NOT NULL,
   `name` varchar(255) NOT NULL,
   `facebookId` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
--- --------------------------------------------------------
-
---
--- Table structure for table `StudentPetitions`
---
-
-CREATE TABLE `StudentPetitions` (
-  `netId` char(8) NOT NULL,
-  `name` varchar(30) NOT NULL COMMENT 'User-inputted name',
-  `comment` varchar(4095) NOT NULL,
-  `public` tinyint(1) UNSIGNED NOT NULL,
-  `time` int(10) UNSIGNED NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 -- --------------------------------------------------------
@@ -125,23 +86,10 @@ CREATE TABLE `WorksheetCourses` (
 --
 
 --
--- Indexes for table `BluebookEvents`
---
-ALTER TABLE `BluebookEvents`
-  ADD PRIMARY KEY (`netId`,`time`);
-
---
 -- Indexes for table `StudentBluebookSettings`
 --
 ALTER TABLE `StudentBluebookSettings`
   ADD PRIMARY KEY (`netId`);
-
---
--- Indexes for table `StudentCoursesTaken`
---
-ALTER TABLE `StudentCoursesTaken`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `netId` (`netId`) USING HASH;
 
 --
 -- Indexes for table `StudentFacebookFriends`
@@ -150,12 +98,6 @@ ALTER TABLE `StudentFacebookFriends`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `netId_friendFacebookId` (`netId`,`facebookId`),
   ADD KEY `netId` (`netId`);
-
---
--- Indexes for table `StudentPetitions`
---
-ALTER TABLE `StudentPetitions`
-  ADD PRIMARY KEY (`netId`);
 
 --
 -- Indexes for table `Students`
@@ -175,12 +117,6 @@ ALTER TABLE `WorksheetCourses`
 --
 -- AUTO_INCREMENT for dumped tables
 --
-
---
--- AUTO_INCREMENT for table `StudentCoursesTaken`
---
-ALTER TABLE `StudentCoursesTaken`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=17412;
 
 --
 -- AUTO_INCREMENT for table `StudentFacebookFriends`

@@ -59,9 +59,6 @@ export const passportConfig = async (
           update: {},
           create: {
             netId: profile.user,
-            facebookLastUpdated: 0,
-            noticeLastSeen: 0,
-            timesNoticeSeen: 0,
             evaluationsEnabled: false,
           },
         });
@@ -186,7 +183,9 @@ const postAuth = (req: express.Request, res: express.Response): void => {
     // prefix the redirect with a slash to avoid an open redirect vulnerability.
     if (
       ALLOWED_ORIGINS.includes(hostName) ||
-      hostName.endsWith('.coursetable.com')
+      hostName.endsWith('.coursetable.com') ||
+      (hostName.endsWith('-coursetable.vercel.app') &&
+        hostName.startsWith('coursetable-'))
     ) {
       return res.redirect(redirect);
     }

@@ -103,7 +103,7 @@ function Footer() {
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  <TextComponent type={1}>Github</TextComponent>
+                  <TextComponent type={1}>GitHub</TextComponent>
                 </a>
               </li>
             </ul>
