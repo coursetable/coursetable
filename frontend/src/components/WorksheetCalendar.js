@@ -1,6 +1,6 @@
 import React, { useCallback, useMemo } from 'react';
 import moment from 'moment';
-import './WeekSchedule.css';
+import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
@@ -52,7 +52,7 @@ const StyledCalendar = styled(Calendar)`
  * Render Worksheet Calendar component
  */
 
-function WeekSchedule() {
+function WorksheetCalendar() {
   const { showModal, courses, hover_course, hidden_courses } = useWorksheet();
 
   // Parse listings dictionaries to generate event dictionaries
@@ -173,5 +173,5 @@ function WeekSchedule() {
   );
 }
 
-// WeekSchedule.whyDidYouRender = true;
-export default React.memo(WeekSchedule);
+// WorksheetCalendar.whyDidYouRender = true;
+export default React.memo(WorksheetCalendar);

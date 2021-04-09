@@ -2,7 +2,7 @@ import React from 'react';
 
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
-import WeekSchedule from '../components/WeekSchedule';
+import WorksheetCalendar from '../components/WorksheetCalendar';
 import WorksheetCalendarList from '../components/WorksheetCalendarList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetList from '../components/WorksheetList';
@@ -125,7 +125,7 @@ function Worksheet() {
                 layer={0}
                 className={styles.calendar_style_container}
               >
-                <WeekSchedule />
+                <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
                   className={`${styles.expand_btn} ${styles.top_right}`}
