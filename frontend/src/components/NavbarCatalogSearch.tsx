@@ -29,7 +29,7 @@ import { useSearch, Option, defaultFilters } from '../searchContext';
 import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';
-import CatalogColumnSort from './CatalogColumnSort';
+import ResultsColumnSort from './ResultsColumnSort';
 
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -535,7 +535,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Sort by Guts */}
                   <AdvancedLabel>{sortbyOptions[7].label}:</AdvancedLabel>
-                  <CatalogColumnSort
+                  <ResultsColumnSort
                     selectOption={sortbyOptions[7]}
                     key={reset_key}
                   />

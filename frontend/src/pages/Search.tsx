@@ -6,7 +6,7 @@ import { Element, scroller } from 'react-scroll';
 import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
-import CatalogResults from '../components/CatalogResults';
+import Results from '../components/Results';
 import CourseModal from '../components/CourseModal';
 
 import {
@@ -419,7 +419,7 @@ const Search: React.FC = () => {
           }`}
         >
           <Element name="catalog" className="d-flex justify-content-center">
-            <CatalogResults
+            <Results
               data={searchData}
               isList={isList}
               setView={handleSetView}

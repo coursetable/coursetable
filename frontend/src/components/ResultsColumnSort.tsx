@@ -24,11 +24,11 @@ type Props = {
 };
 
 /**
- * Renders column sort toggle button on catalog
+ * Renders column sort toggle button for results
  * @prop selectOption - sortbyOption from Constants to sort by
  */
 
-const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
+const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
   // Local sort order state
   const [localSortOrder, setLocalSortOrder] = useState<SortOrderType>(
     defaultFilters.defaultSortOrder
@@ -103,4 +103,4 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
   );
 };
 
-export default CatalogColumnSort;
+export default ResultsColumnSort;

@@ -16,7 +16,7 @@ import {
   SurfaceComponent,
 } from './StyledComponents';
 import { skillsAreasColors } from '../queries/Constants';
-import tagStyles from './SearchResultsItem.module.css';
+import tagStyles from './ResultsItem.module.css';
 import styles from './WorksheetAccordion.module.css';
 import { weekdays } from '../common';
 import NoCourses from './NoCourses';

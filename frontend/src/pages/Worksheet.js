@@ -102,7 +102,7 @@ function Worksheet() {
       {!is_mobile ? (
         /* Desktop View */
         <div className={styles.desktop_container}>
-          <Row className={cur_expand === 'list' ? 'mx-3' : 'mx-3 mb-3'}>
+          <Row className={cur_expand === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
             {/* Calendar Component */}
             <Col
               // Width of component depends on if it is expanded or not

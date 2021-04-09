@@ -12,7 +12,6 @@ import _ from 'lodash';
 import { useWorksheet } from '../worksheetContext';
 import { toSeasonString } from '../courseUtilities';
 import { useUser } from '../user';
-// import CatalogColumnSort from './CatalogColumnSort';
 
 // Row in navbar search
 const StyledRow = styled(Row)`

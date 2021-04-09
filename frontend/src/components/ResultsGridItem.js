@@ -14,8 +14,8 @@ import {
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import styles from './SearchResultsGridItem.module.css';
-import tag_styles from './SearchResultsItem.module.css';
+import styles from './ResultsGridItem.module.css';
+import tag_styles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from './StyledComponents';
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
@@ -44,12 +44,7 @@ const StyledGridItem = styled.div`
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  */
 
-const SearchResultsGridItem = ({
-  course,
-  isLoggedIn,
-  num_cols,
-  multiSeasons,
-}) => {
+const ResultsGridItem = ({ course, isLoggedIn, num_cols, multiSeasons }) => {
   // How many decimal points to use in ratings
   const RATINGS_PRECISION = 1;
   // Bootstrap column width depending on the number of columns
@@ -369,4 +364,4 @@ const SearchResultsGridItem = ({
   );
 };
 
-export default SearchResultsGridItem;
+export default ResultsGridItem;
