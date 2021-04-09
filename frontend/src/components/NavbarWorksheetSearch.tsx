@@ -79,10 +79,13 @@ export const NavbarWorksheetSearch: React.FC = () => {
   } = useWorksheet();
 
   const selected_season = useMemo(() => {
-    return {
-      value: cur_season,
-      label: toSeasonString(cur_season)[0],
-    };
+    if (cur_season) {
+      return {
+        value: cur_season,
+        label: toSeasonString(cur_season)[0],
+      };
+    }
+    return null;
   }, [cur_season]);
 
   // Fetch user context data
