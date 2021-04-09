@@ -37,8 +37,10 @@ import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../queries/Constants';
 import { useSearch } from '../searchContext';
 import { breakpoints } from '../utilities';
+import { toSeasonString } from '../courseUtilities';
 
 import { API_ENDPOINT } from '../config';
+import { useWorksheet } from '../worksheetContext';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -85,6 +87,7 @@ const getColWidth = (calculated, min = 0, max = 1000000) => {
  * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_fb = object | holds a list of each fb friend taking a specific course
  * @prop sticky_top = number | top margin for sticky column header
+ * @prop page = string | page search results are on
  */
 
 const Results = ({
@@ -97,6 +100,7 @@ const Results = ({
   isLoggedIn,
   num_fb,
   sticky_top = 100,
+  page = 'catalog',
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -113,6 +117,8 @@ const Results = ({
 
   // Fetch reset_key from search context
   const { reset_key } = useSearch();
+
+  const { cur_season } = useWorksheet();
 
   const globalTheme = useTheme();
 
@@ -265,8 +271,19 @@ const Results = ({
           src={NoCoursesFound}
           style={{ width: '25%' }}
         />
-        <h3>No courses found</h3>
-        <div>We couldn't find any courses matching your search.</div>
+        {page === 'catalog' ? (
+          <>
+            <h3>No courses found</h3>
+            <div>We couldn't find any courses matching your search.</div>
+          </>
+        ) : (
+          <>
+            <h3>No courses found for</h3>
+            <h3 className="mb-5">
+              {toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}
+            </h3>
+          </>
+        )}
       </div>
     );
   } else {
