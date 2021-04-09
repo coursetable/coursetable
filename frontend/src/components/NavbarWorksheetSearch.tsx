@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { Form, Row } from 'react-bootstrap';
+import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
 import { Popout } from './Popout';
@@ -7,7 +7,7 @@ import { PopoutSelect } from './PopoutSelect';
 
 // import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../searchContext';
-// import { breakpoints } from '../utilities';
+import { breakpoints } from '../utilities';
 import _ from 'lodash';
 import { useWorksheet } from '../worksheetContext';
 import { toSeasonString } from '../courseUtilities';
@@ -24,6 +24,44 @@ const StyledRow = styled(Row)`
 // Filter group wrapper
 const FilterGroup = styled.div``;
 
+// Toggle button group
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
+  width: 180px;
+`;
+
+// Toggle button
+const StyledToggleButton = styled(ToggleButton)`
+  box-shadow: none !important;
+  font-size: 14px;
+  ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
+  background-color: ${({ theme }) => theme.surface[0]};
+  color: ${({ theme }) => theme.text[0]};
+  border: ${({ theme }) => theme.icon} 2px solid;
+  transition: 0s;
+  padding: 0.25rem 0;
+  width: 50%;
+
+  &:hover {
+    background-color: ${({ theme }) => theme.button_hover};
+    color: ${({ theme }) => theme.text[0]};
+    border: ${({ theme }) => theme.primary_hover} 2px solid;
+  }
+
+  &:active {
+    background-color: ${({ theme }) => theme.button_active}!important;
+    color: ${({ theme }) => theme.text[0]}!important;
+  }
+
+  &:focus {
+    box-shadow: none !important;
+  }
+
+  &.active {
+    background-color: ${({ theme }) => theme.primary_hover}!important;
+    border-color: ${({ theme }) => theme.primary_hover}!important;
+  }
+`;
+
 /**
  * Worksheet search form for the desktop in the navbar
  */
@@ -37,6 +75,8 @@ export const NavbarWorksheetSearch: React.FC = () => {
     changeSeason,
     fb_person,
     handleFBPersonChange,
+    cur_expand,
+    handleCurExpand,
   } = useWorksheet();
 
   const selected_season = useMemo(() => {
@@ -93,14 +133,20 @@ export const NavbarWorksheetSearch: React.FC = () => {
 
   return (
     <>
-      {/* Search Form */}
-      <Form
-        className="px-0"
-        // onSubmit={scroll_to_results}
-        data-tutorial="catalog-1"
-      >
+      {/* Filters Form */}
+      <Form className="px-0" data-tutorial="">
         <StyledRow>
           <FilterGroup className="d-flex align-items-center">
+            <StyledToggleButtonGroup
+              name="worksheet-view-toggle"
+              type="radio"
+              value={cur_expand}
+              onChange={(val: string) => handleCurExpand(val)}
+              className="ml-2 mr-3"
+            >
+              <StyledToggleButton value="none">Calendar</StyledToggleButton>
+              <StyledToggleButton value="list">List</StyledToggleButton>
+            </StyledToggleButtonGroup>
             {/* Season Filter Dropdown */}
             <Popout
               buttonText="Season"
