@@ -11,7 +11,7 @@ import winston from '../logging/winston';
 
 import axios from 'axios';
 
-import { YALIES_API_KEY } from '../config';
+import { YALIES_API_KEY, POSTHOG_CLIENT } from '../config';
 
 import { PrismaClient } from '@prisma/client';
 
@@ -153,6 +153,15 @@ export const passportConfig = async (
           },
         })
         .then((student) => {
+          POSTHOG_CLIENT.identify({
+            distinctId: netId,
+            properties: {
+              email: student?.email || '',
+              firstName: student?.first_name || '',
+              lastName: student?.last_name || '',
+            },
+          });
+
           done(null, {
             netId,
             evals: !!student?.evaluationsEnabled,
