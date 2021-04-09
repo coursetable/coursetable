@@ -175,7 +175,7 @@ function Worksheet() {
                     display: worksheet_view.view === 'list' ? '' : 'none',
                   }}
                 >
-                  <WorksheetExpandedList />
+                  {worksheet_view.view === 'list' && <WorksheetExpandedList />}
                 </div>
               </Fade>
               {/* Default List Component */}
