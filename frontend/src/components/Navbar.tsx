@@ -252,7 +252,7 @@ function CourseTableNavbar({
             {show_search && page === 'catalog' ? (
               <NavbarCatalogSearch />
             ) : (
-              page === 'worksheet' && <NavbarWorksheetSearch />
+              show_search && page === 'worksheet' && <NavbarWorksheetSearch />
             )}
 
             <NavCollapseWrapper>
