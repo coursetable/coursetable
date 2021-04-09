@@ -3,7 +3,7 @@
  */
 import express from 'express';
 
-import { YALIES_API_KEY, CANNY_KEY } from '../config';
+import { YALIES_API_KEY, CANNY_KEY, POSTHOG_CLIENT } from '../config';
 
 import { User } from '../models/student';
 
@@ -81,6 +81,22 @@ export const cannyIdentify = async (
           curriculum: user.curriculum,
         },
       });
+
+      // Update user in PostHog
+      POSTHOG_CLIENT.identify({
+        distinctId: netId,
+        properties: {
+          email: user.email || '',
+          firstName: user.first_name || '',
+          lastName: user.last_name || '',
+          upi: user.upi || -1,
+          school: user.school || '',
+          college: user.college || '',
+          major: user.major || '',
+          curriculum: user.curriculum || '',
+        },
+      });
+
       const token = createCannyToken({
         netId,
         evals: !!user.school_code,
