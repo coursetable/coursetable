@@ -97,6 +97,11 @@ export const cannyIdentify = async (
         },
       });
 
+      POSTHOG_CLIENT.capture({
+        distinctId: netId,
+        event: 'request-canny-token',
+      });
+
       const token = createCannyToken({
         netId,
         evals: !!user.school_code,
