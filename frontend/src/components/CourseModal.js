@@ -130,7 +130,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
                         (listings.length === 1 ? (
                           // If this is the initial listing, show worksheet toggle button
                           <WorksheetToggleButton
-                            worksheetView={false}
                             crn={cur_listing.crn}
                             season_code={cur_listing.season_code}
                             modal

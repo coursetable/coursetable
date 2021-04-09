@@ -71,7 +71,6 @@ function WorksheetListItem({ course, hidden, theme }) {
         {/* Add/remove from worksheet button */}
         <div className="my-auto">
           <WorksheetToggleButton
-            worksheetView
             crn={course.crn}
             season_code={cur_season}
             modal={false}

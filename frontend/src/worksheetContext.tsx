@@ -18,6 +18,7 @@ import { Season } from './common';
 import { OptType, Option } from './searchContext';
 
 export type HiddenCourses = Record<number, boolean>;
+export type WorksheetView = Record<string, string>;
 
 type Store = {
   season_codes: string[];
@@ -28,7 +29,7 @@ type Store = {
   courses: Listing[];
   hidden_courses: HiddenCourses;
   hover_course: number | null;
-  cur_expand: string;
+  worksheet_view: WorksheetView;
   worksheetLoading: boolean;
   worksheetError: string | null;
   worksheetData: Listing[];
@@ -36,7 +37,7 @@ type Store = {
   changeSeason: (season_code: Season) => void;
   handleFBPersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
-  handleCurExpand: (view: string) => void;
+  handleWorksheetView: (view: WorksheetView) => void;
   toggleCourse: (crn: number) => void;
   setCourseModal: React.Dispatch<
     React.SetStateAction<(string | boolean | Listing)[]>
@@ -79,10 +80,13 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState<number | null>(null);
   // Currently expanded component (calendar or list or none)
-  const [cur_expand, setCurExpand] = useSessionStorageState(
-    'cur_expand',
-    'none'
-  );
+  const [
+    worksheet_view,
+    setWorksheetView,
+  ] = useSessionStorageState<WorksheetView>('worksheet_view', {
+    view: 'calendar',
+    mode: '',
+  });
 
   /* Processing */
 
@@ -236,13 +240,13 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     [setHiddenCourses, courses]
   );
 
-  const handleCurExpand = useCallback(
-    (view: string) => {
-      setCurExpand(view);
+  const handleWorksheetView = useCallback(
+    (view: WorksheetView) => {
+      setWorksheetView(view);
       // Scroll back to top when changing views
       window.scrollTo({ top: 0, left: 0 });
     },
-    [setCurExpand]
+    [setWorksheetView]
   );
 
   const handleFBPersonChange = useCallback(
@@ -283,7 +287,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       courses,
       hidden_courses,
       hover_course,
-      cur_expand,
+      worksheet_view,
       worksheetLoading,
       worksheetError,
       worksheetData,
@@ -293,7 +297,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       changeSeason,
       handleFBPersonChange,
       setHoverCourse,
-      handleCurExpand,
+      handleWorksheetView,
       toggleCourse,
       setCourseModal,
       showModal,
@@ -308,7 +312,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       courses,
       hidden_courses,
       hover_course,
-      cur_expand,
+      worksheet_view,
       worksheetLoading,
       worksheetError,
       worksheetData,
@@ -316,7 +320,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       changeSeason,
       handleFBPersonChange,
       setHoverCourse,
-      handleCurExpand,
+      handleWorksheetView,
       toggleCourse,
       setCourseModal,
       showModal,

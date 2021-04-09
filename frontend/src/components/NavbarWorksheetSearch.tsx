@@ -74,8 +74,8 @@ export const NavbarWorksheetSearch: React.FC = () => {
     changeSeason,
     fb_person,
     handleFBPersonChange,
-    cur_expand,
-    handleCurExpand,
+    worksheet_view,
+    handleWorksheetView,
   } = useWorksheet();
 
   const selected_season = useMemo(() => {
@@ -139,11 +139,17 @@ export const NavbarWorksheetSearch: React.FC = () => {
             <StyledToggleButtonGroup
               name="worksheet-view-toggle"
               type="radio"
-              value={cur_expand}
-              onChange={(val: string) => handleCurExpand(val)}
+              value={
+                worksheet_view.view === 'expanded calendar'
+                  ? 'calendar'
+                  : worksheet_view.view
+              }
+              onChange={(val: string) =>
+                handleWorksheetView({ view: val, mode: '' })
+              }
               className="ml-2 mr-3"
             >
-              <StyledToggleButton value="none">Calendar</StyledToggleButton>
+              <StyledToggleButton value="calendar">Calendar</StyledToggleButton>
               <StyledToggleButton value="list">List</StyledToggleButton>
             </StyledToggleButtonGroup>
             {/* Season Filter Dropdown */}

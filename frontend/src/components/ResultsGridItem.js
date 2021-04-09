@@ -349,7 +349,6 @@ const ResultsGridItem = ({ course, isLoggedIn, num_cols, multiSeasons }) => {
       {/* Add/remove from worksheet button */}
       <div className={styles.worksheet_btn}>
         <WorksheetToggleButton
-          worksheetView={false}
           crn={course.crn}
           season_code={course.season_code}
           modal={false}

@@ -31,12 +31,12 @@ function Worksheet() {
 
   const {
     cur_worksheet,
-    cur_expand,
+    worksheet_view,
     worksheetLoading,
     worksheetError,
     worksheetData,
     course_modal,
-    handleCurExpand,
+    handleWorksheetView,
     hideModal,
   } = useWorksheet();
 
@@ -102,14 +102,24 @@ function Worksheet() {
       {!is_mobile ? (
         /* Desktop View */
         <div className={styles.desktop_container}>
-          <Row className={cur_expand === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
+          <Row
+            className={worksheet_view.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}
+          >
             {/* Calendar Component */}
             <Col
               // Width of component depends on if it is expanded or not
-              md={cur_expand === 'calendar' ? 12 : 9}
+              md={
+                worksheet_view.view === 'calendar' &&
+                worksheet_view.mode === 'expanded'
+                  ? 12
+                  : 9
+              }
               className={`mt-3 pl-0 ${
-                cur_expand === 'calendar' ? 'pr-0 ' : 'pr-3 '
-              }${cur_expand === 'list' ? styles.hidden : ''}`}
+                worksheet_view.view === 'calendar' &&
+                worksheet_view.mode === 'expanded'
+                  ? 'pr-0 '
+                  : 'pr-3 '
+              }${worksheet_view.view === 'list' ? styles.hidden : ''}`}
             >
               <SurfaceComponent
                 layer={0}
@@ -120,14 +130,18 @@ function Worksheet() {
                 <StyledExpandBtn
                   className={`${styles.expand_btn} ${styles.top_right}`}
                 >
-                  {cur_expand === 'none' ? (
+                  {worksheet_view.view === 'calendar' &&
+                  worksheet_view.mode !== 'expanded' ? (
                     <FaExpandAlt
                       className={styles.expand_icon}
                       size={expand_btn_size}
                       style={{ display: 'block' }}
                       onClick={() => {
                         // Expand calendar
-                        handleCurExpand('calendar');
+                        handleWorksheetView({
+                          view: 'calendar',
+                          mode: 'expanded',
+                        });
                       }}
                     />
                   ) : (
@@ -136,7 +150,7 @@ function Worksheet() {
                       size={expand_btn_size}
                       onClick={() => {
                         // Compress calendar
-                        handleCurExpand('none');
+                        handleWorksheetView({ view: 'calendar', mode: '' });
                       }}
                     />
                   )}
@@ -146,20 +160,31 @@ function Worksheet() {
             {/* List Component */}
             <Col
               // Width depends on if it is expanded or not
-              md={cur_expand === 'list' ? 12 : 3}
+              md={worksheet_view.view === 'list' ? 12 : 3}
               className={`ml-auto px-0 ${
-                cur_expand === 'calendar' ? styles.hidden : ''
+                worksheet_view.view === 'calendar' &&
+                worksheet_view.mode === 'expanded'
+                  ? styles.hidden
+                  : ''
               }`}
             >
               {/* Expanded List Component */}
-              <Fade in={cur_expand === 'list'}>
-                <div style={{ display: cur_expand === 'list' ? '' : 'none' }}>
+              <Fade in={worksheet_view.view === 'list'}>
+                <div
+                  style={{
+                    display: worksheet_view.view === 'list' ? '' : 'none',
+                  }}
+                >
                   <WorksheetExpandedList />
                 </div>
               </Fade>
               {/* Default List Component */}
-              <Fade in={cur_expand !== 'list'}>
-                <div style={{ display: cur_expand !== 'list' ? '' : 'none' }}>
+              <Fade in={worksheet_view.view !== 'list'}>
+                <div
+                  style={{
+                    display: worksheet_view.view !== 'list' ? '' : 'none',
+                  }}
+                >
                   <WorksheetList />
                 </div>
               </Fade>
