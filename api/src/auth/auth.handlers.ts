@@ -109,6 +109,22 @@ export const passportConfig = async (
                 curriculum: user.curriculum,
               },
             });
+
+            // Update user in PostHog
+            POSTHOG_CLIENT.identify({
+              distinctId: profile.user,
+              properties: {
+                email: user.email || '',
+                firstName: user.first_name || '',
+                lastName: user.last_name || '',
+                upi: user.upi || -1,
+                school: user.school || '',
+                college: user.college || '',
+                major: user.major || '',
+                curriculum: user.curriculum || '',
+              },
+            });
+
             return done(null, {
               netId: profile.user,
               evals: !!user.school_code,
@@ -153,15 +169,6 @@ export const passportConfig = async (
           },
         })
         .then((student) => {
-          POSTHOG_CLIENT.identify({
-            distinctId: netId,
-            properties: {
-              email: student?.email || '',
-              firstName: student?.first_name || '',
-              lastName: student?.last_name || '',
-            },
-          });
-
           done(null, {
             netId,
             evals: !!student?.evaluationsEnabled,
