@@ -3,9 +3,9 @@ import React from 'react';
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import WeekSchedule from '../components/WeekSchedule';
-import WorksheetList from '../components/WorksheetList';
+import WorksheetCalendarList from '../components/WorksheetCalendarList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
-import WorksheetExpandedList from '../components/WorksheetExpandedList';
+import WorksheetList from '../components/WorksheetList';
 import CourseModal from '../components/CourseModal';
 import {
   SurfaceComponent,
@@ -168,24 +168,24 @@ function Worksheet() {
                   : ''
               }`}
             >
-              {/* Expanded List Component */}
+              {/* List Component */}
               <Fade in={worksheet_view.view === 'list'}>
                 <div
                   style={{
                     display: worksheet_view.view === 'list' ? '' : 'none',
                   }}
                 >
-                  {worksheet_view.view === 'list' && <WorksheetExpandedList />}
+                  {worksheet_view.view === 'list' && <WorksheetList />}
                 </div>
               </Fade>
-              {/* Default List Component */}
+              {/* Calendar List Component */}
               <Fade in={worksheet_view.view !== 'list'}>
                 <div
                   style={{
                     display: worksheet_view.view !== 'list' ? '' : 'none',
                   }}
                 >
-                  <WorksheetList />
+                  <WorksheetCalendarList />
                 </div>
               </Fade>
             </Col>

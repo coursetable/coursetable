@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { ListGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SurfaceComponent } from './StyledComponents';
-import WorksheetListItem from './WorksheetListItem';
+import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import NoCourses from './NoCourses';
 import { useWorksheet } from '../worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
@@ -78,7 +78,7 @@ const CourseList = styled(SurfaceComponent)`
  * Render worksheet list in default worksheet view
  */
 
-function WorksheetList() {
+function WorksheetCalendarList() {
   const { courses, cur_season, hidden_courses, toggleCourse } = useWorksheet();
 
   // Build the HTML for the list of courses of a given season
@@ -90,7 +90,7 @@ function WorksheetList() {
     courses.forEach((course, id) => {
       // Add listgroup item to items list
       items.push(
-        <WorksheetListItem
+        <WorksheetCalendarListItem
           key={id}
           course={course}
           hidden={hidden_courses[course.crn]}
@@ -146,5 +146,5 @@ function WorksheetList() {
   );
 }
 
-// WorksheetList.whyDidYouRender = true;
-export default React.memo(WorksheetList);
+// WorksheetCalendarList.whyDidYouRender = true;
+export default React.memo(WorksheetCalendarList);

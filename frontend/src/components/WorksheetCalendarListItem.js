@@ -1,7 +1,7 @@
 import React from 'react';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import styled, { withTheme } from 'styled-components';
-import styles from './WorksheetListItem.module.css';
+import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../worksheetContext';
@@ -30,7 +30,7 @@ const StyledListItem = styled(ListGroup.Item)`
  * @prop course - object | current listing
  * @prop hidden - object | dictionary of hidden courses
  */
-function WorksheetListItem({ course, hidden, theme }) {
+function WorksheetCalendarListItem({ course, hidden, theme }) {
   const {
     showModal,
     cur_season,
@@ -81,4 +81,4 @@ function WorksheetListItem({ course, hidden, theme }) {
   );
 }
 
-export default React.memo(withTheme(WorksheetListItem));
+export default React.memo(withTheme(WorksheetCalendarListItem));
