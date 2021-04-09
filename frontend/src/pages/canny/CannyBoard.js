@@ -9,7 +9,7 @@ import { toast } from 'react-toastify';
 export const boards = {
   features: {
     value: 'features',
-    label: 'Feature requests',
+    label: 'Feature Requests',
     token: '1ce2e740-4310-1893-6927-1e2edad7785e',
   },
   bugs: {
