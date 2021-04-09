@@ -9,7 +9,7 @@ import React, {
   useState,
 } from 'react';
 import { useSessionStorageState } from './browserStorage';
-import { Listing } from './components/FerryProvider';
+import { Listing, useFerry } from './components/FerryProvider';
 import { toSeasonString } from './courseUtilities';
 // import { sortbyOptions } from './queries/Constants';
 import { useWorksheetInfo } from './queries/GetWorksheetListings';
@@ -90,20 +90,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
 
   /* Processing */
 
-  // populate seasons from database
-  // let season_options: OptType;
-  // const { seasons: seasonsData } = useFerry();
-  // if (seasonsData && seasonsData.seasons) {
-  //   season_options = seasonsData.seasons.map((x) => {
-  //     const seasonOption: Option = {
-  //       value: x.season_code,
-  //       // capitalize term and add year
-  //       label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
-  //     };
-  //     return seasonOption;
-  //   });
-  // }
-
   // Worksheet of the current person
   const cur_worksheet = useMemo(() => {
     /** @type typeof user.worksheet! */
@@ -117,18 +103,18 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       : when_not_defined;
   }, [user.worksheet, user.fbWorksheets, fb_person]);
 
+  const { seasons: seasonsData } = useFerry();
   const season_codes = useMemo(() => {
     const season_codes_temp: string[] = [];
-    if (cur_worksheet) {
-      cur_worksheet.forEach((szn) => {
-        if (season_codes_temp.indexOf(szn[0]) === -1)
-          season_codes_temp.push(szn[0]);
+    if (seasonsData && seasonsData.seasons) {
+      seasonsData.seasons.forEach((season) => {
+        season_codes_temp.push(season.season_code);
       });
     }
     season_codes_temp.sort();
     season_codes_temp.reverse();
     return season_codes_temp;
-  }, [cur_worksheet]);
+  }, [seasonsData]);
 
   // List to hold season dropdown options
   const season_options = useMemo(() => {
