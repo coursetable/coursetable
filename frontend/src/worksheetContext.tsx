@@ -145,7 +145,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   // Current season initialized to most recent season
   const [cur_season, setCurSeason] = useSessionStorageState<Season>(
     'cur_season',
-    season_codes.length > 0 ? season_codes[0] : ''
+    ''
   );
 
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
@@ -203,6 +203,13 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     colorMap,
     sortByCourseCode,
   ]);
+
+  // Initialize current season
+  useEffect(() => {
+    if (season_codes.length > 0) {
+      setCurSeason(season_codes[0]);
+    }
+  }, [season_codes, setCurSeason]);
 
   /* Functions */
 
