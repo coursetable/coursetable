@@ -86,6 +86,10 @@ const About: React.VFC = () => {
       name: 'Josh Chough',
       image: jc,
       role: 'Development & Design',
+      links: {
+        github: 'https://github.com/itsjoshthedeveloper',
+        linkedin: 'https://www.linkedin.com/in/joshchough/',
+      },
     },
     {
       name: 'Aidan Evans',
