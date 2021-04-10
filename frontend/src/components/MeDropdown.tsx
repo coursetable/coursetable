@@ -2,7 +2,13 @@ import React, { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import { FcCalendar } from 'react-icons/fc';
+import {
+  FcCalendar,
+  FcInfo,
+  FcQuestions,
+  FcFeedback,
+  FcPuzzle,
+} from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
@@ -82,6 +88,84 @@ const MeDropdown: React.VFC<Props> = ({
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
           <Col className="px-3 pt-3">
+            {isLoggedIn && (
+              <>
+                {/* About page Link */}
+                <Row className="pb-3 m-auto">
+                  <FcInfo
+                    className="mr-2 my-auto"
+                    size={20}
+                    style={{ paddingLeft: '2px' }}
+                  />
+                  <TextComponent type={1}>
+                    <NavLink
+                      to="/about"
+                      className={styles.collapse_text}
+                      onClick={scrollToTop}
+                    >
+                      <StyledHoverText>About</StyledHoverText>
+                    </NavLink>
+                  </TextComponent>
+                </Row>
+                {/* FAQ page Link */}
+                <Row className="pb-3 m-auto">
+                  <FcQuestions
+                    className="mr-2 my-auto"
+                    size={20}
+                    style={{ paddingLeft: '2px' }}
+                  />
+                  <TextComponent type={1}>
+                    <NavLink
+                      to="/faq"
+                      className={styles.collapse_text}
+                      onClick={scrollToTop}
+                    >
+                      <StyledHoverText>FAQ</StyledHoverText>
+                    </NavLink>
+                  </TextComponent>
+                </Row>
+              </>
+            )}
+            {/* Feedback page Link */}
+            <Row className="pb-3 m-auto">
+              <FcFeedback
+                className="mr-2 my-auto"
+                size={20}
+                style={{ paddingLeft: '2px' }}
+              />
+              <TextComponent type={1}>
+                <NavLink
+                  to="/feedback"
+                  className={styles.collapse_text}
+                  onClick={scrollToTop}
+                >
+                  <StyledHoverText>Feedback</StyledHoverText>
+                </NavLink>
+              </TextComponent>
+            </Row>
+            {/* Try tutorial only on desktop */}
+            {!isMobile && !isTablet && isLoggedIn && (
+              <Row className="pb-3 m-auto">
+                <FcPuzzle
+                  className="mr-2 my-auto"
+                  size={20}
+                  style={{ paddingLeft: '2px' }}
+                />
+                <TextComponent type={1}>
+                  <NavLink
+                    to="/catalog"
+                    className={styles.collapse_text}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToTop(e);
+                      setIsTutorialOpen(true);
+                    }}
+                  >
+                    <StyledHoverText>Tutorial</StyledHoverText>
+                  </NavLink>
+                </TextComponent>
+              </Row>
+            )}
             {/* Export Worksheet button */}
             {isLoggedIn && (
               <Row className=" pb-3 m-auto">

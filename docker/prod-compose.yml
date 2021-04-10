@@ -2,7 +2,7 @@ version: "3.2"
 services:
   api:
     build: ../api
-    image: node:latest
+    image: coursetable/api
     restart: always
     ports:
       - "8039:8039"
@@ -12,7 +12,7 @@ services:
     volumes:
       - ../api:/app
       - ./wait-for-it.sh:/app/wait-for-it.sh
-
+    user: "1000"
     depends_on:
       - graphql-engine
     environment:
