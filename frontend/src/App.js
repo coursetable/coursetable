@@ -66,11 +66,7 @@ function App({ themeToggler }) {
         </a>
         !
       </Notice>
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        themeToggler={themeToggler}
-        setIsTutorialOpen={setIsTutorialOpen}
-      />
+      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">

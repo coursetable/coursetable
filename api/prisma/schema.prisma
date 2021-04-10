@@ -9,17 +9,15 @@ datasource db {
 }
 
 model StudentBluebookSettings {
-  netId              String  @id @db.Char(8)
-  evaluationsEnabled Boolean
-  first_name         String? @db.VarChar(256)
-  last_name          String? @db.VarChar(256)
-  email              String? @db.VarChar(256)
-  upi                Int?
-  school             String? @db.VarChar(256)
-  year               Int?
-  college            String? @db.VarChar(256)
-  major              String? @db.VarChar(256)
-  curriculum         String? @db.VarChar(256)
+  netId               String  @id @db.Char(8)
+  shareCoursesEnabled Boolean @default(true)
+  facebookLastUpdated Int     @db.UnsignedInt
+  seenDisclaimer      Boolean @default(false)
+  noticeLastSeen      Int     @db.UnsignedInt
+  timesNoticeSeen     Int     @db.UnsignedTinyInt
+  viewException       Int     @default(0) @db.UnsignedTinyInt
+  challengeTries      Int     @default(0) @db.UnsignedSmallInt
+  evaluationsEnabled  Boolean
 }
 
 model StudentFacebookFriends {
@@ -33,19 +31,103 @@ model StudentFacebookFriends {
 }
 
 model Students {
-  netId            String @id @default("") @db.Char(8)
-  facebookId       BigInt @db.UnsignedBigInt
-  facebookDataJson String @db.Text
+  netId                String                        @id @default("") @db.Char(8)
+  firstName            String                        @db.VarChar(32)
+  middleName           String                        @db.VarChar(32)
+  lastName             String                        @db.VarChar(32)
+  preferredName        String                        @db.VarChar(32)
+  year                 Int                           @db.UnsignedSmallInt
+  college              Students_college
+  division             String                        @db.VarChar(64)
+  major                String                        @db.VarChar(64)
+  major2               String                        @db.VarChar(64)
+  email                String                        @db.VarChar(64)
+  room                 String                        @db.VarChar(64)
+  campusPhone          String                        @db.VarChar(32)
+  campusMail           String                        @db.VarChar(256)
+  gender               Students_gender
+  encryptedPassword    Bytes                         @db.VarBinary(512)
+  classesv2Crawled     Int                           @default(0) @db.UnsignedInt
+  homeAddress          String                        @db.VarChar(256)
+  birthMonth           Students_birthMonth
+  birthDay             Int                           @db.UnsignedTinyInt
+  type                 Students_type                 @default(Normal)
+  coursesTakenPrompted Students_coursesTakenPrompted @default(Not_prompted)
+  facebookId           BigInt                        @db.UnsignedBigInt
+  facebookDataJson     String                        @db.Text
 
   @@index([facebookId], name: "facebookId")
 }
 
-model WorksheetCourses {
-  id     Int    @id @default(autoincrement()) @db.UnsignedMediumInt
-  net_id String @db.Char(8)
-  oci_id Int    @db.UnsignedMediumInt
-  season Int    @db.UnsignedMediumInt
+model BluebookEvents {
+  netId String @db.Char(8)
+  time  Int    @db.UnsignedInt
+  event String @db.VarChar(32)
+  data  String @db.VarChar(255)
 
-  @@unique([net_id, oci_id, season], name: "net_id_oci_id_season")
-  @@index([net_id], name: "net_id")
+  @@id([netId, time])
+}
+
+model StudentCoursesTaken {
+  id      Int    @id @default(autoincrement()) @db.UnsignedInt
+  netId   String @default("0") @db.Char(8)
+  subject String @default("0") @db.Char(4)
+  number  String @default("0") @db.Char(6)
+  season  Int    @default(0) @db.UnsignedMediumInt
+
+  @@index([netId], name: "netId")
+}
+
+model StudentPetitions {
+  netId   String  @id @db.Char(8)
+  name    String  @db.VarChar(30)
+  comment String  @db.VarChar(4095)
+  public  Boolean
+  time    Int     @db.UnsignedInt
+}
+
+enum Students_college {
+  Pierson
+  Davenport
+  Calhoun
+  Silliman
+  Berkeley
+  Trumbull
+  Morse
+  Branford
+  Saybrook
+  Jonathan_Edwards @map("Jonathan Edwards")
+  Ezra_Stiles @map("Ezra Stiles")
+  Timothy_Dwight @map("Timothy Dwight")
+}
+
+enum Students_gender {
+  Male
+  Female
+}
+
+enum Students_birthMonth {
+  Jan
+  Feb
+  Mar
+  Apr
+  May
+  Jun
+  Jul
+  Aug
+  Sep
+  Oct
+  Nov
+  Dec
+}
+
+enum Students_type {
+  Normal
+  Administrator
+}
+
+enum Students_coursesTakenPrompted {
+  Not_prompted @map("Not prompted")
+  Shared
+  Skipped
 }

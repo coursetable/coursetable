@@ -15,7 +15,6 @@ import { SurfaceComponent } from './StyledComponents';
 
 import { API_ENDPOINT } from '../config';
 
-// Profile icon
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
@@ -123,8 +122,37 @@ function CourseTableNavbar({
 
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
-            {/* Desktop navbar search */}
-            {show_search && <NavbarSearch />}
+            <Navbar.Collapse
+              id="basic-navbar-nav"
+              // Make navbar display: flex when not mobile. If mobile, normal formatting
+              className={!is_mobile ? 'd-flex' : 'justify-content-end'}
+            >
+              {/* Close navbar on click in mobile view */}
+              <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
+                {/* About Page */}
+                <StyledNavLink
+                  to="/about"
+                  // Left align about link if not mobile
+                  className={!is_mobile ? ' align-self-begin' : ''}
+                >
+                  About
+                </StyledNavLink>
+                {/* FAQs Page */}
+                <StyledNavLink
+                  to="/faq"
+                  // Left align about link if not mobile
+                  className={!is_mobile ? ' align-self-begin' : ''}
+                >
+                  FAQ
+                </StyledNavLink>
+                {/* Feedback Page */}
+                <StyledNavLink
+                  to="/feedback"
+                  // Left align about link if not mobile
+                  className={!is_mobile ? ' mr-auto' : ''}
+                >
+                  Feedback
+                </StyledNavLink>
 
                 {/* DarkMode Button */}
                 <div
@@ -173,7 +201,20 @@ function CourseTableNavbar({
                       />
                     </StyledMeIcon>
                   </div>
-                  {isLoggedIn && (
+                </div>
+                {/* Sign in/out and Facebook buttons. Show if mobile */}
+                <div className="d-md-none">
+                  {!isLoggedIn ? (
+                    <StyledDiv
+                      onClick={() => {
+                        posthog.capture('login');
+
+                        window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
+                      }}
+                    >
+                      Sign In
+                    </StyledDiv>
+                  ) : (
                     <>
                       <StyledDiv>
                         <FBLoginButton />
@@ -181,67 +222,9 @@ function CourseTableNavbar({
                       <StyledDiv onClick={logout}>Sign Out</StyledDiv>
                     </>
                   )}
-                  {/* Profile Icon. Show if not mobile */}
-                  <div
-                    // Right align profile icon if not mobile
-                    className={`d-none d-md-block ${
-                      !isMobile ? 'align-self-end' : ''
-                    }`}
-                  >
-                    <div className={styles.navbar_me}>
-                      <StyledMeIcon
-                        ref={ref_visible}
-                        className={`${styles.icon_circle} m-auto`}
-                        onClick={() =>
-                          setIsComponentVisible(!isComponentVisible)
-                        }
-                      >
-                        <BsFillPersonFill
-                          className="m-auto"
-                          size={20}
-                          color={isComponentVisible ? '#007bff' : undefined}
-                        />
-                      </StyledMeIcon>
-                    </div>
-                  </div>
-                  {/* Sign in/out and Facebook buttons. Show if mobile */}
-                  <div className="d-md-none">
-                    <StyledDiv>
-                      <a
-                        href="https://old.coursetable.com/"
-                        style={{ color: 'inherit' }}
-                      >
-                        Old CourseTable
-                      </a>
-                    </StyledDiv>
-                    {!isLoggedIn ? (
-                      <StyledDiv
-                        onClick={() => {
-                          posthog.capture('login');
-                          window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
-                        }}
-                      >
-                        Sign In
-                      </StyledDiv>
-                    ) : (
-                      <>
-                        <StyledDiv>
-                          <FBLoginButton />
-                        </StyledDiv>
-                        <StyledDiv onClick={logout}>Sign Out</StyledDiv>
-                      </>
-                    )}
-                  </div>
-                </Nav>
-              </Navbar.Collapse>
-              {/* Last updated ago text for desktop */}
-              {show_search && (
-                <SmallTextComponent type={2} className="mb-2 text-right">
-                  <MdUpdate className="mr-1" />
-                  Updated {lastUpdated} ago
-                </SmallTextComponent>
-              )}
-            </NavCollapseWrapper>
+                </div>
+              </Nav>
+            </Navbar.Collapse>
           </Navbar>
         </Container>
       </SurfaceComponent>

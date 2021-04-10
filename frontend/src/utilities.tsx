@@ -1,6 +1,5 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import posthog from 'posthog-js';
-import { css } from 'styled-components';
 import axios from 'axios';
 
 import { API_ENDPOINT } from './config';
