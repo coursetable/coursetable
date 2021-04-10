@@ -56,6 +56,8 @@ const About: React.VFC = () => {
       image: my,
       role: 'CourseTable Co-Lead',
       links: {
+        github: 'https://github.com/maxyuan6717',
+        linkedin: 'https://www.linkedin.com/in/max-yuan-209930194/',
         website: 'https://maxyuan.io/',
       },
     },
