@@ -15,7 +15,7 @@ import { toSeasonString } from './courseUtilities';
 import { useWorksheetInfo } from './queries/GetWorksheetListings';
 import { useUser, Worksheet } from './user';
 import { Season } from './common';
-import { OptType, Option } from './searchContext';
+import { OptType, Option, defaultFilters } from './searchContext';
 
 export type HiddenCourses = Record<number, boolean>;
 export type WorksheetView = Record<string, string>;
@@ -132,10 +132,10 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     return season_options_temp;
   }, [season_codes]);
 
-  // Current season initialized to most recent season
+  // Current season
   const [cur_season, setCurSeason] = useSessionStorageState<Season>(
     'cur_season',
-    ''
+    defaultFilters.defaultSeason[0].value
   );
 
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
@@ -194,13 +194,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     sortByCourseCode,
   ]);
 
-  // Initialize current season
-  useEffect(() => {
-    if (season_codes.length > 0) {
-      setCurSeason(season_codes[0]);
-    }
-  }, [season_codes, setCurSeason]);
-
   /* Functions */
 
   // Hide/Show this course
@@ -247,6 +240,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     (season_code: Season) => {
       posthog.capture('worksheet-season', { new_season: season_code });
       setCurSeason(season_code);
+      console.log(season_code);
     },
     [setCurSeason]
   );

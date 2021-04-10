@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { DateTime } from 'luxon';
 import posthog from 'posthog-js';
 import React, {
   createContext,
@@ -11,7 +12,12 @@ import React, {
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { useSessionStorageState } from './browserStorage';
 import { Listing, useCourseData, useFerry } from './components/FerryProvider';
-import { getNumFB, getOverallRatings, sortCourses } from './courseUtilities';
+import {
+  getNumFB,
+  getOverallRatings,
+  sortCourses,
+  toSeasonString,
+} from './courseUtilities';
 import {
   areas,
   AreasType,
@@ -99,11 +105,29 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
+// Calculate upcoming season
+const dt = DateTime.now().setZone('America/New_York');
+let year = dt.year;
+let season: number;
+// Starting in October look at next year spring
+if (dt.month >= 10) {
+  season = 1;
+  year += 1;
+  // Starting in March look at this year fall
+} else if (dt.month >= 3) {
+  season = 3;
+} else {
+  season = 1;
+}
+const def_season_code = `${year}0${season}`;
+
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
 const defaultBounds = [1, 5];
-const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
+const defaultSeason: Option[] = [
+  { value: def_season_code, label: toSeasonString(def_season_code)[0] },
+];
 const defaultHideCancelled = true;
 const defaultHideFirstYearSeminars = false;
 const defaultHideGraduateCourses = false;
