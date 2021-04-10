@@ -33,8 +33,8 @@ export default async (app: express.Express): Promise<void> => {
   app.get('/api/auth/logout', (req, res) => {
     if (req.user) {
       POSTHOG_CLIENT.capture({
-        distinctId: req.user?.netId,
-        event: 'update-facebook-friends',
+        distinctId: req.user.netId,
+        event: 'api-logout',
       });
     }
 
