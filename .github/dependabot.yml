@@ -5,18 +5,6 @@
 
 version: 2
 updates:
-  - package-ecosystem: 'composer'
-    directory: '/'
-    schedule:
-      interval: 'daily'
-    reviewers:
-      - 'kevinhu'
-  - package-ecosystem: 'npm'
-    directory: '/proxy'
-    schedule:
-      interval: 'daily'
-    reviewers:
-      - 'kevinhu'
   - package-ecosystem: 'npm'
     directory: '/api'
     schedule:
