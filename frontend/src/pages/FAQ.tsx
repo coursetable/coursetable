@@ -170,9 +170,9 @@ function FAQ() {
       title: "Can I use CourseTable's data for a project?",
       contents: (
         <>
-          Sure. Shoot us an <a href="mailto: harshal.sheth@yale.edu">email</a>{' '}
-          with a brief description of your project, and we'll get back to you
-          shortly.
+          Sure. Shoot us an{' '}
+          <a href="mailto: coursetable.at.yale@gmail.com">email</a> with a brief
+          description of your project, and we'll get back to you shortly.
         </>
       ),
     },
@@ -241,7 +241,7 @@ function FAQ() {
           <p>
             In 2014,{' '}
             <a
-              href="https://legacy.coursetable.com/Blog.html"
+              href="https://web.archive.org/web/20210224091423/https://www.nytimes.com/2014/01/22/nyregion/yale-students-tangle-with-university-over-yale-blue-book-website.html"
               target="_blank"
               rel="noopener noreferrer"
             >

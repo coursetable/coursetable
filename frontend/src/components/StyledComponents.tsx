@@ -19,9 +19,11 @@ export const SmallTextComponent = styled(TextComponent)`
   ${breakpoints('font-size', '%', [{ 1320: 64 }])};
 `;
 
-// Div for banner components/any components that are light grey in light mode, dark grey in dark mode
+// Div for banner components
 export const StyledBanner = styled.div`
-  background-color: ${({ theme }) => theme.banner};
+  background-color: #0086fa;
+  transition: background-color 0.2s linear;
+  color: #ffffff;
 `;
 
 // FormControl for any typed inputs

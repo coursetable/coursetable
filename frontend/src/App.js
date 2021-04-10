@@ -101,11 +101,11 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
-        Want to try out the latest features and shape the future of CourseTable?
-        Become a Beta Tester{' '}
-        <a href="https://forms.gle/UtD5YnZ7MzxYLTux6">here</a>, or{' '}
-        <a href="https://www.linkedin.com/company/coursetable">follow us</a> on
-        LinkedIn for the latest updates.
+        Got a feature in mind or caught a bug? Check out our new{' '}
+        <a href="/feedback" className="text-light">
+          <u>feedback page</u>
+        </a>
+        !
       </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}

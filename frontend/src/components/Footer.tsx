@@ -86,16 +86,6 @@ function Footer() {
                   <TextComponent type={1}>Join Us</TextComponent>
                 </NavLink>
               </li>
-              {/* Blog */}
-              <li>
-                <a
-                  href="https://legacy.coursetable.com/Blog.html"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <TextComponent type={1}>Blog</TextComponent>
-                </a>
-              </li>
               {/* Github */}
               <li>
                 <a
@@ -104,6 +94,16 @@ function Footer() {
                   rel="noopener noreferrer"
                 >
                   <TextComponent type={1}>GitHub</TextComponent>
+                </a>
+              </li>
+              {/* Blog */}
+              <li>
+                <a
+                  href="https://www.linkedin.com/company/coursetable/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <TextComponent type={1}>LinkedIn</TextComponent>
                 </a>
               </li>
             </ul>
