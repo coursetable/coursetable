@@ -1,0 +1,320 @@
+[02/08 21:38:51] [Notice] Running for 200903 without evaluations
+[02/08 21:38:51] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 200903  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:38:52] [Notice] Running for 200903 with evaluations
+[02/08 21:38:52] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 200903  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:38:53] [Notice] Running for 201001 without evaluations
+[02/08 21:38:53] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201001  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:38:54] [Notice] Running for 201001 with evaluations
+[02/08 21:38:54] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201001  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:38:55] [Notice] Running for 201002 without evaluations
+[02/08 21:38:55] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201002  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:38:56] [Notice] Running for 201002 with evaluations
+[02/08 21:38:56] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201002  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:38:57] [Notice] Running for 201003 without evaluations
+[02/08 21:38:57] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201003  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:38:58] [Notice] Running for 201003 with evaluations
+[02/08 21:38:58] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201003  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:38:59] [Notice] Running for 201101 without evaluations
+[02/08 21:38:59] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201101  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:00] [Notice] Running for 201101 with evaluations
+[02/08 21:39:00] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201101  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:01] [Notice] Running for 201102 without evaluations
+[02/08 21:39:01] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201102  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:01] [Notice] Running for 201102 with evaluations
+[02/08 21:39:01] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201102  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:02] [Notice] Running for 201103 without evaluations
+[02/08 21:39:02] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201103  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:03] [Notice] Running for 201103 with evaluations
+[02/08 21:39:03] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201103  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:04] [Notice] Running for 201201 without evaluations
+[02/08 21:39:04] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201201  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:05] [Notice] Running for 201201 with evaluations
+[02/08 21:39:05] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201201  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:06] [Notice] Running for 201202 without evaluations
+[02/08 21:39:06] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201202  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:07] [Notice] Running for 201202 with evaluations
+[02/08 21:39:07] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201202  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:08] [Notice] Running for 201203 without evaluations
+[02/08 21:39:08] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201203  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:09] [Notice] Running for 201203 with evaluations
+[02/08 21:39:09] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201203  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:10] [Notice] Running for 201301 without evaluations
+[02/08 21:39:10] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201301  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:10] [Notice] Running for 201301 with evaluations
+[02/08 21:39:10] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201301  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:11] [Notice] Running for 201302 without evaluations
+[02/08 21:39:11] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201302  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:12] [Notice] Running for 201302 with evaluations
+[02/08 21:39:12] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201302  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:13] [Notice] Running for 201303 without evaluations
+[02/08 21:39:13] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201303  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:14] [Notice] Running for 201303 with evaluations
+[02/08 21:39:14] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201303  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:14] [Notice] Running for 201401 without evaluations
+[02/08 21:39:14] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201401  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:15] [Notice] Running for 201401 with evaluations
+[02/08 21:39:15] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201401  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:16] [Notice] Running for 201402 without evaluations
+[02/08 21:39:16] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201402  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:17] [Notice] Running for 201402 with evaluations
+[02/08 21:39:17] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201402  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:18] [Notice] Running for 201403 without evaluations
+[02/08 21:39:18] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201403  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:19] [Notice] Running for 201403 with evaluations
+[02/08 21:39:19] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201403  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:20] [Notice] Running for 201501 without evaluations
+[02/08 21:39:20] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201501  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:21] [Notice] Running for 201501 with evaluations
+[02/08 21:39:21] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201501  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:22] [Notice] Running for 201502 without evaluations
+[02/08 21:39:22] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201502  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:23] [Notice] Running for 201502 with evaluations
+[02/08 21:39:23] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201502  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:24] [Notice] Running for 201503 without evaluations
+[02/08 21:39:24] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201503  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:24] [Notice] Running for 201503 with evaluations
+[02/08 21:39:24] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201503  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:25] [Notice] Running for 201601 without evaluations
+[02/08 21:39:25] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201601  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:26] [Notice] Running for 201601 with evaluations
+[02/08 21:39:26] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201601  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:27] [Notice] Running for 201602 without evaluations
+[02/08 21:39:27] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201602  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:28] [Notice] Running for 201602 with evaluations
+[02/08 21:39:28] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201602  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:29] [Notice] Running for 201603 without evaluations
+[02/08 21:39:29] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201603  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:30] [Notice] Running for 201603 with evaluations
+[02/08 21:39:30] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201603  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:31] [Notice] Running for 201701 without evaluations
+[02/08 21:39:31] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201701  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:32] [Notice] Running for 201701 with evaluations
+[02/08 21:39:32] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201701  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:32] [Notice] Running for 201702 without evaluations
+[02/08 21:39:32] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201702  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:33] [Notice] Running for 201702 with evaluations
+[02/08 21:39:33] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201702  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:34] [Notice] Running for 201703 without evaluations
+[02/08 21:39:34] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201703  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:39] [Notice] Running for 201703 with evaluations
+[02/08 21:39:39] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201703  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:42] [Notice] Running for 201801 without evaluations
+[02/08 21:39:42] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201801  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:47] [Notice] Running for 201801 with evaluations
+[02/08 21:39:47] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201801  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:50] [Notice] Running for 201802 without evaluations
+[02/08 21:39:50] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201802  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:51] [Notice] Running for 201802 with evaluations
+[02/08 21:39:51] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201802  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:39:53] [Notice] Running for 201803 without evaluations
+[02/08 21:39:53] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201803  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:39:58] [Notice] Running for 201803 with evaluations
+[02/08 21:39:58] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201803  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:40:03] [Notice] Running for 201901 without evaluations
+[02/08 21:40:03] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201901  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:40:07] [Notice] Running for 201901 with evaluations
+[02/08 21:40:07] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201901  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:40:11] [Notice] Running for 201902 without evaluations
+[02/08 21:40:11] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201902  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:40:12] [Notice] Running for 201902 with evaluations
+[02/08 21:40:12] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201902  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:40:13] [Notice] Running for 201903 without evaluations
+[02/08 21:40:13] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201903  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:40:16] [Notice] Running for 201903 with evaluations
+[02/08 21:40:16] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 201903  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 21:40:19] [Notice] Running for 202001 without evaluations
+[02/08 21:40:19] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 202001  --sqlite "/var/www/html/scripts/sqlite/blank.sqlite"  --out "/var/www/html/scripts/../web/gen/json/data_[season].json"  --save-to-db 
+[02/08 21:40:21] [Notice] Running for 202001 with evaluations
+[02/08 21:40:21] [Notice] php "/var/www/html/scripts/../web/GenerateDataFile.php" --season 202001  --out "/var/www/html/scripts/../web/gen/json/data_with_evals_[season].json" 
+[02/08 22:00:49] [Notice] Skipping 200903 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 200903 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201001 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201001 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201002 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201002 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201003 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201003 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201101 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201101 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201102 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201102 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201103 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201103 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201201 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201201 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201202 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201202 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201203 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201203 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201301 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201301 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201302 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201302 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201303 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201303 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201401 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201401 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201402 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201402 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201403 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201403 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201501 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201501 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201502 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201502 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201503 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201503 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201601 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201601 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201602 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201602 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201603 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201603 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201701 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201701 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201702 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201702 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201703 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201703 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201801 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201801 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201802 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201802 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201803 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201803 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201901 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201901 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201902 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201902 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201903 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 201903 with evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 202001 without evaluations: already exists
+[02/08 22:00:49] [Notice] Skipping 202001 with evaluations: already exists
+[02/29 21:12:16] [Notice] Skipping 200903 without evaluations: already exists
+[02/29 21:12:16] [Notice] Skipping 200903 with evaluations: already exists
+[02/29 21:12:16] [Notice] Skipping 201001 without evaluations: already exists
+[02/29 21:12:16] [Notice] Skipping 201001 with evaluations: already exists
+[02/29 21:12:16] [Notice] Skipping 201002 without evaluations: already exists
+[02/29 21:12:16] [Notice] Skipping 201002 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201003 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201003 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201101 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201101 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201102 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201102 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201103 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201103 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201201 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201201 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201202 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201202 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201203 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201203 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201301 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201301 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201302 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201302 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201303 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201303 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201401 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201401 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201402 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201402 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201403 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201403 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201501 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201501 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201502 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201502 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201503 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201503 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201601 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201601 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201602 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201602 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201603 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201603 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201701 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201701 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201702 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201702 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201703 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201703 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201801 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201801 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201802 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201802 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201803 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201803 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201901 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201901 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201902 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201902 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201903 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 201903 with evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 202001 without evaluations: already exists
+[02/29 21:12:17] [Notice] Skipping 202001 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 200903 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 200903 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201001 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201001 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201002 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201002 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201003 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201003 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201101 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201101 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201102 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201102 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201103 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201103 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201201 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201201 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201202 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201202 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201203 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201203 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201301 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201301 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201302 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201302 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201303 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201303 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201401 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201401 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201402 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201402 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201403 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201403 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201501 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201501 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201502 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201502 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201503 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201503 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201601 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201601 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201602 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201602 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201603 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201603 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201701 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201701 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201702 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201702 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201703 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201703 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201801 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201801 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201802 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201802 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201803 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201803 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201901 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201901 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201902 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201902 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201903 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 201903 with evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 202001 without evaluations: already exists
+[03/03 19:43:56] [Notice] Skipping 202001 with evaluations: already exists
