@@ -1,9 +1,0 @@
-{
-  "name": "coursetable/coursetable",
-  "description": "Code to power https://coursetable.com",
-  "require": {
-    "querypath/querypath": "^3.0",
-    "facebook/graph-sdk": "^5.7",
-    "eluceo/ical": "^2.0.0"
-  }
-}
