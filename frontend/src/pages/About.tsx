@@ -79,7 +79,7 @@ const About: React.VFC = () => {
       image: sh,
       role: 'Design',
       links: {
-        website: 'http://sidneyhirschman.com/',
+        website: 'https://sidneyhirschman.com/',
       },
     },
     {
