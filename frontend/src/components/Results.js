@@ -41,6 +41,7 @@ import { toSeasonString } from '../courseUtilities';
 
 import { API_ENDPOINT } from '../config';
 import { useWorksheet } from '../worksheetContext';
+import { Link } from 'react-router-dom';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -278,10 +279,13 @@ const Results = ({
           </>
         ) : (
           <>
-            <h3>No courses found for</h3>
-            <h3 className="mb-5">
+            <h3>
+              No courses found for{' '}
               {toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}
             </h3>
+            <div>
+              Add some courses on the <Link to="/catalog">Catalog</Link>.
+            </div>
           </>
         )}
       </div>
