@@ -5,6 +5,8 @@
 import express from 'express';
 import passport from 'passport';
 
+import { POSTHOG_CLIENT } from '../config';
+
 import { casLogin } from './auth.handlers';
 
 /**
@@ -29,6 +31,13 @@ export default async (app: express.Express): Promise<void> => {
 
   // Logouts
   app.get('/api/auth/logout', (req, res) => {
+    if (req.user) {
+      POSTHOG_CLIENT.capture({
+        distinctId: req.user?.netId,
+        event: 'update-facebook-friends',
+      });
+    }
+
     req.logOut();
     return res.json({ success: true });
   });
