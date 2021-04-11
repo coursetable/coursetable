@@ -86,14 +86,19 @@ export const cannyIdentify = async (
       POSTHOG_CLIENT.identify({
         distinctId: netId,
         properties: {
-          email: user.email || '',
-          firstName: user.first_name || '',
-          lastName: user.last_name || '',
-          upi: user.upi || -1,
-          school: user.school || '',
-          college: user.college || '',
-          major: user.major || '',
-          curriculum: user.curriculum || '',
+          email: user.email,
+          name: user.name,
+          firstName: user.first_name,
+          middleName: user.middle_name,
+          lastName: user.last_name,
+          upi: user.upi,
+          school: user.school,
+          college: user.college,
+          major: user.major,
+          curriculum: user.curriculum,
+          year: user.year,
+          organization: user.organization,
+          leave: user.leave,
         },
       });
 
