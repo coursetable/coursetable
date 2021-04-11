@@ -7,12 +7,8 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
-import {
-  useSearch,
-  Option,
-  defaultFilters,
-  SortOrderType,
-} from '../searchContext';
+import { SortByOption } from '../queries/Constants';
+import { useSearch, defaultFilters, SortOrderType } from '../searchContext';
 
 const StyledSortBtn = styled.div`
   cursor: pointer;
@@ -24,15 +20,15 @@ const StyledSortBtn = styled.div`
 `;
 
 type Props = {
-  selectOption: Option;
+  selectOption: SortByOption;
 };
 
 /**
- * Renders column sort toggle button on catalog
+ * Renders column sort toggle button for results
  * @prop selectOption - sortbyOption from Constants to sort by
  */
 
-const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
+const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
   // Local sort order state
   const [localSortOrder, setLocalSortOrder] = useState<SortOrderType>(
     defaultFilters.defaultSortOrder
@@ -107,4 +103,4 @@ const CatalogColumnSort: React.FC<Props> = ({ selectOption }) => {
   );
 };
 
-export default CatalogColumnSort;
+export default ResultsColumnSort;

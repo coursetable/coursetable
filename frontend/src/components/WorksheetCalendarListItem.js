@@ -1,9 +1,10 @@
 import React from 'react';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import styled, { withTheme } from 'styled-components';
-import styles from './WorksheetListItem.module.css';
+import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
+import { useWorksheet } from '../worksheetContext';
 
 // Listgroup Item for worksheet list item
 const StyledListItem = styled(ListGroup.Item)`
@@ -27,21 +28,16 @@ const StyledListItem = styled(ListGroup.Item)`
 /**
  * Render worksheet list item in default worksheet view
  * @prop course - object | current listing
- * @prop showModal - function | to show modal for a certain listing
- * @prop cur_season - string | holds the current season code
- * @prop toggleCourse - function | to hide/show course
- * @prop setHoverCourse - function | to darken calendar events of this listing
  * @prop hidden - object | dictionary of hidden courses
  */
-function WorksheetListItem({
-  course,
-  showModal,
-  cur_season,
-  toggleCourse,
-  setHoverCourse,
-  hidden,
-  theme,
-}) {
+function WorksheetCalendarListItem({ course, hidden, theme }) {
+  const {
+    showModal,
+    cur_season,
+    toggleCourse,
+    setHoverCourse,
+  } = useWorksheet();
+
   // Style for coloring hidden courses
   const color_style = {
     color: hidden ? theme.hidden : theme.text[0],
@@ -75,7 +71,6 @@ function WorksheetListItem({
         {/* Add/remove from worksheet button */}
         <div className="my-auto">
           <WorksheetToggleButton
-            worksheetView
             crn={course.crn}
             season_code={cur_season}
             modal={false}
@@ -86,4 +81,4 @@ function WorksheetListItem({
   );
 }
 
-export default React.memo(withTheme(WorksheetListItem));
+export default React.memo(withTheme(WorksheetCalendarListItem));

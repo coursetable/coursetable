@@ -17,12 +17,12 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
-import Styles from './CatalogResultsItem.module.css';
+import Styles from './ResultsItem.module.css';
 import { getOverallRatings, isInWorksheet } from '../courseUtilities';
 import { breakpoints } from '../utilities';
 import { useUser } from '../user';
 
-// Row for catalog results item
+// Row for results item
 const StyledResultsItem = styled(Row)`
   max-width: 1600px;
   user-select: none;
@@ -66,17 +66,17 @@ const Tag = styled(Badge)`
 `;
 
 /**
- * Renders a list item for a catalog search result
+ * Renders a list item for a search result
  * @prop course - object | listing data for the current course
  * @prop showModal - function | shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop isFirst - boolean | is this the first course of the catalog results?
+ * @prop isFirst - boolean | is this the first course of the results?
  * @prop COL_SPACING - object | with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
  * @prop fb_friends - array | of fb friends also taking this course
  */
 
-const CatalogResultsItem = ({
+const ResultsItem = ({
   course,
   showModal,
   multiSeasons,
@@ -211,7 +211,7 @@ const CatalogResultsItem = ({
       tabIndex="0"
       inWorksheet={courseInWorksheet}
     >
-      {/* Catalog Results Row Item */}
+      {/* Results Row Item */}
       <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
         {/* Season */}
         {multiSeasons && (
@@ -384,6 +384,6 @@ const CatalogResultsItem = ({
   );
 };
 
-const CatalogResultsItemMemo = React.memo(CatalogResultsItem);
-// CatalogResultsItemMemo.whyDidYouRender = true;
-export default CatalogResultsItemMemo;
+const ResultsItemMemo = React.memo(ResultsItem);
+// ResultsItemMemo.whyDidYouRender = true;
+export default ResultsItemMemo;

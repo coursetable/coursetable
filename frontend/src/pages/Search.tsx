@@ -6,7 +6,7 @@ import { Element, scroller } from 'react-scroll';
 import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
-import CatalogResults from '../components/CatalogResults';
+import Results from '../components/Results';
 import CourseModal from '../components/CourseModal';
 
 import {
@@ -106,7 +106,6 @@ const Search: React.FC = () => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
-    setOrdering,
     handleResetFilters,
   } = useSearch();
 
@@ -218,10 +217,7 @@ const Search: React.FC = () => {
                 </Row>
                 {/* Sort by option and order */}
                 <Row className="mx-auto py-0 px-4">
-                  <SortByReactSelect
-                    setOrdering={setOrdering}
-                    key={reset_key}
-                  />
+                  <SortByReactSelect key={reset_key} />
                 </Row>
                 <StyledHr />
                 <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
@@ -423,7 +419,7 @@ const Search: React.FC = () => {
           }`}
         >
           <Element name="catalog" className="d-flex justify-content-center">
-            <CatalogResults
+            <Results
               data={searchData}
               isList={isList}
               setView={handleSetView}

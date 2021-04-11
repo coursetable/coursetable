@@ -63,6 +63,7 @@ export type SortKeys = keyof Listing | 'fb';
 const _number = 0;
 const _sortKeys = sortbyOptions[_number].value;
 expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
+export type SortByOption = typeof sortbyOptions[number];
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;

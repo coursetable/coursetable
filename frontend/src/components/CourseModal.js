@@ -12,7 +12,7 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
-import tag_styles from './SearchResultsItem.module.css';
+import tag_styles from './ResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants';
 import { TextComponent, StyledLink } from './StyledComponents';
 import { toSeasonString } from '../courseUtilities';
@@ -130,7 +130,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
                         (listings.length === 1 ? (
                           // If this is the initial listing, show worksheet toggle button
                           <WorksheetToggleButton
-                            worksheetView={false}
                             crn={cur_listing.crn}
                             season_code={cur_listing.season_code}
                             modal

@@ -6,15 +6,15 @@ import React, {
   useMemo,
 } from 'react';
 
-import CatalogResultsItemMemo from './CatalogResultsItem';
-import SearchResultsGridItem from './SearchResultsGridItem';
+import ResultsItemMemo from './ResultsItem';
+import ResultsGridItem from './ResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
 
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
-import Styles from './CatalogResults.module.css';
-import './CatalogResults.css';
+import Styles from './Results.module.css';
+import './Results.css';
 
 import {
   Container,
@@ -33,22 +33,21 @@ import Authentication from '../images/authentication.svg';
 import styled, { useTheme } from 'styled-components';
 import { SurfaceComponent, StyledIcon } from './StyledComponents';
 
-import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
-import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
-import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
-import CatalogColumnSort from './CatalogColumnSort';
+import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../queries/Constants';
 import { useSearch } from '../searchContext';
 import { breakpoints } from '../utilities';
+import { toSeasonString } from '../courseUtilities';
 
 import { API_ENDPOINT } from '../config';
+import { useWorksheet } from '../worksheetContext';
+import { Link } from 'react-router-dom';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
   position: -webkit-sticky; /* Safari */
   position: sticky;
-  top: 100px;
   ${breakpoints('top', 'px', [{ 1320: 88 }])};
   z-index: 2;
 `;
@@ -80,7 +79,7 @@ const getColWidth = (calculated, min = 0, max = 1000000) => {
 };
 
 /**
- * Renders the infinite list of catalog search results
+ * Renders the infinite list of search results for both catalog and worksheet
  * @prop data - array | that holds the search results
  * @prop isList - boolean | determines display format (list or grid)
  * @prop setView - function | changes display format
@@ -88,9 +87,11 @@ const getColWidth = (calculated, min = 0, max = 1000000) => {
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_fb = object | holds a list of each fb friend taking a specific course
+ * @prop sticky_top = number | top margin for sticky column header
+ * @prop page = string | page search results are on
  */
 
-const CatalogResults = ({
+const Results = ({
   data,
   isList,
   setView,
@@ -99,6 +100,8 @@ const CatalogResults = ({
   showModal,
   isLoggedIn,
   num_fb,
+  sticky_top = 100,
+  page = 'catalog',
 }) => {
   // Fetch width of window
   const { width } = useWindowDimensions();
@@ -115,6 +118,8 @@ const CatalogResults = ({
 
   // Fetch reset_key from search context
   const { reset_key } = useSearch();
+
+  const { cur_season } = useWorksheet();
 
   const globalTheme = useTheme();
 
@@ -182,7 +187,7 @@ const CatalogResults = ({
         j++
       ) {
         row_elements.push(
-          <SearchResultsGridItem
+          <ResultsGridItem
             course={data[j]}
             showModal={showModal}
             isLoggedIn={isLoggedIn}
@@ -221,7 +226,7 @@ const CatalogResults = ({
           }}
           key={key}
         >
-          <CatalogResultsItemMemo
+          <ResultsItemMemo
             course={data[index]}
             showModal={showModal}
             multiSeasons={multiSeasons}
@@ -267,8 +272,22 @@ const CatalogResults = ({
           src={NoCoursesFound}
           style={{ width: '25%' }}
         />
-        <h3>No courses found</h3>
-        <div>We couldn't find any courses matching your search.</div>
+        {page === 'catalog' ? (
+          <>
+            <h3>No courses found</h3>
+            <div>We couldn't find any courses matching your search.</div>
+          </>
+        ) : (
+          <>
+            <h3>
+              No courses found for{' '}
+              {toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}
+            </h3>
+            <div>
+              Add some courses on the <Link to="/catalog">Catalog</Link>.
+            </div>
+          </>
+        )}
       </div>
     );
   } else {
@@ -423,7 +442,7 @@ const CatalogResults = ({
   return (
     <div className={Styles.results_container_max_width}>
       {!isMobile && !isTablet && isLoggedIn && (
-        <StyledSpacer>
+        <StyledSpacer style={{ top: sticky_top }}>
           <StyledContainer
             layer={0}
             id="results_container"
@@ -451,7 +470,7 @@ const CatalogResults = ({
                   {/* Course Code */}
                   <ResultsHeader style={code_style}>
                     Code
-                    <CatalogColumnSort
+                    <ResultsColumnSort
                       selectOption={sortbyOptions[0]}
                       key={reset_key}
                     />
@@ -459,7 +478,7 @@ const CatalogResults = ({
                   {/* Course Name */}
                   <ResultsHeader style={title_style}>
                     <span className={Styles.one_line}>Title</span>
-                    <CatalogColumnSort
+                    <ResultsColumnSort
                       selectOption={sortbyOptions[2]}
                       key={reset_key}
                     />
@@ -474,7 +493,7 @@ const CatalogResults = ({
                       >
                         <span className={Styles.one_line}>Overall</span>
                       </OverlayTrigger>
-                      <CatalogColumnSort
+                      <ResultsColumnSort
                         selectOption={sortbyOptions[4]}
                         key={reset_key}
                       />
@@ -488,7 +507,7 @@ const CatalogResults = ({
                       >
                         <span className={Styles.one_line}>Work</span>
                       </OverlayTrigger>
-                      <CatalogColumnSort
+                      <ResultsColumnSort
                         selectOption={sortbyOptions[6]}
                         key={reset_key}
                       />
@@ -496,7 +515,7 @@ const CatalogResults = ({
                     {/* Professor Rating & Course Professors */}
                     <ResultsHeader style={prof_style}>
                       <span className={Styles.one_line}>Professors</span>
-                      <CatalogColumnSort
+                      <ResultsColumnSort
                         selectOption={sortbyOptions[5]}
                         key={reset_key}
                       />
@@ -511,7 +530,7 @@ const CatalogResults = ({
                     >
                       <span className={Styles.one_line}>#</span>
                     </OverlayTrigger>
-                    <CatalogColumnSort
+                    <ResultsColumnSort
                       selectOption={sortbyOptions[8]}
                       key={reset_key}
                     />
@@ -523,7 +542,7 @@ const CatalogResults = ({
                   {/* Course Meeting Days & Times */}
                   <ResultsHeader style={meet_style}>
                     <span className={Styles.one_line}>Meets</span>
-                    <CatalogColumnSort
+                    <ResultsColumnSort
                       selectOption={sortbyOptions[9]}
                       key={reset_key}
                     />
@@ -541,7 +560,7 @@ const CatalogResults = ({
                     >
                       <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
-                    <CatalogColumnSort
+                    <ResultsColumnSort
                       selectOption={sortbyOptions[3]}
                       key={reset_key}
                     />
@@ -585,5 +604,5 @@ const CatalogResults = ({
   );
 };
 
-// CatalogResults.whyDidYouRender = true;
-export default CatalogResults;
+// Results.whyDidYouRender = true;
+export default Results;

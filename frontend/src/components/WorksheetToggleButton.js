@@ -23,14 +23,12 @@ const StyledButton = styled(Button)`
 
 /**
  * Toggle button to add course to or remove from worksheet
- * @prop worksheetView - boolean | are we in the worksheet view?
  * @prop crn - number | integer that holds the crn of the current course
  * @prop season_code - string | holds the current season code
  * @prop modal - boolean | are we rendering in the course modal
  * @prop setCourseInWorksheet - function | to set if current course is in user's worksheet for parent component
  */
 function WorksheetToggleButton({
-  worksheetView,
   crn,
   season_code,
   modal,

@@ -5,19 +5,20 @@ import CustomSelect from './CustomSelect';
 /**
  * Popout select component for select filters in popout dropdowns
  */
-export const PopoutSelect: React.FC<SelectProps> = ({ ...props }) => {
+export const PopoutSelect: React.FC<SelectProps> = ({ isMulti, ...props }) => {
   return (
     <CustomSelect
       popout
       {...props}
+      isMulti={isMulti}
       autoFocus
       backspaceRemovesValue={false}
       controlShouldRenderValue
-      hideSelectedOptions
-      isClearable
+      hideSelectedOptions={isMulti}
+      isClearable={isMulti}
       menuIsOpen
       tabSelectsValue={false}
-      closeMenuOnSelect={false}
+      closeMenuOnSelect={!isMulti}
     />
   );
 };

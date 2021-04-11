@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { DateTime } from 'luxon';
 import posthog from 'posthog-js';
 import React, {
   createContext,
@@ -11,7 +12,12 @@ import React, {
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { useSessionStorageState } from './browserStorage';
 import { Listing, useCourseData, useFerry } from './components/FerryProvider';
-import { getNumFB, getOverallRatings, sortCourses } from './courseUtilities';
+import {
+  getNumFB,
+  getOverallRatings,
+  sortCourses,
+  toSeasonString,
+} from './courseUtilities';
 import {
   areas,
   AreasType,
@@ -20,6 +26,7 @@ import {
   sortbyOptions,
   SortKeys,
   searchSpeed,
+  SortByOption,
 } from './queries/Constants';
 import { useUser } from './user';
 
@@ -30,6 +37,8 @@ export type Option = {
   color?: string;
   numeric?: boolean;
 };
+
+export const isOption = (x: any): x is Option => 'label' in x && 'value' in x;
 
 export type SortOrderType = 'desc' | 'asc' | undefined;
 
@@ -58,7 +67,7 @@ type Store = {
   hideCancelled: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
-  select_sortby: Option;
+  select_sortby: SortByOption;
   sort_order: SortOrderType;
   ordering: OrderingType;
   seasonsOptions: OptType;
@@ -85,7 +94,7 @@ type Store = {
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
-  setSelectSortby: React.Dispatch<React.SetStateAction<Option>>;
+  setSelectSortby: React.Dispatch<React.SetStateAction<SortByOption>>;
   setSortOrder: React.Dispatch<React.SetStateAction<SortOrderType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
@@ -96,18 +105,38 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
+// Calculate upcoming season
+const dt = DateTime.now().setZone('America/New_York');
+let year = dt.year;
+let season: number;
+// Starting in October look at next year spring
+if (dt.month >= 10) {
+  season = 1;
+  year += 1;
+  // Starting in March look at this year fall
+} else if (dt.month >= 3) {
+  season = 3;
+} else {
+  season = 1;
+}
+const def_season_code = `${year}0${season}`;
+
 // Default filter and sorting values
+const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
 const defaultBounds = [1, 5];
-const defaultSeason: Option[] = [{ value: '202101', label: 'Spring 2021' }];
+const defaultSeason: Option[] = [
+  { value: def_season_code, label: toSeasonString(def_season_code)[0] },
+];
 const defaultHideCancelled = true;
 const defaultHideFirstYearSeminars = false;
 const defaultHideGraduateCourses = false;
-const defaultSortOption: Option = sortbyOptions[0];
+const defaultSortOption: SortByOption = sortbyOptions[0];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
 export const defaultFilters = {
+  defaultOption,
   defaultOptions,
   defaultBounds,
   defaultSeason,
@@ -192,7 +221,7 @@ export const SearchProvider: React.FC = ({ children }) => {
   /* Sorting */
 
   // Sort option state
-  const [select_sortby, setSelectSortby] = useSessionStorageState(
+  const [select_sortby, setSelectSortby] = useSessionStorageState<SortByOption>(
     'select_sortby',
     defaultSortOption
   );

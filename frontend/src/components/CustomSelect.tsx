@@ -102,11 +102,12 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
 };
 
 // Styles for popout select
-const popoutStyles = (width: number): StylesConfig => {
+const popoutStyles = (theme: DefaultTheme, width: number): StylesConfig => {
   return {
     control: (base, { isDisabled }) => ({
       ...base,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
+      backgroundColor: isDisabled ? theme.disabled : theme.select,
       borderColor: 'rgba(0, 0, 0, 0.1)',
       minWidth: width,
       margin: 8,
@@ -231,7 +232,7 @@ function CustomSelect<T extends OptionTypeBase>({
   if (popout) {
     styles = mergeStyles(
       indicatorStyles(globalTheme, isMulti),
-      popoutStyles(400)
+      popoutStyles(globalTheme, 400)
     );
   } else {
     styles = mergeStyles(

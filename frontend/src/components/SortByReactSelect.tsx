@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 import {
   FcAlphabeticalSortingAz,
@@ -7,12 +7,11 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
-import { sortbyOptions, SortKeys } from '../queries/Constants';
+import { sortbyOptions } from '../queries/Constants';
 import styles from './SortbyReactSelect.module.css';
 import search_styles from '../pages/Search.module.css';
 import CustomSelect from './CustomSelect';
-import { useSessionStorageState } from '../browserStorage';
-import { OrderingType, SortOrderType } from '../searchContext';
+import { useSearch } from '../searchContext';
 
 // Toggle sort order button
 const StyledSortBtn = styled.div`
@@ -23,40 +22,21 @@ const StyledSortBtn = styled.div`
 
 /**
  * Sorting select and toggle button
- * @prop setOrdering - function to set ordering of courses
  */
 
-const SortByReactSelect = ({
-  setOrdering,
-}: {
-  setOrdering: (ordering: OrderingType) => void;
-}) => {
-  // State that controls sortby select
-  const [select_sortby, setSelectSortby] = useSessionStorageState<
-    typeof sortbyOptions[number]
-  >('select_sortby', sortbyOptions[0]);
-  // State that determines sort order
-  const [sort_order, setSortOrder] = useSessionStorageState<SortOrderType>(
-    'sort_order',
-    'asc'
-  );
+const SortByReactSelect = () => {
+  const {
+    select_sortby,
+    sort_order,
+    setSelectSortby,
+    setSortOrder,
+  } = useSearch();
 
   // Handle changing the sort order
   const handleSortOrder = () => {
     if (sort_order === 'asc') setSortOrder('desc');
     else setSortOrder('asc');
   };
-
-  // Set ordering in parent element whenever sortby or order changes
-  useEffect(() => {
-    const sortParams = select_sortby.value;
-    const ordering: {
-      [key in SortKeys]?: SortOrderType;
-    } = {
-      [sortParams]: sort_order,
-    };
-    setOrdering(ordering);
-  }, [select_sortby, sort_order, setOrdering]);
 
   return (
     <>
