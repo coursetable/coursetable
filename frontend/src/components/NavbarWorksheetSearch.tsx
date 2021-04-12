@@ -139,6 +139,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
       <Form className="px-0" data-tutorial="">
         <StyledRow>
           <FilterGroup className="d-flex align-items-center">
+            {/* Worksheet View Toggle */}
             <StyledToggleButtonGroup
               name="worksheet-view-toggle"
               type="radio"
@@ -151,6 +152,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
                 handleWorksheetView({ view: val, mode: '' })
               }
               className="ml-2 mr-3"
+              data-tutorial="worksheet-2"
             >
               <StyledToggleButton value="calendar">Calendar</StyledToggleButton>
               <StyledToggleButton value="list">List</StyledToggleButton>

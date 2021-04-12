@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import Tour, { ReactourStep, ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
@@ -21,7 +21,7 @@ const NextButton = styled(Button)`
 const PrevButton = styled(Button)`
   background-color: transparent;
   border-color: transparent !important;
-  color: ${({ theme }) => theme.text[2]} !important;
+  color: ${({ theme }) => theme.text[0]} !important;
   box-shadow: none !important;
   font-size: 14px;
 
@@ -33,6 +33,10 @@ const PrevButton = styled(Button)`
   }
   &:focus {
     background-color: transparent;
+  }
+  &:disabled {
+    background-color: transparent;
+    color: ${({ theme }) => theme.text[2]} !important;
   }
 `;
 
@@ -123,6 +127,40 @@ const stepsContent: Step[] = [
   },
   {
     selector: 'catalog-6',
+    header: '💾 Save courses you’re interested in',
+    text: () => (
+      <>
+        Click on the <strong>+</strong> button next to a course to add it to
+        your Worksheet.
+      </>
+    ),
+    video: true,
+  },
+  {
+    selector: 'worksheet-1',
+    header: '👀 View your saved courses',
+    text: () => (
+      <>
+        Click on <strong>Worksheet</strong> to see all the courses you’ve saved.
+      </>
+    ),
+    video: true,
+    position: 'bottom',
+  },
+  {
+    selector: 'worksheet-2',
+    header: '📅 Change how you see your Worksheet',
+    text: () => (
+      <>
+        Click on <strong>Calendar</strong> to see your courses on a calendar and{' '}
+        <strong>List</strong> to see your courses in a list.
+      </>
+    ),
+    video: true,
+    position: 'bottom',
+  },
+  {
+    selector: 'feedback',
     header: '📢 We gotchu fam',
     text: () => (
       <>
@@ -152,7 +190,7 @@ const stepsContent: Step[] = [
  * Custom Tutorial component using react tour
  */
 
-export const Tutorial: React.FC<Props> = ({
+const Tutorial: React.FC<Props> = ({
   isTutorialOpen,
   setIsTutorialOpen,
   shownTutorial,
@@ -169,6 +207,8 @@ export const Tutorial: React.FC<Props> = ({
   }, [isTutorialOpen]);
 
   const globalTheme = useTheme();
+  const location = useLocation();
+  const history = useHistory();
 
   // Change react tour helper styling based on theme
   const helper_style: React.CSSProperties = useMemo(() => {
@@ -188,11 +228,6 @@ export const Tutorial: React.FC<Props> = ({
     }
     return styles;
   }, [globalTheme, shownTutorial]);
-
-  // Focus element callback
-  const focusElement = useCallback((node) => {
-    node.focus();
-  }, []);
 
   // Generate react tour steps
   const steps: ReactourStep[] = stepsContent.map(
@@ -224,10 +259,10 @@ export const Tutorial: React.FC<Props> = ({
         style: helper_style,
       };
 
-      // Add observe selector and action if observing
+      // Add observe selector if observing
       if (observe) {
         const observe_selector = `[data-tutorial="${selector}-observe"]`;
-        step = { ...step, observe: observe_selector, action: focusElement };
+        step = { ...step, observe: observe_selector };
       }
 
       if (position) {
@@ -249,23 +284,35 @@ export const Tutorial: React.FC<Props> = ({
           style={{
             marginRight: '-40px',
           }}
+          disabled={location.pathname === '/worksheet' && currentStep === 7}
         >
           Back
         </PrevButton>
       );
     }
     return <PrevButton>Back</PrevButton>;
-  }, [currentStep, shownTutorial]);
+  }, [currentStep, shownTutorial, location]);
 
   // Disable/enable body scroll callbacks
   const disableBody = useCallback((target) => disableBodyScroll(target), []);
   const enableBody = useCallback((target) => enableBodyScroll(target), []);
+
+  // Next button component
+  const nextButton = useMemo(() => {
+    if (location.pathname === '/catalog' && currentStep === 7) {
+      return <NextButton disabled>Next</NextButton>;
+    }
+    return <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>;
+  }, [currentStep, location]);
 
   return (
     <Tour
       steps={steps}
       isOpen={isTutorialOpen}
       onRequestClose={() => {
+        if (!shownTutorial) {
+          history.push('/catalog');
+        }
         setShownTutorial(true);
         setIsTutorialOpen(false);
       }}
@@ -273,15 +320,13 @@ export const Tutorial: React.FC<Props> = ({
       accentColor={globalTheme.primary_hover}
       rounded={6}
       showCloseButton={false}
-      disableDotsNavigation={!shownTutorial}
-      showNavigation={shownTutorial}
+      disableDotsNavigation
+      showNavigation={shownTutorial && currentStep !== 10}
       closeWithMask={shownTutorial}
       disableFocusLock
       showNavigationNumber={false}
       showNumber={false}
-      nextButton={
-        <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>
-      }
+      nextButton={nextButton}
       prevButton={prevButton}
       lastStepNextButton={<NextButton>Finish Tutorial</NextButton>}
       getCurrentStep={(curr) => setCurrentStep(curr)}
@@ -291,3 +336,5 @@ export const Tutorial: React.FC<Props> = ({
     />
   );
 };
+
+export default Tutorial;

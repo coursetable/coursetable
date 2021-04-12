@@ -298,7 +298,7 @@ function CourseTableNavbar({
                       </StyledNavLink>
                       {/* Worksheet Page */}
                       <StyledNavLink to="/worksheet" onClick={scrollToTop}>
-                        Worksheet
+                        <span data-tutorial="worksheet-1">Worksheet</span>
                       </StyledNavLink>
                     </>
                   )}
