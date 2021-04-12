@@ -5,7 +5,7 @@ import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import { Tutorial } from './components/Tutorial';
+import Tutorial from './components/Tutorial';
 
 import Landing from './pages/Landing';
 // import Home from './pages/Home';
