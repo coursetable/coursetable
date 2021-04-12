@@ -189,11 +189,6 @@ export const Tutorial: React.FC<Props> = ({
     return styles;
   }, [globalTheme, shownTutorial]);
 
-  // Focus element callback
-  const focusElement = useCallback((node) => {
-    node.focus();
-  }, []);
-
   // Generate react tour steps
   const steps: ReactourStep[] = stepsContent.map(
     ({ selector, header, text, observe, video, image, position }) => {
@@ -224,10 +219,10 @@ export const Tutorial: React.FC<Props> = ({
         style: helper_style,
       };
 
-      // Add observe selector and action if observing
+      // Add observe selector if observing
       if (observe) {
         const observe_selector = `[data-tutorial="${selector}-observe"]`;
-        step = { ...step, observe: observe_selector, action: focusElement };
+        step = { ...step, observe: observe_selector };
       }
 
       if (position) {
