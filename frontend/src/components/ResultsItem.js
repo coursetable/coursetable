@@ -365,7 +365,10 @@ const ResultsItem = ({
           </OverlayTrigger>
         </div>
         {/* Add/remove from worksheet button */}
-        <div className={Styles.worksheet_btn}>
+        <div
+          className={Styles.worksheet_btn}
+          data-tutorial={isFirst && 'catalog-6'}
+        >
           <WorksheetToggleButton
             crn={course.crn}
             season_code={course.season_code}

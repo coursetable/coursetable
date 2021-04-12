@@ -191,7 +191,7 @@ function App({ themeToggler, location }) {
           <NotFound />
         </MyRoute>
       </Switch>
-      {/* Render footer if not on catalog or worksheet pages */}
+      {/* Render footer if not on catalog */}
       <Route
         render={({ location }) => {
           return !['/catalog'].includes(location.pathname) && <Footer />;

@@ -123,6 +123,35 @@ const stepsContent: Step[] = [
   },
   {
     selector: 'catalog-6',
+    header: '💾 Save courses you’re interested in',
+    text: () => (
+      <>
+        Click on the <strong>+</strong> button next to a course to add it to
+        your Worksheet.
+      </>
+    ),
+  },
+  {
+    selector: 'worksheet-1',
+    header: '👀 View your saved courses',
+    text: () => (
+      <>
+        Click on <strong>Worksheet</strong> to see all the courses you’ve saved.
+      </>
+    ),
+  },
+  {
+    selector: 'worksheet-2',
+    header: '📅 Change how you see your Worksheet',
+    text: () => (
+      <>
+        Click on <strong>Calendar</strong> to see courses on a calendar and{' '}
+        <strong>List</strong> to see courses in a list.
+      </>
+    ),
+  },
+  {
+    selector: 'feedback',
     header: '📢 We gotchu fam',
     text: () => (
       <>
@@ -269,7 +298,7 @@ export const Tutorial: React.FC<Props> = ({
       rounded={6}
       showCloseButton={false}
       disableDotsNavigation={!shownTutorial}
-      showNavigation={shownTutorial}
+      showNavigation={shownTutorial && currentStep !== 10}
       closeWithMask={shownTutorial}
       disableFocusLock
       showNavigationNumber={false}
