@@ -277,15 +277,13 @@ const Tutorial: React.FC<Props> = ({
     if (currentStep === 0) {
       return <div style={{ display: 'none' }} />;
     }
-    if (location.pathname === '/worksheet' && currentStep === 7) {
-      return <PrevButton disabled>Back</PrevButton>;
-    }
     if (!shownTutorial) {
       return (
         <PrevButton
           style={{
             marginRight: '-40px',
           }}
+          disabled={location.pathname === '/worksheet' && currentStep === 7}
         >
           Back
         </PrevButton>
