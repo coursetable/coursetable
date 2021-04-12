@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import Tour, { ReactourStep, ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
@@ -208,6 +208,7 @@ const Tutorial: React.FC<Props> = ({
 
   const globalTheme = useTheme();
   const location = useLocation();
+  const history = useHistory();
 
   // Change react tour helper styling based on theme
   const helper_style: React.CSSProperties = useMemo(() => {
@@ -309,6 +310,9 @@ const Tutorial: React.FC<Props> = ({
       steps={steps}
       isOpen={isTutorialOpen}
       onRequestClose={() => {
+        if (!shownTutorial) {
+          history.push('/catalog');
+        }
         setShownTutorial(true);
         setIsTutorialOpen(false);
       }}
