@@ -152,8 +152,8 @@ const stepsContent: Step[] = [
     header: '📅 Change how you see your Worksheet',
     text: () => (
       <>
-        Click on <strong>Calendar</strong> to see courses on a calendar and{' '}
-        <strong>List</strong> to see courses in a list.
+        Click on <strong>Calendar</strong> to see your courses on a calendar and{' '}
+        <strong>List</strong> to see your courses in a list.
       </>
     ),
     video: true,
