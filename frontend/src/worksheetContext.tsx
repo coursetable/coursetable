@@ -237,7 +237,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     (season_code: Season) => {
       posthog.capture('worksheet-season', { new_season: season_code });
       setCurSeason(season_code);
-      console.log(season_code);
     },
     [setCurSeason]
   );
