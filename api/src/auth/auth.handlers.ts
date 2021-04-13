@@ -11,7 +11,7 @@ import winston from '../logging/winston';
 
 import axios from 'axios';
 
-import { YALIES_API_KEY } from '../config';
+import { YALIES_API_KEY, POSTHOG_CLIENT } from '../config';
 
 import { PrismaClient } from '@prisma/client';
 
@@ -109,6 +109,27 @@ export const passportConfig = async (
                 curriculum: user.curriculum,
               },
             });
+
+            // Update user in PostHog
+            POSTHOG_CLIENT.identify({
+              distinctId: profile.user,
+              properties: {
+                email: user.email,
+                name: user.name,
+                firstName: user.first_name,
+                middleName: user.middle_name,
+                lastName: user.last_name,
+                upi: user.upi,
+                school: user.school,
+                college: user.college,
+                major: user.major,
+                curriculum: user.curriculum,
+                year: user.year,
+                organization: user.organization,
+                leave: user.leave,
+              },
+            });
+
             return done(null, {
               netId: profile.user,
               evals: !!user.school_code,

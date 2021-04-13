@@ -6,6 +6,8 @@ import express from 'express';
 
 import winston from '../logging/winston';
 
+import { POSTHOG_CLIENT } from '../config';
+
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -29,6 +31,16 @@ export const toggleBookmark = async (
   const { netId } = req.user;
 
   const { action, season, ociId } = req.body;
+
+  POSTHOG_CLIENT.capture({
+    distinctId: netId,
+    event: 'toggle-bookmark',
+    properties: {
+      action,
+      season,
+      ociId,
+    },
+  });
 
   // Add a bookmarked course
   if (action === 'add') {
@@ -77,6 +89,11 @@ export const getUserWorksheet = async (
   }
 
   const { netId } = req.user;
+
+  POSTHOG_CLIENT.capture({
+    distinctId: netId,
+    event: 'fetch-worksheets',
+  });
 
   // Get user info
   winston.info(`Getting profile for user ${netId}`);

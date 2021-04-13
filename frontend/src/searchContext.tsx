@@ -538,9 +538,18 @@ export const SearchProvider: React.FC = ({ children }) => {
 
       // Handle search text. Each token must match something.
       for (const token of tokens) {
+        // first character of the course number
+        const numberFirstChar = listing.number.charAt(0);
         if (
           listing.subject.toLowerCase().startsWith(token) ||
           listing.number.toLowerCase().startsWith(token) ||
+          // for course numbers that start with a letter
+          // (checked by if .toLowerCase() is not equal to .toUpperCase(), see https://stackoverflow.com/a/32567789/5540324),
+          // exclude this letter when comparing with the search token
+          (numberFirstChar.toLowerCase() !== numberFirstChar.toUpperCase() &&
+            listing.number
+              .toLowerCase()
+              .startsWith(numberFirstChar.toLowerCase() + token)) ||
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
             professor.toLowerCase().includes(token)
