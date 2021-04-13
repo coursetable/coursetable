@@ -79,7 +79,7 @@ type Store = {
   reset_key: number;
   duration: number;
   speed: string;
-  course_modal: (string | boolean)[];
+  course_modal: (string | boolean | Listing)[];
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -99,7 +99,8 @@ type Store = {
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
-  setCourseModal: React.Dispatch<React.SetStateAction<(string | boolean)[]>>;
+  showModal: (listing: Listing) => void;
+  hideModal: () => void;
 };
 
 const SearchContext = createContext<Store | undefined>(undefined);
@@ -252,7 +253,9 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [speed, setSpeed] = useState('fast');
 
   // State that determines if a course modal needs to be displayed and which course to display
-  const [course_modal, setCourseModal] = useState([false, '']);
+  const [course_modal, setCourseModal] = useState<
+    (string | boolean | Listing)[]
+  >([false, '']);
 
   // Fetch user context data
   const { user } = useUser();
@@ -606,6 +609,25 @@ export const SearchProvider: React.FC = ({ children }) => {
     setCanReset,
   ]);
 
+  // Show the modal for the course that was clicked
+  const showModal = useCallback(
+    (listing: Listing) => {
+      posthog.capture('course-modal-open', {
+        season_code: listing.season_code,
+        course_code: listing.course_code,
+        crn: listing.crn,
+      });
+
+      setCourseModal([true, listing]);
+    },
+    [setCourseModal]
+  );
+
+  // Reset course_modal state to hide the modal
+  const hideModal = useCallback(() => {
+    setCourseModal([false, '']);
+  }, [setCourseModal]);
+
   // perform default search on load
   useEffect(() => {
     // only execute after seasons have been loaded
@@ -729,7 +751,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       setOrdering,
       handleResetFilters,
       setStartTime,
-      setCourseModal,
+      showModal,
+      hideModal,
     }),
     [
       canReset,
@@ -778,7 +801,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       setOrdering,
       handleResetFilters,
       setStartTime,
-      setCourseModal,
+      showModal,
+      hideModal,
     ]
   );
 

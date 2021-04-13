@@ -43,27 +43,6 @@ const Search: React.FC = () => {
   const isMobile = width < 768;
   const isTablet = !isMobile && width < 1200;
 
-  const { course_modal, setCourseModal } = useSearch();
-
-  // Show the modal for the course that was clicked
-  const showModal = useCallback(
-    (listing) => {
-      posthog.capture('course-modal-open', {
-        season_code: listing.season_code,
-        course_code: listing.course_code,
-        crn: listing.crn,
-      });
-
-      setCourseModal([true, listing]);
-    },
-    [setCourseModal]
-  );
-
-  // Reset course_modal state to hide the modal
-  const hideModal = () => {
-    setCourseModal([false, '']);
-  };
-
   // number of search results to return
   // const QUERY_SIZE = 30;
 
@@ -93,6 +72,7 @@ const Search: React.FC = () => {
     reset_key,
     isLoggedIn,
     num_fb,
+    course_modal,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -107,6 +87,8 @@ const Search: React.FC = () => {
     setHideFirstYearSeminars,
     setHideGraduateCourses,
     handleResetFilters,
+    showModal,
+    hideModal,
   } = useSearch();
 
   const handleSetView = useCallback(

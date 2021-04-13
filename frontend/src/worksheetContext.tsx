@@ -39,9 +39,6 @@ type Store = {
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
   toggleCourse: (crn: number) => void;
-  setCourseModal: React.Dispatch<
-    React.SetStateAction<(string | boolean | Listing)[]>
-  >;
   showModal: (listing: Listing) => void;
   hideModal: () => void;
 };
@@ -279,7 +276,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
-      setCourseModal,
       showModal,
       hideModal,
     }),
@@ -302,7 +298,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
-      setCourseModal,
       showModal,
       hideModal,
     ]
