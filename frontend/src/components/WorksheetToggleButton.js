@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
@@ -41,18 +41,18 @@ function WorksheetToggleButton({
     return isInWorksheet(season_code, crn.toString(), user.worksheet);
   }, [user.worksheet, season_code, crn]);
   // Is the current course in the worksheet?
-  const [inWorksheet, setInWorksheet] = useState(worksheet_check);
-  if (setCourseInWorksheet) setCourseInWorksheet(worksheet_check);
+  const [inWorksheet, setInWorksheet] = useState(false);
 
   // Fetch width of window
   const { width } = useWindowDimensions();
 
   // Reset inWorksheet state on every rerender
-  const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
-  if (inWorksheet !== update) {
-    setInWorksheet(update);
-    if (setCourseInWorksheet) setCourseInWorksheet(update);
-  }
+  useEffect(() => {
+    if (inWorksheet !== worksheet_check) {
+      setInWorksheet(worksheet_check);
+      if (setCourseInWorksheet) setCourseInWorksheet(worksheet_check);
+    }
+  }, [worksheet_check, inWorksheet, setCourseInWorksheet]);
 
   // Disabled worksheet add/remove button if not logged in
   if (user.worksheet == null)
