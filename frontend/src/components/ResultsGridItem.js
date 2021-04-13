@@ -22,6 +22,7 @@ import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
 import { getOverallRatings } from '../courseUtilities';
 import { useWorksheet } from '../worksheetContext';
+import { useSearch } from '../searchContext';
 
 // Grid Item wrapper
 const StyledGridItem = styled.div`
@@ -42,15 +43,20 @@ const StyledGridItem = styled.div`
  * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_cols - number | integer that holds how many columns in grid view
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
+ * @prop showModal - function | to display course modal
  */
 
-const ResultsGridItem = ({ course, isLoggedIn, num_cols, multiSeasons }) => {
+const ResultsGridItem = ({
+  course,
+  isLoggedIn,
+  num_cols,
+  multiSeasons,
+  showModal,
+}) => {
   // How many decimal points to use in ratings
   const RATINGS_PRECISION = 1;
   // Bootstrap column width depending on the number of columns
   const col_width = 12 / num_cols;
-
-  const { showModal } = useWorksheet();
 
   // Season code for this listing
   const { season_code } = course;

@@ -39,9 +39,6 @@ type Store = {
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
   toggleCourse: (crn: number) => void;
-  setCourseModal: React.Dispatch<
-    React.SetStateAction<(string | boolean | Listing)[]>
-  >;
   showModal: (listing: Listing) => void;
   hideModal: () => void;
 };
@@ -240,7 +237,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     (season_code: Season) => {
       posthog.capture('worksheet-season', { new_season: season_code });
       setCurSeason(season_code);
-      console.log(season_code);
     },
     [setCurSeason]
   );
@@ -279,7 +275,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
-      setCourseModal,
       showModal,
       hideModal,
     }),
@@ -302,7 +297,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
-      setCourseModal,
       showModal,
       hideModal,
     ]
