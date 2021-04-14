@@ -146,9 +146,6 @@ export const ratingColormap = chroma
 export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
-export const evalsColormap = chroma
-  .scale(['#f8696b', '#ffeb84', '#63b37b'])
-  .domain([-1, 1]);
 
 // Maybe the number type is causing the error? (but it works fine on navbar search hmmm)
 export const creditOptions = [
