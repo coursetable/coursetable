@@ -1,3 +1,4 @@
+// @ts-nocheck
 /* eslint-disable react/react-in-jsx-scope */
 import { useMemo } from 'react';
 import { DefaultTheme, useTheme } from 'styled-components';

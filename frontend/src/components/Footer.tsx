@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import styles from './Footer.module.css';

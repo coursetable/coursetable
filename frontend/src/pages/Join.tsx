@@ -54,6 +54,7 @@ function Join() {
         {/* Role Select */}
         <Form.Group>
           <CustomSelect
+            // @ts-ignore
             isMulti
             name="roles[]"
             options={[
