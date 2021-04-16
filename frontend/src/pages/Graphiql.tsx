@@ -5,6 +5,10 @@ import { Playground, store } from 'graphql-playground-react';
 
 const Graphiql = () => (
   <div>
+    <link
+      rel="stylesheet"
+      href="//cdn.jsdelivr.net/npm/graphql-playground-react/build/static/css/index.css"
+    />
     <Provider store={store}>
       <Playground
         endpoint="https://localhost:3001/ferry/v1/graphql"
