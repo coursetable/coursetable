@@ -12,6 +12,10 @@ const fetcher = createGraphiQLFetcher({
 
 const Graphiql = () => (
   <div style={{ height: '90vh' }}>
+    <div className="px-3 py-2 text-primary bg-light">
+      All of our course data are available for Yale students through GraphQL.
+      Note that we truncate each query to 1,000 items for performance reasons.
+    </div>
     <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
     <GraphiQL fetcher={fetcher} defaultSecondaryEditorOpen />
   </div>
