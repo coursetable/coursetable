@@ -113,6 +113,7 @@ https
   // Restrict GraphQL access for authenticated Yale students only
   app.use('/ferry', authWithEvals);
   app.use('/ferry', (req, res, next) => {
+    // Use read-only student role for all Hasura queries
     req.headers['X-Hasura-Role'] = 'student';
     return next();
   });
