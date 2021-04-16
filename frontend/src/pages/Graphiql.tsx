@@ -11,9 +11,9 @@ const fetcher = createGraphiQLFetcher({
 });
 
 const Graphiql = () => (
-  <div style={{ height: '100vh' }}>
+  <div style={{ height: '90vh' }}>
     <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
-    <GraphiQL fetcher={fetcher} editorTheme="dracula" />
+    <GraphiQL fetcher={fetcher} defaultSecondaryEditorOpen />
   </div>
 );
 export default Graphiql;
