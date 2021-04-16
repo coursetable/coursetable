@@ -19,6 +19,7 @@ import Thankyou from './pages/Thankyou';
 import WorksheetLogin from './pages/WorksheetLogin';
 import CannyContainer from './pages/Canny';
 import Graphiql from './pages/Graphiql';
+import GraphiqlLogin from './pages/GraphiqlLogin';
 
 import { useUser } from './user';
 
@@ -113,8 +114,7 @@ function App({ themeToggler }) {
 
         {/* Graphiql explorer */}
         <MyRoute exact path="/graphiql">
-          {/* {isLoggedIn ? <Redirect to="/login" /> : <Graphiql />} */}
-          <Graphiql />
+          {isLoggedIn ? <Graphiql /> : <GraphiqlLogin />}
         </MyRoute>
 
         {/* Thank You */}
