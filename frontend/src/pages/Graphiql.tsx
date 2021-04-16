@@ -3,6 +3,8 @@ import { API_ENDPOINT } from '../config';
 import GraphiQL from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
+import './Graphiql.css';
+
 const fetcher = createGraphiQLFetcher({
   url: `${API_ENDPOINT}/ferry/v1/graphql`,
   fetch: (url, args) => {
@@ -16,7 +18,6 @@ const Graphiql = () => (
       All of our course data are available for Yale students through GraphQL.
       Note that we truncate each query to 1,000 items for performance reasons.
     </div>
-    <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
     <GraphiQL fetcher={fetcher} defaultSecondaryEditorOpen />
   </div>
 );
