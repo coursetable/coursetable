@@ -112,6 +112,10 @@ https
 
   // Restrict GraphQL access for authenticated Yale students only
   app.use('/ferry', authWithEvals);
+  app.use('/ferry', (req, res, next) => {
+    req.headers['X-Hasura-Role'] = 'student';
+    return next();
+  });
   app.use(
     '/ferry',
     createProxyMiddleware({

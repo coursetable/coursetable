@@ -70,6 +70,17 @@ function Footer() {
             </ul>
           </div>
           <div className="col-6 col-md">
+            <h5>Developers</h5>
+            <ul className="list-unstyled text-small">
+              {/* GraphQL explorer */}
+              <li>
+                <NavLink to="/graphiql" onClick={scrollToTop}>
+                  <TextComponent type={1}>GraphQL playground</TextComponent>
+                </NavLink>
+              </li>
+            </ul>
+          </div>
+          <div className="col-6 col-md">
             <h5>About</h5>
             <ul className="list-unstyled text-small">
               {/* Team */}
