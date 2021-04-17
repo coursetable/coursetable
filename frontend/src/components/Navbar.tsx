@@ -172,7 +172,11 @@ function CourseTableNavbar({
 
   // Decides whether to show search or not
   useEffect(() => {
-    if (!isMobile && !isTablet && isLoggedIn && page) {
+    if (
+      !isMobile &&
+      isLoggedIn &&
+      ((page === 'catalog' && !isTablet) || page === 'worksheet')
+    ) {
       setShowSearch(true);
     } else {
       setShowSearch(false);

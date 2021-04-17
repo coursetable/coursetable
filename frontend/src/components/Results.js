@@ -156,9 +156,9 @@ const Results = ({
     TEMP_COL_SPACING.PROF_WIDTH =
       getColWidth(EXTRA / 7, undefined, undefined) +
       TEMP_COL_SPACING.RATE_PROF_WIDTH;
-    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 96.5, 126);
-    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, 138, 150);
-    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, 70, undefined);
+    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 60, 126);
+    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, 60, 170);
+    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, 30, undefined);
     TEMP_COL_SPACING.TITLE_WIDTH =
       EXTRA -
       TEMP_COL_SPACING.PROF_WIDTH -
@@ -460,148 +460,150 @@ const Results = ({
 
   return (
     <div className={Styles.results_container_max_width}>
-      {!isMobile && !isTablet && isLoggedIn && (
-        <StyledSpacer
-          style={{ top: navbarHeight }}
-          isCatalog={page === 'catalog'}
-        >
-          <StyledContainer
-            layer={0}
-            id="results_container"
-            className="px-0 mx-0"
+      {!isMobile &&
+        ((page === 'catalog' && !isTablet) || page === 'worksheet') &&
+        isLoggedIn && (
+          <StyledSpacer
+            style={{ top: navbarHeight }}
+            isCatalog={page === 'catalog'}
           >
-            {/* Column Headers */}
-            <StyledRow
-              ref={ref}
-              className={`mx-auto pl-4 pr-2 ${isLgDesktop ? 'py-2' : 'py-1'} ${
-                Styles.results_header_row
-              } justify-content-between`}
-              data-tutorial="catalog-5"
+            <StyledContainer
+              layer={0}
+              id="results_container"
+              className="px-0 mx-0"
             >
-              {/* View Toggle */}
-              <div
-                className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+              {/* Column Headers */}
+              <StyledRow
+                ref={ref}
+                className={`mx-auto pl-4 pr-2 ${
+                  isLgDesktop ? 'py-2' : 'py-1'
+                } ${Styles.results_header_row} justify-content-between`}
+                data-tutorial="catalog-5"
               >
-                <ListGridToggle isList={isList} setView={setView} />
-              </div>
-              {isList ? (
-                <>
-                  {multiSeasons && (
-                    <ResultsHeader style={szn_style}>Season</ResultsHeader>
-                  )}
-                  {/* Course Code */}
-                  <ResultsHeader style={code_style}>
-                    Code
-                    <ResultsColumnSort
-                      selectOption={sortbyOptions[0]}
-                      key={reset_key}
-                    />
-                  </ResultsHeader>
-                  {/* Course Name */}
-                  <ResultsHeader style={title_style}>
-                    <span className={Styles.one_line}>Title</span>
-                    <ResultsColumnSort
-                      selectOption={sortbyOptions[2]}
-                      key={reset_key}
-                    />
-                  </ResultsHeader>
-                  <div className="d-flex">
-                    {/* Overall Rating */}
-                    <ResultsHeader style={rate_overall_style}>
+                {/* View Toggle */}
+                <div
+                  className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+                >
+                  <ListGridToggle isList={isList} setView={setView} />
+                </div>
+                {isList ? (
+                  <>
+                    {multiSeasons && (
+                      <ResultsHeader style={szn_style}>Season</ResultsHeader>
+                    )}
+                    {/* Course Code */}
+                    <ResultsHeader style={code_style}>
+                      Code
+                      <ResultsColumnSort
+                        selectOption={sortbyOptions[0]}
+                        key={reset_key}
+                      />
+                    </ResultsHeader>
+                    {/* Course Name */}
+                    <ResultsHeader style={title_style}>
+                      <span className={Styles.one_line}>Title</span>
+                      <ResultsColumnSort
+                        selectOption={sortbyOptions[2]}
+                        key={reset_key}
+                      />
+                    </ResultsHeader>
+                    <div className="d-flex">
+                      {/* Overall Rating */}
+                      <ResultsHeader style={rate_overall_style}>
+                        <OverlayTrigger
+                          placement="bottom"
+                          delay={{ show: 100, hide: 100 }}
+                          overlay={class_tooltip}
+                        >
+                          <span className={Styles.one_line}>Overall</span>
+                        </OverlayTrigger>
+                        <ResultsColumnSort
+                          selectOption={sortbyOptions[4]}
+                          key={reset_key}
+                        />
+                      </ResultsHeader>
+                      {/* Workload Rating */}
+                      <ResultsHeader style={rate_workload_style}>
+                        <OverlayTrigger
+                          placement="bottom"
+                          delay={{ show: 100, hide: 100 }}
+                          overlay={workload_tooltip}
+                        >
+                          <span className={Styles.one_line}>Work</span>
+                        </OverlayTrigger>
+                        <ResultsColumnSort
+                          selectOption={sortbyOptions[6]}
+                          key={reset_key}
+                        />
+                      </ResultsHeader>
+                      {/* Professor Rating & Course Professors */}
+                      <ResultsHeader style={prof_style}>
+                        <span className={Styles.one_line}>Professors</span>
+                        <ResultsColumnSort
+                          selectOption={sortbyOptions[5]}
+                          key={reset_key}
+                        />
+                      </ResultsHeader>
+                    </div>
+                    {/* Previous Enrollment Number */}
+                    <ResultsHeader style={enroll_style}>
                       <OverlayTrigger
                         placement="bottom"
                         delay={{ show: 100, hide: 100 }}
-                        overlay={class_tooltip}
+                        overlay={enrollment_tooltip}
                       >
-                        <span className={Styles.one_line}>Overall</span>
+                        <span className={Styles.one_line}>#</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
-                        selectOption={sortbyOptions[4]}
+                        selectOption={sortbyOptions[8]}
                         key={reset_key}
                       />
                     </ResultsHeader>
-                    {/* Workload Rating */}
-                    <ResultsHeader style={rate_workload_style}>
+                    {/* Skills/Areas */}
+                    <ResultsHeader style={sa_style}>
+                      <span className={Styles.one_line}>Skills/Areas</span>
+                    </ResultsHeader>
+                    {/* Course Meeting Days & Times */}
+                    <ResultsHeader style={meet_style}>
+                      <span className={Styles.one_line}>Meets</span>
+                      <ResultsColumnSort
+                        selectOption={sortbyOptions[9]}
+                        key={reset_key}
+                      />
+                    </ResultsHeader>
+                    {/* Location */}
+                    <ResultsHeader style={loc_style}>
+                      <span className={Styles.one_line}>Location</span>
+                    </ResultsHeader>
+                    {/* FB */}
+                    <ResultsHeader style={fb_style}>
                       <OverlayTrigger
                         placement="bottom"
                         delay={{ show: 100, hide: 100 }}
-                        overlay={workload_tooltip}
+                        overlay={fb_tooltip}
                       >
-                        <span className={Styles.one_line}>Work</span>
+                        <span className={Styles.one_line}>#FB</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
-                        selectOption={sortbyOptions[6]}
+                        selectOption={sortbyOptions[3]}
                         key={reset_key}
                       />
                     </ResultsHeader>
-                    {/* Professor Rating & Course Professors */}
-                    <ResultsHeader style={prof_style}>
-                      <span className={Styles.one_line}>Professors</span>
-                      <ResultsColumnSort
-                        selectOption={sortbyOptions[5]}
-                        key={reset_key}
-                      />
+                  </>
+                ) : (
+                  // Showing how many search results for grid view
+                  <Col md={10}>
+                    <ResultsHeader>
+                      {`Showing ${data.length} course${
+                        data.length === 1 ? '' : 's'
+                      }...`}
                     </ResultsHeader>
-                  </div>
-                  {/* Previous Enrollment Number */}
-                  <ResultsHeader style={enroll_style}>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={enrollment_tooltip}
-                    >
-                      <span className={Styles.one_line}>#</span>
-                    </OverlayTrigger>
-                    <ResultsColumnSort
-                      selectOption={sortbyOptions[8]}
-                      key={reset_key}
-                    />
-                  </ResultsHeader>
-                  {/* Skills/Areas */}
-                  <ResultsHeader style={sa_style}>
-                    <span className={Styles.one_line}>Skills/Areas</span>
-                  </ResultsHeader>
-                  {/* Course Meeting Days & Times */}
-                  <ResultsHeader style={meet_style}>
-                    <span className={Styles.one_line}>Meets</span>
-                    <ResultsColumnSort
-                      selectOption={sortbyOptions[9]}
-                      key={reset_key}
-                    />
-                  </ResultsHeader>
-                  {/* Location */}
-                  <ResultsHeader style={loc_style}>
-                    <span className={Styles.one_line}>Location</span>
-                  </ResultsHeader>
-                  {/* FB */}
-                  <ResultsHeader style={fb_style}>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={fb_tooltip}
-                    >
-                      <span className={Styles.one_line}>#FB</span>
-                    </OverlayTrigger>
-                    <ResultsColumnSort
-                      selectOption={sortbyOptions[3]}
-                      key={reset_key}
-                    />
-                  </ResultsHeader>
-                </>
-              ) : (
-                // Showing how many search results for grid view
-                <Col md={10}>
-                  <ResultsHeader>
-                    {`Showing ${data.length} course${
-                      data.length === 1 ? '' : 's'
-                    }...`}
-                  </ResultsHeader>
-                </Col>
-              )}
-            </StyledRow>
-          </StyledContainer>
-        </StyledSpacer>
-      )}
+                  </Col>
+                )}
+              </StyledRow>
+            </StyledContainer>
+          </StyledSpacer>
+        )}
 
       <SurfaceComponent
         layer={0}
