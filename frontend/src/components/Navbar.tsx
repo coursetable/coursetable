@@ -125,6 +125,7 @@ function CourseTableNavbar({
 
   // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  console.log(isTablet);
 
   // Show navbar search state
   const [show_search, setShowSearch] = useState(false);
@@ -147,7 +148,7 @@ function CourseTableNavbar({
     children: React.ReactNode;
   }> = useCallback(
     ({ children }) => {
-      if (!isMobile && !isTablet && show_search) {
+      if (!isMobile && show_search) {
         return (
           <div className="ml-auto d-flex flex-column align-items-end justify-content-between h-100">
             {children}
@@ -156,7 +157,7 @@ function CourseTableNavbar({
       }
       return <>{children}</>;
     },
-    [isMobile, isTablet, show_search]
+    [isMobile, show_search]
   );
 
   // Handles page
@@ -172,16 +173,12 @@ function CourseTableNavbar({
 
   // Decides whether to show search or not
   useEffect(() => {
-    if (
-      !isMobile &&
-      isLoggedIn &&
-      ((page === 'catalog' && !isTablet) || page === 'worksheet')
-    ) {
+    if (!isMobile && isLoggedIn && page) {
       setShowSearch(true);
     } else {
       setShowSearch(false);
     }
-  }, [isMobile, isTablet, isLoggedIn, page]);
+  }, [isMobile, isLoggedIn, page]);
 
   // Calculate time since last updated
   useEffect(() => {
@@ -235,17 +232,6 @@ function CourseTableNavbar({
               </NavLink>
             </NavLogo>
 
-            {/* Last updated ago text for tablet */}
-            {isTablet && page === 'catalog' && (
-              <SmallTextComponent
-                type={2}
-                className="d-flex align-items-center"
-              >
-                <MdUpdate className="mr-1" />
-                Updated {lastUpdated} ago
-              </SmallTextComponent>
-            )}
-
             {/* Mobile nav toggle */}
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
@@ -261,14 +247,8 @@ function CourseTableNavbar({
               <Navbar.Collapse
                 id="basic-navbar-nav"
                 // Make navbar display: flex when not mobile. If mobile, normal formatting
-                className={
-                  !isMobile && !isTablet ? 'd-flex' : 'justify-content-end'
-                }
-                style={
-                  !isMobile && !isTablet && show_search
-                    ? { flexGrow: 0 }
-                    : undefined
-                }
+                className={!isMobile ? 'd-flex' : 'justify-content-end'}
+                style={!isMobile && show_search ? { flexGrow: 0 } : undefined}
               >
                 {/* Close navbar on click in mobile view */}
                 <Nav

@@ -40,8 +40,8 @@ const StyledRow = styled(Row)`
 `;
 
 // Wrapper for search bar
-const SearchWrapper = styled.div`
-  width: 40vw;
+const SearchWrapper = styled.div<{ isTablet: boolean }>`
+  width: ${({ isTablet }) => (isTablet ? 35 : 40)}vw;
   display: flex;
   align-items: center;
 `;
@@ -55,8 +55,8 @@ const NavbarStyledSearchBar = styled(StyledInput)`
 `;
 
 // Range filter
-const StyledRange = styled(Range)`
-  width: 100px;
+const StyledRange = styled(Range)<{ isTablet: boolean }>`
+  width: ${({ isTablet }) => (isTablet ? 74 : 100)}px;
   cursor: pointer;
 `;
 
@@ -145,7 +145,7 @@ const CloseIcon = styled(IoClose)`
  */
 export const NavbarCatalogSearch: React.FC = () => {
   // Fetch current device
-  const { isMobile, isLgDesktop } = useWindowDimensions();
+  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
 
   // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
@@ -269,15 +269,25 @@ export const NavbarCatalogSearch: React.FC = () => {
   // Consolidate all advanced filters' selected options
   const advanced_options = useMemo(
     () => ({
-      selects: { select_schools, select_credits },
+      selects: {
+        select_schools,
+        select_credits,
+        select_subjects: isTablet && select_subjects,
+        select_seasons: isTablet && select_seasons,
+        select_skillsareas: isTablet && select_skillsareas,
+      },
       toggles: { hideCancelled, hideFirstYearSeminars, hideGraduateCourses },
     }),
     [
       select_schools,
       select_credits,
+      select_subjects,
+      select_seasons,
+      select_skillsareas,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
+      isTablet,
     ]
   );
 
@@ -308,7 +318,7 @@ export const NavbarCatalogSearch: React.FC = () => {
       >
         {/* Top row */}
         <StyledRow>
-          <SearchWrapper>
+          <SearchWrapper isTablet={isTablet}>
             {/* Search Bar */}
             <InputGroup className="h-100">
               <NavbarStyledSearchBar
@@ -342,58 +352,63 @@ export const NavbarCatalogSearch: React.FC = () => {
             {coursesLoading
               ? 'Searching ...'
               : `Showing ${searchData.length} results${
-                  speed.length > 20 ? '\n' : ' '
-                }(${speed})`}
+                  !isTablet ? `${speed.length > 20 ? '\n' : ' '}(${speed})` : ''
+                }`}
           </SmallTextComponent>
         </StyledRow>
         {/* Bottom row */}
         <StyledRow className="align-items-center">
           <FilterGroup className="d-flex align-items-center">
-            {/* Yale Subjects Filter Dropdown */}
-            <Popout
-              buttonText="Subject"
-              type="subject"
-              onReset={() => {
-                setSelectSubjects(defaultFilters.defaultOptions);
-                setStartTime(Date.now());
-              }}
-              select_options={select_subjects}
-              data_tutorial={2}
-            >
-              <PopoutSelect
-                isMulti
-                value={select_subjects}
-                options={subjectOptions}
-                placeholder="All Subjects"
-                onChange={(selectedOption: ValueType<Option>) => {
-                  setSelectSubjects((selectedOption as Option[]) || []);
-                  setStartTime(Date.now());
-                }}
-              />
-            </Popout>
-            {/* Areas/Skills Filter Dropdown */}
-            <Popout
-              buttonText="Areas/Skills"
-              type="skills/areas"
-              onReset={() => {
-                setSelectSkillsAreas(defaultFilters.defaultOptions);
-                setStartTime(Date.now());
-              }}
-              select_options={select_skillsareas}
-              className="mr-0"
-            >
-              <PopoutSelect
-                useColors
-                isMulti
-                value={select_skillsareas}
-                options={skillsAreasOptions}
-                placeholder="All Areas/Skills"
-                onChange={(selectedOption: ValueType<Option>) => {
-                  setSelectSkillsAreas((selectedOption as Option[]) || []);
-                  setStartTime(Date.now());
-                }}
-              />
-            </Popout>
+            {!isTablet && (
+              <>
+                {/* Yale Subjects Filter Dropdown */}
+                <Popout
+                  buttonText="Subject"
+                  type="subject"
+                  onReset={() => {
+                    setSelectSubjects(defaultFilters.defaultOptions);
+                    setStartTime(Date.now());
+                  }}
+                  select_options={select_subjects}
+                  data_tutorial={2}
+                >
+                  <PopoutSelect
+                    isMulti
+                    value={select_subjects}
+                    options={subjectOptions}
+                    placeholder="All Subjects"
+                    onChange={(selectedOption: ValueType<Option>) => {
+                      setSelectSubjects((selectedOption as Option[]) || []);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Popout>
+                {/* Areas/Skills Filter Dropdown */}
+                <Popout
+                  buttonText="Areas/Skills"
+                  type="skills/areas"
+                  onReset={() => {
+                    setSelectSkillsAreas(defaultFilters.defaultOptions);
+                    setStartTime(Date.now());
+                  }}
+                  select_options={select_skillsareas}
+                  className="mr-0"
+                >
+                  <PopoutSelect
+                    useColors
+                    isMulti
+                    value={select_skillsareas}
+                    options={skillsAreasOptions}
+                    placeholder="All Areas/Skills"
+                    onChange={(selectedOption: ValueType<Option>) => {
+                      setSelectSkillsAreas((selectedOption as Option[]) || []);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Popout>
+              </>
+            )}
+
             <div
               className="w-auto flex-grow-0 d-flex align-items-center"
               data-tutorial="catalog-3"
@@ -414,6 +429,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                   min={1}
                   max={5}
                   step={0.1}
+                  isTablet={isTablet}
                   key={reset_key}
                   handleStyle={range_handle_style()}
                   railStyle={range_rail_style()}
@@ -444,6 +460,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                   min={1}
                   max={5}
                   step={0.1}
+                  isTablet={isTablet}
                   key={reset_key}
                   handleStyle={range_handle_style()}
                   railStyle={range_rail_style()}
@@ -460,32 +477,39 @@ export const NavbarCatalogSearch: React.FC = () => {
               </Col>
             </div>
             {/* Season Filter Dropdown */}
-            <Popout
-              buttonText="Season"
-              type="season"
-              onReset={() => {
-                setSelectSeasons(defaultFilters.defaultOptions);
-                setStartTime(Date.now());
-              }}
-              select_options={select_seasons}
-            >
-              <PopoutSelect
-                isMulti
-                value={select_seasons}
-                options={seasonsOptions}
-                placeholder="Last 5 Years"
-                onChange={(selectedOption: ValueType<Option>) => {
-                  setSelectSeasons((selectedOption as Option[]) || []);
+            {!isTablet && (
+              <Popout
+                buttonText="Season"
+                type="season"
+                onReset={() => {
+                  setSelectSeasons(defaultFilters.defaultOptions);
                   setStartTime(Date.now());
                 }}
-              />
-            </Popout>
+                select_options={select_seasons}
+              >
+                <PopoutSelect
+                  isMulti
+                  value={select_seasons}
+                  options={seasonsOptions}
+                  placeholder="Last 5 Years"
+                  onChange={(selectedOption: ValueType<Option>) => {
+                    setSelectSeasons((selectedOption as Option[]) || []);
+                    setStartTime(Date.now());
+                  }}
+                />
+              </Popout>
+            )}
             {/* Advanced Filter Dropdown */}
             <Popout
               buttonText="Advanced"
               arrowIcon={false}
               type="advanced"
               onReset={() => {
+                if (isTablet) {
+                  setSelectSubjects(defaultFilters.defaultOptions);
+                  setSelectSeasons(defaultFilters.defaultOptions);
+                  setSelectSkillsAreas(defaultFilters.defaultOptions);
+                }
                 setSelectSchools(defaultFilters.defaultOptions);
                 setSelectCredits(defaultFilters.defaultOptions);
                 setHideCancelled(false);
@@ -497,6 +521,64 @@ export const NavbarCatalogSearch: React.FC = () => {
               data_tutorial={4}
             >
               <AdvancedWrapper>
+                {isTablet && (
+                  <>
+                    <Row className="align-items-center justify-content-between mx-3 mt-3">
+                      {/* Yale Subjects Filter Dropdown */}
+                      <AdvancedLabel>Subject:</AdvancedLabel>
+                      <AdvancedSelect
+                        closeMenuOnSelect
+                        isMulti
+                        value={select_subjects}
+                        options={subjectOptions}
+                        placeholder="All Subjects"
+                        // prevent overlap with tooltips
+                        menuPortalTarget={document.querySelector('#portal')}
+                        onChange={(selectedOption: ValueType<Option>) => {
+                          setSelectSubjects((selectedOption as Option[]) || []);
+                          setStartTime(Date.now());
+                        }}
+                      />
+                    </Row>
+                    <Row className="align-items-center justify-content-between mx-3 mt-3">
+                      {/* Areas/Skills Filter Dropdown */}
+                      <AdvancedLabel>Areas/Skills:</AdvancedLabel>
+                      <AdvancedSelect
+                        useColors
+                        closeMenuOnSelect
+                        isMulti
+                        value={select_skillsareas}
+                        options={skillsAreasOptions}
+                        placeholder="All Areas/Skills"
+                        // prevent overlap with tooltips
+                        menuPortalTarget={document.querySelector('#portal')}
+                        onChange={(selectedOption: ValueType<Option>) => {
+                          setSelectSkillsAreas(
+                            (selectedOption as Option[]) || []
+                          );
+                          setStartTime(Date.now());
+                        }}
+                      />
+                    </Row>
+                    <Row className="align-items-center justify-content-between mx-3 mt-3">
+                      {/* Season Filter Dropdown */}
+                      <AdvancedLabel>Season:</AdvancedLabel>
+                      <AdvancedSelect
+                        closeMenuOnSelect
+                        isMulti
+                        value={select_seasons}
+                        options={seasonsOptions}
+                        placeholder="Last 5 Years"
+                        // prevent overlap with tooltips
+                        menuPortalTarget={document.querySelector('#portal')}
+                        onChange={(selectedOption: ValueType<Option>) => {
+                          setSelectSeasons((selectedOption as Option[]) || []);
+                          setStartTime(Date.now());
+                        }}
+                      />
+                    </Row>
+                  </>
+                )}
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}
                   <AdvancedLabel>School:</AdvancedLabel>
