@@ -103,12 +103,8 @@ const Results = ({
   sticky_top = 100,
   page = 'catalog',
 }) => {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-
-  // Check if mobile or tablet
-  const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1200;
+  // Fetch current device
+  const { width, isMobile, isTablet, isLgDesktop } = useWindowDimensions();
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
@@ -134,10 +130,10 @@ const Results = ({
   const COL_SPACING = useMemo(() => {
     const TEMP_COL_SPACING = {
       SZN_WIDTH: 60,
-      CODE_WIDTH: width > 1320 ? 110 : 90,
-      RATE_OVERALL_WIDTH: width > 1320 ? 92 : 82,
-      RATE_WORKLOAD_WIDTH: width > 1320 ? 92 : 82,
-      RATE_PROF_WIDTH: width > 1320 ? 40 : 36,
+      CODE_WIDTH: isLgDesktop ? 110 : 90,
+      RATE_OVERALL_WIDTH: isLgDesktop ? 92 : 82,
+      RATE_WORKLOAD_WIDTH: isLgDesktop ? 92 : 82,
+      RATE_PROF_WIDTH: isLgDesktop ? 40 : 36,
       ENROLL_WIDTH: 40,
       FB_WIDTH: 60,
       PADDING: 43,
@@ -169,7 +165,7 @@ const Results = ({
       10;
 
     return TEMP_COL_SPACING;
-  }, [ROW_WIDTH, multiSeasons, width]);
+  }, [ROW_WIDTH, multiSeasons, isLgDesktop]);
 
   // Holds HTML for the search results
   let resultsListing;
@@ -336,7 +332,7 @@ const Results = ({
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={data.length}
-                  rowHeight={width > 1320 ? 32 : 28}
+                  rowHeight={isLgDesktop ? 32 : 28}
                   rowRenderer={renderListRow}
                 />
               )}
@@ -451,7 +447,7 @@ const Results = ({
             {/* Column Headers */}
             <StyledRow
               ref={ref}
-              className={`mx-auto pl-4 pr-2 ${width > 1320 ? 'py-2' : 'py-1'} ${
+              className={`mx-auto pl-4 pr-2 ${isLgDesktop ? 'py-2' : 'py-1'} ${
                 Styles.results_header_row
               } justify-content-between`}
               data-tutorial="catalog-5"

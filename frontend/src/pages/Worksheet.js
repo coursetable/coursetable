@@ -25,9 +25,8 @@ import { useWorksheet } from '../worksheetContext';
  */
 
 function Worksheet() {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-  const is_mobile = width < 768;
+  // Fetch current device
+  const { isMobile } = useWindowDimensions();
 
   const {
     cur_worksheet,
@@ -43,7 +42,7 @@ function Worksheet() {
   // If user somehow isn't logged in and worksheet is null
   if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
-  if (cur_worksheet.length === 0 && !is_mobile && false) {
+  if (cur_worksheet.length === 0 && !isMobile && false) {
     // TODO: remove this part and add an empty state later on.
     // We don't want to prevent a user from seeing their friend's
     // worksheets if they haven't added anything to their own worksheet.
@@ -99,7 +98,7 @@ function Worksheet() {
 
   return (
     <div className={styles.container}>
-      {!is_mobile ? (
+      {!isMobile ? (
         /* Desktop View */
         <div className={styles.desktop_container}>
           <Row

@@ -4,6 +4,7 @@ import React, {
   useState,
   useEffect,
   useMemo,
+  useCallback,
 } from 'react';
 
 import debounce from 'lodash/debounce';
@@ -11,15 +12,35 @@ import debounce from 'lodash/debounce';
 type Store = {
   width: number;
   height: number;
+  isMobile: boolean;
+  isTablet: boolean;
+  isSmDesktop: boolean;
+  isLgDesktop: boolean;
 };
+
+const mobileBreakpoint = 768;
+const tabletBreakpoint = 1200;
+const smDesktopBreakpoint = 1320;
 
 const WindowDimensionsCtx = createContext<Store | undefined>(undefined);
 
 // Return dimensions of the window
 const WindowDimensionsProvider: React.FC = ({ children }) => {
+  const range = useCallback((num: number, min: number, max: number) => {
+    return num >= min && num < max;
+  }, []);
+
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
+    isMobile: range(window.innerWidth, 0, mobileBreakpoint),
+    isTablet: range(window.innerWidth, mobileBreakpoint, tabletBreakpoint),
+    isSmDesktop: range(
+      window.innerWidth,
+      tabletBreakpoint,
+      smDesktopBreakpoint
+    ),
+    isLgDesktop: range(window.innerWidth, smDesktopBreakpoint, 100000),
   });
 
   // Fires whenever the window size changes.
@@ -31,9 +52,21 @@ const WindowDimensionsProvider: React.FC = ({ children }) => {
         setDimensions({
           width: window.innerWidth,
           height: window.innerHeight,
+          isMobile: range(window.innerWidth, 0, mobileBreakpoint),
+          isTablet: range(
+            window.innerWidth,
+            mobileBreakpoint,
+            tabletBreakpoint
+          ),
+          isSmDesktop: range(
+            window.innerWidth,
+            tabletBreakpoint,
+            smDesktopBreakpoint
+          ),
+          isLgDesktop: range(window.innerWidth, smDesktopBreakpoint, 100000),
         });
       }, 200),
-    [setDimensions]
+    [setDimensions, range]
   );
 
   // Update values on window resize

@@ -144,9 +144,8 @@ const CloseIcon = styled(IoClose)`
  * Catalog search form for the desktop in the navbar
  */
 export const NavbarCatalogSearch: React.FC = () => {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-  const is_mobile = width < 768;
+  // Fetch current device
+  const { isMobile, isLgDesktop } = useWindowDimensions();
 
   // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
@@ -223,26 +222,26 @@ export const NavbarCatalogSearch: React.FC = () => {
 
   // Responsive styles for overall and workload range filters
   const range_handle_style = useCallback(() => {
-    if (width > 1320) {
+    if (isLgDesktop) {
       return undefined;
     }
     const styles: React.CSSProperties = { height: '12px', width: '12px' };
     return [styles, styles];
-  }, [width]);
+  }, [isLgDesktop]);
   const range_rail_style = useCallback(() => {
-    if (width > 1320) {
+    if (isLgDesktop) {
       return {};
     }
     const styles: React.CSSProperties = { marginTop: '-1px' };
     return styles;
-  }, [width]);
+  }, [isLgDesktop]);
 
   // Scroll down to catalog when in mobile view.
   const scroll_to_results = useCallback(
     (event: React.FormEvent<HTMLFormElement>) => {
       if (event) event.preventDefault();
 
-      if (is_mobile) {
+      if (isMobile) {
         scroller.scrollTo('catalog', {
           smooth: true,
           duration: 500,
@@ -250,7 +249,7 @@ export const NavbarCatalogSearch: React.FC = () => {
         });
       }
     },
-    [is_mobile]
+    [isMobile]
   );
 
   // ctrl/cmd-f search hotkey

@@ -123,11 +123,8 @@ function CourseTableNavbar({
   // Last updated state
   const [lastUpdated, setLastUpdated] = useState('0 hrs');
 
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1200;
-  // const is_relative = width < 1230;
+  // Fetch current device
+  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
 
   // Show navbar search state
   const [show_search, setShowSearch] = useState(false);
@@ -138,7 +135,7 @@ function CourseTableNavbar({
   const navbar_style = () => {
     if (show_search && page === 'catalog') {
       return {
-        height: width > 1320 ? '100px' : '88px',
+        height: isLgDesktop ? '100px' : '88px',
         paddingBottom: '0px',
       };
     }

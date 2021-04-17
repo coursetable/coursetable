@@ -38,10 +38,8 @@ import { ValueType } from 'react-select/src/types';
  * Renders catalog page
  */
 const Search: React.FC = () => {
-  // Fetch window dimensions
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1200;
+  // Fetch current device
+  const { isMobile, isTablet } = useWindowDimensions();
 
   // number of search results to return
   // const QUERY_SIZE = 30;

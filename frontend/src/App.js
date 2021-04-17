@@ -30,12 +30,8 @@ import { useWindowDimensions } from './components/WindowDimensionsProvider';
  * @prop location - object | provides the location info from react-router-dom
  */
 function App({ themeToggler, location }) {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-
-  // Check if mobile or tablet
-  const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1200;
+  // Fetch current device
+  const { isMobile, isTablet } = useWindowDimensions();
 
   // Page initialized as loading
   const [loading, setLoading] = useState(true);

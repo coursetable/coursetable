@@ -61,10 +61,8 @@ const extra_info_map = {
  */
 
 const CourseModal = ({ listing, hideModal, show }) => {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-  // Switch to mobile view?
-  const isMobile = width < 768;
+  // Fetch current device
+  const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
   const [view, setView] = useState(['overview', null]);
   // Current evaluation filter (both, course, professor)
