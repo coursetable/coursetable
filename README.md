@@ -16,8 +16,6 @@ The various functions of the website are compartmentalized as follows:
 
 - `/api`: An Express server for backend logic.
 - `/frontend`: The current face of the site, built with React.
-- `/web`: PHP scripts migrated from the old site.
-- `/proxy`: Proxy configuration for relaying connections between services (e.g. authentication headers, CAS cookies, etc.)
 - `/docker`: Configuration files for running everything together in Docker.
 - `/legacy`: Static HTML files from the old site.
 - `/scripts` and `/sysadmin`: Administration scripts and bootstrapping tools.
