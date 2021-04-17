@@ -76,8 +76,17 @@ const WindowDimensionsProvider: React.FC = ({ children }) => {
       window.removeEventListener('resize', handleResize);
     };
   }, [handleResize]);
+
+  // Store object returned in context provider
+  const store = useMemo(
+    () => ({
+      ...dimensions,
+    }),
+    [dimensions]
+  );
+
   return (
-    <WindowDimensionsCtx.Provider value={dimensions}>
+    <WindowDimensionsCtx.Provider value={store}>
       {children}
     </WindowDimensionsCtx.Provider>
   );

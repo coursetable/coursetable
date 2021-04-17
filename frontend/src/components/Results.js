@@ -48,7 +48,6 @@ const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
   position: -webkit-sticky; /* Safari */
   position: sticky;
-  ${breakpoints('top', 'px', [{ 1320: 88 }])};
   z-index: 2;
 `;
 
@@ -87,7 +86,6 @@ const getColWidth = (calculated, min = 0, max = 1000000) => {
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_fb = object | holds a list of each fb friend taking a specific course
- * @prop sticky_top = number | top margin for sticky column header
  * @prop page = string | page search results are on
  */
 
@@ -100,11 +98,16 @@ const Results = ({
   showModal,
   isLoggedIn,
   num_fb,
-  sticky_top = 100,
   page = 'catalog',
 }) => {
   // Fetch current device
-  const { width, isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  const {
+    width,
+    isMobile,
+    isTablet,
+    isSmDesktop,
+    isLgDesktop,
+  } = useWindowDimensions();
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
@@ -435,10 +438,33 @@ const Results = ({
   const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
+  const navbarHeight = useMemo(() => {
+    if (page === 'catalog') {
+      if (isSmDesktop || isTablet) {
+        return 88;
+      }
+      if (isLgDesktop) {
+        return 100;
+      }
+    }
+    if (page === 'worksheet') {
+      if (isSmDesktop || isTablet) {
+        return 58;
+      }
+      if (isLgDesktop) {
+        return 61;
+      }
+    }
+    return 0;
+  }, [page, isTablet, isSmDesktop, isLgDesktop]);
+
   return (
     <div className={Styles.results_container_max_width}>
       {!isMobile && !isTablet && isLoggedIn && (
-        <StyledSpacer style={{ top: sticky_top }}>
+        <StyledSpacer
+          style={{ top: navbarHeight }}
+          isCatalog={page === 'catalog'}
+        >
           <StyledContainer
             layer={0}
             id="results_container"
