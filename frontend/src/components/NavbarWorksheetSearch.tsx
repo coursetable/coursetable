@@ -166,6 +166,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
             >
               <PopoutSelect
                 isMulti={false}
+                isClearable={false}
                 value={selected_season}
                 options={season_options}
                 placeholder="Last 5 Years"
