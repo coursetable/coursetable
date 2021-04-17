@@ -40,6 +40,8 @@
 
 .skills_areas {
   display: inline-flex;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .course_section {

@@ -156,7 +156,7 @@ const Results = ({
     TEMP_COL_SPACING.PROF_WIDTH =
       getColWidth(EXTRA / 7, undefined, undefined) +
       TEMP_COL_SPACING.RATE_PROF_WIDTH;
-    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 60, 126);
+    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 40, 126);
     TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, 60, 170);
     TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, 30, undefined);
     TEMP_COL_SPACING.TITLE_WIDTH =
