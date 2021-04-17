@@ -48,7 +48,6 @@ const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
   position: -webkit-sticky; /* Safari */
   position: sticky;
-  ${breakpoints('top', 'px', [{ 1320: 88 }])};
   z-index: 2;
 `;
 
@@ -87,7 +86,6 @@ const getColWidth = (calculated, min = 0, max = 1000000) => {
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_fb = object | holds a list of each fb friend taking a specific course
- * @prop sticky_top = number | top margin for sticky column header
  * @prop page = string | page search results are on
  */
 
@@ -100,15 +98,16 @@ const Results = ({
   showModal,
   isLoggedIn,
   num_fb,
-  sticky_top = 100,
   page = 'catalog',
 }) => {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-
-  // Check if mobile or tablet
-  const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1200;
+  // Fetch current device
+  const {
+    width,
+    isMobile,
+    isTablet,
+    isSmDesktop,
+    isLgDesktop,
+  } = useWindowDimensions();
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);
@@ -134,10 +133,10 @@ const Results = ({
   const COL_SPACING = useMemo(() => {
     const TEMP_COL_SPACING = {
       SZN_WIDTH: 60,
-      CODE_WIDTH: width > 1320 ? 110 : 90,
-      RATE_OVERALL_WIDTH: width > 1320 ? 92 : 82,
-      RATE_WORKLOAD_WIDTH: width > 1320 ? 92 : 82,
-      RATE_PROF_WIDTH: width > 1320 ? 40 : 36,
+      CODE_WIDTH: isLgDesktop ? 110 : 90,
+      RATE_OVERALL_WIDTH: isLgDesktop ? 92 : 82,
+      RATE_WORKLOAD_WIDTH: isLgDesktop ? 92 : 82,
+      RATE_PROF_WIDTH: isLgDesktop ? 40 : 36,
       ENROLL_WIDTH: 40,
       FB_WIDTH: 60,
       PADDING: 43,
@@ -157,9 +156,9 @@ const Results = ({
     TEMP_COL_SPACING.PROF_WIDTH =
       getColWidth(EXTRA / 7, undefined, undefined) +
       TEMP_COL_SPACING.RATE_PROF_WIDTH;
-    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 96.5, 126);
-    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, 138, 150);
-    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, 70, undefined);
+    TEMP_COL_SPACING.SA_WIDTH = getColWidth(EXTRA / 8, 40, 126);
+    TEMP_COL_SPACING.MEET_WIDTH = getColWidth(EXTRA / 6, 60, 170);
+    TEMP_COL_SPACING.LOC_WIDTH = getColWidth(EXTRA / 13, 30, undefined);
     TEMP_COL_SPACING.TITLE_WIDTH =
       EXTRA -
       TEMP_COL_SPACING.PROF_WIDTH -
@@ -169,7 +168,7 @@ const Results = ({
       10;
 
     return TEMP_COL_SPACING;
-  }, [ROW_WIDTH, multiSeasons, width]);
+  }, [ROW_WIDTH, multiSeasons, isLgDesktop]);
 
   // Holds HTML for the search results
   let resultsListing;
@@ -336,7 +335,7 @@ const Results = ({
                   onScroll={onChildScroll}
                   scrollTop={scrollTop}
                   rowCount={data.length}
-                  rowHeight={width > 1320 ? 32 : 28}
+                  rowHeight={isLgDesktop ? 32 : 28}
                   rowRenderer={renderListRow}
                 />
               )}
@@ -439,10 +438,33 @@ const Results = ({
   const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
+  const navbarHeight = useMemo(() => {
+    if (page === 'catalog') {
+      if (isSmDesktop || isTablet) {
+        return 88;
+      }
+      if (isLgDesktop) {
+        return 100;
+      }
+    }
+    if (page === 'worksheet') {
+      if (isSmDesktop || isTablet) {
+        return 58;
+      }
+      if (isLgDesktop) {
+        return 61;
+      }
+    }
+    return 0;
+  }, [page, isTablet, isSmDesktop, isLgDesktop]);
+
   return (
     <div className={Styles.results_container_max_width}>
-      {!isMobile && !isTablet && isLoggedIn && (
-        <StyledSpacer style={{ top: sticky_top }}>
+      {!isMobile && isLoggedIn && (
+        <StyledSpacer
+          style={{ top: navbarHeight }}
+          isCatalog={page === 'catalog'}
+        >
           <StyledContainer
             layer={0}
             id="results_container"
@@ -451,7 +473,7 @@ const Results = ({
             {/* Column Headers */}
             <StyledRow
               ref={ref}
-              className={`mx-auto pl-4 pr-2 ${width > 1320 ? 'py-2' : 'py-1'} ${
+              className={`mx-auto pl-4 pr-2 ${isLgDesktop ? 'py-2' : 'py-1'} ${
                 Styles.results_header_row
               } justify-content-between`}
               data-tutorial="catalog-5"

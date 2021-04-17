@@ -44,7 +44,7 @@ function WorksheetToggleButton({
   const [inWorksheet, setInWorksheet] = useState(false);
 
   // Fetch width of window
-  const { width } = useWindowDimensions();
+  const { isLgDesktop } = useWindowDimensions();
 
   // Reset inWorksheet state on every rerender
   useEffect(() => {
@@ -140,9 +140,9 @@ function WorksheetToggleButton({
             <BsBookmark size={25} className="scale_icon" />
           )
         ) : inWorksheet ? (
-          <FaMinus size={width > 1320 ? 16 : 14} />
+          <FaMinus size={isLgDesktop ? 16 : 14} />
         ) : (
-          <FaPlus size={width > 1320 ? 16 : 14} />
+          <FaPlus size={isLgDesktop ? 16 : 14} />
         )}
       </StyledButton>
     </OverlayTrigger>

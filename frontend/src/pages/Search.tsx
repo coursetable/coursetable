@@ -38,10 +38,8 @@ import { ValueType } from 'react-select/src/types';
  * Renders catalog page
  */
 const Search: React.FC = () => {
-  // Fetch window dimensions
-  const { width } = useWindowDimensions();
-  const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1200;
+  // Fetch current device
+  const { isMobile, isTablet } = useWindowDimensions();
 
   // number of search results to return
   // const QUERY_SIZE = 30;
@@ -142,12 +140,12 @@ const Search: React.FC = () => {
     );
   }, []);
 
-  // Switch to grid view if mobile or tablet
+  // Switch to grid view if mobile
   useEffect(() => {
-    if ((isMobile || isTablet) && isList === true) {
+    if (isMobile && isList === true) {
       setView(false);
     }
-  }, [isMobile, isTablet, isList, setView]);
+  }, [isMobile, isList, setView]);
 
   // TODO: add state if courseLoadError is present
   return (
@@ -157,8 +155,8 @@ const Search: React.FC = () => {
           !isMobile && !isTablet ? 'd-flex flex-row-reverse flex-nowrap' : ''
         }`}
       >
-        {/* Search Form for mobile and tablet only */}
-        {(isMobile || isTablet) && (
+        {/* Search Form for mobile only */}
+        {isMobile && (
           <Col className={`p-3 ${Styles.search_col_mobile}`}>
             <SurfaceComponent
               layer={0}
@@ -395,7 +393,7 @@ const Search: React.FC = () => {
         <Col
           md={12}
           className={`m-0 ${
-            isMobile || isTablet
+            isMobile
               ? `p-3 ${Styles.results_col_mobile}`
               : `px-0 pb-3 ${Styles.results_col}`
           }`}

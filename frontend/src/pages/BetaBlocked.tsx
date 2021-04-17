@@ -8,11 +8,8 @@ import { useWindowDimensions } from '../components/WindowDimensionsProvider';
  * Renders the beta blocked page if user is not on the beta whitelist
  */
 const BetaBlocked: React.VFC = () => {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-
-  // Check if mobile or tablet
-  const isMobile = width < 768;
+  // Fetch current device
+  const { isMobile } = useWindowDimensions();
 
   return (
     <div className="text-center py-5 px-3">

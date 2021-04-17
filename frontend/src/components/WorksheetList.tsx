@@ -37,7 +37,6 @@ const WorksheetList = () => {
               showModal={showModal}
               isLoggedIn={isLoggedIn}
               num_fb={num_fb}
-              sticky_top={45}
               page="worksheet"
             />
           </div>

@@ -49,12 +49,8 @@ const MeDropdown: React.VFC<Props> = ({
   isLoggedIn,
   setIsTutorialOpen,
 }) => {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-
-  // Check if mobile or tablet
-  const isMobile = width < 768;
-  const isTablet = !isMobile && width < 1200;
+  // Fetch current device
+  const { isMobile, isTablet } = useWindowDimensions();
 
   // Get user context data
   const { user } = useUser();
