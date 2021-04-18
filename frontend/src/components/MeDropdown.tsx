@@ -1,7 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import { Row, Col, Collapse } from 'react-bootstrap';
-import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import {
+  FaFacebookSquare,
+  FaSignOutAlt,
+  FaSignInAlt,
+  FaStar,
+} from 'react-icons/fa';
 import { FcCalendar } from 'react-icons/fc';
 import FBLoginButton from './FBLoginButton';
 
@@ -17,6 +22,21 @@ import {
 } from './StyledComponents';
 
 import { API_ENDPOINT } from '../config';
+import styled from 'styled-components';
+
+const BetaRow = styled(Row)`
+  background: ${({ theme }) => theme.primary};
+  border-top-left-radius: 10px;
+  border-top-right-radius: 10px;
+
+  &:hover {
+    background: ${({ theme }) => theme.primary_hover};
+  }
+`;
+
+const WhiteText = styled.div`
+  color: white;
+`;
 
 // Season to export classes from
 const CUR_SEASON = '202101';
@@ -72,6 +92,7 @@ const MeDropdown: React.VFC<Props> = ({
   const handleDropdownClick = () => {
     setIsComponentVisible(true);
   };
+
   return (
     <SurfaceComponent
       layer={1}
@@ -81,10 +102,24 @@ const MeDropdown: React.VFC<Props> = ({
       <Collapse in={profile_expanded}>
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
-          <Col className="px-3 pt-3">
+          <Col className="py-0 px-0">
+            {/* Beta link button */}
+            {isLoggedIn && (
+              <BetaRow className="px-3 pt-3 pb-3 m-auto">
+                <FaStar className="mr-2 my-auto" size={20} color="white" />
+                <WhiteText
+                  onClick={() =>
+                    window.open('https://beta.coursetable.com', '_blank')
+                  }
+                  className={styles.collapse_text}
+                >
+                  Try CourseTable Beta&trade;!
+                </WhiteText>
+              </BetaRow>
+            )}
             {/* Export Worksheet button */}
             {isLoggedIn && (
-              <Row className=" pb-3 m-auto">
+              <Row className="px-3 py-2 m-auto">
                 <FcCalendar className="mr-2 my-auto" size={20} />
                 <TextComponent
                   type={1}
@@ -97,7 +132,7 @@ const MeDropdown: React.VFC<Props> = ({
             )}
             {/* Connect FB button */}
             {isLoggedIn && (
-              <Row className=" pb-3 m-auto">
+              <Row className="px-3 py-2 m-auto">
                 <FaFacebookSquare
                   className="mr-2 my-auto"
                   size={20}
@@ -108,7 +143,7 @@ const MeDropdown: React.VFC<Props> = ({
             )}
             {/* Sign In/Out button */}
             {isLoggedIn ? (
-              <Row className=" pb-3 m-auto">
+              <Row className="px-3 pt-2 pb-3 m-auto">
                 <FaSignOutAlt
                   className="mr-2 my-auto"
                   size={20}
@@ -124,7 +159,7 @@ const MeDropdown: React.VFC<Props> = ({
                 </TextComponent>
               </Row>
             ) : (
-              <Row className=" pb-3 m-auto">
+              <Row className="px-3 pt-2 pb-3 m-auto">
                 <FaSignInAlt
                   className="mr-2 my-auto"
                   size={20}
