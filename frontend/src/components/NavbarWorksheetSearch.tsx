@@ -12,6 +12,9 @@ import _ from 'lodash';
 import { useWorksheet } from '../worksheetContext';
 import { toSeasonString } from '../courseUtilities';
 import { useUser } from '../user';
+import FBLoginButton from './FBLoginButton';
+import { FaFacebookSquare } from 'react-icons/fa';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -24,8 +27,10 @@ const StyledRow = styled(Row)`
 const FilterGroup = styled.div``;
 
 // Toggle button group
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
-  width: 180px;
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{
+  isTablet: boolean;
+}>`
+  width: ${({ isTablet }) => (isTablet ? 140 : 180)}px;
 `;
 
 // Toggle button
@@ -131,7 +136,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
     };
   }, [user.fbLogin, fb_person, friendInfo]);
 
-  // const globalTheme = useTheme();
+  const { isTablet } = useWindowDimensions();
 
   return (
     <>
@@ -153,6 +158,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
               }
               className="ml-2 mr-3"
               data-tutorial="worksheet-2"
+              isTablet={isTablet}
             >
               <StyledToggleButton value="calendar">Calendar</StyledToggleButton>
               <StyledToggleButton value="list">List</StyledToggleButton>
@@ -166,6 +172,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
             >
               <PopoutSelect
                 isMulti={false}
+                isClearable={false}
                 value={selected_season}
                 options={season_options}
                 placeholder="Last 5 Years"
@@ -177,29 +184,47 @@ export const NavbarWorksheetSearch: React.FC = () => {
               />
             </Popout>
             {/* Facebook Dropdown */}
-            <Popout
-              buttonText="Friends' courses"
-              type="facebook"
-              select_options={selected_fb}
-              clearIcon={false}
-              isDisabled={!user.fbLogin}
-              disabledButtonText="Connect FB"
-            >
-              <PopoutSelect
-                isMulti={false}
-                value={selected_fb}
-                options={friend_options}
-                placeholder="Friends' courses"
-                onChange={(selectedOption: ValueType<Option>) => {
-                  // Cleared FB friend
-                  if (!selectedOption) handleFBPersonChange('me');
-                  // Selected FB friend
-                  else if (isOption(selectedOption))
-                    handleFBPersonChange(selectedOption.value);
-                }}
-                isDisabled={!user.fbLogin}
-              />
-            </Popout>
+            {user.fbLogin ? (
+              <>
+                <Popout
+                  buttonText="Friends' courses"
+                  type="facebook"
+                  select_options={selected_fb}
+                  clearIcon={false}
+                  isDisabled={!user.fbLogin}
+                  disabledButtonText="Connect FB"
+                >
+                  <PopoutSelect
+                    isMulti={false}
+                    value={selected_fb}
+                    options={friend_options}
+                    placeholder="Friends' courses"
+                    onChange={(selectedOption: ValueType<Option>) => {
+                      // Cleared FB friend
+                      if (!selectedOption) handleFBPersonChange('me');
+                      // Selected FB friend
+                      else if (isOption(selectedOption))
+                        handleFBPersonChange(selectedOption.value);
+                    }}
+                    isDisabled={!user.fbLogin}
+                  />
+                </Popout>
+                {!isTablet && (
+                  <Row className="ml-2">
+                    <FBLoginButton />
+                  </Row>
+                )}
+              </>
+            ) : (
+              <Row className="ml-2">
+                <FaFacebookSquare
+                  className="mr-2 my-auto"
+                  size={20}
+                  color="#007bff"
+                />
+                <FBLoginButton />
+              </Row>
+            )}
           </FilterGroup>
         </StyledRow>
       </Form>
