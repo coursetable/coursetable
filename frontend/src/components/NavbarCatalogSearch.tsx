@@ -166,6 +166,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
+    hideDiscussionSections,
     reset_key,
     searchData,
     seasonsOptions,
@@ -185,6 +186,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
+    setHideDiscussionSections,
     handleResetFilters,
     setStartTime,
   } = useSearch();
@@ -276,7 +278,12 @@ export const NavbarCatalogSearch: React.FC = () => {
         select_seasons: isTablet && select_seasons,
         select_skillsareas: isTablet && select_skillsareas,
       },
-      toggles: { hideCancelled, hideFirstYearSeminars, hideGraduateCourses },
+      toggles: {
+        hideCancelled,
+        hideFirstYearSeminars,
+        hideGraduateCourses,
+        hideDiscussionSections,
+      },
     }),
     [
       select_schools,
@@ -287,6 +294,7 @@ export const NavbarCatalogSearch: React.FC = () => {
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
+      hideDiscussionSections,
       isTablet,
     ]
   );
@@ -665,6 +673,21 @@ export const NavbarCatalogSearch: React.FC = () => {
                       }}
                     >
                       Hide graduate courses
+                    </ToggleLabel>
+                  </Toggle>
+                  {/* Hide Discussion Sections Toggle */}
+                  <Toggle type="switch">
+                    <ToggleInput
+                      checked={hideDiscussionSections}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <ToggleLabel
+                      onClick={() => {
+                        setHideDiscussionSections(!hideDiscussionSections);
+                        setStartTime(Date.now());
+                      }}
+                    >
+                      Hide discussion sections
                     </ToggleLabel>
                   </Toggle>
                 </AdvancedToggleRow>

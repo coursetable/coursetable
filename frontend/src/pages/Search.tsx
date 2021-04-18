@@ -39,16 +39,13 @@ import { ValueType } from 'react-select/src/types';
  */
 const Search: React.FC = () => {
   // Fetch current device
-  const { isMobile, isTablet } = useWindowDimensions();
+  const { isMobile } = useWindowDimensions();
 
   // number of search results to return
   // const QUERY_SIZE = 30;
 
   // way to display results
-  const [isList, setView] = useSessionStorageState(
-    'isList',
-    !isMobile && !isTablet
-  );
+  const [isList, setView] = useSessionStorageState('isList', !isMobile);
 
   // Get search context data
   const {
@@ -63,6 +60,7 @@ const Search: React.FC = () => {
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
+    hideDiscussionSections,
     seasonsOptions,
     coursesLoading,
     searchData,
@@ -84,6 +82,7 @@ const Search: React.FC = () => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
+    setHideDiscussionSections,
     handleResetFilters,
     showModal,
     hideModal,
@@ -102,7 +101,7 @@ const Search: React.FC = () => {
       if (event) event.preventDefault();
 
       // Scroll down to catalog when in mobile view.
-      if (isMobile || isTablet) {
+      if (isMobile) {
         scroller.scrollTo('catalog', {
           smooth: true,
           duration: 500,
@@ -110,7 +109,7 @@ const Search: React.FC = () => {
         });
       }
     },
-    [isMobile, isTablet]
+    [isMobile]
   );
 
   // Scroll to the bottom when courses finish loading on initial load.
@@ -152,7 +151,7 @@ const Search: React.FC = () => {
     <div className={Styles.search_base}>
       <Row
         className={`p-0 m-0 ${
-          !isMobile && !isTablet ? 'd-flex flex-row-reverse flex-nowrap' : ''
+          !isMobile ? 'd-flex flex-row-reverse flex-nowrap' : ''
         }`}
       >
         {/* Search Form for mobile only */}
@@ -376,7 +375,23 @@ const Search: React.FC = () => {
                       Hide graduate courses
                     </Form.Check.Label>
                   </Form.Check>
+
+                  {/* Hide Discussion Sections Toggle */}
+                  <Form.Check type="switch" className={Styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideDiscussionSections}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideDiscussionSections(!hideDiscussionSections);
+                      }}
+                    >
+                      Hide discussion sections
+                    </Form.Check.Label>
+                  </Form.Check>
                 </Row>
+
                 <div className={Styles.useless_btn}>
                   {/* The form requires a button with type submit in order to process
                     events when someone hits enter to submit. We want this functionality

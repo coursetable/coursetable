@@ -67,6 +67,7 @@ type Store = {
   hideCancelled: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
+  hideDiscussionSections: boolean;
   select_sortby: SortByOption;
   sort_order: SortOrderType;
   ordering: OrderingType;
@@ -94,6 +95,7 @@ type Store = {
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
+  setHideDiscussionSections: React.Dispatch<React.SetStateAction<boolean>>;
   setSelectSortby: React.Dispatch<React.SetStateAction<SortByOption>>;
   setSortOrder: React.Dispatch<React.SetStateAction<SortOrderType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
@@ -129,9 +131,8 @@ const defaultBounds = [1, 5];
 const defaultSeason: Option[] = [
   { value: def_season_code, label: toSeasonString(def_season_code)[0] },
 ];
-const defaultHideCancelled = true;
-const defaultHideFirstYearSeminars = false;
-const defaultHideGraduateCourses = false;
+const defaultTrue = true;
+const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
@@ -141,9 +142,8 @@ export const defaultFilters = {
   defaultOptions,
   defaultBounds,
   defaultSeason,
-  defaultHideCancelled,
-  defaultHideFirstYearSeminars,
-  defaultHideGraduateCourses,
+  defaultTrue,
+  defaultFalse,
   defaultSortOption,
   defaultSortOrder,
   defaultOrdering,
@@ -203,21 +203,23 @@ export const SearchProvider: React.FC = ({ children }) => {
 
   const [hideCancelled, setHideCancelled] = useSessionStorageState(
     'hideCancelled',
-    defaultHideCancelled
+    defaultTrue
   );
 
   const [
     hideFirstYearSeminars,
     setHideFirstYearSeminars,
-  ] = useSessionStorageState(
-    'hideFirstYearSeminars',
-    defaultHideFirstYearSeminars
-  );
+  ] = useSessionStorageState('hideFirstYearSeminars', defaultFalse);
 
   const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
     'hideGraduateCourses',
-    defaultHideGraduateCourses
+    defaultFalse
   );
+
+  const [
+    hideDiscussionSections,
+    setHideDiscussionSections,
+  ] = useSessionStorageState('hideDiscussionSections', defaultTrue);
 
   /* Sorting */
 
@@ -406,6 +408,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       min_workload: include_all_workloads ? null : workloadBounds[0],
       max_workload: include_all_workloads ? null : workloadBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
+      discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
       grad_level: hideGraduateCourses ? false : null,
     };
@@ -421,6 +424,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
+    hideDiscussionSections,
     overallBounds,
     select_credits,
     select_schools,
@@ -475,6 +479,13 @@ export const SearchProvider: React.FC = ({ children }) => {
       if (
         searchConfig.extra_info !== null &&
         searchConfig.extra_info !== listing.extra_info
+      ) {
+        return false;
+      }
+
+      if (
+        searchConfig.discussion_section !== null &&
+        listing.title === 'Discussion Section'
       ) {
         return false;
       }
@@ -581,6 +592,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setHideCancelled(true);
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
+    setHideDiscussionSections(true);
     setOverallBounds(defaultBounds);
     setOverallValueLabels(defaultBounds);
     setWorkloadBounds(defaultBounds);
@@ -612,6 +624,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
+    setHideDiscussionSections,
     setSelectSortby,
     setSortOrder,
     setOrdering,
@@ -667,9 +680,10 @@ export const SearchProvider: React.FC = ({ children }) => {
       !_.isEqual(select_seasons, defaultSeason) ||
       !_.isEqual(select_schools, defaultOptions) ||
       !_.isEqual(select_credits, defaultOptions) ||
-      !_.isEqual(hideCancelled, defaultHideCancelled) ||
-      !_.isEqual(hideFirstYearSeminars, defaultHideFirstYearSeminars) ||
-      !_.isEqual(hideGraduateCourses, defaultHideGraduateCourses) ||
+      !_.isEqual(hideCancelled, defaultTrue) ||
+      !_.isEqual(hideFirstYearSeminars, defaultFalse) ||
+      !_.isEqual(hideGraduateCourses, defaultFalse) ||
+      !_.isEqual(hideDiscussionSections, defaultTrue) ||
       !_.isEqual(ordering, defaultOrdering)
     ) {
       setCanReset(true);
@@ -701,6 +715,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
+    hideDiscussionSections,
     ordering,
     coursesLoading,
     searchData,
@@ -726,6 +741,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
+      hideDiscussionSections,
       select_sortby,
       sort_order,
       ordering,
@@ -755,6 +771,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setHideCancelled,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
+      setHideDiscussionSections,
       setSelectSortby,
       setSortOrder,
       setOrdering,
@@ -778,6 +795,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
+      hideDiscussionSections,
       select_sortby,
       sort_order,
       ordering,
@@ -805,6 +823,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setHideCancelled,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
+      setHideDiscussionSections,
       setSelectSortby,
       setSortOrder,
       setOrdering,
