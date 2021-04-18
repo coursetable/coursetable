@@ -27,8 +27,10 @@ const StyledRow = styled(Row)`
 const FilterGroup = styled.div``;
 
 // Toggle button group
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)`
-  width: 180px;
+const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{
+  isTablet: boolean;
+}>`
+  width: ${({ isTablet }) => (isTablet ? 140 : 180)}px;
 `;
 
 // Toggle button
@@ -156,6 +158,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
               }
               className="ml-2 mr-3"
               data-tutorial="worksheet-2"
+              isTablet={isTablet}
             >
               <StyledToggleButton value="calendar">Calendar</StyledToggleButton>
               <StyledToggleButton value="list">List</StyledToggleButton>
