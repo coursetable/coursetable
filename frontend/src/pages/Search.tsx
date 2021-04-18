@@ -63,6 +63,7 @@ const Search: React.FC = () => {
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
+    hideDiscussionSections,
     seasonsOptions,
     coursesLoading,
     searchData,
@@ -84,6 +85,7 @@ const Search: React.FC = () => {
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
+    setHideDiscussionSections,
     handleResetFilters,
     showModal,
     hideModal,
@@ -376,7 +378,23 @@ const Search: React.FC = () => {
                       Hide graduate courses
                     </Form.Check.Label>
                   </Form.Check>
+
+                  {/* Hide Discussion Sections Toggle */}
+                  <Form.Check type="switch" className={Styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideDiscussionSections}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideDiscussionSections(!hideDiscussionSections);
+                      }}
+                    >
+                      Hide discussion sections
+                    </Form.Check.Label>
+                  </Form.Check>
                 </Row>
+
                 <div className={Styles.useless_btn}>
                   {/* The form requires a button with type submit in order to process
                     events when someone hits enter to submit. We want this functionality
