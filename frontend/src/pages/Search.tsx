@@ -39,16 +39,13 @@ import { ValueType } from 'react-select/src/types';
  */
 const Search: React.FC = () => {
   // Fetch current device
-  const { isMobile, isTablet } = useWindowDimensions();
+  const { isMobile } = useWindowDimensions();
 
   // number of search results to return
   // const QUERY_SIZE = 30;
 
   // way to display results
-  const [isList, setView] = useSessionStorageState(
-    'isList',
-    !isMobile && !isTablet
-  );
+  const [isList, setView] = useSessionStorageState('isList', !isMobile);
 
   // Get search context data
   const {
@@ -104,7 +101,7 @@ const Search: React.FC = () => {
       if (event) event.preventDefault();
 
       // Scroll down to catalog when in mobile view.
-      if (isMobile || isTablet) {
+      if (isMobile) {
         scroller.scrollTo('catalog', {
           smooth: true,
           duration: 500,
@@ -112,7 +109,7 @@ const Search: React.FC = () => {
         });
       }
     },
-    [isMobile, isTablet]
+    [isMobile]
   );
 
   // Scroll to the bottom when courses finish loading on initial load.
@@ -154,7 +151,7 @@ const Search: React.FC = () => {
     <div className={Styles.search_base}>
       <Row
         className={`p-0 m-0 ${
-          !isMobile && !isTablet ? 'd-flex flex-row-reverse flex-nowrap' : ''
+          !isMobile ? 'd-flex flex-row-reverse flex-nowrap' : ''
         }`}
       >
         {/* Search Form for mobile only */}
