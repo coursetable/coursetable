@@ -193,7 +193,7 @@ const MeDropdown: React.VFC<Props> = ({
                   size={20}
                   color="#007bff"
                 />
-                <FBLoginButton />
+                <FBLoginButton loggedInMode="disconnect" />
               </Row>
             )}
             {/* Sign In/Out button */}
