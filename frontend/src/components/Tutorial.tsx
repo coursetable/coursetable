@@ -319,7 +319,7 @@ const Tutorial: React.FC<Props> = ({
       startAt={0}
       accentColor={globalTheme.primary_hover}
       rounded={6}
-      showCloseButton={false}
+      showCloseButton={currentStep === 0}
       disableDotsNavigation
       showNavigation={shownTutorial && currentStep !== 10}
       closeWithMask={shownTutorial}
