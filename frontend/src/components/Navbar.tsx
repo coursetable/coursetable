@@ -124,8 +124,7 @@ function CourseTableNavbar({
   const [lastUpdated, setLastUpdated] = useState('0 hrs');
 
   // Fetch current device
-  const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
-  console.log(isTablet);
+  const { isMobile, isLgDesktop } = useWindowDimensions();
 
   // Show navbar search state
   const [show_search, setShowSearch] = useState(false);
