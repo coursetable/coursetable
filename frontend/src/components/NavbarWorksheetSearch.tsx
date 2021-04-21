@@ -190,6 +190,9 @@ export const NavbarWorksheetSearch: React.FC = () => {
                   buttonText="Friends' courses"
                   type="facebook"
                   select_options={selected_fb}
+                  onReset={() => {
+                    handleFBPersonChange('me');
+                  }}
                   isDisabled={!user.fbLogin}
                   disabledButtonText="Connect FB"
                 >
