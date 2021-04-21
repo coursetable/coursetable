@@ -72,6 +72,12 @@ const ResultsHeader = styled.div`
   font-weight: 600;
 `;
 
+// Search results
+const SearchResults = styled(SurfaceComponent)`
+  overflow: hidden;
+  ${({ numCourses }) => (numCourses < 20 ? 'height: 80vh;' : '')}
+`;
+
 // Function to calculate column width within a max and min
 const getColWidth = (calculated, min = 0, max = 1000000) => {
   return Math.max(Math.min(calculated, max), min);
@@ -603,11 +609,10 @@ const Results = ({
         </StyledSpacer>
       )}
 
-      <SurfaceComponent
+      <SearchResults
         layer={0}
-        className={`${Styles.results_list_container} ${
-          !isList ? 'px-1 pt-3 ' : ''
-        }`}
+        className={`${!isList ? 'px-1 pt-3 ' : ''}`}
+        numCourses={data.length}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
@@ -621,7 +626,7 @@ const Results = ({
             </Spinner>
           </Row>
         )}
-      </SurfaceComponent>
+      </SearchResults>
     </div>
   );
 };
