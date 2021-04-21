@@ -7,10 +7,6 @@
   width: 100%;
 }
 
-.results_list_container {
-  overflow: hidden;
-}
-
 .results_header_row {
   user-select: none;
 }
