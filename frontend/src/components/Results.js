@@ -73,9 +73,10 @@ const ResultsHeader = styled.div`
 `;
 
 // Search results
-const SearchResults = styled(SurfaceComponent)`
+const SearchResults = styled.div`
   overflow: hidden;
-  ${({ numCourses }) => (numCourses < 20 ? 'height: 80vh;' : '')}
+  ${({ numCourses }) =>
+    numCourses > 0 && numCourses < 20 ? 'height: 80vh;' : ''}
 `;
 
 // Function to calculate column width within a max and min
