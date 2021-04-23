@@ -11,6 +11,7 @@ import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
+  subjectOptions,
 } from '../queries/Constants';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
@@ -126,6 +127,19 @@ const ResultsItem = ({
     </Tooltip>
   );
 
+  // Tooltip for hovering over subject
+  const subject_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <small>
+        {subjectOptions
+          .filter((subject) => {
+            return subject.value === subject_code;
+          })[0]
+          .label.substring(subject_code.length + 2)}
+      </small>
+    </Tooltip>
+  );
+
   // Render popover that contains title, description, and requirements when hovering over course name
   const renderTitlePopover = (props) => {
     return (
@@ -200,6 +214,9 @@ const ResultsItem = ({
   const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
+  const subject_code = course.course_code.split(' ')[0];
+  const course_code = course.course_code.split(' ')[1];
+
   return (
     <StyledSpacer
       className={`${isFirst ? Styles.first_search_result_item : ''} ${
@@ -235,7 +252,10 @@ const ResultsItem = ({
           style={code_style}
           className={`${Styles.ellipsis_text} font-weight-bold`}
         >
-          {course.course_code}
+          <OverlayTrigger placement="top" overlay={subject_tooltip}>
+            <span>{subject_code}</span>
+          </OverlayTrigger>{' '}
+          {course_code}
           <TextComponent type={1}>
             {course.section
               ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`

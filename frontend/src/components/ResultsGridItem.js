@@ -10,6 +10,7 @@ import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
+  subjectOptions,
 } from '../queries/Constants';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
@@ -97,6 +98,19 @@ const ResultsGridItem = ({
     </Tooltip>
   );
 
+  // Tooltip for hovering over subject
+  const subject_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <small>
+        {subjectOptions
+          .filter((subject) => {
+            return subject.value === subject_code;
+          })[0]
+          .label.substring(subject_code.length + 2)}
+      </small>
+    </Tooltip>
+  );
+
   // Tooltip for hovering over class rating
   const class_tooltip = (props) => (
     <Tooltip id="button-tooltip" {...props}>
@@ -118,6 +132,13 @@ const ResultsGridItem = ({
     </Tooltip>
   );
 
+  const subject_code = course.course_code
+    ? course.course_code.split(' ')[0]
+    : '';
+  const course_code = course.course_code
+    ? course.course_code.split(' ')[1]
+    : '';
+
   return (
     <Col
       md={col_width}
@@ -137,7 +158,14 @@ const ResultsGridItem = ({
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.course_codes}>
-                {course.course_code ? course.course_code : ''}
+                {course.course_code && (
+                  <>
+                    <OverlayTrigger placement="top" overlay={subject_tooltip}>
+                      <span>{subject_code}</span>
+                    </OverlayTrigger>{' '}
+                    {course_code}
+                  </>
+                )}
                 {course.section
                   ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
                   : ''}
