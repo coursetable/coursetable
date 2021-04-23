@@ -148,11 +148,7 @@ const ResultsGridItem = ({
           {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
-                <OverlayTrigger
-                  placement="top"
-                  delay={{ show: 500, hide: 250 }}
-                  overlay={season_tooltip}
-                >
+                <OverlayTrigger placement="top" overlay={season_tooltip}>
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
                       tag_styles[seasons[parseInt(season, 10) - 1]]
@@ -263,11 +259,7 @@ const ResultsGridItem = ({
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
               {/* Class Rating */}
-              <OverlayTrigger
-                placement="right"
-                delay={{ show: 500, hide: 250 }}
-                overlay={class_tooltip}
-              >
+              <OverlayTrigger placement="right" overlay={class_tooltip}>
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
@@ -293,11 +285,7 @@ const ResultsGridItem = ({
                 </Row>
               </OverlayTrigger>
               {/* Professor Rating */}
-              <OverlayTrigger
-                placement="right"
-                delay={{ show: 500, hide: 250 }}
-                overlay={prof_tooltip}
-              >
+              <OverlayTrigger placement="right" overlay={prof_tooltip}>
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
@@ -321,11 +309,7 @@ const ResultsGridItem = ({
                 </Row>
               </OverlayTrigger>
               {/* Workload Rating */}
-              <OverlayTrigger
-                placement="right"
-                delay={{ show: 500, hide: 250 }}
-                overlay={workload_tooltip}
-              >
+              <OverlayTrigger placement="right" overlay={workload_tooltip}>
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in

@@ -124,7 +124,7 @@ function WorksheetToggleButton({
   return (
     <OverlayTrigger
       placement="top"
-      delay={{ show: 250, hide: 50 }}
+      delay={{ show: 1000, hide: 0 }}
       overlay={renderTooltip}
     >
       <StyledButton

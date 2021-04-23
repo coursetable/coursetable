@@ -216,11 +216,7 @@ const ResultsItem = ({
         {/* Season */}
         {multiSeasons && (
           <div style={szn_style} className="d-flex">
-            <OverlayTrigger
-              placement="top"
-              delay={{ show: 500, hide: 250 }}
-              overlay={season_tooltip}
-            >
+            <OverlayTrigger placement="top" overlay={season_tooltip}>
               <div className={`${Styles.skills_areas} my-auto`}>
                 <Tag
                   variant="secondary"
@@ -354,11 +350,7 @@ const ResultsItem = ({
         </div>
         {/* # FB Friends also shopping */}
         <div style={fb_style} className="d-flex ">
-          <OverlayTrigger
-            placement="top"
-            delay={{ show: 100, hide: 100 }}
-            overlay={renderFBFriendsTooltip}
-          >
+          <OverlayTrigger placement="top" overlay={renderFBFriendsTooltip}>
             <span className="my-auto">
               {fb_friends.length > 0 ? fb_friends.length : ''}
             </span>

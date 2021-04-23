@@ -516,7 +516,6 @@ const Results = ({
                     <ResultsHeader style={rate_overall_style}>
                       <OverlayTrigger
                         placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
                         overlay={class_tooltip}
                       >
                         <span className={Styles.one_line}>Overall</span>
@@ -530,7 +529,6 @@ const Results = ({
                     <ResultsHeader style={rate_workload_style}>
                       <OverlayTrigger
                         placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
                         overlay={workload_tooltip}
                       >
                         <span className={Styles.one_line}>Work</span>
@@ -553,7 +551,6 @@ const Results = ({
                   <ResultsHeader style={enroll_style}>
                     <OverlayTrigger
                       placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
                       overlay={enrollment_tooltip}
                     >
                       <span className={Styles.one_line}>#</span>
@@ -581,11 +578,7 @@ const Results = ({
                   </ResultsHeader>
                   {/* FB */}
                   <ResultsHeader style={fb_style}>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={fb_tooltip}
-                    >
+                    <OverlayTrigger placement="bottom" overlay={fb_tooltip}>
                       <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
                     <ResultsColumnSort

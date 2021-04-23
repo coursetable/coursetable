@@ -83,11 +83,7 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
     // Smooth fade in and out transition
     <Fade in={!inWorksheet && conflict !== false}>
       <div>
-        <OverlayTrigger
-          placement="top"
-          delay={{ show: 250, hide: 250 }}
-          overlay={renderTooltip}
-        >
+        <OverlayTrigger placement="top" overlay={renderTooltip}>
           <MdErrorOutline color="#fc4103" />
         </OverlayTrigger>
       </div>
