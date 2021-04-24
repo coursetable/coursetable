@@ -4,6 +4,7 @@ import moment from 'moment';
 import { toast } from 'react-toastify';
 import { weekdays } from '../common';
 import { toSeasonString } from '../courseUtilities';
+import * as Sentry from '@sentry/react';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ics = require('ics');
@@ -98,7 +99,7 @@ export const generateICS = (listings_all) => {
   // Export to ICS
   ics.createEvents(events, (error, value) => {
     if (error) {
-      console.log(error);
+      Sentry.captureException(error);
       toast.error('Error Generating ICS File');
       return;
     }

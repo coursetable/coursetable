@@ -1,3 +1,5 @@
+import * as Sentry from '@sentry/react';
+
 export const isDev = process.env.NODE_ENV === 'development';
 
 export const API_ENDPOINT = isDev
@@ -12,5 +14,5 @@ export const POSTHOG_OPTIONS = {
 
 export const POSTHOG_TOKEN =
   process.env.REACT_APP_POSTHOG_TOKEN ||
-  console.error('posthog token not set') /* always false */ ||
+  Sentry.captureException('posthog token not set') /* always false */ ||
   'dummy';
