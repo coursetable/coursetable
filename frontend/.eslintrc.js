@@ -38,7 +38,7 @@ module.exports = {
       },
     ],
     // suppress errors for missing 'import React' in files
-   "react/react-in-jsx-scope": "off",
+    'react/react-in-jsx-scope': 'off',
     // TODO: Eventually we want to remove these rules (and default to error).
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/naming-convention': 'off',
