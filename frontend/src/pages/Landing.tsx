@@ -1,4 +1,3 @@
-import React from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';

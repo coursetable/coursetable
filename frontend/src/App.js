@@ -18,6 +18,8 @@ import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import WorksheetLogin from './pages/WorksheetLogin';
 import CannyContainer from './pages/Canny';
+import Graphiql from './pages/Graphiql';
+import GraphiqlLogin from './pages/GraphiqlLogin';
 
 import { useUser } from './user';
 
@@ -108,6 +110,11 @@ function App({ themeToggler }) {
           ) : (
             <Redirect to="/worksheetlogin" />
           )}
+        </MyRoute>
+
+        {/* Graphiql explorer */}
+        <MyRoute exact path="/graphiql">
+          {isLoggedIn ? <Graphiql /> : <GraphiqlLogin />}
         </MyRoute>
 
         {/* Thank You */}

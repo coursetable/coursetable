@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@apollo/client": "^3.3.7",
+    "@graphiql/toolkit": "^0.2.0",
     "@sentry/react": "^6.1.0",
     "@sentry/tracing": "^6.1.0",
     "@types/async-lock": "^1.1.2",
@@ -25,6 +26,7 @@
     "chroma-js": "^2.1.0",
     "core-js": "^3.8.3",
     "file-saver": "^2.0.2",
+    "graphiql": "^1.4.1",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
     "history": "^4.9.0",
@@ -34,11 +36,11 @@
     "posthog-js": "^1.8.8",
     "rc-slider": "9.7.1",
     "rc-tooltip": "^5.1.0",
-    "react": "^17.0.1",
+    "react": "^16.14.0",
     "react-app-polyfill": "^2.0.0",
     "react-big-calendar": "^0.30.0",
     "react-bootstrap": "^1.4.3",
-    "react-dom": "^17.0.1",
+    "react-dom": "^16.14.0",
     "react-hotkeys": "^2.0.0",
     "react-icons": "^4.1.0",
     "react-lines-ellipsis": "^0.14.1",
@@ -101,5 +103,8 @@
     "prettier": "^2.2.1",
     "source-map-explorer": "^2.5.2",
     "typescript-plugin-css-modules": "^3.2.0"
+  },
+  "resolutions": {
+    "graphql-language-service-interface": "2.4.2-alpha.2"
   }
 }
