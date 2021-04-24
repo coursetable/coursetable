@@ -352,7 +352,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     let processedCredits;
     if (select_credits != null) {
       processedCredits = select_credits.map((x) => {
-        return x.value;
+        return x.label;
       });
       // set null defaults
       if (processedCredits.length === 0) {
