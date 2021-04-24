@@ -19,7 +19,11 @@ import CourseConflictIcon from './CourseConflictIcon';
 import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './ResultsItem.module.css';
-import { getOverallRatings, isInWorksheet } from '../courseUtilities';
+import {
+  getOverallRatings,
+  getWorkloadRatings,
+  isInWorksheet,
+} from '../courseUtilities';
 import { breakpoints } from '../utilities';
 import { useUser } from '../user';
 
@@ -112,8 +116,15 @@ const ResultsItem = ({
     );
   }, [season]);
 
-  // Fetch overall rating value and string representation
-  const course_rating = useMemo(() => getOverallRatings(course), [course]);
+  // Fetch overall & workload rating values and string representations
+  const course_rating = useMemo(
+    () => [getOverallRatings(course, false), getOverallRatings(course, true)],
+    [course]
+  );
+  const workload_rating = useMemo(
+    () => [getWorkloadRatings(course, false), getWorkloadRatings(course, true)],
+    [course]
+  );
 
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
@@ -271,28 +282,19 @@ const ResultsItem = ({
         <div className="d-flex">
           {/* Overall Rating */}
           <RatingCell
-            rating={course_rating}
+            rating={course_rating[0]}
             colormap={ratingColormap}
             style={rate_overall_style}
           >
-            {
-              // String representation of rating to be displayed
-              course.average_rating_same_professors
-                ? course_rating // Use same professor if possible. Displayed as is
-                : course.average_rating
-                ? `~${course_rating}` // Use all professors otherwise and add tilda ~
-                : 'N/A' // No ratings at all
-            }
+            {course_rating[1]}
           </RatingCell>
           {/* Workload Rating */}
           <RatingCell
-            rating={course.average_workload}
+            rating={workload_rating[0]}
             colormap={workloadColormap}
             style={rate_workload_style}
           >
-            {course.average_workload
-              ? course.average_workload.toFixed(1)
-              : 'N/A'}
+            {workload_rating[1]}
           </RatingCell>
           {/* Professor Rating & Course Professors */}
           <div style={prof_style} className="d-flex align-items-center">

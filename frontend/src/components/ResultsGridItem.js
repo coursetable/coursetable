@@ -21,7 +21,7 @@ import { TextComponent, StyledIcon } from './StyledComponents';
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
-import { getOverallRatings } from '../courseUtilities';
+import { getOverallRatings, getWorkloadRatings } from '../courseUtilities';
 import { useWorksheet } from '../worksheetContext';
 import { useSearch } from '../searchContext';
 
@@ -77,8 +77,15 @@ const ResultsGridItem = ({
     );
   }, [season]);
 
-  // Fetch overall rating value and string representation
-  const course_rating = useMemo(() => getOverallRatings(course), [course]);
+  // Fetch overall & workload rating values and string representations
+  const course_rating = useMemo(
+    () => [getOverallRatings(course, false), getOverallRatings(course, true)],
+    [course]
+  );
+  const workload_rating = useMemo(
+    () => [getWorkloadRatings(course, false), getWorkloadRatings(course, true)],
+    [course]
+  );
 
   // Variable used in list keys
   let key = 0;
@@ -293,19 +300,12 @@ const ResultsGridItem = ({
                     // Only show eval data when user is signed in
                     className={`${styles.rating} mr-1`}
                     style={{
-                      color: course_rating
-                        ? ratingColormap(course_rating).darken().saturate()
+                      color: course_rating[0]
+                        ? ratingColormap(course_rating[0]).darken().saturate()
                         : '#cccccc',
                     }}
                   >
-                    {
-                      // String representation of rating to be displayed
-                      course.average_rating_same_professors
-                        ? course_rating // Use same professor if possible. Displayed as is
-                        : course.average_rating
-                        ? `~${course_rating}` // Use all professors otherwise and add tilda ~
-                        : 'N/A' // No ratings at all
-                    }
+                    {course_rating[1]}
                   </div>
                   <StyledIcon>
                     <Star className={styles.icon} />
@@ -344,16 +344,14 @@ const ResultsGridItem = ({
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        course.average_workload && isLoggedIn
-                          ? workloadColormap(course.average_workload)
+                        isLoggedIn && workload_rating[0]
+                          ? workloadColormap(workload_rating[0])
                               .darken()
                               .saturate()
                           : '#cccccc',
                     }}
                   >
-                    {course.average_workload && isLoggedIn
-                      ? course.average_workload.toFixed(RATINGS_PRECISION)
-                      : 'N/A'}
+                    {isLoggedIn && workload_rating[1]}
                   </div>
                   <StyledIcon>
                     <Book className={styles.icon} />

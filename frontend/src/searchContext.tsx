@@ -15,6 +15,7 @@ import { Listing, useCourseData, useFerry } from './components/FerryProvider';
 import {
   getNumFB,
   getOverallRatings,
+  getWorkloadRatings,
   sortCourses,
   toSeasonString,
 } from './courseUtilities';
@@ -466,12 +467,13 @@ export const SearchProvider: React.FC = ({ children }) => {
         return false;
       }
 
+      const average_workload = Number(getWorkloadRatings(listing));
       if (
         searchConfig.min_workload !== null &&
         searchConfig.max_workload !== null &&
-        (listing.average_workload === null ||
-          _.round(listing.average_workload, 1) < searchConfig.min_workload ||
-          _.round(listing.average_workload, 1) > searchConfig.max_workload)
+        (average_workload === null ||
+          _.round(average_workload, 1) < searchConfig.min_workload ||
+          _.round(average_workload, 1) > searchConfig.max_workload)
       ) {
         return false;
       }

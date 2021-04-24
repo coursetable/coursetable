@@ -361,7 +361,8 @@ const Results = ({
           Average Course Rating
           <br />
           (same professor and all cross-listed courses. If this professor hasn't
-          taught the class before, a ~ denotes the use of all professors)
+          taught the course before, a ~ denotes an average across all
+          professors)
         </span>
       </Tooltip>
     ),
@@ -384,7 +385,9 @@ const Results = ({
       <Tooltip id="button-tooltip" {...props}>
         <span>
           Average Workload Rating <br />
-          (any professor and all cross-listed courses)
+          (same professor and all cross-listed courses. If this professor hasn't
+          taught the course before, a ~ denotes an average across all
+          professors)
         </span>
       </Tooltip>
     ),
@@ -410,7 +413,7 @@ const Results = ({
   const fb_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Number of Facebook friends shopping this class</span>
+        <span>Number of Facebook friends shopping this course</span>
       </Tooltip>
     ),
     []
