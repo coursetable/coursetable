@@ -18,6 +18,7 @@ function CalendarEvent({ event }) {
       <StyledPopover {...props} id="title_popover">
         <Popover.Title>
           <strong>{course.title}</strong>
+          <span className="d-block">{course.times_summary}</span>
         </Popover.Title>
         <Popover.Content>
           {course.description
@@ -42,8 +43,8 @@ function CalendarEvent({ event }) {
       // Course info that appears on hover
       placement="right"
       overlay={(props) => renderTitlePopover(props, event.listing)}
-      // Have a 500ms delay before showing popover so it only pops up when user wants it to
-      delay={{ show: 300, hide: 100 }}
+      // Have a 1000ms delay before showing popover so it only pops up when user wants it to
+      delay={{ show: 1000, hide: 0 }}
     >
       <div
         style={event_style}

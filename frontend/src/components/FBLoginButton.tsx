@@ -9,6 +9,7 @@ import { TextComponent, StyledHoverText } from './StyledComponents';
 
 import { API_ENDPOINT } from '../config';
 import styled from 'styled-components';
+import * as Sentry from '@sentry/react';
 
 const RefreshIcon = styled(FaSyncAlt)`
   transition: transform 0.3s;
@@ -77,16 +78,16 @@ const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
               toast.success('Successfully connected to FB!');
             })
             .catch((err) => {
-              console.error(err);
+              Sentry.captureException(err);
               toast.error('Error connecting FB');
             });
         } else if (response.status === 'not_authorized') {
           // The person is logged into Facebook, but not your app.
-          console.log('FB not authorized');
+          Sentry.captureException('FB not authorized');
         } else {
           // The person is not logged into Facebook, so we're not sure if
           // they are logged into this app or not.
-          console.log('Not logged into FB');
+          Sentry.captureException('Not logged into FB');
         }
       },
       {

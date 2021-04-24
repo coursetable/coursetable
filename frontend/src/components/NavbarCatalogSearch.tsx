@@ -79,6 +79,8 @@ const RangeValueLabel = styled.div`
 // Wrapper for advanced filters dropdown
 const AdvancedWrapper = styled.div`
   width: 440px;
+  max-height: 80vh;
+  overflow: auto;
 `;
 
 // Advanced filters label in dropdown

@@ -27,7 +27,7 @@ export const toSeasonString = (season_code: Season) => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
-    `${season_code.substring(0, 4)} ${seasons[parseInt(season_code[5], 10)]}`,
+    `${seasons[parseInt(season_code[5], 10)]} ${season_code.substring(0, 4)}`,
     season_code.substring(0, 4),
     seasons[parseInt(season_code[5], 10)],
   ] as const;
@@ -202,16 +202,37 @@ export const sortCourses = (
 };
 
 // Get the overall rating for a course
-export const getOverallRatings = (course: Listing) => {
+export const getOverallRatings = (course: Listing, display = false) => {
   // Determine which overall rating to use
   const course_rating = course.average_rating_same_professors
     ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
     : course.average_rating
-    ? course.average_rating.toFixed(1) // Use all professors otherwise
+    ? display
+      ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
+      : course.average_rating.toFixed(1) // Use all professors otherwise
+    : display
+    ? 'N/A'
     : null; // No ratings at all
 
-  // Return rating
+  // Return overall rating
   return course_rating;
+};
+
+// Get the workload rating for a course
+export const getWorkloadRatings = (course: Listing, display = false) => {
+  // Determine which workload rating to use
+  const course_workload = course.average_workload_same_professors
+    ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
+    : course.average_workload
+    ? display
+      ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
+      : course.average_workload.toFixed(1) // Use all professors otherwise
+    : display
+    ? 'N/A'
+    : null; // No ratings at all
+
+  // Return workload rating
+  return course_workload;
 };
 
 // Calculate day and time score

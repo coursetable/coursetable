@@ -15,6 +15,7 @@ import { Listing, useCourseData, useFerry } from './components/FerryProvider';
 import {
   getNumFB,
   getOverallRatings,
+  getWorkloadRatings,
   sortCourses,
   toSeasonString,
 } from './courseUtilities';
@@ -352,7 +353,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     let processedCredits;
     if (select_credits != null) {
       processedCredits = select_credits.map((x) => {
-        return x.value;
+        return x.label;
       });
       // set null defaults
       if (processedCredits.length === 0) {
@@ -460,18 +461,19 @@ export const SearchProvider: React.FC = ({ children }) => {
         searchConfig.min_overall !== null &&
         searchConfig.max_overall !== null &&
         (average_overall === null ||
-          average_overall < searchConfig.min_overall ||
-          average_overall > searchConfig.max_overall)
+          _.round(average_overall, 1) < searchConfig.min_overall ||
+          _.round(average_overall, 1) > searchConfig.max_overall)
       ) {
         return false;
       }
 
+      const average_workload = Number(getWorkloadRatings(listing));
       if (
         searchConfig.min_workload !== null &&
         searchConfig.max_workload !== null &&
-        (listing.average_workload === null ||
-          listing.average_workload < searchConfig.min_workload ||
-          listing.average_workload > searchConfig.max_workload)
+        (average_workload === null ||
+          _.round(average_workload, 1) < searchConfig.min_workload ||
+          _.round(average_workload, 1) > searchConfig.max_workload)
       ) {
         return false;
       }

@@ -2,6 +2,7 @@ import { useMemo } from 'react';
 import { Season } from '../common';
 import { Listing, useCourseData } from '../components/FerryProvider';
 import { Worksheet } from '../user';
+import * as Sentry from '@sentry/react';
 
 // Search query used in Worksheet.js and CourseConflictIcon.js
 export const useWorksheetInfo = (
@@ -43,7 +44,9 @@ export const useWorksheetInfo = (
       if (courses && season_code in courses) {
         const course = courses[season_code].get(crn);
         if (!course) {
-          console.warn('failed to resolve worksheet course', season_code, crn);
+          Sentry.captureException(
+            `failed to resolve worksheet course ${season_code} ${crn}`
+          );
         } else {
           data.push(course);
         }

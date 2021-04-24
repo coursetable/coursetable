@@ -73,9 +73,10 @@ const ResultsHeader = styled.div`
 `;
 
 // Search results
-const SearchResults = styled(SurfaceComponent)`
+const SearchResults = styled.div`
   overflow: hidden;
-  ${({ numCourses }) => (numCourses < 20 ? 'height: 80vh;' : '')}
+  ${({ numCourses }) =>
+    numCourses > 0 && numCourses < 20 ? 'height: 80vh;' : ''}
 `;
 
 // Function to calculate column width within a max and min
@@ -352,6 +353,19 @@ const Results = ({
     }
   }
 
+  // Tooltip for hovering over course code
+  const code_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>
+          Course Code <br />
+          and Section
+        </span>
+      </Tooltip>
+    ),
+    []
+  );
+
   // Tooltip for hovering over course rating
   const class_tooltip = useCallback(
     (props) => (
@@ -360,7 +374,8 @@ const Results = ({
           Average Course Rating
           <br />
           (same professor and all cross-listed courses. If this professor hasn't
-          taught the class before, a ~ denotes the use of all professors)
+          taught the course before, a ~ denotes an average across all
+          professors)
         </span>
       </Tooltip>
     ),
@@ -371,7 +386,11 @@ const Results = ({
   const prof_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Average Professor Rating</span>
+        <span>
+          Average Professor Rating <br />
+          and Names <br />
+          (if there are multiple professors, we take the average between them)
+        </span>
       </Tooltip>
     ),
     []
@@ -383,7 +402,22 @@ const Results = ({
       <Tooltip id="button-tooltip" {...props}>
         <span>
           Average Workload Rating <br />
-          (any professor and all cross-listed courses)
+          (same professor and all cross-listed courses. If this professor hasn't
+          taught the course before, a ~ denotes an average across all
+          professors)
+        </span>
+      </Tooltip>
+    ),
+    []
+  );
+
+  // Tooltip for hovering over meets
+  const meets_tooltip = useCallback(
+    (props) => (
+      <Tooltip id="button-tooltip" {...props}>
+        <span>
+          Days of the Week <br />
+          and Times
         </span>
       </Tooltip>
     ),
@@ -409,7 +443,7 @@ const Results = ({
   const fb_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Number of Facebook friends shopping this class</span>
+        <span>Number of Facebook friends shopping this course</span>
       </Tooltip>
     ),
     []
@@ -497,7 +531,9 @@ const Results = ({
                   )}
                   {/* Course Code */}
                   <ResultsHeader style={code_style}>
-                    Code
+                    <OverlayTrigger placement="bottom" overlay={code_tooltip}>
+                      <span className={Styles.one_line}>Code</span>
+                    </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[0]}
                       key={reset_key}
@@ -516,7 +552,6 @@ const Results = ({
                     <ResultsHeader style={rate_overall_style}>
                       <OverlayTrigger
                         placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
                         overlay={class_tooltip}
                       >
                         <span className={Styles.one_line}>Overall</span>
@@ -530,7 +565,6 @@ const Results = ({
                     <ResultsHeader style={rate_workload_style}>
                       <OverlayTrigger
                         placement="bottom"
-                        delay={{ show: 100, hide: 100 }}
                         overlay={workload_tooltip}
                       >
                         <span className={Styles.one_line}>Work</span>
@@ -542,7 +576,9 @@ const Results = ({
                     </ResultsHeader>
                     {/* Professor Rating & Course Professors */}
                     <ResultsHeader style={prof_style}>
-                      <span className={Styles.one_line}>Professors</span>
+                      <OverlayTrigger placement="bottom" overlay={prof_tooltip}>
+                        <span className={Styles.one_line}>Professors</span>
+                      </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[5]}
                         key={reset_key}
@@ -553,7 +589,6 @@ const Results = ({
                   <ResultsHeader style={enroll_style}>
                     <OverlayTrigger
                       placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
                       overlay={enrollment_tooltip}
                     >
                       <span className={Styles.one_line}>#</span>
@@ -569,7 +604,9 @@ const Results = ({
                   </ResultsHeader>
                   {/* Course Meeting Days & Times */}
                   <ResultsHeader style={meet_style}>
-                    <span className={Styles.one_line}>Meets</span>
+                    <OverlayTrigger placement="bottom" overlay={meets_tooltip}>
+                      <span className={Styles.one_line}>Meets</span>
+                    </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[9]}
                       key={reset_key}
@@ -581,11 +618,7 @@ const Results = ({
                   </ResultsHeader>
                   {/* FB */}
                   <ResultsHeader style={fb_style}>
-                    <OverlayTrigger
-                      placement="bottom"
-                      delay={{ show: 100, hide: 100 }}
-                      overlay={fb_tooltip}
-                    >
+                    <OverlayTrigger placement="bottom" overlay={fb_tooltip}>
                       <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
                     <ResultsColumnSort

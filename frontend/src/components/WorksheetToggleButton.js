@@ -11,6 +11,7 @@ import { useUser } from '../user';
 import { getSSObject, setSSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
 import { useWindowDimensions } from './WindowDimensionsProvider';
+import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
 
@@ -101,7 +102,7 @@ function WorksheetToggleButton({
       })
       .catch((err) => {
         toast.error('Failed to update worksheet');
-        console.error(err);
+        Sentry.captureException(err);
       });
   }
 
@@ -124,7 +125,7 @@ function WorksheetToggleButton({
   return (
     <OverlayTrigger
       placement="top"
-      delay={{ show: 250, hide: 50 }}
+      delay={{ show: 1000, hide: 0 }}
       overlay={renderTooltip}
     >
       <StyledButton
