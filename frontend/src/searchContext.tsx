@@ -460,8 +460,8 @@ export const SearchProvider: React.FC = ({ children }) => {
         searchConfig.min_overall !== null &&
         searchConfig.max_overall !== null &&
         (average_overall === null ||
-          average_overall < searchConfig.min_overall ||
-          average_overall > searchConfig.max_overall)
+          _.round(average_overall, 1) < searchConfig.min_overall ||
+          _.round(average_overall, 1) > searchConfig.max_overall)
       ) {
         return false;
       }
@@ -470,8 +470,8 @@ export const SearchProvider: React.FC = ({ children }) => {
         searchConfig.min_workload !== null &&
         searchConfig.max_workload !== null &&
         (listing.average_workload === null ||
-          listing.average_workload < searchConfig.min_workload ||
-          listing.average_workload > searchConfig.max_workload)
+          _.round(listing.average_workload, 1) < searchConfig.min_workload ||
+          _.round(listing.average_workload, 1) > searchConfig.max_workload)
       ) {
         return false;
       }
