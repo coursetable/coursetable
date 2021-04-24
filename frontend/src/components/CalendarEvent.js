@@ -18,6 +18,7 @@ function CalendarEvent({ event }) {
       <StyledPopover {...props} id="title_popover">
         <Popover.Title>
           <strong>{course.title}</strong>
+          <span className="d-block">{course.times_summary}</span>
         </Popover.Title>
         <Popover.Content>
           {course.description

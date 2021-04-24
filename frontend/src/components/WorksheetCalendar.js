@@ -169,6 +169,7 @@ function WorksheetCalendar() {
         dayFormat: 'ddd',
         timeGutterFormat: 'ha',
       }}
+      tooltipAccessor={null}
     />
   );
 }
