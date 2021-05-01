@@ -173,6 +173,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
               <PopoutSelect
                 isMulti={false}
                 isClearable={false}
+                hideSelectedOptions={false}
                 value={selected_season}
                 options={season_options}
                 placeholder="Last 5 Years"
@@ -198,6 +199,7 @@ export const NavbarWorksheetSearch: React.FC = () => {
                 >
                   <PopoutSelect
                     isMulti={false}
+                    hideSelectedOptions={false}
                     value={selected_fb}
                     options={friend_options}
                     placeholder="Friends' courses"
