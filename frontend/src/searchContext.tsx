@@ -10,7 +10,7 @@ import React, {
   useState,
 } from 'react';
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
-import { useSessionStorageState } from './browserStorage';
+import { useLocalStorageState, useSessionStorageState } from './browserStorage';
 import { Listing, useCourseData, useFerry } from './components/FerryProvider';
 import {
   getNumFB,
@@ -202,7 +202,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     defaultOptions
   );
 
-  const [hideCancelled, setHideCancelled] = useSessionStorageState(
+  const [hideCancelled, setHideCancelled] = useLocalStorageState(
     'hideCancelled',
     defaultTrue
   );
@@ -210,9 +210,9 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [
     hideFirstYearSeminars,
     setHideFirstYearSeminars,
-  ] = useSessionStorageState('hideFirstYearSeminars', defaultFalse);
+  ] = useLocalStorageState('hideFirstYearSeminars', defaultFalse);
 
-  const [hideGraduateCourses, setHideGraduateCourses] = useSessionStorageState(
+  const [hideGraduateCourses, setHideGraduateCourses] = useLocalStorageState(
     'hideGraduateCourses',
     defaultFalse
   );
@@ -220,7 +220,7 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [
     hideDiscussionSections,
     setHideDiscussionSections,
-  ] = useSessionStorageState('hideDiscussionSections', defaultTrue);
+  ] = useLocalStorageState('hideDiscussionSections', defaultTrue);
 
   /* Sorting */
 

@@ -8,7 +8,7 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useSessionStorageState } from './browserStorage';
+import { useLocalStorageState, useSessionStorageState } from './browserStorage';
 import { Listing, useFerry } from './components/FerryProvider';
 import { toSeasonString } from './courseUtilities';
 // import { sortbyOptions } from './queries/Constants';
@@ -73,7 +73,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   const [
     hidden_courses,
     setHiddenCourses,
-  ] = useSessionStorageState<HiddenCourses>('hidden_courses', {});
+  ] = useLocalStorageState<HiddenCourses>('hidden_courses', {});
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState<number | null>(null);
   // Currently expanded component (calendar or list or none)

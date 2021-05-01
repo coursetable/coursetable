@@ -502,6 +502,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                   value={select_seasons}
                   options={seasonsOptions}
                   placeholder="Last 5 Years"
+                  hideSelectedOptions={false}
                   onChange={(selectedOption: ValueType<Option>) => {
                     setSelectSeasons((selectedOption as Option[]) || []);
                     setStartTime(Date.now());

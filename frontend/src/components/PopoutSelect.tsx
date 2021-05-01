@@ -8,6 +8,7 @@ import CustomSelect from './CustomSelect';
 export const PopoutSelect: React.FC<SelectProps> = ({
   isMulti,
   isClearable = true,
+  hideSelectedOptions = true,
   ...props
 }) => {
   return (
@@ -18,7 +19,7 @@ export const PopoutSelect: React.FC<SelectProps> = ({
       autoFocus
       backspaceRemovesValue={false}
       controlShouldRenderValue
-      hideSelectedOptions={isMulti}
+      hideSelectedOptions={hideSelectedOptions}
       isClearable={isClearable}
       menuIsOpen
       tabSelectsValue={false}
