@@ -203,16 +203,21 @@ export const sortCourses = (
 
 // Get the overall rating for a course
 export const getOverallRatings = (course: Listing, display = false) => {
+  let course_rating;
   // Determine which overall rating to use
-  const course_rating = course.average_rating_same_professors
-    ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
-    : course.average_rating
-    ? display
+  if (display) {
+    course_rating = course.average_rating_same_professors
+      ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
+      : course.average_rating
       ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : course.average_rating.toFixed(1) // Use all professors otherwise
-    : display
-    ? 'N/A'
-    : null; // No ratings at all
+      : 'N/A'; // No ratings at all
+  } else {
+    course_rating = course.average_rating_same_professors
+      ? course.average_rating_same_professors // Use same professor if possible
+      : course.average_rating
+      ? course.average_rating // Use all professors otherwise
+      : null; // No ratings at all
+  }
 
   // Return overall rating
   return course_rating;
@@ -220,16 +225,21 @@ export const getOverallRatings = (course: Listing, display = false) => {
 
 // Get the workload rating for a course
 export const getWorkloadRatings = (course: Listing, display = false) => {
+  let course_workload;
   // Determine which workload rating to use
-  const course_workload = course.average_workload_same_professors
-    ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
-    : course.average_workload
-    ? display
+  if (display) {
+    course_workload = course.average_workload_same_professors
+      ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
+      : course.average_workload
       ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : course.average_workload.toFixed(1) // Use all professors otherwise
-    : display
-    ? 'N/A'
-    : null; // No ratings at all
+      : 'N/A'; // No ratings at all
+  } else {
+    course_workload = course.average_workload_same_professors
+      ? course.average_workload_same_professors // Use same professor if possible
+      : course.average_workload
+      ? course.average_workload // Use all professors otherwise
+      : null; // No ratings at all
+  }
 
   // Return workload rating
   return course_workload;

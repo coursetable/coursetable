@@ -79,11 +79,17 @@ const ResultsGridItem = ({
 
   // Fetch overall & workload rating values and string representations
   const course_rating = useMemo(
-    () => [getOverallRatings(course, false), getOverallRatings(course, true)],
+    () => [
+      String(getOverallRatings(course, false)),
+      getOverallRatings(course, true),
+    ],
     [course]
   );
   const workload_rating = useMemo(
-    () => [getWorkloadRatings(course, false), getWorkloadRatings(course, true)],
+    () => [
+      String(getWorkloadRatings(course, false)),
+      getWorkloadRatings(course, true),
+    ],
     [course]
   );
 
