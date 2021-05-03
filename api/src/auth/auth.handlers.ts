@@ -17,6 +17,26 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// codes for allowed organizations (to give faculty access to the site)
+const ALLOWED_ORG_CODES = [
+  'MED', // medical school
+  'FAS', // faculty of arts and sciences
+  'SOM', // school of medicine
+  'LAW', // law school
+  'NUR', // nursing school
+  'ENV', // school of the environment
+  'SPH', // public health
+  'DIV', // divinity school
+  'DRA', // drama
+  'ARC', // architecture
+  'ART', // art
+  'MAC', // MacMillan center
+  'SCM', // music
+  'ISM', // sacred music
+  'JAC', // Jackson institute
+  'GRA', // graduate school
+];
+
 const extractHostname = (url: string): string => {
   let hostname;
   // find & remove protocol (http, ftp, etc.) and get hostname
@@ -97,7 +117,10 @@ export const passportConfig = async (
               },
               data: {
                 // enable evaluations if user has a school code
-                evaluationsEnabled: !!user.school_code,
+                // or is a member of an approved organization (for faculty)
+                evaluationsEnabled:
+                  !!user.school_code ||
+                  ALLOWED_ORG_CODES.includes(user.organization),
                 first_name: user.first_name,
                 last_name: user.last_name,
                 email: user.email,
