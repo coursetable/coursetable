@@ -55,6 +55,7 @@ const Search: React.FC = () => {
     overallBounds,
     workloadBounds,
     select_seasons,
+    timeBounds,
     enrollBounds,
     select_schools,
     // select_credits,
@@ -78,6 +79,8 @@ const Search: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
+    setTimeBounds,
+    setTimeValueLabels,
     setEnrollBounds,
     setEnrollValueLabels,
     setSelectSchools,
@@ -138,6 +141,14 @@ const Search: React.FC = () => {
     return (
       <Handle {...e} key={key}>
         <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
+      </Handle>
+    );
+  }, []);
+  const timeSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
+    return (
+      <Handle {...e} key={key}>
+        <div className={`shadow ${Styles.time_tooltip}`}>{value}</div>
       </Handle>
     );
   }, []);
@@ -338,6 +349,32 @@ const Search: React.FC = () => {
                     </div>
                   </Col>
                 </Row>
+                {/* Time slider */}
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                  <Col>
+                    <Container>
+                      <Range
+                        min={0}
+                        max={10}
+                        step={1}
+                        key={reset_key}
+                        defaultValue={timeBounds}
+                        onChange={(value) => {
+                          setTimeValueLabels(value);
+                        }}
+                        onAfterChange={(value) => {
+                          setTimeBounds(value);
+                        }}
+                        handle={timeSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Time
+                    </div>
+                  </Col>
+                </Row>
+                {/* Enrollment slider */}
                 <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
                   <Col>
                     <Container>
@@ -358,7 +395,7 @@ const Search: React.FC = () => {
                       />
                     </Container>
                     <div className={`text-center ${Styles.filter_title}`}>
-                      # Enrolled
+                      Enrollment
                     </div>
                   </Col>
                 </Row>

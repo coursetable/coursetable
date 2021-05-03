@@ -60,8 +60,14 @@ const StyledRange = styled(Range)<{ isTablet: boolean }>`
   cursor: pointer;
 `;
 
-// Enrollment range filter
+// Advanced enroll filter
 const StyledEnrollRange = styled(Range)`
+  width: 250px;
+  cursor: pointer;
+`;
+
+// Advanced time filter
+const StyledTimeRange = styled(Range)`
   width: 250px;
   cursor: pointer;
 `;
@@ -169,6 +175,8 @@ export const NavbarCatalogSearch: React.FC = () => {
     workloadBounds,
     workloadValueLabels,
     select_seasons,
+    timeBounds,
+    timeValueLabels,
     enrollBounds,
     enrollValueLabels,
     select_schools,
@@ -191,6 +199,8 @@ export const NavbarCatalogSearch: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
+    setTimeBounds,
+    setTimeValueLabels,
     setEnrollBounds,
     setEnrollValueLabels,
     setSelectSchools,
@@ -206,6 +216,7 @@ export const NavbarCatalogSearch: React.FC = () => {
   // Active state for overall and workload range filters
   const [activeOverall, setActiveOverall] = useState(false);
   const [activeWorkload, setActiveWorkload] = useState(false);
+  const [activeTime, setActiveTime] = useState(false);
   const [activeEnrollment, setActiveEnrollment] = useState(false);
 
   const globalTheme = useTheme();
@@ -222,6 +233,11 @@ export const NavbarCatalogSearch: React.FC = () => {
     } else {
       setActiveWorkload(false);
     }
+    if (canReset && !_.isEqual(timeBounds, defaultFilters.defaultTimeBounds)) {
+      setActiveTime(true);
+    } else {
+      setActiveTime(false);
+    }
     if (
       canReset &&
       !_.isEqual(enrollBounds, defaultFilters.defaultEnrollBounds)
@@ -230,7 +246,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     } else {
       setActiveEnrollment(false);
     }
-  }, [canReset, overallBounds, workloadBounds, enrollBounds]);
+  }, [canReset, overallBounds, workloadBounds, timeBounds, enrollBounds]);
 
   // Active styles for overall and workload range filters
   const activeStyle = useCallback(
@@ -546,6 +562,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                 setHideFirstYearSeminars(false);
                 setHideGraduateCourses(false);
                 setStartTime(Date.now());
+                setTimeBounds(defaultFilters.defaultTimeBounds);
                 setEnrollBounds(defaultFilters.defaultEnrollBounds);
               }}
               select_options={advanced_options}
@@ -610,6 +627,30 @@ export const NavbarCatalogSearch: React.FC = () => {
                     </Row>
                   </>
                 )}
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  <AdvancedLabel style={activeStyle(activeTime)}>
+                    Time:
+                  </AdvancedLabel>
+                  <RangeValueLabel>{timeValueLabels[0]}</RangeValueLabel>
+                  <StyledTimeRange
+                    min={0}
+                    max={10}
+                    step={1}
+                    key={reset_key}
+                    handleStyle={range_handle_style()}
+                    railStyle={range_rail_style()}
+                    trackStyle={[range_rail_style()]}
+                    defaultValue={timeBounds}
+                    onChange={(value) => {
+                      setTimeValueLabels(value);
+                    }}
+                    onAfterChange={(value) => {
+                      setTimeBounds(value);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                  <RangeValueLabel>{timeValueLabels[1]}</RangeValueLabel>
+                </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <AdvancedLabel style={activeStyle(activeEnrollment)}>
                     # Enrolled:
