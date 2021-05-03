@@ -120,7 +120,7 @@ export const passportConfig = async (
                 // or is a member of an approved organization (for faculty)
                 evaluationsEnabled:
                   !!user.school_code ||
-                  ALLOWED_ORG_CODES.includes(user.organization),
+                  ALLOWED_ORG_CODES.includes(user.organization_code),
                 first_name: user.first_name,
                 last_name: user.last_name,
                 email: user.email,
