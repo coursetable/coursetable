@@ -72,7 +72,7 @@ function Footer() {
               {/* Status */}
               <li>
                 <a
-                  href="https://status.coursetable.com"
+                  href="https://stats.uptimerobot.com/NpVA5UNlX3"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
