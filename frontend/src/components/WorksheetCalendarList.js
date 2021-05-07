@@ -88,22 +88,25 @@ function WorksheetCalendarList() {
 
     // Iterate over all listings of this season
     courses.forEach((course, id) => {
+      let hidden = false;
+      if (Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
+        hidden = hidden_courses[cur_season][course.crn];
+      }
       // Add listgroup item to items list
       items.push(
-        <WorksheetCalendarListItem
-          key={id}
-          course={course}
-          hidden={hidden_courses[course.crn]}
-        />
+        <WorksheetCalendarListItem key={id} course={course} hidden={hidden} />
       );
     });
 
     return items;
-  }, [courses, hidden_courses]);
+  }, [courses, hidden_courses, cur_season]);
 
   const areHidden = useMemo(() => {
-    return Object.keys(hidden_courses).length === courses.length;
-  }, [hidden_courses, courses]);
+    if (!Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
+      return false;
+    }
+    return Object.keys(hidden_courses[cur_season]).length === courses.length;
+  }, [hidden_courses, courses, cur_season]);
 
   return (
     <>
