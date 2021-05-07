@@ -53,7 +53,13 @@ const StyledCalendar = styled(Calendar)`
  */
 
 function WorksheetCalendar() {
-  const { showModal, courses, hover_course, hidden_courses } = useWorksheet();
+  const {
+    showModal,
+    courses,
+    hover_course,
+    hidden_courses,
+    cur_season,
+  } = useWorksheet();
 
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback(
@@ -65,7 +71,11 @@ function WorksheetCalendar() {
       const parsedCourses = [];
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
-        if (hidden_courses[course.crn]) return;
+        if (
+          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
+          hidden_courses[cur_season][course.crn]
+        )
+          return;
         for (let indx = 0; indx < 5; indx++) {
           const info = course.times_by_day[weekdays[indx]];
           // If the listing takes place on this day
@@ -95,7 +105,7 @@ function WorksheetCalendar() {
       earliest.set({ minute: 0 });
       return [earliest, latest, parsedCourses];
     },
-    [hidden_courses]
+    [hidden_courses, cur_season]
   );
 
   // Custom styling for the calendar events

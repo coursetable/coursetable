@@ -8,12 +8,13 @@ import { toast } from 'react-toastify';
 import posthog from 'posthog-js';
 import styled from 'styled-components';
 import { useUser } from '../user';
-import { getSSObject, setSSObject } from '../browserStorage';
+import { getLSObject, setLSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
+import { useWorksheet } from '../worksheetContext';
 
 const StyledButton = styled(Button)`
   color: ${({ theme }) => theme.primary}!important;
@@ -37,6 +38,8 @@ function WorksheetToggleButton({
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
+
+  const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
 
   const worksheet_check = useMemo(() => {
     return isInWorksheet(season_code, crn.toString(), user.worksheet);
@@ -72,11 +75,12 @@ function WorksheetToggleButton({
 
     // removes removed courses from worksheet hidden courses
     if (inWorksheet) {
-      setSSObject('hidden_courses', {}, true);
-      const hidden_courses = getSSObject('hidden_courses');
-      if (hidden_courses[crn]) {
-        hidden_courses[crn] = false;
-        setSSObject('hidden_courses', hidden_courses);
+      setLSObject('hidden_courses', {}, true);
+      if (
+        Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
+        hidden_courses[cur_season][crn]
+      ) {
+        toggleCourse(crn);
       }
     }
 

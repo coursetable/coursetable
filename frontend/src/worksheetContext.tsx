@@ -17,7 +17,7 @@ import { useUser, Worksheet } from './user';
 import { Season } from './common';
 import { OptType, Option, defaultFilters } from './searchContext';
 
-export type HiddenCourses = Record<number, boolean>;
+export type HiddenCourses = Record<Season, Record<number, boolean>>;
 export type WorksheetView = Record<string, string>;
 
 type Store = {
@@ -197,23 +197,46 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   const toggleCourse = useCallback(
     (crn: number) => {
       if (crn === -1) {
-        const new_hidden_courses: HiddenCourses = {};
-        courses.forEach((listing) => {
-          new_hidden_courses[listing.crn] = true;
+        setHiddenCourses((old_hidden_courses: HiddenCourses) => {
+          const new_hidden_courses = { ...old_hidden_courses };
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              new_hidden_courses,
+              cur_season
+            )
+          ) {
+            new_hidden_courses[cur_season] = {};
+          }
+          courses.forEach((listing) => {
+            new_hidden_courses[cur_season][listing.crn] = true;
+          });
+          return new_hidden_courses;
         });
-        setHiddenCourses(new_hidden_courses);
       } else if (crn === -2) {
-        setHiddenCourses({});
+        setHiddenCourses((old_hidden_courses: HiddenCourses) => {
+          const new_hidden_courses = { ...old_hidden_courses };
+          new_hidden_courses[cur_season] = {};
+          return new_hidden_courses;
+        });
       } else {
         setHiddenCourses((old_hidden_courses: HiddenCourses) => {
           const new_hidden_courses = { ...old_hidden_courses };
-          if (old_hidden_courses[crn]) delete new_hidden_courses[crn];
-          else new_hidden_courses[crn] = true;
+          if (
+            !Object.prototype.hasOwnProperty.call(
+              new_hidden_courses,
+              cur_season
+            )
+          ) {
+            new_hidden_courses[cur_season] = {};
+          }
+          if (new_hidden_courses[cur_season][crn])
+            delete new_hidden_courses[cur_season][crn];
+          else new_hidden_courses[cur_season][crn] = true;
           return new_hidden_courses;
         });
       }
     },
-    [setHiddenCourses, courses]
+    [setHiddenCourses, courses, cur_season]
   );
 
   const handleWorksheetView = useCallback(
