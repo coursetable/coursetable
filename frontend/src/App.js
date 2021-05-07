@@ -62,9 +62,9 @@ function App({ themeToggler }) {
   return (
     <>
       <Notice>
-        Got a feature in mind or caught a bug? Check out our new{' '}
-        <a href="/feedback" className="text-light">
-          <u>feedback page</u>
+        Want to search courses faster and see more info? Check out the new{' '}
+        <a href="https://beta.coursetable.com" className="text-light">
+          <u>CourseTable Beta</u>
         </a>
         !
       </Notice>
