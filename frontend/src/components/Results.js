@@ -75,8 +75,8 @@ const ResultsHeader = styled.div`
 // Search results
 const SearchResults = styled.div`
   overflow: hidden;
-  ${({ numCourses }) =>
-    numCourses > 0 && numCourses < 20 ? 'height: 80vh;' : ''}
+  ${({ numCourses, isMobile }) =>
+    numCourses > 0 && numCourses < 20 && !isMobile ? 'height: 80vh;' : ''}
 `;
 
 // Function to calculate column width within a max and min
@@ -646,6 +646,7 @@ const Results = ({
         layer={0}
         className={`${!isList ? 'px-1 pt-3 ' : ''}`}
         numCourses={data.length}
+        isMobile={isMobile}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
