@@ -53,6 +53,7 @@ const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
     // If not sorting by this option previously, start sorting this option
     if (select_sortby.value !== selectOption.value) {
       setSelectSortby(selectOption);
+      setSortOrder(localSortOrder);
     } else {
       // Toggle sort order
       if (localSortOrder === 'asc') {
@@ -67,10 +68,12 @@ const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
 
   // Handle active state and initial sort order
   useEffect(() => {
-    if (firstTime && select_sortby.value === selectOption.value) {
-      setLocalSortOrder(sort_order);
+    if (firstTime) {
+      if (select_sortby.value === selectOption.value) {
+        setLocalSortOrder(sort_order);
+        setActive(true);
+      }
       setFirstTime(false);
-      setActive(true);
     } else if (!active && select_sortby.value === selectOption.value) {
       setActive(true);
     } else if (active && select_sortby.value !== selectOption.value) {
