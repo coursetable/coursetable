@@ -45,14 +45,19 @@ function App({ themeToggler }) {
 
       Promise.allSettled([a, b]).finally(() => {
         // Set loading to false after user info and fb info is fetched
-        setTimeout(setLoading, 3000, false);
+        setLoading(false);
       });
     }
   }, [userRefresh, fbRefresh, firstLoad]);
 
   // If user is a first-year, redirect to beta
   if (user.year === 2025) {
-    window.location.href = `https://beta.coursetable.com${window.location.pathname}`;
+    window.open(
+      `https://beta.coursetable.com${window.location.pathname}`,
+      '_self',
+      '',
+      true
+    );
   }
 
   // Determine if user is logged in
@@ -61,7 +66,7 @@ function App({ themeToggler }) {
   const MyRoute = Route;
 
   // Render spinner if page loading
-  if (loading) {
+  if (loading || user.year === 2025) {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
