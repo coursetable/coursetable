@@ -17,7 +17,6 @@ import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import WorksheetLogin from './pages/WorksheetLogin';
-import CannyContainer from './pages/Canny';
 import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
 
@@ -126,18 +125,6 @@ function App({ themeToggler }) {
 
         <MyRoute exact path="/faq">
           <FAQ />
-        </MyRoute>
-
-        <MyRoute exact path="/feedback/">
-          <Route path="*" component={CannyContainer} />
-        </MyRoute>
-
-        <MyRoute exact path="/feedback/:board">
-          <Route path="*" component={CannyContainer} />
-        </MyRoute>
-
-        <MyRoute exact path="/feedback/:board/*">
-          <Route path="*" component={CannyContainer} />
         </MyRoute>
 
         <MyRoute exact path="/joinus">
