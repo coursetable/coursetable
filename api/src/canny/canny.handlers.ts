@@ -34,7 +34,8 @@ const createCannyToken = (user: User) => {
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response
-): Promise<void> => {
+): // eslint-disable-next-line consistent-return
+Promise<void> => {
   if (!req.user) {
     return res.redirect(FRONTEND_ENDPOINT);
   }
