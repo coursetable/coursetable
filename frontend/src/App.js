@@ -28,6 +28,8 @@ import { useUser } from './user';
  * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
  */
 function App({ themeToggler }) {
+  // First load state
+  const [firstLoad, setFirstLoad] = useState(true);
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -35,14 +37,23 @@ function App({ themeToggler }) {
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
-    const a = userRefresh(true);
-    const b = fbRefresh(true);
+    if (firstLoad) {
+      setFirstLoad(false);
 
-    Promise.allSettled([a, b]).finally(() => {
-      // Set loading to false after user info and fb info is fetched
-      setLoading(false);
-    });
-  }, [userRefresh, fbRefresh]);
+      const a = userRefresh(true);
+      const b = fbRefresh(true);
+
+      Promise.allSettled([a, b]).finally(() => {
+        // Set loading to false after user info and fb info is fetched
+        setTimeout(setLoading, 3000, false);
+      });
+    }
+  }, [userRefresh, fbRefresh, firstLoad]);
+
+  // If user is a first-year, redirect to beta
+  if (user.year === 2025) {
+    window.location.href = `https://beta.coursetable.com${window.location.pathname}`;
+  }
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
@@ -59,6 +70,7 @@ function App({ themeToggler }) {
       </Row>
     );
   }
+
   return (
     <>
       <Notice>
