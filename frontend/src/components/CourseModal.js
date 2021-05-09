@@ -105,7 +105,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
   // key variable for lists
   let key = 0;
 
-  console.log(cur_listing);
+  // console.log(cur_listing);
 
   return (
     <div className="d-flex justify-content-center">

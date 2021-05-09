@@ -85,7 +85,7 @@ export const UserProvider: React.FC = ({ children }) => {
           setYear(undefined);
           posthog.reset();
           Sentry.configureScope((scope) => scope.clear());
-          console.info(err);
+          Sentry.captureException(err);
           if (!suppressError) {
             toast.error('Error fetching worksheet');
           }
@@ -112,7 +112,7 @@ export const UserProvider: React.FC = ({ children }) => {
         .catch((err) => {
           // Error with fetching friends' worksheets
           if (!suppressError) {
-            console.info(err);
+            Sentry.captureException(err);
             toast.error('Error updating Facebook friends');
           }
           setFbLogin(false);
