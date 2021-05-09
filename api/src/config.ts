@@ -36,7 +36,7 @@ export const PHP_URI = 'http://nginx:8080';
 // Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
   ? 'https://localhost:3000'
-  : process.env.FRONTEND_ENDPOINT;
+  : process.env.FRONTEND_ENDPOINT || 'https://coursetable.com';
 
 // CORS options so frontend can interface with server
 export const CORS_OPTIONS = {

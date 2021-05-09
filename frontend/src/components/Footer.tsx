@@ -8,6 +8,8 @@ import { scrollToTop } from '../utilities';
 
 import VercelBanner from '../images/powered-by-vercel.svg';
 
+import { API_ENDPOINT } from '../config';
+
 /**
  * Footer
  */
@@ -63,9 +65,12 @@ function Footer() {
               </li>
               {/* Feedback */}
               <li>
-                <NavLink to="/feedback" onClick={scrollToTop}>
+                <a
+                  href={`${API_ENDPOINT}/api/canny/board`}
+                  onClick={scrollToTop}
+                >
                   <TextComponent type={1}>Feedback</TextComponent>
-                </NavLink>
+                </a>
               </li>
             </ul>
           </div>
