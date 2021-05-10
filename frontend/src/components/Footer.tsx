@@ -67,6 +67,8 @@ function Footer() {
               <li>
                 <a
                   href={`${API_ENDPOINT}/api/canny/board`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   onClick={scrollToTop}
                 >
                   <TextComponent type={1}>Feedback</TextComponent>
