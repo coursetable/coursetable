@@ -18,11 +18,11 @@ import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import WorksheetLogin from './pages/WorksheetLogin';
-import CannyContainer from './pages/Canny';
 
 import { useUser } from './user';
 import { useLocalStorageState } from './browserStorage';
 import { useWindowDimensions } from './components/WindowDimensionsProvider';
+import { API_ENDPOINT } from './config';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -98,7 +98,12 @@ function App({ themeToggler, location }) {
     <>
       <Notice>
         Got a feature in mind or caught a bug? Check out our new{' '}
-        <a href="/feedback" className="text-light">
+        <a
+          href={`${API_ENDPOINT}/api/canny/board`}
+          className="text-light"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <u>feedback page</u>
         </a>
         !
@@ -160,18 +165,6 @@ function App({ themeToggler, location }) {
 
         <MyRoute exact path="/faq">
           <FAQ />
-        </MyRoute>
-
-        <MyRoute exact path="/feedback/">
-          <Route path="*" component={CannyContainer} />
-        </MyRoute>
-
-        <MyRoute exact path="/feedback/:board">
-          <Route path="*" component={CannyContainer} />
-        </MyRoute>
-
-        <MyRoute exact path="/feedback/:board/*">
-          <Route path="*" component={CannyContainer} />
         </MyRoute>
 
         <MyRoute exact path="/joinus">

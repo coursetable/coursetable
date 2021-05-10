@@ -3,7 +3,12 @@
  */
 import express from 'express';
 
-import { YALIES_API_KEY, CANNY_KEY, POSTHOG_CLIENT } from '../config';
+import {
+  YALIES_API_KEY,
+  CANNY_KEY,
+  POSTHOG_CLIENT,
+  FRONTEND_ENDPOINT,
+} from '../config';
 
 import { User } from '../models/student';
 
@@ -29,9 +34,10 @@ const createCannyToken = (user: User) => {
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response
-): Promise<express.Response> => {
+): // eslint-disable-next-line consistent-return
+Promise<void> => {
   if (!req.user) {
-    return res.status(401).json({ success: false });
+    return res.redirect(FRONTEND_ENDPOINT);
   }
 
   const { netId } = req.user;
@@ -39,7 +45,7 @@ export const cannyIdentify = async (
   // Make another request to Yalies.io to get most up-to-date info
   // (also done upon login, but our cookies last a while)
   winston.info("Getting user's enrollment status from Yalies.io");
-  return axios
+  await axios
     .post(
       'https://yalies.io/api/people',
       {
@@ -115,10 +121,12 @@ export const cannyIdentify = async (
         lastName: user.last_name,
       });
 
-      return res.json({ success: true, token });
+      return res.redirect(
+        `https://feedback.coursetable.com/?ssoToken=${token}`
+      );
     })
     .catch((err) => {
       winston.error(`Yalies connection error: ${err}`);
-      return res.status(500).json({ success: false });
+      return res.redirect(FRONTEND_ENDPOINT);
     });
 };
