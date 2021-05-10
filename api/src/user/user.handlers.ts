@@ -116,6 +116,7 @@ export const getUserWorksheet = async (
     netId,
     evaluationsEnabled: studentProfile?.evaluationsEnabled,
     year: studentProfile?.year,
+    school: studentProfile?.school,
     data: worksheets.map((course) => [
       String(course.season),
       String(course.oci_id),
