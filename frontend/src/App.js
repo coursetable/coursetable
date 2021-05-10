@@ -22,6 +22,7 @@ import WorksheetLogin from './pages/WorksheetLogin';
 import { useUser } from './user';
 import { useLocalStorageState } from './browserStorage';
 import { useWindowDimensions } from './components/WindowDimensionsProvider';
+import { API_ENDPOINT } from './config';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -97,7 +98,7 @@ function App({ themeToggler, location }) {
     <>
       <Notice>
         Got a feature in mind or caught a bug? Check out our new{' '}
-        <a href="/feedback" className="text-light">
+        <a href={`${API_ENDPOINT}/api/canny/board`} className="text-light">
           <u>feedback page</u>
         </a>
         !
