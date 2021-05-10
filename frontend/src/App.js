@@ -51,7 +51,7 @@ function App({ themeToggler }) {
   }, [userRefresh, fbRefresh, firstLoad]);
 
   // If user is a first-year, redirect to beta
-  if (user.year === 2025) {
+  if (user.school === 'Yale College' && user.year === 2025) {
     window.open(
       `https://beta.coursetable.com${window.location.pathname}`,
       '_self',
@@ -66,7 +66,7 @@ function App({ themeToggler }) {
   const MyRoute = Route;
 
   // Render spinner if page loading
-  if (loading || user.year === 2025) {
+  if (loading || (user.school === 'Yale College' && user.year === 2025)) {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
