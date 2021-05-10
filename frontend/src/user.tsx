@@ -29,6 +29,8 @@ type Store = {
     netId?: NetId;
     worksheet?: Worksheet;
     hasEvals?: boolean;
+    year?: number;
+    school?: string;
     fbLogin?: boolean;
     fbWorksheets?: FBInfo;
   };
@@ -49,6 +51,10 @@ export const UserProvider: React.FC = ({ children }) => {
   const [worksheet, setWorksheet] = useState<Worksheet | undefined>(undefined);
   // User's evals enabled status
   const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
+  // User's year
+  const [year, setYear] = useState<number | undefined>(undefined);
+  // User's school
+  const [school, setSchool] = useState<string | undefined>(undefined);
   // User's FB login status
   const [fbLogin, setFbLogin] = useState<boolean | undefined>(undefined);
   // User's FB friends' worksheets
@@ -69,6 +75,8 @@ export const UserProvider: React.FC = ({ children }) => {
           // Successfully fetched worksheet
           setNetId(res.data.netId);
           setHasEvals(res.data.evaluationsEnabled);
+          setYear(res.data.year);
+          setSchool(res.data.school);
           setWorksheet(res.data.data);
           posthog.identify(res.data.netId);
           Sentry.setUser({ username: res.data.netId });
@@ -78,15 +86,17 @@ export const UserProvider: React.FC = ({ children }) => {
           setNetId(undefined);
           setWorksheet(undefined);
           setHasEvals(undefined);
+          setYear(undefined);
+          setSchool(undefined);
           posthog.reset();
           Sentry.configureScope((scope) => scope.clear());
-          console.info(err);
+          Sentry.captureException(err);
           if (!suppressError) {
             toast.error('Error fetching worksheet');
           }
         });
     },
-    [setWorksheet, setNetId, setHasEvals]
+    [setWorksheet, setNetId, setHasEvals, setYear, setSchool]
   );
 
   // Refresh user FB stuff
@@ -107,7 +117,7 @@ export const UserProvider: React.FC = ({ children }) => {
         .catch((err) => {
           // Error with fetching friends' worksheets
           if (!suppressError) {
-            console.info(err);
+            Sentry.captureException(err);
             toast.error('Error updating Facebook friends');
           }
           setFbLogin(false);
@@ -122,10 +132,12 @@ export const UserProvider: React.FC = ({ children }) => {
       netId,
       worksheet,
       hasEvals,
+      year,
+      school,
       fbLogin,
       fbWorksheets,
     };
-  }, [netId, worksheet, hasEvals, fbLogin, fbWorksheets]);
+  }, [netId, worksheet, hasEvals, year, school, fbLogin, fbWorksheets]);
 
   const store = useMemo(
     () => ({

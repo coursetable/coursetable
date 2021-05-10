@@ -14,6 +14,7 @@ import { toast } from 'react-toastify';
 import _seasons from '../generated/seasons.json';
 import { CatalogBySeasonQuery } from '../generated/graphql';
 import { Crn, Season, Weekdays } from '../common';
+import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
 
@@ -166,7 +167,7 @@ const FerryProvider: React.FC = ({ children }) => {
       });
       Promise.all(fetches).catch((err) => {
         toast.error('Failed to fetch course information');
-        console.error(err);
+        Sentry.captureException(err);
         addError(err);
       });
     },

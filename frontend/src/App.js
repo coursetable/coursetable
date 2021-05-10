@@ -27,6 +27,8 @@ import { useUser } from './user';
  * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
  */
 function App({ themeToggler }) {
+  // First load state
+  const [firstLoad, setFirstLoad] = useState(true);
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -34,14 +36,28 @@ function App({ themeToggler }) {
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
-    const a = userRefresh(true);
-    const b = fbRefresh(true);
+    if (firstLoad) {
+      setFirstLoad(false);
 
-    Promise.allSettled([a, b]).finally(() => {
-      // Set loading to false after user info and fb info is fetched
-      setLoading(false);
-    });
-  }, [userRefresh, fbRefresh]);
+      const a = userRefresh(true);
+      const b = fbRefresh(true);
+
+      Promise.allSettled([a, b]).finally(() => {
+        // Set loading to false after user info and fb info is fetched
+        setLoading(false);
+      });
+    }
+  }, [userRefresh, fbRefresh, firstLoad]);
+
+  // If user is a first-year, redirect to beta
+  if (user.school === 'Yale College' && user.year === 2025) {
+    window.open(
+      `https://beta.coursetable.com${window.location.pathname}`,
+      '_self',
+      '',
+      true
+    );
+  }
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
@@ -49,7 +65,7 @@ function App({ themeToggler }) {
   const MyRoute = Route;
 
   // Render spinner if page loading
-  if (loading) {
+  if (loading || (user.school === 'Yale College' && user.year === 2025)) {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
@@ -58,12 +74,13 @@ function App({ themeToggler }) {
       </Row>
     );
   }
+
   return (
     <>
       <Notice>
-        Got a feature in mind or caught a bug? Check out our new{' '}
-        <a href="/feedback" className="text-light">
-          <u>feedback page</u>
+        Want to search courses faster and see more info? Check out the new{' '}
+        <a href="https://beta.coursetable.com" className="text-light">
+          <u>CourseTable Beta</u>
         </a>
         !
       </Notice>

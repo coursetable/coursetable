@@ -22,6 +22,7 @@ import ErrorPage from '../components/ErrorPage';
 
 import { useSessionStorageState } from '../browserStorage';
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import * as Sentry from '@sentry/react';
 
 // Function to sort worksheet courses by course code
 const sortByCourseCode = (a, b) => {
@@ -216,7 +217,7 @@ function Worksheet() {
   }
   // Wait for search query to finish
   if (error) {
-    console.error(error);
+    Sentry.captureException(error);
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
         <ErrorPage message="There seems to be an issue with our server" />
@@ -237,7 +238,7 @@ function Worksheet() {
     );
   }
   if (data === undefined) {
-    console.error('data is undefined but worksheet is not');
+    Sentry.captureException('data is undefined but worksheet is not');
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
         <ErrorPage message="Internal error with course data" />

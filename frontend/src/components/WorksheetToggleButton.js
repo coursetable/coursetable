@@ -9,6 +9,7 @@ import styled from 'styled-components';
 import { useUser } from '../user';
 import { getSSObject, setSSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
+import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
 
@@ -86,7 +87,7 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
       })
       .catch((err) => {
         toast.error('Failed to update worksheet');
-        console.error(err);
+        Sentry.captureException(err);
       });
   }
 
