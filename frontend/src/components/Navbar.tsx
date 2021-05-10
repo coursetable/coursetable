@@ -162,6 +162,8 @@ function CourseTableNavbar({
                 {/* Feedback Page */}
                 <StyledLink
                   href={`${API_ENDPOINT}/api/canny/board`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   // Left align about link if not mobile
                   className={!is_mobile ? ' mr-auto' : ''}
                 >
