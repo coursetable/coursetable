@@ -140,13 +140,13 @@ const MeDropdown: React.VFC<Props> = ({
                 style={{ paddingLeft: '2px' }}
               />
               <TextComponent type={1}>
-                <NavLink
-                  to="/feedback"
+                <a
+                  href={`${API_ENDPOINT}/api/canny/board`}
                   className={styles.collapse_text}
                   onClick={scrollToTop}
                 >
                   <StyledHoverText>Feedback</StyledHoverText>
-                </NavLink>
+                </a>
               </TextComponent>
             </Row>
             {/* Try tutorial only on desktop */}

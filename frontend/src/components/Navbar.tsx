@@ -70,21 +70,6 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-// Regular link
-const StyledLink = styled.a`
-  padding: 0.5rem 1rem 0.5rem 0rem;
-  transition: 0.1s;
-  color: ${({ theme }) => theme.text[1]};
-  font-weight: 500;
-  &:hover {
-    text-decoration: none !important;
-    color: ${({ theme }) => theme.primary};
-  }
-  &.active {
-    color: ${({ theme }) => theme.primary};
-  }
-`;
-
 // Nav toggle for mobile
 const StyledNavToggle = styled(Navbar.Toggle)`
   border-color: ${({ theme }) => theme.border} !important;
