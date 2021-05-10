@@ -142,6 +142,8 @@ const MeDropdown: React.VFC<Props> = ({
               <TextComponent type={1}>
                 <a
                   href={`${API_ENDPOINT}/api/canny/board`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={styles.collapse_text}
                   onClick={scrollToTop}
                 >

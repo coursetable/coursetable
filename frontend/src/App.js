@@ -98,7 +98,12 @@ function App({ themeToggler, location }) {
     <>
       <Notice>
         Got a feature in mind or caught a bug? Check out our new{' '}
-        <a href={`${API_ENDPOINT}/api/canny/board`} className="text-light">
+        <a
+          href={`${API_ENDPOINT}/api/canny/board`}
+          className="text-light"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
           <u>feedback page</u>
         </a>
         !
