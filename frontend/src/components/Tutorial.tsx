@@ -167,7 +167,11 @@ const stepsContent: Step[] = [
     text: () => (
       <>
         If you have any problems or new ideas, you can leave feedback on our{' '}
-        <a target="_blank" rel="noopener noreferrer" href={`${API_ENDPOINT}/api/canny/board`}>
+        <a
+          target="_blank"
+          rel="noopener noreferrer"
+          href={`${API_ENDPOINT}/api/canny/board`}
+        >
           <strong>Feedback page</strong>
         </a>
         .
