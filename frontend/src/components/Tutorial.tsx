@@ -5,6 +5,8 @@ import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
+import { API_ENDPOINT } from '../config';
+
 // Next button for tutorial
 const NextButton = styled(Button)`
   background-color: ${({ theme }) => theme.primary_hover};
@@ -165,9 +167,9 @@ const stepsContent: Step[] = [
     text: () => (
       <>
         If you have any problems or new ideas, you can leave feedback on our{' '}
-        <Link target="_blank" rel="noopener noreferrer" to="/feedback">
+        <a target="_blank" rel="noopener noreferrer" href={`${API_ENDPOINT}/api/canny/board`}>
           <strong>Feedback page</strong>
-        </Link>
+        </a>
         .
       </>
     ),
