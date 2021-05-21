@@ -417,7 +417,8 @@ const Results = ({
       <Tooltip id="button-tooltip" {...props}>
         <span>
           Days of the Week <br />
-          and Times
+          and Times <br />
+          (sort order based on day and starting time)
         </span>
       </Tooltip>
     ),
