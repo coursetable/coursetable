@@ -144,6 +144,8 @@ const stepsContent: Step[] = [
     text: () => (
       <>
         Click on <strong>Worksheet</strong> to see all the courses you’ve saved.
+        <br />
+        (Click <strong>Worksheet</strong> above to go to the next step.)
       </>
     ),
     video: true,
