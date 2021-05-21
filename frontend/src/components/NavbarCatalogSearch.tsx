@@ -101,6 +101,11 @@ const AdvancedSelect = styled(CustomSelect)`
   width: 80%;
 `;
 
+// Advanced range styles
+const AdvancedRange = styled(BaseRange)`
+  margin-bottom: 20px;
+`;
+
 // Advanced range group
 const AdvancedRangeGroup = styled.div`
   width: 75%;
@@ -650,10 +655,11 @@ export const NavbarCatalogSearch: React.FC = () => {
                       <RangeValueLabel>{timeValueLabels[0]}</RangeValueLabel>
                       <RangeValueLabel>{timeValueLabels[1]}</RangeValueLabel>
                     </div>
-                    <BaseRange
+                    <AdvancedRange
                       min={0}
                       max={10}
                       step={1}
+                      marks={{ 0: 0, 2: 2, 4: 4, 6: 6, 8: 8, 10: 10 }}
                       key={reset_key}
                       handleStyle={range_handle_style()}
                       railStyle={range_rail_style()}
@@ -679,10 +685,11 @@ export const NavbarCatalogSearch: React.FC = () => {
                       <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
                       <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
                     </div>
-                    <BaseRange
+                    <AdvancedRange
                       min={0}
                       max={510}
                       step={10}
+                      marks={{ 0: 0, 20: 20, 100: 100, 300: 300, 510: 510 }}
                       key={reset_key}
                       handleStyle={range_handle_style()}
                       railStyle={range_rail_style()}
