@@ -13,6 +13,7 @@ import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { useLocalStorageState, useSessionStorageState } from './browserStorage';
 import { Listing, useCourseData, useFerry } from './components/FerryProvider';
 import {
+  getEnrolled,
   getNumFB,
   getOverallRatings,
   getWorkloadRatings,
@@ -517,12 +518,13 @@ export const SearchProvider: React.FC = ({ children }) => {
         return false;
       }
 
+      const enrollment = Number(getEnrolled(listing));
       if (
         searchConfig.min_enrollment !== null &&
         searchConfig.max_enrollment !== null &&
-        (listing.last_enrollment === null ||
-          listing.last_enrollment < searchConfig.min_enrollment ||
-          listing.last_enrollment > searchConfig.max_enrollment)
+        (enrollment === null ||
+          enrollment < searchConfig.min_enrollment ||
+          enrollment > searchConfig.max_enrollment)
       ) {
         return false;
       }

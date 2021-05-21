@@ -20,6 +20,7 @@ import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
 
 import Styles from './ResultsItem.module.css';
 import {
+  getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
   isInWorksheet,
@@ -323,15 +324,7 @@ const ResultsItem = ({
         </div>
         {/* Previous Enrollment */}
         <div style={enroll_style} className="d-flex">
-          <span className="my-auto">
-            {course.enrolled
-              ? course.enrolled
-              : course.last_enrollment && course.last_enrollment_same_professors
-              ? course.last_enrollment
-              : course.last_enrollment
-              ? `~${course.last_enrollment}`
-              : ''}
-          </span>
+          <span className="my-auto">{getEnrolled(course, true)}</span>
         </div>
         {/* Skills and Areas */}
         <div style={sa_style} className="d-flex">

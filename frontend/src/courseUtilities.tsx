@@ -245,6 +245,36 @@ export const getWorkloadRatings = (course: Listing, display = false) => {
   return course_workload;
 };
 
+// Get the enrollment for a course
+export const getEnrolled = (
+  course: Listing,
+  display = false,
+  onModal = false
+) => {
+  let course_enrolled;
+  // Determine which enrolled to use
+  if (display) {
+    course_enrolled = course.enrolled
+      ? course.enrolled // Use enrollment for that season if course has happened
+      : course.last_enrollment && course.last_enrollment_same_professors
+      ? course.last_enrollment // Use last enrollment if course hasn't happened
+      : course.last_enrollment
+      ? `~${course.last_enrollment}${
+          onModal ? ' (different professor was teaching)' : ''
+        }` // Indicate diff prof
+      : `${onModal ? 'N/A' : ''}`; // No enrollment data
+  } else {
+    course_enrolled = course.enrolled
+      ? course.enrolled // Use enrollment for that season if course has happened
+      : course.last_enrollment
+      ? course.last_enrollment // Use last enrollment if course hasn't happened
+      : null; // No enrollment data
+  }
+
+  // Return enrolled
+  return course_enrolled;
+};
+
 // Calculate day and time score
 const calculateDayTime = (course: Listing) => {
   // If no times then return null
