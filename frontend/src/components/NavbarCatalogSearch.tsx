@@ -54,22 +54,14 @@ const NavbarStyledSearchBar = styled(StyledInput)`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
 `;
 
+// Base range styles
+const BaseRange = styled(Range)`
+  cursor: pointer;
+`;
+
 // Range filter
-const StyledRange = styled(Range)<{ isTablet: boolean }>`
+const StyledRange = styled(BaseRange)<{ isTablet: boolean }>`
   width: ${({ isTablet }) => (isTablet ? 74 : 100)}px;
-  cursor: pointer;
-`;
-
-// Advanced enroll filter
-const StyledEnrollRange = styled(Range)`
-  width: 250px;
-  cursor: pointer;
-`;
-
-// Advanced time filter
-const StyledTimeRange = styled(Range)`
-  width: 250px;
-  cursor: pointer;
 `;
 
 // Range filter label
@@ -107,6 +99,16 @@ const AdvancedLabel = styled.div`
 // Advanced select in dropdown
 const AdvancedSelect = styled(CustomSelect)`
   width: 80%;
+`;
+
+// Advanced range group
+const AdvancedRangeGroup = styled.div`
+  width: 75%;
+  display: flex;
+  flex-grow: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 0.5rem;
 `;
 
 // Row for toggles in advanced filters
@@ -210,6 +212,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     setHideGraduateCourses,
     setHideDiscussionSections,
     handleResetFilters,
+    setResetKey,
     setStartTime,
   } = useSearch();
 
@@ -223,12 +226,18 @@ export const NavbarCatalogSearch: React.FC = () => {
 
   // Handle active state for overall and workload range filters
   useEffect(() => {
-    if (canReset && !_.isEqual(overallBounds, defaultFilters.defaultBounds)) {
+    if (
+      canReset &&
+      !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds)
+    ) {
       setActiveOverall(true);
     } else {
       setActiveOverall(false);
     }
-    if (canReset && !_.isEqual(workloadBounds, defaultFilters.defaultBounds)) {
+    if (
+      canReset &&
+      !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds)
+    ) {
       setActiveWorkload(true);
     } else {
       setActiveWorkload(false);
@@ -558,12 +567,16 @@ export const NavbarCatalogSearch: React.FC = () => {
                 }
                 setSelectSchools(defaultFilters.defaultOptions);
                 setSelectCredits(defaultFilters.defaultOptions);
-                setHideCancelled(false);
-                setHideFirstYearSeminars(false);
-                setHideGraduateCourses(false);
+                setHideCancelled(defaultFilters.defaultFalse);
+                setHideFirstYearSeminars(defaultFilters.defaultFalse);
+                setHideGraduateCourses(defaultFilters.defaultFalse);
+                setHideDiscussionSections(defaultFilters.defaultFalse);
                 setStartTime(Date.now());
                 setTimeBounds(defaultFilters.defaultTimeBounds);
+                setTimeValueLabels(defaultFilters.defaultTimeBounds);
                 setEnrollBounds(defaultFilters.defaultEnrollBounds);
+                setEnrollValueLabels(defaultFilters.defaultEnrollBounds);
+                setResetKey(reset_key + 1);
               }}
               select_options={advanced_options}
               data_tutorial={4}
@@ -631,49 +644,59 @@ export const NavbarCatalogSearch: React.FC = () => {
                   <AdvancedLabel style={activeStyle(activeTime)}>
                     Time:
                   </AdvancedLabel>
-                  <RangeValueLabel>{timeValueLabels[0]}</RangeValueLabel>
-                  <StyledTimeRange
-                    min={0}
-                    max={10}
-                    step={1}
-                    key={reset_key}
-                    handleStyle={range_handle_style()}
-                    railStyle={range_rail_style()}
-                    trackStyle={[range_rail_style()]}
-                    defaultValue={timeBounds}
-                    onChange={(value) => {
-                      setTimeValueLabels(value);
-                    }}
-                    onAfterChange={(value) => {
-                      setTimeBounds(value);
-                      setStartTime(Date.now());
-                    }}
-                  />
-                  <RangeValueLabel>{timeValueLabels[1]}</RangeValueLabel>
+                  <AdvancedRangeGroup>
+                    {/* Time Range */}
+                    <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                      <RangeValueLabel>{timeValueLabels[0]}</RangeValueLabel>
+                      <RangeValueLabel>{timeValueLabels[1]}</RangeValueLabel>
+                    </div>
+                    <BaseRange
+                      min={0}
+                      max={10}
+                      step={1}
+                      key={reset_key}
+                      handleStyle={range_handle_style()}
+                      railStyle={range_rail_style()}
+                      trackStyle={[range_rail_style()]}
+                      defaultValue={timeBounds}
+                      onChange={(value) => {
+                        setTimeValueLabels(value);
+                      }}
+                      onAfterChange={(value) => {
+                        setTimeBounds(value);
+                        setStartTime(Date.now());
+                      }}
+                    />
+                  </AdvancedRangeGroup>
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <AdvancedLabel style={activeStyle(activeEnrollment)}>
                     # Enrolled:
                   </AdvancedLabel>
-                  <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
-                  <StyledEnrollRange
-                    min={0}
-                    max={600}
-                    step={30}
-                    key={reset_key}
-                    handleStyle={range_handle_style()}
-                    railStyle={range_rail_style()}
-                    trackStyle={[range_rail_style()]}
-                    defaultValue={enrollBounds}
-                    onChange={(value) => {
-                      setEnrollValueLabels(value);
-                    }}
-                    onAfterChange={(value) => {
-                      setEnrollBounds(value);
-                      setStartTime(Date.now());
-                    }}
-                  />
-                  <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
+                  <AdvancedRangeGroup>
+                    {/* Enrollment Range */}
+                    <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                      <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
+                      <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
+                    </div>
+                    <BaseRange
+                      min={0}
+                      max={510}
+                      step={10}
+                      key={reset_key}
+                      handleStyle={range_handle_style()}
+                      railStyle={range_rail_style()}
+                      trackStyle={[range_rail_style()]}
+                      defaultValue={enrollBounds}
+                      onChange={(value) => {
+                        setEnrollValueLabels(value);
+                      }}
+                      onAfterChange={(value) => {
+                        setEnrollBounds(value);
+                        setStartTime(Date.now());
+                      }}
+                    />
+                  </AdvancedRangeGroup>
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}

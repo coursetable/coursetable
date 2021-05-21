@@ -109,6 +109,7 @@ type Store = {
   setSortOrder: React.Dispatch<React.SetStateAction<SortOrderType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
+  setResetKey: React.Dispatch<React.SetStateAction<number>>;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
   showModal: (listing: Listing) => void;
   hideModal: () => void;
@@ -136,7 +137,7 @@ const def_season_code = `${year}0${season}`;
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
-const defaultBounds = [1, 5];
+const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
   { value: def_season_code, label: toSeasonString(def_season_code)[0] },
 ];
@@ -144,14 +145,14 @@ const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
 const defaultTimeBounds = [0, 10];
-const defaultEnrollBounds = [0, 600];
+const defaultEnrollBounds = [0, 510];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
 export const defaultFilters = {
   defaultOption,
   defaultOptions,
-  defaultBounds,
+  defaultRatingBounds,
   defaultTimeBounds,
   defaultEnrollBounds,
   defaultSeason,
@@ -185,18 +186,20 @@ export const SearchProvider: React.FC = ({ children }) => {
 
   const [overallBounds, setOverallBounds] = useSessionStorageState(
     'overallBounds',
-    defaultBounds
+    defaultRatingBounds
   );
   const [overallValueLabels, setOverallValueLabels] = useState(
-    overallBounds !== defaultBounds ? overallBounds : defaultBounds
+    overallBounds !== defaultRatingBounds ? overallBounds : defaultRatingBounds
   );
 
   const [workloadBounds, setWorkloadBounds] = useSessionStorageState(
     'workloadBounds',
-    defaultBounds
+    defaultRatingBounds
   );
   const [workloadValueLabels, setWorkloadValueLabels] = useState(
-    workloadBounds !== defaultBounds ? workloadBounds : defaultBounds
+    workloadBounds !== defaultRatingBounds
+      ? workloadBounds
+      : defaultRatingBounds
   );
 
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
@@ -417,16 +420,13 @@ export const SearchProvider: React.FC = ({ children }) => {
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    const include_all_overalls =
-      overallBounds[0] === 1 && overallBounds[1] === 5;
+    const include_all_overalls = overallBounds === defaultRatingBounds;
 
-    const include_all_workloads =
-      workloadBounds[0] === 1 && workloadBounds[1] === 5;
+    const include_all_workloads = workloadBounds === defaultRatingBounds;
 
-    const include_all_times = timeBounds[0] === 0 && timeBounds[1] === 10;
+    const include_all_times = timeBounds === defaultTimeBounds;
 
-    const include_all_enrollments =
-      enrollBounds[0] === 0 && enrollBounds[1] === 600;
+    const include_all_enrollments = enrollBounds === defaultEnrollBounds;
 
     // Variables to use in search query
     const search_variables = {
@@ -644,10 +644,10 @@ export const SearchProvider: React.FC = ({ children }) => {
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
     setHideDiscussionSections(true);
-    setOverallBounds(defaultBounds);
-    setOverallValueLabels(defaultBounds);
-    setWorkloadBounds(defaultBounds);
-    setWorkloadValueLabels(defaultBounds);
+    setOverallBounds(defaultRatingBounds);
+    setOverallValueLabels(defaultRatingBounds);
+    setWorkloadBounds(defaultRatingBounds);
+    setWorkloadValueLabels(defaultRatingBounds);
     setSelectSeasons(defaultSeason);
     setSelectSkillsAreas(defaultOptions);
     setSelectCredits(defaultOptions);
@@ -732,8 +732,8 @@ export const SearchProvider: React.FC = ({ children }) => {
       !_.isEqual(searchText, '') ||
       !_.isEqual(select_subjects, defaultOptions) ||
       !_.isEqual(select_skillsareas, defaultOptions) ||
-      !_.isEqual(overallBounds, defaultBounds) ||
-      !_.isEqual(workloadBounds, defaultBounds) ||
+      !_.isEqual(overallBounds, defaultRatingBounds) ||
+      !_.isEqual(workloadBounds, defaultRatingBounds) ||
       !_.isEqual(select_seasons, defaultSeason) ||
       !_.isEqual(timeBounds, defaultTimeBounds) ||
       !_.isEqual(enrollBounds, defaultEnrollBounds) ||
@@ -845,6 +845,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setSortOrder,
       setOrdering,
       handleResetFilters,
+      setResetKey,
       setStartTime,
       showModal,
       hideModal,
@@ -905,6 +906,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setSortOrder,
       setOrdering,
       handleResetFilters,
+      setResetKey,
       setStartTime,
       showModal,
       hideModal,

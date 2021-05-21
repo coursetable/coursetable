@@ -380,8 +380,8 @@ const Search: React.FC = () => {
                     <Container>
                       <Range
                         min={0}
-                        max={600}
-                        step={30}
+                        max={510}
+                        step={10}
                         key={reset_key}
                         defaultValue={enrollBounds}
                         onChange={(value) => {
