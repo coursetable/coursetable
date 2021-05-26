@@ -238,39 +238,18 @@ export const NavbarCatalogSearch: React.FC = () => {
 
   // Handle active state for range filters
   useEffect(() => {
-    if (
-      canReset &&
-      !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds)
-    ) {
-      setActiveOverall(true);
-    } else {
-      setActiveOverall(false);
-    }
-    if (
-      canReset &&
-      !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds)
-    ) {
-      setActiveWorkload(true);
-    } else {
-      setActiveWorkload(false);
-    }
-    if (canReset && !_.isEqual(timeBounds, defaultFilters.defaultTimeBounds)) {
-      setActiveTime(true);
-    } else {
-      setActiveTime(false);
-    }
-    if (
-      canReset &&
-      !_.isEqual(enrollBounds, defaultFilters.defaultEnrollBounds)
-    ) {
-      setActiveEnrollment(true);
-    } else {
-      setActiveEnrollment(false);
-    }
-    if (canReset && !_.isEqual(numBounds, defaultFilters.defaultNumBounds)) {
-      setActiveNumber(true);
-    } else {
-      setActiveNumber(false);
+    if (canReset) {
+      setActiveOverall(
+        !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds)
+      );
+      setActiveWorkload(
+        !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds)
+      );
+      setActiveTime(!_.isEqual(timeBounds, defaultFilters.defaultTimeBounds));
+      setActiveEnrollment(
+        !_.isEqual(enrollBounds, defaultFilters.defaultEnrollBounds)
+      );
+      setActiveNumber(!_.isEqual(numBounds, defaultFilters.defaultNumBounds));
     }
   }, [
     canReset,
