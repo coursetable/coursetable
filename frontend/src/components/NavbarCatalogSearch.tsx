@@ -195,6 +195,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
+    select_sortby,
     reset_key,
     searchData,
     seasonsOptions,
@@ -347,11 +348,19 @@ export const NavbarCatalogSearch: React.FC = () => {
         select_seasons: isTablet && select_seasons,
         select_skillsareas: isTablet && select_skillsareas,
       },
+      ranges: {
+        activeTime,
+        activeEnrollment,
+        activeNumber,
+      },
       toggles: {
         hideCancelled,
         hideFirstYearSeminars,
         hideGraduateCourses,
         hideDiscussionSections,
+      },
+      sorts: {
+        average_gut_rating: select_sortby.value === sortbyOptions[7].value,
       },
     }),
     [
@@ -360,10 +369,14 @@ export const NavbarCatalogSearch: React.FC = () => {
       select_subjects,
       select_seasons,
       select_skillsareas,
+      activeTime,
+      activeEnrollment,
+      activeNumber,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
+      select_sortby,
       isTablet,
     ]
   );

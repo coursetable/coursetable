@@ -202,11 +202,15 @@ export const Popout: React.FC<Props> = ({
               optionValue.length > 0
             ) {
               activeFilters++;
+            } else if (key === 'ranges' && optionValue) {
+              activeFilters++;
             } else if (
               key === 'toggles' &&
               typeof optionValue === 'boolean' &&
               optionValue
             ) {
+              activeFilters++;
+            } else if (key === 'sorts' && optionValue) {
               activeFilters++;
             }
           }
