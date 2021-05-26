@@ -16,8 +16,10 @@ import {
   getEnrolled,
   getNumFB,
   getOverallRatings,
+  getTimes,
   getWorkloadRatings,
   sortCourses,
+  toRangeTime,
   toSeasonString,
 } from './courseUtilities';
 import {
@@ -516,6 +518,27 @@ export const SearchProvider: React.FC = ({ children }) => {
           _.round(average_workload, 1) > searchConfig.max_workload)
       ) {
         return false;
+      }
+
+      if (searchConfig.min_time !== null && searchConfig.max_time !== null) {
+        let include = false;
+        const times = getTimes(listing);
+        if (times) {
+          times.forEach((time) => {
+            if (
+              searchConfig.min_time !== null &&
+              searchConfig.max_time !== null &&
+              time !== null &&
+              toRangeTime(time.start) >= toRangeTime(searchConfig.min_time) &&
+              toRangeTime(time.end) <= toRangeTime(searchConfig.max_time)
+            ) {
+              include = true;
+            }
+          });
+        }
+        if (!include) {
+          return false;
+        }
       }
 
       const enrollment = Number(getEnrolled(listing));

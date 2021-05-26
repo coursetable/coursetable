@@ -317,19 +317,18 @@ export const getTimes = (course: Listing) => {
 
   // Get the first day's times
   const times_by_day = course.times_by_day;
-  const first_day = Object.keys(times_by_day)[0] as Weekdays;
-  const day_times = times_by_day[first_day];
 
-  if (day_times) {
-    // Get the start time
-    const start_time = day_times[0][0];
-    // Get the end time
-    const end_time = day_times[0][1];
-    return { start: start_time, end: end_time };
-  }
+  const initialFiltered: Record<string, string>[] = [];
 
-  // If first day doesn't have any times then return null
-  return null;
+  const times = Object.keys(times_by_day).reduce((filtered, day) => {
+    const day_times = times_by_day[day as Weekdays];
+    if (day_times) {
+      filtered.push({ start: day_times[0][0], end: day_times[0][1] });
+    }
+    return filtered;
+  }, initialFiltered);
+
+  return times;
 };
 
 // Convert real time (24 hour) to range time
