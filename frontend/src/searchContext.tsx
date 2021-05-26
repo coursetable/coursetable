@@ -423,13 +423,19 @@ export const SearchProvider: React.FC = ({ children }) => {
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    const include_all_overalls = overallBounds === defaultRatingBounds;
+    const include_all_overalls = _.isEqual(overallBounds, defaultRatingBounds);
 
-    const include_all_workloads = workloadBounds === defaultRatingBounds;
+    const include_all_workloads = _.isEqual(
+      workloadBounds,
+      defaultRatingBounds
+    );
 
-    const include_all_times = timeBounds === defaultTimeBounds;
+    const include_all_times = _.isEqual(timeBounds, defaultTimeBounds);
 
-    const include_all_enrollments = enrollBounds === defaultEnrollBounds;
+    const include_all_enrollments = _.isEqual(
+      enrollBounds,
+      defaultEnrollBounds
+    );
 
     // Variables to use in search query
     const search_variables = {
@@ -526,6 +532,11 @@ export const SearchProvider: React.FC = ({ children }) => {
         if (times) {
           times.forEach((time) => {
             if (
+              searchConfig.min_time !== null &&
+              searchConfig.max_time !== null
+            ) {
+              include = true;
+            } else if (
               searchConfig.min_time !== null &&
               searchConfig.max_time !== null &&
               time !== null &&
