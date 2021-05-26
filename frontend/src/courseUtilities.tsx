@@ -276,38 +276,6 @@ export const getEnrolled = (
   return course_enrolled;
 };
 
-// Calculate day and time score
-const calculateDayTime = (course: Listing) => {
-  // If no times then return null
-  if (isEmpty(course.times_by_day)) {
-    return null;
-  }
-
-  // Get the first day's times
-  const times_by_day = course.times_by_day;
-  const first_day = Object.keys(times_by_day)[0] as Weekdays;
-  const day_times = times_by_day[first_day];
-
-  if (day_times) {
-    // Get the start time
-    let temp = '';
-    day_times[0][0].split(':').forEach((val) => {
-      temp += val;
-    });
-    const start_time = Number(temp);
-
-    // Calculate the day score
-    const day_score = weekdays.indexOf(first_day) * 10000;
-
-    // Calculate the total score and return
-    const score = day_score + start_time;
-    return score;
-  }
-
-  // If first day doesn't have any times then return null
-  return null;
-};
-
 // Get start and end times
 export const getTimes = (course: Listing) => {
   // If no times then return null
@@ -329,6 +297,41 @@ export const getTimes = (course: Listing) => {
   }, initialFiltered);
 
   return times;
+};
+
+// Calculate day and time score
+const calculateDayTime = (course: Listing) => {
+  // Get all days' times
+  const times = getTimes(course);
+
+  if (times) {
+    // Get earliest start time
+    // const earliestTime = times.reduce((early, time) => {
+    //   if (toRangeTime(time.start) < toRangeTime(early)) {
+    //     early = time.start;
+    //   }
+    //   return early;
+    // }, '0:00');
+
+    // Calculate the time score
+    const start_time = Number(
+      times[0].start.split(':').reduce((final, num) => {
+        final += num;
+        return final;
+      }, '')
+    );
+
+    // Calculate the day score
+    const first_day = Object.keys(course.times_by_day)[0] as Weekdays;
+    const day_score = weekdays.indexOf(first_day) * 10000;
+
+    // Calculate the total score and return
+    const score = day_score + start_time;
+    return score;
+  }
+
+  // If no times then return null
+  return null;
 };
 
 // Convert real time (24 hour) to range time
