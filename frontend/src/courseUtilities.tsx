@@ -5,6 +5,7 @@ import { FBFriendInfo, FBInfo, Worksheet } from './user';
 import { Listing } from './components/FerryProvider';
 import { SortKeys } from './queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
+import { DateTime } from 'luxon';
 
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (
@@ -305,4 +306,61 @@ const calculateDayTime = (course: Listing) => {
 
   // If first day doesn't have any times then return null
   return null;
+};
+
+// Get start and end times
+export const getTimes = (course: Listing) => {
+  // If no times then return null
+  if (isEmpty(course.times_by_day)) {
+    return null;
+  }
+
+  // Get the first day's times
+  const times_by_day = course.times_by_day;
+  const first_day = Object.keys(times_by_day)[0] as Weekdays;
+  const day_times = times_by_day[first_day];
+
+  if (day_times) {
+    // Get the start time
+    const start_time = day_times[0][0];
+    // Get the end time
+    const end_time = day_times[0][1];
+    return { start: start_time, end: end_time };
+  }
+
+  // If first day doesn't have any times then return null
+  return null;
+};
+
+// Convert real time (24 hour) to range time
+export const toRangeTime = (time: string) => {
+  // Get hour and minute
+  const splitTime = time.split(':');
+  const hour = Number(splitTime[0]);
+  const minute = Number(splitTime[1]);
+
+  // Calculate range time
+  const rangeTime = hour * 12 + minute / 5;
+  return rangeTime;
+};
+
+// Convert range time to real time (24 hour)
+export const toRealTime = (time: number) => {
+  // Get hour and minute
+  const hour = Math.floor(time / 12);
+  const minute = (time % 12) * 5;
+
+  // Format real time
+  const realTime = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
+  return realTime;
+};
+
+// Convert 24 hour time to 12 hour time
+export const to12HourTime = (time: string) => {
+  return DateTime.fromFormat(time, 'H:mm').toFormat('h:mma');
+};
+
+// Convert 12 hour time to 24 hour time
+export const to24HourTime = (time: string) => {
+  return DateTime.fromFormat(time, 'h:mm').toFormat('H:mm');
 };
