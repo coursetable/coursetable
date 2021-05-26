@@ -187,6 +187,8 @@ export const NavbarCatalogSearch: React.FC = () => {
     timeValueLabels,
     enrollBounds,
     enrollValueLabels,
+    numBounds,
+    numValueLabels,
     select_schools,
     select_credits,
     hideCancelled,
@@ -211,6 +213,8 @@ export const NavbarCatalogSearch: React.FC = () => {
     setTimeValueLabels,
     setEnrollBounds,
     setEnrollValueLabels,
+    setNumBounds,
+    setNumValueLabels,
     setSelectSchools,
     setSelectCredits,
     setHideCancelled,
@@ -222,15 +226,16 @@ export const NavbarCatalogSearch: React.FC = () => {
     setStartTime,
   } = useSearch();
 
-  // Active state for overall and workload range filters
+  // Active state for range filters
   const [activeOverall, setActiveOverall] = useState(false);
   const [activeWorkload, setActiveWorkload] = useState(false);
   const [activeTime, setActiveTime] = useState(false);
   const [activeEnrollment, setActiveEnrollment] = useState(false);
+  const [activeNumber, setActiveNumber] = useState(false);
 
   const globalTheme = useTheme();
 
-  // Handle active state for overall and workload range filters
+  // Handle active state for range filters
   useEffect(() => {
     if (
       canReset &&
@@ -261,9 +266,21 @@ export const NavbarCatalogSearch: React.FC = () => {
     } else {
       setActiveEnrollment(false);
     }
-  }, [canReset, overallBounds, workloadBounds, timeBounds, enrollBounds]);
+    if (canReset && !_.isEqual(numBounds, defaultFilters.defaultNumBounds)) {
+      setActiveNumber(true);
+    } else {
+      setActiveNumber(false);
+    }
+  }, [
+    canReset,
+    overallBounds,
+    workloadBounds,
+    timeBounds,
+    enrollBounds,
+    numBounds,
+  ]);
 
-  // Active styles for overall and workload range filters
+  // Active styles for range filters
   const activeStyle = useCallback(
     (active: boolean) => {
       if (active) {
@@ -577,11 +594,13 @@ export const NavbarCatalogSearch: React.FC = () => {
                 setHideFirstYearSeminars(defaultFilters.defaultFalse);
                 setHideGraduateCourses(defaultFilters.defaultFalse);
                 setHideDiscussionSections(defaultFilters.defaultFalse);
-                setStartTime(Date.now());
                 setTimeBounds(defaultFilters.defaultTimeBounds);
                 setTimeValueLabels(defaultFilters.defaultTimeBounds);
                 setEnrollBounds(defaultFilters.defaultEnrollBounds);
                 setEnrollValueLabels(defaultFilters.defaultEnrollBounds);
+                setNumBounds(defaultFilters.defaultNumBounds);
+                setNumValueLabels(defaultFilters.defaultNumBounds);
+                setStartTime(Date.now());
                 setResetKey(reset_key + 1);
               }}
               select_options={advanced_options}
@@ -712,6 +731,47 @@ export const NavbarCatalogSearch: React.FC = () => {
                       }}
                       onAfterChange={(value) => {
                         setEnrollBounds(value);
+                        setStartTime(Date.now());
+                      }}
+                    />
+                  </AdvancedRangeGroup>
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  <AdvancedLabel style={activeStyle(activeNumber)}>
+                    Course #:
+                  </AdvancedLabel>
+                  <AdvancedRangeGroup>
+                    {/* Course Number Range */}
+                    <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                      <RangeValueLabel>
+                        {numValueLabels[0].toString().padStart(3, '0')}
+                      </RangeValueLabel>
+                      <RangeValueLabel>
+                        {numValueLabels[1].toString().padStart(3, '0')}
+                      </RangeValueLabel>
+                    </div>
+                    <AdvancedRange
+                      min={0}
+                      max={1500}
+                      step={10}
+                      marks={{
+                        0: '000',
+                        100: '100',
+                        200: '200',
+                        300: '300',
+                        400: '400',
+                        500: '500',
+                      }}
+                      key={reset_key}
+                      handleStyle={range_handle_style()}
+                      railStyle={range_rail_style()}
+                      trackStyle={[range_rail_style()]}
+                      defaultValue={numBounds}
+                      onChange={(value) => {
+                        setNumValueLabels(value);
+                      }}
+                      onAfterChange={(value) => {
+                        setNumBounds(value);
                         setStartTime(Date.now());
                       }}
                     />
