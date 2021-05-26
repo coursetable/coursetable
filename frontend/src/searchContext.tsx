@@ -533,11 +533,6 @@ export const SearchProvider: React.FC = ({ children }) => {
           times.forEach((time) => {
             if (
               searchConfig.min_time !== null &&
-              searchConfig.max_time !== null
-            ) {
-              include = true;
-            } else if (
-              searchConfig.min_time !== null &&
               searchConfig.max_time !== null &&
               time !== null &&
               toRangeTime(time.start) >= toRangeTime(searchConfig.min_time) &&
