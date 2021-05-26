@@ -30,6 +30,7 @@ import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';
 import ResultsColumnSort from './ResultsColumnSort';
+import { toRangeTime, toRealTime, to12HourTime } from '../courseUtilities';
 
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -652,24 +653,35 @@ export const NavbarCatalogSearch: React.FC = () => {
                   <AdvancedRangeGroup>
                     {/* Time Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
-                      <RangeValueLabel>{timeValueLabels[0]}</RangeValueLabel>
-                      <RangeValueLabel>{timeValueLabels[1]}</RangeValueLabel>
+                      <RangeValueLabel>
+                        {to12HourTime(timeValueLabels[0])}
+                      </RangeValueLabel>
+                      <RangeValueLabel>
+                        {to12HourTime(timeValueLabels[1])}
+                      </RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={0}
-                      max={10}
+                      min={84}
+                      max={264}
                       step={1}
-                      marks={{ 0: 0, 2: 2, 4: 4, 6: 6, 8: 8, 10: 10 }}
+                      marks={{
+                        84: '7AM',
+                        120: '10AM',
+                        156: '1PM',
+                        192: '4PM',
+                        228: '7PM',
+                        264: '10PM',
+                      }}
                       key={reset_key}
                       handleStyle={range_handle_style()}
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
-                      defaultValue={timeBounds}
+                      defaultValue={timeBounds.map(toRangeTime)}
                       onChange={(value) => {
-                        setTimeValueLabels(value);
+                        setTimeValueLabels(value.map(toRealTime));
                       }}
                       onAfterChange={(value) => {
-                        setTimeBounds(value);
+                        setTimeBounds(value.map(toRealTime));
                         setStartTime(Date.now());
                       }}
                     />

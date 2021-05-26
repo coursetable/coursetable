@@ -33,6 +33,7 @@ import {
 import { useSessionStorageState } from '../browserStorage';
 import { useSearch, Option } from '../searchContext';
 import { ValueType } from 'react-select/src/types';
+import { to12HourTime, toRangeTime, toRealTime } from '../courseUtilities';
 
 /**
  * Renders catalog page
@@ -148,7 +149,12 @@ const Search: React.FC = () => {
     const key = e.className;
     return (
       <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.time_tooltip}`}>{value}</div>
+        <div
+          className={`shadow ${Styles.time_tooltip}`}
+          style={{ width: '3.5rem' }}
+        >
+          {to12HourTime(toRealTime(value))}
+        </div>
       </Handle>
     );
   }, []);
@@ -354,16 +360,16 @@ const Search: React.FC = () => {
                   <Col>
                     <Container>
                       <Range
-                        min={0}
-                        max={10}
+                        min={84}
+                        max={264}
                         step={1}
                         key={reset_key}
-                        defaultValue={timeBounds}
+                        defaultValue={timeBounds.map(toRangeTime)}
                         onChange={(value) => {
-                          setTimeValueLabels(value);
+                          setTimeValueLabels(value.map(toRealTime));
                         }}
                         onAfterChange={(value) => {
-                          setTimeBounds(value);
+                          setTimeBounds(value.map(toRealTime));
                         }}
                         handle={timeSliderHandle}
                         className={Styles.slider}

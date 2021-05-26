@@ -64,8 +64,8 @@ type Store = {
   workloadBounds: number[];
   workloadValueLabels: number[];
   select_seasons: Option[];
-  timeBounds: number[];
-  timeValueLabels: number[];
+  timeBounds: string[];
+  timeValueLabels: string[];
   enrollBounds: number[];
   enrollValueLabels: number[];
   select_schools: Option[];
@@ -96,8 +96,8 @@ type Store = {
   setWorkloadBounds: React.Dispatch<React.SetStateAction<number[]>>;
   setWorkloadValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSeasons: React.Dispatch<React.SetStateAction<Option[]>>;
-  setTimeBounds: React.Dispatch<React.SetStateAction<number[]>>;
-  setTimeValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
+  setTimeBounds: React.Dispatch<React.SetStateAction<string[]>>;
+  setTimeValueLabels: React.Dispatch<React.SetStateAction<string[]>>;
   setEnrollBounds: React.Dispatch<React.SetStateAction<number[]>>;
   setEnrollValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSchools: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -145,7 +145,7 @@ const defaultSeason: Option[] = [
 const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
-const defaultTimeBounds = [0, 10];
+const defaultTimeBounds = ['7:00', '22:00'];
 const defaultEnrollBounds = [0, 510];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
