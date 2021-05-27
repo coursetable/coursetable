@@ -23,6 +23,7 @@ import {
   schoolOptions,
   subjectOptions,
   sortbyOptions,
+  dayOptions,
 } from '../queries/Constants';
 import CustomSelect from './CustomSelect';
 import { useSearch, Option, defaultFilters } from '../searchContext';
@@ -183,6 +184,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     workloadBounds,
     workloadValueLabels,
     select_seasons,
+    select_days,
     timeBounds,
     timeValueLabels,
     enrollBounds,
@@ -210,6 +212,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
+    setSelectDays,
     setTimeBounds,
     setTimeValueLabels,
     setEnrollBounds,
@@ -321,6 +324,7 @@ export const NavbarCatalogSearch: React.FC = () => {
   const advanced_options = useMemo(
     () => ({
       selects: {
+        select_days,
         select_schools,
         select_credits,
         select_subjects: isTablet && select_subjects,
@@ -343,6 +347,7 @@ export const NavbarCatalogSearch: React.FC = () => {
       },
     }),
     [
+      select_days,
       select_schools,
       select_credits,
       select_subjects,
@@ -580,6 +585,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                   setSelectSeasons(defaultFilters.defaultOptions);
                   setSelectSkillsAreas(defaultFilters.defaultOptions);
                 }
+                setSelectDays(defaultFilters.defaultOptions);
                 setSelectSchools(defaultFilters.defaultOptions);
                 setSelectCredits(defaultFilters.defaultOptions);
                 setHideCancelled(defaultFilters.defaultFalse);
@@ -657,6 +663,23 @@ export const NavbarCatalogSearch: React.FC = () => {
                     </Row>
                   </>
                 )}
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Day Multi-Select */}
+                  <AdvancedLabel>Day:</AdvancedLabel>
+                  <AdvancedSelect
+                    closeMenuOnSelect
+                    isMulti
+                    value={select_days}
+                    options={dayOptions}
+                    placeholder="All Days"
+                    // prevent overlap with tooltips
+                    menuPortalTarget={document.querySelector('#portal')}
+                    onChange={(selectedOption: ValueType<Option>) => {
+                      setSelectDays((selectedOption as Option[]) || []);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   <AdvancedLabel style={activeStyle(activeTime)}>
                     Time:

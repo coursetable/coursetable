@@ -16,7 +16,7 @@ import {
   getEnrolled,
   getNumFB,
   getOverallRatings,
-  getTimes,
+  getDayTimes,
   getWorkloadRatings,
   sortCourses,
   toRangeTime,
@@ -66,6 +66,7 @@ type Store = {
   workloadBounds: number[];
   workloadValueLabels: number[];
   select_seasons: Option[];
+  select_days: Option[];
   timeBounds: string[];
   timeValueLabels: string[];
   enrollBounds: number[];
@@ -100,6 +101,7 @@ type Store = {
   setWorkloadBounds: React.Dispatch<React.SetStateAction<number[]>>;
   setWorkloadValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSeasons: React.Dispatch<React.SetStateAction<Option[]>>;
+  setSelectDays: React.Dispatch<React.SetStateAction<Option[]>>;
   setTimeBounds: React.Dispatch<React.SetStateAction<string[]>>;
   setTimeValueLabels: React.Dispatch<React.SetStateAction<string[]>>;
   setEnrollBounds: React.Dispatch<React.SetStateAction<number[]>>;
@@ -214,6 +216,11 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
     'select_seasons',
     defaultSeason
+  );
+
+  const [select_days, setSelectDays] = useSessionStorageState(
+    'select_days',
+    defaultOptions
   );
 
   const [timeBounds, setTimeBounds] = useSessionStorageState(
@@ -422,7 +429,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       }
     }
 
-    // subject to filter
+    // subjects to filter
     let processedSubjects;
     if (select_subjects != null) {
       processedSubjects = select_subjects.map((x) => {
@@ -432,6 +439,19 @@ export const SearchProvider: React.FC = ({ children }) => {
       // set null defaults
       if (processedSubjects.length === 0) {
         processedSubjects = null;
+      }
+    }
+
+    // days to filter
+    let processedDays;
+    if (select_days != null) {
+      processedDays = select_days.map((x) => {
+        return x.value;
+      });
+
+      // set null defaults
+      if (processedDays.length === 0) {
+        processedDays = null;
       }
     }
 
@@ -462,6 +482,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       credits: new Set(processedCredits),
       schools: new Set(processedSchools),
       subjects: new Set(processedSubjects),
+      days: new Set(processedDays),
       min_overall: include_all_overalls ? null : overallBounds[0],
       max_overall: include_all_overalls ? null : overallBounds[1],
       min_workload: include_all_workloads ? null : workloadBounds[0],
@@ -499,6 +520,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     select_schools,
     select_skillsareas,
     select_subjects,
+    select_days,
     searchText,
   ]);
 
@@ -547,7 +569,7 @@ export const SearchProvider: React.FC = ({ children }) => {
 
       if (searchConfig.min_time !== null && searchConfig.max_time !== null) {
         let include = false;
-        const times = getTimes(listing);
+        const times = getDayTimes(listing);
         if (times) {
           times.forEach((time) => {
             if (
@@ -631,6 +653,23 @@ export const SearchProvider: React.FC = ({ children }) => {
         !searchConfig.subjects.has(listing.subject)
       ) {
         return false;
+      }
+
+      const days = getDayTimes(listing);
+      if (searchConfig.days.size !== 0) {
+        let include = true;
+        if (days !== null) {
+          days.forEach((day) => {
+            if (!searchConfig.days.has(day.day)) {
+              include = false;
+            }
+          });
+        } else {
+          include = false;
+        }
+        if (!include) {
+          return false;
+        }
       }
 
       if (
@@ -719,6 +758,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setNumValueLabels(defaultNumBounds);
     setSelectSeasons(defaultSeason);
     setSelectSkillsAreas(defaultOptions);
+    setSelectDays(defaultOptions);
     setSelectCredits(defaultOptions);
     setSelectSchools(defaultOptions);
     setSelectSubjects(defaultOptions);
@@ -743,6 +783,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setEnrollBounds,
     setNumBounds,
     setSelectSchools,
+    setSelectDays,
     setSelectCredits,
     setHideCancelled,
     setHideFirstYearSeminars,
@@ -865,6 +906,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       workloadBounds,
       workloadValueLabels,
       select_seasons,
+      select_days,
       timeBounds,
       timeValueLabels,
       enrollBounds,
@@ -901,6 +943,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setWorkloadBounds,
       setWorkloadValueLabels,
       setSelectSeasons,
+      setSelectDays,
       setTimeBounds,
       setTimeValueLabels,
       setEnrollBounds,
@@ -932,6 +975,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       workloadBounds,
       workloadValueLabels,
       select_seasons,
+      select_days,
       timeBounds,
       timeValueLabels,
       enrollBounds,
@@ -966,6 +1010,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setWorkloadBounds,
       setWorkloadValueLabels,
       setSelectSeasons,
+      setSelectDays,
       setTimeBounds,
       setTimeValueLabels,
       setEnrollBounds,

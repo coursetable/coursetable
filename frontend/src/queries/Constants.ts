@@ -155,6 +155,14 @@ export const creditOptions = [
   { label: '2', value: 2 },
 ] as const;
 
+export const dayOptions = [
+  { label: 'Monday', value: 'Monday' },
+  { label: 'Tuesday', value: 'Tuesday' },
+  { label: 'Wednesday', value: 'Wednesday' },
+  { label: 'Thursday', value: 'Thursday' },
+  { label: 'Friday', value: 'Friday' },
+] as const;
+
 // to get a list of abbreviations, run
 // a distinct_on:school query over computed_course_info
 

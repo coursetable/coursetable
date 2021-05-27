@@ -277,7 +277,7 @@ export const getEnrolled = (
 };
 
 // Get start and end times
-export const getTimes = (course: Listing) => {
+export const getDayTimes = (course: Listing) => {
   // If no times then return null
   if (isEmpty(course.times_by_day)) {
     return null;
@@ -291,7 +291,7 @@ export const getTimes = (course: Listing) => {
   const times = Object.keys(times_by_day).reduce((filtered, day) => {
     const day_times = times_by_day[day as Weekdays];
     if (day_times) {
-      filtered.push({ start: day_times[0][0], end: day_times[0][1] });
+      filtered.push({ day, start: day_times[0][0], end: day_times[0][1] });
     }
     return filtered;
   }, initialFiltered);
@@ -302,7 +302,7 @@ export const getTimes = (course: Listing) => {
 // Calculate day and time score
 const calculateDayTime = (course: Listing) => {
   // Get all days' times
-  const times = getTimes(course);
+  const times = getDayTimes(course);
 
   if (times) {
     // Get earliest start time
