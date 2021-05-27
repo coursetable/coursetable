@@ -706,13 +706,24 @@ export const NavbarCatalogSearch: React.FC = () => {
                     {/* Enrollment Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
                       <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
-                      <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
+                      <RangeValueLabel>
+                        {enrollValueLabels[1] === 160
+                          ? '160+'
+                          : enrollValueLabels[1]}
+                      </RangeValueLabel>
                     </div>
                     <AdvancedRange
                       min={0}
-                      max={510}
-                      step={10}
-                      marks={{ 0: 0, 20: 20, 100: 100, 300: 300, 510: 510 }}
+                      max={160}
+                      step={5}
+                      marks={{
+                        0: 0,
+                        20: 20,
+                        50: 50,
+                        75: 75,
+                        100: 100,
+                        160: '160+',
+                      }}
                       key={reset_key}
                       handleStyle={range_handle_style()}
                       railStyle={range_rail_style()}
@@ -739,12 +750,14 @@ export const NavbarCatalogSearch: React.FC = () => {
                         {numValueLabels[0].toString().padStart(3, '0')}
                       </RangeValueLabel>
                       <RangeValueLabel>
-                        {numValueLabels[1].toString().padStart(3, '0')}
+                        {numValueLabels[1] === 1000
+                          ? '1000+'
+                          : numValueLabels[1].toString().padStart(3, '0')}
                       </RangeValueLabel>
                     </div>
                     <AdvancedRange
                       min={0}
-                      max={1500}
+                      max={1000}
                       step={10}
                       marks={{
                         0: '000',
@@ -753,6 +766,11 @@ export const NavbarCatalogSearch: React.FC = () => {
                         300: '300',
                         400: '400',
                         500: '500',
+                        600: '600',
+                        700: '700',
+                        800: '800',
+                        900: '900',
+                        1000: '1000+',
                       }}
                       key={reset_key}
                       handleStyle={range_handle_style()}

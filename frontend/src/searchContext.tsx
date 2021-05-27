@@ -152,8 +152,8 @@ const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
 const defaultTimeBounds = ['7:00', '22:00'];
-const defaultEnrollBounds = [0, 510];
-const defaultNumBounds = [0, 1500];
+const defaultEnrollBounds = [0, 160];
+const defaultNumBounds = [0, 1000];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
@@ -566,13 +566,15 @@ export const SearchProvider: React.FC = ({ children }) => {
         }
       }
 
-      const enrollment = Number(getEnrolled(listing));
+      let enrollment = getEnrolled(listing);
+      if (enrollment !== null) enrollment = Number(enrollment);
       if (
         searchConfig.min_enrollment !== null &&
         searchConfig.max_enrollment !== null &&
         (enrollment === null ||
           enrollment < searchConfig.min_enrollment ||
-          enrollment > searchConfig.max_enrollment)
+          (searchConfig.max_enrollment < 160 &&
+            enrollment > searchConfig.max_enrollment))
       ) {
         return false;
       }
@@ -583,7 +585,7 @@ export const SearchProvider: React.FC = ({ children }) => {
         searchConfig.max_number !== null &&
         (number === null ||
           number < searchConfig.min_number ||
-          number > searchConfig.max_number)
+          (searchConfig.max_number < 1000 && number > searchConfig.max_number))
       ) {
         return false;
       }
