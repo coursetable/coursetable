@@ -381,6 +381,3 @@ export const toExponential = (number: number) => {
 export const toLinear = (number: number) => {
   return getBaseLog(1.01, number);
 };
-
-console.log(toExponential(627));
-console.log(toLinear(510));
