@@ -247,22 +247,25 @@ export const NavbarCatalogSearch: React.FC = () => {
 
   // Handle active state for range filters
   useEffect(() => {
-    if (canReset) {
-      setActiveOverall(
-        !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds)
-      );
-      setActiveWorkload(
-        !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds)
-      );
-      setActiveTime(!_.isEqual(timeBounds, defaultFilters.defaultTimeBounds));
-      setActiveEnrollment(
+    setActiveOverall(
+      canReset && !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds)
+    );
+    setActiveWorkload(
+      canReset && !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds)
+    );
+    setActiveTime(
+      canReset && !_.isEqual(timeBounds, defaultFilters.defaultTimeBounds)
+    );
+    setActiveEnrollment(
+      canReset &&
         !_.isEqual(
           enrollBounds.map(Math.round),
           defaultFilters.defaultEnrollBounds
         )
-      );
-      setActiveNumber(!_.isEqual(numBounds, defaultFilters.defaultNumBounds));
-    }
+    );
+    setActiveNumber(
+      canReset && !_.isEqual(numBounds, defaultFilters.defaultNumBounds)
+    );
   }, [
     canReset,
     overallBounds,
@@ -509,8 +512,8 @@ export const NavbarCatalogSearch: React.FC = () => {
                   <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
                 </div>
                 <StyledRange
-                  min={1}
-                  max={5}
+                  min={defaultFilters.defaultRatingBounds[0]}
+                  max={defaultFilters.defaultRatingBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
                   key={reset_key}
@@ -540,8 +543,8 @@ export const NavbarCatalogSearch: React.FC = () => {
                   <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
                 </div>
                 <StyledRange
-                  min={1}
-                  max={5}
+                  min={defaultFilters.defaultRatingBounds[0]}
+                  max={defaultFilters.defaultRatingBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
                   key={reset_key}
@@ -704,8 +707,8 @@ export const NavbarCatalogSearch: React.FC = () => {
                       </RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={84}
-                      max={264}
+                      min={toRangeTime(defaultFilters.defaultTimeBounds[0])}
+                      max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
                       step={1}
                       marks={{
                         84: '7AM',
@@ -741,8 +744,12 @@ export const NavbarCatalogSearch: React.FC = () => {
                       <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={0}
-                      max={630}
+                      min={Math.round(
+                        toLinear(defaultFilters.defaultEnrollBounds[0])
+                      )}
+                      max={Math.round(
+                        toLinear(defaultFilters.defaultEnrollBounds[1])
+                      )}
                       step={10}
                       marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
                       key={reset_key}
@@ -779,8 +786,8 @@ export const NavbarCatalogSearch: React.FC = () => {
                       </RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={0}
-                      max={1000}
+                      min={defaultFilters.defaultNumBounds[0]}
+                      max={defaultFilters.defaultNumBounds[1]}
                       step={10}
                       marks={{
                         0: '000',
