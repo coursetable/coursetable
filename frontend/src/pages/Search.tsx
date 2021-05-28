@@ -31,9 +31,15 @@ import {
 } from '../components/StyledComponents';
 
 import { useSessionStorageState } from '../browserStorage';
-import { useSearch, Option } from '../searchContext';
+import { useSearch, Option, defaultFilters } from '../searchContext';
 import { ValueType } from 'react-select/src/types';
-import { to12HourTime, toRangeTime, toRealTime } from '../courseUtilities';
+// import {
+//   to12HourTime,
+//   toExponential,
+//   toLinear,
+//   toRangeTime,
+//   toRealTime,
+// } from '../courseUtilities';
 
 /**
  * Renders catalog page
@@ -56,8 +62,8 @@ const Search: React.FC = () => {
     overallBounds,
     workloadBounds,
     select_seasons,
-    timeBounds,
-    enrollBounds,
+    // timeBounds,
+    // enrollBounds,
     select_schools,
     // select_credits,
     hideCancelled,
@@ -80,10 +86,10 @@ const Search: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
-    setTimeBounds,
-    setTimeValueLabels,
-    setEnrollBounds,
-    setEnrollValueLabels,
+    // setTimeBounds,
+    // setTimeValueLabels,
+    // setEnrollBounds,
+    // setEnrollValueLabels,
     setSelectSchools,
     // setSelectCredits,
     setHideCancelled,
@@ -145,27 +151,29 @@ const Search: React.FC = () => {
       </Handle>
     );
   }, []);
-  const timeSliderHandle = useCallback(({ value, dragging, ...e }) => {
-    const key = e.className;
-    return (
-      <Handle {...e} key={key}>
-        <div
-          className={`shadow ${Styles.time_tooltip}`}
-          style={{ width: '3.5rem' }}
-        >
-          {to12HourTime(toRealTime(value))}
-        </div>
-      </Handle>
-    );
-  }, []);
-  const enrollmentSliderHandle = useCallback(({ value, dragging, ...e }) => {
-    const key = e.className;
-    return (
-      <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.enrollment_tooltip}`}>{value}</div>
-      </Handle>
-    );
-  }, []);
+  // const timeSliderHandle = useCallback(({ value, dragging, ...e }) => {
+  //   const key = e.className;
+  //   return (
+  //     <Handle {...e} key={key}>
+  //       <div
+  //         className={`shadow ${Styles.time_tooltip}`}
+  //         style={{ width: '3.5rem' }}
+  //       >
+  //         {to12HourTime(toRealTime(value))}
+  //       </div>
+  //     </Handle>
+  //   );
+  // }, []);
+  // const enrollmentSliderHandle = useCallback(({ value, dragging, ...e }) => {
+  //   const key = e.className;
+  //   return (
+  //     <Handle {...e} key={key}>
+  //       <div className={`shadow ${Styles.enrollment_tooltip}`}>
+  //         {Math.round(toExponential(value))}
+  //       </div>
+  //     </Handle>
+  //   );
+  // }, []);
 
   // Switch to grid view if mobile
   useEffect(() => {
@@ -312,8 +320,8 @@ const Search: React.FC = () => {
                   <Col>
                     <Container style={{ paddingTop: '1px' }}>
                       <Range
-                        min={1}
-                        max={5}
+                        min={defaultFilters.defaultRatingBounds[0]}
+                        max={defaultFilters.defaultRatingBounds[1]}
                         step={0.1}
                         key={reset_key}
                         defaultValue={overallBounds}
@@ -335,8 +343,8 @@ const Search: React.FC = () => {
                   <Col>
                     <Container>
                       <Range
-                        min={1}
-                        max={5}
+                        min={defaultFilters.defaultRatingBounds[0]}
+                        max={defaultFilters.defaultRatingBounds[1]}
                         step={0.1}
                         key={reset_key}
                         defaultValue={workloadBounds}
@@ -355,13 +363,14 @@ const Search: React.FC = () => {
                     </div>
                   </Col>
                 </Row>
-                {/* Time slider */}
+                {/* Omitting advanced range filters for mobile */}
+                {/* // Time slider
                 <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
                   <Col>
                     <Container>
                       <Range
-                        min={84}
-                        max={264}
+                        min={toRangeTime(defaultFilters.defaultTimeBounds[0])}
+                        max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
                         step={1}
                         key={reset_key}
                         defaultValue={timeBounds.map(toRangeTime)}
@@ -380,21 +389,27 @@ const Search: React.FC = () => {
                     </div>
                   </Col>
                 </Row>
-                {/* Enrollment slider */}
+                // Enrollment slider
                 <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
                   <Col>
                     <Container>
                       <Range
-                        min={0}
-                        max={510}
+                        min={Math.round(
+                          toLinear(defaultFilters.defaultEnrollBounds[0])
+                        )}
+                        max={Math.round(
+                          toLinear(defaultFilters.defaultEnrollBounds[1])
+                        )}
                         step={10}
                         key={reset_key}
-                        defaultValue={enrollBounds}
+                        defaultValue={enrollBounds.map(toLinear)}
                         onChange={(value) => {
-                          setEnrollValueLabels(value);
+                          setEnrollValueLabels(
+                            value.map(toExponential).map(Math.round)
+                          );
                         }}
                         onAfterChange={(value) => {
-                          setEnrollBounds(value);
+                          setEnrollBounds(value.map(toExponential));
                         }}
                         handle={enrollmentSliderHandle}
                         className={Styles.slider}
@@ -404,7 +419,7 @@ const Search: React.FC = () => {
                       Enrollment
                     </div>
                   </Col>
-                </Row>
+                </Row> */}
                 <StyledHr className="mb-0" />
                 <Row
                   className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
