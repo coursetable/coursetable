@@ -33,6 +33,7 @@ import {
 import { useSessionStorageState } from '../browserStorage';
 import { useSearch, Option } from '../searchContext';
 import { ValueType } from 'react-select/src/types';
+import { to12HourTime, toRangeTime, toRealTime } from '../courseUtilities';
 
 /**
  * Renders catalog page
@@ -55,6 +56,8 @@ const Search: React.FC = () => {
     overallBounds,
     workloadBounds,
     select_seasons,
+    timeBounds,
+    enrollBounds,
     select_schools,
     // select_credits,
     hideCancelled,
@@ -77,6 +80,10 @@ const Search: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
+    setTimeBounds,
+    setTimeValueLabels,
+    setEnrollBounds,
+    setEnrollValueLabels,
     setSelectSchools,
     // setSelectCredits,
     setHideCancelled,
@@ -135,6 +142,27 @@ const Search: React.FC = () => {
     return (
       <Handle {...e} key={key}>
         <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
+      </Handle>
+    );
+  }, []);
+  const timeSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
+    return (
+      <Handle {...e} key={key}>
+        <div
+          className={`shadow ${Styles.time_tooltip}`}
+          style={{ width: '3.5rem' }}
+        >
+          {to12HourTime(toRealTime(value))}
+        </div>
+      </Handle>
+    );
+  }, []);
+  const enrollmentSliderHandle = useCallback(({ value, dragging, ...e }) => {
+    const key = e.className;
+    return (
+      <Handle {...e} key={key}>
+        <div className={`shadow ${Styles.enrollment_tooltip}`}>{value}</div>
       </Handle>
     );
   }, []);
@@ -324,6 +352,56 @@ const Search: React.FC = () => {
                     </Container>
                     <div className={`text-center ${Styles.filter_title}`}>
                       Workload
+                    </div>
+                  </Col>
+                </Row>
+                {/* Time slider */}
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                  <Col>
+                    <Container>
+                      <Range
+                        min={84}
+                        max={264}
+                        step={1}
+                        key={reset_key}
+                        defaultValue={timeBounds.map(toRangeTime)}
+                        onChange={(value) => {
+                          setTimeValueLabels(value.map(toRealTime));
+                        }}
+                        onAfterChange={(value) => {
+                          setTimeBounds(value.map(toRealTime));
+                        }}
+                        handle={timeSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Time
+                    </div>
+                  </Col>
+                </Row>
+                {/* Enrollment slider */}
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                  <Col>
+                    <Container>
+                      <Range
+                        min={0}
+                        max={510}
+                        step={10}
+                        key={reset_key}
+                        defaultValue={enrollBounds}
+                        onChange={(value) => {
+                          setEnrollValueLabels(value);
+                        }}
+                        onAfterChange={(value) => {
+                          setEnrollBounds(value);
+                        }}
+                        handle={enrollmentSliderHandle}
+                        className={Styles.slider}
+                      />
+                    </Container>
+                    <div className={`text-center ${Styles.filter_title}`}>
+                      Enrollment
                     </div>
                   </Col>
                 </Row>

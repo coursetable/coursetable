@@ -176,7 +176,9 @@
 }
 
 .overall_tooltip,
-.workload_tooltip {
+.workload_tooltip,
+.enrollment_tooltip,
+.time_tooltip {
   font-size: 0.75rem;
   width: 1.5rem;
   color: white;
@@ -194,8 +196,10 @@
 }
 
 /* arrow */
-.overall_tooltip::after,
-.workload_tooltip::after {
+/* .overall_tooltip::after,
+.workload_tooltip::after,
+.enrollment_tooltip::after,
+.time_tooltip::after {
   content: '';
   position: absolute;
   top: 100%;
@@ -204,7 +208,7 @@
   border-width: 5px;
   border-style: solid;
   border-color: #2d87f3 transparent transparent transparent;
-}
+} */
 
 .reset_filters_btn {
   color: #e23e57;

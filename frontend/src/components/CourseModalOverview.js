@@ -18,7 +18,11 @@ import { ratingColormap, workloadColormap } from '../queries/Constants';
 import Styles from './CourseModalOverview.module.css';
 
 import CourseModalLoading from './CourseModalLoading';
-import { fbFriendsAlsoTaking, toSeasonString } from '../courseUtilities';
+import {
+  fbFriendsAlsoTaking,
+  getEnrolled,
+  toSeasonString,
+} from '../courseUtilities';
 import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
 import { weekdays } from '../common';
 
@@ -578,14 +582,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <span className={Styles.lable_bubble}>Enrollment</span>
             </Col>
             <Col sm={9} xs={8} className={Styles.metadata}>
-              {listing.enrolled
-                ? listing.enrolled
-                : listing.last_enrollment &&
-                  listing.last_enrollment_same_professors
-                ? listing.last_enrollment
-                : listing.last_enrollment
-                ? `~${listing.last_enrollment} (different professor was teaching)`
-                : 'N/A'}
+              {getEnrolled(listing, true, true)}
             </Col>
           </Row>
           {/* Credits */}

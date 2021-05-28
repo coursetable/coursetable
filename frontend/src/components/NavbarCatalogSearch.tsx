@@ -23,6 +23,7 @@ import {
   schoolOptions,
   subjectOptions,
   sortbyOptions,
+  dayOptions,
 } from '../queries/Constants';
 import CustomSelect from './CustomSelect';
 import { useSearch, Option, defaultFilters } from '../searchContext';
@@ -30,6 +31,7 @@ import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';
 import ResultsColumnSort from './ResultsColumnSort';
+import { toRangeTime, toRealTime, to12HourTime } from '../courseUtilities';
 
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -54,10 +56,14 @@ const NavbarStyledSearchBar = styled(StyledInput)`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
 `;
 
-// Range filter
-const StyledRange = styled(Range)<{ isTablet: boolean }>`
-  width: ${({ isTablet }) => (isTablet ? 74 : 100)}px;
+// Base range styles
+const BaseRange = styled(Range)`
   cursor: pointer;
+`;
+
+// Range filter
+const StyledRange = styled(BaseRange)<{ isTablet: boolean }>`
+  width: ${({ isTablet }) => (isTablet ? 74 : 100)}px;
 `;
 
 // Range filter label
@@ -95,6 +101,21 @@ const AdvancedLabel = styled.div`
 // Advanced select in dropdown
 const AdvancedSelect = styled(CustomSelect)`
   width: 80%;
+`;
+
+// Advanced range styles
+const AdvancedRange = styled(BaseRange)`
+  margin-bottom: 20px;
+`;
+
+// Advanced range group
+const AdvancedRangeGroup = styled.div`
+  width: 75%;
+  display: flex;
+  flex-grow: 0;
+  flex-direction: column;
+  align-items: center;
+  margin-right: 0.5rem;
 `;
 
 // Row for toggles in advanced filters
@@ -163,12 +184,20 @@ export const NavbarCatalogSearch: React.FC = () => {
     workloadBounds,
     workloadValueLabels,
     select_seasons,
+    select_days,
+    timeBounds,
+    timeValueLabels,
+    enrollBounds,
+    enrollValueLabels,
+    numBounds,
+    numValueLabels,
     select_schools,
     select_credits,
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
+    select_sortby,
     reset_key,
     searchData,
     seasonsOptions,
@@ -183,6 +212,13 @@ export const NavbarCatalogSearch: React.FC = () => {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
+    setSelectDays,
+    setTimeBounds,
+    setTimeValueLabels,
+    setEnrollBounds,
+    setEnrollValueLabels,
+    setNumBounds,
+    setNumValueLabels,
     setSelectSchools,
     setSelectCredits,
     setHideCancelled,
@@ -190,30 +226,44 @@ export const NavbarCatalogSearch: React.FC = () => {
     setHideGraduateCourses,
     setHideDiscussionSections,
     handleResetFilters,
+    setResetKey,
     setStartTime,
   } = useSearch();
 
-  // Active state for overall and workload range filters
+  // Active state for range filters
   const [activeOverall, setActiveOverall] = useState(false);
   const [activeWorkload, setActiveWorkload] = useState(false);
+  const [activeTime, setActiveTime] = useState(false);
+  const [activeEnrollment, setActiveEnrollment] = useState(false);
+  const [activeNumber, setActiveNumber] = useState(false);
 
   const globalTheme = useTheme();
 
-  // Handle active state for overall and workload range filters
+  // Handle active state for range filters
   useEffect(() => {
-    if (canReset && !_.isEqual(overallBounds, defaultFilters.defaultBounds)) {
-      setActiveOverall(true);
-    } else {
-      setActiveOverall(false);
+    if (canReset) {
+      setActiveOverall(
+        !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds)
+      );
+      setActiveWorkload(
+        !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds)
+      );
+      setActiveTime(!_.isEqual(timeBounds, defaultFilters.defaultTimeBounds));
+      setActiveEnrollment(
+        !_.isEqual(enrollBounds, defaultFilters.defaultEnrollBounds)
+      );
+      setActiveNumber(!_.isEqual(numBounds, defaultFilters.defaultNumBounds));
     }
-    if (canReset && !_.isEqual(workloadBounds, defaultFilters.defaultBounds)) {
-      setActiveWorkload(true);
-    } else {
-      setActiveWorkload(false);
-    }
-  }, [canReset, overallBounds, workloadBounds]);
+  }, [
+    canReset,
+    overallBounds,
+    workloadBounds,
+    timeBounds,
+    enrollBounds,
+    numBounds,
+  ]);
 
-  // Active styles for overall and workload range filters
+  // Active styles for range filters
   const activeStyle = useCallback(
     (active: boolean) => {
       if (active) {
@@ -274,11 +324,17 @@ export const NavbarCatalogSearch: React.FC = () => {
   const advanced_options = useMemo(
     () => ({
       selects: {
+        select_days,
         select_schools,
         select_credits,
         select_subjects: isTablet && select_subjects,
         select_seasons: isTablet && select_seasons,
         select_skillsareas: isTablet && select_skillsareas,
+      },
+      ranges: {
+        activeTime,
+        activeEnrollment,
+        activeNumber,
       },
       toggles: {
         hideCancelled,
@@ -286,17 +342,25 @@ export const NavbarCatalogSearch: React.FC = () => {
         hideGraduateCourses,
         hideDiscussionSections,
       },
+      sorts: {
+        average_gut_rating: select_sortby.value === sortbyOptions[7].value,
+      },
     }),
     [
+      select_days,
       select_schools,
       select_credits,
       select_subjects,
       select_seasons,
       select_skillsareas,
+      activeTime,
+      activeEnrollment,
+      activeNumber,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
+      select_sortby,
       isTablet,
     ]
   );
@@ -521,12 +585,21 @@ export const NavbarCatalogSearch: React.FC = () => {
                   setSelectSeasons(defaultFilters.defaultOptions);
                   setSelectSkillsAreas(defaultFilters.defaultOptions);
                 }
+                setSelectDays(defaultFilters.defaultOptions);
                 setSelectSchools(defaultFilters.defaultOptions);
                 setSelectCredits(defaultFilters.defaultOptions);
-                setHideCancelled(false);
-                setHideFirstYearSeminars(false);
-                setHideGraduateCourses(false);
+                setHideCancelled(defaultFilters.defaultFalse);
+                setHideFirstYearSeminars(defaultFilters.defaultFalse);
+                setHideGraduateCourses(defaultFilters.defaultFalse);
+                setHideDiscussionSections(defaultFilters.defaultFalse);
+                setTimeBounds(defaultFilters.defaultTimeBounds);
+                setTimeValueLabels(defaultFilters.defaultTimeBounds);
+                setEnrollBounds(defaultFilters.defaultEnrollBounds);
+                setEnrollValueLabels(defaultFilters.defaultEnrollBounds);
+                setNumBounds(defaultFilters.defaultNumBounds);
+                setNumValueLabels(defaultFilters.defaultNumBounds);
                 setStartTime(Date.now());
+                setResetKey(reset_key + 1);
               }}
               select_options={advanced_options}
               data_tutorial={4}
@@ -590,6 +663,153 @@ export const NavbarCatalogSearch: React.FC = () => {
                     </Row>
                   </>
                 )}
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Day Multi-Select */}
+                  <AdvancedLabel>Day:</AdvancedLabel>
+                  <AdvancedSelect
+                    closeMenuOnSelect
+                    isMulti
+                    value={select_days}
+                    options={dayOptions}
+                    placeholder="All Days"
+                    // prevent overlap with tooltips
+                    menuPortalTarget={document.querySelector('#portal')}
+                    onChange={(selectedOption: ValueType<Option>) => {
+                      setSelectDays((selectedOption as Option[]) || []);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  <AdvancedLabel style={activeStyle(activeTime)}>
+                    Time:
+                  </AdvancedLabel>
+                  <AdvancedRangeGroup>
+                    {/* Time Range */}
+                    <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                      <RangeValueLabel>
+                        {to12HourTime(timeValueLabels[0])}
+                      </RangeValueLabel>
+                      <RangeValueLabel>
+                        {to12HourTime(timeValueLabels[1])}
+                      </RangeValueLabel>
+                    </div>
+                    <AdvancedRange
+                      min={84}
+                      max={264}
+                      step={1}
+                      marks={{
+                        84: '7AM',
+                        120: '10AM',
+                        156: '1PM',
+                        192: '4PM',
+                        228: '7PM',
+                        264: '10PM',
+                      }}
+                      key={reset_key}
+                      handleStyle={range_handle_style()}
+                      railStyle={range_rail_style()}
+                      trackStyle={[range_rail_style()]}
+                      defaultValue={timeBounds.map(toRangeTime)}
+                      onChange={(value) => {
+                        setTimeValueLabels(value.map(toRealTime));
+                      }}
+                      onAfterChange={(value) => {
+                        setTimeBounds(value.map(toRealTime));
+                        setStartTime(Date.now());
+                      }}
+                    />
+                  </AdvancedRangeGroup>
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  <AdvancedLabel style={activeStyle(activeEnrollment)}>
+                    # Enrolled:
+                  </AdvancedLabel>
+                  <AdvancedRangeGroup>
+                    {/* Enrollment Range */}
+                    <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                      <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
+                      <RangeValueLabel>
+                        {enrollValueLabels[1] === 160
+                          ? '160+'
+                          : enrollValueLabels[1]}
+                      </RangeValueLabel>
+                    </div>
+                    <AdvancedRange
+                      min={0}
+                      max={160}
+                      step={5}
+                      marks={{
+                        0: 0,
+                        20: 20,
+                        50: 50,
+                        75: 75,
+                        100: 100,
+                        160: '160+',
+                      }}
+                      key={reset_key}
+                      handleStyle={range_handle_style()}
+                      railStyle={range_rail_style()}
+                      trackStyle={[range_rail_style()]}
+                      defaultValue={enrollBounds}
+                      onChange={(value) => {
+                        setEnrollValueLabels(value);
+                      }}
+                      onAfterChange={(value) => {
+                        setEnrollBounds(value);
+                        setStartTime(Date.now());
+                      }}
+                    />
+                  </AdvancedRangeGroup>
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  <AdvancedLabel style={activeStyle(activeNumber)}>
+                    Course #:
+                  </AdvancedLabel>
+                  <AdvancedRangeGroup>
+                    {/* Course Number Range */}
+                    <div className="d-flex align-items-center justify-content-between mb-1 w-100">
+                      <RangeValueLabel>
+                        {numValueLabels[0].toString().padStart(3, '0')}
+                      </RangeValueLabel>
+                      <RangeValueLabel>
+                        {numValueLabels[1] === 1000
+                          ? '1000+'
+                          : numValueLabels[1].toString().padStart(3, '0')}
+                      </RangeValueLabel>
+                    </div>
+                    <AdvancedRange
+                      min={0}
+                      max={1000}
+                      step={10}
+                      marks={{
+                        0: '000',
+                        100: '100',
+                        200: '200',
+                        300: '300',
+                        400: '400',
+                        500: '500',
+                        600: '600',
+                        700: '700',
+                        800: '800',
+                        900: '900',
+                        1000: '1000+',
+                      }}
+                      key={reset_key}
+                      handleStyle={range_handle_style()}
+                      railStyle={range_rail_style()}
+                      trackStyle={[range_rail_style()]}
+                      defaultValue={numBounds}
+                      onChange={(value) => {
+                        setNumValueLabels(value);
+                      }}
+                      onAfterChange={(value) => {
+                        setNumBounds(value);
+                        setStartTime(Date.now());
+                      }}
+                    />
+                  </AdvancedRangeGroup>
+                </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Yale Schools Multi-Select */}
                   <AdvancedLabel>School:</AdvancedLabel>

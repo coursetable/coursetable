@@ -13,10 +13,13 @@ import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { useLocalStorageState, useSessionStorageState } from './browserStorage';
 import { Listing, useCourseData, useFerry } from './components/FerryProvider';
 import {
+  getEnrolled,
   getNumFB,
   getOverallRatings,
+  getDayTimes,
   getWorkloadRatings,
   sortCourses,
+  toRangeTime,
   toSeasonString,
 } from './courseUtilities';
 import {
@@ -63,6 +66,13 @@ type Store = {
   workloadBounds: number[];
   workloadValueLabels: number[];
   select_seasons: Option[];
+  select_days: Option[];
+  timeBounds: string[];
+  timeValueLabels: string[];
+  enrollBounds: number[];
+  enrollValueLabels: number[];
+  numBounds: number[];
+  numValueLabels: number[];
   select_schools: Option[];
   select_credits: Option[];
   hideCancelled: boolean;
@@ -91,6 +101,13 @@ type Store = {
   setWorkloadBounds: React.Dispatch<React.SetStateAction<number[]>>;
   setWorkloadValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSeasons: React.Dispatch<React.SetStateAction<Option[]>>;
+  setSelectDays: React.Dispatch<React.SetStateAction<Option[]>>;
+  setTimeBounds: React.Dispatch<React.SetStateAction<string[]>>;
+  setTimeValueLabels: React.Dispatch<React.SetStateAction<string[]>>;
+  setEnrollBounds: React.Dispatch<React.SetStateAction<number[]>>;
+  setEnrollValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
+  setNumBounds: React.Dispatch<React.SetStateAction<number[]>>;
+  setNumValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSchools: React.Dispatch<React.SetStateAction<Option[]>>;
   setSelectCredits: React.Dispatch<React.SetStateAction<Option[]>>;
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
@@ -101,6 +118,7 @@ type Store = {
   setSortOrder: React.Dispatch<React.SetStateAction<SortOrderType>>;
   setOrdering: React.Dispatch<React.SetStateAction<OrderingType>>;
   handleResetFilters: () => void;
+  setResetKey: React.Dispatch<React.SetStateAction<number>>;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
   showModal: (listing: Listing) => void;
   hideModal: () => void;
@@ -128,20 +146,26 @@ const def_season_code = `${year}0${season}`;
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
-const defaultBounds = [1, 5];
+const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
   { value: def_season_code, label: toSeasonString(def_season_code)[0] },
 ];
 const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
+const defaultTimeBounds = ['7:00', '22:00'];
+const defaultEnrollBounds = [0, 160];
+const defaultNumBounds = [0, 1000];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
 
 export const defaultFilters = {
   defaultOption,
   defaultOptions,
-  defaultBounds,
+  defaultRatingBounds,
+  defaultTimeBounds,
+  defaultEnrollBounds,
+  defaultNumBounds,
   defaultSeason,
   defaultTrue,
   defaultFalse,
@@ -173,23 +197,54 @@ export const SearchProvider: React.FC = ({ children }) => {
 
   const [overallBounds, setOverallBounds] = useSessionStorageState(
     'overallBounds',
-    defaultBounds
+    defaultRatingBounds
   );
   const [overallValueLabels, setOverallValueLabels] = useState(
-    overallBounds !== defaultBounds ? overallBounds : defaultBounds
+    overallBounds !== defaultRatingBounds ? overallBounds : defaultRatingBounds
   );
 
   const [workloadBounds, setWorkloadBounds] = useSessionStorageState(
     'workloadBounds',
-    defaultBounds
+    defaultRatingBounds
   );
   const [workloadValueLabels, setWorkloadValueLabels] = useState(
-    workloadBounds !== defaultBounds ? workloadBounds : defaultBounds
+    workloadBounds !== defaultRatingBounds
+      ? workloadBounds
+      : defaultRatingBounds
   );
 
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
     'select_seasons',
     defaultSeason
+  );
+
+  const [select_days, setSelectDays] = useSessionStorageState(
+    'select_days',
+    defaultOptions
+  );
+
+  const [timeBounds, setTimeBounds] = useSessionStorageState(
+    'timeBounds',
+    defaultTimeBounds
+  );
+  const [timeValueLabels, setTimeValueLabels] = useState(
+    timeBounds !== defaultTimeBounds ? timeBounds : defaultTimeBounds
+  );
+
+  const [enrollBounds, setEnrollBounds] = useSessionStorageState(
+    'enrollBounds',
+    defaultEnrollBounds
+  );
+  const [enrollValueLabels, setEnrollValueLabels] = useState(
+    enrollBounds !== defaultEnrollBounds ? enrollBounds : defaultEnrollBounds
+  );
+
+  const [numBounds, setNumBounds] = useSessionStorageState(
+    'numBounds',
+    defaultNumBounds
+  );
+  const [numValueLabels, setNumValueLabels] = useState(
+    numBounds !== defaultNumBounds ? numBounds : defaultNumBounds
   );
 
   const [select_schools, setSelectSchools] = useSessionStorageState(
@@ -374,7 +429,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       }
     }
 
-    // subject to filter
+    // subjects to filter
     let processedSubjects;
     if (select_subjects != null) {
       processedSubjects = select_subjects.map((x) => {
@@ -387,13 +442,36 @@ export const SearchProvider: React.FC = ({ children }) => {
       }
     }
 
+    // days to filter
+    let processedDays;
+    if (select_days != null) {
+      processedDays = select_days.map((x) => {
+        return x.value;
+      });
+
+      // set null defaults
+      if (processedDays.length === 0) {
+        processedDays = null;
+      }
+    }
+
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    const include_all_overalls =
-      overallBounds[0] === 1 && overallBounds[1] === 5;
+    const include_all_overalls = _.isEqual(overallBounds, defaultRatingBounds);
 
-    const include_all_workloads =
-      workloadBounds[0] === 1 && workloadBounds[1] === 5;
+    const include_all_workloads = _.isEqual(
+      workloadBounds,
+      defaultRatingBounds
+    );
+
+    const include_all_times = _.isEqual(timeBounds, defaultTimeBounds);
+
+    const include_all_enrollments = _.isEqual(
+      enrollBounds,
+      defaultEnrollBounds
+    );
+
+    const include_all_numbers = _.isEqual(numBounds, defaultNumBounds);
 
     // Variables to use in search query
     const search_variables = {
@@ -404,10 +482,17 @@ export const SearchProvider: React.FC = ({ children }) => {
       credits: new Set(processedCredits),
       schools: new Set(processedSchools),
       subjects: new Set(processedSubjects),
+      days: new Set(processedDays),
       min_overall: include_all_overalls ? null : overallBounds[0],
       max_overall: include_all_overalls ? null : overallBounds[1],
       min_workload: include_all_workloads ? null : workloadBounds[0],
       max_workload: include_all_workloads ? null : workloadBounds[1],
+      min_time: include_all_times ? null : timeBounds[0],
+      max_time: include_all_times ? null : timeBounds[1],
+      min_enrollment: include_all_enrollments ? null : enrollBounds[0],
+      max_enrollment: include_all_enrollments ? null : enrollBounds[1],
+      min_number: include_all_numbers ? null : numBounds[0],
+      max_number: include_all_numbers ? null : numBounds[1],
       extra_info: hideCancelled ? 'ACTIVE' : null,
       discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
@@ -427,11 +512,15 @@ export const SearchProvider: React.FC = ({ children }) => {
     hideGraduateCourses,
     hideDiscussionSections,
     overallBounds,
+    workloadBounds,
+    timeBounds,
+    enrollBounds,
+    numBounds,
     select_credits,
     select_schools,
     select_skillsareas,
     select_subjects,
-    workloadBounds,
+    select_days,
     searchText,
   ]);
 
@@ -478,6 +567,51 @@ export const SearchProvider: React.FC = ({ children }) => {
         return false;
       }
 
+      if (searchConfig.min_time !== null && searchConfig.max_time !== null) {
+        let include = false;
+        const times = getDayTimes(listing);
+        if (times) {
+          times.forEach((time) => {
+            if (
+              searchConfig.min_time !== null &&
+              searchConfig.max_time !== null &&
+              time !== null &&
+              toRangeTime(time.start) >= toRangeTime(searchConfig.min_time) &&
+              toRangeTime(time.end) <= toRangeTime(searchConfig.max_time)
+            ) {
+              include = true;
+            }
+          });
+        }
+        if (!include) {
+          return false;
+        }
+      }
+
+      let enrollment = getEnrolled(listing);
+      if (enrollment !== null) enrollment = Number(enrollment);
+      if (
+        searchConfig.min_enrollment !== null &&
+        searchConfig.max_enrollment !== null &&
+        (enrollment === null ||
+          enrollment < searchConfig.min_enrollment ||
+          (searchConfig.max_enrollment < 160 &&
+            enrollment > searchConfig.max_enrollment))
+      ) {
+        return false;
+      }
+
+      const number = Number(listing.number.replace(/\D/g, ''));
+      if (
+        searchConfig.min_number !== null &&
+        searchConfig.max_number !== null &&
+        (number === null ||
+          number < searchConfig.min_number ||
+          (searchConfig.max_number < 1000 && number > searchConfig.max_number))
+      ) {
+        return false;
+      }
+
       if (
         searchConfig.extra_info !== null &&
         searchConfig.extra_info !== listing.extra_info
@@ -519,6 +653,23 @@ export const SearchProvider: React.FC = ({ children }) => {
         !searchConfig.subjects.has(listing.subject)
       ) {
         return false;
+      }
+
+      const days = getDayTimes(listing);
+      if (searchConfig.days.size !== 0) {
+        let include = true;
+        if (days !== null) {
+          days.forEach((day) => {
+            if (!searchConfig.days.has(day.day)) {
+              include = false;
+            }
+          });
+        } else {
+          include = false;
+        }
+        if (!include) {
+          return false;
+        }
       }
 
       if (
@@ -595,12 +746,19 @@ export const SearchProvider: React.FC = ({ children }) => {
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
     setHideDiscussionSections(true);
-    setOverallBounds(defaultBounds);
-    setOverallValueLabels(defaultBounds);
-    setWorkloadBounds(defaultBounds);
-    setWorkloadValueLabels(defaultBounds);
+    setOverallBounds(defaultRatingBounds);
+    setOverallValueLabels(defaultRatingBounds);
+    setWorkloadBounds(defaultRatingBounds);
+    setWorkloadValueLabels(defaultRatingBounds);
+    setTimeBounds(defaultTimeBounds);
+    setTimeValueLabels(defaultTimeBounds);
+    setEnrollBounds(defaultEnrollBounds);
+    setEnrollValueLabels(defaultEnrollBounds);
+    setNumBounds(defaultNumBounds);
+    setNumValueLabels(defaultNumBounds);
     setSelectSeasons(defaultSeason);
     setSelectSkillsAreas(defaultOptions);
+    setSelectDays(defaultOptions);
     setSelectCredits(defaultOptions);
     setSelectSchools(defaultOptions);
     setSelectSubjects(defaultOptions);
@@ -621,7 +779,11 @@ export const SearchProvider: React.FC = ({ children }) => {
     setOverallBounds,
     setWorkloadBounds,
     setSelectSeasons,
+    setTimeBounds,
+    setEnrollBounds,
+    setNumBounds,
     setSelectSchools,
+    setSelectDays,
     setSelectCredits,
     setHideCancelled,
     setHideFirstYearSeminars,
@@ -677,9 +839,12 @@ export const SearchProvider: React.FC = ({ children }) => {
       !_.isEqual(searchText, '') ||
       !_.isEqual(select_subjects, defaultOptions) ||
       !_.isEqual(select_skillsareas, defaultOptions) ||
-      !_.isEqual(overallBounds, defaultBounds) ||
-      !_.isEqual(workloadBounds, defaultBounds) ||
+      !_.isEqual(overallBounds, defaultRatingBounds) ||
+      !_.isEqual(workloadBounds, defaultRatingBounds) ||
       !_.isEqual(select_seasons, defaultSeason) ||
+      !_.isEqual(timeBounds, defaultTimeBounds) ||
+      !_.isEqual(enrollBounds, defaultEnrollBounds) ||
+      !_.isEqual(numBounds, defaultNumBounds) ||
       !_.isEqual(select_schools, defaultOptions) ||
       !_.isEqual(select_credits, defaultOptions) ||
       !_.isEqual(hideCancelled, defaultTrue) ||
@@ -711,6 +876,9 @@ export const SearchProvider: React.FC = ({ children }) => {
     select_skillsareas,
     overallBounds,
     workloadBounds,
+    timeBounds,
+    enrollBounds,
+    numBounds,
     select_seasons,
     select_schools,
     select_credits,
@@ -738,6 +906,13 @@ export const SearchProvider: React.FC = ({ children }) => {
       workloadBounds,
       workloadValueLabels,
       select_seasons,
+      select_days,
+      timeBounds,
+      timeValueLabels,
+      enrollBounds,
+      enrollValueLabels,
+      numBounds,
+      numValueLabels,
       select_schools,
       select_credits,
       hideCancelled,
@@ -768,6 +943,13 @@ export const SearchProvider: React.FC = ({ children }) => {
       setWorkloadBounds,
       setWorkloadValueLabels,
       setSelectSeasons,
+      setSelectDays,
+      setTimeBounds,
+      setTimeValueLabels,
+      setEnrollBounds,
+      setEnrollValueLabels,
+      setNumBounds,
+      setNumValueLabels,
       setSelectSchools,
       setSelectCredits,
       setHideCancelled,
@@ -778,6 +960,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setSortOrder,
       setOrdering,
       handleResetFilters,
+      setResetKey,
       setStartTime,
       showModal,
       hideModal,
@@ -792,6 +975,13 @@ export const SearchProvider: React.FC = ({ children }) => {
       workloadBounds,
       workloadValueLabels,
       select_seasons,
+      select_days,
+      timeBounds,
+      timeValueLabels,
+      enrollBounds,
+      enrollValueLabels,
+      numBounds,
+      numValueLabels,
       select_schools,
       select_credits,
       hideCancelled,
@@ -820,6 +1010,13 @@ export const SearchProvider: React.FC = ({ children }) => {
       setWorkloadBounds,
       setWorkloadValueLabels,
       setSelectSeasons,
+      setSelectDays,
+      setTimeBounds,
+      setTimeValueLabels,
+      setEnrollBounds,
+      setEnrollValueLabels,
+      setNumBounds,
+      setNumValueLabels,
       setSelectSchools,
       setSelectCredits,
       setHideCancelled,
@@ -830,6 +1027,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setSortOrder,
       setOrdering,
       handleResetFilters,
+      setResetKey,
       setStartTime,
       showModal,
       hideModal,

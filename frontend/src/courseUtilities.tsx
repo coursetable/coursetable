@@ -5,6 +5,7 @@ import { FBFriendInfo, FBInfo, Worksheet } from './user';
 import { Listing } from './components/FerryProvider';
 import { SortKeys } from './queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
+import { DateTime } from 'luxon';
 
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (
@@ -203,16 +204,21 @@ export const sortCourses = (
 
 // Get the overall rating for a course
 export const getOverallRatings = (course: Listing, display = false) => {
+  let course_rating;
   // Determine which overall rating to use
-  const course_rating = course.average_rating_same_professors
-    ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
-    : course.average_rating
-    ? display
+  if (display) {
+    course_rating = course.average_rating_same_professors
+      ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
+      : course.average_rating
       ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : course.average_rating.toFixed(1) // Use all professors otherwise
-    : display
-    ? 'N/A'
-    : null; // No ratings at all
+      : 'N/A'; // No ratings at all
+  } else {
+    course_rating = course.average_rating_same_professors
+      ? course.average_rating_same_professors // Use same professor if possible
+      : course.average_rating
+      ? course.average_rating // Use all professors otherwise
+      : null; // No ratings at all
+  }
 
   // Return overall rating
   return course_rating;
@@ -220,23 +226,58 @@ export const getOverallRatings = (course: Listing, display = false) => {
 
 // Get the workload rating for a course
 export const getWorkloadRatings = (course: Listing, display = false) => {
+  let course_workload;
   // Determine which workload rating to use
-  const course_workload = course.average_workload_same_professors
-    ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
-    : course.average_workload
-    ? display
+  if (display) {
+    course_workload = course.average_workload_same_professors
+      ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
+      : course.average_workload
       ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : course.average_workload.toFixed(1) // Use all professors otherwise
-    : display
-    ? 'N/A'
-    : null; // No ratings at all
+      : 'N/A'; // No ratings at all
+  } else {
+    course_workload = course.average_workload_same_professors
+      ? course.average_workload_same_professors // Use same professor if possible
+      : course.average_workload
+      ? course.average_workload // Use all professors otherwise
+      : null; // No ratings at all
+  }
 
   // Return workload rating
   return course_workload;
 };
 
-// Calculate day and time score
-const calculateDayTime = (course: Listing) => {
+// Get the enrollment for a course
+export const getEnrolled = (
+  course: Listing,
+  display = false,
+  onModal = false
+) => {
+  let course_enrolled;
+  // Determine which enrolled to use
+  if (display) {
+    course_enrolled = course.enrolled
+      ? course.enrolled // Use enrollment for that season if course has happened
+      : course.last_enrollment && course.last_enrollment_same_professors
+      ? course.last_enrollment // Use last enrollment if course hasn't happened
+      : course.last_enrollment
+      ? `~${course.last_enrollment}${
+          onModal ? ' (different professor was teaching)' : ''
+        }` // Indicate diff prof
+      : `${onModal ? 'N/A' : ''}`; // No enrollment data
+  } else {
+    course_enrolled = course.enrolled
+      ? course.enrolled // Use enrollment for that season if course has happened
+      : course.last_enrollment
+      ? course.last_enrollment // Use last enrollment if course hasn't happened
+      : null; // No enrollment data
+  }
+
+  // Return enrolled
+  return course_enrolled;
+};
+
+// Get start and end times
+export const getDayTimes = (course: Listing) => {
   // If no times then return null
   if (isEmpty(course.times_by_day)) {
     return null;
@@ -244,18 +285,44 @@ const calculateDayTime = (course: Listing) => {
 
   // Get the first day's times
   const times_by_day = course.times_by_day;
-  const first_day = Object.keys(times_by_day)[0] as Weekdays;
-  const day_times = times_by_day[first_day];
 
-  if (day_times) {
-    // Get the start time
-    let temp = '';
-    day_times[0][0].split(':').forEach((val) => {
-      temp += val;
-    });
-    const start_time = Number(temp);
+  const initialFiltered: Record<string, string>[] = [];
+
+  const times = Object.keys(times_by_day).reduce((filtered, day) => {
+    const day_times = times_by_day[day as Weekdays];
+    if (day_times) {
+      filtered.push({ day, start: day_times[0][0], end: day_times[0][1] });
+    }
+    return filtered;
+  }, initialFiltered);
+
+  return times;
+};
+
+// Calculate day and time score
+const calculateDayTime = (course: Listing) => {
+  // Get all days' times
+  const times = getDayTimes(course);
+
+  if (times) {
+    // Get earliest start time
+    // const earliestTime = times.reduce((early, time) => {
+    //   if (toRangeTime(time.start) < toRangeTime(early)) {
+    //     early = time.start;
+    //   }
+    //   return early;
+    // }, '0:00');
+
+    // Calculate the time score
+    const start_time = Number(
+      times[0].start.split(':').reduce((final, num) => {
+        final += num;
+        return final;
+      }, '')
+    );
 
     // Calculate the day score
+    const first_day = Object.keys(course.times_by_day)[0] as Weekdays;
     const day_score = weekdays.indexOf(first_day) * 10000;
 
     // Calculate the total score and return
@@ -263,6 +330,39 @@ const calculateDayTime = (course: Listing) => {
     return score;
   }
 
-  // If first day doesn't have any times then return null
+  // If no times then return null
   return null;
+};
+
+// Convert real time (24 hour) to range time
+export const toRangeTime = (time: string) => {
+  // Get hour and minute
+  const splitTime = time.split(':');
+  const hour = Number(splitTime[0]);
+  const minute = Number(splitTime[1]);
+
+  // Calculate range time
+  const rangeTime = hour * 12 + minute / 5;
+  return rangeTime;
+};
+
+// Convert range time to real time (24 hour)
+export const toRealTime = (time: number) => {
+  // Get hour and minute
+  const hour = Math.floor(time / 12);
+  const minute = (time % 12) * 5;
+
+  // Format real time
+  const realTime = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
+  return realTime;
+};
+
+// Convert 24 hour time to 12 hour time
+export const to12HourTime = (time: string) => {
+  return DateTime.fromFormat(time, 'H:mm').toFormat('h:mma');
+};
+
+// Convert 12 hour time to 24 hour time
+export const to24HourTime = (time: string) => {
+  return DateTime.fromFormat(time, 'h:mm').toFormat('H:mm');
 };

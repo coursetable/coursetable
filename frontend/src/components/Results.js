@@ -417,7 +417,8 @@ const Results = ({
       <Tooltip id="button-tooltip" {...props}>
         <span>
           Days of the Week <br />
-          and Times
+          and Times <br />
+          (sort order based on day and starting time)
         </span>
       </Tooltip>
     ),
@@ -428,15 +429,25 @@ const Results = ({
   const enrollment_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>
-          Previous Class Enrollment
-          <br />
-          (based on the most recent past instance of this course. a ~ means a
-          different professor was teaching)
-        </span>
+        {multiSeasons ? (
+          <span>
+            Class Enrollment
+            <br />
+            (If the course has not occurred/completed, based on the most recent
+            past instance of this course. a ~ means a different professor was
+            teaching)
+          </span>
+        ) : (
+          <span>
+            Previous Class Enrollment
+            <br />
+            (based on the most recent past instance of this course. a ~ means a
+            different professor was teaching)
+          </span>
+        )}
       </Tooltip>
     ),
-    []
+    [multiSeasons]
   );
 
   // Tooltip for hovering over fb friends
