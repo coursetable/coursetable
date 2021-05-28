@@ -31,7 +31,13 @@ import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';
 import ResultsColumnSort from './ResultsColumnSort';
-import { toRangeTime, toRealTime, to12HourTime } from '../courseUtilities';
+import {
+  toRangeTime,
+  toRealTime,
+  to12HourTime,
+  toLinear,
+  toExponential,
+} from '../courseUtilities';
 
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -250,7 +256,10 @@ export const NavbarCatalogSearch: React.FC = () => {
       );
       setActiveTime(!_.isEqual(timeBounds, defaultFilters.defaultTimeBounds));
       setActiveEnrollment(
-        !_.isEqual(enrollBounds, defaultFilters.defaultEnrollBounds)
+        !_.isEqual(
+          enrollBounds.map(Math.round),
+          defaultFilters.defaultEnrollBounds
+        )
       );
       setActiveNumber(!_.isEqual(numBounds, defaultFilters.defaultNumBounds));
     }
@@ -729,34 +738,25 @@ export const NavbarCatalogSearch: React.FC = () => {
                     {/* Enrollment Range */}
                     <div className="d-flex align-items-center justify-content-between mb-1 w-100">
                       <RangeValueLabel>{enrollValueLabels[0]}</RangeValueLabel>
-                      <RangeValueLabel>
-                        {enrollValueLabels[1] === 160
-                          ? '160+'
-                          : enrollValueLabels[1]}
-                      </RangeValueLabel>
+                      <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
                     </div>
                     <AdvancedRange
                       min={0}
-                      max={160}
-                      step={5}
-                      marks={{
-                        0: 0,
-                        20: 20,
-                        50: 50,
-                        75: 75,
-                        100: 100,
-                        160: '160+',
-                      }}
+                      max={630}
+                      step={10}
+                      marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
                       key={reset_key}
                       handleStyle={range_handle_style()}
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
-                      defaultValue={enrollBounds}
+                      defaultValue={enrollBounds.map(toLinear)}
                       onChange={(value) => {
-                        setEnrollValueLabels(value);
+                        setEnrollValueLabels(
+                          value.map(toExponential).map(Math.round)
+                        );
                       }}
                       onAfterChange={(value) => {
-                        setEnrollBounds(value);
+                        setEnrollBounds(value.map(toExponential));
                         setStartTime(Date.now());
                       }}
                     />

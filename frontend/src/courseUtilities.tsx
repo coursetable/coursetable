@@ -366,3 +366,21 @@ export const to12HourTime = (time: string) => {
 export const to24HourTime = (time: string) => {
   return DateTime.fromFormat(time, 'h:mm').toFormat('H:mm');
 };
+
+// Base log
+const getBaseLog = (x: number, y: number) => {
+  return Math.log(y) / Math.log(x);
+};
+
+// Convert linear to exponential
+export const toExponential = (number: number) => {
+  return 1.01 ** number;
+};
+
+// Convert exponential to linear
+export const toLinear = (number: number) => {
+  return getBaseLog(1.01, number);
+};
+
+console.log(toExponential(627));
+console.log(toLinear(510));

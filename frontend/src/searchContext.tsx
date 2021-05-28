@@ -154,7 +154,7 @@ const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
 const defaultTimeBounds = ['7:00', '22:00'];
-const defaultEnrollBounds = [0, 160];
+const defaultEnrollBounds = [1, 528];
 const defaultNumBounds = [0, 1000];
 const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { course_code: 'asc' };
@@ -467,7 +467,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     const include_all_times = _.isEqual(timeBounds, defaultTimeBounds);
 
     const include_all_enrollments = _.isEqual(
-      enrollBounds,
+      enrollBounds.map(Math.round),
       defaultEnrollBounds
     );
 
@@ -594,9 +594,8 @@ export const SearchProvider: React.FC = ({ children }) => {
         searchConfig.min_enrollment !== null &&
         searchConfig.max_enrollment !== null &&
         (enrollment === null ||
-          enrollment < searchConfig.min_enrollment ||
-          (searchConfig.max_enrollment < 160 &&
-            enrollment > searchConfig.max_enrollment))
+          enrollment < Math.round(searchConfig.min_enrollment) ||
+          enrollment > Math.round(searchConfig.max_enrollment))
       ) {
         return false;
       }
