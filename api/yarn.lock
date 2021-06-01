@@ -2478,10 +2478,10 @@ pkg-up@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
-posthog-node@1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/posthog-node/-/posthog-node-1.0.9.tgz#bfd10ec94d2d3d69526343b0ae9a7c95979314a6"
-  integrity sha512-5pm/oN4B868TGoSpscg3DeVZG4jIHnjV8Q4RbhqAn/Y6rCreXie7asV+HrEPGGq976ODYNhYXUteQdjADxK0zw==
+posthog-node@1.0.10:
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/posthog-node/-/posthog-node-1.0.10.tgz#5f8a1a56c4d65b5a4062982e5d77a7e002264da6"
+  integrity sha512-P4MOTiBx6hDKZlWfFD1ysTWjc26hZsHQpGMXv/M4PeLxpJK0fVT0TmD6pEv65PqpRS19pOYlygFQYSkaX+cwnw==
   dependencies:
     axios "^0.21.1"
     axios-retry "^3.1.9"
