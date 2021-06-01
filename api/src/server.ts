@@ -33,8 +33,7 @@ import * as Sentry from '@sentry/node';
 import * as Tracing from '@sentry/tracing';
 
 Sentry.init({
-  dsn:
-    'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
+  dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
 
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control

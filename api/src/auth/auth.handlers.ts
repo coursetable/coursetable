@@ -187,27 +187,25 @@ export const passportConfig = async (
    * @param netId: netId of user to get info for.
    * @param done: callback function to be executed after deserialization.
    */
-  passport.deserializeUser(
-    async (netId: string, done): Promise<void> => {
-      winston.info(`Deserializing user ${netId}`);
-      await prisma.studentBluebookSettings
-        .findUnique({
-          where: {
-            netId,
-          },
-        })
-        .then((student) => {
-          done(null, {
-            netId,
-            evals: !!student?.evaluationsEnabled,
-            // convert nulls to undefined
-            email: student?.email || undefined,
-            firstName: student?.first_name || undefined,
-            lastName: student?.last_name || undefined,
-          });
+  passport.deserializeUser(async (netId: string, done): Promise<void> => {
+    winston.info(`Deserializing user ${netId}`);
+    await prisma.studentBluebookSettings
+      .findUnique({
+        where: {
+          netId,
+        },
+      })
+      .then((student) => {
+        done(null, {
+          netId,
+          evals: !!student?.evaluationsEnabled,
+          // convert nulls to undefined
+          email: student?.email || undefined,
+          firstName: student?.first_name || undefined,
+          lastName: student?.last_name || undefined,
         });
-    }
-  );
+      });
+  });
 };
 
 const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
