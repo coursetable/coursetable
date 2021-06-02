@@ -14,7 +14,7 @@
     ]
   },
   "dependencies": {
-    "@prisma/client": "^2.23.0",
+    "@prisma/client": "^2.24.0",
     "@sentry/node": "^6.4.1",
     "@sentry/tracing": "^6.5.0",
     "@types/app-root-path": "^1.2.4",
