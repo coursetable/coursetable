@@ -44,7 +44,7 @@
     "morgan": "^1.10.0",
     "passport": "^0.4.1",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
-    "posthog-node": "1.1.0",
+    "posthog-node": "1.1.2",
     "prisma": "^2.24.1",
     "ts-node": "^10.0.0",
     "typescript": "^4.3.2",
