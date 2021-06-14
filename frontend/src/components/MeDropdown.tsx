@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import { Row, Col, Collapse } from 'react-bootstrap';
-import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import {
   FcCalendar,
   FcInfo,
@@ -9,6 +8,7 @@ import {
   FcFeedback,
   FcPuzzle,
 } from 'react-icons/fc';
+import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
@@ -84,6 +84,7 @@ const MeDropdown: React.VFC<Props> = ({
   const handleDropdownClick = () => {
     setIsComponentVisible(true);
   };
+
   return (
     <SurfaceComponent
       layer={1}

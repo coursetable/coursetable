@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import styles from './Footer.module.css';
@@ -85,6 +83,17 @@ function Footer() {
                 >
                   <TextComponent type={1}>Status</TextComponent>
                 </a>
+              </li>
+            </ul>
+          </div>
+          <div className="col-6 col-md">
+            <h5>Developers</h5>
+            <ul className="list-unstyled text-small">
+              {/* GraphQL explorer */}
+              <li>
+                <NavLink to="/graphiql" onClick={scrollToTop}>
+                  <TextComponent type={1}>GraphQL playground</TextComponent>
+                </NavLink>
               </li>
             </ul>
           </div>

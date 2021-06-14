@@ -17,6 +17,26 @@ import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
 
+// codes for allowed organizations (to give faculty access to the site)
+const ALLOWED_ORG_CODES = [
+  'MED', // medical school
+  'FAS', // faculty of arts and sciences
+  'SOM', // school of medicine
+  'LAW', // law school
+  'NUR', // nursing school
+  'ENV', // school of the environment
+  'SPH', // public health
+  'DIV', // divinity school
+  'DRA', // drama
+  'ARC', // architecture
+  'ART', // art
+  'MAC', // MacMillan center
+  'SCM', // music
+  'ISM', // sacred music
+  'JAC', // Jackson institute
+  'GRA', // graduate school
+];
+
 const extractHostname = (url: string): string => {
   let hostname;
   // find & remove protocol (http, ftp, etc.) and get hostname
@@ -97,7 +117,10 @@ export const passportConfig = async (
               },
               data: {
                 // enable evaluations if user has a school code
-                evaluationsEnabled: !!user.school_code,
+                // or is a member of an approved organization (for faculty)
+                evaluationsEnabled:
+                  !!user.school_code ||
+                  ALLOWED_ORG_CODES.includes(user.organization_code),
                 first_name: user.first_name,
                 last_name: user.last_name,
                 email: user.email,
@@ -164,27 +187,25 @@ export const passportConfig = async (
    * @param netId: netId of user to get info for.
    * @param done: callback function to be executed after deserialization.
    */
-  passport.deserializeUser(
-    async (netId: string, done): Promise<void> => {
-      winston.info(`Deserializing user ${netId}`);
-      await prisma.studentBluebookSettings
-        .findUnique({
-          where: {
-            netId,
-          },
-        })
-        .then((student) => {
-          done(null, {
-            netId,
-            evals: !!student?.evaluationsEnabled,
-            // convert nulls to undefined
-            email: student?.email || undefined,
-            firstName: student?.first_name || undefined,
-            lastName: student?.last_name || undefined,
-          });
+  passport.deserializeUser(async (netId: string, done): Promise<void> => {
+    winston.info(`Deserializing user ${netId}`);
+    await prisma.studentBluebookSettings
+      .findUnique({
+        where: {
+          netId,
+        },
+      })
+      .then((student) => {
+        done(null, {
+          netId,
+          evals: !!student?.evaluationsEnabled,
+          // convert nulls to undefined
+          email: student?.email || undefined,
+          firstName: student?.first_name || undefined,
+          lastName: student?.last_name || undefined,
         });
-    }
-  );
+      });
+  });
 };
 
 const ALLOWED_ORIGINS = ['localhost', 'coursetable.com'];
