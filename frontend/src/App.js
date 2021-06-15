@@ -34,8 +34,6 @@ import { API_ENDPOINT } from './config';
 function App({ themeToggler, location }) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
-  // First load state
-  const [firstLoad, setFirstLoad] = useState(true);
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -43,28 +41,14 @@ function App({ themeToggler, location }) {
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
-    if (firstLoad) {
-      setFirstLoad(false);
+    const a = userRefresh(true);
+    const b = fbRefresh(true);
 
-      const a = userRefresh(true);
-      const b = fbRefresh(true);
-
-      Promise.allSettled([a, b]).finally(() => {
-        // Set loading to false after user info and fb info is fetched
-        setLoading(false);
-      });
-    }
-  }, [userRefresh, fbRefresh, firstLoad]);
-
-  // If user is a first-year, redirect to beta
-  if (user.school === 'Yale College' && user.year === 2025) {
-    window.open(
-      `https://beta.coursetable.com${window.location.pathname}`,
-      '_self',
-      '',
-      true
-    );
-  }
+    Promise.allSettled([a, b]).finally(() => {
+      // Set loading to false after user info and fb info is fetched
+      setLoading(false);
+    });
+  }, [userRefresh, fbRefresh]);
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
@@ -102,7 +86,7 @@ function App({ themeToggler, location }) {
   ]);
 
   // Render spinner if page loading
-  if (loading || (user.school === 'Yale College' && user.year === 2025)) {
+  if (loading) {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
