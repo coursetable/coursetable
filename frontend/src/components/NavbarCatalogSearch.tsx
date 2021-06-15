@@ -463,7 +463,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                     value={select_subjects}
                     options={subjectOptions}
                     placeholder="All Subjects"
-                    onChange={(selectedOption: ValueType<Option>) => {
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectSubjects((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
                     }}
@@ -486,7 +486,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                     value={select_skillsareas}
                     options={skillsAreasOptions}
                     placeholder="All Areas/Skills"
-                    onChange={(selectedOption: ValueType<Option>) => {
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectSkillsAreas((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
                     }}
@@ -579,7 +579,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                   options={seasonsOptions}
                   placeholder="Last 5 Years"
                   hideSelectedOptions={false}
-                  onChange={(selectedOption: ValueType<Option>) => {
+                  onChange={(selectedOption: ValueType<Option, boolean>) => {
                     setSelectSeasons((selectedOption as Option[]) || []);
                     setStartTime(Date.now());
                   }}
@@ -630,7 +630,9 @@ export const NavbarCatalogSearch: React.FC = () => {
                         placeholder="All Subjects"
                         // prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
-                        onChange={(selectedOption: ValueType<Option>) => {
+                        onChange={(
+                          selectedOption: ValueType<Option, boolean>
+                        ) => {
                           setSelectSubjects((selectedOption as Option[]) || []);
                           setStartTime(Date.now());
                         }}
@@ -648,7 +650,9 @@ export const NavbarCatalogSearch: React.FC = () => {
                         placeholder="All Areas/Skills"
                         // prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
-                        onChange={(selectedOption: ValueType<Option>) => {
+                        onChange={(
+                          selectedOption: ValueType<Option, boolean>
+                        ) => {
                           setSelectSkillsAreas(
                             (selectedOption as Option[]) || []
                           );
@@ -667,7 +671,9 @@ export const NavbarCatalogSearch: React.FC = () => {
                         placeholder="Last 5 Years"
                         // prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
-                        onChange={(selectedOption: ValueType<Option>) => {
+                        onChange={(
+                          selectedOption: ValueType<Option, boolean>
+                        ) => {
                           setSelectSeasons((selectedOption as Option[]) || []);
                           setStartTime(Date.now());
                         }}
@@ -686,7 +692,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                     placeholder="All Days"
                     // prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
-                    onChange={(selectedOption: ValueType<Option>) => {
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectDays((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
                     }}
@@ -828,7 +834,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                     placeholder="All Schools"
                     // prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
-                    onChange={(selectedOption: ValueType<Option>) => {
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectSchools((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
                     }}
@@ -845,7 +851,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                     placeholder="All Credits"
                     // prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
-                    onChange={(selectedOption: ValueType<Option>) => {
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
                     }}

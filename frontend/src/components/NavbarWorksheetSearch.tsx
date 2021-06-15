@@ -171,13 +171,12 @@ export const NavbarWorksheetSearch: React.FC = () => {
               clearIcon={false}
             >
               <PopoutSelect
-                isMulti={false}
                 isClearable={false}
                 hideSelectedOptions={false}
                 value={selected_season}
                 options={season_options}
                 placeholder="Last 5 Years"
-                onChange={(selectedOption: ValueType<Option>) => {
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
                     changeSeason(selectedOption.value);
                   }
@@ -198,12 +197,11 @@ export const NavbarWorksheetSearch: React.FC = () => {
                   disabledButtonText="Connect FB"
                 >
                   <PopoutSelect
-                    isMulti={false}
                     hideSelectedOptions={false}
                     value={selected_fb}
                     options={friend_options}
                     placeholder="Friends' courses"
-                    onChange={(selectedOption: ValueType<Option>) => {
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
                       // Cleared FB friend
                       if (!selectedOption) handleFBPersonChange('me');
                       // Selected FB friend

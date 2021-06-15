@@ -197,7 +197,7 @@ function CustomSelect<T extends OptionTypeBase>({
   useColors = false,
   isMulti = false,
   ...props
-}: SelectProps<T> & Props) {
+}: SelectProps<T, boolean> & Props) {
   const globalTheme = useTheme();
 
   // All the default theme colors

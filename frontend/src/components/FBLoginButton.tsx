@@ -10,7 +10,6 @@ import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
 import styled from 'styled-components';
-import * as Sentry from '@sentry/react';
 
 const RefreshIcon = styled(FaSyncAlt)`
   transition: transform 0.3s;

@@ -246,7 +246,9 @@ const Search: React.FC = () => {
                         placeholder="Last 5 Years"
                         // prevent overlap with tooltips
                         menuPortalTarget={document.body}
-                        onChange={(selectedOption: ValueType<Option>) =>
+                        onChange={(
+                          selectedOption: ValueType<Option, boolean>
+                        ) =>
                           setSelectSeasons((selectedOption as Option[]) || [])
                         }
                       />
@@ -265,7 +267,7 @@ const Search: React.FC = () => {
                       useColors
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}
-                      onChange={(selectedOption: ValueType<Option>) =>
+                      onChange={(selectedOption: ValueType<Option, boolean>) =>
                         setSelectSkillsAreas((selectedOption as Option[]) || [])
                       }
                     />
@@ -279,7 +281,7 @@ const Search: React.FC = () => {
                     placeholder="All Credits"
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
-                    onChange={(selectedOption: ValueType<Option>) => {
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
                     }}
                   />
@@ -294,7 +296,7 @@ const Search: React.FC = () => {
                       isSearchable
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}
-                      onChange={(selectedOption: ValueType<Option>) =>
+                      onChange={(selectedOption: ValueType<Option, boolean>) =>
                         setSelectSubjects((selectedOption as Option[]) || [])
                       }
                     />
@@ -308,7 +310,9 @@ const Search: React.FC = () => {
                       placeholder="All Schools"
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}
-                      onChange={(selectedOption: ValueType<Option>) => {
+                      onChange={(
+                        selectedOption: ValueType<Option, boolean>
+                      ) => {
                         setSelectSchools((selectedOption as Option[]) || []);
                       }}
                     />
