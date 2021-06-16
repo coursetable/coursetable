@@ -654,12 +654,17 @@ export const SearchProvider: React.FC = ({ children }) => {
         return false;
       }
 
-      const days = getDayTimes(listing);
+      const days = new Set(getDayTimes(listing)?.map((daytime) => daytime.day));
       if (searchConfig.days.size !== 0) {
         let include = true;
-        if (days !== null) {
+        if (days && days !== null) {
           days.forEach((day) => {
-            if (!searchConfig.days.has(day.day)) {
+            if (!searchConfig.days.has(day)) {
+              include = false;
+            }
+          });
+          searchConfig.days.forEach((day) => {
+            if (!days.has(day)) {
               include = false;
             }
           });
