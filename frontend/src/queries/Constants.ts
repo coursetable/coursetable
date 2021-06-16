@@ -50,7 +50,7 @@ export const sortbyOptions = [
   },
   { label: 'Sort by Workload', value: 'average_workload', numeric: true },
   {
-    label: 'Sort by Guts (Rating - Workload)',
+    label: 'Sort by Guts (Overall - Workload)',
     value: 'average_gut_rating',
     numeric: true,
   },
