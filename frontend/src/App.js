@@ -26,6 +26,10 @@ import { useLocalStorageState } from './browserStorage';
 import { useWindowDimensions } from './components/WindowDimensionsProvider';
 import { API_ENDPOINT } from './config';
 
+import { WiStars } from 'react-icons/wi';
+import { BsBookmarkFill } from 'react-icons/bs';
+import { FaVoteYea } from 'react-icons/fa';
+
 /**
  * Render navbar and the corresponding page component for the route the user is on
  * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
@@ -99,16 +103,38 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
-        Got a feature in mind or caught a bug? Check out our new{' '}
+        Welcome to CourseTable 2.1!&nbsp;&nbsp;&nbsp;
+        <a
+          href="https://coursetable.canny.io/changelog/introducing-coursetable-21"
+          className="text-light"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <WiStars size={26} />
+          <strong>
+            <u>See what changed</u>
+          </strong>
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a
+          href="https://old.coursetable.com"
+          className="text-light"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <BsBookmarkFill size={16} className="mr-1" />
+          <u>Go back to the old design</u>
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
         <a
           href={`${API_ENDPOINT}/api/canny/board`}
           className="text-light"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <u>feedback page</u>
+          <FaVoteYea size={16} className="mr-1" />
+          <u>Leave feedback</u>
         </a>
-        !
       </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
