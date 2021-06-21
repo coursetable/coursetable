@@ -846,6 +846,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       !_.isEqual(overallBounds, defaultRatingBounds) ||
       !_.isEqual(workloadBounds, defaultRatingBounds) ||
       !_.isEqual(select_seasons, defaultSeason) ||
+      !_.isEqual(select_days, defaultOptions) ||
       !_.isEqual(timeBounds, defaultTimeBounds) ||
       !_.isEqual(enrollBounds, defaultEnrollBounds) ||
       !_.isEqual(numBounds, defaultNumBounds) ||
@@ -884,6 +885,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     enrollBounds,
     numBounds,
     select_seasons,
+    select_days,
     select_schools,
     select_credits,
     hideCancelled,
