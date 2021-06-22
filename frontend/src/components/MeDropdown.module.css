@@ -1,6 +1,7 @@
 .collapse_container {
-  width: 240px;
+  width: 200px;
   position: absolute;
+  top: 66px;
   right: 10px;
   /* background-color: white; */
   z-index: calc(420 + 69);
@@ -12,19 +13,9 @@
 .collapse_text {
   color: inherit;
   font-weight: 500;
-  transition: 0.1s;
 }
 
 .collapse_text:hover {
   cursor: pointer;
   text-decoration: none !important;
-}
-
-.fb_sync {
-  transition: 0.3s;
-}
-
-.fb_sync:hover {
-  cursor: pointer;
-  transform: rotateZ(90deg);
 }

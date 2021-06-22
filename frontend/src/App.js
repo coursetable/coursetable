@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, Redirect, Link } from 'react-router-dom';
+import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
+import Tutorial from './components/Tutorial';
 
 import Landing from './pages/Landing';
 // import Home from './pages/Home';
@@ -21,14 +22,22 @@ import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
 
 import { useUser } from './user';
+import { useLocalStorageState } from './browserStorage';
+import { useWindowDimensions } from './components/WindowDimensionsProvider';
+import { API_ENDPOINT } from './config';
+
+import { WiStars } from 'react-icons/wi';
+import { BsBookmarkFill } from 'react-icons/bs';
+import { FaVoteYea } from 'react-icons/fa';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
- * @prop themeToggler - Function to toggle light/dark mode. Passed on to navbar and darkmodebutton
+ * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
+ * @prop location - object | provides the location info from react-router-dom
  */
-function App({ themeToggler }) {
-  // First load state
-  const [firstLoad, setFirstLoad] = useState(true);
+function App({ themeToggler, location }) {
+  // Fetch current device
+  const { isMobile, isTablet } = useWindowDimensions();
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
@@ -36,36 +45,52 @@ function App({ themeToggler }) {
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
-    if (firstLoad) {
-      setFirstLoad(false);
+    const a = userRefresh(true);
+    const b = fbRefresh(true);
 
-      const a = userRefresh(true);
-      const b = fbRefresh(true);
-
-      Promise.allSettled([a, b]).finally(() => {
-        // Set loading to false after user info and fb info is fetched
-        setLoading(false);
-      });
-    }
-  }, [userRefresh, fbRefresh, firstLoad]);
-
-  // If user is a first-year, redirect to beta
-  if (user.school === 'Yale College' && user.year === 2025) {
-    window.open(
-      `https://beta.coursetable.com${window.location.pathname}`,
-      '_self',
-      '',
-      true
-    );
-  }
+    Promise.allSettled([a, b]).finally(() => {
+      // Set loading to false after user info and fb info is fetched
+      setLoading(false);
+    });
+  }, [userRefresh, fbRefresh]);
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
 
   const MyRoute = Route;
 
+  // Tutorial state
+  const [isTutorialOpen, setIsTutorialOpen] = useState(false);
+
+  // First tutorial state
+  const [shownTutorial, setShownTutorial] = useLocalStorageState(
+    'shownTutorial',
+    false
+  );
+
+  // Handle whether or not to open tutorial
+  useEffect(() => {
+    if (
+      !isMobile &&
+      !isTablet &&
+      isLoggedIn &&
+      !shownTutorial &&
+      location &&
+      location.pathname === '/catalog'
+    ) {
+      setIsTutorialOpen(true);
+    }
+  }, [
+    isMobile,
+    isTablet,
+    isLoggedIn,
+    shownTutorial,
+    location,
+    setIsTutorialOpen,
+  ]);
+
   // Render spinner if page loading
-  if (loading || (user.school === 'Yale College' && user.year === 2025)) {
+  if (loading) {
     return (
       <Row className="m-auto" style={{ height: '100vh' }}>
         <Spinner className="m-auto" animation="border" role="status">
@@ -78,13 +103,44 @@ function App({ themeToggler }) {
   return (
     <>
       <Notice>
-        Want to search courses faster and see more info? Check out the new{' '}
-        <a href="https://beta.coursetable.com" className="text-light">
-          <u>CourseTable Beta</u>
+        Welcome to CourseTable 2.1!&nbsp;&nbsp;&nbsp;
+        <a
+          href="https://coursetable.canny.io/changelog/introducing-coursetable-21"
+          className="text-light"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <WiStars size={26} />
+          <strong>
+            <u>See what changed</u>
+          </strong>
         </a>
-        !
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a
+          href="https://old.coursetable.com"
+          className="text-light"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <BsBookmarkFill size={16} className="mr-1" />
+          <u>Go back to the old design</u>
+        </a>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <a
+          href={`${API_ENDPOINT}/api/canny/board`}
+          className="text-light"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <FaVoteYea size={16} className="mr-1" />
+          <u>Leave feedback</u>
+        </a>
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} themeToggler={themeToggler} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        themeToggler={themeToggler}
+        setIsTutorialOpen={setIsTutorialOpen}
+      />
       <Switch>
         {/* Home Page */}
         <MyRoute exact path="/">
@@ -157,14 +213,21 @@ function App({ themeToggler }) {
           <NotFound />
         </MyRoute>
       </Switch>
-      {/* Render footer if not on catalog or worksheet pages */}
+      {/* Render footer if not on catalog */}
       <Route
         render={({ location }) => {
           return !['/catalog'].includes(location.pathname) && <Footer />;
         }}
       />
+      {/* Tutorial for first-time users */}
+      <Tutorial
+        isTutorialOpen={isTutorialOpen}
+        setIsTutorialOpen={setIsTutorialOpen}
+        shownTutorial={shownTutorial}
+        setShownTutorial={setShownTutorial}
+      />
     </>
   );
 }
 
-export default App;
+export default withRouter(App);

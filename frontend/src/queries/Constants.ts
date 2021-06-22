@@ -2,6 +2,41 @@ import { expectType, TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
 import { Listing } from '../components/FerryProvider';
 
+// Phrases for search speed [50 character limit]
+export const searchSpeed = {
+  fast: [
+    'fast',
+    'kinda fast',
+    'not too slow',
+    'you try loading this many courses',
+    'not not not fast',
+    'faster than Handsome Dan',
+  ],
+  faster: [
+    'faster',
+    'really fast',
+    'blazing fast',
+    'faster than Zoom',
+    'not not fast',
+  ],
+  fastest: [
+    'fastest',
+    'wicked fast',
+    'faster than Usain',
+    'faster than Yale One-Day-Breaks',
+    'faster than drivers on Elm St',
+    'faster than the speed of light',
+    'faster than seniors when they see a gut',
+    'faster than Higgins on paintball',
+    'faster than YPopUp getting reserved',
+    "faster than durfee's tenders selling out",
+    'faster than sonic the hedgehog',
+    'faster than an art-stem double major drops art',
+    'faster than switching your major to CS',
+    'faster than you can sell out to consulting',
+  ],
+};
+
 export const sortbyOptions = [
   { label: 'Sort by Course Code', value: 'course_code', numeric: false },
   { label: 'Sort by Course Number', value: 'number', numeric: true },
@@ -15,11 +50,12 @@ export const sortbyOptions = [
   },
   { label: 'Sort by Workload', value: 'average_workload', numeric: true },
   {
-    label: 'Sort by Guts (Rating - Workload)',
+    label: 'Sort by Guts (Overall - Workload)',
     value: 'average_gut_rating',
     numeric: true,
   },
-  // { label: 'Enrollment', value: 'enrollment' },
+  { label: 'Sort by Last Enrollment', value: 'last_enrollment', numeric: true },
+  { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
 // Make sure we can only sort by keys in the listing, or by facebook.
@@ -27,9 +63,12 @@ export type SortKeys = keyof Listing | 'fb';
 const _number = 0;
 const _sortKeys = sortbyOptions[_number].value;
 expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
+export type SortByOption = typeof sortbyOptions[number];
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
+export type AreasType = typeof areas[number];
+export type SkillsType = typeof skills[number];
 
 export const skillsAreasColors = {
   Hu: '#9970AB',
@@ -46,17 +85,59 @@ export const skillsAreasColors = {
 };
 
 export const skillsAreasOptions = [
-  { label: 'Hu', value: 'Hu', color: skillsAreasColors.Hu },
-  { label: 'So', value: 'So', color: skillsAreasColors.So },
-  { label: 'Sc', value: 'Sc', color: skillsAreasColors.Sc },
-  { label: 'QR', value: 'QR', color: skillsAreasColors.QR },
-  { label: 'WR', value: 'WR', color: skillsAreasColors.WR },
-  { label: 'L (all)', value: 'L', color: skillsAreasColors.L },
-  { label: 'L1', value: 'L1', color: skillsAreasColors.L1 },
-  { label: 'L2', value: 'L2', color: skillsAreasColors.L2 },
-  { label: 'L3', value: 'L3', color: skillsAreasColors.L3 },
-  { label: 'L4', value: 'L4', color: skillsAreasColors.L4 },
-  { label: 'L5', value: 'L5', color: skillsAreasColors.L5 },
+  {
+    label: 'Areas',
+    options: [
+      {
+        label: 'Hu - Humanities & Arts',
+        value: 'Hu',
+        color: skillsAreasColors.Hu,
+      },
+      {
+        label: 'So - Social Sciences',
+        value: 'So',
+        color: skillsAreasColors.So,
+      },
+      { label: 'Sc - Sciences', value: 'Sc', color: skillsAreasColors.Sc },
+    ],
+  },
+  {
+    label: 'Skills',
+    options: [
+      {
+        label: 'QR - Quantitative Reasoning',
+        value: 'QR',
+        color: skillsAreasColors.QR,
+      },
+      { label: 'WR - Writing', value: 'WR', color: skillsAreasColors.WR },
+      { label: 'L - All Language', value: 'L', color: skillsAreasColors.L },
+      {
+        label: 'L1 - Language Level 1',
+        value: 'L1',
+        color: skillsAreasColors.L1,
+      },
+      {
+        label: 'L2 - Language Level 2',
+        value: 'L2',
+        color: skillsAreasColors.L2,
+      },
+      {
+        label: 'L3 - Language Level 3',
+        value: 'L3',
+        color: skillsAreasColors.L3,
+      },
+      {
+        label: 'L4 - Language Level 4',
+        value: 'L4',
+        color: skillsAreasColors.L4,
+      },
+      {
+        label: 'L5 - Language Level 5',
+        value: 'L5',
+        color: skillsAreasColors.L5,
+      },
+    ],
+  },
 ] as const;
 
 export const ratingColormap = chroma
@@ -66,11 +147,20 @@ export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
 
+// Maybe the number type is causing the error? (but it works fine on navbar search hmmm)
 export const creditOptions = [
   { label: '0.5', value: 0.5 },
   { label: '1', value: 1 },
   { label: '1.5', value: 1.5 },
   { label: '2', value: 2 },
+] as const;
+
+export const dayOptions = [
+  { label: 'Monday', value: 'Monday' },
+  { label: 'Tuesday', value: 'Tuesday' },
+  { label: 'Wednesday', value: 'Wednesday' },
+  { label: 'Thursday', value: 'Thursday' },
+  { label: 'Friday', value: 'Friday' },
 ] as const;
 
 // to get a list of abbreviations, run
@@ -79,19 +169,19 @@ export const creditOptions = [
 // school labels were filled in manually
 export const schoolOptions = [
   { label: 'Yale College', value: 'YC' },
-  { label: 'Architecture', value: 'AC' },
-  { label: 'Art', value: 'AT' },
-  { label: 'Arts and Sciences', value: 'GS' },
-  { label: 'Divinity', value: 'DI' },
-  { label: 'Drama', value: 'DR' },
-  { label: 'Forestry', value: 'FS' },
-  { label: 'Law', value: 'LW' },
-  { label: 'Medicine', value: 'MD' },
-  { label: 'Management', value: 'MG' },
-  { label: 'Music', value: 'MU' },
-  { label: 'Nursing', value: 'NR' },
-  { label: 'Physician Associate', value: 'PA' },
-  { label: 'Public Health', value: 'PH' },
+  { label: 'School of Architecture', value: 'AC' },
+  { label: 'School of Fine Arts', value: 'AT' },
+  { label: 'Graduate School of Arts and Sciences', value: 'GS' },
+  { label: 'Divinity School', value: 'DI' },
+  { label: 'School of Drama', value: 'DR' },
+  { label: 'School of the Environment', value: 'FS' },
+  { label: 'Law School', value: 'LW' },
+  { label: 'School of Medicine', value: 'MD' },
+  { label: 'School of Management', value: 'MG' },
+  { label: 'School of Music', value: 'MU' },
+  { label: 'School of Nursing', value: 'NR' },
+  { label: 'Physician Associate Program', value: 'PA' },
+  { label: 'School of Public Health', value: 'PH' },
   { label: 'Summer Session', value: 'SU' },
 ] as const;
 

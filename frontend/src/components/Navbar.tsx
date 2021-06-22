@@ -1,20 +1,31 @@
-import { useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
-import { NavLink } from 'react-router-dom';
+import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
+import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
 import posthog from 'posthog-js';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
 import { useWindowDimensions } from './WindowDimensionsProvider';
-import { logout, scrollToTop, useComponentVisible } from '../utilities';
+import {
+  breakpoints,
+  logout,
+  scrollToTop,
+  useComponentVisible,
+} from '../utilities';
 import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent, SmallTextComponent } from './StyledComponents';
+import { NavbarCatalogSearch } from './NavbarCatalogSearch';
+// import { useSearch } from '../searchContext';
+import { DateTime, Duration } from 'luxon';
 
 import { API_ENDPOINT } from '../config';
+import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
+// Profile icon
 const StyledMeIcon = styled.div`
   background-color: ${({ theme }) =>
     theme.theme === 'light' ? 'rgba(1, 1, 1, 0.1)' : '#525252'};
@@ -23,28 +34,33 @@ const StyledMeIcon = styled.div`
   height: 30px;
   border-radius: 15px;
   display: flex;
-  transition: background-color 0.2s linear, color 0.2s linear;
   &:hover {
     cursor: pointer;
     color: ${({ theme }) => theme.primary};
   }
 `;
 
+// Sign in/out & FB btns
 const StyledDiv = styled.div`
   padding: 0.5rem 1rem 0.5rem 0rem;
-  transition: 0.1s;
   color: ${({ theme }) => theme.text[1]};
   font-weight: 500;
+  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
+  user-select: none;
   &:hover {
     color: ${({ theme }) => theme.primary};
   }
 `;
 
+// Nav links
 const StyledNavLink = styled(NavLink)`
   padding: 0.5rem 1rem 0.5rem 0rem;
-  transition: 0.1s;
   color: ${({ theme }) => theme.text[1]};
+  user-select: none;
+  cursor: pointer;
   font-weight: 500;
+  font-size: 1rem;
+  ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
   &:hover {
     text-decoration: none !important;
     color: ${({ theme }) => theme.primary};
@@ -54,20 +70,7 @@ const StyledNavLink = styled(NavLink)`
   }
 `;
 
-const StyledLink = styled.a`
-  padding: 0.5rem 1rem 0.5rem 0rem;
-  transition: 0.1s;
-  color: ${({ theme }) => theme.text[1]};
-  font-weight: 500;
-  &:hover {
-    text-decoration: none !important;
-    color: ${({ theme }) => theme.primary};
-  }
-  &.active {
-    color: ${({ theme }) => theme.primary};
-  }
-`;
-
+// Nav toggle for mobile
 const StyledNavToggle = styled(Navbar.Toggle)`
   border-color: ${({ theme }) => theme.border} !important;
   .navbar-toggler-icon {
@@ -80,20 +83,33 @@ const StyledNavToggle = styled(Navbar.Toggle)`
   }
 `;
 
+// Nav logo
+const NavLogo = styled(Nav)`
+  padding-top: 0.75rem;
+  padding-bottom: 0.75rem;
+`;
+
+type Props = {
+  isLoggedIn: boolean;
+  themeToggler: () => void;
+  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+};
+
 /**
  * Renders the navbar
- * @prop isLoggedIn - boolean | is user logged in?
- * @prop themeToggler - callback which toggles between light and dark mode
+ * @prop isLoggedIn - is user logged in?
+ * @prop themeToggler - which toggles between light and dark mode
+ * @prop setIsTutorialOpen - opens tutorial
+ * @prop location - object | provides the location info from react-router-dom
  */
 function CourseTableNavbar({
   isLoggedIn,
   themeToggler,
-}: {
-  isLoggedIn: boolean;
-  themeToggler: () => void;
-}) {
+  setIsTutorialOpen,
+  location,
+}: RouteComponentProps & Props) {
   // Is navbar expanded in mobile view?
-  const [nav_expanded, setExpand] = useState(false);
+  const [nav_expanded, setExpand] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
   const {
     ref_visible,
@@ -101,10 +117,90 @@ function CourseTableNavbar({
     setIsComponentVisible,
   } = useComponentVisible<HTMLDivElement>(false);
 
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-  const is_mobile = width < 768;
-  // const is_relative = width < 1230;
+  // Fetch from search
+  // const { searchData, coursesLoading, speed } = useSearch();
+
+  // Last updated state
+  const [lastUpdated, setLastUpdated] = useState('0 hrs');
+
+  // Fetch current device
+  const { isMobile, isLgDesktop } = useWindowDimensions();
+
+  // Show navbar search state
+  const [show_search, setShowSearch] = useState(false);
+  // Page state
+  const [page, setPage] = useState('');
+
+  // Navbar styling for navbar search
+  const navbar_style = () => {
+    if (show_search && page === 'catalog') {
+      return {
+        height: isLgDesktop ? '100px' : '88px',
+        paddingBottom: '0px',
+      };
+    }
+    return undefined;
+  };
+
+  //  Wrapper for nav collapse for # of results shown text
+  const NavCollapseWrapper: React.FC<{
+    children: React.ReactNode;
+  }> = useCallback(
+    ({ children }) => {
+      if (!isMobile && show_search) {
+        return (
+          <div className="ml-auto d-flex flex-column align-items-end justify-content-between h-100">
+            {children}
+          </div>
+        );
+      }
+      return <>{children}</>;
+    },
+    [isMobile, show_search]
+  );
+
+  // Handles page
+  useEffect(() => {
+    if (location && location.pathname === '/catalog') {
+      setPage('catalog');
+    } else if (location && location.pathname === '/worksheet') {
+      setPage('worksheet');
+    } else {
+      setPage('');
+    }
+  }, [location]);
+
+  // Decides whether to show search or not
+  useEffect(() => {
+    if (!isMobile && isLoggedIn && page) {
+      setShowSearch(true);
+    } else {
+      setShowSearch(false);
+    }
+  }, [isMobile, isLoggedIn, page]);
+
+  // Calculate time since last updated
+  useEffect(() => {
+    const dt = DateTime.now().setZone('America/New_York');
+    let dt_update;
+    if (dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)) {
+      dt_update = dt
+        .plus(Duration.fromObject({ days: -1 }))
+        .set({ hour: 3, minute: 30, second: 0 });
+    } else {
+      dt_update = dt.set({ hour: 3, minute: 30, second: 0 });
+    }
+    const diffInSecs = dt.diff(dt_update).as('seconds');
+    if (diffInSecs < 60) {
+      setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
+    } else if (diffInSecs < 3600) {
+      const diffInMins = Math.floor(diffInSecs / 60);
+      setLastUpdated(`${diffInMins} min${diffInMins > 1 ? 's' : ''}`);
+    } else {
+      const diffInHrs = Math.floor(diffInSecs / 3600);
+      setLastUpdated(`${diffInHrs} hr${diffInHrs > 1 ? 's' : ''}`);
+    }
+  }, []);
 
   return (
     <div className={styles.sticky_navbar}>
@@ -112,13 +208,14 @@ function CourseTableNavbar({
         <Container fluid className="p-0">
           <Navbar
             expanded={nav_expanded}
-            onToggle={(expanded) => setExpand(expanded)}
+            onToggle={(expanded: boolean) => setExpand(expanded)}
             // sticky="top"
             expand="md"
-            className="shadow-sm px-3"
+            className="shadow-sm px-3 align-items-start"
+            style={navbar_style()}
           >
             {/* Logo in top left */}
-            <Nav className={`${styles.nav_brand} navbar-brand py-2`}>
+            <NavLogo className="navbar-brand">
               <NavLink
                 to="/"
                 activeStyle={{
@@ -132,128 +229,146 @@ function CourseTableNavbar({
                   <Logo icon={false} />
                 </span>
               </NavLink>
-            </Nav>
+            </NavLogo>
 
+            {/* Mobile nav toggle */}
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
-            <Navbar.Collapse
-              id="basic-navbar-nav"
-              // Make navbar display: flex when not mobile. If mobile, normal formatting
-              className={!is_mobile ? 'd-flex' : 'justify-content-end'}
-            >
-              {/* Close navbar on click in mobile view */}
-              <Nav onClick={() => setExpand(false)} style={{ width: '100%' }}>
-                {/* About Page */}
-                <StyledNavLink
-                  to="/about"
-                  // Left align about link if not mobile
-                  className={!is_mobile ? ' align-self-begin' : ''}
-                >
-                  About
-                </StyledNavLink>
-                {/* FAQs Page */}
-                <StyledNavLink
-                  to="/faq"
-                  // Left align about link if not mobile
-                  className={!is_mobile ? ' align-self-begin' : ''}
-                >
-                  FAQ
-                </StyledNavLink>
-                {/* Feedback Page */}
-                <StyledLink
-                  href={`${API_ENDPOINT}/api/canny/board`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  // Left align about link if not mobile
-                  className={!is_mobile ? ' mr-auto' : ''}
-                >
-                  Feedback
-                </StyledLink>
+            {/* Desktop navbar search */}
+            {show_search && page === 'catalog' ? (
+              <NavbarCatalogSearch />
+            ) : (
+              show_search && page === 'worksheet' && <NavbarWorksheetSearch />
+            )}
 
-                {/* DarkMode Button */}
-                <div
-                  className={`${styles.navbar_dark_mode_btn} d-flex`}
-                  onClick={themeToggler}
+            <NavCollapseWrapper>
+              {/* Navbar collapse */}
+              <Navbar.Collapse
+                id="basic-navbar-nav"
+                // Make navbar display: flex when not mobile. If mobile, normal formatting
+                className={!isMobile ? 'd-flex' : 'justify-content-end'}
+                style={!isMobile && show_search ? { flexGrow: 0 } : undefined}
+              >
+                {/* Close navbar on click in mobile view */}
+                <Nav
+                  onClick={() => setExpand(false)}
+                  className={`${
+                    isMobile && 'align-items-start pt-2'
+                  } position-relative`}
+                  style={{ width: '100%' }}
                 >
-                  <DarkModeButton />
-                </div>
-
-                {/* Catalog Page */}
-                <StyledNavLink
-                  to="/catalog"
-                  // Right align catalog link if not mobile
-                  className={!is_mobile ? ' align-self-end' : ''}
-                  onClick={scrollToTop}
-                >
-                  Catalog
-                </StyledNavLink>
-                {/* Worksheet Page */}
-                <StyledNavLink
-                  to="/worksheet"
-                  // Right align worksheet link if not mobile
-                  className={!is_mobile ? ' align-self-end' : ''}
-                  onClick={scrollToTop}
-                >
-                  Worksheet
-                </StyledNavLink>
-
-                {/* Profile Icon. Show if not mobile */}
-                <div
-                  // Right align profile icon if not mobile
-                  className={`d-none d-md-block ${
-                    !is_mobile ? 'align-self-end' : ''
-                  }`}
-                >
-                  <div className={styles.navbar_me}>
-                    <StyledMeIcon
-                      ref={ref_visible}
-                      className={`${styles.icon_circle} m-auto`}
-                      onClick={() => setIsComponentVisible(!isComponentVisible)}
-                    >
-                      <BsFillPersonFill
-                        className="m-auto"
-                        size={20}
-                        color={isComponentVisible ? '#007bff' : undefined}
-                      />
-                    </StyledMeIcon>
+                  {/* DarkMode Button */}
+                  <div
+                    className={`${styles.navbar_dark_mode_btn} d-flex ${
+                      !isMobile ? 'ml-auto' : ''
+                    }`}
+                    onClick={themeToggler}
+                  >
+                    <DarkModeButton />
                   </div>
-                </div>
-                {/* Sign in/out and Facebook buttons. Show if mobile */}
-                <div className="d-md-none">
-                  {!isLoggedIn ? (
-                    <StyledDiv
-                      onClick={() => {
-                        posthog.capture('login');
-
-                        window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`;
-                      }}
-                    >
-                      Sign In
-                    </StyledDiv>
-                  ) : (
+                  {isLoggedIn && (
                     <>
-                      <StyledDiv>
-                        <FBLoginButton />
-                      </StyledDiv>
-                      <StyledDiv onClick={logout}>Sign Out</StyledDiv>
+                      {/* Catalog Page */}
+                      <StyledNavLink
+                        to="/catalog"
+                        onClick={scrollToTop}
+                        id="catalog-link"
+                      >
+                        Catalog
+                      </StyledNavLink>
+                      {/* Worksheet Page */}
+                      <StyledNavLink to="/worksheet" onClick={scrollToTop}>
+                        <span data-tutorial="worksheet-1">Worksheet</span>
+                      </StyledNavLink>
                     </>
                   )}
-                </div>
-              </Nav>
-            </Navbar.Collapse>
+                  {(isMobile || !isLoggedIn) && (
+                    <>
+                      {/* About Page */}
+                      <StyledNavLink to="/about" onClick={scrollToTop}>
+                        About
+                      </StyledNavLink>
+                      {/* FAQ Page */}
+                      <StyledNavLink to="/faq" onClick={scrollToTop}>
+                        FAQ
+                      </StyledNavLink>
+                    </>
+                  )}
+                  {/* Profile Icon. Show if not mobile */}
+                  <div
+                    // Right align profile icon if not mobile
+                    className={`d-none d-md-block ${
+                      !isMobile ? 'align-self-end' : ''
+                    }`}
+                  >
+                    <div className={styles.navbar_me}>
+                      <StyledMeIcon
+                        ref={ref_visible}
+                        className={`${styles.icon_circle} m-auto`}
+                        onClick={() =>
+                          setIsComponentVisible(!isComponentVisible)
+                        }
+                      >
+                        <BsFillPersonFill
+                          className="m-auto"
+                          size={20}
+                          color={isComponentVisible ? '#007bff' : undefined}
+                        />
+                      </StyledMeIcon>
+                    </div>
+                  </div>
+                  {/* Sign in/out and Facebook buttons. Show if mobile */}
+                  <div className="d-md-none">
+                    <StyledDiv>
+                      <a
+                        href="https://old.coursetable.com/"
+                        style={{ color: 'inherit' }}
+                      >
+                        Old CourseTable
+                      </a>
+                    </StyledDiv>
+                    {!isLoggedIn ? (
+                      <StyledDiv
+                        onClick={() => {
+                          posthog.capture('login');
+                          window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
+                        }}
+                      >
+                        Sign In
+                      </StyledDiv>
+                    ) : (
+                      <>
+                        <StyledDiv>
+                          <FBLoginButton />
+                        </StyledDiv>
+                        <StyledDiv onClick={logout}>Sign Out</StyledDiv>
+                      </>
+                    )}
+                  </div>
+                </Nav>
+              </Navbar.Collapse>
+              {/* Last updated ago text for desktop */}
+              {show_search && page === 'catalog' && (
+                <SmallTextComponent type={2} className="mb-2 text-right">
+                  <MdUpdate className="mr-1" />
+                  Updated {lastUpdated} ago
+                </SmallTextComponent>
+              )}
+            </NavCollapseWrapper>
           </Navbar>
         </Container>
       </SurfaceComponent>
-      {/* Dropdown that has position: absolute */}
+      {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
           profile_expanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
+          setIsTutorialOpen={setIsTutorialOpen}
         />
       </div>
     </div>
   );
 }
 
-export default CourseTableNavbar;
+export default withRouter(CourseTableNavbar);

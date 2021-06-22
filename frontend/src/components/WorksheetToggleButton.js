@@ -1,46 +1,64 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
+import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import posthog from 'posthog-js';
 import styled from 'styled-components';
 import { useUser } from '../user';
-import { getSSObject, setSSObject } from '../browserStorage';
+import { getLSObject, setLSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
+import { useWorksheet } from '../worksheetContext';
 
-/**
- * Render worksheet list in default worksheet view
- * @prop worksheetView - boolean | are we in the worksheet view?
- * @prop crn - integer that holds the crn of the current course
- * @prop season_code - string that holds the current season code
- * @prop modal - boolean | are we rendering in the course modal
- */
-
-const StyledBookmark = styled.span`
-  color: ${({ theme }) => theme.primary};
+const StyledButton = styled(Button)`
+  color: ${({ theme }) => theme.primary}!important;
   &:hover {
     opacity: 0.5;
   }
 `;
 
-function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
+/**
+ * Toggle button to add course to or remove from worksheet
+ * @prop crn - number | integer that holds the crn of the current course
+ * @prop season_code - string | holds the current season code
+ * @prop modal - boolean | are we rendering in the course modal
+ * @prop setCourseInWorksheet - function | to set if current course is in user's worksheet for parent component
+ */
+function WorksheetToggleButton({
+  crn,
+  season_code,
+  modal,
+  setCourseInWorksheet = null,
+}) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
+
+  const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
+
   const worksheet_check = useMemo(() => {
     return isInWorksheet(season_code, crn.toString(), user.worksheet);
   }, [user.worksheet, season_code, crn]);
   // Is the current course in the worksheet?
-  const [inWorksheet, setInWorksheet] = useState(worksheet_check);
+  const [inWorksheet, setInWorksheet] = useState(false);
+
+  // Fetch width of window
+  const { isLgDesktop } = useWindowDimensions();
 
   // Reset inWorksheet state on every rerender
-  const update = isInWorksheet(season_code, crn.toString(), user.worksheet);
-  if (inWorksheet !== update) setInWorksheet(update);
-  // Disabled worksheed add/remove button if not logged in
+  useEffect(() => {
+    if (inWorksheet !== worksheet_check) {
+      setInWorksheet(worksheet_check);
+      if (setCourseInWorksheet) setCourseInWorksheet(worksheet_check);
+    }
+  }, [worksheet_check, inWorksheet, setCourseInWorksheet]);
+
+  // Disabled worksheet add/remove button if not logged in
   if (user.worksheet == null)
     return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
@@ -57,11 +75,12 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
 
     // removes removed courses from worksheet hidden courses
     if (inWorksheet) {
-      setSSObject('hidden_courses', {}, true);
-      const hidden_courses = getSSObject('hidden_courses');
-      if (hidden_courses[crn]) {
-        hidden_courses[crn] = false;
-        setSSObject('hidden_courses', hidden_courses);
+      setLSObject('hidden_courses', {}, true);
+      if (
+        Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
+        hidden_courses[cur_season][crn]
+      ) {
+        toggleCourse(crn);
       }
     }
 
@@ -107,31 +126,30 @@ function WorksheetToggleButton({ worksheetView, crn, season_code, modal }) {
     </Tooltip>
   );
 
-  const bookmark_style = { transition: '0.3s' };
   return (
     <OverlayTrigger
       placement="top"
-      delay={{ show: 1000, hide: 250 }}
+      delay={{ show: 1000, hide: 0 }}
       overlay={renderTooltip}
     >
-      <Button
+      <StyledButton
         variant="toggle"
-        className={`p-0 ${modal ? '' : 'bookmark_move'}`}
+        className="py-auto px-1 d-flex align-items-center"
         onClick={toggleWorkSheet}
       >
-        {inWorksheet ? (
-          <StyledBookmark>
-            <BsBookmarkFill
-              className={modal ? '' : 'bookmark_move'}
-              size={25}
-            />
-          </StyledBookmark>
+        {/* Show bookmark icon on modal and +/- everywhere else */}
+        {modal ? (
+          inWorksheet ? (
+            <BsBookmarkFill size={25} className="scale_icon" />
+          ) : (
+            <BsBookmark size={25} className="scale_icon" />
+          )
+        ) : inWorksheet ? (
+          <FaMinus size={isLgDesktop ? 16 : 14} />
         ) : (
-          <StyledBookmark>
-            <BsBookmark size={25} style={bookmark_style} />
-          </StyledBookmark>
+          <FaPlus size={isLgDesktop ? 16 : 14} />
         )}
-      </Button>
+      </StyledButton>
     </OverlayTrigger>
   );
 }

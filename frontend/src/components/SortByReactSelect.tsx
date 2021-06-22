@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import {
   FcAlphabeticalSortingAz,
   FcAlphabeticalSortingZa,
@@ -7,12 +5,13 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
-import { sortbyOptions, SortKeys } from '../queries/Constants';
+import { sortbyOptions } from '../queries/Constants';
 import styles from './SortbyReactSelect.module.css';
 import search_styles from '../pages/Search.module.css';
 import CustomSelect from './CustomSelect';
-import { useSessionStorageState } from '../browserStorage';
+import { useSearch } from '../searchContext';
 
+// Toggle sort order button
 const StyledSortBtn = styled.div`
   &:hover {
     background-color: ${({ theme }) => theme.banner};
@@ -20,28 +19,16 @@ const StyledSortBtn = styled.div`
 `;
 
 /**
- * Render expanded worksheet list after maximize button is clicked
- * @prop setOrdering - function to set ordering of courses
+ * Sorting select and toggle button
  */
 
-const SortByReactSelect = ({
-  setOrdering,
-}: {
-  setOrdering: (
-    ordering: {
-      [key in SortKeys]?: 'asc' | 'desc';
-    }
-  ) => void;
-}) => {
-  // State that controls sortby select
-  const [select_sortby, setSelectSortby] = useSessionStorageState<
-    typeof sortbyOptions[number]
-  >('select_sortby', sortbyOptions[0]);
-  // State that determines sort order
-  const [sort_order, setSortOrder] = useSessionStorageState<'asc' | 'desc'>(
-    'sort_order',
-    'asc'
-  );
+const SortByReactSelect = () => {
+  const {
+    select_sortby,
+    sort_order,
+    setSelectSortby,
+    setSortOrder,
+  } = useSearch();
 
   // Handle changing the sort order
   const handleSortOrder = () => {
@@ -49,21 +36,10 @@ const SortByReactSelect = ({
     else setSortOrder('asc');
   };
 
-  // Set ordering in parent element whenever sortby or order changes
-  useEffect(() => {
-    const sortParams = select_sortby.value;
-    const ordering: {
-      [key in SortKeys]?: 'asc' | 'desc';
-    } = {
-      [sortParams]: sort_order,
-    };
-    setOrdering(ordering);
-  }, [select_sortby, sort_order, setOrdering]);
-
   return (
     <>
+      {/* Sort By Select */}
       <div className={styles.sortby_container}>
-        {/* Sort By Select */}
         <CustomSelect
           value={select_sortby}
           options={sortbyOptions}
@@ -75,6 +51,7 @@ const SortByReactSelect = ({
           }}
         />
       </div>
+      {/* Toggle sort order button */}
       <StyledSortBtn
         className={`${search_styles.sort_btn} my-auto`}
         onClick={handleSortOrder}

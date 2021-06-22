@@ -7,10 +7,9 @@ import { withTheme } from 'styled-components';
 /**
  * Render the course hide button in the Worksheet List
  * @prop hidden - boolean | is this course hidden
- * @prop toggleCourse - function to hide/show course
- * @prop crn - int that holds crn for the current course
+ * @prop toggleCourse - function | to hide/show course
+ * @prop crn - number | integer that holds crn for the current course
  */
-
 const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
   // Handle hide/show click
   function toggleWorkSheet() {
@@ -29,14 +28,26 @@ const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
   return (
     <OverlayTrigger
       placement="bottom"
-      delay={{ show: 1000, hide: 250 }}
+      delay={{ show: 1000, hide: 0 }}
       overlay={renderTooltip}
     >
-      <Button variant="toggle" onClick={toggleWorkSheet} className="p-0">
+      <Button
+        variant="toggle"
+        onClick={toggleWorkSheet}
+        className="p-1 d-flex align-items-center"
+      >
         {hidden ? (
-          <BsEyeSlash color={theme.hidden} size={button_size} />
+          <BsEyeSlash
+            color={theme.hidden}
+            size={button_size}
+            className="scale_icon"
+          />
         ) : (
-          <BsEye color={theme.text[0]} size={button_size} />
+          <BsEye
+            color={theme.text[0]}
+            size={button_size}
+            className="scale_icon"
+          />
         )}
       </Button>
     </OverlayTrigger>

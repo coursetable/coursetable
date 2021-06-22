@@ -1,5 +1,6 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react';
 import posthog from 'posthog-js';
+import { css } from 'styled-components';
 import axios from 'axios';
 
 import { API_ENDPOINT } from './config';
@@ -37,6 +38,54 @@ export const useComponentVisible = <T extends HTMLElement>(
   return { ref_visible, isComponentVisible, setIsComponentVisible };
 };
 
+// Detect clicks outside of a toggle and dropdown component
+export const useComponentVisibleDropdown = <T extends HTMLElement>(
+  initialIsVisible: boolean,
+  callback?: (visible: boolean) => void
+) => {
+  // Is the component visible?
+  const [isComponentVisible, setIsComponentVisible] = useState(
+    initialIsVisible
+  );
+  const ref_toggle = useRef<T>(null);
+  const ref_dropdown = useRef<T>(null);
+
+  // Handle clicks outside of the component
+  const handleClickOutside = (event: Event) => {
+    // Hide component if user clicked outside of it
+    const portal = document.querySelector('#portal');
+    if (
+      ref_toggle.current &&
+      ref_dropdown &&
+      ref_dropdown.current &&
+      !ref_toggle.current.contains(event.target as Node) &&
+      !ref_dropdown.current.contains(event.target as Node) &&
+      portal &&
+      !portal.contains(event.target as Node)
+    ) {
+      if (callback) {
+        callback(isComponentVisible);
+      }
+      setIsComponentVisible(false);
+    }
+  };
+
+  // Add event listener on mount and remove it on dismount
+  useEffect(() => {
+    document.body.addEventListener('click', handleClickOutside, true);
+    return () => {
+      document.body.removeEventListener('click', handleClickOutside, true);
+    };
+  });
+
+  return {
+    ref_toggle,
+    ref_dropdown,
+    isComponentVisible,
+    setIsComponentVisible,
+  };
+};
+
 export const scrollToTop: MouseEventHandler = (event) => {
   const newPage =
     event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
@@ -65,3 +114,25 @@ export function logout() {
       window.location.pathname = '/';
     });
 }
+
+// Helper function for setting breakpoint styles in styled-components
+export const breakpoints = (
+  cssProp = 'padding', // the CSS property to apply to the breakpoints
+  cssPropUnits = 'px', // the units of the CSS property (can set equal to "" and apply units to values directly)
+  values: { [key: number]: number }[] = [], // array of objects, e.g. [{ 800: 60 }, ...] <-- 800 (key) = screen breakpoint, 60 (value) = CSS prop breakpoint
+  mediaQueryType = 'max-width' // media query breakpoint type, i.e.: max-width, min-width, max-height, min-height
+) => {
+  const breakpointProps = values.reduce((mediaQueries, value) => {
+    const [screenBreakpoint, cssPropBreakpoint] = [
+      Object.keys(value)[0],
+      Object.values(value)[0],
+    ];
+    mediaQueries += `
+    @media screen and (${mediaQueryType}: ${screenBreakpoint}px) {
+      ${cssProp}: ${cssPropBreakpoint}${cssPropUnits} !important;
+    }
+    `;
+    return mediaQueries;
+  }, '');
+  return css(([breakpointProps] as unknown) as TemplateStringsArray);
+};

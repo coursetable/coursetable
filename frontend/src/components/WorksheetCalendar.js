@@ -1,11 +1,12 @@
 import React, { useCallback, useMemo } from 'react';
 import moment from 'moment';
-import './WeekSchedule.css';
+import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
 import CalendarEvent from './CalendarEvent';
 import { weekdays } from '../common';
+import { useWorksheet } from '../worksheetContext';
 
 const localizer = momentLocalizer(moment);
 
@@ -16,32 +17,29 @@ const StyledCalendar = styled(Calendar)`
       .rbc-time-header {
         .rbc-time-header-content {
           border-color: ${({ theme }) => theme.border};
-          transition: border 0.2s linear;
           .rbc-time-header-cell {
             .rbc-header {
+              user-select: none;
+              cursor: default;
               border-color: ${({ theme }) => theme.border};
-              transition: border 0.2s linear;
             }
           }
         }
       }
       .rbc-time-content {
         border-color: ${({ theme }) => theme.border};
-        transition: border 0.2s linear;
         .rbc-time-gutter {
           .rbc-timeslot-group {
+            user-select: none;
+            cursor: default;
             border-color: ${({ theme }) => theme.border};
-            transition: border 0.2s linear;
           }
         }
         .rbc-day-slot {
           .rbc-timeslot-group {
             border-color: ${({ theme }) => theme.border};
-            transition: border 0.2s linear;
             .rbc-time-slot {
               border-color: ${({ theme }) => theme.border};
-              transition: border 0.2s linear;
-            }
           }
         }
       }
@@ -52,13 +50,17 @@ const StyledCalendar = styled(Calendar)`
 
 /**
  * Render Worksheet Calendar component
- * @prop showModal - function to show modal for a particular listing
- * @prop courses - list of dictionaries of listing data
- * @prop hover_course - dictionary of listing that is being hovered over in list view
- * @prop hidden_courses - dictionary of hidden courses
  */
 
-function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
+function WorksheetCalendar() {
+  const {
+    showModal,
+    courses,
+    hover_course,
+    hidden_courses,
+    cur_season,
+  } = useWorksheet();
+
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback(
     (listings) => {
@@ -69,7 +71,11 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
       const parsedCourses = [];
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
-        if (hidden_courses[course.crn]) return;
+        if (
+          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
+          hidden_courses[cur_season][course.crn]
+        )
+          return;
         for (let indx = 0; indx < 5; indx++) {
           const info = course.times_by_day[weekdays[indx]];
           // If the listing takes place on this day
@@ -99,7 +105,7 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
       earliest.set({ minute: 0 });
       return [earliest, latest, parsedCourses];
     },
-    [hidden_courses]
+    [hidden_courses, cur_season]
   );
 
   // Custom styling for the calendar events
@@ -173,9 +179,10 @@ function WeekSchedule({ showModal, courses, hover_course, hidden_courses }) {
         dayFormat: 'ddd',
         timeGutterFormat: 'ha',
       }}
+      tooltipAccessor={null}
     />
   );
 }
 
-// WeekSchedule.whyDidYouRender = true;
-export default React.memo(WeekSchedule);
+// WorksheetCalendar.whyDidYouRender = true;
+export default React.memo(WorksheetCalendar);

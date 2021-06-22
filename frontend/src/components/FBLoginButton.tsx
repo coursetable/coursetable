@@ -9,11 +9,36 @@ import { TextComponent, StyledHoverText } from './StyledComponents';
 import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
+import styled from 'styled-components';
+
+const RefreshIcon = styled(FaSyncAlt)`
+  transition: transform 0.3s;
+
+  :hover {
+    cursor: pointer;
+    transform: rotateZ(90deg);
+  }
+`;
+
+const RefreshText = styled(TextComponent)`
+  &:hover + ${RefreshIcon} {
+    cursor: pointer;
+    transform: rotateZ(90deg);
+  }
+`;
+
+const loggedInModes = ['disconnect', 'refresh'] as const;
+type LoggedInMode = typeof loggedInModes[number];
+
+type Props = {
+  loggedInMode?: LoggedInMode;
+};
 
 /**
  * FB login button that shows up in the profile dropdown
+ * @prop loggedInMode - show disconnect or refresh when logged in?
  */
-function FBLoginButton() {
+const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
   const { user, fbRefresh } = useUser();
   const logged_in = user.fbLogin;
 
@@ -105,27 +130,37 @@ function FBLoginButton() {
           <StyledHoverText>Connect to FB</StyledHoverText>
         </TextComponent>
       )}
-      {logged_in && (
-        <>
-          <TextComponent
-            type={1}
-            onClick={handleLogoutClick}
-            className={styles.collapse_text}
-          >
-            <StyledHoverText>Disconnect FB</StyledHoverText>
-          </TextComponent>
-
-          <FaSyncAlt
-            className={`${styles.fb_sync} ml-2 my-auto`}
-            size={15}
-            color="#32CD32"
-            title="Refresh FB friends"
-            onClick={handleLoginClick}
-          />
-        </>
-      )}
+      {logged_in &&
+        (loggedInMode === loggedInModes[0] ? (
+          <>
+            <TextComponent
+              type={1}
+              onClick={handleLogoutClick}
+              className={styles.collapse_text}
+            >
+              <StyledHoverText>Disconnect FB</StyledHoverText>
+            </TextComponent>
+          </>
+        ) : (
+          <>
+            <RefreshText
+              type={1}
+              onClick={handleLoginClick}
+              className={styles.collapse_text}
+            >
+              <StyledHoverText>Refresh FB</StyledHoverText>
+            </RefreshText>
+            <RefreshIcon
+              className="ml-2 my-auto"
+              size={15}
+              color="#32CD32"
+              title="Refresh FB friends"
+              onClick={handleLoginClick}
+            />
+          </>
+        ))}
     </div>
   );
-}
+};
 
 export default FBLoginButton;

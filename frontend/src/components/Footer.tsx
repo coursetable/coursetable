@@ -74,6 +74,16 @@ function Footer() {
                   <TextComponent type={1}>Feedback</TextComponent>
                 </a>
               </li>
+              {/* Status */}
+              <li>
+                <a
+                  href="https://stats.uptimerobot.com/NpVA5UNlX3"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <TextComponent type={1}>Status</TextComponent>
+                </a>
+              </li>
             </ul>
           </div>
           <div className="col-6 col-md">

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -10,22 +10,29 @@ import {
   ratingColormap,
   workloadColormap,
   skillsAreasColors,
+  subjectOptions,
 } from '../queries/Constants';
 
 import WorksheetToggleButton from './WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
-import styles from './SearchResultsGridItem.module.css';
-import tag_styles from './SearchResultsItem.module.css';
+import styles from './ResultsGridItem.module.css';
+import tag_styles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from './StyledComponents';
 import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
-import { getOverallRatings } from '../courseUtilities';
+import { getOverallRatings, getWorkloadRatings } from '../courseUtilities';
+import { useWorksheet } from '../worksheetContext';
+import { useSearch } from '../searchContext';
 
+// Grid Item wrapper
 const StyledGridItem = styled.div`
-  background-color: ${({ theme }) =>
-    theme.theme === 'light' ? 'rgb(245, 245, 245)' : theme.surface[1]};
-  transition: background-color 0.2s linear;
+  background-color: ${({ theme, inWorksheet }) =>
+    inWorksheet
+      ? theme.primary_light
+      : theme.theme === 'light'
+      ? 'rgb(245, 245, 245)'
+      : theme.surface[1]};
   &:hover {
     background-color: ${({ theme }) => theme.select_hover};
   }
@@ -33,24 +40,25 @@ const StyledGridItem = styled.div`
 
 /**
  * Renders a grid item for a search result
- * @prop course - listing data for the current course
- * @prop showModal - function that shows the course modal for this listing
+ * @prop course - object | listing data for the current course
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_cols - integer that holds how many columns in grid view
+ * @prop num_cols - number | integer that holds how many columns in grid view
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
+ * @prop showModal - function | to display course modal
  */
 
-const SearchResultsGridItem = ({
+const ResultsGridItem = ({
   course,
-  showModal,
   isLoggedIn,
   num_cols,
   multiSeasons,
+  showModal,
 }) => {
   // How many decimal points to use in ratings
   const RATINGS_PRECISION = 1;
   // Bootstrap column width depending on the number of columns
   const col_width = 12 / num_cols;
+
   // Season code for this listing
   const { season_code } = course;
   const season = season_code[5];
@@ -69,11 +77,27 @@ const SearchResultsGridItem = ({
     );
   }, [season]);
 
-  // Fetch overall rating value and string representation
-  const course_rating = useMemo(() => getOverallRatings(course), [course]);
+  // Fetch overall & workload rating values and string representations
+  const course_rating = useMemo(
+    () => [
+      String(getOverallRatings(course, false)),
+      getOverallRatings(course, true),
+    ],
+    [course]
+  );
+  const workload_rating = useMemo(
+    () => [
+      String(getWorkloadRatings(course, false)),
+      getWorkloadRatings(course, true),
+    ],
+    [course]
+  );
 
   // Variable used in list keys
   let key = 0;
+
+  // Is the current course in the worksheet?
+  const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
   // Tooltip for hovering over season
   const season_tooltip = (props) => (
@@ -83,6 +107,19 @@ const SearchResultsGridItem = ({
           seasons[season - 1].charAt(0).toUpperCase() +
           seasons[season - 1].slice(1)
         } ${season_code.substr(0, 4)}`}
+      </small>
+    </Tooltip>
+  );
+
+  // Tooltip for hovering over subject
+  const subject_tooltip = (props) => (
+    <Tooltip id="button-tooltip" {...props}>
+      <small>
+        {subjectOptions
+          .filter((subject) => {
+            return subject.value === subject_code;
+          })[0]
+          .label.substring(subject_code.length + 2)}
       </small>
     </Tooltip>
   );
@@ -108,6 +145,13 @@ const SearchResultsGridItem = ({
     </Tooltip>
   );
 
+  const subject_code = course.course_code
+    ? course.course_code.split(' ')[0]
+    : '';
+  const course_code = course.course_code
+    ? course.course_code.split(' ')[1]
+    : '';
+
   return (
     <Col
       md={col_width}
@@ -120,13 +164,21 @@ const SearchResultsGridItem = ({
         }}
         className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
         tabIndex="0"
+        inWorksheet={courseInWorksheet}
       >
         <Row className="m-auto">
           {/* Course Code */}
           <Col xs={multiSeasons ? 8 : 12} className="p-0">
             <Row className="mx-auto mt-3">
               <small className={styles.course_codes}>
-                {course.course_code ? course.course_code : ''}
+                {course.course_code && (
+                  <>
+                    <OverlayTrigger placement="top" overlay={subject_tooltip}>
+                      <span>{subject_code}</span>
+                    </OverlayTrigger>{' '}
+                    {course_code}
+                  </>
+                )}
                 {course.section
                   ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
                   : ''}
@@ -137,11 +189,7 @@ const SearchResultsGridItem = ({
           {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
-                <OverlayTrigger
-                  placement="top"
-                  delay={{ show: 500, hide: 250 }}
-                  overlay={season_tooltip}
-                >
+                <OverlayTrigger placement="top" overlay={season_tooltip}>
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
                       tag_styles[seasons[parseInt(season, 10) - 1]]
@@ -252,29 +300,18 @@ const SearchResultsGridItem = ({
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
               {/* Class Rating */}
-              <OverlayTrigger
-                placement="right"
-                delay={{ show: 500, hide: 250 }}
-                overlay={class_tooltip}
-              >
+              <OverlayTrigger placement="right" overlay={class_tooltip}>
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
                     className={`${styles.rating} mr-1`}
                     style={{
-                      color: course_rating
-                        ? ratingColormap(course_rating).darken().saturate()
+                      color: course_rating[0]
+                        ? ratingColormap(course_rating[0]).darken().saturate()
                         : '#cccccc',
                     }}
                   >
-                    {
-                      // String representation of rating to be displayed
-                      course.average_rating_same_professors
-                        ? course_rating // Use same professor if possible. Displayed as is
-                        : course.average_rating
-                        ? `~${course_rating}` // Use all professors otherwise and add tilda ~
-                        : 'N/A' // No ratings at all
-                    }
+                    {course_rating[1]}
                   </div>
                   <StyledIcon>
                     <Star className={styles.icon} />
@@ -282,11 +319,7 @@ const SearchResultsGridItem = ({
                 </Row>
               </OverlayTrigger>
               {/* Professor Rating */}
-              <OverlayTrigger
-                placement="right"
-                delay={{ show: 500, hide: 250 }}
-                overlay={prof_tooltip}
-              >
+              <OverlayTrigger placement="right" overlay={prof_tooltip}>
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
@@ -310,27 +343,21 @@ const SearchResultsGridItem = ({
                 </Row>
               </OverlayTrigger>
               {/* Workload Rating */}
-              <OverlayTrigger
-                placement="right"
-                delay={{ show: 500, hide: 250 }}
-                overlay={workload_tooltip}
-              >
+              <OverlayTrigger placement="right" overlay={workload_tooltip}>
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        course.average_workload && isLoggedIn
-                          ? workloadColormap(course.average_workload)
+                        isLoggedIn && workload_rating[0]
+                          ? workloadColormap(workload_rating[0])
                               .darken()
                               .saturate()
                           : '#cccccc',
                     }}
                   >
-                    {course.average_workload && isLoggedIn
-                      ? course.average_workload.toFixed(RATINGS_PRECISION)
-                      : 'N/A'}
+                    {isLoggedIn && workload_rating[1]}
                   </div>
                   <StyledIcon>
                     <Book className={styles.icon} />
@@ -341,13 +368,13 @@ const SearchResultsGridItem = ({
           </Col>
         </Row>
       </StyledGridItem>
-      {/* Bookmark Button */}
+      {/* Add/remove from worksheet button */}
       <div className={styles.worksheet_btn}>
         <WorksheetToggleButton
-          worksheetView={false}
           crn={course.crn}
           season_code={course.season_code}
           modal={false}
+          setCourseInWorksheet={setCourseInWorksheet}
         />
       </div>
       {/* Render conflict icon */}
@@ -358,4 +385,4 @@ const SearchResultsGridItem = ({
   );
 };
 
-export default SearchResultsGridItem;
+export default ResultsGridItem;

@@ -17,7 +17,6 @@ import LandingImage from '../images/landing_page.svg';
 
 const StyledStat = styled.span`
   color: ${({ theme }) => theme.primary};
-  transition: color 0.2s linear;
 `;
 
 /**

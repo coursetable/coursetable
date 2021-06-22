@@ -12,7 +12,7 @@ import WorksheetToggleButton from './WorksheetToggleButton';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
-import tag_styles from './SearchResultsItem.module.css';
+import tag_styles from './ResultsItem.module.css';
 import { skillsAreasColors } from '../queries/Constants';
 import { TextComponent, StyledLink } from './StyledComponents';
 import { toSeasonString } from '../courseUtilities';
@@ -61,10 +61,8 @@ const extra_info_map = {
  */
 
 const CourseModal = ({ listing, hideModal, show }) => {
-  // Fetch width of window
-  const { width } = useWindowDimensions();
-  // Switch to mobile view?
-  const isMobile = width < 768;
+  // Fetch current device
+  const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
   const [view, setView] = useState(['overview', null]);
   // Current evaluation filter (both, course, professor)
@@ -128,7 +126,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
                         (listings.length === 1 ? (
                           // If this is the initial listing, show worksheet toggle button
                           <WorksheetToggleButton
-                            worksheetView={false}
                             crn={cur_listing.crn}
                             season_code={cur_listing.season_code}
                             modal

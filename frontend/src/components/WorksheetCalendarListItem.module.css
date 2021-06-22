@@ -1,0 +1,11 @@
+.list_text {
+  overflow: hidden;
+}
+
+.course_title {
+  display: block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

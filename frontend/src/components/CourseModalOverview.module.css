@@ -20,7 +20,6 @@
   /* NO RATING BUBBLE ANIMATION */
   max-height: 3rem;
 
-  transition: background-color 0.3s;
   transition: max-height 0.2s ease-out;
 }
 
@@ -40,10 +39,7 @@
 .rating_cell {
   width: 100%;
   text-align: center;
-  font-weight: bold;
   border-radius: 6px;
-  display: flex;
-  align-items: center;
   justify-content: center;
 }
 

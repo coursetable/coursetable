@@ -2,64 +2,56 @@ import React, { useState, useEffect } from 'react';
 import posthog from 'posthog-js';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import {
-  FaFacebookSquare,
-  FaSignOutAlt,
-  FaSignInAlt,
-  FaStar,
-} from 'react-icons/fa';
-import { FcCalendar } from 'react-icons/fc';
+  FcCalendar,
+  FcInfo,
+  FcQuestions,
+  FcFeedback,
+  FcPuzzle,
+} from 'react-icons/fc';
+import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
 import { generateICS } from './GenerateICS';
 import { useUser } from '../user';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { logout } from '../utilities';
+import { logout, scrollToTop } from '../utilities';
 import {
   SurfaceComponent,
   TextComponent,
   StyledHoverText,
 } from './StyledComponents';
+import { NavLink } from 'react-router-dom';
+import { useWindowDimensions } from './WindowDimensionsProvider';
 
 import { API_ENDPOINT } from '../config';
-import styled from 'styled-components';
-
-const BetaRow = styled(Row)`
-  background: ${({ theme }) => theme.primary};
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
-
-  &:hover {
-    background: ${({ theme }) => theme.primary_hover};
-  }
-`;
-
-const WhiteText = styled.div`
-  color: white;
-`;
 
 // Season to export classes from
 const CUR_SEASON = '202101';
 
 type Props = {
-  /** Is dropdown visible? */
   profile_expanded: boolean;
-
-  /** Function that changes dropdown visibility */
   setIsComponentVisible(visible: boolean): void;
-
-  /** Is user logged in? */
   isLoggedIn: boolean;
+  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
+ * @prop profile_expanded - is dropdown visible?
+ * @prop setIsComponentVisible - function that changes dropdown visibility
+ * @prop isLoggedIn - is user logged in?
+ * @prop setIsTutorialOpen - opens tutorial
  */
 const MeDropdown: React.VFC<Props> = ({
   profile_expanded,
   setIsComponentVisible,
   isLoggedIn,
+  setIsTutorialOpen,
 }) => {
+  // Fetch current device
+  const { isMobile, isTablet } = useWindowDimensions();
+
   // Get user context data
   const { user } = useUser();
 
@@ -102,24 +94,90 @@ const MeDropdown: React.VFC<Props> = ({
       <Collapse in={profile_expanded}>
         {/* This wrapper div is important for making the collapse animation smooth */}
         <div>
-          <Col className="py-0 px-0">
-            {/* Beta link button */}
+          <Col className="px-3 pt-3">
             {isLoggedIn && (
-              <BetaRow className="px-3 pt-3 pb-3 m-auto">
-                <FaStar className="mr-2 my-auto" size={20} color="white" />
-                <WhiteText
-                  onClick={() =>
-                    window.open('https://beta.coursetable.com', '_blank')
-                  }
+              <>
+                {/* About page Link */}
+                <Row className="pb-3 m-auto">
+                  <FcInfo
+                    className="mr-2 my-auto"
+                    size={20}
+                    style={{ paddingLeft: '2px' }}
+                  />
+                  <TextComponent type={1}>
+                    <NavLink
+                      to="/about"
+                      className={styles.collapse_text}
+                      onClick={scrollToTop}
+                    >
+                      <StyledHoverText>About</StyledHoverText>
+                    </NavLink>
+                  </TextComponent>
+                </Row>
+                {/* FAQ page Link */}
+                <Row className="pb-3 m-auto">
+                  <FcQuestions
+                    className="mr-2 my-auto"
+                    size={20}
+                    style={{ paddingLeft: '2px' }}
+                  />
+                  <TextComponent type={1}>
+                    <NavLink
+                      to="/faq"
+                      className={styles.collapse_text}
+                      onClick={scrollToTop}
+                    >
+                      <StyledHoverText>FAQ</StyledHoverText>
+                    </NavLink>
+                  </TextComponent>
+                </Row>
+              </>
+            )}
+            {/* Feedback page Link */}
+            <Row className="pb-3 m-auto">
+              <FcFeedback
+                className="mr-2 my-auto"
+                size={20}
+                style={{ paddingLeft: '2px' }}
+              />
+              <TextComponent type={1}>
+                <a
+                  href={`${API_ENDPOINT}/api/canny/board`}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className={styles.collapse_text}
+                  onClick={scrollToTop}
                 >
-                  Try CourseTable Beta&trade;!
-                </WhiteText>
-              </BetaRow>
+                  <StyledHoverText>Feedback</StyledHoverText>
+                </a>
+              </TextComponent>
+            </Row>
+            {/* Try tutorial only on desktop */}
+            {!isMobile && !isTablet && isLoggedIn && (
+              <Row className="pb-3 m-auto">
+                <FcPuzzle
+                  className="mr-2 my-auto"
+                  size={20}
+                  style={{ paddingLeft: '2px' }}
+                />
+                <TextComponent type={1}>
+                  <NavLink
+                    to="/catalog"
+                    className={styles.collapse_text}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      scrollToTop(e);
+                      setIsTutorialOpen(true);
+                    }}
+                  >
+                    <StyledHoverText>Tutorial</StyledHoverText>
+                  </NavLink>
+                </TextComponent>
+              </Row>
             )}
             {/* Export Worksheet button */}
             {isLoggedIn && (
-              <Row className="px-3 py-2 m-auto">
+              <Row className="pb-3 m-auto">
                 <FcCalendar className="mr-2 my-auto" size={20} />
                 <TextComponent
                   type={1}
@@ -132,18 +190,18 @@ const MeDropdown: React.VFC<Props> = ({
             )}
             {/* Connect FB button */}
             {isLoggedIn && (
-              <Row className="px-3 py-2 m-auto">
+              <Row className="pb-3 m-auto">
                 <FaFacebookSquare
                   className="mr-2 my-auto"
                   size={20}
                   color="#007bff"
                 />
-                <FBLoginButton />
+                <FBLoginButton loggedInMode="disconnect" />
               </Row>
             )}
             {/* Sign In/Out button */}
             {isLoggedIn ? (
-              <Row className="px-3 pt-2 pb-3 m-auto">
+              <Row className="pb-3 m-auto">
                 <FaSignOutAlt
                   className="mr-2 my-auto"
                   size={20}
@@ -159,7 +217,7 @@ const MeDropdown: React.VFC<Props> = ({
                 </TextComponent>
               </Row>
             ) : (
-              <Row className="px-3 pt-2 pb-3 m-auto">
+              <Row className="pb-3 m-auto">
                 <FaSignInAlt
                   className="mr-2 my-auto"
                   size={20}
