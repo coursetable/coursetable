@@ -156,10 +156,6 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
   For more details, see https://stackoverflow.com/questions/35531347/localhost-blocked-on-chrome-with-privacy-error.
 
-- `Fatal error: Uncaught Error: Failed opening required '/usr/share/nginx/html/web/includes/../../vendor/autoload.php'`
-
-  This means that PHP hasn't installed all its dependencies yet. Try running `docker-compose restart` and check again.
-
 ## Installing packages
 
 <details>

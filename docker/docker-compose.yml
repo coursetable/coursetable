@@ -59,7 +59,7 @@ services:
       - ./mysql/database.sql:/docker-entrypoint-initdb.d/00-database.sql
 
   phpmyadmin:
-    build: ./phpmyadmin
+    image: phpmyadmin/phpmyadmin:latest
     depends_on:
       - mysql
     environment:
