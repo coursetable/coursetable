@@ -42,10 +42,7 @@ Check out [the getting started guide](docs/getting-started.md).
 
 **Style:**
 
-For different languages:
-
-- TypeScript & JavaScript: We use [prettier](https://prettier.io/) to automatically format the code. Make sure you use your editor's integration!
-- PHP: We use [PHP CodeSniffer](https://github.com/squizlabs/PHP_CodeSniffer) to maintain coding standards; generally, it's 4 spaces for tabs, camelCase for variables, and follow whatever else that's in use right now.
+TypeScript & JavaScript: We use [prettier](https://prettier.io/) to automatically format the code. Make sure you use your editor's integration!
 
 We have automated checks set up that will run for every commit and pull request.
 

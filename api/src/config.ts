@@ -30,9 +30,6 @@ export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
 // Secret for Canny SSO
 export const CANNY_KEY = getEnv('CANNY_KEY');
 
-// Legacy PHP URI
-export const PHP_URI = 'http://nginx:8080';
-
 // Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
   ? 'https://localhost:3000'
