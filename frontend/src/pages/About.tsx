@@ -50,6 +50,11 @@ const About: React.VFC = () => {
       name: 'Kevin Hu',
       image: kh,
       role: 'CourseTable Co-Lead',
+      links: {
+        github: 'https://github.com/kevinhu',
+        linkedin: 'https://www.linkedin.com/in/hukevinhu/',
+        website: 'https://kevinhu.io/',
+      },
     },
     {
       name: 'Max Yuan',
@@ -155,9 +160,24 @@ const About: React.VFC = () => {
 
   const alumni = [
     {
+      name: 'Peter Xu',
+      image: hs,
+      role: 'CourseTable cofounder',
+    },
+    {
+      name: 'Harry Yu',
+      image: hs,
+      role: 'CourseTable cofounder',
+    },
+    {
       name: 'Harshal Sheth',
       image: hs,
       role: 'CourseTable Lead',
+      links: {
+        website: 'https://harshal.sheth.io',
+        linkedin: 'https://linkedin.com/in/hsheth2',
+        github: 'https://github.com/hsheth2',
+      },
     },
     {
       name: 'Hao Li',
