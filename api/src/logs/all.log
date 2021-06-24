@@ -2972,3 +2972,90 @@ Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the cli
 
 2021-03-10 01:52:46:5246 http: GET /legacy_api/WorksheetActions.php?action=get&season=all 200 - - 35.938 ms
 
+{"message":"Updating static catalog","level":"info","timestamp":"2021-06-24 04:34:45:3445"}
+{"message":"Secure dev proxy listening on port 3001","level":"info","timestamp":"2021-06-24 04:34:45:3445"}
+{"message":"Fetched 38 seasons","level":"info","timestamp":"2021-06-24 04:34:46:3446"}
+{"message":"Fetched season 202002: n=262","level":"info","timestamp":"2021-06-24 04:34:47:3447"}
+{"message":"Fetched season 202102: n=341","level":"info","timestamp":"2021-06-24 04:34:47:3447"}
+{"message":"Fetched season 200903: n=4360","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201502: n=329","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201802: n=321","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201202: n=360","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201602: n=286","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201702: n=299","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201101: n=4349","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201902: n=391","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201102: n=396","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 201402: n=310","level":"info","timestamp":"2021-06-24 04:34:48:3448"}
+{"message":"Fetched season 202003: n=5315","level":"info","timestamp":"2021-06-24 04:34:49:3449"}
+{"message":"Fetched season 201002: n=345","level":"info","timestamp":"2021-06-24 04:34:49:3449"}
+{"message":"Fetched season 201302: n=352","level":"info","timestamp":"2021-06-24 04:34:49:3449"}
+{"message":"Fetched season 202201: n=2510","level":"info","timestamp":"2021-06-24 04:34:49:3449"}
+{"message":"Fetched season 201203: n=4237","level":"info","timestamp":"2021-06-24 04:34:49:3449"}
+{"message":"Fetched season 201103: n=4456","level":"info","timestamp":"2021-06-24 04:34:50:3450"}
+{"message":"Fetched season 201003: n=4242","level":"info","timestamp":"2021-06-24 04:34:50:3450"}
+{"message":"Fetched season 201001: n=4477","level":"info","timestamp":"2021-06-24 04:34:51:3451"}
+{"message":"Fetched season 202103: n=3324","level":"info","timestamp":"2021-06-24 04:34:51:3451"}
+{"message":"Fetched season 201301: n=4473","level":"info","timestamp":"2021-06-24 04:34:51:3451"}
+{"message":"Fetched season 201403: n=3747","level":"info","timestamp":"2021-06-24 04:34:51:3451"}
+{"message":"Fetched season 201601: n=4081","level":"info","timestamp":"2021-06-24 04:34:52:3452"}
+{"message":"Fetched season 201201: n=4498","level":"info","timestamp":"2021-06-24 04:34:52:3452"}
+{"message":"Fetched season 201701: n=4327","level":"info","timestamp":"2021-06-24 04:34:52:3452"}
+{"message":"Fetched season 201603: n=4086","level":"info","timestamp":"2021-06-24 04:34:52:3452"}
+{"message":"Fetched season 201401: n=4133","level":"info","timestamp":"2021-06-24 04:34:53:3453"}
+{"message":"Fetched season 201501: n=3937","level":"info","timestamp":"2021-06-24 04:34:53:3453"}
+{"message":"Fetched season 201703: n=4204","level":"info","timestamp":"2021-06-24 04:34:53:3453"}
+{"message":"Fetched season 201803: n=4522","level":"info","timestamp":"2021-06-24 04:34:54:3454"}
+{"message":"Fetched season 201901: n=4730","level":"info","timestamp":"2021-06-24 04:34:54:3454"}
+{"message":"Fetched season 201503: n=3853","level":"info","timestamp":"2021-06-24 04:34:54:3454"}
+{"message":"Fetched season 201303: n=4168","level":"info","timestamp":"2021-06-24 04:34:54:3454"}
+{"message":"Fetched season 202001: n=4626","level":"info","timestamp":"2021-06-24 04:34:56:3456"}
+{"message":"Fetched season 201801: n=4310","level":"info","timestamp":"2021-06-24 04:34:57:3457"}
+{"message":"Fetched season 201903: n=4520","level":"info","timestamp":"2021-06-24 04:34:58:3458"}
+{"message":"Fetched season 202101: n=5547","level":"info","timestamp":"2021-06-24 04:34:58:3458"}
+{"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-06-24 04:34:58:3458"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:46:3546"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:46:3546"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Fetching Facebook friends' worksheets","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Getting user's Facebook ID","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Fetching user's worksheets","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Getting profile for user kh779","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Getting worksheets for user kh779","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"GET /api/user/worksheets 200 42 - 75.370 ms\n","level":"http","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"Intercepting with-evals authentication","level":"info","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"GET /api/static/catalogs/202103.json 500 1037 - 43.436 ms\n","level":"http","timestamp":"2021-06-24 04:35:47:3547"}
+{"message":"GET /api/facebook/worksheets - - - - ms\n","level":"http","timestamp":"2021-06-24 04:35:49:3549"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Fetching user's worksheets","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Getting profile for user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Getting worksheets for user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"GET /api/user/worksheets 200 42 - 14.016 ms\n","level":"http","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Fetching Facebook friends' worksheets","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Getting user's Facebook ID","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Intercepting with-evals authentication","level":"info","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"GET /api/static/catalogs/202103.json 500 1037 - 4.209 ms\n","level":"http","timestamp":"2021-06-24 04:35:50:3550"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Fetching Facebook friends' worksheets","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Getting user's Facebook ID","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Fetching user's worksheets","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Getting profile for user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Getting worksheets for user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"GET /api/user/worksheets 304 - - 43.638 ms\n","level":"http","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"GET /api/facebook/worksheets 401 - - 80.520 ms\n","level":"http","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Deserializing user kh779","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"Intercepting with-evals authentication","level":"info","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"GET /api/static/catalogs/202103.json 500 1037 - 50.398 ms\n","level":"http","timestamp":"2021-06-24 04:36:04:364"}
+{"message":"GET /api/facebook/worksheets - - - - ms\n","level":"http","timestamp":"2021-06-24 04:36:05:365"}
