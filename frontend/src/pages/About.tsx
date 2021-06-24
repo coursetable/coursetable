@@ -31,6 +31,8 @@ import lt from '../images/headshots/leck-tang.jpg';
 import az from '../images/headshots/anna-zhang.jpg';
 import ls from '../images/headshots/lauren-song.jpg';
 import js from '../images/headshots/josephine-shin.jpg';
+import hy from '../images/headshots/harry-yu.jpg';
+import px from '../images/headshots/peter-xu.png';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -50,6 +52,11 @@ const About: React.VFC = () => {
       name: 'Kevin Hu',
       image: kh,
       role: 'CourseTable Co-Lead',
+      links: {
+        github: 'https://github.com/kevinhu',
+        linkedin: 'https://www.linkedin.com/in/hukevinhu/',
+        website: 'https://kevinhu.io/',
+      },
     },
     {
       name: 'Max Yuan',
@@ -155,9 +162,24 @@ const About: React.VFC = () => {
 
   const alumni = [
     {
+      name: 'Peter Xu',
+      image: px,
+      role: 'Cofounder',
+    },
+    {
+      name: 'Harry Yu',
+      image: hy,
+      role: 'Cofounder',
+    },
+    {
       name: 'Harshal Sheth',
       image: hs,
       role: 'CourseTable Lead',
+      links: {
+        website: 'https://harshal.sheth.io',
+        linkedin: 'https://linkedin.com/in/hsheth2',
+        github: 'https://github.com/hsheth2',
+      },
     },
     {
       name: 'Hao Li',
