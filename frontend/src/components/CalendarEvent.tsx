@@ -11,7 +11,14 @@ const event_style = {
   height: '100%',
 };
 
-function CalendarEvent({ event }) {
+function CalendarEvent({
+  event,
+}: {
+  event: {
+    listing: { locations_summary: string; title: string };
+    title: string;
+  };
+}) {
   // Render popover that contains title, description, and requirements when hovering over course
   const renderTitlePopover = useCallback((props, course) => {
     return (

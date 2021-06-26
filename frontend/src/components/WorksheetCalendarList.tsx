@@ -84,18 +84,14 @@ function WorksheetCalendarList() {
   // Build the HTML for the list of courses of a given season
   const items = useMemo(() => {
     // List to hold HTML
-    const items = [];
-
-    // Iterate over all listings of this season
-    courses.forEach((course, id) => {
+    const items = courses.map((course, id) => {
       let hidden = false;
       if (Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
         hidden = hidden_courses[cur_season][course.crn];
       }
       // Add listgroup item to items list
-      items.push(
-        <WorksheetCalendarListItem key={id} course={course} hidden={hidden} />
-      );
+      return;
+      <WorksheetCalendarListItem key={id} course={course} hidden={hidden} />;
     });
 
     return items;
@@ -142,7 +138,7 @@ function WorksheetCalendarList() {
           <ListGroup variant="flush">{items}</ListGroup>
         ) : (
           // There aren't courses for this season
-          <NoCourses cur_season={cur_season} />
+          <NoCourses />
         )}
       </CourseList>
     </>

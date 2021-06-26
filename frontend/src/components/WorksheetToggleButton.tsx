@@ -8,7 +8,7 @@ import { toast } from 'react-toastify';
 import posthog from 'posthog-js';
 import styled from 'styled-components';
 import { useUser } from '../user';
-import { getLSObject, setLSObject } from '../browserStorage';
+import { setLSObject } from '../browserStorage';
 import { isInWorksheet } from '../courseUtilities';
 import { useWindowDimensions } from './WindowDimensionsProvider';
 import * as Sentry from '@sentry/react';
@@ -34,7 +34,12 @@ function WorksheetToggleButton({
   crn,
   season_code,
   modal,
-  setCourseInWorksheet = null,
+  setCourseInWorksheet,
+}: {
+  crn: number;
+  season_code: string;
+  modal: boolean;
+  setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
@@ -111,14 +116,14 @@ function WorksheetToggleButton({
   }
 
   // Handle button click
-  function toggleWorkSheet(e) {
+  function toggleWorkSheet(e: React.MouseEvent<HTMLButtonElement>) {
     e.preventDefault();
     e.stopPropagation();
     add_remove_course();
   }
 
   // Render remove/add message on hover
-  const renderTooltip = (props) => (
+  const renderTooltip = (props: any) => (
     <Tooltip id="button-tooltip" {...props}>
       <small>
         {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}

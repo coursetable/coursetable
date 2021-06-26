@@ -34,5 +34,5 @@
     "resolveJsonModule": true
   },
   "include": ["./src/**/*"],
-  "files":["./src/auth/user.d.ts"]
+  "files": ["./src/auth/user.d.ts"]
 }

@@ -16,14 +16,7 @@ import { useWindowDimensions } from './WindowDimensionsProvider';
 import Styles from './Results.module.css';
 import './Results.css';
 
-import {
-  Container,
-  Col,
-  Row,
-  Spinner,
-  Tooltip,
-  OverlayTrigger,
-} from 'react-bootstrap';
+import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 
@@ -31,7 +24,7 @@ import NoCoursesFound from '../images/no_courses_found.svg';
 import Authentication from '../images/authentication.svg';
 
 import styled, { useTheme } from 'styled-components';
-import { SurfaceComponent, StyledIcon } from './StyledComponents';
+import { SurfaceComponent } from './StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../queries/Constants';

@@ -5,6 +5,7 @@ import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../worksheetContext';
+import { Listing } from './FerryProvider';
 
 // Listgroup Item for worksheet list item
 const StyledListItem = styled(ListGroup.Item)`
@@ -30,7 +31,15 @@ const StyledListItem = styled(ListGroup.Item)`
  * @prop course - object | current listing
  * @prop hidden - object | dictionary of hidden courses
  */
-function WorksheetCalendarListItem({ course, hidden, theme }) {
+function WorksheetCalendarListItem({
+  course,
+  hidden,
+  theme,
+}: {
+  course: Listing;
+  hidden: boolean;
+  theme: any;
+}) {
   const {
     showModal,
     cur_season,
@@ -65,7 +74,6 @@ function WorksheetCalendarListItem({ course, hidden, theme }) {
             toggleCourse={toggleCourse}
             hidden={hidden}
             crn={course.crn}
-            season_code={cur_season}
           />
         </div>
         {/* Add/remove from worksheet button */}

@@ -10,7 +10,17 @@ import { withTheme } from 'styled-components';
  * @prop toggleCourse - function | to hide/show course
  * @prop crn - number | integer that holds crn for the current course
  */
-const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
+const WorksheetHideButton = ({
+  hidden,
+  toggleCourse,
+  crn,
+  theme,
+}: {
+  hidden: boolean;
+  toggleCourse: (crn: number) => void;
+  crn: number;
+  theme: any;
+}) => {
   // Handle hide/show click
   function toggleWorkSheet() {
     toggleCourse(crn);
@@ -19,7 +29,7 @@ const WorksheetHideButton = ({ hidden, toggleCourse, crn, theme }) => {
   const button_size = 18;
 
   // Tooltip that displays show/hide message on hover
-  const renderTooltip = (props) => (
+  const renderTooltip = (props: any) => (
     <Tooltip id="button-tooltip" {...props}>
       <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
     </Tooltip>

@@ -7,8 +7,19 @@ import styled from 'styled-components';
 import CalendarEvent from './CalendarEvent';
 import { weekdays } from '../common';
 import { useWorksheet } from '../worksheetContext';
+import { Listing } from './FerryProvider';
 
 const localizer = momentLocalizer(moment);
+
+interface parsedCourseType {
+  title: string;
+  start: Date;
+  end: Date;
+  listing: {
+    course_code: string;
+  };
+  id: number;
+}
 
 // Calendar for worksheet
 const StyledCalendar = styled(Calendar)`
@@ -63,12 +74,12 @@ function WorksheetCalendar() {
 
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback(
-    (listings) => {
+    (listings: Listing[]) => {
       // Initialize earliest and latest class times
       let earliest = moment().hour(20);
       let latest = moment().hour(0);
       // List of event dictionaries
-      const parsedCourses = [];
+      const parsedCourses: parsedCourseType[] = [];
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
         if (
@@ -88,13 +99,13 @@ function WorksheetCalendar() {
             if (end.get('hour') < 8) end.add(12, 'h');
             const value = course.course_code;
             // Add event dictionary to the list
-            parsedCourses[parsedCourses.length] = {
+            parsedCourses.push({
               title: value,
               start: start.toDate(),
               end: end.toDate(),
               listing: course,
               id: index,
-            };
+            });
             // Update earliest and latest courses
             if (start.get('hours') < earliest.get('hours')) earliest = start;
             if (end.get('hours') > latest.get('hours')) latest = end;
@@ -103,7 +114,11 @@ function WorksheetCalendar() {
       });
       // Set earliest minute to 0
       earliest.set({ minute: 0 });
-      return [earliest, latest, parsedCourses];
+      return {
+        earliest,
+        latest,
+        parsedCourses,
+      };
     },
     [hidden_courses, cur_season]
   );
@@ -115,6 +130,9 @@ function WorksheetCalendar() {
         backgroundColor: event.listing.color,
         borderColor: event.listing.border,
         borderWidth: '2px',
+        zIndex: 0,
+        filter: 'default',
+        opacity: 'default',
       };
       if (hover_course && hover_course === event.listing.crn) {
         style.zIndex = 2;
@@ -134,14 +152,14 @@ function WorksheetCalendar() {
   }, [courses, parseListings]);
 
   const minTime = useMemo(() => {
-    return ret_values[0].get('hours') !== 20
-      ? ret_values[0].toDate()
+    return ret_values.earliest.get('hours') !== 20
+      ? ret_values.earliest.toDate()
       : moment().hour(8).minute(0).toDate();
   }, [ret_values]);
 
   const maxTime = useMemo(() => {
-    return ret_values[1].get('hours') !== 0
-      ? ret_values[1].toDate()
+    return ret_values.latest.get('hours') !== 0
+      ? ret_values.latest.toDate()
       : moment().hour(18).minute(0).toDate();
   }, [ret_values]);
 
@@ -162,9 +180,10 @@ function WorksheetCalendar() {
   return (
     <StyledCalendar
       // Show Mon-Fri
+      // @ts-ignore
       defaultView="work_week"
       views={['work_week']}
-      events={ret_values[2]}
+      events={ret_values.parsedCourses}
       // Earliest course time or 8am if no courses
       min={minTime}
       // Latest course time or 6pm if no courses
