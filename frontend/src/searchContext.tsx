@@ -129,7 +129,7 @@ SearchContext.displayName = 'SearchContext';
 
 // Calculate upcoming season
 const dt = DateTime.now().setZone('America/New_York');
-let year = dt.year;
+let { year } = dt;
 let season: number;
 // Starting in October look at next year spring
 if (dt.month >= 10) {

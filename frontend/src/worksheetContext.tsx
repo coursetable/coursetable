@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import posthog from 'posthog-js';
 import React, {
   createContext,

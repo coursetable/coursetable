@@ -284,7 +284,7 @@ export const getDayTimes = (course: Listing) => {
   }
 
   // Get the first day's times
-  const times_by_day = course.times_by_day;
+  const { times_by_day } = course;
 
   const initialFiltered: Record<string, string>[] = [];
 
