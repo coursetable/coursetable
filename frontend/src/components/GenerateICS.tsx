@@ -5,13 +5,14 @@ import { toast } from 'react-toastify';
 import { weekdays } from '../common';
 import { toSeasonString } from '../courseUtilities';
 import * as Sentry from '@sentry/react';
+import { Listing } from './FerryProvider';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const ics = require('ics');
 const FileSaver = require('file-saver');
 
 // Is this day during a break?
-const onBreak = (day) => {
+const onBreak = (day: moment.Moment) => {
   // Spring 2021 Breaks
   const breaks = [
     [moment('2021-02-22T00:01'), moment('2021-02-22T23:59')],
@@ -28,7 +29,7 @@ const onBreak = (day) => {
 };
 
 // generate ICS file and download it
-export const generateICS = (listings_all) => {
+export const generateICS = (listings_all: Listing[]) => {
   // Season to export
   const cur_season = '202101';
 
@@ -36,7 +37,7 @@ export const generateICS = (listings_all) => {
   const period = [moment('2021-02-01T08:20'), moment('2021-05-07T17:30')];
 
   // Only get courses for the current season that have valid times
-  const listings = [];
+  const listings: Listing[] = [];
   listings_all.forEach((listing) => {
     if (!listing.times_summary || listing.times_summary === 'TBA') return;
     if (listing.season_code === cur_season) listings.push(listing);
@@ -97,7 +98,7 @@ export const generateICS = (listings_all) => {
   }
 
   // Export to ICS
-  ics.createEvents(events, (error, value) => {
+  ics.createEvents(events, (error: any, value: any) => {
     if (error) {
       Sentry.captureException(error);
       toast.error('Error Generating ICS File');
