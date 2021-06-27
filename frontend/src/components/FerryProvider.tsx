@@ -54,6 +54,8 @@ type _ListingAugments = {
   professor_avg_rating?: string;
   color?: string;
   border?: string;
+  start_time?: moment.Moment;
+  location_url?: string;
 };
 expectType<
   // Make sure we don't override a key that wasn't there originally.

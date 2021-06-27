@@ -1,4 +1,3 @@
-import React from 'react';
 import { Row, Col, Modal } from 'react-bootstrap';
 import EvaluationResponses from './EvaluationResponses';
 import EvaluationRatings from './EvaluationRatings';
@@ -12,7 +11,15 @@ import { useSearchEvaluationNarrativesQuery } from '../generated/graphql';
  * @prop crn - integer that holds current listing's crn
  * @prop course_code - string that holds current listing's course code
  */
-const CourseModalEvaluations = ({ season_code, crn, course_code }) => {
+const CourseModalEvaluations = ({
+  season_code,
+  crn,
+  course_code,
+}: {
+  season_code: string;
+  crn: number;
+  course_code: string;
+}) => {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
@@ -22,7 +29,7 @@ const CourseModalEvaluations = ({ season_code, crn, course_code }) => {
   });
   // Wait until fetched
   if (loading || error) return <CourseModalLoading />;
-  const info = data.computed_listing_info;
+  const info = data?.computed_listing_info;
 
   return (
     <Modal.Body>

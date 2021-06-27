@@ -10,21 +10,21 @@ import styles from './Searchbar.module.css';
  * @prop bar_size - string that holds width of the search bar
  */
 
-function Searchbar({ bar_size }) {
+function Searchbar({ bar_size }: { bar_size: 'sm' | 'lg' | undefined }) {
   // State that holds value to be searched
   const [value, setValue] = useState('');
   // Ref to get the value from the search bar
-  const input = useRef();
+  const input = useRef<HTMLInputElement>(null);
   // On form submit, set value state to the searched value
-  const searched = (event) => {
+  const searched: React.FormEventHandler<HTMLFormElement> = (event) => {
     posthog.capture('search', {
       from: 'searchbar',
-      value: input.current.value,
+      value: input?.current?.value,
     });
 
     // Prevent page refresh on submit
     event.preventDefault();
-    setValue(input.current.value);
+    setValue(input?.current?.value || '');
   };
   // If something was searched scroll to top when switching to catalog page
   if (value) {

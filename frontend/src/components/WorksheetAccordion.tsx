@@ -21,12 +21,21 @@ import styles from './WorksheetAccordion.module.css';
 import { weekdays } from '../common';
 import NoCourses from './NoCourses';
 import { useWorksheet } from '../worksheetContext';
+import { Listing } from './FerryProvider';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 // Render custom accordion items
-function ContextAwareToggle({ eventKey, callback, course }) {
+function ContextAwareToggle({
+  eventKey,
+  callback,
+  course,
+}: {
+  eventKey: string;
+  callback?: (eventKey: string) => null;
+  course: Listing;
+}) {
   // Get current selected item
   const currentEventKey = useContext(AccordionContext);
   const theme = useContext(ThemeContext);
@@ -39,7 +48,7 @@ function ContextAwareToggle({ eventKey, callback, course }) {
   const isCurrentEventKey = currentEventKey === eventKey;
 
   // Remove weekday from course times
-  const trim = (time_string) => {
+  const trim = (time_string: string) => {
     // Iterate over each char in the time string
     for (let i = 0; i < time_string.length; i++) {
       // If we see a number, then we have passed the weekdays and can return the rest of the string
@@ -104,8 +113,14 @@ function WorksheetAccordion() {
 
   // Parse listing dictionaries and determine which courses take place on each weekday
   const parseListings = useCallback(
-    (listings) => {
-      const parsed_courses = [[], [], [], [], []];
+    (listings: Listing[]) => {
+      const parsed_courses: [
+        Listing[],
+        Listing[],
+        Listing[],
+        Listing[],
+        Listing[]
+      ] = [[], [], [], [], []];
       // Iterate over each listing
       listings.forEach((course) => {
         // Iterate over each weekday
@@ -136,7 +151,9 @@ function WorksheetAccordion() {
 
   // Build HTML for each class that takes place on each day of the week
   const buildHtml = useCallback(
-    (parsed_courses) => {
+    (
+      parsed_courses: [Listing[], Listing[], Listing[], Listing[], Listing[]]
+    ) => {
       // Start the list with the current day
       let today = new Date().getDay();
       // Start on monday if it is the weekend
