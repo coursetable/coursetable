@@ -1,20 +1,20 @@
 import React, { useMemo, useState, useCallback } from 'react';
 import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
-import './MultiToggle.css';
+import '../MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { HiExternalLink } from 'react-icons/hi';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
-import { useUser } from '../user';
+import { useUser } from '../../user';
 import {
   TextComponent,
   StyledPopover,
   StyledRating,
   StyledLink,
-} from './StyledComponents';
-import { ratingColormap, workloadColormap } from '../queries/Constants';
+} from '../StyledComponents';
+import { ratingColormap, workloadColormap } from '../../queries/Constants';
 import Styles from './CourseModalOverview.module.css';
 
 import CourseModalLoading from './CourseModalLoading';
@@ -22,9 +22,9 @@ import {
   fbFriendsAlsoTaking,
   getEnrolled,
   toSeasonString,
-} from '../courseUtilities';
-import { useSearchAverageAcrossSeasonsQuery } from '../generated/graphql';
-import { weekdays } from '../common';
+} from '../../courseUtilities';
+import { useSearchAverageAcrossSeasonsQuery } from '../../generated/graphql';
+import { weekdays } from '../../common';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`

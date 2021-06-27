@@ -6,7 +6,7 @@ import WorksheetCalendar from '../components/WorksheetCalendar';
 import WorksheetCalendarList from '../components/WorksheetCalendarList';
 import WorksheetAccordion from '../components/WorksheetAccordion';
 import WorksheetList from '../components/WorksheetList';
-import CourseModal from '../components/CourseModal';
+import CourseModal from '../components/CourseModal/CourseModal';
 import {
   SurfaceComponent,
   StyledExpandBtn,

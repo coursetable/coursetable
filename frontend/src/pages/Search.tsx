@@ -7,7 +7,7 @@ import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
 import Results from '../components/Results';
-import CourseModal from '../components/CourseModal';
+import CourseModal from '../components/CourseModal/CourseModal';
 
 import {
   skillsAreasOptions,

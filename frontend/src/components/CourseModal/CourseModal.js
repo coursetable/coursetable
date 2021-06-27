@@ -8,14 +8,14 @@ import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 
-import WorksheetToggleButton from './WorksheetToggleButton';
-import { useWindowDimensions } from './WindowDimensionsProvider';
+import WorksheetToggleButton from '../WorksheetToggleButton';
+import { useWindowDimensions } from '../WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
-import tag_styles from './ResultsItem.module.css';
-import { skillsAreasColors } from '../queries/Constants';
-import { TextComponent, StyledLink } from './StyledComponents';
-import { toSeasonString } from '../courseUtilities';
+import tag_styles from '../ResultsItem.module.css';
+import { skillsAreasColors } from '../../queries/Constants';
+import { TextComponent, StyledLink } from '../StyledComponents';
+import { toSeasonString } from '../../courseUtilities';
 
 // Course Modal
 const StyledModal = styled(Modal)`
