@@ -12,7 +12,7 @@ export const isInWorksheet = (
   season_code: Season,
   crn: Crn | string,
   worksheet?: Worksheet
-) => {
+): boolean => {
   if (worksheet == null) return false;
   if (typeof crn !== 'string') {
     crn = crn.toString();
@@ -24,7 +24,9 @@ export const isInWorksheet = (
 };
 
 // Convert season code to legible string
-export const toSeasonString = (season_code: Season) => {
+export const toSeasonString = (
+  season_code: Season
+): readonly [string, string, string] => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
   return [
@@ -35,7 +37,9 @@ export const toSeasonString = (season_code: Season) => {
 };
 
 // Unflatten course times for easy use in checkConflict
-export const unflattenTimes = (course: Listing) => {
+export const unflattenTimes = (
+  course: Listing
+): [string, string, string, string][] | undefined | 'TBA' => {
   if (!course) return undefined;
   if (course.times_summary === 'TBA') return 'TBA';
   // Holds the course times for each day of the week
@@ -52,7 +56,7 @@ export const checkConflict = (
   listings: Listing[],
   course: Listing,
   times: [string, string, string, string][] // index is 0-4, corresponding to weekdays
-) => {
+): Listing[] => {
   const conflicts: Listing[] = [];
   // Iterate over worksheet listings
   for (let i = 0; i < listings.length; i++) {
@@ -89,7 +93,10 @@ export const checkConflict = (
   return conflicts;
 };
 // Checks if a course is cross-listed in the user's worksheet
-export const checkCrossListed = (listings: Listing[], course: Listing) => {
+export const checkCrossListed = (
+  listings: Listing[],
+  course: Listing
+): boolean | string => {
   const classes: string[] = [];
   // Iterate over worksheet listings
   for (let i = 0; i < listings.length; i++) {
@@ -109,7 +116,7 @@ export const fbFriendsAlsoTaking = (
   crn: Crn,
   worksheets: Worksheet,
   names: FBFriendInfo
-) => {
+): string[] => {
   // Return if worksheets are null
   if (!worksheets) return [];
   // List of FB friends also shopping
@@ -130,7 +137,7 @@ type NumFBReturn =
   // Value is the list of FB friends taking the class
   Record<string, string[]>;
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
-export const getNumFB = (fbWorksheets: FBInfo) => {
+export const getNumFB = (fbWorksheets: FBInfo): NumFBReturn => {
   // List of each friends' worksheets
   const { worksheets } = fbWorksheets;
   // List of each friends' names/facebook id
@@ -147,6 +154,91 @@ export const getNumFB = (fbWorksheets: FBInfo) => {
     });
   }
   return fb_dict;
+};
+
+// Get the overall rating for a course
+export const getOverallRatings = (
+  course: Listing,
+  display = false
+): string | number | null => {
+  let course_rating;
+  // Determine which overall rating to use
+  if (display) {
+    course_rating = course.average_rating_same_professors
+      ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
+      : course.average_rating
+      ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
+      : 'N/A'; // No ratings at all
+  } else {
+    course_rating = course.average_rating_same_professors
+      ? course.average_rating_same_professors // Use same professor if possible
+      : course.average_rating
+      ? course.average_rating // Use all professors otherwise
+      : null; // No ratings at all
+  }
+
+  // Return overall rating
+  return course_rating;
+};
+
+// Get the workload rating for a course
+export const getWorkloadRatings = (
+  course: Listing,
+  display = false
+): string | number | null => {
+  let course_workload;
+  // Determine which workload rating to use
+  if (display) {
+    course_workload = course.average_workload_same_professors
+      ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
+      : course.average_workload
+      ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
+      : 'N/A'; // No ratings at all
+  } else {
+    course_workload = course.average_workload_same_professors
+      ? course.average_workload_same_professors // Use same professor if possible
+      : course.average_workload
+      ? course.average_workload // Use all professors otherwise
+      : null; // No ratings at all
+  }
+
+  // Return workload rating
+  return course_workload;
+};
+
+// Calculate day and time score
+const calculateDayTime = (course: Listing): number | null => {
+  // Get all days' times
+  const times = getDayTimes(course);
+
+  if (times) {
+    // Get earliest start time
+    // const earliestTime = times.reduce((early, time) => {
+    //   if (toRangeTime(time.start) < toRangeTime(early)) {
+    //     early = time.start;
+    //   }
+    //   return early;
+    // }, '0:00');
+
+    // Calculate the time score
+    const start_time = Number(
+      times[0].start.split(':').reduce((final, num) => {
+        final += num;
+        return final;
+      }, '')
+    );
+
+    // Calculate the day score
+    const first_day = Object.keys(course.times_by_day)[0] as Weekdays;
+    const day_score = weekdays.indexOf(first_day) * 10000;
+
+    // Calculate the total score and return
+    const score = day_score + start_time;
+    return score;
+  }
+
+  // If no times then return null
+  return null;
 };
 
 // Helper function that returns the correct value to sort by
@@ -184,7 +276,7 @@ export const sortCourses = (
   // we should prevent there from being multiple keys.
   ordering: { [key in SortKeys]?: 'asc' | 'desc' },
   num_fb: NumFBReturn
-) => {
+): Listing[] => {
   // Key to sort the courses by
   const key = Object.keys(ordering)[0] as SortKeys;
   // Boolean | in ascending order?
@@ -202,56 +294,12 @@ export const sortCourses = (
   return sorted;
 };
 
-// Get the overall rating for a course
-export const getOverallRatings = (course: Listing, display = false) => {
-  let course_rating;
-  // Determine which overall rating to use
-  if (display) {
-    course_rating = course.average_rating_same_professors
-      ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
-      : course.average_rating
-      ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
-  } else {
-    course_rating = course.average_rating_same_professors
-      ? course.average_rating_same_professors // Use same professor if possible
-      : course.average_rating
-      ? course.average_rating // Use all professors otherwise
-      : null; // No ratings at all
-  }
-
-  // Return overall rating
-  return course_rating;
-};
-
-// Get the workload rating for a course
-export const getWorkloadRatings = (course: Listing, display = false) => {
-  let course_workload;
-  // Determine which workload rating to use
-  if (display) {
-    course_workload = course.average_workload_same_professors
-      ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
-      : course.average_workload
-      ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
-  } else {
-    course_workload = course.average_workload_same_professors
-      ? course.average_workload_same_professors // Use same professor if possible
-      : course.average_workload
-      ? course.average_workload // Use all professors otherwise
-      : null; // No ratings at all
-  }
-
-  // Return workload rating
-  return course_workload;
-};
-
 // Get the enrollment for a course
 export const getEnrolled = (
   course: Listing,
   display = false,
   onModal = false
-) => {
+): string | number | null => {
   let course_enrolled;
   // Determine which enrolled to use
   if (display) {
@@ -277,7 +325,9 @@ export const getEnrolled = (
 };
 
 // Get start and end times
-export const getDayTimes = (course: Listing) => {
+export const getDayTimes = (
+  course: Listing
+): Record<string, string>[] | null => {
   // If no times then return null
   if (isEmpty(course.times_by_day)) {
     return null;
@@ -298,44 +348,8 @@ export const getDayTimes = (course: Listing) => {
 
   return times;
 };
-
-// Calculate day and time score
-const calculateDayTime = (course: Listing) => {
-  // Get all days' times
-  const times = getDayTimes(course);
-
-  if (times) {
-    // Get earliest start time
-    // const earliestTime = times.reduce((early, time) => {
-    //   if (toRangeTime(time.start) < toRangeTime(early)) {
-    //     early = time.start;
-    //   }
-    //   return early;
-    // }, '0:00');
-
-    // Calculate the time score
-    const start_time = Number(
-      times[0].start.split(':').reduce((final, num) => {
-        final += num;
-        return final;
-      }, '')
-    );
-
-    // Calculate the day score
-    const first_day = Object.keys(course.times_by_day)[0] as Weekdays;
-    const day_score = weekdays.indexOf(first_day) * 10000;
-
-    // Calculate the total score and return
-    const score = day_score + start_time;
-    return score;
-  }
-
-  // If no times then return null
-  return null;
-};
-
 // Convert real time (24 hour) to range time
-export const toRangeTime = (time: string) => {
+export const toRangeTime = (time: string): number => {
   // Get hour and minute
   const splitTime = time.split(':');
   const hour = Number(splitTime[0]);
@@ -347,7 +361,7 @@ export const toRangeTime = (time: string) => {
 };
 
 // Convert range time to real time (24 hour)
-export const toRealTime = (time: number) => {
+export const toRealTime = (time: number): string => {
   // Get hour and minute
   const hour = Math.floor(time / 12);
   const minute = (time % 12) * 5;
@@ -358,12 +372,12 @@ export const toRealTime = (time: number) => {
 };
 
 // Convert 24 hour time to 12 hour time
-export const to12HourTime = (time: string) => {
+export const to12HourTime = (time: string): string => {
   return DateTime.fromFormat(time, 'H:mm').toFormat('h:mma');
 };
 
 // Convert 12 hour time to 24 hour time
-export const to24HourTime = (time: string) => {
+export const to24HourTime = (time: string): string => {
   return DateTime.fromFormat(time, 'h:mm').toFormat('H:mm');
 };
 
@@ -373,11 +387,11 @@ const getBaseLog = (x: number, y: number) => {
 };
 
 // Convert linear to exponential
-export const toExponential = (number: number) => {
+export const toExponential = (number: number): number => {
   return 1.01 ** number;
 };
 
 // Convert exponential to linear
-export const toLinear = (number: number) => {
+export const toLinear = (number: number): number => {
   return getBaseLog(1.01, number);
 };
