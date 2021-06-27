@@ -14,14 +14,17 @@ import {
 } from '../../queries/Constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import CourseConflictIcon from '../CourseConflictIcon';
+import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tag_styles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from '../StyledComponents';
 import { ReactComponent as Star } from '../../images/catalog_icons/star.svg';
 import { ReactComponent as Teacher } from '../../images/catalog_icons/teacher.svg';
 import { ReactComponent as Book } from '../../images/catalog_icons/book.svg';
-import { getOverallRatings, getWorkloadRatings } from '../../courseUtilities';
+import {
+  getOverallRatings,
+  getWorkloadRatings,
+} from '../../utilities/courseUtilities';
 import { useWorksheet } from '../../worksheetContext';
 import { useSearch } from '../../searchContext';
 

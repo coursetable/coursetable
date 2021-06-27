@@ -10,10 +10,10 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
 import { SmallTextComponent, StyledInput } from '../StyledComponents';
-import { useWindowDimensions } from '../WindowDimensionsProvider';
+import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 import { ValueType } from 'react-select/src/types';
-import { Popout } from '../Popout';
-import { PopoutSelect } from '../PopoutSelect';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
 
@@ -37,7 +37,7 @@ import {
   to12HourTime,
   toLinear,
   toExponential,
-} from '../../courseUtilities';
+} from '../../utilities/courseUtilities';
 
 // Row in navbar search
 const StyledRow = styled(Row)`

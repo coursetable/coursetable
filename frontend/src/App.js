@@ -23,7 +23,7 @@ import GraphiqlLogin from './pages/GraphiqlLogin';
 
 import { useUser } from './user';
 import { useLocalStorageState } from './browserStorage';
-import { useWindowDimensions } from './components/WindowDimensionsProvider';
+import { useWindowDimensions } from './components/Providers/WindowDimensionsProvider';
 import { API_ENDPOINT } from './config';
 
 import { WiStars } from 'react-icons/wi';

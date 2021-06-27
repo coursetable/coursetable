@@ -2,7 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 import UnderConstruction from '../images/infrastructure.svg';
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { useWindowDimensions } from '../components/Providers/WindowDimensionsProvider';
 
 /**
  * Renders the beta blocked page if user is not on the beta whitelist

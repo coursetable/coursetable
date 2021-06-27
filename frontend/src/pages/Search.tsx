@@ -16,7 +16,7 @@ import {
   subjectOptions,
 } from '../queries/Constants';
 
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { useWindowDimensions } from '../components/Providers/WindowDimensionsProvider';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/Search/SortByReactSelect';
 

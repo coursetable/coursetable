@@ -9,13 +9,13 @@ import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import { useWindowDimensions } from '../WindowDimensionsProvider';
+import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
 import tag_styles from '../Search/ResultsItem.module.css';
 import { skillsAreasColors } from '../../queries/Constants';
 import { TextComponent, StyledLink } from '../StyledComponents';
-import { toSeasonString } from '../../courseUtilities';
+import { toSeasonString } from '../../utilities/courseUtilities';
 
 // Course Modal
 const StyledModal = styled(Modal)`

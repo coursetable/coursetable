@@ -11,12 +11,12 @@ import axios from 'axios';
 import { expectType, TypeOf } from 'ts-expect';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
-import _seasons from '../generated/seasons.json';
-import { CatalogBySeasonQuery } from '../generated/graphql';
-import { Crn, Season, Weekdays } from '../common';
+import _seasons from '../../generated/seasons.json';
+import { CatalogBySeasonQuery } from '../../generated/graphql';
+import { Crn, Season, Weekdays } from '../../utilities/common';
 import * as Sentry from '@sentry/react';
 
-import { API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../../config';
 
 // Preprocess seasons data.
 // We need to wrap this inside the "seasons" key of an object

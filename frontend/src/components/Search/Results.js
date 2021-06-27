@@ -11,7 +11,7 @@ import ResultsGridItem from './ResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
 
-import { useWindowDimensions } from '../WindowDimensionsProvider';
+import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 
 import Styles from './Results.module.css';
 import './Results.css';
@@ -30,7 +30,7 @@ import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../../queries/Constants';
 import { useSearch } from '../../searchContext';
 import { breakpoints } from '../../utilities';
-import { toSeasonString } from '../../courseUtilities';
+import { toSeasonString } from '../../utilities/courseUtilities';
 
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../worksheetContext';

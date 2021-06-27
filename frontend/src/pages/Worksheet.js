@@ -17,7 +17,7 @@ import styles from './Worksheet.module.css';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import ErrorPage from '../components/ErrorPage';
 
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
+import { useWindowDimensions } from '../components/Providers/WindowDimensionsProvider';
 import { useWorksheet } from '../worksheetContext';
 import * as Sentry from '@sentry/react';
 

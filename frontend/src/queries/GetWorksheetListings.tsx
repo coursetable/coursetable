@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
-import { Season } from '../common';
-import { Listing, useCourseData } from '../components/FerryProvider';
+import { Season } from '../utilities/common';
+import { Listing, useCourseData } from '../components/Providers/FerryProvider';
 import { Worksheet } from '../user';
 import * as Sentry from '@sentry/react';
 

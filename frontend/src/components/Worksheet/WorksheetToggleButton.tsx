@@ -9,8 +9,8 @@ import posthog from 'posthog-js';
 import styled from 'styled-components';
 import { useUser } from '../../user';
 import { setLSObject } from '../../browserStorage';
-import { isInWorksheet } from '../../courseUtilities';
-import { useWindowDimensions } from '../WindowDimensionsProvider';
+import { isInWorksheet } from '../../utilities/courseUtilities';
+import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../../config';

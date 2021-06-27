@@ -8,12 +8,12 @@ import React, {
   useState,
 } from 'react';
 import { useLocalStorageState, useSessionStorageState } from './browserStorage';
-import { Listing, useFerry } from './components/FerryProvider';
-import { toSeasonString } from './courseUtilities';
+import { Listing, useFerry } from './components/Providers/FerryProvider';
+import { toSeasonString } from './utilities/courseUtilities';
 // import { sortbyOptions } from './queries/Constants';
 import { useWorksheetInfo } from './queries/GetWorksheetListings';
 import { useUser, Worksheet } from './user';
-import { Season } from './common';
+import { Season } from './utilities/common';
 import { OptType, Option, defaultFilters } from './searchContext';
 
 export type HiddenCourses = Record<Season, Record<number, boolean>>;

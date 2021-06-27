@@ -9,7 +9,7 @@ import axios from 'axios';
 import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
-import { NetId, Season } from './common';
+import { NetId, Season } from './utilities/common';
 import { API_ENDPOINT } from './config';
 
 export type Worksheet = [Season, string][];

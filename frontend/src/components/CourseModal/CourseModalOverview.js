@@ -22,9 +22,9 @@ import {
   fbFriendsAlsoTaking,
   getEnrolled,
   toSeasonString,
-} from '../../courseUtilities';
+} from '../../utilities/courseUtilities';
 import { useSearchAverageAcrossSeasonsQuery } from '../../generated/graphql';
-import { weekdays } from '../../common';
+import { weekdays } from '../../utilities/common';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`

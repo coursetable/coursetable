@@ -15,7 +15,7 @@ import {
 } from '../../queries/Constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import CourseConflictIcon from '../CourseConflictIcon';
+import CourseConflictIcon from './CourseConflictIcon';
 import {
   TextComponent,
   StyledPopover,
@@ -28,7 +28,7 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   isInWorksheet,
-} from '../../courseUtilities';
+} from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
 import { useUser } from '../../user';
 

@@ -6,9 +6,9 @@ import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
 import posthog from 'posthog-js';
 import Logo from './Logo';
-import DarkModeButton from '../DarkModeButton';
+import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
-import { useWindowDimensions } from '../WindowDimensionsProvider';
+import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 import {
   breakpoints,
   logout,

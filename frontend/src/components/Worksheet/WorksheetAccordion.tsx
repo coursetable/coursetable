@@ -18,10 +18,10 @@ import {
 import { skillsAreasColors } from '../../queries/Constants';
 import tagStyles from '../Search/ResultsItem.module.css';
 import styles from './WorksheetAccordion.module.css';
-import { weekdays } from '../../common';
+import { weekdays } from '../../utilities/common';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../worksheetContext';
-import { Listing } from '../FerryProvider';
+import { Listing } from '../Providers/FerryProvider';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);

@@ -11,7 +11,11 @@ import React, {
 } from 'react';
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { useLocalStorageState, useSessionStorageState } from './browserStorage';
-import { Listing, useCourseData, useFerry } from './components/FerryProvider';
+import {
+  Listing,
+  useCourseData,
+  useFerry,
+} from './components/Providers/FerryProvider';
 import {
   getEnrolled,
   getNumFB,
@@ -21,7 +25,7 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
-} from './courseUtilities';
+} from './utilities/courseUtilities';
 import {
   areas,
   AreasType,

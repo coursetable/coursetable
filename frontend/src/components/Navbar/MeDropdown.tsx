@@ -22,7 +22,7 @@ import {
   StyledHoverText,
 } from '../StyledComponents';
 import { NavLink } from 'react-router-dom';
-import { useWindowDimensions } from '../WindowDimensionsProvider';
+import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 
 import { API_ENDPOINT } from '../../config';
 

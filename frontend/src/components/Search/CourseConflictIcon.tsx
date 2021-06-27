@@ -2,15 +2,15 @@ import React, { useMemo } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { MdErrorOutline } from 'react-icons/md';
-import { useUser } from '../user';
+import { useUser } from '../../user';
 import {
   checkConflict,
   checkCrossListed,
   isInWorksheet,
   unflattenTimes,
-} from '../courseUtilities';
-import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { Listing } from './FerryProvider';
+} from '../../utilities/courseUtilities';
+import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
+import { Listing } from '../Providers/FerryProvider';
 
 /**
  * Displays icon when there is a course conflict with worksheet

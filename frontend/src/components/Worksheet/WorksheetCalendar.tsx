@@ -4,10 +4,10 @@ import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
-import CalendarEvent from '../CalendarEvent';
-import { weekdays } from '../../common';
+import CalendarEvent from './CalendarEvent';
+import { weekdays } from '../../utilities/common';
 import { useWorksheet } from '../../worksheetContext';
-import { Listing } from '../FerryProvider';
+import { Listing } from '../Providers/FerryProvider';
 
 const localizer = momentLocalizer(moment);
 

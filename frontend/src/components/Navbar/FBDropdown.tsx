@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { NetId } from '../../common';
+import { NetId } from '../../utilities/common';
 import { useUser } from '../../user';
 import { useWorksheet } from '../../worksheetContext';
 

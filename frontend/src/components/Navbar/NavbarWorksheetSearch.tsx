@@ -2,19 +2,19 @@ import React, { useMemo } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
-import { Popout } from '../Popout';
-import { PopoutSelect } from '../PopoutSelect';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 
 // import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../../searchContext';
 import { breakpoints } from '../../utilities';
 import _ from 'lodash';
 import { useWorksheet } from '../../worksheetContext';
-import { toSeasonString } from '../../courseUtilities';
+import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../user';
 import FBLoginButton from './FBLoginButton';
 import { FaFacebookSquare } from 'react-icons/fa';
-import { useWindowDimensions } from '../WindowDimensionsProvider';
+import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 
 // Row in navbar search
 const StyledRow = styled(Row)`

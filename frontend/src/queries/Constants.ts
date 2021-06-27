@@ -1,6 +1,6 @@
 import { expectType, TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
-import { Listing } from '../components/FerryProvider';
+import { Listing } from '../components/Providers/FerryProvider';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {

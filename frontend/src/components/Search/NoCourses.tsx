@@ -1,6 +1,6 @@
 import React from 'react';
 import NoCoursesFound from '../../images/no_courses_found.svg';
-import { toSeasonString } from '../../courseUtilities';
+import { toSeasonString } from '../../utilities/courseUtilities';
 import { useWorksheet } from '../../worksheetContext';
 import { Link } from 'react-router-dom';
 

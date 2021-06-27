@@ -23,8 +23,8 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
 import reportWebVitals from './reportWebVitals';
-import WindowDimensionsProvider from './components/WindowDimensionsProvider';
-import FerryProvider from './components/FerryProvider';
+import WindowDimensionsProvider from './components/Providers/WindowDimensionsProvider';
+import FerryProvider from './components/Providers/FerryProvider';
 import { UserProvider } from './user';
 import { SearchProvider } from './searchContext';
 import { WorksheetProvider } from './worksheetContext';
