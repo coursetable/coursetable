@@ -9,11 +9,11 @@ import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
-import { SmallTextComponent, StyledInput } from './StyledComponents';
-import { useWindowDimensions } from './WindowDimensionsProvider';
+import { SmallTextComponent, StyledInput } from '../StyledComponents';
+import { useWindowDimensions } from '../WindowDimensionsProvider';
 import { ValueType } from 'react-select/src/types';
-import { Popout } from './Popout';
-import { PopoutSelect } from './PopoutSelect';
+import { Popout } from '../Popout';
+import { PopoutSelect } from '../PopoutSelect';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
 
@@ -24,20 +24,20 @@ import {
   subjectOptions,
   sortbyOptions,
   dayOptions,
-} from '../queries/Constants';
-import CustomSelect from './CustomSelect';
-import { useSearch, Option, defaultFilters } from '../searchContext';
-import { breakpoints } from '../utilities';
+} from '../../queries/Constants';
+import CustomSelect from '../CustomSelect';
+import { useSearch, Option, defaultFilters } from '../../searchContext';
+import { breakpoints } from '../../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';
-import ResultsColumnSort from './Results/ResultsColumnSort';
+import ResultsColumnSort from '../Results/ResultsColumnSort';
 import {
   toRangeTime,
   toRealTime,
   to12HourTime,
   toLinear,
   toExponential,
-} from '../courseUtilities';
+} from '../../courseUtilities';
 
 // Row in navbar search
 const StyledRow = styled(Row)`

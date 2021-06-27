@@ -6,23 +6,23 @@ import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
 import posthog from 'posthog-js';
 import Logo from './Logo';
-import DarkModeButton from './DarkModeButton';
+import DarkModeButton from '../DarkModeButton';
 import MeDropdown from './MeDropdown';
-import { useWindowDimensions } from './WindowDimensionsProvider';
+import { useWindowDimensions } from '../WindowDimensionsProvider';
 import {
   breakpoints,
   logout,
   scrollToTop,
   useComponentVisible,
-} from '../utilities';
-import FBLoginButton from './FBLoginButton';
+} from '../../utilities';
+import FBLoginButton from '../FBLoginButton';
 import styles from './Navbar.module.css';
-import { SurfaceComponent, SmallTextComponent } from './StyledComponents';
+import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 // import { useSearch } from '../searchContext';
 import { DateTime, Duration } from 'luxon';
 
-import { API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../../config';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
 // Profile icon

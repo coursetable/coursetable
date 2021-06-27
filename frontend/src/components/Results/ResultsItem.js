@@ -16,7 +16,11 @@ import {
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from '../CourseConflictIcon';
-import { TextComponent, StyledPopover, StyledRating } from '../StyledComponents';
+import {
+  TextComponent,
+  StyledPopover,
+  StyledRating,
+} from '../StyledComponents';
 
 import Styles from './ResultsItem.module.css';
 import {

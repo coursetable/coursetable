@@ -9,22 +9,22 @@ import {
   FcPuzzle,
 } from 'react-icons/fc';
 import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import FBLoginButton from './FBLoginButton';
+import FBLoginButton from '../FBLoginButton';
 
 import styles from './MeDropdown.module.css';
-import { generateICS } from './GenerateICS';
-import { useUser } from '../user';
-import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { logout, scrollToTop } from '../utilities';
+import { generateICS } from '../GenerateICS';
+import { useUser } from '../../user';
+import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
+import { logout, scrollToTop } from '../../utilities';
 import {
   SurfaceComponent,
   TextComponent,
   StyledHoverText,
-} from './StyledComponents';
+} from '../StyledComponents';
 import { NavLink } from 'react-router-dom';
-import { useWindowDimensions } from './WindowDimensionsProvider';
+import { useWindowDimensions } from '../WindowDimensionsProvider';
 
-import { API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../../config';
 
 // Season to export classes from
 const CUR_SEASON = '202101';
