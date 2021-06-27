@@ -7,8 +7,8 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { ThemeContext } from 'styled-components';
-import SeasonDropdown from '../SeasonDropdown';
-import FBDropdown from '../FBDropdown';
+import SeasonDropdown from '../Search/SeasonDropdown';
+import FBDropdown from '../Navbar/FBDropdown';
 import {
   TextComponent,
   StyledBanner,
@@ -16,10 +16,10 @@ import {
   SurfaceComponent,
 } from '../StyledComponents';
 import { skillsAreasColors } from '../../queries/Constants';
-import tagStyles from '../Results/ResultsItem.module.css';
+import tagStyles from '../Search/ResultsItem.module.css';
 import styles from './WorksheetAccordion.module.css';
 import { weekdays } from '../../common';
-import NoCourses from '../NoCourses';
+import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../worksheetContext';
 import { Listing } from '../FerryProvider';
 

@@ -9,7 +9,7 @@ import {
   FcPuzzle,
 } from 'react-icons/fc';
 import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import FBLoginButton from '../FBLoginButton';
+import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
 import { generateICS } from '../GenerateICS';

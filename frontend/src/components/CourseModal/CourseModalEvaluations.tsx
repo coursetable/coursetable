@@ -1,6 +1,6 @@
 import { Row, Col, Modal } from 'react-bootstrap';
-import EvaluationResponses from '../EvaluationResponses';
-import EvaluationRatings from '../EvaluationRatings';
+import EvaluationResponses from './EvaluationResponses';
+import EvaluationRatings from './EvaluationRatings';
 
 import CourseModalLoading from './CourseModalLoading';
 import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';

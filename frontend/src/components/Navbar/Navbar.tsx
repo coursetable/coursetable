@@ -15,7 +15,7 @@ import {
   scrollToTop,
   useComponentVisible,
 } from '../../utilities';
-import FBLoginButton from '../FBLoginButton';
+import FBLoginButton from './FBLoginButton';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';

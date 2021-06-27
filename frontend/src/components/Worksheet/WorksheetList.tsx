@@ -4,7 +4,7 @@ import { Col, Row } from 'react-bootstrap';
 import { sortCourses } from '../../courseUtilities';
 import { useWorksheet } from '../../worksheetContext';
 import { useSearch } from '../../searchContext';
-import Results from '../Results/Results';
+import Results from '../Search/Results';
 
 /**
  * Render expanded worksheet list after maximize button is clicked
@@ -25,7 +25,7 @@ const WorksheetList = () => {
   return (
     <div>
       <Row className="p-0 m-0">
-        {/* Catalog Search Results */}
+        {/* Catalog Search Search */}
         <Col md={12} className="m-0 px-0 pb-3">
           <div className="d-flex justify-content-center">
             <Results

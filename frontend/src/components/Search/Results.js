@@ -9,7 +9,7 @@ import React, {
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
 
-import ListGridToggle from '../ListGridToggle';
+import ListGridToggle from './ListGridToggle';
 
 import { useWindowDimensions } from '../WindowDimensionsProvider';
 
@@ -669,5 +669,5 @@ const Results = ({
   );
 };
 
-// Results.whyDidYouRender = true;
+// Search.whyDidYouRender = true;
 export default Results;

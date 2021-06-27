@@ -6,7 +6,7 @@ import { Element, scroller } from 'react-scroll';
 import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
-import Results from '../components/Results/Results';
+import Results from '../components/Search/Results';
 import CourseModal from '../components/CourseModal/CourseModal';
 
 import {
@@ -18,7 +18,7 @@ import {
 
 import { useWindowDimensions } from '../components/WindowDimensionsProvider';
 import CustomSelect from '../components/CustomSelect';
-import SortByReactSelect from '../components/SortByReactSelect';
+import SortByReactSelect from '../components/Search/SortByReactSelect';
 
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
@@ -501,7 +501,7 @@ const Search: React.FC = () => {
           </Col>
         )}
 
-        {/* Catalog Search Results */}
+        {/* Catalog Search Search */}
         <Col
           md={12}
           className={`m-0 ${

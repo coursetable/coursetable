@@ -2,8 +2,8 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './EvaluationResponses.module.css';
-import { TextComponent } from './StyledComponents';
-import { SearchEvaluationNarrativesQuery } from '../generated/graphql';
+import { TextComponent } from '../StyledComponents';
+import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`

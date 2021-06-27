@@ -12,7 +12,7 @@ import _ from 'lodash';
 import { useWorksheet } from '../../worksheetContext';
 import { toSeasonString } from '../../courseUtilities';
 import { useUser } from '../../user';
-import FBLoginButton from '../FBLoginButton';
+import FBLoginButton from './FBLoginButton';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { useWindowDimensions } from '../WindowDimensionsProvider';
 

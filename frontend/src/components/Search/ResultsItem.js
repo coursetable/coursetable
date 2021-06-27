@@ -250,7 +250,7 @@ const ResultsItem = ({
       tabIndex="0"
       inWorksheet={courseInWorksheet}
     >
-      {/* Results Row Item */}
+      {/* Search Row Item */}
       <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
         {/* Season */}
         {multiSeasons && (

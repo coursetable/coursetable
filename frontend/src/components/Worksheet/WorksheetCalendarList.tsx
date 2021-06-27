@@ -3,7 +3,7 @@ import { ListGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SurfaceComponent } from '../StyledComponents';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import NoCourses from '../NoCourses';
+import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 

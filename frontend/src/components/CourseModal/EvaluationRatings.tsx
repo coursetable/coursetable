@@ -6,9 +6,9 @@ import {
   graph_labels,
   graph_titles,
   question_text,
-} from '../queries/Constants';
-import { TextComponent } from './StyledComponents';
-import { SearchEvaluationNarrativesQuery } from '../generated/graphql';
+} from '../../queries/Constants';
+import { TextComponent } from '../StyledComponents';
+import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 /**
  * Displays Evaluation Graphs

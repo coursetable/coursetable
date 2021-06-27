@@ -12,7 +12,7 @@ import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
-import tag_styles from '../Results/ResultsItem.module.css';
+import tag_styles from '../Search/ResultsItem.module.css';
 import { skillsAreasColors } from '../../queries/Constants';
 import { TextComponent, StyledLink } from '../StyledComponents';
 import { toSeasonString } from '../../courseUtilities';

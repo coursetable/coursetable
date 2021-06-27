@@ -3,12 +3,12 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaSyncAlt } from 'react-icons/fa';
 import posthog from 'posthog-js';
-import { useUser } from '../user';
-import styles from './Navbar/MeDropdown.module.css';
-import { TextComponent, StyledHoverText } from './StyledComponents';
+import { useUser } from '../../user';
+import styles from './MeDropdown.module.css';
+import { TextComponent, StyledHoverText } from '../StyledComponents';
 import * as Sentry from '@sentry/react';
 
-import { API_ENDPOINT } from '../config';
+import { API_ENDPOINT } from '../../config';
 import styled from 'styled-components';
 
 const RefreshIcon = styled(FaSyncAlt)`

@@ -1,9 +1,9 @@
 import { Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './RatingsGraph.module.css';
-import { TextComponent } from './StyledComponents';
+import { TextComponent } from '../StyledComponents';
 
-import { graph_labels } from '../queries/Constants';
+import { graph_labels } from '../../queries/Constants';
 
 const StyledLabel = styled.p`
   font-size: 10px !important;

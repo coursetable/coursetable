@@ -5,11 +5,11 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
-import { sortbyOptions } from '../queries/Constants';
+import { sortbyOptions } from '../../queries/Constants';
 import styles from './SortbyReactSelect.module.css';
-import search_styles from '../pages/Search.module.css';
-import CustomSelect from './CustomSelect';
-import { useSearch } from '../searchContext';
+import search_styles from '../../pages/Search.module.css';
+import CustomSelect from '../CustomSelect';
+import { useSearch } from '../../searchContext';
 
 // Toggle sort order button
 const StyledSortBtn = styled.div`
