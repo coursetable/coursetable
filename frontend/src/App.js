@@ -215,8 +215,8 @@ function App({ themeToggler, location }) {
       </Switch>
       {/* Render footer if not on catalog */}
       <Route
-        render={({ location }) => {
-          return !['/catalog'].includes(location.pathname) && <Footer />;
+        render={({ routeLocation }) => {
+          return !['/catalog'].includes(routeLocation.pathname) && <Footer />;
         }}
       />
       {/* Tutorial for first-time users */}

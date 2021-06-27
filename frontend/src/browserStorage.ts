@@ -21,21 +21,24 @@ const getObject = <T>(key: string, storage: Storage) => {
   return JSON.parse(str_val) as T;
 };
 // session storage functions
-export const setSSObject = <T>(key: string, obj: T, if_empty = false) => {
+export const setSSObject = <T>(key: string, obj: T, if_empty = false): void => {
   setObject<T>(key, obj, window.sessionStorage, if_empty);
 };
-export const getSSObject = <T>(key: string) => {
+export const getSSObject = <T>(key: string): T | null => {
   return getObject<T>(key, window.sessionStorage);
 };
 // local storage functions
-export const setLSObject = <T>(key: string, obj: T, if_empty = false) => {
+export const setLSObject = <T>(key: string, obj: T, if_empty = false): void => {
   setObject<T>(key, obj, window.localStorage, if_empty);
 };
-export const getLSObject = <T>(key: string) => {
+export const getLSObject = <T>(key: string): T | null => {
   return getObject<T>(key, window.localStorage);
 };
 // Saves State in Session Storage
-export const useSessionStorageState = <T>(key: string, default_value: T) => {
+export const useSessionStorageState = <T>(
+  key: string,
+  default_value: T
+): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
   setSSObject<T>(key, default_value, true);
   const [value, setValue] = useState<T>(getSSObject<T>(key)!);
   useEffect(() => {
@@ -44,7 +47,10 @@ export const useSessionStorageState = <T>(key: string, default_value: T) => {
   return [value, setValue] as const;
 };
 // Saves State in Local Storage
-export const useLocalStorageState = <T>(key: string, default_value: T) => {
+export const useLocalStorageState = <T>(
+  key: string,
+  default_value: T
+): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
   setLSObject<T>(key, default_value, true);
   const [value, setValue] = useState<T>(getLSObject<T>(key)!);
   useEffect(() => {
