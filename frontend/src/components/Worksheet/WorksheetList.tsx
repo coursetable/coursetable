@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-import { sortCourses } from '../courseUtilities';
-import { useWorksheet } from '../worksheetContext';
-import { useSearch } from '../searchContext';
-import Results from './Results';
+import { sortCourses } from '../../courseUtilities';
+import { useWorksheet } from '../../worksheetContext';
+import { useSearch } from '../../searchContext';
+import Results from '../Results/Results';
 
 /**
  * Render expanded worksheet list after maximize button is clicked

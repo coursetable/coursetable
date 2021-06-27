@@ -12,11 +12,11 @@ import {
   workloadColormap,
   skillsAreasColors,
   subjectOptions,
-} from '../queries/Constants';
+} from '../../queries/Constants';
 
-import WorksheetToggleButton from './WorksheetToggleButton';
-import CourseConflictIcon from './CourseConflictIcon';
-import { TextComponent, StyledPopover, StyledRating } from './StyledComponents';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import CourseConflictIcon from '../CourseConflictIcon';
+import { TextComponent, StyledPopover, StyledRating } from '../StyledComponents';
 
 import Styles from './ResultsItem.module.css';
 import {
@@ -24,9 +24,9 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   isInWorksheet,
-} from '../courseUtilities';
-import { breakpoints } from '../utilities';
-import { useUser } from '../user';
+} from '../../courseUtilities';
+import { breakpoints } from '../../utilities';
+import { useUser } from '../../user';
 
 // Row for results item
 const StyledResultsItem = styled(Row)`

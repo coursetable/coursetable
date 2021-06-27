@@ -2,10 +2,10 @@ import React from 'react';
 
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
-import WorksheetCalendar from '../components/WorksheetCalendar';
-import WorksheetCalendarList from '../components/WorksheetCalendarList';
-import WorksheetAccordion from '../components/WorksheetAccordion';
-import WorksheetList from '../components/WorksheetList';
+import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
+import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
+import WorksheetAccordion from '../components/Worksheet/WorksheetAccordion';
+import WorksheetList from '../components/Worksheet/WorksheetList';
 import CourseModal from '../components/CourseModal/CourseModal';
 import {
   SurfaceComponent,

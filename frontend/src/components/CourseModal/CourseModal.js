@@ -8,11 +8,11 @@ import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 
-import WorksheetToggleButton from '../WorksheetToggleButton';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../WindowDimensionsProvider';
 
 import styles from './CourseModal.module.css';
-import tag_styles from '../ResultsItem.module.css';
+import tag_styles from '../Results/ResultsItem.module.css';
 import { skillsAreasColors } from '../../queries/Constants';
 import { TextComponent, StyledLink } from '../StyledComponents';
 import { toSeasonString } from '../../courseUtilities';

@@ -9,9 +9,9 @@ import React, {
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
 
-import ListGridToggle from './ListGridToggle';
+import ListGridToggle from '../ListGridToggle';
 
-import { useWindowDimensions } from './WindowDimensionsProvider';
+import { useWindowDimensions } from '../WindowDimensionsProvider';
 
 import Styles from './Results.module.css';
 import './Results.css';
@@ -20,20 +20,20 @@ import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
 import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 
-import NoCoursesFound from '../images/no_courses_found.svg';
-import Authentication from '../images/authentication.svg';
+import NoCoursesFound from '../../images/no_courses_found.svg';
+import Authentication from '../../images/authentication.svg';
 
 import styled, { useTheme } from 'styled-components';
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { sortbyOptions } from '../queries/Constants';
-import { useSearch } from '../searchContext';
-import { breakpoints } from '../utilities';
-import { toSeasonString } from '../courseUtilities';
+import { sortbyOptions } from '../../queries/Constants';
+import { useSearch } from '../../searchContext';
+import { breakpoints } from '../../utilities';
+import { toSeasonString } from '../../courseUtilities';
 
-import { API_ENDPOINT } from '../config';
-import { useWorksheet } from '../worksheetContext';
+import { API_ENDPOINT } from '../../config';
+import { useWorksheet } from '../../worksheetContext';
 import { Link } from 'react-router-dom';
 
 // Space above row dropdown to hide scrolled courses

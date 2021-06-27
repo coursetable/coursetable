@@ -1,10 +1,10 @@
 import React, { useMemo } from 'react';
 import { ListGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
-import { SurfaceComponent } from './StyledComponents';
+import { SurfaceComponent } from '../StyledComponents';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
-import NoCourses from './NoCourses';
-import { useWorksheet } from '../worksheetContext';
+import NoCourses from '../NoCourses';
+import { useWorksheet } from '../../worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 
 // Space above row dropdown to hide scrolled courses

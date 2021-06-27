@@ -7,21 +7,21 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { ThemeContext } from 'styled-components';
-import SeasonDropdown from './SeasonDropdown';
-import FBDropdown from './FBDropdown';
+import SeasonDropdown from '../SeasonDropdown';
+import FBDropdown from '../FBDropdown';
 import {
   TextComponent,
   StyledBanner,
   StyledCard,
   SurfaceComponent,
-} from './StyledComponents';
-import { skillsAreasColors } from '../queries/Constants';
-import tagStyles from './ResultsItem.module.css';
+} from '../StyledComponents';
+import { skillsAreasColors } from '../../queries/Constants';
+import tagStyles from '../Results/ResultsItem.module.css';
 import styles from './WorksheetAccordion.module.css';
-import { weekdays } from '../common';
-import NoCourses from './NoCourses';
-import { useWorksheet } from '../worksheetContext';
-import { Listing } from './FerryProvider';
+import { weekdays } from '../../common';
+import NoCourses from '../NoCourses';
+import { useWorksheet } from '../../worksheetContext';
+import { Listing } from '../FerryProvider';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);

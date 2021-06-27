@@ -6,7 +6,7 @@ import { Element, scroller } from 'react-scroll';
 import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
-import Results from '../components/Results';
+import Results from '../components/Results/Results';
 import CourseModal from '../components/CourseModal/CourseModal';
 
 import {

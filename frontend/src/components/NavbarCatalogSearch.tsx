@@ -30,7 +30,7 @@ import { useSearch, Option, defaultFilters } from '../searchContext';
 import { breakpoints } from '../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';
-import ResultsColumnSort from './ResultsColumnSort';
+import ResultsColumnSort from './Results/ResultsColumnSort';
 import {
   toRangeTime,
   toRealTime,

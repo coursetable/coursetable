@@ -11,19 +11,19 @@ import {
   workloadColormap,
   skillsAreasColors,
   subjectOptions,
-} from '../queries/Constants';
+} from '../../queries/Constants';
 
-import WorksheetToggleButton from './WorksheetToggleButton';
-import CourseConflictIcon from './CourseConflictIcon';
+import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
+import CourseConflictIcon from '../CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tag_styles from './ResultsItem.module.css';
-import { TextComponent, StyledIcon } from './StyledComponents';
-import { ReactComponent as Star } from '../images/catalog_icons/star.svg';
-import { ReactComponent as Teacher } from '../images/catalog_icons/teacher.svg';
-import { ReactComponent as Book } from '../images/catalog_icons/book.svg';
-import { getOverallRatings, getWorkloadRatings } from '../courseUtilities';
-import { useWorksheet } from '../worksheetContext';
-import { useSearch } from '../searchContext';
+import { TextComponent, StyledIcon } from '../StyledComponents';
+import { ReactComponent as Star } from '../../images/catalog_icons/star.svg';
+import { ReactComponent as Teacher } from '../../images/catalog_icons/teacher.svg';
+import { ReactComponent as Book } from '../../images/catalog_icons/book.svg';
+import { getOverallRatings, getWorkloadRatings } from '../../courseUtilities';
+import { useWorksheet } from '../../worksheetContext';
+import { useSearch } from '../../searchContext';
 
 // Grid Item wrapper
 const StyledGridItem = styled.div`
