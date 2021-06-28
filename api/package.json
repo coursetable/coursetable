@@ -27,7 +27,7 @@
     "@types/jsonwebtoken": "^8.5.2",
     "@types/morgan": "^1.9.2",
     "@types/mysql": "^2.15.18",
-    "@types/node": "^15.12.4",
+    "@types/node": "^15.12.5",
     "@types/passport": "^1.0.6",
     "@types/psl": "^1.1.0",
     "app-root-path": "^3.0.0",
