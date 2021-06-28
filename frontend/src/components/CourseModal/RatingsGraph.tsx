@@ -48,33 +48,34 @@ const RatingsGraph = ({
     // Skip to last color if this is the yes/no question
     if (indx === 1 && ratings.length === 2) indx = 4;
     // Build bar
-    return;
-    <div key={indx} className={styles.bar}>
-      {/* Number of votes for each rating */}
-      <p className={`${styles.value} m-0 `}>
-        <TextComponent type={1}>{rating}</TextComponent>
-      </p>
-      {/* Bar */}
-      <div
-        className={`${styles.column} px-1 mx-auto`}
-        style={{
-          backgroundColor: colors[indx],
-          height: `${height.toString()}px`,
-        }}
-      />
-      {/* Rating labels */}
-      {ratings.length === 2 && (
-        <StyledLabel className={`${styles.value} m-0`}>
-          {indx === 0 ? 'yes' : 'no'}
-        </StyledLabel>
-      )}
-      {ratings.length === 5 && (
-        <StyledLabel className={`${styles.value} m-0`}>
-          <span className="d-none d-sm-block">{labels[indx]}</span>
-          <span className="d-sm-none">{indx + 1}</span>
-        </StyledLabel>
-      )}
-    </div>;
+    return (
+      <div key={indx} className={styles.bar}>
+        {/* Number of votes for each rating */}
+        <p className={`${styles.value} m-0 `}>
+          <TextComponent type={1}>{rating}</TextComponent>
+        </p>
+        {/* Bar */}
+        <div
+          className={`${styles.column} px-1 mx-auto`}
+          style={{
+            backgroundColor: colors[indx],
+            height: `${height.toString()}px`,
+          }}
+        />
+        {/* Rating labels */}
+        {ratings.length === 2 && (
+          <StyledLabel className={`${styles.value} m-0`}>
+            {indx === 0 ? 'yes' : 'no'}
+          </StyledLabel>
+        )}
+        {ratings.length === 5 && (
+          <StyledLabel className={`${styles.value} m-0`}>
+            <span className="d-none d-sm-block">{labels[indx]}</span>
+            <span className="d-sm-none">{indx + 1}</span>
+          </StyledLabel>
+        )}
+      </div>
+    );
 
     indx++;
   });
