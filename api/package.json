@@ -15,7 +15,7 @@
   },
   "dependencies": {
     "@prisma/client": "^2.25.0",
-    "@sentry/node": "^6.7.2",
+    "@sentry/node": "^6.8.0",
     "@sentry/tracing": "^6.7.2",
     "@types/app-root-path": "^1.2.4",
     "@types/axios": "^0.14.0",
@@ -51,7 +51,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^4.28.0",
+    "@typescript-eslint/eslint-plugin": "^4.28.1",
     "@typescript-eslint/parser": "^4.28.0",
     "eslint": "^7.29.0",
     "eslint-config-airbnb-base": "^14.2.1",
@@ -60,6 +60,6 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.1",
-    "ts-node-dev": "^1.1.6"
+    "ts-node-dev": "^1.1.7"
   }
 }
