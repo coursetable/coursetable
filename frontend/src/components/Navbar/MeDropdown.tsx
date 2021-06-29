@@ -13,7 +13,7 @@ import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
 import { generateICS } from '../GenerateICS';
-import { useUser } from '../../user';
+import { useUser } from '../../contexts/userContext';
 import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
 import { logout, scrollToTop } from '../../utilities';
 import {

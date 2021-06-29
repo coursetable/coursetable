@@ -10,12 +10,15 @@ import React, {
   useState,
 } from 'react';
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
-import { useLocalStorageState, useSessionStorageState } from './browserStorage';
+import {
+  useLocalStorageState,
+  useSessionStorageState,
+} from '../browserStorage';
 import {
   Listing,
   useCourseData,
   useFerry,
-} from './components/Providers/FerryProvider';
+} from '../components/Providers/FerryProvider';
 import {
   getEnrolled,
   getNumFB,
@@ -25,7 +28,7 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
-} from './utilities/courseUtilities';
+} from '../utilities/courseUtilities';
 import {
   areas,
   AreasType,
@@ -35,8 +38,8 @@ import {
   SortKeys,
   searchSpeed,
   SortByOption,
-} from './queries/Constants';
-import { useUser } from './user';
+} from '../queries/Constants';
+import { useUser } from './userContext';
 
 // Option type for all the filter options
 export type Option = {

@@ -3,7 +3,7 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaSyncAlt } from 'react-icons/fa';
 import posthog from 'posthog-js';
-import { useUser } from '../../user';
+import { useUser } from '../../contexts/userContext';
 import styles from './MeDropdown.module.css';
 import { TextComponent, StyledHoverText } from '../StyledComponents';
 import * as Sentry from '@sentry/react';

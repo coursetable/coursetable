@@ -31,7 +31,7 @@ import {
 } from '../components/StyledComponents';
 
 import { useSessionStorageState } from '../browserStorage';
-import { useSearch, Option, defaultFilters } from '../searchContext';
+import { useSearch, Option, defaultFilters } from '../contexts/searchContext';
 import { ValueType } from 'react-select/src/types';
 // import {
 //   to12HourTime,

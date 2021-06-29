@@ -26,7 +26,11 @@ import {
   dayOptions,
 } from '../../queries/Constants';
 import CustomSelect from '../CustomSelect';
-import { useSearch, Option, defaultFilters } from '../../searchContext';
+import {
+  useSearch,
+  Option,
+  defaultFilters,
+} from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import chroma from 'chroma-js';
 import _ from 'lodash';

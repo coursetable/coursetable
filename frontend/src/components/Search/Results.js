@@ -28,12 +28,12 @@ import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../../queries/Constants';
-import { useSearch } from '../../searchContext';
+import { useSearch } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import { toSeasonString } from '../../utilities/courseUtilities';
 
 import { API_ENDPOINT } from '../../config';
-import { useWorksheet } from '../../worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { Link } from 'react-router-dom';
 
 // Space above row dropdown to hide scrolled courses

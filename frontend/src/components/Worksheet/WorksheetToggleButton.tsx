@@ -7,14 +7,14 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import posthog from 'posthog-js';
 import styled from 'styled-components';
-import { useUser } from '../../user';
+import { useUser } from '../../contexts/userContext';
 import { setLSObject } from '../../browserStorage';
 import { isInWorksheet } from '../../utilities/courseUtilities';
 import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../../config';
-import { useWorksheet } from '../../worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 
 const StyledButton = styled(Button)`
   color: ${({ theme }) => theme.primary}!important;

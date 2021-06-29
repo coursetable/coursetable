@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { MdErrorOutline } from 'react-icons/md';
-import { useUser } from '../../user';
+import { useUser } from '../../contexts/userContext';
 import {
   checkConflict,
   checkCrossListed,

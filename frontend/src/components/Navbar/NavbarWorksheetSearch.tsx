@@ -6,12 +6,12 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
 // import { sortbyOptions } from '../queries/Constants';
-import { isOption, Option } from '../../searchContext';
+import { isOption, Option } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import _ from 'lodash';
-import { useWorksheet } from '../../worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
-import { useUser } from '../../user';
+import { useUser } from '../../contexts/userContext';
 import FBLoginButton from './FBLoginButton';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';

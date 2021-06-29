@@ -7,13 +7,16 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useLocalStorageState, useSessionStorageState } from './browserStorage';
-import { Listing, useFerry } from './components/Providers/FerryProvider';
-import { toSeasonString } from './utilities/courseUtilities';
+import {
+  useLocalStorageState,
+  useSessionStorageState,
+} from '../browserStorage';
+import { Listing, useFerry } from '../components/Providers/FerryProvider';
+import { toSeasonString } from '../utilities/courseUtilities';
 // import { sortbyOptions } from './queries/Constants';
-import { useWorksheetInfo } from './queries/GetWorksheetListings';
-import { useUser, Worksheet } from './user';
-import { Season } from './utilities/common';
+import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+import { useUser, Worksheet } from './userContext';
+import { Season } from '../utilities/common';
 import { OptType, Option, defaultFilters } from './searchContext';
 
 export type HiddenCourses = Record<Season, Record<number, boolean>>;

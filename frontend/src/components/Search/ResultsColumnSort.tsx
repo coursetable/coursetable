@@ -8,7 +8,11 @@ import {
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
 import { SortByOption } from '../../queries/Constants';
-import { useSearch, defaultFilters, SortOrderType } from '../../searchContext';
+import {
+  useSearch,
+  defaultFilters,
+  SortOrderType,
+} from '../../contexts/searchContext';
 
 const StyledSortBtn = styled.div`
   cursor: pointer;

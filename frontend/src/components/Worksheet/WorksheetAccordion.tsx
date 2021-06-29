@@ -20,7 +20,7 @@ import tagStyles from '../Search/ResultsItem.module.css';
 import styles from './WorksheetAccordion.module.css';
 import { weekdays } from '../../utilities/common';
 import NoCourses from '../Search/NoCourses';
-import { useWorksheet } from '../../worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { Listing } from '../Providers/FerryProvider';
 
 // Component used to trim description to certain number of lines

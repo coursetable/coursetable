@@ -2,7 +2,7 @@ import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import '../Navbar/DropdownShared.css';
 import { toSeasonString } from '../../utilities/courseUtilities';
-import { useWorksheet } from '../../worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 
 /**
  * Render Season Dropdown in mobile view

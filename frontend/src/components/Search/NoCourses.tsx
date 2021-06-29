@@ -1,7 +1,7 @@
 import React from 'react';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import { toSeasonString } from '../../utilities/courseUtilities';
-import { useWorksheet } from '../../worksheetContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { Link } from 'react-router-dom';
 
 const NoCourses: React.VFC = () => {

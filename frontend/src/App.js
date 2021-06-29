@@ -21,7 +21,7 @@ import WorksheetLogin from './pages/WorksheetLogin';
 import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
 
-import { useUser } from './user';
+import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './browserStorage';
 import { useWindowDimensions } from './components/Providers/WindowDimensionsProvider';
 import { API_ENDPOINT } from './config';

@@ -7,7 +7,7 @@ import { IoIosArrowDown } from 'react-icons/io';
 import { HiExternalLink } from 'react-icons/hi';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
-import { useUser } from '../../user';
+import { useUser } from '../../contexts/userContext';
 import {
   TextComponent,
   StyledPopover,

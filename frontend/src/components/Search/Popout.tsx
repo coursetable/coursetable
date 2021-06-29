@@ -6,7 +6,7 @@ import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import { breakpoints, useComponentVisibleDropdown } from '../../utilities';
 import chroma from 'chroma-js';
-import { isOption } from '../../searchContext';
+import { isOption } from '../../contexts/searchContext';
 
 // Entire popout component
 const PopoutWrapper = styled.div`

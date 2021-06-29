@@ -25,9 +25,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import reportWebVitals from './reportWebVitals';
 import WindowDimensionsProvider from './components/Providers/WindowDimensionsProvider';
 import FerryProvider from './components/Providers/FerryProvider';
-import { UserProvider } from './user';
-import { SearchProvider } from './searchContext';
-import { WorksheetProvider } from './worksheetContext';
+import { UserProvider } from './contexts/userContext';
+import { SearchProvider } from './contexts/searchContext';
+import { WorksheetProvider } from './contexts/worksheetContext';
 
 import { isDev, API_ENDPOINT, POSTHOG_TOKEN, POSTHOG_OPTIONS } from './config';
 

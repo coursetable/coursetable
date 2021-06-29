@@ -25,8 +25,8 @@ import {
   getOverallRatings,
   getWorkloadRatings,
 } from '../../utilities/courseUtilities';
-import { useWorksheet } from '../../worksheetContext';
-import { useSearch } from '../../searchContext';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import { useSearch } from '../../contexts/searchContext';
 
 // Grid Item wrapper
 const StyledGridItem = styled.div`

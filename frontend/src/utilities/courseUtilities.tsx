@@ -1,7 +1,7 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
-import { FBFriendInfo, FBInfo, Worksheet } from '../user';
+import { FBFriendInfo, FBInfo, Worksheet } from '../contexts/userContext';
 import { Listing } from '../components/Providers/FerryProvider';
 import { SortKeys } from '../queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
