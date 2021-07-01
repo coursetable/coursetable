@@ -24,7 +24,7 @@
     "@types/cookie-session": "^2.0.42",
     "@types/cors": "^2.8.10",
     "@types/express": "^4.17.12",
-    "@types/jsonwebtoken": "^8.5.2",
+    "@types/jsonwebtoken": "^8.5.3",
     "@types/morgan": "^1.9.2",
     "@types/mysql": "^2.15.18",
     "@types/node": "^15.12.5",
