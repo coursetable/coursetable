@@ -60,6 +60,6 @@
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-prettier": "^3.4.0",
     "prettier": "^2.3.2",
-    "ts-node-dev": "^1.1.6"
+    "ts-node-dev": "^1.1.8"
   }
 }
