@@ -1,4 +1,4 @@
-import React, { useCallback, useMemo } from 'react';
+import React, { CSSProperties, useCallback, useMemo } from 'react';
 import moment from 'moment';
 import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
@@ -126,13 +126,10 @@ function WorksheetCalendar() {
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event) => {
-      const style = {
+      const style: CSSProperties = {
         backgroundColor: event.listing.color,
         borderColor: event.listing.border,
         borderWidth: '2px',
-        zIndex: 0,
-        filter: 'default',
-        opacity: 'default',
       };
       if (hover_course && hover_course === event.listing.crn) {
         style.zIndex = 2;
