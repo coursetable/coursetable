@@ -90,8 +90,9 @@ function WorksheetCalendarList() {
         hidden = hidden_courses[cur_season][course.crn];
       }
       // Add listgroup item to items list
-      return;
-      <WorksheetCalendarListItem key={id} course={course} hidden={hidden} />;
+      return (
+        <WorksheetCalendarListItem key={id} course={course} hidden={hidden} />
+      );
     });
 
     return items;
