@@ -36,20 +36,20 @@ const RatingsGraph = ({
   if (reverse) colors.reverse();
 
   // Variables used for list keys
-  let indx = 0;
+  // let indx = 0;
   // Set minimum bar height
   const MIN_HEIGHT = 15;
   // Loop through each rating to build the bar
 
   // Holds the bars
-  const columns = ratings.map((rating) => {
+  const columns = ratings.map((rating, indx) => {
     // Calculate height of the bar
     const height = rating ? MIN_HEIGHT + (rating / max_val) * 100 : 0;
     // Skip to last color if this is the yes/no question
     if (indx === 1 && ratings.length === 2) indx = 4;
     // Build bar
     return (
-      <div key={indx} className={styles.bar}>
+      <div key={labels[indx]} className={styles.bar}>
         {/* Number of votes for each rating */}
         <p className={`${styles.value} m-0 `}>
           <TextComponent type={1}>{rating}</TextComponent>
@@ -76,8 +76,6 @@ const RatingsGraph = ({
         )}
       </div>
     );
-
-    indx++;
   });
 
   return (
