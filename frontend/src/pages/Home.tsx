@@ -1,8 +1,8 @@
 import React from 'react';
 import { CardDeck, Card, Container } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
-import Logo from '../components/Logo';
-import Searchbar from '../components/Searchbar';
+import Logo from '../components/Navbar/Logo';
+import Searchbar from '../components/Search/Searchbar';
 import styles from './Home.module.css';
 
 /**

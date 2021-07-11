@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import styles from './Footer.module.css';
-import Logo from './Logo';
+import Logo from './Navbar/Logo';
 import { StyledHr, TextComponent } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';

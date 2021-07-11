@@ -2,11 +2,11 @@ import React from 'react';
 
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
-import WorksheetCalendar from '../components/WorksheetCalendar';
-import WorksheetCalendarList from '../components/WorksheetCalendarList';
-import WorksheetAccordion from '../components/WorksheetAccordion';
-import WorksheetList from '../components/WorksheetList';
-import CourseModal from '../components/CourseModal';
+import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
+import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
+import WorksheetAccordion from '../components/Worksheet/WorksheetAccordion';
+import WorksheetList from '../components/Worksheet/WorksheetList';
+import CourseModal from '../components/CourseModal/CourseModal';
 import {
   SurfaceComponent,
   StyledExpandBtn,
@@ -17,8 +17,8 @@ import styles from './Worksheet.module.css';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import ErrorPage from '../components/ErrorPage';
 
-import { useWindowDimensions } from '../components/WindowDimensionsProvider';
-import { useWorksheet } from '../worksheetContext';
+import { useWindowDimensions } from '../components/Providers/WindowDimensionsProvider';
+import { useWorksheet } from '../contexts/worksheetContext';
 import * as Sentry from '@sentry/react';
 
 /**

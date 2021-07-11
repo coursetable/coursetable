@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
-import { Season } from '../common';
-import { Listing, useCourseData } from '../components/FerryProvider';
-import { Worksheet } from '../user';
+import { Season } from '../utilities/common';
+import { Listing, useCourseData } from '../components/Providers/FerryProvider';
+import { Worksheet } from '../contexts/userContext';
 import * as Sentry from '@sentry/react';
 
 // Search query used in Worksheet.js and CourseConflictIcon.js

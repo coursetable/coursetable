@@ -3,7 +3,7 @@ import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
-import Navbar from './components/Navbar';
+import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
 
@@ -21,9 +21,9 @@ import WorksheetLogin from './pages/WorksheetLogin';
 import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
 
-import { useUser } from './user';
+import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './browserStorage';
-import { useWindowDimensions } from './components/WindowDimensionsProvider';
+import { useWindowDimensions } from './components/Providers/WindowDimensionsProvider';
 import { API_ENDPOINT } from './config';
 
 import { WiStars } from 'react-icons/wi';
@@ -215,8 +215,8 @@ function App({ themeToggler, location }) {
       </Switch>
       {/* Render footer if not on catalog */}
       <Route
-        render={({ location }) => {
-          return !['/catalog'].includes(location.pathname) && <Footer />;
+        render={({ location: routeLocation }) => {
+          return !['/catalog'].includes(routeLocation.pathname) && <Footer />;
         }}
       />
       {/* Tutorial for first-time users */}

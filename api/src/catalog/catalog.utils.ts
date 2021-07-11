@@ -1,5 +1,5 @@
 /**
- * @file Utilities used for fetching catalog files.
+ * @file utilities used for fetching catalog files.
  */
 
 import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';

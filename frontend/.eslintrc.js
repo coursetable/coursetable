@@ -60,7 +60,7 @@ module.exports = {
     'react/require-default-props': 'off',
     'react/no-unescaped-entities': 'off',
     'react/jsx-filename-extension': 'off', // TODO: rename all .js to .jsx
-    'react/jsx-props-no-spreading': 'warn',
+    'react/jsx-props-no-spreading': 'off',
     'react/no-array-index-key': 'warn',
     'jsx-a11y/no-static-element-interactions': 'warn',
     'jsx-a11y/click-events-have-key-events': 'warn',
