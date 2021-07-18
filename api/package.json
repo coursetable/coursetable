@@ -19,7 +19,7 @@
     "@sentry/tracing": "^6.7.2",
     "@types/app-root-path": "^1.2.4",
     "@types/axios": "^0.14.0",
-    "@types/body-parser": "^1.19.0",
+    "@types/body-parser": "^1.19.1",
     "@types/cookie-parser": "^1.4.2",
     "@types/cookie-session": "^2.0.42",
     "@types/cors": "^2.8.10",
