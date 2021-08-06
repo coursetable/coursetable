@@ -37,7 +37,7 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "graphql": "^15.5.1",
-    "graphql-request": "^3.4.0",
+    "graphql-request": "^3.5.0",
     "graphql-tag": "^2.12.5",
     "http-proxy-middleware": "^2.0.1",
     "jsonwebtoken": "^8.5.1",
