@@ -6,7 +6,7 @@
     "@apollo/client": "^3.3.7",
     "@graphiql/toolkit": "^0.2.0",
     "@sentry/react": "^6.1.0",
-    "@sentry/tracing": "^6.1.0",
+    "@sentry/tracing": "^6.11.0",
     "@types/async-lock": "^1.1.2",
     "@types/body-scroll-lock": "^2.6.1",
     "@types/chroma-js": "^2.1.3",
