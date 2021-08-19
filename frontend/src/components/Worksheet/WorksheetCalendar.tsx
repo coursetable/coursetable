@@ -64,13 +64,8 @@ const StyledCalendar = styled(Calendar)`
  */
 
 function WorksheetCalendar() {
-  const {
-    showModal,
-    courses,
-    hover_course,
-    hidden_courses,
-    cur_season,
-  } = useWorksheet();
+  const { showModal, courses, hover_course, hidden_courses, cur_season } =
+    useWorksheet();
 
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback(

@@ -97,8 +97,7 @@ const stepsContent: Step[] = [
   {
     selector: 'catalog-2',
     header: '🎯 Filter for exactly what you want',
-    text:
-      'Click on a filter to pop out a dropdown where you can select multiple options.',
+    text: 'Click on a filter to pop out a dropdown where you can select multiple options.',
     observe: true,
     video: true,
   },
@@ -123,8 +122,7 @@ const stepsContent: Step[] = [
   {
     selector: 'catalog-5',
     header: '🔍 Control how you see the possibilities',
-    text:
-      'Click on a column toggle to sort by that column (ascending/descending).',
+    text: 'Click on a column toggle to sort by that column (ascending/descending).',
     video: true,
   },
   {

@@ -72,20 +72,16 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     (string | boolean | Listing)[]
   >([false, '']);
   // List of courses that the user has marked hidden
-  const [
-    hidden_courses,
-    setHiddenCourses,
-  ] = useLocalStorageState<HiddenCourses>('hidden_courses', {});
+  const [hidden_courses, setHiddenCourses] =
+    useLocalStorageState<HiddenCourses>('hidden_courses', {});
   // The current listing that the user is hovering over
   const [hover_course, setHoverCourse] = useState<number | null>(null);
   // Currently expanded component (calendar or list or none)
-  const [
-    worksheet_view,
-    setWorksheetView,
-  ] = useSessionStorageState<WorksheetView>('worksheet_view', {
-    view: 'calendar',
-    mode: '',
-  });
+  const [worksheet_view, setWorksheetView] =
+    useSessionStorageState<WorksheetView>('worksheet_view', {
+      view: 'calendar',
+      mode: '',
+    });
 
   /* Processing */
 

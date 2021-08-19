@@ -11,9 +11,8 @@ export const useComponentVisible = <T extends HTMLElement>(
   initialIsVisible: boolean
 ) => {
   // Is the component visible?
-  const [isComponentVisible, setIsComponentVisible] = useState(
-    initialIsVisible
-  );
+  const [isComponentVisible, setIsComponentVisible] =
+    useState(initialIsVisible);
   const ref_visible = useRef<T>(null);
 
   // Handle clicks outside of the component
@@ -44,9 +43,8 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
   callback?: (visible: boolean) => void
 ) => {
   // Is the component visible?
-  const [isComponentVisible, setIsComponentVisible] = useState(
-    initialIsVisible
-  );
+  const [isComponentVisible, setIsComponentVisible] =
+    useState(initialIsVisible);
   const ref_toggle = useRef<T>(null);
   const ref_dropdown = useRef<T>(null);
 
@@ -134,5 +132,5 @@ export const breakpoints = (
     `;
     return mediaQueries;
   }, '');
-  return css(([breakpointProps] as unknown) as TemplateStringsArray);
+  return css([breakpointProps] as unknown as TemplateStringsArray);
 };

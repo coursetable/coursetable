@@ -1,6 +1,7 @@
-import * as React from 'react';
-
+/* eslint-disable */
 declare module 'react-lines-ellipsis' {
+  import * as React from 'react';
+
   interface ReactLinesEllipsisProps {
     basedOn?: 'letters' | 'words';
     className?: string;
@@ -15,9 +16,7 @@ declare module 'react-lines-ellipsis' {
     winWidth?: number;
   }
 
-  // eslint-disable-next-line react/prefer-stateless-function
   class LinesEllipsis extends React.Component<ReactLinesEllipsisProps> {
-    // eslint-disable-next-line react/static-property-placement
     static defaultProps?: ReactLinesEllipsisProps;
   }
 
@@ -25,7 +24,9 @@ declare module 'react-lines-ellipsis' {
 }
 
 declare module 'react-lines-ellipsis/lib/responsiveHOC' {
-  export default function responsiveHOC(): <P extends Record<string, unknown>>(
+  import * as React from 'react';
+
+  export default function responsiveHOC(): <P extends object>(
     WrappedComponent: React.ComponentType<P>
   ) => React.ComponentClass<P>;
 }
