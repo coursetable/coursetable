@@ -269,20 +269,16 @@ export const SearchProvider: React.FC = ({ children }) => {
     defaultTrue
   );
 
-  const [
-    hideFirstYearSeminars,
-    setHideFirstYearSeminars,
-  ] = useLocalStorageState('hideFirstYearSeminars', defaultFalse);
+  const [hideFirstYearSeminars, setHideFirstYearSeminars] =
+    useLocalStorageState('hideFirstYearSeminars', defaultFalse);
 
   const [hideGraduateCourses, setHideGraduateCourses] = useLocalStorageState(
     'hideGraduateCourses',
     defaultFalse
   );
 
-  const [
-    hideDiscussionSections,
-    setHideDiscussionSections,
-  ] = useLocalStorageState('hideDiscussionSections', defaultTrue);
+  const [hideDiscussionSections, setHideDiscussionSections] =
+    useLocalStorageState('hideDiscussionSections', defaultTrue);
 
   /* Sorting */
 

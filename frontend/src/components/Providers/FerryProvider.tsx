@@ -27,7 +27,8 @@ const seasons = {
   seasons: [..._seasons].reverse(),
 };
 
-type _RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
+type _RawListingResponse =
+  CatalogBySeasonQuery['computed_listing_info'][number];
 type _ListingOverrides = {
   season_code: Season;
 
@@ -76,9 +77,8 @@ const preprocessCourses = (listing: Listing) => {
     // for the average professor rating, take the first professor
     if ('average_professor' in listing && listing.average_professor !== null)
       // Trim professor ratings to one decimal point
-      listing.professor_avg_rating = listing.average_professor.toFixed(
-        RATINGS_PRECISION
-      );
+      listing.professor_avg_rating =
+        listing.average_professor.toFixed(RATINGS_PRECISION);
   }
   return listing;
 };

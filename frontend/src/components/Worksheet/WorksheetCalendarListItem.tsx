@@ -40,12 +40,8 @@ function WorksheetCalendarListItem({
   hidden: boolean;
   theme: any;
 }) {
-  const {
-    showModal,
-    cur_season,
-    toggleCourse,
-    setHoverCourse,
-  } = useWorksheet();
+  const { showModal, cur_season, toggleCourse, setHoverCourse } =
+    useWorksheet();
 
   // Style for coloring hidden courses
   const color_style = {

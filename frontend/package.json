@@ -68,7 +68,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "lint-check": "prettier -l . && eslint src",
+    "lint-check": "prettier -l . && eslint src --quiet",
     "depcheck": "npx depcheck . --json",
     "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml"
   },

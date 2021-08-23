@@ -101,13 +101,8 @@ const Results = ({
   page = 'catalog',
 }) => {
   // Fetch current device
-  const {
-    width,
-    isMobile,
-    isTablet,
-    isSmDesktop,
-    isLgDesktop,
-  } = useWindowDimensions();
+  const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
+    useWindowDimensions();
 
   // Show tooltip for the list/grid view toggle. NOT USING RN
   // const [show_tooltip, setShowTooltip] = useState(false);

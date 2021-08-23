@@ -111,11 +111,8 @@ function CourseTableNavbar({
   // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
-  const {
-    ref_visible,
-    isComponentVisible,
-    setIsComponentVisible,
-  } = useComponentVisible<HTMLDivElement>(false);
+  const { ref_visible, isComponentVisible, setIsComponentVisible } =
+    useComponentVisible<HTMLDivElement>(false);
 
   // Fetch from search
   // const { searchData, coursesLoading, speed } = useSearch();

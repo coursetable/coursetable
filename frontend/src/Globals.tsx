@@ -57,8 +57,7 @@ const history = createBrowserHistory();
 
 const release = isDev ? 'edge' : process.env.REACT_APP_SENTRY_RELEASE;
 Sentry.init({
-  dsn:
-    'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
+  dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [
     new Integrations.BrowserTracing({
       // Via https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/

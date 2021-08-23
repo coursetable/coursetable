@@ -43,12 +43,8 @@ const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
   const [active, setActive] = useState(false);
 
   // Get search context data
-  const {
-    select_sortby,
-    sort_order,
-    setSelectSortby,
-    setSortOrder,
-  } = useSearch();
+  const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
+    useSearch();
 
   const globalTheme = useTheme();
 

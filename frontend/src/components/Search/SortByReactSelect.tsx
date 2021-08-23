@@ -23,12 +23,8 @@ const StyledSortBtn = styled.div`
  */
 
 const SortByReactSelect = () => {
-  const {
-    select_sortby,
-    sort_order,
-    setSelectSortby,
-    setSortOrder,
-  } = useSearch();
+  const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
+    useSearch();
 
   // Handle changing the sort order
   const handleSortOrder = () => {

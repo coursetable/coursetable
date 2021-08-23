@@ -1,3 +1,4 @@
+/* eslint-disable */
 declare module 'react-lines-ellipsis' {
   import * as React from 'react';
 
