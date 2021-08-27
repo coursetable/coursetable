@@ -34,7 +34,7 @@ export const useWorksheetInfo = (
 
     // Resolve the worksheet items.
     for (let i = 0; i < worksheet.length; i++) {
-      const season_code = worksheet[i][0];
+      const season_code: string = worksheet[i][0];
       const crn = parseInt(worksheet[i][1], 10);
 
       if (season !== null && season !== season_code) {
