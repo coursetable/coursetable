@@ -39,7 +39,7 @@
     "luxon": "^1.26.0",
     "moment": "^2.29.1",
     "posthog-js": "^1.8.8",
-    "rc-slider": "9.7.1",
+    "rc-slider": "9.7.2",
     "rc-tooltip": "^5.1.0",
     "react": "^16.14.0",
     "react-app-polyfill": "^2.0.0",
