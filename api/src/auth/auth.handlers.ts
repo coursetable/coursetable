@@ -11,11 +11,7 @@ import winston from '../logging/winston';
 
 import axios from 'axios';
 
-import { YALIES_API_KEY, POSTHOG_CLIENT } from '../config';
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { YALIES_API_KEY, POSTHOG_CLIENT, prisma } from '../config';
 
 // codes for allowed organizations (to give faculty access to the site)
 const ALLOWED_ORG_CODES = [

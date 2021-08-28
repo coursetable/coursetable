@@ -6,11 +6,7 @@ import express from 'express';
 
 import winston from '../logging/winston';
 
-import { POSTHOG_CLIENT } from '../config';
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { POSTHOG_CLIENT, prisma } from '../config';
 
 /**
  * Toggle a bookmarked course in a worksheet.

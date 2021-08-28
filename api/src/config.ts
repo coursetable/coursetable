@@ -2,6 +2,7 @@
  * @file Global server configurations
  */
 import PostHog from 'posthog-node';
+import { PrismaClient } from '@prisma/client';
 
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
@@ -70,3 +71,5 @@ export const STATIC_FILE_DIR = './static';
 export const POSTHOG_CLIENT = new PostHog(getEnv('POSTHOG_API_KEY'), {
   host: getEnv('POSTHOG_HOST'),
 });
+
+export const prisma = new PrismaClient();

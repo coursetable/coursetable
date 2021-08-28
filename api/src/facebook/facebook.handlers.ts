@@ -6,17 +6,13 @@ import express from 'express';
 
 import axios from 'axios';
 
-import { FACEBOOK_API_ENDPOINT, POSTHOG_CLIENT } from '../config';
+import { FACEBOOK_API_ENDPOINT, POSTHOG_CLIENT, prisma } from '../config';
 
 import winston from '../logging/winston';
-
-import { PrismaClient } from '@prisma/client';
 
 const ME_FIELDS = 'id,name,first_name,middle_name,last_name';
 const FRIEND_FIELDS = 'id,name,first_name,middle_name,last_name';
 const FRIENDS_PAGE_LIMIT = 500;
-
-const prisma = new PrismaClient();
 
 /**
  * Fetch and create/update user's Facebook friends.

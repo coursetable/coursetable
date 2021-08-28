@@ -25,11 +25,29 @@ export const requestEvalsQuery = gql`
       }
       id
       evaluation_question {
-          question_text
-        }
+        question_text
+      }
     }
   }
 `;
+
+export interface requestEvalsQueryResponse {
+  evaluation_ratings: {
+    rating: number[];
+    course: {
+      season_code: number;
+      title: string;
+      listings: {
+        crn: number;
+        course_code: string;
+      }[];
+    };
+    id: number;
+    evaluation_question: {
+      question_text: string;
+    };
+  }[];
+}
 
 // query for retrieving course enrollment data again
 export const verifyEvalsQuery = gql`
@@ -40,3 +58,10 @@ export const verifyEvalsQuery = gql`
     }
   }
 `;
+
+export interface verifyEvalsQueryResponse {
+  evaluation_ratings: {
+    id: number;
+    rating: number[];
+  }[];
+}

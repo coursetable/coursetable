@@ -1,6 +1,6 @@
 import express from 'express';
 
-import { requestChallenge, verifyChallenge } from './challenge.controllers.js';
+import { requestChallenge, verifyChallenge } from './challenge.controllers';
 
 /**
  * Set up challenge routes.
