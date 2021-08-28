@@ -6,7 +6,10 @@ import {
   GRAPHQL_ENDPOINT,
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
+  prisma,
 } from '../config';
+
+import winston from '../logging/winston';
 
 import {
   requestEvalsQuery,
@@ -16,10 +19,6 @@ import {
 } from './challenge.queries';
 
 import { encrypt, decrypt, getRandomInt } from './challenge.utils';
-
-// import { PrismaClient } from '@prisma/client';
-
-// const prisma = new PrismaClient();
 
 /**
  * Generate a challenge object given a query response.
@@ -36,7 +35,7 @@ const constructChallenge = (
   evals: requestEvalsQueryResponse,
   challengeTries: number,
   netid: string
-) => {
+): express.Response => {
   // array of course enrollment counts
   const ratingIndices: number[] = [];
 
@@ -114,40 +113,55 @@ const constructChallenge = (
  * @prop req - request object
  * @prop res - return object
  */
-export const requestChallenge = (
+export const requestChallenge = async (
   req: express.Request,
   res: express.Response
-) => {
-  const netid = req.header('x-coursetable-netid'); // user's NetID
+): Promise<express.Response> => {
+  winston.info(`Requesting challenge`);
 
-  // Student.getChallengeStatus(netid, (statusCode, err, data) => {
-  //   if (err) {
-  //     return res.status(statusCode).json({
-  //       error: err,
-  //     });
-  //   }
+  if (!req.user) {
+    return res.status(401).json({ error: 'USER_NOT_FOUND' });
+  }
 
-  //   const challengeTries = data['challengeTries'];
+  const { netId } = req.user;
 
-  //   // randomize the selected challenge courses by
-  //   // randomly choosing a minimum rating
-  //   const minRating = 1 + Math.random() * 4;
+  // increment challenge tries
+  const { challengeTries, evaluationsEnabled } =
+    await prisma.studentBluebookSettings.update({
+      where: { netId },
+      data: { challengeTries: { increment: 1 } },
+    });
 
-  //   request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
-  //     season: CHALLENGE_SEASON,
-  //     minRating,
-  //   })
-  //     .then((evals) => {
-  //       return constructChallenge(req, res, evals, challengeTries, netid);
-  //     })
-  //     .catch((err) => {
-  //       return res.status(500).json({
-  //         error: err,
-  //         challengeTries,
-  //         maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //       });
-  //     });
-  // });
+  if (evaluationsEnabled) {
+    return res.status(403).json({ error: 'ALREADY_ENABLED' });
+  }
+
+  if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
+    return res.status(429).json({
+      error: 'MAX_TRIES_REACHED',
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
+
+  // randomize the selected challenge courses by
+  // randomly choosing a minimum rating
+  const minRating = 1 + Math.random() * 4;
+
+  return request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
+    season: CHALLENGE_SEASON,
+    minRating,
+  })
+    .then((evals) => {
+      return constructChallenge(req, res, evals, challengeTries, netId);
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        error: err,
+        challengeTries,
+        maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+      });
+    });
 };
 
 /**
@@ -165,7 +179,7 @@ const checkChallenge = (
     courseRatingId: string;
     courseRatingIndex: string;
   }[]
-) => {
+): boolean => {
   // the true values in CourseTable to compare against
   const truth = true_evals.evaluation_ratings;
 
