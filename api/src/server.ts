@@ -25,6 +25,7 @@ import cas_auth from './auth/auth.routes';
 import facebook from './facebook/facebook.routes';
 import canny from './canny/canny.routes';
 import user from './user/user.routes';
+import challenge from './challenge/challenge.routes';
 
 import passport from 'passport';
 
@@ -138,6 +139,7 @@ https
   await facebook(app);
   await canny(app);
   await user(app);
+  await challenge(app);
 
   // Mount static files route and require NetID authentication
   app.use(
