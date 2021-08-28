@@ -206,129 +206,126 @@ const checkChallenge = (
  * @prop req - request object
  * @prop res - return object
  */
-export const verifyChallenge = (
+export const verifyChallenge = async (
   req: express.Request,
   res: express.Response
-) => {
-  const netid = req.header('x-coursetable-netid'); // user's NetID
+): Promise<express.Response> => {
+  winston.info(`Verifying challenge`);
 
-  // Student.getChallengeStatus(netid, (statusCode, err, data) => {
-  //   if (err) {
-  //     return res.status(statusCode).json({
-  //       error: err,
-  //     });
-  //   }
-  //   const challengeTries = data['challengeTries'];
+  if (!req.user) {
+    return res.status(401).json({ error: 'USER_NOT_FOUND' });
+  }
 
-  //   Student.incrementChallengeTries(
-  //     challengeTries,
-  //     netid,
-  //     (statusCode, err, data) => {
-  //       if (err) {
-  //         return res.status(statusCode).json({
-  //           error: err,
-  //         });
-  //       }
+  const { netId } = req.user;
 
-  //       let { token, salt, answers } = req.body;
+  // increment challenge tries
+  const { challengeTries, evaluationsEnabled } =
+    await prisma.studentBluebookSettings.update({
+      where: { netId },
+      data: { challengeTries: { increment: 1 } },
+    });
 
-  //       let secrets; // the decrypted token
+  if (evaluationsEnabled) {
+    return res.status(403).json({ error: 'ALREADY_ENABLED' });
+  }
 
-  //       let secretRatingIds; // for retrieving the correct ones from the database
+  if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
+    return res.status(429).json({
+      error: 'MAX_TRIES_REACHED',
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
 
-  //       // list in the format "<question_id>_<rating_index>" to verify
-  //       // the submitted answers match those encoded in the token
-  //       let secretRatings;
-  //       let answerRatings;
+  const { token, salt, answers } = req.body;
+  let secrets: {
+    netid: string;
+    ratingSecrets: { courseRatingId: string; courseRatingIndex: number }[];
+  }; // the decrypted token
+  let secretRatingIds; // for retrieving the correct ones from the database
+  // list in the format "<question_id>_<rating_index>" to verify
+  // the submitted answers match those encoded in the token
+  let secretRatings;
+  let answerRatings;
+  // catch malformed token decryption errors
+  try {
+    secrets = JSON.parse(decrypt(token, salt));
+    secretRatingIds = secrets.ratingSecrets.map((x) => x.courseRatingId);
+    secretRatings = secrets.ratingSecrets.map(
+      (x) => `${x.courseRatingId}_${x.courseRatingIndex}`
+    );
+  } catch (e) {
+    return res.status(406).json({
+      error: 'INVALID_TOKEN',
+      challengeTries: challengeTries + 1,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
+  // ensure that netid in token is same as in headers
+  if (secrets.netid !== netId) {
+    return res.status(406).json({
+      error: 'INVALID_TOKEN',
+      challengeTries: challengeTries + 1,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
+  // catch malformed answer JSON errors
+  try {
+    answerRatings = answers.map(
+      (x: { courseRatingId: string; courseRatingIndex: number }) =>
+        `${x.courseRatingId}_${x.courseRatingIndex}`
+    );
+  } catch (e) {
+    return res.status(406).json({
+      error: 'MALFORMED_ANSWERS',
+      challengeTries: challengeTries + 1,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
+  // make sure the provided ratings IDs and indices match those we have
+  if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
+    return res.status(406).json({
+      error: 'INVALID_TOKEN',
+      challengeTries: challengeTries + 1,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
+  return request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+    questionIds: secretRatingIds,
+  })
+    .then((true_evals) => {
+      // if answers are incorrect, respond with error
+      if (!checkChallenge(true_evals, answers)) {
+        return res.status(200).json({
+          body: {
+            message: 'INCORRECT',
+            challengeTries: challengeTries + 1,
+            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+          },
+        });
+      }
 
-  //       // catch malformed token decryption errors
-  //       try {
-  //         secrets = JSON.parse(decrypt(token, salt));
-  //         secretRatingIds = secrets.ratingSecrets.map((x) => x.courseRatingId);
-  //         secretRatings = secrets.ratingSecrets.map(
-  //           (x) => `${x.courseRatingId}_${x.courseRatingIndex}`
-  //         );
-  //       } catch (e) {
-  //         return res.status(406).json({
-  //           error: 'INVALID_TOKEN',
-  //           challengeTries: challengeTries + 1,
-  //           maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //         });
-  //       }
-
-  //       // ensure that netid in token is same as in headers
-  //       if (secrets.netid !== netid) {
-  //         return res.status(406).json({
-  //           error: 'INVALID_TOKEN',
-  //           challengeTries: challengeTries + 1,
-  //           maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //         });
-  //       }
-
-  //       // catch malformed answer JSON errors
-  //       try {
-  //         answerRatings = answers.map(
-  //           (x) => `${x.courseRatingId}_${x.courseRatingIndex}`
-  //         );
-  //       } catch (e) {
-  //         return res.status(406).json({
-  //           error: 'MALFORMED_ANSWERS',
-  //           challengeTries: challengeTries + 1,
-  //           maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //         });
-  //       }
-
-  //       // make sure the provided ratings IDs and indices match those we have
-  //       if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
-  //         return res.status(406).json({
-  //           error: 'INVALID_TOKEN',
-  //           challengeTries: challengeTries + 1,
-  //           maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //         });
-  //       }
-
-  //       request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
-  //         questionIds: secretRatingIds,
-  //       })
-  //         .then((true_evals) => {
-  //           // if answers are incorrect, respond with error
-  //           if (!checkChallenge(true_evals, answers)) {
-  //             return res.status(200).json({
-  //               body: {
-  //                 message: 'INCORRECT',
-  //                 challengeTries: challengeTries + 1,
-  //                 maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //               },
-  //             });
-  //           }
-
-  //           // otherwise, enable evaluations
-  //           Student.enableEvaluations(netid, (statusCode, err, data) => {
-  //             if (err) {
-  //               return res.status(statusCode).json({
-  //                 error: err,
-  //                 challengeTries: challengeTries + 1,
-  //                 maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //               });
-  //             }
-
-  //             return res.json({
-  //               body: {
-  //                 message: 'CORRECT',
-  //                 challengeTries: challengeTries + 1,
-  //                 maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //               },
-  //             });
-  //           });
-  //         })
-  //         .catch((err) => {
-  //           return res.status(500).json({
-  //             error: err,
-  //             challengeTries: challengeTries + 1,
-  //             maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-  //           });
-  //         });
-  //     }
-  //   );
-  // });
+      // otherwise, enable evaluations and respond with success
+      return prisma.studentBluebookSettings
+        .update({
+          where: { netId },
+          data: { evaluationsEnabled: true },
+        })
+        .then(() => {
+          return res.json({
+            body: {
+              message: 'CORRECT',
+              challengeTries,
+              maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+            },
+          });
+        });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        error: err,
+        challengeTries,
+        maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+      });
+    });
 };
