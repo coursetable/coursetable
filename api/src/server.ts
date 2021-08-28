@@ -134,12 +134,12 @@ https
   app.use(express.json() as RequestHandler);
 
   // Activate catalog and CAS authentication
+  await challenge(app);
   await catalog(app);
   await cas_auth(app);
   await facebook(app);
   await canny(app);
   await user(app);
-  await challenge(app);
 
   // Mount static files route and require NetID authentication
   app.use(
