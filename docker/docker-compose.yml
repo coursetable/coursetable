@@ -33,6 +33,7 @@ services:
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
       SECURE_PORT: ${SECURE_PORT?secure_port}
       INSECURE_PORT: ${INSECURE_PORT?insecure_port}
+      CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
 
   graphql-engine:
     image: hasura/graphql-engine:v1.3.3

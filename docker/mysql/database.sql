@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.1.0
+-- version 5.1.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: mysql
--- Generation Time: Apr 07, 2021 at 01:33 AM
--- Server version: 10.5.9-MariaDB-1:10.5.9+maria~focal
--- PHP Version: 7.4.16
+-- Generation Time: Aug 28, 2021 at 12:38 AM
+-- Server version: 10.6.4-MariaDB-1:10.6.4+maria~focal
+-- PHP Version: 7.4.20
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -20,7 +20,7 @@ SET time_zone = "+00:00";
 --
 -- Database: `yaleplus`
 --
-CREATE DATABASE IF NOT EXISTS `yaleplus` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
+CREATE DATABASE IF NOT EXISTS `yaleplus` DEFAULT CHARACTER SET utf8mb3 COLLATE utf8mb3_general_ci;
 USE `yaleplus`;
 
 -- --------------------------------------------------------
@@ -40,8 +40,9 @@ CREATE TABLE `StudentBluebookSettings` (
   `year` int(11) DEFAULT NULL COMMENT 'User''s year of graduation',
   `college` varchar(256) DEFAULT NULL COMMENT 'User''s residential college',
   `major` varchar(256) DEFAULT NULL COMMENT ' User''s major',
-  `curriculum` varchar(256) DEFAULT NULL COMMENT 'User''s curriculum (for grad students)'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+  `curriculum` varchar(256) DEFAULT NULL COMMENT 'User''s curriculum (for grad students)',
+  `challengeTries` int(11) NOT NULL DEFAULT 0 COMMENT 'Number of attempts at challenge'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -54,7 +55,7 @@ CREATE TABLE `StudentFacebookFriends` (
   `netId` char(8) NOT NULL,
   `name` varchar(255) NOT NULL,
   `facebookId` bigint(20) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -66,7 +67,7 @@ CREATE TABLE `Students` (
   `netId` char(8) NOT NULL DEFAULT '',
   `facebookId` bigint(20) UNSIGNED NOT NULL,
   `facebookDataJson` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
 
@@ -79,7 +80,7 @@ CREATE TABLE `WorksheetCourses` (
   `net_id` char(8) NOT NULL,
   `oci_id` mediumint(8) UNSIGNED NOT NULL,
   `season` mediumint(8) UNSIGNED NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
 -- Indexes for dumped tables

@@ -33,7 +33,7 @@ const constructChallenge = (
   netid: string
 ) => {
   // array of course enrollment counts
-  const ratingIndices = [];
+  const ratingIndices: number[] = [];
 
   for (const evaluation_rating of evals['evaluation_ratings']) {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
@@ -50,7 +50,7 @@ const constructChallenge = (
   const ratingIds = evals.evaluation_ratings.map((x) => x.id);
 
   // construct token object
-  const ratingSecrets = ratingIds.map((x, index) => {
+  const ratingSecrets = ratingIds.map((x, index: number) => {
     return {
       courseRatingId: ratingIds[index],
       courseRatingIndex: ratingIndices[index],
@@ -67,14 +67,14 @@ const constructChallenge = (
   const token = encrypt(JSON.stringify(secrets), salt);
 
   // course ids, titles and questions for user
-  const courseIds = evals.evaluation_ratings.map((x) => x['id']);
-  const courseTitles = evals.evaluation_ratings.map((x) => x.course.title);
+  const courseIds = evals.evaluation_ratings.map((x: any) => x.id);
+  const courseTitles = evals.evaluation_ratings.map((x: any) => x.course.title);
   const courseQuestionTexts = evals.evaluation_ratings.map(
     (x) => x.evaluation_question.question_text
   );
 
   // Yale OCE urls for user to retrieve answers
-  const oceUrls = evals.evaluation_ratings.map((x) => {
+  const oceUrls = evals.evaluation_ratings.map((x: any) => {
     // courses have multiple CRNs, and any one should be fine
     const crn = x.course.listings[0].crn;
     const season = x.course.season_code;
@@ -83,10 +83,10 @@ const constructChallenge = (
   });
 
   // merged course information object
-  const course_info = courseTitles.map((x, index) => {
+  const course_info = courseTitles.map((title: string, index: number) => {
     return {
       courseId: courseIds[index],
-      courseTitle: courseTitles[index],
+      courseTitle: title,
       courseRatingIndex: ratingIndices[index],
       courseQuestionTexts: courseQuestionTexts[index],
       courseOceUrl: oceUrls[index],
