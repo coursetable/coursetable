@@ -37,17 +37,22 @@ const constructChallenge = (
   netid: string
 ): express.Response => {
   // array of course enrollment counts
-  const ratingIndices: number[] = [];
+  let ratingIndices: number[];
 
-  for (const evaluation_rating of evals.evaluation_ratings) {
-    const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
+  try {
+    ratingIndices = evals.evaluation_ratings.map((evaluation_rating) => {
+      const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
-    if (!Number.isInteger(evaluation_rating.rating[ratingIndex])) {
-      return res.status(500).json({
-        error: 'RATINGS_RETRIEVAL_ERROR',
-      });
-    }
-    ratingIndices.push(ratingIndex);
+      if (!Number.isInteger(evaluation_rating.rating[ratingIndex])) {
+        throw new Error(`Invalid rating index: ${ratingIndex}`);
+      }
+
+      return ratingIndex;
+    });
+  } catch {
+    return res.status(500).json({
+      error: 'RATINGS_RETRIEVAL_ERROR',
+    });
   }
 
   // array of CourseTable question IDs
