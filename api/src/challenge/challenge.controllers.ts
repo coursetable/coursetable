@@ -141,7 +141,7 @@ export const requestChallenge = async (
     return res.status(403).json({ error: 'ALREADY_ENABLED' });
   }
 
-  if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
+  if (challengeTries > MAX_CHALLENGE_REQUESTS) {
     return res.status(429).json({
       error: 'MAX_TRIES_REACHED',
       challengeTries,
@@ -234,7 +234,7 @@ export const verifyChallenge = async (
     return res.status(403).json({ error: 'ALREADY_ENABLED' });
   }
 
-  if (challengeTries >= MAX_CHALLENGE_REQUESTS) {
+  if (challengeTries > MAX_CHALLENGE_REQUESTS) {
     return res.status(429).json({
       error: 'MAX_TRIES_REACHED',
       challengeTries,
@@ -262,7 +262,7 @@ export const verifyChallenge = async (
   } catch (e) {
     return res.status(406).json({
       error: 'INVALID_TOKEN',
-      challengeTries: challengeTries + 1,
+      challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
@@ -270,7 +270,7 @@ export const verifyChallenge = async (
   if (secrets.netid !== netId) {
     return res.status(406).json({
       error: 'INVALID_TOKEN',
-      challengeTries: challengeTries + 1,
+      challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
@@ -283,7 +283,7 @@ export const verifyChallenge = async (
   } catch (e) {
     return res.status(406).json({
       error: 'MALFORMED_ANSWERS',
-      challengeTries: challengeTries + 1,
+      challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
@@ -291,10 +291,12 @@ export const verifyChallenge = async (
   if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
     return res.status(406).json({
       error: 'INVALID_TOKEN',
-      challengeTries: challengeTries + 1,
+      challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
+
+  // check the answers against the true values
   return request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
     questionIds: secretRatingIds,
   })
@@ -304,7 +306,7 @@ export const verifyChallenge = async (
         return res.status(200).json({
           body: {
             message: 'INCORRECT',
-            challengeTries: challengeTries + 1,
+            challengeTries,
             maxChallengeTries: MAX_CHALLENGE_REQUESTS,
           },
         });

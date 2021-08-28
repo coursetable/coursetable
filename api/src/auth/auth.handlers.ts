@@ -68,7 +68,7 @@ export const passportConfig = async (
       async (profile, done) => {
         // Create or update user's profile
         winston.info("Creating user's profile");
-        await prisma.studentBluebookSettings.upsert({
+        const existingUser = await prisma.studentBluebookSettings.upsert({
           where: {
             netId: profile.user,
           },
@@ -113,8 +113,10 @@ export const passportConfig = async (
               },
               data: {
                 // enable evaluations if user has a school code
-                // or is a member of an approved organization (for faculty)
+                // or is a member of an approved organization (for faculty).
+                // also leave evaluations enabled if the user already has access.
                 evaluationsEnabled:
+                  existingUser.evaluationsEnabled ||
                   !!user.school_code ||
                   ALLOWED_ORG_CODES.includes(user.organization_code),
                 first_name: user.first_name,
