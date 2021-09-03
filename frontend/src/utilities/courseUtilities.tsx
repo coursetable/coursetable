@@ -247,8 +247,8 @@ const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
   if (key === 'fb') {
     // Concatenate season code and crn to form key
     const fb_key = listing.season_code + listing.crn;
-    // No friends. return null
-    if (!num_fb[fb_key]) return null;
+    // No friends. return zero
+    if (!num_fb[fb_key]) return 0;
     // Has friends. return number of friends
     return num_fb[fb_key].length;
   }
