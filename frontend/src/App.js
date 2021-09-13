@@ -103,37 +103,16 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
-        Welcome to CourseTable 2.1!&nbsp;&nbsp;&nbsp;
+        CourseTable is looking for designers and developers!{' '}
         <a
-          href="https://coursetable.canny.io/changelog/introducing-coursetable-21"
+          href="https://docs.google.com/forms/d/e/1FAIpQLSeivRbmGefS24ENAtGuc4pFliO69Qjh4OKNGuWHkQlW36Ppjw/viewform"
           className="text-light"
           target="_blank"
           rel="noopener noreferrer"
         >
-          <WiStars size={26} />
           <strong>
-            <u>See what changed</u>
+            <u>Join the team! Apply through YCS!</u>
           </strong>
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a
-          href="https://old.coursetable.com"
-          className="text-light"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <BsBookmarkFill size={16} className="mr-1" />
-          <u>Go back to the old design</u>
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a
-          href={`${API_ENDPOINT}/api/canny/board`}
-          className="text-light"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FaVoteYea size={16} className="mr-1" />
-          <u>Leave feedback</u>
         </a>
       </Notice>
       <Navbar
