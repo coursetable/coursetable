@@ -103,7 +103,7 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
-        CourseTable is looking for designers and developers!{" "}
+        CourseTable is looking for designers and developers!{' '}
         <a
           href="https://docs.google.com/forms/d/e/1FAIpQLSeivRbmGefS24ENAtGuc4pFliO69Qjh4OKNGuWHkQlW36Ppjw/viewform"
           className="text-light"
