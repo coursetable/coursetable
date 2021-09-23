@@ -102,19 +102,7 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      <Notice>
-        CourseTable is looking for designers and developers!{' '}
-        <a
-          href="https://docs.google.com/forms/d/e/1FAIpQLSeivRbmGefS24ENAtGuc4pFliO69Qjh4OKNGuWHkQlW36Ppjw/viewform"
-          className="text-light"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <strong>
-            <u>Join the team! Apply through YCS!</u>
-          </strong>
-        </a>
-      </Notice>
+      {/* <Notice></Notice> */}
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
