@@ -60,6 +60,8 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    - Linux: Install [Docker CE](https://docs.docker.com/engine/install/)
      and [Docker Compose](https://docs.docker.com/compose/install/)
+     
+5. Install Node: see [here](https://nodejs.org/en/download/) for downloadable installer.
 
 ## Aside: a quick explainer on docker-compose
 
@@ -105,7 +107,6 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 4. Wait ~2-3 minutes. If you’re curious, here's what's going on:
 
    - Installing Node.js module dependencies
-   - Installing PHP (Composer) packages
    - Setting up the database schema
    - Generating some JSON data files
 
@@ -138,13 +139,9 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
 8. Make some changes!
 
-   Most changes you make (i.e. to the API server or frontend) will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page. If you plan on making changes to the database, please 
+   Most changes you make (i.e. to the API server or frontend) will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page.
 
 ## Troubleshooting
-
-- `Fatal error: Uncaught SmartyException: unable to write file`
-
-  Execute `chmod -R 777 web/gen` in your terminal.
 
 - `Windows: “Hardware assisted virtualization and data execution protection must be enabled in the BIOS”`
 
