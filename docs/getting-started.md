@@ -94,6 +94,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ```bash
    # log in
    # 	- select "Scope login to current directory if you're using Doppler elsewhere"
+   #  - select the 'dev' config
    doppler login
    ```
 
