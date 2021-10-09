@@ -137,6 +137,8 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    - Installing Node.js module dependencies
    - Setting up the database schema
    - Generating some JSON data files
+  
+   You should see something like `api_1             | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
 
 1. Start again:
 
