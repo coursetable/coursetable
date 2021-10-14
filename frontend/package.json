@@ -29,6 +29,7 @@
     "bootstrap": "^4.5.3",
     "chroma-js": "^2.1.0",
     "core-js": "^3.8.3",
+    "esbuild": "^0.13.6",
     "file-saver": "^2.0.2",
     "graphiql": "^1.4.1",
     "graphql": "^15.5.0",
