@@ -58,8 +58,9 @@ export const UserProvider: React.FC = ({ children }) => {
   // User's FB login status
   const [fbLogin, setFbLogin] = useState<boolean | undefined>(undefined);
   // User's FB friends' worksheets
-  const [fbWorksheets, setFbWorksheets] =
-    useState<FBInfo | undefined>(undefined);
+  const [fbWorksheets, setFbWorksheets] = useState<FBInfo | undefined>(
+    undefined
+  );
 
   // Refresh user worksheet
   const userRefresh = useCallback(

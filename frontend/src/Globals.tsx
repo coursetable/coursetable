@@ -22,7 +22,7 @@ import { Integrations } from '@sentry/tracing';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import reportWebVitals from './reportWebVitals';
+// import reportWebVitals from './reportWebVitals';
 import WindowDimensionsProvider from './components/Providers/WindowDimensionsProvider';
 import FerryProvider from './components/Providers/FerryProvider';
 import { UserProvider } from './contexts/userContext';
@@ -55,7 +55,7 @@ if (POSTHOG_TOKEN !== '') {
 
 const history = createBrowserHistory();
 
-const release = isDev ? 'edge' : process.env.REACT_APP_SENTRY_RELEASE;
+const release = isDev ? "edge" : import.meta.env.REACT_APP_SENTRY_RELEASE;
 Sentry.init({
   dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [
@@ -66,7 +66,7 @@ Sentry.init({
     // @ts-ignore
     new posthog.SentryIntegration(posthog, 'coursetable', 5515218),
   ],
-  environment: process.env.NODE_ENV,
+  environment: import.meta.env.MODE,
 
   // See https://docs.sentry.io/platforms/javascript/configuration/releases/.
   release,
@@ -163,12 +163,12 @@ const Globals: React.FC = ({ children }) => {
   );
 };
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals((metric) => {
-  const { entries: _, ...reportableMetric } = metric;
-  posthog.capture('web-vitals', { ...reportableMetric });
-});
+// // If you want to start measuring performance in your app, pass a function
+// // to log results (for example: reportWebVitals(console.log))
+// // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
+// reportWebVitals((metric) => {
+//   const { entries: _, ...reportableMetric } = metric;
+//   posthog.capture('web-vitals', { ...reportableMetric });
+// });
 
 export default Globals;

@@ -131,8 +131,9 @@ export const Popout: React.FC<Props> = ({
   const theme = useTheme();
 
   // Dynamic text state for active popout button
-  const [toggleText, setToggleText] =
-    useState<string | JSX.Element[]>(buttonText);
+  const [toggleText, setToggleText] = useState<string | JSX.Element[]>(
+    buttonText
+  );
   // Active state
   const [active, setActive] = useState(false);
 
