@@ -64,10 +64,10 @@
   },
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject",
     "lint-check": "prettier -l . && eslint src --quiet",
     "depcheck": "npx depcheck . --json",
     "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml"
@@ -88,6 +88,7 @@
     ]
   },
   "devDependencies": {
+    "@craco/craco": "^6.3.0",
     "@graphql-codegen/cli": "1.20.0",
     "@graphql-codegen/introspection": "1.18.1",
     "@graphql-codegen/typescript": "2.1.2",
@@ -96,6 +97,7 @@
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.19.0",
     "@welldone-software/why-did-you-render": "^6.0.5",
+    "craco-esbuild": "^0.4.2",
     "eslint": "^7.20.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-config-airbnb-typescript": "^12.3.1",

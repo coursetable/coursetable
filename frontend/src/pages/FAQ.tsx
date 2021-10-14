@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import React, { useContext } from 'react';
 import { Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
@@ -65,7 +65,7 @@ function ContextAwareToggle({
 /**
  * Renders the FAQ page
  */
-function FAQ() {
+const FAQ: React.VFC = () => {
   const faqs = [
     {
       title: 'What is CourseTable?',
@@ -314,6 +314,6 @@ function FAQ() {
       </Accordion>
     </div>
   );
-}
+};
 
 export default FAQ;

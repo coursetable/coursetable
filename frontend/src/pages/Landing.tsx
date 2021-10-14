@@ -1,3 +1,4 @@
+import React from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
@@ -23,7 +24,7 @@ const StyledStat = styled.span`
  * Renders the Landing page for when users aren't logged in
  */
 
-function Landing() {
+const Landing: React.VFC = () => {
   return (
     <div /* className={styles.container} */>
       <Container fluid>
@@ -94,6 +95,6 @@ function Landing() {
       </Container>
     </div>
   );
-}
+};
 
 export default Landing;

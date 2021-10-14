@@ -1,3 +1,4 @@
+import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import styles from './Footer.module.css';
@@ -14,7 +15,7 @@ import { API_ENDPOINT } from '../config';
  * Footer
  */
 
-function Footer() {
+const Footer: React.VFC = () => {
   return (
     <Container fluid>
       <StyledHr />
@@ -106,12 +107,6 @@ function Footer() {
                   <TextComponent type={1}>Team</TextComponent>
                 </NavLink>
               </li>
-              {/* Join us */}
-              <li>
-                <NavLink to="/joinus" onClick={scrollToTop}>
-                  <TextComponent type={1}>Join Us</TextComponent>
-                </NavLink>
-              </li>
               {/* Github */}
               <li>
                 <a
@@ -138,6 +133,6 @@ function Footer() {
       </footer>
     </Container>
   );
-}
+};
 
 export default Footer;
