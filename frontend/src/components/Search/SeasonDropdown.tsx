@@ -1,3 +1,4 @@
+import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import '../Navbar/DropdownShared.css';
@@ -10,7 +11,7 @@ import { useWorksheet } from '../../contexts/worksheetContext';
  * @prop cur_season - string that holds the current season code
  */
 
-function SeasonDropdown() {
+const SeasonDropdown: React.VFC = () => {
   const { season_codes, cur_season, changeSeason } = useWorksheet();
 
   // Populate list of HTML options
@@ -41,6 +42,6 @@ function SeasonDropdown() {
       </DropdownButton>
     </div>
   );
-}
+};
 
 export default SeasonDropdown;

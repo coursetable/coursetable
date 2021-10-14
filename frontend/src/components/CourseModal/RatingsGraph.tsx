@@ -1,3 +1,4 @@
+import React from 'react';
 import { Row } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './RatingsGraph.module.css';
@@ -19,15 +20,11 @@ const StyledLabel = styled.p`
  * @prop labels - list that holds the x-axis labels for the grpah
  */
 
-const RatingsGraph = ({
-  ratings,
-  reverse,
-  labels,
-}: {
+const RatingsGraph: React.VFC<{
   ratings: number[];
   reverse: boolean;
   labels: typeof graph_labels[keyof typeof graph_labels];
-}) => {
+}> = ({ ratings, reverse, labels }) => {
   const max_val = Math.max(...ratings);
 
   // Bar chart colors

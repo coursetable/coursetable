@@ -6,7 +6,7 @@ module.exports = {
     {
       plugin: CracoEsbuildPlugin,
       options: {
-        includePaths: ['/external/dir/with/components'], // Optional. If you want to include components which are not in src folder
+        // includePaths: ['/external/dir/with/components'], // Optional. If you want to include components which are not in src folder
         enableSvgr: true, // Optional.
         esbuildLoaderOptions: {
           // Optional. Defaults to auto-detect loader.

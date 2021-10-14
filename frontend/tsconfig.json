@@ -25,7 +25,7 @@
         "name": "typescript-plugin-css-modules"
       }
     ],
-    "jsx": "react-jsx",
+    "jsx": "react",
     "downlevelIteration": true
   },
   "include": [

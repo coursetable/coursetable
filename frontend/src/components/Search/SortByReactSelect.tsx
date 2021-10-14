@@ -1,3 +1,4 @@
+import React from 'react';
 import {
   FcAlphabeticalSortingAz,
   FcAlphabeticalSortingZa,
@@ -22,7 +23,7 @@ const StyledSortBtn = styled.div`
  * Sorting select and toggle button
  */
 
-const SortByReactSelect = () => {
+const SortByReactSelect: React.VFC = () => {
   const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
     useSearch();
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { FaBars, FaTh } from 'react-icons/fa';
 import styled from 'styled-components';
 
@@ -18,13 +19,10 @@ const StyledToggle = styled.div`
  * @prop setView - function to switch views
  */
 
-const ListGridToggle = ({
-  isList,
-  setView,
-}: {
+const ListGridToggle: React.VFC<{
   isList: boolean;
   setView: (isList: any) => void;
-}) => {
+}> = ({ isList, setView }) => {
   return (
     <StyledToggle
       className="d-flex ml-auto my-auto"
