@@ -3,13 +3,32 @@
   "version": "0.0.0",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "vite",
     "build": "tsc && vite build",
-    "test": "vite test",
-    "serve": "vite preview",
-    "lint-check": "prettier -l . && eslint src --quiet",
+    "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml",
     "depcheck": "npx depcheck . --json",
-    "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml"
+    "lint-check": "prettier -l . && eslint src --quiet",
+    "serve": "vite preview",
+    "start": "vite --https",
+    "test": "vite test"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "resolutions": {
+    "graphql-language-service-interface": "2.4.2-alpha.2",
+    "react-virtualized": "git+https://git@github.com/remorses/react-virtualized-fixed-import.git#9.22.3"
   },
   "dependencies": {
     "@apollo/client": "^3.3.7",
@@ -100,24 +119,5 @@
     "vite": "^2.6.4",
     "vite-plugin-react-svg": "^0.2.0",
     "vite-plugin-svgr": "^0.4.0"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "resolutions": {
-    "graphql-language-service-interface": "2.4.2-alpha.2",
-    "react-virtualized": "git+https://git@github.com/remorses/react-virtualized-fixed-import.git#9.22.3"
   }
 }
