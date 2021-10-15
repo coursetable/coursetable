@@ -114,3 +114,4 @@ Error [ERR_HTTP_HEADERS_SENT]: Cannot set headers after they are sent to the cli
     at Query.<anonymous> (/app/src/models/student.models.ts:52:15)
     at Query.<anonymous> (/app/node_modules/mysql/lib/Connection.js:526:10)
     at Query._callback (/app/node_modules/mysql/lib/Connection.js:488:16)
+{"message":"request to http://graphql-engine:8080/v1/graphql failed, reason: getaddrinfo ENOTFOUND graphql-engine","type":"system","errno":"ENOTFOUND","code":"ENOTFOUND","level":"error","timestamp":"2021-10-15 18:13:20:1320"}
