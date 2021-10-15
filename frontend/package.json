@@ -113,6 +113,7 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.0.0",
+    "jest": "^27.2.5",
     "prettier": "^2.2.1",
     "source-map-explorer": "^2.5.2",
     "typescript-plugin-css-modules": "^3.2.0",

@@ -1,4 +1,5 @@
 ignores: [
+  "jest",
   "@sentry/tracing",
   "@vitejs/plugin-react",
   "vite-plugin-svgr",
