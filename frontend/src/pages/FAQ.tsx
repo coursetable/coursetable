@@ -101,11 +101,7 @@ function FAQ() {
           Over the summer of 2020, we rebuilt CourseTable as a modern site that
           will be easier to update and maintain going forward. If we're missing
           a feature from the old site that you would like to see added back,
-          please{' '}
-          <NavLink to="/feedback" onClick={scrollToTop}>
-            let us know
-          </NavLink>
-          .
+          please <a href="https://feedback.coursetable.com">let us know</a>.
         </>
       ),
     },
@@ -159,10 +155,7 @@ function FAQ() {
           We update our database every day around 3:30am EST. If anything
           continues to not match Yale's catalog after a few days, please let us
           know through our{' '}
-          <NavLink to="/feedback" onClick={scrollToTop}>
-            feedback form
-          </NavLink>
-          .
+          <a href="https://feedback.coursetable.com">feedback form</a>.
         </>
       ),
     },
@@ -211,10 +204,8 @@ function FAQ() {
       contents: (
         <>
           If you have a suggestion or find a bug, please submit our{' '}
-          <NavLink to="/feedback" onClick={scrollToTop}>
-            general feedback form
-          </NavLink>
-          . We'll be in touch as soon as possible.
+          <a href="https://feedback.coursetable.com">general feedback form</a>.
+          We'll be in touch as soon as possible.
         </>
       ),
     },
@@ -293,10 +284,7 @@ function FAQ() {
       </h1>
       <p className={`${styles.faq_description} mb-3`}>
         <TextComponent type={1}>Have another question?</TextComponent>{' '}
-        <NavLink to="/feedback" onClick={scrollToTop}>
-          Contact us
-        </NavLink>
-        .
+        <a href="https://feedback.coursetable.com">Contact us</a>.
       </p>
       <Accordion>
         {faqs.map((faq, idx) => (
