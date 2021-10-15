@@ -18,9 +18,9 @@ import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tag_styles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from '../StyledComponents';
-import Star from "../../images/catalog_icons/star.svg?component";
-import Teacher from "../../images/catalog_icons/teacher.svg?component";
-import Book from "../../images/catalog_icons/book.svg?component";
+import Star from '../../images/catalog_icons/star.svg?component';
+import Teacher from '../../images/catalog_icons/teacher.svg?component';
+import Book from '../../images/catalog_icons/book.svg?component';
 import {
   getOverallRatings,
   getWorkloadRatings,

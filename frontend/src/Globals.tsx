@@ -55,7 +55,7 @@ if (POSTHOG_TOKEN !== '') {
 
 const history = createBrowserHistory();
 
-const release = isDev ? "edge" : import.meta.env.REACT_APP_SENTRY_RELEASE;
+const release = isDev ? 'edge' : import.meta.env.VITE_SENTRY_RELEASE;
 Sentry.init({
   dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [

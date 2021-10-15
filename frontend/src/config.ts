@@ -4,7 +4,7 @@ export const isDev = import.meta.env.DEV;
 
 export const API_ENDPOINT = isDev
   ? 'https://localhost:3001'
-  : import.meta.env.REACT_APP_API_ENDPOINT;
+  : import.meta.env.VITE_API_ENDPOINT;
 
 // /* testing posthog in development only */ const POSTHOG_TOKEN = 'KP78eJ-P-nRNQcVeL9pgBPGFt_KXOlCnT7ZwoJ9UDUo';
 export const POSTHOG_OPTIONS = {
