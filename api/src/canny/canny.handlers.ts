@@ -8,6 +8,7 @@ import {
   CANNY_KEY,
   POSTHOG_CLIENT,
   FRONTEND_ENDPOINT,
+  prisma,
 } from '../config';
 
 import { User } from '../models/student';
@@ -15,10 +16,6 @@ import { User } from '../models/student';
 import winston from '../logging/winston';
 import axios from 'axios';
 import jwt from 'jsonwebtoken';
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
 
 // Create a JWT-signed Canny token with user info
 const createCannyToken = (user: User) => {

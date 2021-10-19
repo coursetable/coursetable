@@ -25,6 +25,7 @@ import cas_auth from './auth/auth.routes';
 import facebook from './facebook/facebook.routes';
 import canny from './canny/canny.routes';
 import user from './user/user.routes';
+import challenge from './challenge/challenge.routes';
 
 import passport from 'passport';
 
@@ -133,6 +134,7 @@ https
   app.use(express.json() as RequestHandler);
 
   // Activate catalog and CAS authentication
+  await challenge(app);
   await catalog(app);
   await cas_auth(app);
   await facebook(app);

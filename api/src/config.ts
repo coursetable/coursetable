@@ -2,6 +2,7 @@
  * @file Global server configurations
  */
 import PostHog from 'posthog-node';
+import { PrismaClient } from '@prisma/client';
 
 const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
@@ -26,6 +27,14 @@ export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
 
 // Ferry GraphQL endpoint
 export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
+
+export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
+export const CHALLENGE_PASSWORD =
+  process.env.CHALLENGE_PASSWORD || die('challenge password');
+
+export const NUM_CHALLENGE_COURSES = 3; // number of courses to select for the challenge
+export const CHALLENGE_SEASON = '202101'; // season to select the challenge from
+export const MAX_CHALLENGE_REQUESTS = 100; // maximum number of allowed challenge tries
 
 // Secret for Canny SSO
 export const CANNY_KEY = getEnv('CANNY_KEY');
@@ -62,3 +71,5 @@ export const STATIC_FILE_DIR = './static';
 export const POSTHOG_CLIENT = new PostHog(getEnv('POSTHOG_API_KEY'), {
   host: getEnv('POSTHOG_HOST'),
 });
+
+export const prisma = new PrismaClient();

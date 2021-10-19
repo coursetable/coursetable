@@ -11,11 +11,7 @@ import winston from '../logging/winston';
 
 import axios from 'axios';
 
-import { YALIES_API_KEY, POSTHOG_CLIENT } from '../config';
-
-import { PrismaClient } from '@prisma/client';
-
-const prisma = new PrismaClient();
+import { YALIES_API_KEY, POSTHOG_CLIENT, prisma } from '../config';
 
 // codes for allowed organizations (to give faculty access to the site)
 const ALLOWED_ORG_CODES = [
@@ -72,7 +68,7 @@ export const passportConfig = async (
       async (profile, done) => {
         // Create or update user's profile
         winston.info("Creating user's profile");
-        await prisma.studentBluebookSettings.upsert({
+        const existingUser = await prisma.studentBluebookSettings.upsert({
           where: {
             netId: profile.user,
           },
@@ -110,17 +106,21 @@ export const passportConfig = async (
 
             const user = data[0];
 
+            // enable evaluations if user has a school code
+            // or is a member of an approved organization (for faculty).
+            // also leave evaluations enabled if the user already has access.
+            const enableEvals =
+              existingUser.evaluationsEnabled ||
+              !!user.school_code ||
+              ALLOWED_ORG_CODES.includes(user.organization_code);
+
             winston.info(`Updating evaluations for ${profile.user}`);
             await prisma.studentBluebookSettings.update({
               where: {
                 netId: profile.user,
               },
               data: {
-                // enable evaluations if user has a school code
-                // or is a member of an approved organization (for faculty)
-                evaluationsEnabled:
-                  !!user.school_code ||
-                  ALLOWED_ORG_CODES.includes(user.organization_code),
+                evaluationsEnabled: enableEvals,
                 first_name: user.first_name,
                 last_name: user.last_name,
                 email: user.email,
@@ -155,7 +155,7 @@ export const passportConfig = async (
 
             return done(null, {
               netId: profile.user,
-              evals: !!user.school_code,
+              evals: enableEvals,
               email: user.email,
               firstName: user.first_name,
               lastName: user.last_name,
