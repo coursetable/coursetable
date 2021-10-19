@@ -1,4 +1,4 @@
-import React, { useMemo, useState, useEffect } from 'react';
+import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import './WorksheetToggleButton.css';
 import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
@@ -63,6 +63,64 @@ function WorksheetToggleButton({
     }
   }, [worksheet_check, inWorksheet, setCourseInWorksheet]);
 
+  // Handle button click
+  const toggleWorkSheet = useCallback(
+    (e: React.MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      posthog.capture('worksheet-add-remove', { season_code, crn });
+
+      // Determine if we are adding or removing the course
+      const add_remove = inWorksheet ? 'remove' : 'add';
+
+      // removes removed courses from worksheet hidden courses
+      if (inWorksheet) {
+        setLSObject('hidden_courses', {}, true);
+        if (
+          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
+          hidden_courses[cur_season][crn]
+        ) {
+          toggleCourse(crn);
+        }
+      }
+
+      // Call the endpoint
+      return axios
+        .post(
+          `${API_ENDPOINT}/api/user/toggleBookmark`,
+          { action: add_remove, season: season_code, ociId: crn },
+          {
+            withCredentials: true,
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then((response) => {
+          // Refresh user's worksheet
+          return userRefresh();
+        })
+        .then(() => {
+          // If not in worksheet view, update inWorksheet state
+          setInWorksheet(!inWorksheet);
+        })
+        .catch((err) => {
+          toast.error('Failed to update worksheet');
+          Sentry.captureException(err);
+        });
+    },
+    [
+      crn,
+      cur_season,
+      hidden_courses,
+      inWorksheet,
+      season_code,
+      toggleCourse,
+      userRefresh,
+    ]
+  );
+
   // Disabled worksheet add/remove button if not logged in
   if (user.worksheet == null)
     return (
@@ -70,57 +128,6 @@ function WorksheetToggleButton({
         <BsBookmark size={25} className="disabled-button-icon" />
       </Button>
     );
-
-  // Add/remove course
-  function add_remove_course() {
-    posthog.capture('worksheet-add-remove', { season_code, crn });
-
-    // Determine if we are adding or removing the course
-    const add_remove = inWorksheet ? 'remove' : 'add';
-
-    // removes removed courses from worksheet hidden courses
-    if (inWorksheet) {
-      setLSObject('hidden_courses', {}, true);
-      if (
-        Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
-        hidden_courses[cur_season][crn]
-      ) {
-        toggleCourse(crn);
-      }
-    }
-
-    // Call the endpoint
-    return axios
-      .post(
-        `${API_ENDPOINT}/api/user/toggleBookmark`,
-        { action: add_remove, season: season_code, ociId: crn },
-        {
-          withCredentials: true,
-          headers: {
-            'Content-Type': 'application/json',
-          },
-        }
-      )
-      .then((response) => {
-        // Refresh user's worksheet
-        return userRefresh();
-      })
-      .then(() => {
-        // If not in worksheet view, update inWorksheet state
-        setInWorksheet(!inWorksheet);
-      })
-      .catch((err) => {
-        toast.error('Failed to update worksheet');
-        Sentry.captureException(err);
-      });
-  }
-
-  // Handle button click
-  function toggleWorkSheet(e: React.MouseEvent<HTMLButtonElement>) {
-    e.preventDefault();
-    e.stopPropagation();
-    add_remove_course();
-  }
 
   // Render remove/add message on hover
   const renderTooltip = (props: any) => (

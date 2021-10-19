@@ -102,40 +102,7 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      <Notice>
-        Welcome to CourseTable 2.1!&nbsp;&nbsp;&nbsp;
-        <a
-          href="https://coursetable.canny.io/changelog/introducing-coursetable-21"
-          className="text-light"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <WiStars size={26} />
-          <strong>
-            <u>See what changed</u>
-          </strong>
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a
-          href="https://old.coursetable.com"
-          className="text-light"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <BsBookmarkFill size={16} className="mr-1" />
-          <u>Go back to the old design</u>
-        </a>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a
-          href={`${API_ENDPOINT}/api/canny/board`}
-          className="text-light"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <FaVoteYea size={16} className="mr-1" />
-          <u>Leave feedback</u>
-        </a>
-      </Notice>
+      {/* <Notice></Notice> */}
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}

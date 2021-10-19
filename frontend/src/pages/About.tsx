@@ -59,6 +59,15 @@ const About: React.VFC = () => {
       },
     },
     {
+      name: 'Josh Chough',
+      image: jc,
+      role: 'CourseTable Co-Lead',
+      links: {
+        github: 'https://github.com/itsjoshthedeveloper',
+        linkedin: 'https://www.linkedin.com/in/joshchough/',
+      },
+    },
+    {
       name: 'Max Yuan',
       image: my,
       role: 'CourseTable Co-Lead',
@@ -89,15 +98,6 @@ const About: React.VFC = () => {
       role: 'Design',
       links: {
         website: 'https://sidneyhirschman.com/',
-      },
-    },
-    {
-      name: 'Josh Chough',
-      image: jc,
-      role: 'Development & Design',
-      links: {
-        github: 'https://github.com/itsjoshthedeveloper',
-        linkedin: 'https://www.linkedin.com/in/joshchough/',
       },
     },
     {
