@@ -1,4 +1,4 @@
-// import React from 'react';
+import React from 'react';
 import { OptionTypeBase, Props as SelectProps } from 'react-select';
 import CustomSelect from '../CustomSelect';
 

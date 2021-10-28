@@ -1,7 +1,35 @@
 {
   "name": "frontend",
-  "version": "0.1.0",
-  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "analyze": "source-map-explorer 'build/static/js/*.js'",
+    "build": "tsc && vite build",
+    "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml",
+    "depcheck": "npx depcheck . --json",
+    "lint-check": "prettier -l . && eslint src --quiet",
+    "serve": "vite preview",
+    "start": "vite --https",
+    "test": "vite test"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "resolutions": {
+    "graphql-language-service-interface": "2.4.2-alpha.2",
+    "react-virtualized": "git+https://git@github.com/remorses/react-virtualized-fixed-import.git#9.22.3"
+  },
   "dependencies": {
     "@apollo/client": "^3.3.7",
     "@graphiql/toolkit": "^0.2.0",
@@ -41,17 +69,16 @@
     "posthog-js": "^1.8.8",
     "rc-slider": "9.7.1",
     "rc-tooltip": "^5.1.0",
-    "react": "^16.14.0",
+    "react": "^17.0.0",
     "react-app-polyfill": "^2.0.0",
     "react-big-calendar": "^0.30.0",
     "react-bootstrap": "^1.4.3",
-    "react-dom": "^16.14.0",
+    "react-dom": "^17.0.0",
     "react-hotkeys": "^2.0.0",
     "react-icons": "^4.1.0",
     "react-lines-ellipsis": "^0.14.1",
     "react-multi-toggle": "^1.1.0",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^4.0.3",
     "react-scroll": "^1.8.0",
     "react-select": "^4.3.0",
     "react-toastify": "^6.2.0",
@@ -59,33 +86,8 @@
     "reactour": "^1.18.1",
     "styled-components": "^5.2.1",
     "ts-expect": "^1.3.0",
-    "typescript": "^4.1.3",
+    "typescript": "^4.4.4",
     "web-vitals": "^1.1.1"
-  },
-  "scripts": {
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
-    "lint-check": "prettier -l . && eslint src --quiet",
-    "depcheck": "npx depcheck . --json",
-    "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml"
-  },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
   },
   "devDependencies": {
     "@graphql-codegen/cli": "1.20.0",
@@ -93,8 +95,13 @@
     "@graphql-codegen/typescript": "2.1.2",
     "@graphql-codegen/typescript-operations": "1.17.15",
     "@graphql-codegen/typescript-react-apollo": "2.2.1",
+    "@types/file-saver": "^2.0.3",
+    "@types/react": "^17.0.0",
+    "@types/react-dom": "^17.0.0",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.19.0",
+    "@vitejs/plugin-react": "^1.0.0",
+    "@vitejs/plugin-react-refresh": "^1.3.6",
     "@welldone-software/why-did-you-render": "^6.0.5",
     "eslint": "^7.20.0",
     "eslint-config-airbnb": "^18.2.1",
@@ -106,11 +113,12 @@
     "eslint-plugin-prettier": "^3.3.1",
     "eslint-plugin-react": "^7.22.0",
     "eslint-plugin-react-hooks": "^4.0.0",
+    "jest": "^27.2.5",
     "prettier": "^2.2.1",
     "source-map-explorer": "^2.5.2",
-    "typescript-plugin-css-modules": "^3.2.0"
-  },
-  "resolutions": {
-    "graphql-language-service-interface": "2.4.2-alpha.2"
+    "typescript-plugin-css-modules": "^3.2.0",
+    "vite": "^2.6.4",
+    "vite-plugin-react-svg": "^0.2.0",
+    "vite-plugin-svgr": "^0.4.0"
   }
 }

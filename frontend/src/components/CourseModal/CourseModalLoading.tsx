@@ -1,10 +1,11 @@
+import React from 'react';
 import { Modal, Spinner } from 'react-bootstrap';
 
 /**
  * Displays loading page for course modal
  */
 
-const CourseModalLoading = () => {
+const CourseModalLoading: React.VFC = () => {
   return (
     <Modal.Body className="d-flex">
       <Spinner className="m-auto" animation="border" role="status">

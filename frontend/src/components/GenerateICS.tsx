@@ -8,8 +8,8 @@ import * as Sentry from '@sentry/react';
 import { Listing } from './Providers/FerryProvider';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
-const ics = require('ics');
-const FileSaver = require('file-saver');
+import ics from 'ics';
+import FileSaver from 'file-saver';
 
 // Is this day during a break?
 const onBreak = (day: moment.Moment) => {
@@ -98,6 +98,7 @@ export const generateICS = (listings_all: Listing[]) => {
   }
 
   // Export to ICS
+  // @ts-ignore
   ics.createEvents(events, (error: any, value: any) => {
     if (error) {
       Sentry.captureException(error);

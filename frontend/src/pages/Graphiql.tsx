@@ -1,3 +1,4 @@
+import React from 'react';
 import { API_ENDPOINT } from '../config';
 
 import GraphiQL from 'graphiql';
@@ -12,7 +13,7 @@ const fetcher = createGraphiQLFetcher({
   },
 });
 
-const Graphiql = () => (
+const Graphiql: React.VFC = () => (
   <div style={{ height: '90vh' }}>
     <div className="px-3 py-2 text-primary bg-light">
       All of our course data are available for Yale students through GraphQL.

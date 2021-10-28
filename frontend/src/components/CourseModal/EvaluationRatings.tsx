@@ -1,3 +1,4 @@
+import React from 'react';
 import { Row } from 'react-bootstrap';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
@@ -16,13 +17,10 @@ import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
  * @prop info - dictionary that holds the eval data for each question
  */
 
-const EvaluationRatings = ({
-  crn,
-  info,
-}: {
+const EvaluationRatings: React.VFC<{
   crn: number;
   info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
-}) => {
+}> = ({ crn, info }) => {
   // List of dictionaries that holds the ratings for each question as well as the question text
   const ratings: { question: string; values: number[] }[] = [];
   // Loop through each section

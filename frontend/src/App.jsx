@@ -14,7 +14,6 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
-import Join from './pages/Join';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import WorksheetLogin from './pages/WorksheetLogin';
@@ -165,10 +164,6 @@ function App({ themeToggler, location }) {
 
         <MyRoute exact path="/faq">
           <FAQ />
-        </MyRoute>
-
-        <MyRoute exact path="/joinus">
-          <Join />
         </MyRoute>
 
         <MyRoute path="/Table">

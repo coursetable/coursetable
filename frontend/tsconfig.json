@@ -3,7 +3,6 @@
     "target": "es5",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
-    // "checkJs": true,
     "skipLibCheck": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
@@ -22,7 +21,7 @@
         "name": "typescript-plugin-css-modules"
       }
     ],
-    "jsx": "react-jsx",
+    "jsx": "react",
     "downlevelIteration": true
   },
   "include": ["src"]
