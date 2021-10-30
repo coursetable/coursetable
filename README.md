@@ -20,12 +20,6 @@ The various functions of the website are compartmentalized as follows:
 - `/legacy`: Static HTML files from the old site.
 - `/scripts` and `/sysadmin`: Administration scripts and bootstrapping tools.
 
-## Architecture
-
-See [this architecture diagram](https://jamboard.google.com/d/1kDZUh1WwqN6tIM7fn6C451oFyqxl1pzpIqTJuK0JE8U/viewer).
-
-<!-- TODO: that diagram is a bit outdated -->
-
 ## How to develop
 
 Check out [the getting started guide](docs/getting-started.md).
