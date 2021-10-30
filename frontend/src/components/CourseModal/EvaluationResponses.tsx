@@ -1,8 +1,8 @@
 import React, { useState, useMemo, useCallback } from 'react';
-import { Tab, Row, Tabs } from 'react-bootstrap';
+import { Form, InputGroup, Button, Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './EvaluationResponses.module.css';
-import { TextComponent } from '../StyledComponents';
+import { StyledInput, TextComponent } from '../StyledComponents';
 import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 // Tabs of evaluation comments in modal
@@ -164,6 +164,7 @@ const EvaluationResponses: React.FC<{
 
   return (
     <div>
+      <StyledInput type="text" placeholder="Search evaluations..." />
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
