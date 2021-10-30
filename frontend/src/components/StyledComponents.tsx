@@ -1,4 +1,4 @@
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 import { FormControl, Card, Popover } from 'react-bootstrap';
 import chroma from 'chroma-js';
 import { breakpoints } from '../utilities';
