@@ -17,9 +17,9 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 1. Install [Windows Terminal](https://docs.microsoft.com/en-us/windows/terminal/get-started)
 
 1. Install [Windows Subsystem for Linux](https://docs.microsoft.com/en-us/windows/wsl/install-win10) by using the `wsl --install -d Ubuntu-20.04` command.
-   
+
    If you already have WSL, make sure it is WSL2 by using the `wsl -l -v` command.
-  
+
    If it is not version 2, then use the `wsl --set-version <distribution-name> 2` and use the distribution name that shows up from the command above.
 
 </details>
@@ -35,17 +35,17 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 1. Join our GitHub organization and clone the repository
 
    Make sure that you're added to the [CourseTable GitHub organization](https://github.com/coursetable).
-  
+
    Open up a terminal.
-  
+
    > **For Windows**: Make sure to clone the repository in your Linux filesystem in Ubuntu using Windows Terminal (NOT your Windows filesystem). This means your terminal signature should look something like `user@machine-name:~$` not `user@machine-name:/mnt/c$`. This will allow React hot reloading to work.
 
    Clone the [coursetable/coursetable repository](https://github.com/coursetable/coursetable) by running `git clone https://github.com/coursetable/coursetable.git`.
-  
+
    After cloning, cd to the repository. Open the repository in VSCode by running the command `code .`.
 
    > **For Windows**: This should open it using WSL, and you should see a green bar on the bottom left of your VSCode editor that says `WSL: Ubuntu-20.04`. Also, make sure that the bar in the bottom right says `LF` and not `CRLF`.
-  
+
    Then, install the following extensions:
 
    - [Remote - WSL](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-wsl) (only needed for Windows)
@@ -56,13 +56,13 @@ Cause Windows is a special little baby, there's some things we got to do to get 
    > **For Windows**: In the Extensions tab in VSCode, you should see a `LOCAL - INSTALLED` section and a `WSL: UBUNTU-20.04 - INSTALLED` section. VSCode separates the extensions you've installed locally on your Windows system and remotely on your WSL Ubuntu system. When installing new extensions, make sure to click `Install in WSL: Ubuntu-20.04`.
 
 1. Install Doppler
-  
+
    Make sure you've been added to the organization there – if not, contact one of the project leads.
-  
+
    Follow the instructions [here](https://docs.doppler.com/docs/enclave-installation).
-  
+
    We use Doppler to manage our secrets such as API keys.
-  
+
    > **For Windows**: Make sure to use the `Debian/Ubuntu` installation instructions.
 
 1. Install Docker
@@ -73,21 +73,21 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    - Linux: Install [Docker CE](https://docs.docker.com/engine/install/)
      and [Docker Compose](https://docs.docker.com/compose/install/)
-     
+
 1. Install Node/NPM
-  
+
    - Mac: Install Node: see [here](https://nodejs.org/en/download/) for downloadable installer.
-  
+
    - Windows or Linux: Install [nvm, node.js, and npm](https://docs.microsoft.com/en-us/windows/nodejs/setup-on-wsl2#install-nvm-nodejs-and-npm). Follow Steps 1 - 9 at the link to the left.
 
    > **For Windows**: If you get an error that looks like this `bash: /mnt/c/Program Files/nodejs/npm: /bin/sh^M: bad interpreter: No such file or directory`, then try following the instructions [here](https://hackmd.io/@badging/wsl2#Troubleshooting-PATH).
-  
+
    > **For Linux**: To be honest, I haven't tried this on Linux but it should technically be the same as WSL right? If you're having problems, let us know.
 
 1. Install Yarn
-  
+
    - Mac: Run `brew install yarn` (Why's it so easy for Mac users this isn't fair.)
-  
+
    - Windows or Linux: Run `npm install --global yarn`
 
 ## Aside: a quick explainer on docker-compose
@@ -108,7 +108,7 @@ Some useful commands:
 - `docker-compose logs -f <service>` gets the logs for a specific service. For example, `docker-compose logs -f api` gets the logs for the backend API.
 - `docker-compose build` builds all the services. This probably won't be necessary for our development environment, since we're building everything on the fly
 
-## Running CourseTable
+## Initial Setup for Running CourseTable
 
 Note: if you run into issues, check the troubleshooting section at the bottom.
 
@@ -137,8 +137,8 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    - Installing Node.js module dependencies
    - Setting up the database schema
    - Generating some JSON data files
-  
-   You should see something like `api_1             | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
+
+   You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
 
 1. Start again:
 
@@ -146,13 +146,13 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    ```sh
    # kill the docker-compose logs -f command from above using Cmd (Ctrl) + C. wait for all containers to say "Stopped"
-   
+
    # first, enter an environment with Doppler secrets injected so docker is happy
    doppler run --command "/bin/sh"
-   
+
    docker-compose up
    docker-compose logs -f
-   
+
    # exit the Doppler environment
    exit
    ```
@@ -165,7 +165,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
 1. Navigate to https://localhost:3000.
 
-   You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally)
+   You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally).
 
 1. Make some changes!
 
@@ -182,12 +182,12 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
   Go to [chrome://flags/#allow-insecure-localhost](chrome://flags/#allow-insecure-localhost) and enable the setting.
 
   For more details, see https://stackoverflow.com/questions/35531347/localhost-blocked-on-chrome-with-privacy-error.
-  
+
 - ```
   Unable to install the latest Doppler CLI
   Doppler Error: exit status 2
   ```
-  
+
   Try using `sudo doppler update`.
 
 ## Installing packages
@@ -213,6 +213,45 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 1. Install your package by running `yarn add <package>`
 
 </details>
+&nbsp;
+
+# How to Run CourseTable Regularly
+
+After running all of the initial development environment setup, follow the commands below to set up preparation of the environment for regular CourseTable development:
+
+1. Open Docker Desktop.
+
+   Ensure that Docker Desktop is up and running.
+
+   > **Windows**: In Settings -> Resources -> WSL Integration, make sure "Enable integration with my default WSL distro" is checked.
+
+1. Start the backend:
+
+   ```sh
+   cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
+   cd docker
+   bash start.sh
+   ```
+
+1. Start the frontend (in separate terminal):
+
+   ```sh
+   cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
+   cd frontend
+   ./start.sh
+   ```
+
+1. Navigate to https://localhost:3000.
+
+   You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally).
+
+1. Make some changes!
+
+   Most changes you make (i.e. to the API server or frontend) will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page.
+
+1. **_Make sure_** to safely exit both the **_frontend and backend_**.
+
+   > Use Ctrl+C in each terminal (frontend & backend) to safely exit.
 
 ## [stale] CourseTable Development Guide
 
