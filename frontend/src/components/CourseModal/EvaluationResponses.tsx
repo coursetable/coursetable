@@ -121,7 +121,7 @@ const EvaluationResponses: React.FC<{
         temp_summary = cur_responses[key].map(
           (response: string, index: number) => {
             return (
-              <StyledCommentRow key={index} className="m-auto p-2">
+              <StyledCommentRow key={index} className="comment m-auto p-2">
                 <TextComponent type={1}>{response}</TextComponent>
               </StyledCommentRow>
             );
@@ -131,7 +131,7 @@ const EvaluationResponses: React.FC<{
         temp_recommend = cur_responses[key].map(
           (response: string, index: number) => {
             return (
-              <StyledCommentRow key={index} className="m-auto p-2">
+              <StyledCommentRow key={index} className="comment m-auto p-2">
                 <TextComponent type={1}>{response}</TextComponent>
               </StyledCommentRow>
             );
@@ -141,7 +141,7 @@ const EvaluationResponses: React.FC<{
         temp_skills = cur_responses[key].map(
           (response: string, index: number) => {
             return (
-              <StyledCommentRow key={index} className="m-auto p-2">
+              <StyledCommentRow key={index} className="comment m-auto p-2">
                 <TextComponent type={1}>{response}</TextComponent>
               </StyledCommentRow>
             );
@@ -151,7 +151,7 @@ const EvaluationResponses: React.FC<{
         temp_strengths = cur_responses[key].map(
           (response: string, index: number) => {
             return (
-              <StyledCommentRow key={index} className="m-auto p-2">
+              <StyledCommentRow key={index} className="comment m-auto p-2">
                 <TextComponent type={1}>{response}</TextComponent>
               </StyledCommentRow>
             );
@@ -164,7 +164,26 @@ const EvaluationResponses: React.FC<{
 
   return (
     <div>
-      <StyledInput type="text" placeholder="Search evaluations..." />
+      <StyledInput
+        id="filter-input"
+        type="text"
+        placeholder="Search evaluations..."
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          const match = event.target.value.toLowerCase().replace(/\s/g, '');
+          document.querySelectorAll<HTMLElement>('.comment').forEach((el) => {
+            if (
+              (el.firstChild as HTMLSpanElement).innerText
+                .toLowerCase()
+                .replace(/\s/g, '')
+                .includes(match)
+            ) {
+              el.style.display = 'flex';
+            } else {
+              el.style.display = 'none';
+            }
+          });
+        }}
+      />
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
