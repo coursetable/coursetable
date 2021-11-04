@@ -119,7 +119,7 @@ const EvaluationResponses: React.FC<{
       sort_order === 'length' ? sorted_responses : responses;
     // Populate the lists above
     const genTemp = (resps: any) => {
-      if (resps.length == 0) {
+      if (resps.length === 0) {
         return resps;
       }
       const filteredResps = resps
@@ -136,15 +136,14 @@ const EvaluationResponses: React.FC<{
             </StyledCommentRow>
           );
         });
-      if (filteredResps.length == 0) {
+      if (filteredResps.length === 0) {
         return [
           <StyledCommentRow key={0} className="m-auto p-2">
             <TextComponent type={1}>No matches found.</TextComponent>
           </StyledCommentRow>,
         ];
-      } else {
-        return filteredResps;
       }
+      return filteredResps;
     };
     for (const key in cur_responses) {
       if (key.includes('summarize')) {
