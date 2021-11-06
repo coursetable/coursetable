@@ -1,3 +1,4 @@
 build
 src/generated/
 public/arc-sw.js
+index.html
