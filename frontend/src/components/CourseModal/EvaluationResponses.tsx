@@ -4,6 +4,7 @@ import styled from 'styled-components';
 import styles from './EvaluationResponses.module.css';
 import { StyledInput, TextComponent } from '../StyledComponents';
 import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import Mark from 'mark.js';
 
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
@@ -124,10 +125,7 @@ const EvaluationResponses: React.FC<{
       }
       const filteredResps = resps
         .filter((response: string, index: number) => {
-          return response
-            .toLowerCase()
-            .replace(/\s/g, '')
-            .includes(filter.toLowerCase().replace(/\s/g, ''));
+          return response.includes(filter.toLowerCase().replace(/\s/g, ''));
         })
         .map((response: string, index: number) => {
           return (
@@ -166,9 +164,13 @@ const EvaluationResponses: React.FC<{
         type="text"
         placeholder="Search evaluations..."
         value={filter}
-        onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
-          setFilter(event.target.value)
-        }
+        style={{ marginBottom: '2px' }}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setFilter(event.target.value);
+          const context = document.querySelector('#responses') as HTMLElement;
+          const instance = new Mark(context);
+          instance.mark(filter);
+        }}
       />
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
@@ -248,7 +250,9 @@ const EvaluationResponses: React.FC<{
           </Tab>
         )}
       </StyledTabs>
-      {!num_questions && <strong>No comments for this course</strong>}
+      <div id="responses">
+        {!num_questions && <strong>No comments for this course</strong>}
+      </div>
     </div>
   );
 };
