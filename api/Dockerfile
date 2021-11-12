@@ -7,4 +7,4 @@ RUN yarn install
 COPY . ./
 
 ENV NODE_ENV=production
-CMD ["yarn", "run", "prod"]
+CMD ["yarn", "run", "start"]
