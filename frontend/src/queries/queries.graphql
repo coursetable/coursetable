@@ -1,16 +1,15 @@
 # Note: these aren't actually used directly. Instead, we use
 # graphql-codegen to create typescript and apollo bindings.
 # These can be found in the "generated" directory.
-
-query SearchAverageAcrossSeasons(
-  $course_code: String
-  $professor_name: [String!]
+query SameCourseOrProfOfferings(
+  $same_course_id: Int
+  $professor_ids: [String!]
 ) {
   computed_listing_info(
     where: {
       _or: [
-        { course_code: { _eq: $course_code } }
-        { professor_names: { _has_keys_any: $professor_name } }
+        { same_course_id: { _eq: $same_course_id } }
+        { professor_ids: { _has_keys_any: $professor_ids } }
       ]
     }
   ) {
@@ -41,6 +40,7 @@ query SearchAverageAcrossSeasons(
     listing_id
     locations_summary
     number
+    professor_ids
     professor_info
     professor_names
     regnotes

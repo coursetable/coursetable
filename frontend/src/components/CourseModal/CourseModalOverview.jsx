@@ -23,7 +23,7 @@ import {
   getEnrolled,
   toSeasonString,
 } from '../../utilities/courseUtilities';
-import { useSearchAverageAcrossSeasonsQuery } from '../../generated/graphql';
+import { useSameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import { weekdays } from '../../utilities/common';
 
 // Button with season and other info that user selects to view evals
@@ -107,13 +107,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       location_url = listing.times_by_day[day][0][3];
     }
   }
-  // Fetch ratings data for this listing
-  const { loading, error, data } = useSearchAverageAcrossSeasonsQuery({
+
+  const { loading, error, data } = useSameCourseOrProfOfferingsQuery({
     variables: {
-      course_code: listing.course_code ? listing.course_code : 'bruh',
-      professor_name: listing.professor_names
-        ? listing.professor_names
-        : ['bruh'],
+      same_course_id: listing.same_course_id,
+      professor_ids: listing.professor_ids.map((x) => String(x)),
     },
   });
   // Hold HTML code that displays the list of evaluations
