@@ -10040,6 +10040,13 @@ export type SearchEvaluationNarrativesQueryVariables = Exact<{
 
 export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn: number, course: { __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment: Maybe<string>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating: Maybe<any>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> } }> };
 
+export type CatalogBySeasonQueryVariables = Exact<{
+  season: Scalars['String'];
+}>;
+
+
+export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, average_rating_same_professors: Maybe<number>, average_workload_same_professors: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, same_course_id: number, same_course_and_profs_id: number, last_offered_course_id: Maybe<number>, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string }> };
+
 
 export const SameCourseOrProfOfferingsDocument = gql`
     query SameCourseOrProfOfferings($same_course_id: Int!, $professor_ids: [String!]) {
@@ -10171,3 +10178,75 @@ export function useSearchEvaluationNarrativesLazyQuery(baseOptions?: Apollo.Lazy
 export type SearchEvaluationNarrativesQueryHookResult = ReturnType<typeof useSearchEvaluationNarrativesQuery>;
 export type SearchEvaluationNarrativesLazyQueryHookResult = ReturnType<typeof useSearchEvaluationNarrativesLazyQuery>;
 export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>;
+export const CatalogBySeasonDocument = gql`
+    query catalogBySeason($season: String!) {
+  computed_listing_info(where: {season_code: {_eq: $season}}) {
+    all_course_codes
+    areas
+    average_gut_rating
+    average_professor
+    average_rating
+    average_workload
+    average_rating_same_professors
+    average_workload_same_professors
+    classnotes
+    course_code
+    credits
+    crn
+    description
+    enrolled
+    extra_info
+    final_exam
+    flag_info
+    fysem
+    last_enrollment
+    last_enrollment_same_professors
+    listing_id
+    locations_summary
+    number
+    professor_ids
+    professor_names
+    regnotes
+    requirements
+    rp_attr
+    same_course_id
+    same_course_and_profs_id
+    last_offered_course_id
+    school
+    season_code
+    section
+    skills
+    subject
+    syllabus_url
+    times_by_day
+    times_summary
+    title
+  }
+}
+    `;
+
+/**
+ * __useCatalogBySeasonQuery__
+ *
+ * To run a query within a React component, call `useCatalogBySeasonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogBySeasonQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useCatalogBySeasonQuery(baseOptions: Apollo.QueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+        return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
+      }
+export function useCatalogBySeasonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+          return Apollo.useLazyQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
+        }
+export type CatalogBySeasonQueryHookResult = ReturnType<typeof useCatalogBySeasonQuery>;
+export type CatalogBySeasonLazyQueryHookResult = ReturnType<typeof useCatalogBySeasonLazyQuery>;
+export type CatalogBySeasonQueryResult = Apollo.QueryResult<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>;
