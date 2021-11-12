@@ -10025,12 +10025,12 @@ export type Tfidf_Similars_Variance_Order_By = {
 };
 
 export type SameCourseOrProfOfferingsQueryVariables = Exact<{
-  same_course_id: Maybe<Scalars['Int']>;
+  same_course_id: Scalars['Int'];
   professor_ids: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type SameCourseOrProfOfferingsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_info: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string, course: { __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> } }> };
+export type SameCourseOrProfOfferingsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_info: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, same_course_id: number, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string, course: { __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> } }> };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code: Maybe<Scalars['String']>;
@@ -10042,7 +10042,7 @@ export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', compu
 
 
 export const SameCourseOrProfOfferingsDocument = gql`
-    query SameCourseOrProfOfferings($same_course_id: Int, $professor_ids: [String!]) {
+    query SameCourseOrProfOfferings($same_course_id: Int!, $professor_ids: [String!]) {
   computed_listing_info(
     where: {_or: [{same_course_id: {_eq: $same_course_id}}, {professor_ids: {_has_keys_any: $professor_ids}}]}
   ) {
@@ -10079,6 +10079,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
     regnotes
     requirements
     rp_attr
+    same_course_id
     school
     season_code
     section
@@ -10109,7 +10110,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
  *   },
  * });
  */
-export function useSameCourseOrProfOfferingsQuery(baseOptions?: Apollo.QueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {
+export function useSameCourseOrProfOfferingsQuery(baseOptions: Apollo.QueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {
         return Apollo.useQuery<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>(SameCourseOrProfOfferingsDocument, baseOptions);
       }
 export function useSameCourseOrProfOfferingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {

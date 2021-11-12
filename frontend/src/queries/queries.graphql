@@ -2,7 +2,7 @@
 # graphql-codegen to create typescript and apollo bindings.
 # These can be found in the "generated" directory.
 query SameCourseOrProfOfferings(
-  $same_course_id: Int
+  $same_course_id: Int!
   $professor_ids: [String!]
 ) {
   computed_listing_info(
@@ -46,6 +46,7 @@ query SameCourseOrProfOfferings(
     regnotes
     requirements
     rp_attr
+    same_course_id
     school
     season_code
     section
