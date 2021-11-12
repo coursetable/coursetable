@@ -162,8 +162,18 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           syllabus_url: course.syllabus_url,
           section: course.section,
         }))
-        .sort((a, b) => (a.season_code < b.season_code ? 1 : -1));
+        .filter(
+          // remove duplicates by syllabus URL
+          (v, i, a) =>
+            a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i
+        )
+        .sort((a, b) => {
+          if (a.season_code > b.season_code) return -1;
+          if (b.season_code < a.season_code) return 1;
+          return parseInt(a.section, 10) > parseInt(b.section, 10) ? 1 : -1;
+        });
     }
+    return [];
   }, [data, listing.same_course_id]);
 
   const [showPastSyllabi, setShowPastSyllabi] = useState(
