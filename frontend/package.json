@@ -58,7 +58,7 @@
     "chroma-js": "^2.1.0",
     "core-js": "^3.8.3",
     "file-saver": "^2.0.2",
-    "graphiql": "^1.4.1",
+    "graphiql": "^1.4.7",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
     "history": "^4.9.0",

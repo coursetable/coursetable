@@ -103,12 +103,15 @@ export type Computed_Listing_Info = {
   locations_summary: Scalars['String'];
   no_response: Maybe<Scalars['Int']>;
   number: Scalars['String'];
+  professor_ids: Scalars['jsonb'];
   professor_info: Scalars['jsonb'];
   professor_names: Scalars['jsonb'];
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   responses: Maybe<Scalars['Int']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Scalars['Int'];
+  same_course_id: Scalars['Int'];
   school: Maybe<Scalars['String']>;
   season_code: Scalars['String'];
   section: Scalars['String'];
@@ -136,6 +139,12 @@ export type Computed_Listing_InfoAreasArgs = {
 
 /** columns and relationships of "computed_listing_info" */
 export type Computed_Listing_InfoFlag_InfoArgs = {
+  path: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "computed_listing_info" */
+export type Computed_Listing_InfoProfessor_IdsArgs = {
   path: Maybe<Scalars['String']>;
 };
 
@@ -213,6 +222,7 @@ export type Computed_Listing_Info_Append_Input = {
   all_course_codes: Maybe<Scalars['jsonb']>;
   areas: Maybe<Scalars['jsonb']>;
   flag_info: Maybe<Scalars['jsonb']>;
+  professor_ids: Maybe<Scalars['jsonb']>;
   professor_info: Maybe<Scalars['jsonb']>;
   professor_names: Maybe<Scalars['jsonb']>;
   skills: Maybe<Scalars['jsonb']>;
@@ -249,6 +259,8 @@ export type Computed_Listing_Info_Avg_Fields = {
   listing_id: Maybe<Scalars['Float']>;
   no_response: Maybe<Scalars['Float']>;
   responses: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "computed_listing_info" */
@@ -275,6 +287,8 @@ export type Computed_Listing_Info_Avg_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "computed_listing_info". All fields are combined with a logical 'AND'. */
@@ -319,12 +333,15 @@ export type Computed_Listing_Info_Bool_Exp = {
   locations_summary: Maybe<String_Comparison_Exp>;
   no_response: Maybe<Int_Comparison_Exp>;
   number: Maybe<String_Comparison_Exp>;
+  professor_ids: Maybe<Jsonb_Comparison_Exp>;
   professor_info: Maybe<Jsonb_Comparison_Exp>;
   professor_names: Maybe<Jsonb_Comparison_Exp>;
   regnotes: Maybe<String_Comparison_Exp>;
   requirements: Maybe<String_Comparison_Exp>;
   responses: Maybe<Int_Comparison_Exp>;
   rp_attr: Maybe<String_Comparison_Exp>;
+  same_course_and_profs_id: Maybe<Int_Comparison_Exp>;
+  same_course_id: Maybe<Int_Comparison_Exp>;
   school: Maybe<String_Comparison_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
   section: Maybe<String_Comparison_Exp>;
@@ -348,6 +365,7 @@ export type Computed_Listing_Info_Delete_At_Path_Input = {
   all_course_codes: Maybe<Array<Maybe<Scalars['String']>>>;
   areas: Maybe<Array<Maybe<Scalars['String']>>>;
   flag_info: Maybe<Array<Maybe<Scalars['String']>>>;
+  professor_ids: Maybe<Array<Maybe<Scalars['String']>>>;
   professor_info: Maybe<Array<Maybe<Scalars['String']>>>;
   professor_names: Maybe<Array<Maybe<Scalars['String']>>>;
   skills: Maybe<Array<Maybe<Scalars['String']>>>;
@@ -358,6 +376,7 @@ export type Computed_Listing_Info_Delete_Elem_Input = {
   all_course_codes: Maybe<Scalars['Int']>;
   areas: Maybe<Scalars['Int']>;
   flag_info: Maybe<Scalars['Int']>;
+  professor_ids: Maybe<Scalars['Int']>;
   professor_info: Maybe<Scalars['Int']>;
   professor_names: Maybe<Scalars['Int']>;
   skills: Maybe<Scalars['Int']>;
@@ -368,6 +387,7 @@ export type Computed_Listing_Info_Delete_Key_Input = {
   all_course_codes: Maybe<Scalars['String']>;
   areas: Maybe<Scalars['String']>;
   flag_info: Maybe<Scalars['String']>;
+  professor_ids: Maybe<Scalars['String']>;
   professor_info: Maybe<Scalars['String']>;
   professor_names: Maybe<Scalars['String']>;
   skills: Maybe<Scalars['String']>;
@@ -397,6 +417,8 @@ export type Computed_Listing_Info_Inc_Input = {
   listing_id: Maybe<Scalars['Int']>;
   no_response: Maybe<Scalars['Int']>;
   responses: Maybe<Scalars['Int']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "computed_listing_info" */
@@ -438,12 +460,15 @@ export type Computed_Listing_Info_Insert_Input = {
   locations_summary: Maybe<Scalars['String']>;
   no_response: Maybe<Scalars['Int']>;
   number: Maybe<Scalars['String']>;
+  professor_ids: Maybe<Scalars['jsonb']>;
   professor_info: Maybe<Scalars['jsonb']>;
   professor_names: Maybe<Scalars['jsonb']>;
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   responses: Maybe<Scalars['Int']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
@@ -492,6 +517,8 @@ export type Computed_Listing_Info_Max_Fields = {
   requirements: Maybe<Scalars['String']>;
   responses: Maybe<Scalars['Int']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
@@ -536,6 +563,8 @@ export type Computed_Listing_Info_Max_Order_By = {
   requirements: Maybe<Order_By>;
   responses: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
   school: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   section: Maybe<Order_By>;
@@ -581,6 +610,8 @@ export type Computed_Listing_Info_Min_Fields = {
   requirements: Maybe<Scalars['String']>;
   responses: Maybe<Scalars['Int']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
@@ -625,6 +656,8 @@ export type Computed_Listing_Info_Min_Order_By = {
   requirements: Maybe<Order_By>;
   responses: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
   school: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   section: Maybe<Order_By>;
@@ -695,12 +728,15 @@ export type Computed_Listing_Info_Order_By = {
   locations_summary: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   number: Maybe<Order_By>;
+  professor_ids: Maybe<Order_By>;
   professor_info: Maybe<Order_By>;
   professor_names: Maybe<Order_By>;
   regnotes: Maybe<Order_By>;
   requirements: Maybe<Order_By>;
   responses: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
   school: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   section: Maybe<Order_By>;
@@ -718,6 +754,7 @@ export type Computed_Listing_Info_Prepend_Input = {
   all_course_codes: Maybe<Scalars['jsonb']>;
   areas: Maybe<Scalars['jsonb']>;
   flag_info: Maybe<Scalars['jsonb']>;
+  professor_ids: Maybe<Scalars['jsonb']>;
   professor_info: Maybe<Scalars['jsonb']>;
   professor_names: Maybe<Scalars['jsonb']>;
   skills: Maybe<Scalars['jsonb']>;
@@ -796,6 +833,8 @@ export enum Computed_Listing_Info_Select_Column {
   /** column name */
   Number = 'number',
   /** column name */
+  ProfessorIds = 'professor_ids',
+  /** column name */
   ProfessorInfo = 'professor_info',
   /** column name */
   ProfessorNames = 'professor_names',
@@ -807,6 +846,10 @@ export enum Computed_Listing_Info_Select_Column {
   Responses = 'responses',
   /** column name */
   RpAttr = 'rp_attr',
+  /** column name */
+  SameCourseAndProfsId = 'same_course_and_profs_id',
+  /** column name */
+  SameCourseId = 'same_course_id',
   /** column name */
   School = 'school',
   /** column name */
@@ -866,12 +909,15 @@ export type Computed_Listing_Info_Set_Input = {
   locations_summary: Maybe<Scalars['String']>;
   no_response: Maybe<Scalars['Int']>;
   number: Maybe<Scalars['String']>;
+  professor_ids: Maybe<Scalars['jsonb']>;
   professor_info: Maybe<Scalars['jsonb']>;
   professor_names: Maybe<Scalars['jsonb']>;
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   responses: Maybe<Scalars['Int']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   school: Maybe<Scalars['String']>;
   season_code: Maybe<Scalars['String']>;
   section: Maybe<Scalars['String']>;
@@ -909,6 +955,8 @@ export type Computed_Listing_Info_Stddev_Fields = {
   listing_id: Maybe<Scalars['Float']>;
   no_response: Maybe<Scalars['Float']>;
   responses: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "computed_listing_info" */
@@ -935,6 +983,8 @@ export type Computed_Listing_Info_Stddev_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
@@ -962,6 +1012,8 @@ export type Computed_Listing_Info_Stddev_Pop_Fields = {
   listing_id: Maybe<Scalars['Float']>;
   no_response: Maybe<Scalars['Float']>;
   responses: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "computed_listing_info" */
@@ -988,6 +1040,8 @@ export type Computed_Listing_Info_Stddev_Pop_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
@@ -1015,6 +1069,8 @@ export type Computed_Listing_Info_Stddev_Samp_Fields = {
   listing_id: Maybe<Scalars['Float']>;
   no_response: Maybe<Scalars['Float']>;
   responses: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "computed_listing_info" */
@@ -1041,6 +1097,8 @@ export type Computed_Listing_Info_Stddev_Samp_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
@@ -1068,6 +1126,8 @@ export type Computed_Listing_Info_Sum_Fields = {
   listing_id: Maybe<Scalars['Int']>;
   no_response: Maybe<Scalars['Int']>;
   responses: Maybe<Scalars['Int']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "computed_listing_info" */
@@ -1094,6 +1154,8 @@ export type Computed_Listing_Info_Sum_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** update columns of table "computed_listing_info" */
@@ -1169,6 +1231,8 @@ export enum Computed_Listing_Info_Update_Column {
   /** column name */
   Number = 'number',
   /** column name */
+  ProfessorIds = 'professor_ids',
+  /** column name */
   ProfessorInfo = 'professor_info',
   /** column name */
   ProfessorNames = 'professor_names',
@@ -1180,6 +1244,10 @@ export enum Computed_Listing_Info_Update_Column {
   Responses = 'responses',
   /** column name */
   RpAttr = 'rp_attr',
+  /** column name */
+  SameCourseAndProfsId = 'same_course_and_profs_id',
+  /** column name */
+  SameCourseId = 'same_course_id',
   /** column name */
   School = 'school',
   /** column name */
@@ -1227,6 +1295,8 @@ export type Computed_Listing_Info_Var_Pop_Fields = {
   listing_id: Maybe<Scalars['Float']>;
   no_response: Maybe<Scalars['Float']>;
   responses: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "computed_listing_info" */
@@ -1253,6 +1323,8 @@ export type Computed_Listing_Info_Var_Pop_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
@@ -1280,6 +1352,8 @@ export type Computed_Listing_Info_Var_Samp_Fields = {
   listing_id: Maybe<Scalars['Float']>;
   no_response: Maybe<Scalars['Float']>;
   responses: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "computed_listing_info" */
@@ -1306,6 +1380,8 @@ export type Computed_Listing_Info_Var_Samp_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
@@ -1333,6 +1409,8 @@ export type Computed_Listing_Info_Variance_Fields = {
   listing_id: Maybe<Scalars['Float']>;
   no_response: Maybe<Scalars['Float']>;
   responses: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "computed_listing_info" */
@@ -1359,6 +1437,289 @@ export type Computed_Listing_Info_Variance_Order_By = {
   listing_id: Maybe<Order_By>;
   no_response: Maybe<Order_By>;
   responses: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
+};
+
+/** columns and relationships of "course_discussions" */
+export type Course_Discussions = {
+  __typename?: 'course_discussions';
+  /** An object relationship */
+  course: Courses;
+  course_id: Scalars['Int'];
+  /** An object relationship */
+  discussion: Discussions;
+  discussion_id: Scalars['Int'];
+};
+
+/** aggregated selection of "course_discussions" */
+export type Course_Discussions_Aggregate = {
+  __typename?: 'course_discussions_aggregate';
+  aggregate: Maybe<Course_Discussions_Aggregate_Fields>;
+  nodes: Array<Course_Discussions>;
+};
+
+/** aggregate fields of "course_discussions" */
+export type Course_Discussions_Aggregate_Fields = {
+  __typename?: 'course_discussions_aggregate_fields';
+  avg: Maybe<Course_Discussions_Avg_Fields>;
+  count: Maybe<Scalars['Int']>;
+  max: Maybe<Course_Discussions_Max_Fields>;
+  min: Maybe<Course_Discussions_Min_Fields>;
+  stddev: Maybe<Course_Discussions_Stddev_Fields>;
+  stddev_pop: Maybe<Course_Discussions_Stddev_Pop_Fields>;
+  stddev_samp: Maybe<Course_Discussions_Stddev_Samp_Fields>;
+  sum: Maybe<Course_Discussions_Sum_Fields>;
+  var_pop: Maybe<Course_Discussions_Var_Pop_Fields>;
+  var_samp: Maybe<Course_Discussions_Var_Samp_Fields>;
+  variance: Maybe<Course_Discussions_Variance_Fields>;
+};
+
+
+/** aggregate fields of "course_discussions" */
+export type Course_Discussions_Aggregate_FieldsCountArgs = {
+  columns: Maybe<Array<Course_Discussions_Select_Column>>;
+  distinct: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "course_discussions" */
+export type Course_Discussions_Aggregate_Order_By = {
+  avg: Maybe<Course_Discussions_Avg_Order_By>;
+  count: Maybe<Order_By>;
+  max: Maybe<Course_Discussions_Max_Order_By>;
+  min: Maybe<Course_Discussions_Min_Order_By>;
+  stddev: Maybe<Course_Discussions_Stddev_Order_By>;
+  stddev_pop: Maybe<Course_Discussions_Stddev_Pop_Order_By>;
+  stddev_samp: Maybe<Course_Discussions_Stddev_Samp_Order_By>;
+  sum: Maybe<Course_Discussions_Sum_Order_By>;
+  var_pop: Maybe<Course_Discussions_Var_Pop_Order_By>;
+  var_samp: Maybe<Course_Discussions_Var_Samp_Order_By>;
+  variance: Maybe<Course_Discussions_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "course_discussions" */
+export type Course_Discussions_Arr_Rel_Insert_Input = {
+  data: Array<Course_Discussions_Insert_Input>;
+  on_conflict: Maybe<Course_Discussions_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Course_Discussions_Avg_Fields = {
+  __typename?: 'course_discussions_avg_fields';
+  course_id: Maybe<Scalars['Float']>;
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "course_discussions" */
+export type Course_Discussions_Avg_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "course_discussions". All fields are combined with a logical 'AND'. */
+export type Course_Discussions_Bool_Exp = {
+  _and: Maybe<Array<Maybe<Course_Discussions_Bool_Exp>>>;
+  _not: Maybe<Course_Discussions_Bool_Exp>;
+  _or: Maybe<Array<Maybe<Course_Discussions_Bool_Exp>>>;
+  course: Maybe<Courses_Bool_Exp>;
+  course_id: Maybe<Int_Comparison_Exp>;
+  discussion: Maybe<Discussions_Bool_Exp>;
+  discussion_id: Maybe<Int_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "course_discussions" */
+export enum Course_Discussions_Constraint {
+  /** unique or primary key constraint */
+  PkCourseDiscussionsStaged = 'pk_course_discussions_staged'
+}
+
+/** input type for incrementing integer column in table "course_discussions" */
+export type Course_Discussions_Inc_Input = {
+  course_id: Maybe<Scalars['Int']>;
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "course_discussions" */
+export type Course_Discussions_Insert_Input = {
+  course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  course_id: Maybe<Scalars['Int']>;
+  discussion: Maybe<Discussions_Obj_Rel_Insert_Input>;
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** aggregate max on columns */
+export type Course_Discussions_Max_Fields = {
+  __typename?: 'course_discussions_max_fields';
+  course_id: Maybe<Scalars['Int']>;
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** order by max() on columns of table "course_discussions" */
+export type Course_Discussions_Max_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Course_Discussions_Min_Fields = {
+  __typename?: 'course_discussions_min_fields';
+  course_id: Maybe<Scalars['Int']>;
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** order by min() on columns of table "course_discussions" */
+export type Course_Discussions_Min_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "course_discussions" */
+export type Course_Discussions_Mutation_Response = {
+  __typename?: 'course_discussions_mutation_response';
+  /** number of affected rows by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data of the affected rows by the mutation */
+  returning: Array<Course_Discussions>;
+};
+
+/** input type for inserting object relation for remote table "course_discussions" */
+export type Course_Discussions_Obj_Rel_Insert_Input = {
+  data: Course_Discussions_Insert_Input;
+  on_conflict: Maybe<Course_Discussions_On_Conflict>;
+};
+
+/** on conflict condition type for table "course_discussions" */
+export type Course_Discussions_On_Conflict = {
+  constraint: Course_Discussions_Constraint;
+  update_columns: Array<Course_Discussions_Update_Column>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "course_discussions" */
+export type Course_Discussions_Order_By = {
+  course: Maybe<Courses_Order_By>;
+  course_id: Maybe<Order_By>;
+  discussion: Maybe<Discussions_Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "course_discussions" */
+export type Course_Discussions_Pk_Columns_Input = {
+  course_id: Scalars['Int'];
+  discussion_id: Scalars['Int'];
+};
+
+/** select columns of table "course_discussions" */
+export enum Course_Discussions_Select_Column {
+  /** column name */
+  CourseId = 'course_id',
+  /** column name */
+  DiscussionId = 'discussion_id'
+}
+
+/** input type for updating data in table "course_discussions" */
+export type Course_Discussions_Set_Input = {
+  course_id: Maybe<Scalars['Int']>;
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** aggregate stddev on columns */
+export type Course_Discussions_Stddev_Fields = {
+  __typename?: 'course_discussions_stddev_fields';
+  course_id: Maybe<Scalars['Float']>;
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "course_discussions" */
+export type Course_Discussions_Stddev_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Course_Discussions_Stddev_Pop_Fields = {
+  __typename?: 'course_discussions_stddev_pop_fields';
+  course_id: Maybe<Scalars['Float']>;
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "course_discussions" */
+export type Course_Discussions_Stddev_Pop_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Course_Discussions_Stddev_Samp_Fields = {
+  __typename?: 'course_discussions_stddev_samp_fields';
+  course_id: Maybe<Scalars['Float']>;
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "course_discussions" */
+export type Course_Discussions_Stddev_Samp_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Course_Discussions_Sum_Fields = {
+  __typename?: 'course_discussions_sum_fields';
+  course_id: Maybe<Scalars['Int']>;
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "course_discussions" */
+export type Course_Discussions_Sum_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** update columns of table "course_discussions" */
+export enum Course_Discussions_Update_Column {
+  /** column name */
+  CourseId = 'course_id',
+  /** column name */
+  DiscussionId = 'discussion_id'
+}
+
+/** aggregate var_pop on columns */
+export type Course_Discussions_Var_Pop_Fields = {
+  __typename?: 'course_discussions_var_pop_fields';
+  course_id: Maybe<Scalars['Float']>;
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "course_discussions" */
+export type Course_Discussions_Var_Pop_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Course_Discussions_Var_Samp_Fields = {
+  __typename?: 'course_discussions_var_samp_fields';
+  course_id: Maybe<Scalars['Float']>;
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "course_discussions" */
+export type Course_Discussions_Var_Samp_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Course_Discussions_Variance_Fields = {
+  __typename?: 'course_discussions_variance_fields';
+  course_id: Maybe<Scalars['Float']>;
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "course_discussions" */
+export type Course_Discussions_Variance_Order_By = {
+  course_id: Maybe<Order_By>;
+  discussion_id: Maybe<Order_By>;
 };
 
 /** columns and relationships of "course_flags" */
@@ -1975,6 +2336,10 @@ export type Courses = {
   /** An object relationship */
   courseByLastEnrollmentCourseId: Maybe<Courses>;
   /** An array relationship */
+  course_discussions: Array<Course_Discussions>;
+  /** An aggregated array relationship */
+  course_discussions_aggregate: Course_Discussions_Aggregate;
+  /** An array relationship */
   course_flags: Array<Course_Flags>;
   /** An aggregated array relationship */
   course_flags_aggregate: Course_Flags_Aggregate;
@@ -2047,8 +2412,6 @@ export type Courses = {
   listings: Array<Listings>;
   /** An aggregated array relationship */
   listings_aggregate: Listings_Aggregate;
-  /** Key-value pairs consisting of `<location>:<list of times>` */
-  location_times: Maybe<Scalars['String']>;
   /**
    * If single location, is `<location>`; otherwise is
    *         `<location> + <n_other_locations>` where the first location is the one
@@ -2065,6 +2428,20 @@ export type Courses = {
   requirements: Maybe<Scalars['String']>;
   /** Reading period notes */
   rp_attr: Maybe<Scalars['String']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
+  same_course_and_profs_id: Scalars['Int'];
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
+  same_course_id: Scalars['Int'];
   /** An object relationship */
   season: Seasons;
   /** An object relationship */
@@ -2133,6 +2510,26 @@ export type CoursesComputed_Listing_Infos_AggregateArgs = {
   offset: Maybe<Scalars['Int']>;
   order_by: Maybe<Array<Computed_Listing_Info_Order_By>>;
   where: Maybe<Computed_Listing_Info_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesCourse_DiscussionsArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+
+/** columns and relationships of "courses" */
+export type CoursesCourse_Discussions_AggregateArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
 };
 
 
@@ -2474,6 +2871,8 @@ export type Courses_Avg_Fields = {
   last_enrollment: Maybe<Scalars['Float']>;
   last_enrollment_course_id: Maybe<Scalars['Float']>;
   last_offered_course_id: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "courses" */
@@ -2491,6 +2890,8 @@ export type Courses_Avg_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "courses". All fields are combined with a logical 'AND'. */
@@ -2512,6 +2913,7 @@ export type Courses_Bool_Exp = {
   computed_listing_infos: Maybe<Computed_Listing_Info_Bool_Exp>;
   course: Maybe<Courses_Bool_Exp>;
   courseByLastEnrollmentCourseId: Maybe<Courses_Bool_Exp>;
+  course_discussions: Maybe<Course_Discussions_Bool_Exp>;
   course_flags: Maybe<Course_Flags_Bool_Exp>;
   course_home_url: Maybe<String_Comparison_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
@@ -2535,11 +2937,12 @@ export type Courses_Bool_Exp = {
   last_enrollment_season_code: Maybe<String_Comparison_Exp>;
   last_offered_course_id: Maybe<Int_Comparison_Exp>;
   listings: Maybe<Listings_Bool_Exp>;
-  location_times: Maybe<String_Comparison_Exp>;
   locations_summary: Maybe<String_Comparison_Exp>;
   regnotes: Maybe<String_Comparison_Exp>;
   requirements: Maybe<String_Comparison_Exp>;
   rp_attr: Maybe<String_Comparison_Exp>;
+  same_course_and_profs_id: Maybe<Int_Comparison_Exp>;
+  same_course_id: Maybe<Int_Comparison_Exp>;
   season: Maybe<Seasons_Bool_Exp>;
   seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Bool_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
@@ -2576,6 +2979,8 @@ export type Courses_Inc_Input = {
   last_enrollment: Maybe<Scalars['Int']>;
   last_enrollment_course_id: Maybe<Scalars['Int']>;
   last_offered_course_id: Maybe<Scalars['Int']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "courses" */
@@ -2594,6 +2999,7 @@ export type Courses_Insert_Input = {
   computed_listing_infos: Maybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
   courseByLastEnrollmentCourseId: Maybe<Courses_Obj_Rel_Insert_Input>;
+  course_discussions: Maybe<Course_Discussions_Arr_Rel_Insert_Input>;
   course_flags: Maybe<Course_Flags_Arr_Rel_Insert_Input>;
   course_home_url: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
@@ -2617,11 +3023,12 @@ export type Courses_Insert_Input = {
   last_enrollment_season_code: Maybe<Scalars['String']>;
   last_offered_course_id: Maybe<Scalars['Int']>;
   listings: Maybe<Listings_Arr_Rel_Insert_Input>;
-  location_times: Maybe<Scalars['String']>;
   locations_summary: Maybe<Scalars['String']>;
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   season: Maybe<Seasons_Obj_Rel_Insert_Input>;
   seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Obj_Rel_Insert_Input>;
   season_code: Maybe<Scalars['String']>;
@@ -2659,11 +3066,12 @@ export type Courses_Max_Fields = {
   last_enrollment_course_id: Maybe<Scalars['Int']>;
   last_enrollment_season_code: Maybe<Scalars['String']>;
   last_offered_course_id: Maybe<Scalars['Int']>;
-  location_times: Maybe<Scalars['String']>;
   locations_summary: Maybe<Scalars['String']>;
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   season_code: Maybe<Scalars['String']>;
   short_title: Maybe<Scalars['String']>;
   syllabus_url: Maybe<Scalars['String']>;
@@ -2693,11 +3101,12 @@ export type Courses_Max_Order_By = {
   last_enrollment_course_id: Maybe<Order_By>;
   last_enrollment_season_code: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
-  location_times: Maybe<Order_By>;
   locations_summary: Maybe<Order_By>;
   regnotes: Maybe<Order_By>;
   requirements: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   short_title: Maybe<Order_By>;
   syllabus_url: Maybe<Order_By>;
@@ -2728,11 +3137,12 @@ export type Courses_Min_Fields = {
   last_enrollment_course_id: Maybe<Scalars['Int']>;
   last_enrollment_season_code: Maybe<Scalars['String']>;
   last_offered_course_id: Maybe<Scalars['Int']>;
-  location_times: Maybe<Scalars['String']>;
   locations_summary: Maybe<Scalars['String']>;
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   season_code: Maybe<Scalars['String']>;
   short_title: Maybe<Scalars['String']>;
   syllabus_url: Maybe<Scalars['String']>;
@@ -2762,11 +3172,12 @@ export type Courses_Min_Order_By = {
   last_enrollment_course_id: Maybe<Order_By>;
   last_enrollment_season_code: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
-  location_times: Maybe<Order_By>;
   locations_summary: Maybe<Order_By>;
   regnotes: Maybe<Order_By>;
   requirements: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
   season_code: Maybe<Order_By>;
   short_title: Maybe<Order_By>;
   syllabus_url: Maybe<Order_By>;
@@ -2813,6 +3224,7 @@ export type Courses_Order_By = {
   computed_listing_infos_aggregate: Maybe<Computed_Listing_Info_Aggregate_Order_By>;
   course: Maybe<Courses_Order_By>;
   courseByLastEnrollmentCourseId: Maybe<Courses_Order_By>;
+  course_discussions_aggregate: Maybe<Course_Discussions_Aggregate_Order_By>;
   course_flags_aggregate: Maybe<Course_Flags_Aggregate_Order_By>;
   course_home_url: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
@@ -2836,11 +3248,12 @@ export type Courses_Order_By = {
   last_enrollment_season_code: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
   listings_aggregate: Maybe<Listings_Aggregate_Order_By>;
-  location_times: Maybe<Order_By>;
   locations_summary: Maybe<Order_By>;
   regnotes: Maybe<Order_By>;
   requirements: Maybe<Order_By>;
   rp_attr: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
   season: Maybe<Seasons_Order_By>;
   seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Order_By>;
   season_code: Maybe<Order_By>;
@@ -2910,8 +3323,6 @@ export enum Courses_Select_Column {
   /** column name */
   LastOfferedCourseId = 'last_offered_course_id',
   /** column name */
-  LocationTimes = 'location_times',
-  /** column name */
   LocationsSummary = 'locations_summary',
   /** column name */
   Regnotes = 'regnotes',
@@ -2919,6 +3330,10 @@ export enum Courses_Select_Column {
   Requirements = 'requirements',
   /** column name */
   RpAttr = 'rp_attr',
+  /** column name */
+  SameCourseAndProfsId = 'same_course_and_profs_id',
+  /** column name */
+  SameCourseId = 'same_course_id',
   /** column name */
   SeasonCode = 'season_code',
   /** column name */
@@ -2964,11 +3379,12 @@ export type Courses_Set_Input = {
   last_enrollment_same_professors: Maybe<Scalars['Boolean']>;
   last_enrollment_season_code: Maybe<Scalars['String']>;
   last_offered_course_id: Maybe<Scalars['Int']>;
-  location_times: Maybe<Scalars['String']>;
   locations_summary: Maybe<Scalars['String']>;
   regnotes: Maybe<Scalars['String']>;
   requirements: Maybe<Scalars['String']>;
   rp_attr: Maybe<Scalars['String']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
   season_code: Maybe<Scalars['String']>;
   short_title: Maybe<Scalars['String']>;
   skills: Maybe<Scalars['json']>;
@@ -2996,6 +3412,8 @@ export type Courses_Stddev_Fields = {
   last_enrollment: Maybe<Scalars['Float']>;
   last_enrollment_course_id: Maybe<Scalars['Float']>;
   last_offered_course_id: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "courses" */
@@ -3013,6 +3431,8 @@ export type Courses_Stddev_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
@@ -3031,6 +3451,8 @@ export type Courses_Stddev_Pop_Fields = {
   last_enrollment: Maybe<Scalars['Float']>;
   last_enrollment_course_id: Maybe<Scalars['Float']>;
   last_offered_course_id: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "courses" */
@@ -3048,6 +3470,8 @@ export type Courses_Stddev_Pop_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
@@ -3066,6 +3490,8 @@ export type Courses_Stddev_Samp_Fields = {
   last_enrollment: Maybe<Scalars['Float']>;
   last_enrollment_course_id: Maybe<Scalars['Float']>;
   last_offered_course_id: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "courses" */
@@ -3083,6 +3509,8 @@ export type Courses_Stddev_Samp_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
@@ -3101,6 +3529,8 @@ export type Courses_Sum_Fields = {
   last_enrollment: Maybe<Scalars['Int']>;
   last_enrollment_course_id: Maybe<Scalars['Int']>;
   last_offered_course_id: Maybe<Scalars['Int']>;
+  same_course_and_profs_id: Maybe<Scalars['Int']>;
+  same_course_id: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "courses" */
@@ -3118,6 +3548,8 @@ export type Courses_Sum_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** update columns of table "courses" */
@@ -3169,8 +3601,6 @@ export enum Courses_Update_Column {
   /** column name */
   LastOfferedCourseId = 'last_offered_course_id',
   /** column name */
-  LocationTimes = 'location_times',
-  /** column name */
   LocationsSummary = 'locations_summary',
   /** column name */
   Regnotes = 'regnotes',
@@ -3178,6 +3608,10 @@ export enum Courses_Update_Column {
   Requirements = 'requirements',
   /** column name */
   RpAttr = 'rp_attr',
+  /** column name */
+  SameCourseAndProfsId = 'same_course_and_profs_id',
+  /** column name */
+  SameCourseId = 'same_course_id',
   /** column name */
   SeasonCode = 'season_code',
   /** column name */
@@ -3214,6 +3648,8 @@ export type Courses_Var_Pop_Fields = {
   last_enrollment: Maybe<Scalars['Float']>;
   last_enrollment_course_id: Maybe<Scalars['Float']>;
   last_offered_course_id: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "courses" */
@@ -3231,6 +3667,8 @@ export type Courses_Var_Pop_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
@@ -3249,6 +3687,8 @@ export type Courses_Var_Samp_Fields = {
   last_enrollment: Maybe<Scalars['Float']>;
   last_enrollment_course_id: Maybe<Scalars['Float']>;
   last_offered_course_id: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "courses" */
@@ -3266,6 +3706,8 @@ export type Courses_Var_Samp_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
@@ -3284,6 +3726,8 @@ export type Courses_Variance_Fields = {
   last_enrollment: Maybe<Scalars['Float']>;
   last_enrollment_course_id: Maybe<Scalars['Float']>;
   last_offered_course_id: Maybe<Scalars['Float']>;
+  same_course_and_profs_id: Maybe<Scalars['Float']>;
+  same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "courses" */
@@ -3301,6 +3745,8 @@ export type Courses_Variance_Order_By = {
   last_enrollment: Maybe<Order_By>;
   last_enrollment_course_id: Maybe<Order_By>;
   last_offered_course_id: Maybe<Order_By>;
+  same_course_and_profs_id: Maybe<Order_By>;
+  same_course_id: Maybe<Order_By>;
 };
 
 /** columns and relationships of "demand_statistics" */
@@ -3609,6 +4055,382 @@ export type Demand_Statistics_Variance_Fields = {
 export type Demand_Statistics_Variance_Order_By = {
   course_id: Maybe<Order_By>;
   latest_demand: Maybe<Order_By>;
+};
+
+/** columns and relationships of "discussions" */
+export type Discussions = {
+  __typename?: 'discussions';
+  /** An array relationship */
+  course_discussions: Array<Course_Discussions>;
+  /** An aggregated array relationship */
+  course_discussions_aggregate: Course_Discussions_Aggregate;
+  /** Discussion section ID */
+  discussion_id: Scalars['Int'];
+  /** Additional discussion section notes */
+  info: Maybe<Scalars['String']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Same format as for courses.
+   */
+  locations_summary: Maybe<Scalars['String']>;
+  /** Discussion section number */
+  number: Scalars['String'];
+  /** Discussion section subject */
+  subject: Scalars['String'];
+  /**
+   * Course meeting times by day, with days as keys and
+   *         tuples of `(start_time, end_time, location)`. Same format as for courses.
+   */
+  times_by_day: Maybe<Scalars['json']>;
+  /** Course times and locations. Same format as for courses. */
+  times_long_summary: Maybe<Scalars['String']>;
+  /** Course times. Same format as for courses. */
+  times_summary: Maybe<Scalars['String']>;
+};
+
+
+/** columns and relationships of "discussions" */
+export type DiscussionsCourse_DiscussionsArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+
+/** columns and relationships of "discussions" */
+export type DiscussionsCourse_Discussions_AggregateArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+
+/** columns and relationships of "discussions" */
+export type DiscussionsTimes_By_DayArgs = {
+  path: Maybe<Scalars['String']>;
+};
+
+/** aggregated selection of "discussions" */
+export type Discussions_Aggregate = {
+  __typename?: 'discussions_aggregate';
+  aggregate: Maybe<Discussions_Aggregate_Fields>;
+  nodes: Array<Discussions>;
+};
+
+/** aggregate fields of "discussions" */
+export type Discussions_Aggregate_Fields = {
+  __typename?: 'discussions_aggregate_fields';
+  avg: Maybe<Discussions_Avg_Fields>;
+  count: Maybe<Scalars['Int']>;
+  max: Maybe<Discussions_Max_Fields>;
+  min: Maybe<Discussions_Min_Fields>;
+  stddev: Maybe<Discussions_Stddev_Fields>;
+  stddev_pop: Maybe<Discussions_Stddev_Pop_Fields>;
+  stddev_samp: Maybe<Discussions_Stddev_Samp_Fields>;
+  sum: Maybe<Discussions_Sum_Fields>;
+  var_pop: Maybe<Discussions_Var_Pop_Fields>;
+  var_samp: Maybe<Discussions_Var_Samp_Fields>;
+  variance: Maybe<Discussions_Variance_Fields>;
+};
+
+
+/** aggregate fields of "discussions" */
+export type Discussions_Aggregate_FieldsCountArgs = {
+  columns: Maybe<Array<Discussions_Select_Column>>;
+  distinct: Maybe<Scalars['Boolean']>;
+};
+
+/** order by aggregate values of table "discussions" */
+export type Discussions_Aggregate_Order_By = {
+  avg: Maybe<Discussions_Avg_Order_By>;
+  count: Maybe<Order_By>;
+  max: Maybe<Discussions_Max_Order_By>;
+  min: Maybe<Discussions_Min_Order_By>;
+  stddev: Maybe<Discussions_Stddev_Order_By>;
+  stddev_pop: Maybe<Discussions_Stddev_Pop_Order_By>;
+  stddev_samp: Maybe<Discussions_Stddev_Samp_Order_By>;
+  sum: Maybe<Discussions_Sum_Order_By>;
+  var_pop: Maybe<Discussions_Var_Pop_Order_By>;
+  var_samp: Maybe<Discussions_Var_Samp_Order_By>;
+  variance: Maybe<Discussions_Variance_Order_By>;
+};
+
+/** input type for inserting array relation for remote table "discussions" */
+export type Discussions_Arr_Rel_Insert_Input = {
+  data: Array<Discussions_Insert_Input>;
+  on_conflict: Maybe<Discussions_On_Conflict>;
+};
+
+/** aggregate avg on columns */
+export type Discussions_Avg_Fields = {
+  __typename?: 'discussions_avg_fields';
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by avg() on columns of table "discussions" */
+export type Discussions_Avg_Order_By = {
+  discussion_id: Maybe<Order_By>;
+};
+
+/** Boolean expression to filter rows from the table "discussions". All fields are combined with a logical 'AND'. */
+export type Discussions_Bool_Exp = {
+  _and: Maybe<Array<Maybe<Discussions_Bool_Exp>>>;
+  _not: Maybe<Discussions_Bool_Exp>;
+  _or: Maybe<Array<Maybe<Discussions_Bool_Exp>>>;
+  course_discussions: Maybe<Course_Discussions_Bool_Exp>;
+  discussion_id: Maybe<Int_Comparison_Exp>;
+  info: Maybe<String_Comparison_Exp>;
+  locations_summary: Maybe<String_Comparison_Exp>;
+  number: Maybe<String_Comparison_Exp>;
+  subject: Maybe<String_Comparison_Exp>;
+  times_by_day: Maybe<Json_Comparison_Exp>;
+  times_long_summary: Maybe<String_Comparison_Exp>;
+  times_summary: Maybe<String_Comparison_Exp>;
+};
+
+/** unique or primary key constraints on table "discussions" */
+export enum Discussions_Constraint {
+  /** unique or primary key constraint */
+  PkDiscussionsStaged = 'pk_discussions_staged'
+}
+
+/** input type for incrementing integer column in table "discussions" */
+export type Discussions_Inc_Input = {
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** input type for inserting data into table "discussions" */
+export type Discussions_Insert_Input = {
+  course_discussions: Maybe<Course_Discussions_Arr_Rel_Insert_Input>;
+  discussion_id: Maybe<Scalars['Int']>;
+  info: Maybe<Scalars['String']>;
+  locations_summary: Maybe<Scalars['String']>;
+  number: Maybe<Scalars['String']>;
+  subject: Maybe<Scalars['String']>;
+  times_by_day: Maybe<Scalars['json']>;
+  times_long_summary: Maybe<Scalars['String']>;
+  times_summary: Maybe<Scalars['String']>;
+};
+
+/** aggregate max on columns */
+export type Discussions_Max_Fields = {
+  __typename?: 'discussions_max_fields';
+  discussion_id: Maybe<Scalars['Int']>;
+  info: Maybe<Scalars['String']>;
+  locations_summary: Maybe<Scalars['String']>;
+  number: Maybe<Scalars['String']>;
+  subject: Maybe<Scalars['String']>;
+  times_long_summary: Maybe<Scalars['String']>;
+  times_summary: Maybe<Scalars['String']>;
+};
+
+/** order by max() on columns of table "discussions" */
+export type Discussions_Max_Order_By = {
+  discussion_id: Maybe<Order_By>;
+  info: Maybe<Order_By>;
+  locations_summary: Maybe<Order_By>;
+  number: Maybe<Order_By>;
+  subject: Maybe<Order_By>;
+  times_long_summary: Maybe<Order_By>;
+  times_summary: Maybe<Order_By>;
+};
+
+/** aggregate min on columns */
+export type Discussions_Min_Fields = {
+  __typename?: 'discussions_min_fields';
+  discussion_id: Maybe<Scalars['Int']>;
+  info: Maybe<Scalars['String']>;
+  locations_summary: Maybe<Scalars['String']>;
+  number: Maybe<Scalars['String']>;
+  subject: Maybe<Scalars['String']>;
+  times_long_summary: Maybe<Scalars['String']>;
+  times_summary: Maybe<Scalars['String']>;
+};
+
+/** order by min() on columns of table "discussions" */
+export type Discussions_Min_Order_By = {
+  discussion_id: Maybe<Order_By>;
+  info: Maybe<Order_By>;
+  locations_summary: Maybe<Order_By>;
+  number: Maybe<Order_By>;
+  subject: Maybe<Order_By>;
+  times_long_summary: Maybe<Order_By>;
+  times_summary: Maybe<Order_By>;
+};
+
+/** response of any mutation on the table "discussions" */
+export type Discussions_Mutation_Response = {
+  __typename?: 'discussions_mutation_response';
+  /** number of affected rows by the mutation */
+  affected_rows: Scalars['Int'];
+  /** data of the affected rows by the mutation */
+  returning: Array<Discussions>;
+};
+
+/** input type for inserting object relation for remote table "discussions" */
+export type Discussions_Obj_Rel_Insert_Input = {
+  data: Discussions_Insert_Input;
+  on_conflict: Maybe<Discussions_On_Conflict>;
+};
+
+/** on conflict condition type for table "discussions" */
+export type Discussions_On_Conflict = {
+  constraint: Discussions_Constraint;
+  update_columns: Array<Discussions_Update_Column>;
+  where: Maybe<Discussions_Bool_Exp>;
+};
+
+/** ordering options when selecting data from "discussions" */
+export type Discussions_Order_By = {
+  course_discussions_aggregate: Maybe<Course_Discussions_Aggregate_Order_By>;
+  discussion_id: Maybe<Order_By>;
+  info: Maybe<Order_By>;
+  locations_summary: Maybe<Order_By>;
+  number: Maybe<Order_By>;
+  subject: Maybe<Order_By>;
+  times_by_day: Maybe<Order_By>;
+  times_long_summary: Maybe<Order_By>;
+  times_summary: Maybe<Order_By>;
+};
+
+/** primary key columns input for table: "discussions" */
+export type Discussions_Pk_Columns_Input = {
+  /** Discussion section ID */
+  discussion_id: Scalars['Int'];
+};
+
+/** select columns of table "discussions" */
+export enum Discussions_Select_Column {
+  /** column name */
+  DiscussionId = 'discussion_id',
+  /** column name */
+  Info = 'info',
+  /** column name */
+  LocationsSummary = 'locations_summary',
+  /** column name */
+  Number = 'number',
+  /** column name */
+  Subject = 'subject',
+  /** column name */
+  TimesByDay = 'times_by_day',
+  /** column name */
+  TimesLongSummary = 'times_long_summary',
+  /** column name */
+  TimesSummary = 'times_summary'
+}
+
+/** input type for updating data in table "discussions" */
+export type Discussions_Set_Input = {
+  discussion_id: Maybe<Scalars['Int']>;
+  info: Maybe<Scalars['String']>;
+  locations_summary: Maybe<Scalars['String']>;
+  number: Maybe<Scalars['String']>;
+  subject: Maybe<Scalars['String']>;
+  times_by_day: Maybe<Scalars['json']>;
+  times_long_summary: Maybe<Scalars['String']>;
+  times_summary: Maybe<Scalars['String']>;
+};
+
+/** aggregate stddev on columns */
+export type Discussions_Stddev_Fields = {
+  __typename?: 'discussions_stddev_fields';
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev() on columns of table "discussions" */
+export type Discussions_Stddev_Order_By = {
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate stddev_pop on columns */
+export type Discussions_Stddev_Pop_Fields = {
+  __typename?: 'discussions_stddev_pop_fields';
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_pop() on columns of table "discussions" */
+export type Discussions_Stddev_Pop_Order_By = {
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate stddev_samp on columns */
+export type Discussions_Stddev_Samp_Fields = {
+  __typename?: 'discussions_stddev_samp_fields';
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by stddev_samp() on columns of table "discussions" */
+export type Discussions_Stddev_Samp_Order_By = {
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate sum on columns */
+export type Discussions_Sum_Fields = {
+  __typename?: 'discussions_sum_fields';
+  discussion_id: Maybe<Scalars['Int']>;
+};
+
+/** order by sum() on columns of table "discussions" */
+export type Discussions_Sum_Order_By = {
+  discussion_id: Maybe<Order_By>;
+};
+
+/** update columns of table "discussions" */
+export enum Discussions_Update_Column {
+  /** column name */
+  DiscussionId = 'discussion_id',
+  /** column name */
+  Info = 'info',
+  /** column name */
+  LocationsSummary = 'locations_summary',
+  /** column name */
+  Number = 'number',
+  /** column name */
+  Subject = 'subject',
+  /** column name */
+  TimesByDay = 'times_by_day',
+  /** column name */
+  TimesLongSummary = 'times_long_summary',
+  /** column name */
+  TimesSummary = 'times_summary'
+}
+
+/** aggregate var_pop on columns */
+export type Discussions_Var_Pop_Fields = {
+  __typename?: 'discussions_var_pop_fields';
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by var_pop() on columns of table "discussions" */
+export type Discussions_Var_Pop_Order_By = {
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate var_samp on columns */
+export type Discussions_Var_Samp_Fields = {
+  __typename?: 'discussions_var_samp_fields';
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by var_samp() on columns of table "discussions" */
+export type Discussions_Var_Samp_Order_By = {
+  discussion_id: Maybe<Order_By>;
+};
+
+/** aggregate variance on columns */
+export type Discussions_Variance_Fields = {
+  __typename?: 'discussions_variance_fields';
+  discussion_id: Maybe<Scalars['Float']>;
+};
+
+/** order by variance() on columns of table "discussions" */
+export type Discussions_Variance_Order_By = {
+  discussion_id: Maybe<Order_By>;
 };
 
 /** columns and relationships of "evaluation_narratives" */
@@ -6161,6 +6983,10 @@ export type Mutation_Root = {
   __typename?: 'mutation_root';
   /** delete data from the table: "computed_listing_info" */
   delete_computed_listing_info: Maybe<Computed_Listing_Info_Mutation_Response>;
+  /** delete data from the table: "course_discussions" */
+  delete_course_discussions: Maybe<Course_Discussions_Mutation_Response>;
+  /** delete single row from the table: "course_discussions" */
+  delete_course_discussions_by_pk: Maybe<Course_Discussions>;
   /** delete data from the table: "course_flags" */
   delete_course_flags: Maybe<Course_Flags_Mutation_Response>;
   /** delete single row from the table: "course_flags" */
@@ -6177,6 +7003,10 @@ export type Mutation_Root = {
   delete_demand_statistics: Maybe<Demand_Statistics_Mutation_Response>;
   /** delete single row from the table: "demand_statistics" */
   delete_demand_statistics_by_pk: Maybe<Demand_Statistics>;
+  /** delete data from the table: "discussions" */
+  delete_discussions: Maybe<Discussions_Mutation_Response>;
+  /** delete single row from the table: "discussions" */
+  delete_discussions_by_pk: Maybe<Discussions>;
   /** delete data from the table: "evaluation_narratives" */
   delete_evaluation_narratives: Maybe<Evaluation_Narratives_Mutation_Response>;
   /** delete single row from the table: "evaluation_narratives" */
@@ -6221,6 +7051,10 @@ export type Mutation_Root = {
   insert_computed_listing_info: Maybe<Computed_Listing_Info_Mutation_Response>;
   /** insert a single row into the table: "computed_listing_info" */
   insert_computed_listing_info_one: Maybe<Computed_Listing_Info>;
+  /** insert data into the table: "course_discussions" */
+  insert_course_discussions: Maybe<Course_Discussions_Mutation_Response>;
+  /** insert a single row into the table: "course_discussions" */
+  insert_course_discussions_one: Maybe<Course_Discussions>;
   /** insert data into the table: "course_flags" */
   insert_course_flags: Maybe<Course_Flags_Mutation_Response>;
   /** insert a single row into the table: "course_flags" */
@@ -6237,6 +7071,10 @@ export type Mutation_Root = {
   insert_demand_statistics: Maybe<Demand_Statistics_Mutation_Response>;
   /** insert a single row into the table: "demand_statistics" */
   insert_demand_statistics_one: Maybe<Demand_Statistics>;
+  /** insert data into the table: "discussions" */
+  insert_discussions: Maybe<Discussions_Mutation_Response>;
+  /** insert a single row into the table: "discussions" */
+  insert_discussions_one: Maybe<Discussions>;
   /** insert data into the table: "evaluation_narratives" */
   insert_evaluation_narratives: Maybe<Evaluation_Narratives_Mutation_Response>;
   /** insert a single row into the table: "evaluation_narratives" */
@@ -6279,6 +7117,10 @@ export type Mutation_Root = {
   insert_tfidf_similars_one: Maybe<Tfidf_Similars>;
   /** update data of the table: "computed_listing_info" */
   update_computed_listing_info: Maybe<Computed_Listing_Info_Mutation_Response>;
+  /** update data of the table: "course_discussions" */
+  update_course_discussions: Maybe<Course_Discussions_Mutation_Response>;
+  /** update single row of the table: "course_discussions" */
+  update_course_discussions_by_pk: Maybe<Course_Discussions>;
   /** update data of the table: "course_flags" */
   update_course_flags: Maybe<Course_Flags_Mutation_Response>;
   /** update single row of the table: "course_flags" */
@@ -6295,6 +7137,10 @@ export type Mutation_Root = {
   update_demand_statistics: Maybe<Demand_Statistics_Mutation_Response>;
   /** update single row of the table: "demand_statistics" */
   update_demand_statistics_by_pk: Maybe<Demand_Statistics>;
+  /** update data of the table: "discussions" */
+  update_discussions: Maybe<Discussions_Mutation_Response>;
+  /** update single row of the table: "discussions" */
+  update_discussions_by_pk: Maybe<Discussions>;
   /** update data of the table: "evaluation_narratives" */
   update_evaluation_narratives: Maybe<Evaluation_Narratives_Mutation_Response>;
   /** update single row of the table: "evaluation_narratives" */
@@ -6345,6 +7191,19 @@ export type Mutation_RootDelete_Computed_Listing_InfoArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDelete_Course_DiscussionsArgs = {
+  where: Course_Discussions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Course_Discussions_By_PkArgs = {
+  course_id: Scalars['Int'];
+  discussion_id: Scalars['Int'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDelete_Course_FlagsArgs = {
   where: Course_Flags_Bool_Exp;
 };
@@ -6391,6 +7250,18 @@ export type Mutation_RootDelete_Demand_StatisticsArgs = {
 /** mutation root */
 export type Mutation_RootDelete_Demand_Statistics_By_PkArgs = {
   course_id: Scalars['Int'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_DiscussionsArgs = {
+  where: Discussions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDelete_Discussions_By_PkArgs = {
+  discussion_id: Scalars['Int'];
 };
 
 
@@ -6531,6 +7402,20 @@ export type Mutation_RootInsert_Computed_Listing_Info_OneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsert_Course_DiscussionsArgs = {
+  objects: Array<Course_Discussions_Insert_Input>;
+  on_conflict: Maybe<Course_Discussions_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Course_Discussions_OneArgs = {
+  object: Course_Discussions_Insert_Input;
+  on_conflict: Maybe<Course_Discussions_On_Conflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsert_Course_FlagsArgs = {
   objects: Array<Course_Flags_Insert_Input>;
   on_conflict: Maybe<Course_Flags_On_Conflict>;
@@ -6583,6 +7468,20 @@ export type Mutation_RootInsert_Demand_StatisticsArgs = {
 export type Mutation_RootInsert_Demand_Statistics_OneArgs = {
   object: Demand_Statistics_Insert_Input;
   on_conflict: Maybe<Demand_Statistics_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_DiscussionsArgs = {
+  objects: Array<Discussions_Insert_Input>;
+  on_conflict: Maybe<Discussions_On_Conflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsert_Discussions_OneArgs = {
+  object: Discussions_Insert_Input;
+  on_conflict: Maybe<Discussions_On_Conflict>;
 };
 
 
@@ -6740,6 +7639,22 @@ export type Mutation_RootUpdate_Computed_Listing_InfoArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdate_Course_DiscussionsArgs = {
+  _inc: Maybe<Course_Discussions_Inc_Input>;
+  _set: Maybe<Course_Discussions_Set_Input>;
+  where: Course_Discussions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Course_Discussions_By_PkArgs = {
+  _inc: Maybe<Course_Discussions_Inc_Input>;
+  _set: Maybe<Course_Discussions_Set_Input>;
+  pk_columns: Course_Discussions_Pk_Columns_Input;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdate_Course_FlagsArgs = {
   _inc: Maybe<Course_Flags_Inc_Input>;
   _set: Maybe<Course_Flags_Set_Input>;
@@ -6800,6 +7715,22 @@ export type Mutation_RootUpdate_Demand_Statistics_By_PkArgs = {
   _inc: Maybe<Demand_Statistics_Inc_Input>;
   _set: Maybe<Demand_Statistics_Set_Input>;
   pk_columns: Demand_Statistics_Pk_Columns_Input;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_DiscussionsArgs = {
+  _inc: Maybe<Discussions_Inc_Input>;
+  _set: Maybe<Discussions_Set_Input>;
+  where: Discussions_Bool_Exp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdate_Discussions_By_PkArgs = {
+  _inc: Maybe<Discussions_Inc_Input>;
+  _set: Maybe<Discussions_Set_Input>;
+  pk_columns: Discussions_Pk_Columns_Input;
 };
 
 
@@ -6994,8 +7925,6 @@ export type Professors = {
   email: Maybe<Scalars['String']>;
   /** Name of the professor */
   name: Scalars['String'];
-  /** Professor ID used by Yale OCS */
-  ocs_id: Maybe<Scalars['String']>;
   /** Professor ID */
   professor_id: Scalars['Int'];
 };
@@ -7096,7 +8025,6 @@ export type Professors_Bool_Exp = {
   course_professors: Maybe<Course_Professors_Bool_Exp>;
   email: Maybe<String_Comparison_Exp>;
   name: Maybe<String_Comparison_Exp>;
-  ocs_id: Maybe<String_Comparison_Exp>;
   professor_id: Maybe<Int_Comparison_Exp>;
 };
 
@@ -7120,7 +8048,6 @@ export type Professors_Insert_Input = {
   course_professors: Maybe<Course_Professors_Arr_Rel_Insert_Input>;
   email: Maybe<Scalars['String']>;
   name: Maybe<Scalars['String']>;
-  ocs_id: Maybe<Scalars['String']>;
   professor_id: Maybe<Scalars['Int']>;
 };
 
@@ -7131,7 +8058,6 @@ export type Professors_Max_Fields = {
   average_rating_n: Maybe<Scalars['Int']>;
   email: Maybe<Scalars['String']>;
   name: Maybe<Scalars['String']>;
-  ocs_id: Maybe<Scalars['String']>;
   professor_id: Maybe<Scalars['Int']>;
 };
 
@@ -7141,7 +8067,6 @@ export type Professors_Max_Order_By = {
   average_rating_n: Maybe<Order_By>;
   email: Maybe<Order_By>;
   name: Maybe<Order_By>;
-  ocs_id: Maybe<Order_By>;
   professor_id: Maybe<Order_By>;
 };
 
@@ -7152,7 +8077,6 @@ export type Professors_Min_Fields = {
   average_rating_n: Maybe<Scalars['Int']>;
   email: Maybe<Scalars['String']>;
   name: Maybe<Scalars['String']>;
-  ocs_id: Maybe<Scalars['String']>;
   professor_id: Maybe<Scalars['Int']>;
 };
 
@@ -7162,7 +8086,6 @@ export type Professors_Min_Order_By = {
   average_rating_n: Maybe<Order_By>;
   email: Maybe<Order_By>;
   name: Maybe<Order_By>;
-  ocs_id: Maybe<Order_By>;
   professor_id: Maybe<Order_By>;
 };
 
@@ -7195,7 +8118,6 @@ export type Professors_Order_By = {
   course_professors_aggregate: Maybe<Course_Professors_Aggregate_Order_By>;
   email: Maybe<Order_By>;
   name: Maybe<Order_By>;
-  ocs_id: Maybe<Order_By>;
   professor_id: Maybe<Order_By>;
 };
 
@@ -7216,8 +8138,6 @@ export enum Professors_Select_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  OcsId = 'ocs_id',
-  /** column name */
   ProfessorId = 'professor_id'
 }
 
@@ -7227,7 +8147,6 @@ export type Professors_Set_Input = {
   average_rating_n: Maybe<Scalars['Int']>;
   email: Maybe<Scalars['String']>;
   name: Maybe<Scalars['String']>;
-  ocs_id: Maybe<Scalars['String']>;
   professor_id: Maybe<Scalars['Int']>;
 };
 
@@ -7302,8 +8221,6 @@ export enum Professors_Update_Column {
   /** column name */
   Name = 'name',
   /** column name */
-  OcsId = 'ocs_id',
-  /** column name */
   ProfessorId = 'professor_id'
 }
 
@@ -7359,6 +8276,12 @@ export type Query_Root = {
   computed_listing_info: Array<Computed_Listing_Info>;
   /** fetch aggregated fields from the table: "computed_listing_info" */
   computed_listing_info_aggregate: Computed_Listing_Info_Aggregate;
+  /** fetch data from the table: "course_discussions" */
+  course_discussions: Array<Course_Discussions>;
+  /** fetch aggregated fields from the table: "course_discussions" */
+  course_discussions_aggregate: Course_Discussions_Aggregate;
+  /** fetch data from the table: "course_discussions" using primary key columns */
+  course_discussions_by_pk: Maybe<Course_Discussions>;
   /** fetch data from the table: "course_flags" */
   course_flags: Array<Course_Flags>;
   /** fetch aggregated fields from the table: "course_flags" */
@@ -7383,6 +8306,12 @@ export type Query_Root = {
   demand_statistics_aggregate: Demand_Statistics_Aggregate;
   /** fetch data from the table: "demand_statistics" using primary key columns */
   demand_statistics_by_pk: Maybe<Demand_Statistics>;
+  /** fetch data from the table: "discussions" */
+  discussions: Array<Discussions>;
+  /** fetch aggregated fields from the table: "discussions" */
+  discussions_aggregate: Discussions_Aggregate;
+  /** fetch data from the table: "discussions" using primary key columns */
+  discussions_by_pk: Maybe<Discussions>;
   /** fetch data from the table: "evaluation_narratives" */
   evaluation_narratives: Array<Evaluation_Narratives>;
   /** fetch aggregated fields from the table: "evaluation_narratives" */
@@ -7463,6 +8392,33 @@ export type Query_RootComputed_Listing_Info_AggregateArgs = {
   offset: Maybe<Scalars['Int']>;
   order_by: Maybe<Array<Computed_Listing_Info_Order_By>>;
   where: Maybe<Computed_Listing_Info_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootCourse_DiscussionsArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootCourse_Discussions_AggregateArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootCourse_Discussions_By_PkArgs = {
+  course_id: Scalars['Int'];
+  discussion_id: Scalars['Int'];
 };
 
 
@@ -7569,6 +8525,32 @@ export type Query_RootDemand_Statistics_AggregateArgs = {
 /** query root */
 export type Query_RootDemand_Statistics_By_PkArgs = {
   course_id: Scalars['Int'];
+};
+
+
+/** query root */
+export type Query_RootDiscussionsArgs = {
+  distinct_on: Maybe<Array<Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Discussions_Order_By>>;
+  where: Maybe<Discussions_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootDiscussions_AggregateArgs = {
+  distinct_on: Maybe<Array<Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Discussions_Order_By>>;
+  where: Maybe<Discussions_Bool_Exp>;
+};
+
+
+/** query root */
+export type Query_RootDiscussions_By_PkArgs = {
+  discussion_id: Scalars['Int'];
 };
 
 
@@ -8191,6 +9173,12 @@ export type Subscription_Root = {
   computed_listing_info: Array<Computed_Listing_Info>;
   /** fetch aggregated fields from the table: "computed_listing_info" */
   computed_listing_info_aggregate: Computed_Listing_Info_Aggregate;
+  /** fetch data from the table: "course_discussions" */
+  course_discussions: Array<Course_Discussions>;
+  /** fetch aggregated fields from the table: "course_discussions" */
+  course_discussions_aggregate: Course_Discussions_Aggregate;
+  /** fetch data from the table: "course_discussions" using primary key columns */
+  course_discussions_by_pk: Maybe<Course_Discussions>;
   /** fetch data from the table: "course_flags" */
   course_flags: Array<Course_Flags>;
   /** fetch aggregated fields from the table: "course_flags" */
@@ -8215,6 +9203,12 @@ export type Subscription_Root = {
   demand_statistics_aggregate: Demand_Statistics_Aggregate;
   /** fetch data from the table: "demand_statistics" using primary key columns */
   demand_statistics_by_pk: Maybe<Demand_Statistics>;
+  /** fetch data from the table: "discussions" */
+  discussions: Array<Discussions>;
+  /** fetch aggregated fields from the table: "discussions" */
+  discussions_aggregate: Discussions_Aggregate;
+  /** fetch data from the table: "discussions" using primary key columns */
+  discussions_by_pk: Maybe<Discussions>;
   /** fetch data from the table: "evaluation_narratives" */
   evaluation_narratives: Array<Evaluation_Narratives>;
   /** fetch aggregated fields from the table: "evaluation_narratives" */
@@ -8295,6 +9289,33 @@ export type Subscription_RootComputed_Listing_Info_AggregateArgs = {
   offset: Maybe<Scalars['Int']>;
   order_by: Maybe<Array<Computed_Listing_Info_Order_By>>;
   where: Maybe<Computed_Listing_Info_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootCourse_DiscussionsArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootCourse_Discussions_AggregateArgs = {
+  distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Course_Discussions_Order_By>>;
+  where: Maybe<Course_Discussions_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootCourse_Discussions_By_PkArgs = {
+  course_id: Scalars['Int'];
+  discussion_id: Scalars['Int'];
 };
 
 
@@ -8401,6 +9422,32 @@ export type Subscription_RootDemand_Statistics_AggregateArgs = {
 /** subscription root */
 export type Subscription_RootDemand_Statistics_By_PkArgs = {
   course_id: Scalars['Int'];
+};
+
+
+/** subscription root */
+export type Subscription_RootDiscussionsArgs = {
+  distinct_on: Maybe<Array<Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Discussions_Order_By>>;
+  where: Maybe<Discussions_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootDiscussions_AggregateArgs = {
+  distinct_on: Maybe<Array<Discussions_Select_Column>>;
+  limit: Maybe<Scalars['Int']>;
+  offset: Maybe<Scalars['Int']>;
+  order_by: Maybe<Array<Discussions_Order_By>>;
+  where: Maybe<Discussions_Bool_Exp>;
+};
+
+
+/** subscription root */
+export type Subscription_RootDiscussions_By_PkArgs = {
+  discussion_id: Scalars['Int'];
 };
 
 
@@ -8977,27 +10024,13 @@ export type Tfidf_Similars_Variance_Order_By = {
   target: Maybe<Order_By>;
 };
 
-export type ListSeasonsQueryVariables = Exact<{
-  season: Maybe<Array<Scalars['String']>>;
+export type SameCourseOrProfOfferingsQueryVariables = Exact<{
+  same_course_id: Scalars['Int'];
+  professor_ids: Maybe<Array<Scalars['String']> | Scalars['String']>;
 }>;
 
 
-export type ListSeasonsQuery = { __typename?: 'query_root', seasons: Array<{ __typename?: 'seasons', season_code: string, term: Maybe<string>, year: Maybe<number> }> };
-
-export type CatalogBySeasonQueryVariables = Exact<{
-  season: Scalars['String'];
-}>;
-
-
-export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, average_rating_same_professors: Maybe<number>, average_workload_same_professors: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string }> };
-
-export type SearchAverageAcrossSeasonsQueryVariables = Exact<{
-  course_code: Maybe<Scalars['String']>;
-  professor_name: Maybe<Array<Scalars['String']>>;
-}>;
-
-
-export type SearchAverageAcrossSeasonsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_info: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string, course: { __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> } }> };
+export type SameCourseOrProfOfferingsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_info: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, same_course_id: number, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string, course: { __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> } }> };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code: Maybe<Scalars['String']>;
@@ -9007,114 +10040,18 @@ export type SearchEvaluationNarrativesQueryVariables = Exact<{
 
 export type SearchEvaluationNarrativesQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', crn: number, course: { __typename?: 'courses', evaluation_narratives_aggregate: { __typename?: 'evaluation_narratives_aggregate', nodes: Array<{ __typename?: 'evaluation_narratives', comment: Maybe<string>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> }, evaluation_ratings: Array<{ __typename?: 'evaluation_ratings', rating: Maybe<any>, evaluation_question: { __typename?: 'evaluation_questions', question_text: Maybe<string> } }> } }> };
 
+export type CatalogBySeasonQueryVariables = Exact<{
+  season: Scalars['String'];
+}>;
 
-export const ListSeasonsDocument = gql`
-    query listSeasons($season: [String!]) {
-  seasons {
-    season_code
-    term
-    year
-  }
-}
-    `;
 
-/**
- * __useListSeasonsQuery__
- *
- * To run a query within a React component, call `useListSeasonsQuery` and pass it any options that fit your needs.
- * When your component renders, `useListSeasonsQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useListSeasonsQuery({
- *   variables: {
- *      season: // value for 'season'
- *   },
- * });
- */
-export function useListSeasonsQuery(baseOptions?: Apollo.QueryHookOptions<ListSeasonsQuery, ListSeasonsQueryVariables>) {
-        return Apollo.useQuery<ListSeasonsQuery, ListSeasonsQueryVariables>(ListSeasonsDocument, baseOptions);
-      }
-export function useListSeasonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<ListSeasonsQuery, ListSeasonsQueryVariables>) {
-          return Apollo.useLazyQuery<ListSeasonsQuery, ListSeasonsQueryVariables>(ListSeasonsDocument, baseOptions);
-        }
-export type ListSeasonsQueryHookResult = ReturnType<typeof useListSeasonsQuery>;
-export type ListSeasonsLazyQueryHookResult = ReturnType<typeof useListSeasonsLazyQuery>;
-export type ListSeasonsQueryResult = Apollo.QueryResult<ListSeasonsQuery, ListSeasonsQueryVariables>;
-export const CatalogBySeasonDocument = gql`
-    query catalogBySeason($season: String!) {
-  computed_listing_info(where: {season_code: {_eq: $season}}) {
-    all_course_codes
-    areas
-    average_gut_rating
-    average_professor
-    average_rating
-    average_workload
-    average_rating_same_professors
-    average_workload_same_professors
-    classnotes
-    course_code
-    credits
-    crn
-    description
-    enrolled
-    extra_info
-    final_exam
-    flag_info
-    fysem
-    last_enrollment
-    last_enrollment_same_professors
-    listing_id
-    locations_summary
-    number
-    professor_names
-    regnotes
-    requirements
-    rp_attr
-    school
-    season_code
-    section
-    skills
-    subject
-    syllabus_url
-    times_by_day
-    times_summary
-    title
-  }
-}
-    `;
+export type CatalogBySeasonQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, average_rating_same_professors: Maybe<number>, average_workload_same_professors: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, same_course_id: number, same_course_and_profs_id: number, last_offered_course_id: Maybe<number>, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string }> };
 
-/**
- * __useCatalogBySeasonQuery__
- *
- * To run a query within a React component, call `useCatalogBySeasonQuery` and pass it any options that fit your needs.
- * When your component renders, `useCatalogBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useCatalogBySeasonQuery({
- *   variables: {
- *      season: // value for 'season'
- *   },
- * });
- */
-export function useCatalogBySeasonQuery(baseOptions: Apollo.QueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
-        return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
-      }
-export function useCatalogBySeasonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
-          return Apollo.useLazyQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
-        }
-export type CatalogBySeasonQueryHookResult = ReturnType<typeof useCatalogBySeasonQuery>;
-export type CatalogBySeasonLazyQueryHookResult = ReturnType<typeof useCatalogBySeasonLazyQuery>;
-export type CatalogBySeasonQueryResult = Apollo.QueryResult<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>;
-export const SearchAverageAcrossSeasonsDocument = gql`
-    query SearchAverageAcrossSeasons($course_code: String, $professor_name: [String!]) {
+
+export const SameCourseOrProfOfferingsDocument = gql`
+    query SameCourseOrProfOfferings($same_course_id: Int!, $professor_ids: [String!]) {
   computed_listing_info(
-    where: {_or: [{course_code: {_eq: $course_code}}, {professor_names: {_has_keys_any: $professor_name}}]}
+    where: {_or: [{same_course_id: {_eq: $same_course_id}}, {professor_ids: {_has_keys_any: $professor_ids}}]}
   ) {
     course {
       evaluation_statistics {
@@ -9143,11 +10080,13 @@ export const SearchAverageAcrossSeasonsDocument = gql`
     listing_id
     locations_summary
     number
+    professor_ids
     professor_info
     professor_names
     regnotes
     requirements
     rp_attr
+    same_course_id
     school
     season_code
     section
@@ -9162,31 +10101,31 @@ export const SearchAverageAcrossSeasonsDocument = gql`
     `;
 
 /**
- * __useSearchAverageAcrossSeasonsQuery__
+ * __useSameCourseOrProfOfferingsQuery__
  *
- * To run a query within a React component, call `useSearchAverageAcrossSeasonsQuery` and pass it any options that fit your needs.
- * When your component renders, `useSearchAverageAcrossSeasonsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * To run a query within a React component, call `useSameCourseOrProfOfferingsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useSameCourseOrProfOfferingsQuery` returns an object from Apollo Client that contains loading, error, and data properties
  * you can use to render your UI.
  *
  * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
  *
  * @example
- * const { data, loading, error } = useSearchAverageAcrossSeasonsQuery({
+ * const { data, loading, error } = useSameCourseOrProfOfferingsQuery({
  *   variables: {
- *      course_code: // value for 'course_code'
- *      professor_name: // value for 'professor_name'
+ *      same_course_id: // value for 'same_course_id'
+ *      professor_ids: // value for 'professor_ids'
  *   },
  * });
  */
-export function useSearchAverageAcrossSeasonsQuery(baseOptions?: Apollo.QueryHookOptions<SearchAverageAcrossSeasonsQuery, SearchAverageAcrossSeasonsQueryVariables>) {
-        return Apollo.useQuery<SearchAverageAcrossSeasonsQuery, SearchAverageAcrossSeasonsQueryVariables>(SearchAverageAcrossSeasonsDocument, baseOptions);
+export function useSameCourseOrProfOfferingsQuery(baseOptions: Apollo.QueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {
+        return Apollo.useQuery<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>(SameCourseOrProfOfferingsDocument, baseOptions);
       }
-export function useSearchAverageAcrossSeasonsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SearchAverageAcrossSeasonsQuery, SearchAverageAcrossSeasonsQueryVariables>) {
-          return Apollo.useLazyQuery<SearchAverageAcrossSeasonsQuery, SearchAverageAcrossSeasonsQueryVariables>(SearchAverageAcrossSeasonsDocument, baseOptions);
+export function useSameCourseOrProfOfferingsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>) {
+          return Apollo.useLazyQuery<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>(SameCourseOrProfOfferingsDocument, baseOptions);
         }
-export type SearchAverageAcrossSeasonsQueryHookResult = ReturnType<typeof useSearchAverageAcrossSeasonsQuery>;
-export type SearchAverageAcrossSeasonsLazyQueryHookResult = ReturnType<typeof useSearchAverageAcrossSeasonsLazyQuery>;
-export type SearchAverageAcrossSeasonsQueryResult = Apollo.QueryResult<SearchAverageAcrossSeasonsQuery, SearchAverageAcrossSeasonsQueryVariables>;
+export type SameCourseOrProfOfferingsQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsQuery>;
+export type SameCourseOrProfOfferingsLazyQueryHookResult = ReturnType<typeof useSameCourseOrProfOfferingsLazyQuery>;
+export type SameCourseOrProfOfferingsQueryResult = Apollo.QueryResult<SameCourseOrProfOfferingsQuery, SameCourseOrProfOfferingsQueryVariables>;
 export const SearchEvaluationNarrativesDocument = gql`
     query SearchEvaluationNarratives($season_code: String, $course_code: String) {
   computed_listing_info(
@@ -9239,3 +10178,75 @@ export function useSearchEvaluationNarrativesLazyQuery(baseOptions?: Apollo.Lazy
 export type SearchEvaluationNarrativesQueryHookResult = ReturnType<typeof useSearchEvaluationNarrativesQuery>;
 export type SearchEvaluationNarrativesLazyQueryHookResult = ReturnType<typeof useSearchEvaluationNarrativesLazyQuery>;
 export type SearchEvaluationNarrativesQueryResult = Apollo.QueryResult<SearchEvaluationNarrativesQuery, SearchEvaluationNarrativesQueryVariables>;
+export const CatalogBySeasonDocument = gql`
+    query catalogBySeason($season: String!) {
+  computed_listing_info(where: {season_code: {_eq: $season}}) {
+    all_course_codes
+    areas
+    average_gut_rating
+    average_professor
+    average_rating
+    average_workload
+    average_rating_same_professors
+    average_workload_same_professors
+    classnotes
+    course_code
+    credits
+    crn
+    description
+    enrolled
+    extra_info
+    final_exam
+    flag_info
+    fysem
+    last_enrollment
+    last_enrollment_same_professors
+    listing_id
+    locations_summary
+    number
+    professor_ids
+    professor_names
+    regnotes
+    requirements
+    rp_attr
+    same_course_id
+    same_course_and_profs_id
+    last_offered_course_id
+    school
+    season_code
+    section
+    skills
+    subject
+    syllabus_url
+    times_by_day
+    times_summary
+    title
+  }
+}
+    `;
+
+/**
+ * __useCatalogBySeasonQuery__
+ *
+ * To run a query within a React component, call `useCatalogBySeasonQuery` and pass it any options that fit your needs.
+ * When your component renders, `useCatalogBySeasonQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useCatalogBySeasonQuery({
+ *   variables: {
+ *      season: // value for 'season'
+ *   },
+ * });
+ */
+export function useCatalogBySeasonQuery(baseOptions: Apollo.QueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+        return Apollo.useQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
+      }
+export function useCatalogBySeasonLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>) {
+          return Apollo.useLazyQuery<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>(CatalogBySeasonDocument, baseOptions);
+        }
+export type CatalogBySeasonQueryHookResult = ReturnType<typeof useCatalogBySeasonQuery>;
+export type CatalogBySeasonLazyQueryHookResult = ReturnType<typeof useCatalogBySeasonLazyQuery>;
+export type CatalogBySeasonQueryResult = Apollo.QueryResult<CatalogBySeasonQuery, CatalogBySeasonQueryVariables>;
