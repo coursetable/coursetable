@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["createMany"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -29,8 +28,8 @@ model StudentFacebookFriends {
   name       String @db.VarChar(255)
   facebookId BigInt @db.UnsignedBigInt
 
-  @@unique([netId, facebookId], name: "netId_friendFacebookId")
-  @@index([netId], name: "netId")
+  @@unique([netId, facebookId], name: "netId_friendFacebookId", map: "netId_friendFacebookId")
+  @@index([netId], map: "netId")
 }
 
 model Students {
@@ -38,7 +37,7 @@ model Students {
   facebookId       BigInt @db.UnsignedBigInt
   facebookDataJson String @db.Text
 
-  @@index([facebookId], name: "facebookId")
+  @@index([facebookId], map: "facebookId")
 }
 
 model WorksheetCourses {
@@ -47,6 +46,6 @@ model WorksheetCourses {
   oci_id Int    @db.UnsignedMediumInt
   season Int    @db.UnsignedMediumInt
 
-  @@unique([net_id, oci_id, season], name: "net_id_oci_id_season")
-  @@index([net_id], name: "net_id")
+  @@unique([net_id, oci_id, season], name: "net_id_oci_id_season", map: "net_id_oci_id_season")
+  @@index([net_id], map: "net_id")
 }

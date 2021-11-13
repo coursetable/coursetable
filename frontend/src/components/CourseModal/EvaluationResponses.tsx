@@ -2,8 +2,9 @@ import React, { useState, useMemo, useCallback } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './EvaluationResponses.module.css';
-import { TextComponent } from '../StyledComponents';
+import { StyledInput, TextComponent } from '../StyledComponents';
 import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import Mark from 'mark.js';
 
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
@@ -106,6 +107,8 @@ const EvaluationResponses: React.FC<{
   // Number of questions
   const num_questions = Object.keys(responses).length;
 
+  const [filter, setFilter] = useState('');
+
   // Generate HTML to hold the responses to each question
   const [recommend, skills, strengths, summary] = useMemo(() => {
     // Lists that hold the html for the comments for a specific question
@@ -116,54 +119,64 @@ const EvaluationResponses: React.FC<{
     const cur_responses =
       sort_order === 'length' ? sorted_responses : responses;
     // Populate the lists above
+    const genTemp = (resps: any) => {
+      if (resps.length === 0) {
+        return resps;
+      }
+      const filteredResps = resps
+        .filter((response: string, index: number) => {
+          return response.toLowerCase().includes(filter.toLowerCase());
+        })
+        .map((response: string, index: number) => {
+          return (
+            <StyledCommentRow key={index} className="m-auto p-2 responses">
+              <TextComponent type={1}>{response}</TextComponent>
+            </StyledCommentRow>
+          );
+        });
+      if (filteredResps.length === 0) {
+        return [
+          <StyledCommentRow key={0} className="m-auto p-2">
+            <TextComponent type={1}>No matches found.</TextComponent>
+          </StyledCommentRow>,
+        ];
+      }
+      return filteredResps;
+    };
     for (const key in cur_responses) {
       if (key.includes('summarize')) {
-        temp_summary = cur_responses[key].map(
-          (response: string, index: number) => {
-            return (
-              <StyledCommentRow key={index} className="m-auto p-2">
-                <TextComponent type={1}>{response}</TextComponent>
-              </StyledCommentRow>
-            );
-          }
-        );
+        temp_summary = genTemp(cur_responses[key]);
       } else if (key.includes('recommend')) {
-        temp_recommend = cur_responses[key].map(
-          (response: string, index: number) => {
-            return (
-              <StyledCommentRow key={index} className="m-auto p-2">
-                <TextComponent type={1}>{response}</TextComponent>
-              </StyledCommentRow>
-            );
-          }
-        );
+        temp_recommend = genTemp(cur_responses[key]);
       } else if (key.includes('skills')) {
-        temp_skills = cur_responses[key].map(
-          (response: string, index: number) => {
-            return (
-              <StyledCommentRow key={index} className="m-auto p-2">
-                <TextComponent type={1}>{response}</TextComponent>
-              </StyledCommentRow>
-            );
-          }
-        );
+        temp_skills = genTemp(cur_responses[key]);
       } else if (key.includes('strengths')) {
-        temp_strengths = cur_responses[key].map(
-          (response: string, index: number) => {
-            return (
-              <StyledCommentRow key={index} className="m-auto p-2">
-                <TextComponent type={1}>{response}</TextComponent>
-              </StyledCommentRow>
-            );
-          }
-        );
+        temp_strengths = genTemp(cur_responses[key]);
       }
     }
     return [temp_recommend, temp_skills, temp_strengths, temp_summary];
-  }, [responses, sort_order, sorted_responses]);
+  }, [responses, sort_order, sorted_responses, filter]);
+
+  const context = document.querySelectorAll('.responses');
+  const instance = new Mark(context);
 
   return (
     <div>
+      <StyledInput
+        id="filter-input"
+        type="text"
+        placeholder="Search evaluations..."
+        value={filter}
+        style={{ marginBottom: '5px' }}
+        onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+          setFilter(event.target.value);
+          instance.unmark({
+            done() {
+              instance.mark(event.target.value);
+            },
+          });
+        }}
+      />
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
