@@ -125,7 +125,7 @@ const EvaluationResponses: React.FC<{
       }
       const filteredResps = resps
         .filter((response: string, index: number) => {
-          return response.includes(filter.toLowerCase());
+          return response.toLowerCase().includes(filter.toLowerCase());
         })
         .map((response: string, index: number) => {
           return (
