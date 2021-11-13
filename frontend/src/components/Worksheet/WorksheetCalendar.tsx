@@ -170,6 +170,7 @@ function WorksheetCalendar() {
   );
 
   return (
+    // @ts-ignore
     <StyledCalendar
       // Show Mon-Fri
       // @ts-ignore

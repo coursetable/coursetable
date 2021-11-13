@@ -12,3 +12,8 @@
   border-radius: 5px;
   overflow: hidden;
 }
+
+mark {
+  padding: 0px;
+  border-radius: 3.5px;
+}

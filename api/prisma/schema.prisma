@@ -1,6 +1,5 @@
 generator client {
-  provider        = "prisma-client-js"
-  previewFeatures = ["createMany"]
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -38,7 +37,7 @@ model Students {
   facebookId       BigInt @db.UnsignedBigInt
   facebookDataJson String @db.Text
 
-  @@index([facebookId], name: "facebookId")
+  @@index([facebookId], map: "facebookId")
 }
 
 model WorksheetCourses {
