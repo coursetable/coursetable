@@ -1,10 +1,18 @@
 import React, { useMemo, useState, useCallback } from 'react';
-import { Row, Col, Modal, OverlayTrigger, Popover } from 'react-bootstrap';
+import {
+  Row,
+  Col,
+  Modal,
+  OverlayTrigger,
+  Popover,
+  Collapse,
+} from 'react-bootstrap';
 import '../Search/MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
 import { HiExternalLink } from 'react-icons/hi';
+import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
 import { useUser } from '../../contexts/userContext';
@@ -23,7 +31,7 @@ import {
   getEnrolled,
   toSeasonString,
 } from '../../utilities/courseUtilities';
-import { useSearchAverageAcrossSeasonsQuery } from '../../generated/graphql';
+import { useSameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import { weekdays } from '../../utilities/common';
 
 // Button with season and other info that user selects to view evals
@@ -107,13 +115,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       location_url = listing.times_by_day[day][0][3];
     }
   }
-  // Fetch ratings data for this listing
-  const { loading, error, data } = useSearchAverageAcrossSeasonsQuery({
+
+  const { loading, error, data } = useSameCourseOrProfOfferingsQuery({
     variables: {
-      course_code: listing.course_code ? listing.course_code : 'bruh',
-      professor_name: listing.professor_names
-        ? listing.professor_names
-        : ['bruh'],
+      same_course_id: listing.same_course_id,
+      professor_ids: listing.professor_ids.map((x) => String(x)),
     },
   });
   // Hold HTML code that displays the list of evaluations
@@ -142,11 +148,43 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     },
     [listing.professor_names]
   );
+  // Get past syllabi links
+  const past_syllabi = useMemo(() => {
+    if (data) {
+      return data.computed_listing_info
+        .filter(
+          (course) =>
+            course.same_course_id === listing.same_course_id &&
+            course.syllabus_url
+        )
+        .map((course) => ({
+          season_code: course.season_code,
+          syllabus_url: course.syllabus_url,
+          section: course.section,
+        }))
+        .filter(
+          // remove duplicates by syllabus URL
+          (v, i, a) =>
+            a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i
+        )
+        .sort((a, b) => {
+          if (a.season_code > b.season_code) return -1;
+          if (b.season_code < a.season_code) return 1;
+          return parseInt(a.section, 10) > parseInt(b.section, 10) ? 1 : -1;
+        });
+    }
+    return [];
+  }, [data, listing.same_course_id]);
+
+  const [showPastSyllabi, setShowPastSyllabi] = useState(
+    past_syllabi && past_syllabi.length < 8
+  );
+
   // Make sure data is loaded
   const items = useMemo(() => {
     if (data) {
       // Hold list of evaluation dictionaries
-      const evaluations = [];
+      const course_offerings = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
         // Stores the average rating for all profs teaching this course and populates prof_info
@@ -173,7 +211,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           // Divide by number of profs to get average
           average_professor_rating /= num_profs;
         }
-        evaluations.push({
+        course_offerings.push({
           // Course rating
           rating: season.course.evaluation_statistics[0]
             ? season.course.evaluation_statistics[0].avg_rating || -1
@@ -207,18 +245,19 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         });
       });
       // Sort by season code and section
-      evaluations.sort(sortEvals);
+      course_offerings.sort(sortEvals);
       // Hold eval html for each column
-      const temp_items = { both: [], course: [], professor: [] };
+      const overlap_sections = { both: [], course: [], professor: [] };
+
       // Variable used for list keys
       let id = 0;
 
       // Loop through each listing with evals
-      for (let i = 0; i < evaluations.length; i++) {
+      for (let i = 0; i < course_offerings.length; i++) {
         // Skip listings in the current and future seasons that have no evals
-        if (['202102', '202103', '202201'].includes(evaluations[i].season_code))
+        if (['202103', '202201'].includes(course_offerings[i].season_code))
           continue;
-        const hasEvals = evaluations[i].rating !== -1;
+        const hasEvals = course_offerings[i].rating !== -1;
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* The listing button, either clickable or greyed out based on whether evaluations exist */}
@@ -226,16 +265,18 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <StyledCol
                 xs={5}
                 className={`${Styles.rating_bubble}  px-0 mr-3 text-center`}
-                onClick={() => handleSetSeason(evaluations[i])}
+                onClick={() => handleSetSeason(course_offerings[i])}
                 style={{ flex: 'none' }}
               >
-                <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+                <strong>
+                  {toSeasonString(course_offerings[i].season_code)[0]}
+                </strong>
                 <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
                   {filter === 'professor'
-                    ? evaluations[i].course_code[0]
+                    ? course_offerings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${evaluations[i].section}`
-                    : evaluations[i].professor[0]}
+                    ? `Section ${course_offerings[i].section}`
+                    : course_offerings[i].professor[0]}
                 </div>
               </StyledCol>
             ) : (
@@ -244,13 +285,15 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 className={`${Styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
                 style={{ flex: 'none', color: '#b5b5b5' }}
               >
-                <strong>{toSeasonString(evaluations[i].season_code)[0]}</strong>
+                <strong>
+                  {toSeasonString(course_offerings[i].season_code)[0]}
+                </strong>
                 <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
                   {filter === 'professor'
-                    ? evaluations[i].course_code[0]
+                    ? course_offerings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${evaluations[i].section}`
-                    : evaluations[i].professor[0]}
+                    ? `Section ${course_offerings[i].section}`
+                    : course_offerings[i].professor[0]}
                 </div>
               </StyledColUnclickable>
             )}
@@ -260,12 +303,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={evaluations[i].rating}
+                rating={course_offerings[i].rating}
                 colormap={ratingColormap}
                 className={`${Styles.rating_cell} ${Styles.expanded_ratings}`}
               >
-                {evaluations[i].rating !== -1
-                  ? evaluations[i].rating.toFixed(1)
+                {course_offerings[i].rating !== -1
+                  ? course_offerings[i].rating.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -275,12 +318,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={evaluations[i].professor_rating}
+                rating={course_offerings[i].professor_rating}
                 colormap={ratingColormap}
                 className={Styles.rating_cell}
               >
-                {evaluations[i].professor_rating !== -1
-                  ? evaluations[i].professor_rating.toFixed(1)
+                {course_offerings[i].professor_rating !== -1
+                  ? course_offerings[i].professor_rating.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -290,12 +333,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={evaluations[i].workload}
+                rating={course_offerings[i].workload}
                 colormap={workloadColormap}
                 className={Styles.rating_cell}
               >
-                {evaluations[i].workload !== -1
-                  ? evaluations[i].workload.toFixed(1)
+                {course_offerings[i].workload !== -1
+                  ? course_offerings[i].workload.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -303,23 +346,23 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         );
         // Course in both column
         if (
-          evaluations[i].course_code.includes(listing.course_code) &&
+          course_offerings[i].course_code.includes(listing.course_code) &&
           listing.professor_names.length &&
-          overlapping_profs(evaluations[i].professor) ===
+          overlapping_profs(course_offerings[i].professor) ===
             listing.professor_names.length
         ) {
-          temp_items.both.push(eval_box);
+          overlap_sections.both.push(eval_box);
         }
         // Course in course column
-        if (evaluations[i].course_code.includes(listing.course_code)) {
-          temp_items.course.push(eval_box);
+        if (course_offerings[i].course_code.includes(listing.course_code)) {
+          overlap_sections.course.push(eval_box);
         }
         // Course in prof column
-        if (overlapping_profs(evaluations[i].professor) > 0) {
-          temp_items.professor.push(eval_box);
+        if (overlapping_profs(course_offerings[i].professor) > 0) {
+          overlap_sections.professor.push(eval_box);
         }
       }
-      return temp_items;
+      return overlap_sections;
     }
     return undefined;
   }, [data, filter, handleSetSeason, listing, overlapping_profs, prof_info]);
@@ -492,6 +535,40 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               )}
             </Col>
           </Row>
+          {past_syllabi.length > 0 && (
+            <Row className="m-auto pt-4 pb-2">
+              <Col sm={4} xs={4} className="px-0">
+                <span
+                  role="button"
+                  className={Styles.toggle_bubble}
+                  onClick={() => setShowPastSyllabi(!showPastSyllabi)}
+                >
+                  Past syllabi ({past_syllabi.length}){' '}
+                  {showPastSyllabi ? (
+                    <MdExpandLess size={18} className="my-auto" />
+                  ) : (
+                    <MdExpandMore size={18} className="my-auto" />
+                  )}
+                </span>
+              </Col>
+              <Collapse in={showPastSyllabi}>
+                <Col sm={8} xs={8} className={Styles.metadata}>
+                  {past_syllabi.map((course) => (
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={course.syllabus_url}
+                      className="d-flex"
+                    >
+                      {toSeasonString(course.season_code)[0]} (section{' '}
+                      {course.section})
+                      <HiExternalLink size={18} className="ml-1 my-auto" />
+                    </a>
+                  ))}
+                </Col>
+              </Collapse>
+            </Row>
+          )}
           {/* Course Professors */}
           <Row className="m-auto py-2">
             <Col sm={3} xs={4} className="px-0">

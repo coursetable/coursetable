@@ -7,6 +7,12 @@
   color: rgb(136, 136, 136);
 }
 
+.toggle_bubble {
+  font-weight: 550;
+  color: #468ff2;
+  white-space: nowrap;
+}
+
 .metadata {
   font-weight: 600;
 }

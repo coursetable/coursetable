@@ -42,10 +42,14 @@ export const catalogBySeasonQuery = gql`
       listing_id
       locations_summary
       number
+      professor_ids
       professor_names
       regnotes
       requirements
       rp_attr
+      same_course_id
+      same_course_and_profs_id
+      last_offered_course_id
       school
       season_code
       section
