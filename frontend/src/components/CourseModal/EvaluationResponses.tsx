@@ -167,16 +167,14 @@ const EvaluationResponses: React.FC<{
         type="text"
         placeholder="Search evaluations..."
         value={filter}
-        style={{ marginBottom: '2px' }}
+        style={{ marginBottom: '5px' }}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           setFilter(event.target.value);
           instance.unmark({
             done() {
-              // console.log(filter);
-              instance.mark(event.target.value, { caseSensitive: false });
+              instance.mark(event.target.value);
             },
           });
-          // instance.mark(filter);
         }}
       />
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
@@ -257,9 +255,7 @@ const EvaluationResponses: React.FC<{
           </Tab>
         )}
       </StyledTabs>
-      <div id="responses">
-        {!num_questions && <strong>No comments for this course</strong>}
-      </div>
+      {!num_questions && <strong>No comments for this course</strong>}
     </div>
   );
 };
