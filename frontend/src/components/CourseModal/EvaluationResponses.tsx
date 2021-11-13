@@ -125,11 +125,11 @@ const EvaluationResponses: React.FC<{
       }
       const filteredResps = resps
         .filter((response: string, index: number) => {
-          return response.includes(filter.toLowerCase().replace(/\s/g, ''));
+          return response.includes(filter.toLowerCase());
         })
         .map((response: string, index: number) => {
           return (
-            <StyledCommentRow key={index} className="m-auto p-2">
+            <StyledCommentRow key={index} className="m-auto p-2 responses">
               <TextComponent type={1}>{response}</TextComponent>
             </StyledCommentRow>
           );
@@ -157,6 +157,9 @@ const EvaluationResponses: React.FC<{
     return [temp_recommend, temp_skills, temp_strengths, temp_summary];
   }, [responses, sort_order, sorted_responses, filter]);
 
+  const context = document.querySelectorAll('.responses');
+  const instance = new Mark(context);
+
   return (
     <div>
       <StyledInput
@@ -167,9 +170,13 @@ const EvaluationResponses: React.FC<{
         style={{ marginBottom: '2px' }}
         onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
           setFilter(event.target.value);
-          const context = document.querySelector('#responses') as HTMLElement;
-          const instance = new Mark(context);
-          instance.mark(filter);
+          instance.unmark({
+            done() {
+              // console.log(filter);
+              instance.mark(event.target.value, { caseSensitive: false });
+            },
+          });
+          // instance.mark(filter);
         }}
       />
       <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
