@@ -119,7 +119,7 @@ export const updateFriends = async (
       return prisma.studentFacebookFriends.upsert({
         // update (do not create a new friend) when one already matches the netId and Facebook ID
         where: {
-          netId_facebookId: { netId, facebookId },
+          netId_friendFacebookId: { netId, facebookId },
         },
         // basic info for creation
         create: {
