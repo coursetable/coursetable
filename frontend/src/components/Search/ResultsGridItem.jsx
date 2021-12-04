@@ -18,15 +18,14 @@ import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tag_styles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from '../StyledComponents';
-import Star from '../../images/catalog_icons/star.svg?component';
-import Teacher from '../../images/catalog_icons/teacher.svg?component';
-import Book from '../../images/catalog_icons/book.svg?component';
 import {
   getOverallRatings,
   getWorkloadRatings,
 } from '../../utilities/courseUtilities';
-import { useWorksheet } from '../../contexts/worksheetContext';
-import { useSearch } from '../../contexts/searchContext';
+
+import { AiOutlineStar } from 'react-icons/ai';
+import { IoPersonOutline } from 'react-icons/io5';
+import { BiBookOpen } from 'react-icons/bi';
 
 // Grid Item wrapper
 const StyledGridItem = styled.div`
@@ -317,7 +316,7 @@ const ResultsGridItem = ({
                     {course_rating[1]}
                   </div>
                   <StyledIcon>
-                    <Star className={styles.icon} />
+                    <AiOutlineStar className={styles.icon} />
                   </StyledIcon>
                 </Row>
               </OverlayTrigger>
@@ -341,7 +340,7 @@ const ResultsGridItem = ({
                       : 'N/A'}
                   </div>
                   <StyledIcon>
-                    <Teacher className={styles.prof_icon} />
+                    <IoPersonOutline className={styles.prof_icon} />
                   </StyledIcon>
                 </Row>
               </OverlayTrigger>
@@ -363,7 +362,7 @@ const ResultsGridItem = ({
                     {isLoggedIn && workload_rating[1]}
                   </div>
                   <StyledIcon>
-                    <Book className={styles.icon} />
+                    <BiBookOpen className={styles.icon} />
                   </StyledIcon>
                 </Row>
               </OverlayTrigger>
