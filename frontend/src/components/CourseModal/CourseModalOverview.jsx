@@ -476,6 +476,8 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     }
   };
 
+  const COL_LEN_LEFT = 4;
+
   return (
     <Modal.Body>
       <Row className="m-auto">
@@ -516,10 +518,14 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           )}
           {/* Course Syllabus */}
           <Row className="m-auto pt-4 pb-2">
-            <Col sm={3} xs={4} className="px-0">
+            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
               <span className={Styles.lable_bubble}>Syllabus</span>
             </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={Styles.metadata}
+            >
               {listing.syllabus_url ? (
                 <a
                   target="_blank"
@@ -537,7 +543,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           </Row>
           {past_syllabi.length > 0 && (
             <Row className="m-auto pt-4 pb-2">
-              <Col sm={4} xs={4} className="px-0">
+              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span
                   role="button"
                   className={Styles.toggle_bubble}
@@ -552,7 +558,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 </span>
               </Col>
               <Collapse in={showPastSyllabi}>
-                <Col sm={8} xs={8} className={Styles.metadata}>
+                <Col
+                  sm={12 - COL_LEN_LEFT}
+                  xs={11 - COL_LEN_LEFT}
+                  className={Styles.metadata}
+                >
                   {past_syllabi.map((course) => (
                     <a
                       target="_blank"
@@ -571,10 +581,14 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           )}
           {/* Course Professors */}
           <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
+            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
               <span className={Styles.lable_bubble}>Professor</span>
             </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={Styles.metadata}
+            >
               {listing.professor_names.length
                 ? listing.professor_names.map((prof, index) => {
                     return (
@@ -597,19 +611,27 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           </Row>
           {/* Course Times */}
           <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
+            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
               <span className={Styles.lable_bubble}>Meets</span>
             </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={Styles.metadata}
+            >
               {listing.times_summary}
             </Col>
           </Row>
           {/* Course Location */}
           <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
+            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
               <span className={Styles.lable_bubble}>Location</span>
             </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={Styles.metadata}
+            >
               {location_url !== '' ? (
                 <a
                   target="_blank"
@@ -627,20 +649,28 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           </Row>
           {/* Course Section */}
           <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
+            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
               <span className={Styles.lable_bubble}>Section</span>
             </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={Styles.metadata}
+            >
               {listing.section ? listing.section : 'N/A'}
             </Col>
           </Row>
           {/* Course Information (flag_info) */}
           {listing.flag_info.length > 0 && (
             <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
+              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span className={Styles.lable_bubble}>Info</span>
               </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
+              <Col
+                sm={12 - COL_LEN_LEFT}
+                xs={11 - COL_LEN_LEFT}
+                className={Styles.metadata}
+              >
                 {listing.flag_info.length ? (
                   <ul className={Styles.flag_info}>
                     {listing.flag_info.map((text) => (
@@ -655,29 +685,37 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           )}
           {/* Course Enrollment */}
           <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
+            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
               <span className={Styles.lable_bubble}>Enrollment</span>
             </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={Styles.metadata}
+            >
               {getEnrolled(listing, true, true)}
             </Col>
           </Row>
           {/* Credits */}
           <Row className="m-auto py-2">
-            <Col sm={3} xs={4} className="px-0">
+            <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
               <span className={Styles.lable_bubble}>Credits</span>
             </Col>
-            <Col sm={9} xs={8} className={Styles.metadata}>
+            <Col
+              sm={12 - COL_LEN_LEFT}
+              xs={11 - COL_LEN_LEFT}
+              className={Styles.metadata}
+            >
               {listing.credits}
             </Col>
           </Row>
           {/* Class Notes (classnotes) */}
           {listing.classnotes && (
             <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
+              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span className={Styles.lable_bubble}>Class Notes</span>
               </Col>
-              <Col sm={9} xs={8}>
+              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.classnotes}
               </Col>
             </Row>
@@ -685,10 +723,10 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           {/* Registrar Notes (regnotes) */}
           {listing.regnotes && (
             <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
+              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span className={Styles.lable_bubble}>Registrar Notes</span>
               </Col>
-              <Col sm={9} xs={8}>
+              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.regnotes}
               </Col>
             </Row>
@@ -696,10 +734,10 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           {/* Reading Period Notes (rp_attr) */}
           {listing.rp_attr && (
             <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
+              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span className={Styles.lable_bubble}>Reading Period</span>
               </Col>
-              <Col sm={9} xs={8}>
+              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.rp_attr}
               </Col>
             </Row>
@@ -707,10 +745,10 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           {/* Final Exam (final_exam) */}
           {listing.final_exam && listing.final_exam !== 'HTBA' && (
             <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
+              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span className={Styles.lable_bubble}>Final Exam</span>
               </Col>
-              <Col sm={9} xs={8}>
+              <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.final_exam}
               </Col>
             </Row>
@@ -718,10 +756,14 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           {/* FB Friends that are also shopping this course */}
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
-              <Col sm={3} xs={4} className="px-0">
+              <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span className={Styles.lable_bubble}>FB Friends</span>
               </Col>
-              <Col sm={9} xs={8} className={Styles.metadata}>
+              <Col
+                sm={12 - COL_LEN_LEFT}
+                xs={11 - COL_LEN_LEFT}
+                className={Styles.metadata}
+              >
                 {also_taking.map((friend, index) => {
                   return (
                     <Row className="m-auto" key={index}>
