@@ -16,6 +16,7 @@ import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
+import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
@@ -124,7 +125,11 @@ function App({ themeToggler, location }) {
 
         {/* Catalog */}
         <MyRoute exact path="/catalog">
-          <Search />
+          {isLoggedIn && !user.hasEvals ? (
+            <Redirect push to="/challenge" />
+          ) : (
+            <Search />
+          )}
         </MyRoute>
 
         {/* Auth */}
@@ -138,7 +143,7 @@ function App({ themeToggler, location }) {
 
         {/* OCE Challenge */}
         <MyRoute exact path="/challenge">
-          <Redirect to="/" />
+          <Challenge />
         </MyRoute>
 
         {/* Worksheet */}
