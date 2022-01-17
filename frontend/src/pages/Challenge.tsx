@@ -150,7 +150,7 @@ const Challenge: React.VFC = () => {
               })
               .catch((err) => {
                 toast.error('Failed to update evaluation status');
-                console.error(err);
+                // console.error(err);
               });
           }
           // Incorrect responses
@@ -169,7 +169,6 @@ const Challenge: React.VFC = () => {
           }
         })
         .catch((err) => {
-          console.log('received err', err.response);
           if (err.response.data) {
             const { error } = err.response.data;
 
