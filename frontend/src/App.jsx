@@ -125,7 +125,9 @@ function App({ themeToggler, location }) {
 
         {/* Catalog */}
         <MyRoute exact path="/catalog">
-          {isLoggedIn && !user.hasEvals ? (
+          {!isLoggedIn ? (
+            <Redirect push to="/login" />
+          ) : !user.hasEvals ? (
             <Redirect push to="/challenge" />
           ) : (
             <Search />
