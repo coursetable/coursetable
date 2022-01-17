@@ -145,7 +145,9 @@ const Challenge: React.VFC = () => {
                 return client.resetStore();
               })
               .then(() => {
-                toast.success('All of your responses were correct!');
+                toast.success(
+                  "All of your responses were correct! Refresh the page if the courses aren't showing."
+                );
                 history.goBack();
               })
               .catch((err) => {
