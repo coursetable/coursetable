@@ -14,9 +14,7 @@ import FileSaver from 'file-saver';
 // Is this day during a break?
 const onBreak = (day: moment.Moment) => {
   // Spring 2022 Breaks
-  const breaks = [
-    [moment('2022-03-19T00:01'), moment('2022-03-27T23:59')]
-  ];
+  const breaks = [[moment('2022-03-19T00:01'), moment('2022-03-27T23:59')]];
 
   for (let i = 0; i < breaks.length; i++) {
     if (day >= breaks[i][0] && day <= breaks[i][1]) return true;
