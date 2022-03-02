@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import { DateTime } from 'luxon';
 import posthog from 'posthog-js';
 import React, {
   createContext,
@@ -20,25 +19,25 @@ import {
   useFerry,
 } from '../components/Providers/FerryProvider';
 import {
+  areas,
+  AreasType,
+  searchSpeed,
+  skills,
+  SkillsType,
+  SortByOption,
+  sortbyOptions,
+  SortKeys,
+} from '../queries/Constants';
+import {
+  getDayTimes,
   getEnrolled,
   getNumFB,
   getOverallRatings,
-  getDayTimes,
   getWorkloadRatings,
   sortCourses,
   toRangeTime,
   toSeasonString,
 } from '../utilities/courseUtilities';
-import {
-  areas,
-  AreasType,
-  skills,
-  SkillsType,
-  sortbyOptions,
-  SortKeys,
-  searchSpeed,
-  SortByOption,
-} from '../queries/Constants';
 import { useUser } from './userContext';
 
 // Option type for all the filter options
