@@ -193,5 +193,10 @@
     "season_code": "202203",
     "term": "fall",
     "year": 2022
+  },
+  {
+    "season_code": "202301",
+    "term": "spring",
+    "year": 2023
   }
 ]
