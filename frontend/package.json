@@ -83,7 +83,7 @@
     "react-router-dom": "^5.2.0",
     "react-scroll": "^1.8.0",
     "react-select": "^4.3.0",
-    "react-toastify": "^6.2.0",
+    "react-toastify": "^9.0.1",
     "react-virtualized": "^9.22.3",
     "reactour": "^1.18.1",
     "styled-components": "^5.2.1",
