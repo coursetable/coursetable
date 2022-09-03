@@ -103,7 +103,7 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
-        We are recruiting! Interested in joining CourseTable? Fill out this{' '}
+        CourseTable is recruiting! Interested in joining us? Fill out this{' '}
         <a
           href="https://forms.gle/aENPVAo55QRnrTei8"
           style={{ color: 'white', fontWeight: '600' }}
