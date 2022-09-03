@@ -102,7 +102,16 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      {/* <Notice></Notice> */}
+      <Notice>
+        We are recruiting! Interested in joining CourseTable? Fill out this{' '}
+        <a
+          href="https://forms.gle/aENPVAo55QRnrTei8"
+          style={{ color: 'white', fontWeight: '600' }}
+        >
+          form
+        </a>
+        !
+      </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
