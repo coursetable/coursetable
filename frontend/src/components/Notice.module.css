@@ -4,7 +4,12 @@
   justify-content: space-between;
   flex-direction: row;
   align-items: center;
-  background: linear-gradient(90deg, rgba(68,103,196,1) 0%, rgba(101,155,223,1) 50%, rgba(135,206,251,1) 100%);
+  background: linear-gradient(
+    90deg,
+    rgba(68, 103, 196, 1) 0%,
+    rgba(101, 155, 223, 1) 50%,
+    rgba(135, 206, 251, 1) 100%
+  );
 }
 
 .banner .content {
