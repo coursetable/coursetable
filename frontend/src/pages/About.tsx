@@ -14,6 +14,8 @@ import web from '../images/headshots/link-logos/web.png';
 import web_dark from '../images/headshots/link-logos/web-light.png';
 
 // Current Member Headshots
+import lz from '../images/headshots/lily-zhou.jpg';
+import lh from '../images/headshots/lucas-huang.jpg';
 import ae from '../images/headshots/aidan-evans.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
@@ -49,9 +51,28 @@ const About: React.VFC = () => {
 
   const current = [
     {
+      name: 'Lucas Huang',
+      image: lh,
+      role: 'CourseTable Co-Lead',
+      links: {
+        github: 'https://github.com/Quintec',
+        linkedin: 'https://www.linkedin.com/in/huangl16/',
+        website: 'https://quintec.github.io/',
+      },
+    },
+    {
+      name: 'Lily Zhou',
+      image: lz,
+      role: 'CourseTable Co-Lead',
+      links: {
+        github: 'https://github.com/lilyzhouZYJ',
+        linkedin: 'https://www.linkedin.com/in/lily-zhou-b12142146/',
+      },
+    },
+    {
       name: 'Kevin Hu',
       image: kh,
-      role: 'CourseTable Co-Lead',
+      role: 'Former Lead',
       links: {
         github: 'https://github.com/kevinhu',
         linkedin: 'https://www.linkedin.com/in/hukevinhu/',
@@ -61,7 +82,7 @@ const About: React.VFC = () => {
     {
       name: 'Josh Chough',
       image: jc,
-      role: 'CourseTable Co-Lead',
+      role: 'Former Lead',
       links: {
         github: 'https://github.com/itsjoshthedeveloper',
         linkedin: 'https://www.linkedin.com/in/joshchough/',
@@ -70,7 +91,7 @@ const About: React.VFC = () => {
     {
       name: 'Max Yuan',
       image: my,
-      role: 'CourseTable Co-Lead',
+      role: 'Former Lead',
       links: {
         github: 'https://github.com/maxyuan6717',
         linkedin: 'https://www.linkedin.com/in/max-yuan-209930194/',
