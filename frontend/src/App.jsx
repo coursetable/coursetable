@@ -105,12 +105,12 @@ function App({ themeToggler, location }) {
       <Notice>
         CourseTable is recruiting! Interested in joining us? Fill out this{' '}
         <a
-          href="https://forms.gle/aENPVAo55QRnrTei8"
+          href="tiny.cc/applyYCSF22"
           style={{ color: 'white', fontWeight: '600' }}
         >
-          form
+          application form
         </a>
-        !
+        &nbsp;for Yale Computer Society!
       </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
