@@ -105,7 +105,7 @@ function App({ themeToggler, location }) {
       <Notice>
         CourseTable is recruiting! Interested in joining us? Fill out this{' '}
         <a
-          href="tiny.cc/applyYCSF22"
+          href="https://tiny.cc/applyYCSF22"
           style={{ color: 'white', fontWeight: '600' }}
         >
           application form
