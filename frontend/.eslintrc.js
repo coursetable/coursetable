@@ -1,4 +1,5 @@
 module.exports = {
+  root: true,
   extends: [
     'airbnb-typescript',
     'airbnb/hooks',
@@ -65,4 +66,12 @@ module.exports = {
     'jsx-a11y/no-static-element-interactions': 'warn',
     'jsx-a11y/click-events-have-key-events': 'warn',
   },
+  overrides: [
+    {
+      files: ['vite.config.ts'],
+      rules: {
+        'import/no-extraneous-dependencies': 'off',
+      },
+    },
+  ],
 };

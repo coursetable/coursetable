@@ -548,6 +548,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                   role="button"
                   className={Styles.toggle_bubble}
                   onClick={() => setShowPastSyllabi(!showPastSyllabi)}
+                  tabIndex={0}
                 >
                   Past syllabi ({past_syllabi.length}){' '}
                   {showPastSyllabi ? (
