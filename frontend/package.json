@@ -102,6 +102,7 @@
     "@types/mark.js": "^8.11.6",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
+    "@types/vite-plugin-react-svg": "^0.2.1",
     "@typescript-eslint/eslint-plugin": "^4.16.1",
     "@typescript-eslint/parser": "^4.19.0",
     "@vitejs/plugin-react": "^1.0.0",
