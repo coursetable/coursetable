@@ -102,7 +102,7 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      <Notice>
+      {/* <Notice>
         CourseTable is recruiting! Interested in joining us? Fill out this{' '}
         <a
           href="https://tiny.cc/applyYCSF22"
@@ -111,7 +111,7 @@ function App({ themeToggler, location }) {
           application form
         </a>
         &nbsp;for Yale Computer Society!
-      </Notice>
+      </Notice> */}
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
