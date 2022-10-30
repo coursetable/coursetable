@@ -142,7 +142,7 @@ const Globals: React.FC = ({ children }) => {
                             if (React.isValidElement(child)) {
                               return React.cloneElement(child, {
                                 themeToggler,
-                              });
+                              } as object);
                             }
                             return child;
                           })}
