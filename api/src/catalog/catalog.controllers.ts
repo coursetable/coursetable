@@ -9,6 +9,12 @@ import winston from '../logging/winston';
 
 import { fetchCatalog } from './catalog.utils';
 
+let BYPASS = 0;
+if ('BYPASS_AUTH' in process.env) {
+  BYPASS = parseInt(process.env.BYPASS_AUTH);
+}
+
+
 /**
  * Middleware to verify request headers
  *
@@ -26,7 +32,7 @@ export const verifyHeaders = (
   const authd = req.header('x-ferry-secret'); // if user is logged in
 
   // require NetID authentication
-  if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
+  if (FERRY_SECRET !== '' && authd !== FERRY_SECRET && BYPASS == 0) {
     return res.status(401).json({
       error: 'NOT_AUTHENTICATED',
     });
