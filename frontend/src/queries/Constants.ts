@@ -11,6 +11,12 @@ export const searchSpeed = {
     'you try loading this many courses',
     'not not not fast',
     'faster than Handsome Dan',
+    'faster than the doors in HQ',
+    'faster than the Silliman elevator',
+    'faster than the HY ticket pick-up line',
+    'faster than debugging binary bomb',
+    'faster than October break',
+    'faster than it takes to get to Murray',
   ],
   faster: [
     'faster',
@@ -35,6 +41,9 @@ export const searchSpeed = {
     'faster than switching your major to CS',
     'faster than you can sell out to consulting',
     'faster than HAL',
+    'faster than HY tickets selling out',
+    'faster than YSO Halloween tickets selling out',
+    'faster than the naked run',
   ],
 };
 
