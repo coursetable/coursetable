@@ -34,6 +34,7 @@ export const searchSpeed = {
     'faster than an art-stem double major drops art',
     'faster than switching your major to CS',
     'faster than you can sell out to consulting',
+    'faster than HAL',
   ],
 };
 
