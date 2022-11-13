@@ -102,16 +102,24 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      {/* <Notice>
-        CourseTable is recruiting! Interested in joining us? Fill out this{' '}
+      <Notice>
+        Looking for new classes? Check out these useful tools:{' '}
         <a
-          href="https://tiny.cc/applyYCSF22"
-          style={{ color: 'white', fontWeight: '600' }}
+          href="https://yuts.io/"
+          style={{ color: 'white', fontWeight: '900' }}
         >
-          application form
+          Yuts.io
         </a>
-        &nbsp;for Yale Computer Society!
-      </Notice> */}
+        &nbsp;where you see all the top guts,
+        and&nbsp;
+        <a
+          href="https://janktable.herokuapp.com/"
+          style={{ color: 'white', fontWeight: '900' }}
+        >
+          JankTable
+        </a>
+        &nbsp;where you can browse and search ALL course reviews!
+      </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
