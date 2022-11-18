@@ -103,22 +103,24 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
-        Looking for new classes? Check out these useful tools:{' '}
-        <a
-          href="https://yuts.io/"
-          style={{ color: 'white', fontWeight: '900' }}
-        >
-          Yuts.io
-        </a>
-        &nbsp;where you see all the top guts,
-        and&nbsp;
+        Want to specifically search course reviews? Check out&nbsp;
         <a
           href="https://janktable.herokuapp.com/"
-          style={{ color: 'white', fontWeight: '900' }}
+          style={{ color: 'white', fontWeight: '750' }}
+          target="_blank"
         >
           JankTable
         </a>
-        &nbsp;where you can browse and search ALL course reviews!
+        !<br />
+        Or are you looking for guts? Check out&nbsp;
+        <a
+          href="https://yuts.io/"
+          style={{ color: 'white', fontWeight: '750' }}
+          target="_blank"
+        >
+          Yuts
+        </a>
+        !
       </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
