@@ -35,7 +35,7 @@
     "cookie-parser": "^1.4.5",
     "cookie-session": "^1.4.0",
     "cors": "^2.8.5",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "graphql": "^15.6.0",
     "graphql-request": "^3.5.0",
     "graphql-tag": "^2.12.5",
