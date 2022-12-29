@@ -5,7 +5,7 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
 import CalendarEvent from './CalendarEvent';
-import { theme_transition_duration, weekdays } from '../../utilities/common';
+import { weekdays } from '../../utilities/common';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Listing } from '../Providers/FerryProvider';
 
