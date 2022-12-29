@@ -119,32 +119,39 @@ const FAQ: React.VFC = () => {
       title: 'Where does CourseTable get the data?',
       contents: (
         <>
-          We source our data from a combination of Yale's{' '}
-          <a
-            href="https://courses.yale.edu/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            course catalog
-          </a>
-          ,{' '}
-          <a
-            href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            historical evaluations database
-          </a>
-          , and{' '}
-          <a
-            href="https://ivy.yale.edu/course-stats/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            course demand portal
-          </a>
-          . Some of the information is also pulled from our historical archives
-          of the aforementioned data sources.
+          <p>
+            We source our data from a combination of Yale's{' '}
+            <a
+              href="https://courses.yale.edu/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              course catalog
+            </a>
+            ,{' '}
+            <a
+              href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              historical evaluations database
+            </a>
+            , and{' '}
+            <a
+              href="https://ivy.yale.edu/course-stats/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              course demand portal
+            </a>
+            . Some of the information is also pulled from our historical
+            archives of the aforementioned data sources.
+          </p>
+          <p>
+            If you so desire, you may request deletion of your data by sending
+            us an <a href="mailto: coursetable.at.yale@gmail.com">email</a> with
+            the subject line "Request to Delete CourseTable Data".
+          </p>
         </>
       ),
     },
