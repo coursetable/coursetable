@@ -18,6 +18,7 @@ const StyledSortBtn = styled.div`
   cursor: pointer;
   border-radius: 4px;
   padding: 2px;
+  transition: background-color ${({ theme }) => theme.trans_dur};
   &:hover {
     background-color: ${({ theme }) => theme.button_active};
   }

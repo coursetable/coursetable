@@ -82,6 +82,7 @@ const RangeLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
   user-select: none;
   cursor: default;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Range filter value label
@@ -90,6 +91,7 @@ const RangeValueLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
   user-select: none;
   cursor: default;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Wrapper for advanced filters dropdown
@@ -165,6 +167,7 @@ const CloseIcon = styled(IoClose)`
   margin-left: -30px;
   cursor: pointer;
   color: ${({ theme }) => theme.icon_focus};
+  transition: color ${({ theme }) => theme.trans_dur};
   &:hover {
     color: ${({ theme }) =>
       theme.theme === 'light'

@@ -23,5 +23,6 @@ declare module 'styled-components' {
     primary_light: string;
     primary_hover: string;
     row_odd: string;
+    trans_dur: string;
   }
 }

@@ -14,11 +14,20 @@ const StyledCard = styled(Card)`
   background-color: transparent;
   border: none !important;
   border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+  transition: border-color ${({ theme }) => theme.trans_dur};
 
   .active {
     border-bottom: 1px solid ${({ theme }) => theme.border} !important;
     color: ${({ theme }) => theme.primary};
+    transition: border-color ${({ theme }) => theme.trans_dur};
   }
+`;
+
+// Container for FAQ
+const StyledContainer = styled.div`
+  width: 600px;
+  margin-bottom: 3rem;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Custom accordion component
@@ -278,7 +287,7 @@ const FAQ: React.VFC = () => {
   ];
 
   return (
-    <div className={`${styles.container} mx-auto`}>
+    <StyledContainer className={'mx-auto'}>
       <h1 className={`${styles.faq_header} mt-5 mb-1`}>
         Frequently Asked Questions
       </h1>
@@ -300,7 +309,7 @@ const FAQ: React.VFC = () => {
           </StyledCard>
         ))}
       </Accordion>
-    </div>
+    </StyledContainer>
   );
 };
 

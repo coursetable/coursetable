@@ -3,6 +3,7 @@ import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import styles from './Footer.module.css';
 import Logo from './Navbar/Logo';
+import styled from 'styled-components';
 import { StyledHr, TextComponent } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';
@@ -10,6 +11,11 @@ import { scrollToTop } from '../utilities';
 import VercelBanner from '../images/powered-by-vercel.svg';
 
 import { API_ENDPOINT } from '../config';
+
+// Header
+const StyledH5 = styled.h5`
+  transition: color ${({ theme }) => theme.trans_dur};
+`;
 
 /**
  * Footer
@@ -39,7 +45,7 @@ const Footer: React.VFC = () => {
             </a>
           </div>
           <div className="col-6 col-md">
-            <h5>Explore</h5>
+            <StyledH5>Explore</StyledH5>
             <ul className="list-unstyled text-small">
               {/* Catalog */}
               <li>
@@ -56,7 +62,7 @@ const Footer: React.VFC = () => {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <h5>Support</h5>
+            <StyledH5>Support</StyledH5>
             <ul className="list-unstyled text-small">
               {/* FAQ */}
               <li>
@@ -88,7 +94,7 @@ const Footer: React.VFC = () => {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <h5>Developers</h5>
+            <StyledH5>Developers</StyledH5>
             <ul className="list-unstyled text-small">
               {/* GraphQL explorer */}
               <li>
@@ -99,7 +105,7 @@ const Footer: React.VFC = () => {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <h5>About</h5>
+            <StyledH5>About</StyledH5>
             <ul className="list-unstyled text-small">
               {/* Team */}
               <li>

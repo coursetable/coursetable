@@ -26,6 +26,7 @@ export const lightTheme: DefaultTheme = {
   primary_light: 'rgba(70, 143, 242, 0.15)', // Primary color (lighter blue)
   primary_hover: '#007bff', // Primary hover color (dark blue)
   row_odd: '#f9f9f9', // Odd row background color
+  trans_dur: '0.35s', // Transition duration
 };
 export const darkTheme: DefaultTheme = {
   theme: 'dark',
@@ -48,4 +49,5 @@ export const darkTheme: DefaultTheme = {
   primary_light: 'rgba(68, 100, 145, 0.25)', // Primary color (lighter blue)
   primary_hover: '#007bff', // Primary hover color (blue)
   row_odd: '#202020', // Odd row background color
+  trans_dur: '0.35s', // Transition duration
 };
