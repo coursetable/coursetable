@@ -213,12 +213,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         }
         course_offerings.push({
           // Course rating
-          rating: season.course.evaluation_statistics[0]
-            ? season.course.evaluation_statistics[0].avg_rating || -1
+          rating: season.course.evaluation_statistic[0]
+            ? season.course.evaluation_statistic[0].avg_rating || -1
             : -1,
           // Workload rating
-          workload: season.course.evaluation_statistics[0]
-            ? season.course.evaluation_statistics[0].avg_workload || -1
+          workload: season.course.evaluation_statistic[0]
+            ? season.course.evaluation_statistic[0].avg_workload || -1
             : -1,
           // Professor rating
           professor_rating: average_professor_rating || -1,
