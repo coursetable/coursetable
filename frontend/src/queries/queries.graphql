@@ -14,7 +14,7 @@ query SameCourseOrProfOfferings(
     }
   ) {
     course {
-      evaluation_statistics {
+      evaluation_statistic {
         avg_workload
         avg_rating
       }
