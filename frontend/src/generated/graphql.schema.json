@@ -3313,7 +3313,7 @@
         "enumValues": [
           {
             "name": "idx_computed_listing_listing_id",
-            "description": "unique or primary key constraint on columns \"listing_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -13793,7 +13793,7 @@
         "enumValues": [
           {
             "name": "pk_course_discussions_staged",
-            "description": "unique or primary key constraint on columns \"course_id\", \"discussion_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -15504,7 +15504,7 @@
         "enumValues": [
           {
             "name": "pk_course_flags_staged",
-            "description": "unique or primary key constraint on columns \"course_id\", \"flag_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -17215,7 +17215,7 @@
         "enumValues": [
           {
             "name": "pk_course_professors_staged",
-            "description": "unique or primary key constraint on columns \"course_id\", \"professor_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -22919,7 +22919,7 @@
         "enumValues": [
           {
             "name": "pk_courses_staged",
-            "description": "unique or primary key constraint on columns \"course_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -30325,7 +30325,7 @@
         "enumValues": [
           {
             "name": "pk_demand_statistics_staged",
-            "description": "unique or primary key constraint on columns \"course_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -31914,7 +31914,7 @@
         "enumValues": [
           {
             "name": "pk_discussions_staged",
-            "description": "unique or primary key constraint on columns \"discussion_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -33865,7 +33865,7 @@
         "enumValues": [
           {
             "name": "pk_evaluation_narratives_staged",
-            "description": "unique or primary key constraint on columns \"id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -36937,7 +36937,7 @@
         "enumValues": [
           {
             "name": "pk_evaluation_questions_staged",
-            "description": "unique or primary key constraint on columns \"question_code\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -38309,7 +38309,7 @@
         "enumValues": [
           {
             "name": "pk_evaluation_ratings_staged",
-            "description": "unique or primary key constraint on columns \"id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -40144,7 +40144,7 @@
         "enumValues": [
           {
             "name": "pk_evaluation_statistics_staged",
-            "description": "unique or primary key constraint on columns \"course_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -42643,7 +42643,7 @@
         "enumValues": [
           {
             "name": "pk_fasttext_similars_staged",
-            "description": "unique or primary key constraint on columns \"source\", \"target\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -44543,7 +44543,7 @@
         "enumValues": [
           {
             "name": "pk_flags_staged",
-            "description": "unique or primary key constraint on columns \"flag_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -45461,45 +45461,10 @@
       },
       {
         "kind": "INPUT_OBJECT",
-        "name": "jsonb_cast_exp",
-        "description": null,
-        "fields": null,
-        "inputFields": [
-          {
-            "name": "String",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "String_comparison_exp",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          }
-        ],
-        "interfaces": null,
-        "enumValues": null,
-        "possibleTypes": null
-      },
-      {
-        "kind": "INPUT_OBJECT",
         "name": "jsonb_comparison_exp",
         "description": "Boolean expression to compare columns of type \"jsonb\". All fields are combined with logical 'AND'.",
         "fields": null,
         "inputFields": [
-          {
-            "name": "_cast",
-            "description": null,
-            "type": {
-              "kind": "INPUT_OBJECT",
-              "name": "jsonb_cast_exp",
-              "ofType": null
-            },
-            "defaultValue": null,
-            "isDeprecated": false,
-            "deprecationReason": null
-          },
           {
             "name": "_contained_in",
             "description": "is the column contained in the given json value",
@@ -46806,13 +46771,13 @@
         "enumValues": [
           {
             "name": "idx_season_code_crn_unique",
-            "description": "unique or primary key constraint on columns \"crn\", \"season_code\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           },
           {
             "name": "pk_listings_staged",
-            "description": "unique or primary key constraint on columns \"listing_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -53841,7 +53806,7 @@
         "enumValues": [
           {
             "name": "pk_professors_staged",
-            "description": "unique or primary key constraint on columns \"professor_id\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -59746,7 +59711,7 @@
         "enumValues": [
           {
             "name": "pk_seasons_staged",
-            "description": "unique or primary key constraint on columns \"season_code\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }
@@ -65066,7 +65031,7 @@
         "enumValues": [
           {
             "name": "pk_tfidf_similars_staged",
-            "description": "unique or primary key constraint on columns \"source\", \"target\"",
+            "description": "unique or primary key constraint",
             "isDeprecated": false,
             "deprecationReason": null
           }

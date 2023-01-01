@@ -372,7 +372,7 @@ export type Computed_Listing_Info_Bool_Exp = {
 
 /** unique or primary key constraints on table "computed_listing_info" */
 export enum Computed_Listing_Info_Constraint {
-  /** unique or primary key constraint on columns "listing_id" */
+  /** unique or primary key constraint */
   IdxComputedListingListingId = 'idx_computed_listing_listing_id'
 }
 
@@ -1540,7 +1540,7 @@ export type Course_Discussions_Bool_Exp = {
 
 /** unique or primary key constraints on table "course_discussions" */
 export enum Course_Discussions_Constraint {
-  /** unique or primary key constraint on columns "course_id", "discussion_id" */
+  /** unique or primary key constraint */
   PkCourseDiscussionsStaged = 'pk_course_discussions_staged'
 }
 
@@ -1816,7 +1816,7 @@ export type Course_Flags_Bool_Exp = {
 
 /** unique or primary key constraints on table "course_flags" */
 export enum Course_Flags_Constraint {
-  /** unique or primary key constraint on columns "course_id", "flag_id" */
+  /** unique or primary key constraint */
   PkCourseFlagsStaged = 'pk_course_flags_staged'
 }
 
@@ -2092,7 +2092,7 @@ export type Course_Professors_Bool_Exp = {
 
 /** unique or primary key constraints on table "course_professors" */
 export enum Course_Professors_Constraint {
-  /** unique or primary key constraint on columns "course_id", "professor_id" */
+  /** unique or primary key constraint */
   PkCourseProfessorsStaged = 'pk_course_professors_staged'
 }
 
@@ -3002,7 +3002,7 @@ export type Courses_Bool_Exp = {
 
 /** unique or primary key constraints on table "courses" */
 export enum Courses_Constraint {
-  /** unique or primary key constraint on columns "course_id" */
+  /** unique or primary key constraint */
   PkCoursesStaged = 'pk_courses_staged'
 }
 
@@ -5023,7 +5023,7 @@ export type Demand_Statistics_Bool_Exp = {
 
 /** unique or primary key constraints on table "demand_statistics" */
 export enum Demand_Statistics_Constraint {
-  /** unique or primary key constraint on columns "course_id" */
+  /** unique or primary key constraint */
   PkDemandStatisticsStaged = 'pk_demand_statistics_staged'
 }
 
@@ -5320,7 +5320,7 @@ export type Discussions_Bool_Exp = {
 
 /** unique or primary key constraints on table "discussions" */
 export enum Discussions_Constraint {
-  /** unique or primary key constraint on columns "discussion_id" */
+  /** unique or primary key constraint */
   PkDiscussionsStaged = 'pk_discussions_staged'
 }
 
@@ -5688,7 +5688,7 @@ export type Evaluation_Narratives_Bool_Exp = {
 
 /** unique or primary key constraints on table "evaluation_narratives" */
 export enum Evaluation_Narratives_Constraint {
-  /** unique or primary key constraint on columns "id" */
+  /** unique or primary key constraint */
   PkEvaluationNarrativesStaged = 'pk_evaluation_narratives_staged'
 }
 
@@ -6230,7 +6230,7 @@ export type Evaluation_Questions_Bool_Exp = {
 
 /** unique or primary key constraints on table "evaluation_questions" */
 export enum Evaluation_Questions_Constraint {
-  /** unique or primary key constraint on columns "question_code" */
+  /** unique or primary key constraint */
   PkEvaluationQuestionsStaged = 'pk_evaluation_questions_staged'
 }
 
@@ -6476,7 +6476,7 @@ export type Evaluation_Ratings_Bool_Exp = {
 
 /** unique or primary key constraints on table "evaluation_ratings" */
 export enum Evaluation_Ratings_Constraint {
-  /** unique or primary key constraint on columns "id" */
+  /** unique or primary key constraint */
   PkEvaluationRatingsStaged = 'pk_evaluation_ratings_staged'
 }
 
@@ -6810,7 +6810,7 @@ export type Evaluation_Statistics_Bool_Exp = {
 
 /** unique or primary key constraints on table "evaluation_statistics" */
 export enum Evaluation_Statistics_Constraint {
-  /** unique or primary key constraint on columns "course_id" */
+  /** unique or primary key constraint */
   PkEvaluationStatisticsStaged = 'pk_evaluation_statistics_staged'
 }
 
@@ -7251,7 +7251,7 @@ export type Fasttext_Similars_Bool_Exp = {
 
 /** unique or primary key constraints on table "fasttext_similars" */
 export enum Fasttext_Similars_Constraint {
-  /** unique or primary key constraint on columns "source", "target" */
+  /** unique or primary key constraint */
   PkFasttextSimilarsStaged = 'pk_fasttext_similars_staged'
 }
 
@@ -7567,7 +7567,7 @@ export type Flags_Bool_Exp = {
 
 /** unique or primary key constraints on table "flags" */
 export enum Flags_Constraint {
-  /** unique or primary key constraint on columns "flag_id" */
+  /** unique or primary key constraint */
   PkFlagsStaged = 'pk_flags_staged'
 }
 
@@ -7742,13 +7742,8 @@ export type Json_Comparison_Exp = {
 };
 
 
-export type Jsonb_Cast_Exp = {
-  String: Maybe<String_Comparison_Exp>;
-};
-
 /** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
 export type Jsonb_Comparison_Exp = {
-  _cast: Maybe<Jsonb_Cast_Exp>;
   /** is the column contained in the given json value */
   _contained_in: Maybe<Scalars['jsonb']>;
   /** does the column contain the given json value at the top level */
@@ -7915,9 +7910,9 @@ export type Listings_Bool_Exp = {
 
 /** unique or primary key constraints on table "listings" */
 export enum Listings_Constraint {
-  /** unique or primary key constraint on columns "crn", "season_code" */
+  /** unique or primary key constraint */
   IdxSeasonCodeCrnUnique = 'idx_season_code_crn_unique',
-  /** unique or primary key constraint on columns "listing_id" */
+  /** unique or primary key constraint */
   PkListingsStaged = 'pk_listings_staged'
 }
 
@@ -9334,7 +9329,7 @@ export type Professors_Bool_Exp = {
 
 /** unique or primary key constraints on table "professors" */
 export enum Professors_Constraint {
-  /** unique or primary key constraint on columns "professor_id" */
+  /** unique or primary key constraint */
   PkProfessorsStaged = 'pk_professors_staged'
 }
 
@@ -10217,7 +10212,7 @@ export type Seasons_Bool_Exp = {
 
 /** unique or primary key constraints on table "seasons" */
 export enum Seasons_Constraint {
-  /** unique or primary key constraint on columns "season_code" */
+  /** unique or primary key constraint */
   PkSeasonsStaged = 'pk_seasons_staged'
 }
 
@@ -10971,7 +10966,7 @@ export type Tfidf_Similars_Bool_Exp = {
 
 /** unique or primary key constraints on table "tfidf_similars" */
 export enum Tfidf_Similars_Constraint {
-  /** unique or primary key constraint on columns "source", "target" */
+  /** unique or primary key constraint */
   PkTfidfSimilarsStaged = 'pk_tfidf_similars_staged'
 }
 
