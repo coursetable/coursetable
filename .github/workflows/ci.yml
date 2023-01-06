@@ -31,7 +31,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: cd api && yarn install --frozen-lockfile
-      - run: npx prisma db pull && npx prisma generate
+      - run: cd api && npx prisma db pull && npx prisma generate
       - run: cd api && yarn run checks
       - run: cd api && yarn run lint
 
