@@ -31,7 +31,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: cd api && yarn install --frozen-lockfile
-      - run: cd api && yarn prisma version && yarn openssl version
+      - run: cd api && yarn openssl version && yarn prisma version
       - run: cd api && yarn run checks
       - run: cd api && yarn run lint
 
