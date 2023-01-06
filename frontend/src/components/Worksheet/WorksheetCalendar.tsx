@@ -28,29 +28,35 @@ const StyledCalendar = styled(Calendar)`
       .rbc-time-header {
         .rbc-time-header-content {
           border-color: ${({ theme }) => theme.border};
+          transition: border-color ${({ theme }) => theme.trans_dur};
           .rbc-time-header-cell {
             .rbc-header {
               user-select: none;
               cursor: default;
               border-color: ${({ theme }) => theme.border};
+              transition: border-color ${({ theme }) => theme.trans_dur};
             }
           }
         }
       }
       .rbc-time-content {
         border-color: ${({ theme }) => theme.border};
+        transition: border-color ${({ theme }) => theme.trans_dur};
         .rbc-time-gutter {
           .rbc-timeslot-group {
             user-select: none;
             cursor: default;
             border-color: ${({ theme }) => theme.border};
+            transition: border-color ${({ theme }) => theme.trans_dur};
           }
         }
         .rbc-day-slot {
           .rbc-timeslot-group {
             border-color: ${({ theme }) => theme.border};
+            transition: border-color ${({ theme }) => theme.trans_dur};
             .rbc-time-slot {
               border-color: ${({ theme }) => theme.border};
+              transition: border-color ${({ theme }) => theme.trans_dur};
           }
         }
       }

@@ -12,6 +12,9 @@ const StyledListItem = styled(ListGroup.Item)`
   background-color: transparent;
   border-color: ${({ theme }) => theme.border};
   overflow: hidden;
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
   &:hover {
     cursor: pointer;
     background-color: ${({ theme }) => theme.select_hover};
@@ -24,6 +27,12 @@ const StyledListItem = styled(ListGroup.Item)`
   &:hover .hidden {
     opacity: 1;
   }
+`;
+
+// Course code
+const StyledCol = styled(Col)`
+  overflow: hidden;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 /**
@@ -55,15 +64,15 @@ function WorksheetCalendarListItem({
     >
       <Row className="align-items-center mx-auto">
         {/* Course Code and Title */}
-        <Col
-          className={`${styles.list_text} pl-1 pr-2`}
+        <StyledCol
+          className={'pl-1 pr-2'}
           style={color_style}
           onClick={() => showModal(course)}
         >
           <strong>{course.course_code}</strong>
           <br />
           <span className={styles.course_title}>{course.title}</span>
-        </Col>
+        </StyledCol>
         {/* Hide Button */}
         <div className={`mr-1 my-auto ${hidden ? 'visible' : 'hidden'}`}>
           <WorksheetHideButton

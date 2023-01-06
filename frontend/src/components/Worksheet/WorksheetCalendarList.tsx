@@ -14,6 +14,9 @@ const StyledSpacer = styled.div`
   position: sticky;
   top: 56px;
   z-index: 2;
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 `;
 
 // Hide icon
@@ -39,6 +42,9 @@ const StyledBtn = styled.div`
   justify-content: center;
   align-items: center;
   user-select: none;
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
@@ -84,18 +90,18 @@ function WorksheetCalendarList() {
   // Build the HTML for the list of courses of a given season
   const items = useMemo(() => {
     // List to hold HTML
-    const items = courses.map((course, id) => {
+    const listitems = courses.map((course, id) => {
       let hidden = false;
       if (Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
         hidden = hidden_courses[cur_season][course.crn];
       }
-      // Add listgroup item to items list
+      // Add listgroup item to listitems list
       return (
         <WorksheetCalendarListItem key={id} course={course} hidden={hidden} />
       );
     });
 
-    return items;
+    return listitems;
   }, [courses, hidden_courses, cur_season]);
 
   const areHidden = useMemo(() => {

@@ -6,11 +6,13 @@ import { breakpoints } from '../utilities';
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`
   background-color: ${({ theme, layer }) => theme.surface[layer]};
+  transition: background-color ${({ theme }) => theme.trans_dur};
 `;
 
 // Span used to color text. Type is an int that represents primary (0) or secondary (1) color
 export const TextComponent = styled.span<{ type: number }>`
   color: ${({ theme, type }) => theme.text[type]};
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Small text component
@@ -46,6 +48,9 @@ export const StyledInput = styled(FormControl)`
   border: solid 2px rgba(0, 0, 0, 0.1);
   border-radius: 8px;
   padding: 0.375rem 0.75rem;
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
@@ -64,11 +69,14 @@ export const StyledInput = styled(FormControl)`
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
     theme.theme === 'light' ? '#ededed' : '#404040'};
+  transition: border-color ${({ theme }) => theme.trans_dur};
 `;
 
 // Card used in Worksheet mobile and about page
 export const StyledCard = styled(Card)`
   background-color: ${({ theme }) => theme.surface[0]};
+  transition: background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 `;
 
 // Expand buttons in worksheet and worksheet expanded
@@ -78,12 +86,18 @@ export const StyledExpandBtn = styled.div`
   position: absolute;
   top: 0%;
   z-index: 2;
-  transition: transform 0.05s linear;
+  transition: transform 0.05s linear,
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 `;
 
 // Popovers in search results item, prof popover in modal, and worksheet calendar
 export const StyledPopover = styled(Popover)`
   background-color: ${({ theme }) => theme.surface[0]};
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
+
   .popover-header {
     background-color: ${({ theme }) => theme.banner};
     color: ${({ theme }) => theme.text[1]};
@@ -118,6 +132,7 @@ export const StyledRating = styled.div<{
 // Primary Color link
 export const StyledLink = styled.span`
   color: ${({ theme }) => theme.primary};
+  transition: color ${({ theme }) => theme.trans_dur};
   &:hover {
     color: ${({ theme }) => theme.primary_hover};
     cursor: pointer;

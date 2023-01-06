@@ -39,6 +39,7 @@ import { Link } from 'react-router-dom';
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
+  transition: background-color ${({ theme }) => theme.trans_dur};
   position: -webkit-sticky; /* Safari */
   position: sticky;
   z-index: 2;
@@ -48,6 +49,9 @@ const StyledSpacer = styled.div`
 const StyledContainer = styled(SurfaceComponent)`
   border-top: 2px solid ${({ theme }) => theme.border};
   border-bottom: 2px solid ${({ theme }) => theme.border};
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 `;
 
 // Restrict the row width
@@ -70,6 +74,12 @@ const SearchResults = styled.div`
   overflow: hidden;
   ${({ numCourses, isMobile }) =>
     numCourses > 0 && numCourses < 20 && !isMobile ? 'height: 80vh;' : ''}
+`;
+
+// Results item wrapper
+const ResultsItemWrapper = styled.div`
+  transition: background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 `;
 
 // Function to calculate column width within a max and min
@@ -213,7 +223,7 @@ const Results = ({
           ? { backgroundColor: globalTheme.surface[0] }
           : { backgroundColor: globalTheme.row_odd };
       return (
-        <div
+        <ResultsItemWrapper
           style={{
             ...style,
             ...colorStyles,
@@ -229,7 +239,7 @@ const Results = ({
             isScrolling={isScrolling}
             fb_friends={fb_friends}
           />
-        </div>
+        </ResultsItemWrapper>
       );
     },
     [data, showModal, multiSeasons, COL_SPACING, num_fb, globalTheme]
