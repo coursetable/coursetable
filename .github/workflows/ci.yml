@@ -31,7 +31,7 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-yarn-
       - run: cd api && yarn install --frozen-lockfile
-      - run: cd api && npm prestart
+      - run: cd api && yarn run prestart
       - run: cd api && yarn run checks
       - run: cd api && yarn run lint
 
