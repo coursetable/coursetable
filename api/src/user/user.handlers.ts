@@ -7,6 +7,7 @@ import express from 'express';
 import winston from '../logging/winston';
 
 import { POSTHOG_CLIENT, prisma } from '../config';
+import { WorksheetCourses } from '@prisma/client';
 
 /**
  * Toggle a bookmarked course in a worksheet.
@@ -113,7 +114,7 @@ export const getUserWorksheet = async (
     evaluationsEnabled: studentProfile?.evaluationsEnabled,
     year: studentProfile?.year,
     school: studentProfile?.school,
-    data: worksheets.map((course) => [
+    data: worksheets.map((course: WorksheetCourses) => [
       String(course.season),
       String(course.oci_id),
     ]),
