@@ -165,6 +165,19 @@ const FAQ: React.VFC = () => {
       ),
     },
     {
+      title: 'Can I request deletion of my data?',
+      contents: (
+        <>
+          <p>
+            If you so desire, you may request deletion of your data by sending
+            us an <a href="mailto: coursetable.at.yale@gmail.com">email</a> with
+            the subject line{' '}
+            <strong>"Request to Delete CourseTable Data"</strong>.
+          </p>
+        </>
+      ),
+    },
+    {
       title: 'How often is CourseTable updated?',
       contents: (
         <>
