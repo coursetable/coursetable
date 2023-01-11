@@ -9,6 +9,7 @@ import axios from 'axios';
 import { FACEBOOK_API_ENDPOINT, POSTHOG_CLIENT, prisma } from '../config';
 
 import winston from '../logging/winston';
+import { StudentFacebookFriends, Students } from '@prisma/client';
 
 const ME_FIELDS = 'id,name,first_name,middle_name,last_name';
 const FRIEND_FIELDS = 'id,name,first_name,middle_name,last_name';
@@ -232,7 +233,9 @@ export const getFriendsWorksheets = async (
     },
   });
 
-  const friendNetIds = friends.map((friend) => friend.netId);
+  const friendNetIds = friends.map(
+    (friend: StudentFacebookFriends) => friend.netId
+  );
 
   // Get friends' worksheets from NetIDs
   winston.info('Getting worksheets of Facebook friends');
@@ -246,7 +249,7 @@ export const getFriendsWorksheets = async (
 
   // Get friends' worksheets from NetIDs
   winston.info('Getting info of Facebook friends');
-  const friendInfos = await prisma.students.findMany({
+  const friendInfos: Students[] = await prisma.students.findMany({
     where: {
       netId: {
         in: friendNetIds,
@@ -256,20 +259,30 @@ export const getFriendsWorksheets = async (
 
   // map netId to worksheets (list of [season, oci_id])
   const worksheetsByFriend: { [key: string]: [string, number][] } = {};
-  friendWorksheets.forEach(({ net_id, oci_id, season }) => {
-    if (net_id in worksheetsByFriend) {
-      worksheetsByFriend[net_id].push([String(season), oci_id]);
-    } else {
-      worksheetsByFriend[net_id] = [[String(season), oci_id]];
+  friendWorksheets.forEach(
+    ({
+      net_id,
+      oci_id,
+      season,
+    }: {
+      net_id: string;
+      oci_id: number;
+      season: number;
+    }) => {
+      if (net_id in worksheetsByFriend) {
+        worksheetsByFriend[net_id].push([String(season), oci_id]);
+      } else {
+        worksheetsByFriend[net_id] = [[String(season), oci_id]];
+      }
     }
-  });
+  );
 
   // map netId to friend name and Facebook ID
   const infoByFriend: {
     [key: string]: { name: string; facebookId: string };
   } = {};
   friendInfos.forEach(
-    ({ netId: friendNetId, facebookId, facebookDataJson }) => {
+    ({ netId: friendNetId, facebookId, facebookDataJson }: Students) => {
       if (facebookDataJson && facebookDataJson !== '') {
         infoByFriend[friendNetId] = {
           name: JSON.parse(facebookDataJson).name,

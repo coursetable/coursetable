@@ -39,6 +39,9 @@ const StyledButton = styled.div`
   border-radius: 4px;
   user-select: none;
   cursor: pointer;
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
 
   &:hover {
     background-color: ${({ theme }) => theme.button_hover};
@@ -56,12 +59,25 @@ const ClearIcon = styled(IoClose)`
   z-index: 1000;
   cursor: pointer;
   color: ${({ theme }) => theme.icon_focus};
+  transition: color ${({ theme }) => theme.trans_dur};
   &:hover {
     color: ${({ theme }) =>
       theme.theme === 'light'
         ? chroma(theme.icon_focus).darken().css()
         : chroma(theme.icon_focus).brighten().css()};
   }
+`;
+
+// Down icon
+const DownIcon = styled(IoMdArrowDropdown)`
+  color: ${({ theme }) => theme.icon_focus};
+  transition: color ${({ theme }) => theme.trans_dur};
+`;
+
+// Up icon
+const UpIcon = styled(IoMdArrowDropup)`
+  color: ${({ theme }) => theme.icon_focus};
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 type Option = {
@@ -266,15 +282,9 @@ export const Popout: React.FC<Props> = ({
           <ClearIcon className="ml-1" onClick={onClear} />
         ) : arrowIcon ? (
           isComponentVisible ? (
-            <IoMdArrowDropup
-              className="ml-1"
-              style={{ color: theme.icon_focus }}
-            />
+            <DownIcon className="ml-1" />
           ) : (
-            <IoMdArrowDropdown
-              className="ml-1"
-              style={{ color: theme.icon_focus }}
-            />
+            <UpIcon className="ml-1" />
           )
         ) : (
           <></>

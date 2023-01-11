@@ -14,11 +14,20 @@ const StyledCard = styled(Card)`
   background-color: transparent;
   border: none !important;
   border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+  transition: border-color ${({ theme }) => theme.trans_dur};
 
   .active {
     border-bottom: 1px solid ${({ theme }) => theme.border} !important;
     color: ${({ theme }) => theme.primary};
+    transition: border-color ${({ theme }) => theme.trans_dur};
   }
+`;
+
+// Container for FAQ
+const StyledContainer = styled.div`
+  width: 600px;
+  margin-bottom: 3rem;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Custom accordion component
@@ -119,32 +128,47 @@ const FAQ: React.VFC = () => {
       title: 'Where does CourseTable get the data?',
       contents: (
         <>
-          We source our data from a combination of Yale's{' '}
-          <a
-            href="https://courses.yale.edu/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            course catalog
-          </a>
-          ,{' '}
-          <a
-            href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            historical evaluations database
-          </a>
-          , and{' '}
-          <a
-            href="https://ivy.yale.edu/course-stats/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            course demand portal
-          </a>
-          . Some of the information is also pulled from our historical archives
-          of the aforementioned data sources.
+          <p>
+            We source our data from a combination of Yale's{' '}
+            <a
+              href="https://courses.yale.edu/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              course catalog
+            </a>
+            ,{' '}
+            <a
+              href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              historical evaluations database
+            </a>
+            , and{' '}
+            <a
+              href="https://ivy.yale.edu/course-stats/"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              course demand portal
+            </a>
+            . Some of the information is also pulled from our historical
+            archives of the aforementioned data sources.
+          </p>
+        </>
+      ),
+    },
+    {
+      title: 'Can I request deletion of my data?',
+      contents: (
+        <>
+          <p>
+            If you so desire, you may request deletion of your data by sending
+            us an <a href="mailto: coursetable.at.yale@gmail.com">email</a> with
+            the subject line{' '}
+            <strong>"Request to Delete CourseTable Data"</strong>.
+          </p>
         </>
       ),
     },
@@ -278,7 +302,7 @@ const FAQ: React.VFC = () => {
   ];
 
   return (
-    <div className={`${styles.container} mx-auto`}>
+    <StyledContainer className={'mx-auto'}>
       <h1 className={`${styles.faq_header} mt-5 mb-1`}>
         Frequently Asked Questions
       </h1>
@@ -300,7 +324,7 @@ const FAQ: React.VFC = () => {
           </StyledCard>
         ))}
       </Accordion>
-    </div>
+    </StyledContainer>
   );
 };
 

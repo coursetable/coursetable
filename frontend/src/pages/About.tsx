@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
@@ -42,6 +42,14 @@ import hl from '../images/headshots/hao-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 
 // import generic from '../images/headshots/default_pfp.png';
+
+// Header
+const StyledH1 = styled.h1`
+  font-weight: 600;
+  font-size: 25px;
+  text-align: center;
+  transition: color ${({ theme }) => theme.trans_dur};
+`;
 
 /**
  * Renders the about us page
@@ -251,7 +259,7 @@ const About: React.VFC = () => {
 
   return (
     <div className={`${styles.container} mx-auto`}>
-      <h1 className={`${styles.about_header} mt-5 mb-1`}>About Us</h1>
+      <StyledH1 className={'mt-5 mb-1'}>About Us</StyledH1>
       <TextComponent type={1}>
         <p className={`${styles.about_description} mb-3 mx-auto`}>
           CourseTable offers a clean and effective way for Yale students to find
