@@ -13,8 +13,8 @@ import FileSaver from 'file-saver';
 
 // Is this day during a break?
 const onBreak = (day: moment.Moment) => {
-  // Spring 2022 Breaks
-  const breaks = [[moment('2022-03-19T00:01'), moment('2022-03-27T23:59')]];
+  // Spring 2023 Breaks
+  const breaks = [[moment('2023-03-11T00:01'), moment('2023-03-26T23:59')]];
 
   for (let i = 0; i < breaks.length; i++) {
     if (day >= breaks[i][0] && day <= breaks[i][1]) return true;
@@ -25,10 +25,10 @@ const onBreak = (day: moment.Moment) => {
 // generate ICS file and download it
 export const generateICS = (listings_all: Listing[]) => {
   // Season to export
-  const cur_season = '202203';
+  const cur_season = '202301';
 
-  // Spring 2022 period
-  const period = [moment('2022-01-25T08:20'), moment('2022-04-29T17:30')];
+  // Fall 2023 period
+  const period = [moment('2023-01-17T08:20'), moment('2023-04-28T17:30')];
 
   // Only get courses for the current season that have valid times
   const listings: Listing[] = [];

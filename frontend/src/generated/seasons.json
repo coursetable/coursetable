@@ -203,5 +203,10 @@
     "season_code": "202301",
     "term": "spring",
     "year": 2023
+  },
+  {
+    "season_code": "202302",
+    "term": "summer",
+    "year": 2023
   }
 ]
