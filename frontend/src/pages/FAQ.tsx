@@ -156,11 +156,6 @@ const FAQ: React.VFC = () => {
             . Some of the information is also pulled from our historical
             archives of the aforementioned data sources.
           </p>
-          <p>
-            If you so desire, you may request deletion of your data by sending
-            us an <a href="mailto: coursetable.at.yale@gmail.com">email</a> with
-            the subject line "Request to Delete CourseTable Data".
-          </p>
         </>
       ),
     },
