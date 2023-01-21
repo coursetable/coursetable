@@ -19,7 +19,7 @@ const Notice: React.FC = ({ children }) => {
   }
 
   return (
-    <StyledBanner className={styles.banner}>
+    <StyledBanner className={styles.banner} style={{ margin: '1.5px' }}>
       <div className={styles.content}>
         <div>{children}</div>
       </div>

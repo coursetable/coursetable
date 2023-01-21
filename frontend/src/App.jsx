@@ -103,6 +103,26 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
+        Application for&nbsp;
+        <a
+          href="http://yalecompsociety.org/"
+          style={{ color: 'white', fontWeight: '750' }}
+          target="_blank"
+        >
+          Yale Computer Society
+        </a>
+        &nbsp;for Spring 2023 is now open.
+        Apply&nbsp;
+        <a
+          href="https://tiny.cc/applyYCSS23"
+          style={{ color: 'white', fontWeight: '750', textDecoration: 'underline' }}
+          target="_blank"
+        >
+          here
+        </a>
+        &nbsp;by <b>Friday, Jan. 27 at 11:59 pm</b>!
+      </Notice>
+      <Notice>
         Want to specifically search course reviews? Check out&nbsp;
         <a
           href="https://janktable.herokuapp.com/"
