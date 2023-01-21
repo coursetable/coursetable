@@ -111,11 +111,14 @@ function App({ themeToggler, location }) {
         >
           Yale Computer Society
         </a>
-        &nbsp;for Spring 2023 is now open.
-        Apply&nbsp;
+        &nbsp;for Spring 2023 is now open. Apply&nbsp;
         <a
           href="https://tiny.cc/applyYCSS23"
-          style={{ color: 'white', fontWeight: '750', textDecoration: 'underline' }}
+          style={{
+            color: 'white',
+            fontWeight: '750',
+            textDecoration: 'underline',
+          }}
           target="_blank"
         >
           here
