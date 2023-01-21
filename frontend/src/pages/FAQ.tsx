@@ -14,11 +14,20 @@ const StyledCard = styled(Card)`
   background-color: transparent;
   border: none !important;
   border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+  transition: border-color ${({ theme }) => theme.trans_dur};
 
   .active {
     border-bottom: 1px solid ${({ theme }) => theme.border} !important;
     color: ${({ theme }) => theme.primary};
+    transition: border-color ${({ theme }) => theme.trans_dur};
   }
+`;
+
+// Container for FAQ
+const StyledContainer = styled.div`
+  width: 600px;
+  margin-bottom: 3rem;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Custom accordion component
@@ -145,6 +154,16 @@ const FAQ: React.VFC = () => {
           </a>
           . Some of the information is also pulled from our historical archives
           of the aforementioned data sources.
+        </>
+      ),
+    },
+    {
+      title: 'Can I request deletion of my data?',
+      contents: (
+        <>
+          If you so desire, you may request deletion of your data by sending us
+          an <a href="mailto: coursetable.at.yale@gmail.com">email</a> with the
+          subject line <strong>"Request to Delete CourseTable Data"</strong>.
         </>
       ),
     },
@@ -278,7 +297,7 @@ const FAQ: React.VFC = () => {
   ];
 
   return (
-    <div className={`${styles.container} mx-auto`}>
+    <StyledContainer className={'mx-auto'}>
       <h1 className={`${styles.faq_header} mt-5 mb-1`}>
         Frequently Asked Questions
       </h1>
@@ -300,7 +319,7 @@ const FAQ: React.VFC = () => {
           </StyledCard>
         ))}
       </Accordion>
-    </div>
+    </StyledContainer>
   );
 };
 

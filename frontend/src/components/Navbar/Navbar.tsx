@@ -34,6 +34,9 @@ const StyledMeIcon = styled.div`
   height: 30px;
   border-radius: 15px;
   display: flex;
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
   &:hover {
     cursor: pointer;
     color: ${({ theme }) => theme.primary};
@@ -61,6 +64,7 @@ const StyledNavLink = styled(NavLink)`
   font-weight: 500;
   font-size: 1rem;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
+  transition: color ${({ theme }) => theme.trans_dur};
   &:hover {
     text-decoration: none !important;
     color: ${({ theme }) => theme.primary};

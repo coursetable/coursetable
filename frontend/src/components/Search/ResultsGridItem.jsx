@@ -35,6 +35,9 @@ const StyledGridItem = styled.div`
       : theme.theme === 'light'
       ? 'rgb(245, 245, 245)'
       : theme.surface[1]};
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
   &:hover {
     background-color: ${({ theme }) => theme.select_hover};
   }
