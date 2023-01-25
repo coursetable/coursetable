@@ -1,0 +1,23 @@
+.container {
+  width: 900px;
+  margin-bottom: 3rem;
+}
+
+.privacy_description {
+  font-weight: 500;
+  font-size: 15px;
+  text-align: center;
+  max-width: 750px;
+}
+
+@media (max-width: 950px) {
+  .container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 425px) {
+  .container {
+    width: 90vw;
+  }
+}
