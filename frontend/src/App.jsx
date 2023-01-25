@@ -14,6 +14,7 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
+import Privacy from './pages/Privacy';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import Challenge from './pages/Challenge';
@@ -213,6 +214,11 @@ function App({ themeToggler, location }) {
 
         <MyRoute exact path="/faq">
           <FAQ />
+        </MyRoute>
+
+        {/* Privacy */}
+        <MyRoute exact path="/privacypolicy">
+          <Privacy />
         </MyRoute>
 
         <MyRoute path="/Table">
