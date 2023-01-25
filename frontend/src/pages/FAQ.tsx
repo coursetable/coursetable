@@ -158,16 +158,6 @@ const FAQ: React.VFC = () => {
       ),
     },
     {
-      title: 'Can I request deletion of my data?',
-      contents: (
-        <>
-          If you so desire, you may request deletion of your data by sending us
-          an <a href="mailto: coursetable.at.yale@gmail.com">email</a> with the
-          subject line <strong>"Request to Delete CourseTable Data"</strong>.
-        </>
-      ),
-    },
-    {
       title: 'How often is CourseTable updated?',
       contents: (
         <>
@@ -291,6 +281,18 @@ const FAQ: React.VFC = () => {
             application
           </NavLink>
           !
+        </>
+      ),
+    },
+    {
+      title: 'Do you have a privacy policy?',
+      contents: (
+        <>
+          You can find our privacy policy{' '}
+          <NavLink to="/privacypolicy" onClick={scrollToTop}>
+            here
+          </NavLink>
+          .
         </>
       ),
     },
