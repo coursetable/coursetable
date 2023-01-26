@@ -91,6 +91,12 @@ const Footer: React.VFC = () => {
                   <TextComponent type={1}>Status</TextComponent>
                 </a>
               </li>
+              {/* Privacy Policy */}
+              <li>
+                <NavLink to="/privacypolicy" onClick={scrollToTop}>
+                  <TextComponent type={1}>Privacy Policy</TextComponent>
+                </NavLink>
+              </li>
             </ul>
           </div>
           <div className="col-6 col-md">
