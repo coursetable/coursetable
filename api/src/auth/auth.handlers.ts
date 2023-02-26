@@ -13,6 +13,11 @@ import axios from 'axios';
 
 import { YALIES_API_KEY, POSTHOG_CLIENT, prisma } from '../config';
 
+let BYPASS = 0;
+if ('BYPASS_AUTH' in process.env) {
+  BYPASS = parseInt(process.env.BYPASS_AUTH);
+}
+
 // codes for allowed organizations (to give faculty access to the site)
 const ALLOWED_ORG_CODES = [
   'MED', // medical school
@@ -252,6 +257,9 @@ export const casLogin = (
   winston.info('Logging in with CAS');
   // Authenticate with passport
   passport.authenticate('cas', (casError, user) => {
+    if (BYPASS == 1) {
+      return postAuth(req, res);
+    }
     // handle auth errors or missing users
     if (casError) {
       return next(casError);
