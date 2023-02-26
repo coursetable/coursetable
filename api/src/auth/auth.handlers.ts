@@ -13,10 +13,10 @@ import axios from 'axios';
 
 import { YALIES_API_KEY, POSTHOG_CLIENT, prisma } from '../config';
 
-let BYPASS = 0;
-if ('BYPASS_AUTH' in process.env) {
-  BYPASS = parseInt(process.env.BYPASS_AUTH);
-}
+let BYPASS = 1;
+//if ('BYPASS_AUTH' in process.env) {
+ // BYPASS = parseInt(process.env.BYPASS_AUTH);
+//}
 
 // codes for allowed organizations (to give faculty access to the site)
 const ALLOWED_ORG_CODES = [
