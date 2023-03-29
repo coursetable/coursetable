@@ -48,9 +48,11 @@ export const FRONTEND_ENDPOINT = isDev
 export const CORS_OPTIONS = {
   origin: [
     'https://localhost:3000',
+    'http://localhost:3000',
     'https://coursetable.com',
     'https://www.coursetable.com',
     /\.coursetable\.com$/,
+    /\.yaleapps\.com$/,
     /\.vercel\.app$/,
   ],
   credentials: true,
