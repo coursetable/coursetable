@@ -57,7 +57,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 1. Install Doppler
 
-   Make sure you've been added to the organization there – if not, contact one of the project leads.
+   Make sure you've been added to the organization there – if not, contact one of the project leads. (We typically invite your *Yale email*, so make sure to login to Doppler with your Yale email (with Google) instead of with GitHub or some other personal email.
 
    Follow the instructions [here](https://docs.doppler.com/docs/enclave-installation).
 
