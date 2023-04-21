@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useCallback, useMemo } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
@@ -15,7 +15,6 @@ import { useUser } from '../../contexts/userContext';
 import FBLoginButton from './FBLoginButton';
 import { FaFacebookSquare } from 'react-icons/fa';
 import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
-
 // Row in navbar search
 const StyledRow = styled(Row)`
   width: auto;
@@ -79,11 +78,23 @@ export const NavbarWorksheetSearch: React.FC = () => {
     season_options,
     cur_season,
     changeSeason,
+    changeWorksheet,
+    worksheet_number,
     fb_person,
     handleFBPersonChange,
     worksheet_view,
     handleWorksheetView,
   } = useWorksheet();
+
+  const worksheet_options = useMemo(() => {
+    const worksheet_options_temp = [
+      { value: '0', label: 'Main Worksheet' },
+      { value: '1', label: 'Worksheet 1' },
+      { value: '2', label: 'Worksheet 2' },
+      { value: '3', label: 'Worksheet 3' },
+    ];
+    return worksheet_options_temp;
+  }, []);
 
   const selected_season = useMemo(() => {
     if (cur_season) {
@@ -94,6 +105,19 @@ export const NavbarWorksheetSearch: React.FC = () => {
     }
     return null;
   }, [cur_season]);
+
+  const selected_worksheet = useMemo(() => {
+    if (worksheet_number) {
+      return {
+        value: worksheet_number,
+        label:
+          worksheet_number === '0'
+            ? 'Main Worksheet'
+            : `Worksheet ${worksheet_number}`,
+      };
+    }
+    return null;
+  }, [worksheet_number]);
 
   // Fetch user context data
   const { user } = useUser();
@@ -181,6 +205,27 @@ export const NavbarWorksheetSearch: React.FC = () => {
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
                     changeSeason(selectedOption.value);
+                  }
+                }}
+              />
+            </Popout>
+            {/* Worksheet Choice Filter Dropdown */}
+            <Popout
+              buttonText="Worksheet"
+              type="worksheet"
+              select_options={selected_worksheet}
+              clearIcon={false}
+            >
+              <PopoutSelect
+                isClearable={false}
+                hideSelectedOptions={false}
+                value={selected_worksheet}
+                options={worksheet_options}
+                placeholder="Main Worksheet"
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                  if (isOption(selectedOption)) {
+                    changeWorksheet(selectedOption.value);
+                    //console.log(worksheet_number);
                   }
                 }}
               />

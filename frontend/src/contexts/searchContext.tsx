@@ -72,6 +72,7 @@ type Store = {
   workloadBounds: number[];
   workloadValueLabels: number[];
   select_seasons: Option[];
+  select_worksheet: Option[];
   select_days: Option[];
   timeBounds: string[];
   timeValueLabels: string[];
@@ -157,6 +158,7 @@ const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
   { value: def_season_code, label: toSeasonString(def_season_code)[0] },
 ];
+const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
@@ -174,6 +176,7 @@ export const defaultFilters = {
   defaultEnrollBounds,
   defaultNumBounds,
   defaultSeason,
+  defaultWorksheet,
   defaultTrue,
   defaultFalse,
   defaultSortOption,
@@ -223,6 +226,15 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
     'select_seasons',
     defaultSeason
+  );
+
+  const [select_worksheets, setSelectWorksheets] = useSessionStorageState(
+    'select_worksheets',
+    defaultWorksheet
+  );
+  const [worksheet_number, setWorksheetNumber] = useSessionStorageState(
+    'worksheet_number',
+    0
   );
 
   const [select_days, setSelectDays] = useSessionStorageState(

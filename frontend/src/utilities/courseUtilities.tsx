@@ -1,7 +1,12 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
-import { FBFriendInfo, FBInfo, Worksheet } from '../contexts/userContext';
+import {
+  FBFriendInfo,
+  FBInfo,
+  Worksheet,
+  Saved,
+} from '../contexts/userContext';
 import { Listing } from '../components/Providers/FerryProvider';
 import { SortKeys } from '../queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
@@ -11,6 +16,7 @@ import { DateTime } from 'luxon';
 export const isInWorksheet = (
   season_code: Season,
   crn: Crn | string,
+  worksheet_number: string,
   worksheet?: Worksheet
 ): boolean => {
   if (worksheet == null) return false;
@@ -18,7 +24,26 @@ export const isInWorksheet = (
     crn = crn.toString();
   }
   for (let i = 0; i < worksheet.length; i++) {
-    if (worksheet[i][0] === season_code && worksheet[i][1] === crn) return true;
+    //console.log(worksheet_number, worksheet[i][2], 'yaaaa');
+    if (
+      worksheet[i][0] === season_code &&
+      worksheet[i][1] === crn &&
+      worksheet[i][2] === worksheet_number.toString()
+    )
+      return true;
+  }
+  return false;
+};
+
+// Check if a listing is in the user's saved
+export const isInSaved = (crn: Crn | string, saved?: Saved): boolean => {
+  if (saved == null) return false;
+
+  if (typeof crn !== 'string') {
+    crn = crn.toString();
+  }
+  for (let i = 0; i < saved.length; i++) {
+    if (saved[i][1] === crn) return true;
   }
   return false;
 };
