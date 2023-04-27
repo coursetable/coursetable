@@ -26,9 +26,10 @@ export const useWorksheetInfo = (
       if (seasons.has(season)) return [season];
       return [];
     }
+    return Array.from(seasons); // idk just need to return something i think
   }, [season, worksheet]);
 
-  const required_worksheet_numbers = useMemo(() => {
+/*   const required_worksheet_numbers = useMemo(() => {
     if (!worksheet || worksheet.length === 0) {
       // If the worksheet is empty, we don't want to request data for any
       // seasons, even if a specific season is requested.
@@ -41,7 +42,7 @@ export const useWorksheetInfo = (
     });
     if (worksheet_numbers.has(worksheet_number)) return [worksheet_number];
     return [];
-  }, [worksheet_number, worksheet]);
+  }, [worksheet_number, worksheet]); */
 
   const { loading, error, courses } = useCourseData(required_seasons);
 
@@ -54,7 +55,6 @@ export const useWorksheetInfo = (
       const season_code: string = worksheet[i][0];
       const crn = parseInt(worksheet[i][1], 10);
       const worksheet_number_course: string = worksheet[i][2];
-
       if (season !== null && season != season_code) {
         continue;
       }

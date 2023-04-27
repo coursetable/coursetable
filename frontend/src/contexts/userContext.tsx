@@ -12,7 +12,7 @@ import { toast } from 'react-toastify';
 import { NetId, Season } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
-export type Worksheet = [Season, string][];
+export type Worksheet = [Season, string, string][];
 export type FBFriendInfo = Record<
   NetId,
   {

@@ -72,7 +72,6 @@ type Store = {
   workloadBounds: number[];
   workloadValueLabels: number[];
   select_seasons: Option[];
-  select_worksheet: Option[];
   select_days: Option[];
   timeBounds: string[];
   timeValueLabels: string[];
@@ -226,15 +225,6 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
     'select_seasons',
     defaultSeason
-  );
-
-  const [select_worksheets, setSelectWorksheets] = useSessionStorageState(
-    'select_worksheets',
-    defaultWorksheet
-  );
-  const [worksheet_number, setWorksheetNumber] = useSessionStorageState(
-    'worksheet_number',
-    0
   );
 
   const [select_days, setSelectDays] = useSessionStorageState(

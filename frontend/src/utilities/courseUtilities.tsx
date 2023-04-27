@@ -5,7 +5,6 @@ import {
   FBFriendInfo,
   FBInfo,
   Worksheet,
-  Saved,
 } from '../contexts/userContext';
 import { Listing } from '../components/Providers/FerryProvider';
 import { SortKeys } from '../queries/Constants';
