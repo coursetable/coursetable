@@ -34,18 +34,7 @@ export const isInWorksheet = (
   return false;
 };
 
-// Check if a listing is in the user's saved
-export const isInSaved = (crn: Crn | string, saved?: Saved): boolean => {
-  if (saved == null) return false;
 
-  if (typeof crn !== 'string') {
-    crn = crn.toString();
-  }
-  for (let i = 0; i < saved.length; i++) {
-    if (saved[i][1] === crn) return true;
-  }
-  return false;
-};
 
 // Convert season code to legible string
 export const toSeasonString = (

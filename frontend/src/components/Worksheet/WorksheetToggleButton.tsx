@@ -187,7 +187,7 @@ function WorksheetToggleButton({
               onChange={handleWorksheetChange}
               onClick={(e) => {
                 // Check if the clicked target is the select element
-                if (e.target.tagName === 'SELECT') {
+                if ((e.target as HTMLSelectElement).tagName === 'SELECT') {
                   e.stopPropagation();
                 }
               }}
