@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import './WorksheetToggleButton.css';
-import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
+import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
@@ -157,9 +157,9 @@ function WorksheetToggleButton({
 
   // Handler for changing the selected worksheet in the dropdown
   const handleWorksheetChange = (event: {
-    target: { value: React.SetStateAction<number> };
+    target: { value: React.SetStateAction<string> };
   }) => {
-    setSelectedWorksheet(Number(event.target.value));
+    setSelectedWorksheet(event.target.value);
   };
 
   return (

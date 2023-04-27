@@ -64,7 +64,7 @@ export const toggleBookmark = async (
         net_id: netId,
         oci_id: parseInt(ociId, 10),
         season: parseInt(season, 10),
-        worksheet_number: worksheet_number,
+        worksheet_number
       },
     });
   }
