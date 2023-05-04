@@ -16,6 +16,7 @@ import web_dark from '../images/headshots/link-logos/web-light.png';
 // Current Member Headshots
 import lz from '../images/headshots/lily-zhou.jpg';
 import lh from '../images/headshots/lucas-huang.jpg';
+import as from '../images/headshots/alex-schapiro.png';
 import ae from '../images/headshots/aidan-evans.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
@@ -58,6 +59,15 @@ const About: React.VFC = () => {
   const theme = useTheme();
 
   const current = [
+    {
+      name: 'Alex Schapiro',
+      image: as,
+      role: 'CourseTable Co-Lead',
+      links: {
+        github: 'https://github.com/bearsyankees',
+        linkedin: 'https://www.linkedin.com/in/aschap/',
+      },
+    },
     {
       name: 'Lucas Huang',
       image: lh,
