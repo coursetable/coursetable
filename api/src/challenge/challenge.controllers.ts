@@ -88,7 +88,7 @@ const constructChallenge = (
     const { crn } = x.course.listings[0];
     const season = x.course.season_code;
 
-    return `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=${crn}&term_code=${season}`;
+    return `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=${crn}&termCode=${season}`;
   });
 
   // merged course information object
