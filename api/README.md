@@ -30,7 +30,7 @@ Once these requirements are met, a challenge is produced as follows:
 
    Random selection is implemented by choosing a random float between 1 and 5 and selecting questions with a mean response just above this threshold (accomplished by sorting the responses in order of ascending mean rating and limiting to the first three).
 
-2. For each question, we randomly choose one of the five response options for the user to go fetch the number of respondents. For ease of access, we auto-generate the OCE URL from the template `https://oce.app.yale.edu/oce-viewer/studentSummary/index?crn=<CRN>&term_code=<SEASON>`.
+2. For each question, we randomly choose one of the five response options for the user to go fetch the number of respondents. For ease of access, we auto-generate the OCE URL from the template `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=<CRN>&termCode=<SEASON>`.
 
 3. An object containing the question-response bucket combinations, the user's NetID, and a salt value is JSON-stringified and encrypted into a token using a secret unknown to the user. This affords us the following points of security:
 
