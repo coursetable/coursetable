@@ -10,7 +10,7 @@ COPY src ./src
 COPY prisma ./prisma
 
 # Give permissions to Prisma schema file
-RUN chmod 644 app/prisma/schema.prisma
+RUN chmod 644 /app/prisma/schema.prisma
 RUN yarn install
 
 ENV NODE_ENV=production
