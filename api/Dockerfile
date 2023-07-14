@@ -6,6 +6,11 @@ COPY yarn.lock ./
 COPY tsconfig.json ./
 COPY src ./src
 
+# Copy Prisma schema file
+COPY prisma ./prisma
+
+# Give permissions to Prisma schema file
+RUN chmod 644 /prisma/schema.prisma
 RUN yarn install
 
 ENV NODE_ENV=production
