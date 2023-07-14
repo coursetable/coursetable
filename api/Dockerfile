@@ -10,8 +10,12 @@ COPY src ./src
 COPY prisma ./prisma
 
 # Give permissions to Prisma schema file
-RUN chmod 664 /app/prisma/schema.prisma
+RUN chmod 644 /app/prisma/schema.prisma
 RUN yarn install
+
+# Set non-root user and adjust ownership
+RUN chown -R node:node /app
+USER node
 
 ENV NODE_ENV=production
 CMD ["yarn", "start"]
