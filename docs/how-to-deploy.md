@@ -86,6 +86,11 @@ cd ~/coursetable/docker
 git pull # Get changes onto server
 ./deploy.sh # Deploy the new version
 ```
+If you get a prisma EACCES error run this from /coursetable/docker:
+```
+chown -R 1000:1000 ../api
+chmod -R 755 ../api
+```
 
 **ferry**
 
@@ -95,6 +100,7 @@ cd ~/ferry
 git pull # Get changes onto server
 doppler run --command "./refresh_courses.sh" # Rerun the pipeline
 ```
+
 
 **beta**
 
