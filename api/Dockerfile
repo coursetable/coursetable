@@ -1,27 +1,21 @@
 FROM node:latest as build
 
 WORKDIR /app
-
-# Copying needed files
 COPY package.json ./
 COPY yarn.lock ./
 COPY tsconfig.json ./
 COPY src ./src
+
+# Copy Prisma schema file
 COPY prisma ./prisma
-COPY start.sh ./
 
-# Adjust permissions
-USER root
-RUN chmod +x start.sh
-
-# Switch back to the node user
-USER node
-
-# Install dependencies
+# Give permissions to Prisma schema file
+RUN chmod 644 /app/prisma/schema.prisma
 RUN yarn install
 
-# Set environment variable
-ENV NODE_ENV=production
+# Set non-root user and adjust ownership
+RUN chown node:node /app/prisma/schema.prisma
+USER node
 
-# Start the application
-CMD ["sh", "start.sh"]
+ENV NODE_ENV=production
+CMD ["yarn", "start"]
