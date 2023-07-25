@@ -19,7 +19,7 @@ const Graphiql: React.VFC = () => (
       All of our course data are available for Yale students through GraphQL.
       Note that we truncate each query to 1,000 items for performance reasons.
     </div>
-    <GraphiQL fetcher={fetcher} defaultSecondaryEditorOpen />
+    <GraphiQL fetcher={fetcher} />
   </div>
 );
 export default Graphiql;
