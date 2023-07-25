@@ -32,7 +32,7 @@
   },
   "dependencies": {
     "@apollo/client": "^3.3.7",
-    "@graphiql/toolkit": "^0.2.0",
+    "@graphiql/toolkit": "^0.9.1",
     "@sentry/react": "^6.1.0",
     "@sentry/tracing": "^6.1.0",
     "@types/async-lock": "^1.1.2",
@@ -58,7 +58,7 @@
     "chroma-js": "^2.1.0",
     "core-js": "^3.8.3",
     "file-saver": "^2.0.2",
-    "graphiql": "^1.4.7",
+    "graphiql": "^3.0.4",
     "graphql": "^15.5.0",
     "graphql-tag": "^2.11.0",
     "history": "^4.9.0",

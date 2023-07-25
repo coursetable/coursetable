@@ -21,6 +21,7 @@ import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
+import Join from './pages/Join';
 
 import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './browserStorage';
@@ -185,6 +186,11 @@ function App({ themeToggler, location }) {
         {/* Thank You */}
         <MyRoute exact path="/thankyou">
           <Thankyou />
+        </MyRoute>
+
+        {/* Join Us */}
+        <MyRoute exact path="/joinus">
+          <Join />
         </MyRoute>
 
         {/* Footer Links */}
