@@ -119,6 +119,12 @@ const Footer: React.VFC = () => {
                   <TextComponent type={1}>Team</TextComponent>
                 </NavLink>
               </li>
+              {/* Join us */}
+              <li>
+                <NavLink to="/joinus" onClick={scrollToTop}>
+                  <TextComponent type={1}>Join Us</TextComponent>
+                </NavLink>
+              </li>
               {/* Github */}
               <li>
                 <a
