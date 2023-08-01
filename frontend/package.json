@@ -67,7 +67,7 @@
     "luxon": "^3.3.0",
     "mark.js": "^8.11.1",
     "moment": "^2.29.1",
-    "posthog-js": "^1.8.8",
+    "posthog-js": "^1.57.2",
     "qs": "^6.10.3",
     "rc-slider": "9.7.1",
     "rc-tooltip": "^5.1.0",
