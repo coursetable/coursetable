@@ -86,7 +86,7 @@ app.use(
 
     // Not enabling this yet since it could have unintended consequences.
     // Eventually we should enable this.
-    // secure: true,
+    secure: process.env.NODE_ENV === 'production', // set to false when not in production
   })
 );
 
