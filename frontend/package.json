@@ -29,7 +29,8 @@
   },
   "resolutions": {
     "graphql-language-service-interface": "2.4.2-alpha.2",
-    "react-virtualized": "git+https://git@github.com/remorses/react-virtualized-fixed-import.git#9.22.3"
+    "react-virtualized": "git+https://git@github.com/remorses/react-virtualized-fixed-import.git#9.22.3",
+    "@types/react": "^18.2.7"
   },
   "dependencies": {
     "@apollo/client": "^3.3.7",
@@ -74,7 +75,7 @@
     "qs": "^6.10.3",
     "rc-slider": "9.7.1",
     "rc-tooltip": "^5.1.0",
-    "react": "^17.0.0",
+    "react": "17.0.2",
     "react-app-polyfill": "^2.0.0",
     "react-big-calendar": "^0.30.0",
     "react-bootstrap": "^1.4.3",
