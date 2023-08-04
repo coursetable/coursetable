@@ -71,7 +71,10 @@ function Worksheet() {
     );
   }
   // Wait for search query to finish
-  if (worksheetError) {
+  // if (worksheetError) {
+
+  // temp fix for accessing worksheet w/o ferry
+  if (false) {
     Sentry.captureException(worksheetError);
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
@@ -118,16 +121,15 @@ function Worksheet() {
               // Width of component depends on if it is expanded or not
               md={
                 worksheet_view.view === 'calendar' &&
-                worksheet_view.mode === 'expanded'
+                  worksheet_view.mode === 'expanded'
                   ? 12
                   : 9
               }
-              className={`mt-3 pl-0 ${
-                worksheet_view.view === 'calendar' &&
+              className={`mt-3 pl-0 ${worksheet_view.view === 'calendar' &&
                 worksheet_view.mode === 'expanded'
-                  ? 'pr-0 '
-                  : 'pr-3 '
-              }${worksheet_view.view === 'list' ? styles.hidden : ''}`}
+                ? 'pr-0 '
+                : 'pr-3 '
+                }${worksheet_view.view === 'list' ? styles.hidden : ''}`}
             >
               <StyledCalendarContainer
                 layer={0}
@@ -139,7 +141,7 @@ function Worksheet() {
                   className={`${styles.expand_btn} ${styles.top_right}`}
                 >
                   {worksheet_view.view === 'calendar' &&
-                  worksheet_view.mode !== 'expanded' ? (
+                    worksheet_view.mode !== 'expanded' ? (
                     <FaExpandAlt
                       className={styles.expand_icon}
                       size={expand_btn_size}
@@ -169,12 +171,11 @@ function Worksheet() {
             <Col
               // Width depends on if it is expanded or not
               md={worksheet_view.view === 'list' ? 12 : 3}
-              className={`ml-auto px-0 ${
-                worksheet_view.view === 'calendar' &&
+              className={`ml-auto px-0 ${worksheet_view.view === 'calendar' &&
                 worksheet_view.mode === 'expanded'
-                  ? styles.hidden
-                  : ''
-              }`}
+                ? styles.hidden
+                : ''
+                }`}
             >
               {/* List Component */}
               <Fade in={worksheet_view.view === 'list'}>
