@@ -100,25 +100,29 @@ const addToCache = (season: Season): Promise<void> => {
       [season]: true,
     };
 
-    return axios
-      .get(`${API_ENDPOINT}/api/static/catalogs/${season}.json`, {
-        withCredentials: true,
-      })
-      .then((res) => {
-        // Convert season list into a crn lookup table.
-        const data = res.data as Listing[];
-        const info = new Map<Crn, Listing>();
-        for (const rawListing of data) {
-          const listing = preprocessCourses(rawListing);
-          info.set(listing.crn, listing);
-        }
+    return (
+      axios
+        // .get(`${API_ENDPOINT}/api/static/catalogs/${season}.json`, {
+        .get('https://localhost:3000/test.json', {
+          // withCredentials: true,
+          withCredentials: false,
+        })
+        .then((res) => {
+          // Convert season list into a crn lookup table.
+          const data = res.data as Listing[];
+          const info = new Map<Crn, Listing>();
+          for (const rawListing of data) {
+            const listing = preprocessCourses(rawListing);
+            info.set(listing.crn, listing);
+          }
 
-        // Save in global cache. Here we force the creation of a new object.
-        courseData = {
-          ...courseData,
-          [season]: info,
-        };
-      });
+          // Save in global cache. Here we force the creation of a new object.
+          courseData = {
+            ...courseData,
+            [season]: info,
+          };
+        })
+    );
   });
 };
 
