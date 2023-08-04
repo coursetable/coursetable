@@ -138,14 +138,20 @@ const Globals: React.FC = ({ children }) => {
                         <GlobalStyles />
                         <div id="base" style={{ height: 'auto' }}>
                           {/* Clone child and give it the themeToggler prop */}
-                          {React.Children.map(children, (child) => {
-                            if (React.isValidElement(child)) {
-                              return React.cloneElement(child, {
-                                themeToggler,
-                              });
-                            }
-                            return child;
-                          })}
+                          {children &&
+                            React.Children.map(
+                              children as React.ReactElement<{
+                                themeToggler: string | (() => void);
+                              }>,
+                              (child) => {
+                                if (React.isValidElement(child)) {
+                                  return React.cloneElement(child, {
+                                    themeToggler,
+                                  });
+                                }
+                                return child;
+                              }
+                            )}
                         </div>
                       </>
                     </ThemeProvider>

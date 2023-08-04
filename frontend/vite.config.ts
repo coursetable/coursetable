@@ -4,6 +4,8 @@ import reactSvgPlugin from 'vite-plugin-react-svg';
 import { injectHtml } from 'vite-plugin-html';
 import dotenv from 'dotenv';
 
+
+
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
