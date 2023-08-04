@@ -85,7 +85,8 @@ export const UserProvider: React.FC = ({ children }) => {
           // Error with fetching user's worksheet
           setNetId(undefined);
           setWorksheet(undefined);
-          setHasEvals(undefined);
+          // setHasEvals(undefined);
+          setHasEvals(true);
           setYear(undefined);
           setSchool(undefined);
           posthog.reset();

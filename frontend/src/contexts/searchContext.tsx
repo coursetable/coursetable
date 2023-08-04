@@ -321,7 +321,8 @@ export const SearchProvider: React.FC = ({ children }) => {
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
-  const isLoggedIn = user.worksheet != null;
+  // const isLoggedIn = user.worksheet != null;
+  const isLoggedIn = true;
 
   // Object that holds a list of each fb friend taking a specific course
   const num_fb = useMemo(() => {

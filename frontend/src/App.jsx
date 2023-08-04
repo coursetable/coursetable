@@ -53,7 +53,8 @@ function App({ themeToggler, location }) {
   }, [userRefresh, fbRefresh]);
 
   // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheet != null);
+  // const isLoggedIn = Boolean(user.worksheet != null);
+  const isLoggedIn = true;
 
   const MyRoute = Route;
 
