@@ -15,32 +15,32 @@ services:
       - graphql-engine
       - mysql
     environment:
-      CANNY_KEY: ${CANNY_KEY?canny_key}
-      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
-      FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
-      FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
+      CANNY_KEY: XXX
+      FACEBOOK_API_ENDPOINT: XXX
+      FERRY_SECRET: XXX
+      FRONTEND_ENDPOINT: XXX
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql
-      MYSQL_HOST: ${MYSQL_HOST?host}
-      MYSQL_PORT: ${MYSQL_PORT?port}
-      MYSQL_USER: ${MYSQL_USERNAME?username}
-      MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
-      MYSQL_URL: ${MYSQL_URL?mysql_url}
+      MYSQL_HOST: XXX
+      MYSQL_PORT: XXX
+      MYSQL_USER: XXX
+      MYSQL_PASSWORD: XXX
+      MYSQL_URL: XXX
       NODE_ENV: development
-      POSTHOG_API_KEY: ${POSTHOG_API_KEY?posthog_api_key}
-      POSTHOG_HOST: ${POSTHOG_HOST?posthog_host}
-      SESSION_SECRET: ${SESSION_SECRET?session_secret}
+      POSTHOG_API_KEY: XXX
+      POSTHOG_HOST: XXX
+      SESSION_SECRET: XXX
       STUDENTS_DB: yaleplus
-      YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}
-      SECURE_PORT: ${SECURE_PORT?secure_port}
-      INSECURE_PORT: ${INSECURE_PORT?insecure_port}
-      CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
+      YALIES_API_KEY: XXX
+      SECURE_PORT: XXX
+      INSECURE_PORT: XXX
+      CHALLENGE_PASSWORD: XXX
 
   graphql-engine:
     image: hasura/graphql-engine:latest
     ports:
       - "8085:8080"
     environment:
-      HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
+      HASURA_GRAPHQL_DATABASE_URL: XXX
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
@@ -50,7 +50,7 @@ services:
     build: ./mysql
     command: --default-authentication-plugin=mysql_native_password --log-warnings
     environment:
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
+      MYSQL_ROOT_PASSWORD: XXX
     ports:
       - "3306:3306"
     volumes:
@@ -65,7 +65,7 @@ services:
       - mysql
     environment:
       PMA_HOST: mysql
-      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
+      MYSQL_ROOT_PASSWORD: XXX
     ports:
       - "8081:80"
 
