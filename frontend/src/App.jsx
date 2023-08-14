@@ -104,26 +104,6 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      <Notice>
-        Want to specifically search course reviews? Check out&nbsp;
-        <a
-          href="https://janktable.herokuapp.com/"
-          style={{ color: 'white', fontWeight: '750' }}
-          target="_blank"
-        >
-          JankTable
-        </a>
-        !<br />
-        Or are you looking for guts? Check out&nbsp;
-        <a
-          href="https://yuts.io/"
-          style={{ color: 'white', fontWeight: '750' }}
-          target="_blank"
-        >
-          Yuts
-        </a>
-        !
-      </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
