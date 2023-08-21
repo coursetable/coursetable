@@ -23,6 +23,18 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const StyledSelect = styled.select`
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.select || '#f2f2f2'}!important;
+  color: ${({ theme }) => theme.text[0] || '#333'}!important;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+`;
+
 /**
  * Toggle button to add course to or remove from worksheet
  * @prop crn - number | integer that holds the crn of the current course
@@ -186,7 +198,7 @@ function WorksheetToggleButton({
               <FaPlus size={25} className="scale_icon" />
             )}
             {/* Render the worksheet dropdown */}
-            <select
+            <StyledSelect
               value={selectedWorksheet}
               onChange={handleWorksheetChange}
               onClick={(e) => {
@@ -199,24 +211,13 @@ function WorksheetToggleButton({
                 e.preventDefault();
               }}
               className="worksheet-dropdown"
-              style={{
-                padding: '10px',
-                borderRadius: '5px',
-                backgroundColor: '#f2f2f2',
-                color: '#333',
-                fontSize: '16px',
-                fontWeight: 'bold',
-                border: 'none',
-                boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.2)',
-                cursor: 'pointer',
-              }}
             >
               {worksheetOptions.map((option) => (
                 <option key={option} value={option}>
                   {option === '0' ? 'Main Worksheet' : `Worksheet ${option}`}
                 </option>
               ))}
-            </select>
+            </StyledSelect>
           </>
         ) : (
           <>
