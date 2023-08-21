@@ -10,6 +10,7 @@ datasource db {
 model StudentBluebookSettings {
   netId              String  @id @db.Char(8)
   evaluationsEnabled Boolean
+  betaEnabled        Boolean @default(false)
   first_name         String? @db.VarChar(256)
   last_name          String? @db.VarChar(256)
   email              String? @db.VarChar(256)
@@ -29,6 +30,7 @@ model StudentFacebookFriends {
   facebookId BigInt @db.UnsignedBigInt
 
   @@unique([netId, facebookId], name: "netId_friendFacebookId", map: "netId_friendFacebookId")
+  @@index([facebookId], map: "facebookId")
   @@index([netId], map: "netId")
 }
 
@@ -41,13 +43,12 @@ model Students {
 }
 
 model WorksheetCourses {
-  id               Int    @id @default(autoincrement()) @db.UnsignedMediumInt
-  net_id           String @db.Char(8)
-  oci_id           Int    @db.UnsignedMediumInt
-  season           Int    @db.UnsignedMediumInt
-  worksheet_number Int?   @default(0) @db.UnsignedMediumInt
+  id     Int    @id @default(autoincrement()) @db.UnsignedMediumInt
+  net_id String @db.Char(8)
+  oci_id Int    @db.UnsignedMediumInt
+  season Int    @db.UnsignedMediumInt
 
-  @@unique([net_id, oci_id, season, worksheet_number], map: "net_id_oci_id_season_worksheet_number")
+  @@unique([net_id, oci_id, season], map: "net_id_oci_id_season")
   @@index([net_id], map: "net_id")
 }
 

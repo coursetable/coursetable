@@ -27,11 +27,68 @@ export const toggleBookmark = async (
 
   const { netId } = req.user;
 
-  const { action, season, ociId } = req.body;
+  const { action, season, ociId, worksheet_number } = req.body;
 
   POSTHOG_CLIENT.capture({
     distinctId: netId,
     event: 'toggle-bookmark',
+    properties: {
+      action,
+      season,
+      ociId,
+      worksheet_number,
+    },
+  });
+
+  // Add a bookmarked course
+  if (action === 'add') {
+    winston.info(
+      `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`
+    );
+    await prisma.worksheetCourses.create({
+      data: {
+        net_id: netId,
+        oci_id: parseInt(ociId, 10),
+        season: parseInt(season, 10),
+        worksheet_number,
+      },
+    });
+  }
+  // Remove a bookmarked course
+  else if (action === 'remove') {
+    winston.info(
+      `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`
+    );
+    await prisma.worksheetCourses.deleteMany({
+      where: {
+        net_id: netId,
+        oci_id: parseInt(ociId, 10),
+        season: parseInt(season, 10),
+        worksheet_number
+      },
+    });
+  }
+
+  return res.json({ success: true });
+};
+
+export const saveClassForFutureToggle = async (
+  req: express.Request,
+  res: express.Response
+): Promise<express.Response> => {
+  winston.info('Adding class to save for later');
+
+  if (!req.user) {
+    return res.status(401).json();
+  }
+
+  const { netId } = req.user;
+
+  const { action, season, ociId, course_code } = req.body;
+
+  POSTHOG_CLIENT.capture({
+    distinctId: netId,
+    event: 'save-for-later',
     properties: {
       action,
       season,
@@ -42,22 +99,23 @@ export const toggleBookmark = async (
   // Add a bookmarked course
   if (action === 'add') {
     winston.info(
-      `Bookmarking course ${ociId} in season ${season} for user ${netId}`
+      `Saving course ${ociId} in season ${season} for user ${netId}`
     );
-    await prisma.worksheetCourses.create({
+    await prisma.savedCourses.create({
       data: {
         net_id: netId,
         oci_id: parseInt(ociId, 10),
         season: parseInt(season, 10),
+        course_code,
       },
     });
   }
   // Remove a bookmarked course
   else if (action === 'remove') {
     winston.info(
-      `Removing bookmark for course ${ociId} in season ${season} for user ${netId}`
+      `Unsaving course ${ociId} in season ${season} for user ${netId}`
     );
-    await prisma.worksheetCourses.deleteMany({
+    await prisma.savedCourses.deleteMany({
       where: {
         net_id: netId,
         oci_id: parseInt(ociId, 10),
@@ -117,6 +175,8 @@ export const getUserWorksheet = async (
     data: worksheets.map((course: WorksheetCourses) => [
       String(course.season),
       String(course.oci_id),
+      String(course.worksheet_number),
     ]),
   });
 };
+
