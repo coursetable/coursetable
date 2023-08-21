@@ -27,6 +27,7 @@ type Store = {
   season_options: OptType;
   cur_worksheet: Worksheet;
   cur_season: Season;
+  worksheet_number: string;
   fb_person: string;
   courses: Listing[];
   hidden_courses: HiddenCourses;
@@ -37,6 +38,7 @@ type Store = {
   worksheetData: Listing[];
   course_modal: (string | boolean | Listing)[];
   changeSeason: (season_code: Season) => void;
+  changeWorksheet: (worksheet_number: string) => void;
   handleFBPersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
@@ -133,12 +135,18 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     defaultFilters.defaultSeason[0].value
   );
 
+  // Current worksheet number
+  const [worksheet_number, setWorksheetNumber] = useSessionStorageState(
+    'worksheet_number',
+    '0'
+  );
+
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
   const {
     loading: worksheetLoading,
     error: worksheetError,
     data: worksheetData,
-  } = useWorksheetInfo(cur_worksheet, cur_season);
+  } = useWorksheetInfo(cur_worksheet, cur_season, worksheet_number);
 
   // Cache calendar colors. Reset whenever the season changes.
   const [colorMap, setColorMap] = useState<Record<number, number[]>>({});
@@ -262,6 +270,15 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     [setCurSeason]
   );
 
+  // Function to change worksheet number
+  const changeWorksheet = useCallback(
+    (new_number: string) => {
+      posthog.capture('worksheet-number', { new_number });
+      setWorksheetNumber(new_number);
+    },
+    [setWorksheetNumber]
+  );
+
   // Show course modal for the chosen listing
   const showModal = useCallback((listing: Listing) => {
     setCourseModal([true, listing]);
@@ -280,6 +297,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       season_options,
       cur_worksheet,
       cur_season,
+      worksheet_number,
       fb_person,
       courses,
       hidden_courses,
@@ -298,12 +316,14 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       toggleCourse,
       showModal,
       hideModal,
+      changeWorksheet,
     }),
     [
       season_codes,
       season_options,
       cur_worksheet,
       cur_season,
+      worksheet_number,
       fb_person,
       courses,
       hidden_courses,
@@ -320,6 +340,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       toggleCourse,
       showModal,
       hideModal,
+      changeWorksheet,
     ]
   );
 

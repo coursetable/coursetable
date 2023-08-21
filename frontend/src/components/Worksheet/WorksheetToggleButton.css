@@ -30,3 +30,7 @@
 .disabled-button:focus {
   box-shadow: none !important;
 }
+
+.worksheet-dropdown:hover {
+  opacity: 1 !important; 
+}
