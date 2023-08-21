@@ -35,11 +35,13 @@ function WorksheetToggleButton({
   season_code,
   modal,
   setCourseInWorksheet,
+  selectedWorksheet: initialSelectedWorksheet,
 }: {
   crn: number;
   season_code: string;
   modal: boolean;
   setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedWorksheet?: string;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
@@ -47,7 +49,9 @@ function WorksheetToggleButton({
   // Define options for the worksheet dropdown
   const worksheetOptions = ['0', '1', '2', '3'];
 
-  const [selectedWorksheet, setSelectedWorksheet] = useState('0');
+  const [selectedWorksheet, setSelectedWorksheet] = useState(
+    initialSelectedWorksheet || '0'
+  );
 
   const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
 

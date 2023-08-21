@@ -44,10 +44,12 @@ function WorksheetCalendarListItem({
   course,
   hidden,
   theme,
+  worksheet_number,
 }: {
   course: Listing;
   hidden: boolean;
   theme: any;
+  worksheet_number?: string;
 }) {
   const { showModal, cur_season, toggleCourse, setHoverCourse } =
     useWorksheet();
@@ -87,6 +89,7 @@ function WorksheetCalendarListItem({
             crn={course.crn}
             season_code={cur_season}
             modal={false}
+            selectedWorksheet={worksheet_number}
           />
         </div>
       </Row>

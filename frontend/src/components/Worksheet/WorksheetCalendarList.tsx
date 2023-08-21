@@ -85,7 +85,13 @@ const CourseList = styled(SurfaceComponent)`
  */
 
 function WorksheetCalendarList() {
-  const { courses, cur_season, hidden_courses, toggleCourse } = useWorksheet();
+  const {
+    courses,
+    cur_season,
+    hidden_courses,
+    worksheet_number,
+    toggleCourse,
+  } = useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(() => {
@@ -97,12 +103,17 @@ function WorksheetCalendarList() {
       }
       // Add listgroup item to listitems list
       return (
-        <WorksheetCalendarListItem key={id} course={course} hidden={hidden} />
+        <WorksheetCalendarListItem
+          key={id}
+          course={course}
+          hidden={hidden}
+          worksheet_number={worksheet_number}
+        />
       );
     });
 
     return listitems;
-  }, [courses, hidden_courses, cur_season]);
+  }, [courses, hidden_courses, cur_season, worksheet_number]);
 
   const areHidden = useMemo(() => {
     if (!Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
