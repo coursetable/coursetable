@@ -72,61 +72,6 @@ export const toggleBookmark = async (
   return res.json({ success: true });
 };
 
-export const saveClassForFutureToggle = async (
-  req: express.Request,
-  res: express.Response
-): Promise<express.Response> => {
-  winston.info('Adding class to save for later');
-
-  if (!req.user) {
-    return res.status(401).json();
-  }
-
-  const { netId } = req.user;
-
-  const { action, season, ociId, course_code } = req.body;
-
-  POSTHOG_CLIENT.capture({
-    distinctId: netId,
-    event: 'save-for-later',
-    properties: {
-      action,
-      season,
-      ociId,
-    },
-  });
-
-  // Add a bookmarked course
-  if (action === 'add') {
-    winston.info(
-      `Saving course ${ociId} in season ${season} for user ${netId}`
-    );
-    await prisma.savedCourses.create({
-      data: {
-        net_id: netId,
-        oci_id: parseInt(ociId, 10),
-        season: parseInt(season, 10),
-        course_code,
-      },
-    });
-  }
-  // Remove a bookmarked course
-  else if (action === 'remove') {
-    winston.info(
-      `Unsaving course ${ociId} in season ${season} for user ${netId}`
-    );
-    await prisma.savedCourses.deleteMany({
-      where: {
-        net_id: netId,
-        oci_id: parseInt(ociId, 10),
-        season: parseInt(season, 10),
-      },
-    });
-  }
-
-  return res.json({ success: true });
-};
-
 /**
  * Get a user's personal worksheet.
  *
