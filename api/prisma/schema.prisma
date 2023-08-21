@@ -51,13 +51,3 @@ model WorksheetCourses {
   @@index([net_id], map: "net_id")
 }
 
-model SavedCourses {
-  id          Int    @id @default(autoincrement()) @db.UnsignedMediumInt
-  net_id      String @db.Char(8)
-  oci_id      Int    @db.UnsignedMediumInt
-  season      Int    @db.UnsignedMediumInt
-  course_code String @db.Char(10)
-
-  @@unique([net_id, course_code], map: "net_id_oci_id_season_course_code")
-  @@index([net_id], map: "net_id")
-}
