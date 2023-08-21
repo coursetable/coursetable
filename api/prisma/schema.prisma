@@ -51,3 +51,11 @@ model WorksheetCourses {
   @@index([net_id], map: "net_id")
 }
 
+model BluebookEvents {
+  netId String @db.Char(8)
+  time  Int    @db.UnsignedInt
+  event String @db.VarChar(32)
+  data  String @db.VarChar(255)
+
+  @@id([netId, time])
+}
