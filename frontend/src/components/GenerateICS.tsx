@@ -25,7 +25,7 @@ const onBreak = (day: moment.Moment) => {
 // generate ICS file and download it
 export const generateICS = (listings_all: Listing[]) => {
   // Season to export
-  const cur_season = '202301';
+  const cur_season = '202303';
 
   // Fall 2023 period
   const period = [moment('2023-01-17T08:20'), moment('2023-04-28T17:30')];

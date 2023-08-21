@@ -310,7 +310,7 @@ const Privacy: React.VFC = () => {
           </a>
           ,{' '}
           <a
-            href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
+            href="https://oce.app.yale.edu/ocedashboard/studentViewer"
             target="_blank"
             rel="noopener noreferrer"
           >

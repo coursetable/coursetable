@@ -528,10 +528,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                   railStyle={range_rail_style()}
                   trackStyle={[range_rail_style()]}
                   defaultValue={overallBounds}
-                  onChange={(value) => {
+                  onChange={(value: React.SetStateAction<number[]>) => {
                     setOverallValueLabels(value);
                   }}
-                  onAfterChange={(value) => {
+                  onAfterChange={(value: React.SetStateAction<number[]>) => {
                     setOverallBounds(value);
                     setStartTime(Date.now());
                   }}
@@ -559,10 +559,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                   railStyle={range_rail_style()}
                   trackStyle={[range_rail_style()]}
                   defaultValue={workloadBounds}
-                  onChange={(value) => {
+                  onChange={(value: React.SetStateAction<number[]>) => {
                     setWorkloadValueLabels(value);
                   }}
-                  onAfterChange={(value) => {
+                  onAfterChange={(value: React.SetStateAction<number[]>) => {
                     setWorkloadBounds(value);
                     setStartTime(Date.now());
                   }}
@@ -736,10 +736,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
                       defaultValue={timeBounds.map(toRangeTime)}
-                      onChange={(value) => {
+                      onChange={(value: number[]) => {
                         setTimeValueLabels(value.map(toRealTime));
                       }}
-                      onAfterChange={(value) => {
+                      onAfterChange={(value: number[]) => {
                         setTimeBounds(value.map(toRealTime));
                         setStartTime(Date.now());
                       }}
@@ -770,12 +770,12 @@ export const NavbarCatalogSearch: React.FC = () => {
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
                       defaultValue={enrollBounds.map(toLinear)}
-                      onChange={(value) => {
+                      onChange={(value: number[]) => {
                         setEnrollValueLabels(
                           value.map(toExponential).map(Math.round)
                         );
                       }}
-                      onAfterChange={(value) => {
+                      onAfterChange={(value: number[]) => {
                         setEnrollBounds(value.map(toExponential));
                         setStartTime(Date.now());
                       }}
@@ -820,10 +820,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
                       defaultValue={numBounds}
-                      onChange={(value) => {
+                      onChange={(value: React.SetStateAction<number[]>) => {
                         setNumValueLabels(value);
                       }}
-                      onAfterChange={(value) => {
+                      onAfterChange={(value: React.SetStateAction<number[]>) => {
                         setNumBounds(value);
                         setStartTime(Date.now());
                       }}

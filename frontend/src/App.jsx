@@ -21,6 +21,7 @@ import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
+import Join from './pages/Join';
 
 import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './browserStorage';
@@ -103,49 +104,6 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      <Notice>
-        Application for&nbsp;
-        <a
-          href="http://yalecompsociety.org/"
-          style={{ color: 'white', fontWeight: '750' }}
-          target="_blank"
-        >
-          Yale Computer Society
-        </a>
-        &nbsp;for Spring 2023 is now open. Apply&nbsp;
-        <a
-          href="https://tiny.cc/applyYCSS23"
-          style={{
-            color: 'white',
-            fontWeight: '750',
-            textDecoration: 'underline',
-          }}
-          target="_blank"
-        >
-          here
-        </a>
-        &nbsp;by <b>Friday, Jan. 27 at 11:59 pm</b>!
-      </Notice>
-      <Notice>
-        Want to specifically search course reviews? Check out&nbsp;
-        <a
-          href="https://janktable.herokuapp.com/"
-          style={{ color: 'white', fontWeight: '750' }}
-          target="_blank"
-        >
-          JankTable
-        </a>
-        !<br />
-        Or are you looking for guts? Check out&nbsp;
-        <a
-          href="https://yuts.io/"
-          style={{ color: 'white', fontWeight: '750' }}
-          target="_blank"
-        >
-          Yuts
-        </a>
-        !
-      </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
@@ -208,6 +166,11 @@ function App({ themeToggler, location }) {
         {/* Thank You */}
         <MyRoute exact path="/thankyou">
           <Thankyou />
+        </MyRoute>
+
+        {/* Join Us */}
+        <MyRoute exact path="/joinus">
+          <Join />
         </MyRoute>
 
         {/* Footer Links */}
