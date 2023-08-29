@@ -28,7 +28,7 @@ export const generateICS = (listings_all: Listing[]) => {
   const cur_season = '202303';
 
   // Fall 2023 period
-  const period = [moment('2023-08-30T08:20'), moment('2023-012-08T17:30')];
+  const period = [moment('2023-08-30T08:20'), moment('2023-12-08T17:30')];
 
   // Only get courses for the current season that have valid times
   const listings: Listing[] = [];
