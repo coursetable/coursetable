@@ -81,7 +81,7 @@ const About: React.VFC = () => {
     {
       name: 'Lily Zhou',
       image: lz,
-      role: 'CourseTable Co-Lead',
+      role: 'Former Lead',
       links: {
         github: 'https://github.com/lilyzhouZYJ',
         linkedin: 'https://www.linkedin.com/in/lily-zhou-b12142146/',
