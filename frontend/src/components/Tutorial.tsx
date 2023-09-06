@@ -170,7 +170,7 @@ const stepsContent: Step[] = [
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${API_ENDPOINT}/api/canny/board`}
+          href={`https://feedback.coursetable.com/`}
         >
           <strong>Feedback page</strong>
         </a>

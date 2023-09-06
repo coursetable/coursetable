@@ -142,7 +142,7 @@ const MeDropdown: React.VFC<Props> = ({
               />
               <TextComponent type={1}>
                 <a
-                  href={`${API_ENDPOINT}/api/canny/board`}
+                  href={`https://feedback.coursetable.com/`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.collapse_text}

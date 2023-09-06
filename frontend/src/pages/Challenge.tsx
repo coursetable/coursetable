@@ -212,7 +212,7 @@ const Challenge: React.VFC = () => {
                 <div>
                   Looks like we messed up. Please{' '}
                   <a
-                    href={`${API_ENDPOINT}/api/canny/board`}
+                    href={`https://feedback.coursetable.com/`}
                     target="_blank"
                     rel="noopener noreferrer"
                   >
@@ -360,7 +360,7 @@ const Challenge: React.VFC = () => {
         <div>
           We couldn't find a challenge. Please{' '}
           <a
-            href={`${API_ENDPOINT}/api/canny/board`}
+            href={`https://feedback.coursetable.com/`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -377,7 +377,7 @@ const Challenge: React.VFC = () => {
         <div>
           Looks like we messed up. Please{' '}
           <a
-            href={`${API_ENDPOINT}/api/canny/board`}
+            href={`https://feedback.coursetable.com/`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -429,7 +429,7 @@ const Challenge: React.VFC = () => {
             <br />
             If the challenge is not working for you, please{' '}
             <a
-              href={`${API_ENDPOINT}/api/canny/board`}
+              href={`https://feedback.coursetable.com/`}
               target="_blank"
               rel="noopener noreferrer"
             >

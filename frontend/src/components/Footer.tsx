@@ -73,7 +73,7 @@ const Footer: React.VFC = () => {
               {/* Feedback */}
               <li>
                 <a
-                  href={`${API_ENDPOINT}/api/canny/board`}
+                  href={`https://feedback.coursetable.com/`}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={scrollToTop}
