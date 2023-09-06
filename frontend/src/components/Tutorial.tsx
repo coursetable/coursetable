@@ -5,8 +5,6 @@ import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
-import { API_ENDPOINT } from '../config';
-
 // Next button for tutorial
 const NextButton = styled(Button)`
   background-color: ${({ theme }) => theme.primary_hover};

@@ -9,9 +9,6 @@ import { StyledHr, TextComponent } from './StyledComponents';
 import { scrollToTop } from '../utilities';
 
 import VercelBanner from '../images/powered-by-vercel.svg';
-
-import { API_ENDPOINT } from '../config';
-
 // Header
 const StyledH5 = styled.h5`
   transition: color ${({ theme }) => theme.trans_dur};
