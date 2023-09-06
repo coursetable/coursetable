@@ -105,13 +105,13 @@ function App({ themeToggler, location }) {
   return (
     <>
       <Notice>
-        Want to work for CourseTable or join the Yale Computer Society? 
+        Want to work on CourseTable or join the Yale Computer Society?
         <a
           href="https://forms.gle/eX2Lwh39R7pPd2rb6"
           style={{ color: 'white', fontWeight: '750' }}
           target="_blank"
         >
-          &nbsp; <br></br> Apply Here! 
+          &nbsp; <br></br> Apply Here!
         </a>
       </Notice>
       <Navbar
