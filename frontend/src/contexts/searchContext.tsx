@@ -623,9 +623,10 @@ export const SearchProvider: React.FC = ({ children }) => {
         return false;
       }
 
+      // Checks whether the section field consists only of letters -- if so, the class is a discussion section.
       if (
         searchConfig.discussion_section !== null &&
-        listing.title === 'Discussion Section'
+        /^[A-Z]*$/.test(listing.section)
       ) {
         return false;
       }
