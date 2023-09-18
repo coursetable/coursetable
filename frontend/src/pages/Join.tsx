@@ -12,8 +12,8 @@ const Join: React.VFC = () => {
       <h1 className={`${styles.join_header} mt-5 mb-3`}>Join Us!</h1>
       <p className={`${styles.join_description} mb-5`}>
         <TextComponent type={1}>
-          Applications for 2023-24 are open! Apply{' '}
-          <a href="https://forms.gle/eX2Lwh39R7pPd2rb6">here</a>.
+          Current applications are closed :/ But we will be recruiting again in
+          the spring!
         </TextComponent>
       </p>
       <p className={`${styles.join_description} mb-5`}>
