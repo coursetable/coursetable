@@ -5,8 +5,6 @@ import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
-import { API_ENDPOINT } from '../config';
-
 // Next button for tutorial
 const NextButton = styled(Button)`
   background-color: ${({ theme }) => theme.primary_hover};
@@ -170,7 +168,7 @@ const stepsContent: Step[] = [
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`${API_ENDPOINT}/api/canny/board`}
+          href={`https://feedback.coursetable.com/`}
         >
           <strong>Feedback page</strong>
         </a>

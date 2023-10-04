@@ -213,12 +213,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         }
         course_offerings.push({
           // Course rating
-          rating: season.course.evaluation_statistics[0]
-            ? season.course.evaluation_statistics[0].avg_rating || -1
+          rating: season.course.evaluation_statistic
+            ? season.course.evaluation_statistic.avg_rating || -1
             : -1,
           // Workload rating
-          workload: season.course.evaluation_statistics[0]
-            ? season.course.evaluation_statistics[0].avg_workload || -1
+          workload: season.course.evaluation_statistic
+            ? season.course.evaluation_statistic.avg_workload || -1
             : -1,
           // Professor rating
           professor_rating: average_professor_rating || -1,
@@ -255,7 +255,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       // Loop through each listing with evals
       for (let i = 0; i < course_offerings.length; i++) {
         // Skip listings in the current and future seasons that have no evals
-        if (['202103', '202201'].includes(course_offerings[i].season_code))
+        if (['202303', '202401'].includes(course_offerings[i].season_code))
           continue;
         const hasEvals = course_offerings[i].rating !== -1;
         const eval_box = (

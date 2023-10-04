@@ -12,6 +12,7 @@ import winston from '../logging/winston';
 import axios from 'axios';
 
 import { YALIES_API_KEY, POSTHOG_CLIENT, prisma } from '../config';
+import { StudentBluebookSettings } from '@prisma/client';
 
 // codes for allowed organizations (to give faculty access to the site)
 const ALLOWED_ORG_CODES = [
@@ -195,7 +196,7 @@ export const passportConfig = async (
           netId,
         },
       })
-      .then((student) => {
+      .then((student: StudentBluebookSettings | null) => {
         done(null, {
           netId,
           evals: !!student?.evaluationsEnabled,

@@ -3,13 +3,16 @@ import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import styles from './Footer.module.css';
 import Logo from './Navbar/Logo';
+import styled from 'styled-components';
 import { StyledHr, TextComponent } from './StyledComponents';
 
 import { scrollToTop } from '../utilities';
 
 import VercelBanner from '../images/powered-by-vercel.svg';
-
-import { API_ENDPOINT } from '../config';
+// Header
+const StyledH5 = styled.h5`
+  transition: color ${({ theme }) => theme.trans_dur};
+`;
 
 /**
  * Footer
@@ -39,7 +42,7 @@ const Footer: React.VFC = () => {
             </a>
           </div>
           <div className="col-6 col-md">
-            <h5>Explore</h5>
+            <StyledH5>Explore</StyledH5>
             <ul className="list-unstyled text-small">
               {/* Catalog */}
               <li>
@@ -56,7 +59,7 @@ const Footer: React.VFC = () => {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <h5>Support</h5>
+            <StyledH5>Support</StyledH5>
             <ul className="list-unstyled text-small">
               {/* FAQ */}
               <li>
@@ -67,7 +70,7 @@ const Footer: React.VFC = () => {
               {/* Feedback */}
               <li>
                 <a
-                  href={`${API_ENDPOINT}/api/canny/board`}
+                  href={`https://feedback.coursetable.com/`}
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={scrollToTop}
@@ -85,10 +88,16 @@ const Footer: React.VFC = () => {
                   <TextComponent type={1}>Status</TextComponent>
                 </a>
               </li>
+              {/* Privacy Policy */}
+              <li>
+                <NavLink to="/privacypolicy" onClick={scrollToTop}>
+                  <TextComponent type={1}>Privacy Policy</TextComponent>
+                </NavLink>
+              </li>
             </ul>
           </div>
           <div className="col-6 col-md">
-            <h5>Developers</h5>
+            <StyledH5>Developers</StyledH5>
             <ul className="list-unstyled text-small">
               {/* GraphQL explorer */}
               <li>
@@ -99,12 +108,18 @@ const Footer: React.VFC = () => {
             </ul>
           </div>
           <div className="col-6 col-md">
-            <h5>About</h5>
+            <StyledH5>About</StyledH5>
             <ul className="list-unstyled text-small">
               {/* Team */}
               <li>
                 <NavLink to="/about" onClick={scrollToTop}>
                   <TextComponent type={1}>Team</TextComponent>
+                </NavLink>
+              </li>
+              {/* Join us */}
+              <li>
+                <NavLink to="/joinus" onClick={scrollToTop}>
+                  <TextComponent type={1}>Join Us</TextComponent>
                 </NavLink>
               </li>
               {/* Github */}

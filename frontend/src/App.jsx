@@ -14,21 +14,19 @@ import Search from './pages/Search';
 import About from './pages/About';
 import Worksheet from './pages/Worksheet';
 import FAQ from './pages/FAQ';
+import Privacy from './pages/Privacy';
 import NotFound from './pages/NotFound';
 import Thankyou from './pages/Thankyou';
 import Challenge from './pages/Challenge';
 import WorksheetLogin from './pages/WorksheetLogin';
 import Graphiql from './pages/Graphiql';
 import GraphiqlLogin from './pages/GraphiqlLogin';
+import Join from './pages/Join';
 
 import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './browserStorage';
 import { useWindowDimensions } from './components/Providers/WindowDimensionsProvider';
-import { API_ENDPOINT } from './config';
-
-import { WiStars } from 'react-icons/wi';
-import { BsBookmarkFill } from 'react-icons/bs';
-import { FaVoteYea } from 'react-icons/fa';
+import { lightTheme } from './components/Themes';
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -89,6 +87,10 @@ function App({ themeToggler, location }) {
     setIsTutorialOpen,
   ]);
 
+  useEffect(() => {
+    document.body.style.transition = `background-color ${lightTheme.trans_dur}`;
+  }, []);
+
   // Render spinner if page loading
   if (loading) {
     return (
@@ -102,7 +104,6 @@ function App({ themeToggler, location }) {
 
   return (
     <>
-      {/* <Notice></Notice> */}
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
@@ -167,10 +168,20 @@ function App({ themeToggler, location }) {
           <Thankyou />
         </MyRoute>
 
+        {/* Join Us */}
+        <MyRoute exact path="/joinus">
+          <Join />
+        </MyRoute>
+
         {/* Footer Links */}
 
         <MyRoute exact path="/faq">
           <FAQ />
+        </MyRoute>
+
+        {/* Privacy */}
+        <MyRoute exact path="/privacypolicy">
+          <Privacy />
         </MyRoute>
 
         <MyRoute path="/Table">

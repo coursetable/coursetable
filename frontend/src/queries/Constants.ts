@@ -11,6 +11,12 @@ export const searchSpeed = {
     'you try loading this many courses',
     'not not not fast',
     'faster than Handsome Dan',
+    'faster than the doors in HQ',
+    'faster than the Silliman elevator',
+    'faster than the HY ticket pick-up line',
+    'faster than debugging binary bomb',
+    'faster than October break',
+    'faster than it takes to get to Murray',
   ],
   faster: [
     'faster',
@@ -34,6 +40,10 @@ export const searchSpeed = {
     'faster than an art-stem double major drops art',
     'faster than switching your major to CS',
     'faster than you can sell out to consulting',
+    'faster than HAL',
+    'faster than HY tickets selling out',
+    'faster than YSO Halloween tickets selling out',
+    'faster than the naked run',
   ],
 };
 
@@ -63,12 +73,12 @@ export type SortKeys = keyof Listing | 'fb';
 const _number = 0;
 const _sortKeys = sortbyOptions[_number].value;
 expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
-export type SortByOption = typeof sortbyOptions[number];
+export type SortByOption = (typeof sortbyOptions)[number];
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
 export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
-export type AreasType = typeof areas[number];
-export type SkillsType = typeof skills[number];
+export type AreasType = (typeof areas)[number];
+export type SkillsType = (typeof skills)[number];
 
 export const skillsAreasColors: { [key: string]: string } = {
   Hu: '#9970AB',

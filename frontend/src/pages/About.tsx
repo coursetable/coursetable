@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useTheme } from 'styled-components';
+import styled, { useTheme } from 'styled-components';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
@@ -16,6 +16,7 @@ import web_dark from '../images/headshots/link-logos/web-light.png';
 // Current Member Headshots
 import lz from '../images/headshots/lily-zhou.jpg';
 import lh from '../images/headshots/lucas-huang.jpg';
+import as from '../images/headshots/alex-schapiro.png';
 import ae from '../images/headshots/aidan-evans.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
@@ -43,6 +44,14 @@ import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
 
 // import generic from '../images/headshots/default_pfp.png';
 
+// Header
+const StyledH1 = styled.h1`
+  font-weight: 600;
+  font-size: 25px;
+  text-align: center;
+  transition: color ${({ theme }) => theme.trans_dur};
+`;
+
 /**
  * Renders the about us page
  */
@@ -50,6 +59,15 @@ const About: React.VFC = () => {
   const theme = useTheme();
 
   const current = [
+    {
+      name: 'Alex Schapiro',
+      image: as,
+      role: 'CourseTable Co-Lead',
+      links: {
+        github: 'https://github.com/bearsyankees',
+        linkedin: 'https://www.linkedin.com/in/aschap/',
+      },
+    },
     {
       name: 'Lucas Huang',
       image: lh,
@@ -63,7 +81,7 @@ const About: React.VFC = () => {
     {
       name: 'Lily Zhou',
       image: lz,
-      role: 'CourseTable Co-Lead',
+      role: 'Former Lead',
       links: {
         github: 'https://github.com/lilyzhouZYJ',
         linkedin: 'https://www.linkedin.com/in/lily-zhou-b12142146/',
@@ -251,7 +269,7 @@ const About: React.VFC = () => {
 
   return (
     <div className={`${styles.container} mx-auto`}>
-      <h1 className={`${styles.about_header} mt-5 mb-1`}>About Us</h1>
+      <StyledH1 className={'mt-5 mb-1'}>About Us</StyledH1>
       <TextComponent type={1}>
         <p className={`${styles.about_description} mb-3 mx-auto`}>
           CourseTable offers a clean and effective way for Yale students to find

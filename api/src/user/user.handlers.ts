@@ -7,6 +7,7 @@ import express from 'express';
 import winston from '../logging/winston';
 
 import { POSTHOG_CLIENT, prisma } from '../config';
+import { WorksheetCourses } from '@prisma/client';
 
 /**
  * Toggle a bookmarked course in a worksheet.
@@ -26,7 +27,7 @@ export const toggleBookmark = async (
 
   const { netId } = req.user;
 
-  const { action, season, ociId } = req.body;
+  const { action, season, ociId, worksheet_number } = req.body;
 
   POSTHOG_CLIENT.capture({
     distinctId: netId,
@@ -35,32 +36,35 @@ export const toggleBookmark = async (
       action,
       season,
       ociId,
+      worksheet_number,
     },
   });
 
   // Add a bookmarked course
   if (action === 'add') {
     winston.info(
-      `Bookmarking course ${ociId} in season ${season} for user ${netId}`
+      `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`
     );
     await prisma.worksheetCourses.create({
       data: {
         net_id: netId,
         oci_id: parseInt(ociId, 10),
         season: parseInt(season, 10),
+        worksheet_number,
       },
     });
   }
   // Remove a bookmarked course
   else if (action === 'remove') {
     winston.info(
-      `Removing bookmark for course ${ociId} in season ${season} for user ${netId}`
+      `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`
     );
     await prisma.worksheetCourses.deleteMany({
       where: {
         net_id: netId,
         oci_id: parseInt(ociId, 10),
         season: parseInt(season, 10),
+        worksheet_number,
       },
     });
   }
@@ -113,9 +117,10 @@ export const getUserWorksheet = async (
     evaluationsEnabled: studentProfile?.evaluationsEnabled,
     year: studentProfile?.year,
     school: studentProfile?.school,
-    data: worksheets.map((course) => [
+    data: worksheets.map((course: WorksheetCourses) => [
       String(course.season),
       String(course.oci_id),
+      String(course.worksheet_number),
     ]),
   });
 };

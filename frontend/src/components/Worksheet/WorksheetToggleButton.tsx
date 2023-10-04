@@ -1,6 +1,6 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import './WorksheetToggleButton.css';
-import { BsBookmark, BsBookmarkFill } from 'react-icons/bs';
+import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
@@ -23,6 +23,18 @@ const StyledButton = styled(Button)`
   }
 `;
 
+const StyledSelect = styled.select`
+  padding: 10px;
+  border-radius: 5px;
+  background-color: ${({ theme }) => theme.select || '#f2f2f2'}!important;
+  color: ${({ theme }) => theme.text[0] || '#333'}!important;
+  font-size: 16px;
+  font-weight: bold;
+  border: none;
+  box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+  cursor: pointer;
+`;
+
 /**
  * Toggle button to add course to or remove from worksheet
  * @prop crn - number | integer that holds the crn of the current course
@@ -35,20 +47,34 @@ function WorksheetToggleButton({
   season_code,
   modal,
   setCourseInWorksheet,
+  selectedWorksheet: initialSelectedWorksheet,
 }: {
   crn: number;
   season_code: string;
   modal: boolean;
   setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
+  selectedWorksheet?: string;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
 
+  // Define options for the worksheet dropdown
+  const worksheetOptions = ['0', '1', '2', '3'];
+
+  const [selectedWorksheet, setSelectedWorksheet] = useState(
+    initialSelectedWorksheet || '0'
+  );
+
   const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
 
   const worksheet_check = useMemo(() => {
-    return isInWorksheet(season_code, crn.toString(), user.worksheet);
-  }, [user.worksheet, season_code, crn]);
+    return isInWorksheet(
+      season_code,
+      crn.toString(),
+      selectedWorksheet,
+      user.worksheet
+    );
+  }, [user.worksheet, season_code, crn, selectedWorksheet]);
   // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(false);
 
@@ -73,6 +99,7 @@ function WorksheetToggleButton({
 
       // Determine if we are adding or removing the course
       const add_remove = inWorksheet ? 'remove' : 'add';
+      //console.log(add_remove, inWorksheet);
 
       // removes removed courses from worksheet hidden courses
       if (inWorksheet) {
@@ -89,7 +116,12 @@ function WorksheetToggleButton({
       return axios
         .post(
           `${API_ENDPOINT}/api/user/toggleBookmark`,
-          { action: add_remove, season: season_code, ociId: crn },
+          {
+            action: add_remove,
+            season: season_code,
+            ociId: crn,
+            worksheet_number: parseInt(selectedWorksheet),
+          },
           {
             withCredentials: true,
             headers: {
@@ -118,6 +150,7 @@ function WorksheetToggleButton({
       season_code,
       toggleCourse,
       userRefresh,
+      selectedWorksheet,
     ]
   );
 
@@ -138,6 +171,13 @@ function WorksheetToggleButton({
     </Tooltip>
   );
 
+  // Handler for changing the selected worksheet in the dropdown
+  const handleWorksheetChange = (event: {
+    target: { value: React.SetStateAction<string> };
+  }) => {
+    setSelectedWorksheet(event.target.value);
+  };
+
   return (
     <OverlayTrigger
       placement="top"
@@ -151,15 +191,42 @@ function WorksheetToggleButton({
       >
         {/* Show bookmark icon on modal and +/- everywhere else */}
         {modal ? (
-          inWorksheet ? (
-            <BsBookmarkFill size={25} className="scale_icon" />
-          ) : (
-            <BsBookmark size={25} className="scale_icon" />
-          )
-        ) : inWorksheet ? (
-          <FaMinus size={isLgDesktop ? 16 : 14} />
+          <>
+            {inWorksheet ? (
+              <FaMinus size={25} className="scale_icon" />
+            ) : (
+              <FaPlus size={25} className="scale_icon" />
+            )}
+            {/* Render the worksheet dropdown */}
+            <StyledSelect
+              value={selectedWorksheet}
+              onChange={handleWorksheetChange}
+              onClick={(e) => {
+                // Check if the clicked target is the select element
+                if ((e.target as HTMLSelectElement).tagName === 'SELECT') {
+                  e.stopPropagation();
+                }
+              }}
+              onMouseEnter={(e) => {
+                e.preventDefault();
+              }}
+              className="worksheet-dropdown"
+            >
+              {worksheetOptions.map((option) => (
+                <option key={option} value={option}>
+                  {option === '0' ? 'Main Worksheet' : `Worksheet ${option}`}
+                </option>
+              ))}
+            </StyledSelect>
+          </>
         ) : (
-          <FaPlus size={isLgDesktop ? 16 : 14} />
+          <>
+            {inWorksheet ? (
+              <FaMinus size={isLgDesktop ? 16 : 14} />
+            ) : (
+              <FaPlus size={isLgDesktop ? 16 : 14} />
+            )}
+          </>
         )}
       </StyledButton>
     </OverlayTrigger>

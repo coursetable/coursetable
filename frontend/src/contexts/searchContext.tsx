@@ -148,7 +148,7 @@ SearchContext.displayName = 'SearchContext';
 //   season = 1;
 // }
 // UPDATE THIS MANUALLY
-const def_season_code = '202203';
+const def_season_code = '202303';
 
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
@@ -157,6 +157,7 @@ const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
   { value: def_season_code, label: toSeasonString(def_season_code)[0] },
 ];
+const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;
 const defaultFalse = false;
 const defaultSortOption: SortByOption = sortbyOptions[0];
@@ -174,6 +175,7 @@ export const defaultFilters = {
   defaultEnrollBounds,
   defaultNumBounds,
   defaultSeason,
+  defaultWorksheet,
   defaultTrue,
   defaultFalse,
   defaultSortOption,
@@ -621,9 +623,10 @@ export const SearchProvider: React.FC = ({ children }) => {
         return false;
       }
 
+      // Checks whether the section field consists only of letters -- if so, the class is a discussion section.
       if (
         searchConfig.discussion_section !== null &&
-        listing.title === 'Discussion Section'
+        /^[A-Z]*$/.test(listing.section)
       ) {
         return false;
       }

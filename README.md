@@ -4,6 +4,7 @@
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/coursetable/coursetable?style=flat-square)](https://github.com/coursetable/coursetable/pulls)
 [![GitHub contributors](https://img.shields.io/github/contributors/coursetable/coursetable?style=flat-square)](https://github.com/coursetable/coursetable/graphs/contributors)
 [![HitCount](http://hits.dwyl.com/coursetable/coursetable.svg)](http://hits.dwyl.com/coursetable/coursetable)
+![healthchecks](https://healthchecks.io/badge/abfa6868-dc8b-41b8-a225-877c73/2kvk7-26-2.svg)
 
 Coursetable is made of two big parts:
 

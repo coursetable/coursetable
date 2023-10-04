@@ -8,9 +8,7 @@ const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
 
-const getEnv = (name: string) => {
-  return process.env[name] || die(name);
-};
+const getEnv = (name: string) => process.env[name] || die(name);
 
 // If running in dev mode
 export const isDev = process.env.NODE_ENV !== 'production';
@@ -48,9 +46,11 @@ export const FRONTEND_ENDPOINT = isDev
 export const CORS_OPTIONS = {
   origin: [
     'https://localhost:3000',
+    'http://localhost:3000',
     'https://coursetable.com',
     'https://www.coursetable.com',
     /\.coursetable\.com$/,
+    /\.yaleapps\.com$/,
     /\.vercel\.app$/,
   ],
   credentials: true,

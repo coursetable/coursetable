@@ -82,6 +82,7 @@ const RangeLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
   user-select: none;
   cursor: default;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Range filter value label
@@ -90,6 +91,7 @@ const RangeValueLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
   user-select: none;
   cursor: default;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Wrapper for advanced filters dropdown
@@ -165,6 +167,7 @@ const CloseIcon = styled(IoClose)`
   margin-left: -30px;
   cursor: pointer;
   color: ${({ theme }) => theme.icon_focus};
+  transition: color ${({ theme }) => theme.trans_dur};
   &:hover {
     color: ${({ theme }) =>
       theme.theme === 'light'
@@ -525,10 +528,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                   railStyle={range_rail_style()}
                   trackStyle={[range_rail_style()]}
                   defaultValue={overallBounds}
-                  onChange={(value) => {
+                  onChange={(value: React.SetStateAction<number[]>) => {
                     setOverallValueLabels(value);
                   }}
-                  onAfterChange={(value) => {
+                  onAfterChange={(value: React.SetStateAction<number[]>) => {
                     setOverallBounds(value);
                     setStartTime(Date.now());
                   }}
@@ -556,10 +559,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                   railStyle={range_rail_style()}
                   trackStyle={[range_rail_style()]}
                   defaultValue={workloadBounds}
-                  onChange={(value) => {
+                  onChange={(value: React.SetStateAction<number[]>) => {
                     setWorkloadValueLabels(value);
                   }}
-                  onAfterChange={(value) => {
+                  onAfterChange={(value: React.SetStateAction<number[]>) => {
                     setWorkloadBounds(value);
                     setStartTime(Date.now());
                   }}
@@ -733,10 +736,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
                       defaultValue={timeBounds.map(toRangeTime)}
-                      onChange={(value) => {
+                      onChange={(value: number[]) => {
                         setTimeValueLabels(value.map(toRealTime));
                       }}
-                      onAfterChange={(value) => {
+                      onAfterChange={(value: number[]) => {
                         setTimeBounds(value.map(toRealTime));
                         setStartTime(Date.now());
                       }}
@@ -767,12 +770,12 @@ export const NavbarCatalogSearch: React.FC = () => {
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
                       defaultValue={enrollBounds.map(toLinear)}
-                      onChange={(value) => {
+                      onChange={(value: number[]) => {
                         setEnrollValueLabels(
                           value.map(toExponential).map(Math.round)
                         );
                       }}
-                      onAfterChange={(value) => {
+                      onAfterChange={(value: number[]) => {
                         setEnrollBounds(value.map(toExponential));
                         setStartTime(Date.now());
                       }}
@@ -817,10 +820,12 @@ export const NavbarCatalogSearch: React.FC = () => {
                       railStyle={range_rail_style()}
                       trackStyle={[range_rail_style()]}
                       defaultValue={numBounds}
-                      onChange={(value) => {
+                      onChange={(value: React.SetStateAction<number[]>) => {
                         setNumValueLabels(value);
                       }}
-                      onAfterChange={(value) => {
+                      onAfterChange={(
+                        value: React.SetStateAction<number[]>
+                      ) => {
                         setNumBounds(value);
                         setStartTime(Date.now());
                       }}

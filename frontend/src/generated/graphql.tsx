@@ -16,7 +16,8 @@ export type Scalars = {
   jsonb: any;
 };
 
-/** expression to compare columns of type Boolean. All fields are combined with logical 'AND'. */
+
+/** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
 export type Boolean_Comparison_Exp = {
   _eq: Maybe<Scalars['Boolean']>;
   _gt: Maybe<Scalars['Boolean']>;
@@ -29,7 +30,7 @@ export type Boolean_Comparison_Exp = {
   _nin: Maybe<Array<Scalars['Boolean']>>;
 };
 
-/** expression to compare columns of type Int. All fields are combined with logical 'AND'. */
+/** Boolean expression to compare columns of type "Int". All fields are combined with logical 'AND'. */
 export type Int_Comparison_Exp = {
   _eq: Maybe<Scalars['Int']>;
   _gt: Maybe<Scalars['Int']>;
@@ -42,22 +43,36 @@ export type Int_Comparison_Exp = {
   _nin: Maybe<Array<Scalars['Int']>>;
 };
 
-/** expression to compare columns of type String. All fields are combined with logical 'AND'. */
+/** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
 export type String_Comparison_Exp = {
   _eq: Maybe<Scalars['String']>;
   _gt: Maybe<Scalars['String']>;
   _gte: Maybe<Scalars['String']>;
+  /** does the column match the given case-insensitive pattern */
   _ilike: Maybe<Scalars['String']>;
   _in: Maybe<Array<Scalars['String']>>;
+  /** does the column match the given POSIX regular expression, case insensitive */
+  _iregex: Maybe<Scalars['String']>;
   _is_null: Maybe<Scalars['Boolean']>;
+  /** does the column match the given pattern */
   _like: Maybe<Scalars['String']>;
   _lt: Maybe<Scalars['String']>;
   _lte: Maybe<Scalars['String']>;
   _neq: Maybe<Scalars['String']>;
+  /** does the column NOT match the given case-insensitive pattern */
   _nilike: Maybe<Scalars['String']>;
   _nin: Maybe<Array<Scalars['String']>>;
+  /** does the column NOT match the given POSIX regular expression, case insensitive */
+  _niregex: Maybe<Scalars['String']>;
+  /** does the column NOT match the given pattern */
   _nlike: Maybe<Scalars['String']>;
+  /** does the column NOT match the given POSIX regular expression, case sensitive */
+  _nregex: Maybe<Scalars['String']>;
+  /** does the column NOT match the given SQL regular expression */
   _nsimilar: Maybe<Scalars['String']>;
+  /** does the column match the given POSIX regular expression, case sensitive */
+  _regex: Maybe<Scalars['String']>;
+  /** does the column match the given SQL regular expression */
   _similar: Maybe<Scalars['String']>;
 };
 
@@ -183,7 +198,7 @@ export type Computed_Listing_Info_Aggregate = {
 export type Computed_Listing_Info_Aggregate_Fields = {
   __typename?: 'computed_listing_info_aggregate_fields';
   avg: Maybe<Computed_Listing_Info_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Computed_Listing_Info_Max_Fields>;
   min: Maybe<Computed_Listing_Info_Min_Fields>;
   stddev: Maybe<Computed_Listing_Info_Stddev_Fields>;
@@ -231,6 +246,7 @@ export type Computed_Listing_Info_Append_Input = {
 /** input type for inserting array relation for remote table "computed_listing_info" */
 export type Computed_Listing_Info_Arr_Rel_Insert_Input = {
   data: Array<Computed_Listing_Info_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Computed_Listing_Info_On_Conflict>;
 };
 
@@ -293,9 +309,9 @@ export type Computed_Listing_Info_Avg_Order_By = {
 
 /** Boolean expression to filter rows from the table "computed_listing_info". All fields are combined with a logical 'AND'. */
 export type Computed_Listing_Info_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Computed_Listing_Info_Bool_Exp>>>;
+  _and: Maybe<Array<Computed_Listing_Info_Bool_Exp>>;
   _not: Maybe<Computed_Listing_Info_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Computed_Listing_Info_Bool_Exp>>>;
+  _or: Maybe<Array<Computed_Listing_Info_Bool_Exp>>;
   all_course_codes: Maybe<Jsonb_Comparison_Exp>;
   areas: Maybe<Jsonb_Comparison_Exp>;
   average_gut_rating: Maybe<Float8_Comparison_Exp>;
@@ -362,13 +378,13 @@ export enum Computed_Listing_Info_Constraint {
 
 /** delete the field or element with specified path (for JSON arrays, negative integers count from the end) */
 export type Computed_Listing_Info_Delete_At_Path_Input = {
-  all_course_codes: Maybe<Array<Maybe<Scalars['String']>>>;
-  areas: Maybe<Array<Maybe<Scalars['String']>>>;
-  flag_info: Maybe<Array<Maybe<Scalars['String']>>>;
-  professor_ids: Maybe<Array<Maybe<Scalars['String']>>>;
-  professor_info: Maybe<Array<Maybe<Scalars['String']>>>;
-  professor_names: Maybe<Array<Maybe<Scalars['String']>>>;
-  skills: Maybe<Array<Maybe<Scalars['String']>>>;
+  all_course_codes: Maybe<Array<Scalars['String']>>;
+  areas: Maybe<Array<Scalars['String']>>;
+  flag_info: Maybe<Array<Scalars['String']>>;
+  professor_ids: Maybe<Array<Scalars['String']>>;
+  professor_info: Maybe<Array<Scalars['String']>>;
+  professor_names: Maybe<Array<Scalars['String']>>;
+  skills: Maybe<Array<Scalars['String']>>;
 };
 
 /** delete the array element with specified index (negative integers count from the end). throws an error if top level container is not an array */
@@ -393,7 +409,7 @@ export type Computed_Listing_Info_Delete_Key_Input = {
   skills: Maybe<Scalars['String']>;
 };
 
-/** input type for incrementing integer column in table "computed_listing_info" */
+/** input type for incrementing numeric columns in table "computed_listing_info" */
 export type Computed_Listing_Info_Inc_Input = {
   average_gut_rating: Maybe<Scalars['float8']>;
   average_professor: Maybe<Scalars['float8']>;
@@ -670,26 +686,20 @@ export type Computed_Listing_Info_Min_Order_By = {
 /** response of any mutation on the table "computed_listing_info" */
 export type Computed_Listing_Info_Mutation_Response = {
   __typename?: 'computed_listing_info_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Computed_Listing_Info>;
 };
 
-/** input type for inserting object relation for remote table "computed_listing_info" */
-export type Computed_Listing_Info_Obj_Rel_Insert_Input = {
-  data: Computed_Listing_Info_Insert_Input;
-  on_conflict: Maybe<Computed_Listing_Info_On_Conflict>;
-};
-
-/** on conflict condition type for table "computed_listing_info" */
+/** on_conflict condition type for table "computed_listing_info" */
 export type Computed_Listing_Info_On_Conflict = {
   constraint: Computed_Listing_Info_Constraint;
   update_columns: Array<Computed_Listing_Info_Update_Column>;
   where: Maybe<Computed_Listing_Info_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "computed_listing_info" */
+/** Ordering options when selecting data from "computed_listing_info". */
 export type Computed_Listing_Info_Order_By = {
   all_course_codes: Maybe<Order_By>;
   areas: Maybe<Order_By>;
@@ -1463,7 +1473,7 @@ export type Course_Discussions_Aggregate = {
 export type Course_Discussions_Aggregate_Fields = {
   __typename?: 'course_discussions_aggregate_fields';
   avg: Maybe<Course_Discussions_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Course_Discussions_Max_Fields>;
   min: Maybe<Course_Discussions_Min_Fields>;
   stddev: Maybe<Course_Discussions_Stddev_Fields>;
@@ -1500,6 +1510,7 @@ export type Course_Discussions_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "course_discussions" */
 export type Course_Discussions_Arr_Rel_Insert_Input = {
   data: Array<Course_Discussions_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Course_Discussions_On_Conflict>;
 };
 
@@ -1518,9 +1529,9 @@ export type Course_Discussions_Avg_Order_By = {
 
 /** Boolean expression to filter rows from the table "course_discussions". All fields are combined with a logical 'AND'. */
 export type Course_Discussions_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Course_Discussions_Bool_Exp>>>;
+  _and: Maybe<Array<Course_Discussions_Bool_Exp>>;
   _not: Maybe<Course_Discussions_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Course_Discussions_Bool_Exp>>>;
+  _or: Maybe<Array<Course_Discussions_Bool_Exp>>;
   course: Maybe<Courses_Bool_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
   discussion: Maybe<Discussions_Bool_Exp>;
@@ -1533,7 +1544,7 @@ export enum Course_Discussions_Constraint {
   PkCourseDiscussionsStaged = 'pk_course_discussions_staged'
 }
 
-/** input type for incrementing integer column in table "course_discussions" */
+/** input type for incrementing numeric columns in table "course_discussions" */
 export type Course_Discussions_Inc_Input = {
   course_id: Maybe<Scalars['Int']>;
   discussion_id: Maybe<Scalars['Int']>;
@@ -1576,26 +1587,20 @@ export type Course_Discussions_Min_Order_By = {
 /** response of any mutation on the table "course_discussions" */
 export type Course_Discussions_Mutation_Response = {
   __typename?: 'course_discussions_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Course_Discussions>;
 };
 
-/** input type for inserting object relation for remote table "course_discussions" */
-export type Course_Discussions_Obj_Rel_Insert_Input = {
-  data: Course_Discussions_Insert_Input;
-  on_conflict: Maybe<Course_Discussions_On_Conflict>;
-};
-
-/** on conflict condition type for table "course_discussions" */
+/** on_conflict condition type for table "course_discussions" */
 export type Course_Discussions_On_Conflict = {
   constraint: Course_Discussions_Constraint;
   update_columns: Array<Course_Discussions_Update_Column>;
   where: Maybe<Course_Discussions_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "course_discussions" */
+/** Ordering options when selecting data from "course_discussions". */
 export type Course_Discussions_Order_By = {
   course: Maybe<Courses_Order_By>;
   course_id: Maybe<Order_By>;
@@ -1603,7 +1608,7 @@ export type Course_Discussions_Order_By = {
   discussion_id: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "course_discussions" */
+/** primary key columns input for table: course_discussions */
 export type Course_Discussions_Pk_Columns_Input = {
   course_id: Scalars['Int'];
   discussion_id: Scalars['Int'];
@@ -1744,7 +1749,7 @@ export type Course_Flags_Aggregate = {
 export type Course_Flags_Aggregate_Fields = {
   __typename?: 'course_flags_aggregate_fields';
   avg: Maybe<Course_Flags_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Course_Flags_Max_Fields>;
   min: Maybe<Course_Flags_Min_Fields>;
   stddev: Maybe<Course_Flags_Stddev_Fields>;
@@ -1781,6 +1786,7 @@ export type Course_Flags_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "course_flags" */
 export type Course_Flags_Arr_Rel_Insert_Input = {
   data: Array<Course_Flags_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Course_Flags_On_Conflict>;
 };
 
@@ -1799,9 +1805,9 @@ export type Course_Flags_Avg_Order_By = {
 
 /** Boolean expression to filter rows from the table "course_flags". All fields are combined with a logical 'AND'. */
 export type Course_Flags_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Course_Flags_Bool_Exp>>>;
+  _and: Maybe<Array<Course_Flags_Bool_Exp>>;
   _not: Maybe<Course_Flags_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Course_Flags_Bool_Exp>>>;
+  _or: Maybe<Array<Course_Flags_Bool_Exp>>;
   course: Maybe<Courses_Bool_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
   flag: Maybe<Flags_Bool_Exp>;
@@ -1814,7 +1820,7 @@ export enum Course_Flags_Constraint {
   PkCourseFlagsStaged = 'pk_course_flags_staged'
 }
 
-/** input type for incrementing integer column in table "course_flags" */
+/** input type for incrementing numeric columns in table "course_flags" */
 export type Course_Flags_Inc_Input = {
   course_id: Maybe<Scalars['Int']>;
   flag_id: Maybe<Scalars['Int']>;
@@ -1857,26 +1863,20 @@ export type Course_Flags_Min_Order_By = {
 /** response of any mutation on the table "course_flags" */
 export type Course_Flags_Mutation_Response = {
   __typename?: 'course_flags_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Course_Flags>;
 };
 
-/** input type for inserting object relation for remote table "course_flags" */
-export type Course_Flags_Obj_Rel_Insert_Input = {
-  data: Course_Flags_Insert_Input;
-  on_conflict: Maybe<Course_Flags_On_Conflict>;
-};
-
-/** on conflict condition type for table "course_flags" */
+/** on_conflict condition type for table "course_flags" */
 export type Course_Flags_On_Conflict = {
   constraint: Course_Flags_Constraint;
   update_columns: Array<Course_Flags_Update_Column>;
   where: Maybe<Course_Flags_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "course_flags" */
+/** Ordering options when selecting data from "course_flags". */
 export type Course_Flags_Order_By = {
   course: Maybe<Courses_Order_By>;
   course_id: Maybe<Order_By>;
@@ -1884,7 +1884,7 @@ export type Course_Flags_Order_By = {
   flag_id: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "course_flags" */
+/** primary key columns input for table: course_flags */
 export type Course_Flags_Pk_Columns_Input = {
   course_id: Scalars['Int'];
   flag_id: Scalars['Int'];
@@ -2025,7 +2025,7 @@ export type Course_Professors_Aggregate = {
 export type Course_Professors_Aggregate_Fields = {
   __typename?: 'course_professors_aggregate_fields';
   avg: Maybe<Course_Professors_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Course_Professors_Max_Fields>;
   min: Maybe<Course_Professors_Min_Fields>;
   stddev: Maybe<Course_Professors_Stddev_Fields>;
@@ -2062,6 +2062,7 @@ export type Course_Professors_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "course_professors" */
 export type Course_Professors_Arr_Rel_Insert_Input = {
   data: Array<Course_Professors_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Course_Professors_On_Conflict>;
 };
 
@@ -2080,9 +2081,9 @@ export type Course_Professors_Avg_Order_By = {
 
 /** Boolean expression to filter rows from the table "course_professors". All fields are combined with a logical 'AND'. */
 export type Course_Professors_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Course_Professors_Bool_Exp>>>;
+  _and: Maybe<Array<Course_Professors_Bool_Exp>>;
   _not: Maybe<Course_Professors_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Course_Professors_Bool_Exp>>>;
+  _or: Maybe<Array<Course_Professors_Bool_Exp>>;
   course: Maybe<Courses_Bool_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
   professor: Maybe<Professors_Bool_Exp>;
@@ -2095,7 +2096,7 @@ export enum Course_Professors_Constraint {
   PkCourseProfessorsStaged = 'pk_course_professors_staged'
 }
 
-/** input type for incrementing integer column in table "course_professors" */
+/** input type for incrementing numeric columns in table "course_professors" */
 export type Course_Professors_Inc_Input = {
   course_id: Maybe<Scalars['Int']>;
   professor_id: Maybe<Scalars['Int']>;
@@ -2138,26 +2139,20 @@ export type Course_Professors_Min_Order_By = {
 /** response of any mutation on the table "course_professors" */
 export type Course_Professors_Mutation_Response = {
   __typename?: 'course_professors_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Course_Professors>;
 };
 
-/** input type for inserting object relation for remote table "course_professors" */
-export type Course_Professors_Obj_Rel_Insert_Input = {
-  data: Course_Professors_Insert_Input;
-  on_conflict: Maybe<Course_Professors_On_Conflict>;
-};
-
-/** on conflict condition type for table "course_professors" */
+/** on_conflict condition type for table "course_professors" */
 export type Course_Professors_On_Conflict = {
   constraint: Course_Professors_Constraint;
   update_columns: Array<Course_Professors_Update_Column>;
   where: Maybe<Course_Professors_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "course_professors" */
+/** Ordering options when selecting data from "course_professors". */
 export type Course_Professors_Order_By = {
   course: Maybe<Courses_Order_By>;
   course_id: Maybe<Order_By>;
@@ -2165,7 +2160,7 @@ export type Course_Professors_Order_By = {
   professor_id: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "course_professors" */
+/** primary key columns input for table: course_professors */
 export type Course_Professors_Pk_Columns_Input = {
   course_id: Scalars['Int'];
   professor_id: Scalars['Int'];
@@ -2329,64 +2324,60 @@ export type Courses = {
   colsem: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   computed_listing_infos: Array<Computed_Listing_Info>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   computed_listing_infos_aggregate: Computed_Listing_Info_Aggregate;
   /** An object relationship */
   course: Maybe<Courses>;
   /** An object relationship */
-  courseByLastEnrollmentCourseId: Maybe<Courses>;
+  courseByLastOfferedCourseId: Maybe<Courses>;
   /** An array relationship */
   course_discussions: Array<Course_Discussions>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   course_discussions_aggregate: Course_Discussions_Aggregate;
   /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   course_flags_aggregate: Course_Flags_Aggregate;
   /** Link to the course homepage */
   course_home_url: Maybe<Scalars['String']>;
   course_id: Scalars['Int'];
   /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   course_professors_aggregate: Course_Professors_Aggregate;
   /** An array relationship */
   courses: Array<Courses>;
   /** An array relationship */
-  coursesByLastEnrollmentCourseId: Array<Courses>;
-  /** An aggregated array relationship */
-  coursesByLastEnrollmentCourseId_aggregate: Courses_Aggregate;
-  /** An aggregated array relationship */
+  coursesByLastOfferedCourseId: Array<Courses>;
+  /** An aggregate relationship */
+  coursesByLastOfferedCourseId_aggregate: Courses_Aggregate;
+  /** An aggregate relationship */
   courses_aggregate: Courses_Aggregate;
   /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
-  /** An array relationship */
-  demand_statistics: Array<Demand_Statistics>;
-  /** An aggregated array relationship */
-  demand_statistics_aggregate: Demand_Statistics_Aggregate;
+  /** An object relationship */
+  demand_statistic: Maybe<Demand_Statistics>;
   /** Course description */
   description: Maybe<Scalars['String']>;
   /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
-  /** An array relationship */
-  evaluation_statistics: Array<Evaluation_Statistics>;
-  /** An aggregated array relationship */
-  evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
+  /** An object relationship */
+  evaluation_statistic: Maybe<Evaluation_Statistics>;
   /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Scalars['String']>;
   /** An array relationship */
   fasttextSimilarsByTarget: Array<Fasttext_Similars>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   fasttextSimilarsByTarget_aggregate: Fasttext_Similars_Aggregate;
   /** An array relationship */
   fasttext_similars: Array<Fasttext_Similars>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   fasttext_similars_aggregate: Fasttext_Similars_Aggregate;
   /** Final exam information */
   final_exam: Maybe<Scalars['String']>;
@@ -2410,7 +2401,7 @@ export type Courses = {
   last_offered_course_id: Maybe<Scalars['Int']>;
   /** An array relationship */
   listings: Array<Listings>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   listings_aggregate: Listings_Aggregate;
   /**
    * If single location, is `<location>`; otherwise is
@@ -2443,9 +2434,9 @@ export type Courses = {
    */
   same_course_id: Scalars['Int'];
   /** An object relationship */
-  season: Seasons;
+  season: Maybe<Seasons>;
   /** An object relationship */
-  seasonByLastEnrollmentSeasonCode: Maybe<Seasons>;
+  seasonBySeasonCode: Seasons;
   /** The season the course is being taught in */
   season_code: Scalars['String'];
   /**
@@ -2464,11 +2455,11 @@ export type Courses = {
   sysem: Maybe<Scalars['Boolean']>;
   /** An array relationship */
   tfidfSimilarsByTarget: Array<Tfidf_Similars>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   tfidfSimilarsByTarget_aggregate: Tfidf_Similars_Aggregate;
   /** An array relationship */
   tfidf_similars: Array<Tfidf_Similars>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   tfidf_similars_aggregate: Tfidf_Similars_Aggregate;
   /**
    * Course meeting times by day, with days as keys and
@@ -2584,7 +2575,7 @@ export type CoursesCoursesArgs = {
 
 
 /** columns and relationships of "courses" */
-export type CoursesCoursesByLastEnrollmentCourseIdArgs = {
+export type CoursesCoursesByLastOfferedCourseIdArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
   offset: Maybe<Scalars['Int']>;
@@ -2594,7 +2585,7 @@ export type CoursesCoursesByLastEnrollmentCourseIdArgs = {
 
 
 /** columns and relationships of "courses" */
-export type CoursesCoursesByLastEnrollmentCourseId_AggregateArgs = {
+export type CoursesCoursesByLastOfferedCourseId_AggregateArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
   offset: Maybe<Scalars['Int']>;
@@ -2610,26 +2601,6 @@ export type CoursesCourses_AggregateArgs = {
   offset: Maybe<Scalars['Int']>;
   order_by: Maybe<Array<Courses_Order_By>>;
   where: Maybe<Courses_Bool_Exp>;
-};
-
-
-/** columns and relationships of "courses" */
-export type CoursesDemand_StatisticsArgs = {
-  distinct_on: Maybe<Array<Demand_Statistics_Select_Column>>;
-  limit: Maybe<Scalars['Int']>;
-  offset: Maybe<Scalars['Int']>;
-  order_by: Maybe<Array<Demand_Statistics_Order_By>>;
-  where: Maybe<Demand_Statistics_Bool_Exp>;
-};
-
-
-/** columns and relationships of "courses" */
-export type CoursesDemand_Statistics_AggregateArgs = {
-  distinct_on: Maybe<Array<Demand_Statistics_Select_Column>>;
-  limit: Maybe<Scalars['Int']>;
-  offset: Maybe<Scalars['Int']>;
-  order_by: Maybe<Array<Demand_Statistics_Order_By>>;
-  where: Maybe<Demand_Statistics_Bool_Exp>;
 };
 
 
@@ -2670,26 +2641,6 @@ export type CoursesEvaluation_Ratings_AggregateArgs = {
   offset: Maybe<Scalars['Int']>;
   order_by: Maybe<Array<Evaluation_Ratings_Order_By>>;
   where: Maybe<Evaluation_Ratings_Bool_Exp>;
-};
-
-
-/** columns and relationships of "courses" */
-export type CoursesEvaluation_StatisticsArgs = {
-  distinct_on: Maybe<Array<Evaluation_Statistics_Select_Column>>;
-  limit: Maybe<Scalars['Int']>;
-  offset: Maybe<Scalars['Int']>;
-  order_by: Maybe<Array<Evaluation_Statistics_Order_By>>;
-  where: Maybe<Evaluation_Statistics_Bool_Exp>;
-};
-
-
-/** columns and relationships of "courses" */
-export type CoursesEvaluation_Statistics_AggregateArgs = {
-  distinct_on: Maybe<Array<Evaluation_Statistics_Select_Column>>;
-  limit: Maybe<Scalars['Int']>;
-  offset: Maybe<Scalars['Int']>;
-  order_by: Maybe<Array<Evaluation_Statistics_Order_By>>;
-  where: Maybe<Evaluation_Statistics_Bool_Exp>;
 };
 
 
@@ -2815,7 +2766,7 @@ export type Courses_Aggregate = {
 export type Courses_Aggregate_Fields = {
   __typename?: 'courses_aggregate_fields';
   avg: Maybe<Courses_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Courses_Max_Fields>;
   min: Maybe<Courses_Min_Fields>;
   stddev: Maybe<Courses_Stddev_Fields>;
@@ -2852,53 +2803,144 @@ export type Courses_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "courses" */
 export type Courses_Arr_Rel_Insert_Input = {
   data: Array<Courses_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Courses_On_Conflict>;
 };
 
 /** aggregate avg on columns */
 export type Courses_Avg_Fields = {
   __typename?: 'courses_avg_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Float']>;
   course_id: Maybe<Scalars['Float']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['Float']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Float']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "courses" */
 export type Courses_Avg_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "courses". All fields are combined with a logical 'AND'. */
 export type Courses_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Courses_Bool_Exp>>>;
+  _and: Maybe<Array<Courses_Bool_Exp>>;
   _not: Maybe<Courses_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Courses_Bool_Exp>>>;
+  _or: Maybe<Array<Courses_Bool_Exp>>;
   areas: Maybe<Json_Comparison_Exp>;
   average_rating: Maybe<Float8_Comparison_Exp>;
   average_rating_n: Maybe<Int_Comparison_Exp>;
@@ -2912,20 +2954,20 @@ export type Courses_Bool_Exp = {
   colsem: Maybe<Boolean_Comparison_Exp>;
   computed_listing_infos: Maybe<Computed_Listing_Info_Bool_Exp>;
   course: Maybe<Courses_Bool_Exp>;
-  courseByLastEnrollmentCourseId: Maybe<Courses_Bool_Exp>;
+  courseByLastOfferedCourseId: Maybe<Courses_Bool_Exp>;
   course_discussions: Maybe<Course_Discussions_Bool_Exp>;
   course_flags: Maybe<Course_Flags_Bool_Exp>;
   course_home_url: Maybe<String_Comparison_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
   course_professors: Maybe<Course_Professors_Bool_Exp>;
   courses: Maybe<Courses_Bool_Exp>;
-  coursesByLastEnrollmentCourseId: Maybe<Courses_Bool_Exp>;
+  coursesByLastOfferedCourseId: Maybe<Courses_Bool_Exp>;
   credits: Maybe<Float8_Comparison_Exp>;
-  demand_statistics: Maybe<Demand_Statistics_Bool_Exp>;
+  demand_statistic: Maybe<Demand_Statistics_Bool_Exp>;
   description: Maybe<String_Comparison_Exp>;
   evaluation_narratives: Maybe<Evaluation_Narratives_Bool_Exp>;
   evaluation_ratings: Maybe<Evaluation_Ratings_Bool_Exp>;
-  evaluation_statistics: Maybe<Evaluation_Statistics_Bool_Exp>;
+  evaluation_statistic: Maybe<Evaluation_Statistics_Bool_Exp>;
   extra_info: Maybe<String_Comparison_Exp>;
   fasttextSimilarsByTarget: Maybe<Fasttext_Similars_Bool_Exp>;
   fasttext_similars: Maybe<Fasttext_Similars_Bool_Exp>;
@@ -2944,7 +2986,7 @@ export type Courses_Bool_Exp = {
   same_course_and_profs_id: Maybe<Int_Comparison_Exp>;
   same_course_id: Maybe<Int_Comparison_Exp>;
   season: Maybe<Seasons_Bool_Exp>;
-  seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Bool_Exp>;
+  seasonBySeasonCode: Maybe<Seasons_Bool_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
   short_title: Maybe<String_Comparison_Exp>;
   skills: Maybe<Json_Comparison_Exp>;
@@ -2964,251 +3006,688 @@ export enum Courses_Constraint {
   PkCoursesStaged = 'pk_courses_staged'
 }
 
-/** input type for incrementing integer column in table "courses" */
+/** input type for incrementing numeric columns in table "courses" */
 export type Courses_Inc_Input = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   course_id: Maybe<Scalars['Int']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "courses" */
 export type Courses_Insert_Input = {
+  /** Course areas (humanities, social sciences, sciences) */
   areas: Maybe<Scalars['json']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
+  /** Additional class notes */
   classnotes: Maybe<Scalars['String']>;
+  /** True if the course is a college seminar. False otherwise. */
   colsem: Maybe<Scalars['Boolean']>;
   computed_listing_infos: Maybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
-  courseByLastEnrollmentCourseId: Maybe<Courses_Obj_Rel_Insert_Input>;
+  courseByLastOfferedCourseId: Maybe<Courses_Obj_Rel_Insert_Input>;
   course_discussions: Maybe<Course_Discussions_Arr_Rel_Insert_Input>;
   course_flags: Maybe<Course_Flags_Arr_Rel_Insert_Input>;
+  /** Link to the course homepage */
   course_home_url: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
   course_professors: Maybe<Course_Professors_Arr_Rel_Insert_Input>;
   courses: Maybe<Courses_Arr_Rel_Insert_Input>;
-  coursesByLastEnrollmentCourseId: Maybe<Courses_Arr_Rel_Insert_Input>;
+  coursesByLastOfferedCourseId: Maybe<Courses_Arr_Rel_Insert_Input>;
+  /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
-  demand_statistics: Maybe<Demand_Statistics_Arr_Rel_Insert_Input>;
+  demand_statistic: Maybe<Demand_Statistics_Obj_Rel_Insert_Input>;
+  /** Course description */
   description: Maybe<Scalars['String']>;
   evaluation_narratives: Maybe<Evaluation_Narratives_Arr_Rel_Insert_Input>;
   evaluation_ratings: Maybe<Evaluation_Ratings_Arr_Rel_Insert_Input>;
-  evaluation_statistics: Maybe<Evaluation_Statistics_Arr_Rel_Insert_Input>;
+  evaluation_statistic: Maybe<Evaluation_Statistics_Obj_Rel_Insert_Input>;
+  /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Scalars['String']>;
   fasttextSimilarsByTarget: Maybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
   fasttext_similars: Maybe<Fasttext_Similars_Arr_Rel_Insert_Input>;
+  /** Final exam information */
   final_exam: Maybe<Scalars['String']>;
+  /** True if the course is a first-year seminar. False otherwise. */
   fysem: Maybe<Scalars['Boolean']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Whether last enrollment offering
+   *         is with same professor as current.
+   */
   last_enrollment_same_professors: Maybe<Scalars['Boolean']>;
+  /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: Maybe<Scalars['String']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Int']>;
   listings: Maybe<Listings_Arr_Rel_Insert_Input>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Displayed in the "Locations" column
+   *         in CourseTable.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: Maybe<Scalars['String']>;
+  /** Recommended requirements/prerequisites for the course */
   requirements: Maybe<Scalars['String']>;
+  /** Reading period notes */
   rp_attr: Maybe<Scalars['String']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Int']>;
   season: Maybe<Seasons_Obj_Rel_Insert_Input>;
-  seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Obj_Rel_Insert_Input>;
+  seasonBySeasonCode: Maybe<Seasons_Obj_Rel_Insert_Input>;
+  /** The season the course is being taught in */
   season_code: Maybe<Scalars['String']>;
+  /**
+   * Shortened course title (first 29 characters + "...")
+   *         if the length exceeds 32, otherwise just the title itself
+   */
   short_title: Maybe<Scalars['String']>;
+  /**
+   * Skills that the course fulfills (e.g. writing,
+   *         quantitative reasoning, language levels)
+   */
   skills: Maybe<Scalars['json']>;
+  /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']>;
+  /** True if the course is a sophomore seminar. False otherwise. */
   sysem: Maybe<Scalars['Boolean']>;
   tfidfSimilarsByTarget: Maybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
   tfidf_similars: Maybe<Tfidf_Similars_Arr_Rel_Insert_Input>;
+  /**
+   * Course meeting times by day, with days as keys and
+   *         tuples of `(start_time, end_time, location)`
+   */
   times_by_day: Maybe<Scalars['json']>;
+  /**
+   * Course times and locations, displayed in the "Meets"
+   *          row in CourseTable course modals
+   */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Scalars['String']>;
+  /** Complete course title */
   title: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Courses_Max_Fields = {
   __typename?: 'courses_max_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
+  /** Additional class notes */
   classnotes: Maybe<Scalars['String']>;
+  /** Link to the course homepage */
   course_home_url: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
+  /** Course description */
   description: Maybe<Scalars['String']>;
+  /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Scalars['String']>;
+  /** Final exam information */
   final_exam: Maybe<Scalars['String']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Int']>;
+  /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: Maybe<Scalars['String']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Int']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Displayed in the "Locations" column
+   *         in CourseTable.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: Maybe<Scalars['String']>;
+  /** Recommended requirements/prerequisites for the course */
   requirements: Maybe<Scalars['String']>;
+  /** Reading period notes */
   rp_attr: Maybe<Scalars['String']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Int']>;
+  /** The season the course is being taught in */
   season_code: Maybe<Scalars['String']>;
+  /**
+   * Shortened course title (first 29 characters + "...")
+   *         if the length exceeds 32, otherwise just the title itself
+   */
   short_title: Maybe<Scalars['String']>;
+  /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']>;
+  /**
+   * Course times and locations, displayed in the "Meets"
+   *          row in CourseTable course modals
+   */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Scalars['String']>;
+  /** Complete course title */
   title: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "courses" */
 export type Courses_Max_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
+  /** Additional class notes */
   classnotes: Maybe<Order_By>;
+  /** Link to the course homepage */
   course_home_url: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** Course description */
   description: Maybe<Order_By>;
+  /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Order_By>;
+  /** Final exam information */
   final_exam: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Displayed in the "Locations" column
+   *         in CourseTable.
+   */
   locations_summary: Maybe<Order_By>;
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: Maybe<Order_By>;
+  /** Recommended requirements/prerequisites for the course */
   requirements: Maybe<Order_By>;
+  /** Reading period notes */
   rp_attr: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
+  /** The season the course is being taught in */
   season_code: Maybe<Order_By>;
+  /**
+   * Shortened course title (first 29 characters + "...")
+   *         if the length exceeds 32, otherwise just the title itself
+   */
   short_title: Maybe<Order_By>;
+  /** Link to the syllabus */
   syllabus_url: Maybe<Order_By>;
+  /**
+   * Course times and locations, displayed in the "Meets"
+   *          row in CourseTable course modals
+   */
   times_long_summary: Maybe<Order_By>;
+  /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Order_By>;
+  /** Complete course title */
   title: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Courses_Min_Fields = {
   __typename?: 'courses_min_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
+  /** Additional class notes */
   classnotes: Maybe<Scalars['String']>;
+  /** Link to the course homepage */
   course_home_url: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
+  /** Course description */
   description: Maybe<Scalars['String']>;
+  /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Scalars['String']>;
+  /** Final exam information */
   final_exam: Maybe<Scalars['String']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Int']>;
+  /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: Maybe<Scalars['String']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Int']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Displayed in the "Locations" column
+   *         in CourseTable.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: Maybe<Scalars['String']>;
+  /** Recommended requirements/prerequisites for the course */
   requirements: Maybe<Scalars['String']>;
+  /** Reading period notes */
   rp_attr: Maybe<Scalars['String']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Int']>;
+  /** The season the course is being taught in */
   season_code: Maybe<Scalars['String']>;
+  /**
+   * Shortened course title (first 29 characters + "...")
+   *         if the length exceeds 32, otherwise just the title itself
+   */
   short_title: Maybe<Scalars['String']>;
+  /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']>;
+  /**
+   * Course times and locations, displayed in the "Meets"
+   *          row in CourseTable course modals
+   */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Scalars['String']>;
+  /** Complete course title */
   title: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "courses" */
 export type Courses_Min_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
+  /** Additional class notes */
   classnotes: Maybe<Order_By>;
+  /** Link to the course homepage */
   course_home_url: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** Course description */
   description: Maybe<Order_By>;
+  /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Order_By>;
+  /** Final exam information */
   final_exam: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Displayed in the "Locations" column
+   *         in CourseTable.
+   */
   locations_summary: Maybe<Order_By>;
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: Maybe<Order_By>;
+  /** Recommended requirements/prerequisites for the course */
   requirements: Maybe<Order_By>;
+  /** Reading period notes */
   rp_attr: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
+  /** The season the course is being taught in */
   season_code: Maybe<Order_By>;
+  /**
+   * Shortened course title (first 29 characters + "...")
+   *         if the length exceeds 32, otherwise just the title itself
+   */
   short_title: Maybe<Order_By>;
+  /** Link to the syllabus */
   syllabus_url: Maybe<Order_By>;
+  /**
+   * Course times and locations, displayed in the "Meets"
+   *          row in CourseTable course modals
+   */
   times_long_summary: Maybe<Order_By>;
+  /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Order_By>;
+  /** Complete course title */
   title: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "courses" */
 export type Courses_Mutation_Response = {
   __typename?: 'courses_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Courses>;
 };
 
 /** input type for inserting object relation for remote table "courses" */
 export type Courses_Obj_Rel_Insert_Input = {
   data: Courses_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Courses_On_Conflict>;
 };
 
-/** on conflict condition type for table "courses" */
+/** on_conflict condition type for table "courses" */
 export type Courses_On_Conflict = {
   constraint: Courses_Constraint;
   update_columns: Array<Courses_Update_Column>;
   where: Maybe<Courses_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "courses" */
+/** Ordering options when selecting data from "courses". */
 export type Courses_Order_By = {
   areas: Maybe<Order_By>;
   average_rating: Maybe<Order_By>;
@@ -3223,20 +3702,20 @@ export type Courses_Order_By = {
   colsem: Maybe<Order_By>;
   computed_listing_infos_aggregate: Maybe<Computed_Listing_Info_Aggregate_Order_By>;
   course: Maybe<Courses_Order_By>;
-  courseByLastEnrollmentCourseId: Maybe<Courses_Order_By>;
+  courseByLastOfferedCourseId: Maybe<Courses_Order_By>;
   course_discussions_aggregate: Maybe<Course_Discussions_Aggregate_Order_By>;
   course_flags_aggregate: Maybe<Course_Flags_Aggregate_Order_By>;
   course_home_url: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
   course_professors_aggregate: Maybe<Course_Professors_Aggregate_Order_By>;
-  coursesByLastEnrollmentCourseId_aggregate: Maybe<Courses_Aggregate_Order_By>;
+  coursesByLastOfferedCourseId_aggregate: Maybe<Courses_Aggregate_Order_By>;
   courses_aggregate: Maybe<Courses_Aggregate_Order_By>;
   credits: Maybe<Order_By>;
-  demand_statistics_aggregate: Maybe<Demand_Statistics_Aggregate_Order_By>;
+  demand_statistic: Maybe<Demand_Statistics_Order_By>;
   description: Maybe<Order_By>;
   evaluation_narratives_aggregate: Maybe<Evaluation_Narratives_Aggregate_Order_By>;
   evaluation_ratings_aggregate: Maybe<Evaluation_Ratings_Aggregate_Order_By>;
-  evaluation_statistics_aggregate: Maybe<Evaluation_Statistics_Aggregate_Order_By>;
+  evaluation_statistic: Maybe<Evaluation_Statistics_Order_By>;
   extra_info: Maybe<Order_By>;
   fasttextSimilarsByTarget_aggregate: Maybe<Fasttext_Similars_Aggregate_Order_By>;
   fasttext_similars_aggregate: Maybe<Fasttext_Similars_Aggregate_Order_By>;
@@ -3255,7 +3734,7 @@ export type Courses_Order_By = {
   same_course_and_profs_id: Maybe<Order_By>;
   same_course_id: Maybe<Order_By>;
   season: Maybe<Seasons_Order_By>;
-  seasonByLastEnrollmentSeasonCode: Maybe<Seasons_Order_By>;
+  seasonBySeasonCode: Maybe<Seasons_Order_By>;
   season_code: Maybe<Order_By>;
   short_title: Maybe<Order_By>;
   skills: Maybe<Order_By>;
@@ -3269,7 +3748,7 @@ export type Courses_Order_By = {
   title: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "courses" */
+/** primary key columns input for table: courses */
 export type Courses_Pk_Columns_Input = {
   course_id: Scalars['Int'];
 };
@@ -3356,199 +3835,650 @@ export enum Courses_Select_Column {
 
 /** input type for updating data in table "courses" */
 export type Courses_Set_Input = {
+  /** Course areas (humanities, social sciences, sciences) */
   areas: Maybe<Scalars['json']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
+  /** Additional class notes */
   classnotes: Maybe<Scalars['String']>;
+  /** True if the course is a college seminar. False otherwise. */
   colsem: Maybe<Scalars['Boolean']>;
+  /** Link to the course homepage */
   course_home_url: Maybe<Scalars['String']>;
   course_id: Maybe<Scalars['Int']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
+  /** Course description */
   description: Maybe<Scalars['String']>;
+  /** Additional information (indicates if class has been cancelled) */
   extra_info: Maybe<Scalars['String']>;
+  /** Final exam information */
   final_exam: Maybe<Scalars['String']>;
+  /** True if the course is a first-year seminar. False otherwise. */
   fysem: Maybe<Scalars['Boolean']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Whether last enrollment offering
+   *         is with same professor as current.
+   */
   last_enrollment_same_professors: Maybe<Scalars['Boolean']>;
+  /** [computed] Season in which last enrollment offering is from */
   last_enrollment_season_code: Maybe<Scalars['String']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Int']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Displayed in the "Locations" column
+   *         in CourseTable.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /**
+   * Registrar's notes (e.g. preference selection links,
+   *         optional writing credits, etc.)
+   */
   regnotes: Maybe<Scalars['String']>;
+  /** Recommended requirements/prerequisites for the course */
   requirements: Maybe<Scalars['String']>;
+  /** Reading period notes */
   rp_attr: Maybe<Scalars['String']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Int']>;
+  /** The season the course is being taught in */
   season_code: Maybe<Scalars['String']>;
+  /**
+   * Shortened course title (first 29 characters + "...")
+   *         if the length exceeds 32, otherwise just the title itself
+   */
   short_title: Maybe<Scalars['String']>;
+  /**
+   * Skills that the course fulfills (e.g. writing,
+   *         quantitative reasoning, language levels)
+   */
   skills: Maybe<Scalars['json']>;
+  /** Link to the syllabus */
   syllabus_url: Maybe<Scalars['String']>;
+  /** True if the course is a sophomore seminar. False otherwise. */
   sysem: Maybe<Scalars['Boolean']>;
+  /**
+   * Course meeting times by day, with days as keys and
+   *         tuples of `(start_time, end_time, location)`
+   */
   times_by_day: Maybe<Scalars['json']>;
+  /**
+   * Course times and locations, displayed in the "Meets"
+   *          row in CourseTable course modals
+   */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times, displayed in the "Times" column in CourseTable */
   times_summary: Maybe<Scalars['String']>;
+  /** Complete course title */
   title: Maybe<Scalars['String']>;
 };
 
 /** aggregate stddev on columns */
 export type Courses_Stddev_Fields = {
   __typename?: 'courses_stddev_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Float']>;
   course_id: Maybe<Scalars['Float']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['Float']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Float']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "courses" */
 export type Courses_Stddev_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Courses_Stddev_Pop_Fields = {
   __typename?: 'courses_stddev_pop_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Float']>;
   course_id: Maybe<Scalars['Float']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['Float']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Float']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "courses" */
 export type Courses_Stddev_Pop_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Courses_Stddev_Samp_Fields = {
   __typename?: 'courses_stddev_samp_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Float']>;
   course_id: Maybe<Scalars['Float']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['Float']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Float']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "courses" */
 export type Courses_Stddev_Samp_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Courses_Sum_Fields = {
   __typename?: 'courses_sum_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['float8']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Int']>;
   course_id: Maybe<Scalars['Int']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['float8']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Int']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Int']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "courses" */
 export type Courses_Sum_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
@@ -3635,117 +4565,387 @@ export enum Courses_Update_Column {
 /** aggregate var_pop on columns */
 export type Courses_Var_Pop_Fields = {
   __typename?: 'courses_var_pop_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Float']>;
   course_id: Maybe<Scalars['Float']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['Float']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Float']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "courses" */
 export type Courses_Var_Pop_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Courses_Var_Samp_Fields = {
   __typename?: 'courses_var_samp_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Float']>;
   course_id: Maybe<Scalars['Float']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['Float']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Float']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "courses" */
 export type Courses_Var_Samp_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Courses_Variance_Fields = {
   __typename?: 'courses_variance_fields';
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Scalars['Float']>;
   course_id: Maybe<Scalars['Float']>;
+  /** Number of course credits */
   credits: Maybe<Scalars['Float']>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Scalars['Float']>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Scalars['Float']>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "courses" */
 export type Courses_Variance_Order_By = {
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings
+   */
   average_rating: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average course rating for this course code,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_rating_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_rating_same_professors`
+   */
   average_rating_same_professors_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings
+   */
   average_workload: Maybe<Order_By>;
+  /** [computed] Number of courses used to compute `average_workload` */
   average_workload_n: Maybe<Order_By>;
+  /**
+   * [computed] Historical average workload rating,
+   *         aggregated across all cross-listings with same set of professors
+   */
   average_workload_same_professors: Maybe<Order_By>;
+  /**
+   * [computed] Number of courses used to compute
+   *         `average_workload_same_professors`
+   */
   average_workload_same_professors_n: Maybe<Order_By>;
   course_id: Maybe<Order_By>;
+  /** Number of course credits */
   credits: Maybe<Order_By>;
+  /** [computed] Number of students enrolled in last offering of course */
   last_enrollment: Maybe<Order_By>;
+  /** [computed] Course from which last enrollment offering was pulled */
   last_enrollment_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Most recent previous offering of
+   *         course (excluding future ones)
+   */
   last_offered_course_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *         Same as 'same_course_id' with the constraint that all courses in a group were
+   *         taught by the same professors.
+   *
+   */
   same_course_and_profs_id: Maybe<Order_By>;
+  /**
+   * [computed] Unique ID for grouping courses by historical offering.
+   *         All courses with a given ID are identical offerings across different semesters.
+   *
+   */
   same_course_id: Maybe<Order_By>;
 };
 
@@ -3781,7 +4981,7 @@ export type Demand_Statistics_Aggregate = {
 export type Demand_Statistics_Aggregate_Fields = {
   __typename?: 'demand_statistics_aggregate_fields';
   avg: Maybe<Demand_Statistics_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Demand_Statistics_Max_Fields>;
   min: Maybe<Demand_Statistics_Min_Fields>;
   stddev: Maybe<Demand_Statistics_Stddev_Fields>;
@@ -3800,45 +5000,20 @@ export type Demand_Statistics_Aggregate_FieldsCountArgs = {
   distinct: Maybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "demand_statistics" */
-export type Demand_Statistics_Aggregate_Order_By = {
-  avg: Maybe<Demand_Statistics_Avg_Order_By>;
-  count: Maybe<Order_By>;
-  max: Maybe<Demand_Statistics_Max_Order_By>;
-  min: Maybe<Demand_Statistics_Min_Order_By>;
-  stddev: Maybe<Demand_Statistics_Stddev_Order_By>;
-  stddev_pop: Maybe<Demand_Statistics_Stddev_Pop_Order_By>;
-  stddev_samp: Maybe<Demand_Statistics_Stddev_Samp_Order_By>;
-  sum: Maybe<Demand_Statistics_Sum_Order_By>;
-  var_pop: Maybe<Demand_Statistics_Var_Pop_Order_By>;
-  var_samp: Maybe<Demand_Statistics_Var_Samp_Order_By>;
-  variance: Maybe<Demand_Statistics_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "demand_statistics" */
-export type Demand_Statistics_Arr_Rel_Insert_Input = {
-  data: Array<Demand_Statistics_Insert_Input>;
-  on_conflict: Maybe<Demand_Statistics_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Demand_Statistics_Avg_Fields = {
   __typename?: 'demand_statistics_avg_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Float']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "demand_statistics" */
-export type Demand_Statistics_Avg_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "demand_statistics". All fields are combined with a logical 'AND'. */
 export type Demand_Statistics_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Demand_Statistics_Bool_Exp>>>;
+  _and: Maybe<Array<Demand_Statistics_Bool_Exp>>;
   _not: Maybe<Demand_Statistics_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Demand_Statistics_Bool_Exp>>>;
+  _or: Maybe<Array<Demand_Statistics_Bool_Exp>>;
   course: Maybe<Courses_Bool_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
   demand: Maybe<Json_Comparison_Exp>;
@@ -3852,74 +5027,73 @@ export enum Demand_Statistics_Constraint {
   PkDemandStatisticsStaged = 'pk_demand_statistics_staged'
 }
 
-/** input type for incrementing integer column in table "demand_statistics" */
+/** input type for incrementing numeric columns in table "demand_statistics" */
 export type Demand_Statistics_Inc_Input = {
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Int']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "demand_statistics" */
 export type Demand_Statistics_Insert_Input = {
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Int']>;
+  /** JSON dict containing demand stats by day */
   demand: Maybe<Scalars['json']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Int']>;
+  /** Latest demand date */
   latest_demand_date: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Demand_Statistics_Max_Fields = {
   __typename?: 'demand_statistics_max_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Int']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Int']>;
+  /** Latest demand date */
   latest_demand_date: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "demand_statistics" */
-export type Demand_Statistics_Max_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
-  latest_demand_date: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Demand_Statistics_Min_Fields = {
   __typename?: 'demand_statistics_min_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Int']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Int']>;
+  /** Latest demand date */
   latest_demand_date: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "demand_statistics" */
-export type Demand_Statistics_Min_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
-  latest_demand_date: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "demand_statistics" */
 export type Demand_Statistics_Mutation_Response = {
   __typename?: 'demand_statistics_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Demand_Statistics>;
 };
 
 /** input type for inserting object relation for remote table "demand_statistics" */
 export type Demand_Statistics_Obj_Rel_Insert_Input = {
   data: Demand_Statistics_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Demand_Statistics_On_Conflict>;
 };
 
-/** on conflict condition type for table "demand_statistics" */
+/** on_conflict condition type for table "demand_statistics" */
 export type Demand_Statistics_On_Conflict = {
   constraint: Demand_Statistics_Constraint;
   update_columns: Array<Demand_Statistics_Update_Column>;
   where: Maybe<Demand_Statistics_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "demand_statistics" */
+/** Ordering options when selecting data from "demand_statistics". */
 export type Demand_Statistics_Order_By = {
   course: Maybe<Courses_Order_By>;
   course_id: Maybe<Order_By>;
@@ -3928,7 +5102,7 @@ export type Demand_Statistics_Order_By = {
   latest_demand_date: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "demand_statistics" */
+/** primary key columns input for table: demand_statistics */
 export type Demand_Statistics_Pk_Columns_Input = {
   /** The course to which these demand statistics apply */
   course_id: Scalars['Int'];
@@ -3948,62 +5122,50 @@ export enum Demand_Statistics_Select_Column {
 
 /** input type for updating data in table "demand_statistics" */
 export type Demand_Statistics_Set_Input = {
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Int']>;
+  /** JSON dict containing demand stats by day */
   demand: Maybe<Scalars['json']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Int']>;
+  /** Latest demand date */
   latest_demand_date: Maybe<Scalars['String']>;
 };
 
 /** aggregate stddev on columns */
 export type Demand_Statistics_Stddev_Fields = {
   __typename?: 'demand_statistics_stddev_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Float']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "demand_statistics" */
-export type Demand_Statistics_Stddev_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Demand_Statistics_Stddev_Pop_Fields = {
   __typename?: 'demand_statistics_stddev_pop_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Float']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "demand_statistics" */
-export type Demand_Statistics_Stddev_Pop_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Demand_Statistics_Stddev_Samp_Fields = {
   __typename?: 'demand_statistics_stddev_samp_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Float']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "demand_statistics" */
-export type Demand_Statistics_Stddev_Samp_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Demand_Statistics_Sum_Fields = {
   __typename?: 'demand_statistics_sum_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Int']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "demand_statistics" */
-export type Demand_Statistics_Sum_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** update columns of table "demand_statistics" */
@@ -4021,40 +5183,28 @@ export enum Demand_Statistics_Update_Column {
 /** aggregate var_pop on columns */
 export type Demand_Statistics_Var_Pop_Fields = {
   __typename?: 'demand_statistics_var_pop_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Float']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "demand_statistics" */
-export type Demand_Statistics_Var_Pop_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Demand_Statistics_Var_Samp_Fields = {
   __typename?: 'demand_statistics_var_samp_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Float']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "demand_statistics" */
-export type Demand_Statistics_Var_Samp_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Demand_Statistics_Variance_Fields = {
   __typename?: 'demand_statistics_variance_fields';
+  /** The course to which these demand statistics apply */
   course_id: Maybe<Scalars['Float']>;
+  /** Latest demand count */
   latest_demand: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "demand_statistics" */
-export type Demand_Statistics_Variance_Order_By = {
-  course_id: Maybe<Order_By>;
-  latest_demand: Maybe<Order_By>;
 };
 
 /** columns and relationships of "discussions" */
@@ -4062,7 +5212,7 @@ export type Discussions = {
   __typename?: 'discussions';
   /** An array relationship */
   course_discussions: Array<Course_Discussions>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   course_discussions_aggregate: Course_Discussions_Aggregate;
   /** Discussion section ID */
   discussion_id: Scalars['Int'];
@@ -4126,7 +5276,7 @@ export type Discussions_Aggregate = {
 export type Discussions_Aggregate_Fields = {
   __typename?: 'discussions_aggregate_fields';
   avg: Maybe<Discussions_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Discussions_Max_Fields>;
   min: Maybe<Discussions_Min_Fields>;
   stddev: Maybe<Discussions_Stddev_Fields>;
@@ -4145,43 +5295,18 @@ export type Discussions_Aggregate_FieldsCountArgs = {
   distinct: Maybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "discussions" */
-export type Discussions_Aggregate_Order_By = {
-  avg: Maybe<Discussions_Avg_Order_By>;
-  count: Maybe<Order_By>;
-  max: Maybe<Discussions_Max_Order_By>;
-  min: Maybe<Discussions_Min_Order_By>;
-  stddev: Maybe<Discussions_Stddev_Order_By>;
-  stddev_pop: Maybe<Discussions_Stddev_Pop_Order_By>;
-  stddev_samp: Maybe<Discussions_Stddev_Samp_Order_By>;
-  sum: Maybe<Discussions_Sum_Order_By>;
-  var_pop: Maybe<Discussions_Var_Pop_Order_By>;
-  var_samp: Maybe<Discussions_Var_Samp_Order_By>;
-  variance: Maybe<Discussions_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "discussions" */
-export type Discussions_Arr_Rel_Insert_Input = {
-  data: Array<Discussions_Insert_Input>;
-  on_conflict: Maybe<Discussions_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Discussions_Avg_Fields = {
   __typename?: 'discussions_avg_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "discussions" */
-export type Discussions_Avg_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "discussions". All fields are combined with a logical 'AND'. */
 export type Discussions_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Discussions_Bool_Exp>>>;
+  _and: Maybe<Array<Discussions_Bool_Exp>>;
   _not: Maybe<Discussions_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Discussions_Bool_Exp>>>;
+  _or: Maybe<Array<Discussions_Bool_Exp>>;
   course_discussions: Maybe<Course_Discussions_Bool_Exp>;
   discussion_id: Maybe<Int_Comparison_Exp>;
   info: Maybe<String_Comparison_Exp>;
@@ -4199,93 +5324,110 @@ export enum Discussions_Constraint {
   PkDiscussionsStaged = 'pk_discussions_staged'
 }
 
-/** input type for incrementing integer column in table "discussions" */
+/** input type for incrementing numeric columns in table "discussions" */
 export type Discussions_Inc_Input = {
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "discussions" */
 export type Discussions_Insert_Input = {
   course_discussions: Maybe<Course_Discussions_Arr_Rel_Insert_Input>;
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Int']>;
+  /** Additional discussion section notes */
   info: Maybe<Scalars['String']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Same format as for courses.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /** Discussion section number */
   number: Maybe<Scalars['String']>;
+  /** Discussion section subject */
   subject: Maybe<Scalars['String']>;
+  /**
+   * Course meeting times by day, with days as keys and
+   *         tuples of `(start_time, end_time, location)`. Same format as for courses.
+   */
   times_by_day: Maybe<Scalars['json']>;
+  /** Course times and locations. Same format as for courses. */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times. Same format as for courses. */
   times_summary: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Discussions_Max_Fields = {
   __typename?: 'discussions_max_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Int']>;
+  /** Additional discussion section notes */
   info: Maybe<Scalars['String']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Same format as for courses.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /** Discussion section number */
   number: Maybe<Scalars['String']>;
+  /** Discussion section subject */
   subject: Maybe<Scalars['String']>;
+  /** Course times and locations. Same format as for courses. */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times. Same format as for courses. */
   times_summary: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "discussions" */
-export type Discussions_Max_Order_By = {
-  discussion_id: Maybe<Order_By>;
-  info: Maybe<Order_By>;
-  locations_summary: Maybe<Order_By>;
-  number: Maybe<Order_By>;
-  subject: Maybe<Order_By>;
-  times_long_summary: Maybe<Order_By>;
-  times_summary: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Discussions_Min_Fields = {
   __typename?: 'discussions_min_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Int']>;
+  /** Additional discussion section notes */
   info: Maybe<Scalars['String']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Same format as for courses.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /** Discussion section number */
   number: Maybe<Scalars['String']>;
+  /** Discussion section subject */
   subject: Maybe<Scalars['String']>;
+  /** Course times and locations. Same format as for courses. */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times. Same format as for courses. */
   times_summary: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "discussions" */
-export type Discussions_Min_Order_By = {
-  discussion_id: Maybe<Order_By>;
-  info: Maybe<Order_By>;
-  locations_summary: Maybe<Order_By>;
-  number: Maybe<Order_By>;
-  subject: Maybe<Order_By>;
-  times_long_summary: Maybe<Order_By>;
-  times_summary: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "discussions" */
 export type Discussions_Mutation_Response = {
   __typename?: 'discussions_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Discussions>;
 };
 
 /** input type for inserting object relation for remote table "discussions" */
 export type Discussions_Obj_Rel_Insert_Input = {
   data: Discussions_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Discussions_On_Conflict>;
 };
 
-/** on conflict condition type for table "discussions" */
+/** on_conflict condition type for table "discussions" */
 export type Discussions_On_Conflict = {
   constraint: Discussions_Constraint;
   update_columns: Array<Discussions_Update_Column>;
   where: Maybe<Discussions_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "discussions" */
+/** Ordering options when selecting data from "discussions". */
 export type Discussions_Order_By = {
   course_discussions_aggregate: Maybe<Course_Discussions_Aggregate_Order_By>;
   discussion_id: Maybe<Order_By>;
@@ -4298,7 +5440,7 @@ export type Discussions_Order_By = {
   times_summary: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "discussions" */
+/** primary key columns input for table: discussions */
 export type Discussions_Pk_Columns_Input = {
   /** Discussion section ID */
   discussion_id: Scalars['Int'];
@@ -4326,58 +5468,57 @@ export enum Discussions_Select_Column {
 
 /** input type for updating data in table "discussions" */
 export type Discussions_Set_Input = {
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Int']>;
+  /** Additional discussion section notes */
   info: Maybe<Scalars['String']>;
+  /**
+   * If single location, is `<location>`; otherwise is
+   *         `<location> + <n_other_locations>` where the first location is the one
+   *         with the greatest number of days. Same format as for courses.
+   */
   locations_summary: Maybe<Scalars['String']>;
+  /** Discussion section number */
   number: Maybe<Scalars['String']>;
+  /** Discussion section subject */
   subject: Maybe<Scalars['String']>;
+  /**
+   * Course meeting times by day, with days as keys and
+   *         tuples of `(start_time, end_time, location)`. Same format as for courses.
+   */
   times_by_day: Maybe<Scalars['json']>;
+  /** Course times and locations. Same format as for courses. */
   times_long_summary: Maybe<Scalars['String']>;
+  /** Course times. Same format as for courses. */
   times_summary: Maybe<Scalars['String']>;
 };
 
 /** aggregate stddev on columns */
 export type Discussions_Stddev_Fields = {
   __typename?: 'discussions_stddev_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "discussions" */
-export type Discussions_Stddev_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Discussions_Stddev_Pop_Fields = {
   __typename?: 'discussions_stddev_pop_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "discussions" */
-export type Discussions_Stddev_Pop_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Discussions_Stddev_Samp_Fields = {
   __typename?: 'discussions_stddev_samp_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "discussions" */
-export type Discussions_Stddev_Samp_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Discussions_Sum_Fields = {
   __typename?: 'discussions_sum_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "discussions" */
-export type Discussions_Sum_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** update columns of table "discussions" */
@@ -4403,34 +5544,22 @@ export enum Discussions_Update_Column {
 /** aggregate var_pop on columns */
 export type Discussions_Var_Pop_Fields = {
   __typename?: 'discussions_var_pop_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "discussions" */
-export type Discussions_Var_Pop_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Discussions_Var_Samp_Fields = {
   __typename?: 'discussions_var_samp_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "discussions" */
-export type Discussions_Var_Samp_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Discussions_Variance_Fields = {
   __typename?: 'discussions_variance_fields';
+  /** Discussion section ID */
   discussion_id: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "discussions" */
-export type Discussions_Variance_Order_By = {
-  discussion_id: Maybe<Order_By>;
 };
 
 /** columns and relationships of "evaluation_narratives" */
@@ -4468,7 +5597,7 @@ export type Evaluation_Narratives_Aggregate = {
 export type Evaluation_Narratives_Aggregate_Fields = {
   __typename?: 'evaluation_narratives_aggregate_fields';
   avg: Maybe<Evaluation_Narratives_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Evaluation_Narratives_Max_Fields>;
   min: Maybe<Evaluation_Narratives_Min_Fields>;
   stddev: Maybe<Evaluation_Narratives_Stddev_Fields>;
@@ -4505,35 +5634,46 @@ export type Evaluation_Narratives_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "evaluation_narratives" */
 export type Evaluation_Narratives_Arr_Rel_Insert_Input = {
   data: Array<Evaluation_Narratives_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Evaluation_Narratives_On_Conflict>;
 };
 
 /** aggregate avg on columns */
 export type Evaluation_Narratives_Avg_Fields = {
   __typename?: 'evaluation_narratives_avg_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['Float']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Avg_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "evaluation_narratives". All fields are combined with a logical 'AND'. */
 export type Evaluation_Narratives_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Evaluation_Narratives_Bool_Exp>>>;
+  _and: Maybe<Array<Evaluation_Narratives_Bool_Exp>>;
   _not: Maybe<Evaluation_Narratives_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Evaluation_Narratives_Bool_Exp>>>;
+  _or: Maybe<Array<Evaluation_Narratives_Bool_Exp>>;
   comment: Maybe<String_Comparison_Exp>;
   comment_compound: Maybe<Float8_Comparison_Exp>;
   comment_neg: Maybe<Float8_Comparison_Exp>;
@@ -4552,103 +5692,137 @@ export enum Evaluation_Narratives_Constraint {
   PkEvaluationNarrativesStaged = 'pk_evaluation_narratives_staged'
 }
 
-/** input type for incrementing integer column in table "evaluation_narratives" */
+/** input type for incrementing numeric columns in table "evaluation_narratives" */
 export type Evaluation_Narratives_Inc_Input = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['float8']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "evaluation_narratives" */
 export type Evaluation_Narratives_Insert_Input = {
+  /** Response to the question */
   comment: Maybe<Scalars['String']>;
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['float8']>;
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Int']>;
   evaluation_question: Maybe<Evaluation_Questions_Obj_Rel_Insert_Input>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this narrative comment responds */
   question_code: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Evaluation_Narratives_Max_Fields = {
   __typename?: 'evaluation_narratives_max_fields';
+  /** Response to the question */
   comment: Maybe<Scalars['String']>;
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['float8']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this narrative comment responds */
   question_code: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Max_Order_By = {
+  /** Response to the question */
   comment: Maybe<Order_By>;
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
+  /** Question to which this narrative comment responds */
   question_code: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Evaluation_Narratives_Min_Fields = {
   __typename?: 'evaluation_narratives_min_fields';
+  /** Response to the question */
   comment: Maybe<Scalars['String']>;
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['float8']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this narrative comment responds */
   question_code: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Min_Order_By = {
+  /** Response to the question */
   comment: Maybe<Order_By>;
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
+  /** Question to which this narrative comment responds */
   question_code: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "evaluation_narratives" */
 export type Evaluation_Narratives_Mutation_Response = {
   __typename?: 'evaluation_narratives_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Evaluation_Narratives>;
 };
 
-/** input type for inserting object relation for remote table "evaluation_narratives" */
-export type Evaluation_Narratives_Obj_Rel_Insert_Input = {
-  data: Evaluation_Narratives_Insert_Input;
-  on_conflict: Maybe<Evaluation_Narratives_On_Conflict>;
-};
-
-/** on conflict condition type for table "evaluation_narratives" */
+/** on_conflict condition type for table "evaluation_narratives" */
 export type Evaluation_Narratives_On_Conflict = {
   constraint: Evaluation_Narratives_Constraint;
   update_columns: Array<Evaluation_Narratives_Update_Column>;
   where: Maybe<Evaluation_Narratives_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "evaluation_narratives" */
+/** Ordering options when selecting data from "evaluation_narratives". */
 export type Evaluation_Narratives_Order_By = {
   comment: Maybe<Order_By>;
   comment_compound: Maybe<Order_By>;
@@ -4662,7 +5836,7 @@ export type Evaluation_Narratives_Order_By = {
   question_code: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "evaluation_narratives" */
+/** primary key columns input for table: evaluation_narratives */
 export type Evaluation_Narratives_Pk_Columns_Input = {
   id: Scalars['Int'];
 };
@@ -4689,33 +5863,50 @@ export enum Evaluation_Narratives_Select_Column {
 
 /** input type for updating data in table "evaluation_narratives" */
 export type Evaluation_Narratives_Set_Input = {
+  /** Response to the question */
   comment: Maybe<Scalars['String']>;
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['float8']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this narrative comment responds */
   question_code: Maybe<Scalars['String']>;
 };
 
 /** aggregate stddev on columns */
 export type Evaluation_Narratives_Stddev_Fields = {
   __typename?: 'evaluation_narratives_stddev_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['Float']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Stddev_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -4723,20 +5914,30 @@ export type Evaluation_Narratives_Stddev_Order_By = {
 /** aggregate stddev_pop on columns */
 export type Evaluation_Narratives_Stddev_Pop_Fields = {
   __typename?: 'evaluation_narratives_stddev_pop_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['Float']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Stddev_Pop_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -4744,20 +5945,30 @@ export type Evaluation_Narratives_Stddev_Pop_Order_By = {
 /** aggregate stddev_samp on columns */
 export type Evaluation_Narratives_Stddev_Samp_Fields = {
   __typename?: 'evaluation_narratives_stddev_samp_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['Float']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Stddev_Samp_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -4765,20 +5976,30 @@ export type Evaluation_Narratives_Stddev_Samp_Order_By = {
 /** aggregate sum on columns */
 export type Evaluation_Narratives_Sum_Fields = {
   __typename?: 'evaluation_narratives_sum_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['float8']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['float8']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Sum_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -4806,20 +6027,30 @@ export enum Evaluation_Narratives_Update_Column {
 /** aggregate var_pop on columns */
 export type Evaluation_Narratives_Var_Pop_Fields = {
   __typename?: 'evaluation_narratives_var_pop_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['Float']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Var_Pop_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -4827,20 +6058,30 @@ export type Evaluation_Narratives_Var_Pop_Order_By = {
 /** aggregate var_samp on columns */
 export type Evaluation_Narratives_Var_Samp_Fields = {
   __typename?: 'evaluation_narratives_var_samp_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['Float']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Var_Samp_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -4848,20 +6089,30 @@ export type Evaluation_Narratives_Var_Samp_Order_By = {
 /** aggregate variance on columns */
 export type Evaluation_Narratives_Variance_Fields = {
   __typename?: 'evaluation_narratives_variance_fields';
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Scalars['Float']>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Scalars['Float']>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "evaluation_narratives" */
 export type Evaluation_Narratives_Variance_Order_By = {
+  /** VADER sentiment 'compound' score (valence aggregate of neg, neu, pos) */
   comment_compound: Maybe<Order_By>;
+  /** VADER sentiment 'neg' score (negativity) */
   comment_neg: Maybe<Order_By>;
+  /** VADER sentiment 'neu' score (neutrality) */
   comment_neu: Maybe<Order_By>;
+  /** VADER sentiment 'pos' score (positivity) */
   comment_pos: Maybe<Order_By>;
+  /** The course to which this narrative comment applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -4871,11 +6122,11 @@ export type Evaluation_Questions = {
   __typename?: 'evaluation_questions';
   /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
   /**
    * True if the question has narrative responses.
@@ -4951,7 +6202,7 @@ export type Evaluation_Questions_Aggregate = {
 /** aggregate fields of "evaluation_questions" */
 export type Evaluation_Questions_Aggregate_Fields = {
   __typename?: 'evaluation_questions_aggregate_fields';
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Evaluation_Questions_Max_Fields>;
   min: Maybe<Evaluation_Questions_Min_Fields>;
 };
@@ -4963,24 +6214,11 @@ export type Evaluation_Questions_Aggregate_FieldsCountArgs = {
   distinct: Maybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "evaluation_questions" */
-export type Evaluation_Questions_Aggregate_Order_By = {
-  count: Maybe<Order_By>;
-  max: Maybe<Evaluation_Questions_Max_Order_By>;
-  min: Maybe<Evaluation_Questions_Min_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "evaluation_questions" */
-export type Evaluation_Questions_Arr_Rel_Insert_Input = {
-  data: Array<Evaluation_Questions_Insert_Input>;
-  on_conflict: Maybe<Evaluation_Questions_On_Conflict>;
-};
-
 /** Boolean expression to filter rows from the table "evaluation_questions". All fields are combined with a logical 'AND'. */
 export type Evaluation_Questions_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Evaluation_Questions_Bool_Exp>>>;
+  _and: Maybe<Array<Evaluation_Questions_Bool_Exp>>;
   _not: Maybe<Evaluation_Questions_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Evaluation_Questions_Bool_Exp>>>;
+  _or: Maybe<Array<Evaluation_Questions_Bool_Exp>>;
   evaluation_narratives: Maybe<Evaluation_Narratives_Bool_Exp>;
   evaluation_ratings: Maybe<Evaluation_Ratings_Bool_Exp>;
   is_narrative: Maybe<Boolean_Comparison_Exp>;
@@ -5000,66 +6238,76 @@ export enum Evaluation_Questions_Constraint {
 export type Evaluation_Questions_Insert_Input = {
   evaluation_narratives: Maybe<Evaluation_Narratives_Arr_Rel_Insert_Input>;
   evaluation_ratings: Maybe<Evaluation_Ratings_Arr_Rel_Insert_Input>;
+  /**
+   * True if the question has narrative responses.
+   *         False if the question has categorica/numerical responses
+   */
   is_narrative: Maybe<Scalars['Boolean']>;
+  /** JSON array of possible responses (only if the question is not a narrative */
   options: Maybe<Scalars['json']>;
+  /** Question code from OCE (e.g. "YC402") */
   question_code: Maybe<Scalars['String']>;
+  /** The question text */
   question_text: Maybe<Scalars['String']>;
+  /**
+   * [computed] Question type (used for computing ratings, since one
+   *         question may be coded differently for different respondants)
+   */
   tag: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Evaluation_Questions_Max_Fields = {
   __typename?: 'evaluation_questions_max_fields';
+  /** Question code from OCE (e.g. "YC402") */
   question_code: Maybe<Scalars['String']>;
+  /** The question text */
   question_text: Maybe<Scalars['String']>;
+  /**
+   * [computed] Question type (used for computing ratings, since one
+   *         question may be coded differently for different respondants)
+   */
   tag: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "evaluation_questions" */
-export type Evaluation_Questions_Max_Order_By = {
-  question_code: Maybe<Order_By>;
-  question_text: Maybe<Order_By>;
-  tag: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Evaluation_Questions_Min_Fields = {
   __typename?: 'evaluation_questions_min_fields';
+  /** Question code from OCE (e.g. "YC402") */
   question_code: Maybe<Scalars['String']>;
+  /** The question text */
   question_text: Maybe<Scalars['String']>;
+  /**
+   * [computed] Question type (used for computing ratings, since one
+   *         question may be coded differently for different respondants)
+   */
   tag: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "evaluation_questions" */
-export type Evaluation_Questions_Min_Order_By = {
-  question_code: Maybe<Order_By>;
-  question_text: Maybe<Order_By>;
-  tag: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "evaluation_questions" */
 export type Evaluation_Questions_Mutation_Response = {
   __typename?: 'evaluation_questions_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Evaluation_Questions>;
 };
 
 /** input type for inserting object relation for remote table "evaluation_questions" */
 export type Evaluation_Questions_Obj_Rel_Insert_Input = {
   data: Evaluation_Questions_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Evaluation_Questions_On_Conflict>;
 };
 
-/** on conflict condition type for table "evaluation_questions" */
+/** on_conflict condition type for table "evaluation_questions" */
 export type Evaluation_Questions_On_Conflict = {
   constraint: Evaluation_Questions_Constraint;
   update_columns: Array<Evaluation_Questions_Update_Column>;
   where: Maybe<Evaluation_Questions_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "evaluation_questions" */
+/** Ordering options when selecting data from "evaluation_questions". */
 export type Evaluation_Questions_Order_By = {
   evaluation_narratives_aggregate: Maybe<Evaluation_Narratives_Aggregate_Order_By>;
   evaluation_ratings_aggregate: Maybe<Evaluation_Ratings_Aggregate_Order_By>;
@@ -5070,7 +6318,7 @@ export type Evaluation_Questions_Order_By = {
   tag: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "evaluation_questions" */
+/** primary key columns input for table: evaluation_questions */
 export type Evaluation_Questions_Pk_Columns_Input = {
   /** Question code from OCE (e.g. "YC402") */
   question_code: Scalars['String'];
@@ -5092,10 +6340,21 @@ export enum Evaluation_Questions_Select_Column {
 
 /** input type for updating data in table "evaluation_questions" */
 export type Evaluation_Questions_Set_Input = {
+  /**
+   * True if the question has narrative responses.
+   *         False if the question has categorica/numerical responses
+   */
   is_narrative: Maybe<Scalars['Boolean']>;
+  /** JSON array of possible responses (only if the question is not a narrative */
   options: Maybe<Scalars['json']>;
+  /** Question code from OCE (e.g. "YC402") */
   question_code: Maybe<Scalars['String']>;
+  /** The question text */
   question_text: Maybe<Scalars['String']>;
+  /**
+   * [computed] Question type (used for computing ratings, since one
+   *         question may be coded differently for different respondants)
+   */
   tag: Maybe<Scalars['String']>;
 };
 
@@ -5146,7 +6405,7 @@ export type Evaluation_Ratings_Aggregate = {
 export type Evaluation_Ratings_Aggregate_Fields = {
   __typename?: 'evaluation_ratings_aggregate_fields';
   avg: Maybe<Evaluation_Ratings_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Evaluation_Ratings_Max_Fields>;
   min: Maybe<Evaluation_Ratings_Min_Fields>;
   stddev: Maybe<Evaluation_Ratings_Stddev_Fields>;
@@ -5183,27 +6442,30 @@ export type Evaluation_Ratings_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "evaluation_ratings" */
 export type Evaluation_Ratings_Arr_Rel_Insert_Input = {
   data: Array<Evaluation_Ratings_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Evaluation_Ratings_On_Conflict>;
 };
 
 /** aggregate avg on columns */
 export type Evaluation_Ratings_Avg_Fields = {
   __typename?: 'evaluation_ratings_avg_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Avg_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "evaluation_ratings". All fields are combined with a logical 'AND'. */
 export type Evaluation_Ratings_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Evaluation_Ratings_Bool_Exp>>>;
+  _and: Maybe<Array<Evaluation_Ratings_Bool_Exp>>;
   _not: Maybe<Evaluation_Ratings_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Evaluation_Ratings_Bool_Exp>>>;
+  _or: Maybe<Array<Evaluation_Ratings_Bool_Exp>>;
   course: Maybe<Courses_Bool_Exp>;
   course_id: Maybe<Int_Comparison_Exp>;
   evaluation_question: Maybe<Evaluation_Questions_Bool_Exp>;
@@ -5218,8 +6480,9 @@ export enum Evaluation_Ratings_Constraint {
   PkEvaluationRatingsStaged = 'pk_evaluation_ratings_staged'
 }
 
-/** input type for incrementing integer column in table "evaluation_ratings" */
+/** input type for incrementing numeric columns in table "evaluation_ratings" */
 export type Evaluation_Ratings_Inc_Input = {
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
 };
@@ -5227,66 +6490,71 @@ export type Evaluation_Ratings_Inc_Input = {
 /** input type for inserting data into table "evaluation_ratings" */
 export type Evaluation_Ratings_Insert_Input = {
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Int']>;
   evaluation_question: Maybe<Evaluation_Questions_Obj_Rel_Insert_Input>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this rating responds */
   question_code: Maybe<Scalars['String']>;
+  /** JSON array of the response counts for each option */
   rating: Maybe<Scalars['json']>;
 };
 
 /** aggregate max on columns */
 export type Evaluation_Ratings_Max_Fields = {
   __typename?: 'evaluation_ratings_max_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this rating responds */
   question_code: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Max_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
+  /** Question to which this rating responds */
   question_code: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Evaluation_Ratings_Min_Fields = {
   __typename?: 'evaluation_ratings_min_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this rating responds */
   question_code: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Min_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
+  /** Question to which this rating responds */
   question_code: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "evaluation_ratings" */
 export type Evaluation_Ratings_Mutation_Response = {
   __typename?: 'evaluation_ratings_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Evaluation_Ratings>;
 };
 
-/** input type for inserting object relation for remote table "evaluation_ratings" */
-export type Evaluation_Ratings_Obj_Rel_Insert_Input = {
-  data: Evaluation_Ratings_Insert_Input;
-  on_conflict: Maybe<Evaluation_Ratings_On_Conflict>;
-};
-
-/** on conflict condition type for table "evaluation_ratings" */
+/** on_conflict condition type for table "evaluation_ratings" */
 export type Evaluation_Ratings_On_Conflict = {
   constraint: Evaluation_Ratings_Constraint;
   update_columns: Array<Evaluation_Ratings_Update_Column>;
   where: Maybe<Evaluation_Ratings_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "evaluation_ratings" */
+/** Ordering options when selecting data from "evaluation_ratings". */
 export type Evaluation_Ratings_Order_By = {
   course: Maybe<Courses_Order_By>;
   course_id: Maybe<Order_By>;
@@ -5296,7 +6564,7 @@ export type Evaluation_Ratings_Order_By = {
   rating: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "evaluation_ratings" */
+/** primary key columns input for table: evaluation_ratings */
 export type Evaluation_Ratings_Pk_Columns_Input = {
   id: Scalars['Int'];
 };
@@ -5315,21 +6583,26 @@ export enum Evaluation_Ratings_Select_Column {
 
 /** input type for updating data in table "evaluation_ratings" */
 export type Evaluation_Ratings_Set_Input = {
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
+  /** Question to which this rating responds */
   question_code: Maybe<Scalars['String']>;
+  /** JSON array of the response counts for each option */
   rating: Maybe<Scalars['json']>;
 };
 
 /** aggregate stddev on columns */
 export type Evaluation_Ratings_Stddev_Fields = {
   __typename?: 'evaluation_ratings_stddev_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Stddev_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -5337,12 +6610,14 @@ export type Evaluation_Ratings_Stddev_Order_By = {
 /** aggregate stddev_pop on columns */
 export type Evaluation_Ratings_Stddev_Pop_Fields = {
   __typename?: 'evaluation_ratings_stddev_pop_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Stddev_Pop_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -5350,12 +6625,14 @@ export type Evaluation_Ratings_Stddev_Pop_Order_By = {
 /** aggregate stddev_samp on columns */
 export type Evaluation_Ratings_Stddev_Samp_Fields = {
   __typename?: 'evaluation_ratings_stddev_samp_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Stddev_Samp_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -5363,12 +6640,14 @@ export type Evaluation_Ratings_Stddev_Samp_Order_By = {
 /** aggregate sum on columns */
 export type Evaluation_Ratings_Sum_Fields = {
   __typename?: 'evaluation_ratings_sum_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Int']>;
   id: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Sum_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -5388,12 +6667,14 @@ export enum Evaluation_Ratings_Update_Column {
 /** aggregate var_pop on columns */
 export type Evaluation_Ratings_Var_Pop_Fields = {
   __typename?: 'evaluation_ratings_var_pop_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Var_Pop_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -5401,12 +6682,14 @@ export type Evaluation_Ratings_Var_Pop_Order_By = {
 /** aggregate var_samp on columns */
 export type Evaluation_Ratings_Var_Samp_Fields = {
   __typename?: 'evaluation_ratings_var_samp_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Var_Samp_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -5414,12 +6697,14 @@ export type Evaluation_Ratings_Var_Samp_Order_By = {
 /** aggregate variance on columns */
 export type Evaluation_Ratings_Variance_Fields = {
   __typename?: 'evaluation_ratings_variance_fields';
+  /** The course to which this rating applies */
   course_id: Maybe<Scalars['Float']>;
   id: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "evaluation_ratings" */
 export type Evaluation_Ratings_Variance_Order_By = {
+  /** The course to which this rating applies */
   course_id: Maybe<Order_By>;
   id: Maybe<Order_By>;
 };
@@ -5466,7 +6751,7 @@ export type Evaluation_Statistics_Aggregate = {
 export type Evaluation_Statistics_Aggregate_Fields = {
   __typename?: 'evaluation_statistics_aggregate_fields';
   avg: Maybe<Evaluation_Statistics_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Evaluation_Statistics_Max_Fields>;
   min: Maybe<Evaluation_Statistics_Min_Fields>;
   stddev: Maybe<Evaluation_Statistics_Stddev_Fields>;
@@ -5485,57 +6770,32 @@ export type Evaluation_Statistics_Aggregate_FieldsCountArgs = {
   distinct: Maybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "evaluation_statistics" */
-export type Evaluation_Statistics_Aggregate_Order_By = {
-  avg: Maybe<Evaluation_Statistics_Avg_Order_By>;
-  count: Maybe<Order_By>;
-  max: Maybe<Evaluation_Statistics_Max_Order_By>;
-  min: Maybe<Evaluation_Statistics_Min_Order_By>;
-  stddev: Maybe<Evaluation_Statistics_Stddev_Order_By>;
-  stddev_pop: Maybe<Evaluation_Statistics_Stddev_Pop_Order_By>;
-  stddev_samp: Maybe<Evaluation_Statistics_Stddev_Samp_Order_By>;
-  sum: Maybe<Evaluation_Statistics_Sum_Order_By>;
-  var_pop: Maybe<Evaluation_Statistics_Var_Pop_Order_By>;
-  var_samp: Maybe<Evaluation_Statistics_Var_Samp_Order_By>;
-  variance: Maybe<Evaluation_Statistics_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "evaluation_statistics" */
-export type Evaluation_Statistics_Arr_Rel_Insert_Input = {
-  data: Array<Evaluation_Statistics_Insert_Input>;
-  on_conflict: Maybe<Evaluation_Statistics_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Evaluation_Statistics_Avg_Fields = {
   __typename?: 'evaluation_statistics_avg_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['Float']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['Float']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Float']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Float']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Float']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Float']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Float']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Avg_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "evaluation_statistics". All fields are combined with a logical 'AND'. */
 export type Evaluation_Statistics_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Evaluation_Statistics_Bool_Exp>>>;
+  _and: Maybe<Array<Evaluation_Statistics_Bool_Exp>>;
   _not: Maybe<Evaluation_Statistics_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Evaluation_Statistics_Bool_Exp>>>;
+  _or: Maybe<Array<Evaluation_Statistics_Bool_Exp>>;
   avg_rating: Maybe<Float8_Comparison_Exp>;
   avg_workload: Maybe<Float8_Comparison_Exp>;
   course: Maybe<Courses_Bool_Exp>;
@@ -5554,105 +6814,115 @@ export enum Evaluation_Statistics_Constraint {
   PkEvaluationStatisticsStaged = 'pk_evaluation_statistics_staged'
 }
 
-/** input type for incrementing integer column in table "evaluation_statistics" */
+/** input type for incrementing numeric columns in table "evaluation_statistics" */
 export type Evaluation_Statistics_Inc_Input = {
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['float8']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['float8']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Int']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Int']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Int']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Int']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Int']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "evaluation_statistics" */
 export type Evaluation_Statistics_Insert_Input = {
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['float8']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['float8']>;
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Int']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Int']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Int']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Int']>;
+  /** Arbitrary additional information attached to an evaluation */
   extras: Maybe<Scalars['json']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Int']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Int']>;
 };
 
 /** aggregate max on columns */
 export type Evaluation_Statistics_Max_Fields = {
   __typename?: 'evaluation_statistics_max_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['float8']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['float8']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Int']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Int']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Int']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Int']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Int']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Max_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Evaluation_Statistics_Min_Fields = {
   __typename?: 'evaluation_statistics_min_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['float8']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['float8']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Int']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Int']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Int']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Int']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Int']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Min_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "evaluation_statistics" */
 export type Evaluation_Statistics_Mutation_Response = {
   __typename?: 'evaluation_statistics_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Evaluation_Statistics>;
 };
 
 /** input type for inserting object relation for remote table "evaluation_statistics" */
 export type Evaluation_Statistics_Obj_Rel_Insert_Input = {
   data: Evaluation_Statistics_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Evaluation_Statistics_On_Conflict>;
 };
 
-/** on conflict condition type for table "evaluation_statistics" */
+/** on_conflict condition type for table "evaluation_statistics" */
 export type Evaluation_Statistics_On_Conflict = {
   constraint: Evaluation_Statistics_Constraint;
   update_columns: Array<Evaluation_Statistics_Update_Column>;
   where: Maybe<Evaluation_Statistics_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "evaluation_statistics" */
+/** Ordering options when selecting data from "evaluation_statistics". */
 export type Evaluation_Statistics_Order_By = {
   avg_rating: Maybe<Order_By>;
   avg_workload: Maybe<Order_By>;
@@ -5666,7 +6936,7 @@ export type Evaluation_Statistics_Order_By = {
   responses: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "evaluation_statistics" */
+/** primary key columns input for table: evaluation_statistics */
 export type Evaluation_Statistics_Pk_Columns_Input = {
   /** The course associated with these statistics */
   course_id: Scalars['Int'];
@@ -5696,115 +6966,108 @@ export enum Evaluation_Statistics_Select_Column {
 
 /** input type for updating data in table "evaluation_statistics" */
 export type Evaluation_Statistics_Set_Input = {
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['float8']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['float8']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Int']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Int']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Int']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Int']>;
+  /** Arbitrary additional information attached to an evaluation */
   extras: Maybe<Scalars['json']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Int']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Int']>;
 };
 
 /** aggregate stddev on columns */
 export type Evaluation_Statistics_Stddev_Fields = {
   __typename?: 'evaluation_statistics_stddev_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['Float']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['Float']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Float']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Float']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Float']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Float']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Float']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Stddev_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Evaluation_Statistics_Stddev_Pop_Fields = {
   __typename?: 'evaluation_statistics_stddev_pop_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['Float']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['Float']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Float']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Float']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Float']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Float']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Float']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Stddev_Pop_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Evaluation_Statistics_Stddev_Samp_Fields = {
   __typename?: 'evaluation_statistics_stddev_samp_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['Float']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['Float']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Float']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Float']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Float']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Float']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Float']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Stddev_Samp_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Evaluation_Statistics_Sum_Fields = {
   __typename?: 'evaluation_statistics_sum_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['float8']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['float8']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Int']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Int']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Int']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Int']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Int']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Sum_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** update columns of table "evaluation_statistics" */
@@ -5832,76 +7095,64 @@ export enum Evaluation_Statistics_Update_Column {
 /** aggregate var_pop on columns */
 export type Evaluation_Statistics_Var_Pop_Fields = {
   __typename?: 'evaluation_statistics_var_pop_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['Float']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['Float']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Float']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Float']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Float']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Float']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Float']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Var_Pop_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Evaluation_Statistics_Var_Samp_Fields = {
   __typename?: 'evaluation_statistics_var_samp_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['Float']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['Float']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Float']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Float']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Float']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Float']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Float']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Var_Samp_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Evaluation_Statistics_Variance_Fields = {
   __typename?: 'evaluation_statistics_variance_fields';
+  /** [computed] Average overall rating */
   avg_rating: Maybe<Scalars['Float']>;
+  /** [computed] Average workload rating */
   avg_workload: Maybe<Scalars['Float']>;
+  /** The course associated with these statistics */
   course_id: Maybe<Scalars['Float']>;
+  /** Number of students who declined to respond */
   declined: Maybe<Scalars['Float']>;
+  /** Number of students enrolled in course */
   enrolled: Maybe<Scalars['Float']>;
+  /** Placeholder for compatibility (previously held JSON for enrollment) */
   enrollment: Maybe<Scalars['Float']>;
+  /** Number of students who did not respond */
   no_response: Maybe<Scalars['Float']>;
+  /** Number of responses */
   responses: Maybe<Scalars['Float']>;
-};
-
-/** order by variance() on columns of table "evaluation_statistics" */
-export type Evaluation_Statistics_Variance_Order_By = {
-  avg_rating: Maybe<Order_By>;
-  avg_workload: Maybe<Order_By>;
-  course_id: Maybe<Order_By>;
-  declined: Maybe<Order_By>;
-  enrolled: Maybe<Order_By>;
-  enrollment: Maybe<Order_By>;
-  no_response: Maybe<Order_By>;
-  responses: Maybe<Order_By>;
 };
 
 /** columns and relationships of "fasttext_similars" */
@@ -5910,7 +7161,7 @@ export type Fasttext_Similars = {
   /** An object relationship */
   course: Courses;
   /** An object relationship */
-  courseBySource: Courses;
+  courseByTarget: Courses;
   /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Scalars['Int'];
@@ -5928,7 +7179,7 @@ export type Fasttext_Similars_Aggregate = {
 export type Fasttext_Similars_Aggregate_Fields = {
   __typename?: 'fasttext_similars_aggregate_fields';
   avg: Maybe<Fasttext_Similars_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Fasttext_Similars_Max_Fields>;
   min: Maybe<Fasttext_Similars_Min_Fields>;
   stddev: Maybe<Fasttext_Similars_Stddev_Fields>;
@@ -5965,12 +7216,14 @@ export type Fasttext_Similars_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "fasttext_similars" */
 export type Fasttext_Similars_Arr_Rel_Insert_Input = {
   data: Array<Fasttext_Similars_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Fasttext_Similars_On_Conflict>;
 };
 
 /** aggregate avg on columns */
 export type Fasttext_Similars_Avg_Fields = {
   __typename?: 'fasttext_similars_avg_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -5978,6 +7231,7 @@ export type Fasttext_Similars_Avg_Fields = {
 
 /** order by avg() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Avg_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -5985,11 +7239,11 @@ export type Fasttext_Similars_Avg_Order_By = {
 
 /** Boolean expression to filter rows from the table "fasttext_similars". All fields are combined with a logical 'AND'. */
 export type Fasttext_Similars_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Fasttext_Similars_Bool_Exp>>>;
+  _and: Maybe<Array<Fasttext_Similars_Bool_Exp>>;
   _not: Maybe<Fasttext_Similars_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Fasttext_Similars_Bool_Exp>>>;
+  _or: Maybe<Array<Fasttext_Similars_Bool_Exp>>;
   course: Maybe<Courses_Bool_Exp>;
-  courseBySource: Maybe<Courses_Bool_Exp>;
+  courseByTarget: Maybe<Courses_Bool_Exp>;
   rank: Maybe<Int_Comparison_Exp>;
   source: Maybe<Int_Comparison_Exp>;
   target: Maybe<Int_Comparison_Exp>;
@@ -6001,8 +7255,9 @@ export enum Fasttext_Similars_Constraint {
   PkFasttextSimilarsStaged = 'pk_fasttext_similars_staged'
 }
 
-/** input type for incrementing integer column in table "fasttext_similars" */
+/** input type for incrementing numeric columns in table "fasttext_similars" */
 export type Fasttext_Similars_Inc_Input = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -6011,7 +7266,8 @@ export type Fasttext_Similars_Inc_Input = {
 /** input type for inserting data into table "fasttext_similars" */
 export type Fasttext_Similars_Insert_Input = {
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
-  courseBySource: Maybe<Courses_Obj_Rel_Insert_Input>;
+  courseByTarget: Maybe<Courses_Obj_Rel_Insert_Input>;
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -6020,6 +7276,7 @@ export type Fasttext_Similars_Insert_Input = {
 /** aggregate max on columns */
 export type Fasttext_Similars_Max_Fields = {
   __typename?: 'fasttext_similars_max_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -6027,6 +7284,7 @@ export type Fasttext_Similars_Max_Fields = {
 
 /** order by max() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Max_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6035,6 +7293,7 @@ export type Fasttext_Similars_Max_Order_By = {
 /** aggregate min on columns */
 export type Fasttext_Similars_Min_Fields = {
   __typename?: 'fasttext_similars_min_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -6042,6 +7301,7 @@ export type Fasttext_Similars_Min_Fields = {
 
 /** order by min() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Min_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6050,35 +7310,29 @@ export type Fasttext_Similars_Min_Order_By = {
 /** response of any mutation on the table "fasttext_similars" */
 export type Fasttext_Similars_Mutation_Response = {
   __typename?: 'fasttext_similars_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Fasttext_Similars>;
 };
 
-/** input type for inserting object relation for remote table "fasttext_similars" */
-export type Fasttext_Similars_Obj_Rel_Insert_Input = {
-  data: Fasttext_Similars_Insert_Input;
-  on_conflict: Maybe<Fasttext_Similars_On_Conflict>;
-};
-
-/** on conflict condition type for table "fasttext_similars" */
+/** on_conflict condition type for table "fasttext_similars" */
 export type Fasttext_Similars_On_Conflict = {
   constraint: Fasttext_Similars_Constraint;
   update_columns: Array<Fasttext_Similars_Update_Column>;
   where: Maybe<Fasttext_Similars_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "fasttext_similars" */
+/** Ordering options when selecting data from "fasttext_similars". */
 export type Fasttext_Similars_Order_By = {
   course: Maybe<Courses_Order_By>;
-  courseBySource: Maybe<Courses_Order_By>;
+  courseByTarget: Maybe<Courses_Order_By>;
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "fasttext_similars" */
+/** primary key columns input for table: fasttext_similars */
 export type Fasttext_Similars_Pk_Columns_Input = {
   source: Scalars['Int'];
   target: Scalars['Int'];
@@ -6096,6 +7350,7 @@ export enum Fasttext_Similars_Select_Column {
 
 /** input type for updating data in table "fasttext_similars" */
 export type Fasttext_Similars_Set_Input = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -6104,6 +7359,7 @@ export type Fasttext_Similars_Set_Input = {
 /** aggregate stddev on columns */
 export type Fasttext_Similars_Stddev_Fields = {
   __typename?: 'fasttext_similars_stddev_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -6111,6 +7367,7 @@ export type Fasttext_Similars_Stddev_Fields = {
 
 /** order by stddev() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Stddev_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6119,6 +7376,7 @@ export type Fasttext_Similars_Stddev_Order_By = {
 /** aggregate stddev_pop on columns */
 export type Fasttext_Similars_Stddev_Pop_Fields = {
   __typename?: 'fasttext_similars_stddev_pop_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -6126,6 +7384,7 @@ export type Fasttext_Similars_Stddev_Pop_Fields = {
 
 /** order by stddev_pop() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Stddev_Pop_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6134,6 +7393,7 @@ export type Fasttext_Similars_Stddev_Pop_Order_By = {
 /** aggregate stddev_samp on columns */
 export type Fasttext_Similars_Stddev_Samp_Fields = {
   __typename?: 'fasttext_similars_stddev_samp_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -6141,6 +7401,7 @@ export type Fasttext_Similars_Stddev_Samp_Fields = {
 
 /** order by stddev_samp() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Stddev_Samp_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6149,6 +7410,7 @@ export type Fasttext_Similars_Stddev_Samp_Order_By = {
 /** aggregate sum on columns */
 export type Fasttext_Similars_Sum_Fields = {
   __typename?: 'fasttext_similars_sum_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -6156,6 +7418,7 @@ export type Fasttext_Similars_Sum_Fields = {
 
 /** order by sum() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Sum_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6174,6 +7437,7 @@ export enum Fasttext_Similars_Update_Column {
 /** aggregate var_pop on columns */
 export type Fasttext_Similars_Var_Pop_Fields = {
   __typename?: 'fasttext_similars_var_pop_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -6181,6 +7445,7 @@ export type Fasttext_Similars_Var_Pop_Fields = {
 
 /** order by var_pop() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Var_Pop_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6189,6 +7454,7 @@ export type Fasttext_Similars_Var_Pop_Order_By = {
 /** aggregate var_samp on columns */
 export type Fasttext_Similars_Var_Samp_Fields = {
   __typename?: 'fasttext_similars_var_samp_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -6196,6 +7462,7 @@ export type Fasttext_Similars_Var_Samp_Fields = {
 
 /** order by var_samp() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Var_Samp_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6204,6 +7471,7 @@ export type Fasttext_Similars_Var_Samp_Order_By = {
 /** aggregate variance on columns */
 export type Fasttext_Similars_Variance_Fields = {
   __typename?: 'fasttext_similars_variance_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -6211,6 +7479,7 @@ export type Fasttext_Similars_Variance_Fields = {
 
 /** order by variance() on columns of table "fasttext_similars" */
 export type Fasttext_Similars_Variance_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -6221,7 +7490,7 @@ export type Flags = {
   __typename?: 'flags';
   /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   course_flags_aggregate: Course_Flags_Aggregate;
   /** Flag ID */
   flag_id: Scalars['Int'];
@@ -6260,7 +7529,7 @@ export type Flags_Aggregate = {
 export type Flags_Aggregate_Fields = {
   __typename?: 'flags_aggregate_fields';
   avg: Maybe<Flags_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Flags_Max_Fields>;
   min: Maybe<Flags_Min_Fields>;
   stddev: Maybe<Flags_Stddev_Fields>;
@@ -6279,43 +7548,18 @@ export type Flags_Aggregate_FieldsCountArgs = {
   distinct: Maybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "flags" */
-export type Flags_Aggregate_Order_By = {
-  avg: Maybe<Flags_Avg_Order_By>;
-  count: Maybe<Order_By>;
-  max: Maybe<Flags_Max_Order_By>;
-  min: Maybe<Flags_Min_Order_By>;
-  stddev: Maybe<Flags_Stddev_Order_By>;
-  stddev_pop: Maybe<Flags_Stddev_Pop_Order_By>;
-  stddev_samp: Maybe<Flags_Stddev_Samp_Order_By>;
-  sum: Maybe<Flags_Sum_Order_By>;
-  var_pop: Maybe<Flags_Var_Pop_Order_By>;
-  var_samp: Maybe<Flags_Var_Samp_Order_By>;
-  variance: Maybe<Flags_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "flags" */
-export type Flags_Arr_Rel_Insert_Input = {
-  data: Array<Flags_Insert_Input>;
-  on_conflict: Maybe<Flags_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Flags_Avg_Fields = {
   __typename?: 'flags_avg_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "flags" */
-export type Flags_Avg_Order_By = {
-  flag_id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "flags". All fields are combined with a logical 'AND'. */
 export type Flags_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Flags_Bool_Exp>>>;
+  _and: Maybe<Array<Flags_Bool_Exp>>;
   _not: Maybe<Flags_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Flags_Bool_Exp>>>;
+  _or: Maybe<Array<Flags_Bool_Exp>>;
   course_flags: Maybe<Course_Flags_Bool_Exp>;
   flag_id: Maybe<Int_Comparison_Exp>;
   flag_text: Maybe<String_Comparison_Exp>;
@@ -6327,74 +7571,70 @@ export enum Flags_Constraint {
   PkFlagsStaged = 'pk_flags_staged'
 }
 
-/** input type for incrementing integer column in table "flags" */
+/** input type for incrementing numeric columns in table "flags" */
 export type Flags_Inc_Input = {
+  /** Flag ID */
   flag_id: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "flags" */
 export type Flags_Insert_Input = {
   course_flags: Maybe<Course_Flags_Arr_Rel_Insert_Input>;
+  /** Flag ID */
   flag_id: Maybe<Scalars['Int']>;
+  /** Flag text */
   flag_text: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Flags_Max_Fields = {
   __typename?: 'flags_max_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Int']>;
+  /** Flag text */
   flag_text: Maybe<Scalars['String']>;
-};
-
-/** order by max() on columns of table "flags" */
-export type Flags_Max_Order_By = {
-  flag_id: Maybe<Order_By>;
-  flag_text: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Flags_Min_Fields = {
   __typename?: 'flags_min_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Int']>;
+  /** Flag text */
   flag_text: Maybe<Scalars['String']>;
-};
-
-/** order by min() on columns of table "flags" */
-export type Flags_Min_Order_By = {
-  flag_id: Maybe<Order_By>;
-  flag_text: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "flags" */
 export type Flags_Mutation_Response = {
   __typename?: 'flags_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Flags>;
 };
 
 /** input type for inserting object relation for remote table "flags" */
 export type Flags_Obj_Rel_Insert_Input = {
   data: Flags_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Flags_On_Conflict>;
 };
 
-/** on conflict condition type for table "flags" */
+/** on_conflict condition type for table "flags" */
 export type Flags_On_Conflict = {
   constraint: Flags_Constraint;
   update_columns: Array<Flags_Update_Column>;
   where: Maybe<Flags_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "flags" */
+/** Ordering options when selecting data from "flags". */
 export type Flags_Order_By = {
   course_flags_aggregate: Maybe<Course_Flags_Aggregate_Order_By>;
   flag_id: Maybe<Order_By>;
   flag_text: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "flags" */
+/** primary key columns input for table: flags */
 export type Flags_Pk_Columns_Input = {
   /** Flag ID */
   flag_id: Scalars['Int'];
@@ -6410,52 +7650,38 @@ export enum Flags_Select_Column {
 
 /** input type for updating data in table "flags" */
 export type Flags_Set_Input = {
+  /** Flag ID */
   flag_id: Maybe<Scalars['Int']>;
+  /** Flag text */
   flag_text: Maybe<Scalars['String']>;
 };
 
 /** aggregate stddev on columns */
 export type Flags_Stddev_Fields = {
   __typename?: 'flags_stddev_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "flags" */
-export type Flags_Stddev_Order_By = {
-  flag_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Flags_Stddev_Pop_Fields = {
   __typename?: 'flags_stddev_pop_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "flags" */
-export type Flags_Stddev_Pop_Order_By = {
-  flag_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Flags_Stddev_Samp_Fields = {
   __typename?: 'flags_stddev_samp_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "flags" */
-export type Flags_Stddev_Samp_Order_By = {
-  flag_id: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Flags_Sum_Fields = {
   __typename?: 'flags_sum_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "flags" */
-export type Flags_Sum_Order_By = {
-  flag_id: Maybe<Order_By>;
 };
 
 /** update columns of table "flags" */
@@ -6469,38 +7695,26 @@ export enum Flags_Update_Column {
 /** aggregate var_pop on columns */
 export type Flags_Var_Pop_Fields = {
   __typename?: 'flags_var_pop_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "flags" */
-export type Flags_Var_Pop_Order_By = {
-  flag_id: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Flags_Var_Samp_Fields = {
   __typename?: 'flags_var_samp_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "flags" */
-export type Flags_Var_Samp_Order_By = {
-  flag_id: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Flags_Variance_Fields = {
   __typename?: 'flags_variance_fields';
+  /** Flag ID */
   flag_id: Maybe<Scalars['Float']>;
 };
 
-/** order by variance() on columns of table "flags" */
-export type Flags_Variance_Order_By = {
-  flag_id: Maybe<Order_By>;
-};
 
-
-/** expression to compare columns of type float8. All fields are combined with logical 'AND'. */
+/** Boolean expression to compare columns of type "float8". All fields are combined with logical 'AND'. */
 export type Float8_Comparison_Exp = {
   _eq: Maybe<Scalars['float8']>;
   _gt: Maybe<Scalars['float8']>;
@@ -6514,7 +7728,7 @@ export type Float8_Comparison_Exp = {
 };
 
 
-/** expression to compare columns of type json. All fields are combined with logical 'AND'. */
+/** Boolean expression to compare columns of type "json". All fields are combined with logical 'AND'. */
 export type Json_Comparison_Exp = {
   _eq: Maybe<Scalars['json']>;
   _gt: Maybe<Scalars['json']>;
@@ -6528,7 +7742,7 @@ export type Json_Comparison_Exp = {
 };
 
 
-/** expression to compare columns of type jsonb. All fields are combined with logical 'AND'. */
+/** Boolean expression to compare columns of type "jsonb". All fields are combined with logical 'AND'. */
 export type Jsonb_Comparison_Exp = {
   /** is the column contained in the given json value */
   _contained_in: Maybe<Scalars['jsonb']>;
@@ -6556,7 +7770,7 @@ export type Listings = {
   __typename?: 'listings';
   /** An array relationship */
   computed_listing_infos: Array<Computed_Listing_Info>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   computed_listing_infos_aggregate: Computed_Listing_Info_Aggregate;
   /** An object relationship */
   course: Courses;
@@ -6613,7 +7827,7 @@ export type Listings_Aggregate = {
 export type Listings_Aggregate_Fields = {
   __typename?: 'listings_aggregate_fields';
   avg: Maybe<Listings_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Listings_Max_Fields>;
   min: Maybe<Listings_Min_Fields>;
   stddev: Maybe<Listings_Stddev_Fields>;
@@ -6650,29 +7864,36 @@ export type Listings_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "listings" */
 export type Listings_Arr_Rel_Insert_Input = {
   data: Array<Listings_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Listings_On_Conflict>;
 };
 
 /** aggregate avg on columns */
 export type Listings_Avg_Fields = {
   __typename?: 'listings_avg_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Float']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Float']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Float']>;
 };
 
 /** order by avg() on columns of table "listings" */
 export type Listings_Avg_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "listings". All fields are combined with a logical 'AND'. */
 export type Listings_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Listings_Bool_Exp>>>;
+  _and: Maybe<Array<Listings_Bool_Exp>>;
   _not: Maybe<Listings_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Listings_Bool_Exp>>>;
+  _or: Maybe<Array<Listings_Bool_Exp>>;
   computed_listing_infos: Maybe<Computed_Listing_Info_Bool_Exp>;
   course: Maybe<Courses_Bool_Exp>;
   course_code: Maybe<String_Comparison_Exp>;
@@ -6695,10 +7916,13 @@ export enum Listings_Constraint {
   PkListingsStaged = 'pk_listings_staged'
 }
 
-/** input type for incrementing integer column in table "listings" */
+/** input type for incrementing numeric columns in table "listings" */
 export type Listings_Inc_Input = {
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Int']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Int']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Int']>;
 };
 
@@ -6706,95 +7930,141 @@ export type Listings_Inc_Input = {
 export type Listings_Insert_Input = {
   computed_listing_infos: Maybe<Computed_Listing_Info_Arr_Rel_Insert_Input>;
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
+  /** [computed] subject + number (e.g. "AMST 312") */
   course_code: Maybe<Scalars['String']>;
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Int']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Int']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Int']>;
+  /** Course number in the given subject (e.g. "120" or "S120") */
   number: Maybe<Scalars['String']>;
+  /** School (e.g. YC, GS, MG) that the course is listed under */
   school: Maybe<Scalars['String']>;
   season: Maybe<Seasons_Obj_Rel_Insert_Input>;
+  /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Maybe<Scalars['String']>;
+  /** Course section for the given subject and number */
   section: Maybe<Scalars['String']>;
+  /** Subject the course is listed under (e.g. "AMST") */
   subject: Maybe<Scalars['String']>;
 };
 
 /** aggregate max on columns */
 export type Listings_Max_Fields = {
   __typename?: 'listings_max_fields';
+  /** [computed] subject + number (e.g. "AMST 312") */
   course_code: Maybe<Scalars['String']>;
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Int']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Int']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Int']>;
+  /** Course number in the given subject (e.g. "120" or "S120") */
   number: Maybe<Scalars['String']>;
+  /** School (e.g. YC, GS, MG) that the course is listed under */
   school: Maybe<Scalars['String']>;
+  /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Maybe<Scalars['String']>;
+  /** Course section for the given subject and number */
   section: Maybe<Scalars['String']>;
+  /** Subject the course is listed under (e.g. "AMST") */
   subject: Maybe<Scalars['String']>;
 };
 
 /** order by max() on columns of table "listings" */
 export type Listings_Max_Order_By = {
+  /** [computed] subject + number (e.g. "AMST 312") */
   course_code: Maybe<Order_By>;
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
+  /** Course number in the given subject (e.g. "120" or "S120") */
   number: Maybe<Order_By>;
+  /** School (e.g. YC, GS, MG) that the course is listed under */
   school: Maybe<Order_By>;
+  /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Maybe<Order_By>;
+  /** Course section for the given subject and number */
   section: Maybe<Order_By>;
+  /** Subject the course is listed under (e.g. "AMST") */
   subject: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Listings_Min_Fields = {
   __typename?: 'listings_min_fields';
+  /** [computed] subject + number (e.g. "AMST 312") */
   course_code: Maybe<Scalars['String']>;
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Int']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Int']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Int']>;
+  /** Course number in the given subject (e.g. "120" or "S120") */
   number: Maybe<Scalars['String']>;
+  /** School (e.g. YC, GS, MG) that the course is listed under */
   school: Maybe<Scalars['String']>;
+  /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Maybe<Scalars['String']>;
+  /** Course section for the given subject and number */
   section: Maybe<Scalars['String']>;
+  /** Subject the course is listed under (e.g. "AMST") */
   subject: Maybe<Scalars['String']>;
 };
 
 /** order by min() on columns of table "listings" */
 export type Listings_Min_Order_By = {
+  /** [computed] subject + number (e.g. "AMST 312") */
   course_code: Maybe<Order_By>;
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
+  /** Course number in the given subject (e.g. "120" or "S120") */
   number: Maybe<Order_By>;
+  /** School (e.g. YC, GS, MG) that the course is listed under */
   school: Maybe<Order_By>;
+  /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Maybe<Order_By>;
+  /** Course section for the given subject and number */
   section: Maybe<Order_By>;
+  /** Subject the course is listed under (e.g. "AMST") */
   subject: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "listings" */
 export type Listings_Mutation_Response = {
   __typename?: 'listings_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Listings>;
 };
 
 /** input type for inserting object relation for remote table "listings" */
 export type Listings_Obj_Rel_Insert_Input = {
   data: Listings_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Listings_On_Conflict>;
 };
 
-/** on conflict condition type for table "listings" */
+/** on_conflict condition type for table "listings" */
 export type Listings_On_Conflict = {
   constraint: Listings_Constraint;
   update_columns: Array<Listings_Update_Column>;
   where: Maybe<Listings_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "listings" */
+/** Ordering options when selecting data from "listings". */
 export type Listings_Order_By = {
   computed_listing_infos_aggregate: Maybe<Computed_Listing_Info_Aggregate_Order_By>;
   course: Maybe<Courses_Order_By>;
@@ -6810,7 +8080,7 @@ export type Listings_Order_By = {
   subject: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "listings" */
+/** primary key columns input for table: listings */
 export type Listings_Pk_Columns_Input = {
   /** Listing ID */
   listing_id: Scalars['Int'];
@@ -6840,74 +8110,107 @@ export enum Listings_Select_Column {
 
 /** input type for updating data in table "listings" */
 export type Listings_Set_Input = {
+  /** [computed] subject + number (e.g. "AMST 312") */
   course_code: Maybe<Scalars['String']>;
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Int']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Int']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Int']>;
+  /** Course number in the given subject (e.g. "120" or "S120") */
   number: Maybe<Scalars['String']>;
+  /** School (e.g. YC, GS, MG) that the course is listed under */
   school: Maybe<Scalars['String']>;
+  /** When the course/listing is being taught, mapping to `seasons` */
   season_code: Maybe<Scalars['String']>;
+  /** Course section for the given subject and number */
   section: Maybe<Scalars['String']>;
+  /** Subject the course is listed under (e.g. "AMST") */
   subject: Maybe<Scalars['String']>;
 };
 
 /** aggregate stddev on columns */
 export type Listings_Stddev_Fields = {
   __typename?: 'listings_stddev_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Float']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Float']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev() on columns of table "listings" */
 export type Listings_Stddev_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Listings_Stddev_Pop_Fields = {
   __typename?: 'listings_stddev_pop_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Float']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Float']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_pop() on columns of table "listings" */
 export type Listings_Stddev_Pop_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Listings_Stddev_Samp_Fields = {
   __typename?: 'listings_stddev_samp_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Float']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Float']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Float']>;
 };
 
 /** order by stddev_samp() on columns of table "listings" */
 export type Listings_Stddev_Samp_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Listings_Sum_Fields = {
   __typename?: 'listings_sum_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Int']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Int']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Int']>;
 };
 
 /** order by sum() on columns of table "listings" */
 export type Listings_Sum_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
@@ -6936,45 +8239,63 @@ export enum Listings_Update_Column {
 /** aggregate var_pop on columns */
 export type Listings_Var_Pop_Fields = {
   __typename?: 'listings_var_pop_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Float']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Float']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_pop() on columns of table "listings" */
 export type Listings_Var_Pop_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Listings_Var_Samp_Fields = {
   __typename?: 'listings_var_samp_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Float']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Float']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Float']>;
 };
 
 /** order by var_samp() on columns of table "listings" */
 export type Listings_Var_Samp_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Listings_Variance_Fields = {
   __typename?: 'listings_variance_fields';
+  /** Course that the listing refers to */
   course_id: Maybe<Scalars['Float']>;
+  /** The CRN associated with this listing */
   crn: Maybe<Scalars['Float']>;
+  /** Listing ID */
   listing_id: Maybe<Scalars['Float']>;
 };
 
 /** order by variance() on columns of table "listings" */
 export type Listings_Variance_Order_By = {
+  /** Course that the listing refers to */
   course_id: Maybe<Order_By>;
+  /** The CRN associated with this listing */
   crn: Maybe<Order_By>;
+  /** Listing ID */
   listing_id: Maybe<Order_By>;
 };
 
@@ -7893,17 +9214,17 @@ export type Mutation_RootUpdate_Tfidf_Similars_By_PkArgs = {
 
 /** column ordering options */
 export enum Order_By {
-  /** in the ascending order, nulls last */
+  /** in ascending order, nulls last */
   Asc = 'asc',
-  /** in the ascending order, nulls first */
+  /** in ascending order, nulls first */
   AscNullsFirst = 'asc_nulls_first',
-  /** in the ascending order, nulls last */
+  /** in ascending order, nulls last */
   AscNullsLast = 'asc_nulls_last',
-  /** in the descending order, nulls first */
+  /** in descending order, nulls first */
   Desc = 'desc',
-  /** in the descending order, nulls first */
+  /** in descending order, nulls first */
   DescNullsFirst = 'desc_nulls_first',
-  /** in the descending order, nulls last */
+  /** in descending order, nulls last */
   DescNullsLast = 'desc_nulls_last'
 }
 
@@ -7919,7 +9240,7 @@ export type Professors = {
   average_rating_n: Maybe<Scalars['Int']>;
   /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   course_professors_aggregate: Course_Professors_Aggregate;
   /** Email address of the professor */
   email: Maybe<Scalars['String']>;
@@ -7960,7 +9281,7 @@ export type Professors_Aggregate = {
 export type Professors_Aggregate_Fields = {
   __typename?: 'professors_aggregate_fields';
   avg: Maybe<Professors_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Professors_Max_Fields>;
   min: Maybe<Professors_Min_Fields>;
   stddev: Maybe<Professors_Stddev_Fields>;
@@ -7979,47 +9300,25 @@ export type Professors_Aggregate_FieldsCountArgs = {
   distinct: Maybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "professors" */
-export type Professors_Aggregate_Order_By = {
-  avg: Maybe<Professors_Avg_Order_By>;
-  count: Maybe<Order_By>;
-  max: Maybe<Professors_Max_Order_By>;
-  min: Maybe<Professors_Min_Order_By>;
-  stddev: Maybe<Professors_Stddev_Order_By>;
-  stddev_pop: Maybe<Professors_Stddev_Pop_Order_By>;
-  stddev_samp: Maybe<Professors_Stddev_Samp_Order_By>;
-  sum: Maybe<Professors_Sum_Order_By>;
-  var_pop: Maybe<Professors_Var_Pop_Order_By>;
-  var_samp: Maybe<Professors_Var_Samp_Order_By>;
-  variance: Maybe<Professors_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "professors" */
-export type Professors_Arr_Rel_Insert_Input = {
-  data: Array<Professors_Insert_Input>;
-  on_conflict: Maybe<Professors_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Professors_Avg_Fields = {
   __typename?: 'professors_avg_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "professors" */
-export type Professors_Avg_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "professors". All fields are combined with a logical 'AND'. */
 export type Professors_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Professors_Bool_Exp>>>;
+  _and: Maybe<Array<Professors_Bool_Exp>>;
   _not: Maybe<Professors_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Professors_Bool_Exp>>>;
+  _or: Maybe<Array<Professors_Bool_Exp>>;
   average_rating: Maybe<Float8_Comparison_Exp>;
   average_rating_n: Maybe<Int_Comparison_Exp>;
   course_professors: Maybe<Course_Professors_Bool_Exp>;
@@ -8034,84 +9333,97 @@ export enum Professors_Constraint {
   PkProfessorsStaged = 'pk_professors_staged'
 }
 
-/** input type for incrementing integer column in table "professors" */
+/** input type for incrementing numeric columns in table "professors" */
 export type Professors_Inc_Input = {
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "professors" */
 export type Professors_Insert_Input = {
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
   course_professors: Maybe<Course_Professors_Arr_Rel_Insert_Input>;
+  /** Email address of the professor */
   email: Maybe<Scalars['String']>;
+  /** Name of the professor */
   name: Maybe<Scalars['String']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Int']>;
 };
 
 /** aggregate max on columns */
 export type Professors_Max_Fields = {
   __typename?: 'professors_max_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /** Email address of the professor */
   email: Maybe<Scalars['String']>;
+  /** Name of the professor */
   name: Maybe<Scalars['String']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "professors" */
-export type Professors_Max_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  email: Maybe<Order_By>;
-  name: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Professors_Min_Fields = {
   __typename?: 'professors_min_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /** Email address of the professor */
   email: Maybe<Scalars['String']>;
+  /** Name of the professor */
   name: Maybe<Scalars['String']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "professors" */
-export type Professors_Min_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  email: Maybe<Order_By>;
-  name: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "professors" */
 export type Professors_Mutation_Response = {
   __typename?: 'professors_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Professors>;
 };
 
 /** input type for inserting object relation for remote table "professors" */
 export type Professors_Obj_Rel_Insert_Input = {
   data: Professors_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Professors_On_Conflict>;
 };
 
-/** on conflict condition type for table "professors" */
+/** on_conflict condition type for table "professors" */
 export type Professors_On_Conflict = {
   constraint: Professors_Constraint;
   update_columns: Array<Professors_Update_Column>;
   where: Maybe<Professors_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "professors" */
+/** Ordering options when selecting data from "professors". */
 export type Professors_Order_By = {
   average_rating: Maybe<Order_By>;
   average_rating_n: Maybe<Order_By>;
@@ -8121,7 +9433,7 @@ export type Professors_Order_By = {
   professor_id: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "professors" */
+/** primary key columns input for table: professors */
 export type Professors_Pk_Columns_Input = {
   /** Professor ID */
   professor_id: Scalars['Int'];
@@ -8143,71 +9455,75 @@ export enum Professors_Select_Column {
 
 /** input type for updating data in table "professors" */
 export type Professors_Set_Input = {
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /** Email address of the professor */
   email: Maybe<Scalars['String']>;
+  /** Name of the professor */
   name: Maybe<Scalars['String']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Int']>;
 };
 
 /** aggregate stddev on columns */
 export type Professors_Stddev_Fields = {
   __typename?: 'professors_stddev_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "professors" */
-export type Professors_Stddev_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Professors_Stddev_Pop_Fields = {
   __typename?: 'professors_stddev_pop_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "professors" */
-export type Professors_Stddev_Pop_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Professors_Stddev_Samp_Fields = {
   __typename?: 'professors_stddev_samp_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "professors" */
-export type Professors_Stddev_Samp_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Professors_Sum_Fields = {
   __typename?: 'professors_sum_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['float8']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Int']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "professors" */
-export type Professors_Sum_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** update columns of table "professors" */
@@ -8227,76 +9543,72 @@ export enum Professors_Update_Column {
 /** aggregate var_pop on columns */
 export type Professors_Var_Pop_Fields = {
   __typename?: 'professors_var_pop_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "professors" */
-export type Professors_Var_Pop_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Professors_Var_Samp_Fields = {
   __typename?: 'professors_var_samp_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "professors" */
-export type Professors_Var_Samp_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Professors_Variance_Fields = {
   __typename?: 'professors_variance_fields';
+  /**
+   * [computed] Average rating of the professor assessed via
+   *         the "Overall assessment" question in courses taught
+   */
   average_rating: Maybe<Scalars['Float']>;
+  /** [computed] Number of courses used to compute `average_rating` */
   average_rating_n: Maybe<Scalars['Float']>;
+  /** Professor ID */
   professor_id: Maybe<Scalars['Float']>;
 };
 
-/** order by variance() on columns of table "professors" */
-export type Professors_Variance_Order_By = {
-  average_rating: Maybe<Order_By>;
-  average_rating_n: Maybe<Order_By>;
-  professor_id: Maybe<Order_By>;
-};
-
-/** query root */
 export type Query_Root = {
   __typename?: 'query_root';
   /** fetch data from the table: "computed_listing_info" */
   computed_listing_info: Array<Computed_Listing_Info>;
   /** fetch aggregated fields from the table: "computed_listing_info" */
   computed_listing_info_aggregate: Computed_Listing_Info_Aggregate;
-  /** fetch data from the table: "course_discussions" */
+  /** An array relationship */
   course_discussions: Array<Course_Discussions>;
-  /** fetch aggregated fields from the table: "course_discussions" */
+  /** An aggregate relationship */
   course_discussions_aggregate: Course_Discussions_Aggregate;
   /** fetch data from the table: "course_discussions" using primary key columns */
   course_discussions_by_pk: Maybe<Course_Discussions>;
-  /** fetch data from the table: "course_flags" */
+  /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** fetch aggregated fields from the table: "course_flags" */
+  /** An aggregate relationship */
   course_flags_aggregate: Course_Flags_Aggregate;
   /** fetch data from the table: "course_flags" using primary key columns */
   course_flags_by_pk: Maybe<Course_Flags>;
-  /** fetch data from the table: "course_professors" */
+  /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** fetch aggregated fields from the table: "course_professors" */
+  /** An aggregate relationship */
   course_professors_aggregate: Course_Professors_Aggregate;
   /** fetch data from the table: "course_professors" using primary key columns */
   course_professors_by_pk: Maybe<Course_Professors>;
-  /** fetch data from the table: "courses" */
+  /** An array relationship */
   courses: Array<Courses>;
-  /** fetch aggregated fields from the table: "courses" */
+  /** An aggregate relationship */
   courses_aggregate: Courses_Aggregate;
   /** fetch data from the table: "courses" using primary key columns */
   courses_by_pk: Maybe<Courses>;
@@ -8312,9 +9624,9 @@ export type Query_Root = {
   discussions_aggregate: Discussions_Aggregate;
   /** fetch data from the table: "discussions" using primary key columns */
   discussions_by_pk: Maybe<Discussions>;
-  /** fetch data from the table: "evaluation_narratives" */
+  /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** fetch aggregated fields from the table: "evaluation_narratives" */
+  /** An aggregate relationship */
   evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
   evaluation_narratives_by_pk: Maybe<Evaluation_Narratives>;
@@ -8324,9 +9636,9 @@ export type Query_Root = {
   evaluation_questions_aggregate: Evaluation_Questions_Aggregate;
   /** fetch data from the table: "evaluation_questions" using primary key columns */
   evaluation_questions_by_pk: Maybe<Evaluation_Questions>;
-  /** fetch data from the table: "evaluation_ratings" */
+  /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** fetch aggregated fields from the table: "evaluation_ratings" */
+  /** An aggregate relationship */
   evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
   /** fetch data from the table: "evaluation_ratings" using primary key columns */
   evaluation_ratings_by_pk: Maybe<Evaluation_Ratings>;
@@ -8336,9 +9648,9 @@ export type Query_Root = {
   evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
   /** fetch data from the table: "evaluation_statistics" using primary key columns */
   evaluation_statistics_by_pk: Maybe<Evaluation_Statistics>;
-  /** fetch data from the table: "fasttext_similars" */
+  /** An array relationship */
   fasttext_similars: Array<Fasttext_Similars>;
-  /** fetch aggregated fields from the table: "fasttext_similars" */
+  /** An aggregate relationship */
   fasttext_similars_aggregate: Fasttext_Similars_Aggregate;
   /** fetch data from the table: "fasttext_similars" using primary key columns */
   fasttext_similars_by_pk: Maybe<Fasttext_Similars>;
@@ -8348,9 +9660,9 @@ export type Query_Root = {
   flags_aggregate: Flags_Aggregate;
   /** fetch data from the table: "flags" using primary key columns */
   flags_by_pk: Maybe<Flags>;
-  /** fetch data from the table: "listings" */
+  /** An array relationship */
   listings: Array<Listings>;
-  /** fetch aggregated fields from the table: "listings" */
+  /** An aggregate relationship */
   listings_aggregate: Listings_Aggregate;
   /** fetch data from the table: "listings" using primary key columns */
   listings_by_pk: Maybe<Listings>;
@@ -8366,16 +9678,15 @@ export type Query_Root = {
   seasons_aggregate: Seasons_Aggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk: Maybe<Seasons>;
-  /** fetch data from the table: "tfidf_similars" */
+  /** An array relationship */
   tfidf_similars: Array<Tfidf_Similars>;
-  /** fetch aggregated fields from the table: "tfidf_similars" */
+  /** An aggregate relationship */
   tfidf_similars_aggregate: Tfidf_Similars_Aggregate;
   /** fetch data from the table: "tfidf_similars" using primary key columns */
   tfidf_similars_by_pk: Maybe<Tfidf_Similars>;
 };
 
 
-/** query root */
 export type Query_RootComputed_Listing_InfoArgs = {
   distinct_on: Maybe<Array<Computed_Listing_Info_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8385,7 +9696,6 @@ export type Query_RootComputed_Listing_InfoArgs = {
 };
 
 
-/** query root */
 export type Query_RootComputed_Listing_Info_AggregateArgs = {
   distinct_on: Maybe<Array<Computed_Listing_Info_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8395,7 +9705,6 @@ export type Query_RootComputed_Listing_Info_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourse_DiscussionsArgs = {
   distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8405,7 +9714,6 @@ export type Query_RootCourse_DiscussionsArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourse_Discussions_AggregateArgs = {
   distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8415,14 +9723,12 @@ export type Query_RootCourse_Discussions_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourse_Discussions_By_PkArgs = {
   course_id: Scalars['Int'];
   discussion_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootCourse_FlagsArgs = {
   distinct_on: Maybe<Array<Course_Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8432,7 +9738,6 @@ export type Query_RootCourse_FlagsArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourse_Flags_AggregateArgs = {
   distinct_on: Maybe<Array<Course_Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8442,14 +9747,12 @@ export type Query_RootCourse_Flags_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourse_Flags_By_PkArgs = {
   course_id: Scalars['Int'];
   flag_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootCourse_ProfessorsArgs = {
   distinct_on: Maybe<Array<Course_Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8459,7 +9762,6 @@ export type Query_RootCourse_ProfessorsArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourse_Professors_AggregateArgs = {
   distinct_on: Maybe<Array<Course_Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8469,14 +9771,12 @@ export type Query_RootCourse_Professors_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourse_Professors_By_PkArgs = {
   course_id: Scalars['Int'];
   professor_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootCoursesArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8486,7 +9786,6 @@ export type Query_RootCoursesArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourses_AggregateArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8496,13 +9795,11 @@ export type Query_RootCourses_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootCourses_By_PkArgs = {
   course_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootDemand_StatisticsArgs = {
   distinct_on: Maybe<Array<Demand_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8512,7 +9809,6 @@ export type Query_RootDemand_StatisticsArgs = {
 };
 
 
-/** query root */
 export type Query_RootDemand_Statistics_AggregateArgs = {
   distinct_on: Maybe<Array<Demand_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8522,13 +9818,11 @@ export type Query_RootDemand_Statistics_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootDemand_Statistics_By_PkArgs = {
   course_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootDiscussionsArgs = {
   distinct_on: Maybe<Array<Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8538,7 +9832,6 @@ export type Query_RootDiscussionsArgs = {
 };
 
 
-/** query root */
 export type Query_RootDiscussions_AggregateArgs = {
   distinct_on: Maybe<Array<Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8548,13 +9841,11 @@ export type Query_RootDiscussions_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootDiscussions_By_PkArgs = {
   discussion_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootEvaluation_NarrativesArgs = {
   distinct_on: Maybe<Array<Evaluation_Narratives_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8564,7 +9855,6 @@ export type Query_RootEvaluation_NarrativesArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Narratives_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Narratives_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8574,13 +9864,11 @@ export type Query_RootEvaluation_Narratives_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Narratives_By_PkArgs = {
   id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootEvaluation_QuestionsArgs = {
   distinct_on: Maybe<Array<Evaluation_Questions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8590,7 +9878,6 @@ export type Query_RootEvaluation_QuestionsArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Questions_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Questions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8600,13 +9887,11 @@ export type Query_RootEvaluation_Questions_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Questions_By_PkArgs = {
   question_code: Scalars['String'];
 };
 
 
-/** query root */
 export type Query_RootEvaluation_RatingsArgs = {
   distinct_on: Maybe<Array<Evaluation_Ratings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8616,7 +9901,6 @@ export type Query_RootEvaluation_RatingsArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Ratings_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Ratings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8626,13 +9910,11 @@ export type Query_RootEvaluation_Ratings_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Ratings_By_PkArgs = {
   id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootEvaluation_StatisticsArgs = {
   distinct_on: Maybe<Array<Evaluation_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8642,7 +9924,6 @@ export type Query_RootEvaluation_StatisticsArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Statistics_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8652,13 +9933,11 @@ export type Query_RootEvaluation_Statistics_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootEvaluation_Statistics_By_PkArgs = {
   course_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootFasttext_SimilarsArgs = {
   distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8668,7 +9947,6 @@ export type Query_RootFasttext_SimilarsArgs = {
 };
 
 
-/** query root */
 export type Query_RootFasttext_Similars_AggregateArgs = {
   distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8678,14 +9956,12 @@ export type Query_RootFasttext_Similars_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootFasttext_Similars_By_PkArgs = {
   source: Scalars['Int'];
   target: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootFlagsArgs = {
   distinct_on: Maybe<Array<Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8695,7 +9971,6 @@ export type Query_RootFlagsArgs = {
 };
 
 
-/** query root */
 export type Query_RootFlags_AggregateArgs = {
   distinct_on: Maybe<Array<Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8705,13 +9980,11 @@ export type Query_RootFlags_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootFlags_By_PkArgs = {
   flag_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootListingsArgs = {
   distinct_on: Maybe<Array<Listings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8721,7 +9994,6 @@ export type Query_RootListingsArgs = {
 };
 
 
-/** query root */
 export type Query_RootListings_AggregateArgs = {
   distinct_on: Maybe<Array<Listings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8731,13 +10003,11 @@ export type Query_RootListings_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootListings_By_PkArgs = {
   listing_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootProfessorsArgs = {
   distinct_on: Maybe<Array<Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8747,7 +10017,6 @@ export type Query_RootProfessorsArgs = {
 };
 
 
-/** query root */
 export type Query_RootProfessors_AggregateArgs = {
   distinct_on: Maybe<Array<Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8757,13 +10026,11 @@ export type Query_RootProfessors_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootProfessors_By_PkArgs = {
   professor_id: Scalars['Int'];
 };
 
 
-/** query root */
 export type Query_RootSeasonsArgs = {
   distinct_on: Maybe<Array<Seasons_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8773,7 +10040,6 @@ export type Query_RootSeasonsArgs = {
 };
 
 
-/** query root */
 export type Query_RootSeasons_AggregateArgs = {
   distinct_on: Maybe<Array<Seasons_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8783,13 +10049,11 @@ export type Query_RootSeasons_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootSeasons_By_PkArgs = {
   season_code: Scalars['String'];
 };
 
 
-/** query root */
 export type Query_RootTfidf_SimilarsArgs = {
   distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8799,7 +10063,6 @@ export type Query_RootTfidf_SimilarsArgs = {
 };
 
 
-/** query root */
 export type Query_RootTfidf_Similars_AggregateArgs = {
   distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -8809,7 +10072,6 @@ export type Query_RootTfidf_Similars_AggregateArgs = {
 };
 
 
-/** query root */
 export type Query_RootTfidf_Similars_By_PkArgs = {
   source: Scalars['Int'];
   target: Scalars['Int'];
@@ -8821,14 +10083,14 @@ export type Seasons = {
   /** An array relationship */
   courses: Array<Courses>;
   /** An array relationship */
-  coursesByLastEnrollmentSeasonCode: Array<Courses>;
-  /** An aggregated array relationship */
-  coursesByLastEnrollmentSeasonCode_aggregate: Courses_Aggregate;
-  /** An aggregated array relationship */
+  coursesBySeasonCode: Array<Courses>;
+  /** An aggregate relationship */
+  coursesBySeasonCode_aggregate: Courses_Aggregate;
+  /** An aggregate relationship */
   courses_aggregate: Courses_Aggregate;
   /** An array relationship */
   listings: Array<Listings>;
-  /** An aggregated array relationship */
+  /** An aggregate relationship */
   listings_aggregate: Listings_Aggregate;
   /** Season code (e.g. '202001') */
   season_code: Scalars['String'];
@@ -8850,7 +10112,7 @@ export type SeasonsCoursesArgs = {
 
 
 /** columns and relationships of "seasons" */
-export type SeasonsCoursesByLastEnrollmentSeasonCodeArgs = {
+export type SeasonsCoursesBySeasonCodeArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
   offset: Maybe<Scalars['Int']>;
@@ -8860,7 +10122,7 @@ export type SeasonsCoursesByLastEnrollmentSeasonCodeArgs = {
 
 
 /** columns and relationships of "seasons" */
-export type SeasonsCoursesByLastEnrollmentSeasonCode_AggregateArgs = {
+export type SeasonsCoursesBySeasonCode_AggregateArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
   offset: Maybe<Scalars['Int']>;
@@ -8909,7 +10171,7 @@ export type Seasons_Aggregate = {
 export type Seasons_Aggregate_Fields = {
   __typename?: 'seasons_aggregate_fields';
   avg: Maybe<Seasons_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Seasons_Max_Fields>;
   min: Maybe<Seasons_Min_Fields>;
   stddev: Maybe<Seasons_Stddev_Fields>;
@@ -8928,45 +10190,20 @@ export type Seasons_Aggregate_FieldsCountArgs = {
   distinct: Maybe<Scalars['Boolean']>;
 };
 
-/** order by aggregate values of table "seasons" */
-export type Seasons_Aggregate_Order_By = {
-  avg: Maybe<Seasons_Avg_Order_By>;
-  count: Maybe<Order_By>;
-  max: Maybe<Seasons_Max_Order_By>;
-  min: Maybe<Seasons_Min_Order_By>;
-  stddev: Maybe<Seasons_Stddev_Order_By>;
-  stddev_pop: Maybe<Seasons_Stddev_Pop_Order_By>;
-  stddev_samp: Maybe<Seasons_Stddev_Samp_Order_By>;
-  sum: Maybe<Seasons_Sum_Order_By>;
-  var_pop: Maybe<Seasons_Var_Pop_Order_By>;
-  var_samp: Maybe<Seasons_Var_Samp_Order_By>;
-  variance: Maybe<Seasons_Variance_Order_By>;
-};
-
-/** input type for inserting array relation for remote table "seasons" */
-export type Seasons_Arr_Rel_Insert_Input = {
-  data: Array<Seasons_Insert_Input>;
-  on_conflict: Maybe<Seasons_On_Conflict>;
-};
-
 /** aggregate avg on columns */
 export type Seasons_Avg_Fields = {
   __typename?: 'seasons_avg_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Float']>;
-};
-
-/** order by avg() on columns of table "seasons" */
-export type Seasons_Avg_Order_By = {
-  year: Maybe<Order_By>;
 };
 
 /** Boolean expression to filter rows from the table "seasons". All fields are combined with a logical 'AND'. */
 export type Seasons_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Seasons_Bool_Exp>>>;
+  _and: Maybe<Array<Seasons_Bool_Exp>>;
   _not: Maybe<Seasons_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Seasons_Bool_Exp>>>;
+  _or: Maybe<Array<Seasons_Bool_Exp>>;
   courses: Maybe<Courses_Bool_Exp>;
-  coursesByLastEnrollmentSeasonCode: Maybe<Courses_Bool_Exp>;
+  coursesBySeasonCode: Maybe<Courses_Bool_Exp>;
   listings: Maybe<Listings_Bool_Exp>;
   season_code: Maybe<String_Comparison_Exp>;
   term: Maybe<String_Comparison_Exp>;
@@ -8979,76 +10216,73 @@ export enum Seasons_Constraint {
   PkSeasonsStaged = 'pk_seasons_staged'
 }
 
-/** input type for incrementing integer column in table "seasons" */
+/** input type for incrementing numeric columns in table "seasons" */
 export type Seasons_Inc_Input = {
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Int']>;
 };
 
 /** input type for inserting data into table "seasons" */
 export type Seasons_Insert_Input = {
   courses: Maybe<Courses_Arr_Rel_Insert_Input>;
-  coursesByLastEnrollmentSeasonCode: Maybe<Courses_Arr_Rel_Insert_Input>;
+  coursesBySeasonCode: Maybe<Courses_Arr_Rel_Insert_Input>;
   listings: Maybe<Listings_Arr_Rel_Insert_Input>;
+  /** Season code (e.g. '202001') */
   season_code: Maybe<Scalars['String']>;
+  /** [computed] Season of the semester - one of spring, summer, or fall */
   term: Maybe<Scalars['String']>;
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Int']>;
 };
 
 /** aggregate max on columns */
 export type Seasons_Max_Fields = {
   __typename?: 'seasons_max_fields';
+  /** Season code (e.g. '202001') */
   season_code: Maybe<Scalars['String']>;
+  /** [computed] Season of the semester - one of spring, summer, or fall */
   term: Maybe<Scalars['String']>;
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Int']>;
-};
-
-/** order by max() on columns of table "seasons" */
-export type Seasons_Max_Order_By = {
-  season_code: Maybe<Order_By>;
-  term: Maybe<Order_By>;
-  year: Maybe<Order_By>;
 };
 
 /** aggregate min on columns */
 export type Seasons_Min_Fields = {
   __typename?: 'seasons_min_fields';
+  /** Season code (e.g. '202001') */
   season_code: Maybe<Scalars['String']>;
+  /** [computed] Season of the semester - one of spring, summer, or fall */
   term: Maybe<Scalars['String']>;
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Int']>;
-};
-
-/** order by min() on columns of table "seasons" */
-export type Seasons_Min_Order_By = {
-  season_code: Maybe<Order_By>;
-  term: Maybe<Order_By>;
-  year: Maybe<Order_By>;
 };
 
 /** response of any mutation on the table "seasons" */
 export type Seasons_Mutation_Response = {
   __typename?: 'seasons_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Seasons>;
 };
 
 /** input type for inserting object relation for remote table "seasons" */
 export type Seasons_Obj_Rel_Insert_Input = {
   data: Seasons_Insert_Input;
+  /** upsert condition */
   on_conflict: Maybe<Seasons_On_Conflict>;
 };
 
-/** on conflict condition type for table "seasons" */
+/** on_conflict condition type for table "seasons" */
 export type Seasons_On_Conflict = {
   constraint: Seasons_Constraint;
   update_columns: Array<Seasons_Update_Column>;
   where: Maybe<Seasons_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "seasons" */
+/** Ordering options when selecting data from "seasons". */
 export type Seasons_Order_By = {
-  coursesByLastEnrollmentSeasonCode_aggregate: Maybe<Courses_Aggregate_Order_By>;
+  coursesBySeasonCode_aggregate: Maybe<Courses_Aggregate_Order_By>;
   courses_aggregate: Maybe<Courses_Aggregate_Order_By>;
   listings_aggregate: Maybe<Listings_Aggregate_Order_By>;
   season_code: Maybe<Order_By>;
@@ -9056,7 +10290,7 @@ export type Seasons_Order_By = {
   year: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "seasons" */
+/** primary key columns input for table: seasons */
 export type Seasons_Pk_Columns_Input = {
   /** Season code (e.g. '202001') */
   season_code: Scalars['String'];
@@ -9074,53 +10308,40 @@ export enum Seasons_Select_Column {
 
 /** input type for updating data in table "seasons" */
 export type Seasons_Set_Input = {
+  /** Season code (e.g. '202001') */
   season_code: Maybe<Scalars['String']>;
+  /** [computed] Season of the semester - one of spring, summer, or fall */
   term: Maybe<Scalars['String']>;
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Int']>;
 };
 
 /** aggregate stddev on columns */
 export type Seasons_Stddev_Fields = {
   __typename?: 'seasons_stddev_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev() on columns of table "seasons" */
-export type Seasons_Stddev_Order_By = {
-  year: Maybe<Order_By>;
 };
 
 /** aggregate stddev_pop on columns */
 export type Seasons_Stddev_Pop_Fields = {
   __typename?: 'seasons_stddev_pop_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_pop() on columns of table "seasons" */
-export type Seasons_Stddev_Pop_Order_By = {
-  year: Maybe<Order_By>;
 };
 
 /** aggregate stddev_samp on columns */
 export type Seasons_Stddev_Samp_Fields = {
   __typename?: 'seasons_stddev_samp_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Float']>;
-};
-
-/** order by stddev_samp() on columns of table "seasons" */
-export type Seasons_Stddev_Samp_Order_By = {
-  year: Maybe<Order_By>;
 };
 
 /** aggregate sum on columns */
 export type Seasons_Sum_Fields = {
   __typename?: 'seasons_sum_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Int']>;
-};
-
-/** order by sum() on columns of table "seasons" */
-export type Seasons_Sum_Order_By = {
-  year: Maybe<Order_By>;
 };
 
 /** update columns of table "seasons" */
@@ -9136,64 +10357,51 @@ export enum Seasons_Update_Column {
 /** aggregate var_pop on columns */
 export type Seasons_Var_Pop_Fields = {
   __typename?: 'seasons_var_pop_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Float']>;
-};
-
-/** order by var_pop() on columns of table "seasons" */
-export type Seasons_Var_Pop_Order_By = {
-  year: Maybe<Order_By>;
 };
 
 /** aggregate var_samp on columns */
 export type Seasons_Var_Samp_Fields = {
   __typename?: 'seasons_var_samp_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Float']>;
-};
-
-/** order by var_samp() on columns of table "seasons" */
-export type Seasons_Var_Samp_Order_By = {
-  year: Maybe<Order_By>;
 };
 
 /** aggregate variance on columns */
 export type Seasons_Variance_Fields = {
   __typename?: 'seasons_variance_fields';
+  /** [computed] Year of the semester */
   year: Maybe<Scalars['Float']>;
 };
 
-/** order by variance() on columns of table "seasons" */
-export type Seasons_Variance_Order_By = {
-  year: Maybe<Order_By>;
-};
-
-/** subscription root */
 export type Subscription_Root = {
   __typename?: 'subscription_root';
   /** fetch data from the table: "computed_listing_info" */
   computed_listing_info: Array<Computed_Listing_Info>;
   /** fetch aggregated fields from the table: "computed_listing_info" */
   computed_listing_info_aggregate: Computed_Listing_Info_Aggregate;
-  /** fetch data from the table: "course_discussions" */
+  /** An array relationship */
   course_discussions: Array<Course_Discussions>;
-  /** fetch aggregated fields from the table: "course_discussions" */
+  /** An aggregate relationship */
   course_discussions_aggregate: Course_Discussions_Aggregate;
   /** fetch data from the table: "course_discussions" using primary key columns */
   course_discussions_by_pk: Maybe<Course_Discussions>;
-  /** fetch data from the table: "course_flags" */
+  /** An array relationship */
   course_flags: Array<Course_Flags>;
-  /** fetch aggregated fields from the table: "course_flags" */
+  /** An aggregate relationship */
   course_flags_aggregate: Course_Flags_Aggregate;
   /** fetch data from the table: "course_flags" using primary key columns */
   course_flags_by_pk: Maybe<Course_Flags>;
-  /** fetch data from the table: "course_professors" */
+  /** An array relationship */
   course_professors: Array<Course_Professors>;
-  /** fetch aggregated fields from the table: "course_professors" */
+  /** An aggregate relationship */
   course_professors_aggregate: Course_Professors_Aggregate;
   /** fetch data from the table: "course_professors" using primary key columns */
   course_professors_by_pk: Maybe<Course_Professors>;
-  /** fetch data from the table: "courses" */
+  /** An array relationship */
   courses: Array<Courses>;
-  /** fetch aggregated fields from the table: "courses" */
+  /** An aggregate relationship */
   courses_aggregate: Courses_Aggregate;
   /** fetch data from the table: "courses" using primary key columns */
   courses_by_pk: Maybe<Courses>;
@@ -9209,9 +10417,9 @@ export type Subscription_Root = {
   discussions_aggregate: Discussions_Aggregate;
   /** fetch data from the table: "discussions" using primary key columns */
   discussions_by_pk: Maybe<Discussions>;
-  /** fetch data from the table: "evaluation_narratives" */
+  /** An array relationship */
   evaluation_narratives: Array<Evaluation_Narratives>;
-  /** fetch aggregated fields from the table: "evaluation_narratives" */
+  /** An aggregate relationship */
   evaluation_narratives_aggregate: Evaluation_Narratives_Aggregate;
   /** fetch data from the table: "evaluation_narratives" using primary key columns */
   evaluation_narratives_by_pk: Maybe<Evaluation_Narratives>;
@@ -9221,9 +10429,9 @@ export type Subscription_Root = {
   evaluation_questions_aggregate: Evaluation_Questions_Aggregate;
   /** fetch data from the table: "evaluation_questions" using primary key columns */
   evaluation_questions_by_pk: Maybe<Evaluation_Questions>;
-  /** fetch data from the table: "evaluation_ratings" */
+  /** An array relationship */
   evaluation_ratings: Array<Evaluation_Ratings>;
-  /** fetch aggregated fields from the table: "evaluation_ratings" */
+  /** An aggregate relationship */
   evaluation_ratings_aggregate: Evaluation_Ratings_Aggregate;
   /** fetch data from the table: "evaluation_ratings" using primary key columns */
   evaluation_ratings_by_pk: Maybe<Evaluation_Ratings>;
@@ -9233,9 +10441,9 @@ export type Subscription_Root = {
   evaluation_statistics_aggregate: Evaluation_Statistics_Aggregate;
   /** fetch data from the table: "evaluation_statistics" using primary key columns */
   evaluation_statistics_by_pk: Maybe<Evaluation_Statistics>;
-  /** fetch data from the table: "fasttext_similars" */
+  /** An array relationship */
   fasttext_similars: Array<Fasttext_Similars>;
-  /** fetch aggregated fields from the table: "fasttext_similars" */
+  /** An aggregate relationship */
   fasttext_similars_aggregate: Fasttext_Similars_Aggregate;
   /** fetch data from the table: "fasttext_similars" using primary key columns */
   fasttext_similars_by_pk: Maybe<Fasttext_Similars>;
@@ -9245,9 +10453,9 @@ export type Subscription_Root = {
   flags_aggregate: Flags_Aggregate;
   /** fetch data from the table: "flags" using primary key columns */
   flags_by_pk: Maybe<Flags>;
-  /** fetch data from the table: "listings" */
+  /** An array relationship */
   listings: Array<Listings>;
-  /** fetch aggregated fields from the table: "listings" */
+  /** An aggregate relationship */
   listings_aggregate: Listings_Aggregate;
   /** fetch data from the table: "listings" using primary key columns */
   listings_by_pk: Maybe<Listings>;
@@ -9263,16 +10471,15 @@ export type Subscription_Root = {
   seasons_aggregate: Seasons_Aggregate;
   /** fetch data from the table: "seasons" using primary key columns */
   seasons_by_pk: Maybe<Seasons>;
-  /** fetch data from the table: "tfidf_similars" */
+  /** An array relationship */
   tfidf_similars: Array<Tfidf_Similars>;
-  /** fetch aggregated fields from the table: "tfidf_similars" */
+  /** An aggregate relationship */
   tfidf_similars_aggregate: Tfidf_Similars_Aggregate;
   /** fetch data from the table: "tfidf_similars" using primary key columns */
   tfidf_similars_by_pk: Maybe<Tfidf_Similars>;
 };
 
 
-/** subscription root */
 export type Subscription_RootComputed_Listing_InfoArgs = {
   distinct_on: Maybe<Array<Computed_Listing_Info_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9282,7 +10489,6 @@ export type Subscription_RootComputed_Listing_InfoArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootComputed_Listing_Info_AggregateArgs = {
   distinct_on: Maybe<Array<Computed_Listing_Info_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9292,7 +10498,6 @@ export type Subscription_RootComputed_Listing_Info_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_DiscussionsArgs = {
   distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9302,7 +10507,6 @@ export type Subscription_RootCourse_DiscussionsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_Discussions_AggregateArgs = {
   distinct_on: Maybe<Array<Course_Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9312,14 +10516,12 @@ export type Subscription_RootCourse_Discussions_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_Discussions_By_PkArgs = {
   course_id: Scalars['Int'];
   discussion_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_FlagsArgs = {
   distinct_on: Maybe<Array<Course_Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9329,7 +10531,6 @@ export type Subscription_RootCourse_FlagsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_Flags_AggregateArgs = {
   distinct_on: Maybe<Array<Course_Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9339,14 +10540,12 @@ export type Subscription_RootCourse_Flags_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_Flags_By_PkArgs = {
   course_id: Scalars['Int'];
   flag_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_ProfessorsArgs = {
   distinct_on: Maybe<Array<Course_Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9356,7 +10555,6 @@ export type Subscription_RootCourse_ProfessorsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_Professors_AggregateArgs = {
   distinct_on: Maybe<Array<Course_Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9366,14 +10564,12 @@ export type Subscription_RootCourse_Professors_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourse_Professors_By_PkArgs = {
   course_id: Scalars['Int'];
   professor_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootCoursesArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9383,7 +10579,6 @@ export type Subscription_RootCoursesArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourses_AggregateArgs = {
   distinct_on: Maybe<Array<Courses_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9393,13 +10588,11 @@ export type Subscription_RootCourses_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootCourses_By_PkArgs = {
   course_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootDemand_StatisticsArgs = {
   distinct_on: Maybe<Array<Demand_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9409,7 +10602,6 @@ export type Subscription_RootDemand_StatisticsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootDemand_Statistics_AggregateArgs = {
   distinct_on: Maybe<Array<Demand_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9419,13 +10611,11 @@ export type Subscription_RootDemand_Statistics_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootDemand_Statistics_By_PkArgs = {
   course_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootDiscussionsArgs = {
   distinct_on: Maybe<Array<Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9435,7 +10625,6 @@ export type Subscription_RootDiscussionsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootDiscussions_AggregateArgs = {
   distinct_on: Maybe<Array<Discussions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9445,13 +10634,11 @@ export type Subscription_RootDiscussions_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootDiscussions_By_PkArgs = {
   discussion_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_NarrativesArgs = {
   distinct_on: Maybe<Array<Evaluation_Narratives_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9461,7 +10648,6 @@ export type Subscription_RootEvaluation_NarrativesArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Narratives_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Narratives_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9471,13 +10657,11 @@ export type Subscription_RootEvaluation_Narratives_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Narratives_By_PkArgs = {
   id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_QuestionsArgs = {
   distinct_on: Maybe<Array<Evaluation_Questions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9487,7 +10671,6 @@ export type Subscription_RootEvaluation_QuestionsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Questions_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Questions_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9497,13 +10680,11 @@ export type Subscription_RootEvaluation_Questions_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Questions_By_PkArgs = {
   question_code: Scalars['String'];
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_RatingsArgs = {
   distinct_on: Maybe<Array<Evaluation_Ratings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9513,7 +10694,6 @@ export type Subscription_RootEvaluation_RatingsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Ratings_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Ratings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9523,13 +10703,11 @@ export type Subscription_RootEvaluation_Ratings_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Ratings_By_PkArgs = {
   id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_StatisticsArgs = {
   distinct_on: Maybe<Array<Evaluation_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9539,7 +10717,6 @@ export type Subscription_RootEvaluation_StatisticsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Statistics_AggregateArgs = {
   distinct_on: Maybe<Array<Evaluation_Statistics_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9549,13 +10726,11 @@ export type Subscription_RootEvaluation_Statistics_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootEvaluation_Statistics_By_PkArgs = {
   course_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootFasttext_SimilarsArgs = {
   distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9565,7 +10740,6 @@ export type Subscription_RootFasttext_SimilarsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootFasttext_Similars_AggregateArgs = {
   distinct_on: Maybe<Array<Fasttext_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9575,14 +10749,12 @@ export type Subscription_RootFasttext_Similars_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootFasttext_Similars_By_PkArgs = {
   source: Scalars['Int'];
   target: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootFlagsArgs = {
   distinct_on: Maybe<Array<Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9592,7 +10764,6 @@ export type Subscription_RootFlagsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootFlags_AggregateArgs = {
   distinct_on: Maybe<Array<Flags_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9602,13 +10773,11 @@ export type Subscription_RootFlags_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootFlags_By_PkArgs = {
   flag_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootListingsArgs = {
   distinct_on: Maybe<Array<Listings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9618,7 +10787,6 @@ export type Subscription_RootListingsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootListings_AggregateArgs = {
   distinct_on: Maybe<Array<Listings_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9628,13 +10796,11 @@ export type Subscription_RootListings_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootListings_By_PkArgs = {
   listing_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootProfessorsArgs = {
   distinct_on: Maybe<Array<Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9644,7 +10810,6 @@ export type Subscription_RootProfessorsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootProfessors_AggregateArgs = {
   distinct_on: Maybe<Array<Professors_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9654,13 +10819,11 @@ export type Subscription_RootProfessors_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootProfessors_By_PkArgs = {
   professor_id: Scalars['Int'];
 };
 
 
-/** subscription root */
 export type Subscription_RootSeasonsArgs = {
   distinct_on: Maybe<Array<Seasons_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9670,7 +10833,6 @@ export type Subscription_RootSeasonsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootSeasons_AggregateArgs = {
   distinct_on: Maybe<Array<Seasons_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9680,13 +10842,11 @@ export type Subscription_RootSeasons_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootSeasons_By_PkArgs = {
   season_code: Scalars['String'];
 };
 
 
-/** subscription root */
 export type Subscription_RootTfidf_SimilarsArgs = {
   distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9696,7 +10856,6 @@ export type Subscription_RootTfidf_SimilarsArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootTfidf_Similars_AggregateArgs = {
   distinct_on: Maybe<Array<Tfidf_Similars_Select_Column>>;
   limit: Maybe<Scalars['Int']>;
@@ -9706,7 +10865,6 @@ export type Subscription_RootTfidf_Similars_AggregateArgs = {
 };
 
 
-/** subscription root */
 export type Subscription_RootTfidf_Similars_By_PkArgs = {
   source: Scalars['Int'];
   target: Scalars['Int'];
@@ -9718,7 +10876,7 @@ export type Tfidf_Similars = {
   /** An object relationship */
   course: Courses;
   /** An object relationship */
-  courseBySource: Courses;
+  courseByTarget: Courses;
   /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Scalars['Int'];
@@ -9736,7 +10894,7 @@ export type Tfidf_Similars_Aggregate = {
 export type Tfidf_Similars_Aggregate_Fields = {
   __typename?: 'tfidf_similars_aggregate_fields';
   avg: Maybe<Tfidf_Similars_Avg_Fields>;
-  count: Maybe<Scalars['Int']>;
+  count: Scalars['Int'];
   max: Maybe<Tfidf_Similars_Max_Fields>;
   min: Maybe<Tfidf_Similars_Min_Fields>;
   stddev: Maybe<Tfidf_Similars_Stddev_Fields>;
@@ -9773,12 +10931,14 @@ export type Tfidf_Similars_Aggregate_Order_By = {
 /** input type for inserting array relation for remote table "tfidf_similars" */
 export type Tfidf_Similars_Arr_Rel_Insert_Input = {
   data: Array<Tfidf_Similars_Insert_Input>;
+  /** upsert condition */
   on_conflict: Maybe<Tfidf_Similars_On_Conflict>;
 };
 
 /** aggregate avg on columns */
 export type Tfidf_Similars_Avg_Fields = {
   __typename?: 'tfidf_similars_avg_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -9786,6 +10946,7 @@ export type Tfidf_Similars_Avg_Fields = {
 
 /** order by avg() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Avg_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9793,11 +10954,11 @@ export type Tfidf_Similars_Avg_Order_By = {
 
 /** Boolean expression to filter rows from the table "tfidf_similars". All fields are combined with a logical 'AND'. */
 export type Tfidf_Similars_Bool_Exp = {
-  _and: Maybe<Array<Maybe<Tfidf_Similars_Bool_Exp>>>;
+  _and: Maybe<Array<Tfidf_Similars_Bool_Exp>>;
   _not: Maybe<Tfidf_Similars_Bool_Exp>;
-  _or: Maybe<Array<Maybe<Tfidf_Similars_Bool_Exp>>>;
+  _or: Maybe<Array<Tfidf_Similars_Bool_Exp>>;
   course: Maybe<Courses_Bool_Exp>;
-  courseBySource: Maybe<Courses_Bool_Exp>;
+  courseByTarget: Maybe<Courses_Bool_Exp>;
   rank: Maybe<Int_Comparison_Exp>;
   source: Maybe<Int_Comparison_Exp>;
   target: Maybe<Int_Comparison_Exp>;
@@ -9809,8 +10970,9 @@ export enum Tfidf_Similars_Constraint {
   PkTfidfSimilarsStaged = 'pk_tfidf_similars_staged'
 }
 
-/** input type for incrementing integer column in table "tfidf_similars" */
+/** input type for incrementing numeric columns in table "tfidf_similars" */
 export type Tfidf_Similars_Inc_Input = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -9819,7 +10981,8 @@ export type Tfidf_Similars_Inc_Input = {
 /** input type for inserting data into table "tfidf_similars" */
 export type Tfidf_Similars_Insert_Input = {
   course: Maybe<Courses_Obj_Rel_Insert_Input>;
-  courseBySource: Maybe<Courses_Obj_Rel_Insert_Input>;
+  courseByTarget: Maybe<Courses_Obj_Rel_Insert_Input>;
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -9828,6 +10991,7 @@ export type Tfidf_Similars_Insert_Input = {
 /** aggregate max on columns */
 export type Tfidf_Similars_Max_Fields = {
   __typename?: 'tfidf_similars_max_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -9835,6 +10999,7 @@ export type Tfidf_Similars_Max_Fields = {
 
 /** order by max() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Max_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9843,6 +11008,7 @@ export type Tfidf_Similars_Max_Order_By = {
 /** aggregate min on columns */
 export type Tfidf_Similars_Min_Fields = {
   __typename?: 'tfidf_similars_min_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -9850,6 +11016,7 @@ export type Tfidf_Similars_Min_Fields = {
 
 /** order by min() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Min_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9858,35 +11025,29 @@ export type Tfidf_Similars_Min_Order_By = {
 /** response of any mutation on the table "tfidf_similars" */
 export type Tfidf_Similars_Mutation_Response = {
   __typename?: 'tfidf_similars_mutation_response';
-  /** number of affected rows by the mutation */
+  /** number of rows affected by the mutation */
   affected_rows: Scalars['Int'];
-  /** data of the affected rows by the mutation */
+  /** data from the rows affected by the mutation */
   returning: Array<Tfidf_Similars>;
 };
 
-/** input type for inserting object relation for remote table "tfidf_similars" */
-export type Tfidf_Similars_Obj_Rel_Insert_Input = {
-  data: Tfidf_Similars_Insert_Input;
-  on_conflict: Maybe<Tfidf_Similars_On_Conflict>;
-};
-
-/** on conflict condition type for table "tfidf_similars" */
+/** on_conflict condition type for table "tfidf_similars" */
 export type Tfidf_Similars_On_Conflict = {
   constraint: Tfidf_Similars_Constraint;
   update_columns: Array<Tfidf_Similars_Update_Column>;
   where: Maybe<Tfidf_Similars_Bool_Exp>;
 };
 
-/** ordering options when selecting data from "tfidf_similars" */
+/** Ordering options when selecting data from "tfidf_similars". */
 export type Tfidf_Similars_Order_By = {
   course: Maybe<Courses_Order_By>;
-  courseBySource: Maybe<Courses_Order_By>;
+  courseByTarget: Maybe<Courses_Order_By>;
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
 };
 
-/** primary key columns input for table: "tfidf_similars" */
+/** primary key columns input for table: tfidf_similars */
 export type Tfidf_Similars_Pk_Columns_Input = {
   source: Scalars['Int'];
   target: Scalars['Int'];
@@ -9904,6 +11065,7 @@ export enum Tfidf_Similars_Select_Column {
 
 /** input type for updating data in table "tfidf_similars" */
 export type Tfidf_Similars_Set_Input = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -9912,6 +11074,7 @@ export type Tfidf_Similars_Set_Input = {
 /** aggregate stddev on columns */
 export type Tfidf_Similars_Stddev_Fields = {
   __typename?: 'tfidf_similars_stddev_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -9919,6 +11082,7 @@ export type Tfidf_Similars_Stddev_Fields = {
 
 /** order by stddev() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Stddev_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9927,6 +11091,7 @@ export type Tfidf_Similars_Stddev_Order_By = {
 /** aggregate stddev_pop on columns */
 export type Tfidf_Similars_Stddev_Pop_Fields = {
   __typename?: 'tfidf_similars_stddev_pop_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -9934,6 +11099,7 @@ export type Tfidf_Similars_Stddev_Pop_Fields = {
 
 /** order by stddev_pop() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Stddev_Pop_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9942,6 +11108,7 @@ export type Tfidf_Similars_Stddev_Pop_Order_By = {
 /** aggregate stddev_samp on columns */
 export type Tfidf_Similars_Stddev_Samp_Fields = {
   __typename?: 'tfidf_similars_stddev_samp_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -9949,6 +11116,7 @@ export type Tfidf_Similars_Stddev_Samp_Fields = {
 
 /** order by stddev_samp() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Stddev_Samp_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9957,6 +11125,7 @@ export type Tfidf_Similars_Stddev_Samp_Order_By = {
 /** aggregate sum on columns */
 export type Tfidf_Similars_Sum_Fields = {
   __typename?: 'tfidf_similars_sum_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Int']>;
   source: Maybe<Scalars['Int']>;
   target: Maybe<Scalars['Int']>;
@@ -9964,6 +11133,7 @@ export type Tfidf_Similars_Sum_Fields = {
 
 /** order by sum() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Sum_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9982,6 +11152,7 @@ export enum Tfidf_Similars_Update_Column {
 /** aggregate var_pop on columns */
 export type Tfidf_Similars_Var_Pop_Fields = {
   __typename?: 'tfidf_similars_var_pop_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -9989,6 +11160,7 @@ export type Tfidf_Similars_Var_Pop_Fields = {
 
 /** order by var_pop() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Var_Pop_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -9997,6 +11169,7 @@ export type Tfidf_Similars_Var_Pop_Order_By = {
 /** aggregate var_samp on columns */
 export type Tfidf_Similars_Var_Samp_Fields = {
   __typename?: 'tfidf_similars_var_samp_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -10004,6 +11177,7 @@ export type Tfidf_Similars_Var_Samp_Fields = {
 
 /** order by var_samp() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Var_Samp_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -10012,6 +11186,7 @@ export type Tfidf_Similars_Var_Samp_Order_By = {
 /** aggregate variance on columns */
 export type Tfidf_Similars_Variance_Fields = {
   __typename?: 'tfidf_similars_variance_fields';
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Scalars['Float']>;
   source: Maybe<Scalars['Float']>;
   target: Maybe<Scalars['Float']>;
@@ -10019,6 +11194,7 @@ export type Tfidf_Similars_Variance_Fields = {
 
 /** order by variance() on columns of table "tfidf_similars" */
 export type Tfidf_Similars_Variance_Order_By = {
+  /** Target course similarity rank relative to all targets of a source */
   rank: Maybe<Order_By>;
   source: Maybe<Order_By>;
   target: Maybe<Order_By>;
@@ -10030,7 +11206,7 @@ export type SameCourseOrProfOfferingsQueryVariables = Exact<{
 }>;
 
 
-export type SameCourseOrProfOfferingsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_info: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, same_course_id: number, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string, course: { __typename?: 'courses', evaluation_statistics: Array<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> } }> };
+export type SameCourseOrProfOfferingsQuery = { __typename?: 'query_root', computed_listing_info: Array<{ __typename?: 'computed_listing_info', all_course_codes: any, areas: any, average_gut_rating: Maybe<number>, average_professor: Maybe<number>, average_rating: Maybe<number>, average_workload: Maybe<number>, classnotes: Maybe<string>, course_code: string, credits: Maybe<number>, crn: number, description: Maybe<string>, enrolled: Maybe<number>, extra_info: string, final_exam: Maybe<string>, flag_info: any, fysem: Maybe<boolean>, last_enrollment: Maybe<number>, last_enrollment_same_professors: Maybe<boolean>, listing_id: number, locations_summary: string, number: string, professor_ids: any, professor_info: any, professor_names: any, regnotes: Maybe<string>, requirements: Maybe<string>, rp_attr: Maybe<string>, same_course_id: number, school: Maybe<string>, season_code: string, section: string, skills: any, subject: string, syllabus_url: Maybe<string>, times_by_day: any, times_summary: string, title: string, course: { __typename?: 'courses', evaluation_statistic: Maybe<{ __typename?: 'evaluation_statistics', avg_workload: Maybe<number>, avg_rating: Maybe<number> }> } }> };
 
 export type SearchEvaluationNarrativesQueryVariables = Exact<{
   season_code: Maybe<Scalars['String']>;
@@ -10054,7 +11230,7 @@ export const SameCourseOrProfOfferingsDocument = gql`
     where: {_or: [{same_course_id: {_eq: $same_course_id}}, {professor_ids: {_has_keys_any: $professor_ids}}]}
   ) {
     course {
-      evaluation_statistics {
+      evaluation_statistic {
         avg_workload
         avg_rating
       }

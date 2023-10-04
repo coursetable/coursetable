@@ -14,11 +14,20 @@ const StyledCard = styled(Card)`
   background-color: transparent;
   border: none !important;
   border-bottom: 1px solid ${({ theme }) => theme.border} !important;
+  transition: border-color ${({ theme }) => theme.trans_dur};
 
   .active {
     border-bottom: 1px solid ${({ theme }) => theme.border} !important;
     color: ${({ theme }) => theme.primary};
+    transition: border-color ${({ theme }) => theme.trans_dur};
   }
+`;
+
+// Container for FAQ
+const StyledContainer = styled.div`
+  width: 600px;
+  margin-bottom: 3rem;
+  transition: color ${({ theme }) => theme.trans_dur};
 `;
 
 // Custom accordion component
@@ -129,7 +138,7 @@ const FAQ: React.VFC = () => {
           </a>
           ,{' '}
           <a
-            href="https://oce.app.yale.edu/oce-viewer/studentViewer/index"
+            href="https://oce.app.yale.edu/ocedashboard/studentViewer"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -275,10 +284,22 @@ const FAQ: React.VFC = () => {
         </>
       ),
     },
+    {
+      title: 'Do you have a privacy policy?',
+      contents: (
+        <>
+          You can find our privacy policy{' '}
+          <NavLink to="/privacypolicy" onClick={scrollToTop}>
+            here
+          </NavLink>
+          .
+        </>
+      ),
+    },
   ];
 
   return (
-    <div className={`${styles.container} mx-auto`}>
+    <StyledContainer className={'mx-auto'}>
       <h1 className={`${styles.faq_header} mt-5 mb-1`}>
         Frequently Asked Questions
       </h1>
@@ -300,7 +321,7 @@ const FAQ: React.VFC = () => {
           </StyledCard>
         ))}
       </Accordion>
-    </div>
+    </StyledContainer>
   );
 };
 

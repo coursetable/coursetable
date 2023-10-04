@@ -21,6 +21,14 @@ import { useWindowDimensions } from '../components/Providers/WindowDimensionsPro
 import { useWorksheet } from '../contexts/worksheetContext';
 import * as Sentry from '@sentry/react';
 
+import styled from 'styled-components';
+
+const StyledCalendarContainer = styled(SurfaceComponent)`
+  transition: border-color ${({ theme }) => theme.trans_dur},
+    background-color ${({ theme }) => theme.trans_dur},
+    color ${({ theme }) => theme.trans_dur};
+`;
+
 /**
  * Renders worksheet page
  */
@@ -121,7 +129,7 @@ function Worksheet() {
                   : 'pr-3 '
               }${worksheet_view.view === 'list' ? styles.hidden : ''}`}
             >
-              <SurfaceComponent
+              <StyledCalendarContainer
                 layer={0}
                 className={styles.calendar_style_container}
               >
@@ -155,7 +163,7 @@ function Worksheet() {
                     />
                   )}
                 </StyledExpandBtn>
-              </SurfaceComponent>
+              </StyledCalendarContainer>
             </Col>
             {/* List Component */}
             <Col

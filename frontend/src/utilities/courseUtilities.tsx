@@ -11,6 +11,7 @@ import { DateTime } from 'luxon';
 export const isInWorksheet = (
   season_code: Season,
   crn: Crn | string,
+  worksheet_number: string,
   worksheet?: Worksheet
 ): boolean => {
   if (worksheet == null) return false;
@@ -18,7 +19,13 @@ export const isInWorksheet = (
     crn = crn.toString();
   }
   for (let i = 0; i < worksheet.length; i++) {
-    if (worksheet[i][0] === season_code && worksheet[i][1] === crn) return true;
+    //console.log(worksheet_number, worksheet[i][2], 'yaaaa');
+    if (
+      worksheet[i][0] === season_code &&
+      worksheet[i][1] === crn &&
+      worksheet[i][2] === worksheet_number.toString()
+    )
+      return true;
   }
   return false;
 };

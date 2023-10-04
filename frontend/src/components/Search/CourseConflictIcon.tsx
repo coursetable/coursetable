@@ -23,6 +23,7 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
     return isInWorksheet(
       course.season_code,
       course.crn.toString(),
+      '0',
       user.worksheet
     );
   }, [course.season_code, course.crn, user.worksheet]);
