@@ -9,10 +9,6 @@ import { request } from 'graphql-request';
 
 import winston from '../logging/winston';
 
-/**
- * Type for Catalog data
- */
-
 export type SeasonsType = {
   seasons: {
     season_code: string;
@@ -21,7 +17,6 @@ export type SeasonsType = {
   }[];
 };
 
-// type for catalog data
 export type CatalogType = {
   computed_listing_info: {
     all_course_codes: string[];
