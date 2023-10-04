@@ -164,7 +164,6 @@ export const requestChallenge = async (
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
-
 };
 
 /**
@@ -294,16 +293,14 @@ export const verifyChallenge = async (
     });
   }
 
-  let trueEvals: verifyEvalsQueryResponse;
-
+  let true_evals: verifyEvalsQueryResponse;
+  // get a list of all seasons
   try {
-    // check the answers against the true values
-    trueEvals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+    true_evals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
       questionIds: secretRatingIds,
     });
 
-    // if answers are incorrect, respond with error
-    if (!checkChallenge(trueEvals, answers)) {
+    if (!checkChallenge(true_evals, answers)) {
       return res.status(200).json({
         body: {
           message: 'INCORRECT',

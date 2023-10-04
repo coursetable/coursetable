@@ -8,6 +8,7 @@ import fs from 'fs';
 import { request } from 'graphql-request';
 
 import winston from '../logging/winston';
+import { CatalogType, SeasonsType } from './catalog';
 
 export type SeasonsType = {
   seasons: {
