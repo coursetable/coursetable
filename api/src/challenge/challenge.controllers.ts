@@ -149,13 +149,16 @@ export const requestChallenge = async (
   // randomly choosing a minimum rating
   const minRating = 1 + Math.random() * 4;
 
-  let evals: requestEvalsQueryResponse;
   // get a list of all seasons
   try {
-    evals = await request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
-      season: CHALLENGE_SEASON,
-      minRating,
-    });
+    const evals: requestEvalsQueryResponse = await request(
+      GRAPHQL_ENDPOINT,
+      requestEvalsQuery,
+      {
+        season: CHALLENGE_SEASON,
+        minRating,
+      },
+    );
     return constructChallenge(req, res, evals, challengeTries, netId);
   } catch (err) {
     return res.status(500).json({
@@ -293,14 +296,17 @@ export const verifyChallenge = async (
     });
   }
 
-  let true_evals: verifyEvalsQueryResponse;
   // get a list of all seasons
   try {
-    true_evals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
-      questionIds: secretRatingIds,
-    });
+    const trueEvals: verifyEvalsQueryResponse = await request(
+      GRAPHQL_ENDPOINT,
+      verifyEvalsQuery,
+      {
+        questionIds: secretRatingIds,
+      },
+    );
 
-    if (!checkChallenge(true_evals, answers)) {
+    if (!checkChallenge(trueEvals, answers)) {
       return res.status(200).json({
         body: {
           message: 'INCORRECT',
