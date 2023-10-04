@@ -22,7 +22,7 @@ jobs:
       - name: Use Bun ${{ matrix.node-version }}
         uses: oven-sh/setup-bun@v1
         with:
-          version: ${{ matrix.bun-version }}
+          bun-version: ${{ matrix.bun-version }}
       - run: cd api && bun install --frozen-lockfile
       - run: cd api && bun run generate
       - run: cd api && bun run checks
