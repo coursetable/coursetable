@@ -309,7 +309,6 @@ export const verifyChallenge = async (
         },
       });
     }
-
     // otherwise, enable evaluations and respond with success
     await prisma.studentBluebookSettings.update({
       where: { netId },
