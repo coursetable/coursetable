@@ -24,6 +24,7 @@ jobs:
         with:
           version: ${{ matrix.bun-version }}
       - run: cd api && bun install --frozen-lockfile
+      - run: cd api && bun run generate
       - run: cd api && bun run checks
 
   frontend:
