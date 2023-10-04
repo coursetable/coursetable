@@ -1,30 +1,17 @@
 module.exports = {
-  env: {
-    es2021: true,
-    node: true,
-  },
   extends: [
     'airbnb-typescript/base',
     'plugin:@typescript-eslint/recommended',
     'prettier',
-    'plugin:prettier/recommended',
   ],
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaVersion: 12,
     sourceType: 'module',
     project: './tsconfig.json',
   },
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
     'linebreak-style': 'off',
-    'prettier/prettier': [
-      'error',
-      {
-        endOfLine: 'auto',
-        singleQuote: true,
-      },
-    ],
     // TODO: Eventually we want to remove these rules (and default to error).
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/naming-convention': 'off',

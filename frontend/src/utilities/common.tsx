@@ -13,4 +13,4 @@ export const weekdays = [
   'Saturday',
   'Sunday',
 ] as const;
-export type Weekdays = typeof weekdays[number];
+export type Weekdays = (typeof weekdays)[number];
