@@ -34,7 +34,7 @@ const constructChallenge = (
   res: express.Response,
   evals: requestEvalsQueryResponse,
   challengeTries: number,
-  netid: string
+  netid: string,
 ): express.Response => {
   // array of course enrollment counts
   let ratingIndices: number[];
@@ -79,7 +79,7 @@ const constructChallenge = (
   const courseIds = evals.evaluation_ratings.map((x) => x.id);
   const courseTitles = evals.evaluation_ratings.map((x) => x.course.title);
   const courseQuestionTexts = evals.evaluation_ratings.map(
-    (x) => x.evaluation_question.question_text
+    (x) => x.evaluation_question.question_text,
   );
 
   // Yale OCE urls for user to retrieve answers
@@ -120,7 +120,7 @@ const constructChallenge = (
  */
 export const requestChallenge = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): Promise<express.Response> => {
   winston.info(`Requesting challenge`);
 
@@ -153,20 +153,22 @@ export const requestChallenge = async (
   // randomly choosing a minimum rating
   const minRating = 1 + Math.random() * 4;
 
-  return request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
-    season: CHALLENGE_SEASON,
-    minRating,
-  })
-    .then((evals) => {
-      return constructChallenge(req, res, evals, challengeTries, netId);
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        error: err,
-        challengeTries,
-        maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-      });
+  let evals: requestEvalsQueryResponse;
+  // get a list of all seasons
+  try {
+    evals = await request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
+      season: CHALLENGE_SEASON,
+      minRating,
     });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
+
+  return constructChallenge(req, res, evals, challengeTries, netId);
 };
 
 /**
@@ -183,7 +185,7 @@ const checkChallenge = (
     answer: string;
     courseRatingId: string;
     courseRatingIndex: string;
-  }[]
+  }[],
 ): boolean => {
   // the true values in CourseTable to compare against
   const truth = true_evals.evaluation_ratings;
@@ -213,7 +215,7 @@ const checkChallenge = (
  */
 export const verifyChallenge = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): Promise<express.Response> => {
   winston.info(`Verifying challenge`);
 
@@ -257,7 +259,7 @@ export const verifyChallenge = async (
     secrets = JSON.parse(decrypt(token, salt));
     secretRatingIds = secrets.ratingSecrets.map((x) => x.courseRatingId);
     secretRatings = secrets.ratingSecrets.map(
-      (x) => `${x.courseRatingId}_${x.courseRatingIndex}`
+      (x) => `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
   } catch (e) {
     return res.status(406).json({
@@ -278,7 +280,7 @@ export const verifyChallenge = async (
   try {
     answerRatings = answers.map(
       (x: { courseRatingId: string; courseRatingIndex: number }) =>
-        `${x.courseRatingId}_${x.courseRatingIndex}`
+        `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
   } catch (e) {
     return res.status(406).json({
@@ -296,43 +298,43 @@ export const verifyChallenge = async (
     });
   }
 
-  // check the answers against the true values
-  return request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
-    questionIds: secretRatingIds,
-  })
-    .then((true_evals) => {
-      // if answers are incorrect, respond with error
-      if (!checkChallenge(true_evals, answers)) {
-        return res.status(200).json({
-          body: {
-            message: 'INCORRECT',
-            challengeTries,
-            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-          },
-        });
-      }
+  let true_evals: verifyEvalsQueryResponse;
+  // get a list of all seasons
+  try {
+    true_evals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+      questionIds: secretRatingIds,
+    });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
 
-      // otherwise, enable evaluations and respond with success
-      return prisma.studentBluebookSettings
-        .update({
-          where: { netId },
-          data: { evaluationsEnabled: true },
-        })
-        .then(() => {
-          return res.json({
-            body: {
-              message: 'CORRECT',
-              challengeTries,
-              maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-            },
-          });
-        });
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        error: err,
+  if (!checkChallenge(true_evals, answers)) {
+    return res.status(200).json({
+      body: {
+        message: 'INCORRECT',
         challengeTries,
         maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+      },
+    });
+  }
+
+  // otherwise, enable evaluations and respond with success
+  return prisma.studentBluebookSettings
+    .update({
+      where: { netId },
+      data: { evaluationsEnabled: true },
+    })
+    .then(() => {
+      return res.json({
+        body: {
+          message: 'CORRECT',
+          challengeTries,
+          maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+        },
       });
     });
 };

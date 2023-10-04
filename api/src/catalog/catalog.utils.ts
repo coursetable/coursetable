@@ -8,15 +8,16 @@ import fs from 'fs';
 import { request } from 'graphql-request';
 
 import winston from '../logging/winston';
+import { CatalogType, SeasonsType } from './catalog';
 
 /**
  * Get static catalogs for each season from Hasura,
  * @param overwrite - whether or not to skip existing catalogs.
  */
 export async function fetchCatalog(
-  overwrite: boolean
-): Promise<{ [x: string]: PromiseSettledResult<unknown> }> {
-  let seasons;
+  overwrite: boolean,
+): Promise<PromiseSettledResult<void>[]> {
+  let seasons: SeasonsType;
   // get a list of all seasons
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
@@ -28,7 +29,7 @@ export async function fetchCatalog(
   winston.info(`Fetched ${seasons.seasons.length} seasons`);
   fs.writeFileSync(
     `${STATIC_FILE_DIR}/seasons.json`,
-    JSON.stringify(seasons.seasons)
+    JSON.stringify(seasons.seasons),
   );
 
   // for each season, fetch all courses inside it and save
@@ -42,7 +43,7 @@ export async function fetchCatalog(
         return;
       }
 
-      let catalog;
+      let catalog: CatalogType;
 
       try {
         catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
@@ -56,14 +57,14 @@ export async function fetchCatalog(
       if (catalog.computed_listing_info) {
         fs.writeFileSync(
           output_path,
-          JSON.stringify(catalog.computed_listing_info)
+          JSON.stringify(catalog.computed_listing_info),
         );
 
         winston.info(
-          `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`
+          `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`,
         );
       }
-    }
+    },
   );
 
   return Promise.allSettled(processSeasons);

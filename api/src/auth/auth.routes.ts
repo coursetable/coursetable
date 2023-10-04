@@ -8,6 +8,7 @@ import passport from 'passport';
 import { POSTHOG_CLIENT } from '../config';
 
 import { casLogin } from './auth.handlers';
+import winston from '../logging/winston';
 
 /**
  * Set up authentication routes.
@@ -30,7 +31,7 @@ export default async (app: express.Express): Promise<void> => {
   app.get('/api/auth/cas', casLogin);
 
   // Logouts
-  app.get('/api/auth/logout', (req, res) => {
+  app.get('/api/auth/logout', (req, res, next) => {
     if (req.user) {
       POSTHOG_CLIENT.capture({
         distinctId: req.user.netId,
@@ -38,7 +39,13 @@ export default async (app: express.Express): Promise<void> => {
       });
     }
 
-    req.logOut();
+    winston.info(`Logging out ${req.user?.netId}`);
+
+    req.logOut(function (err) {
+      if (err) {
+        return next(err);
+      }
+    });
     return res.json({ success: true });
   });
 };

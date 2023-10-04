@@ -1,7 +1,7 @@
 /**
  * @file Global server configurations
  */
-import PostHog from 'posthog-node';
+import { PostHog } from 'posthog-node';
 import { PrismaClient } from '@prisma/client';
 
 const die = (err: string) => {

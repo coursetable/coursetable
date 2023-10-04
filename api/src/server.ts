@@ -3,7 +3,7 @@ import express, { RequestHandler } from 'express';
 import morgan from './logging/morgan';
 import winston from './logging/winston';
 
-import session from 'cookie-session';
+import cookieSession from 'cookie-session';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
@@ -74,7 +74,7 @@ app.get('/recommendations.htm', (_, res) => {
 
 // Setup sessions.
 app.use(
-  session({
+  cookieSession({
     secret: SESSION_SECRET,
 
     // Cookie lifetime of one year.
@@ -87,7 +87,7 @@ app.use(
     // Not enabling this yet since it could have unintended consequences.
     // Eventually we should enable this.
     // secure: true,
-  })
+  }),
 );
 
 // Serve with SSL.
@@ -97,7 +97,7 @@ https
       key: fs.readFileSync('./src/keys/server.key'),
       cert: fs.readFileSync('./src/keys/server.cert'),
     },
-    app
+    app,
   )
   .listen(SECURE_PORT, () => {
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
@@ -125,7 +125,7 @@ https
         '^/ferry/': '/', // remove base path
       },
       ws: true,
-    })
+    }),
   );
   // Enable request logging.
   app.use(morgan as RequestHandler);
@@ -150,7 +150,7 @@ https
       maxAge: '1h',
       lastModified: true,
       etag: true,
-    })
+    }),
   );
 
   // Setup routes.
