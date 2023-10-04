@@ -25,7 +25,6 @@
   },
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "editor.formatOnSave": true,
   "typescript.tsdk": "frontend/node_modules/typescript/lib",
   "search.exclude": {
     "dist/**": true,
@@ -46,6 +45,5 @@
     "toastify",
     "unstyled"
   ],
-  "eslint.packageManager": "yarn",
   "eslint.workingDirectories": ["api", "frontend", "proxy"]
 }

@@ -18,21 +18,14 @@ jobs:
         node-version: [18.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ~/.cache/yarn
-          key: ${{ runner.os }}-yarn-${{ hashFiles('api/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          cache: yarn
       - run: cd api && yarn install --frozen-lockfile
       - run: cd api && yarn run checks
-      - run: cd api && yarn run lint
 
   frontend:
     runs-on: ubuntu-latest
@@ -45,19 +38,12 @@ jobs:
       VITE_UMAMI_WEBSITE_ID: dummy
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-      - uses: actions/cache@v2
-        id: yarn-cache
-        with:
-          path: ~/.cache/yarn
-          key: ${{ runner.os }}-yarn-${{ hashFiles('frontend/yarn.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-yarn-
+          cache: yarn
       - run: cd frontend && yarn install --frozen-lockfile
-      - run: cd frontend && yarn run lint-check
-      - run: cd frontend && yarn run depcheck
+      - run: cd frontend && yarn run checks
       - run: cd frontend && CI=false yarn run build

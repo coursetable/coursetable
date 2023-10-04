@@ -28,7 +28,7 @@ const RefreshText = styled(TextComponent)`
 `;
 
 const loggedInModes = ['disconnect', 'refresh'] as const;
-type LoggedInMode = typeof loggedInModes[number];
+type LoggedInMode = (typeof loggedInModes)[number];
 
 type Props = {
   loggedInMode?: LoggedInMode;

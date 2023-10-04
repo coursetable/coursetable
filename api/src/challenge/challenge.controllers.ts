@@ -59,12 +59,10 @@ const constructChallenge = (
   const ratingIds = evals.evaluation_ratings.map((x) => x.id);
 
   // construct token object
-  const ratingSecrets = ratingIds.map((x, index: number) => {
-    return {
-      courseRatingId: ratingIds[index],
-      courseRatingIndex: ratingIndices[index],
-    };
-  });
+  const ratingSecrets = ratingIds.map((x, index: number) => ({
+    courseRatingId: ratingIds[index],
+    courseRatingIndex: ratingIndices[index],
+  }));
 
   const secrets = {
     netid,
@@ -92,15 +90,13 @@ const constructChallenge = (
   });
 
   // merged course information object
-  const course_info = courseTitles.map((title: string, index: number) => {
-    return {
-      courseId: courseIds[index],
-      courseTitle: title,
-      courseRatingIndex: ratingIndices[index],
-      courseQuestionTexts: courseQuestionTexts[index],
-      courseOceUrl: oceUrls[index],
-    };
-  });
+  const course_info = courseTitles.map((title: string, index: number) => ({
+    courseId: courseIds[index],
+    courseTitle: title,
+    courseRatingIndex: ratingIndices[index],
+    courseQuestionTexts: courseQuestionTexts[index],
+    courseOceUrl: oceUrls[index],
+  }));
 
   return res.json({
     body: {
@@ -153,20 +149,19 @@ export const requestChallenge = async (
   // randomly choosing a minimum rating
   const minRating = 1 + Math.random() * 4;
 
-  return request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
-    season: CHALLENGE_SEASON,
-    minRating,
-  })
-    .then((evals) => {
-      return constructChallenge(req, res, evals, challengeTries, netId);
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        error: err,
-        challengeTries,
-        maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-      });
+  try {
+    const evals = await request(GRAPHQL_ENDPOINT, requestEvalsQuery, {
+      season: CHALLENGE_SEASON,
+      minRating,
     });
+    return constructChallenge(req, res, evals, challengeTries, netId);
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
 };
 
 /**
@@ -259,7 +254,7 @@ export const verifyChallenge = async (
     secretRatings = secrets.ratingSecrets.map(
       (x) => `${x.courseRatingId}_${x.courseRatingIndex}`
     );
-  } catch (e) {
+  } catch {
     return res.status(406).json({
       error: 'INVALID_TOKEN',
       challengeTries,
@@ -280,7 +275,7 @@ export const verifyChallenge = async (
       (x: { courseRatingId: string; courseRatingIndex: number }) =>
         `${x.courseRatingId}_${x.courseRatingIndex}`
     );
-  } catch (e) {
+  } catch {
     return res.status(406).json({
       error: 'MALFORMED_ANSWERS',
       challengeTries,
@@ -296,43 +291,40 @@ export const verifyChallenge = async (
     });
   }
 
-  // check the answers against the true values
-  return request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
-    questionIds: secretRatingIds,
-  })
-    .then((true_evals) => {
-      // if answers are incorrect, respond with error
-      if (!checkChallenge(true_evals, answers)) {
-        return res.status(200).json({
-          body: {
-            message: 'INCORRECT',
-            challengeTries,
-            maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-          },
-        });
-      }
+  try {
+    // check the answers against the true values
+    const trueEvals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+      questionIds: secretRatingIds,
+    });
 
-      // otherwise, enable evaluations and respond with success
-      return prisma.studentBluebookSettings
-        .update({
-          where: { netId },
-          data: { evaluationsEnabled: true },
-        })
-        .then(() => {
-          return res.json({
-            body: {
-              message: 'CORRECT',
-              challengeTries,
-              maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-            },
-          });
-        });
-    })
-    .catch((err) => {
-      return res.status(500).json({
-        error: err,
+    // if answers are incorrect, respond with error
+    if (!checkChallenge(trueEvals, answers)) {
+      return res.status(200).json({
+        body: {
+          message: 'INCORRECT',
+          challengeTries,
+          maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+        },
+      });
+    }
+
+    // otherwise, enable evaluations and respond with success
+    await prisma.studentBluebookSettings.update({
+      where: { netId },
+      data: { evaluationsEnabled: true },
+    });
+    return res.json({
+      body: {
+        message: 'CORRECT',
         challengeTries,
         maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-      });
+      },
     });
+  } catch (err) {
+    return res.status(500).json({
+      error: err,
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+  }
 };
