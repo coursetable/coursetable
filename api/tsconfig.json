@@ -4,9 +4,7 @@
     // "incremental": true,                   /* Enable incremental compilation */
     "baseUrl": "./src",
     "target": "es5",
-    "lib": [
-      "es2020"
-    ],
+    "lib": ["es2020"],
     "allowJs": true,
     // "checkJs": true,
     "outDir": "./built",
@@ -33,7 +31,5 @@
     "resolveJsonModule": true,
     "skipLibCheck": true
   },
-  "include": [
-    "./src/**/*"
-  ],
+  "include": ["./src/**/*"]
 }

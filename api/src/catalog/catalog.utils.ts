@@ -13,7 +13,7 @@ import winston from '../logging/winston';
  * Type for Catalog data
  */
 
-export type SeasonsType = {
+export type Seasons = {
   seasons: {
     season_code: string;
     term: string;
@@ -22,7 +22,7 @@ export type SeasonsType = {
 };
 
 // type for catalog data
-export type CatalogType = {
+export type Catalog = {
   computed_listing_info: {
     all_course_codes: string[];
     areas: string[];
@@ -74,7 +74,7 @@ export type CatalogType = {
 export async function fetchCatalog(
   overwrite: boolean,
 ): Promise<PromiseSettledResult<void>[]> {
-  let seasons: SeasonsType;
+  let seasons: Seasons;
   // get a list of all seasons
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
@@ -100,7 +100,7 @@ export async function fetchCatalog(
         return;
       }
 
-      let catalog: CatalogType;
+      let catalog: Catalog;
 
       try {
         catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
