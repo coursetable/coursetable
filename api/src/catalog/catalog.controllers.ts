@@ -55,7 +55,7 @@ export const refreshCatalog = (
     .then(() =>
       res.status(200).json({
         status: 'OK',
-      })
+      }),
     )
     .catch((err) => {
       winston.error(err);
