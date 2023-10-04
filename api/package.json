@@ -1,7 +1,6 @@
 {
   "scripts": {
-    "prestart": "yarn prisma db pull && yarn prisma generate",
-    "generate": "bun prisma generate",
+    "prestart": "bun prisma db pull && bun prisma generate",
     "start": "yarn ts-node-dev --debug --files --exit-child src/server.ts",
     "prod": "yarn ts-node --files src/server.ts",
     "checks": "bun run depcheck && bun run lint && bun run typecheck",
