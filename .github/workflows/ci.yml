@@ -15,17 +15,16 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        bun-version: [1.x]
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Use Bun ${{ matrix.node-version }}
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: cd api && yarn install --frozen-lockfile
-      - run: cd api && yarn run checks
+          version: ${{ matrix.bun-version }}
+      - run: cd api && bun install --frozen-lockfile
+      - run: cd api && bun run checks
 
   frontend:
     runs-on: ubuntu-latest
