@@ -41,7 +41,7 @@ export default async (app: express.Express): Promise<void> => {
 
     winston.info(`Logging out ${req.user?.netId}`);
 
-    req.logOut(function (err) {
+    req.logOut((err) => {
       if (err) {
         return next(err);
       }
