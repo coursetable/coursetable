@@ -5,7 +5,7 @@
     "prod": "yarn ts-node --files src/server.ts",
     "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
     "depcheck": "npx depcheck . --json",
-    "lint": "yarn prettier -l src && yarn eslint ./src",
+    "lint": "yarn prettier -l . && yarn eslint src",
     "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
   "nodemonConfig": {
