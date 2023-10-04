@@ -52,11 +52,11 @@ export const refreshCatalog = (
 
   // fetch the catalog files and confirm success
   fetchCatalog(overwrite)
-    .then(() => {
-      return res.status(200).json({
+    .then(() =>
+      res.status(200).json({
         status: 'OK',
-      });
-    })
+      })
+    )
     .catch((err) => {
       winston.error(err);
       return res.status(500).json(err);

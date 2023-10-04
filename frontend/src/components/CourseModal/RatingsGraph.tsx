@@ -23,7 +23,7 @@ const StyledLabel = styled.p`
 const RatingsGraph: React.VFC<{
   ratings: number[];
   reverse: boolean;
-  labels: typeof graph_labels[keyof typeof graph_labels];
+  labels: (typeof graph_labels)[keyof typeof graph_labels];
 }> = ({ ratings, reverse, labels }) => {
   const max_val = Math.max(...ratings);
 

@@ -823,7 +823,9 @@ export const NavbarCatalogSearch: React.FC = () => {
                       onChange={(value: React.SetStateAction<number[]>) => {
                         setNumValueLabels(value);
                       }}
-                      onAfterChange={(value: React.SetStateAction<number[]>) => {
+                      onAfterChange={(
+                        value: React.SetStateAction<number[]>
+                      ) => {
                         setNumBounds(value);
                         setStartTime(Date.now());
                       }}

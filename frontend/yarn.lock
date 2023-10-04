@@ -7212,11 +7212,6 @@ posthog-js@^1.8.8:
   dependencies:
     fflate "^0.4.1"
 
-postinstall-postinstall@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/postinstall-postinstall/-/postinstall-postinstall-2.1.0.tgz#4f7f77441ef539d1512c40bd04c71b06a4704ca3"
-  integrity sha512-7hQX6ZlZXIoRiWNrbMQaLzUUfH+sSx39u8EJ9HYuDc1kLo9IXKWjM5RSquZN1ad5GnH8CGFM78fsAAQi3OKEEQ==
-
 prelude-ls@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/prelude-ls/-/prelude-ls-1.2.1.tgz#debc6489d7a6e6b0e7611888cec880337d316396"
@@ -9076,13 +9071,6 @@ y18n@^5.0.5:
   version "5.0.8"
   resolved "https://registry.yarnpkg.com/y18n/-/y18n-5.0.8.tgz#7f4934d0f7ca8c56f95314939ddcd2dd91ce1d55"
   integrity sha512-0pfFzegeDWJHJIAmTLRP2DwHjdF5s7jo9tuztdQxAhINCdvS+3nGINqPd00AphqJR/0LhANUS6/+7SCb98YOfA==
-
-yalies@^0.1.0:
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/yalies/-/yalies-0.1.0.tgz#1e7db1c5e4320174f347faaa9c39bd27bf60e5e0"
-  integrity sha512-LfgHEJbvusts6Nmw10VJokJ1UAHrzLZVoKEOdjiHyBnJxUAm+OtF8DoAYOCkGrO/FakgaOKsLS5bBuH6t9SIZg==
-  dependencies:
-    node-fetch "^2.6.1"
 
 yallist@^3.0.2:
   version "3.1.1"

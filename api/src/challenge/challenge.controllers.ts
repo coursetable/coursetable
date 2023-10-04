@@ -59,12 +59,10 @@ const constructChallenge = (
   const ratingIds = evals.evaluation_ratings.map((x) => x.id);
 
   // construct token object
-  const ratingSecrets = ratingIds.map((x, index: number) => {
-    return {
-      courseRatingId: ratingIds[index],
-      courseRatingIndex: ratingIndices[index],
-    };
-  });
+  const ratingSecrets = ratingIds.map((x, index: number) => ({
+    courseRatingId: ratingIds[index],
+    courseRatingIndex: ratingIndices[index],
+  }));
 
   const secrets = {
     netid,
@@ -92,15 +90,13 @@ const constructChallenge = (
   });
 
   // merged course information object
-  const course_info = courseTitles.map((title: string, index: number) => {
-    return {
-      courseId: courseIds[index],
-      courseTitle: title,
-      courseRatingIndex: ratingIndices[index],
-      courseQuestionTexts: courseQuestionTexts[index],
-      courseOceUrl: oceUrls[index],
-    };
-  });
+  const course_info = courseTitles.map((title: string, index: number) => ({
+    courseId: courseIds[index],
+    courseTitle: title,
+    courseRatingIndex: ratingIndices[index],
+    courseQuestionTexts: courseQuestionTexts[index],
+    courseOceUrl: oceUrls[index],
+  }));
 
   return res.json({
     body: {
@@ -160,6 +156,7 @@ export const requestChallenge = async (
       season: CHALLENGE_SEASON,
       minRating,
     });
+    return constructChallenge(req, res, evals, challengeTries, netId);
   } catch (err) {
     return res.status(500).json({
       error: err,
@@ -168,7 +165,6 @@ export const requestChallenge = async (
     });
   }
 
-  return constructChallenge(req, res, evals, challengeTries, netId);
 };
 
 /**
@@ -261,7 +257,7 @@ export const verifyChallenge = async (
     secretRatings = secrets.ratingSecrets.map(
       (x) => `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
-  } catch (e) {
+  } catch {
     return res.status(406).json({
       error: 'INVALID_TOKEN',
       challengeTries,
@@ -282,7 +278,7 @@ export const verifyChallenge = async (
       (x: { courseRatingId: string; courseRatingIndex: number }) =>
         `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
-  } catch (e) {
+  } catch {
     return res.status(406).json({
       error: 'MALFORMED_ANSWERS',
       challengeTries,
@@ -298,11 +294,36 @@ export const verifyChallenge = async (
     });
   }
 
-  let true_evals: verifyEvalsQueryResponse;
-  // get a list of all seasons
+  let trueEvals: verifyEvalsQueryResponse;
+
   try {
-    true_evals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+    // check the answers against the true values
+    trueEvals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
       questionIds: secretRatingIds,
+    });
+
+    // if answers are incorrect, respond with error
+    if (!checkChallenge(trueEvals, answers)) {
+      return res.status(200).json({
+        body: {
+          message: 'INCORRECT',
+          challengeTries,
+          maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+        },
+      });
+    }
+
+    // otherwise, enable evaluations and respond with success
+    await prisma.studentBluebookSettings.update({
+      where: { netId },
+      data: { evaluationsEnabled: true },
+    });
+    return res.json({
+      body: {
+        message: 'CORRECT',
+        challengeTries,
+        maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+      },
     });
   } catch (err) {
     return res.status(500).json({
@@ -311,30 +332,4 @@ export const verifyChallenge = async (
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
-
-  if (!checkChallenge(true_evals, answers)) {
-    return res.status(200).json({
-      body: {
-        message: 'INCORRECT',
-        challengeTries,
-        maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-      },
-    });
-  }
-
-  // otherwise, enable evaluations and respond with success
-  return prisma.studentBluebookSettings
-    .update({
-      where: { netId },
-      data: { evaluationsEnabled: true },
-    })
-    .then(() => {
-      return res.json({
-        body: {
-          message: 'CORRECT',
-          challengeTries,
-          maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-        },
-      });
-    });
 };
