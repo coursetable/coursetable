@@ -1,11 +1,11 @@
 {
   "scripts": {
-    "prestart": "npx prisma db pull && npx prisma generate",
-    "start": "npx ts-node-dev --debug --files --exit-child src/server.ts",
-    "prod": "npx ts-node --files src/server.ts",
+    "prestart": "yarn prisma db pull && yarn prisma generate",
+    "start": "yarn ts-node-dev --debug --files --exit-child src/server.ts",
+    "prod": "yarn ts-node --files src/server.ts",
     "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
     "depcheck": "npx depcheck . --json",
-    "lint": "prettier -l src && yarn eslint ./src",
+    "lint": "yarn prettier -l src && yarn eslint ./src",
     "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
   "nodemonConfig": {

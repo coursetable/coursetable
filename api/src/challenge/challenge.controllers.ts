@@ -59,12 +59,10 @@ const constructChallenge = (
   const ratingIds = evals.evaluation_ratings.map((x) => x.id);
 
   // construct token object
-  const ratingSecrets = ratingIds.map((x, index: number) => {
-    return {
-      courseRatingId: ratingIds[index],
-      courseRatingIndex: ratingIndices[index],
-    };
-  });
+  const ratingSecrets = ratingIds.map((x, index: number) => ({
+    courseRatingId: ratingIds[index],
+    courseRatingIndex: ratingIndices[index],
+  }));
 
   const secrets = {
     netid,
@@ -92,15 +90,13 @@ const constructChallenge = (
   });
 
   // merged course information object
-  const course_info = courseTitles.map((title: string, index: number) => {
-    return {
-      courseId: courseIds[index],
-      courseTitle: title,
-      courseRatingIndex: ratingIndices[index],
-      courseQuestionTexts: courseQuestionTexts[index],
-      courseOceUrl: oceUrls[index],
-    };
-  });
+  const course_info = courseTitles.map((title: string, index: number) => ({
+    courseId: courseIds[index],
+    courseTitle: title,
+    courseRatingIndex: ratingIndices[index],
+    courseQuestionTexts: courseQuestionTexts[index],
+    courseOceUrl: oceUrls[index],
+  }));
 
   return res.json({
     body: {
@@ -157,16 +153,14 @@ export const requestChallenge = async (
     season: CHALLENGE_SEASON,
     minRating,
   })
-    .then((evals) => {
-      return constructChallenge(req, res, evals, challengeTries, netId);
-    })
-    .catch((err) => {
-      return res.status(500).json({
+    .then((evals) => constructChallenge(req, res, evals, challengeTries, netId))
+    .catch((err) =>
+      res.status(500).json({
         error: err,
         challengeTries,
         maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-      });
-    });
+      })
+    );
 };
 
 /**
@@ -318,21 +312,21 @@ export const verifyChallenge = async (
           where: { netId },
           data: { evaluationsEnabled: true },
         })
-        .then(() => {
-          return res.json({
+        .then(() =>
+          res.json({
             body: {
               message: 'CORRECT',
               challengeTries,
               maxChallengeTries: MAX_CHALLENGE_REQUESTS,
             },
-          });
-        });
+          })
+        );
     })
-    .catch((err) => {
-      return res.status(500).json({
+    .catch((err) =>
+      res.status(500).json({
         error: err,
         challengeTries,
         maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-      });
-    });
+      })
+    );
 };
