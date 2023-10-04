@@ -19,7 +19,7 @@ import { fetchCatalog } from './catalog.utils';
 export const verifyHeaders = (
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ): void | express.Response => {
   winston.info('Verifying headers');
   // get authentication headers
@@ -44,7 +44,7 @@ export const verifyHeaders = (
  */
 export const refreshCatalog = (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): void => {
   winston.info('Refreshing catalog');
   // always overwrite when called
@@ -55,7 +55,7 @@ export const refreshCatalog = (
     .then(() =>
       res.status(200).json({
         status: 'OK',
-      })
+      }),
     )
     .catch((err) => {
       winston.error(err);

@@ -10,7 +10,7 @@ import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from '../config';
 export function encrypt(text: string, salt: string): string {
   const cipher = crypto.createCipher(
     CHALLENGE_ALGORITHM,
-    CHALLENGE_PASSWORD + salt
+    CHALLENGE_PASSWORD + salt,
   );
   let crypted = cipher.update(text, 'utf8', 'hex');
   crypted += cipher.final('hex');
@@ -25,7 +25,7 @@ export function encrypt(text: string, salt: string): string {
 export function decrypt(text: string, salt: string): string {
   const decipher = crypto.createDecipher(
     CHALLENGE_ALGORITHM,
-    CHALLENGE_PASSWORD + salt
+    CHALLENGE_PASSWORD + salt,
   );
   let dec = decipher.update(text, 'hex', 'utf8');
   dec += decipher.final('utf8');

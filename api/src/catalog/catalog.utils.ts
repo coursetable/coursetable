@@ -9,14 +9,67 @@ import { request } from 'graphql-request';
 
 import winston from '../logging/winston';
 
+export type Seasons = {
+  seasons: {
+    season_code: string;
+    term: string;
+    year: number;
+  }[];
+};
+
+export type Catalog = {
+  computed_listing_info: {
+    all_course_codes: string[];
+    areas: string[];
+    average_gut_rating: number;
+    average_professor: number;
+    average_rating: number;
+    average_workload: number;
+    average_rating_same_professors: number;
+    average_workload_same_professors: number;
+    classnotes: string;
+    course_code: string;
+    credits: number;
+    crn: string;
+    description: string;
+    enrolled: number;
+    extra_info: string;
+    final_exam: string;
+    flag_info: string;
+    fysem: boolean;
+    last_enrollment: number;
+    last_enrollment_same_professors: number;
+    listing_id: string;
+    locations_summary: string;
+    number: string;
+    professor_ids: string[];
+    professor_names: string[];
+    regnotes: string;
+    requirements: string;
+    rp_attr: string;
+    same_course_id: string;
+    same_course_and_profs_id: string;
+    last_offered_course_id: string;
+    school: string;
+    season_code: string;
+    section: string;
+    skills: string;
+    subject: string;
+    syllabus_url: string;
+    times_by_day: string;
+    times_summary: string;
+    title: string;
+  }[];
+};
+
 /**
  * Get static catalogs for each season from Hasura,
  * @param overwrite - whether or not to skip existing catalogs.
  */
 export async function fetchCatalog(
-  overwrite: boolean
-): Promise<{ [x: string]: PromiseSettledResult<unknown> }> {
-  let seasons;
+  overwrite: boolean,
+): Promise<PromiseSettledResult<void>[]> {
+  let seasons: Seasons;
   // get a list of all seasons
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
@@ -28,7 +81,7 @@ export async function fetchCatalog(
   winston.info(`Fetched ${seasons.seasons.length} seasons`);
   fs.writeFileSync(
     `${STATIC_FILE_DIR}/seasons.json`,
-    JSON.stringify(seasons.seasons)
+    JSON.stringify(seasons.seasons),
   );
 
   // for each season, fetch all courses inside it and save
@@ -42,7 +95,7 @@ export async function fetchCatalog(
         return;
       }
 
-      let catalog;
+      let catalog: Catalog;
 
       try {
         catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {
@@ -56,14 +109,14 @@ export async function fetchCatalog(
       if (catalog.computed_listing_info) {
         fs.writeFileSync(
           output_path,
-          JSON.stringify(catalog.computed_listing_info)
+          JSON.stringify(catalog.computed_listing_info),
         );
 
         winston.info(
-          `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`
+          `Fetched season ${season_code}: n=${catalog.computed_listing_info.length}`,
         );
       }
-    }
+    },
   );
 
   return Promise.allSettled(processSeasons);

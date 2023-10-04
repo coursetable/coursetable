@@ -57,7 +57,7 @@ const extractHostname = (url: string): string => {
  * @param passportInstance: passport instance.
  */
 export const passportConfig = async (
-  passportInstance: passport.PassportStatic
+  passportInstance: passport.PassportStatic,
 ): Promise<void> => {
   // strategy for integrating with CAS
   passportInstance.use(
@@ -94,7 +94,7 @@ export const passportConfig = async (
                 Authorization: `Bearer ${YALIES_API_KEY}`,
                 'Content-Type': 'application/json',
               },
-            }
+            },
           )
           .then(async ({ data }) => {
             // if no user found, do not grant access
@@ -169,8 +169,8 @@ export const passportConfig = async (
               evals: false,
             });
           });
-      }
-    )
+      },
+    ),
   );
 
   /**
@@ -248,11 +248,11 @@ const postAuth = (req: express.Request, res: express.Response): void => {
 export const casLogin = (
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ): void => {
   winston.info('Logging in with CAS');
   // Authenticate with passport
-  passport.authenticate('cas', (casError, user) => {
+  passport.authenticate('cas', (casError: Error, user: Express.User) => {
     // handle auth errors or missing users
     if (casError) {
       return next(casError);
@@ -283,7 +283,7 @@ export const casLogin = (
 export const authBasic = (
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ): void => {
   winston.info('Intercepting basic authentication');
   if (req.user) {
@@ -305,7 +305,7 @@ export const authBasic = (
 export const authWithEvals = (
   req: express.Request,
   res: express.Response,
-  next: express.NextFunction
+  next: express.NextFunction,
 ): void => {
   winston.info('Intercepting with-evals authentication');
   if (req.user && req.user.evals) {
