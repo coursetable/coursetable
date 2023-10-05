@@ -129,7 +129,7 @@ function WorksheetToggleButton({
             },
           },
         )
-        .then((response) => {
+        .then(() => {
           // Refresh user's worksheet
           return userRefresh();
         })

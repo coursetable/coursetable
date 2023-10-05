@@ -150,7 +150,7 @@ const Challenge: React.VFC = () => {
                 );
                 history.goBack();
               })
-              .catch((err) => {
+              .catch(() => {
                 toast.error('Failed to update evaluation status');
                 // console.error(err);
               });

@@ -8,22 +8,12 @@ module.exports = {
     'prettier',
   ],
   plugins: ['react', '@typescript-eslint', 'jest', 'jsx-a11y', 'import'],
-  env: {
-    browser: true,
-    es6: true,
-    jest: true,
-  },
   // globals: {
   //   Atomics: 'readonly',
   //   SharedArrayBuffer: 'readonly',
   // },
   parser: '@typescript-eslint/parser',
   parserOptions: {
-    ecmaFeatures: {
-      jsx: true,
-    },
-    ecmaVersion: 2018,
-    sourceType: 'module',
     project: './tsconfig.json',
   },
   rules: {
@@ -33,6 +23,7 @@ module.exports = {
     // TODO: Eventually we want to remove these rules (and default to error).
     '@typescript-eslint/ban-ts-comment': 'off',
     '@typescript-eslint/naming-convention': 'off',
+    '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-shadow': 'warn',
     '@typescript-eslint/no-use-before-define': 'warn',
     'import/order': 'off',

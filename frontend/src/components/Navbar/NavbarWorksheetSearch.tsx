@@ -8,7 +8,6 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 // import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
-import _ from 'lodash';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../contexts/userContext';
