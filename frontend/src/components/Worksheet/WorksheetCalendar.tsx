@@ -121,7 +121,7 @@ function WorksheetCalendar() {
         parsedCourses,
       };
     },
-    [hidden_courses, cur_season]
+    [hidden_courses, cur_season],
   );
 
   // Custom styling for the calendar events
@@ -142,7 +142,7 @@ function WorksheetCalendar() {
         style,
       };
     },
-    [hover_course]
+    [hover_course],
   );
 
   const ret_values = useMemo(() => {
@@ -165,14 +165,14 @@ function WorksheetCalendar() {
     (event) => {
       return showModal(event.listing);
     },
-    [showModal]
+    [showModal],
   );
 
   const eventPropGetterCallback = useCallback(
     (event) => {
       return eventStyleGetter(event);
     },
-    [eventStyleGetter]
+    [eventStyleGetter],
   );
 
   return (

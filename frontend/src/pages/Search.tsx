@@ -106,7 +106,7 @@ const Search: React.FC = () => {
       posthog.capture('catalog-view-toggle', { isList });
       setView(isList);
     },
-    [setView]
+    [setView],
   );
 
   const scroll_to_results = useCallback(
@@ -122,7 +122,7 @@ const Search: React.FC = () => {
         });
       }
     },
-    [isMobile]
+    [isMobile],
   );
 
   // Scroll to the bottom when courses finish loading on initial load.
@@ -223,7 +223,7 @@ const Search: React.FC = () => {
                         type="text"
                         value={searchText}
                         onChange={(
-                          event: React.ChangeEvent<HTMLInputElement>
+                          event: React.ChangeEvent<HTMLInputElement>,
                         ) => setSearchText(event.target.value)}
                         placeholder="Search by course code, title, or prof"
                       />
@@ -247,7 +247,7 @@ const Search: React.FC = () => {
                         // prevent overlap with tooltips
                         menuPortalTarget={document.body}
                         onChange={(
-                          selectedOption: ValueType<Option, boolean>
+                          selectedOption: ValueType<Option, boolean>,
                         ) =>
                           setSelectSeasons((selectedOption as Option[]) || [])
                         }
@@ -311,7 +311,7 @@ const Search: React.FC = () => {
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(
-                        selectedOption: ValueType<Option, boolean>
+                        selectedOption: ValueType<Option, boolean>,
                       ) => {
                         setSelectSchools((selectedOption as Option[]) || []);
                       }}

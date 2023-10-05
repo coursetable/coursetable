@@ -35,7 +35,8 @@ const StyledGridItem = styled.div`
       : theme.theme === 'light'
       ? 'rgb(245, 245, 245)'
       : theme.surface[1]};
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
   &:hover {
@@ -88,14 +89,14 @@ const ResultsGridItem = ({
       String(getOverallRatings(course, false)),
       getOverallRatings(course, true),
     ],
-    [course]
+    [course],
   );
   const workload_rating = useMemo(
     () => [
       String(getWorkloadRatings(course, false)),
       getWorkloadRatings(course, true),
     ],
-    [course]
+    [course],
   );
 
   // Variable used in list keys

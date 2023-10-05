@@ -12,7 +12,7 @@ export const isInWorksheet = (
   season_code: Season,
   crn: Crn | string,
   worksheet_number: string,
-  worksheet?: Worksheet
+  worksheet?: Worksheet,
 ): boolean => {
   if (worksheet == null) return false;
   if (typeof crn !== 'string') {
@@ -32,7 +32,7 @@ export const isInWorksheet = (
 
 // Convert season code to legible string
 export const toSeasonString = (
-  season_code: Season
+  season_code: Season,
 ): readonly [string, string, string] => {
   if (!season_code) return ['', '', ''];
   const seasons = ['', 'Spring', 'Summer', 'Fall'];
@@ -45,7 +45,7 @@ export const toSeasonString = (
 
 // Unflatten course times for easy use in checkConflict
 export const unflattenTimes = (
-  course: Listing
+  course: Listing,
 ): [string, string, string, string][] | undefined | 'TBA' => {
   if (!course) return undefined;
   if (course.times_summary === 'TBA') return 'TBA';
@@ -62,7 +62,7 @@ export const unflattenTimes = (
 export const checkConflict = (
   listings: Listing[],
   course: Listing,
-  times: [string, string, string, string][] // index is 0-4, corresponding to weekdays
+  times: [string, string, string, string][], // index is 0-4, corresponding to weekdays
 ): Listing[] => {
   const conflicts: Listing[] = [];
   // Iterate over worksheet listings
@@ -102,7 +102,7 @@ export const checkConflict = (
 // Checks if a course is cross-listed in the user's worksheet
 export const checkCrossListed = (
   listings: Listing[],
-  course: Listing
+  course: Listing,
 ): boolean | string => {
   const classes: string[] = [];
   // Iterate over worksheet listings
@@ -122,7 +122,7 @@ export const fbFriendsAlsoTaking = (
   season_code: Season,
   crn: Crn,
   worksheets: Worksheet,
-  names: FBFriendInfo
+  names: FBFriendInfo,
 ): string[] => {
   // Return if worksheets are null
   if (!worksheets) return [];
@@ -166,7 +166,7 @@ export const getNumFB = (fbWorksheets: FBInfo): NumFBReturn => {
 // Get the overall rating for a course
 export const getOverallRatings = (
   course: Listing,
-  display = false
+  display = false,
 ): string | number | null => {
   let course_rating;
   // Determine which overall rating to use
@@ -191,7 +191,7 @@ export const getOverallRatings = (
 // Get the workload rating for a course
 export const getWorkloadRatings = (
   course: Listing,
-  display = false
+  display = false,
 ): string | number | null => {
   let course_workload;
   // Determine which workload rating to use
@@ -232,7 +232,7 @@ const calculateDayTime = (course: Listing): number | null => {
       times[0].start.split(':').reduce((final, num) => {
         final += num;
         return final;
-      }, '')
+      }, ''),
     );
 
     // Calculate the day score
@@ -282,7 +282,7 @@ export const sortCourses = (
   // TODO: we should be much more strict with this type. Specifically,
   // we should prevent there from being multiple keys.
   ordering: { [key in SortKeys]?: 'asc' | 'desc' },
-  num_fb: NumFBReturn
+  num_fb: NumFBReturn,
 ): Listing[] => {
   // Key to sort the courses by
   const key = Object.keys(ordering)[0] as SortKeys;
@@ -296,7 +296,7 @@ export const sortCourses = (
       (listing) => helperSort(listing, key, num_fb),
       (listing) => listing.course_code,
     ],
-    ['asc', order_asc ? 'asc' : 'desc', 'asc']
+    ['asc', order_asc ? 'asc' : 'desc', 'asc'],
   );
   return sorted;
 };
@@ -305,7 +305,7 @@ export const sortCourses = (
 export const getEnrolled = (
   course: Listing,
   display = false,
-  onModal = false
+  onModal = false,
 ): string | number | null => {
   let course_enrolled;
   // Determine which enrolled to use
@@ -333,7 +333,7 @@ export const getEnrolled = (
 
 // Get start and end times
 export const getDayTimes = (
-  course: Listing
+  course: Listing,
 ): Record<string, string>[] | null => {
   // If no times then return null
   if (isEmpty(course.times_by_day)) {

@@ -59,7 +59,7 @@ export const UserProvider: React.FC = ({ children }) => {
   const [fbLogin, setFbLogin] = useState<boolean | undefined>(undefined);
   // User's FB friends' worksheets
   const [fbWorksheets, setFbWorksheets] = useState<FBInfo | undefined>(
-    undefined
+    undefined,
   );
 
   // Refresh user worksheet
@@ -96,7 +96,7 @@ export const UserProvider: React.FC = ({ children }) => {
           }
         });
     },
-    [setWorksheet, setNetId, setHasEvals, setYear, setSchool]
+    [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
   );
 
   // Refresh user FB stuff
@@ -124,7 +124,7 @@ export const UserProvider: React.FC = ({ children }) => {
           setFbWorksheets(undefined);
         });
     },
-    [setFbLogin, setFbWorksheets]
+    [setFbLogin, setFbWorksheets],
   );
 
   const user = useMemo(() => {
@@ -148,7 +148,7 @@ export const UserProvider: React.FC = ({ children }) => {
       userRefresh,
       fbRefresh,
     }),
-    [user, userRefresh, fbRefresh]
+    [user, userRefresh, fbRefresh],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;

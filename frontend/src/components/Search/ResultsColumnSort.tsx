@@ -36,7 +36,7 @@ type Props = {
 const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
   // Local sort order state
   const [localSortOrder, setLocalSortOrder] = useState<SortOrderType>(
-    defaultFilters.defaultSortOrder
+    defaultFilters.defaultSortOrder,
   );
   // First time state
   const [firstTime, setFirstTime] = useState(true);

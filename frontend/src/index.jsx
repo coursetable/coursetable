@@ -8,5 +8,5 @@ ReactDOM.render(
   <Globals>
     <App />
   </Globals>,
-  document.getElementById('root')
+  document.getElementById('root'),
 );

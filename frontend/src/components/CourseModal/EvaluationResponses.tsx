@@ -38,17 +38,17 @@ const StyledSortOption = styled.span`
   padding: 3px 5px;
   background-color: ${(
     // @ts-ignore
-    { theme, active }
+    { theme, active },
   ) => (active ? 'rgba(92, 168, 250,0.5)' : theme.border)};
   color: ${(
     // @ts-ignore
-    { theme, active }
+    { theme, active },
   ) => (active ? theme.text[0] : theme.text[2])};
   font-weight: 500;
   &:hover {
     background-color: ${(
       // @ts-ignore
-      { theme, active }
+      { theme, active },
     ) => (active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue)};
     cursor: pointer;
   }
@@ -93,7 +93,7 @@ const EvaluationResponses: React.FC<{
           if (!temp_responses[node.evaluation_question.question_text])
             temp_responses[node.evaluation_question.question_text] = [];
           temp_responses[node.evaluation_question.question_text].push(
-            node.comment
+            node.comment,
           );
         }
       });

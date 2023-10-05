@@ -8,7 +8,7 @@ import { API_ENDPOINT } from './config';
 // Detect clicks outside of a component
 // Via https://stackoverflow.com/a/54570068/5004662
 export const useComponentVisible = <T extends HTMLElement>(
-  initialIsVisible: boolean
+  initialIsVisible: boolean,
 ) => {
   // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
@@ -40,7 +40,7 @@ export const useComponentVisible = <T extends HTMLElement>(
 // Detect clicks outside of a toggle and dropdown component
 export const useComponentVisibleDropdown = <T extends HTMLElement>(
   initialIsVisible: boolean,
-  callback?: (visible: boolean) => void
+  callback?: (visible: boolean) => void,
 ) => {
   // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
@@ -118,7 +118,7 @@ export const breakpoints = (
   cssProp = 'padding', // the CSS property to apply to the breakpoints
   cssPropUnits = 'px', // the units of the CSS property (can set equal to "" and apply units to values directly)
   values: { [key: number]: number }[] = [], // array of objects, e.g. [{ 800: 60 }, ...] <-- 800 (key) = screen breakpoint, 60 (value) = CSS prop breakpoint
-  mediaQueryType = 'max-width' // media query breakpoint type, i.e.: max-width, min-width, max-height, min-height
+  mediaQueryType = 'max-width', // media query breakpoint type, i.e.: max-width, min-width, max-height, min-height
 ) => {
   const breakpointProps = values.reduce((mediaQueries, value) => {
     const [screenBreakpoint, cssPropBreakpoint] = [

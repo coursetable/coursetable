@@ -6,7 +6,6 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:jest/recommended',
     'prettier',
-    'plugin:prettier/recommended',
   ],
   plugins: ['react', '@typescript-eslint', 'jest', 'jsx-a11y', 'import'],
   env: {
@@ -29,13 +28,6 @@ module.exports = {
   },
   rules: {
     'linebreak-style': 'off',
-    'prettier/prettier': [
-      'error',
-      {
-        endOfLine: 'auto',
-        singleQuote: true,
-      },
-    ],
     // suppress errors for missing 'import React' in files
     'react/react-in-jsx-scope': 'off',
     // TODO: Eventually we want to remove these rules (and default to error).

@@ -189,7 +189,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                               style={{
                                 color: skillsAreasColors[skill],
                                 backgroundColor: chroma(
-                                  skillsAreasColors[skill]
+                                  skillsAreasColors[skill],
                                 )
                                   .alpha(0.16)
                                   .css(),
@@ -283,7 +283,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                               style={{
                                 color: skillsAreasColors[skill],
                                 backgroundColor: chroma(
-                                  skillsAreasColors[skill]
+                                  skillsAreasColors[skill],
                                 )
                                   .alpha(0.16)
                                   .css(),
@@ -310,7 +310,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             </Badge>
                           ))}
                         {/* Course Professors and Section */}
-                        {view[1].professor !== ['TBA'] && (
+                        {view[1].professor[0] !== 'TBA' && (
                           <p
                             className={`${styles.course_codes}  my-0 ${
                               view[1].skills.length || view[1].areas.length

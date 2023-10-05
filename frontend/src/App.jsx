@@ -62,7 +62,7 @@ function App({ themeToggler, location }) {
   // First tutorial state
   const [shownTutorial, setShownTutorial] = useLocalStorageState(
     'shownTutorial',
-    false
+    false,
   );
 
   // Handle whether or not to open tutorial

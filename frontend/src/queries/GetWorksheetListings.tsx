@@ -9,7 +9,7 @@ import * as Sentry from '@sentry/react';
 export const useWorksheetInfo = (
   worksheet: Worksheet | undefined,
   season: Season | null = null,
-  worksheet_number = '0'
+  worksheet_number = '0',
 ) => {
   const required_seasons = useMemo(() => {
     if (!worksheet || worksheet.length === 0) {
@@ -67,7 +67,7 @@ export const useWorksheetInfo = (
         const course = courses[season_code].get(crn);
         if (!course) {
           Sentry.captureException(
-            `failed to resolve worksheet course ${season_code} ${crn}`
+            `failed to resolve worksheet course ${season_code} ${crn}`,
           );
         } else {
           data.push(course);

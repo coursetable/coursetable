@@ -131,7 +131,7 @@ const Challenge: React.VFC = () => {
         .post(
           `${API_ENDPOINT}/api/challenge/verify`,
           qs.stringify(post_body),
-          config
+          config,
         )
         .then((res) => {
           // Answers not properly verified
@@ -146,7 +146,7 @@ const Challenge: React.VFC = () => {
               })
               .then(() => {
                 toast.success(
-                  "All of your responses were correct! Refresh the page if the courses aren't showing."
+                  "All of your responses were correct! Refresh the page if the courses aren't showing.",
                 );
                 history.goBack();
               })
@@ -162,7 +162,7 @@ const Challenge: React.VFC = () => {
             setVerifyError('INCORRECT');
 
             setVerifyErrorMessage(
-              <div>Incorrect responses. Please try again.</div>
+              <div>Incorrect responses. Please try again.</div>,
             );
 
             setValidated(false);
@@ -183,7 +183,7 @@ const Challenge: React.VFC = () => {
                   You've used up all your challenge attempts. Please{' '}
                   <NavLink to="/feedback">contact us</NavLink> if you would like
                   to gain access.
-                </div>
+                </div>,
               );
             }
             // Bad token
@@ -193,7 +193,7 @@ const Challenge: React.VFC = () => {
                   Your answers aren't formatted correctly. Please{' '}
                   <NavLink to="/feedback">contact us</NavLink> if you think this
                   is an error.
-                </div>
+                </div>,
               );
             }
             // Bad answers
@@ -203,7 +203,7 @@ const Challenge: React.VFC = () => {
                   Your answers aren't formatted correctly. Please{' '}
                   <NavLink to="/feedback">contact us</NavLink> if you think this
                   is an error.
-                </div>
+                </div>,
               );
             }
             // Other errors
@@ -219,7 +219,7 @@ const Challenge: React.VFC = () => {
                     let us know
                   </a>{' '}
                   what went wrong.
-                </div>
+                </div>,
               );
             }
           }
@@ -282,7 +282,7 @@ const Challenge: React.VFC = () => {
               setAnswers(new_answers);
             }}
           />
-        </Form.Group>
+        </Form.Group>,
       );
     });
   }

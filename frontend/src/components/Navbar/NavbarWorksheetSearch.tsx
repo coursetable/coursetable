@@ -40,7 +40,8 @@ const StyledToggleButton = styled(ToggleButton)`
   background-color: ${({ theme }) => theme.surface[0]};
   color: ${({ theme }) => theme.text[0]};
   border: ${({ theme }) => theme.icon} 2px solid;
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
   padding: 0.25rem 0;

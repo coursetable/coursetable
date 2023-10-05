@@ -132,13 +132,13 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   // Current season
   const [cur_season, setCurSeason] = useSessionStorageState<Season>(
     'cur_season',
-    defaultFilters.defaultSeason[0].value
+    defaultFilters.defaultSeason[0].value,
   );
 
   // Current worksheet number
   const [worksheet_number, setWorksheetNumber] = useSessionStorageState(
     'worksheet_number',
-    '0'
+    '0',
   );
 
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
@@ -208,7 +208,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
           if (
             !Object.prototype.hasOwnProperty.call(
               new_hidden_courses,
-              cur_season
+              cur_season,
             )
           ) {
             new_hidden_courses[cur_season] = {};
@@ -230,7 +230,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
           if (
             !Object.prototype.hasOwnProperty.call(
               new_hidden_courses,
-              cur_season
+              cur_season,
             )
           ) {
             new_hidden_courses[cur_season] = {};
@@ -242,7 +242,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
         });
       }
     },
-    [setHiddenCourses, courses, cur_season]
+    [setHiddenCourses, courses, cur_season],
   );
 
   const handleWorksheetView = useCallback(
@@ -251,14 +251,14 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       // Scroll back to top when changing views
       window.scrollTo({ top: 0, left: 0 });
     },
-    [setWorksheetView]
+    [setWorksheetView],
   );
 
   const handleFBPersonChange = useCallback(
     (new_person: string) => {
       setFbPerson(new_person);
     },
-    [setFbPerson]
+    [setFbPerson],
   );
 
   // Function to change season
@@ -267,7 +267,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       posthog.capture('worksheet-season', { new_season: season_code });
       setCurSeason(season_code);
     },
-    [setCurSeason]
+    [setCurSeason],
   );
 
   // Function to change worksheet number
@@ -276,7 +276,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       posthog.capture('worksheet-number', { new_number });
       setWorksheetNumber(new_number);
     },
-    [setWorksheetNumber]
+    [setWorksheetNumber],
   );
 
   // Show course modal for the chosen listing
@@ -341,7 +341,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       showModal,
       hideModal,
       changeWorksheet,
-    ]
+    ],
   );
 
   return (

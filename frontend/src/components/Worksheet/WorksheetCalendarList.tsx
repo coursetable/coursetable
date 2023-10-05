@@ -14,7 +14,8 @@ const StyledSpacer = styled.div`
   position: sticky;
   top: 56px;
   z-index: 2;
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
 `;
@@ -42,7 +43,8 @@ const StyledBtn = styled.div`
   justify-content: center;
   align-items: center;
   user-select: none;
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
 

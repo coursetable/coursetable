@@ -1,4 +1,3 @@
-// import './wdyr';
 import 'react-app-polyfill/stable';
 import 'core-js/features/promise/all-settled';
 import 'core-js/es/promise/all-settled';
@@ -149,7 +148,7 @@ const Globals: React.FC = ({ children }) => {
                                   });
                                 }
                                 return child;
-                              }
+                              },
                             )}
                         </div>
                       </>

@@ -45,7 +45,7 @@ function ContextAwareToggle({
 
   const decoratedOnClick = useAccordionToggle(
     eventKey,
-    () => callback && callback(eventKey)
+    () => callback && callback(eventKey),
   );
 
   // Is this one currently active?

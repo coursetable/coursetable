@@ -127,14 +127,14 @@ const ResultsItem = ({
       String(getOverallRatings(course, false)),
       getOverallRatings(course, true),
     ],
-    [course]
+    [course],
   );
   const workload_rating = useMemo(
     () => [
       String(getWorkloadRatings(course, false)),
       getWorkloadRatings(course, true),
     ],
-    [course]
+    [course],
   );
 
   // Tooltip for hovering over season
