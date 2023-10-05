@@ -163,7 +163,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    ./start.sh
    ```
 
-1. Navigate to https://localhost:3000.
+1. Navigate to https://localhost:5173.
 
    You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally).
 
@@ -241,7 +241,7 @@ After running all of the initial development environment setup, follow the comma
    ./start.sh
    ```
 
-1. Navigate to https://localhost:3000.
+1. Navigate to https://localhost:5173.
 
    You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally).
 

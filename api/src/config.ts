@@ -39,14 +39,14 @@ export const CANNY_KEY = getEnv('CANNY_KEY');
 
 // Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
-  ? 'https://localhost:3000'
+  ? 'https://localhost:5173'
   : process.env.FRONTEND_ENDPOINT || 'https://coursetable.com';
 
 // CORS options so frontend can interface with server
 export const CORS_OPTIONS = {
   origin: [
-    'https://localhost:3000',
-    'http://localhost:3000',
+    'https://localhost:5173',
+    'http://localhost:5173',
     'https://coursetable.com',
     'https://www.coursetable.com',
     /\.coursetable\.com$/,
