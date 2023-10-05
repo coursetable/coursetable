@@ -36,6 +36,7 @@ import ls from '../images/headshots/lauren-song.jpg';
 import js from '../images/headshots/josephine-shin.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import px from '../images/headshots/peter-xu.png';
+import bx from '../images/headshots/ben-xu.png';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -196,6 +197,15 @@ const About: React.VFC = () => {
       name: 'Anna Zhang',
       image: az,
       role: 'Design',
+    },
+    {
+      name: 'Ben Xu',
+      image: bx,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
+        github: 'https://github.com/benzuzu',
+      },
     },
   ];
 
