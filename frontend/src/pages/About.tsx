@@ -118,85 +118,12 @@ const About: React.VFC = () => {
       },
     },
     {
-      name: 'Michelle M. Li',
-      image: ml,
-      role: 'Design Lead',
-    },
-    {
-      name: 'Murad Avliyakulov',
-      image: ma,
-      role: 'Development',
-    },
-    {
-      name: 'Abhijit Gupta',
-      image: ag,
-      role: 'Development',
-    },
-    {
-      name: 'Sidney Hirschman',
-      image: sh,
-      role: 'Design',
-      links: {
-        website: 'https://sidneyhirschman.com/',
-      },
-    },
-    {
-      name: 'Aidan Evans',
-      image: ae,
-      role: 'Development',
-      links: {
-        github: 'https://github.com/nsnave',
-        linkedin: 'https://www.linkedin.com/in/aidantevans/',
-        website: 'https://www.aidantevans.com/',
-      },
-    },
-    {
-      name: 'Deyuan Li',
-      image: dl,
-      role: 'Development',
-    },
-    {
       name: 'Erik Boesen',
       image: eb,
       role: 'Development',
       links: {
         website: 'https://erikboesen.com',
       },
-    },
-    {
-      name: 'Evan Hu',
-      image: eh,
-      role: 'Development',
-    },
-    {
-      name: 'Nalin Khanna',
-      image: nk,
-      role: 'Development',
-    },
-    {
-      name: 'Josephine Shin',
-      image: js,
-      role: 'Design',
-    },
-    {
-      name: 'Lauren Song',
-      image: ls,
-      role: 'Design',
-    },
-    {
-      name: 'Shayna Sragovicz',
-      image: ss,
-      role: 'Development',
-    },
-    {
-      name: 'Leck Tang',
-      image: lt,
-      role: 'Development',
-    },
-    {
-      name: 'Anna Zhang',
-      image: az,
-      role: 'Design',
     },
     {
       name: 'Ben Xu',
@@ -238,6 +165,79 @@ const About: React.VFC = () => {
     {
       name: 'Dylan Fernandez de Lara',
       image: df,
+      role: 'Design',
+    },
+    {
+      name: 'Michelle M. Li',
+      image: ml,
+      role: 'Design Lead',
+    },
+    {
+      name: 'Murad Avliyakulov',
+      image: ma,
+      role: 'Development',
+    },
+    {
+      name: 'Abhijit Gupta',
+      image: ag,
+      role: 'Development',
+    },
+    {
+      name: 'Sidney Hirschman',
+      image: sh,
+      role: 'Design',
+      links: {
+        website: 'https://sidneyhirschman.com/',
+      },
+    },
+    {
+      name: 'Aidan Evans',
+      image: ae,
+      role: 'Development',
+      links: {
+        github: 'https://github.com/nsnave',
+        linkedin: 'https://www.linkedin.com/in/aidantevans/',
+        website: 'https://www.aidantevans.com/',
+      },
+    },
+    {
+      name: 'Deyuan Li',
+      image: dl,
+      role: 'Development',
+    },
+    {
+      name: 'Evan Hu',
+      image: eh,
+      role: 'Development',
+    },
+    {
+      name: 'Nalin Khanna',
+      image: nk,
+      role: 'Development',
+    },
+    {
+      name: 'Josephine Shin',
+      image: js,
+      role: 'Design',
+    },
+    {
+      name: 'Lauren Song',
+      image: ls,
+      role: 'Design',
+    },
+    {
+      name: 'Shayna Sragovicz',
+      image: ss,
+      role: 'Development',
+    },
+    {
+      name: 'Leck Tang',
+      image: lt,
+      role: 'Development',
+    },
+    {
+      name: 'Anna Zhang',
+      image: az,
       role: 'Design',
     },
   ];
