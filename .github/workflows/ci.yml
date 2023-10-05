@@ -32,18 +32,17 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [18.x]
+        bun-version: [latest]
 
     env:
       VITE_UMAMI_WEBSITE_ID: dummy
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
+      - name: Use Bun ${{ matrix.bun-version }}
+        uses: oven-sh/setup-bun@v1
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: yarn
-      - run: cd frontend && yarn install --frozen-lockfile
-      - run: cd frontend && yarn run checks
-      - run: cd frontend && CI=false yarn run build
+          bun-version: ${{ matrix.bun-version }}
+      - run: cd frontend && bun install --frozen-lockfile
+      - run: cd frontend && bun run checks
+      - run: cd frontend && CI=false bun run build
