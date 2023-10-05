@@ -36,6 +36,7 @@ import ls from '../images/headshots/lauren-song.jpg';
 import js from '../images/headshots/josephine-shin.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import px from '../images/headshots/peter-xu.png';
+import bx from '../images/headshots/ben-xu.png';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -117,6 +118,56 @@ const About: React.VFC = () => {
       },
     },
     {
+      name: 'Erik Boesen',
+      image: eb,
+      role: 'Development',
+      links: {
+        website: 'https://erikboesen.com',
+      },
+    },
+    {
+      name: 'Ben Xu',
+      image: bx,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
+        github: 'https://github.com/benzuzu',
+      },
+    },
+  ];
+
+  const alumni = [
+    {
+      name: 'Peter Xu',
+      image: px,
+      role: 'Cofounder',
+    },
+    {
+      name: 'Harry Yu',
+      image: hy,
+      role: 'Cofounder',
+    },
+    {
+      name: 'Harshal Sheth',
+      image: hs,
+      role: 'CourseTable Lead',
+      links: {
+        website: 'https://harshal.sheth.io',
+        linkedin: 'https://linkedin.com/in/hsheth2',
+        github: 'https://github.com/hsheth2',
+      },
+    },
+    {
+      name: 'Hao Li',
+      image: hl,
+      role: 'Development',
+    },
+    {
+      name: 'Dylan Fernandez de Lara',
+      image: df,
+      role: 'Design',
+    },
+    {
       name: 'Michelle M. Li',
       image: ml,
       role: 'Design Lead',
@@ -155,14 +206,6 @@ const About: React.VFC = () => {
       role: 'Development',
     },
     {
-      name: 'Erik Boesen',
-      image: eb,
-      role: 'Development',
-      links: {
-        website: 'https://erikboesen.com',
-      },
-    },
-    {
       name: 'Evan Hu',
       image: eh,
       role: 'Development',
@@ -195,39 +238,6 @@ const About: React.VFC = () => {
     {
       name: 'Anna Zhang',
       image: az,
-      role: 'Design',
-    },
-  ];
-
-  const alumni = [
-    {
-      name: 'Peter Xu',
-      image: px,
-      role: 'Cofounder',
-    },
-    {
-      name: 'Harry Yu',
-      image: hy,
-      role: 'Cofounder',
-    },
-    {
-      name: 'Harshal Sheth',
-      image: hs,
-      role: 'CourseTable Lead',
-      links: {
-        website: 'https://harshal.sheth.io',
-        linkedin: 'https://linkedin.com/in/hsheth2',
-        github: 'https://github.com/hsheth2',
-      },
-    },
-    {
-      name: 'Hao Li',
-      image: hl,
-      role: 'Development',
-    },
-    {
-      name: 'Dylan Fernandez de Lara',
-      image: df,
       role: 'Design',
     },
   ];

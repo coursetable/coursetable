@@ -17,7 +17,7 @@ import { WorksheetCourses } from '@prisma/client';
  */
 export const toggleBookmark = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): Promise<express.Response> => {
   winston.info('Toggling course bookmark');
 
@@ -43,7 +43,7 @@ export const toggleBookmark = async (
   // Add a bookmarked course
   if (action === 'add') {
     winston.info(
-      `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`
+      `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`,
     );
     await prisma.worksheetCourses.create({
       data: {
@@ -57,7 +57,7 @@ export const toggleBookmark = async (
   // Remove a bookmarked course
   else if (action === 'remove') {
     winston.info(
-      `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`
+      `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`,
     );
     await prisma.worksheetCourses.deleteMany({
       where: {
@@ -80,7 +80,7 @@ export const toggleBookmark = async (
  */
 export const getUserWorksheet = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): Promise<express.Response> => {
   winston.info(`Fetching user's worksheets`);
 

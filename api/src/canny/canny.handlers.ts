@@ -30,7 +30,7 @@ const createCannyToken = (user: User) => {
 // Identify a user for Canny
 export const cannyIdentify = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): // eslint-disable-next-line consistent-return
 Promise<void> => {
   if (!req.user) {
@@ -55,7 +55,7 @@ Promise<void> => {
           Authorization: `Bearer ${YALIES_API_KEY}`,
           'Content-Type': 'application/json',
         },
-      }
+      },
     )
     .then(async ({ data }) => {
       // if no user found, do not grant access
@@ -119,7 +119,7 @@ Promise<void> => {
       });
 
       return res.redirect(
-        `https://feedback.coursetable.com/?ssoToken=${token}`
+        `https://feedback.coursetable.com/?ssoToken=${token}`,
       );
     })
     .catch((err) => {

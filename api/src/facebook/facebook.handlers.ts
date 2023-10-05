@@ -23,7 +23,7 @@ const FRIENDS_PAGE_LIMIT = 500;
  */
 export const updateFriends = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): Promise<express.Response> => {
   winston.info(`Updating Facebook friends`);
 
@@ -104,7 +104,7 @@ export const updateFriends = async (
       // eslint-disable-next-line no-await-in-loop
       await axios
         .get(
-          `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`
+          `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`,
         )
         .then(({ data }) => updateFriendsCursor(data));
     } catch (err) {
@@ -152,7 +152,7 @@ export const updateFriends = async (
  */
 export const disconnectFacebook = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): Promise<express.Response> => {
   winston.info(`Disconnecting Facebook`);
 
@@ -196,7 +196,7 @@ export const disconnectFacebook = async (
  */
 export const getFriendsWorksheets = async (
   req: express.Request,
-  res: express.Response
+  res: express.Response,
 ): Promise<express.Response> => {
   winston.info(`Fetching Facebook friends' worksheets`);
 
@@ -234,7 +234,7 @@ export const getFriendsWorksheets = async (
   });
 
   const friendNetIds = friends.map(
-    (friend: StudentFacebookFriends) => friend.netId
+    (friend: StudentFacebookFriends) => friend.netId,
   );
 
   // Get friends' worksheets from NetIDs
@@ -274,7 +274,7 @@ export const getFriendsWorksheets = async (
       } else {
         worksheetsByFriend[net_id] = [[String(season), oci_id]];
       }
-    }
+    },
   );
 
   // map netId to friend name and Facebook ID
@@ -294,7 +294,7 @@ export const getFriendsWorksheets = async (
           facebookId: String(facebookId),
         };
       }
-    }
+    },
   );
 
   return res.status(200).json({
