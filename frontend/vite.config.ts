@@ -4,6 +4,8 @@ import reactSvgPlugin from 'vite-plugin-react-svg';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import { createHtmlPlugin } from 'vite-plugin-html';
 import dotenv from 'dotenv';
+import dns from 'dns'
+dns.setDefaultResultOrder('verbatim')
 
 // https://vitejs.dev/config/
 export default defineConfig({
