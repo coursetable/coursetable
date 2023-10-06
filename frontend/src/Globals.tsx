@@ -1,4 +1,3 @@
-// import './wdyr';
 import 'react-app-polyfill/stable';
 import 'core-js/features/promise/all-settled';
 import 'core-js/es/promise/all-settled';
@@ -22,7 +21,6 @@ import { Integrations } from '@sentry/tracing';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-// import reportWebVitals from './reportWebVitals';
 import WindowDimensionsProvider from './components/Providers/WindowDimensionsProvider';
 import FerryProvider from './components/Providers/FerryProvider';
 import { UserProvider } from './contexts/userContext';
@@ -150,7 +148,7 @@ const Globals: React.FC = ({ children }) => {
                                   });
                                 }
                                 return child;
-                              }
+                              },
                             )}
                         </div>
                       </>
@@ -168,13 +166,5 @@ const Globals: React.FC = ({ children }) => {
     </CustomErrorBoundary>
   );
 };
-
-// // If you want to start measuring performance in your app, pass a function
-// // to log results (for example: reportWebVitals(console.log))
-// // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-// reportWebVitals((metric) => {
-//   const { entries: _, ...reportableMetric } = metric;
-//   posthog.capture('web-vitals', { ...reportableMetric });
-// });
 
 export default Globals;

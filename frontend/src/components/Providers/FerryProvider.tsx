@@ -44,7 +44,7 @@ type _ListingOverrides = {
         string, // start time
         string, // end time
         string, // location
-        string // location URL
+        string, // location URL
       ][] // an array because there could by multiple times per day
     >
   >;
@@ -142,7 +142,7 @@ const FerryProvider: React.FC = ({ children }) => {
     (diff) => {
       setRequests((requests) => requests + diff);
     },
-    [setRequests]
+    [setRequests],
   );
 
   const [errors, setErrors] = useState<string[]>([]);
@@ -150,7 +150,7 @@ const FerryProvider: React.FC = ({ children }) => {
     (err) => {
       setErrors((errors) => [...errors, err]);
     },
-    [setErrors]
+    [setErrors],
   );
 
   const requestSeasons = useCallback(
@@ -175,7 +175,7 @@ const FerryProvider: React.FC = ({ children }) => {
         addError(err);
       });
     },
-    [diffRequests, addError]
+    [diffRequests, addError],
   );
 
   // If there's any error, we want to immediately stop "loading" and start "erroring".
@@ -191,7 +191,7 @@ const FerryProvider: React.FC = ({ children }) => {
       courses: courseData,
       requestSeasons,
     }),
-    [loading, error, requests, requestSeasons]
+    [loading, error, requests, requestSeasons],
   );
 
   return <FerryCtx.Provider value={store}>{children}</FerryCtx.Provider>;

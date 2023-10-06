@@ -34,7 +34,8 @@ const StyledMeIcon = styled.div`
   height: 30px;
   border-radius: 15px;
   display: flex;
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
   &:hover {
@@ -157,7 +158,7 @@ function CourseTableNavbar({
       }
       return <>{children}</>;
     },
-    [isMobile, show_search]
+    [isMobile, show_search],
   );
 
   // Handles page

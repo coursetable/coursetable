@@ -27,6 +27,6 @@ declare module 'react-lines-ellipsis/lib/responsiveHOC' {
   import * as React from 'react';
 
   export default function responsiveHOC(): <P extends object>(
-    WrappedComponent: React.ComponentType<P>
+    WrappedComponent: React.ComponentType<P>,
   ) => React.ComponentClass<P>;
 }

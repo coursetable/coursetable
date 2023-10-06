@@ -16,7 +16,7 @@ import { ThemeConfig } from 'react-select/src/theme';
 // Styles for the select indicators
 const indicatorStyles = (
   theme: DefaultTheme,
-  isMulti: boolean
+  isMulti: boolean,
 ): StylesConfig => {
   const icon_focus = chroma(theme.icon_focus);
   const icon = chroma(theme.icon);
@@ -233,12 +233,12 @@ function CustomSelect<T extends OptionTypeBase>({
   if (popout) {
     styles = mergeStyles(
       indicatorStyles(globalTheme, isMulti),
-      popoutStyles(globalTheme, 400)
+      popoutStyles(globalTheme, 400),
     );
   } else {
     styles = mergeStyles(
       indicatorStyles(globalTheme, isMulti),
-      defaultStyles(globalTheme)
+      defaultStyles(globalTheme),
     );
   }
   if (useColors) {

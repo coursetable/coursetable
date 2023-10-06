@@ -41,7 +41,7 @@ function ContextAwareToggle({
   const theme = useContext(ThemeContext);
   const decoratedOnClick = useAccordionToggle(
     eventKey,
-    () => callback && callback(eventKey)
+    () => callback && callback(eventKey),
   );
 
   // Is this item selected?
@@ -119,7 +119,7 @@ function WorksheetAccordion() {
         Listing[],
         Listing[],
         Listing[],
-        Listing[]
+        Listing[],
       ] = [[], [], [], [], []];
       // Iterate over each listing
       listings.forEach((course) => {
@@ -146,13 +146,13 @@ function WorksheetAccordion() {
       });
       return parsed_courses;
     },
-    [chronologicalOrder]
+    [chronologicalOrder],
   );
 
   // Build HTML for each class that takes place on each day of the week
   const buildHtml = useCallback(
     (
-      parsed_courses: [Listing[], Listing[], Listing[], Listing[], Listing[]]
+      parsed_courses: [Listing[], Listing[], Listing[], Listing[], Listing[]],
     ) => {
       // Start the list with the current day
       let today = new Date().getDay();
@@ -178,7 +178,7 @@ function WorksheetAccordion() {
         accordion_items.push(
           <StyledBanner key={++id}>
             <h5 className={styles.day_header}>{weekdays[i]}</h5>
-          </StyledBanner>
+          </StyledBanner>,
         );
         // Iterate over each course that takes place on this day
         for (let j = 0; j < day.length; j++) {
@@ -264,14 +264,14 @@ function WorksheetAccordion() {
                   </Row>
                 </Card.Body>
               </Accordion.Collapse>
-            </StyledCard>
+            </StyledCard>,
           );
         }
         dayIndex++;
       }
       return <Accordion>{accordion_items}</Accordion>;
     },
-    [showModal]
+    [showModal],
   );
   // Get courses by day
   const parsed_courses = useMemo(() => {

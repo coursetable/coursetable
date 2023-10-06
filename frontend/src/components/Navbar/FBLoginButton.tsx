@@ -54,7 +54,7 @@ const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
         headers: {
           'fb-token': FB.getAuthResponse()?.accessToken,
         },
-      }
+      },
     );
     if (!data.success) {
       throw data.message;
@@ -93,7 +93,7 @@ const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
       {
         scope: 'user_friends',
         return_scopes: true,
-      }
+      },
     );
   }, [syncFacebook]);
 
@@ -106,7 +106,7 @@ const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
         {},
         {
           withCredentials: true,
-        }
+        },
       )
       .then(() => {
         return fbRefresh(true);

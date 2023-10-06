@@ -11,7 +11,7 @@ const Notice: React.FC = ({ children }) => {
   // Save visibility in session storage
   const [visible, setVisible] = useSessionStorageState(
     'noticeVisibility',
-    true
+    true,
   );
 
   if (!visible) {

@@ -12,7 +12,8 @@ const StyledListItem = styled(ListGroup.Item)`
   background-color: transparent;
   border-color: ${({ theme }) => theme.border};
   overflow: hidden;
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
   &:hover {

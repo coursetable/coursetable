@@ -196,79 +196,79 @@ export const SearchProvider: React.FC = ({ children }) => {
 
   const [select_subjects, setSelectSubjects] = useSessionStorageState(
     'select_subjects',
-    defaultOptions
+    defaultOptions,
   );
 
   const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
     'select_skillsareas',
-    defaultOptions
+    defaultOptions,
   );
 
   const [overallBounds, setOverallBounds] = useSessionStorageState(
     'overallBounds',
-    defaultRatingBounds
+    defaultRatingBounds,
   );
   const [overallValueLabels, setOverallValueLabels] = useState(
-    overallBounds !== defaultRatingBounds ? overallBounds : defaultRatingBounds
+    overallBounds !== defaultRatingBounds ? overallBounds : defaultRatingBounds,
   );
 
   const [workloadBounds, setWorkloadBounds] = useSessionStorageState(
     'workloadBounds',
-    defaultRatingBounds
+    defaultRatingBounds,
   );
   const [workloadValueLabels, setWorkloadValueLabels] = useState(
     workloadBounds !== defaultRatingBounds
       ? workloadBounds
-      : defaultRatingBounds
+      : defaultRatingBounds,
   );
 
   const [select_seasons, setSelectSeasons] = useSessionStorageState(
     'select_seasons',
-    defaultSeason
+    defaultSeason,
   );
 
   const [select_days, setSelectDays] = useSessionStorageState(
     'select_days',
-    defaultOptions
+    defaultOptions,
   );
 
   const [timeBounds, setTimeBounds] = useSessionStorageState(
     'timeBounds',
-    defaultTimeBounds
+    defaultTimeBounds,
   );
   const [timeValueLabels, setTimeValueLabels] = useState(
-    timeBounds !== defaultTimeBounds ? timeBounds : defaultTimeBounds
+    timeBounds !== defaultTimeBounds ? timeBounds : defaultTimeBounds,
   );
 
   const [enrollBounds, setEnrollBounds] = useSessionStorageState(
     'enrollBounds',
-    defaultEnrollBounds
+    defaultEnrollBounds,
   );
   const [enrollValueLabels, setEnrollValueLabels] = useState(
-    enrollBounds !== defaultEnrollBounds ? enrollBounds : defaultEnrollBounds
+    enrollBounds !== defaultEnrollBounds ? enrollBounds : defaultEnrollBounds,
   );
 
   const [numBounds, setNumBounds] = useSessionStorageState(
     'numBounds',
-    defaultNumBounds
+    defaultNumBounds,
   );
   const [numValueLabels, setNumValueLabels] = useState(
-    numBounds !== defaultNumBounds ? numBounds : defaultNumBounds
+    numBounds !== defaultNumBounds ? numBounds : defaultNumBounds,
   );
 
   const [select_schools, setSelectSchools] = useSessionStorageState(
     'select_schools',
-    defaultOptions
+    defaultOptions,
   );
 
   const [select_credits, setSelectCredits] = useSessionStorageState(
     'select_credits',
-    defaultOptions
+    defaultOptions,
   );
 
   const [hideCancelled, setHideCancelled] = useLocalStorageState(
     'hideCancelled',
-    defaultTrue
+    defaultTrue,
   );
 
   const [hideFirstYearSeminars, setHideFirstYearSeminars] =
@@ -276,7 +276,7 @@ export const SearchProvider: React.FC = ({ children }) => {
 
   const [hideGraduateCourses, setHideGraduateCourses] = useLocalStorageState(
     'hideGraduateCourses',
-    defaultFalse
+    defaultFalse,
   );
 
   const [hideDiscussionSections, setHideDiscussionSections] =
@@ -287,19 +287,19 @@ export const SearchProvider: React.FC = ({ children }) => {
   // Sort option state
   const [select_sortby, setSelectSortby] = useSessionStorageState<SortByOption>(
     'select_sortby',
-    defaultSortOption
+    defaultSortOption,
   );
 
   // Sort order state
   const [sort_order, setSortOrder] = useSessionStorageState<SortOrderType>(
     'sort_order',
-    defaultSortOrder
+    defaultSortOrder,
   );
 
   // Combination of sort option and sort order
   const [ordering, setOrdering] = useSessionStorageState(
     'ordering',
-    defaultOrdering
+    defaultOrdering,
   );
 
   /* Resetting */
@@ -394,10 +394,10 @@ export const SearchProvider: React.FC = ({ children }) => {
 
       // separate skills and areas
       processedSkills = processedSkillsAreas.filter((x: any): x is SkillsType =>
-        skills.includes(x)
+        skills.includes(x),
       );
       processedAreas = processedSkillsAreas.filter((x: any): x is AreasType =>
-        areas.includes(x)
+        areas.includes(x),
       );
 
       // set null defaults
@@ -466,14 +466,14 @@ export const SearchProvider: React.FC = ({ children }) => {
 
     const include_all_workloads = _.isEqual(
       workloadBounds,
-      defaultRatingBounds
+      defaultRatingBounds,
     );
 
     const include_all_times = _.isEqual(timeBounds, defaultTimeBounds);
 
     const include_all_enrollments = _.isEqual(
       enrollBounds.map(Math.round),
-      defaultEnrollBounds
+      defaultEnrollBounds,
     );
 
     const include_all_numbers = _.isEqual(numBounds, defaultNumBounds);
@@ -685,10 +685,10 @@ export const SearchProvider: React.FC = ({ children }) => {
       if (
         (searchConfig.areas.size !== 0 || searchConfig.skills.size !== 0) &&
         !listing.areas.some((v: any): v is AreasType =>
-          searchConfig.areas.has(v)
+          searchConfig.areas.has(v),
         ) &&
         !listing.skills.some((v: any): v is SkillsType =>
-          searchConfig.skills.has(v)
+          searchConfig.skills.has(v),
         )
       ) {
         return false;
@@ -726,7 +726,7 @@ export const SearchProvider: React.FC = ({ children }) => {
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
-            professor.toLowerCase().includes(token)
+            professor.toLowerCase().includes(token),
           )
         )
           continue;
@@ -816,7 +816,7 @@ export const SearchProvider: React.FC = ({ children }) => {
 
       setCourseModal([true, listing]);
     },
-    [setCourseModal]
+    [setCourseModal],
   );
 
   // Reset course_modal state to hide the modal
@@ -875,7 +875,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       const sp = _.sample(
         searchSpeed[
           durInSecs > 1 ? 'fast' : durInSecs > 0.5 ? 'faster' : 'fastest'
-        ]
+        ],
       );
       if (sp) {
         setSpeed(sp);
@@ -1043,7 +1043,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setStartTime,
       showModal,
       hideModal,
-    ]
+    ],
   );
 
   return (

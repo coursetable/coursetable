@@ -78,7 +78,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           listing.season_code,
           listing.crn,
           user.fbWorksheets.worksheets,
-          user.fbWorksheets.friendInfo
+          user.fbWorksheets.friendInfo,
         )
       : [];
 
@@ -96,7 +96,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       temp.course_code = temp.course_code[0];
       setSeason(temp);
     },
-    [setSeason]
+    [setSeason],
   );
 
   // Sort course evaluations by season code and section
@@ -146,7 +146,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       });
       return cnt;
     },
-    [listing.professor_names]
+    [listing.professor_names],
   );
   // Get past syllabi links
   const past_syllabi = useMemo(() => {
@@ -155,7 +155,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         .filter(
           (course) =>
             course.same_course_id === listing.same_course_id &&
-            course.syllabus_url
+            course.syllabus_url,
         )
         .map((course) => ({
           season_code: course.season_code,
@@ -165,7 +165,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         .filter(
           // remove duplicates by syllabus URL
           (v, i, a) =>
-            a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i
+            a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
         )
         .sort((a, b) => {
           if (a.season_code > b.season_code) return -1;
@@ -177,7 +177,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
   }, [data, listing.same_course_id]);
 
   const [showPastSyllabi, setShowPastSyllabi] = useState(
-    past_syllabi && past_syllabi.length < 8
+    past_syllabi && past_syllabi.length < 8,
   );
 
   // Make sure data is loaded
@@ -409,7 +409,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                   style={{
                     color: prof_dict.num_courses
                       ? ratingColormap(
-                          prof_dict.total_rating / prof_dict.num_courses
+                          prof_dict.total_rating / prof_dict.num_courses,
                         )
                           .darken()
                           .saturate()

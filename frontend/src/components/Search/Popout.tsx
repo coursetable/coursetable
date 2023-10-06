@@ -18,7 +18,9 @@ const shadow = 'hsla(218, 50%, 10%, 0.1)';
 const Dropdown = styled.div`
   background-color: ${({ theme }) => theme.select};
   border-radius: 4px;
-  box-shadow: 0 0 0 1px ${shadow}, 0 4px 11px ${shadow};
+  box-shadow:
+    0 0 0 1px ${shadow},
+    0 4px 11px ${shadow};
   margin-top: 8px;
   position: absolute;
   z-index: 1000;
@@ -39,7 +41,8 @@ const StyledButton = styled.div`
   border-radius: 4px;
   user-select: none;
   cursor: pointer;
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
 
@@ -148,7 +151,7 @@ export const Popout: React.FC<Props> = ({
 
   // Dynamic text state for active popout button
   const [toggleText, setToggleText] = useState<string | JSX.Element[]>(
-    buttonText
+    buttonText,
   );
   // Active state
   const [active, setActive] = useState(false);
@@ -262,7 +265,7 @@ export const Popout: React.FC<Props> = ({
         onReset();
       }
     },
-    [onReset]
+    [onReset],
   );
 
   return (
