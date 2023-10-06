@@ -1,10 +1,11 @@
-import { defineConfig } from 'vite';
-import reactRefresh from '@vitejs/plugin-react-refresh';
-import reactSvgPlugin from 'vite-plugin-react-svg';
 import basicSsl from '@vitejs/plugin-basic-ssl';
-import { createHtmlPlugin } from 'vite-plugin-html';
-import dotenv from 'dotenv';
+import reactRefresh from '@vitejs/plugin-react-refresh';
 import dns from 'dns'
+import dotenv from 'dotenv';
+import {defineConfig} from 'vite';
+import {createHtmlPlugin} from 'vite-plugin-html';
+import reactSvgPlugin from 'vite-plugin-react-svg';
+
 dns.setDefaultResultOrder('verbatim')
 
 // https://vitejs.dev/config/
@@ -12,7 +13,7 @@ export default defineConfig({
   plugins: [
     reactRefresh(),
     reactSvgPlugin(),
-    createHtmlPlugin({ inject: dotenv.config().parsed }),
+    createHtmlPlugin({inject: dotenv.config().parsed}),
     basicSsl(),
   ],
   build: {
