@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "analyze": "source-map-explorer 'build/static/js/*.js'",
-    "build": "tsc && vite build",
+    "build": "tsc && bunx --bun vite build",
     "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml",
     "checks": "bun run depcheck && bun run lint",
     "depcheck": "bunx depcheck . --json",
