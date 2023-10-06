@@ -5,7 +5,6 @@ import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import posthog from 'posthog-js';
 import styled from 'styled-components';
 import { useUser } from '../../contexts/userContext';
 import { setLSObject } from '../../browserStorage';
@@ -94,8 +93,6 @@ function WorksheetToggleButton({
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
-
-      posthog.capture('worksheet-add-remove', { season_code, crn });
 
       // Determine if we are adding or removing the course
       const add_remove = inWorksheet ? 'remove' : 'add';

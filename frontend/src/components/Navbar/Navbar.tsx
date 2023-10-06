@@ -4,7 +4,6 @@ import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
-import posthog from 'posthog-js';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
@@ -332,7 +331,6 @@ function CourseTableNavbar({
                     {!isLoggedIn ? (
                       <StyledDiv
                         onClick={() => {
-                          posthog.capture('login');
                           window.location.href = `${API_ENDPOINT}/api/auth/cas?redirect=catalog`;
                         }}
                       >

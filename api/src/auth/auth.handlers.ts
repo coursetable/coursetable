@@ -11,7 +11,7 @@ import winston from '../logging/winston';
 
 import axios from 'axios';
 
-import { YALIES_API_KEY, POSTHOG_CLIENT, prisma } from '../config';
+import { YALIES_API_KEY, prisma } from '../config';
 import { StudentBluebookSettings } from '@prisma/client';
 
 // codes for allowed organizations (to give faculty access to the site)
@@ -131,26 +131,6 @@ export const passportConfig = async (
                 college: user.college,
                 major: user.major,
                 curriculum: user.curriculum,
-              },
-            });
-
-            // Update user in PostHog
-            POSTHOG_CLIENT.identify({
-              distinctId: profile.user,
-              properties: {
-                email: user.email,
-                name: user.name,
-                firstName: user.first_name,
-                middleName: user.middle_name,
-                lastName: user.last_name,
-                upi: user.upi,
-                school: user.school,
-                college: user.college,
-                major: user.major,
-                curriculum: user.curriculum,
-                year: user.year,
-                organization: user.organization,
-                leave: user.leave,
               },
             });
 

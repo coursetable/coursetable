@@ -2,8 +2,8 @@ import 'react-app-polyfill/stable';
 import 'core-js/features/promise/all-settled';
 import 'core-js/es/promise/all-settled';
 
-import React, { useEffect } from 'react';
-import { Router, useLocation } from 'react-router-dom';
+import React from 'react';
+import { Router } from 'react-router-dom';
 import { createBrowserHistory } from 'history';
 import { ThemeProvider } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
@@ -14,7 +14,6 @@ import {
   createHttpLink,
 } from '@apollo/client';
 
-import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
 import { Integrations } from '@sentry/tracing';
 
@@ -27,7 +26,7 @@ import { UserProvider } from './contexts/userContext';
 import { SearchProvider } from './contexts/searchContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
 
-import { isDev, API_ENDPOINT, POSTHOG_TOKEN, POSTHOG_OPTIONS } from './config';
+import { isDev, API_ENDPOINT } from './config';
 
 import './index.css';
 
@@ -36,20 +35,6 @@ import { GlobalStyles } from './components/GlobalStyles';
 import { lightTheme, darkTheme } from './components/Themes';
 import ErrorPage from './components/ErrorPage';
 import { Row } from 'react-bootstrap';
-
-// @ts-ignore
-window.posthog = posthog; // save posthog in window object
-if (POSTHOG_TOKEN !== '') {
-  posthog.init(POSTHOG_TOKEN, {
-    ...POSTHOG_OPTIONS,
-  });
-} else {
-  // Disable capturing.
-  posthog.init('[disable]', {
-    ...POSTHOG_OPTIONS,
-    opt_out_capturing_by_default: true,
-  });
-}
 
 const history = createBrowserHistory();
 
@@ -61,8 +46,6 @@ Sentry.init({
       // Via https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
       routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
     }),
-    // @ts-ignore
-    new posthog.SentryIntegration(posthog, 'coursetable', 5515218),
   ],
   environment: import.meta.env.MODE,
 
@@ -86,14 +69,6 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
   link,
 });
-
-function SPAPageChangeListener() {
-  const location = useLocation();
-  useEffect(() => {
-    posthog.capture('$pageview');
-  }, [location]);
-  return <></>;
-}
 
 function ErrorFallback() {
   return (
@@ -130,7 +105,6 @@ const Globals: React.FC = ({ children }) => {
               <SearchProvider>
                 <WorksheetProvider>
                   <Router history={history}>
-                    <SPAPageChangeListener />
                     <ThemeProvider theme={themeMode}>
                       <>
                         <GlobalStyles />

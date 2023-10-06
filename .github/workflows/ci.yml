@@ -34,9 +34,6 @@ jobs:
       matrix:
         bun-version: [latest]
 
-    env:
-      VITE_UMAMI_WEBSITE_ID: dummy
-
     steps:
       - uses: actions/checkout@v4
       - name: Use Bun ${{ matrix.bun-version }}

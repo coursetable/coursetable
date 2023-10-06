@@ -1,5 +1,4 @@
 import { MouseEventHandler, useEffect, useRef, useState } from 'react';
-import posthog from 'posthog-js';
 import { css } from 'styled-components';
 import axios from 'axios';
 
@@ -94,9 +93,6 @@ export const scrollToTop: MouseEventHandler = (event) => {
 };
 
 export function logout() {
-  posthog.capture('logout');
-  posthog.reset();
-
   axios
     .get(`${API_ENDPOINT}/api/auth/logout`, {
       withCredentials: true,

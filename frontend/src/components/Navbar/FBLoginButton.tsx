@@ -2,7 +2,6 @@ import React, { useCallback } from 'react';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import { FaSyncAlt } from 'react-icons/fa';
-import posthog from 'posthog-js';
 import { useUser } from '../../contexts/userContext';
 import styles from './MeDropdown.module.css';
 import { TextComponent, StyledHoverText } from '../StyledComponents';
@@ -70,9 +69,6 @@ const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
         // Full docs on the response object can be found in the documentation
         // for FB.getLoginStatus().
         if (response.status === 'connected') {
-          // Logged into your app and Facebook.
-          posthog.capture('facebook-login', { info: response });
-
           syncFacebook()
             .then(() => {
               toast.success('Successfully connected to FB!');
@@ -98,8 +94,6 @@ const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
   }, [syncFacebook]);
 
   const handleLogoutClick = useCallback(() => {
-    posthog.capture('facebook-logout');
-
     axios
       .post(
         `${API_ENDPOINT}/api/facebook/disconnect`,

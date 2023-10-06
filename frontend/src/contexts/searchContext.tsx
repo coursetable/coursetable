@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import posthog from 'posthog-js';
 import React, {
   createContext,
   useCallback,
@@ -511,13 +510,6 @@ export const SearchProvider: React.FC = ({ children }) => {
       fy_sem: hideFirstYearSeminars ? false : null,
       grad_level: hideGraduateCourses ? false : null,
     };
-
-    // Track search
-    posthog.capture('search', {
-      ...search_variables,
-      search_text_clean: search_variables.search_text || '[none]',
-    });
-
     return search_variables;
   }, [
     searchDescription,
@@ -822,12 +814,6 @@ export const SearchProvider: React.FC = ({ children }) => {
   // Show the modal for the course that was clicked
   const showModal = useCallback(
     (listing: Listing) => {
-      posthog.capture('course-modal-open', {
-        season_code: listing.season_code,
-        course_code: listing.course_code,
-        crn: listing.crn,
-      });
-
       setCourseModal([true, listing]);
     },
     [setCourseModal],

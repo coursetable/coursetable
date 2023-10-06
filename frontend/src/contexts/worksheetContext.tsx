@@ -1,4 +1,3 @@
-import posthog from 'posthog-js';
 import React, {
   createContext,
   useCallback,
@@ -264,7 +263,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   // Function to change season
   const changeSeason = useCallback(
     (season_code: Season) => {
-      posthog.capture('worksheet-season', { new_season: season_code });
       setCurSeason(season_code);
     },
     [setCurSeason],
@@ -273,7 +271,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   // Function to change worksheet number
   const changeWorksheet = useCallback(
     (new_number: string) => {
-      posthog.capture('worksheet-number', { new_number });
       setWorksheetNumber(new_number);
     },
     [setWorksheetNumber],

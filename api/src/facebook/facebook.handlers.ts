@@ -6,7 +6,7 @@ import express from 'express';
 
 import axios from 'axios';
 
-import { FACEBOOK_API_ENDPOINT, POSTHOG_CLIENT, prisma } from '../config';
+import { FACEBOOK_API_ENDPOINT, prisma } from '../config';
 
 import winston from '../logging/winston';
 import { StudentFacebookFriends, Students } from '@prisma/client';
@@ -32,11 +32,6 @@ export const updateFriends = async (
   }
 
   const { netId } = req.user;
-
-  POSTHOG_CLIENT.capture({
-    distinctId: netId,
-    event: 'update-facebook-friends',
-  });
 
   // User's Facebook token for fetching their friends
   const fbToken = req.headers['fb-token'];
@@ -162,11 +157,6 @@ export const disconnectFacebook = async (
 
   const { netId } = req.user;
 
-  POSTHOG_CLIENT.capture({
-    distinctId: netId,
-    event: 'disconnect-facebook',
-  });
-
   try {
     winston.info(`Removing Facebook friends for user ${netId}`);
     await prisma.studentFacebookFriends.deleteMany({
@@ -205,11 +195,6 @@ export const getFriendsWorksheets = async (
   }
 
   const { netId } = req.user;
-
-  POSTHOG_CLIENT.capture({
-    distinctId: netId,
-    event: 'get-facebook-worksheets',
-  });
 
   // Get Facebook ID of user
   winston.info("Getting user's Facebook ID");
