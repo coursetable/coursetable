@@ -49,7 +49,8 @@ const StyledSpacer = styled.div`
 const StyledContainer = styled(SurfaceComponent)`
   border-top: 2px solid ${({ theme }) => theme.border};
   border-bottom: 2px solid ${({ theme }) => theme.border};
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
 `;
@@ -78,7 +79,8 @@ const SearchResults = styled.div`
 
 // Results item wrapper
 const ResultsItemWrapper = styled.div`
-  transition: background-color ${({ theme }) => theme.trans_dur},
+  transition:
+    background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
 `;
 
@@ -198,7 +200,7 @@ const Results = ({
             num_cols={num_cols}
             multiSeasons={multiSeasons}
             key={j}
-          />
+          />,
         );
       }
 
@@ -208,7 +210,7 @@ const Results = ({
         </div>
       );
     },
-    [data, showModal, isLoggedIn, multiSeasons, num_cols]
+    [data, showModal, isLoggedIn, multiSeasons, num_cols],
   );
 
   // List render function for React Virtualized List
@@ -242,7 +244,7 @@ const Results = ({
         </ResultsItemWrapper>
       );
     },
-    [data, showModal, multiSeasons, COL_SPACING, num_fb, globalTheme]
+    [data, showModal, multiSeasons, COL_SPACING, num_fb, globalTheme],
   );
 
   if (!isLoggedIn) {
@@ -361,7 +363,7 @@ const Results = ({
         </span>
       </Tooltip>
     ),
-    []
+    [],
   );
 
   // Tooltip for hovering over course rating
@@ -377,7 +379,7 @@ const Results = ({
         </span>
       </Tooltip>
     ),
-    []
+    [],
   );
 
   // Tooltip for hovering over professor rating
@@ -391,7 +393,7 @@ const Results = ({
         </span>
       </Tooltip>
     ),
-    []
+    [],
   );
 
   // Tooltip for hovering over workload rating
@@ -406,7 +408,7 @@ const Results = ({
         </span>
       </Tooltip>
     ),
-    []
+    [],
   );
 
   // Tooltip for hovering over meets
@@ -420,7 +422,7 @@ const Results = ({
         </span>
       </Tooltip>
     ),
-    []
+    [],
   );
 
   // Tooltip for hovering over enrollment
@@ -445,7 +447,7 @@ const Results = ({
         )}
       </Tooltip>
     ),
-    [multiSeasons]
+    [multiSeasons],
   );
 
   // Tooltip for hovering over fb friends
@@ -455,7 +457,7 @@ const Results = ({
         <span>Number of Facebook friends shopping this course</span>
       </Tooltip>
     ),
-    []
+    [],
   );
 
   // Column width styles

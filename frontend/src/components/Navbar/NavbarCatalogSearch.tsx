@@ -255,23 +255,24 @@ export const NavbarCatalogSearch: React.FC = () => {
   // Handle active state for range filters
   useEffect(() => {
     setActiveOverall(
-      canReset && !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds)
+      canReset && !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds),
     );
     setActiveWorkload(
-      canReset && !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds)
+      canReset &&
+        !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds),
     );
     setActiveTime(
-      canReset && !_.isEqual(timeBounds, defaultFilters.defaultTimeBounds)
+      canReset && !_.isEqual(timeBounds, defaultFilters.defaultTimeBounds),
     );
     setActiveEnrollment(
       canReset &&
         !_.isEqual(
           enrollBounds.map(Math.round),
-          defaultFilters.defaultEnrollBounds
-        )
+          defaultFilters.defaultEnrollBounds,
+        ),
     );
     setActiveNumber(
-      canReset && !_.isEqual(numBounds, defaultFilters.defaultNumBounds)
+      canReset && !_.isEqual(numBounds, defaultFilters.defaultNumBounds),
     );
   }, [
     canReset,
@@ -290,7 +291,7 @@ export const NavbarCatalogSearch: React.FC = () => {
       }
       return undefined;
     },
-    [globalTheme]
+    [globalTheme],
   );
 
   // Responsive styles for overall and workload range filters
@@ -322,7 +323,7 @@ export const NavbarCatalogSearch: React.FC = () => {
         });
       }
     },
-    [isMobile]
+    [isMobile],
   );
 
   // ctrl/cmd-f search hotkey
@@ -381,7 +382,7 @@ export const NavbarCatalogSearch: React.FC = () => {
       hideDiscussionSections,
       select_sortby,
       isTablet,
-    ]
+    ],
   );
 
   // Styles for active search bar
@@ -638,7 +639,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                         // prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
                         onChange={(
-                          selectedOption: ValueType<Option, boolean>
+                          selectedOption: ValueType<Option, boolean>,
                         ) => {
                           setSelectSubjects((selectedOption as Option[]) || []);
                           setStartTime(Date.now());
@@ -658,10 +659,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                         // prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
                         onChange={(
-                          selectedOption: ValueType<Option, boolean>
+                          selectedOption: ValueType<Option, boolean>,
                         ) => {
                           setSelectSkillsAreas(
-                            (selectedOption as Option[]) || []
+                            (selectedOption as Option[]) || [],
                           );
                           setStartTime(Date.now());
                         }}
@@ -679,7 +680,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                         // prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
                         onChange={(
-                          selectedOption: ValueType<Option, boolean>
+                          selectedOption: ValueType<Option, boolean>,
                         ) => {
                           setSelectSeasons((selectedOption as Option[]) || []);
                           setStartTime(Date.now());
@@ -758,10 +759,10 @@ export const NavbarCatalogSearch: React.FC = () => {
                     </div>
                     <AdvancedRange
                       min={Math.round(
-                        toLinear(defaultFilters.defaultEnrollBounds[0])
+                        toLinear(defaultFilters.defaultEnrollBounds[0]),
                       )}
                       max={Math.round(
-                        toLinear(defaultFilters.defaultEnrollBounds[1])
+                        toLinear(defaultFilters.defaultEnrollBounds[1]),
                       )}
                       step={10}
                       marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
@@ -772,7 +773,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                       defaultValue={enrollBounds.map(toLinear)}
                       onChange={(value: number[]) => {
                         setEnrollValueLabels(
-                          value.map(toExponential).map(Math.round)
+                          value.map(toExponential).map(Math.round),
                         );
                       }}
                       onAfterChange={(value: number[]) => {
@@ -824,7 +825,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                         setNumValueLabels(value);
                       }}
                       onAfterChange={(
-                        value: React.SetStateAction<number[]>
+                        value: React.SetStateAction<number[]>,
                       ) => {
                         setNumBounds(value);
                         setStartTime(Date.now());

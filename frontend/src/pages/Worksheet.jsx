@@ -24,7 +24,8 @@ import * as Sentry from '@sentry/react';
 import styled from 'styled-components';
 
 const StyledCalendarContainer = styled(SurfaceComponent)`
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
 `;

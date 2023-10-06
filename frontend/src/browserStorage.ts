@@ -9,7 +9,7 @@ const setObject = <T>(
   key: string,
   obj: T,
   storage: Storage,
-  if_empty = false
+  if_empty = false,
 ) => {
   if (if_empty && containsObject(key, storage)) return;
   storage.setItem(key, JSON.stringify(obj));
@@ -37,7 +37,7 @@ export const getLSObject = <T>(key: string): T | null => {
 // Saves State in Session Storage
 export const useSessionStorageState = <T>(
   key: string,
-  default_value: T
+  default_value: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
   setSSObject<T>(key, default_value, true);
   const [value, setValue] = useState<T>(getSSObject<T>(key)!);
@@ -49,7 +49,7 @@ export const useSessionStorageState = <T>(
 // Saves State in Local Storage
 export const useLocalStorageState = <T>(
   key: string,
-  default_value: T
+  default_value: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
   setLSObject<T>(key, default_value, true);
   const [value, setValue] = useState<T>(getLSObject<T>(key)!);

@@ -41,7 +41,7 @@ export const generateICS = (listings_all: Listing[]) => {
   const season_string = toSeasonString(cur_season);
   if (!listings.length) {
     toast.error(
-      `Worksheet for ${season_string[2]}, ${season_string[1]} is empty`
+      `Worksheet for ${season_string[2]}, ${season_string[1]} is empty`,
     );
     return;
   }
@@ -103,7 +103,7 @@ export const generateICS = (listings_all: Listing[]) => {
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
     FileSaver.saveAs(
       blob,
-      `${moment().format('YYYY-MM-DD--hh-mma')}_worksheet.ics`
+      `${moment().format('YYYY-MM-DD--hh-mma')}_worksheet.ics`,
     );
   });
 };

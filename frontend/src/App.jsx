@@ -8,7 +8,6 @@ import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
 
 import Landing from './pages/Landing';
-// import Home from './pages/Home';
 
 import Search from './pages/Search';
 import About from './pages/About';
@@ -63,7 +62,7 @@ function App({ themeToggler, location }) {
   // First tutorial state
   const [shownTutorial, setShownTutorial] = useLocalStorageState(
     'shownTutorial',
-    false
+    false,
   );
 
   // Handle whether or not to open tutorial

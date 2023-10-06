@@ -62,7 +62,7 @@ function WorksheetToggleButton({
   const worksheetOptions = ['0', '1', '2', '3'];
 
   const [selectedWorksheet, setSelectedWorksheet] = useState(
-    initialSelectedWorksheet || '0'
+    initialSelectedWorksheet || '0',
   );
 
   const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
@@ -72,7 +72,7 @@ function WorksheetToggleButton({
       season_code,
       crn.toString(),
       selectedWorksheet,
-      user.worksheet
+      user.worksheet,
     );
   }, [user.worksheet, season_code, crn, selectedWorksheet]);
   // Is the current course in the worksheet?
@@ -127,9 +127,9 @@ function WorksheetToggleButton({
             headers: {
               'Content-Type': 'application/json',
             },
-          }
+          },
         )
-        .then((response) => {
+        .then(() => {
           // Refresh user's worksheet
           return userRefresh();
         })
@@ -151,7 +151,7 @@ function WorksheetToggleButton({
       toggleCourse,
       userRefresh,
       selectedWorksheet,
-    ]
+    ],
   );
 
   // Disabled worksheet add/remove button if not logged in

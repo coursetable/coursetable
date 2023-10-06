@@ -38,7 +38,7 @@ const WindowDimensionsProvider: React.FC = ({ children }) => {
     isSmDesktop: range(
       window.innerWidth,
       tabletBreakpoint,
-      smDesktopBreakpoint
+      smDesktopBreakpoint,
     ),
     isLgDesktop: range(window.innerWidth, smDesktopBreakpoint, 100000),
   });
@@ -56,17 +56,17 @@ const WindowDimensionsProvider: React.FC = ({ children }) => {
           isTablet: range(
             window.innerWidth,
             mobileBreakpoint,
-            tabletBreakpoint
+            tabletBreakpoint,
           ),
           isSmDesktop: range(
             window.innerWidth,
             tabletBreakpoint,
-            smDesktopBreakpoint
+            smDesktopBreakpoint,
           ),
           isLgDesktop: range(window.innerWidth, smDesktopBreakpoint, 100000),
         });
       }, 200),
-    [setDimensions, range]
+    [setDimensions, range],
   );
 
   // Update values on window resize
@@ -82,7 +82,7 @@ const WindowDimensionsProvider: React.FC = ({ children }) => {
     () => ({
       ...dimensions,
     }),
-    [dimensions]
+    [dimensions],
   );
 
   return (

@@ -274,7 +274,7 @@ const Tutorial: React.FC<Props> = ({
       }
 
       return step;
-    }
+    },
   );
 
   // Handle prev button styling

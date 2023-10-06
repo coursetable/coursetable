@@ -24,7 +24,7 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
       course.season_code,
       course.crn.toString(),
       '0',
-      user.worksheet
+      user.worksheet,
     );
   }, [course.season_code, course.crn, user.worksheet]);
 
@@ -60,7 +60,7 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
   // Renders the conflict tooltip on hover
   const renderTooltip = (
     // We manually add the "id" attribute, so we omit it here.
-    props: Omit<React.ComponentPropsWithRef<typeof Tooltip>, 'id'>
+    props: Omit<React.ComponentPropsWithRef<typeof Tooltip>, 'id'>,
   ) =>
     // Render if this course isn't in the worksheet and there is a conflict
     !inWorksheet && conflict !== false ? (

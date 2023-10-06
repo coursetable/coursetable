@@ -8,7 +8,6 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 // import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
-import _ from 'lodash';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../contexts/userContext';
@@ -40,7 +39,8 @@ const StyledToggleButton = styled(ToggleButton)`
   background-color: ${({ theme }) => theme.surface[0]};
   color: ${({ theme }) => theme.text[0]};
   border: ${({ theme }) => theme.icon} 2px solid;
-  transition: border-color ${({ theme }) => theme.trans_dur},
+  transition:
+    border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
     color ${({ theme }) => theme.trans_dur};
   padding: 0.25rem 0;

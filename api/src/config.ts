@@ -37,16 +37,20 @@ export const MAX_CHALLENGE_REQUESTS = 100; // maximum number of allowed challeng
 // Secret for Canny SSO
 export const CANNY_KEY = getEnv('CANNY_KEY');
 
+// TODO make sure the frontend port is synchronized with this;
+// we should use the same script to start both frontend and backend
+const port = process.env.FRONT_END_PORT || 3000;
+
 // Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
-  ? 'https://localhost:3000'
+  ? `https://localhost:${port}`
   : process.env.FRONTEND_ENDPOINT || 'https://coursetable.com';
 
 // CORS options so frontend can interface with server
 export const CORS_OPTIONS = {
   origin: [
-    'https://localhost:3000',
-    'http://localhost:3000',
+    `https://localhost:${port}`,
+    `https://localhost:${port}`,
     'https://coursetable.com',
     'https://www.coursetable.com',
     /\.coursetable\.com$/,
