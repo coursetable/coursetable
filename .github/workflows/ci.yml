@@ -45,4 +45,4 @@ jobs:
           bun-version: ${{ matrix.bun-version }}
       - run: cd frontend && bun install --frozen-lockfile
       - run: cd frontend && bun run checks
-      - run: cd frontend && CI=false bun run build
+      - run: cd frontend && CI=false npm run build
