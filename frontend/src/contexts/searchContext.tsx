@@ -725,7 +725,7 @@ export const SearchProvider: React.FC = ({ children }) => {
               .toLowerCase()
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
           listing.title.toLowerCase().includes(token) ||
-          listing.description?.toLowerCase()?.includes(token) ||
+          listing.description?.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
             professor.toLowerCase().includes(token),
           )
