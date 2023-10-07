@@ -1,12 +1,14 @@
 {
   "scripts": {
-    "prestart": "bun prisma db pull && bun prisma generate",
-    "generate": "bun prisma generate",
-    "start": "bun ts-node-dev --debug --files --exit-child src/server.ts",
-    "prod": "bun ts-node --files src/server.ts",
+    "prestart": "prisma db pull && prisma generate",
+    "generate": "prisma generate",
+    "start": "ts-node-dev --debug --files --exit-child src/server.ts",
+    "prod": "ts-node --files src/server.ts",
     "checks": "bun run depcheck && bun run lint && bun run typecheck",
+    "npm-checks": "npm run depcheck && npm run lint && npm run typecheck",
     "depcheck": "bunx depcheck . --json",
-    "lint": "bun prettier -l . && bun eslint src",
+    "npm-depcheck": "npx depcheck . --json",
+    "lint": "prettier -l . && eslint src",
     "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
   "nodemonConfig": {
