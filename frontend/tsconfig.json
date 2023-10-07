@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "target": "es5",
+    "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
@@ -11,8 +11,7 @@
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
-    "module": "esnext",
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
@@ -21,11 +20,7 @@
         "name": "typescript-plugin-css-modules"
       }
     ],
-    "jsx": "react",
-    "downlevelIteration": true,
-    "paths": {
-      "react": ["./node_modules/@types/react"]
-    }
+    "jsx": "react"
   },
   "include": ["src"]
 }

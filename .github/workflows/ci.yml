@@ -10,7 +10,7 @@ on:
     branches: [master]
 
 jobs:
-  api:
+  lint-build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -23,26 +23,7 @@ jobs:
         uses: oven-sh/setup-bun@v1
         with:
           bun-version: ${{ matrix.bun-version }}
-      - run: cd api && bun install --frozen-lockfile
+      - run: bun install --frozen-lockfile
       - run: cd api && bun run generate
-      - run: cd api && bun run checks
-
-  frontend:
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        bun-version: [latest]
-
-    env:
-      VITE_UMAMI_WEBSITE_ID: dummy
-
-    steps:
-      - uses: actions/checkout@v4
-      - name: Use Bun ${{ matrix.bun-version }}
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: ${{ matrix.bun-version }}
-      - run: cd frontend && bun install --frozen-lockfile
-      - run: cd frontend && bun run checks
+      - run: bun run checks
       - run: cd frontend && CI=false bun run build

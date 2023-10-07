@@ -1,18 +1,18 @@
-version: "3.2"
+version: '3.2'
 services:
   api:
     build: ../api
     image: coursetable/api
     restart: always
     ports:
-      - "8039:8039"
-      - "8038:8080"
+      - '8039:8039'
+      - '8038:8080'
     expose:
       - 8039
     volumes:
       - ../api:/app
       - ./wait-for-it.sh:/app/wait-for-it.sh
-    user: "1000"
+    user: '1000'
     depends_on:
       - graphql-engine
     environment:
@@ -50,10 +50,10 @@ services:
     image: hasura/graphql-engine:v2.8.4
     restart: always
     ports:
-      - "8085:8080"
+      - '8085:8080'
     environment:
       HASURA_GRAPHQL_DATABASE_URL: ${FERRY_POSTGRES_URI?ferry_db}
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: 'false'
       HASURA_GRAPHQL_ENABLED_LOG_TYPES: startup, http-log, webhook-log, websocket-log, query-log
       ## uncomment next line to set an admin secret
       # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
@@ -65,7 +65,7 @@ services:
     image: nginx
     restart: always
     ports:
-      - "8075:80"
+      - '8075:80'
     volumes:
       - ../api/legacy:/usr/share/nginx/html:ro
     labels:

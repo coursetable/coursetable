@@ -57,7 +57,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 1. Install Doppler
 
-   Make sure you've been added to the organization there – if not, contact one of the project leads. (We typically invite your *Yale email*, so make sure to login to Doppler with your Yale email (with Google) instead of with GitHub or some other personal email.
+   Make sure you've been added to the organization there – if not, contact one of the project leads. (We typically invite your _Yale email_, so make sure to login to Doppler with your Yale email (with Google) instead of with GitHub or some other personal email.
 
    Follow the instructions [here](https://docs.doppler.com/docs/enclave-installation).
 
@@ -189,6 +189,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 </details>
 
 &nbsp;
+
 # How to Run CourseTable Regularly
 
 After running all of the initial development environment setup, follow the commands below to set up preparation of the environment for regular CourseTable development:

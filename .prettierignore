@@ -1,0 +1,6 @@
+frontend/build
+frontend/src/generated
+frontend/index.html
+api/static
+api/legacy
+.imgbotconfig
