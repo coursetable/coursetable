@@ -1,0 +1,39 @@
+services:
+  api:
+    restart: always
+    expose:
+      - 8039
+    environment:
+      NODE_ENV: production
+    labels:
+      traefik.enable: true
+      traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)
+      traefik.http.routers.coursetable.tls: true
+      traefik.http.routers.coursetable.tls.certResolver: ctresolver
+      traefik.http.routers.coursetable.middlewares: gzip-compress@file
+    networks:
+      - traefik
+      - mysql_default
+      - default
+
+  graphql-engine:
+    restart: always
+    networks:
+      - ferry_default
+      - default
+
+  legacy:
+    restart: always
+    labels:
+      traefik.enable: true
+      traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
+      traefik.http.routers.coursetable-legacy.tls: true
+      traefik.http.routers.coursetable-legacy.tls.certResolver: ctresolver
+
+networks:
+  traefik:
+    external: true
+  ferry_default:
+    external: true
+  mysql_default:
+    external: true
