@@ -21,4 +21,5 @@ RUN mkdir static/
 # RUN chown -R node:node /app/node_modules/@prisma /app/node_modules/prisma /app/static/ /app/prisma/schema.prisma
 # USER node
 
-ENTRYPOINT ["npm", "start"]
+ENV NODE_ENV=production
+CMD ["npm", "start"]
