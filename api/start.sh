@@ -14,7 +14,6 @@ then
     export SENTRY_ORG=coursetable
     export SENTRY_PROJECT=frontend
 
-    export COMPOSE_FILE=prod-compose.yml
     export SENTRY_RELEASE_VERSION=${VERSION}
 
     sentry-cli releases new "$VERSION"
