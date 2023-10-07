@@ -2,7 +2,7 @@ FROM node:latest as build
 
 WORKDIR /app
 COPY package.json ./
-COPY yarn.lock ./
+COPY bun.lockb ./
 COPY tsconfig.json ./
 COPY src ./src
 
@@ -11,11 +11,11 @@ COPY prisma ./prisma
 
 # Give permissions to Prisma schema file
 RUN chmod 644 /app/prisma/schema.prisma
-RUN yarn install
+RUN bun install
 
 # Set non-root user and adjust ownership
 RUN chown node:node /app/prisma/schema.prisma
 USER node
 
 ENV NODE_ENV=production
-CMD ["yarn", "start"]
+CMD ["npm", "start"]

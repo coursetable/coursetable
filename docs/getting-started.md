@@ -82,17 +82,11 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
    > **For Windows**: If you get an error that looks like this `bash: /mnt/c/Program Files/nodejs/npm: /bin/sh^M: bad interpreter: No such file or directory`, then try following the instructions [here](https://hackmd.io/@badging/wsl2#Troubleshooting-PATH).
 
-1. Install Yarn
-
-   - Mac: Run `brew install yarn`
-
-   - Windows or Linux: Run `npm install --global yarn`
-
-2. Install Bun
+1. Install Bun
 
    - Mac/Linux: Run `curl -fsSL https://bun.sh/install | bash`
    
-   - Windows: Use `yarn` in place of `bun` when installing packages.
+   - Windows: Use `npm install` in place of `bun` when installing packages.
 
 ## Aside: a quick explainer on docker-compose
 
@@ -194,31 +188,56 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
   Try using `sudo doppler update`.
 
-## Installing packages
+## Adding packages
 
-<details>
+<details open>
   <summary><strong>Mac or Linux</strong></summary>
 
 1. Ensure bun is installed by running `bun -v`
 
 1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
 
-1. Install your package by running `bun add <package>`
+1. Add your package by running `bun add <package>`
 
 </details>
 
 <details>
   <summary><strong>Windows</strong></summary>
 
-1. Ensure yarn is installed by running `yarn --version`
+1. Ensure npm is installed by running `npm --version`
 
 1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
 
-1. Install your package by running `yarn add <package>`
+1. Add your package by running `npm install <package>`
 
 </details>
-&nbsp;
 
+
+## Updating packages
+
+<details open>
+  <summary><strong>Mac or Linux</strong></summary>
+
+1. Ensure bun is installed by running `bun -v`
+
+1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
+
+1. Add your package by running `bun update --save`
+
+</details>
+
+<details>
+  <summary><strong>Windows</strong></summary>
+
+1. Ensure npm is installed by running `npm --version`
+
+1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
+
+1. Add your package by running `npm update --save`
+
+</details>
+
+&nbsp;
 # How to Run CourseTable Regularly
 
 After running all of the initial development environment setup, follow the commands below to set up preparation of the environment for regular CourseTable development:
