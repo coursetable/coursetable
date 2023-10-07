@@ -7,7 +7,7 @@
     "checks": "bun run depcheck && bun run lint && bun run typecheck",
     "npm-checks": "npm run depcheck && npm run lint && npm run typecheck",
     "depcheck": "bunx depcheck . --json",
-    "npm-depcheck": "npm run depcheck . --json",
+    "npm-depcheck": "npx depcheck . --json",
     "lint": "prettier -l . && eslint src",
     "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
