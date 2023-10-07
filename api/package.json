@@ -1,11 +1,12 @@
 {
   "scripts": {
-    "prestart": "yarn prisma db pull && yarn prisma generate",
-    "start": "yarn ts-node-dev --debug --files --exit-child src/server.ts",
-    "prod": "yarn ts-node --files src/server.ts",
-    "checks": "yarn run depcheck && yarn run lint && yarn run typecheck",
-    "depcheck": "npx depcheck . --json",
-    "lint": "yarn prettier -l . && yarn eslint src",
+    "prestart": "bun prisma db pull && bun prisma generate",
+    "generate": "bun prisma generate",
+    "start": "bun ts-node-dev --debug --files --exit-child src/server.ts",
+    "prod": "bun ts-node --files src/server.ts",
+    "checks": "bun run depcheck && bun run lint && bun run typecheck",
+    "depcheck": "bunx depcheck . --json",
+    "lint": "bun prettier -l . && bun eslint src",
     "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
   "nodemonConfig": {
@@ -59,7 +60,6 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
     "prettier": "^3.0.3",
-    "prisma": "3.13.0",
     "ts-node-dev": "^2.0.0"
   }
 }

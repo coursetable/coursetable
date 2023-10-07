@@ -76,19 +76,23 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 1. Install Node/NPM
 
-   - Mac: Install Node: see [here](https://nodejs.org/en/download/) for downloadable installer.
+   - Mac or Linux: Install Node: see [here](https://nodejs.org/en/download/) for downloadable installer.
 
-   - Windows or Linux: Install [nvm, node.js, and npm](https://docs.microsoft.com/en-us/windows/nodejs/setup-on-wsl2#install-nvm-nodejs-and-npm). Follow Steps 1 - 9 at the link to the left.
+   - Windows: Install [nvm, node.js, and npm](https://docs.microsoft.com/en-us/windows/nodejs/setup-on-wsl2#install-nvm-nodejs-and-npm). Follow Steps 1 - 9 at the link to the left.
 
    > **For Windows**: If you get an error that looks like this `bash: /mnt/c/Program Files/nodejs/npm: /bin/sh^M: bad interpreter: No such file or directory`, then try following the instructions [here](https://hackmd.io/@badging/wsl2#Troubleshooting-PATH).
 
-   > **For Linux**: To be honest, I haven't tried this on Linux but it should technically be the same as WSL right? If you're having problems, let us know.
-
 1. Install Yarn
 
-   - Mac: Run `brew install yarn` (Why's it so easy for Mac users this isn't fair.)
+   - Mac: Run `brew install yarn`
 
    - Windows or Linux: Run `npm install --global yarn`
+
+2. Install Bun
+
+   - Mac/Linux: Run `curl -fsSL https://bun.sh/install | bash`
+   
+   - Windows: Use `yarn` in place of `bun` when installing packages.
 
 ## Aside: a quick explainer on docker-compose
 
@@ -193,18 +197,18 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 ## Installing packages
 
 <details>
-  <summary><strong>Windows or Linux</strong></summary>
+  <summary><strong>Mac or Linux</strong></summary>
 
-1. Ensure yarn is installed by running `yarn --version`
+1. Ensure bun is installed by running `bun -v`
 
 1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
 
-1. Install your package by running `yarn add <package>`
+1. Install your package by running `bun add <package>`
 
 </details>
 
 <details>
-  <summary><strong>MacOS</strong></summary>
+  <summary><strong>Windows</strong></summary>
 
 1. Ensure yarn is installed by running `yarn --version`
 
