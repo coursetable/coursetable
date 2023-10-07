@@ -1,8 +1,6 @@
 ignores: [
   "jest",
   "@sentry/tracing",
-  "@vitejs/plugin-react",
-  "vite-plugin-svgr",
   "graphql",
   "@graphql-codegen/*",
   "graphql-tag",
