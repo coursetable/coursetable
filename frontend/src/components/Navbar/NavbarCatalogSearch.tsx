@@ -206,6 +206,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     numValueLabels,
     select_schools,
     select_credits,
+    searchDescription,
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
@@ -234,6 +235,7 @@ export const NavbarCatalogSearch: React.FC = () => {
     setNumValueLabels,
     setSelectSchools,
     setSelectCredits,
+    setSearchDescription,
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
@@ -357,6 +359,7 @@ export const NavbarCatalogSearch: React.FC = () => {
         activeNumber,
       },
       toggles: {
+        searchDescription,
         hideCancelled,
         hideFirstYearSeminars,
         hideGraduateCourses,
@@ -376,6 +379,7 @@ export const NavbarCatalogSearch: React.FC = () => {
       activeTime,
       activeEnrollment,
       activeNumber,
+      searchDescription,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
@@ -608,6 +612,7 @@ export const NavbarCatalogSearch: React.FC = () => {
                 setSelectDays(defaultFilters.defaultOptions);
                 setSelectSchools(defaultFilters.defaultOptions);
                 setSelectCredits(defaultFilters.defaultOptions);
+                setSearchDescription(defaultFilters.defaultFalse);
                 setHideCancelled(defaultFilters.defaultFalse);
                 setHideFirstYearSeminars(defaultFilters.defaultFalse);
                 setHideGraduateCourses(defaultFilters.defaultFalse);
@@ -876,6 +881,21 @@ export const NavbarCatalogSearch: React.FC = () => {
                   />
                 </Row>
                 <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
+                  {/* Search By Description Toggle */}
+                  <Toggle type="switch">
+                    <ToggleInput
+                      checked={searchDescription}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <ToggleLabel
+                      onClick={() => {
+                        setSearchDescription(!searchDescription);
+                        setStartTime(Date.now());
+                      }}
+                    >
+                      Include descriptions in search
+                    </ToggleLabel>
+                  </Toggle>
                   {/* Hide Cancelled Courses Toggle */}
                   <Toggle type="switch">
                     <ToggleInput
