@@ -62,7 +62,7 @@ const colors = [
 /**
  * Stores the user's worksheet filters and sorts
  */
-export const WorksheetProvider: React.FC = ({ children }) => {
+export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
@@ -156,12 +156,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
   // Courses data - basically a color-annotated version of the worksheet info.
   const [courses, setCourses] = useState<Listing[]>([]);
 
-  // Function to sort worksheet courses by course code
-  const sortByCourseCode = useCallback((a, b) => {
-    if (a.course_code < b.course_code) return -1;
-    return 1;
-  }, []);
-
   // Initialize courses state and color map.
   useEffect(() => {
     if (
@@ -183,7 +177,7 @@ export const WorksheetProvider: React.FC = ({ children }) => {
         temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
       }
       // Sort list by course code
-      temp.sort(sortByCourseCode);
+      temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
       setCourses(temp);
     }
   }, [
@@ -193,7 +187,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
     worksheetData,
     setCourses,
     colorMap,
-    sortByCourseCode,
   ]);
 
   /* Functions */
@@ -346,6 +339,6 @@ export const WorksheetProvider: React.FC = ({ children }) => {
       {children}
     </WorksheetContext.Provider>
   );
-};
+}
 
 export const useWorksheet = () => useContext(WorksheetContext)!;

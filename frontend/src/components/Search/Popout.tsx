@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import styled, { useTheme } from 'styled-components';
 
@@ -121,7 +121,7 @@ type Props = {
  * @prop data_tutorial - tutorial step number
  * @prop disabledButtonText - default placeholder for disabled popout button
  */
-export const Popout: React.FC<Props> = ({
+export function Popout({
   children,
   buttonText,
   type,
@@ -133,7 +133,7 @@ export const Popout: React.FC<Props> = ({
   className,
   data_tutorial,
   disabledButtonText,
-}) => {
+}: Props) {
   // Ref to detect outside clicks for popout button and dropdown
   const {
     ref_toggle,
@@ -256,18 +256,6 @@ export const Popout: React.FC<Props> = ({
     }
   }, [select_options, buttonText, type, disabledButtonText, isDisabled]);
 
-  // Clear filter handler
-  const onClear = useCallback(
-    (e) => {
-      // Prevent parent popout button onClick from firing and opening dropdown
-      e.stopPropagation();
-      if (onReset) {
-        onReset();
-      }
-    },
-    [onReset],
-  );
-
   return (
     <PopoutWrapper
       data-tutorial={data_tutorial ? `catalog-${data_tutorial}-observe` : ''}
@@ -282,7 +270,14 @@ export const Popout: React.FC<Props> = ({
       >
         {toggleText}
         {active && clearIcon ? (
-          <ClearIcon className="ml-1" onClick={onClear} />
+          <ClearIcon
+            className="ml-1"
+            onClick={(e) => {
+              // Prevent parent popout button onClick from firing and opening dropdown
+              e.stopPropagation();
+              onReset?.();
+            }}
+          />
         ) : arrowIcon ? (
           isComponentVisible ? (
             <DownIcon className="ml-1" />
@@ -299,4 +294,4 @@ export const Popout: React.FC<Props> = ({
       ) : null}
     </PopoutWrapper>
   );
-};
+}

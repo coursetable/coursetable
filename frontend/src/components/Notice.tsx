@@ -7,7 +7,7 @@ import { StyledBanner } from './StyledComponents';
 /**
  * Notice banner at the top of the website
  */
-const Notice: React.FC = ({ children }) => {
+function Notice({ children }: { children: React.ReactNode }) {
   // Save visibility in session storage
   const [visible, setVisible] = useSessionStorageState(
     'noticeVisibility',
@@ -28,6 +28,6 @@ const Notice: React.FC = ({ children }) => {
       </span>
     </StyledBanner>
   );
-};
+}
 
 export default Notice;

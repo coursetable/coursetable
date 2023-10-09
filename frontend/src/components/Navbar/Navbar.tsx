@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
-import { NavLink, RouteComponentProps, withRouter } from 'react-router-dom';
+import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
@@ -110,8 +110,8 @@ function CourseTableNavbar({
   isLoggedIn,
   themeToggler,
   setIsTutorialOpen,
-  location,
-}: RouteComponentProps & Props) {
+}: Props) {
+  const location = useLocation();
   // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
@@ -371,4 +371,4 @@ function CourseTableNavbar({
   );
 }
 
-export default withRouter(CourseTableNavbar);
+export default CourseTableNavbar;

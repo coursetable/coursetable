@@ -179,7 +179,7 @@ const CloseIcon = styled(IoClose)`
 /**
  * Catalog search form for the desktop in the navbar
  */
-export const NavbarCatalogSearch: React.FC = () => {
+export function NavbarCatalogSearch() {
   // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
 
@@ -973,4 +973,4 @@ export const NavbarCatalogSearch: React.FC = () => {
       </Form>
     </>
   );
-};
+}
