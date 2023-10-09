@@ -11,7 +11,8 @@ COPY prisma ./prisma
 
 # Give permissions to Prisma schema file
 RUN chmod 644 /app/prisma/schema.prisma
-RUN bun install
+RUN curl -fsSL https://bun.sh/install | bash
+RUN ~/.bun/bin/bun install
 
 # Set non-root user and adjust ownership
 RUN chown node:node /app/prisma/schema.prisma
