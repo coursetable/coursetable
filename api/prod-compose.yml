@@ -1,8 +1,9 @@
 services:
   api:
     restart: always
-    expose:
-      - 8039
+    ports:
+      - '8039:8039'
+      - '8038:8080'
     environment:
       NODE_ENV: production
     labels:
