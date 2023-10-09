@@ -14,6 +14,7 @@ RUN chmod 644 /app/prisma/schema.prisma
 
 RUN curl -fsSL https://bun.sh/install | bash
 RUN ~/.bun/bin/bun install
+RUN ~/.bun/bin/bun install
 
 RUN mkdir static/
 
