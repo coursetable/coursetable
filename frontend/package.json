@@ -43,7 +43,7 @@
     "async-lock": "^1.4.0",
     "axios": "^1.5.1",
     "body-scroll-lock": "^3.1.5",
-    "bootstrap": "^4.5.3",
+    "bootstrap": "^5.3.2",
     "chroma-js": "^2.4.2",
     "core-js": "^3.33.0",
     "file-saver": "^2.0.5",
