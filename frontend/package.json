@@ -58,7 +58,7 @@
     "moment": "^2.29.4",
     "posthog-js": "^1.82.2",
     "qs": "^6.11.2",
-    "rc-slider": "9.7.1",
+    "rc-slider": "10.3.0",
     "rc-tooltip": "^5.1.0",
     "react": "^17.0.2",
     "react-app-polyfill": "^2.0.0",
