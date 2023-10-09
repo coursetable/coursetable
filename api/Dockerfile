@@ -15,7 +15,7 @@ RUN curl -fsSL https://bun.sh/install | bash
 RUN ~/.bun/bin/bun install
 
 # Set non-root user and adjust ownership
-RUN chown node:node /app/prisma/schema.prisma
+RUN chown -R node:node /app/prisma/schema.prisma /app/node_modules
 USER node
 
 ENV NODE_ENV=production
