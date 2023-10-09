@@ -81,6 +81,7 @@ type Store = {
   numValueLabels: number[];
   select_schools: Option[];
   select_credits: Option[];
+  searchDescription: boolean;
   hideCancelled: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
@@ -116,6 +117,7 @@ type Store = {
   setNumValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSchools: React.Dispatch<React.SetStateAction<Option[]>>;
   setSelectCredits: React.Dispatch<React.SetStateAction<Option[]>>;
+  setSearchDescription: React.Dispatch<React.SetStateAction<boolean>>;
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
@@ -264,6 +266,11 @@ export const SearchProvider: React.FC = ({ children }) => {
   const [select_credits, setSelectCredits] = useSessionStorageState(
     'select_credits',
     defaultOptions,
+  );
+
+  const [searchDescription, setSearchDescription] = useLocalStorageState(
+    'searchDescription',
+    defaultFalse,
   );
 
   const [hideCancelled, setHideCancelled] = useLocalStorageState(
@@ -498,6 +505,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       max_enrollment: include_all_enrollments ? null : enrollBounds[1],
       min_number: include_all_numbers ? null : numBounds[0],
       max_number: include_all_numbers ? null : numBounds[1],
+      description: searchDescription ? 'ACTIVE' : null,
       extra_info: hideCancelled ? 'ACTIVE' : null,
       discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
@@ -512,6 +520,7 @@ export const SearchProvider: React.FC = ({ children }) => {
 
     return search_variables;
   }, [
+    searchDescription,
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
@@ -724,6 +733,8 @@ export const SearchProvider: React.FC = ({ children }) => {
             listing.number
               .toLowerCase()
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
+          (searchDescription &&
+            listing.description?.toLowerCase()?.includes(token)) ||
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
             professor.toLowerCase().includes(token),
@@ -740,6 +751,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     // Apply sorting order.
     return sortCourses(filtered, ordering, num_fb);
   }, [
+    searchDescription,
     required_seasons,
     coursesLoading,
     courseLoadError,
@@ -752,6 +764,7 @@ export const SearchProvider: React.FC = ({ children }) => {
   // For resetting all filters and sorts
   const handleResetFilters = useCallback(() => {
     setSearchText('');
+    setSearchDescription(false);
     setHideCancelled(true);
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
@@ -795,6 +808,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     setSelectSchools,
     setSelectDays,
     setSelectCredits,
+    setSearchDescription,
     setHideCancelled,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
@@ -858,6 +872,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       !_.isEqual(numBounds, defaultNumBounds) ||
       !_.isEqual(select_schools, defaultOptions) ||
       !_.isEqual(select_credits, defaultOptions) ||
+      !_.isEqual(searchDescription, defaultFalse) ||
       !_.isEqual(hideCancelled, defaultTrue) ||
       !_.isEqual(hideFirstYearSeminars, defaultFalse) ||
       !_.isEqual(hideGraduateCourses, defaultFalse) ||
@@ -894,6 +909,7 @@ export const SearchProvider: React.FC = ({ children }) => {
     select_days,
     select_schools,
     select_credits,
+    searchDescription,
     hideCancelled,
     hideFirstYearSeminars,
     hideGraduateCourses,
@@ -927,6 +943,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       numValueLabels,
       select_schools,
       select_credits,
+      searchDescription,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
@@ -964,6 +981,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setNumValueLabels,
       setSelectSchools,
       setSelectCredits,
+      setSearchDescription,
       setHideCancelled,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
@@ -996,6 +1014,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       numValueLabels,
       select_schools,
       select_credits,
+      searchDescription,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
@@ -1031,6 +1050,7 @@ export const SearchProvider: React.FC = ({ children }) => {
       setNumValueLabels,
       setSelectSchools,
       setSelectCredits,
+      setSearchDescription,
       setHideCancelled,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
