@@ -104,7 +104,6 @@ type Props = {
  * @prop isLoggedIn - is user logged in?
  * @prop themeToggler - which toggles between light and dark mode
  * @prop setIsTutorialOpen - opens tutorial
- * @prop location - object | provides the location info from react-router-dom
  */
 function CourseTableNavbar({
   isLoggedIn,
@@ -219,11 +218,15 @@ function CourseTableNavbar({
             <NavLogo className="navbar-brand">
               <NavLink
                 to="/"
-                activeStyle={{
-                  textDecoration: 'none',
-                  display: 'table-cell',
-                  verticalAlign: 'middle',
-                }}
+                style={({ isActive }) =>
+                  isActive
+                    ? {
+                        textDecoration: 'none',
+                        display: 'table-cell',
+                        verticalAlign: 'middle',
+                      }
+                    : {}
+                }
               >
                 {/* Condense logo if on home page */}
                 <span className={styles.nav_logo}>

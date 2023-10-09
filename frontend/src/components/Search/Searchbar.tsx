@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { Form, InputGroup, Button, Row } from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import styles from './Searchbar.module.css';
 
 /**
@@ -27,7 +27,7 @@ function Searchbar({ bar_size }: { bar_size: 'sm' | 'lg' | undefined }) {
 
   return value ? (
     // Switch to catalog if something was searched
-    <Redirect to={{ pathname: '/catalog', state: { search_val: value } }} />
+    <Navigate to="/catalog" state={{ search_val: value }} />
   ) : (
     // Render search bar
     <Form onSubmit={searched}>
