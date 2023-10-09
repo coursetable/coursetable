@@ -31,7 +31,7 @@ services:
       CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
 
   graphql-engine:
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v2.33.4
     ports:
       - '8085:8080'
     environment:
