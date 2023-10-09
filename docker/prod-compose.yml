@@ -67,7 +67,7 @@ services:
     ports:
       - "8075:80"
     volumes:
-      - ../legacy:/usr/share/nginx/html:ro
+      - ../api/legacy:/usr/share/nginx/html:ro
     labels:
       traefik.enable: true
       traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
