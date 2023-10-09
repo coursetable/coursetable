@@ -1,5 +1,8 @@
 services:
   api:
+    ports:
+      - '4096:4096'
+      - '3001:3001'
     volumes:
       - ../api/static:/app/static
 

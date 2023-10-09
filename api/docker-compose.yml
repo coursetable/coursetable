@@ -3,9 +3,6 @@ services:
   api:
     build: ./
     image: coursetable/api:latest
-    ports:
-      - '4096:4096'
-      - '3001:3001'
     depends_on:
       graphql-engine:
         condition: service_healthy
