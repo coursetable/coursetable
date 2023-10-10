@@ -3,6 +3,7 @@ services:
   api:
     build: ./
     image: coursetable/api:latest
+    container_name: express
     depends_on:
       graphql-engine:
         condition: service_healthy
@@ -28,6 +29,7 @@ services:
       CHALLENGE_PASSWORD: ${CHALLENGE_PASSWORD?challenge_password}
 
   graphql-engine:
+    container_name: graphql-engine
     image: hasura/graphql-engine:v2.33.4
     ports:
       - '8085:8080'
@@ -44,7 +46,8 @@ services:
       retries: 60
 
   legacy:
+    container_name: legacy
     build: ./legacy
-    image: coursetable/api-legacy:latest
+    image: coursetable/legacy:latest
     ports:
       - '8075:80'
