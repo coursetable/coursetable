@@ -3,7 +3,6 @@ import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import chroma from 'chroma-js';
-import posthog from 'posthog-js';
 import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
@@ -83,8 +82,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
 
   // Called when hiding modal
   const handleHide = useCallback(() => {
-    posthog.capture('modal-hide');
-
     // Reset views and filters
     setView(['overview', null]);
     setFilter('both');

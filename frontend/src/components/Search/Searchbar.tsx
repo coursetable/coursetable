@@ -2,7 +2,6 @@ import React, { useState, useRef } from 'react';
 import { Form, InputGroup, Button, Row } from 'react-bootstrap';
 import { BsSearch } from 'react-icons/bs';
 import { Redirect } from 'react-router-dom';
-import posthog from 'posthog-js';
 import styles from './Searchbar.module.css';
 
 /**
@@ -17,11 +16,6 @@ function Searchbar({ bar_size }: { bar_size: 'sm' | 'lg' | undefined }) {
   const input = useRef<HTMLInputElement>(null);
   // On form submit, set value state to the searched value
   const searched: React.FormEventHandler<HTMLFormElement> = (event) => {
-    posthog.capture('search', {
-      from: 'searchbar',
-      value: input?.current?.value,
-    });
-
     // Prevent page refresh on submit
     event.preventDefault();
     setValue(input?.current?.value || '');

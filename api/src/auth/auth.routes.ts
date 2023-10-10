@@ -5,8 +5,6 @@
 import express from 'express';
 import passport from 'passport';
 
-import { POSTHOG_CLIENT } from '../config';
-
 import { casLogin } from './auth.handlers';
 import winston from '../logging/winston';
 
@@ -32,13 +30,6 @@ export default async (app: express.Express): Promise<void> => {
 
   // Logouts
   app.get('/api/auth/logout', (req, res, next) => {
-    if (req.user) {
-      POSTHOG_CLIENT.capture({
-        distinctId: req.user.netId,
-        event: 'api-logout',
-      });
-    }
-
     winston.info(`Logging out ${req.user?.netId}`);
 
     req.logOut((err) => {

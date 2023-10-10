@@ -6,7 +6,6 @@ import React, {
   useMemo,
 } from 'react';
 import axios from 'axios';
-import posthog from 'posthog-js';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import { NetId, Season } from '../utilities/common';
@@ -78,7 +77,6 @@ export const UserProvider: React.FC = ({ children }) => {
           setYear(res.data.year);
           setSchool(res.data.school);
           setWorksheet(res.data.data);
-          posthog.identify(res.data.netId);
           Sentry.setUser({ username: res.data.netId });
         })
         .catch((err) => {
@@ -88,7 +86,6 @@ export const UserProvider: React.FC = ({ children }) => {
           setHasEvals(undefined);
           setYear(undefined);
           setSchool(undefined);
-          posthog.reset();
           Sentry.configureScope((scope) => scope.clear());
           Sentry.captureException(err);
           if (!suppressError) {

@@ -6,7 +6,6 @@ import express from 'express';
 import {
   YALIES_API_KEY,
   CANNY_KEY,
-  POSTHOG_CLIENT,
   FRONTEND_ENDPOINT,
   prisma,
 } from '../config';
@@ -83,31 +82,6 @@ Promise<void> => {
           major: user.major,
           curriculum: user.curriculum,
         },
-      });
-
-      // Update user in PostHog
-      POSTHOG_CLIENT.identify({
-        distinctId: netId,
-        properties: {
-          email: user.email,
-          name: user.name,
-          firstName: user.first_name,
-          middleName: user.middle_name,
-          lastName: user.last_name,
-          upi: user.upi,
-          school: user.school,
-          college: user.college,
-          major: user.major,
-          curriculum: user.curriculum,
-          year: user.year,
-          organization: user.organization,
-          leave: user.leave,
-        },
-      });
-
-      POSTHOG_CLIENT.capture({
-        distinctId: netId,
-        event: 'request-canny-token',
       });
 
       const token = createCannyToken({

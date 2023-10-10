@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import posthog from 'posthog-js';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import {
   FcCalendar,
@@ -63,9 +62,6 @@ const MeDropdown: React.VFC<Props> = ({
 
   // Handle 'export worksheet' button click
   const handleExportClick = () => {
-    // Metric Tracking of Worksheet Export
-    posthog.capture('worksheet-export', { component: 'MeDropdown' });
-
     // Start export process
     setExport(true);
   };

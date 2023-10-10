@@ -28,8 +28,6 @@ services:
       MYSQL_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
       MYSQL_URL: ${MYSQL_URL?mysql_url}
       NODE_ENV: production
-      POSTHOG_API_KEY: ${POSTHOG_API_KEY?posthog_api_key}
-      POSTHOG_HOST: ${POSTHOG_HOST?posthog_host}
       SESSION_SECRET: ${SESSION_SECRET?session_secret}
       STUDENTS_DB: yaleplus
       YALIES_API_KEY: ${YALIES_API_KEY?yalies_api_key}

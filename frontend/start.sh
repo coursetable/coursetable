@@ -1,4 +1,3 @@
-export VITE_POSTHOG_TOKEN='nothing'
 export NODE_ENV='development'
 
 doppler setup -p coursetable -c dev

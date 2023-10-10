@@ -3,7 +3,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import { Element, scroller } from 'react-scroll';
-import posthog from 'posthog-js';
 import Styles from './Search.module.css';
 
 import Results from '../components/Search/Results';
@@ -103,7 +102,6 @@ const Search: React.FC = () => {
 
   const handleSetView = useCallback(
     (isList) => {
-      posthog.capture('catalog-view-toggle', { isList });
       setView(isList);
     },
     [setView],

@@ -1,7 +1,3 @@
-/**
- * @file Global server configurations
- */
-import { PostHog } from 'posthog-node';
 import { PrismaClient } from '@prisma/client';
 
 const die = (err: string) => {
@@ -71,9 +67,5 @@ export const { FERRY_SECRET } = process.env;
 // Location of statically generated files. This is relative
 // to the working directory, which is api.
 export const STATIC_FILE_DIR = './static';
-
-export const POSTHOG_CLIENT = new PostHog(getEnv('POSTHOG_API_KEY'), {
-  host: getEnv('POSTHOG_HOST'),
-});
 
 export const prisma = new PrismaClient();
