@@ -5,7 +5,7 @@ set -euo pipefail
 if [ "$1" == 'dev' ]
 then
     doppler setup -p coursetable -c dev
-    doppler run --command "docker-compose up --remove-orphans --build"
+    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans --build"
 elif [ "$1" == 'prod' ]
 then
     doppler setup -p coursetable -c prd

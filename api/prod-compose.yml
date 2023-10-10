@@ -8,6 +8,7 @@ services:
       - '8039'
     environment:
       NODE_ENV: production
+      OVERWRITE_CATALOG: 'true'
     labels:
       traefik.enable: true
       traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)
