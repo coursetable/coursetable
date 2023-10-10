@@ -252,8 +252,8 @@ After running all of the initial development environment setup, follow the comma
 
    ```sh
    cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
-   cd docker
-   bash start.sh
+   cd api
+   ./start.sh dev
    ```
 
 1. Start the frontend (in separate terminal):
