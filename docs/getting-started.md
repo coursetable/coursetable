@@ -84,9 +84,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 1. Install Bun
 
-   - Mac/Linux: Run `curl -fsSL https://bun.sh/install | bash`
-   
-   - Windows: Use `npm install` in place of `bun` when installing packages.
+   - Run `curl -fsSL https://bun.sh/install | bash`
 
 ## Aside: a quick explainer on docker-compose
 
@@ -174,50 +172,19 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
 ## Adding packages
 
-<details open>
-  <summary><strong>Mac or Linux</strong></summary>
-
 1. Ensure bun is installed by running `bun -v`
 
 1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
 
 1. Add your package by running `bun add <package>`
 
-</details>
-
-<details>
-  <summary><strong>Windows</strong></summary>
-
-1. Ensure npm is installed by running `npm --version`
-
-1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
-
-1. Add your package by running `npm install <package>`
-
-</details>
-
-
 ## Updating packages
-
-<details open>
-  <summary><strong>Mac or Linux</strong></summary>
 
 1. Ensure bun is installed by running `bun -v`
 
 1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
 
 1. Add your package by running `bun update --save`
-
-</details>
-
-<details>
-  <summary><strong>Windows</strong></summary>
-
-1. Ensure npm is installed by running `npm --version`
-
-1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
-
-1. Add your package by running `npm update --save`
 
 </details>
 
