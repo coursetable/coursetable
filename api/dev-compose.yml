@@ -1,7 +1,16 @@
 services:
   api:
+    ports:
+      - '4096:4096'
+      - '3001:3001'
     volumes:
       - ../api/static:/app/static
+      - ../api/src:/app/src
+    build:
+      args:
+        - HOT_RELOAD=true
+    environment:
+      OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
 
     depends_on:
       mysql:
@@ -9,7 +18,8 @@ services:
 
   mysql:
     build: ./mysql
-    image: coursetable/api-mysql:latest
+    image: coursetable/mysql:latest
+    container_name: mysql
     command: --default-authentication-plugin=mysql_native_password --log-warnings
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD?password}
@@ -30,6 +40,7 @@ services:
 
   phpmyadmin:
     image: phpmyadmin:latest
+    container_name: phpmyadmin
     depends_on:
       - mysql
     environment:

@@ -1,8 +1,14 @@
 services:
   api:
+    build:
+      args:
+        - HOT_RELOAD=false
     restart: always
+    ports:
+      - '8039:8039'
+      - '8038:8080'
     expose:
-      - 8039
+      - '8039'
     environment:
       NODE_ENV: production
     labels:
