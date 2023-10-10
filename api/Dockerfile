@@ -1,10 +1,18 @@
-FROM node:latest as build
+ARG HOT_RELOAD
 
+FROM node:latest as build_hr_false
 WORKDIR /app
+ONBUILD COPY src ./src
+
+FROM node:latest as build_hr_true
+WORKDIR /app
+ONBUILD RUN echo "Hot reload is enabled"
+
+FROM build_hr_${HOT_RELOAD}
+
 COPY package.json ./
 COPY bun.lockb ./
 COPY tsconfig.json ./
-COPY src ./src
 
 # Copy Prisma schema file
 COPY prisma ./prisma

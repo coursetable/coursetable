@@ -5,6 +5,12 @@ services:
       - '3001:3001'
     volumes:
       - ../api/static:/app/static
+      - ../api/src:/app/src
+    build:
+      args:
+        - HOT_RELOAD=true
+    environment:
+      OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
 
     depends_on:
       mysql:

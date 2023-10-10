@@ -127,7 +127,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    ```sh
    cd docker
-   bash start.sh
+   ./start.sh -d
    ```
 
 1. Wait ~2-3 minutes. If you’re curious, here's what's going on:
@@ -138,22 +138,6 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
 
-1. Start again:
-
-   Not everything comes up the first time because of our inter-service dependencies. Run these commands. You might need to do this a couple times.
-
-   ```sh
-   # kill the docker-compose logs -f command from above using Cmd (Ctrl) + C. wait for all containers to say "Stopped"
-
-   # first, enter an environment with Doppler secrets injected so docker is happy
-   doppler run --command "/bin/sh"
-
-   docker-compose up
-   docker-compose logs -f
-
-   # exit the Doppler environment
-   exit
-   ```
 
 1. Start the frontend (first `cd` to `frontend`)
 
@@ -253,7 +237,17 @@ After running all of the initial development environment setup, follow the comma
    ```sh
    cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
    cd api
-   ./start.sh dev
+   ./start.sh -d
+   ```
+
+1. Optionally, to overwrite your cached catalogs:
+
+   ```sh
+   cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
+   cd api
+   ./start.sh -d -o
+   # Ctrl + C to exit after catalogs refresh
+   ./start.sh -d # start normally
    ```
 
 1. Start the frontend (in separate terminal):
