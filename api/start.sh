@@ -7,20 +7,20 @@ OVERWRITE=false
 
 for ARGS in "$@"; do
 shift
-        case "$ARGS" in
-                "--dev") set -- "$@" "-d" ;;
-                "--prod") set -- "$@" "-p" ;;
-                "--overwrite") set -- "$@" "-o" ;;
-                *) set -- "$@" "$ARGS"
-        esac
+    case "$ARGS" in
+        "--dev") set -- "$@" "-d" ;;
+        "--prod") set -- "$@" "-p" ;;
+        "--overwrite") set -- "$@" "-o" ;;
+        *) set -- "$@" "$ARGS"
+    esac
 done
 
 while getopts 'dpo' flag; do
-        case "${flag}" in
-                d) ENV="dev" ;;
-                p) ENV="prod" ;;
-                o) OVERWRITE=true ;;
-        esac
+    case "${flag}" in
+        d) ENV="dev" ;;
+        p) ENV="prod" ;;
+        o) OVERWRITE=true ;;
+    esac
 done
 
 if [ $ENV == "" ]
