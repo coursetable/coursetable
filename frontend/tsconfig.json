@@ -11,6 +11,7 @@
     "noUnusedLocals": true,
     "noFallthroughCasesInSwitch": true,
     "noImplicitReturns": true,
+    "module": "ESNext",
     "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,

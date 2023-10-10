@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "prestart": "bun run prisma db pull && bun run prisma generate",
-    "generate": "bun run prisma generate",
+    "prestart": "prisma db pull && prisma generate",
+    "generate": "prisma generate",
     "start": "ts-node-dev --debug --files --exit-child src/server.ts",
     "prod": "ts-node --files src/server.ts"
   },
@@ -48,6 +48,7 @@
     "posthog-node": "3.1.2",
     "prisma": "5.4.0",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2",
     "winston": "^3.10.0"
   }
