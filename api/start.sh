@@ -23,21 +23,21 @@ while getopts 'dpo' flag; do
     esac
 done
 
-if [ $ENV == "" ]
+if [[ $ENV == "" ]]
 then
     echo "Please use either '--dev' or '--prod', assuming '--dev' for this run."
     ENV="dev"
 fi
 
-if [ $ENV == 'dev' ]
+if [[ $ENV == 'dev' ]]
 then
-    if [ $OVERWRITE == true ] 
+    if [[ $OVERWRITE == true ]]
     then
         export OVERWRITE_CATALOG='true'
     fi
     doppler setup -p coursetable -c dev
     doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans --build"
-elif [ $ENV == 'prod' ]
+elif [[ $ENV == 'prod' ]]
 then
     doppler setup -p coursetable -c prd
 
