@@ -124,7 +124,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 1. Start the backend:
 
    ```sh
-   cd docker
+   cd api
    ./start.sh -d
    ```
 
