@@ -134,49 +134,35 @@ type Store = {
 const FerryCtx = createContext<Store | undefined>(undefined);
 FerryCtx.displayName = 'FerryCtx';
 
-const FerryProvider: React.FC = ({ children }) => {
+function FerryProvider({ children }: { children: React.ReactNode }) {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
-  const diffRequests = useCallback(
-    (diff) => {
-      setRequests((requests) => requests + diff);
-    },
-    [setRequests],
-  );
-
   const [errors, setErrors] = useState<string[]>([]);
-  const addError = useCallback(
-    (err) => {
-      setErrors((errors) => [...errors, err]);
-    },
-    [setErrors],
-  );
 
-  const requestSeasons = useCallback(
-    (seasons: Season[]) => {
-      const fetches = seasons.map((season) => {
-        // Racy preemptive check of cache.
-        // We cannot check courseLoadAttempted here, since that is set prior
-        // to the data actually being loaded.
-        if (season in courseData) {
-          return Promise.resolve();
-        }
+  const requestSeasons = useCallback((seasons: Season[]) => {
+    const fetches = seasons.map(async (season) => {
+      // Racy preemptive check of cache.
+      // We cannot check courseLoadAttempted here, since that is set prior
+      // to the data actually being loaded.
+      if (season in courseData) {
+        return;
+      }
 
-        // Add to cache.
-        diffRequests(+1);
-        return addToCache(season).finally(() => {
-          diffRequests(-1);
-        });
-      });
-      Promise.all(fetches).catch((err) => {
-        toast.error('Failed to fetch course information');
-        Sentry.captureException(err);
-        addError(err);
-      });
-    },
-    [diffRequests, addError],
-  );
+      // Add to cache.
+      setRequests((r) => r + 1);
+      try {
+        return await addToCache(season);
+      } finally {
+        setRequests((r) => r - 1);
+      }
+    });
+    Promise.all(fetches).catch((err) => {
+      toast.error('Failed to fetch course information');
+      Sentry.captureException(err);
+      setErrors((e) => [...e, err]);
+    });
+  }, []);
 
   // If there's any error, we want to immediately stop "loading" and start "erroring".
   const error = errors[0] ?? null;
@@ -195,7 +181,7 @@ const FerryProvider: React.FC = ({ children }) => {
   );
 
   return <FerryCtx.Provider value={store}>{children}</FerryCtx.Provider>;
-};
+}
 
 export default FerryProvider;
 export const useFerry = () => useContext(FerryCtx)!;

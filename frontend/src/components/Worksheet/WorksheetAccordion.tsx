@@ -104,50 +104,42 @@ function ContextAwareToggle({
 function WorksheetAccordion() {
   const { courses, showModal } = useWorksheet();
 
-  // Function to sort courses in chronological order for each day
-  const chronologicalOrder = useCallback((a, b) => {
-    if (a.start_time < b.start_time) return -1;
-    if (a.start_time > b.start_time) return 1;
-    return 0;
-  }, []);
-
   // Parse listing dictionaries and determine which courses take place on each weekday
-  const parseListings = useCallback(
-    (listings: Listing[]) => {
-      const parsed_courses: [
-        Listing[],
-        Listing[],
-        Listing[],
-        Listing[],
-        Listing[],
-      ] = [[], [], [], [], []];
-      // Iterate over each listing
-      listings.forEach((course) => {
-        // Iterate over each weekday
-        for (let indx = 0; indx < 5; indx++) {
-          const info = course.times_by_day[weekdays[indx]];
-          // If this listing meets on this day
-          if (info !== undefined) {
-            // Get start time
-            course.start_time = moment(info[0][0], 'HH:mm').day(1);
-            // Get location url
-            course.location_url = info[0][3];
-            // Fix start time if needed
-            if (course.start_time.get('hour') < 8)
-              course.start_time.add('h', 12);
-            // Add listing to this weekday's list
-            parsed_courses[indx].push(course);
-          }
+  const parseListings = useCallback((listings: Listing[]) => {
+    const parsed_courses: [
+      Listing[],
+      Listing[],
+      Listing[],
+      Listing[],
+      Listing[],
+    ] = [[], [], [], [], []];
+    // Iterate over each listing
+    listings.forEach((course) => {
+      // Iterate over each weekday
+      for (let indx = 0; indx < 5; indx++) {
+        const info = course.times_by_day[weekdays[indx]];
+        // If this listing meets on this day
+        if (info !== undefined) {
+          // Get start time
+          course.start_time = moment(info[0][0], 'HH:mm').day(1);
+          // Get location url
+          course.location_url = info[0][3];
+          // Fix start time if needed
+          if (course.start_time.get('hour') < 8) course.start_time.add('h', 12);
+          // Add listing to this weekday's list
+          parsed_courses[indx].push(course);
         }
-      });
-      // Sort the courses in chronological order for each day
-      parsed_courses.forEach((day) => {
-        day.sort(chronologicalOrder);
-      });
-      return parsed_courses;
-    },
-    [chronologicalOrder],
-  );
+      }
+    });
+    // Sort the courses in chronological order for each day
+    parsed_courses.forEach((day) => {
+      day.sort(
+        (a, b) =>
+          (a.start_time?.valueOf() || 0) - (b.start_time?.valueOf() || 0),
+      );
+    });
+    return parsed_courses;
+  }, []);
 
   // Build HTML for each class that takes place on each day of the week
   const buildHtml = useCallback(

@@ -70,7 +70,7 @@ const StyledToggleButton = styled(ToggleButton)`
 /**
  * Worksheet search form for the desktop in the navbar
  */
-export const NavbarWorksheetSearch: React.FC = () => {
+export function NavbarWorksheetSearch() {
   // Get search context data
   // const { } = useSearch();
 
@@ -279,4 +279,4 @@ export const NavbarWorksheetSearch: React.FC = () => {
       </Form>
     </>
   );
-};
+}

@@ -37,7 +37,7 @@ type Props = {
  * FB login button that shows up in the profile dropdown
  * @prop loggedInMode - show disconnect or refresh when logged in?
  */
-const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
+function FBLoginButton({ loggedInMode = 'refresh' }: Props) {
   const { user, fbRefresh } = useUser();
   const logged_in = user.fbLogin;
 
@@ -155,6 +155,6 @@ const FBLoginButton: React.FC<Props> = ({ loggedInMode = 'refresh' }) => {
         ))}
     </div>
   );
-};
+}
 
 export default FBLoginButton;

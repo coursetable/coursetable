@@ -1,8 +1,9 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { StyledPopover } from '../StyledComponents';
+import type { Listing } from '../Providers/FerryProvider';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -11,45 +12,49 @@ const event_style = {
   height: '100%',
 };
 
+function truncatedText(
+  text: string | null | undefined,
+  max: number,
+  defaultStr: string,
+) {
+  if (!text) {
+    return defaultStr;
+  } else if (text.length <= max) {
+    return text;
+  }
+  return `${text.slice(0, max)}...`;
+}
+
 function CalendarEvent({
   event,
 }: {
   event: {
-    listing: { locations_summary: string; title: string };
+    listing: Listing;
     title: string;
   };
 }) {
-  // Render popover that contains title, description, and requirements when hovering over course
-  const renderTitlePopover = useCallback((props, course) => {
-    return (
-      <StyledPopover {...props} id="title_popover">
-        <Popover.Title>
-          <strong>{course.title}</strong>
-          <span className="d-block">{course.times_summary}</span>
-        </Popover.Title>
-        <Popover.Content>
-          {course.description
-            ? course.description.length <= 300
-              ? course.description
-              : `${course.description.slice(0, 300)}...`
-            : 'no description'}
-          <br />
-          <div className="text-danger">
-            {course.requirements &&
-              (course.requirements.length <= 250
-                ? course.requirements
-                : `${course.requirements.slice(0, 250)}...`)}
-          </div>
-        </Popover.Content>
-      </StyledPopover>
-    );
-  }, []);
-
+  const course = event.listing;
   return (
     <OverlayTrigger
       // Course info that appears on hover
       placement="right"
-      overlay={(props) => renderTitlePopover(props, event.listing)}
+      overlay={(props) => {
+        return (
+          <StyledPopover {...props} id="title_popover">
+            <Popover.Title>
+              <strong>{course.title}</strong>
+              <span className="d-block">{course.times_summary}</span>
+            </Popover.Title>
+            <Popover.Content>
+              {truncatedText(course.description, 300, 'no description')}
+              <br />
+              <div className="text-danger">
+                {truncatedText(course.requirements, 250, '')}
+              </div>
+            </Popover.Content>
+          </StyledPopover>
+        );
+      }}
       // Have a 1000ms delay before showing popover so it only pops up when user wants it to
       delay={{ show: 1000, hide: 0 }}
     >

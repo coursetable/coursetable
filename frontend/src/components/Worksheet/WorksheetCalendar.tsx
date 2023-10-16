@@ -15,9 +15,7 @@ interface parsedCourseType {
   title: string;
   start: Date;
   end: Date;
-  listing: {
-    course_code: string;
-  };
+  listing: Listing;
   id: number;
 }
 
@@ -126,7 +124,7 @@ function WorksheetCalendar() {
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
-    (event) => {
+    (event: parsedCourseType) => {
       const style: CSSProperties = {
         backgroundColor: event.listing.color,
         borderColor: event.listing.border,
@@ -161,20 +159,6 @@ function WorksheetCalendar() {
       : moment().hour(18).minute(0).toDate();
   }, [ret_values]);
 
-  const onSelectEventCallback = useCallback(
-    (event) => {
-      return showModal(event.listing);
-    },
-    [showModal],
-  );
-
-  const eventPropGetterCallback = useCallback(
-    (event) => {
-      return eventStyleGetter(event);
-    },
-    [eventStyleGetter],
-  );
-
   return (
     // @ts-ignore
     <StyledCalendar
@@ -189,9 +173,9 @@ function WorksheetCalendar() {
       max={maxTime}
       localizer={localizer}
       toolbar={false}
-      onSelectEvent={onSelectEventCallback}
+      onSelectEvent={(event) => showModal((event as parsedCourseType).listing)}
       components={{ event: CalendarEvent }}
-      eventPropGetter={eventPropGetterCallback}
+      eventPropGetter={eventStyleGetter}
       // Display Mon, Tue, Wed, ... at the top
       formats={{
         dayFormat: 'ddd',

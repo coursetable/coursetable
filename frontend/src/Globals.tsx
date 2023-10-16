@@ -77,7 +77,7 @@ function ErrorFallback() {
     </Row>
   );
 }
-const CustomErrorBoundary: React.FC = ({ children }) => {
+function CustomErrorBoundary({ children }: { children: React.ReactNode }) {
   if (isDev) {
     // return <ErrorFallback />;
     return <>{children}</>;
@@ -87,9 +87,9 @@ const CustomErrorBoundary: React.FC = ({ children }) => {
       {children}
     </Sentry.ErrorBoundary>
   );
-};
+}
 
-const Globals: React.FC = ({ children }) => {
+function Globals({ children }: { children: React.ReactNode }) {
   // website light/dark theme
   const [theme, themeToggler] = useDarkMode();
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
@@ -139,6 +139,6 @@ const Globals: React.FC = ({ children }) => {
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>
   );
-};
+}
 
 export default Globals;

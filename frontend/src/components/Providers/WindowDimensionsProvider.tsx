@@ -25,7 +25,7 @@ const smDesktopBreakpoint = 1320;
 const WindowDimensionsCtx = createContext<Store | undefined>(undefined);
 
 // Return dimensions of the window
-const WindowDimensionsProvider: React.FC = ({ children }) => {
+function WindowDimensionsProvider({ children }: { children: React.ReactNode }) {
   const range = useCallback((num: number, min: number, max: number) => {
     return num >= min && num < max;
   }, []);
@@ -90,7 +90,7 @@ const WindowDimensionsProvider: React.FC = ({ children }) => {
       {children}
     </WindowDimensionsCtx.Provider>
   );
-};
+}
 
 export default WindowDimensionsProvider;
 export const useWindowDimensions = () => useContext(WindowDimensionsCtx)!;
