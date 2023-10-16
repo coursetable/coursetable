@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
-import Notice from './components/Notice';
+import * as Sentry from '@sentry/react';
+// import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
@@ -26,6 +27,8 @@ import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './browserStorage';
 import { useWindowDimensions } from './components/Providers/WindowDimensionsProvider';
 import { lightTheme } from './components/Themes';
+
+const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
@@ -106,96 +109,89 @@ function App({ themeToggler }) {
         themeToggler={themeToggler}
         setIsTutorialOpen={setIsTutorialOpen}
       />
-      <Switch>
+      <SentryRoutes>
         {/* Home Page */}
-        <Route exact path="/">
-          {isLoggedIn ? (
-            /* <Home /> */ <Redirect to="/catalog" />
-          ) : (
-            <Redirect to="/login" />
-          )}
-        </Route>
+        <Route
+          path="/"
+          element={
+            isLoggedIn ? (
+              /* <Home /> */ <Navigate to="/catalog" />
+            ) : (
+              <Navigate to="/login" />
+            )
+          }
+        />
 
         {/* About */}
-        <Route exact path="/about">
-          <About />
-        </Route>
+        <Route path="/about" element={<About />} />
 
         {/* Catalog */}
-        <Route exact path="/catalog">
-          {!isLoggedIn ? (
-            <Redirect push to="/login" />
-          ) : !user.hasEvals ? (
-            <Redirect push to="/challenge" />
-          ) : (
-            <Search />
-          )}
-        </Route>
+        <Route
+          path="/catalog"
+          element={
+            !isLoggedIn ? (
+              <Navigate to="/login" />
+            ) : !user.hasEvals ? (
+              <Navigate to="/challenge" />
+            ) : (
+              <Search />
+            )
+          }
+        />
 
         {/* Auth */}
-        <Route exact path="/login">
-          {isLoggedIn ? <Redirect to="/" /> : <Landing />}
-        </Route>
+        <Route
+          path="/login"
+          element={isLoggedIn ? <Navigate to="/" /> : <Landing />}
+        />
 
-        <Route exact path="/worksheetlogin">
-          {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
-        </Route>
+        <Route
+          path="/worksheetlogin"
+          element={
+            isLoggedIn ? <Navigate to="/worksheet" /> : <WorksheetLogin />
+          }
+        />
 
         {/* OCE Challenge */}
-        <Route exact path="/challenge">
-          <Challenge />
-        </Route>
+        <Route path="/challenge" element={<Challenge />} />
 
         {/* Worksheet */}
-        <Route exact path="/worksheet">
-          {isLoggedIn && user.hasEvals ? (
-            <Worksheet />
-          ) : (
-            <Redirect to="/worksheetlogin" />
-          )}
-        </Route>
+        <Route
+          path="/worksheet"
+          element={
+            isLoggedIn && user.hasEvals ? (
+              <Worksheet />
+            ) : (
+              <Navigate to="/worksheetlogin" />
+            )
+          }
+        />
 
         {/* Graphiql explorer */}
-        <Route exact path="/graphiql">
-          {isLoggedIn ? <Graphiql /> : <GraphiqlLogin />}
-        </Route>
+        <Route
+          path="/graphiql"
+          element={isLoggedIn ? <Graphiql /> : <GraphiqlLogin />}
+        />
 
         {/* Thank You */}
-        <Route exact path="/thankyou">
-          <Thankyou />
-        </Route>
+        <Route path="/thankyou" element={<Thankyou />} />
 
         {/* Join Us */}
-        <Route exact path="/joinus">
-          <Join />
-        </Route>
+        <Route path="/joinus" element={<Join />} />
 
         {/* Footer Links */}
-
-        <Route exact path="/faq">
-          <FAQ />
-        </Route>
+        <Route path="/faq" element={<FAQ />} />
 
         {/* Privacy */}
-        <Route exact path="/privacypolicy">
-          <Privacy />
-        </Route>
+        <Route path="/privacypolicy" element={<Privacy />} />
 
-        <Route path="/Table">
-          <Redirect to="/catalog" />
-        </Route>
+        <Route path="/Table" element={<Navigate to="/catalog" />} />
 
         {/* Catch-all Route to NotFound Page */}
-        <Route path="/">
-          <NotFound />
-        </Route>
-      </Switch>
-      {/* Render footer if not on catalog */}
-      <Route
-        render={({ location: routeLocation }) => {
-          return !['/catalog'].includes(routeLocation.pathname) && <Footer />;
-        }}
-      />
+        <Route path="/*" element={<NotFound />} />
+        {/* Render footer if not on catalog */}
+      </SentryRoutes>
+      {!['/catalog'].includes(location.pathname) && <Footer />}
       {/* Tutorial for first-time users */}
       <Tutorial
         isTutorialOpen={isTutorialOpen}

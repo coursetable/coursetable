@@ -1,7 +1,7 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 import qs from 'qs';
 import axios from 'axios';
-import { useHistory, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
@@ -47,8 +47,7 @@ const Challenge: React.VFC = () => {
   const client = useApolloClient();
   // Get user context info and refresh
   const { userRefresh } = useUser();
-  // react-router history to redirect to catalog
-  const history = useHistory();
+  const navigate = useNavigate();
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
   // Stores body of response for the /api/challenge/request API call
@@ -148,7 +147,7 @@ const Challenge: React.VFC = () => {
                 toast.success(
                   "All of your responses were correct! Refresh the page if the courses aren't showing.",
                 );
-                history.goBack();
+                navigate(-1);
               })
               .catch(() => {
                 toast.error('Failed to update evaluation status');
@@ -331,12 +330,7 @@ const Challenge: React.VFC = () => {
         <div>
           You've completed the challenge already - no need to do it again.
           <br />
-          <div
-            onClick={() => {
-              history.goBack();
-            }}
-            className="btn btn-primary mt-3"
-          >
+          <div onClick={() => navigate(-1)} className="btn btn-primary mt-3">
             Go back
           </div>
         </div>

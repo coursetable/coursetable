@@ -2,9 +2,14 @@ import 'react-app-polyfill/stable';
 import 'core-js/features/promise/all-settled';
 import 'core-js/es/promise/all-settled';
 
-import React from 'react';
-import { Router } from 'react-router-dom';
-import { createBrowserHistory } from 'history';
+import React, { useEffect } from 'react';
+import {
+  BrowserRouter,
+  useLocation,
+  useNavigationType,
+  createRoutesFromChildren,
+  matchRoutes,
+} from 'react-router-dom';
 import { ThemeProvider } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import {
@@ -15,7 +20,6 @@ import {
 } from '@apollo/client';
 
 import * as Sentry from '@sentry/react';
-import { Integrations } from '@sentry/tracing';
 
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
@@ -36,15 +40,20 @@ import { lightTheme, darkTheme } from './components/Themes';
 import ErrorPage from './components/ErrorPage';
 import { Row } from 'react-bootstrap';
 
-const history = createBrowserHistory();
-
 const release = isDev ? 'edge' : import.meta.env.VITE_SENTRY_RELEASE;
+
 Sentry.init({
   dsn: 'https://53e6511b51074b35a273d0d47d615927@o476134.ingest.sentry.io/5515218',
   integrations: [
-    new Integrations.BrowserTracing({
-      // Via https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
-      routingInstrumentation: Sentry.reactRouterV5Instrumentation(history),
+    // See https://docs.sentry.io/platforms/javascript/guides/react/configuration/integrations/react-router/
+    new Sentry.BrowserTracing({
+      routingInstrumentation: Sentry.reactRouterV6Instrumentation(
+        useEffect,
+        useLocation,
+        useNavigationType,
+        createRoutesFromChildren,
+        matchRoutes,
+      ),
     }),
   ],
   environment: import.meta.env.MODE,
@@ -104,30 +113,28 @@ function Globals({ children }: { children: React.ReactNode }) {
             <WindowDimensionsProvider>
               <SearchProvider>
                 <WorksheetProvider>
-                  <Router history={history}>
+                  <BrowserRouter>
                     <ThemeProvider theme={themeMode}>
-                      <>
-                        <GlobalStyles />
-                        <div id="base" style={{ height: 'auto' }}>
-                          {/* Clone child and give it the themeToggler prop */}
-                          {children &&
-                            React.Children.map(
-                              children as React.ReactElement<{
-                                themeToggler: string | (() => void);
-                              }>,
-                              (child) => {
-                                if (React.isValidElement(child)) {
-                                  return React.cloneElement(child, {
-                                    themeToggler,
-                                  });
-                                }
-                                return child;
-                              },
-                            )}
-                        </div>
-                      </>
+                      <GlobalStyles />
+                      <div id="base" style={{ height: 'auto' }}>
+                        {/* Clone child and give it the themeToggler prop */}
+                        {children &&
+                          React.Children.map(
+                            children as React.ReactElement<{
+                              themeToggler: string | (() => void);
+                            }>,
+                            (child) => {
+                              if (React.isValidElement(child)) {
+                                return React.cloneElement(child, {
+                                  themeToggler,
+                                });
+                              }
+                              return child;
+                            },
+                          )}
+                      </div>
                     </ThemeProvider>
-                  </Router>
+                  </BrowserRouter>
                 </WorksheetProvider>
               </SearchProvider>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
