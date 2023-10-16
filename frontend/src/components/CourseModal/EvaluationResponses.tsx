@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useCallback } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './EvaluationResponses.module.css';
@@ -67,15 +67,6 @@ const EvaluationResponses: React.FC<{
   // Sort by original order or length?
   const [sort_order, setSortOrder] = useState('original');
 
-  const sortByLength = useCallback((responses) => {
-    for (const key in responses) {
-      responses[key].sort(function (a: string[], b: string[]) {
-        return b.length - a.length;
-      });
-    }
-    return responses;
-  }, []);
-
   // Dictionary that holds the comments for each question
   const [responses, sorted_responses] = useMemo(() => {
     const temp_responses: { [key: string]: string[] } = {};
@@ -98,11 +89,14 @@ const EvaluationResponses: React.FC<{
         }
       });
     });
-    return [
-      temp_responses,
-      sortByLength(JSON.parse(JSON.stringify(temp_responses))), // Deep copy temp_responses and sort it
-    ];
-  }, [info, crn, sortByLength]);
+    const sorted_responses = JSON.parse(
+      JSON.stringify(temp_responses),
+    ) as typeof temp_responses;
+    for (const key of Object.keys(responses)) {
+      sorted_responses[key].sort((a, b) => b.length - a.length);
+    }
+    return [temp_responses, sorted_responses];
+  }, [info, crn]);
 
   // Number of questions
   const num_questions = Object.keys(responses).length;

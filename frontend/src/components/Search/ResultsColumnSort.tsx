@@ -33,7 +33,7 @@ type Props = {
  * @prop selectOption - sortbyOption from Constants to sort by
  */
 
-const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
+function ResultsColumnSort({ selectOption }: Props) {
   // Local sort order state
   const [localSortOrder, setLocalSortOrder] = useState<SortOrderType>(
     defaultFilters.defaultSortOrder,
@@ -105,6 +105,6 @@ const ResultsColumnSort: React.FC<Props> = ({ selectOption }) => {
       </StyledSortBtn>
     </>
   );
-};
+}
 
 export default ResultsColumnSort;

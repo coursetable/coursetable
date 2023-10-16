@@ -187,7 +187,7 @@ export const defaultFilters = {
 /**
  * Stores the user's search, filters, and sorts
  */
-export const SearchProvider: React.FC = ({ children }) => {
+export function SearchProvider({ children }: { children: React.ReactNode }) {
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
 
@@ -1055,6 +1055,6 @@ export const SearchProvider: React.FC = ({ children }) => {
   return (
     <SearchContext.Provider value={store}>{children}</SearchContext.Provider>
   );
-};
+}
 
 export const useSearch = () => useContext(SearchContext)!;

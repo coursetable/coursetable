@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useHistory } from 'react-router-dom';
 import Tour, { ReactourStep, ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
@@ -194,12 +194,12 @@ const stepsContent: Step[] = [
  * Custom Tutorial component using react tour
  */
 
-const Tutorial: React.FC<Props> = ({
+function Tutorial({
   isTutorialOpen,
   setIsTutorialOpen,
   shownTutorial,
   setShownTutorial,
-}) => {
+}: Props) {
   // Current step state
   const [currentStep, setCurrentStep] = useState(0);
 
@@ -297,10 +297,6 @@ const Tutorial: React.FC<Props> = ({
     return <PrevButton>Back</PrevButton>;
   }, [currentStep, shownTutorial, location]);
 
-  // Disable/enable body scroll callbacks
-  const disableBody = useCallback((target) => disableBodyScroll(target), []);
-  const enableBody = useCallback((target) => enableBodyScroll(target), []);
-
   // Next button component
   const nextButton = useMemo(() => {
     if (location.pathname === '/catalog' && currentStep === 7) {
@@ -335,10 +331,10 @@ const Tutorial: React.FC<Props> = ({
       lastStepNextButton={<NextButton>Finish Tutorial</NextButton>}
       getCurrentStep={(curr) => setCurrentStep(curr)}
       disableKeyboardNavigation={['esc']}
-      onAfterOpen={disableBody}
-      onBeforeClose={enableBody}
+      onAfterOpen={disableBodyScroll}
+      onBeforeClose={enableBodyScroll}
     />
   );
-};
+}
 
 export default Tutorial;

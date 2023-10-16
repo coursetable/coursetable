@@ -43,7 +43,7 @@ import { ValueType } from 'react-select/src/types';
 /**
  * Renders catalog page
  */
-const Search: React.FC = () => {
+function Search() {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
 
@@ -100,15 +100,8 @@ const Search: React.FC = () => {
     hideModal,
   } = useSearch();
 
-  const handleSetView = useCallback(
-    (isList) => {
-      setView(isList);
-    },
-    [setView],
-  );
-
-  const scroll_to_results = useCallback(
-    (event) => {
+  const scrollToResults = useCallback(
+    (event?: React.FormEvent) => {
       if (event) event.preventDefault();
 
       // Scroll down to catalog when in mobile view.
@@ -127,28 +120,11 @@ const Search: React.FC = () => {
   const [doneInitialScroll, setDoneInitialScroll] = useState(false);
   useEffect(() => {
     if (!coursesLoading && !doneInitialScroll) {
-      scroll_to_results(null);
+      scrollToResults();
       setDoneInitialScroll(true);
     }
-  }, [coursesLoading, doneInitialScroll, scroll_to_results]);
+  }, [coursesLoading, doneInitialScroll, scrollToResults]);
 
-  // Render slider handles for the course and workload rating sliders
-  const overallSliderHandle = useCallback(({ value, dragging, ...e }) => {
-    const key = e.className;
-    return (
-      <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.overall_tooltip}`}>{value}</div>
-      </Handle>
-    );
-  }, []);
-  const workloadSliderHandle = useCallback(({ value, dragging, ...e }) => {
-    const key = e.className;
-    return (
-      <Handle {...e} key={key}>
-        <div className={`shadow ${Styles.workload_tooltip}`}>{value}</div>
-      </Handle>
-    );
-  }, []);
   // const timeSliderHandle = useCallback(({ value, dragging, ...e }) => {
   //   const key = e.className;
   //   return (
@@ -195,7 +171,7 @@ const Search: React.FC = () => {
               layer={0}
               className={`ml-1 ${Styles.search_container}`}
             >
-              <Form className="px-0" onSubmit={scroll_to_results}>
+              <Form className="px-0" onSubmit={scrollToResults}>
                 <Row className="mx-auto pt-4 px-4">
                   {/* Reset Filters Button */}
                   <small
@@ -333,7 +309,14 @@ const Search: React.FC = () => {
                         onAfterChange={(value) => {
                           setOverallBounds(value);
                         }}
-                        handle={overallSliderHandle}
+                        handle={({ value, dragging, ...e }) => (
+                          // @ts-expect-error: TODO upgrade rc-slider
+                          <Handle {...e} key={e.className}>
+                            <div className={`shadow ${Styles.overall_tooltip}`}>
+                              {value}
+                            </div>
+                          </Handle>
+                        )}
                         className={Styles.slider}
                       />
                     </Container>
@@ -356,7 +339,16 @@ const Search: React.FC = () => {
                         onAfterChange={(value) => {
                           setWorkloadBounds(value);
                         }}
-                        handle={workloadSliderHandle}
+                        handle={({ value, dragging, ...e }) => (
+                          // @ts-expect-error: TODO upgrade rc-slider
+                          <Handle {...e} key={e.className}>
+                            <div
+                              className={`shadow ${Styles.workload_tooltip}`}
+                            >
+                              {value}
+                            </div>
+                          </Handle>
+                        )}
                         className={Styles.slider}
                       />
                     </Container>
@@ -512,7 +504,9 @@ const Search: React.FC = () => {
             <Results
               data={searchData}
               isList={isList}
-              setView={handleSetView}
+              setView={(isList: boolean) => {
+                setView(isList);
+              }}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
               showModal={showModal}
@@ -530,6 +524,6 @@ const Search: React.FC = () => {
       />
     </div>
   );
-};
+}
 
 export default Search;

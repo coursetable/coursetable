@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Switch, Route, Redirect, withRouter } from 'react-router-dom';
+import { Switch, Route, Redirect, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import Notice from './components/Notice';
@@ -30,9 +30,9 @@ import { lightTheme } from './components/Themes';
 /**
  * Render navbar and the corresponding page component for the route the user is on
  * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
- * @prop location - object | provides the location info from react-router-dom
  */
-function App({ themeToggler, location }) {
+function App({ themeToggler }) {
+  const location = useLocation();
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
   // Page initialized as loading
@@ -53,8 +53,6 @@ function App({ themeToggler, location }) {
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
-
-  const MyRoute = Route;
 
   // Tutorial state
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
@@ -110,21 +108,21 @@ function App({ themeToggler, location }) {
       />
       <Switch>
         {/* Home Page */}
-        <MyRoute exact path="/">
+        <Route exact path="/">
           {isLoggedIn ? (
             /* <Home /> */ <Redirect to="/catalog" />
           ) : (
             <Redirect to="/login" />
           )}
-        </MyRoute>
+        </Route>
 
         {/* About */}
-        <MyRoute exact path="/about">
+        <Route exact path="/about">
           <About />
-        </MyRoute>
+        </Route>
 
         {/* Catalog */}
-        <MyRoute exact path="/catalog">
+        <Route exact path="/catalog">
           {!isLoggedIn ? (
             <Redirect push to="/login" />
           ) : !user.hasEvals ? (
@@ -132,65 +130,65 @@ function App({ themeToggler, location }) {
           ) : (
             <Search />
           )}
-        </MyRoute>
+        </Route>
 
         {/* Auth */}
-        <MyRoute exact path="/login">
+        <Route exact path="/login">
           {isLoggedIn ? <Redirect to="/" /> : <Landing />}
-        </MyRoute>
+        </Route>
 
-        <MyRoute exact path="/worksheetlogin">
+        <Route exact path="/worksheetlogin">
           {isLoggedIn ? <Redirect to="/worksheet" /> : <WorksheetLogin />}
-        </MyRoute>
+        </Route>
 
         {/* OCE Challenge */}
-        <MyRoute exact path="/challenge">
+        <Route exact path="/challenge">
           <Challenge />
-        </MyRoute>
+        </Route>
 
         {/* Worksheet */}
-        <MyRoute exact path="/worksheet">
+        <Route exact path="/worksheet">
           {isLoggedIn && user.hasEvals ? (
             <Worksheet />
           ) : (
             <Redirect to="/worksheetlogin" />
           )}
-        </MyRoute>
+        </Route>
 
         {/* Graphiql explorer */}
-        <MyRoute exact path="/graphiql">
+        <Route exact path="/graphiql">
           {isLoggedIn ? <Graphiql /> : <GraphiqlLogin />}
-        </MyRoute>
+        </Route>
 
         {/* Thank You */}
-        <MyRoute exact path="/thankyou">
+        <Route exact path="/thankyou">
           <Thankyou />
-        </MyRoute>
+        </Route>
 
         {/* Join Us */}
-        <MyRoute exact path="/joinus">
+        <Route exact path="/joinus">
           <Join />
-        </MyRoute>
+        </Route>
 
         {/* Footer Links */}
 
-        <MyRoute exact path="/faq">
+        <Route exact path="/faq">
           <FAQ />
-        </MyRoute>
+        </Route>
 
         {/* Privacy */}
-        <MyRoute exact path="/privacypolicy">
+        <Route exact path="/privacypolicy">
           <Privacy />
-        </MyRoute>
+        </Route>
 
-        <MyRoute path="/Table">
+        <Route path="/Table">
           <Redirect to="/catalog" />
-        </MyRoute>
+        </Route>
 
         {/* Catch-all Route to NotFound Page */}
-        <MyRoute path="/">
+        <Route path="/">
           <NotFound />
-        </MyRoute>
+        </Route>
       </Switch>
       {/* Render footer if not on catalog */}
       <Route
@@ -209,4 +207,4 @@ function App({ themeToggler, location }) {
   );
 }
 
-export default withRouter(App);
+export default App;
