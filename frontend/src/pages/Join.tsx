@@ -6,7 +6,7 @@ import { TextComponent } from '../components/StyledComponents';
  * Renders the Join Us page
  */
 
-const Join: React.VFC = () => {
+function Join() {
   return (
     <div className={`${styles.container} mx-auto`}>
       <h1 className={`${styles.join_header} mt-5 mb-3`}>Join Us!</h1>
@@ -26,6 +26,6 @@ const Join: React.VFC = () => {
       </p>
     </div>
   );
-};
+}
 
 export default Join;

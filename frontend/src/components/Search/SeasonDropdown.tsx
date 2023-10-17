@@ -11,7 +11,7 @@ import { useWorksheet } from '../../contexts/worksheetContext';
  * @prop cur_season - string that holds the current season code
  */
 
-const SeasonDropdown: React.VFC = () => {
+function SeasonDropdown() {
   const { season_codes, cur_season, changeSeason } = useWorksheet();
 
   // Populate list of HTML options
@@ -42,6 +42,6 @@ const SeasonDropdown: React.VFC = () => {
       </DropdownButton>
     </div>
   );
-};
+}
 
 export default SeasonDropdown;

@@ -20,10 +20,13 @@ const StyledToggle = styled.div`
  * @prop setView - function to switch views
  */
 
-const ListGridToggle: React.VFC<{
+function ListGridToggle({
+  isList,
+  setView,
+}: {
   isList: boolean;
-  setView: (isList: any) => void;
-}> = ({ isList, setView }) => {
+  setView: (isList: boolean) => void;
+}) {
   return (
     <StyledToggle
       className="d-flex ml-auto my-auto"
@@ -36,6 +39,6 @@ const ListGridToggle: React.VFC<{
       )}
     </StyledToggle>
   );
-};
+}
 
 export default ListGridToggle;

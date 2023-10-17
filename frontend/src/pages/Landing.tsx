@@ -24,7 +24,7 @@ const StyledStat = styled.span`
  * Renders the Landing page for when users aren't logged in
  */
 
-const Landing: React.VFC = () => {
+function Landing() {
   return (
     <div /* className={styles.container} */>
       <Container fluid>
@@ -95,6 +95,6 @@ const Landing: React.VFC = () => {
       </Container>
     </div>
   );
-};
+}
 
 export default Landing;

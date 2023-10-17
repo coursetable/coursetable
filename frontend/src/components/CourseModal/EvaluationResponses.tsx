@@ -106,16 +106,16 @@ const EvaluationResponses: React.FC<{
   // Generate HTML to hold the responses to each question
   const [recommend, skills, strengths, summary] = useMemo(() => {
     // Lists that hold the html for the comments for a specific question
-    let temp_recommend = [];
-    let temp_skills = [];
-    let temp_strengths = [];
-    let temp_summary = [];
+    let temp_recommend: JSX.Element[] = [];
+    let temp_skills: JSX.Element[] = [];
+    let temp_strengths: JSX.Element[] = [];
+    let temp_summary: JSX.Element[] = [];
     const cur_responses =
       sort_order === 'length' ? sorted_responses : responses;
     // Populate the lists above
-    const genTemp = (resps: any) => {
+    const genTemp = (resps: string[]) => {
       if (resps.length === 0) {
-        return resps;
+        return [];
       }
       const filteredResps = resps
         .filter((response: string) => {

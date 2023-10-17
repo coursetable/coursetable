@@ -42,12 +42,12 @@ type Props = {
  * @prop isLoggedIn - is user logged in?
  * @prop setIsTutorialOpen - opens tutorial
  */
-const MeDropdown: React.VFC<Props> = ({
+function MeDropdown({
   profile_expanded,
   setIsComponentVisible,
   isLoggedIn,
   setIsTutorialOpen,
-}) => {
+}: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
 
@@ -235,6 +235,6 @@ const MeDropdown: React.VFC<Props> = ({
       </Collapse>
     </SurfaceComponent>
   );
-};
+}
 
 export default MeDropdown;

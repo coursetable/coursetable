@@ -42,7 +42,7 @@ type Answer = {
  * Renders the OCE Challenge page if the user hasn't completed yet
  */
 
-const Challenge: React.VFC = () => {
+function Challenge() {
   // Apollo client
   const client = useApolloClient();
   // Get user context info and refresh
@@ -468,6 +468,6 @@ const Challenge: React.VFC = () => {
       </SurfaceComponent>
     </div>
   );
-};
+}
 
 export default Challenge;

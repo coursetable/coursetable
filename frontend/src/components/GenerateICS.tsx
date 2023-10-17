@@ -85,15 +85,14 @@ export const generateICS = (listings_all: Listing[]) => {
           start.date(),
           start.hour(),
           start.minute(),
-        ],
+        ] as [number, number, number, number, number],
         duration: { minutes: duration },
       });
     }
   }
 
   // Export to ICS
-  // @ts-ignore
-  ics.createEvents(events, (error: any, value: any) => {
+  ics.createEvents(events, (error, value) => {
     if (error) {
       Sentry.captureException(error);
       toast.error('Error Generating ICS File');

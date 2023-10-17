@@ -19,11 +19,7 @@ const StyledSortBtn = styled.div`
   }
 `;
 
-/**
- * Sorting select and toggle button
- */
-
-const SortByReactSelect: React.VFC = () => {
+function SortByReactSelect() {
   const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
     useSearch();
 
@@ -75,6 +71,6 @@ const SortByReactSelect: React.VFC = () => {
       </StyledSortBtn>
     </>
   );
-};
+}
 
 export default SortByReactSelect;
