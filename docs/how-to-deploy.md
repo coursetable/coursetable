@@ -81,9 +81,9 @@ read -p "Add those to crontab. Press [enter] when done..."
 
 ```sh
 # Run these on the prod server.
-cd ~/coursetable/docker
+cd ~/coursetable/api
 git pull # Get changes onto server
-./deploy.sh # Deploy the new version
+./start.sh -p # Deploy the new version in prod
 ```
 If you get a prisma EACCES error run this from /coursetable/docker:
 ```
