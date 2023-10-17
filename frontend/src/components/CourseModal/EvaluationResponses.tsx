@@ -92,7 +92,7 @@ const EvaluationResponses: React.FC<{
     const sorted_responses = JSON.parse(
       JSON.stringify(temp_responses),
     ) as typeof temp_responses;
-    for (const key of Object.keys(responses)) {
+    for (const key of Object.keys(temp_responses)) {
       sorted_responses[key].sort((a, b) => b.length - a.length);
     }
     return [temp_responses, sorted_responses];
