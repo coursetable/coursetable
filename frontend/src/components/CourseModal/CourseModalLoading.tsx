@@ -5,7 +5,7 @@ import { Modal, Spinner } from 'react-bootstrap';
  * Displays loading page for course modal
  */
 
-const CourseModalLoading: React.VFC = () => {
+function CourseModalLoading() {
   return (
     <Modal.Body className="d-flex">
       <Spinner className="m-auto" animation="border" role="status">
@@ -13,6 +13,6 @@ const CourseModalLoading: React.VFC = () => {
       </Spinner>
     </Modal.Body>
   );
-};
+}
 
 export default CourseModalLoading;

@@ -7,7 +7,7 @@ import { useWindowDimensions } from '../components/Providers/WindowDimensionsPro
 /**
  * Renders the beta blocked page if user is not on the beta whitelist
  */
-const BetaBlocked: React.VFC = () => {
+function BetaBlocked() {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
 
@@ -29,6 +29,6 @@ const BetaBlocked: React.VFC = () => {
       </a>
     </div>
   );
-};
+}
 
 export default BetaBlocked;

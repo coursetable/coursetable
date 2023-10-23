@@ -6,7 +6,7 @@ type Props = {
   message: string;
 };
 
-const ErrorPage: React.VFC<Props> = ({ message }) => {
+function ErrorPage({ message }: Props) {
   return (
     <div className="text-center m-auto">
       <h3>{message}</h3>
@@ -29,6 +29,6 @@ const ErrorPage: React.VFC<Props> = ({ message }) => {
       />
     </div>
   );
-};
+}
 
 export default ErrorPage;

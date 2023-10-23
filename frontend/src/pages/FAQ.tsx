@@ -71,10 +71,7 @@ function ContextAwareToggle({
   );
 }
 
-/**
- * Renders the FAQ page
- */
-const FAQ: React.VFC = () => {
+function FAQ() {
   const faqs = [
     {
       title: 'What is CourseTable?',
@@ -323,6 +320,6 @@ const FAQ: React.VFC = () => {
       </Accordion>
     </StyledContainer>
   );
-};
+}
 
 export default FAQ;

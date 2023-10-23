@@ -12,11 +12,15 @@ import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
  * @prop crn - integer that holds current listing's crn
  * @prop course_code - string that holds current listing's course code
  */
-const CourseModalEvaluations: React.VFC<{
+function CourseModalEvaluations({
+  season_code,
+  crn,
+  course_code,
+}: {
   season_code: string;
   crn: number;
   course_code: string;
-}> = ({ season_code, crn, course_code }) => {
+}) {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
@@ -43,6 +47,6 @@ const CourseModalEvaluations: React.VFC<{
       </Row>
     </Modal.Body>
   );
-};
+}
 
 export default CourseModalEvaluations;

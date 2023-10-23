@@ -159,15 +159,6 @@ function WorksheetToggleButton({
       </Button>
     );
 
-  // Render remove/add message on hover
-  const renderTooltip = (props: any) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small>
-        {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
-      </small>
-    </Tooltip>
-  );
-
   // Handler for changing the selected worksheet in the dropdown
   const handleWorksheetChange = (event: {
     target: { value: React.SetStateAction<string> };
@@ -179,7 +170,13 @@ function WorksheetToggleButton({
     <OverlayTrigger
       placement="top"
       delay={{ show: 1000, hide: 0 }}
-      overlay={renderTooltip}
+      overlay={(props) => (
+        <Tooltip id="button-tooltip" {...props}>
+          <small>
+            {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
+          </small>
+        </Tooltip>
+      )}
     >
       <StyledButton
         variant="toggle"

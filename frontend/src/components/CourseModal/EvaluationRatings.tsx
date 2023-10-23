@@ -17,10 +17,13 @@ import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
  * @prop info - dictionary that holds the eval data for each question
  */
 
-const EvaluationRatings: React.VFC<{
+function EvaluationRatings({
+  crn,
+  info,
+}: {
   crn: number;
   info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
-}> = ({ crn, info }) => {
+}) {
   // List of dictionaries that holds the ratings for each question as well as the question text
   const ratings: { question: string; values: number[] }[] = [];
   // Loop through each section
@@ -87,6 +90,6 @@ const EvaluationRatings: React.VFC<{
     ));
 
   return <div>{items}</div>;
-};
+}
 
 export default EvaluationRatings;

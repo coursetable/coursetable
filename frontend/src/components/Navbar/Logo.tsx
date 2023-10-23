@@ -16,7 +16,7 @@ type Props = {
 /**
  * CourseTable Logo
  */
-const Logo: React.VFC<Props> = ({ icon = true, wordmark = true }) => {
+function Logo({ icon = true, wordmark = true }: Props) {
   const theme = useTheme();
 
   return (
@@ -40,6 +40,6 @@ const Logo: React.VFC<Props> = ({ icon = true, wordmark = true }) => {
       )}
     </span>
   );
-};
+}
 
 export default Logo;

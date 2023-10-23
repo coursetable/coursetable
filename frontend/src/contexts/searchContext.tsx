@@ -47,7 +47,8 @@ export type Option = {
   numeric?: boolean;
 };
 
-export const isOption = (x: any): x is Option => 'label' in x && 'value' in x;
+export const isOption = (x: unknown): x is Option =>
+  !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
 export type SortOrderType = 'desc' | 'asc' | undefined;
 
@@ -399,11 +400,11 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       }
 
       // separate skills and areas
-      processedSkills = processedSkillsAreas.filter((x: any): x is SkillsType =>
-        skills.includes(x),
+      processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
+        skills.includes(x as SkillsType),
       );
-      processedAreas = processedSkillsAreas.filter((x: any): x is AreasType =>
-        areas.includes(x),
+      processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
+        areas.includes(x as AreasType),
       );
 
       // set null defaults
@@ -685,11 +686,11 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
       if (
         (searchConfig.areas.size !== 0 || searchConfig.skills.size !== 0) &&
-        !listing.areas.some((v: any): v is AreasType =>
-          searchConfig.areas.has(v),
+        !listing.areas.some((v): v is AreasType =>
+          searchConfig.areas.has(v as AreasType),
         ) &&
-        !listing.skills.some((v: any): v is SkillsType =>
-          searchConfig.skills.has(v),
+        !listing.skills.some((v): v is SkillsType =>
+          searchConfig.skills.has(v as SkillsType),
         )
       ) {
         return false;

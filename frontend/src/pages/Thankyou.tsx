@@ -4,7 +4,7 @@ import ThankYouImage from '../images/thankyou.svg';
 /**
  * Renders the Thank You page when user submits a form
  */
-const Thankyou: React.VFC = () => {
+function Thankyou() {
   return (
     <div className="text-center py-5">
       <h3>Thank You!</h3>
@@ -17,6 +17,6 @@ const Thankyou: React.VFC = () => {
       />
     </div>
   );
-};
+}
 
 export default Thankyou;

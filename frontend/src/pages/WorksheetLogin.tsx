@@ -6,7 +6,7 @@ import { API_ENDPOINT } from '../config';
 /**
  * Renders a login page if user tries to access worksheet page
  */
-const WorksheetLogin: React.VFC = () => {
+function WorksheetLogin() {
   return (
     <div className="text-center py-5">
       <h3>
@@ -26,6 +26,6 @@ const WorksheetLogin: React.VFC = () => {
       />
     </div>
   );
-};
+}
 
 export default WorksheetLogin;

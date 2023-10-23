@@ -19,7 +19,7 @@ const Underline = styled.span`
 /**
  * Renders the privacy page
  */
-const Privacy: React.VFC = () => {
+function Privacy() {
   return (
     <div className={`${styles.container} mx-auto`}>
       <StyledH1 className={'mt-5 mb-1'}>Privacy Policy</StyledH1>
@@ -683,6 +683,6 @@ const Privacy: React.VFC = () => {
       </TextComponent>
     </div>
   );
-};
+}
 
 export default Privacy;
