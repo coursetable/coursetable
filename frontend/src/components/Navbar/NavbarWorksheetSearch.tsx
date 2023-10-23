@@ -145,11 +145,6 @@ export function NavbarWorksheetSearch() {
   }, [friendInfo]);
 
   const selected_fb = useMemo(() => {
-    return {
-      value: fb_person,
-      label: 'Connect FB',
-    };
-
     if (fb_person === 'me') {
       return null;
     }
@@ -235,8 +230,6 @@ export function NavbarWorksheetSearch() {
                 onReset={() => {
                   handleFBPersonChange('me');
                 }}
-                isDisabled={false}
-                disabledButtonText="Connect FB"
               >
                 <PopoutSelect
                   hideSelectedOptions={false}
@@ -250,7 +243,6 @@ export function NavbarWorksheetSearch() {
                     else if (isOption(selectedOption))
                       handleFBPersonChange(selectedOption.value);
                   }}
-                  isDisabled={false}
                 />
               </Popout>
           </FilterGroup>
