@@ -11,8 +11,6 @@ import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../contexts/userContext';
-import FBLoginButton from './FBLoginButton';
-import { FaFacebookSquare } from 'react-icons/fa';
 import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -124,10 +122,10 @@ export function NavbarWorksheetSearch() {
 
   // FB Friends names
   const friendInfo = useMemo(() => {
-    return user.fbLogin && user.fbWorksheets
+    return user.fbWorksheets
       ? user.fbWorksheets.friendInfo
       : {};
-  }, [user.fbLogin, user.fbWorksheets]);
+  }, [user.fbWorksheets]);
 
   // List of FB friend options. Initialize with me option
   const friend_options = useMemo(() => {
@@ -147,12 +145,11 @@ export function NavbarWorksheetSearch() {
   }, [friendInfo]);
 
   const selected_fb = useMemo(() => {
-    if (!user.fbLogin) {
-      return {
-        value: fb_person,
-        label: 'Connect FB',
-      };
-    }
+    return {
+      value: fb_person,
+      label: 'Connect FB',
+    };
+
     if (fb_person === 'me') {
       return null;
     }
@@ -160,7 +157,7 @@ export function NavbarWorksheetSearch() {
       value: fb_person,
       label: friendInfo[fb_person].name,
     };
-  }, [user.fbLogin, fb_person, friendInfo]);
+  }, [fb_person, friendInfo]);
 
   const { isTablet } = useWindowDimensions();
 
@@ -231,49 +228,31 @@ export function NavbarWorksheetSearch() {
               />
             </Popout>
             {/* Facebook Dropdown */}
-            {user.fbLogin ? (
-              <>
-                <Popout
-                  buttonText="Friends' courses"
-                  type="facebook"
-                  select_options={selected_fb}
-                  onReset={() => {
-                    handleFBPersonChange('me');
+              <Popout
+                buttonText="Friends' courses"
+                type="facebook"
+                select_options={selected_fb}
+                onReset={() => {
+                  handleFBPersonChange('me');
+                }}
+                isDisabled={false}
+                disabledButtonText="Connect FB"
+              >
+                <PopoutSelect
+                  hideSelectedOptions={false}
+                  value={selected_fb}
+                  options={friend_options}
+                  placeholder="Friends' courses"
+                  onChange={(selectedOption: ValueType<Option, boolean>) => {
+                    // Cleared FB friend
+                    if (!selectedOption) handleFBPersonChange('me');
+                    // Selected FB friend
+                    else if (isOption(selectedOption))
+                      handleFBPersonChange(selectedOption.value);
                   }}
-                  isDisabled={!user.fbLogin}
-                  disabledButtonText="Connect FB"
-                >
-                  <PopoutSelect
-                    hideSelectedOptions={false}
-                    value={selected_fb}
-                    options={friend_options}
-                    placeholder="Friends' courses"
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      // Cleared FB friend
-                      if (!selectedOption) handleFBPersonChange('me');
-                      // Selected FB friend
-                      else if (isOption(selectedOption))
-                        handleFBPersonChange(selectedOption.value);
-                    }}
-                    isDisabled={!user.fbLogin}
-                  />
-                </Popout>
-                {!isTablet && (
-                  <Row className="ml-2">
-                    <FBLoginButton />
-                  </Row>
-                )}
-              </>
-            ) : (
-              <Row className="ml-2">
-                <FaFacebookSquare
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#007bff"
+                  isDisabled={false}
                 />
-                <FBLoginButton />
-              </Row>
-            )}
+              </Popout>
           </FilterGroup>
         </StyledRow>
       </Form>

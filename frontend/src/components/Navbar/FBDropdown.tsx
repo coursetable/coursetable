@@ -22,7 +22,7 @@ const FBDropdown: React.VFC = () => {
   const { cur_season, fb_person, handleFBPersonChange } = useWorksheet();
 
   // Generate friend netId list, sorted by name.
-  const friendInfo = (user.fbLogin && user.fbWorksheets?.friendInfo) || {};
+  const friendInfo = (user.fbWorksheets?.friendInfo) || {};
   let friends = Object.keys(friendInfo);
   friends.sort((a, b) => {
     return friendInfo[a].name.toLowerCase() < friendInfo[b].name.toLowerCase()
@@ -32,7 +32,7 @@ const FBDropdown: React.VFC = () => {
   friends = ['me', ...friends];
 
   const friendWorksheets =
-    (user.fbLogin && user?.fbWorksheets?.worksheets) || {};
+    (user?.fbWorksheets?.worksheets) || {};
 
   const DropdownItem: React.VFC<{ person: Person }> = ({ person }) => {
     let text: string;

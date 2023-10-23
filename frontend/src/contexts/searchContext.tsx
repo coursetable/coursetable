@@ -333,9 +333,9 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
   // Object that holds a list of each fb friend taking a specific course
   const num_fb = useMemo(() => {
-    if (!user.fbLogin || !user.fbWorksheets) return {};
+    if (!user.fbWorksheets) return {};
     return getNumFB(user.fbWorksheets);
-  }, [user.fbLogin, user.fbWorksheets]);
+  }, [user.fbWorksheets]);
 
   // populate seasons from database
   let seasonsOptions: OptType;

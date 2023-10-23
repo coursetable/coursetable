@@ -8,7 +8,6 @@ import {
   FcPuzzle,
 } from 'react-icons/fc';
 import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import FBLoginButton from './FBLoginButton';
 
 import styles from './MeDropdown.module.css';
 import { generateICS } from '../GenerateICS';
@@ -184,7 +183,7 @@ const MeDropdown: React.VFC<Props> = ({
                 </TextComponent>
               </Row>
             )}
-            {/* Connect FB button */}
+            {/* Friends button */}
             {isLoggedIn && (
               <Row className="pb-3 m-auto">
                 <FaFacebookSquare
@@ -192,7 +191,15 @@ const MeDropdown: React.VFC<Props> = ({
                   size={20}
                   color="#007bff"
                 />
-                <FBLoginButton loggedInMode="disconnect" />
+                <TextComponent type={1}>
+                  <NavLink
+                    to="/friends"
+                    className={styles.collapse_text}
+                    onClick={scrollToTop}
+                  >
+                    <StyledHoverText>Friends</StyledHoverText>
+                  </NavLink>
+                </TextComponent>
               </Row>
             )}
             {/* Sign In/Out button */}

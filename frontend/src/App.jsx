@@ -139,6 +139,12 @@ function App({ themeToggler }) {
           }
         />
 
+        {/* Friends */}
+        <Route
+          path="/friends"
+          element={isLoggedIn ? <Navigate to="/friends" /> : <Friends />}
+        />
+
         {/* Auth */}
         <Route
           path="/login"
