@@ -37,6 +37,7 @@ import js from '../images/headshots/josephine-shin.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import px from '../images/headshots/peter-xu.png';
 import bx from '../images/headshots/ben-xu.png';
+import ns from '../images/headshots/neil-song.png';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -140,6 +141,15 @@ function About() {
       links: {
         linkedin: 'https://www.linkedin.com/in/ben-xu-6323ab258/',
         github: 'https://github.com/benzuzu',
+      },
+    },
+    {
+      name: 'Neil Song',
+      image: ns,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
       },
     },
   ];
