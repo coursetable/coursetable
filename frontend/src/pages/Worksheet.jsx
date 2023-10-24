@@ -30,6 +30,35 @@ const StyledCalendarContainer = styled(SurfaceComponent)`
     color ${({ theme }) => theme.trans_dur};
 `;
 
+function WorksheetStats() {
+  const { courses, hidden_courses, cur_season } = useWorksheet();
+  const { courseCnt, credits, workload, rating } = courses.reduce(
+    (acc, c) =>
+      hidden_courses[cur_season]?.[c.crn]
+        ? acc
+        : {
+            courseCnt: acc.courseCnt + 1,
+            credits: acc.credits + (c.credits ?? 0),
+            workload: acc.workload + (c.average_workload ?? 0),
+            rating: acc.rating + (c.average_rating ?? 0),
+          },
+    { courseCnt: 0, credits: 0, workload: 0, rating: 0 },
+  );
+  return (
+    <div className={styles.stats}>
+      <ul>
+        <li>Total courses: {courseCnt}</li>
+        <li>Total credits: {credits}</li>
+        <li>Total workload: {workload.toFixed(2)}</li>
+        <li>
+          Average rating:{' '}
+          {(courseCnt === 0 ? 0 : rating / courseCnt).toFixed(2)}
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 /**
  * Renders worksheet page
  */
@@ -135,6 +164,7 @@ function Worksheet() {
                 className={styles.calendar_style_container}
               >
                 <WorksheetCalendar />
+                <WorksheetStats />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
                   className={`${styles.expand_btn} ${styles.top_right}`}

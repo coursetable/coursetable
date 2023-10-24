@@ -180,5 +180,4 @@ function WorksheetCalendar() {
   );
 }
 
-// WorksheetCalendar.whyDidYouRender = true;
-export default React.memo(WorksheetCalendar);
+export default WorksheetCalendar;
