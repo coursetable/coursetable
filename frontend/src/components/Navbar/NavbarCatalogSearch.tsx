@@ -297,49 +297,32 @@ export function NavbarCatalogSearch() {
   );
 
   // Responsive styles for overall and workload range filters
-  const range_handle_style = useCallback(() => {
+  const range_handle_style = useMemo(() => {
     if (isLgDesktop) {
       return undefined;
     }
     const styles: React.CSSProperties = { height: '12px', width: '12px' };
     return [styles, styles];
   }, [isLgDesktop]);
-  const range_rail_style = useCallback(() => {
+  const range_rail_style = useMemo((): React.CSSProperties => {
     if (isLgDesktop) {
       return {};
     }
-    const styles: React.CSSProperties = { marginTop: '-1px' };
+    const styles = { marginTop: '-1px' };
     return styles;
   }, [isLgDesktop]);
 
-  // Scroll down to catalog when in mobile view.
-  const scroll_to_results = useCallback(
-    (event: React.FormEvent<HTMLFormElement>) => {
-      if (event) event.preventDefault();
-
-      if (isMobile) {
-        scroller.scrollTo('catalog', {
-          smooth: true,
-          duration: 500,
-          offset: -56,
-        });
-      }
-    },
-    [isMobile],
-  );
-
   // ctrl/cmd-f search hotkey
-  const focusSearch = (e: KeyboardEvent | undefined) => {
-    if (e && searchTextInput.current) {
-      e.preventDefault();
-      searchTextInput.current.focus();
-    }
-  };
   const keyMap = {
     FOCUS_SEARCH: ['ctrl+f', 'command+f'],
   };
   const handlers = {
-    FOCUS_SEARCH: focusSearch,
+    FOCUS_SEARCH(e: KeyboardEvent | undefined) {
+      if (e && searchTextInput.current) {
+        e.preventDefault();
+        searchTextInput.current.focus();
+      }
+    },
   };
 
   // Consolidate all advanced filters' selected options
@@ -411,7 +394,17 @@ export function NavbarCatalogSearch() {
       {/* Search Form */}
       <Form
         className="px-0 h-100"
-        onSubmit={scroll_to_results}
+        onSubmit={(event) => {
+          if (event) event.preventDefault();
+
+          if (isMobile) {
+            scroller.scrollTo('catalog', {
+              smooth: true,
+              duration: 500,
+              offset: -56,
+            });
+          }
+        }}
         data-tutorial="catalog-1"
       >
         {/* Top row */}
@@ -529,9 +522,9 @@ export function NavbarCatalogSearch() {
                   step={0.1}
                   isTablet={isTablet}
                   key={reset_key}
-                  handleStyle={range_handle_style()}
-                  railStyle={range_rail_style()}
-                  trackStyle={[range_rail_style()]}
+                  handleStyle={range_handle_style}
+                  railStyle={range_rail_style}
+                  trackStyle={[range_rail_style]}
                   defaultValue={overallBounds}
                   onChange={(value: React.SetStateAction<number[]>) => {
                     setOverallValueLabels(value);
@@ -560,9 +553,9 @@ export function NavbarCatalogSearch() {
                   step={0.1}
                   isTablet={isTablet}
                   key={reset_key}
-                  handleStyle={range_handle_style()}
-                  railStyle={range_rail_style()}
-                  trackStyle={[range_rail_style()]}
+                  handleStyle={range_handle_style}
+                  railStyle={range_rail_style}
+                  trackStyle={[range_rail_style]}
                   defaultValue={workloadBounds}
                   onChange={(value: React.SetStateAction<number[]>) => {
                     setWorkloadValueLabels(value);
@@ -738,9 +731,9 @@ export function NavbarCatalogSearch() {
                         264: '10PM',
                       }}
                       key={reset_key}
-                      handleStyle={range_handle_style()}
-                      railStyle={range_rail_style()}
-                      trackStyle={[range_rail_style()]}
+                      handleStyle={range_handle_style}
+                      railStyle={range_rail_style}
+                      trackStyle={[range_rail_style]}
                       defaultValue={timeBounds.map(toRangeTime)}
                       onChange={(value: number[]) => {
                         setTimeValueLabels(value.map(toRealTime));
@@ -772,9 +765,9 @@ export function NavbarCatalogSearch() {
                       step={10}
                       marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
                       key={reset_key}
-                      handleStyle={range_handle_style()}
-                      railStyle={range_rail_style()}
-                      trackStyle={[range_rail_style()]}
+                      handleStyle={range_handle_style}
+                      railStyle={range_rail_style}
+                      trackStyle={[range_rail_style]}
                       defaultValue={enrollBounds.map(toLinear)}
                       onChange={(value: number[]) => {
                         setEnrollValueLabels(
@@ -822,9 +815,9 @@ export function NavbarCatalogSearch() {
                         1000: '1000+',
                       }}
                       key={reset_key}
-                      handleStyle={range_handle_style()}
-                      railStyle={range_rail_style()}
-                      trackStyle={[range_rail_style()]}
+                      handleStyle={range_handle_style}
+                      railStyle={range_rail_style}
+                      trackStyle={[range_rail_style]}
                       defaultValue={numBounds}
                       onChange={(value: React.SetStateAction<number[]>) => {
                         setNumValueLabels(value);

@@ -10,7 +10,7 @@ import Results from '../Search/Results';
  * Render expanded worksheet list after maximize button is clicked
  */
 
-const WorksheetList = () => {
+function WorksheetList() {
   const [isList, setView] = useState(true);
 
   const { courses, worksheetLoading, showModal } = useWorksheet();
@@ -44,6 +44,6 @@ const WorksheetList = () => {
       </Row>
     </div>
   );
-};
+}
 
 export default React.memo(WorksheetList);

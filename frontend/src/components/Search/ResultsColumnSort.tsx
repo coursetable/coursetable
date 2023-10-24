@@ -49,24 +49,6 @@ function ResultsColumnSort({ selectOption }: Props) {
 
   const globalTheme = useTheme();
 
-  // Handle changing the sort order
-  const handleSortOrder = () => {
-    // If not sorting by this option previously, start sorting this option
-    if (select_sortby.value !== selectOption.value) {
-      setSelectSortby(selectOption);
-      setSortOrder(localSortOrder);
-    } else {
-      // Toggle sort order
-      if (localSortOrder === 'asc') {
-        setSortOrder('desc');
-        setLocalSortOrder('desc');
-      } else {
-        setSortOrder('asc');
-        setLocalSortOrder('asc');
-      }
-    }
-  };
-
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
@@ -87,7 +69,21 @@ function ResultsColumnSort({ selectOption }: Props) {
       <StyledSortBtn
         style={{ backgroundColor: active ? globalTheme.select_hover : '' }}
         className="ml-1 my-auto"
-        onClick={handleSortOrder}
+        onClick={() => {
+          // If not sorting by this option previously, start sorting this option
+          if (select_sortby.value !== selectOption.value) {
+            setSelectSortby(selectOption);
+            setSortOrder(localSortOrder);
+            return;
+          }
+          if (localSortOrder === 'asc') {
+            setSortOrder('desc');
+            setLocalSortOrder('desc');
+          } else {
+            setSortOrder('asc');
+            setLocalSortOrder('asc');
+          }
+        }}
       >
         {!selectOption.numeric ? (
           // Sorting by letters

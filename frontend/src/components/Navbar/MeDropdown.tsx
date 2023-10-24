@@ -60,12 +60,6 @@ function MeDropdown({
   let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
   if (!data) data = [];
 
-  // Handle 'export worksheet' button click
-  const handleExportClick = () => {
-    // Start export process
-    setExport(true);
-  };
-
   // Called when worksheet updates or export_ics changes
   useEffect(() => {
     // return if worksheet isn't loaded or it isn't time to export
@@ -76,16 +70,13 @@ function MeDropdown({
     setExport(false);
   }, [data, export_ics]);
 
-  // Keep dropdown open on clicks
-  const handleDropdownClick = () => {
-    setIsComponentVisible(true);
-  };
-
   return (
     <SurfaceComponent
       layer={1}
       className={styles.collapse_container}
-      onClick={handleDropdownClick}
+      onClick={() => {
+        setIsComponentVisible(true);
+      }}
     >
       <Collapse in={profile_expanded}>
         {/* This wrapper div is important for making the collapse animation smooth */}
@@ -177,7 +168,10 @@ function MeDropdown({
                 <FcCalendar className="mr-2 my-auto" size={20} />
                 <TextComponent
                   type={1}
-                  onClick={handleExportClick}
+                  onClick={() => {
+                    // Start export process
+                    setExport(true);
+                  }}
                   className={styles.collapse_text}
                 >
                   <StyledHoverText>Export Worksheet</StyledHoverText>

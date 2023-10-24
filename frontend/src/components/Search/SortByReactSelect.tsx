@@ -23,12 +23,6 @@ function SortByReactSelect() {
   const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
     useSearch();
 
-  // Handle changing the sort order
-  const handleSortOrder = () => {
-    if (sort_order === 'asc') setSortOrder('desc');
-    else setSortOrder('asc');
-  };
-
   return (
     <>
       {/* Sort By Select */}
@@ -47,7 +41,7 @@ function SortByReactSelect() {
       {/* Toggle sort order button */}
       <StyledSortBtn
         className={`${search_styles.sort_btn} my-auto`}
-        onClick={handleSortOrder}
+        onClick={() => setSortOrder(sort_order === 'asc' ? 'desc' : 'asc')}
       >
         {!select_sortby.numeric ? (
           // Sorting by letters

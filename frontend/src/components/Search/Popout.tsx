@@ -141,12 +141,6 @@ export function Popout({
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisibleDropdown<HTMLDivElement>(false);
-
-  // Open popout handler
-  const toggleOpen = () => {
-    setIsComponentVisible(!isComponentVisible);
-  };
-
   const theme = useTheme();
 
   // Dynamic text state for active popout button
@@ -262,7 +256,7 @@ export function Popout({
     >
       {/* Popout Button */}
       <StyledButton
-        onClick={toggleOpen}
+        onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
         ref={ref_toggle}
         className={className}

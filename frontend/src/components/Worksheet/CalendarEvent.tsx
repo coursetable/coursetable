@@ -38,23 +38,21 @@ function CalendarEvent({
     <OverlayTrigger
       // Course info that appears on hover
       placement="right"
-      overlay={(props) => {
-        return (
-          <StyledPopover {...props} id="title_popover">
-            <Popover.Title>
-              <strong>{course.title}</strong>
-              <span className="d-block">{course.times_summary}</span>
-            </Popover.Title>
-            <Popover.Content>
-              {truncatedText(course.description, 300, 'no description')}
-              <br />
-              <div className="text-danger">
-                {truncatedText(course.requirements, 250, '')}
-              </div>
-            </Popover.Content>
-          </StyledPopover>
-        );
-      }}
+      overlay={(props) => (
+        <StyledPopover {...props} id="title_popover">
+          <Popover.Title>
+            <strong>{course.title}</strong>
+            <span className="d-block">{course.times_summary}</span>
+          </Popover.Title>
+          <Popover.Content>
+            {truncatedText(course.description, 300, 'no description')}
+            <br />
+            <div className="text-danger">
+              {truncatedText(course.requirements, 250, '')}
+            </div>
+          </Popover.Content>
+        </StyledPopover>
+      )}
       // Have a 1000ms delay before showing popover so it only pops up when user wants it to
       delay={{ show: 1000, hide: 0 }}
     >
