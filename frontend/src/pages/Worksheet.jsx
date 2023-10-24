@@ -32,7 +32,10 @@ const StyledCalendarContainer = styled(SurfaceComponent)`
 
 function WorksheetStats() {
   const { courses, hidden_courses, cur_season } = useWorksheet();
-  let courseCnt = 0, credits = 0, workload = 0, rating = 0;
+  let courseCnt = 0,
+    credits = 0,
+    workload = 0,
+    rating = 0;
   for (const c of courses) {
     if (hidden_courses[cur_season]?.[c.crn]) continue; // just skip hidden courses
 
