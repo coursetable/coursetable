@@ -32,28 +32,25 @@ const StyledCalendarContainer = styled(SurfaceComponent)`
 
 function WorksheetStats() {
   const { courses, hidden_courses, cur_season } = useWorksheet();
-  const { courseCnt, credits, workload, rating } = courses.reduce(
-    (acc, c) =>
-      hidden_courses[cur_season]?.[c.crn]
-        ? acc
-        : {
-            courseCnt: acc.courseCnt + 1,
-            credits: acc.credits + (c.credits ?? 0),
-            workload: acc.workload + (c.average_workload ?? 0),
-            rating: acc.rating + (c.average_rating ?? 0),
-          },
-    { courseCnt: 0, credits: 0, workload: 0, rating: 0 },
-  );
+  let courseCnt = 0, credits = 0, workload = 0, rating = 0;
+  for (const c of courses) {
+    if (hidden_courses[cur_season]?.[c.crn]) continue; // just skip hidden courses
+
+    courseCnt += 1;
+    credits += c.credits ?? 0;
+    workload += c.average_workload ?? 0;
+    rating += c.average_rating ?? 0;
+  }
+
+  const avgRating = courseCnt === 0 ? 0 : (rating / courseCnt).toFixed(2); // better to calculate not in the jsx
+
   return (
     <div className={styles.stats}>
       <ul>
         <li>Total courses: {courseCnt}</li>
         <li>Total credits: {credits}</li>
         <li>Total workload: {workload.toFixed(2)}</li>
-        <li>
-          Average rating:{' '}
-          {(courseCnt === 0 ? 0 : rating / courseCnt).toFixed(2)}
-        </li>
+        <li>Average rating: {avgRating}</li>
       </ul>
     </div>
   );
