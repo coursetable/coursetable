@@ -16,6 +16,6 @@ import {
  */
 export default async (app: express.Express): Promise<void> => {
   app.use(cookieParser());
-  app.post('/api/facebook/update', addFriend);
+  app.post('/api/facebook/addFriend', addFriend);
   app.get('/api/facebook/worksheets', getFriendsWorksheets);
 };
