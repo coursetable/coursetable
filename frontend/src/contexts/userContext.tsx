@@ -16,7 +16,6 @@ export type FriendRecord = Record<
   NetId,
   {
     name: string;
-    facebookId: string;
   }
 >;
 export type FriendInfo = {
@@ -54,9 +53,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   // User's school
   const [school, setSchool] = useState<string | undefined>(undefined);
   // User's FB friends' worksheets
-  const [fbWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(
-    undefined,
-  );
+  const [fbWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(undefined);
 
   // Refresh user worksheet
   const userRefresh = useCallback(
@@ -92,6 +89,32 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     },
     [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
   );
+
+  // Refresh user FB stuff
+  // const fbRefresh = useCallback(
+  //   (suppressError = false): Promise<void> => {
+  //     return axios
+  //       .get(`${API_ENDPOINT}/api/facebook/worksheets`, {
+  //         withCredentials: true,
+  //       })
+  //       .then((friends_worksheets) => {
+  //         if (!friends_worksheets.data.success) {
+  //           throw new Error(friends_worksheets.data.message);
+  //         }
+  //         // Successfully fetched friends' worksheets
+  //         setFbWorksheets(friends_worksheets.data);
+  //       })
+  //       .catch((err) => {
+  //         // Error with fetching friends' worksheets
+  //         if (!suppressError) {
+  //           Sentry.captureException(err);
+  //           toast.error('Error updating Facebook friends');
+  //         }
+  //         setFbWorksheets(undefined);
+  //       });
+  //   },
+  //   [setFbWorksheets],
+  // );
 
   // Refresh user FB stuff
   const fbRefresh = useCallback(
