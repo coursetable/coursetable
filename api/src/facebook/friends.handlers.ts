@@ -9,172 +9,47 @@ import express from 'express';
 import { prisma } from '../config';
 
 import winston from '../logging/winston';
-import { StudentFacebookFriends, Students } from '@prisma/client';
+import { StudentBluebookSettings, StudentFriends } from '@prisma/client';
 
-const ME_FIELDS = 'id,name,first_name,middle_name,last_name';
-const FRIEND_FIELDS = 'id,name,first_name,middle_name,last_name';
-const FRIENDS_PAGE_LIMIT = 500;
-
-/**
- * Fetch and create/update user's Facebook friends.
- *
- * @param req - express request object
- * @param res - express response object
- */
-export const updateFriends = async (
+export const addFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-  winston.info(`Updating friends`);
+  winston.info("Adding new friend")
 
   if (!req.user) {
-    return res.status(401).json({ success: false });
+    return res.status(401).json({ success: false})
   }
 
-  const { netId } = req.user;
+  const { netId } = req.user
 
-  // User's Facebook token for fetching their friends
-  // const fbToken = req.headers['fb-token'];
-
-  // Get current user's Facebook info
-  // const { data: facebookProfile } = await axios({
-  //   url: `${FACEBOOK_API_ENDPOINT}/me?fields=${ME_FIELDS}&access_token=${fbToken}`,
-  //   method: 'get',
-  // });
-
-  winston.info(`Creating friend info for user ${netId}`);
-
-  // Update user's Facebook info
-  // await prisma.students.upsert({
-  //   // update (do not create a new friend) when one already matches the netId and Facebook ID
-  //   where: {
-  //     netId,
-  //   },
-  //   // basic info for creation
-  //   create: {
-  //     netId,
-  //     facebookId: BigInt(facebookProfile.id),
-  //     facebookDataJson: JSON.stringify(facebookProfile),
-  //   },
-  //   // update people's names if they've changed
-  //   update: {
-  //     facebookId: BigInt(facebookProfile.id),
-  //     facebookDataJson: JSON.stringify(facebookProfile),
-  //   },
-  // });
-
-  let userFriends: { id: string; name: string }[] = [];
-
-  // Cursor pointing to the next page of friends
-  let after: string | undefined = '';
-
-  /**
-   * Update friends array from fetched data.
-   *
-   * @param friendsData - response object from Facebook API
-   */
-  // const updateFriendsCursor = (friendsData: {
-  //   data: { id: string; name: string }[];
-  //   paging: { cursors: { before: string; after: string } };
-  // }) => {
-  //   userFriends = userFriends.concat(friendsData.data);
-
-  //   // break by setting after to undefined
-  //   if (friendsData.data.length === 0 || !friendsData.paging) {
-  //     after = undefined;
-  //   } else {
-  //     // otherwise, update the cursor
-  //     after = friendsData.paging.cursors.after;
-  //   }
-  // };
-
-  // while (after !== undefined) {
-  //   winston.info(`Fetching Facebook friends page`);
-
-  //   // Usually awaits in loops are discouraged because async functions
-  //   // can be parallelized, but this is an exception because the next loop
-  //   // depends on the cursor returned by this one.
-
-  //   try {
-  //     // eslint-disable-next-line no-await-in-loop
-  //     await axios
-  //       .get(
-  //         `${FACEBOOK_API_ENDPOINT}/me/friends?fields=${FRIEND_FIELDS}&limit=${FRIENDS_PAGE_LIMIT}&access_token=${fbToken}&after=${after}`,
-  //       )
-  //       .then(({ data }) => updateFriendsCursor(data));
-  //   } catch (err) {
-  //     winston.error(`Facebook Graph API error: ${err}`);
-  //     return res.status(500).json({ success: false });
-  //   }
-  // }
+  const { friendId } = req.params["friendId"]
 
   try {
-    const upsertFriends = userFriends.map((friend) => {
 
-      return prisma.studentFacebookFriends.upsert({
+    await prisma.$transaction([
+      prisma.studentFriends.upsert({
         // update (do not create a new friend) when one already matches the netId and Facebook ID
         where: {
-          netId,
+          netId_friendNetId: { netId, friendNetId },
         },
         // basic info for creation
         create: {
           netId,
-          name: friend.name,
+          // name: friend.name,
+          friendNetId,
         },
         // update people's names if they've changed
-        update: {
-          name: friend.name,
-        },
-      });
-    });
-
-    await prisma.$transaction(upsertFriends);
+        update: {},
+      })
+    ]);
 
     return res.json({ success: true });
   } catch (err) {
-    winston.error(`Error with upserting Facebook friends: ${err}`);
+    winston.error(`Error with upserting friend: ${err}`);
     return res.status(500).json({ success: false });
   }
-};
-
-/**
- * Delete user's conneccted Facebook info (friends and account ID)
- *
- * @param req - express request object
- * @param res - express response object
- */
-// export const disconnectFacebook = async (
-//   req: express.Request,
-//   res: express.Response,
-// ): Promise<express.Response> => {
-//   winston.info(`Disconnecting Facebook`);
-
-//   if (!req.user) {
-//     return res.status(401).json({ success: false });
-//   }
-
-//   const { netId } = req.user;
-
-//   try {
-//     winston.info(`Removing Facebook friends for user ${netId}`);
-//     await prisma.studentFacebookFriends.deleteMany({
-//       where: {
-//         netId,
-//       },
-//     });
-
-//     winston.info(`Removing Facebook account info for user ${netId}`);
-//     await prisma.students.deleteMany({
-//       where: {
-//         netId,
-//       },
-//     });
-//     return res.json({ success: true });
-//   } catch (err) {
-//     winston.error(`Error with disconnecting Facebook: ${err}`);
-//     return res.status(500).json({ success: false });
-//   }
-// };
+}
 
 /**
  * Get worksheets of user's friends.
@@ -186,7 +61,7 @@ export const getFriendsWorksheets = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-  winston.info(`Fetching Facebook friends' worksheets`);
+  winston.info(`Fetching friends' worksheets`);
 
   if (!req.user) {
     return res.status(401).json();
@@ -194,34 +69,20 @@ export const getFriendsWorksheets = async (
 
   const { netId } = req.user;
 
-  // Get Facebook ID of user
-  winston.info("Getting user's Facebook ID");
-  const studentProfile = await prisma.students.findUnique({
+  // Get NetIDs of Facebook friends
+  winston.info('Getting NetIDs of Facebook friends');
+  const friendRecords = await prisma.studentFriends.findMany({
     where: {
       netId,
     },
   });
 
-  const userFacebookId = studentProfile?.facebookId;
-
-  if (!userFacebookId) {
-    return res.status(401).json();
-  }
-
-  // Get NetIDs of Facebook friends
-  winston.info('Getting NetIDs of Facebook friends');
-  const friends = await prisma.studentFacebookFriends.findMany({
-    where: {
-      facebookId: userFacebookId,
-    },
-  });
-
-  const friendNetIds = friends.map(
-    (friend: StudentFacebookFriends) => friend.netId,
+  const friendNetIds = friendRecords.map(
+    (friendRecord: StudentFriends) => friendRecord.friendNetId,
   );
 
   // Get friends' worksheets from NetIDs
-  winston.info('Getting worksheets of Facebook friends');
+  winston.info('Getting worksheets of friends');
   const friendWorksheets = await prisma.worksheetCourses.findMany({
     where: {
       net_id: {
@@ -230,15 +91,25 @@ export const getFriendsWorksheets = async (
     },
   });
 
-  // Get friends' worksheets from NetIDs
+  // Get friends' infos from NetIDs
   winston.info('Getting info of Facebook friends');
-  const friendInfos: Students[] = await prisma.students.findMany({
+  const friendInfos: StudentBluebookSettings[] = await prisma.studentBluebookSettings.findMany({
     where: {
       netId: {
         in: friendNetIds,
       },
     },
   });
+
+  const friendNames = friendInfos.map(
+    (friendInfo: StudentBluebookSettings) => ({netId: friendInfo.netId, name: friendInfo.first_name + " " + friendInfo.last_name})
+  )
+
+  const friendNameMap: {[key: string]: { name: string }} = {};
+
+  for (const nameRecord of friendNames) {
+    friendNameMap[nameRecord.netId] = { name: nameRecord.name }
+  }
 
   // map netId to worksheets (list of [season, oci_id])
   const worksheetsByFriend: { [key: string]: [string, number][] } = {};
@@ -260,29 +131,9 @@ export const getFriendsWorksheets = async (
     },
   );
 
-  // map netId to friend name and Facebook ID
-  const infoByFriend: {
-    [key: string]: { name: string; facebookId: string };
-  } = {};
-  friendInfos.forEach(
-    ({ netId: friendNetId, facebookId, facebookDataJson }: Students) => {
-      if (facebookDataJson && facebookDataJson !== '') {
-        infoByFriend[friendNetId] = {
-          name: JSON.parse(facebookDataJson).name,
-          facebookId: String(facebookId),
-        };
-      } else {
-        infoByFriend[friendNetId] = {
-          name: friendNetId,
-          facebookId: String(facebookId),
-        };
-      }
-    },
-  );
-
   return res.status(200).json({
     success: true,
     worksheets: worksheetsByFriend,
-    friendInfo: infoByFriend,
+    friendInfo: friendNameMap,
   });
 };
