@@ -145,7 +145,7 @@ const Results = ({
       RATE_WORKLOAD_WIDTH: isLgDesktop ? 92 : 82,
       RATE_PROF_WIDTH: isLgDesktop ? 40 : 36,
       ENROLL_WIDTH: 40,
-      FB_WIDTH: 60,
+      FRIEND_WIDTH: 60,
       PADDING: 43,
     };
 
@@ -154,7 +154,7 @@ const Results = ({
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
       TEMP_COL_SPACING.ENROLL_WIDTH -
-      TEMP_COL_SPACING.FB_WIDTH -
+      TEMP_COL_SPACING.FRIEND_WIDTH -
       TEMP_COL_SPACING.RATE_OVERALL_WIDTH -
       TEMP_COL_SPACING.RATE_WORKLOAD_WIDTH -
       TEMP_COL_SPACING.RATE_PROF_WIDTH -
@@ -216,7 +216,7 @@ const Results = ({
   // List render function for React Virtualized List
   const renderListRow = useCallback(
     ({ index, key, style, isScrolling }) => {
-      const fb_friends = num_friends[data[index].season_code + data[index].crn]
+      const friends = num_friends[data[index].season_code + data[index].crn]
         ? num_friends[data[index].season_code + data[index].crn]
         : [];
       // Alternating row item background colors
@@ -239,7 +239,7 @@ const Results = ({
             isFirst={index === 0}
             COL_SPACING={COL_SPACING}
             isScrolling={isScrolling}
-            fb_friends={fb_friends}
+            friends={friends}
           />
         </ResultsItemWrapper>
       );
@@ -450,11 +450,11 @@ const Results = ({
     [multiSeasons],
   );
 
-  // Tooltip for hovering over fb friends
-  const fb_tooltip = useCallback(
+  // Tooltip for hovering over friends count
+  const friend_tooltip = useCallback(
     (props) => (
       <Tooltip id="button-tooltip" {...props}>
-        <span>Number of Facebook friends shopping this course</span>
+        <span>Number of friends shopping this course</span>
       </Tooltip>
     ),
     [],
@@ -486,7 +486,7 @@ const Results = ({
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
   const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const friend_style = { width: `${COL_SPACING.FRIEND_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
@@ -628,8 +628,8 @@ const Results = ({
                     <span className={Styles.one_line}>Location</span>
                   </ResultsHeader>
                   {/* FB */}
-                  <ResultsHeader style={fb_style}>
-                    <OverlayTrigger placement="bottom" overlay={fb_tooltip}>
+                  <ResultsHeader style={friend_style}>
+                    <OverlayTrigger placement="bottom" overlay={friend_tooltip}>
                       <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
                     <ResultsColumnSort

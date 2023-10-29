@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
@@ -118,7 +119,7 @@ export const checkCrossListed = (
 };
 
 // Fetch the FB friends that are also shopping a specific course. Used in course modal overview
-export const fbFriendsAlsoTaking = (
+export const FriendsAlsoTaking = (
   season_code: Season,
   crn: Crn,
   worksheets: Worksheet,
@@ -139,28 +140,28 @@ export const fbFriendsAlsoTaking = (
   }
   return also_taking;
 };
-type NumFBReturn =
+type NumFriendsReturn =
   // Key is season code + crn
   // Value is the list of FB friends taking the class
   Record<string, string[]>;
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
-export const getNumFB = (fbWorksheets: FriendInfo): NumFBReturn => {
+export const getNumFriends = (friendWorksheets: FriendInfo): NumFriendsReturn => {
   // List of each friends' worksheets
-  const { worksheets } = fbWorksheets;
+  const { worksheets } = friendWorksheets;
   // List of each friends' names/facebook id
-  const names = fbWorksheets.friendInfo;
+  const names = friendWorksheets.friendInfo;
   // Object to return
-  const fb_dict: NumFBReturn = {};
-  // Iterate over each fb friend's worksheet
+  const friend_dict: NumFriendsReturn = {};
+  // Iterate over each friend's worksheet
   for (const friend in worksheets) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
-      if (!fb_dict[key]) fb_dict[key] = []; // List doesn't exist for this course so create one
-      fb_dict[key].push(names[friend].name); // Add fb friend's name to this list
+      if (!friend_dict[key]) friend_dict[key] = []; // List doesn't exist for this course so create one
+      friend_dict[key].push(names[friend].name); // Add friend's name to this list
     });
   }
-  return fb_dict;
+  return friend_dict;
 };
 
 // Get the overall rating for a course
@@ -249,15 +250,15 @@ const calculateDayTime = (course: Listing): number | null => {
 };
 
 // Helper function that returns the correct value to sort by
-const helperSort = (listing: Listing, key: SortKeys, num_friends: NumFBReturn) => {
-  // Sorting by fb friends
-  if (key === 'fb') {
+const helperSort = (listing: Listing, key: SortKeys, num_friends: NumFriendsReturn) => {
+  // Sorting by friends
+  if (key === 'friend') {
     // Concatenate season code and crn to form key
-    const fb_key = listing.season_code + listing.crn;
+    const friend_key = listing.season_code + listing.crn;
     // No friends. return zero
-    if (!num_friends[fb_key]) return 0;
+    if (!num_friends[friend_key]) return 0;
     // Has friends. return number of friends
-    return num_friends[fb_key].length;
+    return num_friends[friend_key].length;
   }
   // Sorting by course rating
   if (key === 'average_rating') {
@@ -282,7 +283,7 @@ export const sortCourses = (
   // TODO: we should be much more strict with this type. Specifically,
   // we should prevent there from being multiple keys.
   ordering: { [key in SortKeys]?: 'asc' | 'desc' },
-  num_friends: NumFBReturn,
+  num_friends: NumFriendsReturn,
 ): Listing[] => {
   // Key to sort the courses by
   const key = Object.keys(ordering)[0] as SortKeys;

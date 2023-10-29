@@ -78,8 +78,8 @@ export function NavbarWorksheetSearch() {
     changeSeason,
     changeWorksheet,
     worksheet_number,
-    fb_person,
-    handleFBPersonChange,
+    person,
+    handlePersonChange,
     worksheet_view,
     handleWorksheetView,
   } = useWorksheet();
@@ -122,10 +122,10 @@ export function NavbarWorksheetSearch() {
 
   // FB Friends names
   const friendInfo = useMemo(() => {
-    return user.fbWorksheets
-      ? user.fbWorksheets.friendInfo
+    return user.friendWorksheets
+      ? user.friendWorksheets.friendInfo
       : {};
-  }, [user.fbWorksheets]);
+  }, [user.friendWorksheets]);
 
   // List of FB friend options. Initialize with me option
   const friend_options = useMemo(() => {
@@ -144,15 +144,15 @@ export function NavbarWorksheetSearch() {
     return friend_options_temp;
   }, [friendInfo]);
 
-  const selected_fb = useMemo(() => {
-    if (fb_person === 'me') {
+  const selected_person = useMemo(() => {
+    if (person === 'me') {
       return null;
     }
     return {
-      value: fb_person,
-      label: friendInfo[fb_person].name,
+      value: person,
+      label: friendInfo[person].name,
     };
-  }, [fb_person, friendInfo]);
+  }, [person, friendInfo]);
 
   const { isTablet } = useWindowDimensions();
 
@@ -226,24 +226,24 @@ export function NavbarWorksheetSearch() {
               <Popout
                 buttonText="Friends' courses"
                 type="facebook"
-                select_options={selected_fb}
+                select_options={selected_person}
                 onReset={() => {
-                  handleFBPersonChange('me');
+                  handlePersonChange('me');
                 }}
                 isDisabled={false}
                 disabledButtonText="Connect FB"
               >
                 <PopoutSelect
                   hideSelectedOptions={false}
-                  value={selected_fb}
+                  value={selected_person}
                   options={friend_options}
                   placeholder="Friends' courses"
                   onChange={(selectedOption: ValueType<Option, boolean>) => {
                     // Cleared FB friend
-                    if (!selectedOption) handleFBPersonChange('me');
+                    if (!selectedOption) handlePersonChange('me');
                     // Selected FB friend
                     else if (isOption(selectedOption))
-                      handleFBPersonChange(selectedOption.value);
+                      handlePersonChange(selectedOption.value);
                   }}
                   isDisabled={false}
                 />

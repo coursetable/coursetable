@@ -29,10 +29,10 @@ type Store = {
     hasEvals?: boolean;
     year?: number;
     school?: string;
-    fbWorksheets?: FriendInfo;
+    friendWorksheets?: FriendInfo;
   };
   userRefresh(suppressError?: boolean): Promise<void>;
-  fbRefresh(suppressError?: boolean): Promise<void>;
+  friendRefresh(suppressError?: boolean): Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -53,7 +53,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   // User's school
   const [school, setSchool] = useState<string | undefined>(undefined);
   // User's FB friends' worksheets
-  const [fbWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(undefined);
+  const [friendWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(undefined);
 
   // Refresh user worksheet
   const userRefresh = useCallback(
@@ -91,33 +91,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   );
 
   // Refresh user FB stuff
-  // const fbRefresh = useCallback(
-  //   (suppressError = false): Promise<void> => {
-  //     return axios
-  //       .get(`${API_ENDPOINT}/api/facebook/worksheets`, {
-  //         withCredentials: true,
-  //       })
-  //       .then((friends_worksheets) => {
-  //         if (!friends_worksheets.data.success) {
-  //           throw new Error(friends_worksheets.data.message);
-  //         }
-  //         // Successfully fetched friends' worksheets
-  //         setFbWorksheets(friends_worksheets.data);
-  //       })
-  //       .catch((err) => {
-  //         // Error with fetching friends' worksheets
-  //         if (!suppressError) {
-  //           Sentry.captureException(err);
-  //           toast.error('Error updating Facebook friends');
-  //         }
-  //         setFbWorksheets(undefined);
-  //       });
-  //   },
-  //   [setFbWorksheets],
-  // );
-
-  // Refresh user FB stuff
-  const fbRefresh = useCallback(
+  const friendRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
         .get(`${API_ENDPOINT}/api/facebook/worksheets`, {
@@ -149,9 +123,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       hasEvals,
       year,
       school,
-      fbWorksheets,
+      friendWorksheets,
     };
-  }, [netId, worksheet, hasEvals, year, school, fbWorksheets]);
+  }, [netId, worksheet, hasEvals, year, school, friendWorksheets]);
 
   const store = useMemo(
     () => ({
@@ -160,9 +134,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
       // Update methods.
       userRefresh,
-      fbRefresh,
+      friendRefresh,
     }),
-    [user, userRefresh, fbRefresh],
+    [user, userRefresh, friendRefresh],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;

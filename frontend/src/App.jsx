@@ -41,18 +41,18 @@ function App({ themeToggler }) {
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
-  const { user, userRefresh, fbRefresh } = useUser();
+  const { user, userRefresh, friendRefresh } = useUser();
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
     const a = userRefresh(true);
-    const b = fbRefresh(true);
+    const b = friendRefresh(true);
 
     Promise.allSettled([a, b]).finally(() => {
-      // Set loading to false after user info and fb info is fetched
+      // Set loading to false after user info is fetched
       setLoading(false);
     });
-  }, [userRefresh, fbRefresh]);
+  }, [userRefresh, friendRefresh]);
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
@@ -137,12 +137,6 @@ function App({ themeToggler }) {
               <Search />
             )
           }
-        />
-
-        {/* Friends */}
-        <Route
-          path="/friends"
-          element={isLoggedIn ? <Navigate to="/friends" /> : <Friends />}
         />
 
         {/* Auth */}

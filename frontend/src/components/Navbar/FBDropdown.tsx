@@ -19,10 +19,10 @@ const FBDropdown: React.VFC = () => {
   // Fetch user context data
   const { user } = useUser();
 
-  const { cur_season, fb_person, handleFBPersonChange } = useWorksheet();
+  const { cur_season, person, handlePersonChange } = useWorksheet();
 
   // Generate friend netId list, sorted by name.
-  const friendInfo = (user.fbWorksheets?.friendInfo) || {};
+  const friendInfo = (user.friendWorksheets?.friendInfo) || {};
   let friends = Object.keys(friendInfo);
   friends.sort((a, b) => {
     return friendInfo[a].name.toLowerCase() < friendInfo[b].name.toLowerCase()
@@ -32,7 +32,7 @@ const FBDropdown: React.VFC = () => {
   friends = ['me', ...friends];
 
   const friendWorksheets =
-    (user?.fbWorksheets?.worksheets) || {};
+    (user?.friendWorksheets?.worksheets) || {};
 
   const DropdownItem: React.VFC<{ person: Person }> = ({ person }) => {
     let text: string;
@@ -52,8 +52,8 @@ const FBDropdown: React.VFC = () => {
         className="d-flex"
         // Styling if this is the current person
         style={{
-          backgroundColor: person === fb_person ? '#007bff' : '',
-          color: person === fb_person ? 'white' : 'black',
+          backgroundColor: person === person ? '#007bff' : '',
+          color: person === person ? 'white' : 'black',
         }}
       >
         <div className="mx-auto">{text}</div>
@@ -66,9 +66,9 @@ const FBDropdown: React.VFC = () => {
   ));
 
   // Set FB person on click
-  const handleSelect = (fb_person: Person | null) => {
-    if (fb_person) {
-      handleFBPersonChange(fb_person);
+  const handleSelect = (person: Person | null) => {
+    if (person) {
+      handlePersonChange(person);
     }
   };
 
@@ -76,7 +76,7 @@ const FBDropdown: React.VFC = () => {
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={fb_person === 'me' ? 'Me' : friendInfo[fb_person].name}
+        title={person === 'me' ? 'Me' : friendInfo[person].name}
         onSelect={handleSelect}
       >
         {friend_options}

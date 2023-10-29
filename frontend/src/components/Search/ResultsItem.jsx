@@ -27,10 +27,8 @@ import {
   getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
-  isInWorksheet,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
-import { useUser } from '../../contexts/userContext';
 
 // Row for results item
 const StyledResultsItem = styled(Row)`
@@ -83,7 +81,7 @@ const Tag = styled(Badge)`
  * @prop isFirst - boolean | is this the first course of the results?
  * @prop COL_SPACING - object | with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
- * @prop fb_friends - array | of fb friends also taking this course
+ * @prop friends - array | of friends also taking this course
  */
 
 const ResultsItem = ({
@@ -93,7 +91,7 @@ const ResultsItem = ({
   isFirst,
   COL_SPACING,
   isScrolling = false,
-  fb_friends,
+  friends,
 }) => {
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
@@ -199,9 +197,9 @@ const ResultsItem = ({
 
   // Render tooltip with names of FB friends also shopping
   const renderFBFriendsTooltip = (props) =>
-    fb_friends.length > 0 ? (
+    friends.length > 0 ? (
       <Tooltip id="button-tooltip" {...props}>
-        {fb_friends.join(' • ')}
+        {friends.join(' • ')}
       </Tooltip>
     ) : (
       <div />
@@ -233,7 +231,7 @@ const ResultsItem = ({
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
   const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const friend_style = { width: `${COL_SPACING.FRIEND_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const subject_code = course.course_code.split(' ')[0];
@@ -374,10 +372,10 @@ const ResultsItem = ({
           <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
         {/* # FB Friends also shopping */}
-        <div style={fb_style} className="d-flex ">
+        <div style={friend_style} className="d-flex ">
           <OverlayTrigger placement="top" overlay={renderFBFriendsTooltip}>
             <span className="my-auto">
-              {fb_friends.length > 0 ? fb_friends.length : ''}
+              {friends.length > 0 ? friends.length : ''}
             </span>
           </OverlayTrigger>
         </div>
