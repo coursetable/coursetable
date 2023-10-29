@@ -12,16 +12,16 @@ import { NetId, Season } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
 export type Worksheet = [Season, string, string][];
-export type FBFriendInfo = Record<
+export type FriendRecord = Record<
   NetId,
   {
     name: string;
     facebookId: string;
   }
 >;
-export type FBInfo = {
+export type FriendInfo = {
   worksheets: Record<NetId, Worksheet>;
-  friendInfo: FBFriendInfo;
+  friendInfo: FriendRecord;
 };
 type Store = {
   user: {
@@ -30,8 +30,7 @@ type Store = {
     hasEvals?: boolean;
     year?: number;
     school?: string;
-    fbLogin?: boolean;
-    fbWorksheets?: FBInfo;
+    fbWorksheets?: FriendInfo;
   };
   userRefresh(suppressError?: boolean): Promise<void>;
   fbRefresh(suppressError?: boolean): Promise<void>;
@@ -54,10 +53,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [year, setYear] = useState<number | undefined>(undefined);
   // User's school
   const [school, setSchool] = useState<string | undefined>(undefined);
-  // User's FB login status
-  const [fbLogin, setFbLogin] = useState<boolean | undefined>(undefined);
   // User's FB friends' worksheets
-  const [fbWorksheets, setFbWorksheets] = useState<FBInfo | undefined>(
+  const [fbWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(
     undefined,
   );
 
@@ -108,7 +105,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             throw new Error(friends_worksheets.data.message);
           }
           // Successfully fetched friends' worksheets
-          setFbLogin(true);
           setFbWorksheets(friends_worksheets.data);
         })
         .catch((err) => {
@@ -117,11 +113,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             Sentry.captureException(err);
             toast.error('Error updating Facebook friends');
           }
-          setFbLogin(false);
           setFbWorksheets(undefined);
         });
     },
-    [setFbLogin, setFbWorksheets],
+    [setFbWorksheets],
   );
 
   const user = useMemo(() => {
@@ -131,10 +126,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       hasEvals,
       year,
       school,
-      fbLogin,
       fbWorksheets,
     };
-  }, [netId, worksheet, hasEvals, year, school, fbLogin, fbWorksheets]);
+  }, [netId, worksheet, hasEvals, year, school, fbWorksheets]);
 
   const store = useMemo(
     () => ({

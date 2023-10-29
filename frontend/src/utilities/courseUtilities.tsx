@@ -1,7 +1,7 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
-import { FBFriendInfo, FBInfo, Worksheet } from '../contexts/userContext';
+import { FriendRecord, FriendInfo, Worksheet } from '../contexts/userContext';
 import { Listing } from '../components/Providers/FerryProvider';
 import { SortKeys } from '../queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
@@ -122,7 +122,7 @@ export const fbFriendsAlsoTaking = (
   season_code: Season,
   crn: Crn,
   worksheets: Worksheet,
-  names: FBFriendInfo,
+  names: FriendRecord,
 ): string[] => {
   // Return if worksheets are null
   if (!worksheets) return [];
@@ -144,7 +144,7 @@ type NumFBReturn =
   // Value is the list of FB friends taking the class
   Record<string, string[]>;
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
-export const getNumFB = (fbWorksheets: FBInfo): NumFBReturn => {
+export const getNumFB = (fbWorksheets: FriendInfo): NumFBReturn => {
   // List of each friends' worksheets
   const { worksheets } = fbWorksheets;
   // List of each friends' names/facebook id
@@ -249,15 +249,15 @@ const calculateDayTime = (course: Listing): number | null => {
 };
 
 // Helper function that returns the correct value to sort by
-const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
+const helperSort = (listing: Listing, key: SortKeys, num_friends: NumFBReturn) => {
   // Sorting by fb friends
   if (key === 'fb') {
     // Concatenate season code and crn to form key
     const fb_key = listing.season_code + listing.crn;
     // No friends. return zero
-    if (!num_fb[fb_key]) return 0;
+    if (!num_friends[fb_key]) return 0;
     // Has friends. return number of friends
-    return num_fb[fb_key].length;
+    return num_friends[fb_key].length;
   }
   // Sorting by course rating
   if (key === 'average_rating') {
@@ -282,7 +282,7 @@ export const sortCourses = (
   // TODO: we should be much more strict with this type. Specifically,
   // we should prevent there from being multiple keys.
   ordering: { [key in SortKeys]?: 'asc' | 'desc' },
-  num_fb: NumFBReturn,
+  num_friends: NumFBReturn,
 ): Listing[] => {
   // Key to sort the courses by
   const key = Object.keys(ordering)[0] as SortKeys;
@@ -292,8 +292,8 @@ export const sortCourses = (
   const sorted = orderBy(
     courses,
     [
-      (listing) => helperSort(listing, key, num_fb) == null,
-      (listing) => helperSort(listing, key, num_fb),
+      (listing) => helperSort(listing, key, num_friends) == null,
+      (listing) => helperSort(listing, key, num_friends),
       (listing) => listing.course_code,
     ],
     ['asc', order_asc ? 'asc' : 'desc', 'asc'],
