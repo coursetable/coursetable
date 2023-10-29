@@ -31,6 +31,16 @@ model StudentFriends {
   @@index([netId], map: "netId")
 }
 
+model StudentFriends {
+  id         BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  netId      String @db.Char(8)
+  name       String @db.VarChar(255)
+  friendNetId String @db.Char(8)
+
+  @@unique([netId, friendNetId], name: "netId_friendNetId", map: "netId_friendNetId")
+  @@index([netId], map: "netId")
+}
+
 model Students {
   netId            String @id @default("") @db.Char(8)
 
