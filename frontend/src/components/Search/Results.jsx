@@ -97,7 +97,7 @@ const getColWidth = (calculated, min = 0, max = 1000000) => {
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_fb = object | holds a list of each fb friend taking a specific course
+ * @prop num_friends = object | holds a list of each friend taking a specific course
  * @prop page = string | page search results are on
  */
 
@@ -109,7 +109,7 @@ const Results = ({
   multiSeasons = false,
   showModal,
   isLoggedIn,
-  num_fb,
+  num_friends,
   page = 'catalog',
 }) => {
   // Fetch current device
@@ -216,8 +216,8 @@ const Results = ({
   // List render function for React Virtualized List
   const renderListRow = useCallback(
     ({ index, key, style, isScrolling }) => {
-      const fb_friends = num_fb[data[index].season_code + data[index].crn]
-        ? num_fb[data[index].season_code + data[index].crn]
+      const fb_friends = num_friends[data[index].season_code + data[index].crn]
+        ? num_friends[data[index].season_code + data[index].crn]
         : [];
       // Alternating row item background colors
       const colorStyles =
@@ -244,7 +244,7 @@ const Results = ({
         </ResultsItemWrapper>
       );
     },
-    [data, showModal, multiSeasons, COL_SPACING, num_fb, globalTheme],
+    [data, showModal, multiSeasons, COL_SPACING, num_friends, globalTheme],
   );
 
   if (!isLoggedIn) {
