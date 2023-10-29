@@ -22,19 +22,22 @@ model StudentBluebookSettings {
   challengeTries     Int     @default(0)
 }
 
-model StudentFriends {
+model StudentFacebookFriends {
   id         BigInt @id @default(autoincrement()) @db.UnsignedBigInt
   netId      String @db.Char(8)
   name       String @db.VarChar(255)
+  facebookId BigInt @db.UnsignedBigInt
 
-  @@unique([netId], map: "netId")
+  @@unique([netId, facebookId], name: "netId_friendFacebookId", map: "netId_friendFacebookId")
   @@index([netId], map: "netId")
 }
 
 model Students {
   netId            String @id @default("") @db.Char(8)
+  facebookId       BigInt @db.UnsignedBigInt
+  facebookDataJson String @db.Text
 
-  @@index([netId], map: "netId")
+  @@index([facebookId], map: "facebookId")
 }
 
 model WorksheetCourses {
