@@ -109,6 +109,7 @@ function CourseModal({ listing, hideModal, show }) {
                             crn={cur_listing.crn}
                             season_code={cur_listing.season_code}
                             modal
+                            selectedWorksheet={cur_listing.current_worksheet}
                           />
                         ) : (
                           // If this is the overview of some other eval course, show back button
