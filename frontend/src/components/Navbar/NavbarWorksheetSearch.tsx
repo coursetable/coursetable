@@ -1,3 +1,4 @@
+/* eslint-disable guard-for-in */
 import React, { useMemo } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -80,6 +81,7 @@ export function NavbarWorksheetSearch() {
     worksheet_number,
     person,
     handlePersonChange,
+    handleAddFriend,
     worksheet_view,
     handleWorksheetView,
   } = useWorksheet();
@@ -222,32 +224,52 @@ export function NavbarWorksheetSearch() {
                 }}
               />
             </Popout>
-            {/* Facebook Dropdown */}
-              <Popout
-                buttonText="Friends' courses"
-                type="facebook"
-                select_options={selected_person}
-                onReset={() => {
-                  handlePersonChange('me');
+            {/* Friends' Courses Dropdown */}
+            <Popout
+              buttonText="Friends' courses"
+              type="friend"
+              select_options={selected_person}
+              onReset={() => {
+                handlePersonChange('me');
+              }}
+            >
+              <PopoutSelect
+                hideSelectedOptions={false}
+                value={selected_person}
+                options={friend_options}
+                placeholder="Friends' courses"
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                  // Cleared FB friend
+                  if (!selectedOption) handlePersonChange('me');
+                  // Selected FB friend
+                  else if (isOption(selectedOption))
+                    handlePersonChange(selectedOption.value);
                 }}
                 isDisabled={false}
-                disabledButtonText="Connect FB"
-              >
-                <PopoutSelect
-                  hideSelectedOptions={false}
-                  value={selected_person}
-                  options={friend_options}
-                  placeholder="Friends' courses"
-                  onChange={(selectedOption: ValueType<Option, boolean>) => {
-                    // Cleared FB friend
-                    if (!selectedOption) handlePersonChange('me');
-                    // Selected FB friend
-                    else if (isOption(selectedOption))
-                      handlePersonChange(selectedOption.value);
-                  }}
-                  isDisabled={false}
-                />
-              </Popout>
+              />
+            </Popout>
+
+            {/* Add Friend Dropdown */}
+            <Popout
+              buttonText="Add Friend"
+              type="adding friends"
+              select_options={selected_person}
+              onReset={() => {
+                
+              }}
+            >
+              <PopoutSelect
+                hideSelectedOptions={false}
+                value={selected_person}
+                options={friend_options}
+                menuIsOpen = {false}
+                placeholder="Type in friend's NetID:"
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                    handleAddFriend(selectedOption.value);
+                }}
+                isDisabled={false}
+              />
+            </Popout>
           </FilterGroup>
         </StyledRow>
       </Form>

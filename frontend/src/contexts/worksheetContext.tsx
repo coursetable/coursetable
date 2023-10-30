@@ -39,6 +39,7 @@ type Store = {
   changeSeason: (season_code: Season) => void;
   changeWorksheet: (worksheet_number: string) => void;
   handlePersonChange: (new_person: string) => void;
+  handleAddFriend: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
   toggleCourse: (crn: number) => void;
@@ -253,6 +254,13 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     [setFbPerson],
   );
 
+  const handleAddFriend = useCallback(
+    (new_person: string) => {
+      setFbPerson(new_person);
+    },
+    [setFbPerson],
+  );
+
   // Function to change season
   const changeSeason = useCallback(
     (season_code: Season) => {
@@ -301,6 +309,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       // Update methods.
       changeSeason,
       handlePersonChange,
+      handleAddFriend,
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
@@ -325,6 +334,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       course_modal,
       changeSeason,
       handlePersonChange,
+      handleAddFriend,
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,

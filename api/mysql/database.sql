@@ -47,14 +47,13 @@ CREATE TABLE `StudentBluebookSettings` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `StudentFacebookFriends`
+-- Table structure for table `StudentFriends`
 --
 
-CREATE TABLE `StudentFacebookFriends` (
+CREATE TABLE `StudentFriends` (
   `id` bigint(20) UNSIGNED NOT NULL,
   `netId` char(8) NOT NULL,
-  `name` varchar(255) NOT NULL,
-  `facebookId` bigint(20) UNSIGNED NOT NULL
+  `friendNetId` char(8) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 -- --------------------------------------------------------
@@ -104,11 +103,11 @@ ALTER TABLE `StudentBluebookSettings`
   ADD PRIMARY KEY (`netId`);
 
 --
--- Indexes for table `StudentFacebookFriends`
+-- Indexes for table `StudentFriends`
 --
-ALTER TABLE `StudentFacebookFriends`
+ALTER TABLE `StudentFriends`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `netId_friendFacebookId` (`netId`,`facebookId`),
+  ADD UNIQUE KEY `netId_friendNetId` (`netId`,`friendNetId`),
   ADD KEY `netId` (`netId`);
 
 --
@@ -140,9 +139,9 @@ ALTER TABLE `SavedCourses`
 --
 
 --
--- AUTO_INCREMENT for table `StudentFacebookFriends`
+-- AUTO_INCREMENT for table `StudentFriends`
 --
-ALTER TABLE `StudentFacebookFriends`
+ALTER TABLE `StudentFriends`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59251421;
 
 --

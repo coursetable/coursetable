@@ -23,7 +23,7 @@ export const addFriend = async (
 
   const { netId } = req.user
 
-  const { friendNetId } = req.params["friendNetId"]
+  const friendNetId = req.params["friendNetId"]
 
   try {
 
