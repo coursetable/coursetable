@@ -26,7 +26,7 @@ import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 import { API_ENDPOINT } from '../../config';
 
 // Season to export classes from
-const CUR_SEASON = '202303';
+const CUR_SEASON = '202401';
 
 type Props = {
   profile_expanded: boolean;
