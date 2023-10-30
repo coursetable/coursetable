@@ -175,6 +175,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
         }
         temp[i].color = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 0.85)`;
         temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
+        temp[i].current_worksheet = worksheet_number;
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
@@ -184,6 +185,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     worksheetLoading,
     worksheetError,
     cur_worksheet,
+    worksheet_number,
     worksheetData,
     setCourses,
     colorMap,
