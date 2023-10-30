@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Nav, Navbar, Container } from 'react-bootstrap';
 import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
@@ -99,6 +99,24 @@ type Props = {
   setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+//  Wrapper for nav collapse for # of results shown text
+function NavCollapseWrapper({
+  children,
+  wrap,
+}: {
+  children: React.ReactNode;
+  wrap: boolean;
+}) {
+  if (wrap) {
+    return (
+      <div className="ml-auto d-flex flex-column align-items-end justify-content-between h-100">
+        {children}
+      </div>
+    );
+  }
+  return <>{children}</>;
+}
+
 /**
  * Renders the navbar
  * @prop isLoggedIn - is user logged in?
@@ -130,35 +148,6 @@ function CourseTableNavbar({
   const [show_search, setShowSearch] = useState(false);
   // Page state
   const [page, setPage] = useState('');
-
-  // Navbar styling for navbar search
-  const navbar_style = () => {
-    if (show_search && page === 'catalog') {
-      return {
-        height: isLgDesktop ? '100px' : '88px',
-        paddingBottom: '0px',
-      };
-    }
-    return undefined;
-  };
-
-  //  Wrapper for nav collapse for # of results shown text
-  const NavCollapseWrapper: React.FC<{
-    children: React.ReactNode;
-  }> = useCallback(
-    ({ children }) => {
-      if (!isMobile && show_search) {
-        return (
-          <div className="ml-auto d-flex flex-column align-items-end justify-content-between h-100">
-            {children}
-          </div>
-        );
-      }
-      return <>{children}</>;
-    },
-    [isMobile, show_search],
-  );
-
   // Handles page
   useEffect(() => {
     if (location && location.pathname === '/catalog') {
@@ -212,7 +201,14 @@ function CourseTableNavbar({
             // sticky="top"
             expand="md"
             className="shadow-sm px-3 align-items-start"
-            style={navbar_style()}
+            style={
+              show_search && page === 'catalog'
+                ? {
+                    height: isLgDesktop ? '100px' : '88px',
+                    paddingBottom: '0px',
+                  }
+                : undefined
+            }
           >
             {/* Logo in top left */}
             <NavLogo className="navbar-brand">
@@ -245,7 +241,7 @@ function CourseTableNavbar({
               show_search && page === 'worksheet' && <NavbarWorksheetSearch />
             )}
 
-            <NavCollapseWrapper>
+            <NavCollapseWrapper wrap={!isMobile && show_search}>
               {/* Navbar collapse */}
               <Navbar.Collapse
                 id="basic-navbar-nav"

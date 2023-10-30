@@ -53,13 +53,13 @@ const StyledGridItem = styled.div`
  * @prop showModal - function | to display course modal
  */
 
-const ResultsGridItem = ({
+function ResultsGridItem({
   course,
   isLoggedIn,
   num_cols,
   multiSeasons,
   showModal,
-}) => {
+}) {
   // How many decimal points to use in ratings
   const RATINGS_PRECISION = 1;
   // Bootstrap column width depending on the number of columns
@@ -73,15 +73,14 @@ const ResultsGridItem = ({
   const icon_size = 13;
   const seasons = ['spring', 'summer', 'fall'];
   // Determine the icon for this season
-  const icon = useMemo(() => {
-    return season === '1' ? (
+  const icon =
+    season === '1' ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
     ) : season === '2' ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
     );
-  }, [season]);
 
   // Fetch overall & workload rating values and string representations
   const course_rating = useMemo(
@@ -104,52 +103,6 @@ const ResultsGridItem = ({
 
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
-
-  // Tooltip for hovering over season
-  const season_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small>
-        {`${
-          seasons[season - 1].charAt(0).toUpperCase() +
-          seasons[season - 1].slice(1)
-        } ${season_code.substr(0, 4)}`}
-      </small>
-    </Tooltip>
-  );
-
-  // Tooltip for hovering over subject
-  const subject_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small>
-        {subjectOptions
-          .filter((subject) => {
-            return subject.value === subject_code;
-          })[0]
-          .label.substring(subject_code.length + 2)}
-      </small>
-    </Tooltip>
-  );
-
-  // Tooltip for hovering over class rating
-  const class_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Class</span>
-    </Tooltip>
-  );
-
-  // Tooltip for hovering over professor rating
-  const prof_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Professor</span>
-    </Tooltip>
-  );
-
-  // Tooltip for hovering over workload rating
-  const workload_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <span>Workload</span>
-    </Tooltip>
-  );
 
   const subject_code = course.course_code
     ? course.course_code.split(' ')[0]
@@ -179,7 +132,18 @@ const ResultsGridItem = ({
               <small className={styles.course_codes}>
                 {course.course_code && (
                   <>
-                    <OverlayTrigger placement="top" overlay={subject_tooltip}>
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={(props) => (
+                        <Tooltip id="button-tooltip" {...props}>
+                          <small>
+                            {subjectOptions
+                              .find((subject) => subject.value === subject_code)
+                              .label.substring(subject_code.length + 2)}
+                          </small>
+                        </Tooltip>
+                      )}
+                    >
                       <span>{subject_code}</span>
                     </OverlayTrigger>{' '}
                     {course_code}
@@ -195,7 +159,19 @@ const ResultsGridItem = ({
           {multiSeasons && (
             <Col xs={4} className="p-0">
               <Row className="m-auto">
-                <OverlayTrigger placement="top" overlay={season_tooltip}>
+                <OverlayTrigger
+                  placement="top"
+                  overlay={(props) => (
+                    <Tooltip id="button-tooltip" {...props}>
+                      <small>
+                        {`${
+                          seasons[season - 1].charAt(0).toUpperCase() +
+                          seasons[season - 1].slice(1)
+                        } ${season_code.substr(0, 4)}`}
+                      </small>
+                    </Tooltip>
+                  )}
+                >
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
                       tag_styles[seasons[parseInt(season, 10) - 1]]
@@ -306,7 +282,14 @@ const ResultsGridItem = ({
           <Col xs={5} className="p-0 d-flex align-items-end">
             <div className="ml-auto">
               {/* Class Rating */}
-              <OverlayTrigger placement="right" overlay={class_tooltip}>
+              <OverlayTrigger
+                placement="right"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>Class</span>
+                  </Tooltip>
+                )}
+              >
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
@@ -325,7 +308,14 @@ const ResultsGridItem = ({
                 </Row>
               </OverlayTrigger>
               {/* Professor Rating */}
-              <OverlayTrigger placement="right" overlay={prof_tooltip}>
+              <OverlayTrigger
+                placement="right"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>Professor</span>
+                  </Tooltip>
+                )}
+              >
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
@@ -349,7 +339,14 @@ const ResultsGridItem = ({
                 </Row>
               </OverlayTrigger>
               {/* Workload Rating */}
-              <OverlayTrigger placement="right" overlay={workload_tooltip}>
+              <OverlayTrigger
+                placement="right"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>Workload</span>
+                  </Tooltip>
+                )}
+              >
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
@@ -389,6 +386,6 @@ const ResultsGridItem = ({
       </div>
     </Col>
   );
-};
+}
 
 export default ResultsGridItem;
