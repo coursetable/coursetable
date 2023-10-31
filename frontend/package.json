@@ -44,6 +44,7 @@
     "chroma-js": "^2.4.2",
     "core-js": "^3.33.0",
     "file-saver": "^2.0.5",
+    "gapi-script": "^1.2.0",
     "graphiql": "^3.0.6",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
