@@ -57,6 +57,7 @@ type _ListingAugments = {
   border?: string;
   start_time?: moment.Moment;
   location_url?: string;
+  current_worksheet?: string;
 };
 expectType<
   // Make sure we don't override a key that wasn't there originally.

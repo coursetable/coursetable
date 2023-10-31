@@ -150,7 +150,7 @@ SearchContext.displayName = 'SearchContext';
 //   season = 1;
 // }
 // UPDATE THIS MANUALLY
-const def_season_code = '202303';
+const def_season_code = '202401';
 
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };

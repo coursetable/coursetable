@@ -159,13 +159,6 @@ function WorksheetToggleButton({
       </Button>
     );
 
-  // Handler for changing the selected worksheet in the dropdown
-  const handleWorksheetChange = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setSelectedWorksheet(event.target.value);
-  };
-
   return (
     <OverlayTrigger
       placement="top"
@@ -194,7 +187,9 @@ function WorksheetToggleButton({
             {/* Render the worksheet dropdown */}
             <StyledSelect
               value={selectedWorksheet}
-              onChange={handleWorksheetChange}
+              onChange={(event) => {
+                setSelectedWorksheet(event.target.value);
+              }}
               onClick={(e) => {
                 // Check if the clicked target is the select element
                 if ((e.target as HTMLSelectElement).tagName === 'SELECT') {

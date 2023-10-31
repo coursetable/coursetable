@@ -86,7 +86,7 @@ const Tag = styled(Badge)`
  * @prop fb_friends - array | of fb friends also taking this course
  */
 
-const ResultsItem = ({
+function ResultsItem({
   course,
   showModal,
   multiSeasons,
@@ -94,7 +94,7 @@ const ResultsItem = ({
   COL_SPACING,
   isScrolling = false,
   fb_friends,
-}) => {
+}) {
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
 
@@ -137,75 +137,8 @@ const ResultsItem = ({
     [course],
   );
 
-  // Tooltip for hovering over season
-  const season_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small>
-        {`${
-          seasons[season - 1].charAt(0).toUpperCase() +
-          seasons[season - 1].slice(1)
-        } ${season_code.substr(0, 4)}`}
-      </small>
-    </Tooltip>
-  );
-
-  // Tooltip for hovering over subject
-  const subject_tooltip = (props) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small>
-        {subjectOptions
-          .filter((subject) => {
-            return subject.value === subject_code;
-          })[0]
-          .label.substring(subject_code.length + 2)}
-      </small>
-    </Tooltip>
-  );
-
-  // Render popover that contains title, description, and requirements when hovering over course name
-  const renderTitlePopover = (props) => {
-    return (
-      <StyledPopover {...props} id="title_popover">
-        <Popover.Title>
-          <strong>
-            {course.extra_info !== 'ACTIVE' ? (
-              <span className={Styles.cancelled_text}>CANCELLED </span>
-            ) : (
-              ''
-            )}
-            {course.title}
-          </strong>
-        </Popover.Title>
-        <Popover.Content>
-          {course.description
-            ? course.description.length <= 500
-              ? course.description
-              : `${course.description.slice(0, 500)}...`
-            : 'no description'}
-          <br />
-          <div className="text-danger">
-            {course.requirements &&
-              (course.requirements.length <= 250
-                ? course.requirements
-                : `${course.requirements.slice(0, 250)}...`)}
-          </div>
-        </Popover.Content>
-      </StyledPopover>
-    );
-  };
-
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
-
-  // Render tooltip with names of FB friends also shopping
-  const renderFBFriendsTooltip = (props) =>
-    fb_friends.length > 0 ? (
-      <Tooltip id="button-tooltip" {...props}>
-        {fb_friends.join(' • ')}
-      </Tooltip>
-    ) : (
-      <div />
-    );
 
   // Column width styles
   const szn_style = {
@@ -255,7 +188,19 @@ const ResultsItem = ({
         {/* Season */}
         {multiSeasons && (
           <div style={szn_style} className="d-flex">
-            <OverlayTrigger placement="top" overlay={season_tooltip}>
+            <OverlayTrigger
+              placement="top"
+              overlay={(props) => (
+                <Tooltip id="button-tooltip" {...props}>
+                  <small>
+                    {`${
+                      seasons[season - 1].charAt(0).toUpperCase() +
+                      seasons[season - 1].slice(1)
+                    } ${season_code.substr(0, 4)}`}
+                  </small>
+                </Tooltip>
+              )}
+            >
               <div className={`${Styles.skills_areas} my-auto`}>
                 <Tag
                   variant="secondary"
@@ -274,7 +219,20 @@ const ResultsItem = ({
           style={code_style}
           className={`${Styles.ellipsis_text} font-weight-bold`}
         >
-          <OverlayTrigger placement="top" overlay={subject_tooltip}>
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) => (
+              <Tooltip id="button-tooltip" {...props}>
+                <small>
+                  {subjectOptions
+                    .filter((subject) => {
+                      return subject.value === subject_code;
+                    })[0]
+                    .label.substring(subject_code.length + 2)}
+                </small>
+              </Tooltip>
+            )}
+          >
             <span>{subject_code}</span>
           </OverlayTrigger>{' '}
           {course_code}
@@ -284,7 +242,37 @@ const ResultsItem = ({
               : ''}
           </TextComponent>
         </div>
-        <OverlayTrigger placement="right" overlay={renderTitlePopover}>
+        <OverlayTrigger
+          placement="right"
+          overlay={(props) => (
+            <StyledPopover {...props} id="title_popover">
+              <Popover.Title>
+                <strong>
+                  {course.extra_info !== 'ACTIVE' ? (
+                    <span className={Styles.cancelled_text}>CANCELLED </span>
+                  ) : (
+                    ''
+                  )}
+                  {course.title}
+                </strong>
+              </Popover.Title>
+              <Popover.Content>
+                {course.description
+                  ? course.description.length <= 500
+                    ? course.description
+                    : `${course.description.slice(0, 500)}...`
+                  : 'no description'}
+                <br />
+                <div className="text-danger">
+                  {course.requirements &&
+                    (course.requirements.length <= 250
+                      ? course.requirements
+                      : `${course.requirements.slice(0, 250)}...`)}
+                </div>
+              </Popover.Content>
+            </StyledPopover>
+          )}
+        >
           {/* Course Title */}
           <div style={title_style}>
             <div className={Styles.ellipsis_text}>{course.title}</div>
@@ -375,7 +363,18 @@ const ResultsItem = ({
         </div>
         {/* # FB Friends also shopping */}
         <div style={fb_style} className="d-flex ">
-          <OverlayTrigger placement="top" overlay={renderFBFriendsTooltip}>
+          <OverlayTrigger
+            placement="top"
+            overlay={(props) =>
+              fb_friends.length > 0 ? (
+                <Tooltip id="button-tooltip" {...props}>
+                  {fb_friends.join(' • ')}
+                </Tooltip>
+              ) : (
+                <div />
+              )
+            }
+          >
             <span className="my-auto">
               {fb_friends.length > 0 ? fb_friends.length : ''}
             </span>
@@ -402,7 +401,7 @@ const ResultsItem = ({
       </StyledResultsItem>
     </StyledSpacer>
   );
-};
+}
 
 const ResultsItemMemo = React.memo(ResultsItem);
 // ResultsItemMemo.whyDidYouRender = true;

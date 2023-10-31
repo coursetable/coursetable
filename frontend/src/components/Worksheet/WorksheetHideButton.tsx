@@ -1,4 +1,4 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import './WorksheetToggleButton.css';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -21,10 +21,6 @@ function WorksheetHideButton({
   crn: number;
   theme: DefaultTheme;
 }) {
-  // Handle hide/show click
-  const toggleWorkSheet = useCallback(() => {
-    toggleCourse(crn);
-  }, [toggleCourse, crn]);
   // Size of toggle button
   const button_size = 18;
 
@@ -40,7 +36,7 @@ function WorksheetHideButton({
     >
       <Button
         variant="toggle"
-        onClick={toggleWorkSheet}
+        onClick={() => toggleCourse(crn)}
         className="p-1 d-flex align-items-center"
       >
         {hidden ? (

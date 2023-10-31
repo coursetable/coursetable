@@ -65,19 +65,16 @@ function FBDropdown() {
     <DropdownItem key={person} person={person} />
   ));
 
-  // Set FB person on click
-  const handleSelect = (fb_person: Person | null) => {
-    if (fb_person) {
-      handleFBPersonChange(fb_person);
-    }
-  };
-
   return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
         title={fb_person === 'me' ? 'Me' : friendInfo[fb_person].name}
-        onSelect={handleSelect}
+        onSelect={(fb_person) => {
+          if (fb_person) {
+            handleFBPersonChange(fb_person);
+          }
+        }}
       >
         {friend_options}
       </DropdownButton>
