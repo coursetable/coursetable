@@ -75,7 +75,7 @@ export async function fetchCatalog(
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
   } catch (err) {
     winston.error(err);
-    throw Error(err as string);
+    throw err;
   }
 
   winston.info(`Fetched ${seasons.seasons.length} seasons`);

@@ -34,22 +34,15 @@ const StyledCommentRow = styled(Row)`
 `;
 
 // Bubble to choose sort order
-const StyledSortOption = styled.span`
+const StyledSortOption = styled.span<{ active: boolean }>`
   padding: 3px 5px;
-  background-color: ${(
-    // @ts-ignore
-    { theme, active },
-  ) => (active ? 'rgba(92, 168, 250,0.5)' : theme.border)};
-  color: ${(
-    // @ts-ignore
-    { theme, active },
-  ) => (active ? theme.text[0] : theme.text[2])};
+  background-color: ${({ theme, active }) =>
+    active ? 'rgba(92, 168, 250,0.5)' : theme.border};
+  color: ${({ theme, active }) => (active ? theme.text[0] : theme.text[2])};
   font-weight: 500;
   &:hover {
-    background-color: ${(
-      // @ts-ignore
-      { theme, active },
-    ) => (active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue)};
+    background-color: ${({ theme, active }) =>
+      active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue};
     cursor: pointer;
   }
 `;
@@ -175,14 +168,12 @@ const EvaluationResponses: React.FC<{
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
           <StyledSortOption
-            // @ts-ignore
             active={sort_order === 'original'}
             onClick={() => setSortOrder('original')}
           >
             original order
           </StyledSortOption>
           <StyledSortOption
-            // @ts-ignore
             active={sort_order === 'length'}
             onClick={() => setSortOrder('length')}
           >
