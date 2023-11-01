@@ -1,0 +1,11 @@
+.stats {
+  padding: 1em;
+  border-radius: 8px;
+  background: #a0a0a022;
+}
+
+.stats ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}

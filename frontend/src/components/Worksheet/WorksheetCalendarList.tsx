@@ -7,6 +7,7 @@ import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import GoogleCalendarButton from '../../components/Worksheet/GoogleCalendarSync/GoogleCalendarButton';
+import styles from './WorksheetCalendarList.module.css';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -84,6 +85,35 @@ const CourseList = styled(SurfaceComponent)`
   box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
 `;
 
+function WorksheetStats() {
+  const { courses, hidden_courses, cur_season } = useWorksheet();
+  const { courseCnt, credits, workload, rating } = courses.reduce(
+    (acc, c) =>
+      hidden_courses[cur_season]?.[c.crn]
+        ? acc
+        : {
+            courseCnt: acc.courseCnt + 1,
+            credits: acc.credits + (c.credits ?? 0),
+            workload: acc.workload + (c.average_workload ?? 0),
+            rating: acc.rating + (c.average_rating ?? 0),
+          },
+    { courseCnt: 0, credits: 0, workload: 0, rating: 0 },
+  );
+  return (
+    <div className={styles.stats}>
+      <ul>
+        <li>Total courses: {courseCnt}</li>
+        <li>Total credits: {credits}</li>
+        <li>Total workload: {workload.toFixed(2)}</li>
+        <li>
+          Average rating:{' '}
+          {(courseCnt === 0 ? 0 : rating / courseCnt).toFixed(2)}
+        </li>
+      </ul>
+    </div>
+  );
+}
+
 /**
  * Render worksheet list in default worksheet view
  */
@@ -128,6 +158,7 @@ function WorksheetCalendarList() {
 
   return (
     <>
+      <WorksheetStats />
       {/* Hide/show toggle */}
       <StyledSpacer className="pt-3">
         <StyledContainer layer={1} className="mx-1">

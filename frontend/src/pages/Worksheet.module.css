@@ -25,21 +25,6 @@
   border-radius: 8px;
 }
 
-.stats {
-  position: absolute;
-  bottom: 2em;
-  right: 1em;
-  padding: 1em;
-  border-radius: 8px;
-  background: #a0a0a022;
-}
-
-.stats ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
 /* DISABLE TRANSITION ANIMATIONS */
 
 .hidden {
