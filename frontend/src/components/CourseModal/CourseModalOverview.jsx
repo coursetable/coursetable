@@ -142,11 +142,11 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           (v, i, a) =>
             a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
         )
-        .sort((a, b) => {
-          if (a.season_code > b.season_code) return -1;
-          if (b.season_code < a.season_code) return 1;
-          return parseInt(a.section, 10) > parseInt(b.section, 10) ? 1 : -1;
-        });
+        .sort(
+          (a, b) =>
+            b.season_code.localeCompare(a.season_code, 'en-US') ||
+            parseInt(a.section, 10) - parseInt(b.section, 10),
+        );
     }
     return [];
   }, [data, listing.same_course_id]);
@@ -536,6 +536,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 >
                   {past_syllabi.map((course) => (
                     <a
+                      key={`${course.season_code}-${course.section}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       href={course.syllabus_url}
