@@ -33,6 +33,7 @@ type Store = {
   };
   userRefresh(suppressError?: boolean): Promise<void>;
   friendRefresh(suppressError?: boolean): Promise<void>;
+  addFriend(friendNetId? : string): Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -94,7 +95,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const friendRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
-        .get(`${API_ENDPOINT}/api/facebook/worksheets`, {
+        .get(`${API_ENDPOINT}/api/friends/worksheets`, {
           withCredentials: true,
         })
         .then((friends_worksheets) => {
@@ -102,6 +103,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             throw new Error(friends_worksheets.data.message);
           }
           // Successfully fetched friends' worksheets
+          console.log(friends_worksheets.data);
           setFbWorksheets(friends_worksheets.data);
         })
         .catch((err) => {
@@ -114,6 +116,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         });
     },
     [setFbWorksheets],
+  );
+
+  // Add Friend
+  const addFriend = useCallback(
+    (friendNetId = ""): Promise<void> => {
+      return axios
+        .get(`${API_ENDPOINT}/api/friends/add/${friendNetId}`, {
+          withCredentials: true,
+        })
+    },
+    [],
   );
 
   const user = useMemo(() => {
@@ -135,8 +148,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       // Update methods.
       userRefresh,
       friendRefresh,
+      addFriend
     }),
-    [user, userRefresh, friendRefresh],
+    [user, userRefresh, friendRefresh, addFriend],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;

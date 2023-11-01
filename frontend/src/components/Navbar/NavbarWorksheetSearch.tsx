@@ -1,10 +1,11 @@
 /* eslint-disable guard-for-in */
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
+import { Searchbar } from '../Search/Searchbar'
 
 // import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../../contexts/searchContext';
@@ -81,7 +82,6 @@ export function NavbarWorksheetSearch() {
     worksheet_number,
     person,
     handlePersonChange,
-    handleAddFriend,
     worksheet_view,
     handleWorksheetView,
   } = useWorksheet();
@@ -120,7 +120,7 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-  const { user } = useUser();
+  const { user, addFriend } = useUser();
 
   // FB Friends names
   const friendInfo = useMemo(() => {
@@ -157,6 +157,8 @@ export function NavbarWorksheetSearch() {
   }, [person, friendInfo]);
 
   const { isTablet } = useWindowDimensions();
+
+  const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   return (
     <>
@@ -250,22 +252,31 @@ export function NavbarWorksheetSearch() {
             </Popout>
 
             {/* Add Friend Dropdown */}
+
             <Popout
               buttonText="Add Friend"
               type="adding friends"
-              select_options={selected_person}
-              onReset={() => {
-                
-              }}
             >
-              <PopoutSelect
+              <Searchbar
                 hideSelectedOptions={false}
-                value={selected_person}
-                options={friend_options}
-                menuIsOpen = {false}
-                placeholder="Type in friend's NetID:"
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
-                    handleAddFriend(selectedOption.value);
+                components={{
+                  Menu:()=>{<></>},
+                }}
+                placeholder="Enter your friend's NetID (hit enter to add): "
+                onKeyDown = {e => {
+                  if(e.key === "Backspace")
+                  {
+                    setCurrentFriendNetID(currentFriendNetID.slice(0, -1));
+                  }
+                  else if(e.key === "Enter")
+                  {
+                    console.log("Added " + currentFriendNetID);
+                    addFriend(currentFriendNetID);
+                  }
+                  else
+                  {
+                    setCurrentFriendNetID(currentFriendNetID + e.key);
+                  }
                 }}
                 isDisabled={false}
               />
