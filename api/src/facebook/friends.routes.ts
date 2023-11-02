@@ -20,9 +20,9 @@ import {
  */
 export default async (app: express.Express): Promise<void> => {
   app.use(cookieParser());
-  app.post('/api/friends/add', addFriend);
-  app.post('/api/friends/request', friendRequest);
-  app.post('/api/friends/resolveRequest', resolveFriendRequest);
+  app.get('/api/friends/add', addFriend);
+  app.get('/api/friends/request', friendRequest);
+  app.get('/api/friends/resolveRequest', resolveFriendRequest);
   app.get('/api/friends/getRequests', getRequestsForFriend);
   app.get('/api/friends/worksheets', getFriendsWorksheets);
   app.get('/api/friends/names', getNames);

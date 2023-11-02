@@ -23,7 +23,11 @@ export const addFriend = async (
 
   const { netId } = req.user
 
-  const friendNetId = req.query.id
+  if (!req.query || typeof req.query.id !== "string") {
+    return res.status(401).json({ success: false })
+  }
+
+  const friendNetId: string = req.query.id
 
   try {
 
@@ -63,7 +67,11 @@ export const friendRequest = async (
 
   const { netId } = req.user;
 
-  const friendNetId = req.query.id
+  if (!req.query || typeof req.query.id !== "string") {
+    return res.status(401).json({ success: false })
+  }
+
+  const friendNetId: string = req.query.id
 
   try {
 
@@ -241,8 +249,6 @@ export const getNames = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-
-  const { netId } = req.user;
 
   winston.info(`Fetching friends' names`);
   const allNameRecords: StudentBluebookSettings[] = await prisma.studentBluebookSettings.findMany();
