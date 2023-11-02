@@ -59,6 +59,18 @@ CREATE TABLE `StudentFriends` (
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `StudentFriendRequests`
+--
+
+CREATE TABLE `StudentFriendRequests` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `netId` char(8) NOT NULL,
+  `friendNetId` char(8) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `Students`
 --
 
@@ -105,6 +117,14 @@ ALTER TABLE `StudentBluebookSettings`
 --
 -- Indexes for table `StudentFriends`
 --
+ALTER TABLE `StudentFriendRequests`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `netId_friendNetId` (`netId`,`friendNetId`),
+  ADD KEY `netId` (`netId`);
+
+--
+-- Indexes for table `StudentFriendRequests`
+--
 ALTER TABLE `StudentFriends`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `netId_friendNetId` (`netId`,`friendNetId`),
@@ -142,6 +162,12 @@ ALTER TABLE `SavedCourses`
 -- AUTO_INCREMENT for table `StudentFriends`
 --
 ALTER TABLE `StudentFriends`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59251421;
+
+--
+-- AUTO_INCREMENT for table `StudentFriendRequests`
+--
+ALTER TABLE `StudentFriendRequests`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=59251421;
 
 --
