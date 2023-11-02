@@ -9,6 +9,8 @@ import {
   addFriend,
   getFriendsWorksheets,
   friendRequest,
+  resolveFriendRequest,
+  getRequestsForFriend,
   getNames
 } from './friends.handlers';
 
@@ -20,6 +22,8 @@ export default async (app: express.Express): Promise<void> => {
   app.use(cookieParser());
   app.post('/api/friends/add', addFriend);
   app.post('/api/friends/request', friendRequest);
+  app.post('/api/friends/resolveRequest', resolveFriendRequest);
+  app.get('/api/friends/getRequests', getRequestsForFriend);
   app.get('/api/friends/worksheets', getFriendsWorksheets);
   app.get('/api/friends/names', getNames);
 };

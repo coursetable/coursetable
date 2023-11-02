@@ -106,8 +106,19 @@ export const resolveFriendRequest = async (
 
   const friendNetId = req.params["friendNetId"]
 
-  // delete record
-
+  try {
+    await prisma.$transaction([
+      prisma.studentFriendRequests.delete({
+        where: {
+          netId_friendNetId: { netId, friendNetId },
+        },
+      })
+    ])
+    return res.json({ success: true });
+  } catch (err) {
+    winston.error(`Error with resolving friend request: ${err}`);
+    return res.status(500).json({ success: false });
+  }
 }
 
 export const getRequestsForFriend = async (
@@ -122,6 +133,20 @@ export const getRequestsForFriend = async (
 
   const { netId } = req.user;
 
+  const friendReqs: StudentFriendRequests[] = await prisma.studentFriendRequests.findMany({
+    where: {
+      friendNetId: netId,
+    },
+  })
+
+  const reqFriends = friendReqs.map(
+    (friendReq: StudentFriendRequests) => friendReq.netId,
+  );
+
+  return res.status(200).json({
+    success: true,
+    friends: reqFriends
+  });
 
 }
 
