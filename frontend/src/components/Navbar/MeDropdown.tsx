@@ -55,7 +55,7 @@ function MeDropdown({
   const { user } = useUser();
 
   // Are we exporting the user's worksheet?
-  const [export_ics, setExport] = useState(false);
+  const [exportICS, setExportICS] = useState(false);
 
   let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
   if (!data) data = [];
@@ -63,12 +63,12 @@ function MeDropdown({
   // Called when worksheet updates or export_ics changes
   useEffect(() => {
     // return if worksheet isn't loaded or it isn't time to export
-    if (!data || data.length === 0 || !export_ics) return;
+    if (!data || data.length === 0 || !exportICS) return;
     // Generate and download ICS file
     generateICS(data);
     // Reset export_ics state on completion
-    setExport(false);
-  }, [data, export_ics]);
+    setExportICS(false);
+  }, [data, exportICS]);
 
   return (
     <SurfaceComponent
@@ -170,7 +170,7 @@ function MeDropdown({
                   type={1}
                   onClick={() => {
                     // Start export process
-                    setExport(true);
+                    setExportICS(true);
                   }}
                   className={styles.collapse_text}
                 >

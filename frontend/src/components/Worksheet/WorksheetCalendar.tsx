@@ -11,7 +11,7 @@ import { Listing } from '../Providers/FerryProvider';
 
 const localizer = momentLocalizer(moment);
 
-interface parsedCourseType {
+interface ParsedCourseType {
   title: string;
   start: Date;
   end: Date;
@@ -20,7 +20,7 @@ interface parsedCourseType {
 }
 
 // Calendar for worksheet
-const StyledCalendar = styled(Calendar<parsedCourseType>)`
+const StyledCalendar = styled(Calendar<ParsedCourseType>)`
   &.rbc-calendar {
     .rbc-time-view {
       .rbc-time-header {
@@ -68,7 +68,7 @@ const StyledCalendar = styled(Calendar<parsedCourseType>)`
  */
 
 function WorksheetCalendar() {
-  const { showModal, courses, hover_course, hidden_courses, cur_season } =
+  const { showModal, courses, hoverCourse, hiddenCourses, curSeason } =
     useWorksheet();
 
   // Parse listings dictionaries to generate event dictionaries
@@ -78,12 +78,12 @@ function WorksheetCalendar() {
       let earliest = moment().hour(20);
       let latest = moment().hour(0);
       // List of event dictionaries
-      const parsedCourses: parsedCourseType[] = [];
+      const parsedCourses: ParsedCourseType[] = [];
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
         if (
-          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
-          hidden_courses[cur_season][course.crn]
+          Object.prototype.hasOwnProperty.call(hiddenCourses, curSeason) &&
+          hiddenCourses[curSeason][course.crn]
         )
           return;
         for (let indx = 0; indx < 5; indx++) {
@@ -119,52 +119,57 @@ function WorksheetCalendar() {
         parsedCourses,
       };
     },
-    [hidden_courses, cur_season],
+    [hiddenCourses, curSeason],
   );
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
-    (event: parsedCourseType) => {
+    (event: ParsedCourseType) => {
       const style: CSSProperties = {
         backgroundColor: event.listing.color,
         borderColor: event.listing.border,
         borderWidth: '2px',
       };
-      if (hover_course && hover_course === event.listing.crn) {
+      if (hoverCourse && hoverCourse === event.listing.crn) {
         style.zIndex = 2;
         style.filter = 'saturate(130%)';
-      } else if (hover_course) {
+      } else if (hoverCourse) {
         style.opacity = '30%';
       }
       return {
         style,
       };
     },
-    [hover_course],
+    [hoverCourse],
   );
 
-  const ret_values = useMemo(() => {
-    return parseListings(courses);
-  }, [courses, parseListings]);
+  const retValues = useMemo(
+    () => parseListings(courses),
+    [courses, parseListings],
+  );
 
-  const minTime = useMemo(() => {
-    return ret_values.earliest.get('hours') !== 20
-      ? ret_values.earliest.toDate()
-      : moment().hour(8).minute(0).toDate();
-  }, [ret_values]);
+  const minTime = useMemo(
+    () =>
+      retValues.earliest.get('hours') !== 20
+        ? retValues.earliest.toDate()
+        : moment().hour(8).minute(0).toDate(),
+    [retValues],
+  );
 
-  const maxTime = useMemo(() => {
-    return ret_values.latest.get('hours') !== 0
-      ? ret_values.latest.toDate()
-      : moment().hour(18).minute(0).toDate();
-  }, [ret_values]);
+  const maxTime = useMemo(
+    () =>
+      retValues.latest.get('hours') !== 0
+        ? retValues.latest.toDate()
+        : moment().hour(18).minute(0).toDate(),
+    [retValues],
+  );
 
   return (
     <StyledCalendar
       // Show Mon-Fri
       defaultView="work_week"
       views={['work_week']}
-      events={ret_values.parsedCourses}
+      events={retValues.parsedCourses}
       // Earliest course time or 8am if no courses
       min={minTime}
       // Latest course time or 6pm if no courses

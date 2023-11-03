@@ -51,7 +51,7 @@ function Challenge() {
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
   // Stores body of response for the /api/challenge/request API call
-  const [res_body, setResBody] = useState<ResBody | null>(null);
+  const [resBody, setResBody] = useState<ResBody | null>(null);
   // Stores user's answers
   const [answers, setAnswers] = useState<Answer[]>([
     { answer: '', courseRatingId: undefined, courseRatingIndex: undefined },
@@ -106,11 +106,11 @@ function Challenge() {
       event.stopPropagation();
     }
     // Form is valid
-    else if (res_body != null) {
+    else if (resBody != null) {
       // Body data to be passed in post request
-      const post_body = {
-        token: res_body.token,
-        salt: res_body.salt,
+      const postBody = {
+        token: resBody.token,
+        salt: resBody.salt,
         answers,
       };
       // Config header for urlencoded
@@ -124,7 +124,7 @@ function Challenge() {
       axios
         .post(
           `${API_ENDPOINT}/api/challenge/verify`,
-          qs.stringify(post_body),
+          qs.stringify(postBody),
           config,
         )
         .then((res) => {
@@ -224,14 +224,14 @@ function Challenge() {
   };
 
   // Student response buckets
-  const rating_options = ['poor', 'fair', 'good', 'very good', 'excellent'];
+  const ratingOptions = ['poor', 'fair', 'good', 'very good', 'excellent'];
   // Holds the html for each form question
-  const question_html: ReactElement[] = [];
-  if (res_body && res_body.course_info) {
+  const questions: ReactElement[] = [];
+  if (resBody && resBody.course_info) {
     // Loop over each question
-    res_body.course_info.forEach((course, index) => {
+    resBody.course_info.forEach((course, index) => {
       // Add question html to list
-      question_html.push(
+      questions.push(
         <Form.Group controlId={`question#${index + 1}`} key={index}>
           {/* Course Title */}
           <Row className="mx-auto">
@@ -255,7 +255,7 @@ function Challenge() {
             <span className="font-weight-bold">"overall assessment"</span>
             &nbsp;question with&nbsp;
             <span className="font-weight-bold">
-              "{rating_options[course.courseRatingIndex]}"
+              "{ratingOptions[course.courseRatingIndex]}"
             </span>
             ?
           </Row>
@@ -267,13 +267,13 @@ function Challenge() {
             value={answers[index].answer}
             onChange={(event) => {
               // Copy answers state into a new variable
-              const new_answers = [...answers];
+              const newAnswers = [...answers];
               // Update new answers
-              new_answers[index].courseRatingId = course.courseId;
-              new_answers[index].courseRatingIndex = course.courseRatingIndex;
-              new_answers[index].answer = event.target.value;
+              newAnswers[index].courseRatingId = course.courseId;
+              newAnswers[index].courseRatingIndex = course.courseRatingIndex;
+              newAnswers[index].answer = event.target.value;
               // Update old answers state with new answers
-              setAnswers(new_answers);
+              setAnswers(newAnswers);
             }}
           />
         </Form.Group>,
@@ -440,10 +440,10 @@ function Challenge() {
         {verifyError && (
           <div className="text-danger mb-2">{verifyErrorMessage}</div>
         )}
-        {res_body ? (
+        {resBody ? (
           // Show form when questions have been fetched
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            {question_html}
+            {questions}
             <Button variant="primary" type="submit" className="w-100">
               Submit
             </Button>

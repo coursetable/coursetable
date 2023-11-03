@@ -8,22 +8,22 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 /**
  * Render Season Dropdown in mobile view
  * @prop onSeasonChange - function to switch seasons
- * @prop cur_season - string that holds the current season code
+ * @prop curSeason - string that holds the current season code
  */
 
 function SeasonDropdown() {
-  const { season_codes, cur_season, changeSeason } = useWorksheet();
+  const { seasonCodes, curSeason, changeSeason } = useWorksheet();
 
   // Populate list of HTML options
-  const seasons_html = season_codes.map((season) => (
+  const seasonsHTML = seasonCodes.map((season) => (
     <Dropdown.Item
       key={season}
       eventKey={season}
       className="d-flex"
       // Styling if this is the current season
       style={{
-        backgroundColor: season === cur_season ? '#007bff' : '',
-        color: season === cur_season ? 'white' : 'black',
+        backgroundColor: season === curSeason ? '#007bff' : '',
+        color: season === curSeason ? 'white' : 'black',
       }}
     >
       <div className="mx-auto">{toSeasonString(season)[0]}</div>
@@ -34,10 +34,10 @@ function SeasonDropdown() {
     <div className="container p-0 m-0">
       <DropdownButton
         variant="dark"
-        title={toSeasonString(cur_season)[0]}
+        title={toSeasonString(curSeason)[0]}
         onSelect={changeSeason}
       >
-        {seasons_html}
+        {seasonsHTML}
       </DropdownButton>
     </div>
   );

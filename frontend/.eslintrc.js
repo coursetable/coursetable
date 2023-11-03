@@ -8,27 +8,15 @@ module.exports = {
     'prettier',
   ],
   plugins: ['react', '@typescript-eslint', 'jest', 'jsx-a11y', 'import'],
-  // globals: {
-  //   Atomics: 'readonly',
-  //   SharedArrayBuffer: 'readonly',
-  // },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.json',
   },
   rules: {
     'linebreak-style': 'off',
-    // suppress errors for missing 'import React' in files
-    'react/react-in-jsx-scope': 'off',
-    // TODO: Eventually we want to remove these rules (and default to error).
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/naming-convention': 'off',
     '@typescript-eslint/no-explicit-any': 'warn',
     '@typescript-eslint/no-shadow': 'warn',
     '@typescript-eslint/no-use-before-define': 'warn',
-    'import/order': 'off',
-    'import/prefer-default-export': 'off',
-    'no-plusplus': 'off',
     'no-nested-ternary': 'warn',
     'no-restricted-syntax': 'warn',
     'no-continue': 'off',
@@ -38,11 +26,6 @@ module.exports = {
     'no-return-await': 'warn',
     'guard-for-in': 'warn',
     'prefer-destructuring': 'warn',
-    'react/prop-types': 'off',
-    'react/require-default-props': 'off',
-    'react/no-unescaped-entities': 'off',
-    'react/jsx-filename-extension': 'off', // TODO: rename all .js to .jsx
-    'react/jsx-props-no-spreading': 'off',
     'react/no-array-index-key': 'warn',
     'jsx-a11y/no-static-element-interactions': 'warn',
     'jsx-a11y/click-events-have-key-events': 'warn',

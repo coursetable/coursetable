@@ -7,11 +7,6 @@ import type { Listing } from '../Providers/FerryProvider';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
-const event_style = {
-  width: '100%',
-  height: '100%',
-};
-
 function truncatedText(
   text: string | null | undefined,
   max: number,
@@ -57,7 +52,10 @@ function CalendarEvent({
       delay={{ show: 1000, hide: 0 }}
     >
       <div
-        style={event_style}
+        style={{
+          width: '100%',
+          height: '100%',
+        }}
         // onMouseEnter={() => setHoverCourse(event.listing)}
         // onMouseLeave={() => setHoverCourse(null)}
       >

@@ -21,9 +21,6 @@ function WorksheetHideButton({
   crn: number;
   theme: DefaultTheme;
 }) {
-  // Size of toggle button
-  const button_size = 18;
-
   return (
     <OverlayTrigger
       placement="bottom"
@@ -40,17 +37,9 @@ function WorksheetHideButton({
         className="p-1 d-flex align-items-center"
       >
         {hidden ? (
-          <BsEyeSlash
-            color={theme.hidden}
-            size={button_size}
-            className="scale_icon"
-          />
+          <BsEyeSlash color={theme.hidden} size={18} className="scale_icon" />
         ) : (
-          <BsEye
-            color={theme.text[0]}
-            size={button_size}
-            className="scale_icon"
-          />
+          <BsEye color={theme.text[0]} size={18} className="scale_icon" />
         )}
       </Button>
     </OverlayTrigger>

@@ -97,7 +97,7 @@ type Props = {
   onReset?: () => void;
   arrowIcon?: boolean;
   clearIcon?: boolean;
-  select_options?:
+  selectOptions?:
     | Option[]
     | Record<string, Record<string, Option[] | boolean>>
     | Option
@@ -116,7 +116,7 @@ type Props = {
  * @prop onReset - reset filter function
  * @prop arrowIcon - whether there is an arrow icon in the popout button
  * @prop clearIcon - whether there is an clear icon in the popout button
- * @prop select_options - selected option(s) for filter
+ * @prop selectOptions - selected option(s) for filter
  * @prop className - additional styles for popout button
  * @prop data_tutorial - tutorial step number
  * @prop disabledButtonText - default placeholder for disabled popout button
@@ -129,18 +129,14 @@ export function Popout({
   onReset,
   arrowIcon = true,
   clearIcon = true,
-  select_options,
+  selectOptions,
   className,
   data_tutorial,
   disabledButtonText,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
-  const {
-    ref_toggle,
-    ref_dropdown,
-    isComponentVisible,
-    setIsComponentVisible,
-  } = useComponentVisibleDropdown<HTMLDivElement>(false);
+  const { refToggle, refDropdown, isComponentVisible, setIsComponentVisible } =
+    useComponentVisibleDropdown<HTMLDivElement>(false);
   const theme = useTheme();
 
   // Dynamic text state for active popout button
@@ -171,11 +167,11 @@ export function Popout({
     if (isDisabled && disabledButtonText) {
       setToggleText(disabledButtonText);
       setActive(false);
-    } else if (select_options) {
-      if (Array.isArray(select_options) && select_options.length > 0) {
+    } else if (selectOptions) {
+      if (Array.isArray(selectOptions) && selectOptions.length > 0) {
         const maxOptions = type === 'season' ? 1 : 3;
-        const top_options = select_options.slice(0, maxOptions);
-        const text = top_options.map((option, index) => {
+        const topOptions = selectOptions.slice(0, maxOptions);
+        const text = topOptions.map((option, index) => {
           const optionLabel = type === 'season' ? option.label : option.value;
           const colorStyle =
             type === 'skills/areas' ? { color: option.color } : undefined;
@@ -184,13 +180,13 @@ export function Popout({
               {optionLabel}
             </span>
           );
-          if (top_options.length > 1 && index < maxOptions - 1) {
+          if (topOptions.length > 1 && index < maxOptions - 1) {
             return <>{span}, </>;
           }
-          if (select_options.length > maxOptions) {
+          if (selectOptions.length > maxOptions) {
             return (
               <>
-                {span} + {select_options.length - maxOptions}
+                {span} + {selectOptions.length - maxOptions}
               </>
             );
           }
@@ -199,12 +195,12 @@ export function Popout({
         setToggleText(text);
         setActive(true);
       } else if (
-        select_options !== null &&
-        typeof select_options === 'object' &&
+        selectOptions !== null &&
+        typeof selectOptions === 'object' &&
         type === 'advanced'
       ) {
         let activeFilters = 0;
-        for (const [key, value] of Object.entries(select_options)) {
+        for (const [key, value] of Object.entries(selectOptions)) {
           for (const optionValue of Object.values(value)) {
             if (
               key === 'selects' &&
@@ -230,12 +226,12 @@ export function Popout({
         setToggleText(text);
         setActive(activeFilters > 0);
       } else if (
-        select_options !== null &&
-        typeof select_options === 'object' &&
-        !Array.isArray(select_options) &&
-        isOption(select_options)
+        selectOptions !== null &&
+        typeof selectOptions === 'object' &&
+        !Array.isArray(selectOptions) &&
+        isOption(selectOptions)
       ) {
-        setToggleText(select_options.label);
+        setToggleText(selectOptions.label);
         setActive(true);
       } else {
         setToggleText(buttonText);
@@ -245,7 +241,7 @@ export function Popout({
       setToggleText(buttonText);
       setActive(false);
     }
-  }, [select_options, buttonText, type, disabledButtonText, isDisabled]);
+  }, [selectOptions, buttonText, type, disabledButtonText, isDisabled]);
 
   return (
     <PopoutWrapper
@@ -255,7 +251,7 @@ export function Popout({
       <StyledButton
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
-        ref={ref_toggle}
+        ref={refToggle}
         className={className}
         data-tutorial={data_tutorial ? `catalog-${data_tutorial}` : ''}
       >
@@ -281,7 +277,7 @@ export function Popout({
       </StyledButton>
       {/* Dropdown */}
       {isComponentVisible ? (
-        <Dropdown ref={ref_dropdown}>{children}</Dropdown>
+        <Dropdown ref={refDropdown}>{children}</Dropdown>
       ) : null}
     </PopoutWrapper>
   );

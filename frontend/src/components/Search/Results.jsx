@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 
-import ResultsItemMemo from './ResultsItem';
+import ResultsItem from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
@@ -90,7 +90,7 @@ const getColWidth = (calculated, min = 0, max = 1000000) =>
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_fb = object | holds a list of each fb friend taking a specific course
+ * @prop numFb = object | holds a list of each fb friend taking a specific course
  * @prop page = string | page search results are on
  */
 
@@ -102,7 +102,7 @@ function Results({
   multiSeasons = false,
   showModal,
   isLoggedIn,
-  num_fb,
+  numFb,
   page = 'catalog',
 }) {
   // Fetch current device
@@ -115,10 +115,10 @@ function Results({
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState(0);
 
-  // Fetch reset_key from search context
-  const { reset_key } = useSearch();
+  // Fetch resetKey from search context
+  const { resetKey } = useSearch();
 
-  const { cur_season } = useWorksheet();
+  const { curSeason } = useWorksheet();
 
   const globalTheme = useTheme();
 
@@ -174,7 +174,7 @@ function Results({
   let resultsListing;
 
   // Number of columns to use in grid view
-  const num_cols = isMobile ? 1 : isTablet ? 2 : 3;
+  const numCols = isMobile ? 1 : isTablet ? 2 : 3;
 
   if (!isLoggedIn) {
     // render an auth wall
@@ -216,7 +216,7 @@ function Results({
           <>
             <h3>
               No courses found for{' '}
-              {toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}
+              {toSeasonString(curSeason).slice(1, 3).reverse().join(' ')}
             </h3>
             <div>
               Add some courses on the <Link to="/catalog">Catalog</Link>.
@@ -242,21 +242,21 @@ function Results({
                 isScrolling={isScrolling}
                 onScroll={onChildScroll}
                 scrollTop={scrollTop}
-                rowCount={Math.ceil(data.length / num_cols)}
+                rowCount={Math.ceil(data.length / numCols)}
                 rowHeight={178}
                 rowRenderer={({ index, key, style }) => {
-                  const row_elements = [];
+                  const rowElements = [];
                   for (
-                    let j = index * num_cols;
-                    j < data.length && j < (index + 1) * num_cols;
+                    let j = index * numCols;
+                    j < data.length && j < (index + 1) * numCols;
                     j++
                   ) {
-                    row_elements.push(
+                    rowElements.push(
                       <ResultsGridItem
                         course={data[j]}
                         showModal={showModal}
                         isLoggedIn={isLoggedIn}
-                        num_cols={num_cols}
+                        numCols={numCols}
                         multiSeasons={multiSeasons}
                         key={j}
                       />,
@@ -265,7 +265,7 @@ function Results({
 
                   return (
                     <div key={key} style={style}>
-                      <StyledRow className="mx-auto">{row_elements}</StyledRow>
+                      <StyledRow className="mx-auto">{rowElements}</StyledRow>
                     </div>
                   );
                 }}
@@ -294,10 +294,10 @@ function Results({
                 rowCount={data.length}
                 rowHeight={isLgDesktop ? 32 : 28}
                 rowRenderer={({ index, key, style, isScrolling }) => {
-                  const fb_friends = num_fb[
+                  const fbFriends = numFb[
                     data[index].season_code + data[index].crn
                   ]
-                    ? num_fb[data[index].season_code + data[index].crn]
+                    ? numFb[data[index].season_code + data[index].crn]
                     : [];
                   // Alternating row item background colors
                   const colorStyles =
@@ -312,14 +312,14 @@ function Results({
                       }}
                       key={key}
                     >
-                      <ResultsItemMemo
+                      <ResultsItem
                         course={data[index]}
                         showModal={showModal}
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
                         isScrolling={isScrolling}
-                        fb_friends={fb_friends}
+                        fbFriends={fbFriends}
                       />
                     </ResultsItemWrapper>
                   );
@@ -331,35 +331,6 @@ function Results({
       </WindowScroller>
     );
   }
-
-  // Column width styles
-  const szn_style = {
-    width: `${COL_SPACING.SZN_WIDTH}px`,
-    paddingLeft: '15px',
-  };
-  const code_style = {
-    width: `${COL_SPACING.CODE_WIDTH}px`,
-    paddingLeft: !multiSeasons ? '15px' : '0px',
-  };
-  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
-  const rate_overall_style = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
-  };
-  const rate_workload_style = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
-  };
-  const rate_prof_style = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_PROF_WIDTH}px`,
-  };
-  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
-  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
-  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
-  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
@@ -410,10 +381,22 @@ function Results({
               {isList ? (
                 <>
                   {multiSeasons && (
-                    <ResultsHeader style={szn_style}>Season</ResultsHeader>
+                    <ResultsHeader
+                      style={{
+                        width: `${COL_SPACING.SZN_WIDTH}px`,
+                        paddingLeft: '15px',
+                      }}
+                    >
+                      Season
+                    </ResultsHeader>
                   )}
                   {/* Course Code */}
-                  <ResultsHeader style={code_style}>
+                  <ResultsHeader
+                    style={{
+                      width: `${COL_SPACING.CODE_WIDTH}px`,
+                      paddingLeft: !multiSeasons ? '15px' : '0px',
+                    }}
+                  >
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -429,20 +412,27 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[0]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Course Name */}
-                  <ResultsHeader style={title_style}>
+                  <ResultsHeader
+                    style={{ width: `${COL_SPACING.TITLE_WIDTH}px` }}
+                  >
                     <span className={Styles.one_line}>Title</span>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[2]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   <div className="d-flex">
                     {/* Overall Rating */}
-                    <ResultsHeader style={rate_overall_style}>
+                    <ResultsHeader
+                      style={{
+                        whiteSpace: 'nowrap',
+                        width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
+                      }}
+                    >
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -461,11 +451,16 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[4]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                     {/* Workload Rating */}
-                    <ResultsHeader style={rate_workload_style}>
+                    <ResultsHeader
+                      style={{
+                        whiteSpace: 'nowrap',
+                        width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
+                      }}
+                    >
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -483,11 +478,13 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[6]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                     {/* Professor Rating & Course Professors */}
-                    <ResultsHeader style={prof_style}>
+                    <ResultsHeader
+                      style={{ width: `${COL_SPACING.PROF_WIDTH}px` }}
+                    >
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -505,12 +502,14 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[5]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                   </div>
                   {/* Previous Enrollment Number */}
-                  <ResultsHeader style={enroll_style}>
+                  <ResultsHeader
+                    style={{ width: `${COL_SPACING.ENROLL_WIDTH}px` }}
+                  >
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -539,15 +538,17 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[8]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Skills/Areas */}
-                  <ResultsHeader style={sa_style}>
+                  <ResultsHeader style={{ width: `${COL_SPACING.SA_WIDTH}px` }}>
                     <span className={Styles.one_line}>Skills/Areas</span>
                   </ResultsHeader>
                   {/* Course Meeting Days & Times */}
-                  <ResultsHeader style={meet_style}>
+                  <ResultsHeader
+                    style={{ width: `${COL_SPACING.MEET_WIDTH}px` }}
+                  >
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -564,15 +565,17 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[9]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Location */}
-                  <ResultsHeader style={loc_style}>
+                  <ResultsHeader
+                    style={{ width: `${COL_SPACING.LOC_WIDTH}px` }}
+                  >
                     <span className={Styles.one_line}>Location</span>
                   </ResultsHeader>
                   {/* FB */}
-                  <ResultsHeader style={fb_style}>
+                  <ResultsHeader style={{ width: `${COL_SPACING.FB_WIDTH}px` }}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -587,7 +590,7 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[3]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                 </>

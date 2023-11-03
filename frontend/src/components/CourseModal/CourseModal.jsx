@@ -107,7 +107,7 @@ function CourseModal({ listing, hideModal, show }) {
                           // If this is the initial listing, show worksheet toggle button
                           <WorksheetToggleButton
                             crn={cur_listing.crn}
-                            season_code={cur_listing.season_code}
+                            seasonCode={cur_listing.season_code}
                             modal
                             selectedWorksheet={cur_listing.current_worksheet}
                           />

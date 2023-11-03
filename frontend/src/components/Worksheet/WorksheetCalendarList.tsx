@@ -87,21 +87,16 @@ const CourseList = styled(SurfaceComponent)`
  */
 
 function WorksheetCalendarList() {
-  const {
-    courses,
-    cur_season,
-    hidden_courses,
-    worksheet_number,
-    toggleCourse,
-  } = useWorksheet();
+  const { courses, curSeason, hiddenCourses, worksheetNumber, toggleCourse } =
+    useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(() => {
     // List to hold HTML
     const listitems = courses.map((course, id) => {
       let hidden = false;
-      if (Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
-        hidden = hidden_courses[cur_season][course.crn];
+      if (Object.prototype.hasOwnProperty.call(hiddenCourses, curSeason)) {
+        hidden = hiddenCourses[curSeason][course.crn];
       }
       // Add listgroup item to listitems list
       return (
@@ -109,20 +104,20 @@ function WorksheetCalendarList() {
           key={id}
           course={course}
           hidden={hidden}
-          worksheet_number={worksheet_number}
+          worksheetNumber={worksheetNumber}
         />
       );
     });
 
     return listitems;
-  }, [courses, hidden_courses, cur_season, worksheet_number]);
+  }, [courses, hiddenCourses, curSeason, worksheetNumber]);
 
   const areHidden = useMemo(() => {
-    if (!Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
+    if (!Object.prototype.hasOwnProperty.call(hiddenCourses, curSeason)) {
       return false;
     }
-    return Object.keys(hidden_courses[cur_season]).length === courses.length;
-  }, [hidden_courses, courses, cur_season]);
+    return Object.keys(hiddenCourses[curSeason]).length === courses.length;
+  }, [hiddenCourses, courses, curSeason]);
 
   return (
     <>

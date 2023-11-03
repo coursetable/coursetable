@@ -45,20 +45,15 @@ function WorksheetCalendarListItem({
   course,
   hidden,
   theme,
-  worksheet_number,
+  worksheetNumber,
 }: {
   course: Listing;
   hidden: boolean;
   theme: DefaultTheme;
-  worksheet_number?: string;
+  worksheetNumber?: string;
 }) {
-  const { showModal, cur_season, toggleCourse, setHoverCourse } =
-    useWorksheet();
+  const { showModal, curSeason, toggleCourse, setHoverCourse } = useWorksheet();
 
-  // Style for coloring hidden courses
-  const color_style = {
-    color: hidden ? theme.hidden : theme.text[0],
-  };
   return (
     <StyledListItem
       className="py-1 px-2"
@@ -69,7 +64,9 @@ function WorksheetCalendarListItem({
         {/* Course Code and Title */}
         <StyledCol
           className={'pl-1 pr-2'}
-          style={color_style}
+          style={{
+            color: hidden ? theme.hidden : theme.text[0],
+          }}
           onClick={() => showModal(course)}
         >
           <strong>{course.course_code}</strong>
@@ -88,9 +85,9 @@ function WorksheetCalendarListItem({
         <div className="my-auto">
           <WorksheetToggleButton
             crn={course.crn}
-            season_code={cur_season}
+            seasonCode={curSeason}
             modal={false}
-            selectedWorksheet={worksheet_number}
+            selectedWorksheet={worksheetNumber}
           />
         </div>
       </Row>

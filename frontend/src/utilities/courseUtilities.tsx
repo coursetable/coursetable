@@ -4,14 +4,14 @@ import { Crn, Season, Weekdays, weekdays } from './common';
 import { FBFriendInfo, FBInfo, Worksheet } from '../contexts/userContext';
 import { Listing } from '../components/Providers/FerryProvider';
 import { SortKeys } from '../queries/Constants';
-import { isEmpty, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { DateTime } from 'luxon';
 
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (
   season_code: Season,
   crn: Crn | string,
-  worksheet_number: string,
+  worksheetNumber: string,
   worksheet?: Worksheet,
 ): boolean => {
   if (worksheet == null) return false;
@@ -19,11 +19,11 @@ export const isInWorksheet = (
     crn = crn.toString();
   }
   for (let i = 0; i < worksheet.length; i++) {
-    //console.log(worksheet_number, worksheet[i][2], 'yaaaa');
+    //console.log(worksheetNumber, worksheet[i][2], 'yaaaa');
     if (
       worksheet[i][0] === season_code &&
       worksheet[i][1] === crn &&
-      worksheet[i][2] === worksheet_number.toString()
+      worksheet[i][2] === worksheetNumber.toString()
     )
       return true;
   }
@@ -50,12 +50,12 @@ export const unflattenTimes = (
   if (!course) return undefined;
   if (course.times_summary === 'TBA') return 'TBA';
   // Holds the course times for each day of the week
-  const times_by_day = weekdays.map((day): [string, string, string, string] => {
-    const times_on_day = course.times_by_day[day];
-    if (!times_on_day) return ['', '', '', ''];
-    return times_on_day[0];
+  const timesByDay = weekdays.map((day): [string, string, string, string] => {
+    const timesOnDay = course.times_by_day[day];
+    if (!timesOnDay) return ['', '', '', ''];
+    return timesOnDay[0];
   });
-  return times_by_day;
+  return timesByDay;
 };
 
 // Checks if the a new course conflicts with the user's worksheet
@@ -76,21 +76,21 @@ export const checkConflict = (
       // Continue if the new course doesn't meet on this day
       if (info === undefined) continue;
       // Get worksheet course's start and end times
-      const listing_start = moment(info[0][0], 'HH:mm');
-      const listing_end = moment(info[0][1], 'HH:mm');
+      const listingStart = moment(info[0][0], 'HH:mm');
+      const listingEnd = moment(info[0][1], 'HH:mm');
       // Continue if new course has invalid time
       if (times[day][0] === '') continue;
       // Get new course' start and end times
-      const cur_start = moment(times[day][0], 'HH:mm');
-      const cur_end = moment(times[day][1], 'HH:mm');
+      const curStart = moment(times[day][0], 'HH:mm');
+      const curEnd = moment(times[day][1], 'HH:mm');
       // Fix invalid times
-      if (listing_start.hour() < 8) listing_start.add(12, 'h');
-      if (listing_end.hour() < 8) listing_end.add(12, 'h');
-      if (cur_start.hour() < 8) cur_start.add(12, 'h');
-      if (cur_end.hour() < 8) cur_end.add(12, 'h');
+      if (listingStart.hour() < 8) listingStart.add(12, 'h');
+      if (listingEnd.hour() < 8) listingEnd.add(12, 'h');
+      if (curStart.hour() < 8) curStart.add(12, 'h');
+      if (curEnd.hour() < 8) curEnd.add(12, 'h');
       // Conflict exists
       if (
-        !(listing_start > cur_end || cur_start > listing_end) &&
+        !(listingStart > curEnd || curStart > listingEnd) &&
         !conflicts.includes(listings[i])
       ) {
         conflicts.push(listings[i]);
@@ -127,7 +127,7 @@ export const fbFriendsAlsoTaking = (
   // Return if worksheets are null
   if (!worksheets) return [];
   // List of FB friends also shopping
-  const also_taking = [];
+  const alsoTaking = [];
   for (const friend in worksheets) {
     if (
       worksheets[friend].find((value) => {
@@ -135,9 +135,9 @@ export const fbFriendsAlsoTaking = (
       })
     )
       // Found one
-      also_taking.push(names[friend].name);
+      alsoTaking.push(names[friend].name);
   }
-  return also_taking;
+  return alsoTaking;
 };
 type NumFBReturn =
   // Key is season code + crn
@@ -150,17 +150,17 @@ export const getNumFB = (fbWorksheets: FBInfo): NumFBReturn => {
   // List of each friends' names/facebook id
   const names = fbWorksheets.friendInfo;
   // Object to return
-  const fb_dict: NumFBReturn = {};
+  const fbDict: NumFBReturn = {};
   // Iterate over each fb friend's worksheet
   for (const friend in worksheets) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
-      if (!fb_dict[key]) fb_dict[key] = []; // List doesn't exist for this course so create one
-      fb_dict[key].push(names[friend].name); // Add fb friend's name to this list
+      if (!fbDict[key]) fbDict[key] = []; // List doesn't exist for this course so create one
+      fbDict[key].push(names[friend].name); // Add fb friend's name to this list
     });
   }
-  return fb_dict;
+  return fbDict;
 };
 
 // Get the overall rating for a course
@@ -168,16 +168,16 @@ export const getOverallRatings = (
   course: Listing,
   display = false,
 ): string | number | null => {
-  let course_rating;
+  let rating;
   // Determine which overall rating to use
   if (display) {
-    course_rating = course.average_rating_same_professors
+    rating = course.average_rating_same_professors
       ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
       : course.average_rating
       ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
       : 'N/A'; // No ratings at all
   } else {
-    course_rating = course.average_rating_same_professors
+    rating = course.average_rating_same_professors
       ? course.average_rating_same_professors // Use same professor if possible
       : course.average_rating
       ? course.average_rating // Use all professors otherwise
@@ -185,7 +185,7 @@ export const getOverallRatings = (
   }
 
   // Return overall rating
-  return course_rating;
+  return rating;
 };
 
 // Get the workload rating for a course
@@ -193,16 +193,16 @@ export const getWorkloadRatings = (
   course: Listing,
   display = false,
 ): string | number | null => {
-  let course_workload;
+  let workload;
   // Determine which workload rating to use
   if (display) {
-    course_workload = course.average_workload_same_professors
+    workload = course.average_workload_same_professors
       ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
       : course.average_workload
       ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
       : 'N/A'; // No ratings at all
   } else {
-    course_workload = course.average_workload_same_professors
+    workload = course.average_workload_same_professors
       ? course.average_workload_same_professors // Use same professor if possible
       : course.average_workload
       ? course.average_workload // Use all professors otherwise
@@ -210,7 +210,7 @@ export const getWorkloadRatings = (
   }
 
   // Return workload rating
-  return course_workload;
+  return workload;
 };
 
 // Calculate day and time score
@@ -228,19 +228,14 @@ const calculateDayTime = (course: Listing): number | null => {
     // }, '0:00');
 
     // Calculate the time score
-    const start_time = Number(
-      times[0].start.split(':').reduce((final, num) => {
-        final += num;
-        return final;
-      }, ''),
-    );
+    const startTime = Number(times[0].start.split(':').join(''));
 
     // Calculate the day score
-    const first_day = Object.keys(course.times_by_day)[0] as Weekdays;
-    const day_score = weekdays.indexOf(first_day) * 10000;
+    const firstDay = Object.keys(course.times_by_day)[0] as Weekdays;
+    const dayScore = weekdays.indexOf(firstDay) * 10000;
 
     // Calculate the total score and return
-    const score = day_score + start_time;
+    const score = dayScore + startTime;
     return score;
   }
 
@@ -249,15 +244,15 @@ const calculateDayTime = (course: Listing): number | null => {
 };
 
 // Helper function that returns the correct value to sort by
-const helperSort = (listing: Listing, key: SortKeys, num_fb: NumFBReturn) => {
+const helperSort = (listing: Listing, key: SortKeys, numFb: NumFBReturn) => {
   // Sorting by fb friends
   if (key === 'fb') {
     // Concatenate season code and crn to form key
-    const fb_key = listing.season_code + listing.crn;
+    const fbKey = listing.season_code + listing.crn;
     // No friends. return zero
-    if (!num_fb[fb_key]) return 0;
+    if (!numFb[fbKey]) return 0;
     // Has friends. return number of friends
-    return num_fb[fb_key].length;
+    return numFb[fbKey].length;
   }
   // Sorting by course rating
   if (key === 'average_rating') {
@@ -282,21 +277,21 @@ export const sortCourses = (
   // TODO: we should be much more strict with this type. Specifically,
   // we should prevent there from being multiple keys.
   ordering: { [key in SortKeys]?: 'asc' | 'desc' },
-  num_fb: NumFBReturn,
+  numFb: NumFBReturn,
 ): Listing[] => {
   // Key to sort the courses by
   const key = Object.keys(ordering)[0] as SortKeys;
   // Boolean | in ascending order?
-  const order_asc = ordering[key]!.startsWith('asc');
+  const orderAsc = ordering[key]!.startsWith('asc');
   // Sort classes
   const sorted = orderBy(
     courses,
     [
-      (listing) => helperSort(listing, key, num_fb) == null,
-      (listing) => helperSort(listing, key, num_fb),
+      (listing) => helperSort(listing, key, numFb) == null,
+      (listing) => helperSort(listing, key, numFb),
       (listing) => listing.course_code,
     ],
-    ['asc', order_asc ? 'asc' : 'desc', 'asc'],
+    ['asc', orderAsc ? 'asc' : 'desc', 'asc'],
   );
   return sorted;
 };
@@ -307,10 +302,10 @@ export const getEnrolled = (
   display = false,
   onModal = false,
 ): string | number | null => {
-  let course_enrolled;
+  let courseEnrolled;
   // Determine which enrolled to use
   if (display) {
-    course_enrolled = course.enrolled
+    courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment && course.last_enrollment_same_professors
       ? course.last_enrollment // Use last enrollment if course hasn't happened
@@ -320,7 +315,7 @@ export const getEnrolled = (
         }` // Indicate diff prof
       : `${onModal ? 'N/A' : ''}`; // No enrollment data
   } else {
-    course_enrolled = course.enrolled
+    courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment
       ? course.last_enrollment // Use last enrollment if course hasn't happened
@@ -328,7 +323,7 @@ export const getEnrolled = (
   }
 
   // Return enrolled
-  return course_enrolled;
+  return courseEnrolled;
 };
 
 // Get start and end times
@@ -336,22 +331,21 @@ export const getDayTimes = (
   course: Listing,
 ): Record<string, string>[] | null => {
   // If no times then return null
-  if (isEmpty(course.times_by_day)) {
+  if (Object.keys(course.times_by_day).length === 0) {
     return null;
   }
 
-  // Get the first day's times
-  const { times_by_day } = course;
-
   const initialFiltered: Record<string, string>[] = [];
 
-  const times = Object.keys(times_by_day).reduce((filtered, day) => {
-    const day_times = times_by_day[day as Weekdays];
-    if (day_times) {
-      filtered.push({ day, start: day_times[0][0], end: day_times[0][1] });
-    }
-    return filtered;
-  }, initialFiltered);
+  const times = Object.entries(course.times_by_day).reduce(
+    (filtered, [day, dayTimes]) => {
+      if (dayTimes) {
+        filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
+      }
+      return filtered;
+    },
+    initialFiltered,
+  );
 
   return times;
 };

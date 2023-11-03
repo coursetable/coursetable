@@ -19,7 +19,7 @@ function FBDropdown() {
   // Fetch user context data
   const { user } = useUser();
 
-  const { cur_season, fb_person, handleFBPersonChange } = useWorksheet();
+  const { curSeason, fbPerson, handleFBPersonChange } = useWorksheet();
 
   // Generate friend netId list, sorted by name.
   const friendInfo = (user.fbLogin && user.fbWorksheets?.friendInfo) || {};
@@ -40,10 +40,10 @@ function FBDropdown() {
       text = 'Me';
     } else {
       const { name } = friendInfo[person];
-      const count_in_season = (friendWorksheets[person] ?? []).filter(
-        (worksheet) => worksheet[0] === cur_season,
+      const countInSeason = (friendWorksheets[person] ?? []).filter(
+        (worksheet) => worksheet[0] === curSeason,
       ).length;
-      text = `${name} (${count_in_season})`;
+      text = `${name} (${countInSeason})`;
     }
     return (
       <Dropdown.Item
@@ -52,8 +52,8 @@ function FBDropdown() {
         className="d-flex"
         // Styling if this is the current person
         style={{
-          backgroundColor: person === fb_person ? '#007bff' : '',
-          color: person === fb_person ? 'white' : 'black',
+          backgroundColor: person === fbPerson ? '#007bff' : '',
+          color: person === fbPerson ? 'white' : 'black',
         }}
       >
         <div className="mx-auto">{text}</div>
@@ -61,22 +61,20 @@ function FBDropdown() {
     );
   };
 
-  const friend_options = friends.map((person) => (
-    <DropdownItem key={person} person={person} />
-  ));
-
   return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={fb_person === 'me' ? 'Me' : friendInfo[fb_person].name}
-        onSelect={(fb_person) => {
-          if (fb_person) {
-            handleFBPersonChange(fb_person);
+        title={fbPerson === 'me' ? 'Me' : friendInfo[fbPerson].name}
+        onSelect={(fbPerson) => {
+          if (fbPerson) {
+            handleFBPersonChange(fbPerson);
           }
         }}
       >
-        {friend_options}
+        {friends.map((person) => (
+          <DropdownItem key={person} person={person} />
+        ))}
       </DropdownButton>
     </div>
   );

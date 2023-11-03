@@ -16,9 +16,9 @@ const setObject = <T>(
 };
 // Retrieves object from storage
 const getObject = <T>(key: string, storage: Storage) => {
-  const str_val = storage.getItem(key);
-  if (str_val == null || str_val === 'undefined') return null;
-  return JSON.parse(str_val) as T;
+  const strVal = storage.getItem(key);
+  if (strVal == null || strVal === 'undefined') return null;
+  return JSON.parse(strVal) as T;
 };
 // session storage functions
 export const setSSObject = <T>(key: string, obj: T, if_empty = false): void => {

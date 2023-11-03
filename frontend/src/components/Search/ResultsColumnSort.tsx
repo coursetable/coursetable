@@ -44,7 +44,7 @@ function ResultsColumnSort({ selectOption }: Props) {
   const [active, setActive] = useState(false);
 
   // Get search context data
-  const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
+  const { selectSortBy, sortOrder, setSelectSortby, setSortOrder } =
     useSearch();
 
   const globalTheme = useTheme();
@@ -52,17 +52,17 @@ function ResultsColumnSort({ selectOption }: Props) {
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
-      if (select_sortby.value === selectOption.value) {
-        setLocalSortOrder(sort_order);
+      if (selectSortBy.value === selectOption.value) {
+        setLocalSortOrder(sortOrder);
         setActive(true);
       }
       setFirstTime(false);
-    } else if (!active && select_sortby.value === selectOption.value) {
+    } else if (!active && selectSortBy.value === selectOption.value) {
       setActive(true);
-    } else if (active && select_sortby.value !== selectOption.value) {
+    } else if (active && selectSortBy.value !== selectOption.value) {
       setActive(false);
     }
-  }, [firstTime, selectOption, select_sortby, sort_order, active]);
+  }, [firstTime, selectOption, selectSortBy, sortOrder, active]);
 
   return (
     <>
@@ -71,7 +71,7 @@ function ResultsColumnSort({ selectOption }: Props) {
         className="ml-1 my-auto"
         onClick={() => {
           // If not sorting by this option previously, start sorting this option
-          if (select_sortby.value !== selectOption.value) {
+          if (selectSortBy.value !== selectOption.value) {
             setSelectSortby(selectOption);
             setSortOrder(localSortOrder);
             return;

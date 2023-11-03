@@ -39,7 +39,7 @@ type Props = {
  */
 function FBLoginButton({ loggedInMode = 'refresh' }: Props) {
   const { user, fbRefresh } = useUser();
-  const logged_in = user.fbLogin;
+  const loggedIn = user.fbLogin;
 
   // Note: window.FB is set up via index.html.
   // Types on window.FB are defined in react-app-env.d.ts.
@@ -115,7 +115,7 @@ function FBLoginButton({ loggedInMode = 'refresh' }: Props) {
 
   return (
     <div className="d-flex">
-      {!logged_in && (
+      {!loggedIn && (
         <TextComponent
           type={1}
           onClick={handleLoginClick}
@@ -124,7 +124,7 @@ function FBLoginButton({ loggedInMode = 'refresh' }: Props) {
           <StyledHoverText>Connect to FB</StyledHoverText>
         </TextComponent>
       )}
-      {logged_in &&
+      {loggedIn &&
         (loggedInMode === loggedInModes[0] ? (
           <>
             <TextComponent

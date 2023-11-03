@@ -12,14 +12,14 @@ export const useComponentVisible = <T extends HTMLElement>(
   // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
     useState(initialIsVisible);
-  const ref_visible = useRef<T>(null);
+  const refVisible = useRef<T>(null);
 
   // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
     if (
-      ref_visible.current &&
-      !ref_visible.current.contains(event.target as Node)
+      refVisible.current &&
+      !refVisible.current.contains(event.target as Node)
     ) {
       setIsComponentVisible(false);
     }
@@ -33,7 +33,7 @@ export const useComponentVisible = <T extends HTMLElement>(
     };
   });
 
-  return { ref_visible, isComponentVisible, setIsComponentVisible };
+  return { refVisible, isComponentVisible, setIsComponentVisible };
 };
 
 // Detect clicks outside of a toggle and dropdown component
@@ -44,19 +44,19 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
   // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
     useState(initialIsVisible);
-  const ref_toggle = useRef<T>(null);
-  const ref_dropdown = useRef<T>(null);
+  const refToggle = useRef<T>(null);
+  const refDropdown = useRef<T>(null);
 
   // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
     const portal = document.querySelector('#portal');
     if (
-      ref_toggle.current &&
-      ref_dropdown &&
-      ref_dropdown.current &&
-      !ref_toggle.current.contains(event.target as Node) &&
-      !ref_dropdown.current.contains(event.target as Node) &&
+      refToggle.current &&
+      refDropdown &&
+      refDropdown.current &&
+      !refToggle.current.contains(event.target as Node) &&
+      !refDropdown.current.contains(event.target as Node) &&
       portal &&
       !portal.contains(event.target as Node)
     ) {
@@ -76,8 +76,8 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
   });
 
   return {
-    ref_toggle,
-    ref_dropdown,
+    refToggle,
+    refDropdown,
     isComponentVisible,
     setIsComponentVisible,
   };

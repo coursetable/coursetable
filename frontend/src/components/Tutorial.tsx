@@ -215,7 +215,7 @@ function Tutorial({
   const navigate = useNavigate();
 
   // Change react tour helper styling based on theme
-  const helper_style: React.CSSProperties = useMemo(() => {
+  const helperStyle: React.CSSProperties = useMemo(() => {
     let styles: React.CSSProperties = {
       maxWidth: '432px',
       backgroundColor: globalTheme.background,
@@ -260,13 +260,12 @@ function Tutorial({
       let step: ReactourStep = {
         selector: selector && `[data-tutorial="${selector}"]`,
         content,
-        style: helper_style,
+        style: helperStyle,
       };
 
       // Add observe selector if observing
       if (observe) {
-        const observe_selector = `[data-tutorial="${selector}-observe"]`;
-        step = { ...step, observe: observe_selector };
+        step = { ...step, observe: `[data-tutorial="${selector}-observe"]` };
       }
 
       if (position) {

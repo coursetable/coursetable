@@ -9,9 +9,9 @@ import * as Sentry from '@sentry/react';
 export const useWorksheetInfo = (
   worksheet: Worksheet | undefined,
   season: Season | null = null,
-  worksheet_number = '0',
+  worksheetNumber = '0',
 ) => {
-  const required_seasons = useMemo(() => {
+  const requiredSeasons = useMemo(() => {
     if (!worksheet || worksheet.length === 0) {
       // If the worksheet is empty, we don't want to request data for any
       // seasons, even if a specific season is requested.
@@ -29,22 +29,22 @@ export const useWorksheetInfo = (
     return Array.from(seasons); // idk just need to return something i think
   }, [season, worksheet]);
 
-  /*   const required_worksheet_numbers = useMemo(() => {
+  /*   const required_worksheetNumbers = useMemo(() => {
     if (!worksheet || worksheet.length === 0) {
       // If the worksheet is empty, we don't want to request data for any
       // seasons, even if a specific season is requested.
       return [];
     }
-    //console.log('ahh', worksheet, worksheet_number);
-    const worksheet_numbers = new Set<string>();
+    //console.log('ahh', worksheet, worksheetNumber);
+    const worksheetNumbers = new Set<string>();
     worksheet.forEach((item) => {
-      worksheet_numbers.add(item[2]);
+      worksheetNumbers.add(item[2]);
     });
-    if (worksheet_numbers.has(worksheet_number)) return [worksheet_number];
+    if (worksheetNumbers.has(worksheetNumber)) return [worksheetNumber];
     return [];
-  }, [worksheet_number, worksheet]); */
+  }, [worksheetNumber, worksheet]); */
 
-  const { loading, error, courses } = useCourseData(required_seasons);
+  const { loading, error, courses } = useCourseData(requiredSeasons);
 
   const data = useMemo(() => {
     const data: Listing[] = [];
@@ -52,22 +52,22 @@ export const useWorksheetInfo = (
 
     // Resolve the worksheet items.
     for (let i = 0; i < worksheet.length; i++) {
-      const season_code: string = worksheet[i][0];
+      const seasonCode = worksheet[i][0];
       const crn = parseInt(worksheet[i][1], 10);
-      const worksheet_number_course: string = worksheet[i][2];
-      if (season !== null && season != season_code) {
+      const worksheetNumberCourse = worksheet[i][2];
+      if (season !== null && season != seasonCode) {
         continue;
       }
 
       if (
         courses &&
-        season_code in courses &&
-        worksheet_number_course == worksheet_number
+        seasonCode in courses &&
+        worksheetNumberCourse == worksheetNumber
       ) {
-        const course = courses[season_code].get(crn);
+        const course = courses[seasonCode].get(crn);
         if (!course) {
           Sentry.captureException(
-            `failed to resolve worksheet course ${season_code} ${crn}`,
+            `failed to resolve worksheet course ${seasonCode} ${crn}`,
           );
         } else {
           data.push(course);
@@ -76,7 +76,7 @@ export const useWorksheetInfo = (
     }
 
     return data;
-  }, [season, courses, worksheet, worksheet_number]);
+  }, [season, courses, worksheet, worksheetNumber]);
 
   return { loading, error, data };
 };

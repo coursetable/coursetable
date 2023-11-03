@@ -130,9 +130,9 @@ function CourseTableNavbar({
 }: Props) {
   const location = useLocation();
   // Is navbar expanded in mobile view?
-  const [nav_expanded, setExpand] = useState<boolean>(false);
+  const [navExpanded, setExpand] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
-  const { ref_visible, isComponentVisible, setIsComponentVisible } =
+  const { refVisible, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
 
   // Fetch from search
@@ -145,7 +145,7 @@ function CourseTableNavbar({
   const { isMobile, isLgDesktop } = useWindowDimensions();
 
   // Show navbar search state
-  const [show_search, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   // Page state
   const [page, setPage] = useState('');
   // Handles page
@@ -171,15 +171,15 @@ function CourseTableNavbar({
   // Calculate time since last updated
   useEffect(() => {
     const dt = DateTime.now().setZone('America/New_York');
-    let dt_update;
+    let dtUpdate;
     if (dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)) {
-      dt_update = dt
+      dtUpdate = dt
         .plus(Duration.fromObject({ days: -1 }))
         .set({ hour: 3, minute: 30, second: 0 });
     } else {
-      dt_update = dt.set({ hour: 3, minute: 30, second: 0 });
+      dtUpdate = dt.set({ hour: 3, minute: 30, second: 0 });
     }
-    const diffInSecs = dt.diff(dt_update).as('seconds');
+    const diffInSecs = dt.diff(dtUpdate).as('seconds');
     if (diffInSecs < 60) {
       setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
     } else if (diffInSecs < 3600) {
@@ -196,13 +196,13 @@ function CourseTableNavbar({
       <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
           <Navbar
-            expanded={nav_expanded}
+            expanded={navExpanded}
             onToggle={(expanded: boolean) => setExpand(expanded)}
             // sticky="top"
             expand="md"
             className="shadow-sm px-3 align-items-start"
             style={
-              show_search && page === 'catalog'
+              showSearch && page === 'catalog'
                 ? {
                     height: isLgDesktop ? '100px' : '88px',
                     paddingBottom: '0px',
@@ -235,19 +235,19 @@ function CourseTableNavbar({
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
             {/* Desktop navbar search */}
-            {show_search && page === 'catalog' ? (
+            {showSearch && page === 'catalog' ? (
               <NavbarCatalogSearch />
             ) : (
-              show_search && page === 'worksheet' && <NavbarWorksheetSearch />
+              showSearch && page === 'worksheet' && <NavbarWorksheetSearch />
             )}
 
-            <NavCollapseWrapper wrap={!isMobile && show_search}>
+            <NavCollapseWrapper wrap={!isMobile && showSearch}>
               {/* Navbar collapse */}
               <Navbar.Collapse
                 id="basic-navbar-nav"
                 // Make navbar display: flex when not mobile. If mobile, normal formatting
                 className={!isMobile ? 'd-flex' : 'justify-content-end'}
-                style={!isMobile && show_search ? { flexGrow: 0 } : undefined}
+                style={!isMobile && showSearch ? { flexGrow: 0 } : undefined}
               >
                 {/* Close navbar on click in mobile view */}
                 <Nav
@@ -303,7 +303,7 @@ function CourseTableNavbar({
                   >
                     <div className={styles.navbar_me}>
                       <StyledMeIcon
-                        ref={ref_visible}
+                        ref={refVisible}
                         className={`${styles.icon_circle} m-auto`}
                         onClick={() =>
                           setIsComponentVisible(!isComponentVisible)
@@ -347,7 +347,7 @@ function CourseTableNavbar({
                 </Nav>
               </Navbar.Collapse>
               {/* Last updated ago text for desktop */}
-              {show_search && page === 'catalog' && (
+              {showSearch && page === 'catalog' && (
                 <SmallTextComponent type={2} className="mb-2 text-right">
                   <MdUpdate className="mr-1" />
                   Updated {lastUpdated} ago

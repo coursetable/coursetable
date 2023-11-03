@@ -23,25 +23,24 @@ const onBreak = (day: moment.Moment) => {
 };
 
 // generate ICS file and download it
-export const generateICS = (listings_all: Listing[]) => {
+export const generateICS = (allListings: Listing[]) => {
   // Season to export
-  const cur_season = '202303';
+  const curSeason = '202303';
 
   // Fall 2023 period
   const period = [moment('2023-08-30T08:20'), moment('2023-12-08T17:30')];
 
   // Only get courses for the current season that have valid times
   const listings: Listing[] = [];
-  listings_all.forEach((listing) => {
+  allListings.forEach((listing) => {
     if (!listing.times_summary || listing.times_summary === 'TBA') return;
-    if (listing.season_code === cur_season) listings.push(listing);
+    if (listing.season_code === curSeason) listings.push(listing);
   });
 
-  // Convert season code to season string
-  const season_string = toSeasonString(cur_season);
+  const seasonString = toSeasonString(curSeason);
   if (!listings.length) {
     toast.error(
-      `Worksheet for ${season_string[2]}, ${season_string[1]} is empty`,
+      `Worksheet for ${seasonString[2]}, ${seasonString[1]} is empty`,
     );
     return;
   }

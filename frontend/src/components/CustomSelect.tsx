@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-nocheck
 /* eslint-disable react/react-in-jsx-scope */
 import React, { useMemo } from 'react';
@@ -18,20 +19,20 @@ const indicatorStyles = (
   theme: DefaultTheme,
   isMulti: boolean,
 ): StylesConfig => {
-  const icon_focus = chroma(theme.icon_focus);
+  const iconFocus = chroma(theme.icon_focus);
   const icon = chroma(theme.icon);
-  const new_icon_focus =
-    theme.theme === 'light' ? icon_focus.darken() : icon_focus.brighten();
-  const new_icon = theme.theme === 'light' ? icon.darken() : icon.brighten();
+  const newIconFocus =
+    theme.theme === 'light' ? iconFocus.darken() : iconFocus.brighten();
+  const newIcon = theme.theme === 'light' ? icon.darken() : icon.brighten();
 
   return {
     clearIndicator: (base, state) => {
       return {
         ...base,
-        color: state.isFocused ? icon_focus.css() : icon.css(),
+        color: state.isFocused ? iconFocus.css() : icon.css(),
         ':hover': {
           ...base[':hover'],
-          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+          color: state.isFocused ? newIconFocus.css() : newIcon.css(),
         },
       };
     },
@@ -39,10 +40,10 @@ const indicatorStyles = (
       return {
         ...base,
         display: isMulti && state.hasValue ? 'none' : 'flex',
-        color: state.isFocused ? icon_focus.css() : icon.css(),
+        color: state.isFocused ? iconFocus.css() : icon.css(),
         ':hover': {
           ...base[':hover'],
-          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+          color: state.isFocused ? newIconFocus.css() : newIcon.css(),
         },
       };
     },

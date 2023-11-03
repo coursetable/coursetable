@@ -65,40 +65,40 @@ export type OptType =
 type Store = {
   canReset: boolean;
   searchText: string;
-  select_subjects: Option[];
-  select_skillsareas: Option[];
+  selectSubjects: Option[];
+  selectSkillsAreas: Option[];
   overallBounds: number[];
   overallValueLabels: number[];
   workloadBounds: number[];
   workloadValueLabels: number[];
-  select_seasons: Option[];
-  select_days: Option[];
+  selectSeasons: Option[];
+  selectDays: Option[];
   timeBounds: string[];
   timeValueLabels: string[];
   enrollBounds: number[];
   enrollValueLabels: number[];
   numBounds: number[];
   numValueLabels: number[];
-  select_schools: Option[];
-  select_credits: Option[];
+  selectSchools: Option[];
+  selectCredits: Option[];
   searchDescription: boolean;
   hideCancelled: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
   hideDiscussionSections: boolean;
-  select_sortby: SortByOption;
-  sort_order: SortOrderType;
+  selectSortBy: SortByOption;
+  sortOrder: SortOrderType;
   ordering: OrderingType;
   seasonsOptions: OptType;
   coursesLoading: boolean;
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
-  num_fb: Record<string, string[]>;
-  reset_key: number;
+  numFb: Record<string, string[]>;
+  resetKey: number;
   duration: number;
   speed: string;
-  course_modal: (string | boolean | Listing)[];
+  courseModal: (string | boolean | Listing)[];
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -150,14 +150,14 @@ SearchContext.displayName = 'SearchContext';
 //   season = 1;
 // }
 // UPDATE THIS MANUALLY
-const def_season_code = '202401';
+const defSeasonCode = '202401';
 
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
 const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
-  { value: def_season_code, label: toSeasonString(def_season_code)[0] },
+  { value: defSeasonCode, label: toSeasonString(defSeasonCode)[0] },
 ];
 const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;
@@ -196,13 +196,13 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
-  const [select_subjects, setSelectSubjects] = useSessionStorageState(
-    'select_subjects',
+  const [selectSubjects, setSelectSubjects] = useSessionStorageState(
+    'selectSubjects',
     defaultOptions,
   );
 
-  const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
-    'select_skillsareas',
+  const [selectSkillsAreas, setSelectSkillsAreas] = useSessionStorageState(
+    'selectSkillsAreas',
     defaultOptions,
   );
 
@@ -224,13 +224,13 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       : defaultRatingBounds,
   );
 
-  const [select_seasons, setSelectSeasons] = useSessionStorageState(
-    'select_seasons',
+  const [selectSeasons, setSelectSeasons] = useSessionStorageState(
+    'selectSeasons',
     defaultSeason,
   );
 
-  const [select_days, setSelectDays] = useSessionStorageState(
-    'select_days',
+  const [selectDays, setSelectDays] = useSessionStorageState(
+    'selectDays',
     defaultOptions,
   );
 
@@ -258,13 +258,13 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     numBounds !== defaultNumBounds ? numBounds : defaultNumBounds,
   );
 
-  const [select_schools, setSelectSchools] = useSessionStorageState(
-    'select_schools',
+  const [selectSchools, setSelectSchools] = useSessionStorageState(
+    'selectSchools',
     defaultOptions,
   );
 
-  const [select_credits, setSelectCredits] = useSessionStorageState(
-    'select_credits',
+  const [selectCredits, setSelectCredits] = useSessionStorageState(
+    'selectCredits',
     defaultOptions,
   );
 
@@ -292,14 +292,14 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   /* Sorting */
 
   // Sort option state
-  const [select_sortby, setSelectSortby] = useSessionStorageState<SortByOption>(
-    'select_sortby',
+  const [selectSortBy, setSelectSortby] = useSessionStorageState<SortByOption>(
+    'selectSortBy',
     defaultSortOption,
   );
 
   // Sort order state
-  const [sort_order, setSortOrder] = useSessionStorageState<SortOrderType>(
-    'sort_order',
+  const [sortOrder, setSortOrder] = useSessionStorageState<SortOrderType>(
+    'sortOrder',
     defaultSortOrder,
   );
 
@@ -314,16 +314,16 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   // State to determine if user can reset or not
   const [canReset, setCanReset] = useSessionStorageState('canReset', false);
   // State to cause components to reload when filters are reset
-  const [reset_key, setResetKey] = useState(0);
+  const [resetKey, setResetKey] = useState(0);
 
   /* Search speed */
 
-  const [start_time, setStartTime] = useState(Date.now());
+  const [startTime, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState('fast');
 
   // State that determines if a course modal needs to be displayed and which course to display
-  const [course_modal, setCourseModal] = useState<
+  const [courseModal, setCourseModal] = useState<
     (string | boolean | Listing)[]
   >([false, '']);
 
@@ -333,7 +333,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const isLoggedIn = user.worksheet != null;
 
   // Object that holds a list of each fb friend taking a specific course
-  const num_fb = useMemo(() => {
+  const numFb = useMemo(() => {
     if (!user.fbLogin || !user.fbWorksheets) return {};
     return getNumFB(user.fbWorksheets);
   }, [user.fbLogin, user.fbWorksheets]);
@@ -352,30 +352,30 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     });
   }
 
-  const required_seasons = useMemo(() => {
+  const requiredSeasons = useMemo(() => {
     if (!isLoggedIn) {
       // If we're not logged in, don't attempt to request any seasons.
       return [];
     }
-    if (select_seasons == null) {
+    if (selectSeasons == null) {
       return [];
     }
-    if (select_seasons.length === 0) {
+    if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
       return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
     }
-    return select_seasons.map((x) => x.value);
-  }, [isLoggedIn, select_seasons, seasonsData]);
+    return selectSeasons.map((x) => x.value);
+  }, [isLoggedIn, selectSeasons, seasonsData]);
 
   const {
     loading: coursesLoading,
     courses: courseData,
     error: courseLoadError,
-  } = useCourseData(required_seasons);
+  } = useCourseData(requiredSeasons);
 
   // State used to determine whether or not to show season tags
   // (if multiple seasons are queried, the season is indicated)
-  const multiSeasons = required_seasons.length !== 1;
+  const multiSeasons = requiredSeasons.length !== 1;
 
   // Search configuration of filters
   const searchConfig = useMemo(() => {
@@ -383,8 +383,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     let processedSkillsAreas;
     let processedSkills;
     let processedAreas;
-    if (select_skillsareas != null) {
-      processedSkillsAreas = select_skillsareas.map((x) => {
+    if (selectSkillsAreas != null) {
+      processedSkillsAreas = selectSkillsAreas.map((x) => {
         return x.value;
       });
 
@@ -418,8 +418,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     // credits to filter
     let processedCredits;
-    if (select_credits != null) {
-      processedCredits = select_credits.map((x) => {
+    if (selectCredits != null) {
+      processedCredits = selectCredits.map((x) => {
         return x.label;
       });
       // set null defaults
@@ -430,8 +430,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     // schools to filter
     let processedSchools;
-    if (select_schools != null) {
-      processedSchools = select_schools.map((x) => {
+    if (selectSchools != null) {
+      processedSchools = selectSchools.map((x) => {
         return x.value;
       });
 
@@ -443,8 +443,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     // subjects to filter
     let processedSubjects;
-    if (select_subjects != null) {
-      processedSubjects = select_subjects.map((x) => {
+    if (selectSubjects != null) {
+      processedSubjects = selectSubjects.map((x) => {
         return x.value;
       });
 
@@ -456,8 +456,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     // days to filter
     let processedDays;
-    if (select_days != null) {
-      processedDays = select_days.map((x) => {
+    if (selectDays != null) {
+      processedDays = selectDays.map((x) => {
         return x.value;
       });
 
@@ -469,24 +469,21 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     // if the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    const include_all_overalls = _.isEqual(overallBounds, defaultRatingBounds);
+    const includeAllOveralls = _.isEqual(overallBounds, defaultRatingBounds);
 
-    const include_all_workloads = _.isEqual(
-      workloadBounds,
-      defaultRatingBounds,
-    );
+    const includeAllWorkloads = _.isEqual(workloadBounds, defaultRatingBounds);
 
-    const include_all_times = _.isEqual(timeBounds, defaultTimeBounds);
+    const includeAllTimes = _.isEqual(timeBounds, defaultTimeBounds);
 
-    const include_all_enrollments = _.isEqual(
+    const includeAllEnrollments = _.isEqual(
       enrollBounds.map(Math.round),
       defaultEnrollBounds,
     );
 
-    const include_all_numbers = _.isEqual(numBounds, defaultNumBounds);
+    const includeAllNumbers = _.isEqual(numBounds, defaultNumBounds);
 
     // Variables to use in search query
-    const search_variables = {
+    const searchVariables = {
       search_text: searchText,
       // seasons: not included because it is handled by required_seasons
       areas: new Set(processedAreas),
@@ -495,23 +492,23 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       schools: new Set(processedSchools),
       subjects: new Set(processedSubjects),
       days: new Set(processedDays),
-      min_overall: include_all_overalls ? null : overallBounds[0],
-      max_overall: include_all_overalls ? null : overallBounds[1],
-      min_workload: include_all_workloads ? null : workloadBounds[0],
-      max_workload: include_all_workloads ? null : workloadBounds[1],
-      min_time: include_all_times ? null : timeBounds[0],
-      max_time: include_all_times ? null : timeBounds[1],
-      min_enrollment: include_all_enrollments ? null : enrollBounds[0],
-      max_enrollment: include_all_enrollments ? null : enrollBounds[1],
-      min_number: include_all_numbers ? null : numBounds[0],
-      max_number: include_all_numbers ? null : numBounds[1],
+      min_overall: includeAllOveralls ? null : overallBounds[0],
+      max_overall: includeAllOveralls ? null : overallBounds[1],
+      min_workload: includeAllWorkloads ? null : workloadBounds[0],
+      max_workload: includeAllWorkloads ? null : workloadBounds[1],
+      min_time: includeAllTimes ? null : timeBounds[0],
+      max_time: includeAllTimes ? null : timeBounds[1],
+      min_enrollment: includeAllEnrollments ? null : enrollBounds[0],
+      max_enrollment: includeAllEnrollments ? null : enrollBounds[1],
+      min_number: includeAllNumbers ? null : numBounds[0],
+      max_number: includeAllNumbers ? null : numBounds[1],
       description: searchDescription ? 'ACTIVE' : null,
       extra_info: hideCancelled ? 'ACTIVE' : null,
       discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
       grad_level: hideGraduateCourses ? false : null,
     };
-    return search_variables;
+    return searchVariables;
   }, [
     searchDescription,
     hideCancelled,
@@ -523,11 +520,11 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     timeBounds,
     enrollBounds,
     numBounds,
-    select_credits,
-    select_schools,
-    select_skillsareas,
-    select_subjects,
-    select_days,
+    selectCredits,
+    selectSchools,
+    selectSkillsAreas,
+    selectSubjects,
+    selectDays,
     searchText,
   ]);
 
@@ -543,7 +540,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       .filter((x) => !!x)
       .map((token) => token.toLowerCase());
 
-    const listings = required_seasons
+    const listings = requiredSeasons
       .map((season_code) => {
         if (!courseData[season_code]) return [];
         return [...courseData[season_code].values()];
@@ -552,24 +549,24 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     const filtered = listings.filter((listing) => {
       // Apply filters.
-      const average_overall = Number(getOverallRatings(listing));
+      const averageOverall = Number(getOverallRatings(listing));
       if (
         searchConfig.min_overall !== null &&
         searchConfig.max_overall !== null &&
-        (average_overall === null ||
-          _.round(average_overall, 1) < searchConfig.min_overall ||
-          _.round(average_overall, 1) > searchConfig.max_overall)
+        (averageOverall === null ||
+          _.round(averageOverall, 1) < searchConfig.min_overall ||
+          _.round(averageOverall, 1) > searchConfig.max_overall)
       ) {
         return false;
       }
 
-      const average_workload = Number(getWorkloadRatings(listing));
+      const averageWorkload = Number(getWorkloadRatings(listing));
       if (
         searchConfig.min_workload !== null &&
         searchConfig.max_workload !== null &&
-        (average_workload === null ||
-          _.round(average_workload, 1) < searchConfig.min_workload ||
-          _.round(average_workload, 1) > searchConfig.max_workload)
+        (averageWorkload === null ||
+          _.round(averageWorkload, 1) < searchConfig.min_workload ||
+          _.round(averageWorkload, 1) > searchConfig.max_workload)
       ) {
         return false;
       }
@@ -742,16 +739,16 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Apply sorting order.
-    return sortCourses(filtered, ordering, num_fb);
+    return sortCourses(filtered, ordering, numFb);
   }, [
     searchDescription,
-    required_seasons,
+    requiredSeasons,
     coursesLoading,
     courseLoadError,
     courseData,
     searchConfig,
     ordering,
-    num_fb,
+    numFb,
   ]);
 
   // For resetting all filters and sorts
@@ -783,12 +780,12 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSortOrder(defaultSortOrder);
     setOrdering(defaultOrdering);
 
-    setResetKey(reset_key + 1);
+    setResetKey(resetKey + 1);
 
     setCanReset(false);
     setStartTime(Date.now());
   }, [
-    reset_key,
+    resetKey,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -820,7 +817,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     [setCourseModal],
   );
 
-  // Reset course_modal state to hide the modal
+  // Reset courseModal state to hide the modal
   const hideModal = useCallback(() => {
     setCourseModal([false, '']);
   }, [setCourseModal]);
@@ -835,30 +832,30 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
   // Set ordering in parent element whenever sortby or order changes
   useEffect(() => {
-    const sortParams = select_sortby.value;
+    const sortParams = selectSortBy.value;
     const newOrdering: {
       [key in SortKeys]?: SortOrderType;
     } = {
-      [sortParams]: sort_order,
+      [sortParams]: sortOrder,
     };
     setOrdering(newOrdering);
-  }, [select_sortby, sort_order, setOrdering]);
+  }, [selectSortBy, sortOrder, setOrdering]);
 
   // Check if can or can't reset
   useEffect(() => {
     if (
       !_.isEqual(searchText, '') ||
-      !_.isEqual(select_subjects, defaultOptions) ||
-      !_.isEqual(select_skillsareas, defaultOptions) ||
+      !_.isEqual(selectSubjects, defaultOptions) ||
+      !_.isEqual(selectSkillsAreas, defaultOptions) ||
       !_.isEqual(overallBounds, defaultRatingBounds) ||
       !_.isEqual(workloadBounds, defaultRatingBounds) ||
-      !_.isEqual(select_seasons, defaultSeason) ||
-      !_.isEqual(select_days, defaultOptions) ||
+      !_.isEqual(selectSeasons, defaultSeason) ||
+      !_.isEqual(selectDays, defaultOptions) ||
       !_.isEqual(timeBounds, defaultTimeBounds) ||
       !_.isEqual(enrollBounds, defaultEnrollBounds) ||
       !_.isEqual(numBounds, defaultNumBounds) ||
-      !_.isEqual(select_schools, defaultOptions) ||
-      !_.isEqual(select_credits, defaultOptions) ||
+      !_.isEqual(selectSchools, defaultOptions) ||
+      !_.isEqual(selectCredits, defaultOptions) ||
       !_.isEqual(searchDescription, defaultFalse) ||
       !_.isEqual(hideCancelled, defaultTrue) ||
       !_.isEqual(hideFirstYearSeminars, defaultFalse) ||
@@ -872,7 +869,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     }
     // Calculate & determine search speed
     if (!coursesLoading && searchData) {
-      const durInSecs = Math.abs(Date.now() - start_time) / 1000;
+      const durInSecs = Math.abs(Date.now() - startTime) / 1000;
       setDuration(durInSecs);
       const sp = _.sample(
         searchSpeed[
@@ -885,17 +882,17 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     }
   }, [
     searchText,
-    select_subjects,
-    select_skillsareas,
+    selectSubjects,
+    selectSkillsAreas,
     overallBounds,
     workloadBounds,
     timeBounds,
     enrollBounds,
     numBounds,
-    select_seasons,
-    select_days,
-    select_schools,
-    select_credits,
+    selectSeasons,
+    selectDays,
+    selectSchools,
+    selectCredits,
     searchDescription,
     hideCancelled,
     hideFirstYearSeminars,
@@ -904,7 +901,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     ordering,
     coursesLoading,
     searchData,
-    start_time,
+    startTime,
     setCanReset,
   ]);
 
@@ -914,40 +911,40 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       // Context state.
       canReset,
       searchText,
-      select_subjects,
-      select_skillsareas,
+      selectSubjects,
+      selectSkillsAreas,
       overallBounds,
       overallValueLabels,
       workloadBounds,
       workloadValueLabels,
-      select_seasons,
-      select_days,
+      selectSeasons,
+      selectDays,
       timeBounds,
       timeValueLabels,
       enrollBounds,
       enrollValueLabels,
       numBounds,
       numValueLabels,
-      select_schools,
-      select_credits,
+      selectSchools,
+      selectCredits,
       searchDescription,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      select_sortby,
-      sort_order,
+      selectSortBy,
+      sortOrder,
       ordering,
       seasonsOptions,
       coursesLoading,
       searchData,
       multiSeasons,
       isLoggedIn,
-      num_fb,
-      reset_key,
+      numFb,
+      resetKey,
       duration,
       speed,
-      course_modal,
+      courseModal,
 
       // Update methods.
       setCanReset,
@@ -985,40 +982,40 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     [
       canReset,
       searchText,
-      select_subjects,
-      select_skillsareas,
+      selectSubjects,
+      selectSkillsAreas,
       overallBounds,
       overallValueLabels,
       workloadBounds,
       workloadValueLabels,
-      select_seasons,
-      select_days,
+      selectSeasons,
+      selectDays,
       timeBounds,
       timeValueLabels,
       enrollBounds,
       enrollValueLabels,
       numBounds,
       numValueLabels,
-      select_schools,
-      select_credits,
+      selectSchools,
+      selectCredits,
       searchDescription,
       hideCancelled,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      select_sortby,
-      sort_order,
+      selectSortBy,
+      sortOrder,
       ordering,
       seasonsOptions,
       coursesLoading,
       searchData,
       multiSeasons,
       isLoggedIn,
-      num_fb,
-      reset_key,
+      numFb,
+      resetKey,
       duration,
       speed,
-      course_modal,
+      courseModal,
       setCanReset,
       setSearchText,
       setSelectSubjects,

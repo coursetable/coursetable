@@ -40,11 +40,11 @@ function Worksheet() {
 
   const {
     cur_worksheet,
-    worksheet_view,
+    worksheetView,
     worksheetLoading,
     worksheetError,
     worksheetData,
-    course_modal,
+    courseModal,
     handleWorksheetView,
     hideModal,
   } = useWorksheet();
@@ -111,24 +111,22 @@ function Worksheet() {
       {!isMobile ? (
         /* Desktop View */
         <div className={styles.desktop_container}>
-          <Row
-            className={worksheet_view.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}
-          >
+          <Row className={worksheetView.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
             {/* Calendar Component */}
             <Col
               // Width of component depends on if it is expanded or not
               md={
-                worksheet_view.view === 'calendar' &&
-                worksheet_view.mode === 'expanded'
+                worksheetView.view === 'calendar' &&
+                worksheetView.mode === 'expanded'
                   ? 12
                   : 9
               }
               className={`mt-3 pl-0 ${
-                worksheet_view.view === 'calendar' &&
-                worksheet_view.mode === 'expanded'
+                worksheetView.view === 'calendar' &&
+                worksheetView.mode === 'expanded'
                   ? 'pr-0 '
                   : 'pr-3 '
-              }${worksheet_view.view === 'list' ? styles.hidden : ''}`}
+              }${worksheetView.view === 'list' ? styles.hidden : ''}`}
             >
               <StyledCalendarContainer
                 layer={0}
@@ -139,8 +137,8 @@ function Worksheet() {
                 <StyledExpandBtn
                   className={`${styles.expand_btn} ${styles.top_right}`}
                 >
-                  {worksheet_view.view === 'calendar' &&
-                  worksheet_view.mode !== 'expanded' ? (
+                  {worksheetView.view === 'calendar' &&
+                  worksheetView.mode !== 'expanded' ? (
                     <FaExpandAlt
                       className={styles.expand_icon}
                       size={expand_btn_size}
@@ -169,29 +167,29 @@ function Worksheet() {
             {/* List Component */}
             <Col
               // Width depends on if it is expanded or not
-              md={worksheet_view.view === 'list' ? 12 : 3}
+              md={worksheetView.view === 'list' ? 12 : 3}
               className={`ml-auto px-0 ${
-                worksheet_view.view === 'calendar' &&
-                worksheet_view.mode === 'expanded'
+                worksheetView.view === 'calendar' &&
+                worksheetView.mode === 'expanded'
                   ? styles.hidden
                   : ''
               }`}
             >
               {/* List Component */}
-              <Fade in={worksheet_view.view === 'list'}>
+              <Fade in={worksheetView.view === 'list'}>
                 <div
                   style={{
-                    display: worksheet_view.view === 'list' ? '' : 'none',
+                    display: worksheetView.view === 'list' ? '' : 'none',
                   }}
                 >
-                  {worksheet_view.view === 'list' && <WorksheetList />}
+                  {worksheetView.view === 'list' && <WorksheetList />}
                 </div>
               </Fade>
               {/* Calendar List Component */}
-              <Fade in={worksheet_view.view !== 'list'}>
+              <Fade in={worksheetView.view !== 'list'}>
                 <div
                   style={{
-                    display: worksheet_view.view !== 'list' ? '' : 'none',
+                    display: worksheetView.view !== 'list' ? '' : 'none',
                   }}
                 >
                   <WorksheetCalendarList />
@@ -213,8 +211,8 @@ function Worksheet() {
       {/* Course Modal */}
       <CourseModal
         hideModal={hideModal}
-        show={course_modal[0]}
-        listing={course_modal[1]}
+        show={courseModal[0]}
+        listing={courseModal[1]}
       />
     </div>
   );

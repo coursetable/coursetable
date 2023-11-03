@@ -75,92 +75,91 @@ export function NavbarWorksheetSearch() {
   // const { } = useSearch();
 
   const {
-    season_options,
-    cur_season,
+    seasonOptions,
+    curSeason,
     changeSeason,
     changeWorksheet,
-    worksheet_number,
-    fb_person,
+    worksheetNumber,
+    fbPerson,
     handleFBPersonChange,
-    worksheet_view,
+    worksheetView,
     handleWorksheetView,
   } = useWorksheet();
 
-  const worksheet_options = useMemo(() => {
-    const worksheet_options_temp = [
+  const worksheetOptions = useMemo(
+    () => [
       { value: '0', label: 'Main Worksheet' },
       { value: '1', label: 'Worksheet 1' },
       { value: '2', label: 'Worksheet 2' },
       { value: '3', label: 'Worksheet 3' },
-    ];
-    return worksheet_options_temp;
-  }, []);
+    ],
+    [],
+  );
 
-  const selected_season = useMemo(() => {
-    if (cur_season) {
+  const selectedSeason = useMemo(() => {
+    if (curSeason) {
       return {
-        value: cur_season,
-        label: toSeasonString(cur_season)[0],
+        value: curSeason,
+        label: toSeasonString(curSeason)[0],
       };
     }
     return null;
-  }, [cur_season]);
+  }, [curSeason]);
 
-  const selected_worksheet = useMemo(() => {
-    if (worksheet_number) {
+  const selectedWorksheet = useMemo(() => {
+    if (worksheetNumber) {
       return {
-        value: worksheet_number,
+        value: worksheetNumber,
         label:
-          worksheet_number === '0'
+          worksheetNumber === '0'
             ? 'Main Worksheet'
-            : `Worksheet ${worksheet_number}`,
+            : `Worksheet ${worksheetNumber}`,
       };
     }
     return null;
-  }, [worksheet_number]);
+  }, [worksheetNumber]);
 
   // Fetch user context data
   const { user } = useUser();
 
   // FB Friends names
-  const friendInfo = useMemo(() => {
-    return user.fbLogin && user.fbWorksheets
-      ? user.fbWorksheets.friendInfo
-      : {};
-  }, [user.fbLogin, user.fbWorksheets]);
+  const friendInfo = useMemo(
+    () => (user.fbLogin && user.fbWorksheets?.friendInfo) || {},
+    [user.fbLogin, user.fbWorksheets],
+  );
 
   // List of FB friend options. Initialize with me option
-  const friend_options = useMemo(() => {
-    const friend_options_temp = [];
+  const friendOptions = useMemo(() => {
+    const tempFriendOptions = [];
     // Add FB friend to dropdown if they have worksheet courses in the current season
-    for (const friend in friendInfo) {
-      friend_options_temp.push({
+    for (const friend of Object.keys(friendInfo)) {
+      tempFriendOptions.push({
         value: friend,
         label: friendInfo[friend].name,
       });
     }
     // Sort FB friends in alphabetical order
-    friend_options_temp.sort((a, b) => {
-      return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
-    });
-    return friend_options_temp;
+    tempFriendOptions.sort((a, b) =>
+      a.label.toLowerCase().localeCompare(b.label.toLowerCase(), 'en-US'),
+    );
+    return tempFriendOptions;
   }, [friendInfo]);
 
-  const selected_fb = useMemo(() => {
+  const selectedFb = useMemo(() => {
     if (!user.fbLogin) {
       return {
-        value: fb_person,
+        value: fbPerson,
         label: 'Connect FB',
       };
     }
-    if (fb_person === 'me') {
+    if (fbPerson === 'me') {
       return null;
     }
     return {
-      value: fb_person,
-      label: friendInfo[fb_person].name,
+      value: fbPerson,
+      label: friendInfo[fbPerson].name,
     };
-  }, [user.fbLogin, fb_person, friendInfo]);
+  }, [user.fbLogin, fbPerson, friendInfo]);
 
   const { isTablet } = useWindowDimensions();
 
@@ -175,9 +174,9 @@ export function NavbarWorksheetSearch() {
               name="worksheet-view-toggle"
               type="radio"
               value={
-                worksheet_view.view === 'expanded calendar'
+                worksheetView.view === 'expanded calendar'
                   ? 'calendar'
-                  : worksheet_view.view
+                  : worksheetView.view
               }
               onChange={(val: string) =>
                 handleWorksheetView({ view: val, mode: '' })
@@ -193,14 +192,14 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Season"
               type="season"
-              select_options={selected_season}
+              selectOptions={selectedSeason}
               clearIcon={false}
             >
               <PopoutSelect
                 isClearable={false}
                 hideSelectedOptions={false}
-                value={selected_season}
-                options={season_options}
+                value={selectedSeason}
+                options={seasonOptions}
                 placeholder="Last 5 Years"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
@@ -213,19 +212,19 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Worksheet"
               type="worksheet"
-              select_options={selected_worksheet}
+              selectOptions={selectedWorksheet}
               clearIcon={false}
             >
               <PopoutSelect
                 isClearable={false}
                 hideSelectedOptions={false}
-                value={selected_worksheet}
-                options={worksheet_options}
+                value={selectedWorksheet}
+                options={worksheetOptions}
                 placeholder="Main Worksheet"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
                     changeWorksheet(selectedOption.value);
-                    //console.log(worksheet_number);
+                    //console.log(worksheetNumber);
                   }
                 }}
               />
@@ -236,7 +235,7 @@ export function NavbarWorksheetSearch() {
                 <Popout
                   buttonText="Friends' courses"
                   type="facebook"
-                  select_options={selected_fb}
+                  selectOptions={selectedFb}
                   onReset={() => {
                     handleFBPersonChange('me');
                   }}
@@ -245,8 +244,8 @@ export function NavbarWorksheetSearch() {
                 >
                   <PopoutSelect
                     hideSelectedOptions={false}
-                    value={selected_fb}
-                    options={friend_options}
+                    value={selectedFb}
+                    options={friendOptions}
                     placeholder="Friends' courses"
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
                       // Cleared FB friend

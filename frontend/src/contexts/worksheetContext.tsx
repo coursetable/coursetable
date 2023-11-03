@@ -22,22 +22,22 @@ export type HiddenCourses = Record<Season, Record<number, boolean>>;
 export type WorksheetView = Record<string, string>;
 
 type Store = {
-  season_codes: string[];
-  season_options: OptType;
+  seasonCodes: string[];
+  seasonOptions: OptType;
   cur_worksheet: Worksheet;
-  cur_season: Season;
-  worksheet_number: string;
-  fb_person: string;
+  curSeason: Season;
+  worksheetNumber: string;
+  fbPerson: string;
   courses: Listing[];
-  hidden_courses: HiddenCourses;
-  hover_course: number | null;
-  worksheet_view: WorksheetView;
+  hiddenCourses: HiddenCourses;
+  hoverCourse: number | null;
+  worksheetView: WorksheetView;
   worksheetLoading: boolean;
   worksheetError: string | null;
   worksheetData: Listing[];
-  course_modal: (string | boolean | Listing)[];
+  courseModal: (string | boolean | Listing)[];
   changeSeason: (season_code: Season | null) => void;
-  changeWorksheet: (worksheet_number: string) => void;
+  changeWorksheet: (worksheetNumber: string) => void;
   handleFBPersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
@@ -66,20 +66,22 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  const [fb_person, setFbPerson] = useSessionStorageState('fb_person', 'me');
+  const [fbPerson, setFbPerson] = useSessionStorageState('fbPerson', 'me');
 
   // Determines when to show course modal and for what listing
-  const [course_modal, setCourseModal] = useState<
+  const [courseModal, setCourseModal] = useState<
     (string | boolean | Listing)[]
   >([false, '']);
   // List of courses that the user has marked hidden
-  const [hidden_courses, setHiddenCourses] =
-    useLocalStorageState<HiddenCourses>('hidden_courses', {});
+  const [hiddenCourses, setHiddenCourses] = useLocalStorageState<HiddenCourses>(
+    'hiddenCourses',
+    {},
+  );
   // The current listing that the user is hovering over
-  const [hover_course, setHoverCourse] = useState<number | null>(null);
+  const [hoverCourse, setHoverCourse] = useState<number | null>(null);
   // Currently expanded component (calendar or list or none)
-  const [worksheet_view, setWorksheetView] =
-    useSessionStorageState<WorksheetView>('worksheet_view', {
+  const [worksheetView, setWorksheetView] =
+    useSessionStorageState<WorksheetView>('worksheetView', {
       view: 'calendar',
       mode: '',
     });
@@ -87,56 +89,56 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   /* Processing */
 
   // Worksheet of the current person
-  const cur_worksheet = useMemo(() => {
+  const curWorksheet = useMemo(() => {
     /** @type typeof user.worksheet! */
-    const when_not_defined: Worksheet = []; // TODO: change this to undefined
-    if (fb_person === 'me') {
-      return user.worksheet ?? when_not_defined;
+    const whenNotDefined: Worksheet = []; // TODO: change this to undefined
+    if (fbPerson === 'me') {
+      return user.worksheet ?? whenNotDefined;
     }
-    const friend_worksheets = user.fbWorksheets?.worksheets;
-    return friend_worksheets
-      ? friend_worksheets[fb_person] ?? when_not_defined
-      : when_not_defined;
-  }, [user.worksheet, user.fbWorksheets, fb_person]);
+    const friendWorksheets = user.fbWorksheets?.worksheets;
+    return friendWorksheets
+      ? friendWorksheets[fbPerson] ?? whenNotDefined
+      : whenNotDefined;
+  }, [user.worksheet, user.fbWorksheets, fbPerson]);
 
   const { seasons: seasonsData } = useFerry();
-  const season_codes = useMemo(() => {
-    const season_codes_temp: string[] = [];
+  const seasonCodes = useMemo(() => {
+    const tempSeasonCodes: string[] = [];
     if (seasonsData && seasonsData.seasons) {
       seasonsData.seasons.forEach((season) => {
-        season_codes_temp.push(season.season_code);
+        tempSeasonCodes.push(season.season_code);
       });
     }
-    season_codes_temp.sort();
-    season_codes_temp.reverse();
-    return season_codes_temp;
+    tempSeasonCodes.sort();
+    tempSeasonCodes.reverse();
+    return tempSeasonCodes;
   }, [seasonsData]);
 
   // List to hold season dropdown options
-  const season_options = useMemo(() => {
-    const season_options_temp: Option[] = [];
+  const seasonOptions = useMemo(() => {
+    const tempSeasonOptions: Option[] = [];
     // Sort season codes from most to least recent
-    season_codes.sort();
-    season_codes.reverse();
-    // Iterate over seasons and populate season_options list
-    season_codes.forEach((season_code) => {
-      season_options_temp.push({
+    seasonCodes.sort();
+    seasonCodes.reverse();
+    // Iterate over seasons and populate seasonOptions list
+    seasonCodes.forEach((season_code) => {
+      tempSeasonOptions.push({
         value: season_code,
         label: toSeasonString(season_code)[0],
       });
     });
-    return season_options_temp;
-  }, [season_codes]);
+    return tempSeasonOptions;
+  }, [seasonCodes]);
 
   // Current season
-  const [cur_season, setCurSeason] = useSessionStorageState<Season>(
-    'cur_season',
+  const [curSeason, setCurSeason] = useSessionStorageState<Season>(
+    'curSeason',
     defaultFilters.defaultSeason[0].value,
   );
 
   // Current worksheet number
-  const [worksheet_number, setWorksheetNumber] = useSessionStorageState(
-    'worksheet_number',
+  const [worksheetNumber, setWorksheetNumber] = useSessionStorageState(
+    'worksheetNumber',
     '0',
   );
 
@@ -145,25 +147,20 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     loading: worksheetLoading,
     error: worksheetError,
     data: worksheetData,
-  } = useWorksheetInfo(cur_worksheet, cur_season, worksheet_number);
+  } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
 
   // Cache calendar colors. Reset whenever the season changes.
   const [colorMap, setColorMap] = useState<Record<number, number[]>>({});
   useEffect(() => {
     setColorMap({});
-  }, [cur_season]);
+  }, [curSeason]);
 
   // Courses data - basically a color-annotated version of the worksheet info.
   const [courses, setCourses] = useState<Listing[]>([]);
 
   // Initialize courses state and color map.
   useEffect(() => {
-    if (
-      !worksheetLoading &&
-      !worksheetError &&
-      cur_worksheet &&
-      worksheetData
-    ) {
+    if (!worksheetLoading && !worksheetError && curWorksheet && worksheetData) {
       const temp = [...worksheetData];
       // Assign color to each course
       for (let i = 0; i < worksheetData.length; i++) {
@@ -175,7 +172,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
         }
         temp[i].color = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 0.85)`;
         temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
-        temp[i].current_worksheet = worksheet_number;
+        temp[i].current_worksheet = worksheetNumber;
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
@@ -184,8 +181,8 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   }, [
     worksheetLoading,
     worksheetError,
-    cur_worksheet,
-    worksheet_number,
+    curWorksheet,
+    worksheetNumber,
     worksheetData,
     setCourses,
     colorMap,
@@ -197,46 +194,40 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   const toggleCourse = useCallback(
     (crn: number) => {
       if (crn === -1) {
-        setHiddenCourses((old_hidden_courses: HiddenCourses) => {
-          const new_hidden_courses = { ...old_hidden_courses };
+        setHiddenCourses((old_hiddenCourses: HiddenCourses) => {
+          const newHiddenCourses = { ...old_hiddenCourses };
           if (
-            !Object.prototype.hasOwnProperty.call(
-              new_hidden_courses,
-              cur_season,
-            )
+            !Object.prototype.hasOwnProperty.call(newHiddenCourses, curSeason)
           ) {
-            new_hidden_courses[cur_season] = {};
+            newHiddenCourses[curSeason] = {};
           }
           courses.forEach((listing) => {
-            new_hidden_courses[cur_season][listing.crn] = true;
+            newHiddenCourses[curSeason][listing.crn] = true;
           });
-          return new_hidden_courses;
+          return newHiddenCourses;
         });
       } else if (crn === -2) {
-        setHiddenCourses((old_hidden_courses: HiddenCourses) => {
-          const new_hidden_courses = { ...old_hidden_courses };
-          new_hidden_courses[cur_season] = {};
-          return new_hidden_courses;
+        setHiddenCourses((old_hiddenCourses: HiddenCourses) => {
+          const newHiddenCourses = { ...old_hiddenCourses };
+          newHiddenCourses[curSeason] = {};
+          return newHiddenCourses;
         });
       } else {
-        setHiddenCourses((old_hidden_courses: HiddenCourses) => {
-          const new_hidden_courses = { ...old_hidden_courses };
+        setHiddenCourses((old_hiddenCourses: HiddenCourses) => {
+          const newHiddenCourses = { ...old_hiddenCourses };
           if (
-            !Object.prototype.hasOwnProperty.call(
-              new_hidden_courses,
-              cur_season,
-            )
+            !Object.prototype.hasOwnProperty.call(newHiddenCourses, curSeason)
           ) {
-            new_hidden_courses[cur_season] = {};
+            newHiddenCourses[curSeason] = {};
           }
-          if (new_hidden_courses[cur_season][crn])
-            delete new_hidden_courses[cur_season][crn];
-          else new_hidden_courses[cur_season][crn] = true;
-          return new_hidden_courses;
+          if (newHiddenCourses[curSeason][crn])
+            delete newHiddenCourses[curSeason][crn];
+          else newHiddenCourses[curSeason][crn] = true;
+          return newHiddenCourses;
         });
       }
     },
-    [setHiddenCourses, courses, cur_season],
+    [setHiddenCourses, courses, curSeason],
   );
 
   const handleWorksheetView = useCallback(
@@ -286,20 +277,20 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   const store = useMemo(
     () => ({
       // Context state.
-      season_codes,
-      season_options,
-      cur_worksheet,
-      cur_season,
-      worksheet_number,
-      fb_person,
+      seasonCodes,
+      seasonOptions,
+      cur_worksheet: curWorksheet,
+      curSeason,
+      worksheetNumber,
+      fbPerson,
       courses,
-      hidden_courses,
-      hover_course,
-      worksheet_view,
+      hiddenCourses,
+      hoverCourse,
+      worksheetView,
       worksheetLoading,
       worksheetError,
       worksheetData,
-      course_modal,
+      courseModal,
 
       // Update methods.
       changeSeason,
@@ -312,20 +303,20 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       changeWorksheet,
     }),
     [
-      season_codes,
-      season_options,
-      cur_worksheet,
-      cur_season,
-      worksheet_number,
-      fb_person,
+      seasonCodes,
+      seasonOptions,
+      curWorksheet,
+      curSeason,
+      worksheetNumber,
+      fbPerson,
       courses,
-      hidden_courses,
-      hover_course,
-      worksheet_view,
+      hiddenCourses,
+      hoverCourse,
+      worksheetView,
       worksheetLoading,
       worksheetError,
       worksheetData,
-      course_modal,
+      courseModal,
       changeSeason,
       handleFBPersonChange,
       setHoverCourse,
