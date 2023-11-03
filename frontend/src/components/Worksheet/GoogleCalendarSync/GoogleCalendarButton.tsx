@@ -66,6 +66,9 @@ function GoogleCalendarButton({ courses }: Props): JSX.Element {
 
   const syncEvents = () => {
     setLoading(true);
+
+    // todo: delete any events with 'courestable' prefix
+
     courses.forEach(async (course, colorIndex) => {
       const event = constructCalendarEvent(course, colorIndex);
       try {

@@ -1,3 +1,4 @@
+import { v4 as uuidv4 } from 'uuid';
 import { Listing } from '../../Providers/FerryProvider';
 
 const TBA_STRING = 'TBA';
@@ -71,7 +72,7 @@ export const constructCalendarEvent = (course: Listing, colorIndex: number) => {
   const byDay = days.map((day) => byDayMapping[day]).join(',');
 
   const event = {
-    id: course.listing_id,
+    id: 'coursetable' + uuidv4().replace(/-/g, ""),
     summary: course.title,
     start: {
       dateTime: calendarStartTime,
