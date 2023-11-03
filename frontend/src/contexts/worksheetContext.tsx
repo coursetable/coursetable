@@ -36,7 +36,7 @@ type Store = {
   worksheetError: string | null;
   worksheetData: Listing[];
   course_modal: (string | boolean | Listing)[];
-  changeSeason: (season_code: Season) => void;
+  changeSeason: (season_code: Season | null) => void;
   changeWorksheet: (worksheet_number: string) => void;
   handleFBPersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
@@ -257,7 +257,8 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Function to change season
   const changeSeason = useCallback(
-    (season_code: Season) => {
+    (season_code: Season | null) => {
+      if (season_code === null) return;
       setCurSeason(season_code);
     },
     [setCurSeason],
