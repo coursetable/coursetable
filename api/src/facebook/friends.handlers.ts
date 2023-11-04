@@ -279,7 +279,7 @@ export const getNames = async (
 
   const allNames = allNameRecords.map(
     (nameRecord: StudentBluebookSettings) => {
-      return {name: nameRecord.first_name + " " + nameRecord.last_name, college: nameRecord.college}
+      return {netId: nameRecord.netId, name: nameRecord.first_name + " " + nameRecord.last_name, college: nameRecord.college}
     }
   );
   return res.status(200).json(allNames);
