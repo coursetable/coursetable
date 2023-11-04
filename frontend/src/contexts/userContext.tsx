@@ -122,7 +122,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const addFriend = useCallback(
     (friendNetId = ""): Promise<void> => {
       return axios
-        .get(`${API_ENDPOINT}/api/friends/add/${friendNetId}`, {
+        .get(`${API_ENDPOINT}/api/friends/add/?id=${friendNetId}`, {
           withCredentials: true,
         })
     },

@@ -27,7 +27,7 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
       user.worksheet,
     );
   }, [course.season_code, course.crn, user.worksheet]);
-
+  console.log("conflicticon")
   // Fetch listing info for each listing in user's worksheet
   const { data } = useWorksheetInfo(user.worksheet, course.season_code);
 

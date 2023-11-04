@@ -47,8 +47,8 @@ export const useWorksheetInfo = (
   const { loading, error, courses } = useCourseData(required_seasons);
 
   const data = useMemo(() => {
-    const data: Listing[] = [];
-    if (!worksheet) return data;
+    const dataReturn: Listing[] = [];
+    if (!worksheet) return dataReturn;
 
     // Resolve the worksheet items.
     for (let i = 0; i < worksheet.length; i++) {
@@ -70,13 +70,14 @@ export const useWorksheetInfo = (
             `failed to resolve worksheet course ${season_code} ${crn}`,
           );
         } else {
-          data.push(course);
+          dataReturn.push(course);
         }
       }
     }
+    console.log("dataReturn: " + dataReturn)
+    return dataReturn;
+  }, [season, courses, worksheet, worksheet_number])
 
-    return data;
-  }, [season, courses, worksheet, worksheet_number]);
-
+  console.log("Data: " + data);
   return { loading, error, data };
 };

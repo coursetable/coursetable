@@ -92,8 +92,10 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     const when_not_defined: Worksheet = []; // TODO: change this to undefined
     if (person === 'me') {
       return user.worksheet ?? when_not_defined;
-    }
+    } 
+
     const friend_worksheets = user.friendWorksheets?.worksheets;
+    console.log("returning worksheet: " + friend_worksheets);
     return friend_worksheets
       ? friend_worksheets[person] ?? when_not_defined
       : when_not_defined;
@@ -139,14 +141,15 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     'worksheet_number',
     '0',
   );
-
+  console.log("cur_worksheet at worksheetcontext: " + cur_worksheet);
+  console.log("user.worksheet at worksheetcontext: " + user.worksheet)
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
   const {
     loading: worksheetLoading,
     error: worksheetError,
     data: worksheetData,
   } = useWorksheetInfo(cur_worksheet, cur_season, worksheet_number);
-
+  console.log("Worksheet Data: " + worksheetData)
   // Cache calendar colors. Reset whenever the season changes.
   const [colorMap, setColorMap] = useState<Record<number, number[]>>({});
   useEffect(() => {
@@ -158,6 +161,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize courses state and color map.
   useEffect(() => {
+    console.log(worksheetData);
     if (
       !worksheetLoading &&
       !worksheetError &&
@@ -178,6 +182,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
+      console.log("setting courses: " + temp)
       setCourses(temp);
     }
   }, [

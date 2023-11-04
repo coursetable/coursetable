@@ -55,8 +55,9 @@ const MeDropdown: React.VFC<Props> = ({
 
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
-
+  console.log("medropdown")
   let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
+  console.log("me dropdown file data: " + data);
   if (!data) data = [];
 
   // Handle 'export worksheet' button click

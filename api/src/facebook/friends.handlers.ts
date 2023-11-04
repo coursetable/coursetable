@@ -17,17 +17,22 @@ export const addFriend = async (
 ): Promise<express.Response> => {
   winston.info("Adding new friend")
 
+
   if (!req.user) {
     return res.status(401).json({ success: false})
   }
 
   const { netId } = req.user
 
+  winston.info(netId);
+
   if (!req.query || typeof req.query.id !== "string") {
     return res.status(401).json({ success: false })
   }
 
   const friendNetId: string = req.query.id
+
+  winston.info("friend net id: " + friendNetId);
 
   try {
 
@@ -188,6 +193,10 @@ export const getFriendsWorksheets = async (
     (friendRecord: StudentFriends) => friendRecord.friendNetId,
   );
 
+  winston.info(netId);
+
+  winston.info(friendNetIds);
+
   // Get friends' worksheets from NetIDs
   winston.info('Getting worksheets of friends');
   const friendWorksheets = await prisma.worksheetCourses.findMany({
@@ -198,15 +207,26 @@ export const getFriendsWorksheets = async (
     },
   });
 
+  winston.info("get worksheets: " + friendWorksheets.map((ws: any) => {
+    return ws.net_id + " - " + ws.oci_id + " - " + ws.worksheet_number
+  }))
+
   // Get friends' infos from NetIDs
   winston.info('Getting info of friends');
-  const friendInfos: StudentBluebookSettings[] = await prisma.studentBluebookSettings.findMany({
+
+  const test = await prisma.studentBluebookSettings.findMany({});
+
+  winston.info(test);
+
+  const friendInfos = await prisma.studentBluebookSettings.findMany({
     where: {
       netId: {
         in: friendNetIds,
       },
     },
   });
+
+  winston.info(friendInfos);
 
   const friendNames = friendInfos.map(
     (friendInfo: StudentBluebookSettings) => ({netId: friendInfo.netId, name: friendInfo.first_name + " " + friendInfo.last_name})
@@ -218,22 +238,26 @@ export const getFriendsWorksheets = async (
     friendNameMap[nameRecord.netId] = { name: nameRecord.name }
   }
 
-  // map netId to worksheets (list of [season, oci_id])
-  const worksheetsByFriend: { [key: string]: [string, number][] } = {};
+  // map netId to worksheets (list of [season, oci_id, worksheet_number])
+  const worksheetsByFriend: { [key: string]: [string, number, number | null][] } = {};
   friendWorksheets.forEach(
     ({
       net_id,
       oci_id,
       season,
+      worksheet_number,
     }: {
       net_id: string;
       oci_id: number;
       season: number;
+      worksheet_number: number | null;
     }) => {
       if (net_id in worksheetsByFriend) {
-        worksheetsByFriend[net_id].push([String(season), oci_id]);
+        worksheetsByFriend[net_id].push([String(season), oci_id, worksheet_number]);
+        // worksheetsByFriend[net_id].push([String(season), oci_id]);
       } else {
-        worksheetsByFriend[net_id] = [[String(season), oci_id]];
+        worksheetsByFriend[net_id] = [[String(season), oci_id, worksheet_number]];
+        // worksheetsByFriend[net_id] = [[String(season), oci_id]];
       }
     },
   );
