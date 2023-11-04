@@ -156,6 +156,9 @@ export function NavbarWorksheetSearch() {
     };
   }, [person, friendInfo]);
 
+  // friend requests variables
+  
+
   const { isTablet } = useWindowDimensions();
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
@@ -240,6 +243,31 @@ export function NavbarWorksheetSearch() {
                 value={selected_person}
                 options={friend_options}
                 placeholder="Friends' courses"
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                  // Cleared FB friend
+                  if (!selectedOption) handlePersonChange('me');
+                  // Selected FB friend
+                  else if (isOption(selectedOption))
+                    handlePersonChange(selectedOption.value);
+                }}
+                isDisabled={false}
+              />
+            </Popout>
+
+            {/* Friend Requests Dropdown */}
+            <Popout
+              buttonText="Friend requests"
+              type="friend reqs"
+              select_options={selected_person}
+              onReset={() => {
+                handlePersonChange('me');
+              }}
+            >
+              <PopoutSelect
+                hideSelectedOptions={false}
+                value={selected_person}
+                options={friend_options}
+                placeholder="Friend requests"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   // Cleared FB friend
                   if (!selectedOption) handlePersonChange('me');

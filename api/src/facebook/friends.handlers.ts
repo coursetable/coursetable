@@ -146,21 +146,39 @@ export const getRequestsForFriend = async (
 
   const { netId } = req.user;
 
-  const friendReqs: StudentFriendRequests[] = await prisma.studentFriendRequests.findMany({
-    where: {
-      friendNetId: netId,
-    },
-  })
+  try {
+    const friendReqs: StudentFriendRequests[] = await prisma.studentFriendRequests.findMany({
+      where: {
+        friendNetId: netId,
+      },
+    })
 
-  const reqFriends = friendReqs.map(
-    (friendReq: StudentFriendRequests) => friendReq.netId,
-  );
+    const reqFriends = friendReqs.map(
+      (friendReq: StudentFriendRequests) => friendReq.netId,
+    );
 
-  return res.status(200).json({
-    success: true,
-    friends: reqFriends
-  });
+    const friendInfos = await prisma.studentBluebookSettings.findMany({
+      where: {
+        netId: {
+          in: reqFriends,
+        },
+      },
+    });
 
+    const friendNames = friendInfos.map(
+      (friendInfo: StudentBluebookSettings) => ({netId: friendInfo.netId, name: friendInfo.first_name + " " + friendInfo.last_name})
+    )
+
+    return res.status(200).json({
+      success: true,
+      friends: friendNames
+    });
+  } catch(err) {
+    return res.status(500).json({
+      success: false,
+      message: "Error fetching friend requests"
+    })
+  }
 }
 
 /**
@@ -279,7 +297,7 @@ export const getNames = async (
 
   const allNames = allNameRecords.map(
     (nameRecord: StudentBluebookSettings) => {
-      return {netId: nameRecord.netId, name: nameRecord.first_name + " " + nameRecord.last_name, college: nameRecord.college}
+      return {netId: nameRecord.netId, first: nameRecord.first_name, last: nameRecord.last_name, college: nameRecord.college}
     }
   );
   return res.status(200).json(allNames);
