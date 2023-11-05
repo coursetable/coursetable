@@ -39,8 +39,9 @@ type Store = {
   userRefresh(suppressError?: boolean): Promise<void>;
   friendRefresh(suppressError?: boolean): Promise<void>;
   friendReqRefresh(suppressError?: boolean): Promise<void>;
-  addFriend(friendNetId? : string): Promise<void>;
+  addFriend(netId1? : string, netId2? : string): Promise<void>;
   friendRequest(friendNetId? : string): Promise<void>;
+  resolveFriendRequest(friendNetId? : string): Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -63,7 +64,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   // User's FB friends' worksheets
   const [friendWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(undefined);
   // User's friend requests
-  const [friendRequests, setFriendRequests] = useState<FriendRequest | undefined>(undefined);
+  const [friendRequests, setFriendRequests] = useState<FriendRequest[] | undefined>(undefined);
 
   // Refresh user worksheet
   const userRefresh = useCallback(
@@ -112,7 +113,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             throw new Error(friends_worksheets.data.message);
           }
           // Successfully fetched friends' worksheets
-          console.log(friends_worksheets.data);
+          console.log("friend worksheet data: " + friends_worksheets.data);
           setFbWorksheets(friends_worksheets.data);
         })
         .catch((err) => {
@@ -139,8 +140,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             throw new Error(friendReqs.data.message);
           }
           // Successfully fetched friends' worksheets
-          console.log(friendReqs.data);
-          setFbWorksheets(friendReqs.data);
+          console.log("friendreqs data: ", friendReqs.data.friends);
+          setFriendRequests(friendReqs.data.friends);
         })
         .catch((err) => {
           // Error with fetching friends' worksheets
@@ -156,9 +157,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Add Friend
   const addFriend = useCallback(
-    (friendNetId = ""): Promise<void> => {
+    (netId1 = "", netId2 = ""): Promise<void> => {
       return axios
-        .get(`${API_ENDPOINT}/api/friends/add/?id=${friendNetId}`, {
+        .get(`${API_ENDPOINT}/api/friends/add/?id=${netId1}&id2=${netId2}`, {
           withCredentials: true,
         })
     },
@@ -168,6 +169,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const friendRequest = useCallback(
     (friendNetId = ""): Promise<void> => {
       return axios.get(`${API_ENDPOINT}/api/friends/request/?id=${friendNetId}`, {
+        withCredentials: true
+      })
+    },
+    []
+  )
+
+  const resolveFriendRequest = useCallback(
+    (friendNetId = ""): Promise<void> => {
+      return axios.get(`${API_ENDPOINT}/api/friends/resolveRequest/?id=${friendNetId}`, {
         withCredentials: true
       })
     },
@@ -196,9 +206,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       friendRefresh,
       friendReqRefresh,
       addFriend,
-      friendRequest
+      friendRequest,
+      resolveFriendRequest
     }),
-    [user, userRefresh, friendRefresh, friendReqRefresh, addFriend, friendRequest],
+    [user, userRefresh, friendRefresh, friendReqRefresh, addFriend, friendRequest, resolveFriendRequest],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;

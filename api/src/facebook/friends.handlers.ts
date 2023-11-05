@@ -22,17 +22,13 @@ export const addFriend = async (
     return res.status(401).json({ success: false})
   }
 
-  const { netId } = req.user
-
-  winston.info(netId);
-
-  if (!req.query || typeof req.query.id !== "string") {
+  if (!req.query || typeof req.query.id !== "string" || typeof req.query.id2 !== "string") {
     return res.status(401).json({ success: false })
   }
 
-  const friendNetId: string = req.query.id
+  const netId: string = req.query.id2
 
-  winston.info("friend net id: " + friendNetId);
+  const friendNetId: string = req.query.id
 
   try {
 
@@ -117,13 +113,17 @@ export const resolveFriendRequest = async (
 
   const { netId } = req.user;
 
-  const friendNetId = req.params["friendNetId"]
+  if (!req.query || typeof req.query.id !== "string") {
+    return res.status(401).json({ success: false })
+  }
+
+  const friendNetId = req.query.id;
 
   try {
     await prisma.$transaction([
       prisma.studentFriendRequests.delete({
         where: {
-          netId_friendNetId: { netId, friendNetId },
+          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
         },
       })
     ])
@@ -152,7 +152,7 @@ export const getRequestsForFriend = async (
         friendNetId: netId,
       },
     })
-
+    winston.info("log friend reqs: " + friendReqs);
     const reqFriends = friendReqs.map(
       (friendReq: StudentFriendRequests) => friendReq.netId,
     );

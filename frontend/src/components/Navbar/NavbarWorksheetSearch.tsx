@@ -120,7 +120,7 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-  const { user, addFriend } = useUser();
+  const { user, addFriend, friendRequest, resolveFriendRequest, friendReqRefresh, friendRefresh } = useUser();
 
   // FB Friends names
   const friendInfo = useMemo(() => {
@@ -156,8 +156,29 @@ export function NavbarWorksheetSearch() {
     };
   }, [person, friendInfo]);
 
+  // FB Friends names
+  const friendRequestInfo = useMemo(() => {
+    return user.friendRequests
+      ? user.friendRequests
+      : [];
+  }, [user.friendRequests]);
+
   // friend requests variables
-  
+  const friend_request_options = useMemo(() => {
+    const friend_request_options_temp = [];
+    // Add FB friend to dropdown if they have worksheet courses in the current season
+    for (const friend of friendRequestInfo) {
+      friend_request_options_temp.push({
+        value: friend.netId,
+        label: friend.name,
+      });
+    }
+    // Sort FB friends in alphabetical order
+    friend_request_options_temp.sort((a, b) => {
+      return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
+    });
+    return friend_request_options_temp;
+  }, [friendRequestInfo]);
 
   const { isTablet } = useWindowDimensions();
 
@@ -258,22 +279,26 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Friend requests"
               type="friend reqs"
-              select_options={selected_person}
+              // select_options={selected_person}
               onReset={() => {
                 handlePersonChange('me');
               }}
             >
               <PopoutSelect
                 hideSelectedOptions={false}
-                value={selected_person}
-                options={friend_options}
+                value={null}
+                isSearchable = {false}
+                options={friend_request_options}
                 placeholder="Friend requests"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  // Cleared FB friend
-                  if (!selectedOption) handlePersonChange('me');
-                  // Selected FB friend
-                  else if (isOption(selectedOption))
-                    handlePersonChange(selectedOption.value);
+                  if(selectedOption && isOption(selectedOption))
+                  {
+                    resolveFriendRequest(selectedOption.value);
+                    addFriend(selectedOption.value, user.netId);
+                    addFriend(user.netId, selectedOption.value);
+                    friendReqRefresh(true);
+                    friendRefresh(true);
+                  }
                 }}
                 isDisabled={false}
               />
@@ -299,9 +324,9 @@ export function NavbarWorksheetSearch() {
                   else if(e.key === "Enter")
                   {
                     console.log("Added " + currentFriendNetID);
-                    addFriend(currentFriendNetID);
+                    friendRequest(currentFriendNetID);
                   }
-                  else
+                  else if(e.key.length == 1)
                   {
                     setCurrentFriendNetID(currentFriendNetID + e.key);
                   }
