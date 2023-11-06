@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
+import { components } from 'react-select';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar'
@@ -184,6 +185,8 @@ export function NavbarWorksheetSearch() {
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
+  const [deleting, setDeleting] = useState(0);
+
   return (
     <>
       {/* Filters Form */}
@@ -284,18 +287,31 @@ export function NavbarWorksheetSearch() {
                 handlePersonChange('me');
               }}
             >
-              <PopoutSelect
+              <Searchbar
+                components={{
+                  Control: (props) => {
+                    return (
+                      <div onClick={() => {setDeleting(1 - deleting);}}>
+                        <components.Control {...props} />
+                      </div>
+                    );
+                  }
+                }}
                 hideSelectedOptions={false}
                 value={null}
                 isSearchable = {false}
                 options={friend_request_options}
-                placeholder="Friend requests"
+                placeholder={(deleting === 0)? "Adding friends (click to switch to delete mode)" : "Deleting friends (click to switch to add mode)"}
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if(selectedOption && isOption(selectedOption))
                   {
                     resolveFriendRequest(selectedOption.value);
-                    addFriend(selectedOption.value, user.netId);
-                    addFriend(user.netId, selectedOption.value);
+                    if(deleting === 0)
+                    {
+                      addFriend(selectedOption.value, user.netId);
+                      addFriend(user.netId, selectedOption.value);
+                    }
+                    else console.log("deleting")
                     friendReqRefresh(true);
                     friendRefresh(true);
                   }
