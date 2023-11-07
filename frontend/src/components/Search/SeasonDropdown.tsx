@@ -35,7 +35,6 @@ function SeasonDropdown() {
       <DropdownButton
         variant="dark"
         title={toSeasonString(cur_season)[0]}
-        // @ts-ignore
         onSelect={changeSeason}
       >
         {seasons_html}

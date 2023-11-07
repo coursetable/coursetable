@@ -9,7 +9,7 @@ declare module 'react-lines-ellipsis' {
     ellipsis?: string;
     isClamped?: () => boolean;
     maxLine?: number | string;
-    onReflow?: ({ clamped, text }: { clamped: boolean; text: string }) => any;
+    onReflow?: ({ clamped, text }: { clamped: boolean; text: string }) => void;
     style?: React.CSSProperties;
     text?: string;
     trimRight?: boolean;
