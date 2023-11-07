@@ -121,7 +121,7 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-  const { user, addFriend, friendRequest, resolveFriendRequest, friendReqRefresh, friendRefresh } = useUser();
+  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest, friendReqRefresh, friendRefresh } = useUser();
 
   // FB Friends names
   const friendInfo = useMemo(() => {
@@ -186,6 +186,7 @@ export function NavbarWorksheetSearch() {
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   const [deleting, setDeleting] = useState(0);
+  const [removing, setRemoving] = useState(0);
 
   return (
     <>
@@ -262,17 +263,38 @@ export function NavbarWorksheetSearch() {
                 handlePersonChange('me');
               }}
             >
-              <PopoutSelect
+              <Searchbar
+                components={{
+                  Control: (props) => {
+                    return (
+                      <div onClick={() => {setRemoving(1 - removing);}}>
+                        <components.Control {...props} />
+                      </div>
+                    );
+                  }
+                }}
                 hideSelectedOptions={false}
                 value={selected_person}
                 options={friend_options}
-                placeholder="Friends' courses"
+                placeholder={(removing === 0)? "Selecting friends (click to switch to remove mode)" : "Removing friends (click to switch to select mode)"}
+                isSearchable = {false}
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  // Cleared FB friend
-                  if (!selectedOption) handlePersonChange('me');
-                  // Selected FB friend
-                  else if (isOption(selectedOption))
-                    handlePersonChange(selectedOption.value);
+                  if(removing === 0)
+                  {
+                    // Cleared FB friend
+                    if (!selectedOption) handlePersonChange('me');
+                    // Selected FB friend
+                    else if (isOption(selectedOption))
+                      handlePersonChange(selectedOption.value);
+                  }
+                  else
+                  {
+                    if(selectedOption && isOption(selectedOption))
+                    {
+                      removeFriend(selectedOption.value, user.netId);
+                      removeFriend(user.netId, selectedOption.value);
+                    } 
+                  }
                 }}
                 isDisabled={false}
               />

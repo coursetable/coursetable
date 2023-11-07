@@ -40,6 +40,7 @@ type Store = {
   friendRefresh(suppressError?: boolean): Promise<void>;
   friendReqRefresh(suppressError?: boolean): Promise<void>;
   addFriend(netId1? : string, netId2? : string): Promise<void>;
+  removeFriend(netId1? : string, netId2? : string): Promise<void>;
   friendRequest(friendNetId? : string): Promise<void>;
   resolveFriendRequest(friendNetId? : string): Promise<void>;
 };
@@ -166,6 +167,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     [],
   );
 
+  // Remove Friend
+  const removeFriend = useCallback(
+    (netId1 = "", netId2 = ""): Promise<void> => {
+      return axios
+        .get(`${API_ENDPOINT}/api/friends/remove/?id=${netId1}&id2=${netId2}`, {
+          withCredentials: true,
+        })
+    },
+    [],
+  );
+
   const friendRequest = useCallback(
     (friendNetId = ""): Promise<void> => {
       return axios.get(`${API_ENDPOINT}/api/friends/request/?id=${friendNetId}`, {
@@ -206,10 +218,11 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       friendRefresh,
       friendReqRefresh,
       addFriend,
+      removeFriend,
       friendRequest,
       resolveFriendRequest
     }),
-    [user, userRefresh, friendRefresh, friendReqRefresh, addFriend, friendRequest, resolveFriendRequest],
+    [user, userRefresh, friendRefresh, friendReqRefresh, addFriend, removeFriend, friendRequest, resolveFriendRequest],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;
