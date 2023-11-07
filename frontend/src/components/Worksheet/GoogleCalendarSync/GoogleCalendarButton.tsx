@@ -35,7 +35,7 @@ function GoogleCalendarButton({ courses }: Props): JSX.Element {
   // Load gapi script and client
   React.useEffect(() => {
     async function loadGapi() {
-      let newGapi = await loadGapiInsideDOM();
+      const newGapi = await loadGapiInsideDOM();
       loadGapiClient(newGapi);
       const newAuth2 = await loadAuth2(
         newGapi,
@@ -48,6 +48,67 @@ function GoogleCalendarButton({ courses }: Props): JSX.Element {
     }
     loadGapi();
   }, [gapi]);
+
+  const syncEvents = React.useCallback(async () => {
+    setLoading(true);
+
+    const season = courses.length > 0 ? courses[0].season_code : '202303';
+
+    try {
+      // get all previously added classes
+      const event_list = await gapi.client.calendar.events.list({
+        calendarId: 'primary',
+        timeMin:
+          season === '202303'
+            ? new Date('2023-08-30').toISOString()
+            : new Date('2024-01-16').toISOString(),
+        timeMax:
+          season === '202303'
+            ? new Date('2023-09-06').toISOString()
+            : new Date('2024-01-23').toISOString(),
+        singleEvents: true,
+        orderBy: 'startTime',
+      });
+
+      // delete all previously added classes
+      if (event_list.result.items.length > 0) {
+        const deletedIds = new Set<string>();
+        event_list.result.items.forEach(async (event: any) => {
+          if (event.id.startsWith('coursetable')) {
+            if (!deletedIds.has(event.recurringEventId)) {
+              deletedIds.add(event.recurringEventId);
+              await gapi.client.calendar.events.delete({
+                calendarId: 'primary',
+                eventId: event.recurringEventId,
+              });
+            }
+          }
+        });
+      }
+    } catch (e) {
+      console.error('Error syncing user events: ', event);
+      console.error(e);
+    }
+
+    // add new classes
+    if (courses.length > 0) {
+      courses.forEach(async (course, colorIndex) => {
+        const event = constructCalendarEvent(course, colorIndex);
+        try {
+          await gapi.client.calendar.events.insert({
+            calendarId: 'primary',
+            resource: event,
+          });
+        } catch (e) {
+          console.error('Error adding events to user calendar: ', event);
+          console.error(e);
+        }
+      });
+    }
+
+    setLoading(false);
+    toast.success('Synced with Google Calendar!');
+  }, [courses, gapi]);
 
   React.useEffect(() => {
     if (!authInstance) {
@@ -62,28 +123,7 @@ function GoogleCalendarButton({ courses }: Props): JSX.Element {
         syncEvents();
       });
     }
-  }, [authInstance, user]);
-
-  const syncEvents = () => {
-    setLoading(true);
-
-    // todo: delete any events with 'courestable' prefix
-
-    courses.forEach(async (course, colorIndex) => {
-      const event = constructCalendarEvent(course, colorIndex);
-      try {
-        await gapi.client.calendar.events.insert({
-          calendarId: 'primary',
-          resource: event,
-        });
-      } catch (e) {
-        console.error('Error syncing event: ', event);
-        console.error(e);
-      }
-    });
-    setLoading(false);
-    toast.success('Synced with Google Calendar!');
-  };
+  }, [authInstance, user, syncEvents]);
 
   if (loading) {
     return (

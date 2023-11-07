@@ -8,12 +8,12 @@ const getISODateString = (day: number, time: string, reference: Date) => {
   const ret = new Date(
     reference.getFullYear(),
     reference.getMonth(),
-    reference.getDate() + (day - reference.getDay())
+    reference.getDate() + ((day - reference.getDay() - 1) % 7 + 7) % 7 + 1 // positive remainder (1-7)
   );
 
-  let [hourString, minuteString] = time.split(':');
-  let hour = parseInt(hourString);
-  let minute = parseInt(minuteString);
+  const [hourString, minuteString] = time.split(':');
+  const hour = parseInt(hourString);
+  const minute = parseInt(minuteString);
 
   ret.setHours(hour);
   ret.setMinutes(minute);
@@ -29,7 +29,7 @@ const getTimes = (times_by_day: any) => {
     Thursday: 4,
     Friday: 5,
     Saturday: 6,
-    Sunday: 7,
+    Sunday: 0,
   };
 
   const days = [];
@@ -67,9 +67,20 @@ export const constructCalendarEvent = (course: Listing, colorIndex: number) => {
   const end_of_semester = course.season_code === "202303" ? "20231208T115959Z" : "20240426T115959Z";
 
   const { days, startTime, endTime } = getTimes(course.times_by_day);
-  const calendarStartTime = getISODateString(days[0], startTime, first_of_semester);
-  const calendarEndTime = getISODateString(days[0], endTime, first_of_semester);
 
+  let calendarStartTime, calendarEndTime = "";
+  for (const day of days) {
+    if (day > first_of_semester.getDay()) {
+      calendarStartTime = getISODateString(day, startTime, first_of_semester);
+      calendarEndTime = getISODateString(day, endTime, first_of_semester);
+      break;
+    }
+  }
+  if (!calendarStartTime) {
+    calendarStartTime = getISODateString(days[0], startTime, first_of_semester);
+    calendarEndTime = getISODateString(days[0], endTime, first_of_semester);
+  }
+  
   let breaks = "";
   if (course.season_code === "202303") {
     const fall_break = new Date("2023-10-18")
@@ -109,7 +120,7 @@ export const constructCalendarEvent = (course: Listing, colorIndex: number) => {
 
   const event = {
     id: 'coursetable' + uuidv4().replace(/-/g, ""),
-    summary: course.title,
+    summary: course.course_code,
     start: {
       dateTime: calendarStartTime,
       timeZone: 'America/New_York',
@@ -123,6 +134,8 @@ export const constructCalendarEvent = (course: Listing, colorIndex: number) => {
       `EXDATE;TZID=America/New_York:${breaks}`,
     ],
     colorId: (colorIndex + 1).toString(),
+    description: course.title,
+    location: course.locations_summary
   };
 
   return event;
