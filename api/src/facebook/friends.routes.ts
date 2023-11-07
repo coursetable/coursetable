@@ -7,6 +7,7 @@ import cookieParser from 'cookie-parser';
 
 import {
   addFriend,
+  removeFriend,
   getFriendsWorksheets,
   friendRequest,
   resolveFriendRequest,
@@ -21,6 +22,7 @@ import {
 export default async (app: express.Express): Promise<void> => {
   app.use(cookieParser());
   app.get('/api/friends/add', addFriend);
+  app.get('/api/friends/remove', removeFriend);
   app.get('/api/friends/request', friendRequest);
   app.get('/api/friends/resolveRequest', resolveFriendRequest);
   app.get('/api/friends/getRequests', getRequestsForFriend);

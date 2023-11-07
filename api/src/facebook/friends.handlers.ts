@@ -56,6 +56,42 @@ export const addFriend = async (
   }
 }
 
+export const removeFriend = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<express.Response> => {
+  winston.info("Removing friend")
+
+
+  if (!req.user) {
+    return res.status(401).json({ success: false})
+  }
+
+  if (!req.query || typeof req.query.id !== "string" || typeof req.query.id2 !== "string") {
+    return res.status(401).json({ success: false })
+  }
+
+  const netId: string = req.query.id2
+
+  const friendNetId: string = req.query.id
+
+  try {
+
+    await prisma.$transaction([
+      prisma.studentFriends.delete({
+        where: {
+          netId_friendNetId: { netId, friendNetId },
+        },
+      })
+    ]);
+
+    return res.json({ success: true });
+  } catch (err) {
+    winston.error(`Error with upserting friend: ${err}`);
+    return res.status(500).json({ success: false });
+  }
+}
+
 export const friendRequest = async (
   req: express.Request,
   res: express.Response,
