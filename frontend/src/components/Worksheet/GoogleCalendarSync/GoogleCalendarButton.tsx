@@ -12,9 +12,10 @@ import { constructCalendarEvent } from './utils';
 
 interface Props {
   courses: Listing[];
+  season_code: string;
 }
 
-function GoogleCalendarButton({ courses }: Props): JSX.Element {
+function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
   const [gapi, setGapi] = React.useState<any>(null);
   const [authInstance, setAuthInstance] = React.useState<any>(null); // Hack - why is it never?
   const [user, setUser] = React.useState(null);
@@ -52,18 +53,16 @@ function GoogleCalendarButton({ courses }: Props): JSX.Element {
   const syncEvents = React.useCallback(async () => {
     setLoading(true);
 
-    const season = courses.length > 0 ? courses[0].season_code : '202303';
-
     try {
       // get all previously added classes
       const event_list = await gapi.client.calendar.events.list({
         calendarId: 'primary',
         timeMin:
-          season === '202303'
+          season_code === '202303'
             ? new Date('2023-08-30').toISOString()
             : new Date('2024-01-16').toISOString(),
         timeMax:
-          season === '202303'
+          season_code === '202303'
             ? new Date('2023-09-06').toISOString()
             : new Date('2024-01-23').toISOString(),
         singleEvents: true,
@@ -108,7 +107,7 @@ function GoogleCalendarButton({ courses }: Props): JSX.Element {
 
     setLoading(false);
     toast.success('Synced with Google Calendar!');
-  }, [courses, gapi]);
+  }, [courses, gapi, season_code]);
 
   React.useEffect(() => {
     if (!authInstance) {

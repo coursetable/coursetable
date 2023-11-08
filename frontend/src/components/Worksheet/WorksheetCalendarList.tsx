@@ -135,7 +135,16 @@ function WorksheetCalendarList() {
             {/* Hide/Show All Button */}
             <Row className="mx-auto">
               <Col className="px-0 w-100">
-                <GoogleCalendarButton courses={courses} />
+                <GoogleCalendarButton
+                  courses={courses.filter(function (course) {
+                    return (
+                      !hidden_courses[cur_season] ||
+                      !(course.crn in hidden_courses[cur_season]) ||
+                      !hidden_courses[cur_season][course.crn]
+                    );
+                  })}
+                  season_code={cur_season}
+                />
               </Col>
             </Row>
             <Row className="mx-auto">
