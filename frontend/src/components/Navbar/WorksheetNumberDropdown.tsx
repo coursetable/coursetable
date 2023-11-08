@@ -17,30 +17,6 @@ function WorksheetNumDropdown() {
     return tempWorksheetOptions;
   }, []);
 
-  const WorksheetDropdownItem = ({
-    worksheetNumber,
-  }: {
-    worksheetNumber: string;
-  }) => {
-    let text: string;
-    if (worksheetNumber === '0') {
-      text = 'Main Worksheet';
-    } else {
-      text = `Worksheet ${worksheetNumber}`;
-    }
-    return (
-      <Dropdown.Item
-        key={worksheetNumber}
-        eventKey={worksheetNumber}
-        className="d-flex"
-        // Styling if this is the current person
-      >
-        <div className="mx-auto">{text}</div>
-      </Dropdown.Item>
-    );
-  };
-
-  // worksheet drop down
   return (
     <div className="container p-0 m-0">
       <DropdownButton
@@ -57,7 +33,13 @@ function WorksheetNumDropdown() {
         }}
       >
         {worksheetOptions.map((worksheet) => (
-          <WorksheetDropdownItem worksheetNumber={worksheet.value} />
+          <Dropdown.Item
+            key={worksheet.value}
+            eventKey={worksheet.value}
+            className="d-flex"
+          >
+            <div className="mx-auto">{worksheet.label}</div>
+          </Dropdown.Item>
         ))}
       </DropdownButton>
     </div>
