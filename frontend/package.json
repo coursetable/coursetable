@@ -86,6 +86,8 @@
     "@types/chroma-js": "^2.4.1",
     "@types/facebook-js-sdk": "^3.3.7",
     "@types/file-saver": "^2.0.5",
+    "@types/gapi.auth2": "^0.0.60",
+    "@types/gapi.calendar": "^3.0.9",
     "@types/lodash": "^4.14.199",
     "@types/luxon": "^3.3.2",
     "@types/mark.js": "^8.11.9",

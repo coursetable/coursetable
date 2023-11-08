@@ -21,7 +21,7 @@ const getISODateString = (day: number, time: string, reference: Date) => {
   return moment(ret).format();
 };
 
-const getTimes = (times_by_day: any) => {
+const getTimes = (times_by_day: Listing['times_by_day']) => {
   const daysMapping: Record<string, number> = {
     Monday: 1,
     Tuesday: 2,
@@ -36,31 +36,30 @@ const getTimes = (times_by_day: any) => {
 
   let startTime, endTime;
 
-  for (const day of Object.keys(times_by_day)) {
+  for (const day of Object.keys(times_by_day) as Array<
+    keyof typeof times_by_day
+  >) {
     days.push(daysMapping[day]);
-    const times = times_by_day[day][0];
     // Assuming each day starts and ends at the same time for now
-    startTime = times[0];
-    endTime = times[1];
+    [[startTime, endTime]] = times_by_day[day]!;
   }
 
   return {
     days,
-    startTime,
-    endTime,
+    startTime: startTime!,
+    endTime: endTime!,
   };
 };
 
-const ISOtoICalFormat = (iso: string) => {
-  return iso
+const ISOtoICalFormat = (iso: string) =>
+  iso
     .replace(/[-:]/g, '') // Remove the hyphens and colons
     .substring(0, 15); // Remove timezone
-};
 
 export const constructCalendarEvent = (course: Listing, colorIndex: number) => {
   if (course.times_summary === TBA_STRING) {
     console.warn('TBA course', course.title);
-    return;
+    return undefined;
   }
 
   const first_of_semester =

@@ -1,28 +1,30 @@
-import React from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
-import { StyledBtn } from '../WorksheetCalendarList';
+import * as Sentry from '@sentry/react';
+import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import { StyledBtn } from '../WorksheetCalendarList';
+import { Listing } from '../../Providers/FerryProvider';
+import { constructCalendarEvent } from './utils';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 const GAPI_CLIENT_NAME = 'client:auth2';
 
-import { Listing } from '../../Providers/FerryProvider';
-import { Spinner } from 'react-bootstrap';
-import { constructCalendarEvent } from './utils';
-
-interface Props {
+function GoogleCalendarButton({
+  courses,
+  season_code,
+}: {
   courses: Listing[];
   season_code: string;
-}
-
-function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
-  const [gapi, setGapi] = React.useState<any>(null);
-  const [authInstance, setAuthInstance] = React.useState<any>(null); // Hack - why is it never?
-  const [user, setUser] = React.useState(null);
-  const [loading, setLoading] = React.useState(true);
+}): JSX.Element {
+  const [gapi, setGapi] = useState<typeof globalThis.gapi | null>(null);
+  const [authInstance, setAuthInstance] =
+    useState<gapi.auth2.GoogleAuthBase | null>(null);
+  const [user, setUser] = useState<gapi.auth2.GoogleUser | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Load gapi client after gapi script loaded
-  const loadGapiClient = (gapiInstance: any) => {
+  const loadGapiClient = (gapiInstance: typeof globalThis.gapi) => {
     gapiInstance.load(GAPI_CLIENT_NAME, () => {
       gapiInstance.client.init({
         apiKey: import.meta.env.VITE_DEV_GCAL_API_KEY,
@@ -34,7 +36,7 @@ function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
   };
 
   // Load gapi script and client
-  React.useEffect(() => {
+  useEffect(() => {
     async function loadGapi() {
       const newGapi = await loadGapiInsideDOM();
       loadGapiClient(newGapi);
@@ -48,9 +50,13 @@ function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
       setLoading(false);
     }
     loadGapi();
-  }, [gapi]);
+  }, []);
 
-  const syncEvents = React.useCallback(async () => {
+  const syncEvents = useCallback(async () => {
+    if (!gapi) {
+      Sentry.captureException('gapi not loaded');
+      return;
+    }
     setLoading(true);
 
     try {
@@ -93,6 +99,9 @@ function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
     if (courses.length > 0) {
       courses.forEach(async (course, colorIndex) => {
         const event = constructCalendarEvent(course, colorIndex);
+        if (!event) {
+          return;
+        }
         try {
           await gapi.client.calendar.events.insert({
             calendarId: 'primary',
@@ -109,7 +118,7 @@ function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
     toast.success('Synced with Google Calendar!');
   }, [courses, gapi, season_code]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!authInstance) {
       return;
     }
@@ -117,10 +126,15 @@ function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
       setUser(authInstance.currentUser.get());
     } else {
       const signInButton = document.getElementById('auth');
-      authInstance.attachClickHandler(signInButton, {}, (googleUser: any) => {
-        setUser(googleUser);
-        syncEvents();
-      });
+      authInstance.attachClickHandler(
+        signInButton,
+        {},
+        (googleUser) => {
+          setUser(googleUser);
+          syncEvents();
+        },
+        Sentry.captureException,
+      );
     }
   }, [authInstance, user, syncEvents]);
 
@@ -133,15 +147,9 @@ function GoogleCalendarButton({ courses, season_code }: Props): JSX.Element {
   }
 
   return (
-    <>
-      {user ? (
-        <StyledBtn id="sync" onClick={syncEvents}>
-          Sync with GCal
-        </StyledBtn>
-      ) : (
-        <StyledBtn id="auth">Sync with GCal</StyledBtn>
-      )}
-    </>
+    <StyledBtn id="sync" onClick={user ? syncEvents : undefined}>
+      Sync with GCal
+    </StyledBtn>
   );
 }
 
