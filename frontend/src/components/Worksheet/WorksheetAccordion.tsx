@@ -268,7 +268,6 @@ function WorksheetAccordion() {
 
   // TODO: add an empty state
 
-  
   return (
     <div className={styles.container}>
       <WorksheetNumDropdown />

@@ -5,7 +5,6 @@ import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import './DropdownShared.css';
 
-
 /**
  * Render FB Dropdown in mobile view.
  *
@@ -17,13 +16,7 @@ function WorksheetNumDropdown() {
   // Fetch user context data
   const { user } = useUser();
 
-  const {
-
-    changeWorksheet,
-    worksheet_number,
-
-  } = useWorksheet();
-
+  const { changeWorksheet, worksheet_number } = useWorksheet();
 
   // Generate list of possible worksheets
   const worksheet_options = useMemo(() => {
@@ -36,9 +29,12 @@ function WorksheetNumDropdown() {
     return worksheet_options_temp;
   }, []);
 
-
-// worksheet drop downItem
-  const WorksheetDropdownItem = ({ worksheet_number }: { worksheet_number: string }) => {
+  // worksheet drop downItem
+  const WorksheetDropdownItem = ({
+    worksheet_number,
+  }: {
+    worksheet_number: string;
+  }) => {
     let text: string;
     if (worksheet_number === '0') {
       text = 'Main Worksheet';
@@ -56,14 +52,17 @@ function WorksheetNumDropdown() {
       </Dropdown.Item>
     );
   };
-  
-  
-// worksheet drop down
-return (
+
+  // worksheet drop down
+  return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={worksheet_number === '0' ? 'Main Worksheet' : `Worksheet ${worksheet_number}`}
+        title={
+          worksheet_number === '0'
+            ? 'Main Worksheet'
+            : `Worksheet ${worksheet_number}`
+        }
         onSelect={(worksheet_number) => {
           if (worksheet_number) {
             changeWorksheet(worksheet_number);
@@ -76,7 +75,6 @@ return (
       </DropdownButton>
     </div>
   );
-
 }
 
 export default WorksheetNumDropdown;
