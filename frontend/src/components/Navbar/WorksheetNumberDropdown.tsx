@@ -4,7 +4,7 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import './DropdownShared.css';
 
 function WorksheetNumDropdown() {
-  const { changeWorksheet, worksheet_number } = useWorksheet();
+  const { changeWorksheet, worksheetNumber } = useWorksheet();
 
   // Generate list of possible worksheets
   const worksheetOptions = useMemo(() => {
@@ -22,13 +22,13 @@ function WorksheetNumDropdown() {
       <DropdownButton
         variant="primary"
         title={
-          worksheet_number === '0'
+          worksheetNumber === '0'
             ? 'Main Worksheet'
-            : `Worksheet ${worksheet_number}`
+            : `Worksheet ${worksheetNumber}`
         }
-        onSelect={(worksheetNumber) => {
-          if (worksheetNumber) {
-            changeWorksheet(worksheetNumber);
+        onSelect={(n) => {
+          if (n) {
+            changeWorksheet(n);
           }
         }}
       >
