@@ -63,6 +63,9 @@ function WorksheetToggleButton({
   const [selectedWorksheet, setSelectedWorksheet] = useState(
     initialSelectedWorksheet || '0',
   );
+  useEffect(() => {
+    setSelectedWorksheet(initialSelectedWorksheet || '0');
+  }, [initialSelectedWorksheet]);
 
   const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
 
