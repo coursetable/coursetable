@@ -36,7 +36,9 @@ then
         export OVERWRITE_CATALOG='true'
     fi
     doppler setup -p coursetable -c dev
-    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans --build"
+    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans"
+    # build debug
+    # doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml build --no-cache &> logs.txt"
 elif [[ $ENV == 'prod' ]]
 then
     doppler setup -p coursetable -c prd

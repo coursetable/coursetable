@@ -4,8 +4,8 @@ services:
       - '4096:4096'
       - '3001:3001'
     volumes:
-      - ../api/static:/app/static
-      - ../api/src:/app/src
+      - ../api/static:/usr/src/app/static
+      - ../api/src:/usr/src/app/src
     build:
       args:
         - HOT_RELOAD=true
