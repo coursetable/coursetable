@@ -173,76 +173,9 @@ function Results({
   // Holds HTML for the search results
   let resultsListing;
 
-  // Number of columns to use in grid view
+  // Number of columns to use in grid viewxw
   const num_cols = isMobile ? 1 : isTablet ? 2 : 3;
 
-<<<<<<< HEAD
-  // Grid render function for React Virtualized List
-  const renderGridRow = useCallback(
-    ({ index, key, style }) => {
-      const row_elements = [];
-      for (
-        let j = index * num_cols;
-        j < data.length && j < (index + 1) * num_cols;
-        j++
-      ) {
-        row_elements.push(
-          <ResultsGridItem
-            course={data[j]}
-            showModal={showModal}
-            isLoggedIn={isLoggedIn}
-            num_cols={num_cols}
-            multiSeasons={multiSeasons}
-            key={j}
-          />,
-        );
-      }
-
-      return (
-        <div key={key} style={style}>
-          <StyledRow className="mx-auto">{row_elements}</StyledRow>
-        </div>
-      );
-    },
-    [data, showModal, isLoggedIn, multiSeasons, num_cols],
-  );
-
-  // List render function for React Virtualized List
-  const renderListRow = useCallback(
-    ({ index, key, style, isScrolling }) => {
-      const friends = num_friends[data[index].season_code + data[index].crn]
-        ? num_friends[data[index].season_code + data[index].crn]
-        : [];
-      // Alternating row item background colors
-      const colorStyles =
-        index % 2 === 0
-          ? { backgroundColor: globalTheme.surface[0] }
-          : { backgroundColor: globalTheme.row_odd };
-      return (
-        <ResultsItemWrapper
-          style={{
-            ...style,
-            ...colorStyles,
-          }}
-          key={key}
-        >
-          <ResultsItemMemo
-            course={data[index]}
-            showModal={showModal}
-            multiSeasons={multiSeasons}
-            isFirst={index === 0}
-            COL_SPACING={COL_SPACING}
-            isScrolling={isScrolling}
-            friends={friends}
-          />
-        </ResultsItemWrapper>
-      );
-    },
-    [data, showModal, multiSeasons, COL_SPACING, num_friends, globalTheme],
-  );
-
-=======
->>>>>>> 5da45bda15088340b836fee918aae4e82cc49fa8
   if (!isLoggedIn) {
     // render an auth wall
     resultsListing = (
