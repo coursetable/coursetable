@@ -138,7 +138,7 @@ function Results({
       RATE_WORKLOAD_WIDTH: isLgDesktop ? 92 : 82,
       RATE_PROF_WIDTH: isLgDesktop ? 40 : 36,
       ENROLL_WIDTH: 40,
-      FRIEND_WIDTH: 60,
+      FB_WIDTH: 60,
       PADDING: 43,
     };
 
@@ -147,7 +147,7 @@ function Results({
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
       TEMP_COL_SPACING.ENROLL_WIDTH -
-      TEMP_COL_SPACING.FRIEND_WIDTH -
+      TEMP_COL_SPACING.FB_WIDTH -
       TEMP_COL_SPACING.RATE_OVERALL_WIDTH -
       TEMP_COL_SPACING.RATE_WORKLOAD_WIDTH -
       TEMP_COL_SPACING.RATE_PROF_WIDTH -
@@ -173,7 +173,7 @@ function Results({
   // Holds HTML for the search results
   let resultsListing;
 
-  // Number of columns to use in grid viewxw
+  // Number of columns to use in grid view
   const num_cols = isMobile ? 1 : isTablet ? 2 : 3;
 
   if (!isLoggedIn) {
@@ -273,22 +273,6 @@ function Results({
             )}
           </AutoSizer>
         )}
-<<<<<<< HEAD
-      </Tooltip>
-    ),
-    [multiSeasons],
-  );
-
-  // Tooltip for hovering over friends count
-  const friend_tooltip = useCallback(
-    (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        <span>Number of friends shopping this course</span>
-      </Tooltip>
-    ),
-    [],
-  );
-=======
       </WindowScroller>
     );
   } else {
@@ -310,10 +294,10 @@ function Results({
                 rowCount={data.length}
                 rowHeight={isLgDesktop ? 32 : 28}
                 rowRenderer={({ index, key, style, isScrolling }) => {
-                  const fb_friends = num_fb[
+                  const friends = num_friends[
                     data[index].season_code + data[index].crn
                   ]
-                    ? num_fb[data[index].season_code + data[index].crn]
+                    ? num_friends[data[index].season_code + data[index].crn]
                     : [];
                   // Alternating row item background colors
                   const colorStyles =
@@ -335,7 +319,7 @@ function Results({
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
                         isScrolling={isScrolling}
-                        fb_friends={fb_friends}
+                        friends={friends}
                       />
                     </ResultsItemWrapper>
                   );
@@ -347,7 +331,6 @@ function Results({
       </WindowScroller>
     );
   }
->>>>>>> 5da45bda15088340b836fee918aae4e82cc49fa8
 
   // Column width styles
   const szn_style = {
@@ -375,7 +358,7 @@ function Results({
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
   const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const friend_style = { width: `${COL_SPACING.FRIEND_WIDTH}px` };
+  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {

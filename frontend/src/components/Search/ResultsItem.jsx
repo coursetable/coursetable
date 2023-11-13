@@ -27,8 +27,10 @@ import {
   getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
+  isInWorksheet,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
+import { useUser } from '../../contexts/userContext';
 
 // Row for results item
 const StyledResultsItem = styled(Row)`
@@ -92,7 +94,7 @@ function ResultsItem({
   COL_SPACING,
   isScrolling = false,
   friends,
-}) => {
+}) {
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
 
@@ -164,7 +166,7 @@ function ResultsItem({
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
   const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const friend_style = { width: `${COL_SPACING.FRIEND_WIDTH}px` };
+  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
   const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const subject_code = course.course_code.split(' ')[0];
