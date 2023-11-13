@@ -9,29 +9,35 @@ import express from 'express';
 import { prisma } from '../config';
 
 import winston from '../logging/winston';
-import { StudentBluebookSettings, StudentFriends, StudentFriendRequests } from '@prisma/client';
+import {
+  StudentBluebookSettings,
+  StudentFriends,
+  StudentFriendRequests,
+} from '@prisma/client';
 
 export const addFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-  winston.info("Adding new friend")
-
+  winston.info('Adding new friend');
 
   if (!req.user) {
-    return res.status(401).json({ success: false})
+    return res.status(401).json({ success: false });
   }
 
-  if (!req.query || typeof req.query.id !== "string" || typeof req.query.id2 !== "string") {
-    return res.status(401).json({ success: false })
+  if (
+    !req.query ||
+    typeof req.query.id !== 'string' ||
+    typeof req.query.id2 !== 'string'
+  ) {
+    return res.status(401).json({ success: false });
   }
 
-  const netId: string = req.query.id2
+  const netId: string = req.query.id2;
 
-  const friendNetId: string = req.query.id
+  const friendNetId: string = req.query.id;
 
   try {
-
     await prisma.$transaction([
       prisma.studentFriends.upsert({
         // update (do not create a new friend) when one already matches the netId and Facebook ID
@@ -46,7 +52,7 @@ export const addFriend = async (
         },
         // update people's names if they've changed
         update: {},
-      })
+      }),
     ]);
 
     return res.json({ success: true });
@@ -54,35 +60,37 @@ export const addFriend = async (
     winston.error(`Error with upserting friend: ${err}`);
     return res.status(500).json({ success: false });
   }
-}
+};
 
 export const removeFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-  winston.info("Removing friend")
-
+  winston.info('Removing friend');
 
   if (!req.user) {
-    return res.status(401).json({ success: false})
+    return res.status(401).json({ success: false });
   }
 
-  if (!req.query || typeof req.query.id !== "string" || typeof req.query.id2 !== "string") {
-    return res.status(401).json({ success: false })
+  if (
+    !req.query ||
+    typeof req.query.id !== 'string' ||
+    typeof req.query.id2 !== 'string'
+  ) {
+    return res.status(401).json({ success: false });
   }
 
-  const netId: string = req.query.id2
+  const netId: string = req.query.id2;
 
-  const friendNetId: string = req.query.id
+  const friendNetId: string = req.query.id;
 
   try {
-
     await prisma.$transaction([
       prisma.studentFriends.delete({
         where: {
           netId_friendNetId: { netId, friendNetId },
         },
-      })
+      }),
     ]);
 
     return res.json({ success: true });
@@ -90,13 +98,13 @@ export const removeFriend = async (
     winston.error(`Error with upserting friend: ${err}`);
     return res.status(500).json({ success: false });
   }
-}
+};
 
 export const friendRequest = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-  winston.info(`Sending friend request`)
+  winston.info(`Sending friend request`);
 
   if (!req.user) {
     return res.status(401).json();
@@ -104,14 +112,13 @@ export const friendRequest = async (
 
   const { netId } = req.user;
 
-  if (!req.query || typeof req.query.id !== "string") {
-    return res.status(401).json({ success: false })
+  if (!req.query || typeof req.query.id !== 'string') {
+    return res.status(401).json({ success: false });
   }
 
-  const friendNetId: string = req.query.id
+  const friendNetId: string = req.query.id;
 
   try {
-
     await prisma.$transaction([
       prisma.studentFriendRequests.upsert({
         // update (do not create a new request) when one already matches the netId and friend ID
@@ -126,7 +133,7 @@ export const friendRequest = async (
         },
         // update people's names if they've changed
         update: {},
-      })
+      }),
     ]);
 
     return res.json({ success: true });
@@ -134,14 +141,13 @@ export const friendRequest = async (
     winston.error(`Error with upserting friend request: ${err}`);
     return res.status(500).json({ success: false });
   }
-
-}
+};
 
 export const resolveFriendRequest = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-  winston.info(`Sending friend request`)
+  winston.info(`Sending friend request`);
 
   if (!req.user) {
     return res.status(401).json();
@@ -149,8 +155,8 @@ export const resolveFriendRequest = async (
 
   const { netId } = req.user;
 
-  if (!req.query || typeof req.query.id !== "string") {
-    return res.status(401).json({ success: false })
+  if (!req.query || typeof req.query.id !== 'string') {
+    return res.status(401).json({ success: false });
   }
 
   const friendNetId = req.query.id;
@@ -161,20 +167,20 @@ export const resolveFriendRequest = async (
         where: {
           netId_friendNetId: { netId: friendNetId, friendNetId: netId },
         },
-      })
-    ])
+      }),
+    ]);
     return res.json({ success: true });
   } catch (err) {
     winston.error(`Error with resolving friend request: ${err}`);
     return res.status(500).json({ success: false });
   }
-}
+};
 
 export const getRequestsForFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-  winston.info(`Sending friend request`)
+  winston.info(`Sending friend request`);
 
   if (!req.user) {
     return res.status(401).json();
@@ -183,12 +189,13 @@ export const getRequestsForFriend = async (
   const { netId } = req.user;
 
   try {
-    const friendReqs: StudentFriendRequests[] = await prisma.studentFriendRequests.findMany({
-      where: {
-        friendNetId: netId,
-      },
-    })
-    winston.info("log friend reqs: " + friendReqs);
+    const friendReqs: StudentFriendRequests[] =
+      await prisma.studentFriendRequests.findMany({
+        where: {
+          friendNetId: netId,
+        },
+      });
+    winston.info('log friend reqs: ' + friendReqs);
     const reqFriends = friendReqs.map(
       (friendReq: StudentFriendRequests) => friendReq.netId,
     );
@@ -202,20 +209,23 @@ export const getRequestsForFriend = async (
     });
 
     const friendNames = friendInfos.map(
-      (friendInfo: StudentBluebookSettings) => ({netId: friendInfo.netId, name: friendInfo.first_name + " " + friendInfo.last_name})
-    )
+      (friendInfo: StudentBluebookSettings) => ({
+        netId: friendInfo.netId,
+        name: friendInfo.first_name + ' ' + friendInfo.last_name,
+      }),
+    );
 
     return res.status(200).json({
       success: true,
-      friends: friendNames
+      friends: friendNames,
     });
-  } catch(err) {
+  } catch (err) {
     return res.status(500).json({
       success: false,
-      message: "Error fetching friend requests"
-    })
+      message: 'Error fetching friend requests',
+    });
   }
-}
+};
 
 /**
  * Get worksheets of user's friends.
@@ -261,9 +271,12 @@ export const getFriendsWorksheets = async (
     },
   });
 
-  winston.info("get worksheets: " + friendWorksheets.map((ws: any) => {
-    return ws.net_id + " - " + ws.oci_id + " - " + ws.worksheet_number
-  }))
+  winston.info(
+    'get worksheets: ' +
+      friendWorksheets.map((ws) => {
+        return ws.net_id + ' - ' + ws.oci_id + ' - ' + ws.worksheet_number;
+      }),
+  );
 
   // Get friends' infos from NetIDs
   winston.info('Getting info of friends');
@@ -283,17 +296,22 @@ export const getFriendsWorksheets = async (
   winston.info(friendInfos);
 
   const friendNames = friendInfos.map(
-    (friendInfo: StudentBluebookSettings) => ({netId: friendInfo.netId, name: friendInfo.first_name + " " + friendInfo.last_name})
-  )
+    (friendInfo: StudentBluebookSettings) => ({
+      netId: friendInfo.netId,
+      name: friendInfo.first_name + ' ' + friendInfo.last_name,
+    }),
+  );
 
-  const friendNameMap: {[key: string]: { name: string }} = {};
+  const friendNameMap: { [key: string]: { name: string } } = {};
 
   for (const nameRecord of friendNames) {
-    friendNameMap[nameRecord.netId] = { name: nameRecord.name }
+    friendNameMap[nameRecord.netId] = { name: nameRecord.name };
   }
 
   // map netId to worksheets (list of [season, oci_id, worksheet_number])
-  const worksheetsByFriend: { [key: string]: [string, number, number | null][] } = {};
+  const worksheetsByFriend: {
+    [key: string]: [string, number, number | null][];
+  } = {};
   friendWorksheets.forEach(
     ({
       net_id,
@@ -307,10 +325,16 @@ export const getFriendsWorksheets = async (
       worksheet_number: number | null;
     }) => {
       if (net_id in worksheetsByFriend) {
-        worksheetsByFriend[net_id].push([String(season), oci_id, worksheet_number]);
+        worksheetsByFriend[net_id].push([
+          String(season),
+          oci_id,
+          worksheet_number,
+        ]);
         // worksheetsByFriend[net_id].push([String(season), oci_id]);
       } else {
-        worksheetsByFriend[net_id] = [[String(season), oci_id, worksheet_number]];
+        worksheetsByFriend[net_id] = [
+          [String(season), oci_id, worksheet_number],
+        ];
         // worksheetsByFriend[net_id] = [[String(season), oci_id]];
       }
     },
@@ -327,14 +351,17 @@ export const getNames = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-
   winston.info(`Fetching friends' names`);
-  const allNameRecords: StudentBluebookSettings[] = await prisma.studentBluebookSettings.findMany();
+  const allNameRecords: StudentBluebookSettings[] =
+    await prisma.studentBluebookSettings.findMany();
 
-  const allNames = allNameRecords.map(
-    (nameRecord: StudentBluebookSettings) => {
-      return {netId: nameRecord.netId, first: nameRecord.first_name, last: nameRecord.last_name, college: nameRecord.college}
-    }
-  );
+  const allNames = allNameRecords.map((nameRecord: StudentBluebookSettings) => {
+    return {
+      netId: nameRecord.netId,
+      first: nameRecord.first_name,
+      last: nameRecord.last_name,
+      college: nameRecord.college,
+    };
+  });
   return res.status(200).json(allNames);
-}
+};

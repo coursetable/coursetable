@@ -12,7 +12,7 @@ import {
   friendRequest,
   resolveFriendRequest,
   getRequestsForFriend,
-  getNames
+  getNames,
 } from './friends.handlers';
 
 /**

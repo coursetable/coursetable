@@ -217,7 +217,6 @@ export const verifyChallenge = async (
 ): Promise<express.Response> => {
   winston.info(`Verifying challenge`);
 
-
   if (!req.user) {
     return res.status(401).json({ error: 'USER_NOT_FOUND' });
   }
@@ -236,7 +235,7 @@ export const verifyChallenge = async (
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     },
   });
-  
+
   // increment challenge tries
   const { challengeTries, evaluationsEnabled } =
     await prisma.studentBluebookSettings.update({

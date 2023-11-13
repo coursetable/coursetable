@@ -19,7 +19,7 @@ function FBDropdown() {
   // Fetch user context data
   const { user } = useUser();
 
-  const { cur_season, person, handlePersonChange } = useWorksheet();
+  const { person, handlePersonChange } = useWorksheet();
 
   // Generate friend netId list, sorted by name.
   const friendInfo = user.friendWorksheets?.friendInfo || {};
@@ -30,8 +30,6 @@ function FBDropdown() {
       : 1;
   });
   friends = ['me', ...friends];
-
-  const friendWorksheets = user?.friendWorksheets?.worksheets || {};
 
   const DropdownItem = ({ person: curr_person }: { person: Person }) => {
     let text: string;
