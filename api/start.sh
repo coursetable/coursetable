@@ -41,6 +41,7 @@ then
     then
         export OVERWRITE_CATALOG='true'
     fi
+    export HOT_RELOAD='true'
     doppler setup -p coursetable -c dev
     doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans --build -d"
     doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml logs -f"

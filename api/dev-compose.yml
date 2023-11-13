@@ -7,11 +7,9 @@ services:
       - ../api/static:/usr/src/app/static
       - ../api/src:/usr/src/app/src
       - ../api/prisma:/usr/src/app/prisma
-    build:
-      args:
-        - HOT_RELOAD=true
     environment:
       OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
+      HOT_RELOAD: ${HOT_RELOAD:-'true'}
 
     depends_on:
       mysql:

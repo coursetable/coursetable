@@ -20,6 +20,6 @@ FROM runtime AS final
 RUN mkdir -p static/catalogs
 COPY --from=install /temp/dev/node_modules node_modules
 # copy src/ and prisma/ for production (doesn't impact volume live reload in dev)
-COPY src/ prisma/ package.json .
+COPY src/ prisma/ entry.sh package.json ./
 # hot reloading is ok in prod
-ENTRYPOINT ["npm", "start"]
+ENTRYPOINT ["./entry.sh"]
