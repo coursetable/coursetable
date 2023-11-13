@@ -38,3 +38,9 @@
 .worksheet-dropdown:hover {
   opacity: 1 !important;
 }
+
+@media only screen and (max-width: 480px) {
+  #button-tooltip {
+    display: none;
+  }
+}
