@@ -20,7 +20,7 @@ interface parsedCourseType {
 }
 
 // Calendar for worksheet
-const StyledCalendar = styled(Calendar)`
+const StyledCalendar = styled(Calendar<parsedCourseType>)`
   &.rbc-calendar {
     .rbc-time-view {
       .rbc-time-header {
@@ -160,10 +160,8 @@ function WorksheetCalendar() {
   }, [ret_values]);
 
   return (
-    // @ts-ignore
     <StyledCalendar
       // Show Mon-Fri
-      // @ts-ignore
       defaultView="work_week"
       views={['work_week']}
       events={ret_values.parsedCourses}
@@ -173,7 +171,7 @@ function WorksheetCalendar() {
       max={maxTime}
       localizer={localizer}
       toolbar={false}
-      onSelectEvent={(event) => showModal((event as parsedCourseType).listing)}
+      onSelectEvent={(event) => showModal(event.listing)}
       components={{ event: CalendarEvent }}
       eventPropGetter={eventStyleGetter}
       // Display Mon, Tue, Wed, ... at the top
@@ -181,7 +179,7 @@ function WorksheetCalendar() {
         dayFormat: 'ddd',
         timeGutterFormat: 'ha',
       }}
-      tooltipAccessor={null}
+      tooltipAccessor={undefined}
     />
   );
 }

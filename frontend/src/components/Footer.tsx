@@ -14,11 +14,7 @@ const StyledH5 = styled.h5`
   transition: color ${({ theme }) => theme.trans_dur};
 `;
 
-/**
- * Footer
- */
-
-const Footer: React.VFC = () => {
+function Footer() {
   return (
     <Container fluid>
       <StyledHr />
@@ -148,6 +144,6 @@ const Footer: React.VFC = () => {
       </footer>
     </Container>
   );
-};
+}
 
 export default Footer;

@@ -6,7 +6,7 @@ import { API_ENDPOINT } from '../config';
 /**
  * Renders a login page if user tries to access worksheet page
  */
-const GraphiqlLogin: React.VFC = () => {
+function GraphiqlLogin() {
   return (
     <div className="text-center py-5">
       <h3>
@@ -26,6 +26,6 @@ const GraphiqlLogin: React.VFC = () => {
       />
     </div>
   );
-};
+}
 
 export default GraphiqlLogin;

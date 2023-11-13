@@ -15,7 +15,7 @@ type Person = NetId | 'me';
  * any classes in this season. In the list, we include the number of
  * listings they have in their worksheet in the given semester.
  */
-const FBDropdown: React.VFC = () => {
+function FBDropdown() {
   // Fetch user context data
   const { user } = useUser();
 
@@ -33,9 +33,7 @@ const FBDropdown: React.VFC = () => {
 
   const friendWorksheets = user?.friendWorksheets?.worksheets || {};
 
-  const DropdownItem: React.VFC<{ person: Person }> = ({
-    person: curr_person,
-  }) => {
+  const DropdownItem = ({ person: curr_person }: { person: Person }) => {
     let text: string;
     if (curr_person === 'me') {
       text = 'Me';
@@ -62,28 +60,25 @@ const FBDropdown: React.VFC = () => {
     );
   };
 
-  const friend_options = friends.map((person) => (
-    <DropdownItem key={person} person={person} />
+  const friend_options = friends.map((curr_person) => (
+    <DropdownItem key={curr_person} person={curr_person} />
   ));
-
-  // Set FB person on click
-  const handleSelect = (person: Person | null) => {
-    if (person) {
-      handlePersonChange(person);
-    }
-  };
 
   return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
         title={person === 'me' ? 'Me' : friendInfo[person].name}
-        onSelect={handleSelect}
+        onSelect={(person) => {
+          if (person) {
+            handlePersonChange(person);
+          }
+        }}
       >
         {friend_options}
       </DropdownButton>
     </div>
   );
-};
+}
 
 export default FBDropdown;

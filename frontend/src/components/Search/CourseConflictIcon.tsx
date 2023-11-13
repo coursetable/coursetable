@@ -16,18 +16,16 @@ import { Listing } from '../Providers/FerryProvider';
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-const CourseConflictIcon = ({ course }: { course: Listing }) => {
+function CourseConflictIcon({ course }: { course: Listing }) {
   const { user } = useUser();
 
-  const inWorksheet = useMemo(() => {
-    return isInWorksheet(
-      course.season_code,
-      course.crn.toString(),
-      '0',
-      user.worksheet,
-    );
-  }, [course.season_code, course.crn, user.worksheet]);
-  console.log("conflicticon")
+  const inWorksheet = isInWorksheet(
+    course.season_code,
+    course.crn.toString(),
+    '0',
+    user.worksheet,
+  );
+
   // Fetch listing info for each listing in user's worksheet
   const { data } = useWorksheetInfo(user.worksheet, course.season_code);
 
@@ -57,40 +55,38 @@ const CourseConflictIcon = ({ course }: { course: Listing }) => {
     return checkCrossListed(data, course);
   }, [course, data]);
 
-  // Renders the conflict tooltip on hover
-  const renderTooltip = (
-    // We manually add the "id" attribute, so we omit it here.
-    props: Omit<React.ComponentPropsWithRef<typeof Tooltip>, 'id'>,
-  ) =>
-    // Render if this course isn't in the worksheet and there is a conflict
-    !inWorksheet && conflict !== false ? (
-      <Tooltip {...props} id="conflict-icon-button-tooltip">
-        <small style={{ fontWeight: 500 }}>
-          Conflicts with: <br />
-          {conflict.map((x) => `${x.course_code}`).join(', ')} <br />
-        </small>
-        {crossListed !== false ? (
-          // Show only if the class is cross-listed with another class in the worksheet
-          <small>(cross-listed with {crossListed})</small>
-        ) : (
-          ''
-        )}
-      </Tooltip>
-    ) : (
-      <div />
-    );
-
   return (
     // Smooth fade in and out transition
     <Fade in={!inWorksheet && conflict !== false}>
       <div>
-        <OverlayTrigger placement="top" overlay={renderTooltip}>
+        <OverlayTrigger
+          placement="top"
+          overlay={(props) =>
+            // Render if this course isn't in the worksheet and there is a conflict
+            !inWorksheet && conflict !== false ? (
+              <Tooltip {...props} id="conflict-icon-button-tooltip">
+                <small style={{ fontWeight: 500 }}>
+                  Conflicts with: <br />
+                  {conflict.map((x) => `${x.course_code}`).join(', ')} <br />
+                </small>
+                {crossListed !== false ? (
+                  // Show only if the class is cross-listed with another class in the worksheet
+                  <small>(cross-listed with {crossListed})</small>
+                ) : (
+                  ''
+                )}
+              </Tooltip>
+            ) : (
+              <div />
+            )
+          }
+        >
           <MdErrorOutline color="#fc4103" />
         </OverlayTrigger>
       </div>
     </Fade>
   );
-};
+}
 
 // CourseConflictIcon.whyDidYouRender = true;
 export default React.memo(CourseConflictIcon);

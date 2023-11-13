@@ -42,7 +42,7 @@ type Answer = {
  * Renders the OCE Challenge page if the user hasn't completed yet
  */
 
-const Challenge: React.VFC = () => {
+function Challenge() {
   // Apollo client
   const client = useApolloClient();
   // Get user context info and refresh
@@ -72,8 +72,8 @@ const Challenge: React.VFC = () => {
   // max number of attempts allowed
   const [maxTries, setMaxTries] = useState(null);
 
-  // get the challenge questions
-  const fetchQuestions = () => {
+  // Fetch questions on component mount
+  useEffect(() => {
     axios
       .get(`${API_ENDPOINT}/api/challenge/request`, { withCredentials: true })
       .then((res) => {
@@ -93,11 +93,6 @@ const Challenge: React.VFC = () => {
           setRequestError(err.response.data.error);
         }
       });
-  };
-
-  // Fetch questions on component mount
-  useEffect(() => {
-    fetchQuestions();
   }, []);
 
   // Handle form submit
@@ -468,6 +463,6 @@ const Challenge: React.VFC = () => {
       </SurfaceComponent>
     </div>
   );
-};
+}
 
 export default Challenge;

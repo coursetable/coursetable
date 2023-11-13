@@ -63,6 +63,9 @@ function WorksheetToggleButton({
   const [selectedWorksheet, setSelectedWorksheet] = useState(
     initialSelectedWorksheet || '0',
   );
+  useEffect(() => {
+    setSelectedWorksheet(initialSelectedWorksheet || '0');
+  }, [initialSelectedWorksheet]);
 
   const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
 
@@ -159,27 +162,17 @@ function WorksheetToggleButton({
       </Button>
     );
 
-  // Render remove/add message on hover
-  const renderTooltip = (props: any) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small>
-        {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
-      </small>
-    </Tooltip>
-  );
-
-  // Handler for changing the selected worksheet in the dropdown
-  const handleWorksheetChange = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
-    setSelectedWorksheet(event.target.value);
-  };
-
   return (
     <OverlayTrigger
       placement="top"
       delay={{ show: 1000, hide: 0 }}
-      overlay={renderTooltip}
+      overlay={(props) => (
+        <Tooltip id="button-tooltip" {...props}>
+          <small>
+            {inWorksheet ? 'Remove from my worksheet' : 'Add to my worksheet'}
+          </small>
+        </Tooltip>
+      )}
     >
       <StyledButton
         variant="toggle"
@@ -197,7 +190,9 @@ function WorksheetToggleButton({
             {/* Render the worksheet dropdown */}
             <StyledSelect
               value={selectedWorksheet}
-              onChange={handleWorksheetChange}
+              onChange={(event) => {
+                setSelectedWorksheet(event.target.value);
+              }}
               onClick={(e) => {
                 // Check if the clicked target is the select element
                 if ((e.target as HTMLSelectElement).tagName === 'SELECT') {

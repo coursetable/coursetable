@@ -62,7 +62,7 @@ export const StyledMultiToggle = styled(MultiToggle)`
  * @prop listing - dictionary that holds all the info for this listing
  */
 
-const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
+function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   // Fetch user context data
   const { user } = useUser();
   // Component used for cutting off long descriptions
@@ -81,31 +81,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           user.friendWorksheets.friendInfo,
         )
       : [];
-
-  // Update description clamped state
-  const handleReflow = (rleState) => {
-    const { clamped } = rleState;
-    setClamped(clamped);
-  };
-
-  // Set the evaluation to view and change to evaluation view
-  const handleSetSeason = useCallback(
-    (evaluation) => {
-      // Temp dictionary that stores listing info
-      const temp = { ...evaluation };
-      temp.course_code = temp.course_code[0];
-      setSeason(temp);
-    },
-    [setSeason],
-  );
-
-  // Sort course evaluations by season code and section
-  const sortEvals = (a, b) => {
-    if (a.season_code > b.season_code) return -1;
-    if (a.season_code < b.season_code) return 1;
-    if (parseInt(a.section, 10) < parseInt(b.section, 10)) return -1;
-    return 1;
-  };
 
   // Parse for location url and location name
   let location_url = '';
@@ -167,11 +142,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           (v, i, a) =>
             a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
         )
-        .sort((a, b) => {
-          if (a.season_code > b.season_code) return -1;
-          if (b.season_code < a.season_code) return 1;
-          return parseInt(a.section, 10) > parseInt(b.section, 10) ? 1 : -1;
-        });
+        .sort(
+          (a, b) =>
+            b.season_code.localeCompare(a.season_code, 'en-US') ||
+            parseInt(a.section, 10) - parseInt(b.section, 10),
+        );
     }
     return [];
   }, [data, listing.same_course_id]);
@@ -245,7 +220,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
         });
       });
       // Sort by season code and section
-      course_offerings.sort(sortEvals);
+      course_offerings.sort(
+        (a, b) =>
+          b.season_code.localeCompare(a.season_code, 'en-US') ||
+          parseInt(a.section, 10) - parseInt(b.section, 10),
+      );
       // Hold eval html for each column
       const overlap_sections = { both: [], course: [], professor: [] };
 
@@ -265,7 +244,12 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               <StyledCol
                 xs={5}
                 className={`${Styles.rating_bubble}  px-0 mr-3 text-center`}
-                onClick={() => handleSetSeason(course_offerings[i])}
+                onClick={() => {
+                  // Temp dictionary that stores listing info
+                  const temp = { ...course_offerings[i] };
+                  temp.course_code = temp.course_code[0];
+                  setSeason(temp);
+                }}
                 style={{ flex: 'none' }}
               >
                 <strong>
@@ -365,11 +349,11 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       return overlap_sections;
     }
     return undefined;
-  }, [data, filter, handleSetSeason, listing, overlapping_profs, prof_info]);
+  }, [data, filter, setSeason, listing, overlapping_profs, prof_info]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
-  const renderProfInfoPopover = (props) => {
+  const profInfoPopover = (props) => {
     let prof_name = '';
     let prof_dict = {};
     // Store dict from prop_info for easy access
@@ -463,19 +447,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
     professor: 2,
   };
 
-  // Switch filter if left or right arrow key is pressed
-  const handleKeyDown = (e) => {
-    if (e.keyCode === 37) {
-      // Left arrow key
-      const new_indx = (options_indx[filter] + 2) % 3;
-      setFilter(options[new_indx].value);
-    } else if (e.keyCode === 39) {
-      // Right arrow key
-      const new_indx = (options_indx[filter] + 1) % 3;
-      setFilter(options[new_indx].value);
-    }
-  };
-
   const COL_LEN_LEFT = 4;
 
   return (
@@ -491,7 +462,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
               }
               maxLine={`${lines}`}
               basedOn="words"
-              onReflow={handleReflow}
+              onReflow={(rleState) => setClamped(rleState.clamped)}
             />
           </Row>
           {/* Read More arrow button */}
@@ -565,6 +536,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                 >
                   {past_syllabi.map((course) => (
                     <a
+                      key={`${course.season_code}-${course.section}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       href={course.syllabus_url}
@@ -598,7 +570,7 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
                           trigger="click"
                           rootClose
                           placement="right"
-                          overlay={renderProfInfoPopover}
+                          overlay={profInfoPopover}
                           popperConfig={{ prof_name: prof }}
                         >
                           <StyledLink>{prof}</StyledLink>
@@ -780,7 +752,17 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
           {/* Filter Select */}
           <Row
             className={`${Styles.filter_container} m-auto justify-content-center`}
-            onKeyDown={handleKeyDown}
+            onKeyDown={(e) => {
+              if (e.keyCode === 37) {
+                // Left arrow key
+                const new_indx = (options_indx[filter] + 2) % 3;
+                setFilter(options[new_indx].value);
+              } else if (e.keyCode === 39) {
+                // Right arrow key
+                const new_indx = (options_indx[filter] + 1) % 3;
+                setFilter(options[new_indx].value);
+              }
+            }}
             tabIndex={0}
           >
             <StyledMultiToggle
@@ -819,6 +801,6 @@ const CourseModalOverview = ({ setFilter, filter, setSeason, listing }) => {
       </Row>
     </Modal.Body>
   );
-};
+}
 
 export default CourseModalOverview;

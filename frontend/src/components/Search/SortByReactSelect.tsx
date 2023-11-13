@@ -19,19 +19,9 @@ const StyledSortBtn = styled.div`
   }
 `;
 
-/**
- * Sorting select and toggle button
- */
-
-const SortByReactSelect: React.VFC = () => {
+function SortByReactSelect() {
   const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
     useSearch();
-
-  // Handle changing the sort order
-  const handleSortOrder = () => {
-    if (sort_order === 'asc') setSortOrder('desc');
-    else setSortOrder('asc');
-  };
 
   return (
     <>
@@ -51,7 +41,7 @@ const SortByReactSelect: React.VFC = () => {
       {/* Toggle sort order button */}
       <StyledSortBtn
         className={`${search_styles.sort_btn} my-auto`}
-        onClick={handleSortOrder}
+        onClick={() => setSortOrder(sort_order === 'asc' ? 'desc' : 'asc')}
       >
         {!select_sortby.numeric ? (
           // Sorting by letters
@@ -75,6 +65,6 @@ const SortByReactSelect: React.VFC = () => {
       </StyledSortBtn>
     </>
   );
-};
+}
 
 export default SortByReactSelect;

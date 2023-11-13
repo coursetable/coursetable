@@ -141,12 +141,6 @@ export function Popout({
     isComponentVisible,
     setIsComponentVisible,
   } = useComponentVisibleDropdown<HTMLDivElement>(false);
-
-  // Open popout handler
-  const toggleOpen = () => {
-    setIsComponentVisible(!isComponentVisible);
-  };
-
   const theme = useTheme();
 
   // Dynamic text state for active popout button
@@ -180,10 +174,7 @@ export function Popout({
     } else if (select_options) {
       if (Array.isArray(select_options) && select_options.length > 0) {
         const maxOptions = type === 'season' ? 1 : 3;
-        const top_options =
-          select_options.length > maxOptions
-            ? (select_options.slice(0, maxOptions) as Option[])
-            : (select_options as Option[]);
+        const top_options = select_options.slice(0, maxOptions);
         const text = top_options.map((option, index) => {
           const optionLabel = type === 'season' ? option.label : option.value;
           const colorStyle =
@@ -262,7 +253,7 @@ export function Popout({
     >
       {/* Popout Button */}
       <StyledButton
-        onClick={toggleOpen}
+        onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
         ref={ref_toggle}
         className={className}

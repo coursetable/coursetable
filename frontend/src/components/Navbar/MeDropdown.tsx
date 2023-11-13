@@ -25,7 +25,7 @@ import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 import { API_ENDPOINT } from '../../config';
 
 // Season to export classes from
-const CUR_SEASON = '202303';
+const CUR_SEASON = '202401';
 
 type Props = {
   profile_expanded: boolean;
@@ -41,12 +41,12 @@ type Props = {
  * @prop isLoggedIn - is user logged in?
  * @prop setIsTutorialOpen - opens tutorial
  */
-const MeDropdown: React.VFC<Props> = ({
+function MeDropdown({
   profile_expanded,
   setIsComponentVisible,
   isLoggedIn,
   setIsTutorialOpen,
-}) => {
+}: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
 
@@ -60,12 +60,6 @@ const MeDropdown: React.VFC<Props> = ({
   console.log("me dropdown file data: " + data);
   if (!data) data = [];
 
-  // Handle 'export worksheet' button click
-  const handleExportClick = () => {
-    // Start export process
-    setExport(true);
-  };
-
   // Called when worksheet updates or export_ics changes
   useEffect(() => {
     // return if worksheet isn't loaded or it isn't time to export
@@ -76,16 +70,13 @@ const MeDropdown: React.VFC<Props> = ({
     setExport(false);
   }, [data, export_ics]);
 
-  // Keep dropdown open on clicks
-  const handleDropdownClick = () => {
-    setIsComponentVisible(true);
-  };
-
   return (
     <SurfaceComponent
       layer={1}
       className={styles.collapse_container}
-      onClick={handleDropdownClick}
+      onClick={() => {
+        setIsComponentVisible(true);
+      }}
     >
       <Collapse in={profile_expanded}>
         {/* This wrapper div is important for making the collapse animation smooth */}
@@ -177,7 +168,10 @@ const MeDropdown: React.VFC<Props> = ({
                 <FcCalendar className="mr-2 my-auto" size={20} />
                 <TextComponent
                   type={1}
-                  onClick={handleExportClick}
+                  onClick={() => {
+                    // Start export process
+                    setExport(true);
+                  }}
                   className={styles.collapse_text}
                 >
                   <StyledHoverText>Export Worksheet</StyledHoverText>
@@ -224,6 +218,6 @@ const MeDropdown: React.VFC<Props> = ({
       </Collapse>
     </SurfaceComponent>
   );
-};
+}
 
 export default MeDropdown;

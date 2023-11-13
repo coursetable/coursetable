@@ -34,22 +34,15 @@ const StyledCommentRow = styled(Row)`
 `;
 
 // Bubble to choose sort order
-const StyledSortOption = styled.span`
+const StyledSortOption = styled.span<{ active: boolean }>`
   padding: 3px 5px;
-  background-color: ${(
-    // @ts-ignore
-    { theme, active },
-  ) => (active ? 'rgba(92, 168, 250,0.5)' : theme.border)};
-  color: ${(
-    // @ts-ignore
-    { theme, active },
-  ) => (active ? theme.text[0] : theme.text[2])};
+  background-color: ${({ theme, active }) =>
+    active ? 'rgba(92, 168, 250,0.5)' : theme.border};
+  color: ${({ theme, active }) => (active ? theme.text[0] : theme.text[2])};
   font-weight: 500;
   &:hover {
-    background-color: ${(
-      // @ts-ignore
-      { theme, active },
-    ) => (active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue)};
+    background-color: ${({ theme, active }) =>
+      active ? 'rgba(92, 168, 250,0.5)' : theme.multivalue};
     cursor: pointer;
   }
 `;
@@ -106,16 +99,16 @@ const EvaluationResponses: React.FC<{
   // Generate HTML to hold the responses to each question
   const [recommend, skills, strengths, summary] = useMemo(() => {
     // Lists that hold the html for the comments for a specific question
-    let temp_recommend = [];
-    let temp_skills = [];
-    let temp_strengths = [];
-    let temp_summary = [];
+    let temp_recommend: JSX.Element[] = [];
+    let temp_skills: JSX.Element[] = [];
+    let temp_strengths: JSX.Element[] = [];
+    let temp_summary: JSX.Element[] = [];
     const cur_responses =
       sort_order === 'length' ? sorted_responses : responses;
     // Populate the lists above
-    const genTemp = (resps: any) => {
+    const genTemp = (resps: string[]) => {
       if (resps.length === 0) {
-        return resps;
+        return [];
       }
       const filteredResps = resps
         .filter((response: string) => {
@@ -175,14 +168,12 @@ const EvaluationResponses: React.FC<{
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
           <StyledSortOption
-            // @ts-ignore
             active={sort_order === 'original'}
             onClick={() => setSortOrder('original')}
           >
             original order
           </StyledSortOption>
           <StyledSortOption
-            // @ts-ignore
             active={sort_order === 'length'}
             onClick={() => setSortOrder('length')}
           >

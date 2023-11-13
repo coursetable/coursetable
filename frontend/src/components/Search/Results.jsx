@@ -1,10 +1,4 @@
-import React, {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  useMemo,
-} from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
@@ -85,9 +79,8 @@ const ResultsItemWrapper = styled.div`
 `;
 
 // Function to calculate column width within a max and min
-const getColWidth = (calculated, min = 0, max = 1000000) => {
-  return Math.max(Math.min(calculated, max), min);
-};
+const getColWidth = (calculated, min = 0, max = 1000000) =>
+  Math.max(Math.min(calculated, max), min);
 
 /**
  * Renders the infinite list of search results for both catalog and worksheet
@@ -101,7 +94,7 @@ const getColWidth = (calculated, min = 0, max = 1000000) => {
  * @prop page = string | page search results are on
  */
 
-const Results = ({
+function Results({
   data,
   isList,
   setView,
@@ -111,7 +104,7 @@ const Results = ({
   isLoggedIn,
   num_friends,
   page = 'catalog',
-}) => {
+}) {
   // Fetch current device
   const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
     useWindowDimensions();
@@ -183,6 +176,7 @@ const Results = ({
   // Number of columns to use in grid view
   const num_cols = isMobile ? 1 : isTablet ? 2 : 3;
 
+<<<<<<< HEAD
   // Grid render function for React Virtualized List
   const renderGridRow = useCallback(
     ({ index, key, style }) => {
@@ -247,6 +241,8 @@ const Results = ({
     [data, showModal, multiSeasons, COL_SPACING, num_friends, globalTheme],
   );
 
+=======
+>>>>>>> 5da45bda15088340b836fee918aae4e82cc49fa8
   if (!isLoggedIn) {
     // render an auth wall
     resultsListing = (
@@ -296,155 +292,55 @@ const Results = ({
         )}
       </div>
     );
-  } else {
+  } else if (!isList) {
     // if not list view, prepare the grid
-    if (!isList) {
-      // Store HTML for grid view results
-      resultsListing = (
-        // Scroll the entire window
-        <WindowScroller>
-          {({ height, isScrolling, onChildScroll, scrollTop }) => (
-            // Make infinite list take up 100% of its container
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <List
-                  autoHeight
-                  width={width}
-                  height={height}
-                  isScrolling={isScrolling}
-                  onScroll={onChildScroll}
-                  scrollTop={scrollTop}
-                  rowCount={Math.ceil(data.length / num_cols)}
-                  rowHeight={178}
-                  rowRenderer={renderGridRow}
-                />
-              )}
-            </AutoSizer>
-          )}
-        </WindowScroller>
-      );
-    }
+    // Store HTML for grid view results
+    resultsListing = (
+      // Scroll the entire window
+      <WindowScroller>
+        {({ height, isScrolling, onChildScroll, scrollTop }) => (
+          // Make infinite list take up 100% of its container
+          <AutoSizer disableHeight>
+            {({ width }) => (
+              <List
+                autoHeight
+                width={width}
+                height={height}
+                isScrolling={isScrolling}
+                onScroll={onChildScroll}
+                scrollTop={scrollTop}
+                rowCount={Math.ceil(data.length / num_cols)}
+                rowHeight={178}
+                rowRenderer={({ index, key, style }) => {
+                  const row_elements = [];
+                  for (
+                    let j = index * num_cols;
+                    j < data.length && j < (index + 1) * num_cols;
+                    j++
+                  ) {
+                    row_elements.push(
+                      <ResultsGridItem
+                        course={data[j]}
+                        showModal={showModal}
+                        isLoggedIn={isLoggedIn}
+                        num_cols={num_cols}
+                        multiSeasons={multiSeasons}
+                        key={j}
+                      />,
+                    );
+                  }
 
-    // Store HTML for list view results
-    else {
-      resultsListing = (
-        // Scroll the entire window
-        <WindowScroller>
-          {({ height, isScrolling, onChildScroll, scrollTop }) => (
-            // Make infinite list take up 100% of its container
-            <AutoSizer disableHeight>
-              {({ width }) => (
-                <List
-                  autoHeight
-                  width={width}
-                  height={height}
-                  isScrolling={isScrolling}
-                  onScroll={onChildScroll}
-                  scrollTop={scrollTop}
-                  rowCount={data.length}
-                  rowHeight={isLgDesktop ? 32 : 28}
-                  rowRenderer={renderListRow}
-                />
-              )}
-            </AutoSizer>
-          )}
-        </WindowScroller>
-      );
-    }
-  }
-
-  // Tooltip for hovering over course code
-  const code_tooltip = useCallback(
-    (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        <span>
-          Course Code <br />
-          and Section
-        </span>
-      </Tooltip>
-    ),
-    [],
-  );
-
-  // Tooltip for hovering over course rating
-  const class_tooltip = useCallback(
-    (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        <span>
-          Average Course Rating
-          <br />
-          (same professor and all cross-listed courses. If this professor hasn't
-          taught the course before, a ~ denotes an average across all
-          professors)
-        </span>
-      </Tooltip>
-    ),
-    [],
-  );
-
-  // Tooltip for hovering over professor rating
-  const prof_tooltip = useCallback(
-    (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        <span>
-          Average Professor Rating <br />
-          and Names <br />
-          (if there are multiple professors, we take the average between them)
-        </span>
-      </Tooltip>
-    ),
-    [],
-  );
-
-  // Tooltip for hovering over workload rating
-  const workload_tooltip = useCallback(
-    (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        <span>
-          Average Workload Rating <br />
-          (same professor and all cross-listed courses. If this professor hasn't
-          taught the course before, a ~ denotes an average across all
-          professors)
-        </span>
-      </Tooltip>
-    ),
-    [],
-  );
-
-  // Tooltip for hovering over meets
-  const meets_tooltip = useCallback(
-    (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        <span>
-          Days of the Week <br />
-          and Times <br />
-          (sort order based on day and starting time)
-        </span>
-      </Tooltip>
-    ),
-    [],
-  );
-
-  // Tooltip for hovering over enrollment
-  const enrollment_tooltip = useCallback(
-    (props) => (
-      <Tooltip id="button-tooltip" {...props}>
-        {multiSeasons ? (
-          <span>
-            Class Enrollment
-            <br />
-            (If the course has not occurred/completed, based on the most recent
-            past instance of this course. a ~ means a different professor was
-            teaching)
-          </span>
-        ) : (
-          <span>
-            Previous Class Enrollment
-            <br />
-            (based on the most recent past instance of this course. a ~ means a
-            different professor was teaching)
-          </span>
+                  return (
+                    <div key={key} style={style}>
+                      <StyledRow className="mx-auto">{row_elements}</StyledRow>
+                    </div>
+                  );
+                }}
+              />
+            )}
+          </AutoSizer>
         )}
+<<<<<<< HEAD
       </Tooltip>
     ),
     [multiSeasons],
@@ -459,6 +355,66 @@ const Results = ({
     ),
     [],
   );
+=======
+      </WindowScroller>
+    );
+  } else {
+    // Store HTML for list view results
+    resultsListing = (
+      // Scroll the entire window
+      <WindowScroller>
+        {({ height, isScrolling, onChildScroll, scrollTop }) => (
+          // Make infinite list take up 100% of its container
+          <AutoSizer disableHeight>
+            {({ width }) => (
+              <List
+                autoHeight
+                width={width}
+                height={height}
+                isScrolling={isScrolling}
+                onScroll={onChildScroll}
+                scrollTop={scrollTop}
+                rowCount={data.length}
+                rowHeight={isLgDesktop ? 32 : 28}
+                rowRenderer={({ index, key, style, isScrolling }) => {
+                  const fb_friends = num_fb[
+                    data[index].season_code + data[index].crn
+                  ]
+                    ? num_fb[data[index].season_code + data[index].crn]
+                    : [];
+                  // Alternating row item background colors
+                  const colorStyles =
+                    index % 2 === 0
+                      ? { backgroundColor: globalTheme.surface[0] }
+                      : { backgroundColor: globalTheme.row_odd };
+                  return (
+                    <ResultsItemWrapper
+                      style={{
+                        ...style,
+                        ...colorStyles,
+                      }}
+                      key={key}
+                    >
+                      <ResultsItemMemo
+                        course={data[index]}
+                        showModal={showModal}
+                        multiSeasons={multiSeasons}
+                        isFirst={index === 0}
+                        COL_SPACING={COL_SPACING}
+                        isScrolling={isScrolling}
+                        fb_friends={fb_friends}
+                      />
+                    </ResultsItemWrapper>
+                  );
+                }}
+              />
+            )}
+          </AutoSizer>
+        )}
+      </WindowScroller>
+    );
+  }
+>>>>>>> 5da45bda15088340b836fee918aae4e82cc49fa8
 
   // Column width styles
   const szn_style = {
@@ -542,7 +498,17 @@ const Results = ({
                   )}
                   {/* Course Code */}
                   <ResultsHeader style={code_style}>
-                    <OverlayTrigger placement="bottom" overlay={code_tooltip}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      overlay={(props) => (
+                        <Tooltip id="button-tooltip" {...props}>
+                          <span>
+                            Course Code <br />
+                            and Section
+                          </span>
+                        </Tooltip>
+                      )}
+                    >
                       <span className={Styles.one_line}>Code</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
@@ -563,7 +529,17 @@ const Results = ({
                     <ResultsHeader style={rate_overall_style}>
                       <OverlayTrigger
                         placement="bottom"
-                        overlay={class_tooltip}
+                        overlay={(props) => (
+                          <Tooltip id="button-tooltip" {...props}>
+                            <span>
+                              Average Course Rating
+                              <br />
+                              (same professor and all cross-listed courses. If
+                              this professor hasn't taught the course before, a
+                              ~ denotes an average across all professors)
+                            </span>
+                          </Tooltip>
+                        )}
                       >
                         <span className={Styles.one_line}>Overall</span>
                       </OverlayTrigger>
@@ -576,7 +552,16 @@ const Results = ({
                     <ResultsHeader style={rate_workload_style}>
                       <OverlayTrigger
                         placement="bottom"
-                        overlay={workload_tooltip}
+                        overlay={(props) => (
+                          <Tooltip id="button-tooltip" {...props}>
+                            <span>
+                              Average Workload Rating <br />
+                              (same professor and all cross-listed courses. If
+                              this professor hasn't taught the course before, a
+                              ~ denotes an average across all professors)
+                            </span>
+                          </Tooltip>
+                        )}
                       >
                         <span className={Styles.one_line}>Work</span>
                       </OverlayTrigger>
@@ -587,7 +572,19 @@ const Results = ({
                     </ResultsHeader>
                     {/* Professor Rating & Course Professors */}
                     <ResultsHeader style={prof_style}>
-                      <OverlayTrigger placement="bottom" overlay={prof_tooltip}>
+                      <OverlayTrigger
+                        placement="bottom"
+                        overlay={(props) => (
+                          <Tooltip id="button-tooltip" {...props}>
+                            <span>
+                              Average Professor Rating <br />
+                              and Names <br />
+                              (if there are multiple professors, we take the
+                              average between them)
+                            </span>
+                          </Tooltip>
+                        )}
+                      >
                         <span className={Styles.one_line}>Professors</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
@@ -600,7 +597,27 @@ const Results = ({
                   <ResultsHeader style={enroll_style}>
                     <OverlayTrigger
                       placement="bottom"
-                      overlay={enrollment_tooltip}
+                      overlay={(props) => (
+                        <Tooltip id="button-tooltip" {...props}>
+                          {multiSeasons ? (
+                            <span>
+                              Class Enrollment
+                              <br />
+                              (If the course has not occurred/completed, based
+                              on the most recent past instance of this course. a
+                              ~ means a different professor was teaching)
+                            </span>
+                          ) : (
+                            <span>
+                              Previous Class Enrollment
+                              <br />
+                              (based on the most recent past instance of this
+                              course. a ~ means a different professor was
+                              teaching)
+                            </span>
+                          )}
+                        </Tooltip>
+                      )}
                     >
                       <span className={Styles.one_line}>#</span>
                     </OverlayTrigger>
@@ -615,7 +632,18 @@ const Results = ({
                   </ResultsHeader>
                   {/* Course Meeting Days & Times */}
                   <ResultsHeader style={meet_style}>
-                    <OverlayTrigger placement="bottom" overlay={meets_tooltip}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      overlay={(props) => (
+                        <Tooltip id="button-tooltip" {...props}>
+                          <span>
+                            Days of the Week <br />
+                            and Times <br />
+                            (sort order based on day and starting time)
+                          </span>
+                        </Tooltip>
+                      )}
+                    >
                       <span className={Styles.one_line}>Meets</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
@@ -628,8 +656,17 @@ const Results = ({
                     <span className={Styles.one_line}>Location</span>
                   </ResultsHeader>
                   {/* FB */}
-                  <ResultsHeader style={friend_style}>
-                    <OverlayTrigger placement="bottom" overlay={friend_tooltip}>
+                  <ResultsHeader style={fb_style}>
+                    <OverlayTrigger
+                      placement="bottom"
+                      overlay={(props) => (
+                        <Tooltip id="button-tooltip" {...props}>
+                          <span>
+                            Number of Facebook friends shopping this course
+                          </span>
+                        </Tooltip>
+                      )}
+                    >
                       <span className={Styles.one_line}>#FB</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
@@ -674,7 +711,7 @@ const Results = ({
       </SearchResults>
     </div>
   );
-};
+}
 
 // Search.whyDidYouRender = true;
 export default Results;

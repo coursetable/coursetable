@@ -4,7 +4,7 @@ import { toSeasonString } from '../../utilities/courseUtilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Link } from 'react-router-dom';
 
-const NoCourses: React.VFC = () => {
+function NoCourses() {
   const { cur_season } = useWorksheet();
 
   return (
@@ -24,6 +24,6 @@ const NoCourses: React.VFC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default NoCourses;

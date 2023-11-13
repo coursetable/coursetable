@@ -37,6 +37,7 @@ import js from '../images/headshots/josephine-shin.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import px from '../images/headshots/peter-xu.png';
 import bx from '../images/headshots/ben-xu.png';
+import ns from '../images/headshots/neil-song.png';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -53,13 +54,21 @@ const StyledH1 = styled.h1`
   transition: color ${({ theme }) => theme.trans_dur};
 `;
 
-/**
- * Renders the about us page
- */
-const About: React.VFC = () => {
+type Person = {
+  name: string;
+  image: string;
+  role: string;
+  links?: {
+    github?: string;
+    linkedin?: string;
+    website?: string;
+  };
+};
+
+function About() {
   const theme = useTheme();
 
-  const current = [
+  const current: Person[] = [
     {
       name: 'Alex Schapiro',
       image: as,
@@ -134,9 +143,18 @@ const About: React.VFC = () => {
         github: 'https://github.com/benzuzu',
       },
     },
+    {
+      name: 'Neil Song',
+      image: ns,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/neil-song/',
+        github: 'https://github.com/neilsong',
+      },
+    },
   ];
 
-  const alumni = [
+  const alumni: Person[] = [
     {
       name: 'Peter Xu',
       image: px,
@@ -242,24 +260,26 @@ const About: React.VFC = () => {
     },
   ];
 
-  const logo_link = (link: any, image: any, image_dark: any, text: string) => (
-    <>
-      {link && (
-        <a href={link}>
-          <img
-            src={theme.theme === 'dark' ? image_dark : image}
-            alt={text}
-            style={{
-              width: '24px',
-              paddingRight: '4px',
-            }}
-          />
-        </a>
-      )}
-    </>
-  );
+  const logoLink = (
+    link: string | undefined,
+    image: string,
+    image_dark: string,
+    text: string,
+  ) =>
+    link && (
+      <a href={link}>
+        <img
+          src={theme.theme === 'dark' ? image_dark : image}
+          alt={text}
+          style={{
+            width: '24px',
+            paddingRight: '4px',
+          }}
+        />
+      </a>
+    );
 
-  const create_cards = (person: any, idx: any) => (
+  const createCards = (person: Person, idx: number) => (
     <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
       <StyledCard style={{ height: '100%' }}>
         <Card.Img variant="top" src={person.image} alt={person.name} />
@@ -268,9 +288,9 @@ const About: React.VFC = () => {
           <Card.Text>
             <TextComponent type={1}>{person.role}</TextComponent>
             <br />
-            {logo_link(person.links?.github, github, github_dark, 'github')}
-            {logo_link(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
-            {logo_link(person.links?.website, web, web_dark, 'website')}
+            {logoLink(person.links?.github, github, github_dark, 'github')}
+            {logoLink(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
+            {logoLink(person.links?.website, web, web_dark, 'website')}
           </Card.Text>
         </Card.Body>
       </StyledCard>
@@ -318,15 +338,15 @@ const About: React.VFC = () => {
       </Row>
 
       <div className="my-3">
-        <Row className="mx-auto">{current.map(create_cards)}</Row>
+        <Row className="mx-auto">{current.map(createCards)}</Row>
       </div>
 
       <h1 className={`${styles.about_header} mt-5 mb-1`}>CourseTable Alumni</h1>
       <div className="my-3">
-        <Row className="mx-auto">{alumni.map(create_cards)}</Row>
+        <Row className="mx-auto">{alumni.map(createCards)}</Row>
       </div>
     </div>
   );
-};
+}
 
 export default About;

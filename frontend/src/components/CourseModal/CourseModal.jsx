@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
@@ -59,7 +59,7 @@ const extra_info_map = {
 
  */
 
-const CourseModal = ({ listing, hideModal, show }) => {
+function CourseModal({ listing, hideModal, show }) {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
@@ -75,28 +75,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
   const cur_listing =
     listings.length > 0 ? listings[listings.length - 1] : null;
 
-  // Set which evaluation we are viewing
-  const setSeason = useCallback((evaluation) => {
-    setView([evaluation.season_code, evaluation]);
-  }, []);
-
-  // Called when hiding modal
-  const handleHide = useCallback(() => {
-    // Reset views and filters
-    setView(['overview', null]);
-    setFilter('both');
-    hideModal();
-  }, [hideModal]);
-
-  // Called when user requests more info about a course from the eval page.
-  const handleMoreInfo = useCallback(() => {
-    // Go to overview page of this eval course
-    setView(['overview', null]);
-    const new_listing = { ...view[1].listing };
-    new_listing.eval = view[1];
-    setListings([...listings, new_listing]);
-  }, [listings, view]);
-
   // key variable for lists
   let key = 0;
 
@@ -106,7 +84,12 @@ const CourseModal = ({ listing, hideModal, show }) => {
         <StyledModal
           show={show}
           scrollable
-          onHide={handleHide}
+          onHide={() => {
+            // Reset views and filters
+            setView(['overview', null]);
+            setFilter('both');
+            hideModal();
+          }}
           dialogClassName="modal-custom-width"
           animation={false}
           centered
@@ -126,6 +109,7 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             crn={cur_listing.crn}
                             season_code={cur_listing.season_code}
                             modal
+                            selectedWorksheet={cur_listing.current_worksheet}
                           />
                         ) : (
                           // If this is the overview of some other eval course, show back button
@@ -256,7 +240,13 @@ const CourseModal = ({ listing, hideModal, show }) => {
                             </TextComponent>
                             <StyledMoreInfo
                               className="mt-auto ml-2"
-                              onClick={handleMoreInfo}
+                              onClick={() => {
+                                // Go to overview page of this eval course
+                                setView(['overview', null]);
+                                const new_listing = { ...view[1].listing };
+                                new_listing.eval = view[1];
+                                setListings([...listings, new_listing]);
+                              }}
                             >
                               More Info
                             </StyledMoreInfo>
@@ -335,7 +325,9 @@ const CourseModal = ({ listing, hideModal, show }) => {
               <CourseModalOverview
                 setFilter={setFilter}
                 filter={filter}
-                setSeason={setSeason}
+                setSeason={(evaluation) => {
+                  setView([evaluation.season_code, evaluation]);
+                }}
                 listing={cur_listing}
               />
             ) : (
@@ -350,6 +342,6 @@ const CourseModal = ({ listing, hideModal, show }) => {
       )}
     </div>
   );
-};
+}
 
 export default React.memo(CourseModal);

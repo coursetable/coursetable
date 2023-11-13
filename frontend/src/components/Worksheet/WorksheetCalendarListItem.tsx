@@ -1,6 +1,6 @@
 import React from 'react';
 import { Row, Col, ListGroup } from 'react-bootstrap';
-import styled, { withTheme } from 'styled-components';
+import styled, { withTheme, type DefaultTheme } from 'styled-components';
 import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
@@ -49,7 +49,7 @@ function WorksheetCalendarListItem({
 }: {
   course: Listing;
   hidden: boolean;
-  theme: any;
+  theme: DefaultTheme;
   worksheet_number?: string;
 }) {
   const { showModal, cur_season, toggleCourse, setHoverCourse } =

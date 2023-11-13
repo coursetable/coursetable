@@ -1,4 +1,4 @@
-import express, { RequestHandler } from 'express';
+import express from 'express';
 
 import morgan from './logging/morgan';
 import winston from './logging/winston';
@@ -46,7 +46,7 @@ const app = express();
 // See https://expressjs.com/en/guide/behind-proxies.html.
 app.set('trust proxy', true);
 // Enable url-encoding
-app.use(express.urlencoded({ extended: true }) as RequestHandler);
+app.use(express.urlencoded({ extended: true }));
 
 // Enable Cross-Origin Resource Sharing
 // (i.e. let the frontend call the API when it's on a different domain)
@@ -127,10 +127,10 @@ https
     }),
   );
   // Enable request logging.
-  app.use(morgan as RequestHandler);
+  app.use(morgan);
 
   // figure out how to make this work with Ferry (has to go after Ferry currently)
-  app.use(express.json() as RequestHandler);
+  app.use(express.json());
 
   // Activate catalog and CAS authentication
   await challenge(app);

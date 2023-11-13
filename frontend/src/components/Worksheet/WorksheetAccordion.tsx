@@ -22,6 +22,7 @@ import { weekdays } from '../../utilities/common';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Listing } from '../Providers/FerryProvider';
+import WorksheetNumDropdown from '../Navbar/WorksheetNumberDropdown';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -46,17 +47,6 @@ function ContextAwareToggle({
 
   // Is this item selected?
   const isCurrentEventKey = currentEventKey === eventKey;
-
-  // Remove weekday from course times
-  const trim = (time_string: string) => {
-    // Iterate over each char in the time string
-    for (let i = 0; i < time_string.length; i++) {
-      // If we see a number, then we have passed the weekdays and can return the rest of the string
-      if (time_string[i] >= '0' && time_string[i] <= '9')
-        return time_string.substr(i, time_string.length - i);
-    }
-    return null;
-  };
 
   const style_color = {
     backgroundColor: theme.select_hover,
@@ -90,7 +80,9 @@ function ContextAwareToggle({
         </Col>
         {/* Course Time */}
         <Col xs="auto" className="p-0">
-          <TextComponent type={1}>{trim(course.times_summary)}</TextComponent>
+          <TextComponent type={1}>
+            {course.times_summary.match(/[0-9].*/)?.[0] ?? ''}
+          </TextComponent>
         </Col>
       </Row>
     </div>
@@ -278,6 +270,7 @@ function WorksheetAccordion() {
 
   return (
     <div className={styles.container}>
+      <WorksheetNumDropdown />
       <Row className={`${styles.dropdowns} mx-auto`}>
         {/* Season Dropdown */}
         <Col xs={6} className="m-0 p-0">

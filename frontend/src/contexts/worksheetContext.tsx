@@ -36,7 +36,7 @@ type Store = {
   worksheetError: string | null;
   worksheetData: Listing[];
   course_modal: (string | boolean | Listing)[];
-  changeSeason: (season_code: Season) => void;
+  changeSeason: (season_code: Season | null) => void;
   changeWorksheet: (worksheet_number: string) => void;
   handlePersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
@@ -179,6 +179,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
         }
         temp[i].color = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 0.85)`;
         temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
+        temp[i].current_worksheet = worksheet_number;
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
@@ -189,6 +190,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     worksheetLoading,
     worksheetError,
     cur_worksheet,
+    worksheet_number,
     worksheetData,
     setCourses,
     colorMap,
@@ -260,7 +262,8 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Function to change season
   const changeSeason = useCallback(
-    (season_code: Season) => {
+    (season_code: Season | null) => {
+      if (season_code === null) return;
       setCurSeason(season_code);
     },
     [setCurSeason],

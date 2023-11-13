@@ -20,11 +20,15 @@ const StyledLabel = styled.p`
  * @prop labels - list that holds the x-axis labels for the grpah
  */
 
-const RatingsGraph: React.VFC<{
+function RatingsGraph({
+  ratings,
+  reverse,
+  labels,
+}: {
   ratings: number[];
   reverse: boolean;
   labels: (typeof graph_labels)[keyof typeof graph_labels];
-}> = ({ ratings, reverse, labels }) => {
+}) {
   const max_val = Math.max(...ratings);
 
   // Bar chart colors
@@ -82,6 +86,6 @@ const RatingsGraph: React.VFC<{
       {columns}
     </Row>
   );
-};
+}
 
 export default RatingsGraph;

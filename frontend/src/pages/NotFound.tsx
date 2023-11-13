@@ -5,7 +5,7 @@ import NotFoundImage from '../images/not_found.svg';
 /**
  * Renders the NotFound page when a user enters an invalid url
  */
-const NotFound: React.VFC = () => {
+function NotFound() {
   return (
     <div className="text-center py-5">
       <img
@@ -21,6 +21,6 @@ const NotFound: React.VFC = () => {
       </div>
     </div>
   );
-};
+}
 
 export default NotFound;

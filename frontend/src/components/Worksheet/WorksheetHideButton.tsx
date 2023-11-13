@@ -1,8 +1,8 @@
-import React, { useCallback } from 'react';
+import React from 'react';
 import './WorksheetToggleButton.css';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
-import { withTheme } from 'styled-components';
+import { withTheme, type DefaultTheme } from 'styled-components';
 
 /**
  * Render the course hide button in the Worksheet List
@@ -10,7 +10,7 @@ import { withTheme } from 'styled-components';
  * @prop toggleCourse - function | to hide/show course
  * @prop crn - number | integer that holds crn for the current course
  */
-const WorksheetHideButton = ({
+function WorksheetHideButton({
   hidden,
   toggleCourse,
   crn,
@@ -19,31 +19,24 @@ const WorksheetHideButton = ({
   hidden: boolean;
   toggleCourse: (crn: number) => void;
   crn: number;
-  theme: any;
-}) => {
-  // Handle hide/show click
-  const toggleWorkSheet = useCallback(() => {
-    toggleCourse(crn);
-  }, [toggleCourse, crn]);
+  theme: DefaultTheme;
+}) {
   // Size of toggle button
   const button_size = 18;
-
-  // Tooltip that displays show/hide message on hover
-  const renderTooltip = (props: any) => (
-    <Tooltip id="button-tooltip" {...props}>
-      <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
-    </Tooltip>
-  );
 
   return (
     <OverlayTrigger
       placement="bottom"
       delay={{ show: 1000, hide: 0 }}
-      overlay={renderTooltip}
+      overlay={(props) => (
+        <Tooltip id="button-tooltip" {...props}>
+          <small>{`${!hidden ? 'Hide ' : 'Show '}in calendar`}</small>
+        </Tooltip>
+      )}
     >
       <Button
         variant="toggle"
-        onClick={toggleWorkSheet}
+        onClick={() => toggleCourse(crn)}
         className="p-1 d-flex align-items-center"
       >
         {hidden ? (
@@ -62,6 +55,6 @@ const WorksheetHideButton = ({
       </Button>
     </OverlayTrigger>
   );
-};
+}
 
 export default React.memo(withTheme(WorksheetHideButton));

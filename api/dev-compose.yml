@@ -39,7 +39,7 @@ services:
       retries: 60
 
   phpmyadmin:
-    image: phpmyadmin:latest
+    image: phpmyadmin:fpm-alpine
     container_name: phpmyadmin
     depends_on:
       - mysql
