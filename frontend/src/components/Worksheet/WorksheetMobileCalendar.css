@@ -49,7 +49,7 @@
 
 @media only screen and (max-width: 767px) {
   .mobile-calendar {
-    height: 70vh;
+    height: 75vh;
   }
 
   .rbc-calendar {
