@@ -364,9 +364,9 @@ function ResultsItem({
           <OverlayTrigger
             placement="top"
             overlay={(props) =>
-              fb_friends.length > 0 ? (
+              friends.length > 0 ? (
                 <Tooltip id="button-tooltip" {...props}>
-                  {fb_friends.join(' • ')}
+                  {friends.join(' • ')}
                 </Tooltip>
               ) : (
                 <div />
