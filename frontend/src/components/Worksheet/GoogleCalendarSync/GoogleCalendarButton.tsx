@@ -147,7 +147,10 @@ function GoogleCalendarButton({
   }
 
   return (
-    <StyledBtn id={user ? "sync" : "auth"} onClick={user ? syncEvents : undefined}>
+    <StyledBtn
+      id={user ? 'sync' : 'auth'}
+      onClick={user ? syncEvents : undefined}
+    >
       Sync with GCal
     </StyledBtn>
   );
