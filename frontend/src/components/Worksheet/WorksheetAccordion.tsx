@@ -22,6 +22,7 @@ import { weekdays } from '../../utilities/common';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Listing } from '../Providers/FerryProvider';
+import WorksheetNumDropdown from '../Navbar/WorksheetNumberDropdown';
 
 // Component used to trim description to certain number of lines
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
@@ -269,6 +270,7 @@ function WorksheetAccordion() {
 
   return (
     <div className={styles.container}>
+      <WorksheetNumDropdown />
       <Row className={`${styles.dropdowns} mx-auto`}>
         {/* Season Dropdown */}
         <Col xs={6} className="m-0 p-0">
