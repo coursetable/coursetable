@@ -223,19 +223,6 @@ export const verifyChallenge = async (
 
   const { netId } = req.user;
 
-  // lol
-  await prisma.studentBluebookSettings.update({
-    where: { netId },
-    data: { evaluationsEnabled: true },
-  });
-  return res.json({
-    body: {
-      message: 'CORRECT',
-      challengeTries: 1,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    },
-  });
-
   // increment challenge tries
   const { challengeTries, evaluationsEnabled } =
     await prisma.studentBluebookSettings.update({
