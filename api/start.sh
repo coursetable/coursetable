@@ -2,6 +2,12 @@
 
 set -euo pipefail
 
+trap ctrl_c INT
+
+function ctrl_c() {
+  doppler run --command "docker compose -f docker-compose.yml -f dev-compose.yml kill"
+}
+
 ENV=""
 OVERWRITE=false
 
@@ -35,8 +41,12 @@ then
     then
         export OVERWRITE_CATALOG='true'
     fi
+    export HOT_RELOAD='true'
     doppler setup -p coursetable -c dev
-    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans --build"
+    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml up --remove-orphans --build -d"
+    doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml logs -f"
+    # build debug
+    # doppler run --command "docker-compose -f docker-compose.yml -f dev-compose.yml build --no-cache &> logs.txt"
 elif [[ $ENV == 'prod' ]]
 then
     doppler setup -p coursetable -c prd
