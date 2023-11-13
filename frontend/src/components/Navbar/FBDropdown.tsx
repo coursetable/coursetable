@@ -22,7 +22,7 @@ const FBDropdown: React.VFC = () => {
   const { cur_season, person, handlePersonChange } = useWorksheet();
 
   // Generate friend netId list, sorted by name.
-  const friendInfo = (user.friendWorksheets?.friendInfo) || {};
+  const friendInfo = user.friendWorksheets?.friendInfo || {};
   let friends = Object.keys(friendInfo);
   friends.sort((a, b) => {
     return friendInfo[a].name.toLowerCase() < friendInfo[b].name.toLowerCase()
@@ -31,29 +31,30 @@ const FBDropdown: React.VFC = () => {
   });
   friends = ['me', ...friends];
 
-  const friendWorksheets =
-    (user?.friendWorksheets?.worksheets) || {};
+  const friendWorksheets = user?.friendWorksheets?.worksheets || {};
 
-  const DropdownItem: React.VFC<{ person: Person }> = ({ person }) => {
+  const DropdownItem: React.VFC<{ person: Person }> = ({
+    person: curr_person,
+  }) => {
     let text: string;
-    if (person === 'me') {
+    if (curr_person === 'me') {
       text = 'Me';
     } else {
-      const { name } = friendInfo[person];
-      const count_in_season = (friendWorksheets[person] ?? []).filter(
-        (worksheet) => worksheet[0] === cur_season,
-      ).length;
-      text = `${name} (${count_in_season})`;
+      const { name } = friendInfo[curr_person];
+      // const count_in_season = (friendWorksheets[curr_person] ?? []).filter(
+      //   (worksheet) => worksheet[0] === cur_season,
+      // ).length;
+      text = `${name}`;
     }
     return (
       <Dropdown.Item
-        key={person}
-        eventKey={person}
+        key={curr_person}
+        eventKey={curr_person}
         className="d-flex"
         // Styling if this is the current person
         style={{
-          backgroundColor: person === person ? '#007bff' : '',
-          color: person === person ? 'white' : 'black',
+          backgroundColor: person === curr_person ? '#007bff' : '',
+          color: person === curr_person ? 'white' : 'black',
         }}
       >
         <div className="mx-auto">{text}</div>
