@@ -11,6 +11,7 @@ services:
       - '8039'
     environment:
       NODE_ENV: production
+      HOT_RELOAD: false
     labels:
       traefik.enable: true
       traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)
