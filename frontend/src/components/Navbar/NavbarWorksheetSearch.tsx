@@ -9,7 +9,7 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
 // import { sortbyOptions } from '../queries/Constants';
-import { isOption, Option } from '../../contexts/searchContext';
+import { isOption, Option, OptType } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
@@ -185,9 +185,28 @@ export function NavbarWorksheetSearch() {
     return friend_request_options_temp;
   }, [friendRequestInfo]);
 
+  const friendNamesInfo = useMemo(() => {
+    return user.allNames
+      ? user.allNames
+      : [];
+  }, [user.allNames]);
+
+  const friend_name_options = useMemo(() => {
+    const friend_name_options_temp: OptType = friendNamesInfo.map((x) => {
+      const name_option: Option = {
+        value: x.netId,
+        label: x.first + " " + x.last + " (" + x.college + ")",
+      }
+      return name_option
+    })
+    return friend_name_options_temp
+  }, [friendNamesInfo])
+
   const { isTablet } = useWindowDimensions();
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+
+  const [currentFriendName, setCurrentFriendName] = useState<Option | undefined>(undefined)
 
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
@@ -375,6 +394,23 @@ export function NavbarWorksheetSearch() {
                 isDisabled={false}
               />
             </Popout>
+
+            {/* Add friend with search by name test */}
+            <div className={`col-md-2 p-0`}>
+              <CustomSelect
+                isMulti
+                value={currentFriendName}
+                options={friend_name_options}
+                placeholder="Add Friends"
+                isSearchable
+                // prevent overlap with tooltips
+                menuPortalTarget={document.body}
+                onChange={(selectedOption: ValueType<Option, boolean>) =>
+                  setCurrentFriendName((selectedOption as Option) || {})
+                }
+              />
+            </div>
+
           </FilterGroup>
         </StyledRow>
       </Form>

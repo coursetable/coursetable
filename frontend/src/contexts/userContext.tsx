@@ -26,6 +26,12 @@ export type FriendInfo = {
   worksheets: Record<NetId, Worksheet>;
   friendInfo: FriendRecord;
 };
+export type FriendName = {
+  netId: string;
+  first: string;
+  last: string;
+  college: string;
+};
 type Store = {
   user: {
     netId?: NetId;
@@ -35,14 +41,16 @@ type Store = {
     school?: string;
     friendRequests?: FriendRequest[];
     friendWorksheets?: FriendInfo;
+    allNames?: FriendName[];
   };
   userRefresh(suppressError?: boolean): Promise<void>;
   friendRefresh(suppressError?: boolean): Promise<void>;
   friendReqRefresh(suppressError?: boolean): Promise<void>;
-  addFriend(netId1?: string, netId2?: string): Promise<void>;
-  removeFriend(netId1?: string, netId2?: string): Promise<void>;
-  friendRequest(friendNetId?: string): Promise<void>;
-  resolveFriendRequest(friendNetId?: string): Promise<void>;
+  addFriend(netId1? : string, netId2? : string): Promise<void>;
+  removeFriend(netId1? : string, netId2? : string): Promise<void>;
+  friendRequest(friendNetId? : string): Promise<void>;
+  resolveFriendRequest(friendNetId? : string): Promise<void>;
+  getAllNames(): Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -67,9 +75,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     undefined,
   );
   // User's friend requests
-  const [friendRequests, setFriendRequests] = useState<
-    FriendRequest[] | undefined
-  >(undefined);
+  const [friendRequests, setFriendRequests] = useState<FriendRequest[] | undefined>(undefined);
+  // All names, used for searching
+  const [allNames, setAllNames] = useState<FriendName[] | undefined>(undefined);
 
   // Refresh user worksheet
   const userRefresh = useCallback(
@@ -158,7 +166,31 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         });
     },
     [setFriendRequests],
-  );
+  )
+
+  const getAllNames = useCallback(
+    (suppressError = false): Promise<void> => {
+      return axios
+        .get(`${API_ENDPOINT}/api/friends/names`, {
+          withCredentials: true
+        })
+        .then((names) => {
+          if (!names.data.success) {
+            throw new Error(names.data.message);
+          }
+          console.log("names data: ", names.data.names)
+          setAllNames(names.data.names)
+        })
+        .catch((err) => {
+          if (!suppressError) {
+            Sentry.captureException(err);
+            toast.error('Error getting friend requests');
+          }
+          setAllNames(undefined);
+        })
+    },
+    []
+  )
 
   // Add Friend
   const addFriend = useCallback((netId1 = '', netId2 = ''): Promise<void> => {
@@ -210,15 +242,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       school,
       friendRequests,
       friendWorksheets,
+      allNames
     };
   }, [
-    netId,
-    worksheet,
-    hasEvals,
-    year,
-    school,
-    friendRequests,
-    friendWorksheets,
+    netId, 
+    worksheet, 
+    hasEvals, 
+    year, 
+    school, 
+    friendRequests, 
+    friendWorksheets, 
+    allNames
   ]);
 
   const store = useMemo(
@@ -234,17 +268,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       removeFriend,
       friendRequest,
       resolveFriendRequest,
+      getAllNames
     }),
-    [
-      user,
-      userRefresh,
-      friendRefresh,
-      friendReqRefresh,
-      addFriend,
-      removeFriend,
-      friendRequest,
-      resolveFriendRequest,
-    ],
+    [user, userRefresh, friendRefresh, friendReqRefresh, addFriend, removeFriend, friendRequest, resolveFriendRequest, getAllNames],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;

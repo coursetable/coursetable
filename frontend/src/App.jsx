@@ -41,19 +41,20 @@ function App({ themeToggler }) {
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
-  const { user, userRefresh, friendRefresh, friendReqRefresh } = useUser();
+  const { user, userRefresh, friendRefresh, friendReqRefresh, getAllNames } = useUser();
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {
     const a = userRefresh(true);
     const b = friendRefresh(true);
     const c = friendReqRefresh(true);
+    const d = getAllNames(true);
 
-    Promise.allSettled([a, b, c]).finally(() => {
+    Promise.allSettled([a, b, c, d]).finally(() => {
       // Set loading to false after user info is fetched
       setLoading(false);
     });
-  }, [userRefresh, friendRefresh, friendReqRefresh]);
+  }, [userRefresh, friendRefresh, friendReqRefresh, getAllNames]);
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet != null);
