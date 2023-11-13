@@ -121,6 +121,7 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
+<<<<<<< HEAD
   const {
     user,
     addFriend,
@@ -130,6 +131,9 @@ export function NavbarWorksheetSearch() {
     friendReqRefresh,
     friendRefresh,
   } = useUser();
+=======
+  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest, friendReqRefresh, friendRefresh } = useUser();
+>>>>>>> df2f921e (create add friends selector - WIP 2)
 
   // FB Friends names
   const friendInfo = useMemo(() => {
@@ -201,6 +205,10 @@ export function NavbarWorksheetSearch() {
     })
     return friend_name_options_temp
   }, [friendNamesInfo])
+
+  const getValue = (opt: Option) => {
+    return opt.value;
+  }
 
   const { isTablet } = useWindowDimensions();
 
@@ -395,8 +403,8 @@ export function NavbarWorksheetSearch() {
               />
             </Popout>
 
-            {/* Add friend with search by name test */}
-            <div className={`col-md-2 p-0`}>
+            {/* Add friend with search by name test - WIP */}
+            {/* <div className={`col-md-2 p-0`}>
               <CustomSelect
                 isMulti
                 value={currentFriendName}
@@ -405,11 +413,11 @@ export function NavbarWorksheetSearch() {
                 isSearchable
                 // prevent overlap with tooltips
                 menuPortalTarget={document.body}
-                onChange={(selectedOption: ValueType<Option, boolean>) =>
-                  setCurrentFriendName((selectedOption as Option) || {})
-                }
+                onChange={((selectedOption: ValueType<Option, boolean>) => {
+                  friendRequest(getValue(selectedOption as Option))
+                })}
               />
-            </div>
+            </div> */}
 
           </FilterGroup>
         </StyledRow>
