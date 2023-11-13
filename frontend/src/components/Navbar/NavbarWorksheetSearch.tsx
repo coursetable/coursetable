@@ -361,9 +361,7 @@ export function NavbarWorksheetSearch() {
               <Searchbar
                 hideSelectedOptions={false}
                 components={{
-                  Menu: () => {
-                    <></>;
-                  },
+                  Menu: () => <></>,
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
                 onKeyDown={(e) => {
