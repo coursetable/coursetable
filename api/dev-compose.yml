@@ -6,6 +6,7 @@ services:
     volumes:
       - ../api/static:/usr/src/app/static
       - ../api/src:/usr/src/app/src
+      - ../api/prisma:/usr/src/app/prisma
     build:
       args:
         - HOT_RELOAD=true

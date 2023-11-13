@@ -2,7 +2,8 @@
   "scripts": {
     "dbpull": "prisma db pull",
     "generate": "prisma generate",
-    "start": "bun --hot src/server.ts",
+    "prestart": "prisma db pull && prisma generate",
+    "start": "nodemon --files src/server.ts",
     "checks": "bun run depcheck && bun run lint && bun run typecheck",
     "depcheck": "bunx depcheck . --json",
     "lint": "prettier -l . && eslint src",
@@ -41,9 +42,11 @@
     "http-proxy-middleware": "^2.0.6",
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
+    "nodemon": "^3.0.1",
     "passport": "0.5.0",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "prisma": "^5.5.2",
+    "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "winston": "^3.10.0"
   },
