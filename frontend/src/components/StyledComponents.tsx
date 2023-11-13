@@ -113,6 +113,20 @@ export const StyledPopover = styled(Popover)`
     border-right-color: ${({ theme }) => theme.surface[0]};
     border-left-color: ${({ theme }) => theme.surface[0]};
   }
+  @media only screen and (max-width: 767px) {
+    .popover-header {
+      display: none
+    }
+    .popover-body {
+      display: none;
+    }
+    .arrow::before {
+      display: none;
+    }
+    .arrow::after {
+      display: none;
+    }
+  }
 `;
 
 // Rating bubbles in search results list item and modal

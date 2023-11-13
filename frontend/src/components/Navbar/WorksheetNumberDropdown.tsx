@@ -18,7 +18,7 @@ function WorksheetNumDropdown() {
   }, []);
 
   return (
-    <div className="container p-0 m-0">
+    <div className="container p-0 m-0 w-mx">
       <DropdownButton
         variant="primary"
         title={

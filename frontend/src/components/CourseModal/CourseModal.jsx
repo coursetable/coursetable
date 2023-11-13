@@ -99,7 +99,7 @@ function CourseModal({ listing, hideModal, show }) {
               {view[0] === 'overview' ? (
                 // Viewing Course Overview
                 <div>
-                  <Row className="m-auto">
+                  <Row className="m-auto modal-top">
                     <Col xs="auto" className="my-auto p-0">
                       {/* Show worksheet add/remove button */}
                       {cur_listing &&

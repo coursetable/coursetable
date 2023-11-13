@@ -1,0 +1,67 @@
+.rbc-events-container {
+  border: none !important;
+  margin: 0 3px !important;
+}
+
+.rbc-allday-cell {
+  display: none !important;
+}
+
+.rbc-today,
+.rbc-current-time-indicator {
+  background-color: transparent !important;
+}
+
+.rbc-header {
+  border-bottom: none !important;
+}
+
+.rbc-header a:hover {
+  color: black !important;
+  text-decoration: none !important;
+  cursor: default;
+}
+
+.rbc-time-view {
+  border: none !important;
+}
+
+.location_text {
+  font-weight: 500;
+}
+
+/* .rbc-event {
+  transition: transform 0.1s, background-color 0.1s, opacity 0.1s;
+} */
+
+.rbc-event:hover {
+  filter: brightness(85%);
+  z-index: 2;
+}
+
+.rbc-event-label {
+  display: none !important;
+}
+
+.rbc-time-content {
+  overflow-y: visible !important;
+}
+
+@media only screen and (max-width: 767px) {
+  .mobile-calendar {
+    height: 70vh;
+  }
+
+  .rbc-calendar {
+    margin: 1rem 0 0.5rem 0;
+  }
+
+  .location_text {
+    display: none;
+  }
+
+  .mobile-view {
+    margin: 1rem 0.75rem;
+  }
+}
+

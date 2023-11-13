@@ -22,3 +22,7 @@
 .dropdown-toggle:active {
   box-shadow: none !important;
 }
+
+.w-mx {
+  max-width: 100%;
+}

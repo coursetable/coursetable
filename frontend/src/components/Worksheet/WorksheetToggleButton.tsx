@@ -176,7 +176,7 @@ function WorksheetToggleButton({
     >
       <StyledButton
         variant="toggle"
-        className="py-auto px-1 d-flex align-items-center"
+        className="py-auto px-1 d-flex align-items-center g-1"
         onClick={toggleWorkSheet}
       >
         {/* Show bookmark icon on modal and +/- everywhere else */}
