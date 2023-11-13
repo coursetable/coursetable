@@ -55,9 +55,9 @@ function MeDropdown({
 
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
-  console.log("medropdown")
+  console.log('medropdown');
   let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
-  console.log("me dropdown file data: " + data);
+  console.log('me dropdown file data: ' + data);
   if (!data) data = [];
 
   // Called when worksheet updates or export_ics changes

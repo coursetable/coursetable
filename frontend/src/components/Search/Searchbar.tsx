@@ -261,7 +261,7 @@ export const Searchbar = <T extends OptionTypeBase>({
   isClearable = true,
   hideSelectedOptions = true,
   components,
-  handleInputChange, 
+  handleInputChange,
   onKeyDown,
   ...props
 }: SelectProps<T, boolean> & Props) => {
@@ -272,13 +272,13 @@ export const Searchbar = <T extends OptionTypeBase>({
       isMulti={isMulti}
       autoFocus
       backspaceRemovesValue={false}
-      components = {components}
+      components={components}
       controlShouldRenderValue
-      handleInputChange = {handleInputChange}
+      handleInputChange={handleInputChange}
       hideSelectedOptions={hideSelectedOptions}
       isClearable={isClearable}
       menuIsOpen
-      onKeyDown = {onKeyDown}
+      onKeyDown={onKeyDown}
       tabSelectsValue={false}
       closeMenuOnSelect={!isMulti}
     />

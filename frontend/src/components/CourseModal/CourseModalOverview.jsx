@@ -72,15 +72,14 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
-  const also_taking =
-    user.friendWorksheets
-      ? FriendsAlsoTaking(
-          listing.season_code,
-          listing.crn,
-          user.friendWorksheets.worksheets,
-          user.friendWorksheets.friendInfo,
-        )
-      : [];
+  const also_taking = user.friendWorksheets
+    ? FriendsAlsoTaking(
+        listing.season_code,
+        listing.crn,
+        user.friendWorksheets.worksheets,
+        user.friendWorksheets.friendInfo,
+      )
+    : [];
 
   // Parse for location url and location name
   let location_url = '';

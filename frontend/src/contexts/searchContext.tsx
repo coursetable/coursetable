@@ -336,7 +336,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const num_friends = useMemo(() => {
     if (!user.friendWorksheets) return {};
     return getNumFriends(user.friendWorksheets);
-  }, [ user.friendWorksheets]);
+  }, [user.friendWorksheets]);
 
   // populate seasons from database
   let seasonsOptions: OptType;

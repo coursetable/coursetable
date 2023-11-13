@@ -6,7 +6,7 @@ import { ValueType } from 'react-select/src/types';
 import { components } from 'react-select';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
-import { Searchbar } from '../Search/Searchbar'
+import { Searchbar } from '../Search/Searchbar';
 
 // import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../../contexts/searchContext';
@@ -121,13 +121,19 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest, friendReqRefresh, friendRefresh } = useUser();
+  const {
+    user,
+    addFriend,
+    removeFriend,
+    friendRequest,
+    resolveFriendRequest,
+    friendReqRefresh,
+    friendRefresh,
+  } = useUser();
 
   // FB Friends names
   const friendInfo = useMemo(() => {
-    return user.friendWorksheets
-      ? user.friendWorksheets.friendInfo
-      : {};
+    return user.friendWorksheets ? user.friendWorksheets.friendInfo : {};
   }, [user.friendWorksheets]);
 
   // List of FB friend options. Initialize with me option
@@ -159,9 +165,7 @@ export function NavbarWorksheetSearch() {
 
   // FB Friends names
   const friendRequestInfo = useMemo(() => {
-    return user.friendRequests
-      ? user.friendRequests
-      : [];
+    return user.friendRequests ? user.friendRequests : [];
   }, [user.friendRequests]);
 
   // friend requests variables
@@ -267,33 +271,37 @@ export function NavbarWorksheetSearch() {
                 components={{
                   Control: (props) => {
                     return (
-                      <div onClick={() => {setRemoving(1 - removing);}}>
+                      <div
+                        onClick={() => {
+                          setRemoving(1 - removing);
+                        }}
+                      >
                         <components.Control {...props} />
                       </div>
                     );
-                  }
+                  },
                 }}
                 hideSelectedOptions={false}
                 value={selected_person}
                 options={friend_options}
-                placeholder={(removing === 0)? "Selecting friends (click to switch to remove mode)" : "Removing friends (click to switch to select mode)"}
-                isSearchable = {false}
+                placeholder={
+                  removing === 0
+                    ? 'Selecting friends (click to switch to remove mode)'
+                    : 'Removing friends (click to switch to select mode)'
+                }
+                isSearchable={false}
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if(removing === 0)
-                  {
+                  if (removing === 0) {
                     // Cleared FB friend
                     if (!selectedOption) handlePersonChange('me');
                     // Selected FB friend
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value);
-                  }
-                  else
-                  {
-                    if(selectedOption && isOption(selectedOption))
-                    {
+                  } else {
+                    if (selectedOption && isOption(selectedOption)) {
                       removeFriend(selectedOption.value, user.netId);
                       removeFriend(user.netId, selectedOption.value);
-                    } 
+                    }
                   }
                 }}
                 isDisabled={false}
@@ -313,27 +321,32 @@ export function NavbarWorksheetSearch() {
                 components={{
                   Control: (props) => {
                     return (
-                      <div onClick={() => {setDeleting(1 - deleting);}}>
+                      <div
+                        onClick={() => {
+                          setDeleting(1 - deleting);
+                        }}
+                      >
                         <components.Control {...props} />
                       </div>
                     );
-                  }
+                  },
                 }}
                 hideSelectedOptions={false}
                 value={null}
-                isSearchable = {false}
+                isSearchable={false}
                 options={friend_request_options}
-                placeholder={(deleting === 0)? "Adding friends (click to switch to delete mode)" : "Deleting friends (click to switch to add mode)"}
+                placeholder={
+                  deleting === 0
+                    ? 'Adding friends (click to switch to delete mode)'
+                    : 'Deleting friends (click to switch to add mode)'
+                }
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if(selectedOption && isOption(selectedOption))
-                  {
+                  if (selectedOption && isOption(selectedOption)) {
                     resolveFriendRequest(selectedOption.value);
-                    if(deleting === 0)
-                    {
+                    if (deleting === 0) {
                       addFriend(selectedOption.value, user.netId);
                       addFriend(user.netId, selectedOption.value);
-                    }
-                    else console.log("deleting")
+                    } else console.log('deleting');
                     friendReqRefresh(true);
                     friendRefresh(true);
                   }
@@ -344,28 +357,22 @@ export function NavbarWorksheetSearch() {
 
             {/* Add Friend Dropdown */}
 
-            <Popout
-              buttonText="Add Friend"
-              type="adding friends"
-            >
+            <Popout buttonText="Add Friend" type="adding friends">
               <Searchbar
                 hideSelectedOptions={false}
                 components={{
-                  Menu:()=>{<></>},
+                  Menu: () => {
+                    <></>;
+                  },
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
-                onKeyDown = {e => {
-                  if(e.key === "Backspace")
-                  {
+                onKeyDown={(e) => {
+                  if (e.key === 'Backspace') {
                     setCurrentFriendNetID(currentFriendNetID.slice(0, -1));
-                  }
-                  else if(e.key === "Enter")
-                  {
-                    console.log("Added " + currentFriendNetID);
+                  } else if (e.key === 'Enter') {
+                    console.log('Added ' + currentFriendNetID);
                     friendRequest(currentFriendNetID);
-                  }
-                  else if(e.key.length == 1)
-                  {
+                  } else if (e.key.length == 1) {
                     setCurrentFriendNetID(currentFriendNetID + e.key);
                   }
                 }}

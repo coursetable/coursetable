@@ -145,7 +145,9 @@ type NumFriendsReturn =
   // Value is the list of FB friends taking the class
   Record<string, string[]>;
 // Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
-export const getNumFriends = (friendWorksheets: FriendInfo): NumFriendsReturn => {
+export const getNumFriends = (
+  friendWorksheets: FriendInfo,
+): NumFriendsReturn => {
   // List of each friends' worksheets
   const { worksheets } = friendWorksheets;
   // List of each friends' names/facebook id
@@ -250,7 +252,11 @@ const calculateDayTime = (course: Listing): number | null => {
 };
 
 // Helper function that returns the correct value to sort by
-const helperSort = (listing: Listing, key: SortKeys, num_friends: NumFriendsReturn) => {
+const helperSort = (
+  listing: Listing,
+  key: SortKeys,
+  num_friends: NumFriendsReturn,
+) => {
   // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key

@@ -74,10 +74,10 @@ export const useWorksheetInfo = (
         }
       }
     }
-    console.log("dataReturn: " + dataReturn)
+    console.log('dataReturn: ' + dataReturn);
     return dataReturn;
-  }, [season, courses, worksheet, worksheet_number])
+  }, [season, courses, worksheet, worksheet_number]);
 
-  console.log("Data: " + data);
+  console.log('Data: ' + data);
   return { loading, error, data };
 };
