@@ -261,10 +261,6 @@ export const getFriendsWorksheets = async (
     (friendRecord: StudentFriends) => friendRecord.friendNetId,
   );
 
-  winston.info(netId);
-
-  winston.info(friendNetIds);
-
   // Get friends' worksheets from NetIDs
   winston.info('Getting worksheets of friends');
   const friendWorksheets = await prisma.worksheetCourses.findMany({
@@ -275,19 +271,8 @@ export const getFriendsWorksheets = async (
     },
   });
 
-  winston.info(
-    'get worksheets: ' +
-      friendWorksheets.map((ws) => {
-        return ws.net_id + ' - ' + ws.oci_id + ' - ' + ws.worksheet_number;
-      }),
-  );
-
   // Get friends' infos from NetIDs
   winston.info('Getting info of friends');
-
-  const test = await prisma.studentBluebookSettings.findMany({});
-
-  winston.info(test);
 
   const friendInfos = await prisma.studentBluebookSettings.findMany({
     where: {
@@ -296,8 +281,6 @@ export const getFriendsWorksheets = async (
       },
     },
   });
-
-  winston.info(friendInfos);
 
   const friendNames = friendInfos.map(
     (friendInfo: StudentBluebookSettings) => ({
