@@ -99,7 +99,6 @@ function WorksheetToggleButton({
 
       // Determine if we are adding or removing the course
       const add_remove = inWorksheet ? 'remove' : 'add';
-      //console.log(add_remove, inWorksheet);
 
       // removes removed courses from worksheet hidden courses
       if (inWorksheet) {
