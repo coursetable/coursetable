@@ -90,7 +90,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   const cur_worksheet = useMemo(() => {
     /** @type typeof user.worksheet! */
     const when_not_defined: Worksheet = []; // TODO: change this to undefined
-
     if (person === 'me') {
       return user.worksheet ?? when_not_defined;
     }
@@ -159,6 +158,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize courses state and color map.
   useEffect(() => {
+    console.log(worksheetData);
     if (
       !worksheetLoading &&
       !worksheetError &&
@@ -180,6 +180,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
+      console.log('setting courses: ' + temp);
       setCourses(temp);
     }
   }, [

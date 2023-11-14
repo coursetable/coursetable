@@ -9,7 +9,7 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
 // import { sortbyOptions } from '../queries/Constants';
-import { isOption, Option } from '../../contexts/searchContext';
+import { isOption, Option, OptType } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
@@ -126,7 +126,6 @@ export function NavbarWorksheetSearch() {
 
   // FB Friends names
   const friendInfo = useMemo(() => {
-    console.log('refreshing friendinfo');
     return user.friendWorksheets ? user.friendWorksheets.friendInfo : {};
   }, [user.friendWorksheets]);
 
@@ -179,9 +178,33 @@ export function NavbarWorksheetSearch() {
     return friend_request_options_temp;
   }, [friendRequestInfo]);
 
+  const friendNamesInfo = useMemo(() => {
+    console.log(user.allNames);
+    return user.allNames ? user.allNames : [];
+  }, [user.allNames]);
+
+  const friend_name_options = useMemo(() => {
+    const friend_name_options_temp: OptType = friendNamesInfo.map((x) => {
+      const name_option: Option = {
+        value: x.netId,
+        label: x.first + ' ' + x.last + ' (' + x.college + ')',
+      };
+      return name_option;
+    });
+    return friend_name_options_temp;
+  }, [friendNamesInfo]);
+
+  const getValue = (opt: Option) => {
+    return opt.value;
+  };
+
   const { isTablet } = useWindowDimensions();
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+
+  const [currentFriendName, setCurrentFriendName] = useState<
+    Option | undefined
+  >(undefined);
 
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
@@ -352,23 +375,24 @@ export function NavbarWorksheetSearch() {
 
             {/* Add Friend Dropdown */}
 
-            <Popout buttonText="Add Friend" type="adding friends">
-              <Searchbar
+            <Popout
+              buttonText="Add Friend"
+              type="adding friends"
+              select_options={currentFriendName}
+              clearIcon={false}
+            >
+              <PopoutSelect
+                isClearable={false}
                 hideSelectedOptions={false}
-                components={{
-                  Menu: () => <></>,
-                }}
-                placeholder="Enter your friend's NetID (hit enter to add): "
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter') {
-                    friendRequest(currentFriendNetID);
-                    alert('Sent friend request: ' + currentFriendNetID);
+                value={currentFriendName}
+                options={friend_name_options}
+                placeholder="Start typing a friend's name..."
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                  if (isOption(selectedOption)) {
+                    friendRequest(getValue(selectedOption as Option));
+                    alert('Sending friend request to ' + selectedOption);
                   }
                 }}
-                onInputChange={(e) => {
-                  setCurrentFriendNetID(e);
-                }}
-                isDisabled={false}
               />
             </Popout>
           </FilterGroup>
