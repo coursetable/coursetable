@@ -25,17 +25,7 @@ jobs:
         run: bun install --frozen-lockfile
       - name: Build
         run: bun run build
-      - name: Publish to Cloudflare Pages
-        uses: cloudflare/pages-action@v1
-        with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN_VALUE }}
-          accountId: ${{secrets.CLOUDFLARE_ACCOUNT_ID}}
-          projectName: coursetable
-          directory: build
-          workingDirectory: frontend
-          # Optional: Change the Wrangler version, allows you to point to a specific version or a tag such as `beta`
-          wranglerVersion: '3'
-          branch: master
+      # - name: Publish to Vercel
 
   # api-build-and-push-image:
   #   runs-on: ubuntu-latest
