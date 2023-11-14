@@ -363,5 +363,5 @@ export const getNames = async (
       college: nameRecord.college,
     };
   });
-  return res.status(200).json(allNames);
+  return res.status(200).json({success: true, names: allNames});
 };
