@@ -6,7 +6,7 @@ import express from 'express';
 
 import cookieParser from 'cookie-parser';
 
-import { toggleBookmark, getUserWorksheet } from './user.handlers';
+import { toggleBookmark, getUserWorksheet, changeWorksheetName } from './user.handlers';
 
 /**
  * Set up user routes.
@@ -16,4 +16,5 @@ export default async (app: express.Express): Promise<void> => {
   app.use(cookieParser());
   app.post('/api/user/toggleBookmark', toggleBookmark);
   app.get('/api/user/worksheets', getUserWorksheet);
+  app.get('/api/user/worksheets/changeName', changeWorksheetName);
 };

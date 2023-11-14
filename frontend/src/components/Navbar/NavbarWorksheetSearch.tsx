@@ -81,21 +81,12 @@ export function NavbarWorksheetSearch() {
     changeSeason,
     changeWorksheet,
     worksheet_number,
+    worksheet_options,
     person,
     handlePersonChange,
     worksheet_view,
     handleWorksheetView,
   } = useWorksheet();
-
-  const worksheet_options = useMemo(() => {
-    const worksheet_options_temp = [
-      { value: '0', label: 'Main Worksheet' },
-      { value: '1', label: 'Worksheet 1' },
-      { value: '2', label: 'Worksheet 2' },
-      { value: '3', label: 'Worksheet 3' },
-    ];
-    return worksheet_options_temp;
-  }, []);
 
   const selected_season = useMemo(() => {
     if (cur_season) {
@@ -111,18 +102,16 @@ export function NavbarWorksheetSearch() {
     if (worksheet_number) {
       return {
         value: worksheet_number,
-        label:
-          worksheet_number === '0'
-            ? 'Main Worksheet'
-            : `Worksheet ${worksheet_number}`,
+        label: worksheet_options[parseInt(worksheet_number)].label
       };
     }
     return null;
-  }, [worksheet_number]);
+  }, [worksheet_number, worksheet_options]);
 
   // Fetch user context data
   const {
     user,
+    changeWorksheetName,
     addFriend,
     removeFriend,
     friendRequest,
@@ -188,6 +177,8 @@ export function NavbarWorksheetSearch() {
   const { isTablet } = useWindowDimensions();
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+
+  const [selectedWorksheetName, setSelectedWorksheetName] = useState('');
 
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
@@ -256,6 +247,26 @@ export function NavbarWorksheetSearch() {
                   }
                 }}
               />
+              
+              <Searchbar
+                hideSelectedOptions={false}
+                components={{
+                  Menu: () => <></>,
+                }}
+                placeholder="Change current worksheet name:"
+                onKeyDown={(e) => {
+                  if (e.key === 'Backspace') {
+                    setSelectedWorksheetName(selectedWorksheetName.slice(0, -1));
+                  } else if (e.key === 'Enter' && selectedWorksheetName.length > 0) {
+                    changeWorksheetName(selectedWorksheetName, worksheet_number);
+                  } else if (e.key.length == 1) {
+                    setSelectedWorksheetName(selectedWorksheetName + e.key);
+                  }
+                }}
+                onMenuClose={() => setSelectedWorksheetName('')}
+                isDisabled={false}
+              />
+              
             </Popout>
             {/* Friends' Courses Dropdown */}
             <Popout

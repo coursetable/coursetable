@@ -122,3 +122,51 @@ export const getUserWorksheet = async (
     ),
   });
 };
+
+export const changeWorksheetName = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<express.Response> => {
+
+  if (!req.user) {
+    return res.status(401).json({ success: false });
+  }
+
+  if (
+    !req.query ||
+    typeof req.query.number !== 'string' ||
+    typeof req.query.name !== 'string'
+  ) {
+    return res.status(401).json({ success: false });
+  }
+
+  const { netId } = req.user;
+  const { number } = req.query;
+  const { name } = req.query;
+
+  try {
+    await prisma.$transaction([
+      prisma.worksheetNames.upsert({
+        where: {
+          net_id_worksheet_number: {
+            net_id: netId,
+            worksheet_number: parseInt(number),
+          },
+        },
+        update: {
+          name: name,
+        },
+        create: {
+          net_id: netId,
+          worksheet_number: parseInt(number),
+          name: name,
+        }
+      })
+    ]);
+    
+    return res.json({ success: true });
+  } catch(err) {
+    winston.error(`Error with updating worksheet name: ${err}`);
+    return res.status(500).json({ success: false });
+  }
+};

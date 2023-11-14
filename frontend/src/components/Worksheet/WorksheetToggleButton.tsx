@@ -58,7 +58,6 @@ function WorksheetToggleButton({
   const { user, userRefresh } = useUser();
 
   // Define options for the worksheet dropdown
-  const worksheetOptions = ['0', '1', '2', '3'];
 
   const [selectedWorksheet, setSelectedWorksheet] = useState(
     initialSelectedWorksheet || '0',
@@ -67,7 +66,7 @@ function WorksheetToggleButton({
     setSelectedWorksheet(initialSelectedWorksheet || '0');
   }, [initialSelectedWorksheet]);
 
-  const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
+  const { cur_season, hidden_courses, toggleCourse, worksheet_options } = useWorksheet();
 
   const worksheet_check = useMemo(() => {
     return isInWorksheet(
@@ -203,9 +202,9 @@ function WorksheetToggleButton({
               }}
               className="worksheet-dropdown"
             >
-              {worksheetOptions.map((option) => (
-                <option key={option} value={option}>
-                  {option === '0' ? 'Main Worksheet' : `Worksheet ${option}`}
+              {worksheet_options.map((option) => (
+                <option key={option.value} value={option.label}>
+                  {option.label}
                 </option>
               ))}
             </StyledSelect>

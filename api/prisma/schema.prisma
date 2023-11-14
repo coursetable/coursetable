@@ -62,7 +62,7 @@ model WorksheetNames {
   worksheet_number Int    @db.UnsignedMediumInt
   name             String @db.Char(255)
 
-  @@unique([net_id, worksheet_number, name], map: "net_id_worksheet_number_name")
+  @@unique([net_id, worksheet_number], map: "net_id_worksheet_number")
   @@index([net_id], map: "net_id")
 }
 

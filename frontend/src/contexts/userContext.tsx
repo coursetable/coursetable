@@ -38,6 +38,7 @@ type Store = {
     worksheetNames?: {[key: string]: string};
   };
   userRefresh(suppressError?: boolean): Promise<void>;
+  changeWorksheetName(newName?: string, number?: string): Promise<void>;
   friendRefresh(suppressError?: boolean): Promise<void>;
   friendReqRefresh(suppressError?: boolean): Promise<void>;
   addFriend(netId1?: string, netId2?: string): Promise<void>;
@@ -111,6 +112,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     },
     [setWorksheet, setNetId, setHasEvals, setYear, setSchool, setWorksheetNames],
   );
+
+  const changeWorksheetName = useCallback(
+    (newName = '', number = ''): Promise<void> => {
+      return axios
+        .get(`${API_ENDPOINT}/api/user/worksheets/changeName/?name=${newName}&number=${number}`, {
+          withCredentials: true,
+        }).then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          userRefresh();
+        });
+    },
+    []
+  ); 
 
   // Refresh user FB stuff
   const friendRefresh = useCallback(
@@ -230,7 +246,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     () => ({
       // Context state.
       user,
-
+      changeWorksheetName,
       // Update methods.
       userRefresh,
       friendRefresh,
@@ -242,6 +258,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     }),
     [
       user,
+      changeWorksheetName,
       userRefresh,
       friendRefresh,
       friendReqRefresh,
