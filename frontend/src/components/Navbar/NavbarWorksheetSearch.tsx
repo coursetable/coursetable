@@ -296,11 +296,9 @@ export function NavbarWorksheetSearch() {
                     // Selected FB friend
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value);
-                  } else {
-                    if (selectedOption && isOption(selectedOption)) {
-                      removeFriend(selectedOption.value, user.netId);
-                      removeFriend(user.netId, selectedOption.value);
-                    }
+                  } else if (selectedOption && isOption(selectedOption)) {
+                    removeFriend(selectedOption.value, user.netId);
+                    removeFriend(user.netId, selectedOption.value);
                   }
                 }}
                 isDisabled={false}
