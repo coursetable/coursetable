@@ -1,8 +1,9 @@
 {
   "scripts": {
-    "dbpull": "prisma db pull",
     "generate": "prisma generate",
-    "start": "bun --hot src/server.ts",
+    "prestart": "prisma generate",
+    "start": "ts-node-dev --debug --files --exit-child src/server.ts",
+    "start:prod": "ts-node --files src/server.ts",
     "checks": "bun run depcheck && bun run lint && bun run typecheck",
     "depcheck": "bunx depcheck . --json",
     "lint": "prettier -l . && eslint src",
@@ -44,6 +45,8 @@
     "passport": "0.5.0",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "prisma": "^5.5.2",
+    "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2",
     "winston": "^3.10.0"
   },

@@ -37,8 +37,6 @@ import js from '../images/headshots/josephine-shin.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
 import px from '../images/headshots/peter-xu.png';
 import bx from '../images/headshots/ben-xu.png';
-import ns from '../images/headshots/neil-song.png';
-import kt from '../images/headshots/kenny-tung.jpg';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -55,21 +53,13 @@ const StyledH1 = styled.h1`
   transition: color ${({ theme }) => theme.trans_dur};
 `;
 
-type Person = {
-  name: string;
-  image: string;
-  role: string;
-  links?: {
-    github?: string;
-    linkedin?: string;
-    website?: string;
-  };
-};
-
-function About() {
+/**
+ * Renders the about us page
+ */
+const Friends: React.VFC = () => {
   const theme = useTheme();
 
-  const current: Person[] = [
+  const current = [
     {
       name: 'Alex Schapiro',
       image: as,
@@ -144,28 +134,9 @@ function About() {
         github: 'https://github.com/benzuzu',
       },
     },
-    {
-      name: 'Neil Song',
-      image: ns,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/neil-song/',
-        github: 'https://github.com/neilsong',
-      },
-    },
-    {
-      name: 'Kenny Tung',
-      image: kt,
-      role: 'Development',
-      links: {
-        linkedin: 'https://www.linkedin.com/in/tungk/',
-        github: 'https://github.com/kentng01/',
-        website: 'https://kenneru.netlify.app/',
-      },
-    },
   ];
 
-  const alumni: Person[] = [
+  const alumni = [
     {
       name: 'Peter Xu',
       image: px,
@@ -271,26 +242,24 @@ function About() {
     },
   ];
 
-  const logoLink = (
-    link: string | undefined,
-    image: string,
-    image_dark: string,
-    text: string,
-  ) =>
-    link && (
-      <a href={link}>
-        <img
-          src={theme.theme === 'dark' ? image_dark : image}
-          alt={text}
-          style={{
-            width: '24px',
-            paddingRight: '4px',
-          }}
-        />
-      </a>
-    );
+  const logo_link = (link: any, image: any, image_dark: any, text: string) => (
+    <>
+      {link && (
+        <a href={link}>
+          <img
+            src={theme.theme === 'dark' ? image_dark : image}
+            alt={text}
+            style={{
+              width: '24px',
+              paddingRight: '4px',
+            }}
+          />
+        </a>
+      )}
+    </>
+  );
 
-  const createCards = (person: Person, idx: number) => (
+  const create_cards = (person: any, idx: any) => (
     <div key={idx} className="col-lg-3 col-md-4 col-sm-6 col-12 p-2">
       <StyledCard style={{ height: '100%' }}>
         <Card.Img variant="top" src={person.image} alt={person.name} />
@@ -299,9 +268,9 @@ function About() {
           <Card.Text>
             <TextComponent type={1}>{person.role}</TextComponent>
             <br />
-            {logoLink(person.links?.github, github, github_dark, 'github')}
-            {logoLink(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
-            {logoLink(person.links?.website, web, web_dark, 'website')}
+            {logo_link(person.links?.github, github, github_dark, 'github')}
+            {logo_link(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
+            {logo_link(person.links?.website, web, web_dark, 'website')}
           </Card.Text>
         </Card.Body>
       </StyledCard>
@@ -349,15 +318,15 @@ function About() {
       </Row>
 
       <div className="my-3">
-        <Row className="mx-auto">{current.map(createCards)}</Row>
+        <Row className="mx-auto">{current.map(create_cards)}</Row>
       </div>
 
       <h1 className={`${styles.about_header} mt-5 mb-1`}>CourseTable Alumni</h1>
       <div className="my-3">
-        <Row className="mx-auto">{alumni.map(createCards)}</Row>
+        <Row className="mx-auto">{alumni.map(create_cards)}</Row>
       </div>
     </div>
   );
-}
+};
 
-export default About;
+export default Friends;
