@@ -578,12 +578,12 @@ function Results({
                       overlay={(props) => (
                         <Tooltip id="button-tooltip" {...props}>
                           <span>
-                            Number of Facebook friends shopping this course
+                            Number of friends shopping this course
                           </span>
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>#FB</span>
+                      <span className={Styles.one_line}>#F</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[3]}
