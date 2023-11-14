@@ -6,7 +6,8 @@
     "start:prod": "ts-node --files src/server.ts",
     "checks": "bun run depcheck && bun run lint && bun run typecheck",
     "depcheck": "bunx depcheck . --json",
-    "lint": "prettier -l . && eslint src",
+    "lint": "bunx prettier -l . && bunx eslint src",
+    "lint:fix": "bunx prettier -w . && bunx eslint src --fix",
     "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
   "nodemonConfig": {
