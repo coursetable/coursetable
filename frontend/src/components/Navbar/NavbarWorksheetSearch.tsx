@@ -294,7 +294,7 @@ export function NavbarWorksheetSearch() {
                       removeFriend(selectedOption.value, user.netId);
                       removeFriend(user.netId, selectedOption.value);
                       alert('Removed friend: ' + selectedOption.value);
-                      window.location.reload(false);
+                      window.location.reload();
                     }
                   }
                 }}
@@ -344,7 +344,7 @@ export function NavbarWorksheetSearch() {
                     } else if (deleting === 1) {
                       alert('Declined friend request: ' + selectedOption.value);
                     }
-                    window.location.reload(false);
+                    window.location.reload();
                   }
                 }}
                 isDisabled={false}
