@@ -121,18 +121,12 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-  const {
-    user,
-    addFriend,
-    removeFriend,
-    friendRequest,
-    resolveFriendRequest,
-    friendReqRefresh,
-    friendRefresh,
-  } = useUser();
+  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest } =
+    useUser();
 
   // FB Friends names
   const friendInfo = useMemo(() => {
+    console.log('refreshing friendinfo');
     return user.friendWorksheets ? user.friendWorksheets.friendInfo : {};
   }, [user.friendWorksheets]);
 
@@ -300,6 +294,8 @@ export function NavbarWorksheetSearch() {
                     if (selectedOption && isOption(selectedOption)) {
                       removeFriend(selectedOption.value, user.netId);
                       removeFriend(user.netId, selectedOption.value);
+                      alert('Removed friend: ' + selectedOption.value);
+                      window.location.reload(false);
                     }
                   }
                 }}
@@ -345,9 +341,9 @@ export function NavbarWorksheetSearch() {
                     if (deleting === 0) {
                       addFriend(selectedOption.value, user.netId);
                       addFriend(user.netId, selectedOption.value);
+                      alert('Added friend: ' + selectedOption.value);
                     }
-                    friendReqRefresh(true);
-                    friendRefresh(true);
+                    window.location.reload(false);
                   }
                 }}
                 isDisabled={false}
@@ -364,13 +360,13 @@ export function NavbarWorksheetSearch() {
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
                 onKeyDown={(e) => {
-                  if (e.key === 'Backspace') {
-                    setCurrentFriendNetID(currentFriendNetID.slice(0, -1));
-                  } else if (e.key === 'Enter') {
+                  if (e.key === 'Enter') {
                     friendRequest(currentFriendNetID);
-                  } else if (e.key.length == 1) {
-                    setCurrentFriendNetID(currentFriendNetID + e.key);
+                    alert('Sent friend request: ' + currentFriendNetID);
                   }
+                }}
+                onInputChange={(e) => {
+                  setCurrentFriendNetID(e);
                 }}
                 isDisabled={false}
               />
