@@ -355,8 +355,8 @@ export function NavbarWorksheetSearch() {
                 options={friend_request_options}
                 placeholder={
                   deleting === 0
-                    ? 'Adding friends (click to switch to delete mode)'
-                    : 'Deleting friends (click to switch to add mode)'
+                    ? 'Accepting requests (click to switch to decline mode)'
+                    : 'Declining requests (click to switch to accept mode)'
                 }
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (selectedOption && isOption(selectedOption)) {
@@ -365,6 +365,8 @@ export function NavbarWorksheetSearch() {
                       addFriend(selectedOption.value, user.netId);
                       addFriend(user.netId, selectedOption.value);
                       alert('Added friend: ' + selectedOption.value);
+                    } else if (deleting === 1) {
+                      alert('Declined friend request: ' + selectedOption.value);
                     }
                     window.location.reload(false);
                   }
@@ -375,24 +377,23 @@ export function NavbarWorksheetSearch() {
 
             {/* Add Friend Dropdown */}
 
-            <Popout
-              buttonText="Add Friend"
-              type="adding friends"
-              select_options={currentFriendName}
-              clearIcon={false}
-            >
-              <PopoutSelect
-                isClearable={false}
+            <Popout buttonText="Add Friend" type="adding friends">
+              <Searchbar
                 hideSelectedOptions={false}
-                value={currentFriendName}
-                options={friend_name_options}
-                placeholder="Start typing a friend's name..."
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if (isOption(selectedOption)) {
-                    friendRequest(getValue(selectedOption as Option));
-                    alert('Sending friend request to ' + selectedOption);
+                components={{
+                  Menu: () => <></>,
+                }}
+                placeholder="Enter your friend's NetID (hit enter to add): "
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    friendRequest(currentFriendNetID);
+                    alert('Sent friend request: ' + currentFriendNetID);
                   }
                 }}
+                onInputChange={(e) => {
+                  setCurrentFriendNetID(e);
+                }}
+                isDisabled={false}
               />
             </Popout>
           </FilterGroup>
