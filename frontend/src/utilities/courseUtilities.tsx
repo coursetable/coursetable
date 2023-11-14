@@ -20,7 +20,6 @@ export const isInWorksheet = (
     crn = crn.toString();
   }
   for (let i = 0; i < worksheet.length; i++) {
-    //console.log(worksheet_number, worksheet[i][2], 'yaaaa');
     if (
       worksheet[i][0] === season_code &&
       worksheet[i][1] === crn &&

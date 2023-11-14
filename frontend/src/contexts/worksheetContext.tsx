@@ -95,7 +95,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     }
 
     const friend_worksheets = user.friendWorksheets?.worksheets;
-    console.log('returning worksheet: ' + friend_worksheets);
     return friend_worksheets
       ? friend_worksheets[person] ?? when_not_defined
       : when_not_defined;
@@ -141,8 +140,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     'worksheet_number',
     '0',
   );
-  console.log('cur_worksheet at worksheetcontext: ' + cur_worksheet);
-  console.log('user.worksheet at worksheetcontext: ' + user.worksheet);
+
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
   const {
     loading: worksheetLoading,
