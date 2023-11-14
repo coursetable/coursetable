@@ -90,6 +90,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   const cur_worksheet = useMemo(() => {
     /** @type typeof user.worksheet! */
     const when_not_defined: Worksheet = []; // TODO: change this to undefined
+
     if (person === 'me') {
       return user.worksheet ?? when_not_defined;
     }
