@@ -154,7 +154,7 @@ export function NavbarWorksheetSearch() {
   }, [friendInfo]);
 
   const selected_person = useMemo(() => {
-    if (person === 'me') {
+    if (person === 'me' || friendInfo[person] == undefined) {
       return null;
     }
     return {
@@ -186,31 +186,31 @@ export function NavbarWorksheetSearch() {
   }, [friendRequestInfo]);
 
   const friendNamesInfo = useMemo(() => {
-    return user.allNames
-      ? user.allNames
-      : [];
+    return user.allNames ? user.allNames : [];
   }, [user.allNames]);
 
   const friend_name_options = useMemo(() => {
     const friend_name_options_temp: OptType = friendNamesInfo.map((x) => {
       const name_option: Option = {
         value: x.netId,
-        label: x.first + " " + x.last + " (" + x.college + ")",
-      }
-      return name_option
-    })
-    return friend_name_options_temp
-  }, [friendNamesInfo])
+        label: x.first + ' ' + x.last + ' (' + x.college + ')',
+      };
+      return name_option;
+    });
+    return friend_name_options_temp;
+  }, [friendNamesInfo]);
 
   const getValue = (opt: Option) => {
     return opt.value;
-  }
+  };
 
   const { isTablet } = useWindowDimensions();
 
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
-  const [currentFriendName, setCurrentFriendName] = useState<Option | undefined>(undefined)
+  const [currentFriendName, setCurrentFriendName] = useState<
+    Option | undefined
+  >(undefined);
 
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
@@ -323,6 +323,8 @@ export function NavbarWorksheetSearch() {
                     if (selectedOption && isOption(selectedOption)) {
                       removeFriend(selectedOption.value, user.netId);
                       removeFriend(user.netId, selectedOption.value);
+                      alert('Removed friend: ' + selectedOption.value);
+                      window.location.reload(false);
                     }
                   }
                 }}
@@ -359,8 +361,8 @@ export function NavbarWorksheetSearch() {
                 options={friend_request_options}
                 placeholder={
                   deleting === 0
-                    ? 'Adding friends (click to switch to delete mode)'
-                    : 'Deleting friends (click to switch to add mode)'
+                    ? 'Accepting requests (click to switch to decline mode)'
+                    : 'Declining requests (click to switch to accept mode)'
                 }
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (selectedOption && isOption(selectedOption)) {
@@ -368,9 +370,11 @@ export function NavbarWorksheetSearch() {
                     if (deleting === 0) {
                       addFriend(selectedOption.value, user.netId);
                       addFriend(user.netId, selectedOption.value);
+                      alert('Added friend: ' + selectedOption.value);
+                    } else if (deleting === 1) {
+                      alert('Declined friend request: ' + selectedOption.value);
                     }
-                    friendReqRefresh(true);
-                    friendRefresh(true);
+                    window.location.reload(false);
                   }
                 }}
                 isDisabled={false}
@@ -378,29 +382,6 @@ export function NavbarWorksheetSearch() {
             </Popout>
 
             {/* Add Friend Dropdown */}
-
-            {/* <Popout
-              buttonText="Add Friend"
-              type="adding friends"
-            >
-              <Searchbar
-                hideSelectedOptions={false}
-                components={{
-                  Menu: () => <></>,
-                }}
-                placeholder="Enter your friend's NetID (hit enter to add): "
-                onKeyDown={(e) => {
-                  if (e.key === 'Backspace') {
-                    setCurrentFriendNetID(currentFriendNetID.slice(0, -1));
-                  } else if (e.key === 'Enter') {
-                    friendRequest(currentFriendNetID);
-                  } else if (e.key.length == 1) {
-                    setCurrentFriendNetID(currentFriendNetID + e.key);
-                  }
-                }}
-                isDisabled={false}
-              />
-            </Popout> */}
 
             <Popout
               buttonText="Add Friend"
@@ -416,14 +397,16 @@ export function NavbarWorksheetSearch() {
                 placeholder="Start typing a friend's name..."
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
-                    console.log("requesting")
-                    friendRequest(getValue(selectedOption as Option))
-                    //console.log(worksheet_number);
+                    friendRequest(getValue(selectedOption as Option));
+                    alert(
+                      'Sent friend request to: ' +
+                        getValue(selectedOption as Option),
+                    );
+                    window.location.reload(false);
                   }
                 }}
               />
             </Popout>
-
           </FilterGroup>
         </StyledRow>
       </Form>
