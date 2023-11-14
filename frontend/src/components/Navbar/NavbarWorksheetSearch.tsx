@@ -383,7 +383,10 @@ export function NavbarWorksheetSearch() {
 
             {/* Add Friend Dropdown */}
 
-            <Popout buttonText="Add Friend" type="adding friends">
+            {/* <Popout
+              buttonText="Add Friend"
+              type="adding friends"
+            >
               <Searchbar
                 hideSelectedOptions={false}
                 components={{
@@ -401,23 +404,29 @@ export function NavbarWorksheetSearch() {
                 }}
                 isDisabled={false}
               />
-            </Popout>
+            </Popout> */}
 
-            {/* Add friend with search by name test - WIP */}
-            {/* <div className={`col-md-2 p-0`}>
-              <CustomSelect
-                isMulti
+            <Popout
+              buttonText="Add Friend"
+              type="adding friends"
+              select_options={currentFriendName}
+              clearIcon={false}
+            >
+              <PopoutSelect
+                isClearable={false}
+                hideSelectedOptions={false}
                 value={currentFriendName}
                 options={friend_name_options}
-                placeholder="Add Friends"
-                isSearchable
-                // prevent overlap with tooltips
-                menuPortalTarget={document.body}
-                onChange={((selectedOption: ValueType<Option, boolean>) => {
-                  friendRequest(getValue(selectedOption as Option))
-                })}
+                placeholder="Start typing a friend's name..."
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                  if (isOption(selectedOption)) {
+                    console.log("requesting")
+                    friendRequest(getValue(selectedOption as Option))
+                    //console.log(worksheet_number);
+                  }
+                }}
               />
-            </div> */}
+            </Popout>
 
           </FilterGroup>
         </StyledRow>
