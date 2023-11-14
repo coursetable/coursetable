@@ -577,9 +577,7 @@ function Results({
                       placement="bottom"
                       overlay={(props) => (
                         <Tooltip id="button-tooltip" {...props}>
-                          <span>
-                            Number of friends shopping this course
-                          </span>
+                          <span>Number of friends shopping this course</span>
                         </Tooltip>
                       )}
                     >
