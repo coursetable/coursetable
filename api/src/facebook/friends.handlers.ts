@@ -118,7 +118,7 @@ export const friendRequest = async (
 
   const friendNetId: string = req.query.id;
 
-  if(netId == friendNetId) {
+  if (netId == friendNetId) {
     return res.status(401).json({ success: false });
   }
 
@@ -199,7 +199,7 @@ export const getRequestsForFriend = async (
           friendNetId: netId,
         },
       });
-      
+
     const reqFriends = friendReqs.map(
       (friendReq: StudentFriendRequests) => friendReq.netId,
     );

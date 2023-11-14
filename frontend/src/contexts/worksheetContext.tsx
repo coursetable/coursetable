@@ -158,7 +158,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize courses state and color map.
   useEffect(() => {
-    console.log(worksheetData);
     if (
       !worksheetLoading &&
       !worksheetError &&
@@ -180,7 +179,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
-      console.log('setting courses: ' + temp);
       setCourses(temp);
     }
   }, [
