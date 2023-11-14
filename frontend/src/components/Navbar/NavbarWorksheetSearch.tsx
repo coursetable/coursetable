@@ -121,7 +121,6 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-<<<<<<< HEAD
   const {
     user,
     addFriend,
@@ -131,9 +130,6 @@ export function NavbarWorksheetSearch() {
     friendReqRefresh,
     friendRefresh,
   } = useUser();
-=======
-  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest, friendReqRefresh, friendRefresh } = useUser();
->>>>>>> df2f921e (create add friends selector - WIP 2)
 
   // FB Friends names
   const friendInfo = useMemo(() => {
