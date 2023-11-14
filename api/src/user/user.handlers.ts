@@ -7,7 +7,7 @@ import express from 'express';
 import winston from '../logging/winston';
 
 import { prisma } from '../config';
-import { WorksheetCourses } from '@prisma/client';
+import { WorksheetCourses, WorksheetNames } from '@prisma/client';
 
 /**
  * Toggle a bookmarked course in a worksheet.
@@ -95,6 +95,13 @@ export const getUserWorksheet = async (
     },
   });
 
+  winston.info(`Getting worksheet names for user ${netId}`);
+  const worksheet_names = await prisma.worksheetNames.findMany({
+    where: {
+      net_id: netId,
+    },
+  });
+
   return res.json({
     success: true,
     netId,
@@ -106,5 +113,12 @@ export const getUserWorksheet = async (
       String(course.oci_id),
       String(course.worksheet_number),
     ]),
+    worksheetNames: worksheet_names.reduce(
+      (map: { [key: string]: string }, worksheet: WorksheetNames) => {
+        map[worksheet.worksheet_number.toString()] = worksheet.name;
+        return map;
+      },
+      {},
+    ),
   });
 };

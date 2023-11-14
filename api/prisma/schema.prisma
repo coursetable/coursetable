@@ -57,6 +57,15 @@ model WorksheetCourses {
   @@index([net_id], map: "net_id")
 }
 
+model WorksheetNames {
+  net_id           String @db.Char(8)
+  worksheet_number Int    @db.UnsignedMediumInt
+  name             String @db.Char(255)
+
+  @@unique([net_id, worksheet_number, name], map: "net_id_worksheet_number_name")
+  @@index([net_id], map: "net_id")
+}
+
 model SavedCourses {
   id          Int    @id @default(autoincrement()) @db.UnsignedMediumInt
   net_id      String @db.Char(8)

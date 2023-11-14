@@ -94,6 +94,16 @@ CREATE TABLE `WorksheetCourses` (
   `worksheet_number` mediumint(8) UNSIGNED DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
+--
+-- Table structure for table `WorksheetNames`
+--
+
+CREATE TABLE `WorksheetNames` (
+  `net_id` char(8) NOT NULL,
+  `worksheet_number` mediumint(8) UNSIGNED NOT NULL,
+  `name` varchar(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
+
 -- Table structure for table `SavedCourses`
 
 CREATE TABLE `SavedCourses` (

@@ -35,6 +35,7 @@ type Store = {
     school?: string;
     friendRequests?: FriendRequest[];
     friendWorksheets?: FriendInfo;
+    worksheetNames?: {[key: string]: string};
   };
   userRefresh(suppressError?: boolean): Promise<void>;
   friendRefresh(suppressError?: boolean): Promise<void>;
@@ -56,6 +57,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [netId, setNetId] = useState<string | undefined>(undefined);
   // User's worksheet
   const [worksheet, setWorksheet] = useState<Worksheet | undefined>(undefined);
+  // User's worksheet names
+  const [worksheetNames, setWorksheetNames] = useState<{[key: string]: string} | undefined>(
+    undefined,
+  );
   // User's evals enabled status
   const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
   // User's year
@@ -87,6 +92,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           setYear(res.data.year);
           setSchool(res.data.school);
           setWorksheet(res.data.data);
+          setWorksheetNames(res.data.worksheetNames);
           Sentry.setUser({ username: res.data.netId });
         })
         .catch((err) => {
@@ -103,7 +109,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           }
         });
     },
-    [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
+    [setWorksheet, setNetId, setHasEvals, setYear, setSchool, setWorksheetNames],
   );
 
   // Refresh user FB stuff
@@ -208,6 +214,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       school,
       friendRequests,
       friendWorksheets,
+      worksheetNames,
     };
   }, [
     netId,
@@ -216,7 +223,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     year,
     school,
     friendRequests,
-    friendWorksheets,
+    friendWorksheets, worksheetNames,
   ]);
 
   const store = useMemo(

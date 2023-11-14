@@ -36,6 +36,7 @@ type Store = {
   worksheetError: string | null;
   worksheetData: Listing[];
   course_modal: (string | boolean | Listing)[];
+  worksheet_options: {value: string, label: string}[];
   changeSeason: (season_code: Season | null) => void;
   changeWorksheet: (worksheet_number: string) => void;
   handlePersonChange: (new_person: string) => void;
@@ -99,6 +100,25 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       ? friend_worksheets[person] ?? when_not_defined
       : when_not_defined;
   }, [user.worksheet, user.friendWorksheets, person]);
+
+  const worksheet_options = useMemo(() => {
+    const tempWorksheetOptions = [
+      { value: '0', label: 'Main Worksheet' },
+      { value: '1', label: 'Worksheet 1' },
+      { value: '2', label: 'Worksheet 2' },
+      { value: '3', label: 'Worksheet 3' },
+    ];
+    if (user.worksheetNames) {
+      for (const [number, name] of Object.entries(user.worksheetNames)) {
+        if (number in ['0','1','2','3']) {
+          tempWorksheetOptions[parseInt(number, 10)].label = name; 
+        } else {
+          tempWorksheetOptions.push({ value: number, label: name });
+        }
+      }
+    }
+    return tempWorksheetOptions;
+  }, [user.worksheetNames]);
 
   const { seasons: seasonsData } = useFerry();
   const season_codes = useMemo(() => {
@@ -300,6 +320,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       worksheetError,
       worksheetData,
       course_modal,
+      worksheet_options,
 
       // Update methods.
       changeSeason,
@@ -326,6 +347,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       worksheetError,
       worksheetData,
       course_modal,
+      worksheet_options,
       changeSeason,
       handlePersonChange,
       setHoverCourse,
