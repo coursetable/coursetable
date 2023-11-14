@@ -83,7 +83,7 @@ const Tag = styled(Badge)`
  * @prop isFirst - boolean | is this the first course of the results?
  * @prop COL_SPACING - object | with widths of each column
  * @prop isScrolling - boolean | is the user scrolling? if so, hide bookmark and conflict icon
- * @prop fb_friends - array | of fb friends also taking this course
+ * @prop friends - array | of friends also taking this course
  */
 
 function ResultsItem({
@@ -93,7 +93,7 @@ function ResultsItem({
   isFirst,
   COL_SPACING,
   isScrolling = false,
-  fb_friends,
+  friends,
 }) {
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
@@ -366,9 +366,9 @@ function ResultsItem({
           <OverlayTrigger
             placement="top"
             overlay={(props) =>
-              fb_friends.length > 0 ? (
+              friends.length > 0 ? (
                 <Tooltip id="button-tooltip" {...props}>
-                  {fb_friends.join(' • ')}
+                  {friends.join(' • ')}
                 </Tooltip>
               ) : (
                 <div />
@@ -376,7 +376,7 @@ function ResultsItem({
             }
           >
             <span className="my-auto">
-              {fb_friends.length > 0 ? fb_friends.length : ''}
+              {friends.length > 0 ? friends.length : ''}
             </span>
           </OverlayTrigger>
         </div>

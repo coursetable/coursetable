@@ -27,7 +27,7 @@ type Store = {
   cur_worksheet: Worksheet;
   cur_season: Season;
   worksheet_number: string;
-  fb_person: string;
+  person: string;
   courses: Listing[];
   hidden_courses: HiddenCourses;
   hover_course: number | null;
@@ -38,7 +38,7 @@ type Store = {
   course_modal: (string | boolean | Listing)[];
   changeSeason: (season_code: Season | null) => void;
   changeWorksheet: (worksheet_number: string) => void;
-  handleFBPersonChange: (new_person: string) => void;
+  handlePersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
   toggleCourse: (crn: number) => void;
@@ -66,7 +66,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  const [fb_person, setFbPerson] = useSessionStorageState('fb_person', 'me');
+  const [person, setFbPerson] = useSessionStorageState('person', 'me');
 
   // Determines when to show course modal and for what listing
   const [course_modal, setCourseModal] = useState<
@@ -90,14 +90,16 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   const cur_worksheet = useMemo(() => {
     /** @type typeof user.worksheet! */
     const when_not_defined: Worksheet = []; // TODO: change this to undefined
-    if (fb_person === 'me') {
+    if (person === 'me') {
       return user.worksheet ?? when_not_defined;
     }
-    const friend_worksheets = user.fbWorksheets?.worksheets;
+
+    const friend_worksheets = user.friendWorksheets?.worksheets;
+    console.log('returning worksheet: ' + friend_worksheets);
     return friend_worksheets
-      ? friend_worksheets[fb_person] ?? when_not_defined
+      ? friend_worksheets[person] ?? when_not_defined
       : when_not_defined;
-  }, [user.worksheet, user.fbWorksheets, fb_person]);
+  }, [user.worksheet, user.friendWorksheets, person]);
 
   const { seasons: seasonsData } = useFerry();
   const season_codes = useMemo(() => {
@@ -139,14 +141,15 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     'worksheet_number',
     '0',
   );
-
+  console.log('cur_worksheet at worksheetcontext: ' + cur_worksheet);
+  console.log('user.worksheet at worksheetcontext: ' + user.worksheet);
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
   const {
     loading: worksheetLoading,
     error: worksheetError,
     data: worksheetData,
   } = useWorksheetInfo(cur_worksheet, cur_season, worksheet_number);
-
+  console.log('Worksheet Data: ' + worksheetData);
   // Cache calendar colors. Reset whenever the season changes.
   const [colorMap, setColorMap] = useState<Record<number, number[]>>({});
   useEffect(() => {
@@ -158,6 +161,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Initialize courses state and color map.
   useEffect(() => {
+    console.log(worksheetData);
     if (
       !worksheetLoading &&
       !worksheetError &&
@@ -179,6 +183,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
+      console.log('setting courses: ' + temp);
       setCourses(temp);
     }
   }, [
@@ -248,7 +253,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     [setWorksheetView],
   );
 
-  const handleFBPersonChange = useCallback(
+  const handlePersonChange = useCallback(
     (new_person: string) => {
       setFbPerson(new_person);
     },
@@ -291,7 +296,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       cur_worksheet,
       cur_season,
       worksheet_number,
-      fb_person,
+      person,
       courses,
       hidden_courses,
       hover_course,
@@ -303,7 +308,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
       // Update methods.
       changeSeason,
-      handleFBPersonChange,
+      handlePersonChange,
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
@@ -317,7 +322,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       cur_worksheet,
       cur_season,
       worksheet_number,
-      fb_person,
+      person,
       courses,
       hidden_courses,
       hover_course,
@@ -327,7 +332,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       worksheetData,
       course_modal,
       changeSeason,
-      handleFBPersonChange,
+      handlePersonChange,
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,

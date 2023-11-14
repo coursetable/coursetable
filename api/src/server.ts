@@ -22,7 +22,8 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 import catalog from './catalog/catalog.routes';
 import { authWithEvals, passportConfig } from './auth/auth.handlers';
 import cas_auth from './auth/auth.routes';
-import facebook from './facebook/facebook.routes';
+// import facebook from './facebook/facebook.routes';
+import friends from './facebook/friends.routes';
 import canny from './canny/canny.routes';
 import user from './user/user.routes';
 import challenge from './challenge/challenge.routes';
@@ -135,7 +136,8 @@ https
   await challenge(app);
   await catalog(app);
   await cas_auth(app);
-  await facebook(app);
+  // await facebook(app);
+  await friends(app);
   await canny(app);
   await user(app);
 

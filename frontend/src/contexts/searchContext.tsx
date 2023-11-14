@@ -30,7 +30,7 @@ import {
 import {
   getDayTimes,
   getEnrolled,
-  getNumFB,
+  getNumFriends,
   getOverallRatings,
   getWorkloadRatings,
   sortCourses,
@@ -94,7 +94,7 @@ type Store = {
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
-  num_fb: Record<string, string[]>;
+  num_friends: Record<string, string[]>;
   reset_key: number;
   duration: number;
   speed: string;
@@ -332,11 +332,11 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   // Is the user logged in?
   const isLoggedIn = user.worksheet != null;
 
-  // Object that holds a list of each fb friend taking a specific course
-  const num_fb = useMemo(() => {
-    if (!user.fbLogin || !user.fbWorksheets) return {};
-    return getNumFB(user.fbWorksheets);
-  }, [user.fbLogin, user.fbWorksheets]);
+  // Object that holds a list of each friend taking a specific course
+  const num_friends = useMemo(() => {
+    if (!user.friendWorksheets) return {};
+    return getNumFriends(user.friendWorksheets);
+  }, [user.friendWorksheets]);
 
   // populate seasons from database
   let seasonsOptions: OptType;
@@ -742,7 +742,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Apply sorting order.
-    return sortCourses(filtered, ordering, num_fb);
+    return sortCourses(filtered, ordering, num_friends);
   }, [
     searchDescription,
     required_seasons,
@@ -751,7 +751,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     courseData,
     searchConfig,
     ordering,
-    num_fb,
+    num_friends,
   ]);
 
   // For resetting all filters and sorts
@@ -943,7 +943,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       searchData,
       multiSeasons,
       isLoggedIn,
-      num_fb,
+      num_friends,
       reset_key,
       duration,
       speed,
@@ -1014,7 +1014,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       searchData,
       multiSeasons,
       isLoggedIn,
-      num_fb,
+      num_friends,
       reset_key,
       duration,
       speed,

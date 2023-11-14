@@ -7,8 +7,7 @@ import {
   FcFeedback,
   FcPuzzle,
 } from 'react-icons/fc';
-import { FaFacebookSquare, FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import FBLoginButton from './FBLoginButton';
+import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
 import { generateICS } from '../GenerateICS';
@@ -56,8 +55,9 @@ function MeDropdown({
 
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
-
+  console.log('medropdown');
   let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
+  console.log('me dropdown file data: ' + data);
   if (!data) data = [];
 
   // Called when worksheet updates or export_ics changes
@@ -176,17 +176,6 @@ function MeDropdown({
                 >
                   <StyledHoverText>Export Worksheet</StyledHoverText>
                 </TextComponent>
-              </Row>
-            )}
-            {/* Connect FB button */}
-            {isLoggedIn && (
-              <Row className="pb-3 m-auto">
-                <FaFacebookSquare
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#007bff"
-                />
-                <FBLoginButton loggedInMode="disconnect" />
               </Row>
             )}
             {/* Sign In/Out button */}
