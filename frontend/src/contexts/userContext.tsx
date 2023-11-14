@@ -118,7 +118,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             throw new Error(friends_worksheets.data.message);
           }
           // Successfully fetched friends' worksheets
-          console.log('friend worksheet data: ' + friends_worksheets.data);
           setFbWorksheets(friends_worksheets.data);
         })
         .catch((err) => {
@@ -145,7 +144,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             throw new Error(friendReqs.data.message);
           }
           // Successfully fetched friends' worksheets
-          console.log('friendreqs data: ', friendReqs.data.friends);
           setFriendRequests(friendReqs.data.friends);
         })
         .catch((err) => {

@@ -17,7 +17,6 @@ export const useWorksheetInfo = (
       // seasons, even if a specific season is requested.
       return [];
     }
-    //console.log('ahh', worksheet);
     const seasons = new Set<Season>();
     worksheet.forEach((item) => {
       seasons.add(item[0]);
@@ -35,7 +34,6 @@ export const useWorksheetInfo = (
       // seasons, even if a specific season is requested.
       return [];
     }
-    //console.log('ahh', worksheet, worksheet_number);
     const worksheet_numbers = new Set<string>();
     worksheet.forEach((item) => {
       worksheet_numbers.add(item[2]);
@@ -74,10 +72,8 @@ export const useWorksheetInfo = (
         }
       }
     }
-    console.log('dataReturn: ' + dataReturn);
     return dataReturn;
   }, [season, courses, worksheet, worksheet_number]);
 
-  console.log('Data: ' + data);
   return { loading, error, data };
 };

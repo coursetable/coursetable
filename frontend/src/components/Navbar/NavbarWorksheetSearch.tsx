@@ -253,7 +253,6 @@ export function NavbarWorksheetSearch() {
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
                     changeWorksheet(selectedOption.value);
-                    //console.log(worksheet_number);
                   }
                 }}
               />
@@ -346,7 +345,7 @@ export function NavbarWorksheetSearch() {
                     if (deleting === 0) {
                       addFriend(selectedOption.value, user.netId);
                       addFriend(user.netId, selectedOption.value);
-                    } else console.log('deleting');
+                    }
                     friendReqRefresh(true);
                     friendRefresh(true);
                   }
@@ -368,7 +367,6 @@ export function NavbarWorksheetSearch() {
                   if (e.key === 'Backspace') {
                     setCurrentFriendNetID(currentFriendNetID.slice(0, -1));
                   } else if (e.key === 'Enter') {
-                    console.log('Added ' + currentFriendNetID);
                     friendRequest(currentFriendNetID);
                   } else if (e.key.length == 1) {
                     setCurrentFriendNetID(currentFriendNetID + e.key);
