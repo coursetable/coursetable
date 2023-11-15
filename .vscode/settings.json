@@ -34,7 +34,7 @@
     "**/node_modules": true,
     "**/.eslintcache": true,
     "**/bower_components": true,
-    "**/docker/mysql/database.sql": true
+    "**/api/mysql/database.sql": true
   },
   "cSpell.words": [
     "Unflatten",
