@@ -28,7 +28,7 @@ function Privacy() {
           <strong>PRIVACY NOTICE</strong>
         </p>
         <p>
-          <strong>Last updated January 24, 2023</strong>
+          <strong>Last updated November 15, 2023</strong>
         </p>
         <p>
           This privacy notice for CourseTable ("<strong>Company</strong>," "
