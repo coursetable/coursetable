@@ -13,9 +13,6 @@ jobs:
       name: Green Production
       url: https://green.coursetable.com
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
 
     strategy:
       matrix:
@@ -23,12 +20,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-      - name: Use Bun ${{ matrix.bun-version }}
-        uses: oven-sh/setup-bun@v1
-        with:
-          bun-version: ${{ matrix.bun-version }}
-      - name: Install dependencies
-        run: bun install --frozen-lockfile
       - name: Install Vercel CLI
         run: bun install --global vercel@latest
       - name: Pull Vercel Environment Information
