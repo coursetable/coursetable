@@ -1,4 +1,4 @@
-name: Preview CD
+name: Preview Comment
 
 on:
   pull_request:
