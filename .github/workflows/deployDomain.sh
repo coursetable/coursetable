@@ -1,4 +1,4 @@
-while getopts s:a: flag
+while getopts t:a: flag
 do
     case "${flag}" in
         t) token=${OPTARG};;
