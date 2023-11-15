@@ -15,7 +15,7 @@ code=$?
 if [ $code -eq 0 ]; then
     # Now you can use the deployment url from stdout for the next step of your workflow
     deploymentUrl=`cat deployment-url.txt`
-    vercel alias $deploymentUrl $alias --token=$token
+    vercel alias set $deploymentUrl $alias --token=$token --scope=coursetable
 else
     # Handle the error
     errorMessage=`cat error.txt`
