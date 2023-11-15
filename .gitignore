@@ -25,3 +25,5 @@ frontend/log.txt
 .vercel
 
 **/yarn.lock
+/deployment-url.txt
+/error.txt
