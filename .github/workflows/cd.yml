@@ -5,7 +5,7 @@ env:
 
 on:
   push:
-    branches: [azure-green-prod-ci, master]
+    branches: [master]
 
 jobs:
   frontend-build-and-deploy:
@@ -23,9 +23,9 @@ jobs:
       - name: Install Vercel CLI
         run: bun install --global vercel@latest
       - name: Pull Vercel Environment Information
-        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
-        run: vercel build  --token ${{ secrets.VERCEL_TOKEN }}
+        run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
       - name: Deploy to Vercel and Alias Deployment
         run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a green.coursetable.com
 
