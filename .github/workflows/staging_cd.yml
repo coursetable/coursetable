@@ -1,0 +1,30 @@
+name: Staging CD
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  push:
+    branches: [master, stage-frontend-cd]
+
+jobs:
+  frontend-build-and-deploy:
+    environment: 
+      name: Staging
+      url: https://staging.coursetable.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Install Vercel CLI
+        run: bun install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy to Vercel and Alias Deployment
+        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a staging.coursetable.com
