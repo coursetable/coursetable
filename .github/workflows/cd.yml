@@ -1,4 +1,7 @@
 name: CD
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 on:
   push:
@@ -6,6 +9,9 @@ on:
 
 jobs:
   frontend-build-and-deploy:
+    environment: 
+      name: Green Production
+      url: https://green.coursetable.com
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -23,9 +29,14 @@ jobs:
           bun-version: ${{ matrix.bun-version }}
       - name: Install dependencies
         run: bun install --frozen-lockfile
-      - name: Build
-        run: bun run build
-      # - name: Publish to Vercel
+      - name: Install Vercel CLI
+        run: bun install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy Project Artifacts to Vercel and Alias Deployment
+        run: ./github/workflows/deployDomain.sh -t=${{ secrets.VERCEL_TOKEN }} -a=green.coursetable.com --yes
 
   # api-build-and-push-image:
   #   runs-on: ubuntu-latest
@@ -51,7 +62,7 @@ jobs:
   #         username: ${{ secrets.REGISTRY_USERNAME }}
   #         password: ${{ secrets.REGISTRY_PASSWORD }}
   #     - run: |
-  #         docker build ./api/dts-api -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api:latest
+  #         docker build ./api/dts-api -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api:production
   #         docker push -a ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api
 
   #     - name: 'Build and push Sim API image'
@@ -61,5 +72,5 @@ jobs:
   #         username: ${{ secrets.REGISTRY_USERNAME }}
   #         password: ${{ secrets.REGISTRY_PASSWORD }}
   #     - run: |
-  #         docker build ./api/sim-api -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api:latest
+  #         docker build ./api/sim-api -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api:production
   #         docker push -a ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api
