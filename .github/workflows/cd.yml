@@ -5,13 +5,13 @@ env:
 
 on:
   push:
-    branches: [master, azure-green-prod-ci]
+    branches: [master]
 
 jobs:
   frontend-build-and-deploy:
     environment: 
-      name: Green Production
-      url: https://green.coursetable.com
+      name: Production
+      url: https://coursetable.com
     runs-on: ubuntu-latest
 
     steps:
@@ -27,7 +27,7 @@ jobs:
       - name: Build Project Artifacts
         run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
       - name: Deploy to Vercel and Alias Deployment
-        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a green.coursetable.com
+        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a coursetable.com
 
   # api-build-and-push-image:
   #   runs-on: ubuntu-latest
