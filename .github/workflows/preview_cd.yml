@@ -19,7 +19,7 @@ jobs:
       - name: Shorten SHA
         shell: bash
         run: |
-           echo "sha_short=${github.event.pull_request.head.sha::7}" >> "$GITHUB_ENV"
+           echo "SHORT_SHA=`echo ${{ github.event.pull_request.head.sha }} | cut -c1-8`" >> $GITHUB_ENV
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
         with:
