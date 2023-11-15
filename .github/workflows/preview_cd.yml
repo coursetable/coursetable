@@ -30,5 +30,7 @@ jobs:
         run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
       - name: Build Project Artifacts
         run: vercel build --token ${{ secrets.VERCEL_TOKEN }}
+      - name: Check Git Status
+        run: git status
       - name: Deploy to Vercel and Alias Deployment
         run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ env.sha_short }}.${{ github.head_ref }}.preview.coursetable.com -b ${{ github.head_ref }}.preview.coursetable.com -d
