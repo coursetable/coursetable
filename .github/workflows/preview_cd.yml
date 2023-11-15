@@ -16,6 +16,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+      - name: Set default branch.
+        run: git remote set-head origin --auto
+        shell: bash
       - name: Shorten SHA
         shell: bash
         run: |
