@@ -57,6 +57,20 @@ function Privacy() {
           .
         </p>
         <p>
+          <strong>LIMITED USE DISCLOSURE</strong>
+        </p>
+        <p>
+          CourseTable's use and transfer to any other app of information
+          received from Google APIs will adhere to&nbsp;
+          <a
+            href="https://developers.google.com/terms/api-services-user-data-
+policy#additional_requirements_for_specific_api_scopes"
+          >
+            Google API Services User Data Policy
+          </a>
+          , including the Limited Use requirements.
+        </p>
+        <p>
           <strong>SUMMARY OF KEY POINTS</strong>
         </p>
         <p>
