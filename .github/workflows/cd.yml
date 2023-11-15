@@ -5,7 +5,7 @@ env:
 
 on:
   push:
-    branches: [master]
+    branches: [master, azure-green-prod-ci]
 
 jobs:
   frontend-build-and-deploy:
