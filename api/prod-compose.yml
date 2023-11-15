@@ -9,8 +9,11 @@ services:
       - '8038:8080'
     expose:
       - '8039'
+    volumes:
+      - ../api/src:/usr/src/app/src
     environment:
       NODE_ENV: production
+      HOT_RELOAD: 'false'
     labels:
       traefik.enable: true
       traefik.http.routers.coursetable.rule: Host(`api.coursetable.com`)

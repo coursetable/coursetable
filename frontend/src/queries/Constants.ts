@@ -51,7 +51,7 @@ export const sortbyOptions = [
   { label: 'Sort by Course Code', value: 'course_code', numeric: false },
   { label: 'Sort by Course Number', value: 'number', numeric: true },
   { label: 'Sort by Course Title', value: 'title', numeric: false },
-  { label: 'Sort by Facebook Friends', value: 'fb', numeric: true },
+  { label: 'Sort by Friends', value: 'friend', numeric: true },
   { label: 'Sort by Course Rating', value: 'average_rating', numeric: true },
   {
     label: 'Sort by Professor Rating',
@@ -69,7 +69,7 @@ export const sortbyOptions = [
 ] as const;
 
 // Make sure we can only sort by keys in the listing, or by facebook.
-export type SortKeys = keyof Listing | 'fb';
+export type SortKeys = keyof Listing | 'friend';
 const _number = 0;
 const _sortKeys = sortbyOptions[_number].value;
 expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
