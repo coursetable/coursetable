@@ -8,7 +8,7 @@ done
 # save stdout and stderr to files
 
 
-vercel deploy --token=$token >deployment-url.txt 2>error.txt
+vercel deploy --prebuilt --token=$token >deployment-url.txt 2>error.txt
  
 # check the exit code
 code=$?
