@@ -1,0 +1,67 @@
+name: CD
+env:
+  VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+  VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+
+on:
+  push:
+    branches: [master]
+
+jobs:
+  frontend-build-and-deploy:
+    environment: 
+      name: Production
+      url: https://coursetable.com
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Install Vercel CLI
+        run: bun install --global vercel@latest
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+      - name: Build Project Artifacts
+        run: vercel build --prod --token ${{ secrets.VERCEL_TOKEN }}
+      - name: Deploy to Vercel and Alias Deployment
+        run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a coursetable.com
+
+  # api-build-and-push-image:
+  #   runs-on: ubuntu-latest
+  #   needs: [frontend-build-and-deploy]
+  #   environment: 
+  #     name: Green Production
+  #     url: https://coursetable.com
+
+  #   steps:
+  #     # checkout the repo
+  #     - name: 'Checkout GitHub Action'
+  #       uses: actions/checkout@main
+        
+  #     - name: 'Login via Azure CLI'
+  #       uses: azure/login@v1
+  #       with:
+  #         creds: ${{ secrets.SP_CREDENTIALS }}
+      
+  #     - name: 'Build and push DTS API image'
+  #       uses: azure/docker-login@v1
+  #       with:
+  #         login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+  #         username: ${{ secrets.REGISTRY_USERNAME }}
+  #         password: ${{ secrets.REGISTRY_PASSWORD }}
+  #     - run: |
+  #         docker build ./api/dts-api -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api:production
+  #         docker push -a ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/dts-api
+
+  #     - name: 'Build and push Sim API image'
+  #       uses: azure/docker-login@v1
+  #       with:
+  #         login-server: ${{ secrets.REGISTRY_LOGIN_SERVER }}
+  #         username: ${{ secrets.REGISTRY_USERNAME }}
+  #         password: ${{ secrets.REGISTRY_PASSWORD }}
+  #     - run: |
+  #         docker build ./api/sim-api -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api:${{ github.sha }} -t ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api:production
+  #         docker push -a ${{ secrets.REGISTRY_LOGIN_SERVER }}/dts/sim-api
