@@ -10,7 +10,7 @@ on:
 jobs:
   frontend-build-and-deploy:
     environment: 
-      name: Dev Preview
+      name: Preview
       url: https://${{ env.sha_short }}.${{ github.head_ref }}.preview.coursetable.com
     runs-on: ubuntu-latest
 
