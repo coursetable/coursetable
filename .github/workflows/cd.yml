@@ -14,10 +14,6 @@ jobs:
       url: https://green.coursetable.com
     runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        bun-version: [latest]
-
     steps:
       - uses: actions/checkout@v4
       - name: Install Vercel CLI
