@@ -127,7 +127,6 @@ export const changeWorksheetName = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {
-
   if (!req.user) {
     return res.status(401).json({ success: false });
   }
@@ -161,12 +160,12 @@ export const changeWorksheetName = async (
           net_id: netId,
           worksheet_number: parseInt(number, 10),
           name: name,
-        }
-      })
+        },
+      }),
     ]);
-    
+
     return res.json({ success: true });
-  } catch(err) {
+  } catch (err) {
     winston.error(`Error with updating worksheet name: ${err}`);
     return res.status(500).json({ success: false });
   }
@@ -198,11 +197,11 @@ export const addWorksheet = async (
         net_id: netId,
         worksheet_number: parseInt(number, 10),
         name: name,
-      }
+      },
     });
 
     return res.json({ success: true });
-  } catch(err) {
+  } catch (err) {
     winston.error(`Error with adding new worksheet: ${err}`);
     return res.status(500).json({ success: false });
   }
@@ -216,10 +215,7 @@ export const deleteWorksheet = async (
     return res.status(401).json({ success: false });
   }
 
-  if (
-    !req.query ||
-    typeof req.query.number !== 'string'
-  ) {
+  if (!req.query || typeof req.query.number !== 'string') {
     return res.status(401).json({ success: false });
   }
 
@@ -234,7 +230,7 @@ export const deleteWorksheet = async (
           net_id: netId,
           worksheet_number: parseInt(number, 10),
         },
-      }
+      },
     });
 
     winston.info(`Deleting courses from worksheet ${number} for user ${netId}`);
@@ -242,11 +238,11 @@ export const deleteWorksheet = async (
       where: {
         net_id: netId,
         worksheet_number: parseInt(number, 10),
-      }
+      },
     });
 
     return res.json({ success: true });
-  } catch(err) {
+  } catch (err) {
     winston.error(`Error with deleting worksheet: ${err}`);
     return res.status(500).json({ success: false });
   }

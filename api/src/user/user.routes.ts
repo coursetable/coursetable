@@ -6,7 +6,13 @@ import express from 'express';
 
 import cookieParser from 'cookie-parser';
 
-import { toggleBookmark, getUserWorksheet, changeWorksheetName, addWorksheet, deleteWorksheet } from './user.handlers';
+import {
+  toggleBookmark,
+  getUserWorksheet,
+  changeWorksheetName,
+  addWorksheet,
+  deleteWorksheet,
+} from './user.handlers';
 
 /**
  * Set up user routes.
