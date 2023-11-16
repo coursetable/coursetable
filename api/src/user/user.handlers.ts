@@ -143,6 +143,8 @@ export const changeWorksheetName = async (
   const { netId } = req.user;
   const { number, name } = req.query;
 
+  winston.info(`Changing name of worksheet ${number} for user ${netId}`);
+
   try {
     await prisma.$transaction([
       prisma.worksheetNames.upsert({
@@ -189,6 +191,7 @@ export const addWorksheet = async (
   const { netId } = req.user;
   const { number, name } = req.query;
 
+  winston.info(`Adding worksheet for user ${netId}`);
   try {
     await prisma.worksheetNames.create({
       data: {
@@ -224,12 +227,21 @@ export const deleteWorksheet = async (
   const { number } = req.query;
 
   try {
+    winston.info(`Deleting worksheet ${number} for user ${netId}`);
     await prisma.worksheetNames.delete({
       where: {
         net_id_worksheet_number: {
           net_id: netId,
           worksheet_number: parseInt(number, 10),
         },
+      }
+    });
+
+    winston.info(`Deleting courses from worksheet ${number} for user ${netId}`);
+    await prisma.worksheetCourses.deleteMany({
+      where: {
+        net_id: netId,
+        worksheet_number: parseInt(number, 10),
       }
     });
 
