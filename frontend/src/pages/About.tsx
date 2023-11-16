@@ -39,6 +39,7 @@ import px from '../images/headshots/peter-xu.png';
 import bx from '../images/headshots/ben-xu.png';
 import ns from '../images/headshots/neil-song.png';
 import kt from '../images/headshots/kenny-tung.jpg';
+import sc from '../images/headshots/sida-chen.jpg';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
@@ -161,6 +162,16 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/tungk/',
         github: 'https://github.com/kentng01/',
         website: 'https://kenneru.netlify.app/',
+      },
+    },
+    {
+      name: 'Sida Chen',
+      image: sc,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
+        github: 'https://github.com/Josh-Cena/',
+        website: 'https://joshcena.com/',
       },
     },
   ];

@@ -15,11 +15,9 @@ Coursetable is made of two big parts:
 
 The various functions of the website are compartmentalized as follows:
 
-- `/api`: An Express server for backend logic.
+- `/api`: Source code for Express server with Docker Compose configuration for backend logic.
 - `/frontend`: The current face of the site, built with React.
-- `/docker`: Configuration files for running everything together in Docker.
-- `/legacy`: Static HTML files from the old site.
-- `/scripts` and `/sysadmin`: Administration scripts and bootstrapping tools.
+- `/sysadmin`: Administration scripts and bootstrapping tools.
 
 ## How to develop
 
@@ -45,7 +43,7 @@ We have automated checks set up that will run for every commit and pull request.
 
 We use GitHub issues to track bugs and feature requests: https://github.com/coursetable/coursetable/issues.
 
-We use GitHub projects to manage everything and do planning: https://github.com/orgs/coursetable/projects/2.
+We use GitHub pull requests for active feature development: https://github.com/coursetable/coursetable/pulls.
 
 ## Setting up and deploying to prod
 

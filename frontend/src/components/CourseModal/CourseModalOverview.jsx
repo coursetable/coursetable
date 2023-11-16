@@ -728,7 +728,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>FB Friends</span>
+                <span className={Styles.lable_bubble}>Friends</span>
               </Col>
               <Col
                 sm={12 - COL_LEN_LEFT}
