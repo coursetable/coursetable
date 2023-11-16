@@ -6,7 +6,7 @@ import { toast } from 'react-toastify';
 import { StyledBtn } from '../WorksheetCalendarList';
 import { Listing } from '../../Providers/FerryProvider';
 import { constructCalendarEvent } from './utils';
-import { FcGoogle } from 'react-icons/fc';
+import GCalIcon from '../../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 const GAPI_CLIENT_NAME = 'client:auth2';
@@ -154,8 +154,8 @@ function GoogleCalendarButton({
       id={user ? 'sync' : 'auth'}
       onClick={user ? syncEvents : undefined}
     >
-      <FcGoogle className="my-auto pr-2" size={26} />
-      Sync with GCal
+      <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
+      &nbsp;&nbsp;Sync with Google Calendar
     </StyledBtn>
   );
 }

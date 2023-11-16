@@ -57,7 +57,7 @@ function Privacy() {
           .
         </p>
         <p>
-          <strong>LIMITED USE DISCLOSURE</strong>
+          <strong>GOOGLE LIMITED USE DISCLOSURE</strong>
         </p>
         <p>
           CourseTable's use and transfer to any other app of information
