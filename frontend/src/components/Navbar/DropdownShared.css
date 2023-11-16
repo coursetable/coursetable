@@ -5,6 +5,11 @@
   width: 100%;
 }
 
+#dropdown-btn {
+  border-top-right-radius: 8px !important;
+  border-top-left-radius: 8px !important;
+}
+
 .dropdown-menu {
   max-height: 50vh;
   min-width: 0 !important;
@@ -21,4 +26,8 @@
 .dropdown-toggle:focus,
 .dropdown-toggle:active {
   box-shadow: none !important;
+}
+
+.w-mx {
+  max-width: 100%;
 }

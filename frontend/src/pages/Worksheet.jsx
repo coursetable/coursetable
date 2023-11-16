@@ -4,7 +4,7 @@ import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
-import WorksheetAccordion from '../components/Worksheet/WorksheetAccordion';
+import WorksheetMobileCalendar from '../components/Worksheet/WorksheetMobileCalendar';
 import WorksheetList from '../components/Worksheet/WorksheetList';
 import CourseModal from '../components/CourseModal/CourseModal';
 import {
@@ -205,7 +205,7 @@ function Worksheet() {
         <div>
           <Row className={`${styles.accordion} m-0 p-3`}>
             <Col className="p-0">
-              <WorksheetAccordion />
+              <WorksheetMobileCalendar />
             </Col>
           </Row>
         </div>
