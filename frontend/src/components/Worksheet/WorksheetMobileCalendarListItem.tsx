@@ -32,6 +32,7 @@ const StyledListItem = styled(ListGroup.Item)`
     .hidden {
       opacity: 1;
     }
+  }
 `;
 
 // Course code
