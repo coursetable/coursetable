@@ -118,6 +118,10 @@ export const friendRequest = async (
 
   const friendNetId: string = req.query.id;
 
+  if (netId == friendNetId) {
+    return res.status(400).json({ success: false });
+  }
+
   try {
     await prisma.$transaction([
       prisma.studentFriendRequests.upsert({
@@ -195,6 +199,7 @@ export const getRequestsForFriend = async (
           friendNetId: netId,
         },
       });
+
     const reqFriends = friendReqs.map(
       (friendReq: StudentFriendRequests) => friendReq.netId,
     );
