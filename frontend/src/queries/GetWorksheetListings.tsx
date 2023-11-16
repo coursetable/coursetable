@@ -74,6 +74,5 @@ export const useWorksheetInfo = (
     }
     return dataReturn;
   }, [season, courses, worksheet, worksheet_number]);
-
   return { loading, error, data };
 };
