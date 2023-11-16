@@ -182,26 +182,26 @@ function WorksheetMobileCalendar() {
       </div>
       <div className="mobile-calendar">
         <StyledCalendar
-            // Show Mon-Fri
-            defaultView="work_week"
-            views={['work_week']}
-            events={ret_values.parsedCourses}
-            // Earliest course time or 8am if no courses
-            min={minTime}
-            // Latest course time or 6pm if no courses
-            max={maxTime}
-            localizer={localizer}
-            toolbar={false}
-            onSelectEvent={(event) => showModal(event.listing)}
-            components={{ event: CalendarEvent }}
-            eventPropGetter={eventStyleGetter}
-            // Display Mon, Tue, Wed, ... at the top
-            formats={{
-              dayFormat: 'ddd',
-              timeGutterFormat: 'ha',
-            }}
-            tooltipAccessor={undefined}
-          />
+          // Show Mon-Fri
+          defaultView="work_week"
+          views={['work_week']}
+          events={ret_values.parsedCourses}
+          // Earliest course time or 8am if no courses
+          min={minTime}
+          // Latest course time or 6pm if no courses
+          max={maxTime}
+          localizer={localizer}
+          toolbar={false}
+          onSelectEvent={(event) => showModal(event.listing)}
+          components={{ event: CalendarEvent }}
+          eventPropGetter={eventStyleGetter}
+          // Display Mon, Tue, Wed, ... at the top
+          formats={{
+            dayFormat: 'ddd',
+            timeGutterFormat: 'ha',
+          }}
+          tooltipAccessor={undefined}
+        />
       </div>
       <div className="mobile-list">
         {/* Mobile Calendar List */}

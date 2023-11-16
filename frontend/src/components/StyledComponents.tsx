@@ -115,7 +115,7 @@ export const StyledPopover = styled(Popover)`
   }
   @media only screen and (max-width: 767px) {
     .popover-header {
-      display: none
+      display: none;
     }
     .popover-body {
       display: none;

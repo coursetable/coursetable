@@ -56,21 +56,18 @@ function WorksheetMobileCalendarListItem({
   theme: DefaultTheme;
   worksheet_number?: string;
 }) {
-  const { showModal, cur_season, toggleCourse } =
-    useWorksheet();
+  const { showModal, cur_season, toggleCourse } = useWorksheet();
 
   // Style for coloring hidden courses
   const color_style = {
     color: hidden ? theme.hidden : theme.text[0],
   };
   return (
-    <StyledListItem
-      className="py-1 px-2"
-    >
+    <StyledListItem className="py-1 px-2">
       <Row className="align-items-center mx-auto">
         {/* Course Code and Title */}
         <StyledCol
-          className={'pl-1 pr-2'}
+          className="pl-1 pr-2"
           style={color_style}
           onClick={() => showModal(course)}
         >
