@@ -112,6 +112,7 @@ export function NavbarWorksheetSearch() {
   const {
     user,
     changeWorksheetName,
+    addWorksheet,
     addFriend,
     removeFriend,
     friendRequest,
@@ -179,6 +180,8 @@ export function NavbarWorksheetSearch() {
   const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   const [selectedWorksheetName, setSelectedWorksheetName] = useState('');
+
+  const [newWorksheetName, setNewWorksheetName] = useState('');
 
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
@@ -264,6 +267,24 @@ export function NavbarWorksheetSearch() {
                   }
                 }}
                 onMenuClose={() => setSelectedWorksheetName('')}
+                isDisabled={false}
+              />
+              <Searchbar
+                hideSelectedOptions={false}
+                components={{
+                  Menu: () => <></>,
+                }}
+                placeholder="Add worksheet"
+                onKeyDown={(e) => {
+                  if (e.key === 'Backspace') {
+                    setNewWorksheetName(newWorksheetName.slice(0, -1));
+                  } else if (e.key === 'Enter' && newWorksheetName.length > 0) {
+                    addWorksheet(newWorksheetName, worksheet_options.length);
+                  } else if (e.key.length == 1) {
+                    setNewWorksheetName(newWorksheetName + e.key);
+                  }
+                }}
+                onMenuClose={() => setNewWorksheetName('')}
                 isDisabled={false}
               />
               

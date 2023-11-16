@@ -141,8 +141,7 @@ export const changeWorksheetName = async (
   }
 
   const { netId } = req.user;
-  const { number } = req.query;
-  const { name } = req.query;
+  const { number, name } = req.query;
 
   try {
     await prisma.$transaction([
@@ -150,7 +149,7 @@ export const changeWorksheetName = async (
         where: {
           net_id_worksheet_number: {
             net_id: netId,
-            worksheet_number: parseInt(number),
+            worksheet_number: parseInt(number, 10),
           },
         },
         update: {
@@ -158,7 +157,7 @@ export const changeWorksheetName = async (
         },
         create: {
           net_id: netId,
-          worksheet_number: parseInt(number),
+          worksheet_number: parseInt(number, 10),
           name: name,
         }
       })
@@ -167,6 +166,41 @@ export const changeWorksheetName = async (
     return res.json({ success: true });
   } catch(err) {
     winston.error(`Error with updating worksheet name: ${err}`);
+    return res.status(500).json({ success: false });
+  }
+};
+
+export const addWorksheet = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<express.Response> => {
+  if (!req.user) {
+    return res.status(401).json({ success: false });
+  }
+
+  if (
+    !req.query ||
+    typeof req.query.number !== 'string' ||
+    typeof req.query.name !== 'string'
+  ) {
+    return res.status(401).json({ success: false });
+  }
+
+  const { netId } = req.user;
+  const { number, name } = req.query;
+
+  try {
+    await prisma.worksheetNames.create({
+      data: {
+        net_id: netId,
+        worksheet_number: parseInt(number, 10),
+        name: name,
+      }
+    });
+
+    return res.json({ success: true });
+  } catch(err) {
+    winston.error(`Error with adding new worksheet: ${err}`);
     return res.status(500).json({ success: false });
   }
 };

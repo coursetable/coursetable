@@ -203,7 +203,7 @@ function WorksheetToggleButton({
               className="worksheet-dropdown"
             >
               {worksheet_options.map((option) => (
-                <option key={option.value} value={option.label}>
+                <option key={option.value} value={option.value}>
                   {option.label}
                 </option>
               ))}
