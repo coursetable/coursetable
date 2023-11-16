@@ -90,7 +90,7 @@ const getColWidth = (calculated, min = 0, max = 1000000) =>
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_fb = object | holds a list of each fb friend taking a specific course
+ * @prop num_friends = object | holds a list of each friend taking a specific course
  * @prop page = string | page search results are on
  */
 
@@ -102,7 +102,7 @@ function Results({
   multiSeasons = false,
   showModal,
   isLoggedIn,
-  num_fb,
+  num_friends,
   page = 'catalog',
 }) {
   // Fetch current device
@@ -294,10 +294,10 @@ function Results({
                 rowCount={data.length}
                 rowHeight={isLgDesktop ? 32 : 28}
                 rowRenderer={({ index, key, style, isScrolling }) => {
-                  const fb_friends = num_fb[
+                  const friends = num_friends[
                     data[index].season_code + data[index].crn
                   ]
-                    ? num_fb[data[index].season_code + data[index].crn]
+                    ? num_friends[data[index].season_code + data[index].crn]
                     : [];
                   // Alternating row item background colors
                   const colorStyles =
@@ -319,7 +319,7 @@ function Results({
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
                         isScrolling={isScrolling}
-                        fb_friends={fb_friends}
+                        friends={friends}
                       />
                     </ResultsItemWrapper>
                   );

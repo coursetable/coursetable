@@ -17,7 +17,6 @@ export const useWorksheetInfo = (
       // seasons, even if a specific season is requested.
       return [];
     }
-    //console.log('ahh', worksheet);
     const seasons = new Set<Season>();
     worksheet.forEach((item) => {
       seasons.add(item[0]);
@@ -35,7 +34,6 @@ export const useWorksheetInfo = (
       // seasons, even if a specific season is requested.
       return [];
     }
-    //console.log('ahh', worksheet, worksheet_number);
     const worksheet_numbers = new Set<string>();
     worksheet.forEach((item) => {
       worksheet_numbers.add(item[2]);
@@ -47,8 +45,8 @@ export const useWorksheetInfo = (
   const { loading, error, courses } = useCourseData(required_seasons);
 
   const data = useMemo(() => {
-    const data: Listing[] = [];
-    if (!worksheet) return data;
+    const dataReturn: Listing[] = [];
+    if (!worksheet) return dataReturn;
 
     // Resolve the worksheet items.
     for (let i = 0; i < worksheet.length; i++) {
@@ -70,12 +68,11 @@ export const useWorksheetInfo = (
             `failed to resolve worksheet course ${season_code} ${crn}`,
           );
         } else {
-          data.push(course);
+          dataReturn.push(course);
         }
       }
     }
-
-    return data;
+    return dataReturn;
   }, [season, courses, worksheet, worksheet_number]);
 
   return { loading, error, data };

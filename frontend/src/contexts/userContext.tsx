@@ -12,16 +12,19 @@ import { NetId, Season } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
 export type Worksheet = [Season, string, string][];
-export type FBFriendInfo = Record<
+export type FriendRecord = Record<
   NetId,
   {
     name: string;
-    facebookId: string;
   }
 >;
-export type FBInfo = {
+export type FriendRequest = {
+  netId: string;
+  name: string;
+};
+export type FriendInfo = {
   worksheets: Record<NetId, Worksheet>;
-  friendInfo: FBFriendInfo;
+  friendInfo: FriendRecord;
 };
 type Store = {
   user: {
@@ -30,11 +33,16 @@ type Store = {
     hasEvals?: boolean;
     year?: number;
     school?: string;
-    fbLogin?: boolean;
-    fbWorksheets?: FBInfo;
+    friendRequests?: FriendRequest[];
+    friendWorksheets?: FriendInfo;
   };
   userRefresh(suppressError?: boolean): Promise<void>;
-  fbRefresh(suppressError?: boolean): Promise<void>;
+  friendRefresh(suppressError?: boolean): Promise<void>;
+  friendReqRefresh(suppressError?: boolean): Promise<void>;
+  addFriend(netId1?: string, netId2?: string): Promise<void>;
+  removeFriend(netId1?: string, netId2?: string): Promise<void>;
+  friendRequest(friendNetId?: string): Promise<void>;
+  resolveFriendRequest(friendNetId?: string): Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -54,12 +62,14 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [year, setYear] = useState<number | undefined>(undefined);
   // User's school
   const [school, setSchool] = useState<string | undefined>(undefined);
-  // User's FB login status
-  const [fbLogin, setFbLogin] = useState<boolean | undefined>(undefined);
   // User's FB friends' worksheets
-  const [fbWorksheets, setFbWorksheets] = useState<FBInfo | undefined>(
+  const [friendWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(
     undefined,
   );
+  // User's friend requests
+  const [friendRequests, setFriendRequests] = useState<
+    FriendRequest[] | undefined
+  >(undefined);
 
   // Refresh user worksheet
   const userRefresh = useCallback(
@@ -97,10 +107,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   );
 
   // Refresh user FB stuff
-  const fbRefresh = useCallback(
+  const friendRefresh = useCallback(
     (suppressError = false): Promise<void> => {
       return axios
-        .get(`${API_ENDPOINT}/api/facebook/worksheets`, {
+        .get(`${API_ENDPOINT}/api/friends/worksheets`, {
           withCredentials: true,
         })
         .then((friends_worksheets) => {
@@ -108,7 +118,6 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             throw new Error(friends_worksheets.data.message);
           }
           // Successfully fetched friends' worksheets
-          setFbLogin(true);
           setFbWorksheets(friends_worksheets.data);
         })
         .catch((err) => {
@@ -117,11 +126,77 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             Sentry.captureException(err);
             toast.error('Error updating Facebook friends');
           }
-          setFbLogin(false);
           setFbWorksheets(undefined);
         });
     },
-    [setFbLogin, setFbWorksheets],
+    [setFbWorksheets],
+  );
+
+  // refresh friend requests
+  const friendReqRefresh = useCallback(
+    (suppressError = false): Promise<void> => {
+      return axios
+        .get(`${API_ENDPOINT}/api/friends/getRequests`, {
+          withCredentials: true,
+        })
+        .then((friendReqs) => {
+          if (!friendReqs.data.success) {
+            throw new Error(friendReqs.data.message);
+          }
+          // Successfully fetched friends' worksheets
+          setFriendRequests(friendReqs.data.friends);
+        })
+        .catch((err) => {
+          // Error with fetching friends' worksheets
+          if (!suppressError) {
+            Sentry.captureException(err);
+            toast.error('Error getting friend requests');
+          }
+          setFriendRequests(undefined);
+        });
+    },
+    [setFriendRequests],
+  );
+
+  // Add Friend
+  const addFriend = useCallback((netId1 = '', netId2 = ''): Promise<void> => {
+    return axios.get(
+      `${API_ENDPOINT}/api/friends/add/?id=${netId1}&id2=${netId2}`,
+      {
+        withCredentials: true,
+      },
+    );
+  }, []);
+
+  // Remove Friend
+  const removeFriend = useCallback(
+    (netId1 = '', netId2 = ''): Promise<void> => {
+      return axios.get(
+        `${API_ENDPOINT}/api/friends/remove/?id=${netId1}&id2=${netId2}`,
+        {
+          withCredentials: true,
+        },
+      );
+    },
+    [],
+  );
+
+  const friendRequest = useCallback((friendNetId = ''): Promise<void> => {
+    return axios.get(`${API_ENDPOINT}/api/friends/request/?id=${friendNetId}`, {
+      withCredentials: true,
+    });
+  }, []);
+
+  const resolveFriendRequest = useCallback(
+    (friendNetId = ''): Promise<void> => {
+      return axios.get(
+        `${API_ENDPOINT}/api/friends/resolveRequest/?id=${friendNetId}`,
+        {
+          withCredentials: true,
+        },
+      );
+    },
+    [],
   );
 
   const user = useMemo(() => {
@@ -131,10 +206,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       hasEvals,
       year,
       school,
-      fbLogin,
-      fbWorksheets,
+      friendRequests,
+      friendWorksheets,
     };
-  }, [netId, worksheet, hasEvals, year, school, fbLogin, fbWorksheets]);
+  }, [
+    netId,
+    worksheet,
+    hasEvals,
+    year,
+    school,
+    friendRequests,
+    friendWorksheets,
+  ]);
 
   const store = useMemo(
     () => ({
@@ -143,9 +226,23 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
       // Update methods.
       userRefresh,
-      fbRefresh,
+      friendRefresh,
+      friendReqRefresh,
+      addFriend,
+      removeFriend,
+      friendRequest,
+      resolveFriendRequest,
     }),
-    [user, userRefresh, fbRefresh],
+    [
+      user,
+      userRefresh,
+      friendRefresh,
+      friendReqRefresh,
+      addFriend,
+      removeFriend,
+      friendRequest,
+      resolveFriendRequest,
+    ],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;
