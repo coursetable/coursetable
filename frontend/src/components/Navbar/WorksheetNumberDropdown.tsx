@@ -18,8 +18,9 @@ function WorksheetNumDropdown() {
   }, []);
 
   return (
-    <div className="container p-0 m-0">
+    <div className="container p-0 m-0 w-mx">
       <DropdownButton
+        id="dropdown-btn"
         variant="primary"
         title={
           worksheet_number === '0'

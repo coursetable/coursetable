@@ -90,7 +90,9 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 `docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
 
-Our setup is declared in the [docker-compose.yml](../docker/docker-compose.yml) file.
+Our setup is declared in the [docker-compose.yml](../api/docker-compose.yml) file.
+ - The dev environment is defined in combination with the [dev-compose.yml](../api/dev-compose.yml) file.
+ - The production environment is defined in combination with the [prod-compose.yml](../api/prod-compose.yml) file.
 
 Some useful commands:
 
