@@ -35,7 +35,7 @@ type Store = {
     school?: string;
     friendRequests?: FriendRequest[];
     friendWorksheets?: FriendInfo;
-    worksheetNames?: {[key: string]: string};
+    worksheetNames?: { [key: string]: string };
   };
   userRefresh(suppressError?: boolean): Promise<void>;
   changeWorksheetName(newName?: string, number?: string): Promise<void>;
@@ -61,9 +61,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   // User's worksheet
   const [worksheet, setWorksheet] = useState<Worksheet | undefined>(undefined);
   // User's worksheet names
-  const [worksheetNames, setWorksheetNames] = useState<{[key: string]: string} | undefined>(
-    undefined,
-  );
+  const [worksheetNames, setWorksheetNames] = useState<
+    { [key: string]: string } | undefined
+  >(undefined);
   // User's evals enabled status
   const [hasEvals, setHasEvals] = useState<boolean | undefined>(undefined);
   // User's year
@@ -112,52 +112,68 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           }
         });
     },
-    [setWorksheet, setNetId, setHasEvals, setYear, setSchool, setWorksheetNames],
+    [
+      setWorksheet,
+      setNetId,
+      setHasEvals,
+      setYear,
+      setSchool,
+      setWorksheetNames,
+    ],
   );
 
   const changeWorksheetName = useCallback(
     (newName = '', number = ''): Promise<void> => {
       return axios
-        .get(`${API_ENDPOINT}/api/user/worksheets/changeName/?name=${newName}&number=${number}`, {
-          withCredentials: true,
-        }).then((res) => {
+        .get(
+          `${API_ENDPOINT}/api/user/worksheets/changeName/?name=${newName}&number=${number}`,
+          {
+            withCredentials: true,
+          },
+        )
+        .then((res) => {
           if (!res.data.success) {
             throw new Error(res.data.message);
           }
           userRefresh();
         });
     },
-    [userRefresh]
-  ); 
+    [userRefresh],
+  );
 
   const addWorksheet = useCallback(
     (name = '', number = ''): Promise<void> => {
-      return axios.get(`${API_ENDPOINT}/api/user/worksheets/add/?name=${name}&number=${number}`, 
-      {
-        withCredentials: true,
-      }).then((res) => {
-        if (!res.data.success) {
-          throw new Error(res.data.message);
-        }
-        userRefresh();
-      })
+      return axios
+        .get(
+          `${API_ENDPOINT}/api/user/worksheets/add/?name=${name}&number=${number}`,
+          {
+            withCredentials: true,
+          },
+        )
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          userRefresh();
+        });
     },
-    [userRefresh]
+    [userRefresh],
   );
 
   const deleteWorksheet = useCallback(
     (number = ''): Promise<void> => {
-      return axios.get(`${API_ENDPOINT}/api/user/worksheets/delete/?number=${number}`,
-      {
-        withCredentials: true,
-      }).then((res) => {
-        if (!res.data.success) {
-          throw new Error(res.data.message);
-        }
-        userRefresh();
-      })
+      return axios
+        .get(`${API_ENDPOINT}/api/user/worksheets/delete/?number=${number}`, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (!res.data.success) {
+            throw new Error(res.data.message);
+          }
+          userRefresh();
+        });
     },
-    [userRefresh]
+    [userRefresh],
   );
 
   // Refresh user FB stuff
@@ -271,7 +287,8 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     year,
     school,
     friendRequests,
-    friendWorksheets, worksheetNames,
+    friendWorksheets,
+    worksheetNames,
   ]);
 
   const store = useMemo(

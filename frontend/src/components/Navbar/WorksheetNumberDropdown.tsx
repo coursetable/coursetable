@@ -4,7 +4,8 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import './DropdownShared.css';
 
 function WorksheetNumDropdown() {
-  const { changeWorksheet, worksheet_number, worksheet_options } = useWorksheet();
+  const { changeWorksheet, worksheet_number, worksheet_options } =
+    useWorksheet();
 
   return (
     <div className="container p-0 m-0">

@@ -1,6 +1,12 @@
 /* eslint-disable guard-for-in */
 import React, { useMemo, useState } from 'react';
-import { Form, Row, ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
+import {
+  Form,
+  Row,
+  ToggleButton,
+  ToggleButtonGroup,
+  Button,
+} from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
 import { components } from 'react-select';
@@ -109,7 +115,7 @@ export function NavbarWorksheetSearch() {
     if (worksheet_number) {
       return {
         value: worksheet_number,
-        label: worksheet_options[parseInt(worksheet_number)].label
+        label: worksheet_options[parseInt(worksheet_number)].label,
       };
     }
     return null;
@@ -192,22 +198,18 @@ export function NavbarWorksheetSearch() {
   const [newWorksheetName, setNewWorksheetName] = useState('');
 
   const [addWorksheetPlaceHolder, setAddWorksheetPlaceHolder] = useState(
-    worksheet_options.length >= 20 ? 
-    'Reached maximum number of worksheets':
-    'Add worksheet'
+    worksheet_options.length >= 20
+      ? 'Reached maximum number of worksheets'
+      : 'Add worksheet',
   );
 
   const [boolWorksheetsNumber, setBoolWorksheetsNumber] = useState(
-    worksheet_options.length >= 20?
-    true:
-    false
+    worksheet_options.length >= 20 ? true : false,
   );
 
   const [deleteBool, setDeleteBool] = useState(
-    worksheet_number in ['0', '1', '2', '3'] ?
-    true :
-    false
-  )
+    worksheet_number in ['0', '1', '2', '3'] ? true : false,
+  );
 
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
@@ -281,7 +283,7 @@ export function NavbarWorksheetSearch() {
                   }
                 }}
               />
-              
+
               <Searchbar
                 hideSelectedOptions={false}
                 components={{
@@ -290,9 +292,17 @@ export function NavbarWorksheetSearch() {
                 placeholder="Change current worksheet name:"
                 onKeyDown={(e) => {
                   if (e.key === 'Backspace') {
-                    setSelectedWorksheetName(selectedWorksheetName.slice(0, -1));
-                  } else if (e.key === 'Enter' && selectedWorksheetName.length > 0) {
-                    changeWorksheetName(selectedWorksheetName, worksheet_number);
+                    setSelectedWorksheetName(
+                      selectedWorksheetName.slice(0, -1),
+                    );
+                  } else if (
+                    e.key === 'Enter' &&
+                    selectedWorksheetName.length > 0
+                  ) {
+                    changeWorksheetName(
+                      selectedWorksheetName,
+                      worksheet_number,
+                    );
                   } else if (e.key.length == 1) {
                     setSelectedWorksheetName(selectedWorksheetName + e.key);
                   }
@@ -311,9 +321,14 @@ export function NavbarWorksheetSearch() {
                     setNewWorksheetName(newWorksheetName.slice(0, -1));
                   } else if (e.key === 'Enter' && newWorksheetName.length > 0) {
                     if (worksheet_options.length < 20) {
-                      addWorksheet(newWorksheetName, worksheet_options.length.toString());
+                      addWorksheet(
+                        newWorksheetName,
+                        worksheet_options.length.toString(),
+                      );
                     } else {
-                      setAddWorksheetPlaceHolder('Reached maximum number of worksheets');
+                      setAddWorksheetPlaceHolder(
+                        'Reached maximum number of worksheets',
+                      );
                       setBoolWorksheetsNumber(false);
                     }
                   } else if (e.key.length == 1) {
@@ -323,28 +338,27 @@ export function NavbarWorksheetSearch() {
                 onMenuClose={() => setNewWorksheetName('')}
                 isDisabled={boolWorksheetsNumber}
               />
-              <div 
-              style={
-                {paddingBottom: '0.45rem',
-                 paddingRight: '0.45rem',
-                 paddingLeft: '0.45rem',
-                 paddingTop: '0.45rem',
-                 display: 'flex',
-                 justifyContent: 'flex-end'
-                }
-              }
-              >
-              <StyledDeleteButton
-                variant="danger"
-                onClick={() => {
-                  setDeleteBool(true);
-                  deleteWorksheet(worksheet_number);
-                  changeWorksheet('0');
+              <div
+                style={{
+                  paddingBottom: '0.45rem',
+                  paddingRight: '0.45rem',
+                  paddingLeft: '0.45rem',
+                  paddingTop: '0.45rem',
+                  display: 'flex',
+                  justifyContent: 'flex-end',
                 }}
-                disabled={deleteBool}
               >
-                Delete Worksheet
-              </StyledDeleteButton>
+                <StyledDeleteButton
+                  variant="danger"
+                  onClick={() => {
+                    setDeleteBool(true);
+                    deleteWorksheet(worksheet_number);
+                    changeWorksheet('0');
+                  }}
+                  disabled={deleteBool}
+                >
+                  Delete Worksheet
+                </StyledDeleteButton>
               </div>
             </Popout>
             {/* Friends' Courses Dropdown */}

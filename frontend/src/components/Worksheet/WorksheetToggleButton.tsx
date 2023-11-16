@@ -66,7 +66,8 @@ function WorksheetToggleButton({
     setSelectedWorksheet(initialSelectedWorksheet || '0');
   }, [initialSelectedWorksheet]);
 
-  const { cur_season, hidden_courses, toggleCourse, worksheet_options } = useWorksheet();
+  const { cur_season, hidden_courses, toggleCourse, worksheet_options } =
+    useWorksheet();
 
   const worksheet_check = useMemo(() => {
     return isInWorksheet(

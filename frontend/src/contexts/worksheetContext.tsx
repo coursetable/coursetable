@@ -36,7 +36,7 @@ type Store = {
   worksheetError: string | null;
   worksheetData: Listing[];
   course_modal: (string | boolean | Listing)[];
-  worksheet_options: {value: string, label: string}[];
+  worksheet_options: { value: string; label: string }[];
   changeSeason: (season_code: Season | null) => void;
   changeWorksheet: (worksheet_number: string) => void;
   handlePersonChange: (new_person: string) => void;
@@ -110,8 +110,8 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     ];
     if (user.worksheetNames) {
       for (const [number, name] of Object.entries(user.worksheetNames)) {
-        if (number in ['0','1','2','3']) {
-          tempWorksheetOptions[parseInt(number, 10)].label = name; 
+        if (number in ['0', '1', '2', '3']) {
+          tempWorksheetOptions[parseInt(number, 10)].label = name;
         } else {
           tempWorksheetOptions.push({ value: number, label: name });
         }
