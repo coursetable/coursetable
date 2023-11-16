@@ -121,13 +121,8 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-  const {
-    user,
-    addFriend,
-    removeFriend,
-    friendRequest,
-    resolveFriendRequest,
-  } = useUser();
+  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest } =
+    useUser();
 
   // FB Friends names
   const friendInfo = useMemo(() => {

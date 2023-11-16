@@ -41,7 +41,8 @@ function App({ themeToggler }) {
   // Page initialized as loading
   const [loading, setLoading] = useState(true);
   // User context data
-  const { user, userRefresh, friendRefresh, friendReqRefresh, getAllNames } = useUser();
+  const { user, userRefresh, friendRefresh, friendReqRefresh, getAllNames } =
+    useUser();
 
   // Refresh user worksheet and FB data on page load
   useEffect(() => {

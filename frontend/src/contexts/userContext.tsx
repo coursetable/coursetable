@@ -46,10 +46,10 @@ type Store = {
   userRefresh(suppressError?: boolean): Promise<void>;
   friendRefresh(suppressError?: boolean): Promise<void>;
   friendReqRefresh(suppressError?: boolean): Promise<void>;
-  addFriend(netId1? : string, netId2? : string): Promise<void>;
-  removeFriend(netId1? : string, netId2? : string): Promise<void>;
-  friendRequest(friendNetId? : string): Promise<void>;
-  resolveFriendRequest(friendNetId? : string): Promise<void>;
+  addFriend(netId1?: string, netId2?: string): Promise<void>;
+  removeFriend(netId1?: string, netId2?: string): Promise<void>;
+  friendRequest(friendNetId?: string): Promise<void>;
+  resolveFriendRequest(friendNetId?: string): Promise<void>;
   getAllNames(): Promise<void>;
 };
 
@@ -169,27 +169,24 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   )
 
   const getAllNames = useCallback((suppressError = false): Promise<void> => {
-      return axios
-        .get(`${API_ENDPOINT}/api/friends/names`, {
-          withCredentials: true
-        })
-        .then((names) => {
-          if (!names.data.success) {
-            throw new Error(names.data.message);
-          }
-          console.log("names data: ", names.data.names)
-          setAllNames(names.data.names)
-        })
-        .catch((err) => {
-          if (!suppressError) {
-            Sentry.captureException(err);
-            toast.error('Error getting friend requests');
-          }
-          setAllNames(undefined);
-        })
-    },
-    []
-  )
+    return axios
+      .get(`${API_ENDPOINT}/api/friends/names`, {
+        withCredentials: true,
+      })
+      .then((names) => {
+        if (!names.data.success) {
+          throw new Error(names.data.message);
+        }
+        setAllNames(names.data.names);
+      })
+      .catch((err) => {
+        if (!suppressError) {
+          Sentry.captureException(err);
+          toast.error('Error getting friend requests');
+        }
+        setAllNames(undefined);
+      });
+  }, []);
 
   // Add Friend
   const addFriend = useCallback((netId1 = '', netId2 = ''): Promise<void> => {
@@ -244,13 +241,13 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       allNames,
     };
   }, [
-    netId, 
-    worksheet, 
-    hasEvals, 
-    year, 
-    school, 
-    friendRequests, 
-    friendWorksheets, 
+    netId,
+    worksheet,
+    hasEvals,
+    year,
+    school,
+    friendRequests,
+    friendWorksheets,
     allNames,
   ]);
 
@@ -270,15 +267,15 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       getAllNames,
     }),
     [
-      user, 
-      userRefresh, 
-      friendRefresh, 
-      friendReqRefresh, 
-      addFriend, 
-      removeFriend, 
-      friendRequest, 
-      resolveFriendRequest, 
-      getAllNames
+      user,
+      userRefresh,
+      friendRefresh,
+      friendReqRefresh,
+      addFriend,
+      removeFriend,
+      friendRequest,
+      resolveFriendRequest,
+      getAllNames,
     ],
   );
 
