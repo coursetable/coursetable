@@ -71,7 +71,7 @@ function WorksheetMobileCalendarListItem({
       <Row className="align-items-center mx-auto">
         {/* Course Code and Title */}
         <StyledCol
-          className={'pl-1 pr-2'}
+          className="pl-1 pr-2"
           style={color_style}
           onClick={() => showModal(course)}
         >
