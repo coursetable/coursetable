@@ -1,6 +1,6 @@
 /* eslint-disable guard-for-in */
 import React, { useMemo, useState } from 'react';
-import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
+import { Form, Row, ToggleButton, ToggleButtonGroup, Button } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
 import { components } from 'react-select';
@@ -68,6 +68,13 @@ const StyledToggleButton = styled(ToggleButton)`
   }
 `;
 
+// Reset button
+const StyledDeleteButton = styled(Button)`
+  padding: 0.25rem 0.375rem;
+  font-size: 12px;
+  ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
+`;
+
 /**
  * Worksheet search form for the desktop in the navbar
  */
@@ -113,6 +120,7 @@ export function NavbarWorksheetSearch() {
     user,
     changeWorksheetName,
     addWorksheet,
+    deleteWorksheet,
     addFriend,
     removeFriend,
     friendRequest,
@@ -183,6 +191,24 @@ export function NavbarWorksheetSearch() {
 
   const [newWorksheetName, setNewWorksheetName] = useState('');
 
+  const [addWorksheetPlaceHolder, setAddWorksheetPlaceHolder] = useState(
+    worksheet_options.length >= 20 ? 
+    'Reached maximum number of worksheets':
+    'Add worksheet'
+  );
+
+  const [boolWorksheetsNumber, setBoolWorksheetsNumber] = useState(
+    worksheet_options.length >= 20?
+    true:
+    false
+  );
+
+  const [deleteBool, setDeleteBool] = useState(
+    worksheet_number in ['0', '1', '2', '3'] ?
+    true :
+    false
+  )
+
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
 
@@ -246,6 +272,11 @@ export function NavbarWorksheetSearch() {
                 placeholder="Main Worksheet"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
+                    if (selectedOption.value in ['0', '1', '2', '3']) {
+                      setDeleteBool(true);
+                    } else {
+                      setDeleteBool(false);
+                    }
                     changeWorksheet(selectedOption.value);
                   }
                 }}
@@ -274,20 +305,47 @@ export function NavbarWorksheetSearch() {
                 components={{
                   Menu: () => <></>,
                 }}
-                placeholder="Add worksheet"
+                placeholder={addWorksheetPlaceHolder}
                 onKeyDown={(e) => {
                   if (e.key === 'Backspace') {
                     setNewWorksheetName(newWorksheetName.slice(0, -1));
                   } else if (e.key === 'Enter' && newWorksheetName.length > 0) {
-                    addWorksheet(newWorksheetName, worksheet_options.length);
+                    if (worksheet_options.length < 20) {
+                      addWorksheet(newWorksheetName, worksheet_options.length.toString());
+                    } else {
+                      setAddWorksheetPlaceHolder('Reached maximum number of worksheets');
+                      setBoolWorksheetsNumber(false);
+                    }
                   } else if (e.key.length == 1) {
                     setNewWorksheetName(newWorksheetName + e.key);
                   }
                 }}
                 onMenuClose={() => setNewWorksheetName('')}
-                isDisabled={false}
+                isDisabled={boolWorksheetsNumber}
               />
-              
+              <div 
+              style={
+                {paddingBottom: '0.45rem',
+                 paddingRight: '0.45rem',
+                 paddingLeft: '0.45rem',
+                 paddingTop: '0.45rem',
+                 display: 'flex',
+                 justifyContent: 'flex-end'
+                }
+              }
+              >
+              <StyledDeleteButton
+                variant="danger"
+                onClick={() => {
+                  setDeleteBool(true);
+                  deleteWorksheet(worksheet_number);
+                  changeWorksheet('0');
+                }}
+                disabled={deleteBool}
+              >
+                Delete Worksheet
+              </StyledDeleteButton>
+              </div>
             </Popout>
             {/* Friends' Courses Dropdown */}
             <Popout

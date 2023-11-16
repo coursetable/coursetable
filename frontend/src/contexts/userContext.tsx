@@ -40,6 +40,7 @@ type Store = {
   userRefresh(suppressError?: boolean): Promise<void>;
   changeWorksheetName(newName?: string, number?: string): Promise<void>;
   addWorksheet(name?: string, number?: string): Promise<void>;
+  deleteWorksheet(number?: string): Promise<void>;
   friendRefresh(suppressError?: boolean): Promise<void>;
   friendReqRefresh(suppressError?: boolean): Promise<void>;
   addFriend(netId1?: string, netId2?: string): Promise<void>;
@@ -132,6 +133,21 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const addWorksheet = useCallback(
     (name = '', number = ''): Promise<void> => {
       return axios.get(`${API_ENDPOINT}/api/user/worksheets/add/?name=${name}&number=${number}`, 
+      {
+        withCredentials: true,
+      }).then((res) => {
+        if (!res.data.success) {
+          throw new Error(res.data.message);
+        }
+        userRefresh();
+      })
+    },
+    [userRefresh]
+  );
+
+  const deleteWorksheet = useCallback(
+    (number = ''): Promise<void> => {
+      return axios.get(`${API_ENDPOINT}/api/user/worksheets/delete/?number=${number}`,
       {
         withCredentials: true,
       }).then((res) => {
@@ -264,6 +280,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       user,
       changeWorksheetName,
       addWorksheet,
+      deleteWorksheet,
       // Update methods.
       userRefresh,
       friendRefresh,
@@ -277,6 +294,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       user,
       changeWorksheetName,
       addWorksheet,
+      deleteWorksheet,
       userRefresh,
       friendRefresh,
       friendReqRefresh,

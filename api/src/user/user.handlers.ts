@@ -204,3 +204,38 @@ export const addWorksheet = async (
     return res.status(500).json({ success: false });
   }
 };
+
+export const deleteWorksheet = async (
+  req: express.Request,
+  res: express.Response,
+): Promise<express.Response> => {
+  if (!req.user) {
+    return res.status(401).json({ success: false });
+  }
+
+  if (
+    !req.query ||
+    typeof req.query.number !== 'string'
+  ) {
+    return res.status(401).json({ success: false });
+  }
+
+  const { netId } = req.user;
+  const { number } = req.query;
+
+  try {
+    await prisma.worksheetNames.delete({
+      where: {
+        net_id_worksheet_number: {
+          net_id: netId,
+          worksheet_number: parseInt(number, 10),
+        },
+      }
+    });
+
+    return res.json({ success: true });
+  } catch(err) {
+    winston.error(`Error with deleting worksheet: ${err}`);
+    return res.status(500).json({ success: false });
+  }
+};
