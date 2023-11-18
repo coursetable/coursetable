@@ -46,4 +46,13 @@
 
 :global .modal-dialog {
   transition: transform 0.1s ease-out !important;
+
+  @media only screen and (min-width: 576px) and (max-width: 800px) {
+    margin: 1.75rem 0.5rem;
+  }
+}
+:global .modal-top {
+  @media only screen and (max-width: 767px) {
+    flex-direction: column !important;
+  }
 }

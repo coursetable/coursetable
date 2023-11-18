@@ -27,7 +27,7 @@ import Styles from './CourseModalOverview.module.css';
 
 import CourseModalLoading from './CourseModalLoading';
 import {
-  fbFriendsAlsoTaking,
+  FriendsAlsoTaking,
   getEnrolled,
   toSeasonString,
 } from '../../utilities/courseUtilities';
@@ -72,15 +72,14 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
-  const also_taking =
-    user.fbLogin && user.fbWorksheets
-      ? fbFriendsAlsoTaking(
-          listing.season_code,
-          listing.crn,
-          user.fbWorksheets.worksheets,
-          user.fbWorksheets.friendInfo,
-        )
-      : [];
+  const also_taking = user.friendWorksheets
+    ? FriendsAlsoTaking(
+        listing.season_code,
+        listing.crn,
+        user.friendWorksheets.worksheets,
+        user.friendWorksheets.friendInfo,
+      )
+    : [];
 
   // Parse for location url and location name
   let location_url = '';
@@ -729,7 +728,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>FB Friends</span>
+                <span className={Styles.lable_bubble}>Friends</span>
               </Col>
               <Col
                 sm={12 - COL_LEN_LEFT}

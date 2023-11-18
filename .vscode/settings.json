@@ -34,7 +34,7 @@
     "**/node_modules": true,
     "**/.eslintcache": true,
     "**/bower_components": true,
-    "**/docker/mysql/database.sql": true
+    "**/api/mysql/database.sql": true
   },
   "cSpell.words": [
     "Unflatten",
@@ -45,5 +45,9 @@
     "toastify",
     "unstyled"
   ],
-  "eslint.workingDirectories": ["api", "frontend", "proxy"]
+  "eslint.workingDirectories": [
+    "api",
+    "frontend",
+    "proxy"
+  ]
 }

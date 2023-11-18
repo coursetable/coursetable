@@ -1,9 +1,12 @@
-import React, { useMemo } from 'react';
+/* eslint-disable guard-for-in */
+import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { ValueType } from 'react-select/src/types';
+import { components } from 'react-select';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
+import { Searchbar } from '../Search/Searchbar';
 
 // import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../../contexts/searchContext';
@@ -11,8 +14,6 @@ import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../contexts/userContext';
-import FBLoginButton from './FBLoginButton';
-import { FaFacebookSquare } from 'react-icons/fa';
 import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -80,8 +81,8 @@ export function NavbarWorksheetSearch() {
     changeSeason,
     changeWorksheet,
     worksheet_number,
-    fb_person,
-    handleFBPersonChange,
+    person,
+    handlePersonChange,
     worksheet_view,
     handleWorksheetView,
   } = useWorksheet();
@@ -120,14 +121,13 @@ export function NavbarWorksheetSearch() {
   }, [worksheet_number]);
 
   // Fetch user context data
-  const { user } = useUser();
+  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest } =
+    useUser();
 
   // FB Friends names
   const friendInfo = useMemo(() => {
-    return user.fbLogin && user.fbWorksheets
-      ? user.fbWorksheets.friendInfo
-      : {};
-  }, [user.fbLogin, user.fbWorksheets]);
+    return user.friendWorksheets ? user.friendWorksheets.friendInfo : {};
+  }, [user.friendWorksheets]);
 
   // List of FB friend options. Initialize with me option
   const friend_options = useMemo(() => {
@@ -146,23 +146,44 @@ export function NavbarWorksheetSearch() {
     return friend_options_temp;
   }, [friendInfo]);
 
-  const selected_fb = useMemo(() => {
-    if (!user.fbLogin) {
-      return {
-        value: fb_person,
-        label: 'Connect FB',
-      };
-    }
-    if (fb_person === 'me') {
+  const selected_person = useMemo(() => {
+    if (person === 'me' || friendInfo[person] == undefined) {
       return null;
     }
     return {
-      value: fb_person,
-      label: friendInfo[fb_person].name,
+      value: person,
+      label: friendInfo[person].name,
     };
-  }, [user.fbLogin, fb_person, friendInfo]);
+  }, [person, friendInfo]);
+
+  // FB Friends names
+  const friendRequestInfo = useMemo(() => {
+    return user.friendRequests ? user.friendRequests : [];
+  }, [user.friendRequests]);
+
+  // friend requests variables
+  const friend_request_options = useMemo(() => {
+    const friend_request_options_temp = [];
+    // Add FB friend to dropdown if they have worksheet courses in the current season
+    for (const friend of friendRequestInfo) {
+      friend_request_options_temp.push({
+        value: friend.netId,
+        label: friend.name,
+      });
+    }
+    // Sort FB friends in alphabetical order
+    friend_request_options_temp.sort((a, b) => {
+      return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
+    });
+    return friend_request_options_temp;
+  }, [friendRequestInfo]);
 
   const { isTablet } = useWindowDimensions();
+
+  const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+
+  const [deleting, setDeleting] = useState(0);
+  const [removing, setRemoving] = useState(0);
 
   return (
     <>
@@ -225,55 +246,132 @@ export function NavbarWorksheetSearch() {
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
                     changeWorksheet(selectedOption.value);
-                    //console.log(worksheet_number);
                   }
                 }}
               />
             </Popout>
-            {/* Facebook Dropdown */}
-            {user.fbLogin ? (
-              <>
-                <Popout
-                  buttonText="Friends' courses"
-                  type="facebook"
-                  select_options={selected_fb}
-                  onReset={() => {
-                    handleFBPersonChange('me');
-                  }}
-                  isDisabled={!user.fbLogin}
-                  disabledButtonText="Connect FB"
-                >
-                  <PopoutSelect
-                    hideSelectedOptions={false}
-                    value={selected_fb}
-                    options={friend_options}
-                    placeholder="Friends' courses"
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      // Cleared FB friend
-                      if (!selectedOption) handleFBPersonChange('me');
-                      // Selected FB friend
-                      else if (isOption(selectedOption))
-                        handleFBPersonChange(selectedOption.value);
-                    }}
-                    isDisabled={!user.fbLogin}
-                  />
-                </Popout>
-                {!isTablet && (
-                  <Row className="ml-2">
-                    <FBLoginButton />
-                  </Row>
-                )}
-              </>
-            ) : (
-              <Row className="ml-2">
-                <FaFacebookSquare
-                  className="mr-2 my-auto"
-                  size={20}
-                  color="#007bff"
-                />
-                <FBLoginButton />
-              </Row>
-            )}
+            {/* Friends' Courses Dropdown */}
+            <Popout
+              buttonText="Friends' courses"
+              type="friend"
+              select_options={selected_person}
+              onReset={() => {
+                handlePersonChange('me');
+              }}
+            >
+              <Searchbar
+                components={{
+                  Control: (props) => {
+                    return (
+                      <div
+                        onClick={() => {
+                          setRemoving(1 - removing);
+                        }}
+                      >
+                        <components.Control {...props} />
+                      </div>
+                    );
+                  },
+                }}
+                hideSelectedOptions={false}
+                value={selected_person}
+                options={friend_options}
+                placeholder={
+                  removing === 0
+                    ? 'Selecting friends (click to switch to remove mode)'
+                    : 'Removing friends (click to switch to select mode)'
+                }
+                isSearchable={false}
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                  if (removing === 0) {
+                    // Cleared FB friend
+                    if (!selectedOption) handlePersonChange('me');
+                    // Selected FB friend
+                    else if (isOption(selectedOption))
+                      handlePersonChange(selectedOption.value);
+                  } else {
+                    if (selectedOption && isOption(selectedOption)) {
+                      removeFriend(selectedOption.value, user.netId);
+                      removeFriend(user.netId, selectedOption.value);
+                      alert('Removed friend: ' + selectedOption.value);
+                      window.location.reload();
+                    }
+                  }
+                }}
+                isDisabled={false}
+              />
+            </Popout>
+
+            {/* Friend Requests Dropdown */}
+            <Popout
+              buttonText="Friend requests"
+              type="friend reqs"
+              // select_options={selected_person}
+              onReset={() => {
+                handlePersonChange('me');
+              }}
+            >
+              <Searchbar
+                components={{
+                  Control: (props) => {
+                    return (
+                      <div
+                        onClick={() => {
+                          setDeleting(1 - deleting);
+                        }}
+                      >
+                        <components.Control {...props} />
+                      </div>
+                    );
+                  },
+                }}
+                hideSelectedOptions={false}
+                value={null}
+                isSearchable={false}
+                options={friend_request_options}
+                placeholder={
+                  deleting === 0
+                    ? 'Accepting requests (click to switch to decline mode)'
+                    : 'Declining requests (click to switch to accept mode)'
+                }
+                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                  if (selectedOption && isOption(selectedOption)) {
+                    resolveFriendRequest(selectedOption.value);
+                    if (deleting === 0) {
+                      addFriend(selectedOption.value, user.netId);
+                      addFriend(user.netId, selectedOption.value);
+                      alert('Added friend: ' + selectedOption.value);
+                    } else if (deleting === 1) {
+                      alert('Declined friend request: ' + selectedOption.value);
+                    }
+                    window.location.reload();
+                  }
+                }}
+                isDisabled={false}
+              />
+            </Popout>
+
+            {/* Add Friend Dropdown */}
+
+            <Popout buttonText="Add Friend" type="adding friends">
+              <Searchbar
+                hideSelectedOptions={false}
+                components={{
+                  Menu: () => <></>,
+                }}
+                placeholder="Enter your friend's NetID (hit enter to add): "
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') {
+                    friendRequest(currentFriendNetID);
+                    alert('Sent friend request: ' + currentFriendNetID);
+                  }
+                }}
+                onInputChange={(e) => {
+                  setCurrentFriendNetID(e);
+                }}
+                isDisabled={false}
+              />
+            </Popout>
           </FilterGroup>
         </StyledRow>
       </Form>
