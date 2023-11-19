@@ -1,4 +1,5 @@
 ignores: [
+  "ts-node",
   "jest",
   "@sentry/tracing",
   "graphql",
