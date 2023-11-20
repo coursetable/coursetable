@@ -9,8 +9,7 @@ import './Graphiql.css';
 const fetcher = createGraphiQLFetcher({
   url: `${GRAPHQL_API_ENDPOINT}/v1/graphql`,
   fetch: (url, args) => {
-    // TODO @types/node and lib.dom are conflicting; we should try to exclude Node types
-    return fetch(url as never, { ...args, credentials: 'include' });
+    return fetch(url, { ...args, credentials: 'include' });
   },
 });
 
