@@ -28,7 +28,7 @@ function Privacy() {
           <strong>PRIVACY NOTICE</strong>
         </p>
         <p>
-          <strong>Last updated November 20, 2023</strong>
+          <strong>Last updated November 15, 2023</strong>
         </p>
         <p>
           This privacy notice for CourseTable ("<strong>Company</strong>," "
@@ -57,7 +57,7 @@ function Privacy() {
           .
         </p>
         <p>
-          <strong>GOOGLE LIMITED USE DISCLOSURE</strong>
+          <strong>LIMITED USE DISCLOSURE</strong>
         </p>
         <p>
           CourseTable's use and transfer to any other app of information
