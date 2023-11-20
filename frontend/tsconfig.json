@@ -22,7 +22,10 @@
       }
     ],
     "jsx": "react",
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "paths": {
+      "react": ["./node_modules/@types/react"]
+    }
   },
   "include": ["src"]
 }
