@@ -133,8 +133,11 @@ function GoogleCalendarButton({
         signInButton,
         {},
         (googleUser) => {
-          setUser(googleUser);
-          syncEvents();
+          if (signInButton && signInButton.id == 'auth') {
+            setUser(googleUser);
+            syncEvents();
+            signInButton.id = 'sync';
+          }
         },
         Sentry.captureException,
       );
