@@ -6,6 +6,7 @@ import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import GoogleCalendarButton from '../../components/Worksheet/GoogleCalendarSync/GoogleCalendarButton';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -31,7 +32,7 @@ const StyledBsEye = styled(BsEye)`
 `;
 
 // Show/hide all button
-const StyledBtn = styled.div`
+export const StyledBtn = styled.div`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
   padding: 5px;
@@ -43,6 +44,7 @@ const StyledBtn = styled.div`
   justify-content: center;
   align-items: center;
   user-select: none;
+  margin-bottom: 5px;
   transition:
     border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},
@@ -130,6 +132,21 @@ function WorksheetCalendarList() {
       <StyledSpacer className="pt-3">
         <StyledContainer layer={1} className="mx-1">
           <div className="shadow-sm p-2">
+            {/* Gcal Button */}
+            <Row className="mx-auto">
+              <Col className="px-0 w-100">
+                <GoogleCalendarButton
+                  courses={courses.filter(function (course) {
+                    return (
+                      !hidden_courses[cur_season] ||
+                      !(course.crn in hidden_courses[cur_season]) ||
+                      !hidden_courses[cur_season][course.crn]
+                    );
+                  })}
+                  season_code={cur_season}
+                />
+              </Col>
+            </Row>
             {/* Hide/Show All Button */}
             <Row className="mx-auto">
               <Col className="px-0 w-100">
