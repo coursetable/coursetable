@@ -7,16 +7,16 @@ import styles from './About.module.css';
 import { TextComponent, StyledCard } from '../components/StyledComponents';
 
 // Link Logos
-import github from '../images/headshots/link-logos/github.png';
-import github_dark from '../images/headshots/link-logos/github-light.png';
-import linkedin from '../images/headshots/link-logos/linkedin.png';
-import web from '../images/headshots/link-logos/web.png';
-import web_dark from '../images/headshots/link-logos/web-light.png';
+import github from '../images/link-logos/github.png';
+import github_dark from '../images/link-logos/github-light.png';
+import linkedin from '../images/link-logos/linkedin.png';
+import web from '../images/link-logos/web.png';
+import web_dark from '../images/link-logos/web-light.png';
 
 // Current Member Headshots
 import lz from '../images/headshots/lily-zhou.jpg';
 import lh from '../images/headshots/lucas-huang.jpg';
-import as from '../images/headshots/alex-schapiro.png';
+import as from '../images/headshots/alex-schapiro.jpg';
 import ae from '../images/headshots/aidan-evans.jpg';
 import ml from '../images/headshots/michelle-li.jpg';
 import jc from '../images/headshots/josh-chough.jpg';
@@ -25,7 +25,7 @@ import kh from '../images/headshots/kevin-hu.jpg';
 import ma from '../images/headshots/murad-avliyakulov.jpg';
 import ag from '../images/headshots/abhijit-gupta.jpg';
 import my from '../images/headshots/max-yuan.jpg';
-import sh from '../images/headshots/sidney-hirschman.jpeg';
+import sh from '../images/headshots/sidney-hirschman.jpg';
 import eb from '../images/headshots/erik-boesen.jpg';
 import eh from '../images/headshots/evan-hu.jpg';
 import nk from '../images/headshots/nalin-khanna.jpg';
@@ -35,17 +35,16 @@ import az from '../images/headshots/anna-zhang.jpg';
 import ls from '../images/headshots/lauren-song.jpg';
 import js from '../images/headshots/josephine-shin.jpg';
 import hy from '../images/headshots/harry-yu.jpg';
-import px from '../images/headshots/peter-xu.png';
-import bx from '../images/headshots/ben-xu.png';
-import ns from '../images/headshots/neil-song.png';
+import px from '../images/headshots/peter-xu.jpg';
+import bx from '../images/headshots/ben-xu.jpg';
+import ns from '../images/headshots/neil-song.jpg';
 import kt from '../images/headshots/kenny-tung.jpg';
+import sc from '../images/headshots/sida-chen.jpg';
 
 // Alumni Headshots
 import hs from '../images/headshots/harshal-sheth.jpg';
 import hl from '../images/headshots/hao-li.jpg';
 import df from '../images/headshots/dylan-fernandez-de-lara.jpg';
-
-// import generic from '../images/headshots/default_pfp.png';
 
 // Header
 const StyledH1 = styled.h1`
@@ -161,6 +160,16 @@ function About() {
         linkedin: 'https://www.linkedin.com/in/tungk/',
         github: 'https://github.com/kentng01/',
         website: 'https://kenneru.netlify.app/',
+      },
+    },
+    {
+      name: 'Sida Chen',
+      image: sc,
+      role: 'Development',
+      links: {
+        linkedin: 'https://www.linkedin.com/in/sida-joshua-chen/',
+        github: 'https://github.com/Josh-Cena/',
+        website: 'https://joshcena.com/',
       },
     },
   ];

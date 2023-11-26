@@ -28,7 +28,7 @@ function Privacy() {
           <strong>PRIVACY NOTICE</strong>
         </p>
         <p>
-          <strong>Last updated January 24, 2023</strong>
+          <strong>Last updated November 20, 2023</strong>
         </p>
         <p>
           This privacy notice for CourseTable ("<strong>Company</strong>," "
@@ -55,6 +55,20 @@ function Privacy() {
             coursetable.at.yale@gmail.com
           </a>
           .
+        </p>
+        <p>
+          <strong>GOOGLE LIMITED USE DISCLOSURE</strong>
+        </p>
+        <p>
+          CourseTable's use and transfer to any other app of information
+          received from Google APIs will adhere to&nbsp;
+          <a
+            href="https://developers.google.com/terms/api-services-user-data-
+policy#additional_requirements_for_specific_api_scopes"
+          >
+            Google API Services User Data Policy
+          </a>
+          , including the Limited Use requirements.
         </p>
         <p>
           <strong>SUMMARY OF KEY POINTS</strong>

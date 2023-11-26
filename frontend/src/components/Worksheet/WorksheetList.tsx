@@ -15,12 +15,12 @@ function WorksheetList() {
 
   const { courses, worksheetLoading, showModal } = useWorksheet();
 
-  const { ordering, num_fb, isLoggedIn } = useSearch();
+  const { ordering, num_friends, isLoggedIn } = useSearch();
 
   const WorksheetData = useMemo(() => {
     // Apply sorting order.
-    return sortCourses(courses, ordering, num_fb);
-  }, [ordering, courses, num_fb]);
+    return sortCourses(courses, ordering, num_friends);
+  }, [ordering, courses, num_friends]);
 
   return (
     <div>
@@ -36,7 +36,7 @@ function WorksheetList() {
               multiSeasons={false}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
-              num_fb={num_fb}
+              num_friends={num_friends}
               page="worksheet"
             />
           </div>

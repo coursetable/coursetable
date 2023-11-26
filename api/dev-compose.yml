@@ -4,13 +4,12 @@ services:
       - '4096:4096'
       - '3001:3001'
     volumes:
-      - ../api/static:/app/static
-      - ../api/src:/app/src
-    build:
-      args:
-        - HOT_RELOAD=true
+      - ../api/static:/usr/src/app/static
+      - ../api/src:/usr/src/app/src
+      - ../api/prisma:/usr/src/app/prisma
     environment:
       OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
+      HOT_RELOAD: ${HOT_RELOAD:-'true'}
 
     depends_on:
       mysql:

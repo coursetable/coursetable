@@ -75,7 +75,7 @@ function Search() {
     multiSeasons,
     reset_key,
     isLoggedIn,
-    num_fb,
+    num_friends,
     course_modal,
     setSearchText,
     setSelectSubjects,
@@ -511,7 +511,7 @@ function Search() {
               multiSeasons={multiSeasons}
               showModal={showModal}
               isLoggedIn={isLoggedIn}
-              num_fb={num_fb}
+              num_friends={num_friends}
             />
           </Element>
         </Col>

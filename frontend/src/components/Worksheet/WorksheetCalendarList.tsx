@@ -132,12 +132,22 @@ function WorksheetCalendarList() {
       <StyledSpacer className="pt-3">
         <StyledContainer layer={1} className="mx-1">
           <div className="shadow-sm p-2">
-            {/* Hide/Show All Button */}
+            {/* Gcal Button */}
             <Row className="mx-auto">
               <Col className="px-0 w-100">
-                <GoogleCalendarButton courses={courses} />
+                <GoogleCalendarButton
+                  courses={courses.filter(function (course) {
+                    return (
+                      !hidden_courses[cur_season] ||
+                      !(course.crn in hidden_courses[cur_season]) ||
+                      !hidden_courses[cur_season][course.crn]
+                    );
+                  })}
+                  season_code={cur_season}
+                />
               </Col>
             </Row>
+            {/* Hide/Show All Button */}
             <Row className="mx-auto">
               <Col className="px-0 w-100">
                 <StyledBtn onClick={() => toggleCourse(areHidden ? -2 : -1)}>

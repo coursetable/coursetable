@@ -1,14 +1,13 @@
 {
   "scripts": {
-    "prestart": "prisma db pull && prisma generate",
     "generate": "prisma generate",
+    "prestart": "prisma generate",
     "start": "ts-node-dev --debug --files --exit-child src/server.ts",
-    "prod": "ts-node --files src/server.ts",
+    "start:prod": "ts-node --files src/server.ts",
     "checks": "bun run depcheck && bun run lint && bun run typecheck",
-    "npm-checks": "npm run depcheck && npm run lint && npm run typecheck",
     "depcheck": "bunx depcheck . --json",
-    "npm-depcheck": "npx depcheck . --json",
-    "lint": "prettier -l . && eslint src",
+    "lint": "bunx prettier -l . && bunx eslint src",
+    "lint:fix": "bunx prettier -w . && bunx eslint src --fix",
     "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
   },
   "nodemonConfig": {
@@ -17,7 +16,7 @@
     ]
   },
   "dependencies": {
-    "@prisma/client": "5.4.0",
+    "@prisma/client": "^5.5.2",
     "@sentry/node": "^7.73.0",
     "@types/app-root-path": "^1.2.6",
     "@types/axios": "^0.14.0",
@@ -46,8 +45,9 @@
     "morgan": "^1.10.0",
     "passport": "0.5.0",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
-    "prisma": "5.4.0",
+    "prisma": "^5.5.2",
     "ts-node": "^10.9.1",
+    "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2",
     "winston": "^3.10.0"
   },
@@ -59,7 +59,6 @@
     "eslint-config-airbnb-typescript": "^17.1.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-import": "^2.28.1",
-    "prettier": "^3.0.3",
-    "ts-node-dev": "^2.0.0"
+    "prettier": "^3.0.3"
   }
 }
