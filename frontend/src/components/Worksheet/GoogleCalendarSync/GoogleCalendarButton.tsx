@@ -94,8 +94,11 @@ function GoogleCalendarButton({
         );
       }
     } catch (e) {
-      console.error('Error syncing user events: ', event);
+      Sentry.captureException('[GCAL]: Error syncing user events: ' + e);
       console.error(e);
+      toast.error('Error syncing Google Calendar Events');
+      setLoading(false);
+      return;
     }
 
     // add new classes
@@ -111,8 +114,9 @@ function GoogleCalendarButton({
             resource: event,
           });
         } catch (e) {
-          console.error('Error adding events to user calendar: ', event);
-          console.error(e);
+          Sentry.captureException(
+            '[GCAL]: Error adding events to user calendar: ' + event,
+          );
         }
       });
     }
@@ -139,7 +143,12 @@ function GoogleCalendarButton({
             signInButton.id = 'sync';
           }
         },
-        Sentry.captureException,
+        (error) => {
+          Sentry.captureException(
+            '[GCAL]: Error signing in to Google Calendar: ' + error,
+          );
+          toast.error('Error signing in to Google Calendar');
+        },
       );
     }
   }, [authInstance, user, syncEvents]);
