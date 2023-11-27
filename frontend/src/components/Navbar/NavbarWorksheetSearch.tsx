@@ -205,6 +205,7 @@ export function NavbarWorksheetSearch() {
     Option | undefined
   >(undefined);
 
+
   const [deleting, setDeleting] = useState(0);
   const [removing, setRemoving] = useState(0);
 
@@ -373,7 +374,6 @@ export function NavbarWorksheetSearch() {
             </Popout>
 
             {/* Add Friend Dropdown */}
-
             <Popout
               buttonText="Add Friend"
               type="adding friends"
@@ -397,6 +397,7 @@ export function NavbarWorksheetSearch() {
                     window.location.reload();
                   }
                 }}
+
               />
             </Popout>
           </FilterGroup>

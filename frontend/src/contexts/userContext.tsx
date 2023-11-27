@@ -166,7 +166,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         });
     },
     [setFriendRequests],
-  )
+  );
 
   const getAllNames = useCallback((suppressError = false): Promise<void> => {
     return axios
