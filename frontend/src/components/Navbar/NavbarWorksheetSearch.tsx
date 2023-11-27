@@ -127,8 +127,6 @@ export function NavbarWorksheetSearch() {
     removeFriend,
     friendRequest,
     resolveFriendRequest,
-    friendReqRefresh,
-    friendRefresh,
   } = useUser();
 
   // FB Friends names
@@ -206,7 +204,7 @@ export function NavbarWorksheetSearch() {
 
   const { isTablet } = useWindowDimensions();
 
-  const [currentFriendNetID, setCurrentFriendNetID] = useState('');
+  // const [currentFriendNetID, setCurrentFriendNetID] = useState('');
 
   const [currentFriendName, setCurrentFriendName] = useState<
     Option | undefined
@@ -324,7 +322,7 @@ export function NavbarWorksheetSearch() {
                       removeFriend(selectedOption.value, user.netId);
                       removeFriend(user.netId, selectedOption.value);
                       alert('Removed friend: ' + selectedOption.value);
-                      window.location.reload(false);
+                      window.location.reload();
                     }
                   }
                 }}
@@ -374,7 +372,7 @@ export function NavbarWorksheetSearch() {
                     } else if (deleting === 1) {
                       alert('Declined friend request: ' + selectedOption.value);
                     }
-                    window.location.reload(false);
+                    window.location.reload();
                   }
                 }}
                 isDisabled={false}
@@ -397,12 +395,13 @@ export function NavbarWorksheetSearch() {
                 placeholder="Start typing a friend's name..."
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (isOption(selectedOption)) {
+                    setCurrentFriendName(selectedOption as Option);
                     friendRequest(getValue(selectedOption as Option));
                     alert(
                       'Sent friend request to: ' +
                         getValue(selectedOption as Option),
                     );
-                    window.location.reload(false);
+                    window.location.reload();
                   }
                 }}
               />

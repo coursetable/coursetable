@@ -140,7 +140,8 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     'worksheet_number',
     '0',
   );
-
+  console.log('cur_worksheet at worksheetcontext: ' + cur_worksheet);
+  console.log('user.worksheet at worksheetcontext: ' + user.worksheet);
   // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
   const {
     loading: worksheetLoading,

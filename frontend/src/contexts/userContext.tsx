@@ -75,7 +75,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     undefined,
   );
   // User's friend requests
-  const [friendRequests, setFriendRequests] = useState<FriendRequest[] | undefined>(undefined);
+  const [friendRequests, setFriendRequests] = useState<
+    FriendRequest[] | undefined
+  >(undefined);
   // All names, used for searching
   const [allNames, setAllNames] = useState<FriendName[] | undefined>(undefined);
 
@@ -168,8 +170,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     [setFriendRequests],
   )
 
-  const getAllNames = useCallback(
-    (suppressError = false): Promise<void> => {
+  const getAllNames = useCallback((suppressError = false): Promise<void> => {
       return axios
         .get(`${API_ENDPOINT}/api/friends/names`, {
           withCredentials: true
@@ -242,7 +243,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       school,
       friendRequests,
       friendWorksheets,
-      allNames
+      allNames,
     };
   }, [
     netId, 
@@ -252,7 +253,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     school, 
     friendRequests, 
     friendWorksheets, 
-    allNames
+    allNames,
   ]);
 
   const store = useMemo(
@@ -268,9 +269,19 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       removeFriend,
       friendRequest,
       resolveFriendRequest,
-      getAllNames
+      getAllNames,
     }),
-    [user, userRefresh, friendRefresh, friendReqRefresh, addFriend, removeFriend, friendRequest, resolveFriendRequest, getAllNames],
+    [
+      user, 
+      userRefresh, 
+      friendRefresh, 
+      friendReqRefresh, 
+      addFriend, 
+      removeFriend, 
+      friendRequest, 
+      resolveFriendRequest, 
+      getAllNames
+    ],
   );
 
   return <UserContext.Provider value={store}>{children}</UserContext.Provider>;
