@@ -167,7 +167,7 @@ function GoogleCalendarButton({
       onClick={user ? syncEvents : undefined}
     >
       <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
-      &nbsp;&nbsp;Sync with Google Calendar
+      &nbsp;&nbsp;Export to Google Calendar
     </StyledBtn>
   );
 }
