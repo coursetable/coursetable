@@ -67,10 +67,10 @@ export const checkConflict = (
           const cur_start = moment(courseStartTime, 'HH:mm');
           const cur_end = moment(courseEndTime, 'HH:mm');
           // Fix invalid times
-          if (listing_start.hour() < 8) listing_start.add(12, 'h');
-          if (listing_end.hour() < 8) listing_end.add(12, 'h');
-          if (cur_start.hour() < 8) cur_start.add(12, 'h');
-          if (cur_end.hour() < 8) cur_end.add(12, 'h');
+          if (listing_start.hour() < 7) listing_start.add(12, 'h');
+          if (listing_end.hour() < 7) listing_end.add(12, 'h');
+          if (cur_start.hour() < 7) cur_start.add(12, 'h');
+          if (cur_end.hour() < 7) cur_end.add(12, 'h');
           // Conflict exists
           if (
             !(listing_start > cur_end || cur_start > listing_end) &&

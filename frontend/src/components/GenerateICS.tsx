@@ -71,8 +71,8 @@ export const generateICS = (listings_all: Listing[]) => {
           .date(day.date())
           .year(day.year());
         // Correct hour
-        if (start.hour() < 8) start.add(12, 'h');
-        if (end.hour() < 8) end.add(12, 'h');
+        if (start.hour() < 7) start.add(12, 'h');
+        if (end.hour() < 7) end.add(12, 'h');
         // Calculate duration
         const duration = end.diff(start, 'minutes');
         // Add listing to events list
