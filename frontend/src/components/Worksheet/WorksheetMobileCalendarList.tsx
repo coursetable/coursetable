@@ -3,6 +3,7 @@ import { ListGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SurfaceComponent } from '../StyledComponents';
 import WorksheetMobileCalendarListItem from './WorksheetMobileCalendarListItem';
+import WorksheetStats from './WorksheetStats';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
@@ -127,6 +128,7 @@ function WorksheetMobileCalendarList() {
 
   return (
     <>
+      <WorksheetStats />
       {/* Hide/show toggle */}
       <StyledSpacer className="pt-3">
         <StyledContainer layer={1} className="mx-1">

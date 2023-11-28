@@ -1,0 +1,46 @@
+.stats {
+  padding: 1em 0.5em;
+  border-radius: 8px;
+  background: #a0a0a022;
+  margin-top: 1em;
+}
+
+.stats ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: 1em;
+  align-items: center;
+  justify-content: center;
+}
+
+.stats li {
+  box-shadow: 0 2px 6px 0px rgba(0, 0, 0, 0.2);
+  border-radius: 8px;
+  width: 45%;
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+}
+
+.stats li span {
+  padding: 0.5em;
+  font-weight: 600;
+  font-size: 14px;
+  flex-grow: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.stats li span:first-of-type {
+  border-radius: 8px 0 0 8px;
+}
+
+.stats li span:last-of-type {
+  border-radius: 0 8px 8px 0;
+}
