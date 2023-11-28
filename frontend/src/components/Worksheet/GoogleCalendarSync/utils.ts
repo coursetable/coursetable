@@ -31,14 +31,15 @@ const getTimes = (times_by_day: Listing['times_by_day']) => {
   for (let idx = 1; idx <= 5; idx++) {
     const info = times_by_day[weekdays[idx - 1]];
     if (!info) continue;
-    registerTime: for (const [startTime, endTime, location] of info) {
-      for (const time of times) {
-        if (time.startTime === startTime && time.endTime === endTime) {
-          time.days.push(idx + 1);
-          continue registerTime;
-        }
+    for (const [startTime, endTime, location] of info) {
+      const time = times.find(
+        (t) => t.startTime === startTime && t.endTime === endTime,
+      );
+      if (time) {
+        time.days.push(idx);
+      } else {
+        times.push({ days: [idx], startTime, endTime, location });
       }
-      times.push({ days: [idx + 1], startTime, endTime, location });
     }
   }
   return times;
