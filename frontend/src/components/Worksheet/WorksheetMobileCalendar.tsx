@@ -93,8 +93,8 @@ function WorksheetMobileCalendar() {
               const start = moment(startTime, 'HH:mm').day(1 + indx);
               const end = moment(endTime, 'HH:mm').day(1 + indx);
               // Fix any incorrect values
-              if (start.get('hour') < 8) start.add(12, 'h');
-              if (end.get('hour') < 8) end.add(12, 'h');
+              if (start.get('hour') < 7) start.add(12, 'h');
+              if (end.get('hour') < 7) end.add(12, 'h');
               const value = course.course_code;
               // Add event dictionary to the list
               parsedCourses.push({
