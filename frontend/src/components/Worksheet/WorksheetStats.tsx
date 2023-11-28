@@ -1,5 +1,5 @@
-import React from 'react';
-import { Badge } from 'react-bootstrap';
+import React, { useState } from 'react';
+import { Badge, Collapse } from 'react-bootstrap';
 import styled from 'styled-components';
 import chroma from 'chroma-js';
 import tagStyles from '../Search/ResultsItem.module.css';
@@ -29,6 +29,7 @@ const workloadColormap = chroma
   .domain([12, 24]);
 
 export default function WorksheetStats() {
+  const [shown, setShown] = useState(true);
   const { courses, hidden_courses, cur_season } = useWorksheet();
   const {
     courseCnt,
@@ -61,53 +62,68 @@ export default function WorksheetStats() {
   );
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
-    <div className={styles.stats}>
-      <ul>
-        <li>
-          <StyledStatPill>Total courses</StyledStatPill>
-          <StyledStatPill colormap={courseNumberColormap} stat={courseCnt}>
-            {courseCnt}
-          </StyledStatPill>
-        </li>
-        <li>
-          <StyledStatPill>Total credits</StyledStatPill>
-          <StyledStatPill colormap={creditColormap} stat={credits}>
-            {credits}
-          </StyledStatPill>
-        </li>
-        <li>
-          <StyledStatPill>Total workload</StyledStatPill>
-          <StyledStatPill colormap={workloadColormap} stat={workload}>
-            {workload.toFixed(2)}
-          </StyledStatPill>
-        </li>
-        <li>
-          <StyledStatPill>Average rating</StyledStatPill>
-          <StyledStatPill colormap={ratingColormap} stat={avgRating}>
-            {avgRating.toFixed(2)}
-          </StyledStatPill>
-        </li>
-        <li className={styles.wide}>
-          <StyledStatPill>Skills & Areas</StyledStatPill>
-          <StyledStatPill>
-            {skillsAreas.sort().map((skill, i) => (
-              <Badge
-                variant="secondary"
-                className={tagStyles.tag}
-                style={{
-                  color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill])
-                    .alpha(0.16)
-                    .css(),
-                }}
-                key={i}
-              >
-                {skill}
-              </Badge>
-            ))}
-          </StyledStatPill>
-        </li>
-      </ul>
-    </div>
+    <>
+      <button
+        className={`${styles.toggleButton} ${shown ? '' : styles.rounded}`}
+        onClick={() => setShown(!shown)}
+      >
+        Summary
+      </button>
+      <Collapse in={shown}>
+        <div>
+          <div className={styles.stats}>
+            <ul>
+              <li>
+                <StyledStatPill>Total courses</StyledStatPill>
+                <StyledStatPill
+                  colormap={courseNumberColormap}
+                  stat={courseCnt}
+                >
+                  {courseCnt}
+                </StyledStatPill>
+              </li>
+              <li>
+                <StyledStatPill>Total credits</StyledStatPill>
+                <StyledStatPill colormap={creditColormap} stat={credits}>
+                  {credits}
+                </StyledStatPill>
+              </li>
+              <li>
+                <StyledStatPill>Total workload</StyledStatPill>
+                <StyledStatPill colormap={workloadColormap} stat={workload}>
+                  {workload.toFixed(2)}
+                </StyledStatPill>
+              </li>
+              <li>
+                <StyledStatPill>Average rating</StyledStatPill>
+                <StyledStatPill colormap={ratingColormap} stat={avgRating}>
+                  {avgRating.toFixed(2)}
+                </StyledStatPill>
+              </li>
+              <li className={styles.wide}>
+                <StyledStatPill>Skills & Areas</StyledStatPill>
+                <StyledStatPill>
+                  {skillsAreas.sort().map((skill, i) => (
+                    <Badge
+                      variant="secondary"
+                      className={tagStyles.tag}
+                      style={{
+                        color: skillsAreasColors[skill],
+                        backgroundColor: chroma(skillsAreasColors[skill])
+                          .alpha(0.16)
+                          .css(),
+                      }}
+                      key={i}
+                    >
+                      {skill}
+                    </Badge>
+                  ))}
+                </StyledStatPill>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </Collapse>
+    </>
   );
 }

@@ -1,8 +1,21 @@
-.stats {
-  padding: 1em 0.5em;
-  border-radius: 8px;
+.toggleButton {
   background: #a0a0a022;
+  border-radius: 8px 8px 0 0;
+  padding: 0.5em;
+  border: none;
+  width: 100%;
+  font-weight: 600;
   margin-top: 1em;
+}
+
+.rounded {
+  border-radius: 8px;
+}
+
+.stats {
+  border-radius: 0 0 8px 8px;
+  background: #a0a0a022;
+  padding: 1em 0.5em;
 }
 
 .stats ul {
