@@ -35,6 +35,16 @@ import {
 import { useSameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import { weekdays } from '../../utilities/common';
 
+function convert24To12(time) {
+  const [hour, minute] = time.split(':');
+  let hourInt = parseInt(hour, 10);
+  const ampm = hourInt >= 12 ? 'pm' : 'am';
+  hourInt %= 12;
+  if (hourInt === 0) hourInt = 12;
+  const minuteInt = parseInt(minute, 10);
+  return `${hourInt}:${minuteInt.toString().padStart(2, '0')}${ampm}`;
+}
+
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
   background-color: ${({ theme }) =>
@@ -94,11 +104,14 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
         );
       }
       locations.set(location, locationURL);
-      const timespan = `${startTime}-${endTime}`;
+      const timespan = `${convert24To12(startTime)}-${convert24To12(endTime)}`;
       if (!times.has(timespan)) {
-        times.set(timespan, []);
+        times.set(timespan, new Set());
       }
-      times.get(timespan).push(day);
+      // Note! Some classes have multiple places at the same time, particularly
+      // if one is "online". Avoid duplicates.
+      // See for example: CDE 567, Spring 2023
+      times.get(timespan).add(day);
     }
   }
 
@@ -604,7 +617,9 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             >
               {[...times.entries()].map(([timespan, days]) => (
                 <div key={timespan}>
-                  {days.map((d) => (d === 'Thursday' ? 'Th' : d[0])).join('')}{' '}
+                  {[...days]
+                    .map((d) => (d === 'Thursday' ? 'Th' : d[0]))
+                    .join('')}{' '}
                   {timespan}
                 </div>
               ))}
