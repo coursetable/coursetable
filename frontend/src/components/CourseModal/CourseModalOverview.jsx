@@ -7,6 +7,7 @@ import {
   Popover,
   Collapse,
 } from 'react-bootstrap';
+import * as Sentry from '@sentry/react';
 import '../Search/MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
@@ -81,12 +82,23 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
       )
     : [];
 
-  // Parse for location url and location name
-  let location_url = '';
-  for (const i in weekdays) {
-    const day = weekdays[i];
-    if (listing.times_by_day && listing.times_by_day[day]) {
-      location_url = listing.times_by_day[day][0][3];
+  const locations = new Map();
+  const times = new Map();
+  for (const day of weekdays) {
+    const info = listing.times_by_day[day];
+    if (!info) continue;
+    for (const [startTime, endTime, location, locationURL] of info) {
+      if (locations.has(location) && locations.get(location) !== locationURL) {
+        Sentry.captureException(
+          new Error(`Duplicate location ${location} with different URLs`),
+        );
+      }
+      locations.set(location, locationURL);
+      const timespan = `${startTime}-${endTime}`;
+      if (!times.has(timespan)) {
+        times.set(timespan, []);
+      }
+      times.get(timespan).push(day);
     }
   }
 
@@ -590,7 +602,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               xs={11 - COL_LEN_LEFT}
               className={Styles.metadata}
             >
-              {listing.times_summary}
+              {[...times.entries()].map(([timespan, days]) => (
+                <div key={timespan}>
+                  {days.map((d) => (d === 'Thursday' ? 'Th' : d[0])).join('')}{' '}
+                  {timespan}
+                </div>
+              ))}
             </Col>
           </Row>
           {/* Course Location */}
@@ -603,19 +620,22 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               xs={11 - COL_LEN_LEFT}
               className={Styles.metadata}
             >
-              {location_url !== '' ? (
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href={location_url}
-                  className="d-flex"
-                >
-                  {listing.locations_summary}
-                  <HiExternalLink size={18} className="ml-1 my-auto" />
-                </a>
-              ) : (
-                listing.locations_summary
-              )}
+              {[...locations.entries()].map(([location, location_url]) => (
+                <div key={location}>
+                  {location_url ? (
+                    <a
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      href={location_url}
+                    >
+                      {location}
+                      <HiExternalLink size={18} className="ml-1 my-auto" />
+                    </a>
+                  ) : (
+                    location
+                  )}
+                </div>
+              ))}
             </Col>
           </Row>
           {/* Course Section */}

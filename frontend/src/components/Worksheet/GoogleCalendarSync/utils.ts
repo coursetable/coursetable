@@ -1,8 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
+import { weekdays } from '../../../utilities/common';
 import { Listing } from '../../Providers/FerryProvider';
 import moment from 'moment';
-
-const TBA_STRING = 'TBA';
 
 const getISODateString = (day: number, time: string, reference: Date) => {
   const ret = new Date(
@@ -22,33 +21,26 @@ const getISODateString = (day: number, time: string, reference: Date) => {
 };
 
 const getTimes = (times_by_day: Listing['times_by_day']) => {
-  const daysMapping: Record<string, number> = {
-    Monday: 1,
-    Tuesday: 2,
-    Wednesday: 3,
-    Thursday: 4,
-    Friday: 5,
-    Saturday: 6,
-    Sunday: 0,
-  };
+  const times: {
+    days: number[];
+    startTime: string;
+    endTime: string;
+    location: string;
+  }[] = [];
 
-  const days = [];
-
-  let startTime, endTime;
-
-  for (const day of Object.keys(times_by_day) as Array<
-    keyof typeof times_by_day
-  >) {
-    days.push(daysMapping[day]);
-    // Assuming each day starts and ends at the same time for now
-    [[startTime, endTime]] = times_by_day[day]!;
+  for (let idx = 0; idx < 5; idx++) {
+    if (!times_by_day[weekdays[idx]]) continue;
+    for (const [startTime, endTime, location] of times_by_day[weekdays[idx]]!) {
+      for (const time of times) {
+        if (time.startTime === startTime && time.endTime === endTime) {
+          time.days.push(idx + 1);
+          break;
+        }
+      }
+      times.push({ days: [idx + 1], startTime, endTime, location });
+    }
   }
-
-  return {
-    days,
-    startTime: startTime!,
-    endTime: endTime!,
-  };
+  return times;
 };
 
 const ISOtoICalFormat = (iso: string) =>
@@ -56,98 +48,105 @@ const ISOtoICalFormat = (iso: string) =>
     .replace(/[-:]/g, '') // Remove the hyphens and colons
     .substring(0, 15); // Remove timezone
 
-export const constructCalendarEvent = (course: Listing, colorIndex: number) => {
-  if (course.times_summary === TBA_STRING) {
-    console.warn('TBA course', course.title);
-    return undefined;
-  }
-
+export const constructCalendarEvents = (
+  course: Listing,
+  colorIndex: number,
+) => {
   const first_of_semester =
     course.season_code === '202303'
       ? new Date('2023-08-30')
       : new Date('2024-01-16');
   const end_of_semester =
     course.season_code === '202303' ? '20231208T115959Z' : '20240426T115959Z';
-
-  const { days, startTime, endTime } = getTimes(course.times_by_day);
-
-  let calendarStartTime,
-    calendarEndTime = '';
-  for (const day of days) {
-    if (day > first_of_semester.getDay()) {
-      calendarStartTime = getISODateString(day, startTime, first_of_semester);
-      calendarEndTime = getISODateString(day, endTime, first_of_semester);
-      break;
-    }
-  }
-  if (!calendarStartTime) {
-    calendarStartTime = getISODateString(days[0], startTime, first_of_semester);
-    calendarEndTime = getISODateString(days[0], endTime, first_of_semester);
-  }
-
-  let breaks = '';
-  if (course.season_code === '202303') {
-    const fall_break = new Date('2023-10-18');
-    for (const day of days) {
-      if (day > fall_break.getDay()) {
-        breaks +=
-          ISOtoICalFormat(getISODateString(day, startTime, fall_break)) + ',';
+  return getTimes(course.times_by_day).map(
+    ({ days, startTime, endTime, location }) => {
+      let calendarStartTime,
+        calendarEndTime = '';
+      for (const day of days) {
+        if (day > first_of_semester.getDay()) {
+          calendarStartTime = getISODateString(
+            day,
+            startTime,
+            first_of_semester,
+          );
+          calendarEndTime = getISODateString(day, endTime, first_of_semester);
+          break;
+        }
       }
-    }
+      if (!calendarStartTime) {
+        calendarStartTime = getISODateString(
+          days[0],
+          startTime,
+          first_of_semester,
+        );
+        calendarEndTime = getISODateString(days[0], endTime, first_of_semester);
+      }
 
-    const thanksgiving_break = new Date('2023-11-20');
-    for (const day of days) {
-      breaks +=
-        ISOtoICalFormat(getISODateString(day, startTime, thanksgiving_break)) +
-        ',';
-    }
-  } else if (course.season_code === '202401') {
-    const spring_break_w1 = new Date('2024-03-11');
-    for (const day of days) {
-      breaks +=
-        ISOtoICalFormat(getISODateString(day, startTime, spring_break_w1)) +
-        ',';
-    }
+      let breaks = '';
+      if (course.season_code === '202303') {
+        const fall_break = new Date('2023-10-18');
+        for (const day of days) {
+          if (day > fall_break.getDay()) {
+            breaks +=
+              ISOtoICalFormat(getISODateString(day, startTime, fall_break)) +
+              ',';
+          }
+        }
 
-    const spring_break_w2 = new Date('2024-03-18');
-    for (const day of days) {
-      breaks +=
-        ISOtoICalFormat(getISODateString(day, startTime, spring_break_w2)) +
-        ',';
-    }
-  }
+        const thanksgiving_break = new Date('2023-11-20');
+        for (const day of days) {
+          breaks +=
+            ISOtoICalFormat(
+              getISODateString(day, startTime, thanksgiving_break),
+            ) + ',';
+        }
+      } else if (course.season_code === '202401') {
+        const spring_break_w1 = new Date('2024-03-11');
+        for (const day of days) {
+          breaks +=
+            ISOtoICalFormat(getISODateString(day, startTime, spring_break_w1)) +
+            ',';
+        }
 
-  const byDayMapping: Record<number, string> = {
-    0: 'SU',
-    1: 'MO',
-    2: 'TU',
-    3: 'WE',
-    4: 'TH',
-    5: 'FR',
-    6: 'SA',
-  };
+        const spring_break_w2 = new Date('2024-03-18');
+        for (const day of days) {
+          breaks +=
+            ISOtoICalFormat(getISODateString(day, startTime, spring_break_w2)) +
+            ',';
+        }
+      }
 
-  const byDay = days.map((day) => byDayMapping[day]).join(',');
+      const byDayMapping: Record<number, string> = {
+        0: 'SU',
+        1: 'MO',
+        2: 'TU',
+        3: 'WE',
+        4: 'TH',
+        5: 'FR',
+        6: 'SA',
+      };
 
-  const event = {
-    id: 'coursetable' + uuidv4().replace(/-/g, ''),
-    summary: course.course_code,
-    start: {
-      dateTime: calendarStartTime,
-      timeZone: 'America/New_York',
+      const byDay = days.map((day) => byDayMapping[day]).join(',');
+
+      return {
+        id: 'coursetable' + uuidv4().replace(/-/g, ''),
+        summary: course.course_code,
+        start: {
+          dateTime: calendarStartTime,
+          timeZone: 'America/New_York',
+        },
+        end: {
+          dateTime: calendarEndTime,
+          timeZone: 'America/New_York',
+        },
+        recurrence: [
+          `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${end_of_semester}`,
+          `EXDATE;TZID=America/New_York:${breaks}`,
+        ],
+        colorId: (colorIndex + 1).toString(),
+        description: course.title,
+        location,
+      };
     },
-    end: {
-      dateTime: calendarEndTime,
-      timeZone: 'America/New_York',
-    },
-    recurrence: [
-      `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${end_of_semester}`,
-      `EXDATE;TZID=America/New_York:${breaks}`,
-    ],
-    colorId: (colorIndex + 1).toString(),
-    description: course.title,
-    location: course.locations_summary,
-  };
-
-  return event;
+  );
 };
