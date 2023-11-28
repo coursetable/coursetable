@@ -26,7 +26,7 @@
   align-items: stretch;
 }
 
-.stats li span {
+.stats li > span {
   padding: 0.5em;
   font-weight: 600;
   font-size: 14px;
@@ -35,6 +35,7 @@
   align-items: center;
   justify-content: center;
   text-align: center;
+  flex-wrap: wrap;
 }
 
 .stats li span:first-of-type {
@@ -43,4 +44,8 @@
 
 .stats li span:last-of-type {
   border-radius: 0 8px 8px 0;
+}
+
+.wide {
+  flex-grow: 0.9;
 }

@@ -1,12 +1,21 @@
 import React from 'react';
+import { Badge } from 'react-bootstrap';
 import styled from 'styled-components';
 import chroma from 'chroma-js';
+import tagStyles from '../Search/ResultsItem.module.css';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { ratingColormap } from '../../queries/Constants';
+import { ratingColormap, skillsAreasColors } from '../../queries/Constants';
 import styles from './WorksheetStats.module.css';
 
-const StyledStatPill = styled.span<{ bgColor?: string }>`
-  background-color: ${({ theme, bgColor }) => bgColor ?? theme.surface[0]};
+const StyledStatPill = styled.span<
+  | { colormap: chroma.Scale<chroma.Color>; stat: number }
+  | { colormap?: never; stat?: never }
+>`
+  background-color: ${({ theme, colormap, stat }) =>
+    colormap
+      ? colormap(stat).alpha(theme.rating_alpha).css()
+      : theme.surface[0]};
+  color: ${({ theme, stat }) => (stat ? '#141414' : theme.text[0])};
 `;
 
 const courseNumberColormap = chroma
@@ -21,44 +30,81 @@ const workloadColormap = chroma
 
 export default function WorksheetStats() {
   const { courses, hidden_courses, cur_season } = useWorksheet();
-  const { courseCnt, credits, workload, rating } = courses.reduce(
+  const {
+    courseCnt,
+    coursesWithRating,
+    credits,
+    workload,
+    rating,
+    skillsAreas,
+  } = courses.reduce(
     (acc, c) =>
       hidden_courses[cur_season]?.[c.crn]
         ? acc
         : {
             courseCnt: acc.courseCnt + 1,
+            coursesWithRating:
+              acc.coursesWithRating + (c.average_rating ? 1 : 0),
             credits: acc.credits + (c.credits ?? 0),
             workload: acc.workload + (c.average_workload ?? 0),
             rating: acc.rating + (c.average_rating ?? 0),
+            skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
           },
-    { courseCnt: 0, credits: 0, workload: 0, rating: 0 },
+    {
+      courseCnt: 0,
+      coursesWithRating: 0,
+      credits: 0,
+      workload: 0,
+      rating: 0,
+      skillsAreas: [] as string[],
+    },
   );
-  const avgRating = courseCnt === 0 ? 0 : rating / courseCnt;
+  const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
     <div className={styles.stats}>
       <ul>
         <li>
           <StyledStatPill>Total courses</StyledStatPill>
-          <StyledStatPill bgColor={courseNumberColormap(courseCnt).css()}>
+          <StyledStatPill colormap={courseNumberColormap} stat={courseCnt}>
             {courseCnt}
           </StyledStatPill>
         </li>
         <li>
           <StyledStatPill>Total credits</StyledStatPill>
-          <StyledStatPill bgColor={creditColormap(credits).css()}>
+          <StyledStatPill colormap={creditColormap} stat={credits}>
             {credits}
           </StyledStatPill>
         </li>
         <li>
           <StyledStatPill>Total workload</StyledStatPill>
-          <StyledStatPill bgColor={workloadColormap(workload).css()}>
+          <StyledStatPill colormap={workloadColormap} stat={workload}>
             {workload.toFixed(2)}
           </StyledStatPill>
         </li>
         <li>
           <StyledStatPill>Average rating</StyledStatPill>
-          <StyledStatPill bgColor={ratingColormap(avgRating).css()}>
+          <StyledStatPill colormap={ratingColormap} stat={avgRating}>
             {avgRating.toFixed(2)}
+          </StyledStatPill>
+        </li>
+        <li className={styles.wide}>
+          <StyledStatPill>Skills & Areas</StyledStatPill>
+          <StyledStatPill>
+            {skillsAreas.sort().map((skill, i) => (
+              <Badge
+                variant="secondary"
+                className={tagStyles.tag}
+                style={{
+                  color: skillsAreasColors[skill],
+                  backgroundColor: chroma(skillsAreasColors[skill])
+                    .alpha(0.16)
+                    .css(),
+                }}
+                key={i}
+              >
+                {skill}
+              </Badge>
+            ))}
           </StyledStatPill>
         </li>
       </ul>
