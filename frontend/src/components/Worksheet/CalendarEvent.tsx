@@ -7,6 +7,15 @@ import type { Listing } from '../Providers/FerryProvider';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
+export interface CourseEvent {
+  title: string;
+  start: Date;
+  end: Date;
+  listing: Listing;
+  id: number;
+  location: string;
+}
+
 const event_style = {
   width: '100%',
   height: '100%',
@@ -25,14 +34,7 @@ function truncatedText(
   return `${text.slice(0, max)}...`;
 }
 
-function CalendarEvent({
-  event,
-}: {
-  event: {
-    listing: Listing;
-    title: string;
-  };
-}) {
+function CalendarEvent({ event }: { event: CourseEvent }) {
   const course = event.listing;
   return (
     <OverlayTrigger
@@ -71,9 +73,7 @@ function CalendarEvent({
             basedOn="words"
           />
         </span>
-        <small className="location_text">
-          {event.listing.locations_summary}
-        </small>
+        <small className="location_text">{event.location}</small>
       </div>
     </OverlayTrigger>
   );

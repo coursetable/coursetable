@@ -5,7 +5,7 @@ import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { StyledBtn } from '../WorksheetCalendarList';
 import { Listing } from '../../Providers/FerryProvider';
-import { constructCalendarEvent } from './utils';
+import { constructCalendarEvents } from './utils';
 import GCalIcon from '../../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
@@ -100,14 +100,8 @@ function GoogleCalendarButton({
       setLoading(false);
       return;
     }
-
-    // add new classes
-    if (courses.length > 0) {
-      courses.forEach(async (course, colorIndex) => {
-        const event = constructCalendarEvent(course, colorIndex);
-        if (!event) {
-          return;
-        }
+    const promises = courses.flatMap((course, colorIndex) =>
+      constructCalendarEvents(course, colorIndex).map(async (event) => {
         try {
           await gapi.client.calendar.events.insert({
             calendarId: 'primary',
@@ -118,8 +112,9 @@ function GoogleCalendarButton({
             '[GCAL]: Error adding events to user calendar: ' + event,
           );
         }
-      });
-    }
+      }),
+    );
+    await Promise.all(promises);
 
     setLoading(false);
     toast.success('Synced with Google Calendar!');

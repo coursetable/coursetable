@@ -60,34 +60,36 @@ export const generateICS = (listings_all: Listing[]) => {
       const info = listing.times_by_day[weekday];
       // Continue if the course doesn't take place on this day of the week
       if (info === undefined) continue;
-      // Get start and end times of the listing
-      const start = moment(info[0][0], 'HH:mm')
-        .month(day.month())
-        .date(day.date())
-        .year(day.year());
-      const end = moment(info[0][1], 'HH:mm')
-        .month(day.month())
-        .date(day.date())
-        .year(day.year());
-      // Correct hour
-      if (start.hour() < 8) start.add(12, 'h');
-      if (end.hour() < 8) end.add(12, 'h');
-      // Calculate duration
-      const duration = end.diff(start, 'minutes');
-      // Add listing to evenets list
-      events.push({
-        title: listing.course_code,
-        description: listing.title,
-        location: listing.locations_summary,
-        start: [
-          start.year(),
-          start.month() + 1,
-          start.date(),
-          start.hour(),
-          start.minute(),
-        ] as [number, number, number, number, number],
-        duration: { minutes: duration },
-      });
+      for (const [startTime, endTime, location] of info) {
+        // Get start and end times of the listing
+        const start = moment(startTime, 'HH:mm')
+          .month(day.month())
+          .date(day.date())
+          .year(day.year());
+        const end = moment(endTime, 'HH:mm')
+          .month(day.month())
+          .date(day.date())
+          .year(day.year());
+        // Correct hour
+        if (start.hour() < 8) start.add(12, 'h');
+        if (end.hour() < 8) end.add(12, 'h');
+        // Calculate duration
+        const duration = end.diff(start, 'minutes');
+        // Add listing to events list
+        events.push({
+          title: listing.course_code,
+          description: listing.title,
+          location,
+          start: [
+            start.year(),
+            start.month() + 1,
+            start.date(),
+            start.hour(),
+            start.minute(),
+          ] as [number, number, number, number, number],
+          duration: { minutes: duration },
+        });
+      }
     }
   }
 
