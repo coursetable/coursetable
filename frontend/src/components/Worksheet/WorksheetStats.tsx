@@ -34,7 +34,7 @@ export default function WorksheetStats() {
   //console.log(courses);
   const countedCourseCodes = new Map();
 
-const {
+  const {
     courseCnt,
     coursesWithRating,
     credits,
@@ -45,25 +45,26 @@ const {
     (acc, c) => {
       //const sectionIsInt = Number.isInteger(parseInt(c.section));
       // see if any of the course's codes have already been counted or if it's hidden so we don't double count
-      const alreadyCounted = c.all_course_codes.some(code => countedCourseCodes.get(code)) || hidden_courses[cur_season]?.[c.crn];
+      const alreadyCounted =
+        c.all_course_codes.some((code) => countedCourseCodes.get(code)) ||
+        hidden_courses[cur_season]?.[c.crn];
 
       if (alreadyCounted) {
         return acc;
       }
 
       // mark codes as counting, no double counting
-      c.all_course_codes.forEach(code => {
+      c.all_course_codes.forEach((code) => {
         countedCourseCodes.set(code, true);
       });
 
       return {
-          courseCnt: acc.courseCnt + 1,
-          coursesWithRating:
-            acc.coursesWithRating + (c.average_rating ? 1 : 0),
-          credits: acc.credits + (c.credits ?? 0),
-          workload: acc.workload + (c.average_workload ?? 0),
-          rating: acc.rating + (c.average_rating ?? 0),
-          skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
+        courseCnt: acc.courseCnt + 1,
+        coursesWithRating: acc.coursesWithRating + (c.average_rating ? 1 : 0),
+        credits: acc.credits + (c.credits ?? 0),
+        workload: acc.workload + (c.average_workload ?? 0),
+        rating: acc.rating + (c.average_rating ?? 0),
+        skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
       };
     },
     {
