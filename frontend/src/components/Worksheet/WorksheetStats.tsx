@@ -48,7 +48,7 @@ export default function WorksheetStats() {
       const shouldNotCount =
         c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
         hidden_courses[cur_season]?.[c.crn];
-      const useCourseInfo =  c.credits;
+      const useCourseInfo = c.credits;
 
       if (shouldNotCount || !useCourseInfo) {
         return acc;
