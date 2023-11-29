@@ -8,7 +8,7 @@ import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import styles from './CourseModal.module.css';
 import tag_styles from '../Search/ResultsItem.module.css';

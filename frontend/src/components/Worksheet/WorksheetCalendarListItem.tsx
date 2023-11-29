@@ -5,7 +5,7 @@ import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Listing } from '../Providers/FerryProvider';
+import type { Listing } from '../../utilities/common';
 
 // Listgroup Item for worksheet list item
 const StyledListItem = styled(ListGroup.Item)`

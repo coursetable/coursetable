@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from 'uuid';
-import { weekdays } from '../../../utilities/common';
-import { Listing } from '../../Providers/FerryProvider';
+import { weekdays, type Listing } from '../../../utilities/common';
 import moment from 'moment';
 
 const getISODateString = (day: number, time: string, reference: Date) => {

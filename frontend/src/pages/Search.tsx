@@ -15,7 +15,7 @@ import {
   subjectOptions,
 } from '../queries/Constants';
 
-import { useWindowDimensions } from '../components/Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/Search/SortByReactSelect';
 
@@ -29,7 +29,7 @@ import {
   TextComponent,
 } from '../components/StyledComponents';
 
-import { useSessionStorageState } from '../browserStorage';
+import { useSessionStorageState } from '../utilities/browserStorage';
 import { useSearch, Option, defaultFilters } from '../contexts/searchContext';
 import { ValueType } from 'react-select/src/types';
 // import {

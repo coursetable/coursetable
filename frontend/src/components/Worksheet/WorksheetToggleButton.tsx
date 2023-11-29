@@ -7,9 +7,9 @@ import axios from 'axios';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import { useUser } from '../../contexts/userContext';
-import { setLSObject } from '../../browserStorage';
+import { setLSObject } from '../../utilities/browserStorage';
 import { isInWorksheet } from '../../utilities/courseUtilities';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../../config';

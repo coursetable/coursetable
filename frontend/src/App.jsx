@@ -24,9 +24,8 @@ import GraphiqlLogin from './pages/GraphiqlLogin';
 import Join from './pages/Join';
 
 import { useUser } from './contexts/userContext';
-import { useLocalStorageState } from './browserStorage';
-import { useWindowDimensions } from './components/Providers/WindowDimensionsProvider';
-import { lightTheme } from './components/Themes';
+import { useLocalStorageState } from './utilities/browserStorage';
+import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -89,10 +88,6 @@ function App({ themeToggler }) {
     location,
     setIsTutorialOpen,
   ]);
-
-  useEffect(() => {
-    document.body.style.transition = `background-color ${lightTheme.trans_dur}`;
-  }, []);
 
   // Render spinner if page loading
   if (loading) {

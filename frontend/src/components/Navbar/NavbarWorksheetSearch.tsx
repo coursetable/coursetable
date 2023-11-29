@@ -14,7 +14,7 @@ import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../contexts/userContext';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 // Row in navbar search
 const StyledRow = styled(Row)`
   width: auto;

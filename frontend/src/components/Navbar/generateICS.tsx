@@ -2,10 +2,9 @@
 
 import moment from 'moment';
 import { toast } from 'react-toastify';
-import { weekdays } from '../utilities/common';
-import { toSeasonString } from '../utilities/courseUtilities';
+import { weekdays, type Listing } from '../../utilities/common';
+import { toSeasonString } from '../../utilities/courseUtilities';
 import * as Sentry from '@sentry/react';
-import { Listing } from './Providers/FerryProvider';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 import ics from 'ics';

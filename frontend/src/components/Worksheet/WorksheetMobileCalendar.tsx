@@ -10,9 +10,8 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
 import CalendarEvent, { type CourseEvent } from './CalendarEvent';
-import { weekdays } from '../../utilities/common';
+import { weekdays, type Listing } from '../../utilities/common';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Listing } from '../Providers/FerryProvider';
 import WorksheetMobileCalendarList from './WorksheetMobileCalendarList';
 
 const localizer = momentLocalizer(moment);

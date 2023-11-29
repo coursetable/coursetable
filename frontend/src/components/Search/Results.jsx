@@ -5,7 +5,7 @@ import ResultsGridItem from './ResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
 
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import Styles from './Results.module.css';
 import './Results.css';

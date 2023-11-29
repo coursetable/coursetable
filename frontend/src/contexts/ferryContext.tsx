@@ -8,15 +8,13 @@ import React, {
 } from 'react';
 
 import axios from 'axios';
-import { expectType, TypeOf } from 'ts-expect';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
-import _seasons from '../../generated/seasons.json';
-import { CatalogBySeasonQuery } from '../../generated/graphql';
-import { Crn, Season, Weekdays } from '../../utilities/common';
+import _seasons from '../generated/seasons.json';
+import type { Crn, Season, Listing } from '../utilities/common';
 import * as Sentry from '@sentry/react';
 
-import { API_ENDPOINT } from '../../config';
+import { API_ENDPOINT } from '../config';
 
 // Preprocess seasons data.
 // We need to wrap this inside the "seasons" key of an object
@@ -26,46 +24,6 @@ import { API_ENDPOINT } from '../../config';
 const seasons = {
   seasons: [..._seasons].reverse(),
 };
-
-type _RawListingResponse =
-  CatalogBySeasonQuery['computed_listing_info'][number];
-type _ListingOverrides = {
-  season_code: Season;
-
-  // Narrow some of the JSON types.
-  all_course_codes: string[];
-  areas: string[];
-  skills: string[];
-  professor_names: string[];
-  times_by_day: Partial<
-    Record<
-      Weekdays,
-      [
-        startTime: string,
-        endTime: string,
-        location: string,
-        locationURL: string,
-      ][] // an array because there could by multiple times per day
-    >
-  >;
-};
-type _ListingAugments = {
-  // Add a couple types created by the preprocessing step.
-  professors?: string;
-  professor_avg_rating?: string;
-  color?: string;
-  border?: string;
-  start_time?: moment.Moment;
-  location_url?: string;
-  current_worksheet?: string;
-};
-expectType<
-  // Make sure we don't override a key that wasn't there originally.
-  TypeOf<keyof _RawListingResponse, keyof _ListingOverrides>
->(true);
-export type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
-  _ListingOverrides &
-  _ListingAugments;
 
 // Preprocess course data.
 const preprocessCourses = (listing: Listing) => {
@@ -135,7 +93,7 @@ type Store = {
 const FerryCtx = createContext<Store | undefined>(undefined);
 FerryCtx.displayName = 'FerryCtx';
 
-function FerryProvider({ children }: { children: React.ReactNode }) {
+export function FerryProvider({ children }: { children: React.ReactNode }) {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
@@ -184,7 +142,6 @@ function FerryProvider({ children }: { children: React.ReactNode }) {
   return <FerryCtx.Provider value={store}>{children}</FerryCtx.Provider>;
 }
 
-export default FerryProvider;
 export const useFerry = () => useContext(FerryCtx)!;
 export const useCourseData = (seasons: Season[]) => {
   const { error, courses, requestSeasons } = useFerry();

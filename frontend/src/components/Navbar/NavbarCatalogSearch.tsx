@@ -10,7 +10,7 @@ import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
 import { SmallTextComponent, StyledInput } from '../StyledComponents';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { ValueType } from 'react-select/src/types';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
