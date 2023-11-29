@@ -31,7 +31,7 @@ const workloadColormap = chroma
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hidden_courses, cur_season } = useWorksheet();
-  //console.log(courses);
+  console.log(courses);
   const countedCourseCodes = new Set();
 
   const {
@@ -48,7 +48,7 @@ export default function WorksheetStats() {
       const shouldNotCount =
         c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
         hidden_courses[cur_season]?.[c.crn];
-      const hasCourseInfo = c.average_rating || c.credits || c.average_workload;
+      const hasCourseInfo = c.average_rating && c.credits && c.average_workload;
 
       if (shouldNotCount || !hasCourseInfo) {
         return acc;
