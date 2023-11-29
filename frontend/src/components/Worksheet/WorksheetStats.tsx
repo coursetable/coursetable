@@ -48,8 +48,9 @@ export default function WorksheetStats() {
       const shouldNotCount =
         c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
         hidden_courses[cur_season]?.[c.crn];
+      const hasCourseInfo = c.average_rating || c.credits || c.average_workload;
 
-      if (shouldNotCount) {
+      if (shouldNotCount || !hasCourseInfo) {
         return acc;
       }
 
