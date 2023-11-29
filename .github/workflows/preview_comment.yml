@@ -16,7 +16,7 @@ jobs:
       - uses: actions/github-script@v7
         with:
           script: |
-            const url_encoded_branch = encodeURIComponent('${{ github.head_ref }}')
+            const url_encoded_branch = "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-\.]+/g, "-")
             github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
