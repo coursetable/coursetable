@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -50,16 +51,10 @@ const StyledGridItem = styled.div`
  * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_cols - number | integer that holds how many columns in grid view
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop showModal - function | to display course modal
  */
 
-function ResultsGridItem({
-  course,
-  isLoggedIn,
-  num_cols,
-  multiSeasons,
-  showModal,
-}) {
+function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
+  const navigate = useNavigate();
   // How many decimal points to use in ratings
   const RATINGS_PRECISION = 1;
   // Bootstrap column width depending on the number of columns
@@ -119,7 +114,7 @@ function ResultsGridItem({
     >
       <StyledGridItem
         onClick={() => {
-          showModal(course);
+          navigate(`/catalog?display=${course.season_code}-${course.crn}`);
         }}
         className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
         tabIndex="0"

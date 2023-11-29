@@ -100,7 +100,6 @@ function Results({
   setView,
   loading = false,
   multiSeasons = false,
-  showModal,
   isLoggedIn,
   num_friends,
   page = 'catalog',
@@ -254,7 +253,6 @@ function Results({
                     row_elements.push(
                       <ResultsGridItem
                         course={data[j]}
-                        showModal={showModal}
                         isLoggedIn={isLoggedIn}
                         num_cols={num_cols}
                         multiSeasons={multiSeasons}
@@ -314,7 +312,6 @@ function Results({
                     >
                       <ResultsItemMemo
                         course={data[index]}
-                        showModal={showModal}
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}

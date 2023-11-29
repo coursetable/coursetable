@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
@@ -15,6 +16,7 @@ import tag_styles from '../Search/ResultsItem.module.css';
 import { skillsAreasColors } from '../../queries/Constants';
 import { TextComponent, StyledLink } from '../StyledComponents';
 import { toSeasonString } from '../../utilities/courseUtilities';
+import { useCourseData } from '../Providers/FerryProvider';
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -51,15 +53,15 @@ const extra_info_map = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
-/**
- * Displays course modal when clicking on a course
- * @prop listing - dictionary that holds listing info
- * @prop hideModal - function to hide modal
- * @prop show - boolean that determines when to show modal
+function CourseModal() {
+  const location = useLocation();
+  const navigate = useNavigate();
 
- */
+  const display = new URLSearchParams(location.search).get('display');
+  const [seasonCode, crn] = display ? display.split('-') : [null, null];
+  const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
 
-function CourseModal({ listing, hideModal, show }) {
+  const listing = courses[seasonCode]?.get(Number(crn));
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
@@ -82,13 +84,13 @@ function CourseModal({ listing, hideModal, show }) {
     <div className="d-flex justify-content-center">
       {cur_listing && (
         <StyledModal
-          show={show}
+          show={Boolean(listing)}
           scrollable
           onHide={() => {
             // Reset views and filters
             setView(['overview', null]);
             setFilter('both');
-            hideModal();
+            navigate(location.pathname);
           }}
           dialogClassName="modal-custom-width"
           animation={false}
@@ -319,7 +321,7 @@ function CourseModal({ listing, hideModal, show }) {
               )}
             </Container>
           </Modal.Header>
-          {show &&
+          {listing &&
             (view[0] === 'overview' ? (
               // Show overview data
               <CourseModalOverview

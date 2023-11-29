@@ -6,6 +6,7 @@ import React, {
   useState,
 } from 'react';
 import { Col, Form, InputGroup, Row, Button } from 'react-bootstrap';
+import { useLocation } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
@@ -182,6 +183,8 @@ const CloseIcon = styled(IoClose)`
 export function NavbarCatalogSearch() {
   // Fetch current device
   const { isMobile, isTablet, isLgDesktop } = useWindowDimensions();
+  const location = useLocation();
+  const hasCourseModal = new URLSearchParams(location.search).has('display');
 
   // Search text for the default search if search bar was used
   const searchTextInput = useRef<HTMLInputElement>(null);
@@ -217,7 +220,6 @@ export function NavbarCatalogSearch() {
     seasonsOptions,
     coursesLoading,
     speed,
-    course_modal,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -386,8 +388,8 @@ export function NavbarCatalogSearch() {
   return (
     <>
       <GlobalHotKeys
-        keyMap={course_modal[0] ? {} : keyMap}
-        handlers={course_modal[0] ? {} : handlers}
+        keyMap={hasCourseModal ? {} : keyMap}
+        handlers={hasCourseModal ? {} : handlers}
         allowChanges // required for global
         style={{ outline: 'none' }}
       />

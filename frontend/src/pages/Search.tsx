@@ -6,7 +6,6 @@ import { Element, scroller } from 'react-scroll';
 import Styles from './Search.module.css';
 
 import Results from '../components/Search/Results';
-import CourseModal from '../components/CourseModal/CourseModal';
 
 import {
   skillsAreasOptions,
@@ -76,7 +75,6 @@ function Search() {
     reset_key,
     isLoggedIn,
     num_friends,
-    course_modal,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -96,8 +94,6 @@ function Search() {
     setHideGraduateCourses,
     setHideDiscussionSections,
     handleResetFilters,
-    showModal,
-    hideModal,
   } = useSearch();
 
   const scrollToResults = useCallback(
@@ -509,19 +505,12 @@ function Search() {
               }}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
-              showModal={showModal}
               isLoggedIn={isLoggedIn}
               num_friends={num_friends}
             />
           </Element>
         </Col>
       </Row>
-      {/* Course Modal */}
-      <CourseModal
-        hideModal={hideModal}
-        show={course_modal[0]}
-        listing={course_modal[1]}
-      />
     </div>
   );
 }

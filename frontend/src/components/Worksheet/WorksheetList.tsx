@@ -12,8 +12,7 @@ import Results from '../Search/Results';
 
 function WorksheetList() {
   const [isList, setView] = useState(true);
-
-  const { courses, worksheetLoading, showModal } = useWorksheet();
+  const { courses, worksheetLoading } = useWorksheet();
 
   const { ordering, num_friends, isLoggedIn } = useSearch();
 
@@ -34,7 +33,6 @@ function WorksheetList() {
               setView={setView}
               loading={worksheetLoading}
               multiSeasons={false}
-              showModal={showModal}
               isLoggedIn={isLoggedIn}
               num_friends={num_friends}
               page="worksheet"

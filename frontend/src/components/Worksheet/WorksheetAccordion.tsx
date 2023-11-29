@@ -1,4 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import chroma from 'chroma-js';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
@@ -81,7 +82,8 @@ function ContextAwareToggle({
  */
 
 function WorksheetAccordion() {
-  const { courses, showModal } = useWorksheet();
+  const navigate = useNavigate();
+  const { courses } = useWorksheet();
 
   // Parse listing dictionaries and determine which courses take place on each weekday
   const parseListings = useCallback((listings: Listing[]) => {
@@ -227,7 +229,11 @@ function WorksheetAccordion() {
                   {/* Button to trigger course modal */}
                   <Row className="m-auto">
                     <StyledBanner
-                      onClick={() => showModal(course)}
+                      onClick={() =>
+                        navigate(
+                          `/worksheet?display=${course.season_code}-${course.crn}`,
+                        )
+                      }
                       className={`${styles.more_info} mt-2 font-weight-bold`}
                     >
                       <TextComponent type={1}>More Info</TextComponent>
@@ -242,7 +248,7 @@ function WorksheetAccordion() {
       }
       return <Accordion>{accordion_items}</Accordion>;
     },
-    [showModal],
+    [navigate],
   );
   // Get courses by day
   const parsed_courses = useMemo(() => {

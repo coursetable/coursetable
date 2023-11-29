@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import styled, { withTheme, type DefaultTheme } from 'styled-components';
 import styles from './WorksheetCalendarListItem.module.css';
@@ -57,7 +58,8 @@ function WorksheetMobileCalendarListItem({
   theme: DefaultTheme;
   worksheet_number?: string;
 }) {
-  const { showModal, cur_season, toggleCourse } = useWorksheet();
+  const navigate = useNavigate();
+  const { cur_season, toggleCourse } = useWorksheet();
 
   // Style for coloring hidden courses
   const color_style = {
@@ -70,7 +72,9 @@ function WorksheetMobileCalendarListItem({
         <StyledCol
           className="pl-1 pr-2"
           style={color_style}
-          onClick={() => showModal(course)}
+          onClick={() =>
+            navigate(`/worksheet?display=${course.season_code}-${course.crn}`)
+          }
         >
           <strong>{course.course_code}</strong>
           <br />

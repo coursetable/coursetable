@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/react';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
+import CourseModal from './components/CourseModal/CourseModal';
 
 import Landing from './pages/Landing';
 
@@ -200,6 +201,7 @@ function App({ themeToggler }) {
         shownTutorial={shownTutorial}
         setShownTutorial={setShownTutorial}
       />
+      <CourseModal />
     </>
   );
 }
