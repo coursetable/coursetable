@@ -31,8 +31,10 @@ const workloadColormap = chroma
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hidden_courses, cur_season } = useWorksheet();
-  //console.log(courses);
-  const {
+  console.log(courses);
+  const countedCourseCodes = new Map();
+
+const {
     courseCnt,
     coursesWithRating,
     credits,
@@ -41,18 +43,28 @@ export default function WorksheetStats() {
     skillsAreas,
   } = courses.reduce(
     (acc, c) => {
-      const isNotDiscussionSection = Number.isInteger(parseInt(c.section)); // check if section is int to see if it's not a discussion section
-      return hidden_courses[cur_season]?.[c.crn] || !isNotDiscussionSection
-        ? acc
-        : {
-            courseCnt: acc.courseCnt + 1,
-            coursesWithRating:
-              acc.coursesWithRating + (c.average_rating ? 1 : 0),
-            credits: acc.credits + (c.credits ?? 0),
-            workload: acc.workload + (c.average_workload ?? 0),
-            rating: acc.rating + (c.average_rating ?? 0),
-            skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
-          };
+      //const sectionIsInt = Number.isInteger(parseInt(c.section));
+      // see if any of the course's codes have already been counted or if it's hidden so we don't double count
+      const alreadyCounted = c.all_course_codes.some(code => countedCourseCodes.get(code)) || hidden_courses[cur_season]?.[c.crn];
+
+      if (alreadyCounted) {
+        return acc;
+      }
+
+      // mark codes as counting, no double counting
+      c.all_course_codes.forEach(code => {
+        countedCourseCodes.set(code, true);
+      });
+
+      return {
+          courseCnt: acc.courseCnt + 1,
+          coursesWithRating:
+            acc.coursesWithRating + (c.average_rating ? 1 : 0),
+          credits: acc.credits + (c.credits ?? 0),
+          workload: acc.workload + (c.average_workload ?? 0),
+          rating: acc.rating + (c.average_rating ?? 0),
+          skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
+      };
     },
     {
       courseCnt: 0,
@@ -63,6 +75,7 @@ export default function WorksheetStats() {
       skillsAreas: [] as string[],
     },
   );
+
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
     <div
