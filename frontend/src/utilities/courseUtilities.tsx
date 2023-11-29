@@ -2,8 +2,12 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
-import { FriendRecord, FriendInfo, Worksheet } from '../contexts/userContext';
-import { Listing } from '../components/Providers/FerryProvider';
+import type {
+  FriendRecord,
+  FriendInfo,
+  Worksheet,
+} from '../contexts/userContext';
+import type { Listing } from '../utilities/common';
 import { SortKeys } from '../queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
 import { DateTime } from 'luxon';

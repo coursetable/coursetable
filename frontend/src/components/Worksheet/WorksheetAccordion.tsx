@@ -18,10 +18,9 @@ import {
 import { skillsAreasColors } from '../../queries/Constants';
 import tagStyles from '../Search/ResultsItem.module.css';
 import styles from './WorksheetAccordion.module.css';
-import { weekdays } from '../../utilities/common';
+import { weekdays, type Listing } from '../../utilities/common';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Listing } from '../Providers/FerryProvider';
 import WorksheetNumDropdown from '../Navbar/WorksheetNumberDropdown';
 
 // Component used to trim description to certain number of lines

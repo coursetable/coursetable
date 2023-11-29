@@ -3,13 +3,13 @@ import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { MdErrorOutline } from 'react-icons/md';
 import { useUser } from '../../contexts/userContext';
+import type { Listing } from '../../utilities/common';
 import {
   checkConflict,
   checkCrossListed,
   isInWorksheet,
 } from '../../utilities/courseUtilities';
 import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
-import { Listing } from '../Providers/FerryProvider';
 
 /**
  * Displays icon when there is a course conflict with worksheet

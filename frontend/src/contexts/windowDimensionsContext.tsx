@@ -27,7 +27,11 @@ const range = (num: number, min: number, max: number) =>
   num >= min && num < max;
 
 // Return dimensions of the window
-function WindowDimensionsProvider({ children }: { children: React.ReactNode }) {
+export function WindowDimensionsProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
@@ -90,5 +94,4 @@ function WindowDimensionsProvider({ children }: { children: React.ReactNode }) {
   );
 }
 
-export default WindowDimensionsProvider;
 export const useWindowDimensions = () => useContext(WindowDimensionsCtx)!;

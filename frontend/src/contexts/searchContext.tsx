@@ -8,15 +8,12 @@ import React, {
   useState,
 } from 'react';
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
+import type { Listing } from '../utilities/common';
 import {
   useLocalStorageState,
   useSessionStorageState,
-} from '../browserStorage';
-import {
-  Listing,
-  useCourseData,
-  useFerry,
-} from '../components/Providers/FerryProvider';
+} from '../utilities/browserStorage';
+import { useCourseData, useFerry } from './ferryContext';
 import {
   areas,
   AreasType,

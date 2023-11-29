@@ -9,13 +9,13 @@ import React, {
 import {
   useLocalStorageState,
   useSessionStorageState,
-} from '../browserStorage';
-import { Listing, useFerry } from '../components/Providers/FerryProvider';
+} from '../utilities/browserStorage';
+import { useFerry } from './ferryContext';
 import { toSeasonString } from '../utilities/courseUtilities';
 // import { sortbyOptions } from './queries/Constants';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { useUser, Worksheet } from './userContext';
-import { Season } from '../utilities/common';
+import type { Season, Listing } from '../utilities/common';
 import { OptType, Option, defaultFilters } from './searchContext';
 
 export type HiddenCourses = Record<Season, Record<number, boolean>>;

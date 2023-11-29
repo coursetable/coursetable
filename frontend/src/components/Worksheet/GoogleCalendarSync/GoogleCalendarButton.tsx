@@ -4,7 +4,7 @@ import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { StyledBtn } from '../WorksheetCalendarList';
-import { Listing } from '../../Providers/FerryProvider';
+import type { Listing } from '../../../utilities/common';
 import { constructCalendarEvents } from './utils';
 import GCalIcon from '../../../images/gcal.svg';
 

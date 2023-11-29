@@ -2,7 +2,7 @@ import 'react-app-polyfill/stable';
 import 'core-js/features/promise/all-settled';
 import 'core-js/es/promise/all-settled';
 
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   BrowserRouter,
   useLocation,
@@ -10,7 +10,7 @@ import {
   createRoutesFromChildren,
   matchRoutes,
 } from 'react-router-dom';
-import { ThemeProvider } from 'styled-components';
+import { ThemeProvider, createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import {
   InMemoryCache,
@@ -24,8 +24,8 @@ import * as Sentry from '@sentry/react';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import WindowDimensionsProvider from './components/Providers/WindowDimensionsProvider';
-import FerryProvider from './components/Providers/FerryProvider';
+import { WindowDimensionsProvider } from './contexts/windowDimensionsContext';
+import { FerryProvider } from './contexts/ferryContext';
 import { UserProvider } from './contexts/userContext';
 import { SearchProvider } from './contexts/searchContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
@@ -34,8 +34,6 @@ import { isDev, API_ENDPOINT } from './config';
 
 import './index.css';
 
-import { useDarkMode } from './components/UseDarkMode';
-import { GlobalStyles } from './components/GlobalStyles';
 import { lightTheme, darkTheme } from './components/Themes';
 import ErrorPage from './components/ErrorPage';
 import { Row } from 'react-bootstrap';
@@ -98,9 +96,39 @@ function CustomErrorBoundary({ children }: { children: React.ReactNode }) {
   );
 }
 
+const GlobalStyles = createGlobalStyle`
+  body {
+    background: ${({ theme }) => theme.background};
+    color: ${({ theme }) => theme.text[0]};
+    transition: background-color ${({ theme }) => theme.trans_dur};
+  }
+  a {
+    color: ${({ theme }) => theme.primary};  
+    &:hover {
+      color: ${({ theme }) => theme.primary_hover};  
+    }
+  }
+  `;
+
+type Theme = 'light' | 'dark';
+
 function Globals({ children }: { children: React.ReactNode }) {
-  // website light/dark theme
-  const [theme, themeToggler] = useDarkMode();
+  const [theme, setTheme] = useState<Theme>('light');
+
+  const setMode = (mode: Theme) => {
+    window.localStorage.setItem('theme', mode);
+    setTheme(mode);
+  };
+
+  const themeToggler = () => {
+    if (theme === 'light') setMode('dark');
+    else setMode('light');
+  };
+
+  useEffect(() => {
+    const localTheme = window.localStorage.getItem('theme') as Theme;
+    if (localTheme) setTheme(localTheme);
+  }, []);
   const themeMode = theme === 'light' ? lightTheme : darkTheme;
   return (
     <CustomErrorBoundary>

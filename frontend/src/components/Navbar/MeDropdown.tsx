@@ -10,7 +10,7 @@ import {
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
-import { generateICS } from '../GenerateICS';
+import { generateICS } from './generateICS';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
 import { logout, scrollToTop } from '../../utilities';
@@ -20,7 +20,7 @@ import {
   StyledHoverText,
 } from '../StyledComponents';
 import { NavLink } from 'react-router-dom';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import { API_ENDPOINT } from '../../config';
 
