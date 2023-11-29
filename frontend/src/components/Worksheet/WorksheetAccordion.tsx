@@ -64,25 +64,13 @@ function ContextAwareToggle({
           <Row>
             {/* Course Location. NOT LINKING TO YALE CAMPUS MAP RN */}
             <TextComponent type={1}>
-              <small>
-                {/* <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        href={course['location_url']}
-                        className={styles.location_url + ' text-muted'}
-                      >
-                        {course.locations_summary}
-                      </a> */}
-                {course.locations_summary}
-              </small>
+              <small>{course.locations_summary}</small>
             </TextComponent>
           </Row>
         </Col>
         {/* Course Time */}
         <Col xs="auto" className="p-0">
-          <TextComponent type={1}>
-            {course.times_summary.match(/[0-9].*/)?.[0] ?? ''}
-          </TextComponent>
+          <TextComponent type={1}>{course.times_summary}</TextComponent>
         </Col>
       </Row>
     </div>

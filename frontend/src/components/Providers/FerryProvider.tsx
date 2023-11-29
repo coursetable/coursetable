@@ -41,10 +41,10 @@ type _ListingOverrides = {
     Record<
       Weekdays,
       [
-        string, // start time
-        string, // end time
-        string, // location
-        string, // location URL
+        startTime: string,
+        endTime: string,
+        location: string,
+        locationURL: string,
       ][] // an array because there could by multiple times per day
     >
   >;

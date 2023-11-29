@@ -43,57 +43,43 @@ export const toSeasonString = (
   ] as const;
 };
 
-// Unflatten course times for easy use in checkConflict
-export const unflattenTimes = (
-  course: Listing,
-): [string, string, string, string][] | undefined | 'TBA' => {
-  if (!course) return undefined;
-  if (course.times_summary === 'TBA') return 'TBA';
-  // Holds the course times for each day of the week
-  const times_by_day = weekdays.map((day): [string, string, string, string] => {
-    const times_on_day = course.times_by_day[day];
-    if (!times_on_day) return ['', '', '', ''];
-    return times_on_day[0];
-  });
-  return times_by_day;
-};
-
 // Checks if the a new course conflicts with the user's worksheet
 export const checkConflict = (
   listings: Listing[],
   course: Listing,
-  times: [string, string, string, string][], // index is 0-4, corresponding to weekdays
 ): Listing[] => {
   const conflicts: Listing[] = [];
+  const daysToCheck = Object.keys(
+    course.times_by_day,
+  ) as (keyof Listing['times_by_day'])[];
   // Iterate over worksheet listings
-  for (let i = 0; i < listings.length; i++) {
+  loopWorksheet: for (const worksheetCourse of listings) {
     // Continue if they aren't in the same season
-    if (listings[i].season_code !== course.season_code) continue;
-    const listing = listings[i];
-    // Iterate over weekdays
-    for (let day = 0; day < 5; day++) {
-      const info = listing.times_by_day[weekdays[day]];
-      // Continue if the new course doesn't meet on this day
+    if (worksheetCourse.season_code !== course.season_code) continue;
+    for (const day of daysToCheck) {
+      const info = worksheetCourse.times_by_day[day];
       if (info === undefined) continue;
-      // Get worksheet course's start and end times
-      const listing_start = moment(info[0][0], 'HH:mm');
-      const listing_end = moment(info[0][1], 'HH:mm');
-      // Continue if new course has invalid time
-      if (times[day][0] === '') continue;
-      // Get new course' start and end times
-      const cur_start = moment(times[day][0], 'HH:mm');
-      const cur_end = moment(times[day][1], 'HH:mm');
-      // Fix invalid times
-      if (listing_start.hour() < 8) listing_start.add(12, 'h');
-      if (listing_end.hour() < 8) listing_end.add(12, 'h');
-      if (cur_start.hour() < 8) cur_start.add(12, 'h');
-      if (cur_end.hour() < 8) cur_end.add(12, 'h');
-      // Conflict exists
-      if (
-        !(listing_start > cur_end || cur_start > listing_end) &&
-        !conflicts.includes(listings[i])
-      ) {
-        conflicts.push(listings[i]);
+      const courseInfo = course.times_by_day[day]!;
+      for (const [startTime, endTime] of info) {
+        const listing_start = moment(startTime, 'HH:mm');
+        const listing_end = moment(endTime, 'HH:mm');
+        for (const [courseStartTime, courseEndTime] of courseInfo) {
+          const cur_start = moment(courseStartTime, 'HH:mm');
+          const cur_end = moment(courseEndTime, 'HH:mm');
+          // Fix invalid times
+          if (listing_start.hour() < 7) listing_start.add(12, 'h');
+          if (listing_end.hour() < 7) listing_end.add(12, 'h');
+          if (cur_start.hour() < 7) cur_start.add(12, 'h');
+          if (cur_end.hour() < 7) cur_end.add(12, 'h');
+          // Conflict exists
+          if (
+            !(listing_start > cur_end || cur_start > listing_end) &&
+            !conflicts.includes(worksheetCourse)
+          ) {
+            conflicts.push(worksheetCourse);
+            continue loopWorksheet;
+          }
+        }
       }
     }
   }

@@ -4,23 +4,15 @@ import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
-import CalendarEvent from './CalendarEvent';
+import CalendarEvent, { type CourseEvent } from './CalendarEvent';
 import { weekdays } from '../../utilities/common';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { Listing } from '../Providers/FerryProvider';
 
 const localizer = momentLocalizer(moment);
 
-interface parsedCourseType {
-  title: string;
-  start: Date;
-  end: Date;
-  listing: Listing;
-  id: number;
-}
-
 // Calendar for worksheet
-const StyledCalendar = styled(Calendar<parsedCourseType>)`
+const StyledCalendar = styled(Calendar<CourseEvent>)`
   &.rbc-calendar {
     .rbc-time-view {
       .rbc-time-header {
@@ -78,7 +70,7 @@ function WorksheetCalendar() {
       let earliest = moment().hour(20);
       let latest = moment().hour(0);
       // List of event dictionaries
-      const parsedCourses: parsedCourseType[] = [];
+      const parsedCourses: CourseEvent[] = [];
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
         if (
@@ -90,24 +82,28 @@ function WorksheetCalendar() {
           const info = course.times_by_day[weekdays[indx]];
           // If the listing takes place on this day
           if (info !== undefined) {
-            // Get start and end times for the listing
-            const start = moment(info[0][0], 'HH:mm').day(1 + indx);
-            const end = moment(info[0][1], 'HH:mm').day(1 + indx);
-            // Fix any incorrect values
-            if (start.get('hour') < 8) start.add(12, 'h');
-            if (end.get('hour') < 8) end.add(12, 'h');
-            const value = course.course_code;
-            // Add event dictionary to the list
-            parsedCourses.push({
-              title: value,
-              start: start.toDate(),
-              end: end.toDate(),
-              listing: course,
-              id: index,
-            });
-            // Update earliest and latest courses
-            if (start.get('hours') < earliest.get('hours')) earliest = start;
-            if (end.get('hours') > latest.get('hours')) latest = end;
+            for (const [startTime, endTime, location] of info) {
+              // Get start and end times for the listing
+              const start = moment(startTime, 'HH:mm').day(1 + indx);
+              const end = moment(endTime, 'HH:mm').day(1 + indx);
+              // Try to fix any incorrect values
+              // We don't have classes before 7, but we do have classes before 8
+              if (start.get('hour') < 7) start.add(12, 'h');
+              if (end.get('hour') < 7) end.add(12, 'h');
+              const value = course.course_code;
+              // Add event dictionary to the list
+              parsedCourses.push({
+                title: value,
+                start: start.toDate(),
+                end: end.toDate(),
+                listing: course,
+                id: index,
+                location,
+              });
+              // Update earliest and latest courses
+              if (start.get('hours') < earliest.get('hours')) earliest = start;
+              if (end.get('hours') > latest.get('hours')) latest = end;
+            }
           }
         }
       });
@@ -124,7 +120,7 @@ function WorksheetCalendar() {
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
-    (event: parsedCourseType) => {
+    (event: CourseEvent) => {
       const style: CSSProperties = {
         backgroundColor: event.listing.color,
         borderColor: event.listing.border,
@@ -184,5 +180,4 @@ function WorksheetCalendar() {
   );
 }
 
-// WorksheetCalendar.whyDidYouRender = true;
-export default React.memo(WorksheetCalendar);
+export default WorksheetCalendar;
