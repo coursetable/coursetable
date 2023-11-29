@@ -3,6 +3,7 @@ import { ListGroup, Row, Col } from 'react-bootstrap';
 import styled from 'styled-components';
 import { SurfaceComponent } from '../StyledComponents';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
+import WorksheetStats from './WorksheetStats';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
@@ -128,6 +129,7 @@ function WorksheetCalendarList() {
 
   return (
     <>
+      <WorksheetStats />
       {/* Hide/show toggle */}
       <StyledSpacer className="pt-3">
         <StyledContainer layer={1} className="mx-1">
@@ -136,13 +138,12 @@ function WorksheetCalendarList() {
             <Row className="mx-auto">
               <Col className="px-0 w-100">
                 <GoogleCalendarButton
-                  courses={courses.filter(function (course) {
-                    return (
+                  courses={courses.filter(
+                    (course) =>
                       !hidden_courses[cur_season] ||
                       !(course.crn in hidden_courses[cur_season]) ||
-                      !hidden_courses[cur_season][course.crn]
-                    );
-                  })}
+                      !hidden_courses[cur_season][course.crn],
+                  )}
                   season_code={cur_season}
                 />
               </Col>
