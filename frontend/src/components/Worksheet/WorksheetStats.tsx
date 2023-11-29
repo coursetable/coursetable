@@ -31,7 +31,7 @@ const workloadColormap = chroma
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hidden_courses, cur_season } = useWorksheet();
-  console.log(courses);
+  //console.log(courses);
   const countedCourseCodes = new Map();
 
 const {
