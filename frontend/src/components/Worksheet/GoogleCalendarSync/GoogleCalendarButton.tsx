@@ -140,7 +140,8 @@ function GoogleCalendarButton({
         },
         (error) => {
           Sentry.captureException(
-            '[GCAL]: Error signing in to Google Calendar: ' + JSON.stringify(error),
+            '[GCAL]: Error signing in to Google Calendar: ' +
+              JSON.stringify(error),
           );
           toast.error('Error signing in to Google Calendar');
         },
