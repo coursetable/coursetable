@@ -41,8 +41,8 @@ export default function WorksheetStats() {
     skillsAreas,
   } = courses.reduce(
     (acc, c) => {
-      const sectionIsInt = Number.isInteger(parseInt(c.section));
-      return hidden_courses[cur_season]?.[c.crn] || !sectionIsInt
+      const isNotDiscussionSection = Number.isInteger(parseInt(c.section)); // check if section is int to see if it's not a discussion section
+      return hidden_courses[cur_season]?.[c.crn] || isNotDiscussionSection
         ? acc
         : {
             courseCnt: acc.courseCnt + 1,
