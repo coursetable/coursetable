@@ -26,7 +26,10 @@ const StyledRow = styled(Row)`
 const FilterGroup = styled.div``;
 
 // Toggle button group
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{
+// Do not pass isTablet prop to ToggleButtonGroup
+const StyledToggleButtonGroup = styled(({ isTablet, ...props }) => (
+  <ToggleButtonGroup {...props} />
+))<{
   isTablet: boolean;
 }>`
   width: ${({ isTablet }) => (isTablet ? 140 : 180)}px;
