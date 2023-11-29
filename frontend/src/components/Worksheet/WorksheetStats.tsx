@@ -62,13 +62,14 @@ export default function WorksheetStats() {
   );
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
-    <>
-      <button
-        className={`${styles.toggleButton} ${shown ? '' : styles.rounded}`}
-        onClick={() => setShown(!shown)}
-      >
-        Summary
-      </button>
+    <div
+      className={`${shown ? 'dropdown' : 'dropup'} ${styles.statsContainer}`}
+    >
+      <div className={styles.toggleButton}>
+        <button className="dropdown-toggle" onClick={() => setShown(!shown)}>
+          Summary
+        </button>
+      </div>
       <Collapse in={shown}>
         <div>
           <div className={styles.stats}>
@@ -124,6 +125,6 @@ export default function WorksheetStats() {
           </div>
         </div>
       </Collapse>
-    </>
+    </div>
   );
 }

@@ -1,20 +1,25 @@
-.toggleButton {
+.statsContainer {
   background: #a0a0a022;
-  border-radius: 8px 8px 0 0;
-  padding: 0.5em;
-  border: none;
-  width: 100%;
-  font-weight: 600;
+  border-radius: 8px;
+  transition: border-radius 0.3s step-end;
+  overflow: hidden;
   margin-top: 1em;
 }
 
-.rounded {
-  border-radius: 8px;
+.toggleButton {
+  width: 100%;
+  padding: 0.5em;
+  overflow: hidden;
+}
+
+.toggleButton button {
+  background: none;
+  border: none;
+  font-weight: 600;
+  color: inherit;
 }
 
 .stats {
-  border-radius: 0 0 8px 8px;
-  background: #a0a0a022;
   padding: 1em 0.5em;
 }
 
