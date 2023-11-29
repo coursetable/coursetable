@@ -31,7 +31,6 @@ const workloadColormap = chroma
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hidden_courses, cur_season } = useWorksheet();
-  //console.log(courses);
   const countedCourseCodes = new Set();
 
   const {
@@ -43,7 +42,6 @@ export default function WorksheetStats() {
     skillsAreas,
   } = courses.reduce(
     (acc, c) => {
-      //const sectionIsInt = Number.isInteger(parseInt(c.section));
       // see if any of the course's codes have already been counted or if it's hidden so we don't double count
       const shouldNotCount =
         c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
