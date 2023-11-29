@@ -54,7 +54,7 @@ export default function WorksheetStats() {
         return acc;
       }
 
-      // mark codes as counting, no double counting
+      // Mark codes as counted, no double counting
       c.all_course_codes.forEach((code) => {
         countedCourseCodes.add(code);
       });
