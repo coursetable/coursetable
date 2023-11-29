@@ -107,8 +107,8 @@ function App({ themeToggler }) {
 
   return (
     <>
-    {/* notice bar*/}
-    {/*<Notice >
+      {/* notice bar*/}
+      {/*<Notice >
     </Notice>*/}
       <Navbar
         isLoggedIn={isLoggedIn}
