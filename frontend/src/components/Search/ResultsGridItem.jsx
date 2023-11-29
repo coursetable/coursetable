@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -54,9 +54,7 @@ const StyledGridItem = styled.div`
  */
 
 function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
-  const navigate = useNavigate();
-  // How many decimal points to use in ratings
-  const RATINGS_PRECISION = 1;
+  const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
   const col_width = 12 / num_cols;
 
@@ -114,7 +112,10 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
     >
       <StyledGridItem
         onClick={() => {
-          navigate(`/catalog?display=${course.season_code}-${course.crn}`);
+          setSearchParams((prev) => {
+            prev.set('course-modal', `${course.season_code}-${course.crn}`);
+            return prev;
+          });
         }}
         className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
         tabIndex="0"

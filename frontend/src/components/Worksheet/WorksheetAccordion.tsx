@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import chroma from 'chroma-js';
 import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
@@ -82,8 +82,17 @@ function ContextAwareToggle({
  */
 
 function WorksheetAccordion() {
-  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   const { courses } = useWorksheet();
+  const showModal = useCallback(
+    (course: Listing) => () => {
+      setSearchParams((prev) => {
+        prev.set('course-modal', `${course.season_code}-${course.crn}`);
+        return prev;
+      });
+    },
+    [setSearchParams],
+  );
 
   // Parse listing dictionaries and determine which courses take place on each weekday
   const parseListings = useCallback((listings: Listing[]) => {
@@ -229,11 +238,7 @@ function WorksheetAccordion() {
                   {/* Button to trigger course modal */}
                   <Row className="m-auto">
                     <StyledBanner
-                      onClick={() =>
-                        navigate(
-                          `/worksheet?display=${course.season_code}-${course.crn}`,
-                        )
-                      }
+                      onClick={showModal(course)}
                       className={`${styles.more_info} mt-2 font-weight-bold`}
                     >
                       <TextComponent type={1}>More Info</TextComponent>
@@ -248,7 +253,7 @@ function WorksheetAccordion() {
       }
       return <Accordion>{accordion_items}</Accordion>;
     },
-    [navigate],
+    [showModal],
   );
   // Get courses by day
   const parsed_courses = useMemo(() => {

@@ -1,5 +1,5 @@
 import React, { CSSProperties, useCallback, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import styles from './WorksheetAccordion.module.css';
 import './WorksheetMobileCalendar.css';
@@ -66,7 +66,7 @@ const StyledCalendar = styled(Calendar<CourseEvent>)`
  */
 
 function WorksheetMobileCalendar() {
-  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   const { courses, hover_course, hidden_courses, cur_season } = useWorksheet();
 
   // Parse listings dictionaries to generate event dictionaries
@@ -187,11 +187,15 @@ function WorksheetMobileCalendar() {
           max={maxTime}
           localizer={localizer}
           toolbar={false}
-          onSelectEvent={(event) =>
-            navigate(
-              `/worksheet?display=${event.listing.season_code}-${event.listing.crn}`,
-            )
-          }
+          onSelectEvent={(event) => {
+            setSearchParams((prev) => {
+              prev.set(
+                'course-modal',
+                `${event.listing.season_code}-${event.listing.crn}`,
+              );
+              return prev;
+            });
+          }}
           components={{ event: CalendarEvent }}
           eventPropGetter={eventStyleGetter}
           // Display Mon, Tue, Wed, ... at the top

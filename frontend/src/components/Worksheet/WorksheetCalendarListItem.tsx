@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import styled, { withTheme, type DefaultTheme } from 'styled-components';
 import styles from './WorksheetCalendarListItem.module.css';
@@ -53,7 +53,7 @@ function WorksheetCalendarListItem({
   theme: DefaultTheme;
   worksheet_number?: string;
 }) {
-  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   const { cur_season, toggleCourse, setHoverCourse } = useWorksheet();
 
   // Style for coloring hidden courses
@@ -71,9 +71,12 @@ function WorksheetCalendarListItem({
         <StyledCol
           className={'pl-1 pr-2'}
           style={color_style}
-          onClick={() =>
-            navigate(`/worksheet?display=${course.season_code}-${course.crn}`)
-          }
+          onClick={() => {
+            setSearchParams((prev) => {
+              prev.set('course-modal', `${course.season_code}-${course.crn}`);
+              return prev;
+            });
+          }}
         >
           <strong>{course.course_code}</strong>
           <br />

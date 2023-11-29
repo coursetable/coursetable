@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
@@ -54,11 +54,10 @@ const extra_info_map = {
 };
 
 function CourseModal() {
-  const location = useLocation();
-  const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
 
-  const display = new URLSearchParams(location.search).get('display');
-  const [seasonCode, crn] = display ? display.split('-') : [null, null];
+  const courseModal = searchParams.get('course-modal');
+  const [seasonCode, crn] = courseModal ? courseModal.split('-') : [null, null];
   const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
 
   const listing = courses[seasonCode]?.get(Number(crn));
@@ -90,7 +89,10 @@ function CourseModal() {
             // Reset views and filters
             setView(['overview', null]);
             setFilter('both');
-            navigate(location.pathname);
+            setSearchParams((prev) => {
+              prev.delete('course-modal');
+              return prev;
+            });
           }}
           dialogClassName="modal-custom-width"
           animation={false}

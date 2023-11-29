@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -27,10 +27,8 @@ import {
   getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
-  isInWorksheet,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
-import { useUser } from '../../contexts/userContext';
 
 // Row for results item
 const StyledResultsItem = styled(Row)`
@@ -93,7 +91,7 @@ function ResultsItem({
   isScrolling = false,
   friends,
 }) {
-  const navigate = useNavigate();
+  const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
 
@@ -177,7 +175,10 @@ function ResultsItem({
         course.extra_info !== 'ACTIVE' ? ` ${Styles.cancelled_class}` : ''
       }`}
       onClick={() => {
-        navigate(`/catalog?display=${course.season_code}-${course.crn}`);
+        setSearchParams((prev) => {
+          prev.set('course-modal', `${course.season_code}-${course.crn}`);
+          return prev;
+        });
       }}
       tabIndex="0"
       inWorksheet={courseInWorksheet}
