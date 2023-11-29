@@ -31,6 +31,7 @@ const workloadColormap = chroma
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hidden_courses, cur_season } = useWorksheet();
+  //console.log(courses);
   const {
     courseCnt,
     coursesWithRating,
@@ -39,8 +40,9 @@ export default function WorksheetStats() {
     rating,
     skillsAreas,
   } = courses.reduce(
-    (acc, c) =>
-      hidden_courses[cur_season]?.[c.crn]
+    (acc, c) => {
+      const sectionIsInt = Number.isInteger(parseInt(c.section));
+      return hidden_courses[cur_season]?.[c.crn] || !sectionIsInt
         ? acc
         : {
             courseCnt: acc.courseCnt + 1,
@@ -50,7 +52,8 @@ export default function WorksheetStats() {
             workload: acc.workload + (c.average_workload ?? 0),
             rating: acc.rating + (c.average_rating ?? 0),
             skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
-          },
+          };
+    },
     {
       courseCnt: 0,
       coursesWithRating: 0,
