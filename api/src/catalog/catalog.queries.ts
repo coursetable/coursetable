@@ -62,15 +62,3 @@ export const catalogBySeasonQuery = gql`
     }
   }
 `;
-
-// query for getting course title and prof by crn and season
-export const courseTitleAndProfByCrnQuery = gql`
-  query courseTitleAndProfByCrn($crn: String!, $season: String!) {
-    computed_listing_info(
-      where: { crn: { _eq: $crn }, season_code: { _eq: $season } }
-    ) {
-      title
-      professor_names
-    }
-  }
-`;
