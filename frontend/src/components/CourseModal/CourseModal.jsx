@@ -78,7 +78,11 @@ function CourseModal() {
     };
 
     return (
-      <FaRegShareFromSquare onClick={copyToClipboard} size={25} color="#007bff"  />
+      <FaRegShareFromSquare
+        onClick={copyToClipboard}
+        size={25}
+        color="#007bff"
+      />
     );
   };
   // Fetch current device
@@ -116,7 +120,6 @@ function CourseModal() {
           centered
         >
           <Modal.Header closeButton className="d-flex justify-content-between">
-
             <Container className="p-0" fluid>
               {view[0] === 'overview' ? (
                 // Viewing Course Overview
@@ -290,7 +293,10 @@ function CourseModal() {
             </Container>
             {/* Share Button */}
             <div className="align-self-center">
-              <ShareButton courseCode={cur_listing.course_code} urlToShare={url} />
+              <ShareButton
+                courseCode={cur_listing.course_code}
+                urlToShare={url}
+              />
             </div>
           </Modal.Header>
           {listing &&
