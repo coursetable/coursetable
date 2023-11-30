@@ -16,7 +16,6 @@ import { TextComponent, StyledLink } from '../StyledComponents';
 import SkillBadge from '../SkillBadge';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useCourseData } from '../../contexts/ferryContext';
-import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 
 // Course Modal
@@ -65,9 +64,9 @@ function CourseModal() {
   const listing = courses[seasonCode]?.get(Number(crn));
 
   // share button
-  const ShareButton = ({ courseCode, url }) => {
+  const ShareButton = ({ courseCode, urlToShare }) => {
     const copyToClipboard = () => {
-      const textToCopy = `${courseCode} -- CourseTable: ${url}`;
+      const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
       navigator.clipboard.writeText(textToCopy).then(
         () => {
           toast.success('Course and URL copied to clipboard!');
@@ -79,9 +78,7 @@ function CourseModal() {
     };
 
     return (
-      <FaRegShareFromSquare variant="primary" onClick={copyToClipboard}>
-        Share
-      </FaRegShareFromSquare>
+      <FaRegShareFromSquare onClick={copyToClipboard} size={25} color="#007bff"  />
     );
   };
   // Fetch current device
@@ -118,8 +115,7 @@ function CourseModal() {
           animation={false}
           centered
         >
-          <Modal.Header closeButton>
-            <ShareButton courseCode={cur_listing.course_code} url={url} />
+          <Modal.Header closeButton className="d-flex justify-content-between">
 
             <Container className="p-0" fluid>
               {view[0] === 'overview' ? (
@@ -292,6 +288,10 @@ function CourseModal() {
                 </div>
               )}
             </Container>
+            {/* Share Button */}
+            <div className="align-self-center">
+              <ShareButton courseCode={cur_listing.course_code} url={url} />
+            </div>
           </Modal.Header>
           {listing &&
             (view[0] === 'overview' ? (
