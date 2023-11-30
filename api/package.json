@@ -46,7 +46,6 @@
     "passport": "0.5.0",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "prisma": "^5.5.2",
-    "react-helmet": "^6.1.0",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.2.2",
