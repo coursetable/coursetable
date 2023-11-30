@@ -290,7 +290,7 @@ function CourseModal() {
             </Container>
             {/* Share Button */}
             <div className="align-self-center">
-              <ShareButton courseCode={cur_listing.course_code} url={url} />
+              <ShareButton courseCode={cur_listing.course_code} urlToShare={url} />
             </div>
           </Modal.Header>
           {listing &&
