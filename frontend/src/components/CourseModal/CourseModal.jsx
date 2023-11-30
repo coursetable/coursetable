@@ -16,7 +16,7 @@ import tag_styles from '../Search/ResultsItem.module.css';
 import { skillsAreasColors } from '../../queries/Constants';
 import { TextComponent, StyledLink } from '../StyledComponents';
 import { toSeasonString } from '../../utilities/courseUtilities';
-import { useCourseData } from '../Providers/FerryProvider';
+import { useCourseData } from '../../contexts/ferryContext';
 
 // Course Modal
 const StyledModal = styled(Modal)`
