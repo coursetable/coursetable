@@ -28,7 +28,7 @@ import styles from './CourseModalOverview.module.css';
 
 import CourseModalLoading from './CourseModalLoading';
 import {
-  FriendsAlsoTaking,
+  friendsAlsoTaking,
   getEnrolled,
   toSeasonString,
 } from '../../utilities/courseUtilities';
@@ -84,7 +84,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
   const also_taking = user.friendWorksheets
-    ? FriendsAlsoTaking(
+    ? friendsAlsoTaking(
         listing.season_code,
         listing.crn,
         user.friendWorksheets.worksheets,

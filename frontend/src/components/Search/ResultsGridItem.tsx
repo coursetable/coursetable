@@ -17,6 +17,7 @@ import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
 import tag_styles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from '../StyledComponents';
+import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
@@ -28,7 +29,7 @@ import { BiBookOpen } from 'react-icons/bi';
 import SkillBadge from '../SkillBadge';
 
 // Grid Item wrapper
-const StyledGridItem = styled.div`
+const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
   background-color: ${({ theme, inWorksheet }) =>
     inWorksheet
       ? theme.primary_light
@@ -46,29 +47,39 @@ const StyledGridItem = styled.div`
 
 /**
  * Renders a grid item for a search result
- * @prop course - object | listing data for the current course
- * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_cols - number | integer that holds how many columns in grid view
- * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
+ * @prop course data for the current course
+ * @prop isLoggedIn is the user logged in?
+ * @prop num_cols integer that holds how many columns in grid view
+ * @prop multiSeasons are we displaying courses across multiple seasons
  */
 
-function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
+function ResultsGridItem({
+  course,
+  isLoggedIn,
+  num_cols,
+  multiSeasons,
+}: {
+  course: Listing;
+  isLoggedIn: boolean;
+  num_cols: number;
+  multiSeasons: boolean;
+}) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
   const col_width = 12 / num_cols;
 
   // Season code for this listing
   const { season_code } = course;
-  const season = season_code[5];
-  const year = season_code.substr(2, 2);
+  const season = Number(season_code[5]);
+  const year = season_code.substring(2, 4);
   // Size of season icons
   const icon_size = 13;
-  const seasons = ['spring', 'summer', 'fall'];
+  const seasons = ['spring', 'summer', 'fall'] as const;
   // Determine the icon for this season
   const icon =
-    season === '1' ? (
+    season === 1 ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
-    ) : season === '2' ? (
+    ) : season === 2 ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
@@ -76,29 +87,26 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
 
   // Fetch overall & workload rating values and string representations
   const course_rating = useMemo(
-    () => [
-      String(getOverallRatings(course, false)),
-      getOverallRatings(course, true),
-    ],
+    () =>
+      [
+        getOverallRatings(course, false),
+        getOverallRatings(course, true),
+      ] as const,
     [course],
   );
   const workload_rating = useMemo(
-    () => [
-      String(getWorkloadRatings(course, false)),
-      getWorkloadRatings(course, true),
-    ],
+    () =>
+      [
+        getWorkloadRatings(course, false),
+        getWorkloadRatings(course, true),
+      ] as const,
     [course],
   );
 
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
-  const subject_code = course.course_code
-    ? course.course_code.split(' ')[0]
-    : '';
-  const course_code = course.course_code
-    ? course.course_code.split(' ')[1]
-    : '';
+  const [subject_code, course_code] = course.course_code.split(' ');
 
   return (
     <Col
@@ -114,7 +122,7 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
           });
         }}
         className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
-        tabIndex="0"
+        tabIndex={0}
         inWorksheet={courseInWorksheet}
       >
         <Row className="m-auto">
@@ -130,7 +138,9 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
                         <Tooltip id="button-tooltip" {...props}>
                           <small>
                             {subjectOptions
-                              .find((subject) => subject.value === subject_code)
+                              .find(
+                                (subject) => subject.value === subject_code,
+                              )!
                               .label.substring(subject_code.length + 2)}
                           </small>
                         </Tooltip>
@@ -166,7 +176,7 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
                 >
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
-                      tag_styles[seasons[parseInt(season, 10) - 1]]
+                      tag_styles[seasons[season - 1]]
                     }`}
                   >
                     <Row className="m-auto">
@@ -251,7 +261,10 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
                     className={`${styles.rating} mr-1`}
                     style={{
                       color: course_rating[0]
-                        ? ratingColormap(course_rating[0]).darken().saturate()
+                        ? ratingColormap(course_rating[0])
+                            .darken()
+                            .saturate()
+                            .css()
                         : '#cccccc',
                     }}
                   >
@@ -278,9 +291,10 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
                     style={{
                       color:
                         course.professor_avg_rating && isLoggedIn
-                          ? ratingColormap(course.professor_avg_rating)
+                          ? ratingColormap(Number(course.professor_avg_rating))
                               .darken()
                               .saturate()
+                              .css()
                           : '#cccccc',
                     }}
                   >
@@ -312,6 +326,7 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
                           ? workloadColormap(workload_rating[0])
                               .darken()
                               .saturate()
+                              .css()
                           : '#cccccc',
                     }}
                   >
