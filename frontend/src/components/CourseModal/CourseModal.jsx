@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import { FaRegShareFromSquare } from "react-icons/fa6";
+import { FaRegShareFromSquare } from 'react-icons/fa6';
 import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
@@ -18,9 +18,6 @@ import { toSeasonString } from '../../utilities/courseUtilities';
 import { useCourseData } from '../../contexts/ferryContext';
 import { Button } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-
-
-
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -71,13 +68,16 @@ function CourseModal() {
   const ShareButton = ({ courseCode, url }) => {
     const copyToClipboard = () => {
       const textToCopy = `${courseCode} -- CourseTable: ${url}`;
-      navigator.clipboard.writeText(textToCopy).then(() => {
-        toast.success('Course and URL copied to clipboard!');
-      }, (err) => {
-        console.error('Error copying to clipboard: ', err);
-      });
+      navigator.clipboard.writeText(textToCopy).then(
+        () => {
+          toast.success('Course and URL copied to clipboard!');
+        },
+        (err) => {
+          console.error('Error copying to clipboard: ', err);
+        },
+      );
     };
-  
+
     return (
       <FaRegShareFromSquare variant="primary" onClick={copyToClipboard}>
         Share
@@ -119,7 +119,7 @@ function CourseModal() {
           centered
         >
           <Modal.Header closeButton>
-          <ShareButton courseCode={cur_listing.course_code} url={url} />
+            <ShareButton courseCode={cur_listing.course_code} url={url} />
 
             <Container className="p-0" fluid>
               {view[0] === 'overview' ? (
