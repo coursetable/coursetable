@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
+import { Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import chroma from 'chroma-js';
 import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
@@ -12,9 +11,8 @@ import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import styles from './CourseModal.module.css';
-import tag_styles from '../Search/ResultsItem.module.css';
-import { skillsAreasColors } from '../../queries/Constants';
 import { TextComponent, StyledLink } from '../StyledComponents';
+import SkillBadge from '../SkillBadge';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useCourseData } from '../../contexts/ferryContext';
 
@@ -75,9 +73,6 @@ function CourseModal() {
   // Current listing that we are viewing overview info for
   const cur_listing =
     listings.length > 0 ? listings[listings.length - 1] : null;
-
-  // key variable for lists
-  let key = 0;
 
   return (
     <div className="d-flex justify-content-center">
@@ -168,37 +163,11 @@ function CourseModal() {
                         {/* Course Skills and Areas */}
                         {cur_listing.skills &&
                           cur_listing.skills.map((skill) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[skill],
-                                backgroundColor: chroma(
-                                  skillsAreasColors[skill],
-                                )
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {skill}
-                            </Badge>
+                            <SkillBadge skill={skill} key={skill} />
                           ))}
                         {cur_listing.areas &&
                           cur_listing.areas.map((area) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[area],
-                                backgroundColor: chroma(skillsAreasColors[area])
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {area}
-                            </Badge>
+                            <SkillBadge skill={area} key={area} />
                           ))}
                       </Row>
                     </Col>
@@ -268,37 +237,11 @@ function CourseModal() {
                         {/* Course Skills and Areas */}
                         {view[1].skills &&
                           view[1].skills.map((skill) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[skill],
-                                backgroundColor: chroma(
-                                  skillsAreasColors[skill],
-                                )
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {skill}
-                            </Badge>
+                            <SkillBadge skill={skill} key={skill} />
                           ))}
                         {view[1].areas &&
                           view[1].areas.map((area) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[area],
-                                backgroundColor: chroma(skillsAreasColors[area])
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {area}
-                            </Badge>
+                            <SkillBadge skill={area} key={area} />
                           ))}
                         {/* Course Professors and Section */}
                         {view[1].professor[0] !== 'TBA' && (

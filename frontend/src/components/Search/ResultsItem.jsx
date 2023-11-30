@@ -22,7 +22,7 @@ import {
   StyledRating,
 } from '../StyledComponents';
 
-import Styles from './ResultsItem.module.css';
+import styles from './ResultsItem.module.css';
 import {
   getEnrolled,
   getOverallRatings,
@@ -171,8 +171,8 @@ function ResultsItem({
 
   return (
     <StyledSpacer
-      className={`${isFirst ? Styles.first_search_result_item : ''} ${
-        course.extra_info !== 'ACTIVE' ? ` ${Styles.cancelled_class}` : ''
+      className={`${isFirst ? styles.first_search_result_item : ''} ${
+        course.extra_info !== 'ACTIVE' ? ` ${styles.cancelled_class}` : ''
       }`}
       onClick={() => {
         setSearchParams((prev) => {
@@ -201,10 +201,10 @@ function ResultsItem({
                 </Tooltip>
               )}
             >
-              <div className={`${Styles.skills_areas} my-auto`}>
+              <div className={`${styles.skills_areas} my-auto`}>
                 <Tag
                   variant="secondary"
-                  className={Styles[seasons[parseInt(season, 10) - 1]]}
+                  className={styles[seasons[parseInt(season, 10) - 1]]}
                   key={season}
                 >
                   <div style={{ display: 'inline-block' }}>{icon}</div>
@@ -217,7 +217,7 @@ function ResultsItem({
         {/* Course Code */}
         <div
           style={code_style}
-          className={`${Styles.ellipsis_text} font-weight-bold`}
+          className={`${styles.ellipsis_text} font-weight-bold`}
         >
           <OverlayTrigger
             placement="top"
@@ -249,7 +249,7 @@ function ResultsItem({
               <Popover.Title>
                 <strong>
                   {course.extra_info !== 'ACTIVE' ? (
-                    <span className={Styles.cancelled_text}>CANCELLED </span>
+                    <span className={styles.cancelled_text}>CANCELLED </span>
                   ) : (
                     ''
                   )}
@@ -275,7 +275,7 @@ function ResultsItem({
         >
           {/* Course Title */}
           <div style={title_style}>
-            <div className={Styles.ellipsis_text}>{course.title}</div>
+            <div className={styles.ellipsis_text}>{course.title}</div>
           </div>
         </OverlayTrigger>
         <div className="d-flex">
@@ -307,7 +307,7 @@ function ResultsItem({
                   : 'N/A'}
               </RatingCell>
             </div>
-            <div className={Styles.ellipsis_text}>
+            <div className={styles.ellipsis_text}>
               {course.professor_names.length === 0
                 ? 'TBA'
                 : course.professor_names.join(' • ')}
@@ -320,7 +320,7 @@ function ResultsItem({
         </div>
         {/* Skills and Areas */}
         <div style={sa_style} className="d-flex">
-          <span className={`${Styles.skills_areas} `}>
+          <span className={`${styles.skills_areas} `}>
             {course.skills.map((skill, index) => (
               <Tag
                 variant="secondary"
@@ -355,11 +355,11 @@ function ResultsItem({
         </div>
         {/* Course Meeting Days & Times */}
         <div style={meet_style}>
-          <div className={Styles.ellipsis_text}>{course.times_summary}</div>
+          <div className={styles.ellipsis_text}>{course.times_summary}</div>
         </div>
         {/* Course Location */}
         <div style={loc_style}>
-          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+          <div className={styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
         {/* # FB Friends also shopping */}
         <div style={fb_style} className="d-flex ">
@@ -382,7 +382,7 @@ function ResultsItem({
         </div>
         {/* Add/remove from worksheet button */}
         <div
-          className={Styles.worksheet_btn}
+          className={styles.worksheet_btn}
           data-tutorial={isFirst && 'catalog-6'}
         >
           <WorksheetToggleButton
@@ -394,7 +394,7 @@ function ResultsItem({
         </div>
         {/* Render conflict icon only when component has been mounted */}
         {mounted && !isScrolling && (
-          <div className={Styles.conflict_error}>
+          <div className={styles.conflict_error}>
             <CourseConflictIcon course={course} />
           </div>
         )}

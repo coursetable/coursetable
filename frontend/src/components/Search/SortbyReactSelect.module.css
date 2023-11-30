@@ -1,3 +1,14 @@
 .sortby_container {
   width: calc(100% - 35px);
 }
+
+.sort_icon {
+  display: block;
+}
+
+.sort_btn {
+  cursor: pointer;
+  border-radius: 8px;
+  padding: 5px;
+  margin-left: auto;
+}
