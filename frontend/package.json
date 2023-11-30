@@ -60,6 +60,7 @@
     "react-big-calendar": "^0.30.0",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^18.2.0",
+    "react-helmet": "^6.1.0",
     "react-hotkeys": "^2.0.0",
     "react-icons": "^4.11.0",
     "react-lines-ellipsis": "^0.15.3",
