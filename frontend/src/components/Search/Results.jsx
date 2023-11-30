@@ -7,8 +7,7 @@ import ListGridToggle from './ListGridToggle';
 
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
-import Styles from './Results.module.css';
-import './Results.css';
+import styles from './Results.module.css';
 
 import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
@@ -347,10 +346,6 @@ function Results({
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const rate_prof_style = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_PROF_WIDTH}px`,
-  };
   const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
   const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
   const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
@@ -379,7 +374,7 @@ function Results({
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
 
   return (
-    <div className={Styles.results_container_max_width}>
+    <div className={styles.results_container_max_width}>
       {!isMobile && isLoggedIn && (
         <StyledSpacer
           style={{ top: navbarHeight }}
@@ -394,13 +389,13 @@ function Results({
             <StyledRow
               ref={ref}
               className={`mx-auto pl-4 pr-2 ${isLgDesktop ? 'py-2' : 'py-1'} ${
-                Styles.results_header_row
+                styles.results_header_row
               } justify-content-between`}
               data-tutorial="catalog-5"
             >
               {/* View Toggle */}
               <div
-                className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+                className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
                 <ListGridToggle isList={isList} setView={setView} />
               </div>
@@ -422,7 +417,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>Code</span>
+                      <span className={styles.one_line}>Code</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[0]}
@@ -431,7 +426,7 @@ function Results({
                   </ResultsHeader>
                   {/* Course Name */}
                   <ResultsHeader style={title_style}>
-                    <span className={Styles.one_line}>Title</span>
+                    <span className={styles.one_line}>Title</span>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[2]}
                       key={reset_key}
@@ -454,7 +449,7 @@ function Results({
                           </Tooltip>
                         )}
                       >
-                        <span className={Styles.one_line}>Overall</span>
+                        <span className={styles.one_line}>Overall</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[4]}
@@ -476,7 +471,7 @@ function Results({
                           </Tooltip>
                         )}
                       >
-                        <span className={Styles.one_line}>Work</span>
+                        <span className={styles.one_line}>Work</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[6]}
@@ -498,7 +493,7 @@ function Results({
                           </Tooltip>
                         )}
                       >
-                        <span className={Styles.one_line}>Professors</span>
+                        <span className={styles.one_line}>Professors</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[5]}
@@ -532,7 +527,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>#</span>
+                      <span className={styles.one_line}>#</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[8]}
@@ -541,7 +536,7 @@ function Results({
                   </ResultsHeader>
                   {/* Skills/Areas */}
                   <ResultsHeader style={sa_style}>
-                    <span className={Styles.one_line}>Skills/Areas</span>
+                    <span className={styles.one_line}>Skills/Areas</span>
                   </ResultsHeader>
                   {/* Course Meeting Days & Times */}
                   <ResultsHeader style={meet_style}>
@@ -557,7 +552,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>Meets</span>
+                      <span className={styles.one_line}>Meets</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[9]}
@@ -566,7 +561,7 @@ function Results({
                   </ResultsHeader>
                   {/* Location */}
                   <ResultsHeader style={loc_style}>
-                    <span className={Styles.one_line}>Location</span>
+                    <span className={styles.one_line}>Location</span>
                   </ResultsHeader>
                   {/* FB */}
                   <ResultsHeader style={fb_style}>
@@ -578,7 +573,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>#F</span>
+                      <span className={styles.one_line}>#F</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[3]}

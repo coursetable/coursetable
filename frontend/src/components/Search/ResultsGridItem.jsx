@@ -1,8 +1,7 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
-import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
-import chroma from 'chroma-js';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
@@ -10,7 +9,6 @@ import styled from 'styled-components';
 import {
   ratingColormap,
   workloadColormap,
-  skillsAreasColors,
   subjectOptions,
 } from '../../queries/Constants';
 
@@ -27,6 +25,7 @@ import {
 import { AiOutlineStar } from 'react-icons/ai';
 import { IoPersonOutline } from 'react-icons/io5';
 import { BiBookOpen } from 'react-icons/bi';
+import SkillBadge from '../SkillBadge';
 
 // Grid Item wrapper
 const StyledGridItem = styled.div`
@@ -90,9 +89,6 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
     ],
     [course],
   );
-
-  // Variable used in list keys
-  let key = 0;
 
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
@@ -226,51 +222,14 @@ function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
             <Row className="m-auto">
               <div className={tag_styles.skills_areas}>
                 {course.skills.map((skill) => (
-                  <Badge
-                    variant="secondary"
-                    className={tag_styles.tag}
-                    key={key++}
-                    style={{
-                      color: skillsAreasColors[skill],
-                      backgroundColor: chroma(skillsAreasColors[skill])
-                        .alpha(0.16)
-                        .css(),
-                    }}
-                  >
-                    {skill}
-                  </Badge>
+                  <SkillBadge skill={skill} key={skill} />
                 ))}
                 {course.areas.map((area) => (
-                  <Badge
-                    variant="secondary"
-                    className={tag_styles.tag}
-                    key={key++}
-                    style={{
-                      color: skillsAreasColors[area],
-                      backgroundColor: chroma(skillsAreasColors[area])
-                        .alpha(0.16)
-                        .css(),
-                    }}
-                  >
-                    {area}
-                  </Badge>
+                  <SkillBadge skill={area} key={area} />
                 ))}
                 {/* Render hidden badge as a spacer if no skills/areas */}
                 {course.skills.length === 0 && course.areas.length === 0 && (
-                  <Badge
-                    variant="secondary"
-                    className={tag_styles.tag}
-                    key={key++}
-                    style={{
-                      color: skillsAreasColors.Hu,
-                      backgroundColor: chroma(skillsAreasColors.Hu)
-                        .alpha(0.16)
-                        .css(),
-                      opacity: 0,
-                    }}
-                  >
-                    Hu
-                  </Badge>
+                  <SkillBadge skill="Hu" hidden />
                 )}
               </div>
             </Row>

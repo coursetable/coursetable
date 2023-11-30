@@ -361,7 +361,7 @@ function About() {
         <Row className="mx-auto">{current.map(createCards)}</Row>
       </div>
 
-      <h1 className={`${styles.about_header} mt-5 mb-1`}>CourseTable Alumni</h1>
+      <h1 className="mt-5 mb-1">CourseTable Alumni</h1>
       <div className="my-3">
         <Row className="mx-auto">{alumni.map(createCards)}</Row>
       </div>

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import { Element, scroller } from 'react-scroll';
-import Styles from './Search.module.css';
+import styles from './Search.module.css';
 
 import Results from '../components/Search/Results';
 
@@ -126,7 +126,7 @@ function Search() {
   //   return (
   //     <Handle {...e} key={key}>
   //       <div
-  //         className={`shadow ${Styles.time_tooltip}`}
+  //         className={`shadow ${styles.time_tooltip}`}
   //         style={{ width: '3.5rem' }}
   //       >
   //         {to12HourTime(toRealTime(value))}
@@ -138,7 +138,7 @@ function Search() {
   //   const key = e.className;
   //   return (
   //     <Handle {...e} key={key}>
-  //       <div className={`shadow ${Styles.enrollment_tooltip}`}>
+  //       <div className={`shadow ${styles.enrollment_tooltip}`}>
   //         {Math.round(toExponential(value))}
   //       </div>
   //     </Handle>
@@ -154,7 +154,7 @@ function Search() {
 
   // TODO: add state if courseLoadError is present
   return (
-    <div className={Styles.search_base}>
+    <div className={styles.search_base}>
       <Row
         className={`p-0 m-0 ${
           !isMobile ? 'd-flex flex-row-reverse flex-nowrap' : ''
@@ -162,22 +162,22 @@ function Search() {
       >
         {/* Search Form for mobile only */}
         {isMobile && (
-          <Col className={`p-3 ${Styles.search_col_mobile}`}>
+          <Col className={`p-3 ${styles.search_col_mobile}`}>
             <SurfaceComponent
               layer={0}
-              className={`ml-1 ${Styles.search_container}`}
+              className={`ml-1 ${styles.search_container}`}
             >
               <Form className="px-0" onSubmit={scrollToResults}>
                 <Row className="mx-auto pt-4 px-4">
                   {/* Reset Filters Button */}
                   <small
-                    className={`${Styles.reset_filters_btn} mr-auto`}
+                    className={`${styles.reset_filters_btn} mr-auto`}
                     onClick={handleResetFilters}
                   >
                     Reset Filters
                   </small>
                   {/* Number of results shown text */}
-                  <small className={`${Styles.num_results} ml-auto`}>
+                  <small className={`${styles.num_results} ml-auto`}>
                     <TextComponent type={2}>
                       {coursesLoading
                         ? 'Searching ...'
@@ -187,8 +187,8 @@ function Search() {
                 </Row>
                 {/* Search Bar */}
                 <Row className="mx-auto pt-1 pb-2 px-4">
-                  <div className={Styles.search_bar}>
-                    <InputGroup className={Styles.search_input}>
+                  <div className={styles.search_bar}>
+                    <InputGroup className={styles.search_input}>
                       <StyledInput
                         type="text"
                         value={searchText}
@@ -205,9 +205,9 @@ function Search() {
                   <SortByReactSelect key={reset_key} />
                 </Row>
                 <StyledHr />
-                <Row className={`mx-auto py-0 px-4 ${Styles.multi_selects}`}>
+                <Row className={`mx-auto py-0 px-4 ${styles.multi_selects}`}>
                   {/* Seasons Multi-Select */}
-                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     {seasonsOptions && (
                       <CustomSelect
                         isMulti
@@ -226,7 +226,7 @@ function Search() {
                   </div>
                   {/* Skills/Areas Multi-Select */}
                   <div
-                    className={`col-md-12 p-0  ${Styles.selector_container}`}
+                    className={`col-md-12 p-0  ${styles.selector_container}`}
                   >
                     <CustomSelect
                       isMulti
@@ -243,7 +243,7 @@ function Search() {
                     />
                   </div>
                   {/* Course Credit Multi-Select */}
-                  {/* <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  {/* <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                   <CustomSelect
                     isMulti
                     value={select_credits}
@@ -257,7 +257,7 @@ function Search() {
                   />
                 </div> */}
                   {/* Yale Subjects Multi-Select */}
-                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect
                       isMulti
                       value={select_subjects}
@@ -272,7 +272,7 @@ function Search() {
                     />
                   </div>
                   {/* Yale Schools Multi-Select */}
-                  <div className={`col-md-12 p-0 ${Styles.selector_container}`}>
+                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect
                       isMulti
                       value={select_schools}
@@ -289,7 +289,7 @@ function Search() {
                   </div>
                 </Row>
                 <StyledHr />
-                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${styles.sliders}`}>
                   {/* Class Rating Slider */}
                   <Col>
                     <Container style={{ paddingTop: '1px' }}>
@@ -308,15 +308,15 @@ function Search() {
                         handle={({ value, dragging, ...e }) => (
                           // @ts-expect-error: TODO upgrade rc-slider
                           <Handle {...e} key={e.className}>
-                            <div className={`shadow ${Styles.overall_tooltip}`}>
+                            <div className={`shadow ${styles.overall_tooltip}`}>
                               {value}
                             </div>
                           </Handle>
                         )}
-                        className={Styles.slider}
+                        className={styles.slider}
                       />
                     </Container>
-                    <div className={`text-center ${Styles.filter_title}`}>
+                    <div className={`text-center ${styles.filter_title}`}>
                       Overall rating
                     </div>
                   </Col>
@@ -339,23 +339,23 @@ function Search() {
                           // @ts-expect-error: TODO upgrade rc-slider
                           <Handle {...e} key={e.className}>
                             <div
-                              className={`shadow ${Styles.workload_tooltip}`}
+                              className={`shadow ${styles.workload_tooltip}`}
                             >
                               {value}
                             </div>
                           </Handle>
                         )}
-                        className={Styles.slider}
+                        className={styles.slider}
                       />
                     </Container>
-                    <div className={`text-center ${Styles.filter_title}`}>
+                    <div className={`text-center ${styles.filter_title}`}>
                       Workload
                     </div>
                   </Col>
                 </Row>
                 {/* Omitting advanced range filters for mobile */}
                 {/* // Time slider
-                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${styles.sliders}`}>
                   <Col>
                     <Container>
                       <Range
@@ -371,16 +371,16 @@ function Search() {
                           setTimeBounds(value.map(toRealTime));
                         }}
                         handle={timeSliderHandle}
-                        className={Styles.slider}
+                        className={styles.slider}
                       />
                     </Container>
-                    <div className={`text-center ${Styles.filter_title}`}>
+                    <div className={`text-center ${styles.filter_title}`}>
                       Time
                     </div>
                   </Col>
                 </Row>
                 // Enrollment slider
-                <Row className={`mx-auto pt-0 pb-0 px-2 ${Styles.sliders}`}>
+                <Row className={`mx-auto pt-0 pb-0 px-2 ${styles.sliders}`}>
                   <Col>
                     <Container>
                       <Range
@@ -402,20 +402,20 @@ function Search() {
                           setEnrollBounds(value.map(toExponential));
                         }}
                         handle={enrollmentSliderHandle}
-                        className={Styles.slider}
+                        className={styles.slider}
                       />
                     </Container>
-                    <div className={`text-center ${Styles.filter_title}`}>
+                    <div className={`text-center ${styles.filter_title}`}>
                       Enrollment
                     </div>
                   </Col>
                 </Row> */}
                 <StyledHr className="mb-0" />
                 <Row
-                  className={`mx-auto pt-1 px-4 justify-content-left ${Styles.light_bg}`}
+                  className={`mx-auto pt-1 px-4 justify-content-left ${styles.light_bg}`}
                 >
                   {/* Hide Cancelled Courses Toggle */}
-                  <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideCancelled}
                       onChange={() => {}} // dummy handler to remove warning
@@ -430,7 +430,7 @@ function Search() {
                   </Form.Check>
 
                   {/* Hide First-Year Seminar Courses Toggle */}
-                  <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideFirstYearSeminars}
                       onChange={() => {}} // dummy handler to remove warning
@@ -445,7 +445,7 @@ function Search() {
                   </Form.Check>
 
                   {/* Hide Graduate-Level Courses Toggle */}
-                  <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideGraduateCourses}
                       onChange={() => {}} // dummy handler to remove warning
@@ -460,7 +460,7 @@ function Search() {
                   </Form.Check>
 
                   {/* Hide Discussion Sections Toggle */}
-                  <Form.Check type="switch" className={Styles.toggle_option}>
+                  <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideDiscussionSections}
                       onChange={() => {}} // dummy handler to remove warning
@@ -475,7 +475,7 @@ function Search() {
                   </Form.Check>
                 </Row>
 
-                <div className={Styles.useless_btn}>
+                <div className={styles.useless_btn}>
                   {/* The form requires a button with type submit in order to process
                     events when someone hits enter to submit. We want this functionality
                     so we can scroll to the results on mobile when they hit enter,
@@ -492,8 +492,8 @@ function Search() {
           md={12}
           className={`m-0 ${
             isMobile
-              ? `p-3 ${Styles.results_col_mobile}`
-              : `px-0 pb-3 ${Styles.results_col}`
+              ? `p-3 ${styles.results_col_mobile}`
+              : `px-0 pb-3 ${styles.results_col}`
           }`}
         >
           <Element name="catalog" className="d-flex justify-content-center">

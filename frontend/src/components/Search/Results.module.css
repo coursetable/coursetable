@@ -40,6 +40,10 @@
   display: block;
 }
 
-:global .sticky {
+:global(.sticky) {
   z-index: 1;
+}
+:global(.ReactVirtualized__Grid),
+:global(.ReactVirtualized__Grid__innerScrollContainer) {
+  overflow: visible !important;
 }

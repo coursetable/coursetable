@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Badge, Collapse } from 'react-bootstrap';
+import { Collapse } from 'react-bootstrap';
 import styled from 'styled-components';
 import chroma from 'chroma-js';
-import tagStyles from '../Search/ResultsItem.module.css';
+import SkillBadge from '../SkillBadge';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { ratingColormap, skillsAreasColors } from '../../queries/Constants';
+import { ratingColormap } from '../../queries/Constants';
 import styles from './WorksheetStats.module.css';
 
 const StyledStatPill = styled.span<
@@ -121,19 +121,7 @@ export default function WorksheetStats() {
                 <StyledStatPill>Skills & Areas</StyledStatPill>
                 <StyledStatPill>
                   {skillsAreas.sort().map((skill, i) => (
-                    <Badge
-                      variant="secondary"
-                      className={tagStyles.tag}
-                      style={{
-                        color: skillsAreasColors[skill],
-                        backgroundColor: chroma(skillsAreasColors[skill])
-                          .alpha(0.16)
-                          .css(),
-                      }}
-                      key={i}
-                    >
-                      {skill}
-                    </Badge>
+                    <SkillBadge skill={skill} key={i} />
                   ))}
                 </StyledStatPill>
               </li>

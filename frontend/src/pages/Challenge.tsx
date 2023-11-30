@@ -410,7 +410,7 @@ function Challenge() {
         <h1 className="font-weight-bold mb-2">Enable evaluations</h1>
         {/* Page Description */}
         <TextComponent type={1}>
-          <p className={`${styles.challenge_description} mb-2`}>
+          <p className="mb-2">
             To confirm that you have access to course evaluations, we ask that
             you retrieve the number of people who responded to a specific
             question for three courses (linked below). If your responses match
