@@ -1,12 +1,8 @@
-/* eslint @typescript-eslint/no-var-requires: "off" */
-
 import moment from 'moment';
 import { toast } from 'react-toastify';
 import { weekdays, type Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import * as Sentry from '@sentry/react';
-
-// eslint-disable-next-line @typescript-eslint/no-var-requires
 import ics from 'ics';
 import FileSaver from 'file-saver';
 
