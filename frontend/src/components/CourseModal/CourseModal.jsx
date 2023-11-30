@@ -321,4 +321,4 @@ function CourseModal() {
   );
 }
 
-export default React.memo(CourseModal);
+export default CourseModal;

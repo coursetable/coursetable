@@ -21,19 +21,6 @@ export const SmallTextComponent = styled(TextComponent)`
   ${breakpoints('font-size', '%', [{ 1320: 64 }])};
 `;
 
-// Keyframes
-// const gradient = keyframes`
-//   0% {
-// 		background-position: 0% 50%;
-// 	}
-// 	50% {
-// 		background-position: 100% 50%;
-// 	}
-// 	100% {
-// 		background-position: 0% 50%;
-// 	}
-// `;
-
 // Div for banner components
 export const StyledBanner = styled.div`
   background-color: #0086fa;
@@ -140,9 +127,7 @@ export const StyledRating = styled.div<{
     rating && rating > 0
       ? colormap(rating).alpha(theme.rating_alpha).css()
       : 'inherit'};
-  color: ${({ rating }) =>
-    // rating && rating > 0 ? colormap(rating).darken(3).css() : '#b5b5b5'};
-    rating && rating > 0 ? '#141414' : '#b5b5b5'};
+  color: ${({ rating }) => (rating && rating > 0 ? '#141414' : '#b5b5b5')};
   display: flex;
   align-items: center;
 `;

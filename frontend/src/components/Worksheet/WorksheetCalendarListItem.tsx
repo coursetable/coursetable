@@ -104,4 +104,4 @@ function WorksheetCalendarListItem({
   );
 }
 
-export default React.memo(withTheme(WorksheetCalendarListItem));
+export default withTheme(WorksheetCalendarListItem);

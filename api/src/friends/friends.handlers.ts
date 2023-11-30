@@ -40,7 +40,7 @@ export const addFriend = async (
   try {
     await prisma.$transaction([
       prisma.studentFriends.upsert({
-        // update (do not create a new friend) when one already matches the netId and Facebook ID
+        // update (do not create a new friend) when one already matches the netId
         where: {
           netId_friendNetId: { netId, friendNetId },
         },
@@ -249,8 +249,8 @@ export const getFriendsWorksheets = async (
 
   const { netId } = req.user;
 
-  // Get NetIDs of Facebook friends
-  winston.info('Getting NetIDs of Facebook friends');
+  // Get NetIDs of friends
+  winston.info('Getting NetIDs of friends');
   const friendRecords = await prisma.studentFriends.findMany({
     where: {
       netId,

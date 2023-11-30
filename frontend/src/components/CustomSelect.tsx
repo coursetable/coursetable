@@ -199,22 +199,13 @@ function CustomSelect<
     borderRadius: 8,
     colors: {
       ...theme.colors,
-      // primary: '', // border :focus & optionBackground :selected
-      // primary75: '', //
       primary50: '#85c2ff', // optionBackground :focus
       primary25: globalTheme.select_hover, // optionBackground :hover
-      // danger: '', // selectedOptionClear :hover
-      // dangerLight: '', // selectedOptionClearBackground :hover
       neutral0: globalTheme.select, // allBackground & optionText :selected
       neutral10: globalTheme.multivalue, // selectedOptionBackground & disabledBorder
-      // neutral20: 'rgba(0, 0, 0, 0.1)', // border & dropdownIcon & clearIcon
       neutral30: 'hsl(0, 0%, 70%)', // border :hover
-      // neutral40: '', // dropdownIcon :hover & clearIcon :hover & noOptionsText
-      // neutral50: '', // placeholder
       neutral60: globalTheme.text[0], // dropdownIconFocus & clearIconFocus
-      // neutral70: '', //
       neutral80: globalTheme.text[0], // selectedOtionText & dropdownIconFocus :hover & clearIconFocus :hover
-      // neutral90: '', //
     },
   });
 

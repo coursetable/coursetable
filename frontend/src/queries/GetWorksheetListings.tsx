@@ -26,20 +26,6 @@ export const useWorksheetInfo = (
     return Array.from(seasons); // idk just need to return something i think
   }, [season, worksheet]);
 
-  /*   const required_worksheet_numbers = useMemo(() => {
-    if (!worksheet || worksheet.length === 0) {
-      // If the worksheet is empty, we don't want to request data for any
-      // seasons, even if a specific season is requested.
-      return [];
-    }
-    const worksheet_numbers = new Set<string>();
-    worksheet.forEach((item) => {
-      worksheet_numbers.add(item[2]);
-    });
-    if (worksheet_numbers.has(worksheet_number)) return [worksheet_number];
-    return [];
-  }, [worksheet_number, worksheet]); */
-
   const { loading, error, courses } = useCourseData(required_seasons);
 
   const data = useMemo(() => {

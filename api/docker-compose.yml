@@ -9,7 +9,6 @@ services:
         condition: service_healthy
     environment:
       CANNY_KEY: ${CANNY_KEY?canny_key}
-      FACEBOOK_API_ENDPOINT: ${FACEBOOK_API_ENDPOINT?facebook_api_endpoint}
       FERRY_SECRET: ${FERRY_RELOAD_SECRET?ferry_reload_secret}
       FRONTEND_ENDPOINT: ${FRONTEND_ENDPOINT?frontend_endpoint}
       GRAPHQL_ENDPOINT: http://graphql-engine:8080/v1/graphql

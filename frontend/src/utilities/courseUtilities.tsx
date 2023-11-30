@@ -100,7 +100,7 @@ export const checkCrossListed = (
   return false;
 };
 
-// Fetch the FB friends that are also shopping a specific course. Used in course modal overview
+// Fetch the friends that are also shopping a specific course. Used in course modal overview
 export function friendsAlsoTaking(
   season_code: Season,
   crn: Crn,
@@ -109,7 +109,7 @@ export function friendsAlsoTaking(
 ): string[] {
   // Return if worksheets are null
   if (!worksheets) return [];
-  // List of FB friends also shopping
+  // List of friends also shopping
   const also_taking = [];
   for (const friend of Object.keys(worksheets)) {
     if (
@@ -124,15 +124,15 @@ export function friendsAlsoTaking(
 }
 type NumFriendsReturn =
   // Key is season code + crn
-  // Value is the list of FB friends taking the class
+  // Value is the list of friends taking the class
   Record<string, string[]>;
-// Fetch the FB friends that are also shopping any course. Used in search and worksheet expanded list
+// Fetch the friends that are also shopping any course. Used in search and worksheet expanded list
 export const getNumFriends = (
   friendWorksheets: FriendInfo,
 ): NumFriendsReturn => {
   // List of each friends' worksheets
   const { worksheets } = friendWorksheets;
-  // List of each friends' names/facebook id
+  // List of each friends' names/net id
   const names = friendWorksheets.friendInfo;
   // Object to return
   const friend_dict: NumFriendsReturn = {};
@@ -204,14 +204,6 @@ const calculateDayTime = (course: Listing): number | null => {
   const times = getDayTimes(course);
 
   if (times) {
-    // Get earliest start time
-    // const earliestTime = times.reduce((early, time) => {
-    //   if (toRangeTime(time.start) < toRangeTime(early)) {
-    //     early = time.start;
-    //   }
-    //   return early;
-    // }, '0:00');
-
     // Calculate the time score
     const start_time = Number(
       times[0].start.split(':').reduce((final, num) => {

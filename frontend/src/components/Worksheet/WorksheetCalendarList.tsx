@@ -175,5 +175,4 @@ function WorksheetCalendarList() {
   );
 }
 
-// WorksheetCalendarList.whyDidYouRender = true;
-export default React.memo(WorksheetCalendarList);
+export default WorksheetCalendarList;

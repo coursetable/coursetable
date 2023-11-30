@@ -76,5 +76,4 @@ function CourseConflictIcon({ course }: { course: Listing }) {
   );
 }
 
-// CourseConflictIcon.whyDidYouRender = true;
-export default React.memo(CourseConflictIcon);
+export default CourseConflictIcon;

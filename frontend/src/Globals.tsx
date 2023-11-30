@@ -71,7 +71,6 @@ const link = createHttpLink({
 });
 
 const client = new ApolloClient({
-  // uri: `${API_ENDPOINT}/ferry/v1/graphql`,
   // default cache for now
   cache: new InMemoryCache(),
   link,
@@ -86,7 +85,6 @@ function ErrorFallback() {
 }
 function CustomErrorBoundary({ children }: { children: React.ReactNode }) {
   if (isDev) {
-    // return <ErrorFallback />;
     return <>{children}</>;
   }
   return (

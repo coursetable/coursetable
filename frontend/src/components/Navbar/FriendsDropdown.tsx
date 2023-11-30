@@ -9,13 +9,13 @@ import './DropdownShared.css';
 type Person = NetId | 'me';
 
 /**
- * Render FB Dropdown in mobile view.
+ * Render friends dropdown in mobile view.
  *
  * We include every friend in this list, even if they haven't selected
  * any classes in this season. In the list, we include the number of
  * listings they have in their worksheet in the given semester.
  */
-function FBDropdown() {
+function FriendsDropdown() {
   // Fetch user context data
   const { user } = useUser();
 
@@ -37,9 +37,6 @@ function FBDropdown() {
       text = 'Me';
     } else {
       const { name } = friendInfo[curr_person];
-      // const count_in_season = (friendWorksheets[curr_person] ?? []).filter(
-      //   (worksheet) => worksheet[0] === cur_season,
-      // ).length;
       text = `${name}`;
     }
     return (
@@ -79,4 +76,4 @@ function FBDropdown() {
   );
 }
 
-export default FBDropdown;
+export default FriendsDropdown;

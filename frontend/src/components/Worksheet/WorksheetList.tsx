@@ -44,4 +44,4 @@ function WorksheetList() {
   );
 }
 
-export default React.memo(WorksheetList);
+export default WorksheetList;

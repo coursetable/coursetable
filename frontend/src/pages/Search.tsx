@@ -9,7 +9,6 @@ import Results from '../components/Search/Results';
 
 import {
   skillsAreasOptions,
-  // creditOptions,
   schoolOptions,
   subjectOptions,
 } from '../queries/Constants';
@@ -31,13 +30,6 @@ import {
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { useSearch, Option, defaultFilters } from '../contexts/searchContext';
 import { ValueType } from 'react-select/src/types';
-// import {
-//   to12HourTime,
-//   toExponential,
-//   toLinear,
-//   toRangeTime,
-//   toRealTime,
-// } from '../courseUtilities';
 
 /**
  * Renders catalog page
@@ -45,9 +37,6 @@ import { ValueType } from 'react-select/src/types';
 function Search() {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
-
-  // number of search results to return
-  // const QUERY_SIZE = 30;
 
   // way to display results
   const [isList, setView] = useSessionStorageState('isList', !isMobile);
@@ -60,10 +49,7 @@ function Search() {
     overallBounds,
     workloadBounds,
     select_seasons,
-    // timeBounds,
-    // enrollBounds,
     select_schools,
-    // select_credits,
     hideCancelled,
     hideConflicting,
     hideFirstYearSeminars,
@@ -84,12 +70,7 @@ function Search() {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
-    // setTimeBounds,
-    // setTimeValueLabels,
-    // setEnrollBounds,
-    // setEnrollValueLabels,
     setSelectSchools,
-    // setSelectCredits,
     setHideCancelled,
     setHideConflicting,
     setHideFirstYearSeminars,
@@ -122,30 +103,6 @@ function Search() {
       setDoneInitialScroll(true);
     }
   }, [coursesLoading, doneInitialScroll, scrollToResults]);
-
-  // const timeSliderHandle = useCallback(({ value, dragging, ...e }) => {
-  //   const key = e.className;
-  //   return (
-  //     <Handle {...e} key={key}>
-  //       <div
-  //         className={`shadow ${styles.time_tooltip}`}
-  //         style={{ width: '3.5rem' }}
-  //       >
-  //         {to12HourTime(toRealTime(value))}
-  //       </div>
-  //     </Handle>
-  //   );
-  // }, []);
-  // const enrollmentSliderHandle = useCallback(({ value, dragging, ...e }) => {
-  //   const key = e.className;
-  //   return (
-  //     <Handle {...e} key={key}>
-  //       <div className={`shadow ${styles.enrollment_tooltip}`}>
-  //         {Math.round(toExponential(value))}
-  //       </div>
-  //     </Handle>
-  //   );
-  // }, []);
 
   // Switch to grid view if mobile
   useEffect(() => {
@@ -235,7 +192,6 @@ function Search() {
                       value={select_skillsareas}
                       options={skillsAreasOptions}
                       placeholder="All Skills/Areas"
-                      // colors
                       useColors
                       // prevent overlap with tooltips
                       menuPortalTarget={document.body}

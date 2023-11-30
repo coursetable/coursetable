@@ -17,7 +17,6 @@ import {
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
-// import { useSearch } from '../searchContext';
 import { DateTime, Duration } from 'luxon';
 
 import { API_ENDPOINT } from '../../config';
@@ -43,7 +42,7 @@ const StyledMeIcon = styled.div`
   }
 `;
 
-// Sign in/out & FB btns
+// Sign in/out buttons
 const StyledDiv = styled.div`
   padding: 0.5rem 1rem 0.5rem 0rem;
   color: ${({ theme }) => theme.text[1]};
@@ -129,9 +128,6 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const { ref_visible, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
 
-  // Fetch from search
-  // const { searchData, coursesLoading, speed } = useSearch();
-
   // Last updated state
   const [lastUpdated, setLastUpdated] = useState('0 hrs');
 
@@ -194,7 +190,6 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
           <Navbar
             expanded={nav_expanded}
             onToggle={(expanded: boolean) => setExpand(expanded)}
-            // sticky="top"
             expand="md"
             className="shadow-sm px-3 align-items-start"
             style={
@@ -313,7 +308,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                       </StyledMeIcon>
                     </div>
                   </div>
-                  {/* Sign in/out and Facebook buttons. Show if mobile */}
+                  {/* Sign in/out buttons. Show if mobile */}
                   <div className="d-md-none">
                     <StyledDiv>
                       <a

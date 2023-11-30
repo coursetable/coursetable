@@ -43,7 +43,7 @@ function App() {
   const { user, userRefresh, friendRefresh, friendReqRefresh, getAllNames } =
     useUser();
 
-  // Refresh user worksheet and FB data on page load
+  // Refresh user worksheet and friends data on page load
   useEffect(() => {
     const a = userRefresh(true);
     const b = friendRefresh(true);

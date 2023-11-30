@@ -57,7 +57,7 @@ const UserContext = createContext<Store | undefined>(undefined);
 UserContext.displayName = 'UserContext';
 
 /**
- * Stores the user's worksheet, FB login status, and FB friends' worksheets
+ * Stores the user's worksheet and friends' worksheets
  */
 export function UserProvider({ children }: { children: React.ReactNode }) {
   // User's netId
@@ -70,10 +70,10 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const [year, setYear] = useState<number | undefined>(undefined);
   // User's school
   const [school, setSchool] = useState<string | undefined>(undefined);
-  // User's FB friends' worksheets
-  const [friendWorksheets, setFbWorksheets] = useState<FriendInfo | undefined>(
-    undefined,
-  );
+  // User's friends' worksheets
+  const [friendWorksheets, setFriendWorksheets] = useState<
+    FriendInfo | undefined
+  >(undefined);
   // User's friend requests
   const [friendRequests, setFriendRequests] = useState<
     FriendRequest[] | undefined
@@ -116,7 +116,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
   );
 
-  // Refresh user FB stuff
+  // Refresh user friends stuff
   const friendRefresh = useCallback(
     async (suppressError = false): Promise<void> => {
       try {
@@ -130,17 +130,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
           throw new Error(friends_worksheets.data.message);
         }
         // Successfully fetched friends' worksheets
-        setFbWorksheets(friends_worksheets.data);
+        setFriendWorksheets(friends_worksheets.data);
       } catch (err) {
         // Error with fetching friends' worksheets
         if (!suppressError) {
           Sentry.captureException(err);
-          toast.error('Error updating Facebook friends');
+          toast.error('Error updating friends');
         }
-        setFbWorksheets(undefined);
+        setFriendWorksheets(undefined);
       }
     },
-    [setFbWorksheets],
+    [setFriendWorksheets],
   );
 
   // refresh friend requests
