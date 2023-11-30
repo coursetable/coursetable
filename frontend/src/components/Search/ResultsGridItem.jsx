@@ -1,4 +1,5 @@
 import React, { useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Row, Col, Badge, OverlayTrigger, Tooltip } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -50,18 +51,10 @@ const StyledGridItem = styled.div`
  * @prop isLoggedIn - boolean | is the user logged in?
  * @prop num_cols - number | integer that holds how many columns in grid view
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
- * @prop showModal - function | to display course modal
  */
 
-function ResultsGridItem({
-  course,
-  isLoggedIn,
-  num_cols,
-  multiSeasons,
-  showModal,
-}) {
-  // How many decimal points to use in ratings
-  const RATINGS_PRECISION = 1;
+function ResultsGridItem({ course, isLoggedIn, num_cols, multiSeasons }) {
+  const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
   const col_width = 12 / num_cols;
 
@@ -119,7 +112,10 @@ function ResultsGridItem({
     >
       <StyledGridItem
         onClick={() => {
-          showModal(course);
+          setSearchParams((prev) => {
+            prev.set('course-modal', `${course.season_code}-${course.crn}`);
+            return prev;
+          });
         }}
         className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
         tabIndex="0"

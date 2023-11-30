@@ -35,15 +35,12 @@ type Store = {
   worksheetLoading: boolean;
   worksheetError: string | null;
   worksheetData: Listing[];
-  course_modal: (string | boolean | Listing)[];
   changeSeason: (season_code: Season | null) => void;
   changeWorksheet: (worksheet_number: string) => void;
   handlePersonChange: (new_person: string) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
   toggleCourse: (crn: number) => void;
-  showModal: (listing: Listing) => void;
-  hideModal: () => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
@@ -68,10 +65,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Current user who's worksheet we are viewing
   const [person, setFbPerson] = useSessionStorageState('person', 'me');
 
-  // Determines when to show course modal and for what listing
-  const [course_modal, setCourseModal] = useState<
-    (string | boolean | Listing)[]
-  >([false, '']);
   // List of courses that the user has marked hidden
   const [hidden_courses, setHiddenCourses] =
     useLocalStorageState<HiddenCourses>('hidden_courses', {});
@@ -272,16 +265,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     [setWorksheetNumber],
   );
 
-  // Show course modal for the chosen listing
-  const showModal = useCallback((listing: Listing) => {
-    setCourseModal([true, listing]);
-  }, []);
-
-  // Hide course modal
-  const hideModal = useCallback(() => {
-    setCourseModal([false, '']);
-  }, []);
-
   // Store object returned in context provider
   const store = useMemo(
     () => ({
@@ -299,7 +282,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       worksheetLoading,
       worksheetError,
       worksheetData,
-      course_modal,
 
       // Update methods.
       changeSeason,
@@ -307,8 +289,6 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
-      showModal,
-      hideModal,
       changeWorksheet,
     }),
     [
@@ -325,14 +305,11 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       worksheetLoading,
       worksheetError,
       worksheetData,
-      course_modal,
       changeSeason,
       handlePersonChange,
       setHoverCourse,
       handleWorksheetView,
       toggleCourse,
-      showModal,
-      hideModal,
       changeWorksheet,
     ],
   );

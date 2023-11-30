@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-
+import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -27,10 +27,8 @@ import {
   getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
-  isInWorksheet,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
-import { useUser } from '../../contexts/userContext';
 
 // Row for results item
 const StyledResultsItem = styled(Row)`
@@ -78,7 +76,6 @@ const Tag = styled(Badge)`
 /**
  * Renders a list item for a search result
  * @prop course - object | listing data for the current course
- * @prop showModal - function | shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isFirst - boolean | is this the first course of the results?
  * @prop COL_SPACING - object | with widths of each column
@@ -88,13 +85,13 @@ const Tag = styled(Badge)`
 
 function ResultsItem({
   course,
-  showModal,
   multiSeasons,
   isFirst,
   COL_SPACING,
   isScrolling = false,
   friends,
 }) {
+  const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
 
@@ -178,7 +175,10 @@ function ResultsItem({
         course.extra_info !== 'ACTIVE' ? ` ${Styles.cancelled_class}` : ''
       }`}
       onClick={() => {
-        showModal(course);
+        setSearchParams((prev) => {
+          prev.set('course-modal', `${course.season_code}-${course.crn}`);
+          return prev;
+        });
       }}
       tabIndex="0"
       inWorksheet={courseInWorksheet}
