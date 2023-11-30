@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
-
+import {Helmet} from 'react-helmet';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import chroma from 'chroma-js';
 import styled from 'styled-components';
@@ -82,6 +82,13 @@ function CourseModal() {
   return (
     <div className="d-flex justify-content-center">
       {cur_listing && (
+        <>
+        <Helmet>
+        <title>{cur_listing.course_code} - CourseTable</title>
+        <meta property="og:title" content={cur_listing.title} />
+        <meta property="og:description" content={cur_listing.description} />
+          </Helmet>
+        {/* Other OG tags */}
         <StyledModal
           show={Boolean(listing)}
           scrollable
@@ -343,6 +350,7 @@ function CourseModal() {
               />
             ))}
         </StyledModal>
+        </>
       )}
     </div>
   );
