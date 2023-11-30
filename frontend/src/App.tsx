@@ -34,7 +34,7 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
  * Render navbar and the corresponding page component for the route the user is on
  * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
  */
-function App({ themeToggler }) {
+function App({ themeToggler }: { themeToggler: () => void }) {
   const location = useLocation();
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();

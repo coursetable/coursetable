@@ -55,8 +55,7 @@ function MeDropdown({
 
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
-  let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
-  if (!data) data = [];
+  const { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
 
   // Called when worksheet updates or export_ics changes
   useEffect(() => {

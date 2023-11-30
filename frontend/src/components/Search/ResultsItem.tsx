@@ -29,6 +29,7 @@ import {
   getWorkloadRatings,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
+import type { Listing } from '../../utilities/common';
 
 // Row for results item
 const StyledResultsItem = styled(Row)`
@@ -43,7 +44,7 @@ const StyledResultsItem = styled(Row)`
 `;
 
 // Wrapper for row
-const StyledSpacer = styled.div`
+const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
   outline: none !important;
   background-color: ${({ theme, inWorksheet }) =>
     inWorksheet ? theme.primary_light : 'inherit'};
@@ -90,6 +91,13 @@ function ResultsItem({
   COL_SPACING,
   isScrolling = false,
   friends,
+}: {
+  course: Listing;
+  multiSeasons: boolean;
+  isFirst: boolean;
+  COL_SPACING: any;
+  isScrolling: boolean;
+  friends: string[];
 }) {
   const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?
@@ -102,16 +110,16 @@ function ResultsItem({
 
   // Season code for this listing
   const { season_code } = course;
-  const season = season_code[5];
-  const year = season_code.substr(2, 2);
+  const season = Number(season_code[5]);
+  const year = season_code.substring(2, 4);
   // Size of season icons
   const icon_size = 10;
-  const seasons = ['spring', 'summer', 'fall'];
+  const seasons = ['spring', 'summer', 'fall'] as const;
   // Determine the icon for this season
   const icon = useMemo(() => {
-    return season === '1' ? (
+    return season === 1 ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
-    ) : season === '2' ? (
+    ) : season === 2 ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
@@ -120,17 +128,19 @@ function ResultsItem({
 
   // Fetch overall & workload rating values and string representations
   const course_rating = useMemo(
-    () => [
-      String(getOverallRatings(course, false)),
-      getOverallRatings(course, true),
-    ],
+    () =>
+      [
+        getOverallRatings(course, false),
+        getOverallRatings(course, true),
+      ] as const,
     [course],
   );
   const workload_rating = useMemo(
-    () => [
-      String(getWorkloadRatings(course, false)),
-      getWorkloadRatings(course, true),
-    ],
+    () =>
+      [
+        getWorkloadRatings(course, false),
+        getWorkloadRatings(course, true),
+      ] as const,
     [course],
   );
 
@@ -138,36 +148,45 @@ function ResultsItem({
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
   // Column width styles
-  const szn_style = {
+  const szn_style: React.CSSProperties = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const code_style = {
+  const code_style: React.CSSProperties = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
-  const rate_overall_style = {
+  const title_style: React.CSSProperties = {
+    width: `${COL_SPACING.TITLE_WIDTH}px`,
+  };
+  const rate_overall_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
   };
-  const rate_workload_style = {
+  const rate_workload_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const rate_prof_style = {
+  const rate_prof_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     minWidth: `${COL_SPACING.RATE_PROF_WIDTH}px`,
   };
-  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
-  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
-  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
-  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
+  const prof_style: React.CSSProperties = {
+    width: `${COL_SPACING.PROF_WIDTH}px`,
+  };
+  const meet_style: React.CSSProperties = {
+    width: `${COL_SPACING.MEET_WIDTH}px`,
+  };
+  const loc_style: React.CSSProperties = {
+    width: `${COL_SPACING.LOC_WIDTH}px`,
+  };
+  const enroll_style: React.CSSProperties = {
+    width: `${COL_SPACING.ENROLL_WIDTH}px`,
+  };
+  const fb_style: React.CSSProperties = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
-  const subject_code = course.course_code.split(' ')[0];
-  const course_code = course.course_code.split(' ')[1];
+  const [subject_code, course_code] = course.course_code.split(' ');
 
   return (
     <StyledSpacer
@@ -180,7 +199,7 @@ function ResultsItem({
           return prev;
         });
       }}
-      tabIndex="0"
+      tabIndex={0}
       inWorksheet={courseInWorksheet}
     >
       {/* Search Row Item */}
@@ -204,7 +223,7 @@ function ResultsItem({
               <div className={`${styles.skills_areas} my-auto`}>
                 <Tag
                   variant="secondary"
-                  className={styles[seasons[parseInt(season, 10) - 1]]}
+                  className={styles[seasons[season - 1]]}
                   key={season}
                 >
                   <div style={{ display: 'inline-block' }}>{icon}</div>
@@ -225,9 +244,7 @@ function ResultsItem({
               <Tooltip id="button-tooltip" {...props}>
                 <small>
                   {subjectOptions
-                    .filter((subject) => {
-                      return subject.value === subject_code;
-                    })[0]
+                    .find((subject) => subject.value === subject_code)!
                     .label.substring(subject_code.length + 2)}
                 </small>
               </Tooltip>
