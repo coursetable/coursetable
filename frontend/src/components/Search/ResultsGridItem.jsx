@@ -34,8 +34,8 @@ const StyledGridItem = styled.div`
     inWorksheet
       ? theme.primary_light
       : theme.theme === 'light'
-      ? 'rgb(245, 245, 245)'
-      : theme.surface[1]};
+        ? 'rgb(245, 245, 245)'
+        : theme.surface[1]};
   transition:
     border-color ${({ theme }) => theme.trans_dur},
     background-color ${({ theme }) => theme.trans_dur},

@@ -283,8 +283,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   {filter === 'professor'
                     ? course_offerings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${course_offerings[i].section}`
-                    : course_offerings[i].professor[0]}
+                      ? `Section ${course_offerings[i].section}`
+                      : course_offerings[i].professor[0]}
                 </div>
               </StyledCol>
             ) : (
@@ -300,8 +300,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   {filter === 'professor'
                     ? course_offerings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${course_offerings[i].section}`
-                    : course_offerings[i].professor[0]}
+                      ? `Section ${course_offerings[i].section}`
+                      : course_offerings[i].professor[0]}
                 </div>
               </StyledColUnclickable>
             )}

@@ -166,14 +166,14 @@ export const getOverallRatings = (
     course_rating = course.average_rating_same_professors
       ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
       : course.average_rating
-      ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
+        ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
+        : 'N/A'; // No ratings at all
   } else {
     course_rating = course.average_rating_same_professors
       ? course.average_rating_same_professors // Use same professor if possible
       : course.average_rating
-      ? course.average_rating // Use all professors otherwise
-      : null; // No ratings at all
+        ? course.average_rating // Use all professors otherwise
+        : null; // No ratings at all
   }
 
   // Return overall rating
@@ -191,14 +191,14 @@ export const getWorkloadRatings = (
     course_workload = course.average_workload_same_professors
       ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
       : course.average_workload
-      ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
+        ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
+        : 'N/A'; // No ratings at all
   } else {
     course_workload = course.average_workload_same_professors
       ? course.average_workload_same_professors // Use same professor if possible
       : course.average_workload
-      ? course.average_workload // Use all professors otherwise
-      : null; // No ratings at all
+        ? course.average_workload // Use all professors otherwise
+        : null; // No ratings at all
   }
 
   // Return workload rating
@@ -309,18 +309,18 @@ export const getEnrolled = (
     course_enrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment && course.last_enrollment_same_professors
-      ? course.last_enrollment // Use last enrollment if course hasn't happened
-      : course.last_enrollment
-      ? `~${course.last_enrollment}${
-          onModal ? ' (different professor was teaching)' : ''
-        }` // Indicate diff prof
-      : `${onModal ? 'N/A' : ''}`; // No enrollment data
+        ? course.last_enrollment // Use last enrollment if course hasn't happened
+        : course.last_enrollment
+          ? `~${course.last_enrollment}${
+              onModal ? ' (different professor was teaching)' : ''
+            }` // Indicate diff prof
+          : `${onModal ? 'N/A' : ''}`; // No enrollment data
   } else {
     course_enrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment
-      ? course.last_enrollment // Use last enrollment if course hasn't happened
-      : null; // No enrollment data
+        ? course.last_enrollment // Use last enrollment if course hasn't happened
+        : null; // No enrollment data
   }
 
   // Return enrolled
