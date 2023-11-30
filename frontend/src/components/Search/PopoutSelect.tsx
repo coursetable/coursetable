@@ -11,14 +11,17 @@ type Props = {
 /**
  * Popout select component for select filters in popout dropdowns
  */
-export const PopoutSelect = <T extends OptionTypeBase>({
-  isMulti = false,
+export const PopoutSelect = <
+  T extends OptionTypeBase,
+  IsMulti extends boolean,
+>({
+  isMulti = false as IsMulti,
   isClearable = true,
   hideSelectedOptions = true,
   ...props
-}: SelectProps<T, boolean> & Props) => {
+}: SelectProps<T, IsMulti> & Props) => {
   return (
-    <CustomSelect<T>
+    <CustomSelect<T, IsMulti>
       popout
       {...props}
       isMulti={isMulti}

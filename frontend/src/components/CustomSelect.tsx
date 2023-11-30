@@ -1,5 +1,3 @@
-// @ts-nocheck
-/* eslint-disable react/react-in-jsx-scope */
 import React, { useMemo } from 'react';
 import { DefaultTheme, useTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
@@ -14,10 +12,10 @@ import Select, {
 import { ThemeConfig } from 'react-select/src/theme';
 
 // Styles for the select indicators
-const indicatorStyles = (
+function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
   theme: DefaultTheme,
-  isMulti: boolean,
-): StylesConfig => {
+  isMulti: IsMulti,
+): StylesConfig<T, IsMulti> {
   const icon_focus = chroma(theme.icon_focus);
   const icon = chroma(theme.icon);
   const new_icon_focus =
@@ -30,7 +28,7 @@ const indicatorStyles = (
         ...base,
         color: state.isFocused ? icon_focus.css() : icon.css(),
         ':hover': {
-          ...base[':hover'],
+          ...(base as any)[':hover'],
           color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
         },
       };
@@ -41,7 +39,7 @@ const indicatorStyles = (
         display: isMulti && state.hasValue ? 'none' : 'flex',
         color: state.isFocused ? icon_focus.css() : icon.css(),
         ':hover': {
-          ...base[':hover'],
+          ...(base as any)[':hover'],
           color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
         },
       };
@@ -51,10 +49,12 @@ const indicatorStyles = (
       display: 'none',
     }),
   };
-};
+}
 
 // Styles for default select
-const defaultStyles = (theme: DefaultTheme): StylesConfig => {
+function defaultStyles<T extends OptionTypeBase>(
+  theme: DefaultTheme,
+): StylesConfig<T, boolean> {
   return {
     control: (base, { isDisabled }) => ({
       ...base,
@@ -93,17 +93,20 @@ const defaultStyles = (theme: DefaultTheme): StylesConfig => {
     option: (base, { isSelected }) => ({
       ...base,
       cursor: 'pointer',
-      color: isSelected && 'white',
+      color: isSelected ? 'white' : undefined,
     }),
     singleValue: (base, { isDisabled }) => ({
       ...base,
-      color: isDisabled && theme.text[2],
+      color: isDisabled ? theme.text[2] : undefined,
     }),
   };
-};
+}
 
 // Styles for popout select
-const popoutStyles = (theme: DefaultTheme, width: number): StylesConfig => {
+function popoutStyles(
+  theme: DefaultTheme,
+  width: number,
+): StylesConfig<OptionTypeBase, boolean> {
   return {
     control: (base, { isDisabled }) => ({
       ...base,
@@ -125,10 +128,10 @@ const popoutStyles = (theme: DefaultTheme, width: number): StylesConfig => {
       cursor: 'pointer',
     }),
   };
-};
+}
 
 // Styles for skills/areas select
-const colorStyles = (): StylesConfig => {
+function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
   return {
     multiValue: (base, { data }) => {
       const color = chroma(data.color);
@@ -171,14 +174,14 @@ const colorStyles = (): StylesConfig => {
           : data.color,
 
         ':active': {
-          ...base[':active'],
+          ...(base as any)[':active'],
           backgroundColor:
             !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
         },
       };
     },
   };
-};
+}
 
 type Props = {
   popout?: boolean;
@@ -192,12 +195,16 @@ type Props = {
  * @prop useColors - use the color styles?
  * @prop isMulti - multi select?
  */
-function CustomSelect<T extends OptionTypeBase>({
+function CustomSelect<
+  T extends OptionTypeBase,
+  IsMulti extends boolean = false,
+>({
   popout = false,
   useColors = false,
-  isMulti = false,
+  isMulti = false as IsMulti,
+  components,
   ...props
-}: SelectProps<T, boolean> & Props) {
+}: SelectProps<T, IsMulti> & Props) {
   const globalTheme = useTheme();
 
   // All the default theme colors
@@ -226,30 +233,25 @@ function CustomSelect<T extends OptionTypeBase>({
   });
 
   // Makes Select forms animated
-  const animatedComponents = useMemo(() => makeAnimated<T>(), []);
+  const animatedComponents = useMemo(
+    () => components ?? makeAnimated<T, IsMulti>(),
+    [components],
+  );
 
   // Configure styles
-  let styles: StylesConfig;
-  if (popout) {
-    styles = mergeStyles(
-      indicatorStyles(globalTheme, isMulti),
-      popoutStyles(globalTheme, 400),
-    );
-  } else {
-    styles = mergeStyles(
-      indicatorStyles(globalTheme, isMulti),
-      defaultStyles(globalTheme),
-    );
-  }
+  let styles = mergeStyles(
+    indicatorStyles(globalTheme, isMulti),
+    popout ? popoutStyles(globalTheme, 400) : defaultStyles(globalTheme),
+  );
   if (useColors) {
     styles = mergeStyles(styles, colorStyles());
   }
 
   return (
-    <Select<T>
+    <Select<T, IsMulti>
       {...props}
       isMulti={isMulti}
-      styles={styles}
+      styles={styles as StylesConfig<T, IsMulti>}
       components={animatedComponents}
       theme={themeStyles}
     />
