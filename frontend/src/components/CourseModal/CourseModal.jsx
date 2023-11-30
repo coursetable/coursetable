@@ -99,9 +99,8 @@ function CourseModal() {
                 prev.delete('course-modal');
                 return prev;
               });
-              document.title = "CourseTable"; 
-            }
-          }
+              document.title = 'CourseTable';
+            }}
             dialogClassName="modal-custom-width"
             animation={false}
             centered
