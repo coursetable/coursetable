@@ -7,7 +7,6 @@ import chroma from 'chroma-js';
 import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
-
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
