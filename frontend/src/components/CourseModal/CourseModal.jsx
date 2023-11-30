@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
+import { FaRegShareFromSquare } from "react-icons/fa6";
 import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
@@ -15,6 +16,11 @@ import { TextComponent, StyledLink } from '../StyledComponents';
 import SkillBadge from '../SkillBadge';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useCourseData } from '../../contexts/ferryContext';
+import { Button } from 'react-bootstrap';
+import { toast } from 'react-toastify';
+
+
+
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -53,12 +59,31 @@ const extra_info_map = {
 
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const url = window.location.href;
 
   const courseModal = searchParams.get('course-modal');
   const [seasonCode, crn] = courseModal ? courseModal.split('-') : [null, null];
   const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
 
   const listing = courses[seasonCode]?.get(Number(crn));
+
+  // share button
+  const ShareButton = ({ courseCode, url }) => {
+    const copyToClipboard = () => {
+      const textToCopy = `${courseCode} -- CourseTable: ${url}`;
+      navigator.clipboard.writeText(textToCopy).then(() => {
+        toast.success('Course and URL copied to clipboard!');
+      }, (err) => {
+        console.error('Error copying to clipboard: ', err);
+      });
+    };
+  
+    return (
+      <FaRegShareFromSquare variant="primary" onClick={copyToClipboard}>
+        Share
+      </FaRegShareFromSquare>
+    );
+  };
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
@@ -94,6 +119,8 @@ function CourseModal() {
           centered
         >
           <Modal.Header closeButton>
+          <ShareButton courseCode={cur_listing.course_code} url={url} />
+
             <Container className="p-0" fluid>
               {view[0] === 'overview' ? (
                 // Viewing Course Overview
