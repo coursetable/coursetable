@@ -111,16 +111,14 @@ const EvaluationResponses: React.FC<{
         return [];
       }
       const filteredResps = resps
-        .filter((response: string) => {
-          return response.toLowerCase().includes(filter.toLowerCase());
-        })
-        .map((response: string, index: number) => {
-          return (
-            <StyledCommentRow key={index} className="m-auto p-2 responses">
-              <TextComponent type={1}>{response}</TextComponent>
-            </StyledCommentRow>
-          );
-        });
+        .filter((response) =>
+          response.toLowerCase().includes(filter.toLowerCase()),
+        )
+        .map((response, index) => (
+          <StyledCommentRow key={index} className="m-auto p-2 responses">
+            <TextComponent type={1}>{response}</TextComponent>
+          </StyledCommentRow>
+        ));
       if (filteredResps.length === 0) {
         return [
           <StyledCommentRow key={0} className="m-auto p-2">

@@ -137,13 +137,12 @@ function WorksheetMobileCalendarList() {
             <Row className="mx-auto">
               <Col className="px-0 w-100">
                 <GoogleCalendarButton
-                  courses={courses.filter(function (course) {
-                    return (
+                  courses={courses.filter(
+                    (course) =>
                       !hidden_courses[cur_season] ||
                       !(course.crn in hidden_courses[cur_season]) ||
-                      !hidden_courses[cur_season][course.crn]
-                    );
-                  })}
+                      !hidden_courses[cur_season][course.crn],
+                  )}
                   season_code={cur_season}
                 />
               </Col>
