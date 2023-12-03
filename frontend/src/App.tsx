@@ -7,6 +7,7 @@ import * as Sentry from '@sentry/react';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
+import CourseModal from './components/CourseModal/CourseModal';
 
 import Landing from './pages/Landing';
 
@@ -24,9 +25,8 @@ import GraphiqlLogin from './pages/GraphiqlLogin';
 import Join from './pages/Join';
 
 import { useUser } from './contexts/userContext';
-import { useLocalStorageState } from './browserStorage';
-import { useWindowDimensions } from './components/Providers/WindowDimensionsProvider';
-import { lightTheme } from './components/Themes';
+import { useLocalStorageState } from './utilities/browserStorage';
+import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
@@ -34,7 +34,7 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
  * Render navbar and the corresponding page component for the route the user is on
  * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
  */
-function App({ themeToggler }) {
+function App({ themeToggler }: { themeToggler: () => void }) {
   const location = useLocation();
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
@@ -89,10 +89,6 @@ function App({ themeToggler }) {
     location,
     setIsTutorialOpen,
   ]);
-
-  useEffect(() => {
-    document.body.style.transition = `background-color ${lightTheme.trans_dur}`;
-  }, []);
 
   // Render spinner if page loading
   if (loading) {
@@ -205,6 +201,7 @@ function App({ themeToggler }) {
         shownTutorial={shownTutorial}
         setShownTutorial={setShownTutorial}
       />
+      <CourseModal />
     </>
   );
 }

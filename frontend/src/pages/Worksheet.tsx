@@ -6,7 +6,6 @@ import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
 import WorksheetMobileCalendar from '../components/Worksheet/WorksheetMobileCalendar';
 import WorksheetList from '../components/Worksheet/WorksheetList';
-import CourseModal from '../components/CourseModal/CourseModal';
 import {
   SurfaceComponent,
   StyledExpandBtn,
@@ -17,7 +16,7 @@ import styles from './Worksheet.module.css';
 import NoCoursesFound from '../images/no_courses_found.svg';
 import ErrorPage from '../components/ErrorPage';
 
-import { useWindowDimensions } from '../components/Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
 import * as Sentry from '@sentry/react';
 
@@ -44,9 +43,7 @@ function Worksheet() {
     worksheetLoading,
     worksheetError,
     worksheetData,
-    course_modal,
     handleWorksheetView,
-    hideModal,
   } = useWorksheet();
 
   // If user somehow isn't logged in and worksheet is null
@@ -210,12 +207,6 @@ function Worksheet() {
           </Row>
         </div>
       )}
-      {/* Course Modal */}
-      <CourseModal
-        hideModal={hideModal}
-        show={course_modal[0]}
-        listing={course_modal[1]}
-      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import React, { CSSProperties, useCallback, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import styles from './WorksheetAccordion.module.css';
 import './WorksheetMobileCalendar.css';
@@ -10,9 +11,8 @@ import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
 import CalendarEvent, { type CourseEvent } from './CalendarEvent';
-import { weekdays } from '../../utilities/common';
+import { weekdays, type Listing } from '../../utilities/common';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Listing } from '../Providers/FerryProvider';
 import WorksheetMobileCalendarList from './WorksheetMobileCalendarList';
 
 const localizer = momentLocalizer(moment);
@@ -66,8 +66,8 @@ const StyledCalendar = styled(Calendar<CourseEvent>)`
  */
 
 function WorksheetMobileCalendar() {
-  const { showModal, courses, hover_course, hidden_courses, cur_season } =
-    useWorksheet();
+  const [, setSearchParams] = useSearchParams();
+  const { courses, hover_course, hidden_courses, cur_season } = useWorksheet();
 
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback(
@@ -187,7 +187,15 @@ function WorksheetMobileCalendar() {
           max={maxTime}
           localizer={localizer}
           toolbar={false}
-          onSelectEvent={(event) => showModal(event.listing)}
+          onSelectEvent={(event) => {
+            setSearchParams((prev) => {
+              prev.set(
+                'course-modal',
+                `${event.listing.season_code}-${event.listing.crn}`,
+              );
+              return prev;
+            });
+          }}
           components={{ event: CalendarEvent }}
           eventPropGetter={eventStyleGetter}
           // Display Mon, Tue, Wed, ... at the top

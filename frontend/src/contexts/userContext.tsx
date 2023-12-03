@@ -50,7 +50,7 @@ type Store = {
   removeFriend(netId1?: string, netId2?: string): Promise<void>;
   friendRequest(friendNetId?: string): Promise<void>;
   resolveFriendRequest(friendNetId?: string): Promise<void>;
-  getAllNames(): Promise<void>;
+  getAllNames(suppressError?: boolean): Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);

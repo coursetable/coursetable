@@ -10,7 +10,7 @@ import {
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
-import { generateICS } from '../GenerateICS';
+import { generateICS } from './generateICS';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
 import { logout, scrollToTop } from '../../utilities';
@@ -20,7 +20,7 @@ import {
   StyledHoverText,
 } from '../StyledComponents';
 import { NavLink } from 'react-router-dom';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import { API_ENDPOINT } from '../../config';
 
@@ -55,8 +55,7 @@ function MeDropdown({
 
   // Are we exporting the user's worksheet?
   const [export_ics, setExport] = useState(false);
-  let { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
-  if (!data) data = [];
+  const { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
 
   // Called when worksheet updates or export_ics changes
   useEffect(() => {

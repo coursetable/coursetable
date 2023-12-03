@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { Badge, Col, Container, Row, Modal } from 'react-bootstrap';
+import { useSearchParams } from 'react-router-dom';
+import { Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
-import chroma from 'chroma-js';
 import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import styles from './CourseModal.module.css';
-import tag_styles from '../Search/ResultsItem.module.css';
-import { skillsAreasColors } from '../../queries/Constants';
 import { TextComponent, StyledLink } from '../StyledComponents';
+import SkillBadge from '../SkillBadge';
 import { toSeasonString } from '../../utilities/courseUtilities';
+import { useCourseData } from '../../contexts/ferryContext';
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -51,15 +51,14 @@ const extra_info_map = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
-/**
- * Displays course modal when clicking on a course
- * @prop listing - dictionary that holds listing info
- * @prop hideModal - function to hide modal
- * @prop show - boolean that determines when to show modal
+function CourseModal() {
+  const [searchParams, setSearchParams] = useSearchParams();
 
- */
+  const courseModal = searchParams.get('course-modal');
+  const [seasonCode, crn] = courseModal ? courseModal.split('-') : [null, null];
+  const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
 
-function CourseModal({ listing, hideModal, show }) {
+  const listing = courses[seasonCode]?.get(Number(crn));
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
@@ -75,20 +74,20 @@ function CourseModal({ listing, hideModal, show }) {
   const cur_listing =
     listings.length > 0 ? listings[listings.length - 1] : null;
 
-  // key variable for lists
-  let key = 0;
-
   return (
     <div className="d-flex justify-content-center">
       {cur_listing && (
         <StyledModal
-          show={show}
+          show={Boolean(listing)}
           scrollable
           onHide={() => {
             // Reset views and filters
             setView(['overview', null]);
             setFilter('both');
-            hideModal();
+            setSearchParams((prev) => {
+              prev.delete('course-modal');
+              return prev;
+            });
           }}
           dialogClassName="modal-custom-width"
           animation={false}
@@ -164,37 +163,11 @@ function CourseModal({ listing, hideModal, show }) {
                         {/* Course Skills and Areas */}
                         {cur_listing.skills &&
                           cur_listing.skills.map((skill) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[skill],
-                                backgroundColor: chroma(
-                                  skillsAreasColors[skill],
-                                )
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {skill}
-                            </Badge>
+                            <SkillBadge skill={skill} key={skill} />
                           ))}
                         {cur_listing.areas &&
                           cur_listing.areas.map((area) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[area],
-                                backgroundColor: chroma(skillsAreasColors[area])
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {area}
-                            </Badge>
+                            <SkillBadge skill={area} key={area} />
                           ))}
                       </Row>
                     </Col>
@@ -264,37 +237,11 @@ function CourseModal({ listing, hideModal, show }) {
                         {/* Course Skills and Areas */}
                         {view[1].skills &&
                           view[1].skills.map((skill) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[skill],
-                                backgroundColor: chroma(
-                                  skillsAreasColors[skill],
-                                )
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {skill}
-                            </Badge>
+                            <SkillBadge skill={skill} key={skill} />
                           ))}
                         {view[1].areas &&
                           view[1].areas.map((area) => (
-                            <Badge
-                              variant="secondary"
-                              className={tag_styles.tag}
-                              style={{
-                                color: skillsAreasColors[area],
-                                backgroundColor: chroma(skillsAreasColors[area])
-                                  .alpha(0.16)
-                                  .css(),
-                              }}
-                              key={key++}
-                            >
-                              {area}
-                            </Badge>
+                            <SkillBadge skill={area} key={area} />
                           ))}
                         {/* Course Professors and Section */}
                         {view[1].professor[0] !== 'TBA' && (
@@ -319,7 +266,7 @@ function CourseModal({ listing, hideModal, show }) {
               )}
             </Container>
           </Modal.Header>
-          {show &&
+          {listing &&
             (view[0] === 'overview' ? (
               // Show overview data
               <CourseModalOverview

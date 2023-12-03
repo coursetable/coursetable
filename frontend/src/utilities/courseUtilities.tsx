@@ -2,8 +2,12 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
-import { FriendRecord, FriendInfo, Worksheet } from '../contexts/userContext';
-import { Listing } from '../components/Providers/FerryProvider';
+import type {
+  FriendRecord,
+  FriendInfo,
+  Worksheet,
+} from '../contexts/userContext';
+import type { Listing } from '../utilities/common';
 import { SortKeys } from '../queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
 import { DateTime } from 'luxon';
@@ -104,12 +108,12 @@ export const checkCrossListed = (
 };
 
 // Fetch the FB friends that are also shopping a specific course. Used in course modal overview
-export const FriendsAlsoTaking = (
+export function friendsAlsoTaking(
   season_code: Season,
   crn: Crn,
-  worksheets: Worksheet,
+  worksheets: Record<string, Worksheet> | undefined,
   names: FriendRecord,
-): string[] => {
+): string[] {
   // Return if worksheets are null
   if (!worksheets) return [];
   // List of FB friends also shopping
@@ -124,7 +128,7 @@ export const FriendsAlsoTaking = (
       also_taking.push(names[friend].name);
   }
   return also_taking;
-};
+}
 type NumFriendsReturn =
   // Key is season code + crn
   // Value is the list of FB friends taking the class
@@ -152,54 +156,54 @@ export const getNumFriends = (
 };
 
 // Get the overall rating for a course
-export const getOverallRatings = (
+export function getOverallRatings(
+  course: Listing,
+  display?: false,
+): number | null;
+export function getOverallRatings(course: Listing, display: true): string;
+export function getOverallRatings(
   course: Listing,
   display = false,
-): string | number | null => {
-  let course_rating;
+): string | number | null {
   // Determine which overall rating to use
   if (display) {
-    course_rating = course.average_rating_same_professors
+    return course.average_rating_same_professors
       ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
       : course.average_rating
       ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
       : 'N/A'; // No ratings at all
-  } else {
-    course_rating = course.average_rating_same_professors
-      ? course.average_rating_same_professors // Use same professor if possible
-      : course.average_rating
-      ? course.average_rating // Use all professors otherwise
-      : null; // No ratings at all
   }
-
-  // Return overall rating
-  return course_rating;
-};
+  return course.average_rating_same_professors
+    ? course.average_rating_same_professors // Use same professor if possible
+    : course.average_rating
+    ? course.average_rating // Use all professors otherwise
+    : null; // No ratings at all
+}
 
 // Get the workload rating for a course
-export const getWorkloadRatings = (
+export function getWorkloadRatings(
+  course: Listing,
+  display?: false,
+): number | null;
+export function getWorkloadRatings(course: Listing, display: true): string;
+export function getWorkloadRatings(
   course: Listing,
   display = false,
-): string | number | null => {
-  let course_workload;
+): string | number | null {
   // Determine which workload rating to use
   if (display) {
-    course_workload = course.average_workload_same_professors
+    return course.average_workload_same_professors
       ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
       : course.average_workload
       ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
       : 'N/A'; // No ratings at all
-  } else {
-    course_workload = course.average_workload_same_professors
-      ? course.average_workload_same_professors // Use same professor if possible
-      : course.average_workload
-      ? course.average_workload // Use all professors otherwise
-      : null; // No ratings at all
   }
-
-  // Return workload rating
-  return course_workload;
-};
+  return course.average_workload_same_professors
+    ? course.average_workload_same_professors // Use same professor if possible
+    : course.average_workload
+    ? course.average_workload // Use all professors otherwise
+    : null; // No ratings at all
+}
 
 // Calculate day and time score
 const calculateDayTime = (course: Listing): number | null => {

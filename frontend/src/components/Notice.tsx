@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
-import { useSessionStorageState } from '../browserStorage';
+import { useSessionStorageState } from '../utilities/browserStorage';
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
 

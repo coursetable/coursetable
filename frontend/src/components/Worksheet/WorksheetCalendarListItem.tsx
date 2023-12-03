@@ -1,11 +1,12 @@
 import React from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import styled, { withTheme, type DefaultTheme } from 'styled-components';
 import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Listing } from '../Providers/FerryProvider';
+import type { Listing } from '../../utilities/common';
 
 // Listgroup Item for worksheet list item
 const StyledListItem = styled(ListGroup.Item)`
@@ -52,8 +53,8 @@ function WorksheetCalendarListItem({
   theme: DefaultTheme;
   worksheet_number?: string;
 }) {
-  const { showModal, cur_season, toggleCourse, setHoverCourse } =
-    useWorksheet();
+  const [, setSearchParams] = useSearchParams();
+  const { cur_season, toggleCourse, setHoverCourse } = useWorksheet();
 
   // Style for coloring hidden courses
   const color_style = {
@@ -70,7 +71,12 @@ function WorksheetCalendarListItem({
         <StyledCol
           className={'pl-1 pr-2'}
           style={color_style}
-          onClick={() => showModal(course)}
+          onClick={() => {
+            setSearchParams((prev) => {
+              prev.set('course-modal', `${course.season_code}-${course.crn}`);
+              return prev;
+            });
+          }}
         >
           <strong>{course.course_code}</strong>
           <br />

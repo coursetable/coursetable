@@ -3,7 +3,7 @@ import { OverlayTrigger, Popover } from 'react-bootstrap';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { StyledPopover } from '../StyledComponents';
-import type { Listing } from '../Providers/FerryProvider';
+import type { Listing } from '../../utilities/common';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 

@@ -1,10 +1,8 @@
 import { useMemo } from 'react';
-import { Season } from '../utilities/common';
-import { Listing, useCourseData } from '../components/Providers/FerryProvider';
-import { Worksheet } from '../contexts/userContext';
+import type { Season, Listing } from '../utilities/common';
+import { useCourseData } from '../contexts/ferryContext';
+import type { Worksheet } from '../contexts/userContext';
 import * as Sentry from '@sentry/react';
-
-// Search query used in Worksheet.js and CourseConflictIcon.js
 
 export const useWorksheetInfo = (
   worksheet: Worksheet | undefined,

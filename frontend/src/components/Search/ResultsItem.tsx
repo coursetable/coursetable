@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react';
-
+import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
 import chroma from 'chroma-js';
@@ -22,15 +22,14 @@ import {
   StyledRating,
 } from '../StyledComponents';
 
-import Styles from './ResultsItem.module.css';
+import styles from './ResultsItem.module.css';
 import {
   getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
-  isInWorksheet,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
-import { useUser } from '../../contexts/userContext';
+import type { Listing } from '../../utilities/common';
 
 // Row for results item
 const StyledResultsItem = styled(Row)`
@@ -45,7 +44,7 @@ const StyledResultsItem = styled(Row)`
 `;
 
 // Wrapper for row
-const StyledSpacer = styled.div`
+const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
   outline: none !important;
   background-color: ${({ theme, inWorksheet }) =>
     inWorksheet ? theme.primary_light : 'inherit'};
@@ -78,7 +77,6 @@ const Tag = styled(Badge)`
 /**
  * Renders a list item for a search result
  * @prop course - object | listing data for the current course
- * @prop showModal - function | shows the course modal for this listing
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isFirst - boolean | is this the first course of the results?
  * @prop COL_SPACING - object | with widths of each column
@@ -88,13 +86,20 @@ const Tag = styled(Badge)`
 
 function ResultsItem({
   course,
-  showModal,
   multiSeasons,
   isFirst,
   COL_SPACING,
   isScrolling = false,
   friends,
+}: {
+  course: Listing;
+  multiSeasons: boolean;
+  isFirst: boolean;
+  COL_SPACING: any;
+  isScrolling: boolean;
+  friends: string[];
 }) {
+  const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?
   const [mounted, setMounted] = useState(false);
 
@@ -105,16 +110,16 @@ function ResultsItem({
 
   // Season code for this listing
   const { season_code } = course;
-  const season = season_code[5];
-  const year = season_code.substr(2, 2);
+  const season = Number(season_code[5]);
+  const year = season_code.substring(2, 4);
   // Size of season icons
   const icon_size = 10;
-  const seasons = ['spring', 'summer', 'fall'];
+  const seasons = ['spring', 'summer', 'fall'] as const;
   // Determine the icon for this season
   const icon = useMemo(() => {
-    return season === '1' ? (
+    return season === 1 ? (
       <FcCloseUpMode className="my-auto" size={icon_size} />
-    ) : season === '2' ? (
+    ) : season === 2 ? (
       <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
@@ -123,17 +128,19 @@ function ResultsItem({
 
   // Fetch overall & workload rating values and string representations
   const course_rating = useMemo(
-    () => [
-      String(getOverallRatings(course, false)),
-      getOverallRatings(course, true),
-    ],
+    () =>
+      [
+        getOverallRatings(course, false),
+        getOverallRatings(course, true),
+      ] as const,
     [course],
   );
   const workload_rating = useMemo(
-    () => [
-      String(getWorkloadRatings(course, false)),
-      getWorkloadRatings(course, true),
-    ],
+    () =>
+      [
+        getWorkloadRatings(course, false),
+        getWorkloadRatings(course, true),
+      ] as const,
     [course],
   );
 
@@ -141,46 +148,58 @@ function ResultsItem({
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
   // Column width styles
-  const szn_style = {
+  const szn_style: React.CSSProperties = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const code_style = {
+  const code_style: React.CSSProperties = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
-  const rate_overall_style = {
+  const title_style: React.CSSProperties = {
+    width: `${COL_SPACING.TITLE_WIDTH}px`,
+  };
+  const rate_overall_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
   };
-  const rate_workload_style = {
+  const rate_workload_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const rate_prof_style = {
+  const rate_prof_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     minWidth: `${COL_SPACING.RATE_PROF_WIDTH}px`,
   };
-  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
-  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
-  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
-  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
+  const prof_style: React.CSSProperties = {
+    width: `${COL_SPACING.PROF_WIDTH}px`,
+  };
+  const meet_style: React.CSSProperties = {
+    width: `${COL_SPACING.MEET_WIDTH}px`,
+  };
+  const loc_style: React.CSSProperties = {
+    width: `${COL_SPACING.LOC_WIDTH}px`,
+  };
+  const enroll_style: React.CSSProperties = {
+    width: `${COL_SPACING.ENROLL_WIDTH}px`,
+  };
+  const fb_style: React.CSSProperties = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
-  const subject_code = course.course_code.split(' ')[0];
-  const course_code = course.course_code.split(' ')[1];
+  const [subject_code, course_code] = course.course_code.split(' ');
 
   return (
     <StyledSpacer
-      className={`${isFirst ? Styles.first_search_result_item : ''} ${
-        course.extra_info !== 'ACTIVE' ? ` ${Styles.cancelled_class}` : ''
+      className={`${isFirst ? styles.first_search_result_item : ''} ${
+        course.extra_info !== 'ACTIVE' ? ` ${styles.cancelled_class}` : ''
       }`}
       onClick={() => {
-        showModal(course);
+        setSearchParams((prev) => {
+          prev.set('course-modal', `${course.season_code}-${course.crn}`);
+          return prev;
+        });
       }}
-      tabIndex="0"
+      tabIndex={0}
       inWorksheet={courseInWorksheet}
     >
       {/* Search Row Item */}
@@ -201,10 +220,10 @@ function ResultsItem({
                 </Tooltip>
               )}
             >
-              <div className={`${Styles.skills_areas} my-auto`}>
+              <div className={`${styles.skills_areas} my-auto`}>
                 <Tag
                   variant="secondary"
-                  className={Styles[seasons[parseInt(season, 10) - 1]]}
+                  className={styles[seasons[season - 1]]}
                   key={season}
                 >
                   <div style={{ display: 'inline-block' }}>{icon}</div>
@@ -217,7 +236,7 @@ function ResultsItem({
         {/* Course Code */}
         <div
           style={code_style}
-          className={`${Styles.ellipsis_text} font-weight-bold`}
+          className={`${styles.ellipsis_text} font-weight-bold`}
         >
           <OverlayTrigger
             placement="top"
@@ -225,9 +244,7 @@ function ResultsItem({
               <Tooltip id="button-tooltip" {...props}>
                 <small>
                   {subjectOptions
-                    .filter((subject) => {
-                      return subject.value === subject_code;
-                    })[0]
+                    .find((subject) => subject.value === subject_code)!
                     .label.substring(subject_code.length + 2)}
                 </small>
               </Tooltip>
@@ -249,7 +266,7 @@ function ResultsItem({
               <Popover.Title>
                 <strong>
                   {course.extra_info !== 'ACTIVE' ? (
-                    <span className={Styles.cancelled_text}>CANCELLED </span>
+                    <span className={styles.cancelled_text}>CANCELLED </span>
                   ) : (
                     ''
                   )}
@@ -275,7 +292,7 @@ function ResultsItem({
         >
           {/* Course Title */}
           <div style={title_style}>
-            <div className={Styles.ellipsis_text}>{course.title}</div>
+            <div className={styles.ellipsis_text}>{course.title}</div>
           </div>
         </OverlayTrigger>
         <div className="d-flex">
@@ -307,7 +324,7 @@ function ResultsItem({
                   : 'N/A'}
               </RatingCell>
             </div>
-            <div className={Styles.ellipsis_text}>
+            <div className={styles.ellipsis_text}>
               {course.professor_names.length === 0
                 ? 'TBA'
                 : course.professor_names.join(' • ')}
@@ -320,7 +337,7 @@ function ResultsItem({
         </div>
         {/* Skills and Areas */}
         <div style={sa_style} className="d-flex">
-          <span className={`${Styles.skills_areas} `}>
+          <span className={`${styles.skills_areas} `}>
             {course.skills.map((skill, index) => (
               <Tag
                 variant="secondary"
@@ -355,11 +372,11 @@ function ResultsItem({
         </div>
         {/* Course Meeting Days & Times */}
         <div style={meet_style}>
-          <div className={Styles.ellipsis_text}>{course.times_summary}</div>
+          <div className={styles.ellipsis_text}>{course.times_summary}</div>
         </div>
         {/* Course Location */}
         <div style={loc_style}>
-          <div className={Styles.ellipsis_text}>{course.locations_summary}</div>
+          <div className={styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
         {/* # FB Friends also shopping */}
         <div style={fb_style} className="d-flex ">
@@ -382,7 +399,7 @@ function ResultsItem({
         </div>
         {/* Add/remove from worksheet button */}
         <div
-          className={Styles.worksheet_btn}
+          className={styles.worksheet_btn}
           data-tutorial={isFirst && 'catalog-6'}
         >
           <WorksheetToggleButton
@@ -394,7 +411,7 @@ function ResultsItem({
         </div>
         {/* Render conflict icon only when component has been mounted */}
         {mounted && !isScrolling && (
-          <div className={Styles.conflict_error}>
+          <div className={styles.conflict_error}>
             <CourseConflictIcon course={course} />
           </div>
         )}

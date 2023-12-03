@@ -8,7 +8,6 @@ import {
 import styled from 'styled-components';
 import { sortbyOptions } from '../../queries/Constants';
 import styles from './SortbyReactSelect.module.css';
-import search_styles from '../../pages/Search.module.css';
 import CustomSelect from '../CustomSelect';
 import { useSearch } from '../../contexts/searchContext';
 
@@ -40,27 +39,21 @@ function SortByReactSelect() {
       </div>
       {/* Toggle sort order button */}
       <StyledSortBtn
-        className={`${search_styles.sort_btn} my-auto`}
+        className={`${styles.sort_btn} my-auto`}
         onClick={() => setSortOrder(sort_order === 'asc' ? 'desc' : 'asc')}
       >
         {!select_sortby.numeric ? (
           // Sorting by letters
           sort_order === 'asc' ? (
-            <FcAlphabeticalSortingAz
-              className={search_styles.sort_icon}
-              size={20}
-            />
+            <FcAlphabeticalSortingAz className={styles.sort_icon} size={20} />
           ) : (
-            <FcAlphabeticalSortingZa
-              className={search_styles.sort_icon}
-              size={20}
-            />
+            <FcAlphabeticalSortingZa className={styles.sort_icon} size={20} />
           )
         ) : // Sorting by numbers
         sort_order === 'asc' ? (
-          <FcNumericalSorting12 className={search_styles.sort_icon} size={20} />
+          <FcNumericalSorting12 className={styles.sort_icon} size={20} />
         ) : (
-          <FcNumericalSorting21 className={search_styles.sort_icon} size={20} />
+          <FcNumericalSorting21 className={styles.sort_icon} size={20} />
         )}
       </StyledSortBtn>
     </>

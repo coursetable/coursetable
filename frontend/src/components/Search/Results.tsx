@@ -5,10 +5,9 @@ import ResultsGridItem from './ResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
 
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
-import Styles from './Results.module.css';
-import './Results.css';
+import styles from './Results.module.css';
 
 import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 
@@ -24,6 +23,7 @@ import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../../queries/Constants';
 import { useSearch } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
+import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/courseUtilities';
 
 import { API_ENDPOINT } from '../../config';
@@ -65,7 +65,7 @@ const ResultsHeader = styled.div`
 `;
 
 // Search results
-const SearchResults = styled.div`
+const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
   overflow: hidden;
   ${({ numCourses, isMobile }) =>
     numCourses > 0 && numCourses < 20 && !isMobile ? 'height: 80vh;' : ''}
@@ -79,7 +79,7 @@ const ResultsItemWrapper = styled.div`
 `;
 
 // Function to calculate column width within a max and min
-const getColWidth = (calculated, min = 0, max = 1000000) =>
+const getColWidth = (calculated: number, min = 0, max = 1000000) =>
   Math.max(Math.min(calculated, max), min);
 
 /**
@@ -100,10 +100,18 @@ function Results({
   setView,
   loading = false,
   multiSeasons = false,
-  showModal,
   isLoggedIn,
   num_friends,
   page = 'catalog',
+}: {
+  data: Listing[];
+  isList: boolean;
+  setView: (isList: boolean) => void;
+  loading?: boolean;
+  multiSeasons?: boolean;
+  isLoggedIn: boolean;
+  num_friends: Record<string, string[]>;
+  page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
   const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
@@ -123,7 +131,7 @@ function Results({
   const globalTheme = useTheme();
 
   // Ref to get row width
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
@@ -140,6 +148,12 @@ function Results({
       ENROLL_WIDTH: 40,
       FB_WIDTH: 60,
       PADDING: 43,
+
+      PROF_WIDTH: 0,
+      SA_WIDTH: 0,
+      MEET_WIDTH: 0,
+      LOC_WIDTH: 0,
+      TITLE_WIDTH: 0,
     };
 
     const EXTRA =
@@ -254,7 +268,6 @@ function Results({
                     row_elements.push(
                       <ResultsGridItem
                         course={data[j]}
-                        showModal={showModal}
                         isLoggedIn={isLoggedIn}
                         num_cols={num_cols}
                         multiSeasons={multiSeasons}
@@ -314,7 +327,6 @@ function Results({
                     >
                       <ResultsItemMemo
                         course={data[index]}
-                        showModal={showModal}
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
@@ -333,33 +345,39 @@ function Results({
   }
 
   // Column width styles
-  const szn_style = {
+  const szn_style: React.CSSProperties = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const code_style = {
+  const code_style: React.CSSProperties = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
-  const rate_overall_style = {
+  const title_style: React.CSSProperties = {
+    width: `${COL_SPACING.TITLE_WIDTH}px`,
+  };
+  const rate_overall_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
   };
-  const rate_workload_style = {
+  const rate_workload_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const rate_prof_style = {
-    whiteSpace: 'nowrap',
-    width: `${COL_SPACING.RATE_PROF_WIDTH}px`,
+  const prof_style: React.CSSProperties = {
+    width: `${COL_SPACING.PROF_WIDTH}px`,
   };
-  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
-  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
-  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
-  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
+  const meet_style: React.CSSProperties = {
+    width: `${COL_SPACING.MEET_WIDTH}px`,
+  };
+  const loc_style: React.CSSProperties = {
+    width: `${COL_SPACING.LOC_WIDTH}px`,
+  };
+  const enroll_style: React.CSSProperties = {
+    width: `${COL_SPACING.ENROLL_WIDTH}px`,
+  };
+  const fb_style: React.CSSProperties = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
@@ -382,12 +400,9 @@ function Results({
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
 
   return (
-    <div className={Styles.results_container_max_width}>
+    <div className={styles.results_container_max_width}>
       {!isMobile && isLoggedIn && (
-        <StyledSpacer
-          style={{ top: navbarHeight }}
-          isCatalog={page === 'catalog'}
-        >
+        <StyledSpacer style={{ top: navbarHeight }}>
           <StyledContainer
             layer={0}
             id="results_container"
@@ -397,13 +412,13 @@ function Results({
             <StyledRow
               ref={ref}
               className={`mx-auto pl-4 pr-2 ${isLgDesktop ? 'py-2' : 'py-1'} ${
-                Styles.results_header_row
+                styles.results_header_row
               } justify-content-between`}
               data-tutorial="catalog-5"
             >
               {/* View Toggle */}
               <div
-                className={`${Styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+                className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
                 <ListGridToggle isList={isList} setView={setView} />
               </div>
@@ -425,7 +440,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>Code</span>
+                      <span className={styles.one_line}>Code</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[0]}
@@ -434,7 +449,7 @@ function Results({
                   </ResultsHeader>
                   {/* Course Name */}
                   <ResultsHeader style={title_style}>
-                    <span className={Styles.one_line}>Title</span>
+                    <span className={styles.one_line}>Title</span>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[2]}
                       key={reset_key}
@@ -457,7 +472,7 @@ function Results({
                           </Tooltip>
                         )}
                       >
-                        <span className={Styles.one_line}>Overall</span>
+                        <span className={styles.one_line}>Overall</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[4]}
@@ -479,7 +494,7 @@ function Results({
                           </Tooltip>
                         )}
                       >
-                        <span className={Styles.one_line}>Work</span>
+                        <span className={styles.one_line}>Work</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[6]}
@@ -501,7 +516,7 @@ function Results({
                           </Tooltip>
                         )}
                       >
-                        <span className={Styles.one_line}>Professors</span>
+                        <span className={styles.one_line}>Professors</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[5]}
@@ -535,7 +550,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>#</span>
+                      <span className={styles.one_line}>#</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[8]}
@@ -544,7 +559,7 @@ function Results({
                   </ResultsHeader>
                   {/* Skills/Areas */}
                   <ResultsHeader style={sa_style}>
-                    <span className={Styles.one_line}>Skills/Areas</span>
+                    <span className={styles.one_line}>Skills/Areas</span>
                   </ResultsHeader>
                   {/* Course Meeting Days & Times */}
                   <ResultsHeader style={meet_style}>
@@ -560,7 +575,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>Meets</span>
+                      <span className={styles.one_line}>Meets</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[9]}
@@ -569,7 +584,7 @@ function Results({
                   </ResultsHeader>
                   {/* Location */}
                   <ResultsHeader style={loc_style}>
-                    <span className={Styles.one_line}>Location</span>
+                    <span className={styles.one_line}>Location</span>
                   </ResultsHeader>
                   {/* FB */}
                   <ResultsHeader style={fb_style}>
@@ -581,7 +596,7 @@ function Results({
                         </Tooltip>
                       )}
                     >
-                      <span className={Styles.one_line}>#F</span>
+                      <span className={styles.one_line}>#F</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[3]}
@@ -605,7 +620,6 @@ function Results({
       )}
 
       <SearchResults
-        layer={0}
         className={`${!isList ? 'px-1 pt-3 ' : ''}`}
         numCourses={data.length}
         isMobile={isMobile}

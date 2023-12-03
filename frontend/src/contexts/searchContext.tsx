@@ -8,15 +8,12 @@ import React, {
   useState,
 } from 'react';
 import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
+import type { Listing } from '../utilities/common';
 import {
   useLocalStorageState,
   useSessionStorageState,
-} from '../browserStorage';
-import {
-  Listing,
-  useCourseData,
-  useFerry,
-} from '../components/Providers/FerryProvider';
+} from '../utilities/browserStorage';
+import { useCourseData, useFerry } from './ferryContext';
 import {
   areas,
   AreasType,
@@ -98,7 +95,6 @@ type Store = {
   reset_key: number;
   duration: number;
   speed: string;
-  course_modal: (string | boolean | Listing)[];
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
   setSearchText: React.Dispatch<React.SetStateAction<string>>;
   setSelectSubjects: React.Dispatch<React.SetStateAction<Option[]>>;
@@ -128,8 +124,6 @@ type Store = {
   handleResetFilters: () => void;
   setResetKey: React.Dispatch<React.SetStateAction<number>>;
   setStartTime: React.Dispatch<React.SetStateAction<number>>;
-  showModal: (listing: Listing) => void;
-  hideModal: () => void;
 };
 
 const SearchContext = createContext<Store | undefined>(undefined);
@@ -321,11 +315,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [start_time, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState('fast');
-
-  // State that determines if a course modal needs to be displayed and which course to display
-  const [course_modal, setCourseModal] = useState<
-    (string | boolean | Listing)[]
-  >([false, '']);
 
   // Fetch user context data
   const { user } = useUser();
@@ -812,19 +801,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setCanReset,
   ]);
 
-  // Show the modal for the course that was clicked
-  const showModal = useCallback(
-    (listing: Listing) => {
-      setCourseModal([true, listing]);
-    },
-    [setCourseModal],
-  );
-
-  // Reset course_modal state to hide the modal
-  const hideModal = useCallback(() => {
-    setCourseModal([false, '']);
-  }, [setCourseModal]);
-
   // perform default search on load
   useEffect(() => {
     // only execute after seasons have been loaded
@@ -947,7 +923,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       reset_key,
       duration,
       speed,
-      course_modal,
 
       // Update methods.
       setCanReset,
@@ -979,8 +954,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       handleResetFilters,
       setResetKey,
       setStartTime,
-      showModal,
-      hideModal,
     }),
     [
       canReset,
@@ -1018,7 +991,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       reset_key,
       duration,
       speed,
-      course_modal,
       setCanReset,
       setSearchText,
       setSelectSubjects,
@@ -1048,8 +1020,6 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       handleResetFilters,
       setResetKey,
       setStartTime,
-      showModal,
-      hideModal,
     ],
   );
 

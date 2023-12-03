@@ -24,11 +24,11 @@ import {
   StyledLink,
 } from '../StyledComponents';
 import { ratingColormap, workloadColormap } from '../../queries/Constants';
-import Styles from './CourseModalOverview.module.css';
+import styles from './CourseModalOverview.module.css';
 
 import CourseModalLoading from './CourseModalLoading';
 import {
-  FriendsAlsoTaking,
+  friendsAlsoTaking,
   getEnrolled,
   toSeasonString,
 } from '../../utilities/courseUtilities';
@@ -84,7 +84,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
   const also_taking = user.friendWorksheets
-    ? FriendsAlsoTaking(
+    ? friendsAlsoTaking(
         listing.season_code,
         listing.crn,
         user.friendWorksheets.worksheets,
@@ -267,7 +267,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             {hasEvals ? (
               <StyledCol
                 xs={5}
-                className={`${Styles.rating_bubble}  px-0 mr-3 text-center`}
+                className={`${styles.rating_bubble}  px-0 mr-3 text-center`}
                 onClick={() => {
                   // Temp dictionary that stores listing info
                   const temp = { ...course_offerings[i] };
@@ -279,7 +279,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 <strong>
                   {toSeasonString(course_offerings[i].season_code)[0]}
                 </strong>
-                <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
+                <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
                     ? course_offerings[i].course_code[0]
                     : filter === 'both'
@@ -290,13 +290,13 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             ) : (
               <StyledColUnclickable
                 xs={5}
-                className={`${Styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
+                className={`${styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
                 style={{ flex: 'none', color: '#b5b5b5' }}
               >
                 <strong>
                   {toSeasonString(course_offerings[i].season_code)[0]}
                 </strong>
-                <div className={`${Styles.details} mx-auto ${Styles.shown}`}>
+                <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
                     ? course_offerings[i].course_code[0]
                     : filter === 'both'
@@ -313,7 +313,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               <StyledRating
                 rating={course_offerings[i].rating}
                 colormap={ratingColormap}
-                className={`${Styles.rating_cell} ${Styles.expanded_ratings}`}
+                className={`${styles.rating_cell} ${styles.expanded_ratings}`}
               >
                 {course_offerings[i].rating !== -1
                   ? course_offerings[i].rating.toFixed(1)
@@ -328,7 +328,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               <StyledRating
                 rating={course_offerings[i].professor_rating}
                 colormap={ratingColormap}
-                className={Styles.rating_cell}
+                className={styles.rating_cell}
               >
                 {course_offerings[i].professor_rating !== -1
                   ? course_offerings[i].professor_rating.toFixed(1)
@@ -343,7 +343,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               <StyledRating
                 rating={course_offerings[i].workload}
                 colormap={workloadColormap}
-                className={Styles.rating_cell}
+                className={styles.rating_cell}
               >
                 {course_offerings[i].workload !== -1
                   ? course_offerings[i].workload.toFixed(1)
@@ -506,7 +506,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Course Requirements */}
           {listing.requirements && (
             <Row className="mx-auto">
-              <span className={`${Styles.requirements} pt-1`}>
+              <span className={`${styles.requirements} pt-1`}>
                 {listing.requirements}
               </span>
             </Row>
@@ -514,12 +514,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Course Syllabus */}
           <Row className="m-auto pt-4 pb-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={Styles.lable_bubble}>Syllabus</span>
+              <span className={styles.lable_bubble}>Syllabus</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
               xs={11 - COL_LEN_LEFT}
-              className={Styles.metadata}
+              className={styles.metadata}
             >
               {listing.syllabus_url ? (
                 <a
@@ -541,7 +541,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span
                   role="button"
-                  className={Styles.toggle_bubble}
+                  className={styles.toggle_bubble}
                   onClick={() => setShowPastSyllabi(!showPastSyllabi)}
                 >
                   Past syllabi ({past_syllabi.length}){' '}
@@ -556,7 +556,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 <Col
                   sm={12 - COL_LEN_LEFT}
                   xs={11 - COL_LEN_LEFT}
-                  className={Styles.metadata}
+                  className={styles.metadata}
                 >
                   {past_syllabi.map((course) => (
                     <a
@@ -578,12 +578,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Course Professors */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={Styles.lable_bubble}>Professor</span>
+              <span className={styles.lable_bubble}>Professor</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
               xs={11 - COL_LEN_LEFT}
-              className={Styles.metadata}
+              className={styles.metadata}
             >
               {listing.professor_names.length
                 ? listing.professor_names.map((prof, index) => {
@@ -608,12 +608,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Course Times */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={Styles.lable_bubble}>Meets</span>
+              <span className={styles.lable_bubble}>Meets</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
               xs={11 - COL_LEN_LEFT}
-              className={Styles.metadata}
+              className={styles.metadata}
             >
               {[...times.entries()].map(([timespan, days]) => (
                 <div key={timespan}>
@@ -628,12 +628,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Course Location */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={Styles.lable_bubble}>Location</span>
+              <span className={styles.lable_bubble}>Location</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
               xs={11 - COL_LEN_LEFT}
-              className={Styles.metadata}
+              className={styles.metadata}
             >
               {[...locations.entries()].map(([location, location_url]) => (
                 <div key={location}>
@@ -656,12 +656,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Course Section */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={Styles.lable_bubble}>Section</span>
+              <span className={styles.lable_bubble}>Section</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
               xs={11 - COL_LEN_LEFT}
-              className={Styles.metadata}
+              className={styles.metadata}
             >
               {listing.section ? listing.section : 'N/A'}
             </Col>
@@ -670,15 +670,15 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {listing.flag_info.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>Info</span>
+                <span className={styles.lable_bubble}>Info</span>
               </Col>
               <Col
                 sm={12 - COL_LEN_LEFT}
                 xs={11 - COL_LEN_LEFT}
-                className={Styles.metadata}
+                className={styles.metadata}
               >
                 {listing.flag_info.length ? (
-                  <ul className={Styles.flag_info}>
+                  <ul className={styles.flag_info}>
                     {listing.flag_info.map((text) => (
                       <li key={text}>{text}</li>
                     ))}
@@ -692,12 +692,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Course Enrollment */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={Styles.lable_bubble}>Enrollment</span>
+              <span className={styles.lable_bubble}>Enrollment</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
               xs={11 - COL_LEN_LEFT}
-              className={Styles.metadata}
+              className={styles.metadata}
             >
               {getEnrolled(listing, true, true)}
             </Col>
@@ -705,12 +705,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Credits */}
           <Row className="m-auto py-2">
             <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-              <span className={Styles.lable_bubble}>Credits</span>
+              <span className={styles.lable_bubble}>Credits</span>
             </Col>
             <Col
               sm={12 - COL_LEN_LEFT}
               xs={11 - COL_LEN_LEFT}
-              className={Styles.metadata}
+              className={styles.metadata}
             >
               {listing.credits}
             </Col>
@@ -719,7 +719,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {listing.classnotes && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>Class Notes</span>
+                <span className={styles.lable_bubble}>Class Notes</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.classnotes}
@@ -730,7 +730,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {listing.regnotes && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>Registrar Notes</span>
+                <span className={styles.lable_bubble}>Registrar Notes</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.regnotes}
@@ -741,7 +741,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {listing.rp_attr && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>Reading Period</span>
+                <span className={styles.lable_bubble}>Reading Period</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.rp_attr}
@@ -752,7 +752,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {listing.final_exam && listing.final_exam !== 'HTBA' && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>Final Exam</span>
+                <span className={styles.lable_bubble}>Final Exam</span>
               </Col>
               <Col sm={12 - COL_LEN_LEFT} xs={11 - COL_LEN_LEFT}>
                 {listing.final_exam}
@@ -763,12 +763,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
-                <span className={Styles.lable_bubble}>Friends</span>
+                <span className={styles.lable_bubble}>Friends</span>
               </Col>
               <Col
                 sm={12 - COL_LEN_LEFT}
                 xs={11 - COL_LEN_LEFT}
-                className={Styles.metadata}
+                className={styles.metadata}
               >
                 {also_taking.map((friend, index) => {
                   return (
@@ -785,7 +785,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
         <Col md={5} className="px-0 my-0">
           {/* Filter Select */}
           <Row
-            className={`${Styles.filter_container} m-auto justify-content-center`}
+            className={`${styles.filter_container} m-auto justify-content-center`}
             onKeyDown={(e) => {
               if (e.keyCode === 37) {
                 // Left arrow key
@@ -803,23 +803,23 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}
-              className={`${Styles.evaluations_filter} mb-2`}
+              className={`${styles.evaluations_filter} mb-2`}
             />
           </Row>
           {/* Course Evaluations Header */}
           {items[filter].length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
-                <span className={Styles.evaluation_header}>Season</span>
+                <span className={styles.evaluation_header}>Season</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={Styles.evaluation_header}>Class</span>
+                <span className={styles.evaluation_header}>Class</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={Styles.evaluation_header}>Prof</span>
+                <span className={styles.evaluation_header}>Prof</span>
               </Col>
               <Col xs={2} className="d-flex ml-0 justify-content-center px-0">
-                <span className={Styles.evaluation_header}>Work</span>
+                <span className={styles.evaluation_header}>Work</span>
               </Col>
             </Row>
           )}

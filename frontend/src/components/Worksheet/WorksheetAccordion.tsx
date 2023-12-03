@@ -1,7 +1,7 @@
 import React, { useCallback, useContext, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
-import chroma from 'chroma-js';
-import { Badge, Row, Col, Accordion, Card } from 'react-bootstrap';
+import { Row, Col, Accordion, Card } from 'react-bootstrap';
 import AccordionContext from 'react-bootstrap/AccordionContext';
 import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import LinesEllipsis from 'react-lines-ellipsis';
@@ -15,13 +15,11 @@ import {
   StyledCard,
   SurfaceComponent,
 } from '../StyledComponents';
-import { skillsAreasColors } from '../../queries/Constants';
-import tagStyles from '../Search/ResultsItem.module.css';
+import SkillBadge from '../SkillBadge';
 import styles from './WorksheetAccordion.module.css';
-import { weekdays } from '../../utilities/common';
+import { weekdays, type Listing } from '../../utilities/common';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Listing } from '../Providers/FerryProvider';
 import WorksheetNumDropdown from '../Navbar/WorksheetNumberDropdown';
 
 // Component used to trim description to certain number of lines
@@ -82,7 +80,17 @@ function ContextAwareToggle({
  */
 
 function WorksheetAccordion() {
-  const { courses, showModal } = useWorksheet();
+  const [, setSearchParams] = useSearchParams();
+  const { courses } = useWorksheet();
+  const showModal = useCallback(
+    (course: Listing) => () => {
+      setSearchParams((prev) => {
+        prev.set('course-modal', `${course.season_code}-${course.crn}`);
+        return prev;
+      });
+    },
+    [setSearchParams],
+  );
 
   // Parse listing dictionaries and determine which courses take place on each weekday
   const parseListings = useCallback((listings: Listing[]) => {
@@ -176,35 +184,11 @@ function WorksheetAccordion() {
                       {/* Course Skills and Areas */}
                       {course.skills &&
                         course.skills.map((skill) => (
-                          <Badge
-                            variant="secondary"
-                            className={tagStyles.tag}
-                            style={{
-                              color: skillsAreasColors[skill],
-                              backgroundColor: chroma(skillsAreasColors[skill])
-                                .alpha(0.16)
-                                .css(),
-                            }}
-                            key={skill}
-                          >
-                            {skill}
-                          </Badge>
+                          <SkillBadge key={skill} skill={skill} />
                         ))}
                       {course.areas &&
                         course.areas.map((area) => (
-                          <Badge
-                            variant="secondary"
-                            className={tagStyles.tag}
-                            style={{
-                              color: skillsAreasColors[area],
-                              backgroundColor: chroma(skillsAreasColors[area])
-                                .alpha(0.16)
-                                .css(),
-                            }}
-                            key={area}
-                          >
-                            {area}
-                          </Badge>
+                          <SkillBadge key={area} skill={area} />
                         ))}
                     </Col>
                   </Row>
@@ -228,7 +212,7 @@ function WorksheetAccordion() {
                   {/* Button to trigger course modal */}
                   <Row className="m-auto">
                     <StyledBanner
-                      onClick={() => showModal(course)}
+                      onClick={showModal(course)}
                       className={`${styles.more_info} mt-2 font-weight-bold`}
                     >
                       <TextComponent type={1}>More Info</TextComponent>

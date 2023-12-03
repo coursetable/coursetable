@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-import { Badge, Collapse } from 'react-bootstrap';
+import { Collapse } from 'react-bootstrap';
 import styled from 'styled-components';
 import chroma from 'chroma-js';
-import tagStyles from '../Search/ResultsItem.module.css';
+import SkillBadge from '../SkillBadge';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { ratingColormap, skillsAreasColors } from '../../queries/Constants';
+import { ratingColormap } from '../../queries/Constants';
 import styles from './WorksheetStats.module.css';
 
 const StyledStatPill = styled.span<
@@ -31,6 +31,8 @@ const workloadColormap = chroma
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hidden_courses, cur_season } = useWorksheet();
+  const countedCourseCodes = new Set();
+
   const {
     courseCnt,
     coursesWithRating,
@@ -39,18 +41,31 @@ export default function WorksheetStats() {
     rating,
     skillsAreas,
   } = courses.reduce(
-    (acc, c) =>
-      hidden_courses[cur_season]?.[c.crn]
-        ? acc
-        : {
-            courseCnt: acc.courseCnt + 1,
-            coursesWithRating:
-              acc.coursesWithRating + (c.average_rating ? 1 : 0),
-            credits: acc.credits + (c.credits ?? 0),
-            workload: acc.workload + (c.average_workload ?? 0),
-            rating: acc.rating + (c.average_rating ?? 0),
-            skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
-          },
+    (acc, c) => {
+      // see if any of the course's codes have already been counted or if it's hidden so we don't double count
+      const shouldNotCount =
+        c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
+        hidden_courses[cur_season]?.[c.crn];
+      const useCourseInfo = c.credits;
+
+      if (shouldNotCount || !useCourseInfo) {
+        return acc;
+      }
+
+      // Mark codes as counted, no double counting
+      c.all_course_codes.forEach((code) => {
+        countedCourseCodes.add(code);
+      });
+
+      return {
+        courseCnt: acc.courseCnt + 1,
+        coursesWithRating: acc.coursesWithRating + (c.average_rating ? 1 : 0),
+        credits: acc.credits + (c.credits ?? 0),
+        workload: acc.workload + (c.average_workload ?? 0),
+        rating: acc.rating + (c.average_rating ?? 0),
+        skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
+      };
+    },
     {
       courseCnt: 0,
       coursesWithRating: 0,
@@ -60,6 +75,7 @@ export default function WorksheetStats() {
       skillsAreas: [] as string[],
     },
   );
+
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
     <div
@@ -105,19 +121,7 @@ export default function WorksheetStats() {
                 <StyledStatPill>Skills & Areas</StyledStatPill>
                 <StyledStatPill>
                   {skillsAreas.sort().map((skill, i) => (
-                    <Badge
-                      variant="secondary"
-                      className={tagStyles.tag}
-                      style={{
-                        color: skillsAreasColors[skill],
-                        backgroundColor: chroma(skillsAreasColors[skill])
-                          .alpha(0.16)
-                          .css(),
-                      }}
-                      key={i}
-                    >
-                      {skill}
-                    </Badge>
+                    <SkillBadge skill={skill} key={i} />
                   ))}
                 </StyledStatPill>
               </li>

@@ -14,7 +14,7 @@ import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../contexts/userContext';
-import { useWindowDimensions } from '../Providers/WindowDimensionsProvider';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 // Row in navbar search
 const StyledRow = styled(Row)`
   width: auto;
@@ -26,7 +26,10 @@ const StyledRow = styled(Row)`
 const FilterGroup = styled.div``;
 
 // Toggle button group
-const StyledToggleButtonGroup = styled(ToggleButtonGroup)<{
+// Do not pass isTablet prop to ToggleButtonGroup
+const StyledToggleButtonGroup = styled(({ isTablet, ...props }) => (
+  <ToggleButtonGroup {...props} />
+))<{
   isTablet: boolean;
 }>`
   width: ${({ isTablet }) => (isTablet ? 140 : 180)}px;
