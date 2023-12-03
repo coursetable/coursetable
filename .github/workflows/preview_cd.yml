@@ -11,7 +11,7 @@ jobs:
   frontend-build-and-deploy:
     environment: 
       name: Preview
-      url: https://${{ env.sha_short }}.${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
+      url: https://${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
     runs-on: ubuntu-latest
 
     steps:
@@ -28,7 +28,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-\.]+/g, "-")
+            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-\.]+/g, "-").substring(0, 64)
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
         with:
