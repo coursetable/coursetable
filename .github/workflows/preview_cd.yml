@@ -28,7 +28,7 @@ jobs:
         with:
           result-encoding: string
           script: |
-            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-\.]+/g, "-").substring(0, 25)
+            return "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-\.]+/g, "-").slice(-25)
       - name: Install Bun
         uses: oven-sh/setup-bun@v1
         with:
