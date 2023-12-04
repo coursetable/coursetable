@@ -96,7 +96,7 @@ function GoogleCalendarButton({
     } catch (e) {
       Sentry.captureException('[GCAL]: Error syncing user events: ' + e);
       console.error(e);
-      toast.error('Error syncing Google Calendar Events');
+      toast.error('Error exporting Google Calendar Events');
       setLoading(false);
       return;
     }
@@ -117,7 +117,7 @@ function GoogleCalendarButton({
     await Promise.all(promises);
 
     setLoading(false);
-    toast.success('Synced with Google Calendar!');
+    toast.success('Exporting to Google Calendar!');
   }, [courses, gapi, season_code]);
 
   useEffect(() => {
