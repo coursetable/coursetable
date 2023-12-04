@@ -131,7 +131,7 @@ export const StyledPopover = styled(Popover)`
 
 // Rating bubbles in search results list item and modal
 export const StyledRating = styled.div<{
-  rating: number;
+  rating: number | null;
   colormap: chroma.Scale<chroma.Color>;
 }>`
   font-weight: ${({ rating }) => (rating ? 600 : 400)};

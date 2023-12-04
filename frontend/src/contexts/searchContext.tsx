@@ -24,7 +24,9 @@ import {
   sortbyOptions,
   SortKeys,
 } from '../queries/Constants';
+import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import {
+  checkConflict,
   getDayTimes,
   getEnrolled,
   getNumFriends,
@@ -80,6 +82,7 @@ type Store = {
   select_credits: Option[];
   searchDescription: boolean;
   hideCancelled: boolean;
+  hideConflicting: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
   hideDiscussionSections: boolean;
@@ -115,6 +118,7 @@ type Store = {
   setSelectCredits: React.Dispatch<React.SetStateAction<Option[]>>;
   setSearchDescription: React.Dispatch<React.SetStateAction<boolean>>;
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
+  setHideConflicting: React.Dispatch<React.SetStateAction<boolean>>;
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
   setHideDiscussionSections: React.Dispatch<React.SetStateAction<boolean>>;
@@ -270,6 +274,11 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [hideCancelled, setHideCancelled] = useLocalStorageState(
     'hideCancelled',
     defaultTrue,
+  );
+
+  const [hideConflicting, setHideConflicting] = useLocalStorageState(
+    'hideConflicting',
+    defaultFalse,
   );
 
   const [hideFirstYearSeminars, setHideFirstYearSeminars] =
@@ -496,6 +505,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       max_number: include_all_numbers ? null : numBounds[1],
       description: searchDescription ? 'ACTIVE' : null,
       extra_info: hideCancelled ? 'ACTIVE' : null,
+      conflicting: hideConflicting ? 'ACTIVE' : null,
       discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
       fy_sem: hideFirstYearSeminars ? false : null,
       grad_level: hideGraduateCourses ? false : null,
@@ -504,6 +514,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   }, [
     searchDescription,
     hideCancelled,
+    hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
@@ -519,6 +530,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     select_days,
     searchText,
   ]);
+
+  const { data: worksheetInfo } = useWorksheetInfo(user.worksheet);
 
   // Filtered and sorted courses
   const searchData = useMemo(() => {
@@ -610,6 +623,15 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       if (
         searchConfig.extra_info !== null &&
         searchConfig.extra_info !== listing.extra_info
+      ) {
+        return false;
+      }
+
+      if (
+        searchConfig.conflicting !== null &&
+        worksheetInfo &&
+        listing.times_summary !== 'TBA' &&
+        checkConflict(worksheetInfo, listing).length > 0
       ) {
         return false;
       }
@@ -733,6 +755,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     // Apply sorting order.
     return sortCourses(filtered, ordering, num_friends);
   }, [
+    worksheetInfo,
     searchDescription,
     required_seasons,
     coursesLoading,
@@ -748,6 +771,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSearchText('');
     setSearchDescription(false);
     setHideCancelled(true);
+    setHideConflicting(false);
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
     setHideDiscussionSections(true);
@@ -792,6 +816,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSelectCredits,
     setSearchDescription,
     setHideCancelled,
+    setHideConflicting,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
     setHideDiscussionSections,
@@ -837,6 +862,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       !_.isEqual(select_credits, defaultOptions) ||
       !_.isEqual(searchDescription, defaultFalse) ||
       !_.isEqual(hideCancelled, defaultTrue) ||
+      !_.isEqual(hideConflicting, defaultFalse) ||
       !_.isEqual(hideFirstYearSeminars, defaultFalse) ||
       !_.isEqual(hideGraduateCourses, defaultFalse) ||
       !_.isEqual(hideDiscussionSections, defaultTrue) ||
@@ -874,6 +900,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     select_credits,
     searchDescription,
     hideCancelled,
+    hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
@@ -908,6 +935,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       select_credits,
       searchDescription,
       hideCancelled,
+      hideConflicting,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
@@ -945,6 +973,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       setSelectCredits,
       setSearchDescription,
       setHideCancelled,
+      setHideConflicting,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
       setHideDiscussionSections,
@@ -976,6 +1005,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       select_credits,
       searchDescription,
       hideCancelled,
+      hideConflicting,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
@@ -1011,6 +1041,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       setSelectCredits,
       setSearchDescription,
       setHideCancelled,
+      setHideConflicting,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
       setHideDiscussionSections,

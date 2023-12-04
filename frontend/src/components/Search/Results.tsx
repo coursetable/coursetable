@@ -23,6 +23,7 @@ import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../../queries/Constants';
 import { useSearch } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
+import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/courseUtilities';
 
 import { API_ENDPOINT } from '../../config';
@@ -64,7 +65,7 @@ const ResultsHeader = styled.div`
 `;
 
 // Search results
-const SearchResults = styled.div`
+const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
   overflow: hidden;
   ${({ numCourses, isMobile }) =>
     numCourses > 0 && numCourses < 20 && !isMobile ? 'height: 80vh;' : ''}
@@ -78,7 +79,7 @@ const ResultsItemWrapper = styled.div`
 `;
 
 // Function to calculate column width within a max and min
-const getColWidth = (calculated, min = 0, max = 1000000) =>
+const getColWidth = (calculated: number, min = 0, max = 1000000) =>
   Math.max(Math.min(calculated, max), min);
 
 /**
@@ -102,6 +103,15 @@ function Results({
   isLoggedIn,
   num_friends,
   page = 'catalog',
+}: {
+  data: Listing[];
+  isList: boolean;
+  setView: (isList: boolean) => void;
+  loading?: boolean;
+  multiSeasons?: boolean;
+  isLoggedIn: boolean;
+  num_friends: Record<string, string[]>;
+  page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
   const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
@@ -121,7 +131,7 @@ function Results({
   const globalTheme = useTheme();
 
   // Ref to get row width
-  const ref = useRef(null);
+  const ref = useRef<HTMLDivElement>(null);
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
@@ -138,6 +148,12 @@ function Results({
       ENROLL_WIDTH: 40,
       FB_WIDTH: 60,
       PADDING: 43,
+
+      PROF_WIDTH: 0,
+      SA_WIDTH: 0,
+      MEET_WIDTH: 0,
+      LOC_WIDTH: 0,
+      TITLE_WIDTH: 0,
     };
 
     const EXTRA =
@@ -329,29 +345,39 @@ function Results({
   }
 
   // Column width styles
-  const szn_style = {
+  const szn_style: React.CSSProperties = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const code_style = {
+  const code_style: React.CSSProperties = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style = { width: `${COL_SPACING.TITLE_WIDTH}px` };
-  const rate_overall_style = {
+  const title_style: React.CSSProperties = {
+    width: `${COL_SPACING.TITLE_WIDTH}px`,
+  };
+  const rate_overall_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
   };
-  const rate_workload_style = {
+  const rate_workload_style: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const prof_style = { width: `${COL_SPACING.PROF_WIDTH}px` };
-  const meet_style = { width: `${COL_SPACING.MEET_WIDTH}px` };
-  const loc_style = { width: `${COL_SPACING.LOC_WIDTH}px` };
-  const enroll_style = { width: `${COL_SPACING.ENROLL_WIDTH}px` };
-  const fb_style = { width: `${COL_SPACING.FB_WIDTH}px` };
-  const sa_style = { width: `${COL_SPACING.SA_WIDTH}px` };
+  const prof_style: React.CSSProperties = {
+    width: `${COL_SPACING.PROF_WIDTH}px`,
+  };
+  const meet_style: React.CSSProperties = {
+    width: `${COL_SPACING.MEET_WIDTH}px`,
+  };
+  const loc_style: React.CSSProperties = {
+    width: `${COL_SPACING.LOC_WIDTH}px`,
+  };
+  const enroll_style: React.CSSProperties = {
+    width: `${COL_SPACING.ENROLL_WIDTH}px`,
+  };
+  const fb_style: React.CSSProperties = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
@@ -376,10 +402,7 @@ function Results({
   return (
     <div className={styles.results_container_max_width}>
       {!isMobile && isLoggedIn && (
-        <StyledSpacer
-          style={{ top: navbarHeight }}
-          isCatalog={page === 'catalog'}
-        >
+        <StyledSpacer style={{ top: navbarHeight }}>
           <StyledContainer
             layer={0}
             id="results_container"
@@ -597,7 +620,6 @@ function Results({
       )}
 
       <SearchResults
-        layer={0}
         className={`${!isList ? 'px-1 pt-3 ' : ''}`}
         numCourses={data.length}
         isMobile={isMobile}

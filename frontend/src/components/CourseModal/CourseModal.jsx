@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import { Col, Container, Row, Modal } from 'react-bootstrap';
 
 import { IoMdArrowRoundBack } from 'react-icons/io';
+import { FaRegShareFromSquare } from 'react-icons/fa6';
 import styled from 'styled-components';
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
@@ -15,6 +16,7 @@ import { TextComponent, StyledLink } from '../StyledComponents';
 import SkillBadge from '../SkillBadge';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useCourseData } from '../../contexts/ferryContext';
+import { toast } from 'react-toastify';
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -53,12 +55,36 @@ const extra_info_map = {
 
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const url = window.location.href;
 
   const courseModal = searchParams.get('course-modal');
   const [seasonCode, crn] = courseModal ? courseModal.split('-') : [null, null];
   const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
 
   const listing = courses[seasonCode]?.get(Number(crn));
+
+  // share button
+  const ShareButton = ({ courseCode, urlToShare }) => {
+    const copyToClipboard = () => {
+      const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
+      navigator.clipboard.writeText(textToCopy).then(
+        () => {
+          toast.success('Course and URL copied to clipboard!');
+        },
+        (err) => {
+          console.error('Error copying to clipboard: ', err);
+        },
+      );
+    };
+
+    return (
+      <FaRegShareFromSquare
+        onClick={copyToClipboard}
+        size={25}
+        color="#007bff"
+      />
+    );
+  };
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
@@ -93,7 +119,7 @@ function CourseModal() {
           animation={false}
           centered
         >
-          <Modal.Header closeButton>
+          <Modal.Header closeButton className="d-flex justify-content-between">
             <Container className="p-0" fluid>
               {view[0] === 'overview' ? (
                 // Viewing Course Overview
@@ -265,6 +291,13 @@ function CourseModal() {
                 </div>
               )}
             </Container>
+            {/* Share Button */}
+            <div className="align-self-center">
+              <ShareButton
+                courseCode={cur_listing.course_code}
+                urlToShare={url}
+              />
+            </div>
           </Modal.Header>
           {listing &&
             (view[0] === 'overview' ? (
