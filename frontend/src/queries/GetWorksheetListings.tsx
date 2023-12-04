@@ -63,7 +63,9 @@ export const useWorksheetInfo = (
         const course = courses[season_code].get(crn);
         if (!course) {
           Sentry.captureException(
-            `failed to resolve worksheet course ${season_code} ${crn}`,
+            new Error(
+              `failed to resolve worksheet course ${season_code} ${crn}`,
+            ),
           );
         } else {
           dataReturn.push(course);
