@@ -65,6 +65,7 @@ function Search() {
     select_schools,
     // select_credits,
     hideCancelled,
+    hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
@@ -90,6 +91,7 @@ function Search() {
     setSelectSchools,
     // setSelectCredits,
     setHideCancelled,
+    setHideConflicting,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
     setHideDiscussionSections,
@@ -426,6 +428,20 @@ function Search() {
                       }}
                     >
                       Hide cancelled courses
+                    </Form.Check.Label>
+                  </Form.Check>
+
+                  <Form.Check type="switch" className={styles.toggle_option}>
+                    <Form.Check.Input
+                      checked={hideConflicting}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <Form.Check.Label
+                      onClick={() => {
+                        setHideConflicting(!hideConflicting);
+                      }}
+                    >
+                      Hide courses with conflicting times
                     </Form.Check.Label>
                   </Form.Check>
 

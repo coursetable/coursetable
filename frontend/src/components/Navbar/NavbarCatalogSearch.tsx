@@ -211,6 +211,7 @@ export function NavbarCatalogSearch() {
     select_credits,
     searchDescription,
     hideCancelled,
+    hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
@@ -239,6 +240,7 @@ export function NavbarCatalogSearch() {
     setSelectCredits,
     setSearchDescription,
     setHideCancelled,
+    setHideConflicting,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
     setHideDiscussionSections,
@@ -346,6 +348,7 @@ export function NavbarCatalogSearch() {
       toggles: {
         searchDescription,
         hideCancelled,
+        hideConflicting,
         hideFirstYearSeminars,
         hideGraduateCourses,
         hideDiscussionSections,
@@ -366,6 +369,7 @@ export function NavbarCatalogSearch() {
       activeNumber,
       searchDescription,
       hideCancelled,
+      hideConflicting,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
@@ -608,7 +612,8 @@ export function NavbarCatalogSearch() {
                 setSelectSchools(defaultFilters.defaultOptions);
                 setSelectCredits(defaultFilters.defaultOptions);
                 setSearchDescription(defaultFilters.defaultFalse);
-                setHideCancelled(defaultFilters.defaultFalse);
+                setHideCancelled(defaultFilters.defaultTrue);
+                setHideConflicting(defaultFilters.defaultFalse);
                 setHideFirstYearSeminars(defaultFilters.defaultFalse);
                 setHideGraduateCourses(defaultFilters.defaultFalse);
                 setHideDiscussionSections(defaultFilters.defaultFalse);
@@ -904,6 +909,20 @@ export function NavbarCatalogSearch() {
                       }}
                     >
                       Hide cancelled courses
+                    </ToggleLabel>
+                  </Toggle>
+                  <Toggle type="switch">
+                    <ToggleInput
+                      checked={hideConflicting}
+                      onChange={() => {}} // dummy handler to remove warning
+                    />
+                    <ToggleLabel
+                      onClick={() => {
+                        setHideConflicting(!hideConflicting);
+                        setStartTime(Date.now());
+                      }}
+                    >
+                      Hide courses with conflicting times
                     </ToggleLabel>
                   </Toggle>
                   {/* Hide First-Year Seminar Courses Toggle */}
