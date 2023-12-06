@@ -20,7 +20,8 @@ import { IoClose } from 'react-icons/io5';
 
 import {
   skillsAreasOptions,
-  creditOptions,
+  creditOptions,  
+  courseInfoAttributesOptions,
   schoolOptions,
   subjectOptions,
   sortbyOptions,
@@ -209,6 +210,7 @@ export function NavbarCatalogSearch() {
     numValueLabels,
     select_schools,
     select_credits,
+    select_course_info_attributes,
     searchDescription,
     hideCancelled,
     hideConflicting,
@@ -238,6 +240,7 @@ export function NavbarCatalogSearch() {
     setNumValueLabels,
     setSelectSchools,
     setSelectCredits,
+    setSelectCourseInfoAttributes,
     setSearchDescription,
     setHideCancelled,
     setHideConflicting,
@@ -336,6 +339,7 @@ export function NavbarCatalogSearch() {
         select_days,
         select_schools,
         select_credits,
+        select_course_info_attributes,
         select_subjects: isTablet && select_subjects,
         select_seasons: isTablet && select_seasons,
         select_skillsareas: isTablet && select_skillsareas,
@@ -361,6 +365,7 @@ export function NavbarCatalogSearch() {
       select_days,
       select_schools,
       select_credits,
+      select_course_info_attributes,
       select_subjects,
       select_seasons,
       select_skillsareas,
@@ -611,6 +616,7 @@ export function NavbarCatalogSearch() {
                 setSelectDays(defaultFilters.defaultOptions);
                 setSelectSchools(defaultFilters.defaultOptions);
                 setSelectCredits(defaultFilters.defaultOptions);
+                setSelectCourseInfoAttributes(defaultFilters.defaultOptions);
                 setSearchDescription(defaultFilters.defaultFalse);
                 setHideCancelled(defaultFilters.defaultTrue);
                 setHideConflicting(defaultFilters.defaultFalse);
@@ -868,6 +874,23 @@ export function NavbarCatalogSearch() {
                     menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
+                      setStartTime(Date.now());
+                    }}
+                  />
+                </Row>
+                <Row className="align-items-center justify-content-between mx-3 mt-3">
+                  {/* Course Information Attributes Multi-Select */}
+                  <AdvancedLabel>Info:</AdvancedLabel>
+                  <AdvancedSelect
+                    closeMenuOnSelect
+                    isMulti
+                    value={select_course_info_attributes}
+                    options={courseInfoAttributesOptions}
+                    placeholder="Course Information Attributes"
+                    // prevent overlap with tooltips
+                    menuPortalTarget={document.querySelector('#portal')}
+                    onChange={(selectedOption: ValueType<Option, boolean>) => {
+                      setSelectCourseInfoAttributes((selectedOption as Option[]) || []);
                       setStartTime(Date.now());
                     }}
                   />

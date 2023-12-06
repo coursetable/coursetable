@@ -80,6 +80,7 @@ type Store = {
   numValueLabels: number[];
   select_schools: Option[];
   select_credits: Option[];
+  select_course_info_attributes: Option[];
   searchDescription: boolean;
   hideCancelled: boolean;
   hideConflicting: boolean;
@@ -116,6 +117,7 @@ type Store = {
   setNumValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSchools: React.Dispatch<React.SetStateAction<Option[]>>;
   setSelectCredits: React.Dispatch<React.SetStateAction<Option[]>>;
+  setSelectCourseInfoAttributes: React.Dispatch<React.SetStateAction<Option[]>>;
   setSearchDescription: React.Dispatch<React.SetStateAction<boolean>>;
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
   setHideConflicting: React.Dispatch<React.SetStateAction<boolean>>;
@@ -263,6 +265,11 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
   const [select_credits, setSelectCredits] = useSessionStorageState(
     'select_credits',
+    defaultOptions,
+  );
+
+  const [select_course_info_attributes, setSelectCourseInfoAttributes] = useSessionStorageState(
+    'select_course_info_attributes',
     defaultOptions,
   );
 
@@ -426,6 +433,18 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
+    // course info attributes to filter
+    let processedCourseInfoAttributes;
+    if (select_course_info_attributes != null) {
+      processedCourseInfoAttributes = select_course_info_attributes.map((x) => {
+        return x.label;
+      });
+      // set null defaults
+      if (processedCourseInfoAttributes.length === 0) {
+        processedCourseInfoAttributes = null;
+      }
+    }
+
     // schools to filter
     let processedSchools;
     if (select_schools != null) {
@@ -490,6 +509,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       areas: new Set(processedAreas),
       skills: new Set(processedSkills),
       credits: new Set(processedCredits),
+      course_info_attributes: new Set(processedCourseInfoAttributes),
       schools: new Set(processedSchools),
       subjects: new Set(processedSubjects),
       days: new Set(processedDays),
@@ -524,6 +544,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     enrollBounds,
     numBounds,
     select_credits,
+    select_course_info_attributes,
     select_schools,
     select_skillsareas,
     select_subjects,
@@ -716,6 +737,15 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       }
 
       if (
+        searchConfig.course_info_attributes.size !== 0 &&
+        listing.flag_info !== null &&
+        // !searchConfig.course_info_attributes.has(String(listing.flag_info))
+        Array.from(searchConfig.course_info_attributes).filter(value => listing.flag_info.includes(value)).length == 0
+      ) {
+        return false;
+      }
+
+      if (
         searchConfig.schools.size !== 0 &&
         listing.school !== null &&
         !searchConfig.schools.has(listing.school)
@@ -789,6 +819,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSelectSkillsAreas(defaultOptions);
     setSelectDays(defaultOptions);
     setSelectCredits(defaultOptions);
+    setSelectCourseInfoAttributes(defaultOptions);
     setSelectSchools(defaultOptions);
     setSelectSubjects(defaultOptions);
 
@@ -814,6 +845,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSelectSchools,
     setSelectDays,
     setSelectCredits,
+    setSelectCourseInfoAttributes,
     setSearchDescription,
     setHideCancelled,
     setHideConflicting,
@@ -860,6 +892,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       !_.isEqual(numBounds, defaultNumBounds) ||
       !_.isEqual(select_schools, defaultOptions) ||
       !_.isEqual(select_credits, defaultOptions) ||
+      !_.isEqual(select_course_info_attributes, defaultOptions) ||
       !_.isEqual(searchDescription, defaultFalse) ||
       !_.isEqual(hideCancelled, defaultTrue) ||
       !_.isEqual(hideConflicting, defaultFalse) ||
@@ -898,6 +931,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     select_days,
     select_schools,
     select_credits,
+    select_course_info_attributes,
     searchDescription,
     hideCancelled,
     hideConflicting,
@@ -933,6 +967,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       numValueLabels,
       select_schools,
       select_credits,
+      select_course_info_attributes,
       searchDescription,
       hideCancelled,
       hideConflicting,
@@ -971,6 +1006,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       setNumValueLabels,
       setSelectSchools,
       setSelectCredits,
+      setSelectCourseInfoAttributes,
       setSearchDescription,
       setHideCancelled,
       setHideConflicting,
@@ -1003,6 +1039,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       numValueLabels,
       select_schools,
       select_credits,
+      select_course_info_attributes,
       searchDescription,
       hideCancelled,
       hideConflicting,
@@ -1039,6 +1076,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       setNumValueLabels,
       setSelectSchools,
       setSelectCredits,
+      setSelectCourseInfoAttributes,
       setSearchDescription,
       setHideCancelled,
       setHideConflicting,
