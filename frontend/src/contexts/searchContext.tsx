@@ -268,10 +268,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     defaultOptions,
   );
 
-  const [select_course_info_attributes, setSelectCourseInfoAttributes] = useSessionStorageState(
-    'select_course_info_attributes',
-    defaultOptions,
-  );
+  const [select_course_info_attributes, setSelectCourseInfoAttributes] =
+    useSessionStorageState('select_course_info_attributes', defaultOptions);
 
   const [searchDescription, setSearchDescription] = useLocalStorageState(
     'searchDescription',
@@ -740,7 +738,9 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         searchConfig.course_info_attributes.size !== 0 &&
         listing.flag_info !== null &&
         // !searchConfig.course_info_attributes.has(String(listing.flag_info))
-        Array.from(searchConfig.course_info_attributes).filter(value => listing.flag_info.includes(value)).length == 0
+        Array.from(searchConfig.course_info_attributes).filter((value) =>
+          listing.flag_info.includes(value),
+        ).length == 0
       ) {
         return false;
       }

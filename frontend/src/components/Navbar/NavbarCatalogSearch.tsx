@@ -20,7 +20,7 @@ import { IoClose } from 'react-icons/io5';
 
 import {
   skillsAreasOptions,
-  creditOptions,  
+  creditOptions,
   courseInfoAttributesOptions,
   schoolOptions,
   subjectOptions,
@@ -890,7 +890,9 @@ export function NavbarCatalogSearch() {
                     // prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      setSelectCourseInfoAttributes((selectedOption as Option[]) || []);
+                      setSelectCourseInfoAttributes(
+                        (selectedOption as Option[]) || [],
+                      );
                       setStartTime(Date.now());
                     }}
                   />
