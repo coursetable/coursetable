@@ -104,7 +104,7 @@ function App({ themeToggler }: { themeToggler: () => void }) {
   return (
     <>
       {/* notice bar*/}
-      <Notice> 
+      <Notice>
         <b>YCS Demo:</b> In Progress!
       </Notice>
       <Navbar
