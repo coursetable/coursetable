@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-//import Notice from './components/Notice';
+import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
@@ -104,8 +104,9 @@ function App({ themeToggler }: { themeToggler: () => void }) {
   return (
     <>
       {/* notice bar*/}
-      {/*<Notice >
-    </Notice>*/}
+      <Notice> 
+        <b>YCS Demo:</b> In Progress!
+      </Notice>
       <Navbar
         isLoggedIn={isLoggedIn}
         themeToggler={themeToggler}
