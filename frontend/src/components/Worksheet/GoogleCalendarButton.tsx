@@ -3,10 +3,10 @@ import { loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
 import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { StyledBtn } from '../WorksheetCalendarList';
-import type { Listing } from '../../../utilities/common';
-import { constructCalendarEvents } from './utils';
-import GCalIcon from '../../../images/gcal.svg';
+import { StyledBtn } from './WorksheetCalendarList';
+import type { Listing } from '../../utilities/common';
+import { constructCalendarEvents } from '../../utilities/calendar';
+import GCalIcon from '../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 const GAPI_CLIENT_NAME = 'client:auth2';
