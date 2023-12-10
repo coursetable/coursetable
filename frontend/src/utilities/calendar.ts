@@ -165,11 +165,12 @@ const onBreak = (day: moment.Moment) => {
   return false;
 };
 
-export function generateICS(listings_all: Listing[]): Promise<string> {
-  // Season to export
-  const cur_season = '202303';
-
+export function generateICS(
+  listings_all: Listing[],
+  season: string,
+): Promise<string> {
   // Fall 2023 period
+  // TODO make this based on season argument
   const period = [moment('2023-08-30T08:20'), moment('2023-12-08T17:30')];
 
   // Only get courses for the current season that have valid times
@@ -177,11 +178,10 @@ export function generateICS(listings_all: Listing[]): Promise<string> {
     (listing) =>
       listing.times_summary &&
       listing.times_summary !== 'TBA' &&
-      listing.season_code === cur_season,
+      listing.season_code === season,
   );
 
-  // Convert season code to season string
-  const season_string = toSeasonString(cur_season);
+  const season_string = toSeasonString(season);
   if (!listings.length) {
     throw new Error(
       `Worksheet for ${season_string[2]}, ${season_string[1]} has no courses with valid times.`,

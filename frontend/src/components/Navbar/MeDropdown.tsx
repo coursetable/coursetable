@@ -25,10 +25,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
-import { API_ENDPOINT } from '../../config';
-
-// Season to export classes from
-const CUR_SEASON = '202401';
+import { API_ENDPOINT, CUR_SEASON } from '../../config';
 
 type Props = {
   profile_expanded: boolean;
@@ -65,11 +62,11 @@ function MeDropdown({
     // return if worksheet isn't loaded or it isn't time to export
     if (!data || data.length === 0 || !export_ics) return;
     // Generate and download ICS file
-    generateICS(data)
+    generateICS(data, CUR_SEASON)
       .then((value) => {
         // Download to user's computer
         const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-        FileSaver.saveAs(blob, 'worksheet.ics');
+        FileSaver.saveAs(blob, `${CUR_SEASON}_worksheet.ics`);
       })
       .catch((err) => {
         toast.error(

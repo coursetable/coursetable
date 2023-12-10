@@ -79,19 +79,17 @@ function GoogleCalendarButton({
       // delete all previously added classes
       if (event_list.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        event_list.result.items.forEach(
-          async (event: globalThis.gapi.client.calendar.Event) => {
-            if (event.id.startsWith('coursetable') && event.recurringEventId) {
-              if (!deletedIds.has(event.recurringEventId)) {
-                deletedIds.add(event.recurringEventId);
-                await gapi.client.calendar.events.delete({
-                  calendarId: 'primary',
-                  eventId: event.recurringEventId,
-                });
-              }
+        event_list.result.items.forEach(async (event) => {
+          if (event.id.startsWith('coursetable') && event.recurringEventId) {
+            if (!deletedIds.has(event.recurringEventId)) {
+              deletedIds.add(event.recurringEventId);
+              await gapi.client.calendar.events.delete({
+                calendarId: 'primary',
+                eventId: event.recurringEventId,
+              });
             }
-          },
-        );
+          }
+        });
       }
     } catch (e) {
       Sentry.captureException(
