@@ -91,7 +91,9 @@ function Worksheet() {
     );
   }
   if (worksheetData === undefined) {
-    Sentry.captureException('data is undefined but worksheet is not');
+    Sentry.captureException(
+      new Error('data is undefined but worksheet is not'),
+    );
     return (
       <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
         <ErrorPage message="Internal error with course data" />

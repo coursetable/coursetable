@@ -33,7 +33,8 @@ type Store = {
   hover_course: number | null;
   worksheet_view: WorksheetView;
   worksheetLoading: boolean;
-  worksheetError: string | null;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  worksheetError: {} | null;
   worksheetData: Listing[];
   changeSeason: (season_code: Season | null) => void;
   changeWorksheet: (worksheet_number: string) => void;

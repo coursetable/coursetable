@@ -83,110 +83,113 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
 
   // Refresh user worksheet
   const userRefresh = useCallback(
-    (suppressError = false): Promise<void> => {
-      return axios
-        .get(`${API_ENDPOINT}/api/user/worksheets`, { withCredentials: true })
-        .then((res) => {
-          if (!res.data.success) {
-            throw new Error(res.data.message);
-          }
-
-          // Successfully fetched worksheet
-          setNetId(res.data.netId);
-          setHasEvals(res.data.evaluationsEnabled);
-          setYear(res.data.year);
-          setSchool(res.data.school);
-          setWorksheet(res.data.data);
-          Sentry.setUser({ username: res.data.netId });
-        })
-        .catch((err) => {
-          // Error with fetching user's worksheet
-          setNetId(undefined);
-          setWorksheet(undefined);
-          setHasEvals(undefined);
-          setYear(undefined);
-          setSchool(undefined);
-          Sentry.configureScope((scope) => scope.clear());
-          Sentry.captureException(err);
-          if (!suppressError) {
-            toast.error('Error fetching worksheet');
-          }
+    async (suppressError = false): Promise<void> => {
+      try {
+        const res = await axios.get(`${API_ENDPOINT}/api/user/worksheets`, {
+          withCredentials: true,
         });
+        if (!res.data.success) {
+          throw new Error(res.data.message);
+        }
+
+        // Successfully fetched worksheet
+        setNetId(res.data.netId);
+        setHasEvals(res.data.evaluationsEnabled);
+        setYear(res.data.year);
+        setSchool(res.data.school);
+        setWorksheet(res.data.data);
+        Sentry.setUser({ username: res.data.netId });
+      } catch (err) {
+        // Error with fetching user's worksheet
+        setNetId(undefined);
+        setWorksheet(undefined);
+        setHasEvals(undefined);
+        setYear(undefined);
+        setSchool(undefined);
+        Sentry.configureScope((scope) => scope.clear());
+        Sentry.captureException(err);
+        if (!suppressError) {
+          toast.error('Error fetching worksheet');
+        }
+      }
     },
     [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
   );
 
   // Refresh user FB stuff
   const friendRefresh = useCallback(
-    (suppressError = false): Promise<void> => {
-      return axios
-        .get(`${API_ENDPOINT}/api/friends/worksheets`, {
-          withCredentials: true,
-        })
-        .then((friends_worksheets) => {
-          if (!friends_worksheets.data.success) {
-            throw new Error(friends_worksheets.data.message);
-          }
-          // Successfully fetched friends' worksheets
-          setFbWorksheets(friends_worksheets.data);
-        })
-        .catch((err) => {
-          // Error with fetching friends' worksheets
-          if (!suppressError) {
-            Sentry.captureException(err);
-            toast.error('Error updating Facebook friends');
-          }
-          setFbWorksheets(undefined);
-        });
+    async (suppressError = false): Promise<void> => {
+      try {
+        const friends_worksheets = await axios.get(
+          `${API_ENDPOINT}/api/friends/worksheets`,
+          {
+            withCredentials: true,
+          },
+        );
+        if (!friends_worksheets.data.success) {
+          throw new Error(friends_worksheets.data.message);
+        }
+        // Successfully fetched friends' worksheets
+        setFbWorksheets(friends_worksheets.data);
+      } catch (err) {
+        // Error with fetching friends' worksheets
+        if (!suppressError) {
+          Sentry.captureException(err);
+          toast.error('Error updating Facebook friends');
+        }
+        setFbWorksheets(undefined);
+      }
     },
     [setFbWorksheets],
   );
 
   // refresh friend requests
   const friendReqRefresh = useCallback(
-    (suppressError = false): Promise<void> => {
-      return axios
-        .get(`${API_ENDPOINT}/api/friends/getRequests`, {
-          withCredentials: true,
-        })
-        .then((friendReqs) => {
-          if (!friendReqs.data.success) {
-            throw new Error(friendReqs.data.message);
-          }
-          // Successfully fetched friends' worksheets
-          setFriendRequests(friendReqs.data.friends);
-        })
-        .catch((err) => {
-          // Error with fetching friends' worksheets
-          if (!suppressError) {
-            Sentry.captureException(err);
-            toast.error('Error getting friend requests');
-          }
-          setFriendRequests(undefined);
-        });
+    async (suppressError = false): Promise<void> => {
+      try {
+        const friendReqs = await axios.get(
+          `${API_ENDPOINT}/api/friends/getRequests`,
+          {
+            withCredentials: true,
+          },
+        );
+        if (!friendReqs.data.success) {
+          throw new Error(friendReqs.data.message);
+        }
+        // Successfully fetched friends' worksheets
+        setFriendRequests(friendReqs.data.friends);
+      } catch (err) {
+        // Error with fetching friends' worksheets
+        if (!suppressError) {
+          Sentry.captureException(err);
+          toast.error('Error getting friend requests');
+        }
+        setFriendRequests(undefined);
+      }
     },
     [setFriendRequests],
   );
 
-  const getAllNames = useCallback((suppressError = false): Promise<void> => {
-    return axios
-      .get(`${API_ENDPOINT}/api/friends/names`, {
-        withCredentials: true,
-      })
-      .then((names) => {
+  const getAllNames = useCallback(
+    async (suppressError = false): Promise<void> => {
+      try {
+        const names = await axios.get(`${API_ENDPOINT}/api/friends/names`, {
+          withCredentials: true,
+        });
         if (!names.data.success) {
           throw new Error(names.data.message);
         }
         setAllNames(names.data.names);
-      })
-      .catch((err) => {
+      } catch (err) {
         if (!suppressError) {
           Sentry.captureException(err);
           toast.error('Error getting friend requests');
         }
         setAllNames(undefined);
-      });
-  }, []);
+      }
+    },
+    [],
+  );
 
   // Add Friend
   const addFriend = useCallback((netId1 = '', netId2 = ''): Promise<void> => {

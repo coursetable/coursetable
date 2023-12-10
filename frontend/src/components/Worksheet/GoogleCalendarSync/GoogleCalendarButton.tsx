@@ -55,7 +55,7 @@ function GoogleCalendarButton({
 
   const syncEvents = useCallback(async () => {
     if (!gapi) {
-      Sentry.captureException('gapi not loaded');
+      Sentry.captureException(new Error('gapi not loaded'));
       return;
     }
     setLoading(true);
@@ -94,8 +94,9 @@ function GoogleCalendarButton({
         );
       }
     } catch (e) {
-      Sentry.captureException('[GCAL]: Error syncing user events: ' + e);
-      console.error(e);
+      Sentry.captureException(
+        new Error('[GCAL]: Error syncing user events: ', { cause: e }),
+      );
       toast.error('Error exporting Google Calendar Events');
       setLoading(false);
       return;
@@ -109,7 +110,9 @@ function GoogleCalendarButton({
           });
         } catch (e) {
           Sentry.captureException(
-            '[GCAL]: Error adding events to user calendar: ' + event,
+            new Error('[GCAL]: Error adding events to user calendar: ', {
+              cause: e,
+            }),
           );
         }
       }),
@@ -140,8 +143,9 @@ function GoogleCalendarButton({
         },
         (error) => {
           Sentry.captureException(
-            '[GCAL]: Error signing in to Google Calendar: ' +
-              JSON.stringify(error),
+            new Error('[GCAL]: Error signing in to Google Calendar: ', {
+              cause: error,
+            }),
           );
           toast.error('Error signing in to Google Calendar');
         },
