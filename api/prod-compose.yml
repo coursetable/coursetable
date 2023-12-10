@@ -31,14 +31,6 @@ services:
       - ferry_default
       - default
 
-  legacy:
-    restart: always
-    labels:
-      traefik.enable: true
-      traefik.http.routers.coursetable-legacy.rule: Host(`legacy.coursetable.com`)
-      traefik.http.routers.coursetable-legacy.tls: true
-      traefik.http.routers.coursetable-legacy.tls.certResolver: ctresolver
-
 networks:
   traefik:
     external: true

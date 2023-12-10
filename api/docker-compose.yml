@@ -42,10 +42,3 @@ services:
       interval: 0.5s
       timeout: 10s
       retries: 60
-
-  legacy:
-    container_name: legacy
-    build: ./legacy
-    image: coursetable/legacy:latest
-    ports:
-      - '8075:80'
