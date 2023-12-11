@@ -84,7 +84,8 @@ const addToCache = (season: Season): Promise<void> => {
 type Store = {
   requests: number;
   loading: boolean;
-  error: string | null;
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  error: {} | null;
   seasons: typeof seasons;
   courses: typeof courseData;
   requestSeasons(seasons: Season[]): void;
@@ -97,7 +98,8 @@ export function FerryProvider({ children }: { children: React.ReactNode }) {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
-  const [errors, setErrors] = useState<string[]>([]);
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  const [errors, setErrors] = useState<{}[]>([]);
 
   const requestSeasons = useCallback((seasons: Season[]) => {
     const fetches = seasons.map(async (season) => {

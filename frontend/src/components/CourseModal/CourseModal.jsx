@@ -82,6 +82,7 @@ function CourseModal() {
         onClick={copyToClipboard}
         size={25}
         color="#007bff"
+        style={{ cursor: 'pointer' }}
       />
     );
   };

@@ -8,12 +8,15 @@ import {
   FcPuzzle,
 } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
+import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
+import FileSaver from 'file-saver';
 
 import styles from './MeDropdown.module.css';
-import { generateICS } from './generateICS';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
 import { logout, scrollToTop } from '../../utilities';
+import { generateICS } from '../../utilities/calendar';
 import {
   SurfaceComponent,
   TextComponent,
@@ -22,10 +25,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
-import { API_ENDPOINT } from '../../config';
-
-// Season to export classes from
-const CUR_SEASON = '202401';
+import { API_ENDPOINT, CUR_SEASON } from '../../config';
 
 type Props = {
   profile_expanded: boolean;
@@ -62,9 +62,22 @@ function MeDropdown({
     // return if worksheet isn't loaded or it isn't time to export
     if (!data || data.length === 0 || !export_ics) return;
     // Generate and download ICS file
-    generateICS(data);
-    // Reset export_ics state on completion
-    setExport(false);
+    generateICS(data, CUR_SEASON)
+      .then((value) => {
+        // Download to user's computer
+        const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
+        FileSaver.saveAs(blob, `${CUR_SEASON}_worksheet.ics`);
+      })
+      .catch((err) => {
+        toast.error(
+          'Error exporting worksheet: ' + (err.message ?? '<unknown>'),
+        );
+        Sentry.captureException(err);
+      })
+      .finally(() => {
+        // Reset export_ics state on completion
+        setExport(false);
+      });
   }, [data, export_ics]);
 
   return (

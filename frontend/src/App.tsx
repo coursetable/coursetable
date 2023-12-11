@@ -3,7 +3,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-//import Notice from './components/Notice';
+// import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
@@ -32,9 +32,8 @@ const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
 /**
  * Render navbar and the corresponding page component for the route the user is on
- * @prop themeToggler - function | to toggle light/dark mode. Passed on to navbar and darkmodebutton
  */
-function App({ themeToggler }: { themeToggler: () => void }) {
+function App() {
   const location = useLocation();
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
@@ -106,11 +105,7 @@ function App({ themeToggler }: { themeToggler: () => void }) {
       {/* notice bar*/}
       {/*<Notice >
     </Notice>*/}
-      <Navbar
-        isLoggedIn={isLoggedIn}
-        themeToggler={themeToggler}
-        setIsTutorialOpen={setIsTutorialOpen}
-      />
+      <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
         {/* Home Page */}
         <Route
