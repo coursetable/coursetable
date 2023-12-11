@@ -9,7 +9,6 @@ const root = createRoot(domNode);
 
 root.render(
   <Globals>
-    {/* @ts-expect-error TODO: themeToggler should not be a prop; it should be a context */}
     <App />
   </Globals>,
 );

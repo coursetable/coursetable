@@ -2,7 +2,7 @@ import 'react-app-polyfill/stable';
 import 'core-js/features/promise/all-settled';
 import 'core-js/es/promise/all-settled';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   BrowserRouter,
   useLocation,
@@ -10,7 +10,7 @@ import {
   createRoutesFromChildren,
   matchRoutes,
 } from 'react-router-dom';
-import { ThemeProvider, createGlobalStyle } from 'styled-components';
+import { createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import {
   InMemoryCache,
@@ -29,12 +29,12 @@ import { FerryProvider } from './contexts/ferryContext';
 import { UserProvider } from './contexts/userContext';
 import { SearchProvider } from './contexts/searchContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
+import { ThemeProvider } from './contexts/themeContext';
 
 import { isDev, API_ENDPOINT } from './config';
 
 import './index.css';
 
-import { lightTheme, darkTheme } from './components/Themes';
 import ErrorPage from './components/ErrorPage';
 import { Row } from 'react-bootstrap';
 
@@ -110,26 +110,7 @@ const GlobalStyles = createGlobalStyle`
   }
   `;
 
-type Theme = 'light' | 'dark';
-
 function Globals({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>('light');
-
-  const setMode = (mode: Theme) => {
-    window.localStorage.setItem('theme', mode);
-    setTheme(mode);
-  };
-
-  const themeToggler = () => {
-    if (theme === 'light') setMode('dark');
-    else setMode('light');
-  };
-
-  useEffect(() => {
-    const localTheme = window.localStorage.getItem('theme') as Theme;
-    if (localTheme) setTheme(localTheme);
-  }, []);
-  const themeMode = theme === 'light' ? lightTheme : darkTheme;
   return (
     <CustomErrorBoundary>
       {/* TODO: re-enable StrictMode later */}
@@ -141,28 +122,14 @@ function Globals({ children }: { children: React.ReactNode }) {
             <WindowDimensionsProvider>
               <SearchProvider>
                 <WorksheetProvider>
-                  <BrowserRouter>
-                    <ThemeProvider theme={themeMode}>
+                  <ThemeProvider>
+                    <BrowserRouter>
                       <GlobalStyles />
                       <div id="base" style={{ height: 'auto' }}>
-                        {/* Clone child and give it the themeToggler prop */}
-                        {children &&
-                          React.Children.map(
-                            children as React.ReactElement<{
-                              themeToggler: string | (() => void);
-                            }>,
-                            (child) => {
-                              if (React.isValidElement(child)) {
-                                return React.cloneElement(child, {
-                                  themeToggler,
-                                });
-                              }
-                              return child;
-                            },
-                          )}
+                        {children}
                       </div>
-                    </ThemeProvider>
-                  </BrowserRouter>
+                    </BrowserRouter>
+                  </ThemeProvider>
                 </WorksheetProvider>
               </SearchProvider>
               {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
