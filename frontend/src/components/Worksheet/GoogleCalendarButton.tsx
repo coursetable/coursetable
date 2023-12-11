@@ -3,10 +3,10 @@ import { loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
 import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { StyledBtn } from '../WorksheetCalendarList';
-import type { Listing } from '../../../utilities/common';
-import { constructCalendarEvents } from './utils';
-import GCalIcon from '../../../images/gcal.svg';
+import { StyledBtn } from './WorksheetCalendarList';
+import type { Listing } from '../../utilities/common';
+import { constructCalendarEvents } from '../../utilities/calendar';
+import GCalIcon from '../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 const GAPI_CLIENT_NAME = 'client:auth2';
@@ -79,19 +79,17 @@ function GoogleCalendarButton({
       // delete all previously added classes
       if (event_list.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        event_list.result.items.forEach(
-          async (event: globalThis.gapi.client.calendar.Event) => {
-            if (event.id.startsWith('coursetable') && event.recurringEventId) {
-              if (!deletedIds.has(event.recurringEventId)) {
-                deletedIds.add(event.recurringEventId);
-                await gapi.client.calendar.events.delete({
-                  calendarId: 'primary',
-                  eventId: event.recurringEventId,
-                });
-              }
+        event_list.result.items.forEach(async (event) => {
+          if (event.id.startsWith('coursetable') && event.recurringEventId) {
+            if (!deletedIds.has(event.recurringEventId)) {
+              deletedIds.add(event.recurringEventId);
+              await gapi.client.calendar.events.delete({
+                calendarId: 'primary',
+                eventId: event.recurringEventId,
+              });
             }
-          },
-        );
+          }
+        });
       }
     } catch (e) {
       Sentry.captureException(

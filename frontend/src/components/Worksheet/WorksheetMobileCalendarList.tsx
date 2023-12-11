@@ -7,7 +7,7 @@ import WorksheetStats from './WorksheetStats';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
-import GoogleCalendarButton from './GoogleCalendarSync/GoogleCalendarButton';
+import GoogleCalendarButton from './GoogleCalendarButton';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`

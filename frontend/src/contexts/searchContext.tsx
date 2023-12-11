@@ -36,6 +36,7 @@ import {
   toRangeTime,
   toSeasonString,
 } from '../utilities/courseUtilities';
+import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
 
 // Option type for all the filter options
@@ -147,15 +148,13 @@ SearchContext.displayName = 'SearchContext';
 // } else {
 //   season = 1;
 // }
-// UPDATE THIS MANUALLY
-const def_season_code = '202401';
 
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
 const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
-  { value: def_season_code, label: toSeasonString(def_season_code)[0] },
+  { value: CUR_SEASON, label: toSeasonString(CUR_SEASON)[0] },
 ];
 const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;
