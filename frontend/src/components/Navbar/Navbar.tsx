@@ -21,6 +21,7 @@ import { NavbarCatalogSearch } from './NavbarCatalogSearch';
 import { DateTime, Duration } from 'luxon';
 
 import { API_ENDPOINT } from '../../config';
+import { useTheme } from '../../contexts/themeContext';
 import { NavbarWorksheetSearch } from './NavbarWorksheetSearch';
 
 // Profile icon
@@ -94,7 +95,6 @@ const NavLogo = styled(Nav)`
 
 type Props = {
   isLoggedIn: boolean;
-  themeToggler: () => void;
   setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
@@ -119,14 +119,9 @@ function NavCollapseWrapper({
 /**
  * Renders the navbar
  * @prop isLoggedIn - is user logged in?
- * @prop themeToggler - which toggles between light and dark mode
  * @prop setIsTutorialOpen - opens tutorial
  */
-function CourseTableNavbar({
-  isLoggedIn,
-  themeToggler,
-  setIsTutorialOpen,
-}: Props) {
+function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const location = useLocation();
   // Is navbar expanded in mobile view?
   const [nav_expanded, setExpand] = useState<boolean>(false);
@@ -139,6 +134,8 @@ function CourseTableNavbar({
 
   // Last updated state
   const [lastUpdated, setLastUpdated] = useState('0 hrs');
+
+  const { toggleTheme } = useTheme();
 
   // Fetch current device
   const { isMobile, isLgDesktop } = useWindowDimensions();
@@ -261,7 +258,7 @@ function CourseTableNavbar({
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
                       !isMobile ? 'ml-auto' : ''
                     }`}
-                    onClick={themeToggler}
+                    onClick={toggleTheme}
                   >
                     <DarkModeButton />
                   </div>
