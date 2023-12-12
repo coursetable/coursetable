@@ -17,7 +17,8 @@ export type SimpleDate = [year: number, month: number, day: number];
 
 export type SeasonCalendar = {
   /**
-   * The first day of class.
+   * The first day of class. Note that for spring term this will be MLK day
+   * which is also a holiday, but semester starts on Monday always.
    */
   start: SimpleDate;
   /**
@@ -37,8 +38,48 @@ export type SeasonCalendar = {
   transfers: { date: SimpleDate; day: number }[];
 };
 
-// TODO: move to api?
+// TODO: instead of hardcoding every year, we should compute this, because
+// each time point is always the same day of the week.
 export const academicCalendars: { [season: string]: SeasonCalendar } = {
+  202203: {
+    start: [2022, 8, 31],
+    end: [2022, 12, 9],
+    breaks: [
+      {
+        name: 'Labor Day',
+        start: [2022, 9, 5],
+        end: [2022, 9, 6],
+      },
+      {
+        name: 'October recess',
+        start: [2022, 10, 19],
+        end: [2022, 10, 24],
+      },
+      {
+        name: 'November recess',
+        start: [2022, 11, 19],
+        end: [2022, 11, 28],
+      },
+    ],
+    transfers: [{ date: [2022, 9, 2], day: 1 }],
+  },
+  202301: {
+    start: [2023, 1, 16],
+    end: [2023, 4, 28],
+    breaks: [
+      {
+        name: 'Martin Luther King Jr. Day',
+        start: [2023, 1, 16],
+        end: [2023, 1, 17],
+      },
+      {
+        name: 'Spring recess',
+        start: [2023, 3, 11],
+        end: [2023, 3, 27],
+      },
+    ],
+    transfers: [{ date: [2023, 1, 20], day: 1 }],
+  },
   202303: {
     start: [2023, 8, 30],
     end: [2023, 12, 8],
