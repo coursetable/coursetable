@@ -26,7 +26,7 @@ function SeasonDropdown() {
         color: season === cur_season ? 'white' : 'black',
       }}
     >
-      <div className="mx-auto">{toSeasonString(season)[0]}</div>
+      <div className="mx-auto">{toSeasonString(season)}</div>
     </Dropdown.Item>
   ));
 
@@ -34,7 +34,7 @@ function SeasonDropdown() {
     <div className="container p-0 m-0">
       <DropdownButton
         variant="dark"
-        title={toSeasonString(cur_season)[0]}
+        title={toSeasonString(cur_season)}
         onSelect={changeSeason}
       >
         {seasons_html}

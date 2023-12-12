@@ -13,7 +13,7 @@ import FileSaver from 'file-saver';
 import styles from './MeDropdown.module.css';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { logout, scrollToTop } from '../../utilities';
-import { useCalendarEvents } from '../../utilities/calendar';
+import { getCalendarEvents } from '../../utilities/calendar';
 import {
   SurfaceComponent,
   TextComponent,
@@ -46,12 +46,15 @@ function MeDropdown({
 }: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
-  const { cur_season } = useWorksheet();
-
-  const getEvents = useCalendarEvents('ics');
+  const { cur_season, hidden_courses, courses } = useWorksheet();
 
   const exportICS = () => {
-    const events = getEvents();
+    const events = getCalendarEvents(
+      'ics',
+      courses,
+      cur_season,
+      hidden_courses,
+    );
     // Error already reported
     if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR

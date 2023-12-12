@@ -5,7 +5,7 @@ import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { StyledBtn } from './WorksheetCalendarList';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { useCalendarEvents } from '../../utilities/calendar';
+import { getCalendarEvents } from '../../utilities/calendar';
 import GCalIcon from '../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
@@ -17,8 +17,7 @@ function GoogleCalendarButton(): JSX.Element {
     useState<gapi.auth2.GoogleAuthBase | null>(null);
   const [user, setUser] = useState<gapi.auth2.GoogleUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const { cur_season } = useWorksheet();
-  const getEvents = useCalendarEvents('gcal');
+  const { cur_season, hidden_courses, courses } = useWorksheet();
 
   // Load gapi client after gapi script loaded
   const loadGapiClient = (gapiInstance: typeof globalThis.gapi) => {
@@ -89,7 +88,12 @@ function GoogleCalendarButton(): JSX.Element {
         });
         await Promise.all(promises);
       }
-      const events = getEvents();
+      const events = getCalendarEvents(
+        'gcal',
+        courses,
+        cur_season,
+        hidden_courses,
+      );
       // Error already reported
       if (events.length === 0) return;
 
@@ -117,7 +121,7 @@ function GoogleCalendarButton(): JSX.Element {
     } finally {
       setLoading(false);
     }
-  }, [getEvents, gapi, cur_season]);
+  }, [courses, gapi, cur_season, hidden_courses]);
 
   useEffect(() => {
     if (!authInstance) {

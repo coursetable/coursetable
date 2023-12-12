@@ -16,8 +16,7 @@ function NoCourses() {
           src={NoCoursesFound}
           style={{ width: '50%' }}
         />
-        <h3>No courses found for</h3>
-        <h3>{toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}</h3>
+        <h3>No courses found for {toSeasonString(cur_season)}</h3>
         <div>
           Add some courses on the <Link to="/catalog">Catalog</Link>.
         </div>

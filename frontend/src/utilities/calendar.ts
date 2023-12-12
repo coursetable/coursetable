@@ -1,14 +1,13 @@
-import { useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
-import { weekdays, type Listing } from './common';
+import { weekdays, type Listing, type Season } from './common';
 import { toSeasonString } from './courseUtilities';
 import {
   academicCalendars,
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
-import { useWorksheet } from '../contexts/worksheetContext';
+import type { HiddenCourses } from '../contexts/worksheetContext';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -165,59 +164,67 @@ TRANSP:OPAQUE
 END:VEVENT`;
 }
 
-export function useCalendarEvents(
+export function getCalendarEvents(
   type: 'gcal',
-): () => ReturnType<typeof toGCalEvent>[];
-export function useCalendarEvents(
+  courses: Listing[],
+  cur_season: Season,
+  hidden_courses: HiddenCourses,
+): ReturnType<typeof toGCalEvent>[];
+export function getCalendarEvents(
   type: 'ics',
-): () => ReturnType<typeof toICSEvent>[];
-export function useCalendarEvents(type: 'gcal' | 'ics') {
-  const { courses, cur_season, hidden_courses } = useWorksheet();
-  return useCallback(() => {
-    const seasonString = toSeasonString(cur_season);
-    if (!academicCalendars[cur_season]) {
-      toast.error(
-        `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
-      );
-      return [];
-    }
-    const visibleCourses = courses.filter(
-      (course) =>
-        !hidden_courses[cur_season] ||
-        !(course.crn in hidden_courses[cur_season]) ||
-        !hidden_courses[cur_season][course.crn],
+  courses: Listing[],
+  cur_season: Season,
+  hidden_courses: HiddenCourses,
+): ReturnType<typeof toICSEvent>[];
+export function getCalendarEvents(
+  type: 'gcal' | 'ics',
+  courses: Listing[],
+  cur_season: Season,
+  hidden_courses: HiddenCourses,
+) {
+  const seasonString = toSeasonString(cur_season);
+  if (!academicCalendars[cur_season]) {
+    toast.error(
+      `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
     );
-    if (visibleCourses.length === 0) {
-      toast.error(`No courses in ${seasonString} to export!`);
-      return [];
-    }
-    const events = visibleCourses.flatMap((c, colorIndex) => {
-      const semester = academicCalendars[c.season_code]!;
-      const endRepeat = isoString(semester.end, '23:59').replace(/[:-]/g, '');
-      const toEvent = type === 'gcal' ? toGCalEvent : toICSEvent;
-      const times = getTimes(c.times_by_day);
-      return times.map(({ days, startTime, endTime, location }) => {
-        const firstMeetingDay = firstDaySince(semester.start, days);
-        const byDay = days.map((day) => dayToCode[day]).join(',');
-        const exDate = datesInBreak(semester.breaks, days, startTime)
-          .map((s) => s.replace(/[:-]/g, ''))
-          .join(',');
+    return [];
+  }
+  const visibleCourses = courses.filter(
+    (course) =>
+      !hidden_courses[cur_season] ||
+      !(course.crn in hidden_courses[cur_season]) ||
+      !hidden_courses[cur_season][course.crn],
+  );
+  if (visibleCourses.length === 0) {
+    toast.error(`No courses in ${seasonString} to export!`);
+    return [];
+  }
+  const events = visibleCourses.flatMap((c, colorIndex) => {
+    const semester = academicCalendars[c.season_code]!;
+    const endRepeat = isoString(semester.end, '23:59').replace(/[:-]/g, '');
+    const toEvent = type === 'gcal' ? toGCalEvent : toICSEvent;
+    const times = getTimes(c.times_by_day);
+    return times.map(({ days, startTime, endTime, location }) => {
+      const firstMeetingDay = firstDaySince(semester.start, days);
+      const byDay = days.map((day) => dayToCode[day]).join(',');
+      const exDate = datesInBreak(semester.breaks, days, startTime)
+        .map((s) => s.replace(/[:-]/g, ''))
+        .join(',');
 
-        // TODO: take care of transfer schedules (see semester.transfer)
-        return toEvent({
-          summary: c.course_code,
-          start: isoString(firstMeetingDay, startTime),
-          end: isoString(firstMeetingDay, endTime),
-          recurrence: [
-            `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
-            `EXDATE;TZID=America/New_York:${exDate}`,
-          ],
-          description: c.title,
-          location,
-          colorIndex,
-        });
+      // TODO: take care of transfer schedules (see semester.transfer)
+      return toEvent({
+        summary: c.course_code,
+        start: isoString(firstMeetingDay, startTime),
+        end: isoString(firstMeetingDay, endTime),
+        recurrence: [
+          `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
+          `EXDATE;TZID=America/New_York:${exDate}`,
+        ],
+        description: c.title,
+        location,
+        colorIndex,
       });
     });
-    return events;
-  }, [courses, cur_season, hidden_courses, type]);
+  });
+  return events;
 }
