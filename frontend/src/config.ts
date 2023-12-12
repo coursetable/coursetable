@@ -8,6 +8,7 @@ export const GRAPHQL_API_ENDPOINT = isDev
   ? 'https://localhost:8085'
   : import.meta.env.VITE_API_ENDPOINT + '/ferry';
 
+// Used for which season to show by default in catalog
 export const CUR_SEASON = '202401';
 
 // We use this format to avoid dealing with time zones.
@@ -36,6 +37,7 @@ export type SeasonCalendar = {
   transfers: { date: SimpleDate; day: number }[];
 };
 
+// TODO: move to api?
 export const academicCalendars: { [season: string]: SeasonCalendar } = {
   202303: {
     start: [2023, 8, 30],
