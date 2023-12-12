@@ -28,22 +28,26 @@ function isoString(date: Date | SimpleDate, time?: string) {
 }
 
 /**
- * For example, it finds the first Tuesday after the semester starts, for
- * example. If semester also starts on Tuesday, it returns the same Tuesday.
+ * For example, it finds the first Tuesday/Thursday after the semester starts,
+ * whichever is earlier. If semester also starts on Tuesday, it returns the
+ * same Tuesday.
  *
  * @param reference A day that is less than a week ago away from the date in
  * question.
- * @param day Day of the week, 1–5.
- * @param time Time of the day, in the format HH:mm.
- * @returns The date in question, formatted with `isoString`.
+ * @param days Day of the week, 1–5. Will return the day in the list that leads
+ * to the earliest date.
+ * @returns The date in question.
  */
-function firstDaySince(reference: SimpleDate, day: number, time: string) {
+function firstDaySince(reference: SimpleDate, days: number[]) {
   const referenceDate = new Date(
     Date.UTC(reference[0], reference[1] - 1, reference[2]),
   );
-  const offset = (((day - referenceDate.getUTCDay()) % 7) + 7) % 7; // positive remainder (0–6)
+  const offsets = days.map(
+    (day) => (((day - referenceDate.getUTCDay()) % 7) + 7) % 7, // Positive offset (0–6)
+  );
+  const offset = Math.min(...offsets);
   referenceDate.setUTCDate(referenceDate.getUTCDate() + offset);
-  return isoString(referenceDate, time);
+  return referenceDate;
 }
 
 function getTimes(times_by_day: Listing['times_by_day']) {
@@ -183,9 +187,7 @@ export function constructCalendarEvents(
   const toEvent = type === 'gcal' ? toGCalEvent : toICSEvent;
   const times = getTimes(course.times_by_day);
   return times.map(({ days, startTime, endTime, location }) => {
-    const firstMeetingStart = firstDaySince(semester.start, days[0], startTime);
-    console.log(semester.start, days[0], firstMeetingStart);
-    const firstMeetingEnd = firstDaySince(semester.start, days[0], endTime);
+    const firstMeetingDay = firstDaySince(semester.start, days);
     const byDay = days.map((day) => dayToCode[day]).join(',');
     const exDate = datesInBreak(semester.breaks, days, startTime)
       .map((s) => s.replace(/[:-]/g, ''))
@@ -194,8 +196,8 @@ export function constructCalendarEvents(
     // TODO: take care of transfer schedules (see semester.transfer)
     return toEvent({
       summary: course.course_code,
-      start: firstMeetingStart,
-      end: firstMeetingEnd,
+      start: isoString(firstMeetingDay, startTime),
+      end: isoString(firstMeetingDay, endTime),
       recurrence: [
         `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
         `EXDATE;TZID=America/New_York:${exDate}`,
