@@ -115,7 +115,7 @@ type CalendarEvent = {
   recurrence: string[];
   description: string;
   location: string;
-  colorIndex?: number;
+  colorIndex: number;
 };
 
 function toGCalEvent({
@@ -139,7 +139,7 @@ function toGCalEvent({
       timeZone: 'America/New_York',
     },
     recurrence,
-    colorId: (colorIndex! + 1).toString(),
+    colorId: (colorIndex + 1).toString(),
     description,
     location,
   };
