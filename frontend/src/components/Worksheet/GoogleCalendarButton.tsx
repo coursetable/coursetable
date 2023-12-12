@@ -4,8 +4,10 @@ import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { StyledBtn } from './WorksheetCalendarList';
+import { academicCalendars } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { getCalendarEvents } from '../../utilities/calendar';
+import { toSeasonString } from '../../utilities/courseUtilities';
 import GCalIcon from '../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
@@ -53,20 +55,28 @@ function GoogleCalendarButton(): JSX.Element {
       Sentry.captureException(new Error('gapi not loaded'));
       return;
     }
+    const seasonString = toSeasonString(cur_season);
+    const semester = academicCalendars[cur_season];
+    if (!semester) {
+      toast.error(
+        `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
+      );
+      return;
+    }
     setLoading(true);
 
     try {
       // get all previously added classes
       const event_list = await gapi.client.calendar.events.list({
         calendarId: 'primary',
-        timeMin:
-          cur_season === '202303'
-            ? new Date('2023-08-30').toISOString()
-            : new Date('2024-01-16').toISOString(),
-        timeMax:
-          cur_season === '202303'
-            ? new Date('2023-09-06').toISOString()
-            : new Date('2024-01-23').toISOString(),
+        // TODO: this is UTC date, which shouldn't matter, but we want
+        // America/New_York. This is easily fixable once we use Temporal
+        timeMin: new Date(
+          Date.UTC(semester.start[0], semester.start[1] - 1, semester.start[2]),
+        ).toISOString(),
+        timeMax: new Date(
+          Date.UTC(semester.end[0], semester.end[1] - 1, semester.end[2]),
+        ).toISOString(),
         singleEvents: true,
         orderBy: 'startTime',
       });
@@ -94,9 +104,6 @@ function GoogleCalendarButton(): JSX.Element {
         cur_season,
         hidden_courses,
       );
-      // Error already reported
-      if (events.length === 0) return;
-
       const promises = events.map(async (event) => {
         try {
           await gapi.client.calendar.events.insert({
