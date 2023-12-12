@@ -79,46 +79,49 @@ function GoogleCalendarButton({
       // delete all previously added classes
       if (event_list.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        event_list.result.items.forEach(async (event) => {
+        const promises = event_list.result.items.map((event) => {
           if (event.id.startsWith('coursetable') && event.recurringEventId) {
             if (!deletedIds.has(event.recurringEventId)) {
               deletedIds.add(event.recurringEventId);
-              await gapi.client.calendar.events.delete({
+              return gapi.client.calendar.events.delete({
                 calendarId: 'primary',
                 eventId: event.recurringEventId,
               });
             }
           }
+          return undefined;
         });
+        await Promise.all(promises);
       }
+
+      const promises = courses.flatMap((course, colorIndex) =>
+        constructCalendarEvents(course, 'gcal', colorIndex).map(
+          async (event) => {
+            try {
+              await gapi.client.calendar.events.insert({
+                calendarId: 'primary',
+                resource: event,
+              });
+            } catch (e) {
+              Sentry.captureException(
+                new Error('[GCAL]: Error adding events to user calendar: ', {
+                  cause: e,
+                }),
+              );
+            }
+          },
+        ),
+      );
+      await Promise.all(promises);
+      toast.success('Exported to Google Calendar!');
     } catch (e) {
       Sentry.captureException(
-        new Error('[GCAL]: Error syncing user events: ', { cause: e }),
+        new Error('[GCAL]: Error syncing user events', { cause: e }),
       );
       toast.error('Error exporting Google Calendar Events');
+    } finally {
       setLoading(false);
-      return;
     }
-    const promises = courses.flatMap((course, colorIndex) =>
-      constructCalendarEvents(course, colorIndex).map(async (event) => {
-        try {
-          await gapi.client.calendar.events.insert({
-            calendarId: 'primary',
-            resource: event,
-          });
-        } catch (e) {
-          Sentry.captureException(
-            new Error('[GCAL]: Error adding events to user calendar: ', {
-              cause: e,
-            }),
-          );
-        }
-      }),
-    );
-    await Promise.all(promises);
-
-    setLoading(false);
-    toast.success('Exporting to Google Calendar!');
   }, [courses, gapi, season_code]);
 
   useEffect(() => {

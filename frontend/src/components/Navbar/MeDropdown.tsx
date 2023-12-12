@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import {
   FcCalendar,
@@ -9,14 +9,13 @@ import {
 } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import * as Sentry from '@sentry/react';
 import FileSaver from 'file-saver';
 
 import styles from './MeDropdown.module.css';
-import { useUser } from '../../contexts/userContext';
-import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
+import { useWorksheet } from '../../contexts/worksheetContext';
 import { logout, scrollToTop } from '../../utilities';
-import { generateICS } from '../../utilities/calendar';
+import { constructCalendarEvents } from '../../utilities/calendar';
+import { toSeasonString } from '../../utilities/courseUtilities';
 import {
   SurfaceComponent,
   TextComponent,
@@ -25,7 +24,7 @@ import {
 import { NavLink } from 'react-router-dom';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
-import { API_ENDPOINT, CUR_SEASON } from '../../config';
+import { API_ENDPOINT } from '../../config';
 
 type Props = {
   profile_expanded: boolean;
@@ -50,35 +49,49 @@ function MeDropdown({
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
 
-  // Get user context data
-  const { user } = useUser();
+  const { courses, cur_season, hidden_courses } = useWorksheet();
 
-  // Are we exporting the user's worksheet?
-  const [export_ics, setExport] = useState(false);
-  const { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
-
-  // Called when worksheet updates or export_ics changes
-  useEffect(() => {
-    // return if worksheet isn't loaded or it isn't time to export
-    if (!data || data.length === 0 || !export_ics) return;
-    // Generate and download ICS file
-    generateICS(data, CUR_SEASON)
-      .then((value) => {
-        // Download to user's computer
-        const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-        FileSaver.saveAs(blob, `${CUR_SEASON}_worksheet.ics`);
-      })
-      .catch((err) => {
-        toast.error(
-          'Error exporting worksheet: ' + (err.message ?? '<unknown>'),
-        );
-        Sentry.captureException(err);
-      })
-      .finally(() => {
-        // Reset export_ics state on completion
-        setExport(false);
-      });
-  }, [data, export_ics]);
+  const exportICS = () => {
+    const visibleCourses = courses.filter(
+      (course) =>
+        !hidden_courses[cur_season] ||
+        !(course.crn in hidden_courses[cur_season]) ||
+        !hidden_courses[cur_season][course.crn],
+    );
+    if (visibleCourses.length === 0) {
+      const seasonString = toSeasonString(cur_season);
+      toast.error(`No courses in ${seasonString} to export!`);
+      return;
+    }
+    const events = visibleCourses.flatMap((c) =>
+      constructCalendarEvents(c, 'ics'),
+    );
+    const value = `BEGIN:VCALENDAR
+CALSCALE:GREGORIAN
+VERSION:2.0
+BEGIN:VTIMEZONE
+TZID:America/New_York
+BEGIN:DAYLIGHT
+DTSTART:20070311T020000
+RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
+TZNAME:EDT
+TZOFFSETFROM:-0500
+TZOFFSETTO:-0400
+END:DAYLIGHT
+BEGIN:STANDARD
+DTSTART:20071104T020000
+RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
+TZNAME:EST
+TZOFFSETFROM:-0400
+TZOFFSETTO:-0500
+END:STANDARD
+END:VTIMEZONE
+${events.join('\n')}
+END:VCALENDAR`;
+    // Download to user's computer
+    const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
+    FileSaver.saveAs(blob, `${cur_season}_worksheet.ics`);
+  };
 
   return (
     <SurfaceComponent
@@ -178,10 +191,7 @@ function MeDropdown({
                 <FcCalendar className="mr-2 my-auto" size={20} />
                 <TextComponent
                   type={1}
-                  onClick={() => {
-                    // Start export process
-                    setExport(true);
-                  }}
+                  onClick={exportICS}
                   className={styles.collapse_text}
                 >
                   <StyledHoverText>Export Worksheet</StyledHoverText>
