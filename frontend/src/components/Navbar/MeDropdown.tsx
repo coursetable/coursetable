@@ -8,14 +8,12 @@ import {
   FcPuzzle,
 } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import { toast } from 'react-toastify';
 import FileSaver from 'file-saver';
 
 import styles from './MeDropdown.module.css';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { logout, scrollToTop } from '../../utilities';
-import { constructCalendarEvents } from '../../utilities/calendar';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { useCalendarEvents } from '../../utilities/calendar';
 import {
   SurfaceComponent,
   TextComponent,
@@ -48,24 +46,14 @@ function MeDropdown({
 }: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
+  const { cur_season } = useWorksheet();
 
-  const { courses, cur_season, hidden_courses } = useWorksheet();
+  const getEvents = useCalendarEvents('ics');
 
   const exportICS = () => {
-    const visibleCourses = courses.filter(
-      (course) =>
-        !hidden_courses[cur_season] ||
-        !(course.crn in hidden_courses[cur_season]) ||
-        !hidden_courses[cur_season][course.crn],
-    );
-    if (visibleCourses.length === 0) {
-      const seasonString = toSeasonString(cur_season);
-      toast.error(`No courses in ${seasonString} to export!`);
-      return;
-    }
-    const events = visibleCourses.flatMap((c) =>
-      constructCalendarEvents(c, 'ics'),
-    );
+    const events = getEvents();
+    // Error already reported
+    if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR
 CALSCALE:GREGORIAN
 VERSION:2.0

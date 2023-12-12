@@ -1,3 +1,4 @@
+import { useCallback } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { weekdays, type Listing } from './common';
@@ -7,6 +8,7 @@ import {
   type SimpleDate,
   type SeasonCalendar,
 } from '../config';
+import { useWorksheet } from '../contexts/worksheetContext';
 
 /**
  * The string never has the time zone offset, but it should always be Eastern
@@ -163,48 +165,59 @@ TRANSP:OPAQUE
 END:VEVENT`;
 }
 
-export function constructCalendarEvents(
-  course: Listing,
+export function useCalendarEvents(
   type: 'gcal',
-  colorIndex: number,
-): ReturnType<typeof toGCalEvent>[];
-export function constructCalendarEvents(course: Listing, type: 'ics'): string[];
-export function constructCalendarEvents(
-  course: Listing,
-  type: 'gcal' | 'ics',
-  colorIndex?: number,
-) {
-  const semester = academicCalendars[course.season_code];
-  if (!semester) {
-    // Unknown season code; can't construct any event
-    const seasonString = toSeasonString(course.season_code);
-    toast.error(
-      `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
+): () => ReturnType<typeof toGCalEvent>[];
+export function useCalendarEvents(
+  type: 'ics',
+): () => ReturnType<typeof toICSEvent>[];
+export function useCalendarEvents(type: 'gcal' | 'ics') {
+  const { courses, cur_season, hidden_courses } = useWorksheet();
+  return useCallback(() => {
+    const seasonString = toSeasonString(cur_season);
+    if (!academicCalendars[cur_season]) {
+      toast.error(
+        `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
+      );
+      return [];
+    }
+    const visibleCourses = courses.filter(
+      (course) =>
+        !hidden_courses[cur_season] ||
+        !(course.crn in hidden_courses[cur_season]) ||
+        !hidden_courses[cur_season][course.crn],
     );
-    return [];
-  }
-  const endRepeat = isoString(semester.end, '23:59').replace(/[:-]/g, '');
-  const toEvent = type === 'gcal' ? toGCalEvent : toICSEvent;
-  const times = getTimes(course.times_by_day);
-  return times.map(({ days, startTime, endTime, location }) => {
-    const firstMeetingDay = firstDaySince(semester.start, days);
-    const byDay = days.map((day) => dayToCode[day]).join(',');
-    const exDate = datesInBreak(semester.breaks, days, startTime)
-      .map((s) => s.replace(/[:-]/g, ''))
-      .join(',');
+    if (visibleCourses.length === 0) {
+      toast.error(`No courses in ${seasonString} to export!`);
+      return [];
+    }
+    const events = visibleCourses.flatMap((c, colorIndex) => {
+      const semester = academicCalendars[c.season_code]!;
+      const endRepeat = isoString(semester.end, '23:59').replace(/[:-]/g, '');
+      const toEvent = type === 'gcal' ? toGCalEvent : toICSEvent;
+      const times = getTimes(c.times_by_day);
+      return times.map(({ days, startTime, endTime, location }) => {
+        const firstMeetingDay = firstDaySince(semester.start, days);
+        const byDay = days.map((day) => dayToCode[day]).join(',');
+        const exDate = datesInBreak(semester.breaks, days, startTime)
+          .map((s) => s.replace(/[:-]/g, ''))
+          .join(',');
 
-    // TODO: take care of transfer schedules (see semester.transfer)
-    return toEvent({
-      summary: course.course_code,
-      start: isoString(firstMeetingDay, startTime),
-      end: isoString(firstMeetingDay, endTime),
-      recurrence: [
-        `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
-        `EXDATE;TZID=America/New_York:${exDate}`,
-      ],
-      description: course.title,
-      location,
-      colorIndex,
+        // TODO: take care of transfer schedules (see semester.transfer)
+        return toEvent({
+          summary: c.course_code,
+          start: isoString(firstMeetingDay, startTime),
+          end: isoString(firstMeetingDay, endTime),
+          recurrence: [
+            `RRULE:FREQ=WEEKLY;BYDAY=${byDay};UNTIL=${endRepeat}Z`,
+            `EXDATE;TZID=America/New_York:${exDate}`,
+          ],
+          description: c.title,
+          location,
+          colorIndex,
+        });
+      });
     });
-  });
+    return events;
+  }, [courses, cur_season, hidden_courses, type]);
 }

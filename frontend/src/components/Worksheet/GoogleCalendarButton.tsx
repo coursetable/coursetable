@@ -4,25 +4,21 @@ import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { StyledBtn } from './WorksheetCalendarList';
-import type { Listing } from '../../utilities/common';
-import { constructCalendarEvents } from '../../utilities/calendar';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import { useCalendarEvents } from '../../utilities/calendar';
 import GCalIcon from '../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 const GAPI_CLIENT_NAME = 'client:auth2';
 
-function GoogleCalendarButton({
-  courses,
-  season_code,
-}: {
-  courses: Listing[];
-  season_code: string;
-}): JSX.Element {
+function GoogleCalendarButton(): JSX.Element {
   const [gapi, setGapi] = useState<typeof globalThis.gapi | null>(null);
   const [authInstance, setAuthInstance] =
     useState<gapi.auth2.GoogleAuthBase | null>(null);
   const [user, setUser] = useState<gapi.auth2.GoogleUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const { cur_season } = useWorksheet();
+  const getEvents = useCalendarEvents('gcal');
 
   // Load gapi client after gapi script loaded
   const loadGapiClient = (gapiInstance: typeof globalThis.gapi) => {
@@ -65,11 +61,11 @@ function GoogleCalendarButton({
       const event_list = await gapi.client.calendar.events.list({
         calendarId: 'primary',
         timeMin:
-          season_code === '202303'
+          cur_season === '202303'
             ? new Date('2023-08-30').toISOString()
             : new Date('2024-01-16').toISOString(),
         timeMax:
-          season_code === '202303'
+          cur_season === '202303'
             ? new Date('2023-09-06').toISOString()
             : new Date('2024-01-23').toISOString(),
         singleEvents: true,
@@ -93,25 +89,24 @@ function GoogleCalendarButton({
         });
         await Promise.all(promises);
       }
+      const events = getEvents();
+      // Error already reported
+      if (events.length === 0) return;
 
-      const promises = courses.flatMap((course, colorIndex) =>
-        constructCalendarEvents(course, 'gcal', colorIndex).map(
-          async (event) => {
-            try {
-              await gapi.client.calendar.events.insert({
-                calendarId: 'primary',
-                resource: event,
-              });
-            } catch (e) {
-              Sentry.captureException(
-                new Error('[GCAL]: Error adding events to user calendar: ', {
-                  cause: e,
-                }),
-              );
-            }
-          },
-        ),
-      );
+      const promises = events.map(async (event) => {
+        try {
+          await gapi.client.calendar.events.insert({
+            calendarId: 'primary',
+            resource: event,
+          });
+        } catch (e) {
+          Sentry.captureException(
+            new Error('[GCAL]: Error adding events to user calendar: ', {
+              cause: e,
+            }),
+          );
+        }
+      });
       await Promise.all(promises);
       toast.success('Exported to Google Calendar!');
     } catch (e) {
@@ -122,7 +117,7 @@ function GoogleCalendarButton({
     } finally {
       setLoading(false);
     }
-  }, [courses, gapi, season_code]);
+  }, [getEvents, gapi, cur_season]);
 
   useEffect(() => {
     if (!authInstance) {
