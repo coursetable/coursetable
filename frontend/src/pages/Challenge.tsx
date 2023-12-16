@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactElement } from 'react';
 import qs from 'qs';
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { useNavigate, NavLink } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -161,57 +161,58 @@ function Challenge() {
           setMaxTries(res.data.body.maxChallengeTries);
         }
       } catch (err) {
-        if (err.response.data) {
-          const { error } = err.response.data;
+        const error =
+          err instanceof AxiosError
+            ? (err.response!.data as { error: string }).error
+            : 'UNKNOWN';
 
-          setVerifyError(error);
+        setVerifyError(error);
 
-          // Max attempts reached
-          if (error === 'MAX_TRIES_REACHED') {
-            setVerifyErrorMessage(
-              <div>
-                You've used up all your challenge attempts. Please{' '}
-                <NavLink to="/feedback">contact us</NavLink> if you would like
-                to gain access.
-              </div>,
-            );
-          }
-          // Bad token
-          else if (error === 'INVALID_TOKEN') {
-            setVerifyErrorMessage(
-              <div>
-                Your answers aren't formatted correctly. Please{' '}
-                <NavLink to="/feedback">contact us</NavLink> if you think this
-                is an error.
-              </div>,
-            );
-          }
-          // Bad answers
-          else if (error === 'MALFORMED_ANSWERS') {
-            setVerifyErrorMessage(
-              <div>
-                Your answers aren't formatted correctly. Please{' '}
-                <NavLink to="/feedback">contact us</NavLink> if you think this
-                is an error.
-              </div>,
-            );
-          }
-          // Other errors
-          else {
-            setVerifyErrorMessage(
-              <div>
-                Looks like we messed up. Please{' '}
-                <a
-                  href={`https://feedback.coursetable.com/`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  let us know
-                </a>{' '}
-                what went wrong.
-              </div>,
-            );
-          }
+        // Max attempts reached
+        if (error === 'MAX_TRIES_REACHED') {
+          setVerifyErrorMessage(
+            <div>
+              You've used up all your challenge attempts. Please{' '}
+              <NavLink to="/feedback">contact us</NavLink> if you would like to
+              gain access.
+            </div>,
+          );
+        }
+        // Bad token
+        else if (error === 'INVALID_TOKEN') {
+          setVerifyErrorMessage(
+            <div>
+              Your answers aren't formatted correctly. Please{' '}
+              <NavLink to="/feedback">contact us</NavLink> if you think this is
+              an error.
+            </div>,
+          );
+        }
+        // Bad answers
+        else if (error === 'MALFORMED_ANSWERS') {
+          setVerifyErrorMessage(
+            <div>
+              Your answers aren't formatted correctly. Please{' '}
+              <NavLink to="/feedback">contact us</NavLink> if you think this is
+              an error.
+            </div>,
+          );
+        }
+        // Other errors
+        else {
+          setVerifyErrorMessage(
+            <div>
+              Looks like we messed up. Please{' '}
+              <a
+                href={`https://feedback.coursetable.com/`}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                let us know
+              </a>{' '}
+              what went wrong.
+            </div>,
+          );
         }
       }
     }
