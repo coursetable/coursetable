@@ -102,7 +102,7 @@ function WorksheetMobileCalendarList() {
     // List to hold HTML
     const listitems = courses.map((course, id) => {
       let hidden = false;
-      if (Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
+      if (cur_season in hidden_courses) {
         hidden = hidden_courses[cur_season][course.crn];
       }
       // Add listgroup item to listitems list
@@ -120,7 +120,7 @@ function WorksheetMobileCalendarList() {
   }, [courses, hidden_courses, cur_season, worksheet_number]);
 
   const areHidden = useMemo(() => {
-    if (!Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
+    if (!(cur_season in hidden_courses)) {
       return false;
     }
     return Object.keys(hidden_courses[cur_season]).length === courses.length;

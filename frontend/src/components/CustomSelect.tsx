@@ -23,27 +23,23 @@ function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
   const new_icon = theme.theme === 'light' ? icon.darken() : icon.brighten();
 
   return {
-    clearIndicator: (base, state) => {
-      return {
-        ...base,
-        color: state.isFocused ? icon_focus.css() : icon.css(),
-        ':hover': {
-          ...(base as any)[':hover'],
-          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
-        },
-      };
-    },
-    dropdownIndicator: (base, state) => {
-      return {
-        ...base,
-        display: isMulti && state.hasValue ? 'none' : 'flex',
-        color: state.isFocused ? icon_focus.css() : icon.css(),
-        ':hover': {
-          ...(base as any)[':hover'],
-          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
-        },
-      };
-    },
+    clearIndicator: (base, state) => ({
+      ...base,
+      color: state.isFocused ? icon_focus.css() : icon.css(),
+      ':hover': {
+        ...(base as any)[':hover'],
+        color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+      },
+    }),
+    dropdownIndicator: (base, state) => ({
+      ...base,
+      display: isMulti && state.hasValue ? 'none' : 'flex',
+      color: state.isFocused ? icon_focus.css() : icon.css(),
+      ':hover': {
+        ...(base as any)[':hover'],
+        color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+      },
+    }),
     indicatorSeparator: (base) => ({
       ...base,
       display: 'none',
@@ -80,16 +76,8 @@ function defaultStyles<T extends OptionTypeBase>(
       borderRadius: '8px',
     }),
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-    multiValue: (base) => {
-      return {
-        ...base,
-      };
-    },
-    multiValueLabel: (base) => {
-      return {
-        ...base,
-      };
-    },
+    multiValue: (base) => ({ ...base }),
+    multiValueLabel: (base) => ({ ...base }),
     option: (base, { isSelected }) => ({
       ...base,
       cursor: 'pointer',
@@ -116,12 +104,10 @@ function popoutStyles(
       minWidth: width,
       margin: 8,
     }),
-    dropdownIndicator: (base) => {
-      return {
-        ...base,
-        display: 'none',
-      };
-    },
+    dropdownIndicator: (base) => ({
+      ...base,
+      display: 'none',
+    }),
     menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
     option: (base) => ({
       ...base,

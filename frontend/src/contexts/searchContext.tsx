@@ -381,9 +381,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     let processedSkills;
     let processedAreas;
     if (select_skillsareas != null) {
-      processedSkillsAreas = select_skillsareas.map((x) => {
-        return x.value;
-      });
+      processedSkillsAreas = select_skillsareas.map((x) => x.value);
 
       // match all languages
       if (processedSkillsAreas.includes('L')) {
@@ -416,9 +414,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     // credits to filter
     let processedCredits;
     if (select_credits != null) {
-      processedCredits = select_credits.map((x) => {
-        return x.label;
-      });
+      processedCredits = select_credits.map((x) => x.label);
       // set null defaults
       if (processedCredits.length === 0) {
         processedCredits = null;
@@ -428,9 +424,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     // schools to filter
     let processedSchools;
     if (select_schools != null) {
-      processedSchools = select_schools.map((x) => {
-        return x.value;
-      });
+      processedSchools = select_schools.map((x) => x.value);
 
       // set null defaults
       if (processedSchools.length === 0) {
@@ -441,9 +435,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     // subjects to filter
     let processedSubjects;
     if (select_subjects != null) {
-      processedSubjects = select_subjects.map((x) => {
-        return x.value;
-      });
+      processedSubjects = select_subjects.map((x) => x.value);
 
       // set null defaults
       if (processedSubjects.length === 0) {
@@ -454,9 +446,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     // days to filter
     let processedDays;
     if (select_days != null) {
-      processedDays = select_days.map((x) => {
-        return x.value;
-      });
+      processedDays = select_days.map((x) => x.value);
 
       // set null defaults
       if (processedDays.length === 0) {

@@ -586,22 +586,20 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               className={styles.metadata}
             >
               {listing.professor_names.length
-                ? listing.professor_names.map((prof, index) => {
-                    return (
-                      <React.Fragment key={prof}>
-                        {index ? ' • ' : ''}
-                        <OverlayTrigger
-                          trigger="click"
-                          rootClose
-                          placement="right"
-                          overlay={profInfoPopover}
-                          popperConfig={{ prof_name: prof }}
-                        >
-                          <StyledLink>{prof}</StyledLink>
-                        </OverlayTrigger>
-                      </React.Fragment>
-                    );
-                  })
+                ? listing.professor_names.map((prof, index) => (
+                    <React.Fragment key={prof}>
+                      {index ? ' • ' : ''}
+                      <OverlayTrigger
+                        trigger="click"
+                        rootClose
+                        placement="right"
+                        overlay={profInfoPopover}
+                        popperConfig={{ prof_name: prof }}
+                      >
+                        <StyledLink>{prof}</StyledLink>
+                      </OverlayTrigger>
+                    </React.Fragment>
+                  ))
                 : 'N/A'}
             </Col>
           </Row>
@@ -770,13 +768,11 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 xs={11 - COL_LEN_LEFT}
                 className={styles.metadata}
               >
-                {also_taking.map((friend, index) => {
-                  return (
-                    <Row className="m-auto" key={index}>
-                      {friend + (index === also_taking.length - 1 ? '' : ',')}
-                    </Row>
-                  );
-                })}
+                {also_taking.map((friend, index) => (
+                  <Row className="m-auto" key={index}>
+                    {friend + (index === also_taking.length - 1 ? '' : ',')}
+                  </Row>
+                ))}
               </Col>
             </Row>
           )}

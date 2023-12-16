@@ -69,14 +69,16 @@ function WorksheetToggleButton({
 
   const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
 
-  const worksheet_check = useMemo(() => {
-    return isInWorksheet(
-      season_code,
-      crn.toString(),
-      selectedWorksheet,
-      user.worksheet,
-    );
-  }, [user.worksheet, season_code, crn, selectedWorksheet]);
+  const worksheet_check = useMemo(
+    () =>
+      isInWorksheet(
+        season_code,
+        crn.toString(),
+        selectedWorksheet,
+        user.worksheet,
+      ),
+    [user.worksheet, season_code, crn, selectedWorksheet],
+  );
   // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(false);
 
@@ -103,10 +105,7 @@ function WorksheetToggleButton({
       // removes removed courses from worksheet hidden courses
       if (inWorksheet) {
         setLSObject('hidden_courses', {}, true);
-        if (
-          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
-          hidden_courses[cur_season][crn]
-        ) {
+        if (cur_season in hidden_courses && hidden_courses[cur_season][crn]) {
           toggleCourse(crn);
         }
       }

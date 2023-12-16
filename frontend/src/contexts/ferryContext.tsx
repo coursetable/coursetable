@@ -46,8 +46,8 @@ const preprocessCourses = (listing: Listing) => {
 const courseDataLock = new AsyncLock();
 let courseLoadAttempted: Record<Season, boolean> = {};
 let courseData: Record<Season, Map<Crn, Listing>> = {};
-const addToCache = (season: Season): Promise<void> => {
-  return courseDataLock.acquire(`load-${season}`, async () => {
+const addToCache = (season: Season): Promise<void> =>
+  courseDataLock.acquire(`load-${season}`, async () => {
     if (season in courseData || season in courseLoadAttempted) {
       // Skip if already loaded, or if we previously tried to load it.
       return;
@@ -78,7 +78,6 @@ const addToCache = (season: Season): Promise<void> => {
       [season]: info,
     };
   });
-};
 
 type Store = {
   requests: number;

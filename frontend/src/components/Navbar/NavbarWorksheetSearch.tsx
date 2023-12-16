@@ -127,9 +127,10 @@ export function NavbarWorksheetSearch() {
     useUser();
 
   // FB Friends names
-  const friendInfo = useMemo(() => {
-    return user.friendWorksheets ? user.friendWorksheets.friendInfo : {};
-  }, [user.friendWorksheets]);
+  const friendInfo = useMemo(
+    () => (user.friendWorksheets ? user.friendWorksheets.friendInfo : {}),
+    [user.friendWorksheets],
+  );
 
   // List of FB friend options. Initialize with me option
   const friend_options = useMemo(() => {
@@ -159,9 +160,10 @@ export function NavbarWorksheetSearch() {
   }, [person, friendInfo]);
 
   // FB Friends names
-  const friendRequestInfo = useMemo(() => {
-    return user.friendRequests ? user.friendRequests : [];
-  }, [user.friendRequests]);
+  const friendRequestInfo = useMemo(
+    () => (user.friendRequests ? user.friendRequests : []),
+    [user.friendRequests],
+  );
 
   // friend requests variables
   const friend_request_options = useMemo(() => {
@@ -263,17 +265,15 @@ export function NavbarWorksheetSearch() {
             >
               <Searchbar
                 components={{
-                  Control: (props) => {
-                    return (
-                      <div
-                        onClick={() => {
-                          setRemoving(1 - removing);
-                        }}
-                      >
-                        <components.Control {...props} />
-                      </div>
-                    );
-                  },
+                  Control: (props) => (
+                    <div
+                      onClick={() => {
+                        setRemoving(1 - removing);
+                      }}
+                    >
+                      <components.Control {...props} />
+                    </div>
+                  ),
                 }}
                 hideSelectedOptions={false}
                 value={selected_person}
@@ -313,17 +313,15 @@ export function NavbarWorksheetSearch() {
             >
               <Searchbar
                 components={{
-                  Control: (props) => {
-                    return (
-                      <div
-                        onClick={() => {
-                          setDeleting(1 - deleting);
-                        }}
-                      >
-                        <components.Control {...props} />
-                      </div>
-                    );
-                  },
+                  Control: (props) => (
+                    <div
+                      onClick={() => {
+                        setDeleting(1 - deleting);
+                      }}
+                    >
+                      <components.Control {...props} />
+                    </div>
+                  ),
                 }}
                 hideSelectedOptions={false}
                 value={null}

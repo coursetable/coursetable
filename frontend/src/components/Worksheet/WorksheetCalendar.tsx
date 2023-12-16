@@ -74,7 +74,7 @@ function WorksheetCalendar() {
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
         if (
-          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
+          cur_season in hidden_courses &&
           hidden_courses[cur_season][course.crn]
         )
           return;
@@ -139,21 +139,26 @@ function WorksheetCalendar() {
     [hover_course],
   );
 
-  const ret_values = useMemo(() => {
-    return parseListings(courses);
-  }, [courses, parseListings]);
+  const ret_values = useMemo(
+    () => parseListings(courses),
+    [courses, parseListings],
+  );
 
-  const minTime = useMemo(() => {
-    return ret_values.earliest.get('hours') !== 20
-      ? ret_values.earliest.toDate()
-      : moment().hour(8).minute(0).toDate();
-  }, [ret_values]);
+  const minTime = useMemo(
+    () =>
+      ret_values.earliest.get('hours') !== 20
+        ? ret_values.earliest.toDate()
+        : moment().hour(8).minute(0).toDate(),
+    [ret_values],
+  );
 
-  const maxTime = useMemo(() => {
-    return ret_values.latest.get('hours') !== 0
-      ? ret_values.latest.toDate()
-      : moment().hour(18).minute(0).toDate();
-  }, [ret_values]);
+  const maxTime = useMemo(
+    () =>
+      ret_values.latest.get('hours') !== 0
+        ? ret_values.latest.toDate()
+        : moment().hour(18).minute(0).toDate(),
+    [ret_values],
+  );
 
   return (
     <StyledCalendar
