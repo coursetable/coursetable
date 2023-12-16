@@ -92,21 +92,18 @@ export const scrollToTop: MouseEventHandler = (event) => {
   }
 };
 
-export function logout() {
-  axios
-    .get(`${API_ENDPOINT}/api/auth/logout`, {
-      withCredentials: true,
-    })
-    .then(() => {
-      // Clear cookies
-      document.cookie.split(';').forEach((c) => {
-        document.cookie = c
-          .replace(/^ +/, '')
-          .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
-      });
-      // Redirect to home page and refresh as well
-      window.location.pathname = '/';
-    });
+export async function logout() {
+  await axios.get(`${API_ENDPOINT}/api/auth/logout`, {
+    withCredentials: true,
+  });
+  // Clear cookies
+  document.cookie.split(';').forEach((c) => {
+    document.cookie = c
+      .replace(/^ +/, '')
+      .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+  });
+  // Redirect to home page and refresh as well
+  window.location.pathname = '/';
 }
 
 // Helper function for setting breakpoint styles in styled-components

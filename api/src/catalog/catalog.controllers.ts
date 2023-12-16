@@ -42,23 +42,22 @@ export const verifyHeaders = (
  * @param res - express response object
  * @param next - express next object
  */
-export const refreshCatalog = (
+export async function refreshCatalog(
   req: express.Request,
   res: express.Response,
-): void => {
+): Promise<express.Response<unknown, Record<string, unknown>>> {
   winston.info('Refreshing catalog');
   // always overwrite when called
   const overwrite = true;
 
   // fetch the catalog files and confirm success
-  fetchCatalog(overwrite)
-    .then(() =>
-      res.status(200).json({
-        status: 'OK',
-      }),
-    )
-    .catch((err) => {
-      winston.error(err);
-      return res.status(500).json(err);
+  try {
+    await fetchCatalog(overwrite);
+    return res.status(200).json({
+      status: 'OK',
     });
-};
+  } catch (err) {
+    winston.error(err);
+    return res.status(500).json(err);
+  }
+}

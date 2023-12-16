@@ -24,11 +24,11 @@ function FBDropdown() {
   // Generate friend netId list, sorted by name.
   const friendInfo = user.friendWorksheets?.friendInfo || {};
   let friends = Object.keys(friendInfo);
-  friends.sort((a, b) => {
-    return friendInfo[a].name.toLowerCase() < friendInfo[b].name.toLowerCase()
-      ? -1
-      : 1;
-  });
+  friends.sort((a, b) =>
+    friendInfo[a].name.localeCompare(friendInfo[b].name, 'en-US', {
+      sensitivity: 'base',
+    }),
+  );
   friends = ['me', ...friends];
 
   const DropdownItem = ({ person: curr_person }: { person: Person }) => {

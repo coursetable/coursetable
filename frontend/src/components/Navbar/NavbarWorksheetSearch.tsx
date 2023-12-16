@@ -1,4 +1,3 @@
-/* eslint-disable guard-for-in */
 import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
@@ -136,16 +135,16 @@ export function NavbarWorksheetSearch() {
   const friend_options = useMemo(() => {
     const friend_options_temp = [];
     // Add FB friend to dropdown if they have worksheet courses in the current season
-    for (const friend in friendInfo) {
+    for (const friend of Object.keys(friendInfo)) {
       friend_options_temp.push({
         value: friend,
         label: friendInfo[friend].name,
       });
     }
     // Sort FB friends in alphabetical order
-    friend_options_temp.sort((a, b) => {
-      return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
-    });
+    friend_options_temp.sort((a, b) =>
+      a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
+    );
     return friend_options_temp;
   }, [friendInfo]);
 
@@ -175,9 +174,9 @@ export function NavbarWorksheetSearch() {
       });
     }
     // Sort FB friends in alphabetical order
-    friend_request_options_temp.sort((a, b) => {
-      return a.label.toLowerCase() < b.label.toLowerCase() ? -1 : 1;
-    });
+    friend_request_options_temp.sort((a, b) =>
+      a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
+    );
     return friend_request_options_temp;
   }, [friendRequestInfo]);
 

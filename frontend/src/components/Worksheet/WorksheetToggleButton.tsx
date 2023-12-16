@@ -93,7 +93,7 @@ function WorksheetToggleButton({
 
   // Handle button click
   const toggleWorkSheet = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -112,8 +112,8 @@ function WorksheetToggleButton({
       }
 
       // Call the endpoint
-      return axios
-        .post(
+      try {
+        await axios.post(
           `${API_ENDPOINT}/api/user/toggleBookmark`,
           {
             action: add_remove,
@@ -127,19 +127,14 @@ function WorksheetToggleButton({
               'Content-Type': 'application/json',
             },
           },
-        )
-        .then(() => {
-          // Refresh user's worksheet
-          return userRefresh();
-        })
-        .then(() => {
-          // If not in worksheet view, update inWorksheet state
-          setInWorksheet(!inWorksheet);
-        })
-        .catch((err) => {
-          toast.error('Failed to update worksheet');
-          Sentry.captureException(err);
-        });
+        );
+        await userRefresh();
+        // If not in worksheet view, update inWorksheet state
+        setInWorksheet(!inWorksheet);
+      } catch (err) {
+        toast.error('Failed to update worksheet');
+        Sentry.captureException(err);
+      }
     },
     [
       crn,

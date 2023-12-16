@@ -96,7 +96,9 @@ function Challenge() {
   }, []);
 
   // Handle form submit
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
+    event,
+  ) => {
     const form = event.currentTarget;
     // Prevent default page reload
     event.preventDefault();
@@ -121,103 +123,97 @@ function Challenge() {
         withCredentials: true,
       };
       // Verify answers
-      axios
-        .post(
+      try {
+        const res = await axios.post(
           `${API_ENDPOINT}/api/challenge/verify`,
           qs.stringify(post_body),
           config,
-        )
-        .then((res) => {
-          // Answers not properly verified
-          if (!res.data || !res.data.body) {
-            toast.error('Error with /api/challenge/verify API call');
-          }
-          // Correct responses
-          else if (res.data.body.message === 'CORRECT') {
-            userRefresh()
-              .then(() => {
-                return client.resetStore();
-              })
-              .then(() => {
-                toast.success(
-                  "All of your responses were correct! Refresh the page if the courses aren't showing.",
-                );
-                navigate(-1);
-              })
-              .catch(() => {
-                toast.error('Failed to update evaluation status');
-                // console.error(err);
-              });
-          }
-          // Incorrect responses
-          else {
-            toast.error('Incorrect responses. Please try again.');
-
-            setVerifyError('INCORRECT');
-
-            setVerifyErrorMessage(
-              <div>Incorrect responses. Please try again.</div>,
+        );
+        // Answers not properly verified
+        if (!res.data || !res.data.body) {
+          toast.error('Error with /api/challenge/verify API call');
+        }
+        // Correct responses
+        else if (res.data.body.message === 'CORRECT') {
+          try {
+            await userRefresh();
+            await client.resetStore();
+            toast.success(
+              "All of your responses were correct! Refresh the page if the courses aren't showing.",
             );
-
-            setValidated(false);
-            setNumTries(res.data.body.challengeTries);
-            setMaxTries(res.data.body.maxChallengeTries);
+            navigate(-1);
+          } catch {
+            toast.error('Failed to update evaluation status');
           }
-        })
-        .catch((err) => {
-          if (err.response.data) {
-            const { error } = err.response.data;
+        }
+        // Incorrect responses
+        else {
+          toast.error('Incorrect responses. Please try again.');
 
-            setVerifyError(error);
+          setVerifyError('INCORRECT');
 
-            // Max attempts reached
-            if (error === 'MAX_TRIES_REACHED') {
-              setVerifyErrorMessage(
-                <div>
-                  You've used up all your challenge attempts. Please{' '}
-                  <NavLink to="/feedback">contact us</NavLink> if you would like
-                  to gain access.
-                </div>,
-              );
-            }
-            // Bad token
-            else if (error === 'INVALID_TOKEN') {
-              setVerifyErrorMessage(
-                <div>
-                  Your answers aren't formatted correctly. Please{' '}
-                  <NavLink to="/feedback">contact us</NavLink> if you think this
-                  is an error.
-                </div>,
-              );
-            }
-            // Bad answers
-            else if (error === 'MALFORMED_ANSWERS') {
-              setVerifyErrorMessage(
-                <div>
-                  Your answers aren't formatted correctly. Please{' '}
-                  <NavLink to="/feedback">contact us</NavLink> if you think this
-                  is an error.
-                </div>,
-              );
-            }
-            // Other errors
-            else {
-              setVerifyErrorMessage(
-                <div>
-                  Looks like we messed up. Please{' '}
-                  <a
-                    href={`https://feedback.coursetable.com/`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    let us know
-                  </a>{' '}
-                  what went wrong.
-                </div>,
-              );
-            }
+          setVerifyErrorMessage(
+            <div>Incorrect responses. Please try again.</div>,
+          );
+
+          setValidated(false);
+          setNumTries(res.data.body.challengeTries);
+          setMaxTries(res.data.body.maxChallengeTries);
+        }
+      } catch (err) {
+        if (err.response.data) {
+          const { error } = err.response.data;
+
+          setVerifyError(error);
+
+          // Max attempts reached
+          if (error === 'MAX_TRIES_REACHED') {
+            setVerifyErrorMessage(
+              <div>
+                You've used up all your challenge attempts. Please{' '}
+                <NavLink to="/feedback">contact us</NavLink> if you would like
+                to gain access.
+              </div>,
+            );
           }
-        });
+          // Bad token
+          else if (error === 'INVALID_TOKEN') {
+            setVerifyErrorMessage(
+              <div>
+                Your answers aren't formatted correctly. Please{' '}
+                <NavLink to="/feedback">contact us</NavLink> if you think this
+                is an error.
+              </div>,
+            );
+          }
+          // Bad answers
+          else if (error === 'MALFORMED_ANSWERS') {
+            setVerifyErrorMessage(
+              <div>
+                Your answers aren't formatted correctly. Please{' '}
+                <NavLink to="/feedback">contact us</NavLink> if you think this
+                is an error.
+              </div>,
+            );
+          }
+          // Other errors
+          else {
+            setVerifyErrorMessage(
+              <div>
+                Looks like we messed up. Please{' '}
+                <a
+                  href={`https://feedback.coursetable.com/`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  let us know
+                </a>{' '}
+                what went wrong.
+              </div>,
+            );
+          }
+        }
+      }
     }
     // Form has been validated
     setValidated(true);

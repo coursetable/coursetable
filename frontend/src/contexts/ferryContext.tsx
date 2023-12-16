@@ -47,10 +47,10 @@ const courseDataLock = new AsyncLock();
 let courseLoadAttempted: Record<Season, boolean> = {};
 let courseData: Record<Season, Map<Crn, Listing>> = {};
 const addToCache = (season: Season): Promise<void> => {
-  return courseDataLock.acquire(`load-${season}`, () => {
+  return courseDataLock.acquire(`load-${season}`, async () => {
     if (season in courseData || season in courseLoadAttempted) {
       // Skip if already loaded, or if we previously tried to load it.
-      return Promise.resolve();
+      return;
     }
 
     // Log that we attempted to load this.
@@ -59,25 +59,24 @@ const addToCache = (season: Season): Promise<void> => {
       [season]: true,
     };
 
-    return axios
-      .get(`${API_ENDPOINT}/api/static/catalogs/${season}.json`, {
+    const res = await axios.get(
+      `${API_ENDPOINT}/api/static/catalogs/${season}.json`,
+      {
         withCredentials: true,
-      })
-      .then((res) => {
-        // Convert season list into a crn lookup table.
-        const data = res.data as Listing[];
-        const info = new Map<Crn, Listing>();
-        for (const rawListing of data) {
-          const listing = preprocessCourses(rawListing);
-          info.set(listing.crn, listing);
-        }
-
-        // Save in global cache. Here we force the creation of a new object.
-        courseData = {
-          ...courseData,
-          [season]: info,
-        };
-      });
+      },
+    );
+    // Convert season list into a crn lookup table.
+    const data = res.data as Listing[];
+    const info = new Map<Crn, Listing>();
+    for (const rawListing of data) {
+      const listing = preprocessCourses(rawListing);
+      info.set(listing.crn, listing);
+    }
+    // Save in global cache. Here we force the creation of a new object.
+    courseData = {
+      ...courseData,
+      [season]: info,
+    };
   });
 };
 
@@ -101,7 +100,7 @@ export function FerryProvider({ children }: { children: React.ReactNode }) {
   // eslint-disable-next-line @typescript-eslint/ban-types
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const requestSeasons = useCallback((seasons: Season[]) => {
+  const requestSeasons = useCallback(async (seasons: Season[]) => {
     const fetches = seasons.map(async (season) => {
       // Racy preemptive check of cache.
       // We cannot check courseLoadAttempted here, since that is set prior
@@ -118,7 +117,7 @@ export function FerryProvider({ children }: { children: React.ReactNode }) {
         setRequests((r) => r - 1);
       }
     });
-    Promise.all(fetches).catch((err) => {
+    await Promise.all(fetches).catch((err) => {
       toast.error('Failed to fetch course information');
       Sentry.captureException(err);
       setErrors((e) => [...e, err]);

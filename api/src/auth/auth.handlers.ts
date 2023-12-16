@@ -12,7 +12,6 @@ import winston from '../logging/winston';
 import axios from 'axios';
 
 import { YALIES_API_KEY, prisma } from '../config';
-import { StudentBluebookSettings } from '@prisma/client';
 
 // codes for allowed organizations (to give faculty access to the site)
 const ALLOWED_ORG_CODES = [
@@ -81,8 +80,8 @@ export const passportConfig = async (
         });
 
         winston.info("Getting user's enrollment status from Yalies.io");
-        axios
-          .post(
+        try {
+          const { data } = await axios.post(
             'https://yalies.io/api/people',
             {
               filters: {
@@ -95,60 +94,58 @@ export const passportConfig = async (
                 'Content-Type': 'application/json',
               },
             },
-          )
-          .then(async ({ data }) => {
-            // if no user found, do not grant access
-            if (data === null || data.length === 0) {
-              return done(null, {
-                netId: profile.user,
-                evals: false,
-              });
-            }
-
-            const user = data[0];
-
-            // enable evaluations if user has a school code
-            // or is a member of an approved organization (for faculty).
-            // also leave evaluations enabled if the user already has access.
-            const enableEvals =
-              existingUser.evaluationsEnabled ||
-              !!user.school_code ||
-              ALLOWED_ORG_CODES.includes(user.organization_code);
-
-            winston.info(`Updating evaluations for ${profile.user}`);
-            await prisma.studentBluebookSettings.update({
-              where: {
-                netId: profile.user,
-              },
-              data: {
-                evaluationsEnabled: enableEvals,
-                first_name: user.first_name,
-                last_name: user.last_name,
-                email: user.email,
-                upi: user.upi,
-                school: user.school,
-                year: user.year,
-                college: user.college,
-                major: user.major,
-                curriculum: user.curriculum,
-              },
-            });
-
-            return done(null, {
-              netId: profile.user,
-              evals: enableEvals,
-              email: user.email,
-              firstName: user.first_name,
-              lastName: user.last_name,
-            });
-          })
-          .catch((err) => {
-            winston.error(`Yalies connection error: ${err}`);
+          );
+          // if no user found, do not grant access
+          if (data === null || data.length === 0) {
             return done(null, {
               netId: profile.user,
               evals: false,
             });
+          }
+
+          const user = data[0];
+
+          // enable evaluations if user has a school code
+          // or is a member of an approved organization (for faculty).
+          // also leave evaluations enabled if the user already has access.
+          const enableEvals =
+            existingUser.evaluationsEnabled ||
+            !!user.school_code ||
+            ALLOWED_ORG_CODES.includes(user.organization_code);
+
+          winston.info(`Updating evaluations for ${profile.user}`);
+          await prisma.studentBluebookSettings.update({
+            where: {
+              netId: profile.user,
+            },
+            data: {
+              evaluationsEnabled: enableEvals,
+              first_name: user.first_name,
+              last_name: user.last_name,
+              email: user.email,
+              upi: user.upi,
+              school: user.school,
+              year: user.year,
+              college: user.college,
+              major: user.major,
+              curriculum: user.curriculum,
+            },
           });
+
+          return done(null, {
+            netId: profile.user,
+            evals: enableEvals,
+            email: user.email,
+            firstName: user.first_name,
+            lastName: user.last_name,
+          });
+        } catch (err) {
+          winston.error(`Yalies connection error: ${err}`);
+          return done(null, {
+            netId: profile.user,
+            evals: false,
+          });
+        }
       },
     ),
   );
@@ -170,22 +167,19 @@ export const passportConfig = async (
    */
   passport.deserializeUser(async (netId: string, done): Promise<void> => {
     winston.info(`Deserializing user ${netId}`);
-    await prisma.studentBluebookSettings
-      .findUnique({
-        where: {
-          netId,
-        },
-      })
-      .then((student: StudentBluebookSettings | null) => {
-        done(null, {
-          netId,
-          evals: !!student?.evaluationsEnabled,
-          // convert nulls to undefined
-          email: student?.email || undefined,
-          firstName: student?.first_name || undefined,
-          lastName: student?.last_name || undefined,
-        });
-      });
+    const student = await prisma.studentBluebookSettings.findUnique({
+      where: {
+        netId,
+      },
+    });
+    done(null, {
+      netId,
+      evals: !!student?.evaluationsEnabled,
+      // convert nulls to undefined
+      email: student?.email || undefined,
+      firstName: student?.first_name || undefined,
+      lastName: student?.last_name || undefined,
+    });
   });
 };
 

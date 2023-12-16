@@ -1,4 +1,3 @@
-/* eslint-disable guard-for-in */
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
@@ -144,7 +143,7 @@ export const getNumFriends = (
   // Object to return
   const friend_dict: NumFriendsReturn = {};
   // Iterate over each friend's worksheet
-  for (const friend in worksheets) {
+  for (const friend of Object.keys(worksheets)) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
