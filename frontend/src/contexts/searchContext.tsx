@@ -154,7 +154,7 @@ const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];
 const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
-  { value: CUR_SEASON, label: toSeasonString(CUR_SEASON)[0] },
+  { value: CUR_SEASON, label: toSeasonString(CUR_SEASON) },
 ];
 const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;

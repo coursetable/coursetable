@@ -34,16 +34,10 @@ export const isInWorksheet = (
 };
 
 // Convert season code to legible string
-export const toSeasonString = (
-  season_code: Season,
-): readonly [string, string, string] => {
-  if (!season_code) return ['', '', ''];
-  const seasons = ['', 'Spring', 'Summer', 'Fall'];
-  return [
-    `${seasons[parseInt(season_code[5], 10)]} ${season_code.substring(0, 4)}`,
-    season_code.substring(0, 4),
-    seasons[parseInt(season_code[5], 10)],
-  ] as const;
+export const toSeasonString = (season_code: Season): string => {
+  const year = season_code.substring(0, 4);
+  const season = ['', 'Spring', 'Summer', 'Fall'][parseInt(season_code[5], 10)];
+  return `${season} ${year}`;
 };
 
 // Checks if the a new course conflicts with the user's worksheet

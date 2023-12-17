@@ -117,7 +117,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     season_codes.forEach((season_code) => {
       season_options_temp.push({
         value: season_code,
-        label: toSeasonString(season_code)[0],
+        label: toSeasonString(season_code),
       });
     });
     return season_options_temp;

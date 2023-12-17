@@ -103,7 +103,7 @@ export function NavbarWorksheetSearch() {
     if (cur_season) {
       return {
         value: cur_season,
-        label: toSeasonString(cur_season)[0],
+        label: toSeasonString(cur_season),
       };
     }
     return null;
