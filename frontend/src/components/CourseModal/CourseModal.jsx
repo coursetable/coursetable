@@ -171,9 +171,7 @@ function CourseModal() {
                             )}
                             {cur_listing.title}
                             <TextComponent type={2}>
-                              {` (${
-                                toSeasonString(cur_listing.season_code)[2]
-                              } ${toSeasonString(cur_listing.season_code)[1]})`}
+                              {` (${toSeasonString(cur_listing.season_code)})`}
                             </TextComponent>
                           </span>
                         </Row>
@@ -234,9 +232,7 @@ function CourseModal() {
                           >
                             {`${view[1].title} `}
                             <TextComponent type={2}>
-                              {` (${toSeasonString(view[0])[2]} ${
-                                toSeasonString(view[0])[1]
-                              })`}
+                              {` (${toSeasonString(view[0])})`}
                             </TextComponent>
                             <StyledMoreInfo
                               className="mt-auto ml-2"

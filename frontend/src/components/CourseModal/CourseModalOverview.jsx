@@ -277,7 +277,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 style={{ flex: 'none' }}
               >
                 <strong>
-                  {toSeasonString(course_offerings[i].season_code)[0]}
+                  {toSeasonString(course_offerings[i].season_code)}
                 </strong>
                 <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
@@ -294,7 +294,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 style={{ flex: 'none', color: '#b5b5b5' }}
               >
                 <strong>
-                  {toSeasonString(course_offerings[i].season_code)[0]}
+                  {toSeasonString(course_offerings[i].season_code)}
                 </strong>
                 <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
@@ -566,7 +566,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                       href={course.syllabus_url}
                       className="d-flex"
                     >
-                      {toSeasonString(course.season_code)[0]} (section{' '}
+                      {toSeasonString(course.season_code)} (section{' '}
                       {course.section})
                       <HiExternalLink size={18} className="ml-1 my-auto" />
                     </a>
