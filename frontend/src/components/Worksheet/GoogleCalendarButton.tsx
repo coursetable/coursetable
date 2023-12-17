@@ -4,25 +4,22 @@ import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { StyledBtn } from './WorksheetCalendarList';
-import type { Listing } from '../../utilities/common';
-import { constructCalendarEvents } from '../../utilities/calendar';
+import { academicCalendars } from '../../config';
+import { useWorksheet } from '../../contexts/worksheetContext';
+import { getCalendarEvents } from '../../utilities/calendar';
+import { toSeasonString } from '../../utilities/courseUtilities';
 import GCalIcon from '../../images/gcal.svg';
 
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 const GAPI_CLIENT_NAME = 'client:auth2';
 
-function GoogleCalendarButton({
-  courses,
-  season_code,
-}: {
-  courses: Listing[];
-  season_code: string;
-}): JSX.Element {
+function GoogleCalendarButton(): JSX.Element {
   const [gapi, setGapi] = useState<typeof globalThis.gapi | null>(null);
   const [authInstance, setAuthInstance] =
     useState<gapi.auth2.GoogleAuthBase | null>(null);
   const [user, setUser] = useState<gapi.auth2.GoogleUser | null>(null);
   const [loading, setLoading] = useState(true);
+  const { cur_season, hidden_courses, courses } = useWorksheet();
 
   // Load gapi client after gapi script loaded
   const loadGapiClient = (gapiInstance: typeof globalThis.gapi) => {
@@ -58,20 +55,28 @@ function GoogleCalendarButton({
       Sentry.captureException(new Error('gapi not loaded'));
       return;
     }
+    const seasonString = toSeasonString(cur_season);
+    const semester = academicCalendars[cur_season];
+    if (!semester) {
+      toast.error(
+        `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
+      );
+      return;
+    }
     setLoading(true);
 
     try {
       // get all previously added classes
       const event_list = await gapi.client.calendar.events.list({
         calendarId: 'primary',
-        timeMin:
-          season_code === '202303'
-            ? new Date('2023-08-30').toISOString()
-            : new Date('2024-01-16').toISOString(),
-        timeMax:
-          season_code === '202303'
-            ? new Date('2023-09-06').toISOString()
-            : new Date('2024-01-23').toISOString(),
+        // TODO: this is UTC date, which shouldn't matter, but we want
+        // America/New_York. This is easily fixable once we use Temporal
+        timeMin: new Date(
+          Date.UTC(semester.start[0], semester.start[1] - 1, semester.start[2]),
+        ).toISOString(),
+        timeMax: new Date(
+          Date.UTC(semester.end[0], semester.end[1] - 1, semester.end[2]),
+        ).toISOString(),
         singleEvents: true,
         orderBy: 'startTime',
       });
@@ -79,28 +84,27 @@ function GoogleCalendarButton({
       // delete all previously added classes
       if (event_list.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        event_list.result.items.forEach(async (event) => {
+        const promises = event_list.result.items.map((event) => {
           if (event.id.startsWith('coursetable') && event.recurringEventId) {
             if (!deletedIds.has(event.recurringEventId)) {
               deletedIds.add(event.recurringEventId);
-              await gapi.client.calendar.events.delete({
+              return gapi.client.calendar.events.delete({
                 calendarId: 'primary',
                 eventId: event.recurringEventId,
               });
             }
           }
+          return undefined;
         });
+        await Promise.all(promises);
       }
-    } catch (e) {
-      Sentry.captureException(
-        new Error('[GCAL]: Error syncing user events: ', { cause: e }),
+      const events = getCalendarEvents(
+        'gcal',
+        courses,
+        cur_season,
+        hidden_courses,
       );
-      toast.error('Error exporting Google Calendar Events');
-      setLoading(false);
-      return;
-    }
-    const promises = courses.flatMap((course, colorIndex) =>
-      constructCalendarEvents(course, colorIndex).map(async (event) => {
+      const promises = events.map(async (event) => {
         try {
           await gapi.client.calendar.events.insert({
             calendarId: 'primary',
@@ -113,13 +117,18 @@ function GoogleCalendarButton({
             }),
           );
         }
-      }),
-    );
-    await Promise.all(promises);
-
-    setLoading(false);
-    toast.success('Exporting to Google Calendar!');
-  }, [courses, gapi, season_code]);
+      });
+      await Promise.all(promises);
+      toast.success('Exported to Google Calendar!');
+    } catch (e) {
+      Sentry.captureException(
+        new Error('[GCAL]: Error syncing user events', { cause: e }),
+      );
+      toast.error('Error exporting Google Calendar Events');
+    } finally {
+      setLoading(false);
+    }
+  }, [courses, gapi, cur_season, hidden_courses]);
 
   useEffect(() => {
     if (!authInstance) {
