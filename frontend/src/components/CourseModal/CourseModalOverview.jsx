@@ -16,6 +16,7 @@ import { HiExternalLink } from 'react-icons/hi';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
+import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import {
   TextComponent,
@@ -258,8 +259,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
       // Loop through each listing with evals
       for (let i = 0; i < course_offerings.length; i++) {
         // Skip listings in the current and future seasons that have no evals
-        if (['202303', '202401'].includes(course_offerings[i].season_code))
-          continue;
+        if (CUR_YEAR.includes(course_offerings[i].season_code)) continue;
         const hasEvals = course_offerings[i].rating !== -1;
         const eval_box = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
