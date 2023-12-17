@@ -116,15 +116,17 @@ function ResultsItem({
   const icon_size = 10;
   const seasons = ['spring', 'summer', 'fall'] as const;
   // Determine the icon for this season
-  const icon = useMemo(() => {
-    return season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={icon_size} />
-    ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
-    ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
-    );
-  }, [season]);
+  const icon = useMemo(
+    () =>
+      season === 1 ? (
+        <FcCloseUpMode className="my-auto" size={icon_size} />
+      ) : season === 2 ? (
+        <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
+      ) : (
+        <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
+      ),
+    [season],
+  );
 
   // Fetch overall & workload rating values and string representations
   const course_rating = useMemo(

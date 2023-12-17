@@ -342,13 +342,13 @@ export const getNames = async (
   const allNameRecords: StudentBluebookSettings[] =
     await prisma.studentBluebookSettings.findMany();
 
-  const allNames = allNameRecords.map((nameRecord: StudentBluebookSettings) => {
-    return {
+  const allNames = allNameRecords.map(
+    (nameRecord: StudentBluebookSettings) => ({
       netId: nameRecord.netId,
       first: nameRecord.first_name,
       last: nameRecord.last_name,
       college: nameRecord.college,
-    };
-  });
+    }),
+  );
   return res.status(200).json(allNames);
 };

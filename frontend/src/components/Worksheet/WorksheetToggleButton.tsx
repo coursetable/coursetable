@@ -69,14 +69,16 @@ function WorksheetToggleButton({
 
   const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
 
-  const worksheet_check = useMemo(() => {
-    return isInWorksheet(
-      season_code,
-      crn.toString(),
-      selectedWorksheet,
-      user.worksheet,
-    );
-  }, [user.worksheet, season_code, crn, selectedWorksheet]);
+  const worksheet_check = useMemo(
+    () =>
+      isInWorksheet(
+        season_code,
+        crn.toString(),
+        selectedWorksheet,
+        user.worksheet,
+      ),
+    [user.worksheet, season_code, crn, selectedWorksheet],
+  );
   // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(false);
 
@@ -93,7 +95,7 @@ function WorksheetToggleButton({
 
   // Handle button click
   const toggleWorkSheet = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
@@ -103,17 +105,14 @@ function WorksheetToggleButton({
       // removes removed courses from worksheet hidden courses
       if (inWorksheet) {
         setLSObject('hidden_courses', {}, true);
-        if (
-          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
-          hidden_courses[cur_season][crn]
-        ) {
+        if (cur_season in hidden_courses && hidden_courses[cur_season][crn]) {
           toggleCourse(crn);
         }
       }
 
       // Call the endpoint
-      return axios
-        .post(
+      try {
+        await axios.post(
           `${API_ENDPOINT}/api/user/toggleBookmark`,
           {
             action: add_remove,
@@ -127,19 +126,14 @@ function WorksheetToggleButton({
               'Content-Type': 'application/json',
             },
           },
-        )
-        .then(() => {
-          // Refresh user's worksheet
-          return userRefresh();
-        })
-        .then(() => {
-          // If not in worksheet view, update inWorksheet state
-          setInWorksheet(!inWorksheet);
-        })
-        .catch((err) => {
-          toast.error('Failed to update worksheet');
-          Sentry.captureException(err);
-        });
+        );
+        await userRefresh();
+        // If not in worksheet view, update inWorksheet state
+        setInWorksheet(!inWorksheet);
+      } catch (err) {
+        toast.error('Failed to update worksheet');
+        Sentry.captureException(err);
+      }
     },
     [
       crn,

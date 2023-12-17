@@ -128,7 +128,7 @@ const EvaluationResponses: React.FC<{
       }
       return filteredResps;
     };
-    for (const key in cur_responses) {
+    for (const key of Object.keys(cur_responses)) {
       if (key.includes('summarize')) {
         temp_summary = genTemp(cur_responses[key]);
       } else if (key.includes('recommend')) {

@@ -1,9 +1,8 @@
 import { useEffect, useState } from 'react';
 
 // Checks if object is in storage
-const containsObject = (key: string, storage: Storage) => {
-  return storage.getItem(key) !== null;
-};
+const containsObject = (key: string, storage: Storage) =>
+  storage.getItem(key) !== null;
 // Saves object to storage
 const setObject = <T>(
   key: string,
@@ -24,16 +23,13 @@ const getObject = <T>(key: string, storage: Storage) => {
 export const setSSObject = <T>(key: string, obj: T, if_empty = false): void => {
   setObject<T>(key, obj, window.sessionStorage, if_empty);
 };
-export const getSSObject = <T>(key: string): T | null => {
-  return getObject<T>(key, window.sessionStorage);
-};
+export const getSSObject = <T>(key: string): T | null =>
+  getObject<T>(key, window.sessionStorage);
 // local storage functions
-export const setLSObject = <T>(key: string, obj: T, if_empty = false): void => {
+export const setLSObject = <T>(key: string, obj: T, if_empty = false): void =>
   setObject<T>(key, obj, window.localStorage, if_empty);
-};
-export const getLSObject = <T>(key: string): T | null => {
-  return getObject<T>(key, window.localStorage);
-};
+export const getLSObject = <T>(key: string): T | null =>
+  getObject<T>(key, window.localStorage);
 // Saves State in Session Storage
 export const useSessionStorageState = <T>(
   key: string,

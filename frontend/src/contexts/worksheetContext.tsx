@@ -193,12 +193,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       if (crn === -1) {
         setHiddenCourses((old_hidden_courses: HiddenCourses) => {
           const new_hidden_courses = { ...old_hidden_courses };
-          if (
-            !Object.prototype.hasOwnProperty.call(
-              new_hidden_courses,
-              cur_season,
-            )
-          ) {
+          if (!(cur_season in new_hidden_courses)) {
             new_hidden_courses[cur_season] = {};
           }
           courses.forEach((listing) => {
@@ -215,12 +210,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       } else {
         setHiddenCourses((old_hidden_courses: HiddenCourses) => {
           const new_hidden_courses = { ...old_hidden_courses };
-          if (
-            !Object.prototype.hasOwnProperty.call(
-              new_hidden_courses,
-              cur_season,
-            )
-          ) {
+          if (!(cur_season in new_hidden_courses)) {
             new_hidden_courses[cur_season] = {};
           }
           if (new_hidden_courses[cur_season][crn])

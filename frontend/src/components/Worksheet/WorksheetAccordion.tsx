@@ -129,114 +129,103 @@ function WorksheetAccordion() {
     return parsed_courses;
   }, []);
 
-  // Build HTML for each class that takes place on each day of the week
-  const buildHtml = useCallback(
-    (
-      parsed_courses: [Listing[], Listing[], Listing[], Listing[], Listing[]],
-    ) => {
-      // Start the list with the current day
-      let today = new Date().getDay();
-      // Start on monday if it is the weekend
-      if (today === 0 || today === 6) today = 1;
-      // Day of the week counter
-      let dayIndex = 0;
-      // Unique id for each array item
-      let id = 0;
-      // List to hold HTML
-      const accordion_items = [];
-      // Iterate over each day starting with the current day
-      for (let i = today - 1; dayIndex < 5; i = (i + 1) % 5) {
-        // List of courses for this day
-        const day = parsed_courses[i];
-        // Skip if no courses on this day
-        if (day.length === 0) {
-          dayIndex++;
-          continue;
-        }
-
-        // Add header for this weekday
-        accordion_items.push(
-          <StyledBanner key={++id}>
-            <h5 className={styles.day_header}>{weekdays[i]}</h5>
-          </StyledBanner>,
-        );
-        // Iterate over each course that takes place on this day
-        for (let j = 0; j < day.length; j++) {
-          const course = day[j];
-          accordion_items.push(
-            <StyledCard key={++id} className={`${styles.card} px-0`}>
-              {/* Custom Accordion Item Header */}
-              <ContextAwareToggle
-                eventKey={`${i}_${course.crn}_${course.season_code}`}
-                course={course}
-              />
-              {/* Accordion Collapsed component */}
-              <Accordion.Collapse
-                eventKey={`${i}_${course.crn}_${course.season_code}`}
-              >
-                <Card.Body className="px-2 pt-2 pb-3">
-                  <Row className="m-auto">
-                    {/* Course Title */}
-                    <Col className="p-0">
-                      <strong>{course.title}</strong>
-                    </Col>
-                    <Col xs="auto" className="pr-0">
-                      {/* Course Skills and Areas */}
-                      {course.skills &&
-                        course.skills.map((skill) => (
-                          <SkillBadge key={skill} skill={skill} />
-                        ))}
-                      {course.areas &&
-                        course.areas.map((area) => (
-                          <SkillBadge key={area} skill={area} />
-                        ))}
-                    </Col>
-                  </Row>
-                  {/* Course Professors */}
-                  <Row className="mx-auto pb-2" style={{ fontWeight: 500 }}>
-                    <TextComponent type={1}>{course.professors}</TextComponent>
-                  </Row>
-                  {/* Course Description */}
-                  <Row className="m-auto">
-                    <ResponsiveEllipsis
-                      style={{ whiteSpace: 'pre-wrap' }}
-                      text={
-                        course.description
-                          ? course.description
-                          : 'no description'
-                      }
-                      maxLine={8}
-                      basedOn="words"
-                    />
-                  </Row>
-                  {/* Button to trigger course modal */}
-                  <Row className="m-auto">
-                    <StyledBanner
-                      onClick={showModal(course)}
-                      className={`${styles.more_info} mt-2 font-weight-bold`}
-                    >
-                      <TextComponent type={1}>More Info</TextComponent>
-                    </StyledBanner>
-                  </Row>
-                </Card.Body>
-              </Accordion.Collapse>
-            </StyledCard>,
-          );
-        }
-        dayIndex++;
-      }
-      return <Accordion>{accordion_items}</Accordion>;
-    },
-    [showModal],
-  );
   // Get courses by day
-  const parsed_courses = useMemo(() => {
-    return parseListings(courses);
-  }, [courses, parseListings]);
-  // Get HTML
+  const parsed_courses = useMemo(
+    () => parseListings(courses),
+    [courses, parseListings],
+  );
   const items = useMemo(() => {
-    return buildHtml(parsed_courses);
-  }, [buildHtml, parsed_courses]);
+    // Start the list with the current day
+    let today = new Date().getDay();
+    // Start on monday if it is the weekend
+    if (today === 0 || today === 6) today = 1;
+    // Day of the week counter
+    let dayIndex = 0;
+    // Unique id for each array item
+    let id = 0;
+    // List to hold HTML
+    const accordion_items = [];
+    // Iterate over each day starting with the current day
+    for (let i = today - 1; dayIndex < 5; i = (i + 1) % 5) {
+      // List of courses for this day
+      const day = parsed_courses[i];
+      // Skip if no courses on this day
+      if (day.length === 0) {
+        dayIndex++;
+        continue;
+      }
+
+      // Add header for this weekday
+      accordion_items.push(
+        <StyledBanner key={++id}>
+          <h5 className={styles.day_header}>{weekdays[i]}</h5>
+        </StyledBanner>,
+      );
+      // Iterate over each course that takes place on this day
+      for (let j = 0; j < day.length; j++) {
+        const course = day[j];
+        accordion_items.push(
+          <StyledCard key={++id} className={`${styles.card} px-0`}>
+            {/* Custom Accordion Item Header */}
+            <ContextAwareToggle
+              eventKey={`${i}_${course.crn}_${course.season_code}`}
+              course={course}
+            />
+            {/* Accordion Collapsed component */}
+            <Accordion.Collapse
+              eventKey={`${i}_${course.crn}_${course.season_code}`}
+            >
+              <Card.Body className="px-2 pt-2 pb-3">
+                <Row className="m-auto">
+                  {/* Course Title */}
+                  <Col className="p-0">
+                    <strong>{course.title}</strong>
+                  </Col>
+                  <Col xs="auto" className="pr-0">
+                    {/* Course Skills and Areas */}
+                    {course.skills &&
+                      course.skills.map((skill) => (
+                        <SkillBadge key={skill} skill={skill} />
+                      ))}
+                    {course.areas &&
+                      course.areas.map((area) => (
+                        <SkillBadge key={area} skill={area} />
+                      ))}
+                  </Col>
+                </Row>
+                {/* Course Professors */}
+                <Row className="mx-auto pb-2" style={{ fontWeight: 500 }}>
+                  <TextComponent type={1}>{course.professors}</TextComponent>
+                </Row>
+                {/* Course Description */}
+                <Row className="m-auto">
+                  <ResponsiveEllipsis
+                    style={{ whiteSpace: 'pre-wrap' }}
+                    text={
+                      course.description ? course.description : 'no description'
+                    }
+                    maxLine={8}
+                    basedOn="words"
+                  />
+                </Row>
+                {/* Button to trigger course modal */}
+                <Row className="m-auto">
+                  <StyledBanner
+                    onClick={showModal(course)}
+                    className={`${styles.more_info} mt-2 font-weight-bold`}
+                  >
+                    <TextComponent type={1}>More Info</TextComponent>
+                  </StyledBanner>
+                </Row>
+              </Card.Body>
+            </Accordion.Collapse>
+          </StyledCard>,
+        );
+      }
+      dayIndex++;
+    }
+    return <Accordion>{accordion_items}</Accordion>;
+  }, [parsed_courses, showModal]);
 
   // TODO: add an empty state
 

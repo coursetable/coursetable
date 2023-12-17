@@ -192,48 +192,45 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   );
 
   // Add Friend
-  const addFriend = useCallback((netId1 = '', netId2 = ''): Promise<void> => {
-    return axios.get(
-      `${API_ENDPOINT}/api/friends/add/?id=${netId1}&id2=${netId2}`,
-      {
+  const addFriend = useCallback(
+    (netId1 = '', netId2 = ''): Promise<void> =>
+      axios.get(`${API_ENDPOINT}/api/friends/add/?id=${netId1}&id2=${netId2}`, {
         withCredentials: true,
-      },
-    );
-  }, []);
-
-  // Remove Friend
-  const removeFriend = useCallback(
-    (netId1 = '', netId2 = ''): Promise<void> => {
-      return axios.get(
-        `${API_ENDPOINT}/api/friends/remove/?id=${netId1}&id2=${netId2}`,
-        {
-          withCredentials: true,
-        },
-      );
-    },
+      }),
     [],
   );
 
-  const friendRequest = useCallback((friendNetId = ''): Promise<void> => {
-    return axios.get(`${API_ENDPOINT}/api/friends/request/?id=${friendNetId}`, {
-      withCredentials: true,
-    });
-  }, []);
+  // Remove Friend
+  const removeFriend = useCallback(
+    (netId1 = '', netId2 = ''): Promise<void> =>
+      axios.get(
+        `${API_ENDPOINT}/api/friends/remove/?id=${netId1}&id2=${netId2}`,
+        { withCredentials: true },
+      ),
+    [],
+  );
+
+  const friendRequest = useCallback(
+    (friendNetId = ''): Promise<void> =>
+      axios.get(`${API_ENDPOINT}/api/friends/request/?id=${friendNetId}`, {
+        withCredentials: true,
+      }),
+    [],
+  );
 
   const resolveFriendRequest = useCallback(
-    (friendNetId = ''): Promise<void> => {
-      return axios.get(
+    (friendNetId = ''): Promise<void> =>
+      axios.get(
         `${API_ENDPOINT}/api/friends/resolveRequest/?id=${friendNetId}`,
         {
           withCredentials: true,
         },
-      );
-    },
+      ),
     [],
   );
 
-  const user = useMemo(() => {
-    return {
+  const user = useMemo(
+    () => ({
       netId,
       worksheet,
       hasEvals,
@@ -242,17 +239,18 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
       friendRequests,
       friendWorksheets,
       allNames,
-    };
-  }, [
-    netId,
-    worksheet,
-    hasEvals,
-    year,
-    school,
-    friendRequests,
-    friendWorksheets,
-    allNames,
-  ]);
+    }),
+    [
+      netId,
+      worksheet,
+      hasEvals,
+      year,
+      school,
+      friendRequests,
+      friendWorksheets,
+      allNames,
+    ],
+  );
 
   const store = useMemo(
     () => ({

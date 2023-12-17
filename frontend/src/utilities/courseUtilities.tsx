@@ -1,4 +1,3 @@
-/* eslint-disable guard-for-in */
 // Performing various actions on the listing dictionary
 import moment from 'moment';
 import { Crn, Season, Weekdays, weekdays } from './common';
@@ -112,11 +111,11 @@ export function friendsAlsoTaking(
   if (!worksheets) return [];
   // List of FB friends also shopping
   const also_taking = [];
-  for (const friend in worksheets) {
+  for (const friend of Object.keys(worksheets)) {
     if (
-      worksheets[friend].find((value) => {
-        return value[0] === season_code && parseInt(value[1], 10) === crn;
-      })
+      worksheets[friend].some(
+        (value) => value[0] === season_code && parseInt(value[1], 10) === crn,
+      )
     )
       // Found one
       also_taking.push(names[friend].name);
@@ -138,7 +137,7 @@ export const getNumFriends = (
   // Object to return
   const friend_dict: NumFriendsReturn = {};
   // Iterate over each friend's worksheet
-  for (const friend in worksheets) {
+  for (const friend of Object.keys(worksheets)) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
@@ -369,26 +368,18 @@ export const toRealTime = (time: number): string => {
 };
 
 // Convert 24 hour time to 12 hour time
-export const to12HourTime = (time: string): string => {
-  return DateTime.fromFormat(time, 'H:mm').toFormat('h:mma');
-};
+export const to12HourTime = (time: string): string =>
+  DateTime.fromFormat(time, 'H:mm').toFormat('h:mma');
 
 // Convert 12 hour time to 24 hour time
-export const to24HourTime = (time: string): string => {
-  return DateTime.fromFormat(time, 'h:mm').toFormat('H:mm');
-};
+export const to24HourTime = (time: string): string =>
+  DateTime.fromFormat(time, 'h:mm').toFormat('H:mm');
 
 // Base log
-const getBaseLog = (x: number, y: number) => {
-  return Math.log(y) / Math.log(x);
-};
+const getBaseLog = (x: number, y: number) => Math.log(y) / Math.log(x);
 
 // Convert linear to exponential
-export const toExponential = (number: number): number => {
-  return 1.01 ** number;
-};
+export const toExponential = (number: number): number => 1.01 ** number;
 
 // Convert exponential to linear
-export const toLinear = (number: number): number => {
-  return getBaseLog(1.01, number);
-};
+export const toLinear = (number: number): number => getBaseLog(1.01, number);
