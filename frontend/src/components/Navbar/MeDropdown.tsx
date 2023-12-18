@@ -1,19 +1,10 @@
 import React from 'react';
 import { Row, Col, Collapse } from 'react-bootstrap';
-import {
-  FcCalendar,
-  FcInfo,
-  FcQuestions,
-  FcFeedback,
-  FcPuzzle,
-} from 'react-icons/fc';
+import { FcInfo, FcQuestions, FcFeedback, FcPuzzle } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import FileSaver from 'file-saver';
 
 import styles from './MeDropdown.module.css';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { logout, scrollToTop } from '../../utilities';
-import { getCalendarEvents } from '../../utilities/calendar';
 import {
   SurfaceComponent,
   TextComponent,
@@ -46,38 +37,6 @@ function MeDropdown({
 }: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
-  const { curSeason, hiddenCourses, courses } = useWorksheet();
-
-  const exportICS = () => {
-    const events = getCalendarEvents('ics', courses, curSeason, hiddenCourses);
-    // Error already reported
-    if (events.length === 0) return;
-    const value = `BEGIN:VCALENDAR
-CALSCALE:GREGORIAN
-VERSION:2.0
-BEGIN:VTIMEZONE
-TZID:America/New_York
-BEGIN:DAYLIGHT
-DTSTART:20070311T020000
-RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
-TZNAME:EDT
-TZOFFSETFROM:-0500
-TZOFFSETTO:-0400
-END:DAYLIGHT
-BEGIN:STANDARD
-DTSTART:20071104T020000
-RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
-TZNAME:EST
-TZOFFSETFROM:-0400
-TZOFFSETTO:-0500
-END:STANDARD
-END:VTIMEZONE
-${events.join('\n')}
-END:VCALENDAR`;
-    // Download to user's computer
-    const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, `${curSeason}_worksheet.ics`);
-  };
 
   return (
     <SurfaceComponent
@@ -168,19 +127,6 @@ END:VCALENDAR`;
                   >
                     <StyledHoverText>Tutorial</StyledHoverText>
                   </NavLink>
-                </TextComponent>
-              </Row>
-            )}
-            {/* Export Worksheet button */}
-            {isLoggedIn && (
-              <Row className="pb-3 m-auto">
-                <FcCalendar className="mr-2 my-auto" size={20} />
-                <TextComponent
-                  type={1}
-                  onClick={exportICS}
-                  className={styles.collapse_text}
-                >
-                  <StyledHoverText>Export Worksheet</StyledHoverText>
                 </TextComponent>
               </Row>
             )}

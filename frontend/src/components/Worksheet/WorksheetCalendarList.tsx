@@ -1,5 +1,13 @@
 import React, { useMemo } from 'react';
-import { ListGroup, Row, Col } from 'react-bootstrap';
+import {
+  ListGroup,
+  Button,
+  Dropdown,
+  DropdownButton,
+  ButtonGroup,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import styled from 'styled-components';
 import { SurfaceComponent } from '../StyledComponents';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
@@ -7,7 +15,10 @@ import WorksheetStats from './WorksheetStats';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import { TbFileExport } from 'react-icons/tb';
 import GoogleCalendarButton from './GoogleCalendarButton';
+import ICSExportButton from './ICSExportButton';
+import styles from './WorksheetCalendarList.module.css';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -32,8 +43,12 @@ const StyledBsEye = styled(BsEye)`
   transition: transform 0.3s !important;
 `;
 
+const StyledTbFileExport = styled(TbFileExport)`
+  transition: transform 0.3s !important;
+`;
+
 // Show/hide all button
-export const StyledBtn = styled.div`
+export const StyledBtn = styled(Button)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
   padding: 5px;
@@ -51,12 +66,19 @@ export const StyledBtn = styled.div`
     background-color ${({ theme }) => theme.transDur},
     color ${({ theme }) => theme.transDur};
 
+  &:active {
+    background-color: ${({ theme }) => theme.buttonActive} !important;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: ${({ theme }) => theme.text[2]} !important;
+  }
+
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
-    ${StyledBsEyeSlash} {
-      transform: scale(1.15);
-    }
-    ${StyledBsEye} {
+    background-color: ${({ theme }) => theme.buttonActive};
+    ${StyledBsEyeSlash}, ${StyledBsEye}, ${StyledTbFileExport} {
       transform: scale(1.15);
     }
   }
@@ -122,37 +144,56 @@ function WorksheetCalendarList() {
     return Object.keys(hiddenCourses[curSeason]).length === courses.length;
   }, [hiddenCourses, courses, curSeason]);
 
+  const HideShowIcon = areHidden ? StyledBsEyeSlash : StyledBsEye;
+
   return (
     <>
       <WorksheetStats />
-      {/* Hide/show toggle */}
       <StyledSpacer className="pt-3">
         <StyledContainer layer={1} className="mx-1">
           <div className="shadow-sm p-2">
-            {/* Gcal Button */}
-            <Row className="mx-auto">
-              <Col className="px-0 w-100">
-                <GoogleCalendarButton />
-              </Col>
-            </Row>
-            {/* Hide/Show All Button */}
-            <Row className="mx-auto">
-              <Col className="px-0 w-100">
-                <StyledBtn onClick={() => toggleCourse(areHidden ? -2 : -1)}>
-                  {areHidden ? (
-                    <>
-                      <StyledBsEyeSlash className="my-auto pr-2" size={26} />{' '}
-                      Show
-                    </>
-                  ) : (
-                    <>
-                      <StyledBsEye className="my-auto pr-2" size={26} /> Hide
-                    </>
-                  )}{' '}
-                  All
+            <ButtonGroup className="w-100">
+              <OverlayTrigger
+                placement="top"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>{areHidden ? 'Show' : 'Hide'} all</span>
+                  </Tooltip>
+                )}
+              >
+                <StyledBtn
+                  onClick={() => toggleCourse(areHidden ? -2 : -1)}
+                  variant="none"
+                  className="px-3 w-100"
+                >
+                  <HideShowIcon className="my-auto pr-2" size={32} />
                 </StyledBtn>
-              </Col>
-            </Row>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="top"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>Export worksheet calendar</span>
+                  </Tooltip>
+                )}
+              >
+                <DropdownButton
+                  as={StyledBtn}
+                  drop="down"
+                  menuAlign="right"
+                  title={<StyledTbFileExport size={22} />}
+                  variant="none"
+                  className={`${styles.exportDropdown} w-100`}
+                >
+                  <Dropdown.Item eventKey="1">
+                    <GoogleCalendarButton />
+                  </Dropdown.Item>
+                  <Dropdown.Item eventKey="2">
+                    <ICSExportButton />
+                  </Dropdown.Item>
+                </DropdownButton>
+              </OverlayTrigger>
+            </ButtonGroup>
           </div>
         </StyledContainer>
       </StyledSpacer>

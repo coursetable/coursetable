@@ -1,0 +1,3 @@
+.exportDropdown :global(.dropdown-menu) {
+  min-width: 20rem !important;
+}

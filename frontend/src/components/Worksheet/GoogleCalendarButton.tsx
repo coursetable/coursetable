@@ -3,7 +3,6 @@ import { loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
 import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { StyledBtn } from './WorksheetCalendarList';
 import { academicCalendars } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { getCalendarEvents } from '../../utilities/calendar';
@@ -160,22 +159,18 @@ function GoogleCalendarButton(): JSX.Element {
     }
   }, [authInstance, user, syncEvents]);
 
-  if (loading) {
-    return (
-      <StyledBtn>
-        <Spinner animation="border" role="status" size="sm" />
-      </StyledBtn>
-    );
-  }
-
   return (
-    <StyledBtn
+    <div
       id={user ? 'sync' : 'auth'}
-      onClick={user ? syncEvents : undefined}
+      onClick={user && !loading ? syncEvents : undefined}
     >
-      <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
+      {loading ? (
+        <Spinner animation="border" role="status" size="sm" />
+      ) : (
+        <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
+      )}
       &nbsp;&nbsp;Export to Google Calendar
-    </StyledBtn>
+    </div>
   );
 }
 
