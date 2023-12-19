@@ -2,6 +2,7 @@ import React from 'react';
 import FileSaver from 'file-saver';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { getCalendarEvents } from '../../utilities/calendar';
+import ICSIcon from '../../images/ics.svg';
 
 export default function ICSExportButton() {
   const { cur_season, hidden_courses, courses } = useWorksheet();
@@ -42,5 +43,10 @@ END:VCALENDAR`;
     FileSaver.saveAs(blob, `${cur_season}_worksheet.ics`);
   };
 
-  return <div onClick={exportICS}>Download as ICS</div>;
+  return (
+    <div onClick={exportICS}>
+      <img style={{ height: '2rem' }} src={ICSIcon} alt="" />
+      &nbsp;&nbsp;Download as ICS
+    </div>
+  );
 }
