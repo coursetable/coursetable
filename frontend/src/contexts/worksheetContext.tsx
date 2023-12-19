@@ -10,13 +10,14 @@ import {
   useLocalStorageState,
   useSessionStorageState,
 } from '../utilities/browserStorage';
+import { CUR_SEASON } from '../config';
 import { useFerry } from './ferryContext';
 import { toSeasonString } from '../utilities/courseUtilities';
 // import { sortbyOptions } from './queries/Constants';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { useUser, Worksheet } from './userContext';
 import type { Season, Listing } from '../utilities/common';
-import { OptType, Option, defaultFilters } from './searchContext';
+import type { OptType, Option } from './searchContext';
 
 export type HiddenCourses = Record<Season, Record<number, boolean>>;
 export type WorksheetView = Record<string, string>;
@@ -126,7 +127,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Current season
   const [cur_season, setCurSeason] = useSessionStorageState<Season>(
     'cur_season',
-    defaultFilters.defaultSeason[0].value,
+    CUR_SEASON,
   );
 
   // Current worksheet number
