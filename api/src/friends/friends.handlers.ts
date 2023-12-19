@@ -3,9 +3,6 @@
  */
 
 import express from 'express';
-
-// import axios from 'axios';
-
 import { prisma } from '../config';
 
 import winston from '../logging/winston';
@@ -47,7 +44,6 @@ export const addFriend = async (
         // basic info for creation
         create: {
           netId,
-          // name: friend.name,
           friendNetId,
         },
         // update people's names if they've changed
@@ -132,7 +128,6 @@ export const friendRequest = async (
         // basic info for creation
         create: {
           netId,
-          // name: friend.name,
           friendNetId,
         },
         // update people's names if they've changed
@@ -317,12 +312,10 @@ export const getFriendsWorksheets = async (
           oci_id,
           worksheet_number,
         ]);
-        // worksheetsByFriend[net_id].push([String(season), oci_id]);
       } else {
         worksheetsByFriend[net_id] = [
           [String(season), oci_id, worksheet_number],
         ];
-        // worksheetsByFriend[net_id] = [[String(season), oci_id]];
       }
     },
   );
