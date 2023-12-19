@@ -43,8 +43,10 @@ const StyledBsEye = styled(BsEye)`
   transition: transform 0.3s !important;
 `;
 
+// Calendar export icon
 const StyledTbFileExport = styled(TbFileExport)`
   transition: transform 0.3s !important;
+  color: ${({ theme }) => theme.text[0]};
 `;
 
 // Show/hide all button
