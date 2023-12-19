@@ -5,15 +5,10 @@ import { getCalendarEvents } from '../../utilities/calendar';
 import ICSIcon from '../../images/ics.svg';
 
 export default function ICSExportButton() {
-  const { cur_season, hidden_courses, courses } = useWorksheet();
+  const { curSeason, hiddenCourses, courses } = useWorksheet();
 
   const exportICS = () => {
-    const events = getCalendarEvents(
-      'ics',
-      courses,
-      cur_season,
-      hidden_courses,
-    );
+    const events = getCalendarEvents('ics', courses, curSeason, hiddenCourses);
     // Error already reported
     if (events.length === 0) return;
     const value = `BEGIN:VCALENDAR
@@ -40,7 +35,7 @@ ${events.join('\n')}
 END:VCALENDAR`;
     // Download to user's computer
     const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-    FileSaver.saveAs(blob, `${cur_season}_worksheet.ics`);
+    FileSaver.saveAs(blob, `${curSeason}_worksheet.ics`);
   };
 
   return (

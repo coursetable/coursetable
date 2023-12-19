@@ -43,14 +43,13 @@ const StyledBsEye = styled(BsEye)`
   transition: transform 0.3s !important;
 `;
 
-// Calendar export icon
 const StyledTbFileExport = styled(TbFileExport)`
   transition: transform 0.3s !important;
   color: ${({ theme }) => theme.text[0]};
 `;
 
 // Show/hide all button
-export const StyledBtn = styled(Button)`
+const StyledBtn = styled(Button)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
   padding: 5px;
@@ -80,6 +79,7 @@ export const StyledBtn = styled(Button)`
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
     background-color: ${({ theme }) => theme.buttonActive};
+    color: ${({ theme }) => theme.text[0]} !important;
     ${StyledBsEyeSlash}, ${StyledBsEye}, ${StyledTbFileExport} {
       transform: scale(1.15);
     }
