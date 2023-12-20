@@ -103,7 +103,7 @@ const StyledBtn = styled(Button)`
   }
 
   & .dropdown-item:hover {
-    background-color: ${({ theme }) => theme.buttonActive};
+    background-color: ${({ theme }) => theme.selectHover};
   }
 `;
 
