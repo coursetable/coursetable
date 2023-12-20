@@ -55,7 +55,7 @@ function FriendsDropdown() {
     );
   };
 
-  const friend_options = friends.map((curr_person) => (
+  const friendOptions = friends.map((curr_person) => (
     <DropdownItem key={curr_person} person={curr_person} />
   ));
 
@@ -70,7 +70,7 @@ function FriendsDropdown() {
           }
         }}
       >
-        {friend_options}
+        {friendOptions}
       </DropdownButton>
     </div>
   );

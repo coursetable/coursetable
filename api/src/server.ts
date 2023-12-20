@@ -21,7 +21,7 @@ import { createProxyMiddleware } from 'http-proxy-middleware';
 // import routes
 import catalog from './catalog/catalog.routes';
 import { authWithEvals, passportConfig } from './auth/auth.handlers';
-import cas_auth from './auth/auth.routes';
+import casAuth from './auth/auth.routes';
 import friends from './friends/friends.routes';
 import canny from './canny/canny.routes';
 import user from './user/user.routes';
@@ -134,7 +134,7 @@ https
   // Activate catalog and CAS authentication
   await challenge(app);
   await catalog(app);
-  await cas_auth(app);
+  await casAuth(app);
   await friends(app);
   await canny(app);
   await user(app);

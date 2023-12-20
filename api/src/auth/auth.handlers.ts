@@ -5,7 +5,6 @@
 import express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
-import { User } from '../models/student';
 
 import winston from '../logging/winston';
 
@@ -155,7 +154,7 @@ export const passportConfig = async (
    * @param user: user to encode.
    * @param done: callback function to be executed after serialization.
    */
-  passport.serializeUser((user: User, done): void => {
+  passport.serializeUser((user, done) => {
     winston.info(`Serializing user ${user}`);
     return done(null, user.netId);
   });

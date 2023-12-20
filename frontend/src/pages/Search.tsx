@@ -44,12 +44,12 @@ function Search() {
   // Get search context data
   const {
     searchText,
-    select_subjects,
-    select_skillsareas,
+    selectSubjects,
+    selectSkillsAreas,
     overallBounds,
     workloadBounds,
-    select_seasons,
-    select_schools,
+    selectSeasons,
+    selectSchools,
     hideCancelled,
     hideConflicting,
     hideFirstYearSeminars,
@@ -59,9 +59,9 @@ function Search() {
     coursesLoading,
     searchData,
     multiSeasons,
-    reset_key,
+    resetKey,
     isLoggedIn,
-    num_friends,
+    numFriends,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -161,7 +161,7 @@ function Search() {
                 </Row>
                 {/* Sort by option and order */}
                 <Row className="mx-auto py-0 px-4">
-                  <SortByReactSelect key={reset_key} />
+                  <SortByReactSelect key={resetKey} />
                 </Row>
                 <StyledHr />
                 <Row className={`mx-auto py-0 px-4 ${styles.multi_selects}`}>
@@ -170,7 +170,7 @@ function Search() {
                     {seasonsOptions && (
                       <CustomSelect
                         isMulti
-                        value={select_seasons}
+                        value={selectSeasons}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
                         // prevent overlap with tooltips
@@ -189,7 +189,7 @@ function Search() {
                   >
                     <CustomSelect
                       isMulti
-                      value={select_skillsareas}
+                      value={selectSkillsAreas}
                       options={skillsAreasOptions}
                       placeholder="All Skills/Areas"
                       useColors
@@ -204,7 +204,7 @@ function Search() {
                   {/* <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                   <CustomSelect
                     isMulti
-                    value={select_credits}
+                    value={selectCredits}
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
@@ -218,7 +218,7 @@ function Search() {
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect
                       isMulti
-                      value={select_subjects}
+                      value={selectSubjects}
                       options={subjectOptions}
                       placeholder="All Subjects"
                       isSearchable
@@ -233,7 +233,7 @@ function Search() {
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect
                       isMulti
-                      value={select_schools}
+                      value={selectSchools}
                       options={schoolOptions}
                       placeholder="All Schools"
                       // prevent overlap with tooltips
@@ -255,7 +255,7 @@ function Search() {
                         min={defaultFilters.defaultRatingBounds[0]}
                         max={defaultFilters.defaultRatingBounds[1]}
                         step={0.1}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={overallBounds}
                         onChange={(value) => {
                           setOverallValueLabels(value);
@@ -285,7 +285,7 @@ function Search() {
                         min={defaultFilters.defaultRatingBounds[0]}
                         max={defaultFilters.defaultRatingBounds[1]}
                         step={0.1}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={workloadBounds}
                         onChange={(value) => {
                           setWorkloadValueLabels(value);
@@ -320,7 +320,7 @@ function Search() {
                         min={toRangeTime(defaultFilters.defaultTimeBounds[0])}
                         max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
                         step={1}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={timeBounds.map(toRangeTime)}
                         onChange={(value) => {
                           setTimeValueLabels(value.map(toRealTime));
@@ -349,7 +349,7 @@ function Search() {
                           toLinear(defaultFilters.defaultEnrollBounds[1])
                         )}
                         step={10}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={enrollBounds.map(toLinear)}
                         onChange={(value) => {
                           setEnrollValueLabels(
@@ -478,7 +478,7 @@ function Search() {
               loading={coursesLoading}
               multiSeasons={multiSeasons}
               isLoggedIn={isLoggedIn}
-              num_friends={num_friends}
+              numFriends={numFriends}
             />
           </Element>
         </Col>

@@ -51,7 +51,7 @@ function firstDaySince(reference: SimpleDate, days: number[]) {
   return referenceDate;
 }
 
-function getTimes(times_by_day: Listing['times_by_day']) {
+function getTimes(timesByDay: Listing['times_by_day']) {
   const times: {
     days: number[];
     startTime: string;
@@ -60,7 +60,7 @@ function getTimes(times_by_day: Listing['times_by_day']) {
   }[] = [];
 
   for (let idx = 1; idx <= 5; idx++) {
-    const info = times_by_day[weekdays[idx - 1]];
+    const info = timesByDay[weekdays[idx - 1]];
     if (!info) continue;
     for (const [startTime, endTime, location] of info) {
       const time = times.find(
@@ -167,23 +167,23 @@ END:VEVENT`;
 export function getCalendarEvents(
   type: 'gcal',
   courses: Listing[],
-  cur_season: Season,
-  hidden_courses: HiddenCourses,
+  curSeason: Season,
+  hiddenCourses: HiddenCourses,
 ): ReturnType<typeof toGCalEvent>[];
 export function getCalendarEvents(
   type: 'ics',
   courses: Listing[],
-  cur_season: Season,
-  hidden_courses: HiddenCourses,
+  curSeason: Season,
+  hiddenCourses: HiddenCourses,
 ): ReturnType<typeof toICSEvent>[];
 export function getCalendarEvents(
   type: 'gcal' | 'ics',
   courses: Listing[],
-  cur_season: Season,
-  hidden_courses: HiddenCourses,
+  curSeason: Season,
+  hiddenCourses: HiddenCourses,
 ) {
-  const seasonString = toSeasonString(cur_season);
-  if (!academicCalendars[cur_season]) {
+  const seasonString = toSeasonString(curSeason);
+  if (!academicCalendars[curSeason]) {
     toast.error(
       `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
     );
@@ -191,9 +191,9 @@ export function getCalendarEvents(
   }
   const visibleCourses = courses.filter(
     (course) =>
-      !hidden_courses[cur_season] ||
-      !(course.crn in hidden_courses[cur_season]) ||
-      !hidden_courses[cur_season][course.crn],
+      !hiddenCourses[curSeason] ||
+      !(course.crn in hiddenCourses[curSeason]) ||
+      !hiddenCourses[curSeason][course.crn],
   );
   if (visibleCourses.length === 0) {
     toast.error(`No courses in ${seasonString} to export!`);

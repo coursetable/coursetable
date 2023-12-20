@@ -18,9 +18,9 @@ const StyledSortBtn = styled.div`
   cursor: pointer;
   border-radius: 4px;
   padding: 2px;
-  transition: background-color ${({ theme }) => theme.trans_dur};
+  transition: background-color ${({ theme }) => theme.transDur};
   &:hover {
-    background-color: ${({ theme }) => theme.button_active};
+    background-color: ${({ theme }) => theme.buttonActive};
   }
 `;
 
@@ -44,7 +44,7 @@ function ResultsColumnSort({ selectOption }: Props) {
   const [active, setActive] = useState(false);
 
   // Get search context data
-  const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
+  const { selectSortby, sortOrder, setSelectSortby, setSortOrder } =
     useSearch();
 
   const globalTheme = useTheme();
@@ -52,26 +52,26 @@ function ResultsColumnSort({ selectOption }: Props) {
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
-      if (select_sortby.value === selectOption.value) {
-        setLocalSortOrder(sort_order);
+      if (selectSortby.value === selectOption.value) {
+        setLocalSortOrder(sortOrder);
         setActive(true);
       }
       setFirstTime(false);
-    } else if (!active && select_sortby.value === selectOption.value) {
+    } else if (!active && selectSortby.value === selectOption.value) {
       setActive(true);
-    } else if (active && select_sortby.value !== selectOption.value) {
+    } else if (active && selectSortby.value !== selectOption.value) {
       setActive(false);
     }
-  }, [firstTime, selectOption, select_sortby, sort_order, active]);
+  }, [firstTime, selectOption, selectSortby, sortOrder, active]);
 
   return (
     <>
       <StyledSortBtn
-        style={{ backgroundColor: active ? globalTheme.select_hover : '' }}
+        style={{ backgroundColor: active ? globalTheme.selectHover : '' }}
         className="ml-1 my-auto"
         onClick={() => {
           // If not sorting by this option previously, start sorting this option
-          if (select_sortby.value !== selectOption.value) {
+          if (selectSortby.value !== selectOption.value) {
             setSelectSortby(selectOption);
             setSortOrder(localSortOrder);
             return;

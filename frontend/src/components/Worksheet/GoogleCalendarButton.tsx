@@ -19,7 +19,7 @@ function GoogleCalendarButton(): JSX.Element {
     useState<gapi.auth2.GoogleAuthBase | null>(null);
   const [user, setUser] = useState<gapi.auth2.GoogleUser | null>(null);
   const [loading, setLoading] = useState(true);
-  const { cur_season, hidden_courses, courses } = useWorksheet();
+  const { curSeason, hiddenCourses, courses } = useWorksheet();
 
   // Load gapi client after gapi script loaded
   const loadGapiClient = (gapiInstance: typeof globalThis.gapi) => {
@@ -55,8 +55,8 @@ function GoogleCalendarButton(): JSX.Element {
       Sentry.captureException(new Error('gapi not loaded'));
       return;
     }
-    const seasonString = toSeasonString(cur_season);
-    const semester = academicCalendars[cur_season];
+    const seasonString = toSeasonString(curSeason);
+    const semester = academicCalendars[curSeason];
     if (!semester) {
       toast.error(
         `Can't construct calendar events for ${seasonString} because there is no academic calendar available.`,
@@ -67,7 +67,7 @@ function GoogleCalendarButton(): JSX.Element {
 
     try {
       // get all previously added classes
-      const event_list = await gapi.client.calendar.events.list({
+      const eventList = await gapi.client.calendar.events.list({
         calendarId: 'primary',
         // TODO: this is UTC date, which shouldn't matter, but we want
         // America/New_York. This is easily fixable once we use Temporal
@@ -82,9 +82,9 @@ function GoogleCalendarButton(): JSX.Element {
       });
 
       // delete all previously added classes
-      if (event_list.result.items.length > 0) {
+      if (eventList.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        const promises = event_list.result.items.map((event) => {
+        const promises = eventList.result.items.map((event) => {
           if (event.id.startsWith('coursetable') && event.recurringEventId) {
             if (!deletedIds.has(event.recurringEventId)) {
               deletedIds.add(event.recurringEventId);
@@ -101,8 +101,8 @@ function GoogleCalendarButton(): JSX.Element {
       const events = getCalendarEvents(
         'gcal',
         courses,
-        cur_season,
-        hidden_courses,
+        curSeason,
+        hiddenCourses,
       );
       const promises = events.map(async (event) => {
         try {
@@ -128,7 +128,7 @@ function GoogleCalendarButton(): JSX.Element {
     } finally {
       setLoading(false);
     }
-  }, [courses, gapi, cur_season, hidden_courses]);
+  }, [courses, gapi, curSeason, hiddenCourses]);
 
   useEffect(() => {
     if (!authInstance) {

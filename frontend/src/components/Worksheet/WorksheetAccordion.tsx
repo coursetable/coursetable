@@ -46,15 +46,12 @@ function ContextAwareToggle({
   // Is this item selected?
   const isCurrentEventKey = currentEventKey === eventKey;
 
-  const style_color = {
-    backgroundColor: theme.select_hover,
+  const styleColor = {
+    backgroundColor: theme.selectHover,
   };
 
   return (
-    <div
-      style={isCurrentEventKey ? style_color : {}}
-      onClick={decoratedOnClick}
-    >
+    <div style={isCurrentEventKey ? styleColor : {}} onClick={decoratedOnClick}>
       <Row className={`${styles.header} p-2 mx-auto`}>
         <Col xs="auto" style={{ fontWeight: 500 }}>
           {/* Course Code */}
@@ -94,7 +91,7 @@ function WorksheetAccordion() {
 
   // Parse listing dictionaries and determine which courses take place on each weekday
   const parseListings = useCallback((listings: Listing[]) => {
-    const parsed_courses: [
+    const parsedCourses: [
       Listing[],
       Listing[],
       Listing[],
@@ -115,22 +112,22 @@ function WorksheetAccordion() {
           // Fix start time if needed
           if (course.start_time.get('hour') < 8) course.start_time.add('h', 12);
           // Add listing to this weekday's list
-          parsed_courses[indx].push(course);
+          parsedCourses[indx].push(course);
         }
       }
     });
     // Sort the courses in chronological order for each day
-    parsed_courses.forEach((day) => {
+    parsedCourses.forEach((day) => {
       day.sort(
         (a, b) =>
           (a.start_time?.valueOf() || 0) - (b.start_time?.valueOf() || 0),
       );
     });
-    return parsed_courses;
+    return parsedCourses;
   }, []);
 
   // Get courses by day
-  const parsed_courses = useMemo(
+  const parsedCourses = useMemo(
     () => parseListings(courses),
     [courses, parseListings],
   );
@@ -144,11 +141,11 @@ function WorksheetAccordion() {
     // Unique id for each array item
     let id = 0;
     // List to hold HTML
-    const accordion_items = [];
+    const accordionItems = [];
     // Iterate over each day starting with the current day
     for (let i = today - 1; dayIndex < 5; i = (i + 1) % 5) {
       // List of courses for this day
-      const day = parsed_courses[i];
+      const day = parsedCourses[i];
       // Skip if no courses on this day
       if (day.length === 0) {
         dayIndex++;
@@ -156,7 +153,7 @@ function WorksheetAccordion() {
       }
 
       // Add header for this weekday
-      accordion_items.push(
+      accordionItems.push(
         <StyledBanner key={++id}>
           <h5 className={styles.day_header}>{weekdays[i]}</h5>
         </StyledBanner>,
@@ -164,7 +161,7 @@ function WorksheetAccordion() {
       // Iterate over each course that takes place on this day
       for (let j = 0; j < day.length; j++) {
         const course = day[j];
-        accordion_items.push(
+        accordionItems.push(
           <StyledCard key={++id} className={`${styles.card} px-0`}>
             {/* Custom Accordion Item Header */}
             <ContextAwareToggle
@@ -224,8 +221,8 @@ function WorksheetAccordion() {
       }
       dayIndex++;
     }
-    return <Accordion>{accordion_items}</Accordion>;
-  }, [parsed_courses, showModal]);
+    return <Accordion>{accordionItems}</Accordion>;
+  }, [parsedCourses, showModal]);
 
   // TODO: add an empty state
 

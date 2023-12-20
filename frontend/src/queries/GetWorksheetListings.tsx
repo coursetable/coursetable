@@ -7,9 +7,9 @@ import * as Sentry from '@sentry/react';
 export const useWorksheetInfo = (
   worksheet: Worksheet | undefined,
   season: Season | null = null,
-  worksheet_number = '0',
+  worksheetNumber = '0',
 ) => {
-  const required_seasons = useMemo(() => {
+  const requiredSeasons = useMemo(() => {
     if (!worksheet || worksheet.length === 0) {
       // If the worksheet is empty, we don't want to request data for any
       // seasons, even if a specific season is requested.
@@ -26,7 +26,7 @@ export const useWorksheetInfo = (
     return Array.from(seasons); // idk just need to return something i think
   }, [season, worksheet]);
 
-  const { loading, error, courses } = useCourseData(required_seasons);
+  const { loading, error, courses } = useCourseData(requiredSeasons);
 
   const data = useMemo(() => {
     const dataReturn: Listing[] = [];
@@ -34,23 +34,23 @@ export const useWorksheetInfo = (
 
     // Resolve the worksheet items.
     for (let i = 0; i < worksheet.length; i++) {
-      const season_code: string = worksheet[i][0];
+      const seasonCode: string = worksheet[i][0];
       const crn = parseInt(worksheet[i][1], 10);
-      const worksheet_number_course: string = worksheet[i][2];
-      if (season !== null && season != season_code) {
+      const worksheetNumberCourse: string = worksheet[i][2];
+      if (season !== null && season != seasonCode) {
         continue;
       }
 
       if (
         courses &&
-        season_code in courses &&
-        worksheet_number_course == worksheet_number
+        seasonCode in courses &&
+        worksheetNumberCourse == worksheetNumber
       ) {
-        const course = courses[season_code].get(crn);
+        const course = courses[seasonCode].get(crn);
         if (!course) {
           Sentry.captureException(
             new Error(
-              `failed to resolve worksheet course ${season_code} ${crn}`,
+              `failed to resolve worksheet course ${seasonCode} ${crn}`,
             ),
           );
         } else {
@@ -59,6 +59,6 @@ export const useWorksheetInfo = (
       }
     }
     return dataReturn;
-  }, [season, courses, worksheet, worksheet_number]);
+  }, [season, courses, worksheet, worksheetNumber]);
   return { loading, error, data };
 };

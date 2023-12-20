@@ -16,7 +16,7 @@ export interface CourseEvent {
   location: string;
 }
 
-const event_style = {
+const eventStyle = {
   width: '100%',
   height: '100%',
 };
@@ -58,7 +58,7 @@ function CalendarEvent({ event }: { event: CourseEvent }) {
       // Have a 1000ms delay before showing popover so it only pops up when user wants it to
       delay={{ show: 1000, hide: 0 }}
     >
-      <div style={event_style}>
+      <div style={eventStyle}>
         <strong>{event.title}</strong>
         <br />
         <span style={{ fontSize: '12px' }}>

@@ -6,13 +6,13 @@ import { breakpoints } from '../utilities';
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`
   background-color: ${({ theme, layer }) => theme.surface[layer]};
-  transition: background-color ${({ theme }) => theme.trans_dur};
+  transition: background-color ${({ theme }) => theme.transDur};
 `;
 
 // Span used to color text. Type is an int that represents primary (0) or secondary (1) color
 export const TextComponent = styled.span<{ type: number }>`
   color: ${({ theme, type }) => theme.text[type]};
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 // Small text component
@@ -36,9 +36,9 @@ export const StyledInput = styled(FormControl)`
   border-radius: 8px;
   padding: 0.375rem 0.75rem;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
@@ -57,15 +57,15 @@ export const StyledInput = styled(FormControl)`
 export const StyledHr = styled.hr`
   border-color: ${({ theme }) =>
     theme.theme === 'light' ? '#ededed' : '#404040'};
-  transition: border-color ${({ theme }) => theme.trans_dur};
+  transition: border-color ${({ theme }) => theme.transDur};
 `;
 
 // Card used in Worksheet mobile and about page
 export const StyledCard = styled(Card)`
   background-color: ${({ theme }) => theme.surface[0]};
   transition:
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Expand buttons in worksheet and worksheet expanded
@@ -77,17 +77,17 @@ export const StyledExpandBtn = styled.div`
   z-index: 2;
   transition:
     transform 0.05s linear,
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Popovers in search results item, prof popover in modal, and worksheet calendar
 export const StyledPopover = styled(Popover)`
   background-color: ${({ theme }) => theme.surface[0]};
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 
   .popover-header {
     background-color: ${({ theme }) => theme.banner};
@@ -125,7 +125,7 @@ export const StyledRating = styled.div<{
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};
   background-color: ${({ theme, rating, colormap }) =>
     rating && rating > 0
-      ? colormap(rating).alpha(theme.rating_alpha).css()
+      ? colormap(rating).alpha(theme.ratingAlpha).css()
       : 'inherit'};
   color: ${({ rating }) => (rating && rating > 0 ? '#141414' : '#b5b5b5')};
   display: flex;
@@ -135,9 +135,9 @@ export const StyledRating = styled.div<{
 // Primary Color link
 export const StyledLink = styled.span`
   color: ${({ theme }) => theme.primary};
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
   &:hover {
-    color: ${({ theme }) => theme.primary_hover};
+    color: ${({ theme }) => theme.primaryHover};
     cursor: pointer;
   }
 `;

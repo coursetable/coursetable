@@ -7,13 +7,13 @@ import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 // Next button for tutorial
 const NextButton = styled(Button)`
-  background-color: ${({ theme }) => theme.primary_hover};
+  background-color: ${({ theme }) => theme.primaryHover};
   border-color: transparent !important;
   box-shadow: none !important;
   font-size: 14px;
 
   &:focus {
-    background-color: ${({ theme }) => theme.primary_hover};
+    background-color: ${({ theme }) => theme.primaryHover};
   }
 `;
 
@@ -26,10 +26,10 @@ const PrevButton = styled(Button)`
   font-size: 14px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.button_active};
+    background-color: ${({ theme }) => theme.buttonActive};
   }
   &:active {
-    background-color: ${({ theme }) => theme.button_active} !important;
+    background-color: ${({ theme }) => theme.buttonActive} !important;
   }
   &:focus {
     background-color: transparent;
@@ -215,7 +215,7 @@ function Tutorial({
   const navigate = useNavigate();
 
   // Change react tour helper styling based on theme
-  const helper_style: React.CSSProperties = useMemo(() => {
+  const helperStyle: React.CSSProperties = useMemo(() => {
     let styles: React.CSSProperties = {
       maxWidth: '432px',
       backgroundColor: globalTheme.background,
@@ -260,13 +260,12 @@ function Tutorial({
       let step: ReactourStep = {
         selector: selector && `[data-tutorial="${selector}"]`,
         content,
-        style: helper_style,
+        style: helperStyle,
       };
 
       // Add observe selector if observing
       if (observe) {
-        const observe_selector = `[data-tutorial="${selector}-observe"]`;
-        step = { ...step, observe: observe_selector };
+        step = { ...step, observe: `[data-tutorial="${selector}-observe"]` };
       }
 
       if (position) {
@@ -317,7 +316,7 @@ function Tutorial({
         setIsTutorialOpen(false);
       }}
       startAt={0}
-      accentColor={globalTheme.primary_hover}
+      accentColor={globalTheme.primaryHover}
       rounded={6}
       showCloseButton={currentStep === 0}
       disableDotsNavigation

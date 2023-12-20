@@ -27,6 +27,7 @@ import {
   getEnrolled,
   getOverallRatings,
   getWorkloadRatings,
+  toSeasonString,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
 import type { Listing } from '../../utilities/common';
@@ -47,11 +48,11 @@ const StyledResultsItem = styled(Row)`
 const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
   outline: none !important;
   background-color: ${({ theme, inWorksheet }) =>
-    inWorksheet ? theme.primary_light : 'inherit'};
+    inWorksheet ? theme.primaryLight : 'inherit'};
 
   &:hover {
     cursor: pointer;
-    background-color: ${({ theme }) => theme.select_hover};
+    background-color: ${({ theme }) => theme.selectHover};
   }
 `;
 
@@ -109,27 +110,26 @@ function ResultsItem({
   }, [mounted]);
 
   // Season code for this listing
-  const { season_code } = course;
-  const season = Number(season_code[5]);
-  const year = season_code.substring(2, 4);
-  // Size of season icons
-  const icon_size = 10;
   const seasons = ['spring', 'summer', 'fall'] as const;
+  const season = Number(course.season_code[5]);
+  const year = course.season_code.substring(2, 4);
+  // Size of season icons
+  const iconSize = 10;
   // Determine the icon for this season
   const icon = useMemo(
     () =>
       season === 1 ? (
-        <FcCloseUpMode className="my-auto" size={icon_size} />
+        <FcCloseUpMode className="my-auto" size={iconSize} />
       ) : season === 2 ? (
-        <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
+        <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
       ) : (
-        <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
+        <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
       ),
     [season],
   );
 
   // Fetch overall & workload rating values and string representations
-  const course_rating = useMemo(
+  const courseRating = useMemo(
     () =>
       [
         getOverallRatings(course, false),
@@ -137,7 +137,7 @@ function ResultsItem({
       ] as const,
     [course],
   );
-  const workload_rating = useMemo(
+  const workloadRating = useMemo(
     () =>
       [
         getWorkloadRatings(course, false),
@@ -150,47 +150,47 @@ function ResultsItem({
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
   // Column width styles
-  const szn_style: React.CSSProperties = {
+  const sznStyle: React.CSSProperties = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const code_style: React.CSSProperties = {
+  const codeStyle: React.CSSProperties = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style: React.CSSProperties = {
+  const titleStyle: React.CSSProperties = {
     width: `${COL_SPACING.TITLE_WIDTH}px`,
   };
-  const rate_overall_style: React.CSSProperties = {
+  const rateOverallStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
   };
-  const rate_workload_style: React.CSSProperties = {
+  const rateWorkloadStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const rate_prof_style: React.CSSProperties = {
+  const rateProfStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
     minWidth: `${COL_SPACING.RATE_PROF_WIDTH}px`,
   };
-  const prof_style: React.CSSProperties = {
+  const profStyle: React.CSSProperties = {
     width: `${COL_SPACING.PROF_WIDTH}px`,
   };
-  const meet_style: React.CSSProperties = {
+  const meetStyle: React.CSSProperties = {
     width: `${COL_SPACING.MEET_WIDTH}px`,
   };
-  const loc_style: React.CSSProperties = {
+  const locStyle: React.CSSProperties = {
     width: `${COL_SPACING.LOC_WIDTH}px`,
   };
-  const enroll_style: React.CSSProperties = {
+  const enrollStyle: React.CSSProperties = {
     width: `${COL_SPACING.ENROLL_WIDTH}px`,
   };
-  const friends_style: React.CSSProperties = {
+  const friendsStyle: React.CSSProperties = {
     width: `${COL_SPACING.FRIENDS_WIDTH}px`,
   };
-  const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
+  const saStyle: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
-  const [subject_code, course_code] = course.course_code.split(' ');
+  const [subjectCode, courseCode] = course.course_code.split(' ');
 
   return (
     <StyledSpacer
@@ -210,17 +210,12 @@ function ResultsItem({
       <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
         {/* Season */}
         {multiSeasons && (
-          <div style={szn_style} className="d-flex">
+          <div style={sznStyle} className="d-flex">
             <OverlayTrigger
               placement="top"
               overlay={(props) => (
                 <Tooltip id="button-tooltip" {...props}>
-                  <small>
-                    {`${
-                      seasons[season - 1].charAt(0).toUpperCase() +
-                      seasons[season - 1].slice(1)
-                    } ${season_code.substr(0, 4)}`}
-                  </small>
+                  <small>{toSeasonString(course.season_code)}</small>
                 </Tooltip>
               )}
             >
@@ -239,7 +234,7 @@ function ResultsItem({
         )}
         {/* Course Code */}
         <div
-          style={code_style}
+          style={codeStyle}
           className={`${styles.ellipsis_text} font-weight-bold`}
         >
           <OverlayTrigger
@@ -248,15 +243,15 @@ function ResultsItem({
               <Tooltip id="button-tooltip" {...props}>
                 <small>
                   {subjectOptions
-                    .find((subject) => subject.value === subject_code)!
-                    .label.substring(subject_code.length + 2)}
+                    .find((subject) => subject.value === subjectCode)!
+                    .label.substring(subjectCode.length + 2)}
                 </small>
               </Tooltip>
             )}
           >
-            <span>{subject_code}</span>
+            <span>{subjectCode}</span>
           </OverlayTrigger>{' '}
-          {course_code}
+          {courseCode}
           <TextComponent type={1}>
             {course.section
               ? ` ${course.section.length > 1 ? '' : '0'}${course.section}`
@@ -295,30 +290,30 @@ function ResultsItem({
           )}
         >
           {/* Course Title */}
-          <div style={title_style}>
+          <div style={titleStyle}>
             <div className={styles.ellipsis_text}>{course.title}</div>
           </div>
         </OverlayTrigger>
         <div className="d-flex">
           {/* Overall Rating */}
           <RatingCell
-            rating={course_rating[0]}
+            rating={courseRating[0]}
             colormap={ratingColormap}
-            style={rate_overall_style}
+            style={rateOverallStyle}
           >
-            {course_rating[1]}
+            {courseRating[1]}
           </RatingCell>
           {/* Workload Rating */}
           <RatingCell
-            rating={workload_rating[0]}
+            rating={workloadRating[0]}
             colormap={workloadColormap}
-            style={rate_workload_style}
+            style={rateWorkloadStyle}
           >
-            {workload_rating[1]}
+            {workloadRating[1]}
           </RatingCell>
           {/* Professor Rating & Course Professors */}
-          <div style={prof_style} className="d-flex align-items-center">
-            <div style={rate_prof_style} className="mr-2 h-100">
+          <div style={profStyle} className="d-flex align-items-center">
+            <div style={rateProfStyle} className="mr-2 h-100">
               <RatingCell
                 rating={course.average_professor}
                 colormap={ratingColormap}
@@ -336,11 +331,11 @@ function ResultsItem({
           </div>
         </div>
         {/* Previous Enrollment */}
-        <div style={enroll_style} className="d-flex">
+        <div style={enrollStyle} className="d-flex">
           <span className="my-auto">{getEnrolled(course, true)}</span>
         </div>
         {/* Skills and Areas */}
-        <div style={sa_style} className="d-flex">
+        <div style={saStyle} className="d-flex">
           <span className={`${styles.skills_areas} `}>
             {course.skills.map((skill, index) => (
               <Tag
@@ -375,15 +370,15 @@ function ResultsItem({
           </span>
         </div>
         {/* Course Meeting Days & Times */}
-        <div style={meet_style}>
+        <div style={meetStyle}>
           <div className={styles.ellipsis_text}>{course.times_summary}</div>
         </div>
         {/* Course Location */}
-        <div style={loc_style}>
+        <div style={locStyle}>
           <div className={styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
         {/* # Friends also shopping */}
-        <div style={friends_style} className="d-flex ">
+        <div style={friendsStyle} className="d-flex ">
           <OverlayTrigger
             placement="top"
             overlay={(props) =>
@@ -408,7 +403,7 @@ function ResultsItem({
         >
           <WorksheetToggleButton
             crn={course.crn}
-            season_code={course.season_code}
+            seasonCode={course.season_code}
             modal={false}
             setCourseInWorksheet={setCourseInWorksheet}
           />

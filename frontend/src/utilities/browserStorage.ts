@@ -8,34 +8,34 @@ const setObject = <T>(
   key: string,
   obj: T,
   storage: Storage,
-  if_empty = false,
+  ifEmpty = false,
 ) => {
-  if (if_empty && containsObject(key, storage)) return;
+  if (ifEmpty && containsObject(key, storage)) return;
   storage.setItem(key, JSON.stringify(obj));
 };
 // Retrieves object from storage
 const getObject = <T>(key: string, storage: Storage) => {
-  const str_val = storage.getItem(key);
-  if (str_val == null || str_val === 'undefined') return null;
-  return JSON.parse(str_val) as T;
+  const strVal = storage.getItem(key);
+  if (strVal == null || strVal === 'undefined') return null;
+  return JSON.parse(strVal) as T;
 };
 // session storage functions
-export const setSSObject = <T>(key: string, obj: T, if_empty = false): void => {
-  setObject<T>(key, obj, window.sessionStorage, if_empty);
+export const setSSObject = <T>(key: string, obj: T, ifEmpty = false): void => {
+  setObject<T>(key, obj, window.sessionStorage, ifEmpty);
 };
 export const getSSObject = <T>(key: string): T | null =>
   getObject<T>(key, window.sessionStorage);
 // local storage functions
-export const setLSObject = <T>(key: string, obj: T, if_empty = false): void =>
-  setObject<T>(key, obj, window.localStorage, if_empty);
+export const setLSObject = <T>(key: string, obj: T, ifEmpty = false): void =>
+  setObject<T>(key, obj, window.localStorage, ifEmpty);
 export const getLSObject = <T>(key: string): T | null =>
   getObject<T>(key, window.localStorage);
 // Saves State in Session Storage
 export const useSessionStorageState = <T>(
   key: string,
-  default_value: T,
+  defaultValue: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
-  setSSObject<T>(key, default_value, true);
+  setSSObject<T>(key, defaultValue, true);
   const [value, setValue] = useState<T>(getSSObject<T>(key)!);
   useEffect(() => {
     setSSObject(key, value);
@@ -45,9 +45,9 @@ export const useSessionStorageState = <T>(
 // Saves State in Local Storage
 export const useLocalStorageState = <T>(
   key: string,
-  default_value: T,
+  defaultValue: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
-  setLSObject<T>(key, default_value, true);
+  setLSObject<T>(key, defaultValue, true);
   const [value, setValue] = useState<T>(getLSObject<T>(key)!);
   useEffect(() => {
     setLSObject(key, value);
