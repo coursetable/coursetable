@@ -26,6 +26,7 @@ import { UserProvider } from './contexts/userContext';
 import { SearchProvider } from './contexts/searchContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
 import { ThemeProvider } from './contexts/themeContext';
+import { GapiProvider } from './contexts/gapiContext';
 
 import { isDev, API_ENDPOINT } from './config';
 
@@ -109,29 +110,31 @@ function Globals({ children }: { children: React.ReactNode }) {
     <CustomErrorBoundary>
       {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
-      <ApolloProvider client={client}>
-        <FerryProvider>
-          {/* UserProvider must be inside the FerryProvider */}
-          <UserProvider>
-            <WindowDimensionsProvider>
-              <SearchProvider>
-                <WorksheetProvider>
-                  <ThemeProvider>
-                    <BrowserRouter>
-                      <GlobalStyles />
-                      <div id="base" style={{ height: 'auto' }}>
-                        {children}
-                      </div>
-                    </BrowserRouter>
-                  </ThemeProvider>
-                </WorksheetProvider>
-              </SearchProvider>
-              {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
-              <ToastContainer toastClassName="rounded" />
-            </WindowDimensionsProvider>
-          </UserProvider>
-        </FerryProvider>
-      </ApolloProvider>
+      <GapiProvider>
+        <ApolloProvider client={client}>
+          <FerryProvider>
+            {/* UserProvider must be inside the FerryProvider */}
+            <UserProvider>
+              <WindowDimensionsProvider>
+                <SearchProvider>
+                  <WorksheetProvider>
+                    <ThemeProvider>
+                      <BrowserRouter>
+                        <GlobalStyles />
+                        <div id="base" style={{ height: 'auto' }}>
+                          {children}
+                        </div>
+                      </BrowserRouter>
+                    </ThemeProvider>
+                  </WorksheetProvider>
+                </SearchProvider>
+                {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
+                <ToastContainer toastClassName="rounded" />
+              </WindowDimensionsProvider>
+            </UserProvider>
+          </FerryProvider>
+        </ApolloProvider>
+      </GapiProvider>
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>
   );
