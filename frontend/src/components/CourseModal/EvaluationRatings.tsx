@@ -4,9 +4,9 @@ import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
 import {
   questions,
-  graph_labels,
-  graph_titles,
-  question_text,
+  graphLabels,
+  graphTitles,
+  questionText,
 } from '../../queries/Constants';
 import { TextComponent } from '../StyledComponents';
 import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
@@ -28,9 +28,9 @@ function EvaluationRatings({
   const ratings: { question: string; values: number[] }[] = [];
   // Loop through each section
   (info || []).forEach((section) => {
-    const crn_code = section.crn;
+    const crnCode = section.crn;
     // Only fetch ratings data for this section
-    if (crn_code !== crn) return;
+    if (crnCode !== crn) return;
     const temp = section.course.evaluation_ratings;
     // Loop through each set of ratings
     for (let i = 0; i < temp.length; i++) {
@@ -46,7 +46,7 @@ function EvaluationRatings({
   });
 
   // Dictionary with ratings for each question
-  const filtered_ratings: {
+  const filteredRatings: {
     assessment: number[];
     workload: number[];
     engagement: number[];
@@ -67,24 +67,24 @@ function EvaluationRatings({
   ratings.forEach((rating) => {
     questions.forEach((question) => {
       if (rating.question.includes(question))
-        filtered_ratings[question] = rating.values;
+        filteredRatings[question] = rating.values;
     });
   });
 
   const items = questions
-    .filter((question) => filtered_ratings[question].length)
+    .filter((question) => filteredRatings[question].length)
     .map((question) => (
       <div key={question}>
         <Row className="mx-auto mb-1 pl-1 justify-content-center">
-          <strong>{graph_titles[question]}</strong>
-          <small className={`${styles.question_text} text-center`}>
-            <TextComponent type={1}>{question_text[question]}</TextComponent>
+          <strong>{graphTitles[question]}</strong>
+          <small className={`${styles.questionText} text-center`}>
+            <TextComponent type={1}>{questionText[question]}</TextComponent>
           </small>
         </Row>
         <RatingsGraph
-          ratings={filtered_ratings[question]}
+          ratings={filteredRatings[question]}
           reverse={question === 'major' || question === 'workload'}
-          labels={graph_labels[question]}
+          labels={graphLabels[question]}
         />
       </div>
     ));

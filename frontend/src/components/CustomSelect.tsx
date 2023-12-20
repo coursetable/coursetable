@@ -16,28 +16,28 @@ function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
   theme: DefaultTheme,
   isMulti: IsMulti,
 ): StylesConfig<T, IsMulti> {
-  const icon_focus = chroma(theme.icon_focus);
+  const iconFocus = chroma(theme.iconFocus);
   const icon = chroma(theme.icon);
-  const new_icon_focus =
-    theme.theme === 'light' ? icon_focus.darken() : icon_focus.brighten();
-  const new_icon = theme.theme === 'light' ? icon.darken() : icon.brighten();
+  const newIconFocus =
+    theme.theme === 'light' ? iconFocus.darken() : iconFocus.brighten();
+  const newIcon = theme.theme === 'light' ? icon.darken() : icon.brighten();
 
   return {
     clearIndicator: (base, state) => ({
       ...base,
-      color: state.isFocused ? icon_focus.css() : icon.css(),
+      color: state.isFocused ? iconFocus.css() : icon.css(),
       ':hover': {
         ...(base as any)[':hover'],
-        color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
       },
     }),
     dropdownIndicator: (base, state) => ({
       ...base,
       display: isMulti && state.hasValue ? 'none' : 'flex',
-      color: state.isFocused ? icon_focus.css() : icon.css(),
+      color: state.isFocused ? iconFocus.css() : icon.css(),
       ':hover': {
         ...(base as any)[':hover'],
-        color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
+        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
       },
     }),
     indicatorSeparator: (base) => ({
@@ -200,7 +200,7 @@ function CustomSelect<
     colors: {
       ...theme.colors,
       primary50: '#85c2ff', // optionBackground :focus
-      primary25: globalTheme.select_hover, // optionBackground :hover
+      primary25: globalTheme.selectHover, // optionBackground :hover
       neutral0: globalTheme.select, // allBackground & optionText :selected
       neutral10: globalTheme.multivalue, // selectedOptionBackground & disabledBorder
       neutral30: 'hsl(0, 0%, 70%)', // border :hover

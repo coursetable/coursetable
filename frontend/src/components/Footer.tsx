@@ -11,7 +11,7 @@ import { scrollToTop } from '../utilities';
 import VercelBanner from '../images/powered-by-vercel.svg';
 // Header
 const StyledH5 = styled.h5`
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 function Footer() {
@@ -22,7 +22,7 @@ function Footer() {
         <div className="row">
           {/* Copyright */}
           <div className="col-12 col-md">
-            <span className={styles.footer_logo}>
+            <span className={styles.footerLogo}>
               <Logo icon={false} />
             </span>
             <small className="d-block mb-3">

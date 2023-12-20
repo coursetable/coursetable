@@ -5,7 +5,7 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import { Link } from 'react-router-dom';
 
 function NoCourses() {
-  const { cur_season } = useWorksheet();
+  const { curSeason } = useWorksheet();
 
   return (
     <div style={{ width: '100%' }} className="d-flex mb-5">
@@ -16,7 +16,7 @@ function NoCourses() {
           src={NoCoursesFound}
           style={{ width: '50%' }}
         />
-        <h3>No courses found for {toSeasonString(cur_season)}</h3>
+        <h3>No courses found for {toSeasonString(curSeason)}</h3>
         <div>
           Add some courses on the <Link to="/catalog">Catalog</Link>.
         </div>

@@ -22,7 +22,7 @@ function WorksheetHideButton({
   theme: DefaultTheme;
 }) {
   // Size of toggle button
-  const button_size = 18;
+  const buttonSize = 18;
 
   return (
     <OverlayTrigger
@@ -42,13 +42,13 @@ function WorksheetHideButton({
         {hidden ? (
           <BsEyeSlash
             color={theme.hidden}
-            size={button_size}
+            size={buttonSize}
             className="scale_icon"
           />
         ) : (
           <BsEye
             color={theme.text[0]}
-            size={button_size}
+            size={buttonSize}
             className="scale_icon"
           />
         )}

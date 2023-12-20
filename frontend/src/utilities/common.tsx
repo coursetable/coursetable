@@ -18,9 +18,8 @@ export const weekdays = [
 ] as const;
 export type Weekdays = (typeof weekdays)[number];
 
-type _RawListingResponse =
-  CatalogBySeasonQuery['computed_listing_info'][number];
-type _ListingOverrides = {
+type RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
+type ListingOverrides = {
   season_code: Season;
 
   // Narrow some of the JSON types.
@@ -40,7 +39,7 @@ type _ListingOverrides = {
     >
   >;
 };
-type _ListingAugments = {
+type ListingAugments = {
   // Add a couple types created by the preprocessing step.
   professors?: string;
   professor_avg_rating?: string;
@@ -48,12 +47,12 @@ type _ListingAugments = {
   border?: string;
   start_time?: moment.Moment;
   location_url?: string;
-  current_worksheet?: string;
+  currentWorksheet?: string;
 };
 expectType<
   // Make sure we don't override a key that wasn't there originally.
-  TypeOf<keyof _RawListingResponse, keyof _ListingOverrides>
+  TypeOf<keyof RawListingResponse, keyof ListingOverrides>
 >(true);
-export type Listing = Omit<_RawListingResponse, keyof _ListingOverrides> &
-  _ListingOverrides &
-  _ListingAugments;
+export type Listing = Omit<RawListingResponse, keyof ListingOverrides> &
+  ListingOverrides &
+  ListingAugments;

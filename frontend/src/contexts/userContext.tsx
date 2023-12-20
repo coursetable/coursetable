@@ -120,17 +120,17 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
   const friendRefresh = useCallback(
     async (suppressError = false): Promise<void> => {
       try {
-        const friends_worksheets = await axios.get(
+        const friendsWorksheets = await axios.get(
           `${API_ENDPOINT}/api/friends/worksheets`,
           {
             withCredentials: true,
           },
         );
-        if (!friends_worksheets.data.success) {
-          throw new Error(friends_worksheets.data.message);
+        if (!friendsWorksheets.data.success) {
+          throw new Error(friendsWorksheets.data.message);
         }
         // Successfully fetched friends' worksheets
-        setFriendWorksheets(friends_worksheets.data);
+        setFriendWorksheets(friendsWorksheets.data);
       } catch (err) {
         // Error with fetching friends' worksheets
         if (!suppressError) {

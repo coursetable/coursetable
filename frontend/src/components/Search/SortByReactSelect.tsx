@@ -19,7 +19,7 @@ const StyledSortBtn = styled.div`
 `;
 
 function SortByReactSelect() {
-  const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
+  const { selectSortby, sortOrder, setSelectSortby, setSortOrder } =
     useSearch();
 
   return (
@@ -27,7 +27,7 @@ function SortByReactSelect() {
       {/* Sort By Select */}
       <div className={styles.sortby_container}>
         <CustomSelect
-          value={select_sortby}
+          value={selectSortby}
           options={sortbyOptions}
           menuPortalTarget={document.body}
           onChange={(options) => {
@@ -40,17 +40,17 @@ function SortByReactSelect() {
       {/* Toggle sort order button */}
       <StyledSortBtn
         className={`${styles.sort_btn} my-auto`}
-        onClick={() => setSortOrder(sort_order === 'asc' ? 'desc' : 'asc')}
+        onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
       >
-        {!select_sortby.numeric ? (
+        {!selectSortby.numeric ? (
           // Sorting by letters
-          sort_order === 'asc' ? (
+          sortOrder === 'asc' ? (
             <FcAlphabeticalSortingAz className={styles.sort_icon} size={20} />
           ) : (
             <FcAlphabeticalSortingZa className={styles.sort_icon} size={20} />
           )
         ) : // Sorting by numbers
-        sort_order === 'asc' ? (
+        sortOrder === 'asc' ? (
           <FcNumericalSorting12 className={styles.sort_icon} size={20} />
         ) : (
           <FcNumericalSorting21 className={styles.sort_icon} size={20} />

@@ -70,9 +70,7 @@ export const sortbyOptions = [
 
 // Make sure we can only sort by keys in the listing, or by friends.
 export type SortKeys = keyof Listing | 'friend';
-const _number = 0;
-const _sortKeys = sortbyOptions[_number].value;
-expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
+expectType<TypeOf<SortKeys, (typeof sortbyOptions)[0]['value']>>(true);
 export type SortByOption = (typeof sortbyOptions)[number];
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
@@ -204,7 +202,7 @@ export const questions = [
   'feedback',
   'challenge',
 ] as const;
-export const question_text = {
+export const questionText = {
   assessment: 'What is your overall assessment of this course?',
   workload:
     'Relative to other courses you have taken at Yale, the workload of this course was:',
@@ -216,7 +214,7 @@ export const question_text = {
   challenge:
     'Relative to other courses you have taken at Yale, the level of intellectual challenge of this course was:',
 } as const;
-export const graph_labels = {
+export const graphLabels = {
   assessment: ['poor', 'fair', 'good', 'very good', 'excellent'],
   workload: ['much less', 'less', 'same', 'greater', 'much greater'],
   engagement: ['very low', 'low', 'medium', 'high', 'very high'],
@@ -237,7 +235,7 @@ export const graph_labels = {
   challenge: ['much less', 'less', 'same', 'greater', 'much greater'],
   major: [],
 } as const;
-export const graph_titles = {
+export const graphTitles = {
   assessment: 'Overall',
   workload: 'Workload',
   engagement: 'Engagement',

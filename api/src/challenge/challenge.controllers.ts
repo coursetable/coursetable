@@ -40,10 +40,10 @@ const constructChallenge = (
   let ratingIndices: number[];
 
   try {
-    ratingIndices = evals.evaluation_ratings.map((evaluation_rating) => {
+    ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
       const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
-      if (!Number.isInteger(evaluation_rating.rating[ratingIndex])) {
+      if (!Number.isInteger(evaluationRating.rating[ratingIndex])) {
         throw new Error(`Invalid rating index: ${ratingIndex}`);
       }
 
@@ -59,7 +59,7 @@ const constructChallenge = (
   const ratingIds = evals.evaluation_ratings.map((x) => x.id);
 
   // construct token object
-  const ratingSecrets = ratingIds.map((x, index: number) => ({
+  const ratingSecrets = ratingIds.map((x, index) => ({
     courseRatingId: ratingIds[index],
     courseRatingIndex: ratingIndices[index],
   }));
@@ -90,7 +90,7 @@ const constructChallenge = (
   });
 
   // merged course information object
-  const course_info = courseTitles.map((title: string, index: number) => ({
+  const courseInfo = courseTitles.map((title, index) => ({
     courseId: courseIds[index],
     courseTitle: title,
     courseRatingIndex: ratingIndices[index],
@@ -102,7 +102,7 @@ const constructChallenge = (
     body: {
       token,
       salt,
-      course_info,
+      course_info: courseInfo,
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     },
@@ -174,11 +174,11 @@ export const requestChallenge = async (
  * to verify that a challenge is solved or not. Used by the
  * verifyChallenge controller.
  *
- * @prop true_evals - response from the GraphQL query over the evaluations
+ * @prop trueEvals - response from the GraphQL query over the evaluations
  * @prop answers - user-provided answers
  */
 const checkChallenge = (
-  true_evals: verifyEvalsQueryResponse,
+  trueEvals: verifyEvalsQueryResponse,
   answers: {
     answer: string;
     courseRatingId: string;
@@ -186,7 +186,7 @@ const checkChallenge = (
   }[],
 ): boolean => {
   // the true values in CourseTable to compare against
-  const truth = true_evals.evaluation_ratings;
+  const truth = trueEvals.evaluation_ratings;
 
   // mapping from question ID to ratings
   const truthById: { [key: string]: number[] } = {};

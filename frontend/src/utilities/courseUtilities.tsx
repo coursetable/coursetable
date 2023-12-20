@@ -13,9 +13,9 @@ import { DateTime } from 'luxon';
 
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (
-  season_code: Season,
+  seasonCode: Season,
   crn: Crn | string,
-  worksheet_number: string,
+  worksheetNumber: string,
   worksheet?: Worksheet,
 ): boolean => {
   if (worksheet == null) return false;
@@ -24,9 +24,9 @@ export const isInWorksheet = (
   }
   for (let i = 0; i < worksheet.length; i++) {
     if (
-      worksheet[i][0] === season_code &&
+      worksheet[i][0] === seasonCode &&
       worksheet[i][1] === crn &&
-      worksheet[i][2] === worksheet_number.toString()
+      worksheet[i][2] === worksheetNumber.toString()
     )
       return true;
   }
@@ -34,9 +34,9 @@ export const isInWorksheet = (
 };
 
 // Convert season code to legible string
-export const toSeasonString = (season_code: Season): string => {
-  const year = season_code.substring(0, 4);
-  const season = ['', 'Spring', 'Summer', 'Fall'][parseInt(season_code[5], 10)];
+export const toSeasonString = (seasonCode: Season): string => {
+  const year = seasonCode.substring(0, 4);
+  const season = ['', 'Spring', 'Summer', 'Fall'][parseInt(seasonCode[5], 10)];
   return `${season} ${year}`;
 };
 
@@ -58,19 +58,19 @@ export const checkConflict = (
       if (info === undefined) continue;
       const courseInfo = course.times_by_day[day]!;
       for (const [startTime, endTime] of info) {
-        const listing_start = moment(startTime, 'HH:mm');
-        const listing_end = moment(endTime, 'HH:mm');
+        const listingStart = moment(startTime, 'HH:mm');
+        const listingEnd = moment(endTime, 'HH:mm');
         for (const [courseStartTime, courseEndTime] of courseInfo) {
-          const cur_start = moment(courseStartTime, 'HH:mm');
-          const cur_end = moment(courseEndTime, 'HH:mm');
+          const curStart = moment(courseStartTime, 'HH:mm');
+          const curEnd = moment(courseEndTime, 'HH:mm');
           // Fix invalid times
-          if (listing_start.hour() < 7) listing_start.add(12, 'h');
-          if (listing_end.hour() < 7) listing_end.add(12, 'h');
-          if (cur_start.hour() < 7) cur_start.add(12, 'h');
-          if (cur_end.hour() < 7) cur_end.add(12, 'h');
+          if (listingStart.hour() < 7) listingStart.add(12, 'h');
+          if (listingEnd.hour() < 7) listingEnd.add(12, 'h');
+          if (curStart.hour() < 7) curStart.add(12, 'h');
+          if (curEnd.hour() < 7) curEnd.add(12, 'h');
           // Conflict exists
           if (
-            !(listing_start > cur_end || cur_start > listing_end) &&
+            !(listingStart > curEnd || curStart > listingEnd) &&
             !conflicts.includes(worksheetCourse)
           ) {
             conflicts.push(worksheetCourse);
@@ -102,7 +102,7 @@ export const checkCrossListed = (
 
 // Fetch the friends that are also shopping a specific course. Used in course modal overview
 export function friendsAlsoTaking(
-  season_code: Season,
+  seasonCode: Season,
   crn: Crn,
   worksheets: Record<string, Worksheet> | undefined,
   names: FriendRecord,
@@ -110,17 +110,17 @@ export function friendsAlsoTaking(
   // Return if worksheets are null
   if (!worksheets) return [];
   // List of friends also shopping
-  const also_taking = [];
+  const alsoTaking: string[] = [];
   for (const friend of Object.keys(worksheets)) {
     if (
       worksheets[friend].some(
-        (value) => value[0] === season_code && parseInt(value[1], 10) === crn,
+        (value) => value[0] === seasonCode && parseInt(value[1], 10) === crn,
       )
     )
       // Found one
-      also_taking.push(names[friend].name);
+      alsoTaking.push(names[friend].name);
   }
-  return also_taking;
+  return alsoTaking;
 }
 type NumFriendsReturn =
   // Key is season code + crn
@@ -135,17 +135,17 @@ export const getNumFriends = (
   // List of each friends' names/net id
   const names = friendWorksheets.friendInfo;
   // Object to return
-  const friend_dict: NumFriendsReturn = {};
+  const friends: NumFriendsReturn = {};
   // Iterate over each friend's worksheet
   for (const friend of Object.keys(worksheets)) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
-      if (!friend_dict[key]) friend_dict[key] = []; // List doesn't exist for this course so create one
-      friend_dict[key].push(names[friend].name); // Add friend's name to this list
+      if (!friends[key]) friends[key] = []; // List doesn't exist for this course so create one
+      friends[key].push(names[friend].name); // Add friend's name to this list
     });
   }
-  return friend_dict;
+  return friends;
 };
 
 // Get the overall rating for a course
@@ -205,7 +205,7 @@ const calculateDayTime = (course: Listing): number | null => {
 
   if (times) {
     // Calculate the time score
-    const start_time = Number(
+    const startTime = Number(
       times[0].start.split(':').reduce((final, num) => {
         final += num;
         return final;
@@ -213,11 +213,11 @@ const calculateDayTime = (course: Listing): number | null => {
     );
 
     // Calculate the day score
-    const first_day = Object.keys(course.times_by_day)[0] as Weekdays;
-    const day_score = weekdays.indexOf(first_day) * 10000;
+    const firstDay = Object.keys(course.times_by_day)[0] as Weekdays;
+    const dayScore = weekdays.indexOf(firstDay) * 10000;
 
     // Calculate the total score and return
-    const score = day_score + start_time;
+    const score = dayScore + startTime;
     return score;
   }
 
@@ -229,16 +229,16 @@ const calculateDayTime = (course: Listing): number | null => {
 const helperSort = (
   listing: Listing,
   key: SortKeys,
-  num_friends: NumFriendsReturn,
+  numFriends: NumFriendsReturn,
 ) => {
   // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key
-    const friend_key = listing.season_code + listing.crn;
+    const friendKey = listing.season_code + listing.crn;
     // No friends. return zero
-    if (!num_friends[friend_key]) return 0;
+    if (!numFriends[friendKey]) return 0;
     // Has friends. return number of friends
-    return num_friends[friend_key].length;
+    return numFriends[friendKey].length;
   }
   // Sorting by course rating
   if (key === 'average_rating') {
@@ -263,21 +263,21 @@ export const sortCourses = (
   // TODO: we should be much more strict with this type. Specifically,
   // we should prevent there from being multiple keys.
   ordering: { [key in SortKeys]?: 'asc' | 'desc' },
-  num_friends: NumFriendsReturn,
+  numFriends: NumFriendsReturn,
 ): Listing[] => {
   // Key to sort the courses by
   const key = Object.keys(ordering)[0] as SortKeys;
   // Boolean | in ascending order?
-  const order_asc = ordering[key]!.startsWith('asc');
+  const orderAsc = ordering[key]!.startsWith('asc');
   // Sort classes
   const sorted = orderBy(
     courses,
     [
-      (listing) => helperSort(listing, key, num_friends) == null,
-      (listing) => helperSort(listing, key, num_friends),
+      (listing) => helperSort(listing, key, numFriends) == null,
+      (listing) => helperSort(listing, key, numFriends),
       (listing) => listing.course_code,
     ],
-    ['asc', order_asc ? 'asc' : 'desc', 'asc'],
+    ['asc', orderAsc ? 'asc' : 'desc', 'asc'],
   );
   return sorted;
 };
@@ -288,10 +288,10 @@ export const getEnrolled = (
   display = false,
   onModal = false,
 ): string | number | null => {
-  let course_enrolled;
+  let courseEnrolled: string | number | null;
   // Determine which enrolled to use
   if (display) {
-    course_enrolled = course.enrolled
+    courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment && course.last_enrollment_same_professors
       ? course.last_enrollment // Use last enrollment if course hasn't happened
@@ -301,7 +301,7 @@ export const getEnrolled = (
         }` // Indicate diff prof
       : `${onModal ? 'N/A' : ''}`; // No enrollment data
   } else {
-    course_enrolled = course.enrolled
+    courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment
       ? course.last_enrollment // Use last enrollment if course hasn't happened
@@ -309,7 +309,7 @@ export const getEnrolled = (
   }
 
   // Return enrolled
-  return course_enrolled;
+  return courseEnrolled;
 };
 
 // Get start and end times
@@ -321,18 +321,17 @@ export const getDayTimes = (
     return null;
   }
 
-  // Get the first day's times
-  const { times_by_day } = course;
-
   const initialFiltered: Record<string, string>[] = [];
 
-  const times = Object.keys(times_by_day).reduce((filtered, day) => {
-    const day_times = times_by_day[day as Weekdays];
-    if (day_times) {
-      filtered.push({ day, start: day_times[0][0], end: day_times[0][1] });
-    }
-    return filtered;
-  }, initialFiltered);
+  const times = Object.entries(course.times_by_day).reduce(
+    (filtered, [day, dayTimes]) => {
+      if (dayTimes) {
+        filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
+      }
+      return filtered;
+    },
+    initialFiltered,
+  );
 
   return times;
 };

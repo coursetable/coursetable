@@ -49,7 +49,7 @@ function convert24To12(time) {
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
   background-color: ${({ theme }) =>
-    theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.select_hover};
+    theme.theme === 'light' ? 'rgb(190, 221, 255)' : theme.selectHover};
 `;
 
 // Unclickable version of StyledCol for courses with no evaluations
@@ -84,7 +84,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
-  const also_taking = user.friendWorksheets
+  const alsoTaking = user.friendWorksheets
     ? friendsAlsoTaking(
         listing.season_code,
         listing.crn,
@@ -125,31 +125,31 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   // Hold HTML code that displays the list of evaluations
 
   // Holds Prof information for popover
-  const prof_info = useMemo(() => {
-    const prof_info_temp = {};
+  const profInfo = useMemo(() => {
+    const profInfoTemp = {};
     listing.professor_names.forEach((prof) => {
-      prof_info_temp[prof] = {
-        num_courses: 0,
-        total_rating: 0,
+      profInfoTemp[prof] = {
+        numCourses: 0,
+        totalRating: 0,
         email: '',
       };
     });
-    return prof_info_temp;
+    return profInfoTemp;
   }, [listing.professor_names]);
   // Count number of profs that overlap between this listing and an eval
-  const overlapping_profs = useCallback(
-    (eval_profs) => {
+  const overlappingProfs = useCallback(
+    (evalProfs) => {
       let cnt = 0;
       listing.professor_names.forEach((prof) => {
         // Eval course contains this prof
-        if (eval_profs.includes(prof)) cnt++;
+        if (evalProfs.includes(prof)) cnt++;
       });
       return cnt;
     },
     [listing.professor_names],
   );
   // Get past syllabi links
-  const past_syllabi = useMemo(() => {
+  const pastSyllabi = useMemo(() => {
     if (data) {
       return data.computed_listing_info
         .filter(
@@ -157,11 +157,6 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             course.same_course_id === listing.same_course_id &&
             course.syllabus_url,
         )
-        .map((course) => ({
-          season_code: course.season_code,
-          syllabus_url: course.syllabus_url,
-          section: course.section,
-        }))
         .filter(
           // remove duplicates by syllabus URL
           (v, i, a) =>
@@ -177,41 +172,41 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   }, [data, listing.same_course_id]);
 
   const [showPastSyllabi, setShowPastSyllabi] = useState(
-    past_syllabi && past_syllabi.length < 8,
+    pastSyllabi && pastSyllabi.length < 8,
   );
 
   // Make sure data is loaded
   const items = useMemo(() => {
     if (data) {
       // Hold list of evaluation dictionaries
-      const course_offerings = [];
+      const courseOfferings = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
         // Stores the average rating for all profs teaching this course and populates prof_info
-        let average_professor_rating = 0;
+        let averageProfessorRating = 0;
         if (season.professor_info) {
-          const num_profs = season.professor_info.length;
+          const numProfs = season.professor_info.length;
           season.professor_info.forEach((prof) => {
             if (prof.average_rating) {
               // Add up all prof ratings
-              average_professor_rating += prof.average_rating;
+              averageProfessorRating += prof.average_rating;
               // Update prof_info
-              if (prof.name in prof_info) {
+              if (prof.name in profInfo) {
                 // Store dict from prof_info for easy access
-                const dict = prof_info[prof.name];
+                const dict = profInfo[prof.name];
                 // Total number of courses this professor teaches
-                dict.num_courses++;
+                dict.numCourses++;
                 // Total rating. Will divide by number of courses later to get average
-                dict.total_rating += prof.average_rating;
+                dict.totalRating += prof.average_rating;
                 // Prof email
                 dict.email = prof.email;
               }
             }
           });
           // Divide by number of profs to get average
-          average_professor_rating /= num_profs;
+          averageProfessorRating /= numProfs;
         }
-        course_offerings.push({
+        courseOfferings.push({
           // Course rating
           rating: season.course.evaluation_statistic
             ? season.course.evaluation_statistic.avg_rating || -1
@@ -221,7 +216,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             ? season.course.evaluation_statistic.avg_workload || -1
             : -1,
           // Professor rating
-          professor_rating: average_professor_rating || -1,
+          professor_rating: averageProfessorRating || -1,
           // Season code
           season_code: season.season_code,
           // Professors
@@ -245,23 +240,23 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
         });
       });
       // Sort by season code and section
-      course_offerings.sort(
+      courseOfferings.sort(
         (a, b) =>
           b.season_code.localeCompare(a.season_code, 'en-US') ||
           parseInt(a.section, 10) - parseInt(b.section, 10),
       );
       // Hold eval html for each column
-      const overlap_sections = { both: [], course: [], professor: [] };
+      const overlapSections = { both: [], course: [], professor: [] };
 
       // Variable used for list keys
       let id = 0;
 
       // Loop through each listing with evals
-      for (let i = 0; i < course_offerings.length; i++) {
+      for (let i = 0; i < courseOfferings.length; i++) {
         // Skip listings in the current and future seasons that have no evals
-        if (CUR_YEAR.includes(course_offerings[i].season_code)) continue;
-        const hasEvals = course_offerings[i].rating !== -1;
-        const eval_box = (
+        if (CUR_YEAR.includes(courseOfferings[i].season_code)) continue;
+        const hasEvals = courseOfferings[i].rating !== -1;
+        const evalBox = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* The listing button, either clickable or greyed out based on whether evaluations exist */}
             {hasEvals ? (
@@ -270,21 +265,21 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 className={`${styles.rating_bubble}  px-0 mr-3 text-center`}
                 onClick={() => {
                   // Temp dictionary that stores listing info
-                  const temp = { ...course_offerings[i] };
+                  const temp = { ...courseOfferings[i] };
                   temp.course_code = temp.course_code[0];
                   setSeason(temp);
                 }}
                 style={{ flex: 'none' }}
               >
                 <strong>
-                  {toSeasonString(course_offerings[i].season_code)}
+                  {toSeasonString(courseOfferings[i].season_code)}
                 </strong>
                 <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
-                    ? course_offerings[i].course_code[0]
+                    ? courseOfferings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${course_offerings[i].section}`
-                    : course_offerings[i].professor[0]}
+                    ? `Section ${courseOfferings[i].section}`
+                    : courseOfferings[i].professor[0]}
                 </div>
               </StyledCol>
             ) : (
@@ -294,14 +289,14 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 style={{ flex: 'none', color: '#b5b5b5' }}
               >
                 <strong>
-                  {toSeasonString(course_offerings[i].season_code)}
+                  {toSeasonString(courseOfferings[i].season_code)}
                 </strong>
                 <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
-                    ? course_offerings[i].course_code[0]
+                    ? courseOfferings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${course_offerings[i].section}`
-                    : course_offerings[i].professor[0]}
+                    ? `Section ${courseOfferings[i].section}`
+                    : courseOfferings[i].professor[0]}
                 </div>
               </StyledColUnclickable>
             )}
@@ -311,12 +306,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={course_offerings[i].rating}
+                rating={courseOfferings[i].rating}
                 colormap={ratingColormap}
                 className={`${styles.rating_cell} ${styles.expanded_ratings}`}
               >
-                {course_offerings[i].rating !== -1
-                  ? course_offerings[i].rating.toFixed(1)
+                {courseOfferings[i].rating !== -1
+                  ? courseOfferings[i].rating.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -326,12 +321,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={course_offerings[i].professor_rating}
+                rating={courseOfferings[i].professor_rating}
                 colormap={ratingColormap}
                 className={styles.rating_cell}
               >
-                {course_offerings[i].professor_rating !== -1
-                  ? course_offerings[i].professor_rating.toFixed(1)
+                {courseOfferings[i].professor_rating !== -1
+                  ? courseOfferings[i].professor_rating.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -341,12 +336,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={course_offerings[i].workload}
+                rating={courseOfferings[i].workload}
                 colormap={workloadColormap}
                 className={styles.rating_cell}
               >
-                {course_offerings[i].workload !== -1
-                  ? course_offerings[i].workload.toFixed(1)
+                {courseOfferings[i].workload !== -1
+                  ? courseOfferings[i].workload.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -354,36 +349,36 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
         );
         // Course in both column
         if (
-          course_offerings[i].course_code.includes(listing.course_code) &&
+          courseOfferings[i].course_code.includes(listing.course_code) &&
           listing.professor_names.length &&
-          overlapping_profs(course_offerings[i].professor) ===
+          overlappingProfs(courseOfferings[i].professor) ===
             listing.professor_names.length
         ) {
-          overlap_sections.both.push(eval_box);
+          overlapSections.both.push(evalBox);
         }
         // Course in course column
-        if (course_offerings[i].course_code.includes(listing.course_code)) {
-          overlap_sections.course.push(eval_box);
+        if (courseOfferings[i].course_code.includes(listing.course_code)) {
+          overlapSections.course.push(evalBox);
         }
         // Course in prof column
-        if (overlapping_profs(course_offerings[i].professor) > 0) {
-          overlap_sections.professor.push(eval_box);
+        if (overlappingProfs(courseOfferings[i].professor) > 0) {
+          overlapSections.professor.push(evalBox);
         }
       }
-      return overlap_sections;
+      return overlapSections;
     }
     return undefined;
-  }, [data, filter, setSeason, listing, overlapping_profs, prof_info]);
+  }, [data, filter, setSeason, listing, overlappingProfs, profInfo]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
   const profInfoPopover = (props) => {
-    let prof_name = '';
-    let prof_dict = {};
+    let profName = '';
+    let profDict = {};
     // Store dict from prop_info for easy access
     if (props.popper.state) {
-      prof_name = props.popper.state.options.prof_name;
-      prof_dict = prof_info[prof_name];
+      profName = props.popper.state.options.prof;
+      profDict = profInfo[profName];
     }
     return (
       <StyledPopover
@@ -394,13 +389,13 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
         <Popover.Title>
           <Row className="mx-auto">
             {/* Professor Name */}
-            <strong>{prof_name}</strong>
+            <strong>{profName}</strong>
           </Row>
           <Row className="mx-auto">
             {/* Professor Email */}
             <small>
-              {prof_dict.email !== '' ? (
-                <a href={`mailto: ${prof_dict.email}`}>{prof_dict.email}</a>
+              {profDict.email !== '' ? (
+                <a href={`mailto: ${profDict.email}`}>{profDict.email}</a>
               ) : (
                 <TextComponent type={1}>N/A</TextComponent>
               )}
@@ -415,9 +410,9 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 <strong
                   className="mx-auto"
                   style={{
-                    color: prof_dict.num_courses
+                    color: profDict.numCourses
                       ? ratingColormap(
-                          prof_dict.total_rating / prof_dict.num_courses,
+                          profDict.totalRating / profDict.numCourses,
                         )
                           .darken()
                           .saturate()
@@ -426,10 +421,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 >
                   {
                     // Get average rating
-                    prof_dict.num_courses
-                      ? (
-                          prof_dict.total_rating / prof_dict.num_courses
-                        ).toFixed(1)
+                    profDict.numCourses
+                      ? (profDict.totalRating / profDict.numCourses).toFixed(1)
                       : 'N/A'
                   }
                 </strong>
@@ -443,7 +436,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             <Col md={6}>
               {/* Number of courses taught by this professor */}
               <Row className="mx-auto mb-1">
-                <strong className="mx-auto">{prof_dict.num_courses}</strong>
+                <strong className="mx-auto">{profDict.numCourses}</strong>
               </Row>
               <Row className="mx-auto">
                 <small className="mx-auto text-center  font-weight-bold">
@@ -465,7 +458,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   ];
 
   // Hold index of each filter option
-  const options_indx = {
+  const optionsIndx = {
     course: 0,
     both: 1,
     professor: 2,
@@ -536,7 +529,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               )}
             </Col>
           </Row>
-          {past_syllabi.length > 0 && (
+          {pastSyllabi.length > 0 && (
             <Row className="m-auto pt-4 pb-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span
@@ -544,7 +537,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   className={styles.toggle_bubble}
                   onClick={() => setShowPastSyllabi(!showPastSyllabi)}
                 >
-                  Past syllabi ({past_syllabi.length}){' '}
+                  Past syllabi ({pastSyllabi.length}){' '}
                   {showPastSyllabi ? (
                     <MdExpandLess size={18} className="my-auto" />
                   ) : (
@@ -558,7 +551,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   xs={11 - COL_LEN_LEFT}
                   className={styles.metadata}
                 >
-                  {past_syllabi.map((course) => (
+                  {pastSyllabi.map((course) => (
                     <a
                       key={`${course.season_code}-${course.section}`}
                       target="_blank"
@@ -594,7 +587,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                         rootClose
                         placement="right"
                         overlay={profInfoPopover}
-                        popperConfig={{ prof_name: prof }}
+                        popperConfig={{ prof }}
                       >
                         <StyledLink>{prof}</StyledLink>
                       </OverlayTrigger>
@@ -633,13 +626,13 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               xs={11 - COL_LEN_LEFT}
               className={styles.metadata}
             >
-              {[...locations.entries()].map(([location, location_url]) => (
+              {[...locations.entries()].map(([location, locationURL]) => (
                 <div key={location}>
-                  {location_url ? (
+                  {locationURL ? (
                     <a
                       target="_blank"
                       rel="noopener noreferrer"
-                      href={location_url}
+                      href={locationURL}
                     >
                       {location}
                       <HiExternalLink size={18} className="ml-1 my-auto" />
@@ -758,7 +751,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             </Row>
           )}
           {/* Friends that are also shopping this course */}
-          {also_taking.length > 0 && (
+          {alsoTaking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">
                 <span className={styles.lable_bubble}>Friends</span>
@@ -768,9 +761,9 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 xs={11 - COL_LEN_LEFT}
                 className={styles.metadata}
               >
-                {also_taking.map((friend, index) => (
+                {alsoTaking.map((friend, index) => (
                   <Row className="m-auto" key={index}>
-                    {friend + (index === also_taking.length - 1 ? '' : ',')}
+                    {friend + (index === alsoTaking.length - 1 ? '' : ',')}
                   </Row>
                 ))}
               </Col>
@@ -783,15 +776,16 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           <Row
             className={`${styles.filter_container} m-auto justify-content-center`}
             onKeyDown={(e) => {
-              if (e.keyCode === 37) {
-                // Left arrow key
-                const new_indx = (options_indx[filter] + 2) % 3;
-                setFilter(options[new_indx].value);
-              } else if (e.keyCode === 39) {
-                // Right arrow key
-                const new_indx = (options_indx[filter] + 1) % 3;
-                setFilter(options[new_indx].value);
-              }
+              // Left/right arrow key
+              const newIndx =
+                (optionsIndx[filter] +
+                  (e.key === 'ArrowLeft'
+                    ? 2
+                    : e.key === 'ArrowRight'
+                    ? 1
+                    : 0)) %
+                3;
+              setFilter(options[newIndx].value);
             }}
             tabIndex={0}
           >

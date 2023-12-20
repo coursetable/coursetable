@@ -58,53 +58,52 @@ const EvaluationResponses: React.FC<{
   info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }> = ({ crn, info }) => {
   // Sort by original order or length?
-  const [sort_order, setSortOrder] = useState('original');
+  const [sortOrder, setSortOrder] = useState('original');
 
   // Dictionary that holds the comments for each question
-  const [responses, sorted_responses] = useMemo(() => {
-    const temp_responses: { [key: string]: string[] } = {};
+  const [responses, sortedResponses] = useMemo(() => {
+    const tempResponses: { [key: string]: string[] } = {};
     // Loop through each section for this course code
     (info || []).forEach((section) => {
-      const crn_code = section.crn;
+      const crnCode = section.crn;
       // Only fetch comments for this section
-      if (crn_code !== crn) return;
+      if (crnCode !== crn) return;
       const { nodes } = section.course.evaluation_narratives_aggregate;
       // Return if no comments
       if (!nodes.length) return;
       // Add comments to responses dictionary
       nodes.forEach((node) => {
         if (node.evaluation_question.question_text && node.comment) {
-          if (!temp_responses[node.evaluation_question.question_text])
-            temp_responses[node.evaluation_question.question_text] = [];
-          temp_responses[node.evaluation_question.question_text].push(
+          if (!tempResponses[node.evaluation_question.question_text])
+            tempResponses[node.evaluation_question.question_text] = [];
+          tempResponses[node.evaluation_question.question_text].push(
             node.comment,
           );
         }
       });
     });
-    const sorted_responses = JSON.parse(
-      JSON.stringify(temp_responses),
-    ) as typeof temp_responses;
-    for (const key of Object.keys(temp_responses)) {
-      sorted_responses[key].sort((a, b) => b.length - a.length);
+    const sortedResponses = JSON.parse(
+      JSON.stringify(tempResponses),
+    ) as typeof tempResponses;
+    for (const key of Object.keys(tempResponses)) {
+      sortedResponses[key].sort((a, b) => b.length - a.length);
     }
-    return [temp_responses, sorted_responses];
+    return [tempResponses, sortedResponses];
   }, [info, crn]);
 
   // Number of questions
-  const num_questions = Object.keys(responses).length;
+  const numQuestions = Object.keys(responses).length;
 
   const [filter, setFilter] = useState('');
 
   // Generate HTML to hold the responses to each question
   const [recommend, skills, strengths, summary] = useMemo(() => {
     // Lists that hold the html for the comments for a specific question
-    let temp_recommend: JSX.Element[] = [];
-    let temp_skills: JSX.Element[] = [];
-    let temp_strengths: JSX.Element[] = [];
-    let temp_summary: JSX.Element[] = [];
-    const cur_responses =
-      sort_order === 'length' ? sorted_responses : responses;
+    let tempRecommend: JSX.Element[] = [];
+    let tempSkills: JSX.Element[] = [];
+    let tempStrengths: JSX.Element[] = [];
+    let tempSummary: JSX.Element[] = [];
+    const curResponses = sortOrder === 'length' ? sortedResponses : responses;
     // Populate the lists above
     const genTemp = (resps: string[]) => {
       if (resps.length === 0) {
@@ -128,19 +127,19 @@ const EvaluationResponses: React.FC<{
       }
       return filteredResps;
     };
-    for (const key of Object.keys(cur_responses)) {
+    for (const key of Object.keys(curResponses)) {
       if (key.includes('summarize')) {
-        temp_summary = genTemp(cur_responses[key]);
+        tempSummary = genTemp(curResponses[key]);
       } else if (key.includes('recommend')) {
-        temp_recommend = genTemp(cur_responses[key]);
+        tempRecommend = genTemp(curResponses[key]);
       } else if (key.includes('skills')) {
-        temp_skills = genTemp(cur_responses[key]);
+        tempSkills = genTemp(curResponses[key]);
       } else if (key.includes('strengths')) {
-        temp_strengths = genTemp(cur_responses[key]);
+        tempStrengths = genTemp(curResponses[key]);
       }
     }
-    return [temp_recommend, temp_skills, temp_strengths, temp_summary];
-  }, [responses, sort_order, sorted_responses, filter]);
+    return [tempRecommend, tempSkills, tempStrengths, tempSummary];
+  }, [responses, sortOrder, sortedResponses, filter]);
 
   const context = document.querySelectorAll('.responses');
   const instance = new Mark(context);
@@ -166,13 +165,13 @@ const EvaluationResponses: React.FC<{
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
           <StyledSortOption
-            active={sort_order === 'original'}
+            active={sortOrder === 'original'}
             onClick={() => setSortOrder('original')}
           >
             original order
           </StyledSortOption>
           <StyledSortOption
-            active={sort_order === 'length'}
+            active={sortOrder === 'length'}
             onClick={() => setSortOrder('length')}
           >
             length
@@ -238,7 +237,7 @@ const EvaluationResponses: React.FC<{
           </Tab>
         )}
       </StyledTabs>
-      {!num_questions && <strong>No comments for this course</strong>}
+      {!numQuestions && <strong>No comments for this course</strong>}
     </div>
   );
 };

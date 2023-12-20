@@ -14,12 +14,12 @@ function WorksheetList() {
   const [isList, setView] = useState(true);
   const { courses, worksheetLoading } = useWorksheet();
 
-  const { ordering, num_friends, isLoggedIn } = useSearch();
+  const { ordering, numFriends, isLoggedIn } = useSearch();
 
   const WorksheetData = useMemo(() => {
     // Apply sorting order.
-    return sortCourses(courses, ordering, num_friends);
-  }, [ordering, courses, num_friends]);
+    return sortCourses(courses, ordering, numFriends);
+  }, [ordering, courses, numFriends]);
 
   return (
     <div>
@@ -34,7 +34,7 @@ function WorksheetList() {
               loading={worksheetLoading}
               multiSeasons={false}
               isLoggedIn={isLoggedIn}
-              num_friends={num_friends}
+              numFriends={numFriends}
               page="worksheet"
             />
           </div>

@@ -23,7 +23,7 @@ function Notice({ children }: { children: React.ReactNode }) {
       <div className={styles.content}>
         <div>{children}</div>
       </div>
-      <span className={styles.close_button} onClick={() => setVisible(false)}>
+      <span className={styles.closeButton} onClick={() => setVisible(false)}>
         <FaTimes style={{ display: 'block' }} />
       </span>
     </StyledBanner>

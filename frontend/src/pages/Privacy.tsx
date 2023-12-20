@@ -9,7 +9,7 @@ const StyledH1 = styled.h1`
   font-weight: 600;
   font-size: 25px;
   text-align: center;
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 const Underline = styled.span`

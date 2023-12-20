@@ -33,9 +33,9 @@ const StyledMeIcon = styled.div`
   border-radius: 15px;
   display: flex;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
   &:hover {
     cursor: pointer;
     color: ${({ theme }) => theme.primary};
@@ -63,7 +63,7 @@ const StyledNavLink = styled(NavLink)`
   font-weight: 500;
   font-size: 1rem;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
   &:hover {
     text-decoration: none !important;
     color: ${({ theme }) => theme.primary};
@@ -123,9 +123,9 @@ function NavCollapseWrapper({
 function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const location = useLocation();
   // Is navbar expanded in mobile view?
-  const [nav_expanded, setExpand] = useState<boolean>(false);
+  const [navExpanded, setNavExpanded] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
-  const { ref_visible, isComponentVisible, setIsComponentVisible } =
+  const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
 
   // Last updated state
@@ -137,7 +137,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const { isMobile, isLgDesktop } = useWindowDimensions();
 
   // Show navbar search state
-  const [show_search, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   // Page state
   const [page, setPage] = useState('');
   // Handles page
@@ -163,15 +163,15 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   // Calculate time since last updated
   useEffect(() => {
     const dt = DateTime.now().setZone('America/New_York');
-    let dt_update;
+    let dtUpdate: DateTime;
     if (dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)) {
-      dt_update = dt
+      dtUpdate = dt
         .plus(Duration.fromObject({ days: -1 }))
         .set({ hour: 3, minute: 30, second: 0 });
     } else {
-      dt_update = dt.set({ hour: 3, minute: 30, second: 0 });
+      dtUpdate = dt.set({ hour: 3, minute: 30, second: 0 });
     }
-    const diffInSecs = dt.diff(dt_update).as('seconds');
+    const diffInSecs = dt.diff(dtUpdate).as('seconds');
     if (diffInSecs < 60) {
       setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
     } else if (diffInSecs < 3600) {
@@ -188,12 +188,12 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
       <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
           <Navbar
-            expanded={nav_expanded}
-            onToggle={(expanded: boolean) => setExpand(expanded)}
+            expanded={navExpanded}
+            onToggle={(expanded: boolean) => setNavExpanded(expanded)}
             expand="md"
             className="shadow-sm px-3 align-items-start"
             style={
-              show_search && page === 'catalog'
+              showSearch && page === 'catalog'
                 ? {
                     height: isLgDesktop ? '100px' : '88px',
                     paddingBottom: '0px',
@@ -226,23 +226,23 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
             {/* Desktop navbar search */}
-            {show_search && page === 'catalog' ? (
+            {showSearch && page === 'catalog' ? (
               <NavbarCatalogSearch />
             ) : (
-              show_search && page === 'worksheet' && <NavbarWorksheetSearch />
+              showSearch && page === 'worksheet' && <NavbarWorksheetSearch />
             )}
 
-            <NavCollapseWrapper wrap={!isMobile && show_search}>
+            <NavCollapseWrapper wrap={!isMobile && showSearch}>
               {/* Navbar collapse */}
               <Navbar.Collapse
                 id="basic-navbar-nav"
                 // Make navbar display: flex when not mobile. If mobile, normal formatting
                 className={!isMobile ? 'd-flex' : 'justify-content-end'}
-                style={!isMobile && show_search ? { flexGrow: 0 } : undefined}
+                style={!isMobile && showSearch ? { flexGrow: 0 } : undefined}
               >
                 {/* Close navbar on click in mobile view */}
                 <Nav
-                  onClick={() => setExpand(false)}
+                  onClick={() => setNavExpanded(false)}
                   className={`${
                     isMobile && 'align-items-start pt-2'
                   } position-relative`}
@@ -294,7 +294,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                   >
                     <div className={styles.navbar_me}>
                       <StyledMeIcon
-                        ref={ref_visible}
+                        ref={elemRef}
                         className={`${styles.icon_circle} m-auto`}
                         onClick={() =>
                           setIsComponentVisible(!isComponentVisible)
@@ -335,7 +335,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                 </Nav>
               </Navbar.Collapse>
               {/* Last updated ago text for desktop */}
-              {show_search && page === 'catalog' && (
+              {showSearch && page === 'catalog' && (
                 <SmallTextComponent type={2} className="mb-2 text-right">
                   <MdUpdate className="mr-1" />
                   Updated {lastUpdated} ago

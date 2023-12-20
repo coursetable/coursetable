@@ -14,12 +14,12 @@ const StyledListItem = styled(ListGroup.Item)`
   border-color: ${({ theme }) => theme.border};
   overflow: hidden;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
   &:hover {
     cursor: pointer;
-    background-color: ${({ theme }) => theme.select_hover};
+    background-color: ${({ theme }) => theme.selectHover};
   }
   /* Hides icon until you hover over the list item */
   .hidden {
@@ -34,7 +34,7 @@ const StyledListItem = styled(ListGroup.Item)`
 // Course code
 const StyledCol = styled(Col)`
   overflow: hidden;
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 /**
@@ -46,18 +46,18 @@ function WorksheetCalendarListItem({
   course,
   hidden,
   theme,
-  worksheet_number,
+  worksheetNumber,
 }: {
   course: Listing;
   hidden: boolean;
   theme: DefaultTheme;
-  worksheet_number?: string;
+  worksheetNumber?: string;
 }) {
   const [, setSearchParams] = useSearchParams();
-  const { cur_season, toggleCourse, setHoverCourse } = useWorksheet();
+  const { curSeason, toggleCourse, setHoverCourse } = useWorksheet();
 
   // Style for coloring hidden courses
-  const color_style = {
+  const colorStyle = {
     color: hidden ? theme.hidden : theme.text[0],
   };
   return (
@@ -70,7 +70,7 @@ function WorksheetCalendarListItem({
         {/* Course Code and Title */}
         <StyledCol
           className={'pl-1 pr-2'}
-          style={color_style}
+          style={colorStyle}
           onClick={() => {
             setSearchParams((prev) => {
               prev.set('course-modal', `${course.season_code}-${course.crn}`);
@@ -94,9 +94,9 @@ function WorksheetCalendarListItem({
         <div className="my-auto">
           <WorksheetToggleButton
             crn={course.crn}
-            season_code={cur_season}
+            seasonCode={curSeason}
             modal={false}
-            selectedWorksheet={worksheet_number}
+            selectedWorksheet={worksheetNumber}
           />
         </div>
       </Row>

@@ -14,12 +14,12 @@ const StyledCard = styled(Card)`
   background-color: transparent;
   border: none !important;
   border-bottom: 1px solid ${({ theme }) => theme.border} !important;
-  transition: border-color ${({ theme }) => theme.trans_dur};
+  transition: border-color ${({ theme }) => theme.transDur};
 
   .active {
     border-bottom: 1px solid ${({ theme }) => theme.border} !important;
     color: ${({ theme }) => theme.primary};
-    transition: border-color ${({ theme }) => theme.trans_dur};
+    transition: border-color ${({ theme }) => theme.transDur};
   }
 `;
 
@@ -27,7 +27,7 @@ const StyledCard = styled(Card)`
 const StyledContainer = styled.div`
   width: 600px;
   margin-bottom: 3rem;
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 // Custom accordion component

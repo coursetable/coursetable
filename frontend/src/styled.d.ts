@@ -10,19 +10,19 @@ declare module 'styled-components' {
     banner: string;
     border: string;
     select: string;
-    select_hover: string;
+    selectHover: string;
     multivalue: string;
     hidden: string;
     disabled: string;
-    button_hover: string;
-    button_active: string;
+    buttonHover: string;
+    buttonActive: string;
     icon: string;
-    icon_focus: string;
-    rating_alpha: number;
+    iconFocus: string;
+    ratingAlpha: number;
     primary: string;
-    primary_light: string;
-    primary_hover: string;
-    row_odd: string;
-    trans_dur: string;
+    primaryLight: string;
+    primaryHover: string;
+    rowOdd: string;
+    transDur: string;
   }
 }

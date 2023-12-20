@@ -17,9 +17,9 @@ const StyledSpacer = styled.div`
   top: 56px;
   z-index: 2;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Hide icon
@@ -46,9 +46,9 @@ const StyledBtn = styled.div`
   align-items: center;
   user-select: none;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
@@ -89,21 +89,16 @@ const CourseList = styled(SurfaceComponent)`
  */
 
 function WorksheetMobileCalendarList() {
-  const {
-    courses,
-    cur_season,
-    hidden_courses,
-    worksheet_number,
-    toggleCourse,
-  } = useWorksheet();
+  const { courses, curSeason, hiddenCourses, worksheetNumber, toggleCourse } =
+    useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(() => {
     // List to hold HTML
     const listitems = courses.map((course, id) => {
       let hidden = false;
-      if (cur_season in hidden_courses) {
-        hidden = hidden_courses[cur_season][course.crn];
+      if (curSeason in hiddenCourses) {
+        hidden = hiddenCourses[curSeason][course.crn];
       }
       // Add listgroup item to listitems list
       return (
@@ -111,20 +106,20 @@ function WorksheetMobileCalendarList() {
           key={id}
           course={course}
           hidden={hidden}
-          worksheet_number={worksheet_number}
+          worksheetNumber={worksheetNumber}
         />
       );
     });
 
     return listitems;
-  }, [courses, hidden_courses, cur_season, worksheet_number]);
+  }, [courses, hiddenCourses, curSeason, worksheetNumber]);
 
   const areHidden = useMemo(() => {
-    if (!(cur_season in hidden_courses)) {
+    if (!(curSeason in hiddenCourses)) {
       return false;
     }
-    return Object.keys(hidden_courses[cur_season]).length === courses.length;
-  }, [hidden_courses, courses, cur_season]);
+    return Object.keys(hiddenCourses[curSeason]).length === courses.length;
+  }, [hiddenCourses, courses, curSeason]);
 
   return (
     <>

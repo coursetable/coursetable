@@ -15,12 +15,13 @@ import {
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
-import tag_styles from './ResultsItem.module.css';
+import tagStyles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from '../StyledComponents';
 import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
+  toSeasonString,
 } from '../../utilities/courseUtilities';
 
 import { AiOutlineStar } from 'react-icons/ai';
@@ -32,16 +33,16 @@ import SkillBadge from '../SkillBadge';
 const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
   background-color: ${({ theme, inWorksheet }) =>
     inWorksheet
-      ? theme.primary_light
+      ? theme.primaryLight
       : theme.theme === 'light'
       ? 'rgb(245, 245, 245)'
       : theme.surface[1]};
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
   &:hover {
-    background-color: ${({ theme }) => theme.select_hover};
+    background-color: ${({ theme }) => theme.selectHover};
   }
 `;
 
@@ -66,27 +67,26 @@ function ResultsGridItem({
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
-  const col_width = 12 / num_cols;
+  const colWidth = 12 / num_cols;
 
   // Season code for this listing
-  const { season_code } = course;
-  const season = Number(season_code[5]);
-  const year = season_code.substring(2, 4);
-  // Size of season icons
-  const icon_size = 13;
   const seasons = ['spring', 'summer', 'fall'] as const;
+  const season = Number(course.season_code[5]);
+  const year = course.season_code.substring(2, 4);
+  // Size of season icons
+  const iconSize = 13;
   // Determine the icon for this season
   const icon =
     season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={icon_size} />
+      <FcCloseUpMode className="my-auto" size={iconSize} />
     ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
+      <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
     ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
+      <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
     );
 
   // Fetch overall & workload rating values and string representations
-  const course_rating = useMemo(
+  const courseRating = useMemo(
     () =>
       [
         getOverallRatings(course, false),
@@ -94,7 +94,7 @@ function ResultsGridItem({
       ] as const,
     [course],
   );
-  const workload_rating = useMemo(
+  const workloadRating = useMemo(
     () =>
       [
         getWorkloadRatings(course, false),
@@ -106,11 +106,11 @@ function ResultsGridItem({
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
-  const [subject_code, course_code] = course.course_code.split(' ');
+  const [subjectCode, courseCode] = course.course_code.split(' ');
 
   return (
     <Col
-      md={col_width}
+      md={colWidth}
       className={`${styles.container} px-2 pt-0 pb-3`}
       style={{ overflow: 'hidden' }}
     >
@@ -138,17 +138,15 @@ function ResultsGridItem({
                         <Tooltip id="button-tooltip" {...props}>
                           <small>
                             {subjectOptions
-                              .find(
-                                (subject) => subject.value === subject_code,
-                              )!
-                              .label.substring(subject_code.length + 2)}
+                              .find((subject) => subject.value === subjectCode)!
+                              .label.substring(subjectCode.length + 2)}
                           </small>
                         </Tooltip>
                       )}
                     >
-                      <span>{subject_code}</span>
+                      <span>{subjectCode}</span>
                     </OverlayTrigger>{' '}
-                    {course_code}
+                    {courseCode}
                   </>
                 )}
                 {course.section
@@ -165,18 +163,13 @@ function ResultsGridItem({
                   placement="top"
                   overlay={(props) => (
                     <Tooltip id="button-tooltip" {...props}>
-                      <small>
-                        {`${
-                          seasons[season - 1].charAt(0).toUpperCase() +
-                          seasons[season - 1].slice(1)
-                        } ${season_code.substr(0, 4)}`}
-                      </small>
+                      <small>{toSeasonString(course.season_code)}</small>
                     </Tooltip>
                   )}
                 >
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
-                      tag_styles[seasons[season - 1]]
+                      tagStyles[seasons[season - 1]]
                     }`}
                   >
                     <Row className="m-auto">
@@ -230,7 +223,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Skills and Areas */}
             <Row className="m-auto">
-              <div className={tag_styles.skills_areas}>
+              <div className={tagStyles.skills_areas}>
                 {course.skills.map((skill) => (
                   <SkillBadge skill={skill} key={skill} />
                 ))}
@@ -260,15 +253,15 @@ function ResultsGridItem({
                     // Only show eval data when user is signed in
                     className={`${styles.rating} mr-1`}
                     style={{
-                      color: course_rating[0]
-                        ? ratingColormap(course_rating[0])
+                      color: courseRating[0]
+                        ? ratingColormap(courseRating[0])
                             .darken()
                             .saturate()
                             .css()
                         : '#cccccc',
                     }}
                   >
-                    {course_rating[1]}
+                    {courseRating[1]}
                   </div>
                   <StyledIcon>
                     <AiOutlineStar className={styles.icon} />
@@ -322,15 +315,15 @@ function ResultsGridItem({
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        isLoggedIn && workload_rating[0]
-                          ? workloadColormap(workload_rating[0])
+                        isLoggedIn && workloadRating[0]
+                          ? workloadColormap(workloadRating[0])
                               .darken()
                               .saturate()
                               .css()
                           : '#cccccc',
                     }}
                   >
-                    {isLoggedIn && workload_rating[1]}
+                    {isLoggedIn && workloadRating[1]}
                   </div>
                   <StyledIcon>
                     <BiBookOpen className={styles.icon} />
@@ -345,7 +338,7 @@ function ResultsGridItem({
       <div className={styles.worksheet_btn}>
         <WorksheetToggleButton
           crn={course.crn}
-          season_code={course.season_code}
+          seasonCode={course.season_code}
           modal={false}
           setCourseInWorksheet={setCourseInWorksheet}
         />

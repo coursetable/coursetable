@@ -83,7 +83,7 @@ const RangeLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 12 }])};
   user-select: none;
   cursor: default;
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 // Range filter value label
@@ -92,7 +92,7 @@ const RangeValueLabel = styled.div`
   ${breakpoints('font-size', 'px', [{ 1320: 10 }])};
   user-select: none;
   cursor: default;
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 // Wrapper for advanced filters dropdown
@@ -133,7 +133,7 @@ const AdvancedRangeGroup = styled.div`
 
 // Row for toggles in advanced filters
 const AdvancedToggleRow = styled(Row)`
-  background-color: ${({ theme }) => theme.button_active};
+  background-color: ${({ theme }) => theme.buttonActive};
 `;
 
 // Advanced filter toggle
@@ -167,13 +167,13 @@ const CloseIcon = styled(IoClose)`
   z-index: 1000;
   margin-left: -30px;
   cursor: pointer;
-  color: ${({ theme }) => theme.icon_focus};
-  transition: color ${({ theme }) => theme.trans_dur};
+  color: ${({ theme }) => theme.iconFocus};
+  transition: color ${({ theme }) => theme.transDur};
   &:hover {
     color: ${({ theme }) =>
       theme.theme === 'light'
-        ? chroma(theme.icon_focus).darken().css()
-        : chroma(theme.icon_focus).brighten().css()};
+        ? chroma(theme.iconFocus).darken().css()
+        : chroma(theme.iconFocus).brighten().css()};
   }
 `;
 
@@ -193,30 +193,30 @@ export function NavbarCatalogSearch() {
   const {
     canReset,
     searchText,
-    select_subjects,
-    select_skillsareas,
+    selectSubjects,
+    selectSkillsAreas,
     overallBounds,
     overallValueLabels,
     workloadBounds,
     workloadValueLabels,
-    select_seasons,
-    select_days,
+    selectSeasons,
+    selectDays,
     timeBounds,
     timeValueLabels,
     enrollBounds,
     enrollValueLabels,
     numBounds,
     numValueLabels,
-    select_schools,
-    select_credits,
+    selectSchools,
+    selectCredits,
     searchDescription,
     hideCancelled,
     hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
-    select_sortby,
-    reset_key,
+    selectSortby,
+    resetKey,
     searchData,
     seasonsOptions,
     coursesLoading,
@@ -293,7 +293,7 @@ export function NavbarCatalogSearch() {
   const activeStyle = useCallback(
     (active: boolean) => {
       if (active) {
-        return { color: globalTheme.primary_hover };
+        return { color: globalTheme.primaryHover };
       }
       return undefined;
     },
@@ -301,14 +301,14 @@ export function NavbarCatalogSearch() {
   );
 
   // Responsive styles for overall and workload range filters
-  const range_handle_style = useMemo(() => {
+  const rangeHandleStyle = useMemo(() => {
     if (isLgDesktop) {
       return undefined;
     }
     const styles: React.CSSProperties = { height: '12px', width: '12px' };
     return [styles, styles];
   }, [isLgDesktop]);
-  const range_rail_style = useMemo((): React.CSSProperties => {
+  const rangeRailStyle = useMemo((): React.CSSProperties => {
     if (isLgDesktop) {
       return {};
     }
@@ -330,15 +330,15 @@ export function NavbarCatalogSearch() {
   };
 
   // Consolidate all advanced filters' selected options
-  const advanced_options = useMemo(
+  const advancedOptions = useMemo(
     () => ({
       selects: {
-        select_days,
-        select_schools,
-        select_credits,
-        select_subjects: isTablet && select_subjects,
-        select_seasons: isTablet && select_seasons,
-        select_skillsareas: isTablet && select_skillsareas,
+        selectDays,
+        selectSchools,
+        selectCredits,
+        selectSubjects: isTablet && selectSubjects,
+        selectSeasons: isTablet && selectSeasons,
+        selectSkillsAreas: isTablet && selectSkillsAreas,
       },
       ranges: {
         activeTime,
@@ -354,16 +354,16 @@ export function NavbarCatalogSearch() {
         hideDiscussionSections,
       },
       sorts: {
-        average_gut_rating: select_sortby.value === sortbyOptions[7].value,
+        average_gut_rating: selectSortby.value === sortbyOptions[7].value,
       },
     }),
     [
-      select_days,
-      select_schools,
-      select_credits,
-      select_subjects,
-      select_seasons,
-      select_skillsareas,
+      selectDays,
+      selectSchools,
+      selectCredits,
+      selectSubjects,
+      selectSeasons,
+      selectSkillsAreas,
       activeTime,
       activeEnrollment,
       activeNumber,
@@ -373,16 +373,16 @@ export function NavbarCatalogSearch() {
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      select_sortby,
+      selectSortby,
       isTablet,
     ],
   );
 
   // Styles for active search bar
-  const searchbar_style = useMemo(() => {
+  const searchbarStyle = useMemo(() => {
     if (searchText) {
       return {
-        backgroundColor: globalTheme.select_hover,
+        backgroundColor: globalTheme.selectHover,
         borderColor: globalTheme.primary,
       };
     }
@@ -421,7 +421,7 @@ export function NavbarCatalogSearch() {
               <NavbarStyledSearchBar
                 type="text"
                 value={searchText}
-                style={searchbar_style}
+                style={searchbarStyle}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                   setSearchText(event.target.value);
                   setStartTime(Date.now());
@@ -466,12 +466,12 @@ export function NavbarCatalogSearch() {
                     setSelectSubjects(defaultFilters.defaultOptions);
                     setStartTime(Date.now());
                   }}
-                  select_options={select_subjects}
+                  select_options={selectSubjects}
                   data_tutorial={2}
                 >
                   <PopoutSelect
                     isMulti
-                    value={select_subjects}
+                    value={selectSubjects}
                     options={subjectOptions}
                     placeholder="All Subjects"
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
@@ -488,13 +488,13 @@ export function NavbarCatalogSearch() {
                     setSelectSkillsAreas(defaultFilters.defaultOptions);
                     setStartTime(Date.now());
                   }}
-                  select_options={select_skillsareas}
+                  select_options={selectSkillsAreas}
                   className="mr-0"
                 >
                   <PopoutSelect
                     useColors
                     isMulti
-                    value={select_skillsareas}
+                    value={selectSkillsAreas}
                     options={skillsAreasOptions}
                     placeholder="All Areas/Skills"
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
@@ -527,10 +527,10 @@ export function NavbarCatalogSearch() {
                   max={defaultFilters.defaultRatingBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
-                  key={reset_key}
-                  handleStyle={range_handle_style}
-                  railStyle={range_rail_style}
-                  trackStyle={[range_rail_style]}
+                  key={resetKey}
+                  handleStyle={rangeHandleStyle}
+                  railStyle={rangeRailStyle}
+                  trackStyle={[rangeRailStyle]}
                   defaultValue={overallBounds}
                   onChange={(value: React.SetStateAction<number[]>) => {
                     setOverallValueLabels(value);
@@ -558,10 +558,10 @@ export function NavbarCatalogSearch() {
                   max={defaultFilters.defaultRatingBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
-                  key={reset_key}
-                  handleStyle={range_handle_style}
-                  railStyle={range_rail_style}
-                  trackStyle={[range_rail_style]}
+                  key={resetKey}
+                  handleStyle={rangeHandleStyle}
+                  railStyle={rangeRailStyle}
+                  trackStyle={[rangeRailStyle]}
                   defaultValue={workloadBounds}
                   onChange={(value: React.SetStateAction<number[]>) => {
                     setWorkloadValueLabels(value);
@@ -582,11 +582,11 @@ export function NavbarCatalogSearch() {
                   setSelectSeasons(defaultFilters.defaultOptions);
                   setStartTime(Date.now());
                 }}
-                select_options={select_seasons}
+                select_options={selectSeasons}
               >
                 <PopoutSelect
                   isMulti
-                  value={select_seasons}
+                  value={selectSeasons}
                   options={seasonsOptions}
                   placeholder="Last 5 Years"
                   hideSelectedOptions={false}
@@ -624,9 +624,9 @@ export function NavbarCatalogSearch() {
                 setNumBounds(defaultFilters.defaultNumBounds);
                 setNumValueLabels(defaultFilters.defaultNumBounds);
                 setStartTime(Date.now());
-                setResetKey(reset_key + 1);
+                setResetKey(resetKey + 1);
               }}
-              select_options={advanced_options}
+              select_options={advancedOptions}
               data_tutorial={4}
             >
               <AdvancedWrapper>
@@ -638,7 +638,7 @@ export function NavbarCatalogSearch() {
                       <AdvancedSelect
                         closeMenuOnSelect
                         isMulti
-                        value={select_subjects}
+                        value={selectSubjects}
                         options={subjectOptions}
                         placeholder="All Subjects"
                         // prevent overlap with tooltips
@@ -658,7 +658,7 @@ export function NavbarCatalogSearch() {
                         useColors
                         closeMenuOnSelect
                         isMulti
-                        value={select_skillsareas}
+                        value={selectSkillsAreas}
                         options={skillsAreasOptions}
                         placeholder="All Areas/Skills"
                         // prevent overlap with tooltips
@@ -679,7 +679,7 @@ export function NavbarCatalogSearch() {
                       <AdvancedSelect
                         closeMenuOnSelect
                         isMulti
-                        value={select_seasons}
+                        value={selectSeasons}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
                         // prevent overlap with tooltips
@@ -700,7 +700,7 @@ export function NavbarCatalogSearch() {
                   <AdvancedSelect
                     closeMenuOnSelect
                     isMulti
-                    value={select_days}
+                    value={selectDays}
                     options={dayOptions}
                     placeholder="All Days"
                     // prevent overlap with tooltips
@@ -737,10 +737,10 @@ export function NavbarCatalogSearch() {
                         228: '7PM',
                         264: '10PM',
                       }}
-                      key={reset_key}
-                      handleStyle={range_handle_style}
-                      railStyle={range_rail_style}
-                      trackStyle={[range_rail_style]}
+                      key={resetKey}
+                      handleStyle={rangeHandleStyle}
+                      railStyle={rangeRailStyle}
+                      trackStyle={[rangeRailStyle]}
                       defaultValue={timeBounds.map(toRangeTime)}
                       onChange={(value: number[]) => {
                         setTimeValueLabels(value.map(toRealTime));
@@ -771,10 +771,10 @@ export function NavbarCatalogSearch() {
                       )}
                       step={10}
                       marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
-                      key={reset_key}
-                      handleStyle={range_handle_style}
-                      railStyle={range_rail_style}
-                      trackStyle={[range_rail_style]}
+                      key={resetKey}
+                      handleStyle={rangeHandleStyle}
+                      railStyle={rangeRailStyle}
+                      trackStyle={[rangeRailStyle]}
                       defaultValue={enrollBounds.map(toLinear)}
                       onChange={(value: number[]) => {
                         setEnrollValueLabels(
@@ -821,10 +821,10 @@ export function NavbarCatalogSearch() {
                         900: '900',
                         1000: '1000+',
                       }}
-                      key={reset_key}
-                      handleStyle={range_handle_style}
-                      railStyle={range_rail_style}
-                      trackStyle={[range_rail_style]}
+                      key={resetKey}
+                      handleStyle={rangeHandleStyle}
+                      railStyle={rangeRailStyle}
+                      trackStyle={[rangeRailStyle]}
                       defaultValue={numBounds}
                       onChange={(value: React.SetStateAction<number[]>) => {
                         setNumValueLabels(value);
@@ -844,7 +844,7 @@ export function NavbarCatalogSearch() {
                   <AdvancedSelect
                     closeMenuOnSelect
                     isMulti
-                    value={select_schools}
+                    value={selectSchools}
                     options={schoolOptions}
                     placeholder="All Schools"
                     // prevent overlap with tooltips
@@ -861,7 +861,7 @@ export function NavbarCatalogSearch() {
                   <AdvancedSelect
                     closeMenuOnSelect
                     isMulti
-                    value={select_credits}
+                    value={selectCredits}
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
@@ -877,7 +877,7 @@ export function NavbarCatalogSearch() {
                   <AdvancedLabel>{sortbyOptions[7].label}:</AdvancedLabel>
                   <ResultsColumnSort
                     selectOption={sortbyOptions[7]}
-                    key={reset_key}
+                    key={resetKey}
                   />
                 </Row>
                 <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">

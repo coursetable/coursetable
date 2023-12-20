@@ -13,7 +13,7 @@ const StyledStatPill = styled.span<
 >`
   background-color: ${({ theme, colormap, stat }) =>
     colormap
-      ? colormap(stat).alpha(theme.rating_alpha).css()
+      ? colormap(stat).alpha(theme.ratingAlpha).css()
       : theme.surface[0]};
   color: ${({ theme, stat }) => (stat ? '#141414' : theme.text[0])};
 `;
@@ -30,7 +30,7 @@ const workloadColormap = chroma
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
-  const { courses, hidden_courses, cur_season } = useWorksheet();
+  const { courses, hiddenCourses, curSeason } = useWorksheet();
   const countedCourseCodes = new Set();
 
   const {
@@ -45,7 +45,7 @@ export default function WorksheetStats() {
       // see if any of the course's codes have already been counted or if it's hidden so we don't double count
       const shouldNotCount =
         c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
-        hidden_courses[cur_season]?.[c.crn];
+        hiddenCourses[curSeason]?.[c.crn];
       const useCourseInfo = c.credits;
 
       if (shouldNotCount || !useCourseInfo) {

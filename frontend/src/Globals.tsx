@@ -94,12 +94,12 @@ const GlobalStyles = createGlobalStyle`
   body {
     background: ${({ theme }) => theme.background};
     color: ${({ theme }) => theme.text[0]};
-    transition: background-color ${({ theme }) => theme.trans_dur};
+    transition: background-color ${({ theme }) => theme.transDur};
   }
   a {
     color: ${({ theme }) => theme.primary};  
     &:hover {
-      color: ${({ theme }) => theme.primary_hover};  
+      color: ${({ theme }) => theme.primaryHover};  
     }
   }
   `;

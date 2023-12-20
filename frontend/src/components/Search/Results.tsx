@@ -33,7 +33,7 @@ import { Link } from 'react-router-dom';
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
-  transition: background-color ${({ theme }) => theme.trans_dur};
+  transition: background-color ${({ theme }) => theme.transDur};
   position: -webkit-sticky; /* Safari */
   position: sticky;
   z-index: 2;
@@ -44,9 +44,9 @@ const StyledContainer = styled(SurfaceComponent)`
   border-top: 2px solid ${({ theme }) => theme.border};
   border-bottom: 2px solid ${({ theme }) => theme.border};
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Restrict the row width
@@ -74,8 +74,8 @@ const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
 // Results item wrapper
 const ResultsItemWrapper = styled.div`
   transition:
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Function to calculate column width within a max and min
@@ -90,7 +90,7 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_friends = object | holds a list of each friend taking a specific course
+ * @prop numFriends = object | holds a list of each friend taking a specific course
  * @prop page = string | page search results are on
  */
 
@@ -101,7 +101,7 @@ function Results({
   loading = false,
   multiSeasons = false,
   isLoggedIn,
-  num_friends,
+  numFriends,
   page = 'catalog',
 }: {
   data: Listing[];
@@ -110,7 +110,7 @@ function Results({
   loading?: boolean;
   multiSeasons?: boolean;
   isLoggedIn: boolean;
-  num_friends: Record<string, string[]>;
+  numFriends: Record<string, string[]>;
   page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
@@ -120,10 +120,10 @@ function Results({
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState(0);
 
-  // Fetch reset_key from search context
-  const { reset_key } = useSearch();
+  // Fetch resetKey from search context
+  const { resetKey } = useSearch();
 
-  const { cur_season } = useWorksheet();
+  const { curSeason } = useWorksheet();
 
   const globalTheme = useTheme();
 
@@ -185,7 +185,7 @@ function Results({
   let resultsListing;
 
   // Number of columns to use in grid view
-  const num_cols = isMobile ? 1 : isTablet ? 2 : 3;
+  const numCols = isMobile ? 1 : isTablet ? 2 : 3;
 
   if (!isLoggedIn) {
     // render an auth wall
@@ -225,7 +225,7 @@ function Results({
           </>
         ) : (
           <>
-            <h3>No courses found for {toSeasonString(cur_season)}</h3>
+            <h3>No courses found for {toSeasonString(curSeason)}</h3>
             <div>
               Add some courses on the <Link to="/catalog">Catalog</Link>.
             </div>
@@ -250,20 +250,20 @@ function Results({
                 isScrolling={isScrolling}
                 onScroll={onChildScroll}
                 scrollTop={scrollTop}
-                rowCount={Math.ceil(data.length / num_cols)}
+                rowCount={Math.ceil(data.length / numCols)}
                 rowHeight={178}
                 rowRenderer={({ index, key, style }) => {
-                  const row_elements = [];
+                  const rowElements = [];
                   for (
-                    let j = index * num_cols;
-                    j < data.length && j < (index + 1) * num_cols;
+                    let j = index * numCols;
+                    j < data.length && j < (index + 1) * numCols;
                     j++
                   ) {
-                    row_elements.push(
+                    rowElements.push(
                       <ResultsGridItem
                         course={data[j]}
                         isLoggedIn={isLoggedIn}
-                        num_cols={num_cols}
+                        num_cols={numCols}
                         multiSeasons={multiSeasons}
                         key={j}
                       />,
@@ -272,7 +272,7 @@ function Results({
 
                   return (
                     <div key={key} style={style}>
-                      <StyledRow className="mx-auto">{row_elements}</StyledRow>
+                      <StyledRow className="mx-auto">{rowElements}</StyledRow>
                     </div>
                   );
                 }}
@@ -301,16 +301,16 @@ function Results({
                 rowCount={data.length}
                 rowHeight={isLgDesktop ? 32 : 28}
                 rowRenderer={({ index, key, style, isScrolling }) => {
-                  const friends = num_friends[
+                  const friends = numFriends[
                     data[index].season_code + data[index].crn
                   ]
-                    ? num_friends[data[index].season_code + data[index].crn]
+                    ? numFriends[data[index].season_code + data[index].crn]
                     : [];
                   // Alternating row item background colors
                   const colorStyles =
                     index % 2 === 0
                       ? { backgroundColor: globalTheme.surface[0] }
-                      : { backgroundColor: globalTheme.row_odd };
+                      : { backgroundColor: globalTheme.rowOdd };
                   return (
                     <ResultsItemWrapper
                       style={{
@@ -339,41 +339,41 @@ function Results({
   }
 
   // Column width styles
-  const szn_style: React.CSSProperties = {
+  const sznStyle: React.CSSProperties = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const code_style: React.CSSProperties = {
+  const codeStyle: React.CSSProperties = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style: React.CSSProperties = {
+  const titleStyle: React.CSSProperties = {
     width: `${COL_SPACING.TITLE_WIDTH}px`,
   };
-  const rate_overall_style: React.CSSProperties = {
+  const rateOverallStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
   };
-  const rate_workload_style: React.CSSProperties = {
+  const rateWorkloadStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const prof_style: React.CSSProperties = {
+  const profStyle: React.CSSProperties = {
     width: `${COL_SPACING.PROF_WIDTH}px`,
   };
-  const meet_style: React.CSSProperties = {
+  const meetStyle: React.CSSProperties = {
     width: `${COL_SPACING.MEET_WIDTH}px`,
   };
-  const loc_style: React.CSSProperties = {
+  const locStyle: React.CSSProperties = {
     width: `${COL_SPACING.LOC_WIDTH}px`,
   };
-  const enroll_style: React.CSSProperties = {
+  const enrollStyle: React.CSSProperties = {
     width: `${COL_SPACING.ENROLL_WIDTH}px`,
   };
-  const friends_style: React.CSSProperties = {
+  const friendsStyle: React.CSSProperties = {
     width: `${COL_SPACING.FRIENDS_WIDTH}px`,
   };
-  const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
+  const saStyle: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
@@ -421,10 +421,10 @@ function Results({
               {isList ? (
                 <>
                   {multiSeasons && (
-                    <ResultsHeader style={szn_style}>Season</ResultsHeader>
+                    <ResultsHeader style={sznStyle}>Season</ResultsHeader>
                   )}
                   {/* Course Code */}
-                  <ResultsHeader style={code_style}>
+                  <ResultsHeader style={codeStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -440,20 +440,20 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[0]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Course Name */}
-                  <ResultsHeader style={title_style}>
+                  <ResultsHeader style={titleStyle}>
                     <span className={styles.one_line}>Title</span>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[2]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   <div className="d-flex">
                     {/* Overall Rating */}
-                    <ResultsHeader style={rate_overall_style}>
+                    <ResultsHeader style={rateOverallStyle}>
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -472,11 +472,11 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[4]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                     {/* Workload Rating */}
-                    <ResultsHeader style={rate_workload_style}>
+                    <ResultsHeader style={rateWorkloadStyle}>
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -494,11 +494,11 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[6]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                     {/* Professor Rating & Course Professors */}
-                    <ResultsHeader style={prof_style}>
+                    <ResultsHeader style={profStyle}>
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -516,12 +516,12 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[5]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                   </div>
                   {/* Previous Enrollment Number */}
-                  <ResultsHeader style={enroll_style}>
+                  <ResultsHeader style={enrollStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -550,15 +550,15 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[8]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Skills/Areas */}
-                  <ResultsHeader style={sa_style}>
+                  <ResultsHeader style={saStyle}>
                     <span className={styles.one_line}>Skills/Areas</span>
                   </ResultsHeader>
                   {/* Course Meeting Days & Times */}
-                  <ResultsHeader style={meet_style}>
+                  <ResultsHeader style={meetStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -575,14 +575,14 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[9]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Location */}
-                  <ResultsHeader style={loc_style}>
+                  <ResultsHeader style={locStyle}>
                     <span className={styles.one_line}>Location</span>
                   </ResultsHeader>
-                  <ResultsHeader style={friends_style}>
+                  <ResultsHeader style={friendsStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -595,7 +595,7 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[3]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                 </>
