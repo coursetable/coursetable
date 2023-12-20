@@ -29,6 +29,11 @@ const StyledListItem = styled(ListGroup.Item)`
   &:hover .hidden {
     opacity: 1;
   }
+  @media only screen and (max-width: 480px) {
+    .hidden {
+      opacity: 1;
+    }
+  }
 `;
 
 // Course code
@@ -69,7 +74,7 @@ function WorksheetCalendarListItem({
       <Row className="align-items-center mx-auto">
         {/* Course Code and Title */}
         <StyledCol
-          className={'pl-1 pr-2'}
+          className="pl-1 pr-2"
           style={colorStyle}
           onClick={() => {
             setSearchParams((prev) => {
