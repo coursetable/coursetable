@@ -4,12 +4,14 @@ import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
-import WorksheetMobileCalendar from '../components/Worksheet/WorksheetMobileCalendar';
 import WorksheetList from '../components/Worksheet/WorksheetList';
 import {
   SurfaceComponent,
   StyledExpandBtn,
 } from '../components/StyledComponents';
+import WorksheetNumDropdown from '../components/Navbar/WorksheetNumberDropdown';
+import SeasonDropdown from '../components/Search/SeasonDropdown';
+import FriendsDropdown from '../components/Navbar/FriendsDropdown';
 
 import styles from './Worksheet.module.css';
 
@@ -202,7 +204,25 @@ function Worksheet() {
         <div>
           <Row className={`${styles.accordion} m-0 p-3`}>
             <Col className="p-0">
-              <WorksheetMobileCalendar />
+              <div className="mobile-calendar-container">
+                <div className="mobile-dropdowns">
+                  <WorksheetNumDropdown />
+                  <Row className={`${styles.dropdowns} mx-auto`}>
+                    <Col xs={6} className="m-0 p-0">
+                      <SeasonDropdown />
+                    </Col>
+                    <Col xs={6} className="m-0 p-0">
+                      <FriendsDropdown />
+                    </Col>
+                  </Row>
+                </div>
+                <div className="mobile-calendar">
+                  <WorksheetCalendar />
+                </div>
+                <div className="mobile-list">
+                  <WorksheetCalendarList />
+                </div>
+              </div>
             </Col>
           </Row>
         </div>
