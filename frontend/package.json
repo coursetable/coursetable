@@ -101,7 +101,6 @@
     "patch-package": "^8.0.0",
     "prettier": "^3.0.3",
     "sharp": "^0.32.6",
-    "source-map-explorer": "^2.5.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "typescript-plugin-css-modules": "^5.0.1",

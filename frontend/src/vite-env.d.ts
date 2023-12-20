@@ -1,4 +1,5 @@
 /// <reference types="vite/client" />
+/// <reference types="gapi.auth2"/>
 
 interface ImportMetaEnv extends Readonly<Record<string, string>> {
   readonly VITE_API_ENDPOINT: string;
