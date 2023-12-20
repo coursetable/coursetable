@@ -26,7 +26,7 @@ const creditColormap = chroma
   .domain([4, 5.5]);
 const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
-  .domain([12, 24]);
+  .domain([12, 20]);
 
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
