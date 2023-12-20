@@ -5,7 +5,6 @@ import { Link } from 'react-router-dom';
 
 import { API_ENDPOINT } from '../config';
 
-// import Logo from '../components/Logo';
 import {
   FcConferenceCall,
   FcComboChart,

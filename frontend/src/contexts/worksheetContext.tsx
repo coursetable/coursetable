@@ -13,7 +13,6 @@ import {
 import { CUR_SEASON } from '../config';
 import { useFerry } from './ferryContext';
 import { toSeasonString } from '../utilities/courseUtilities';
-// import { sortbyOptions } from './queries/Constants';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { useUser, Worksheet } from './userContext';
 import type { Season, Listing } from '../utilities/common';
@@ -65,7 +64,10 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  const [person, setFbPerson] = useSessionStorageState('person', 'me');
+  const [viewedPerson, setViewedPerson] = useSessionStorageState(
+    'person',
+    'me',
+  );
 
   // List of courses that the user has marked hidden
   const [hidden_courses, setHiddenCourses] =
@@ -83,17 +85,16 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Worksheet of the current person
   const cur_worksheet = useMemo(() => {
-    /** @type typeof user.worksheet! */
     const when_not_defined: Worksheet = []; // TODO: change this to undefined
-    if (person === 'me') {
+    if (viewedPerson === 'me') {
       return user.worksheet ?? when_not_defined;
     }
 
     const friend_worksheets = user.friendWorksheets?.worksheets;
     return friend_worksheets
-      ? friend_worksheets[person] ?? when_not_defined
+      ? friend_worksheets[viewedPerson] ?? when_not_defined
       : when_not_defined;
-  }, [user.worksheet, user.friendWorksheets, person]);
+  }, [user.worksheet, user.friendWorksheets, viewedPerson]);
 
   const { seasons: seasonsData } = useFerry();
   const season_codes = useMemo(() => {
@@ -235,9 +236,9 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   const handlePersonChange = useCallback(
     (new_person: string) => {
-      setFbPerson(new_person);
+      setViewedPerson(new_person);
     },
-    [setFbPerson],
+    [setViewedPerson],
   );
 
   // Function to change season
@@ -266,7 +267,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       cur_worksheet,
       cur_season,
       worksheet_number,
-      person,
+      person: viewedPerson,
       courses,
       hidden_courses,
       hover_course,
@@ -289,7 +290,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       cur_worksheet,
       cur_season,
       worksheet_number,
-      person,
+      viewedPerson,
       courses,
       hidden_courses,
       hover_course,

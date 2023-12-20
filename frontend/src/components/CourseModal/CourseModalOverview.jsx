@@ -757,7 +757,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               </Col>
             </Row>
           )}
-          {/* FB Friends that are also shopping this course */}
+          {/* Friends that are also shopping this course */}
           {also_taking.length > 0 && (
             <Row className="m-auto py-2">
               <Col sm={COL_LEN_LEFT} xs={COL_LEN_LEFT + 1} className="px-0">

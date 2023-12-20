@@ -8,10 +8,6 @@ module.exports = {
     'prettier',
   ],
   plugins: ['react', '@typescript-eslint', 'jest', 'jsx-a11y', 'import'],
-  // globals: {
-  //   Atomics: 'readonly',
-  //   SharedArrayBuffer: 'readonly',
-  // },
   parser: '@typescript-eslint/parser',
   parserOptions: {
     project: './tsconfig.json',

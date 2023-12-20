@@ -57,4 +57,4 @@ function WorksheetHideButton({
   );
 }
 
-export default React.memo(withTheme(WorksheetHideButton));
+export default withTheme(WorksheetHideButton);

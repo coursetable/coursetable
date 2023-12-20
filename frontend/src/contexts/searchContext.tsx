@@ -134,21 +134,6 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
-// // Calculate upcoming season
-// const dt = DateTime.now().setZone('America/New_York');
-// let { year } = dt;
-// let season: number;
-// // Starting in October look at next year spring
-// if (dt.month >= 10) {
-//   season = 1;
-//   year += 1;
-//   // Starting in March look at this year fall
-// } else if (dt.month >= 3) {
-//   season = 3;
-// } else {
-//   season = 1;
-// }
-
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: Option[] = [];

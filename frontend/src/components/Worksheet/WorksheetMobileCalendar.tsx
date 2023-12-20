@@ -5,7 +5,7 @@ import styles from './WorksheetAccordion.module.css';
 import './WorksheetMobileCalendar.css';
 import WorksheetNumDropdown from '../Navbar/WorksheetNumberDropdown';
 import SeasonDropdown from '../Search/SeasonDropdown';
-import FBDropdown from '../Navbar/FBDropdown';
+import FriendsDropdown from '../Navbar/FriendsDropdown';
 import { Row, Col } from 'react-bootstrap';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
@@ -170,13 +170,11 @@ function WorksheetMobileCalendar() {
       <div className="mobile-dropdowns">
         <WorksheetNumDropdown />
         <Row className={`${styles.dropdowns} mx-auto`}>
-          {/* Season Dropdown */}
           <Col xs={6} className="m-0 p-0">
             <SeasonDropdown />
           </Col>
-          {/* FB Dropdown */}
           <Col xs={6} className="m-0 p-0">
-            <FBDropdown />
+            <FriendsDropdown />
           </Col>
         </Row>
       </div>
@@ -219,5 +217,4 @@ function WorksheetMobileCalendar() {
   );
 }
 
-// WorksheetCalendar.whyDidYouRender = true;
-export default React.memo(WorksheetMobileCalendar);
+export default WorksheetMobileCalendar;

@@ -218,5 +218,4 @@ function WorksheetToggleButton({
   );
 }
 
-// WorksheetToggleButton.whyDidYouRender = true;
-export default React.memo(WorksheetToggleButton);
+export default WorksheetToggleButton;

@@ -58,11 +58,7 @@ function CalendarEvent({ event }: { event: CourseEvent }) {
       // Have a 1000ms delay before showing popover so it only pops up when user wants it to
       delay={{ show: 1000, hide: 0 }}
     >
-      <div
-        style={event_style}
-        // onMouseEnter={() => setHoverCourse(event.listing)}
-        // onMouseLeave={() => setHoverCourse(null)}
-      >
+      <div style={event_style}>
         <strong>{event.title}</strong>
         <br />
         <span style={{ fontSize: '12px' }}>
@@ -79,5 +75,4 @@ function CalendarEvent({ event }: { event: CourseEvent }) {
   );
 }
 
-// CalendarEvent.whyDidYouRender = true;
-export default React.memo(CalendarEvent);
+export default CalendarEvent;

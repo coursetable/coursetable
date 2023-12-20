@@ -117,9 +117,6 @@ function Results({
   const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
     useWindowDimensions();
 
-  // Show tooltip for the list/grid view toggle. NOT USING RN
-  // const [show_tooltip, setShowTooltip] = useState(false);
-
   // State that holds width of the row for list view
   const [ROW_WIDTH, setRowWidth] = useState(0);
 
@@ -146,7 +143,7 @@ function Results({
       RATE_WORKLOAD_WIDTH: isLgDesktop ? 92 : 82,
       RATE_PROF_WIDTH: isLgDesktop ? 40 : 36,
       ENROLL_WIDTH: 40,
-      FB_WIDTH: 60,
+      FRIENDS_WIDTH: 60,
       PADDING: 43,
 
       PROF_WIDTH: 0,
@@ -161,7 +158,7 @@ function Results({
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
       TEMP_COL_SPACING.ENROLL_WIDTH -
-      TEMP_COL_SPACING.FB_WIDTH -
+      TEMP_COL_SPACING.FRIENDS_WIDTH -
       TEMP_COL_SPACING.RATE_OVERALL_WIDTH -
       TEMP_COL_SPACING.RATE_WORKLOAD_WIDTH -
       TEMP_COL_SPACING.RATE_PROF_WIDTH -
@@ -373,7 +370,9 @@ function Results({
   const enroll_style: React.CSSProperties = {
     width: `${COL_SPACING.ENROLL_WIDTH}px`,
   };
-  const fb_style: React.CSSProperties = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const friends_style: React.CSSProperties = {
+    width: `${COL_SPACING.FRIENDS_WIDTH}px`,
+  };
   const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
@@ -583,8 +582,7 @@ function Results({
                   <ResultsHeader style={loc_style}>
                     <span className={styles.one_line}>Location</span>
                   </ResultsHeader>
-                  {/* FB */}
-                  <ResultsHeader style={fb_style}>
+                  <ResultsHeader style={friends_style}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -638,5 +636,4 @@ function Results({
   );
 }
 
-// Search.whyDidYouRender = true;
 export default Results;

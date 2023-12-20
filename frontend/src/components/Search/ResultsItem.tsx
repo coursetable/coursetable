@@ -185,7 +185,9 @@ function ResultsItem({
   const enroll_style: React.CSSProperties = {
     width: `${COL_SPACING.ENROLL_WIDTH}px`,
   };
-  const fb_style: React.CSSProperties = { width: `${COL_SPACING.FB_WIDTH}px` };
+  const friends_style: React.CSSProperties = {
+    width: `${COL_SPACING.FRIENDS_WIDTH}px`,
+  };
   const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const [subject_code, course_code] = course.course_code.split(' ');
@@ -380,8 +382,8 @@ function ResultsItem({
         <div style={loc_style}>
           <div className={styles.ellipsis_text}>{course.locations_summary}</div>
         </div>
-        {/* # FB Friends also shopping */}
-        <div style={fb_style} className="d-flex ">
+        {/* # Friends also shopping */}
+        <div style={friends_style} className="d-flex ">
           <OverlayTrigger
             placement="top"
             overlay={(props) =>
@@ -422,6 +424,4 @@ function ResultsItem({
   );
 }
 
-const ResultsItemMemo = React.memo(ResultsItem);
-// ResultsItemMemo.whyDidYouRender = true;
-export default ResultsItemMemo;
+export default ResultsItem;

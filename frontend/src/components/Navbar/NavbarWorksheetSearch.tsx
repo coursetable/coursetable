@@ -7,7 +7,6 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
-// import { sortbyOptions } from '../queries/Constants';
 import { isOption, Option } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -74,9 +73,6 @@ const StyledToggleButton = styled(ToggleButton)`
  * Worksheet search form for the desktop in the navbar
  */
 export function NavbarWorksheetSearch() {
-  // Get search context data
-  // const { } = useSearch();
-
   const {
     season_options,
     cur_season,
@@ -126,23 +122,23 @@ export function NavbarWorksheetSearch() {
   const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest } =
     useUser();
 
-  // FB Friends names
+  // Friends names
   const friendInfo = useMemo(
     () => (user.friendWorksheets ? user.friendWorksheets.friendInfo : {}),
     [user.friendWorksheets],
   );
 
-  // List of FB friend options. Initialize with me option
+  // List of friend options. Initialize with me option
   const friend_options = useMemo(() => {
     const friend_options_temp = [];
-    // Add FB friend to dropdown if they have worksheet courses in the current season
+    // Add friend to dropdown if they have worksheet courses in the current season
     for (const friend of Object.keys(friendInfo)) {
       friend_options_temp.push({
         value: friend,
         label: friendInfo[friend].name,
       });
     }
-    // Sort FB friends in alphabetical order
+    // Sort friends in alphabetical order
     friend_options_temp.sort((a, b) =>
       a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
     );
@@ -159,7 +155,7 @@ export function NavbarWorksheetSearch() {
     };
   }, [person, friendInfo]);
 
-  // FB Friends names
+  // Friends names
   const friendRequestInfo = useMemo(
     () => (user.friendRequests ? user.friendRequests : []),
     [user.friendRequests],
@@ -168,14 +164,14 @@ export function NavbarWorksheetSearch() {
   // friend requests variables
   const friend_request_options = useMemo(() => {
     const friend_request_options_temp = [];
-    // Add FB friend to dropdown if they have worksheet courses in the current season
+    // Add friend to dropdown if they have worksheet courses in the current season
     for (const friend of friendRequestInfo) {
       friend_request_options_temp.push({
         value: friend.netId,
         label: friend.name,
       });
     }
-    // Sort FB friends in alphabetical order
+    // Sort friends in alphabetical order
     friend_request_options_temp.sort((a, b) =>
       a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
     );
@@ -286,9 +282,9 @@ export function NavbarWorksheetSearch() {
                 isSearchable={false}
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
                   if (removing === 0) {
-                    // Cleared FB friend
+                    // Cleared friend
                     if (!selectedOption) handlePersonChange('me');
-                    // Selected FB friend
+                    // Selected friend
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value);
                   } else if (selectedOption && isOption(selectedOption)) {
@@ -306,7 +302,6 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Friend requests"
               type="friend reqs"
-              // select_options={selected_person}
               onReset={() => {
                 handlePersonChange('me');
               }}

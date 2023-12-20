@@ -36,8 +36,6 @@ function RatingsGraph({
   // Reverse colors if needed
   if (reverse) colors.reverse();
 
-  // Variables used for list keys
-  // let indx = 0;
   // Set minimum bar height
   const MIN_HEIGHT = 15;
   // Loop through each rating to build the bar

@@ -68,7 +68,7 @@ export const sortbyOptions = [
   { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
-// Make sure we can only sort by keys in the listing, or by facebook.
+// Make sure we can only sort by keys in the listing, or by friends.
 export type SortKeys = keyof Listing | 'friend';
 const _number = 0;
 const _sortKeys = sortbyOptions[_number].value;

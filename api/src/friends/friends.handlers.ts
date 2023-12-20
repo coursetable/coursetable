@@ -3,9 +3,6 @@
  */
 
 import express from 'express';
-
-// import axios from 'axios';
-
 import { prisma } from '../config';
 
 import winston from '../logging/winston';
@@ -40,14 +37,13 @@ export const addFriend = async (
   try {
     await prisma.$transaction([
       prisma.studentFriends.upsert({
-        // update (do not create a new friend) when one already matches the netId and Facebook ID
+        // update (do not create a new friend) when one already matches the netId
         where: {
           netId_friendNetId: { netId, friendNetId },
         },
         // basic info for creation
         create: {
           netId,
-          // name: friend.name,
           friendNetId,
         },
         // update people's names if they've changed
@@ -132,7 +128,6 @@ export const friendRequest = async (
         // basic info for creation
         create: {
           netId,
-          // name: friend.name,
           friendNetId,
         },
         // update people's names if they've changed
@@ -249,8 +244,8 @@ export const getFriendsWorksheets = async (
 
   const { netId } = req.user;
 
-  // Get NetIDs of Facebook friends
-  winston.info('Getting NetIDs of Facebook friends');
+  // Get NetIDs of friends
+  winston.info('Getting NetIDs of friends');
   const friendRecords = await prisma.studentFriends.findMany({
     where: {
       netId,
@@ -317,12 +312,10 @@ export const getFriendsWorksheets = async (
           oci_id,
           worksheet_number,
         ]);
-        // worksheetsByFriend[net_id].push([String(season), oci_id]);
       } else {
         worksheetsByFriend[net_id] = [
           [String(season), oci_id, worksheet_number],
         ];
-        // worksheetsByFriend[net_id] = [[String(season), oci_id]];
       }
     },
   );

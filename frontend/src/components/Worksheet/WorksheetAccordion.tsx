@@ -8,7 +8,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { ThemeContext } from 'styled-components';
 import SeasonDropdown from '../Search/SeasonDropdown';
-import FBDropdown from '../Navbar/FBDropdown';
+import FriendsDropdown from '../Navbar/FriendsDropdown';
 import {
   TextComponent,
   StyledBanner,
@@ -233,13 +233,11 @@ function WorksheetAccordion() {
     <div className={styles.container}>
       <WorksheetNumDropdown />
       <Row className={`${styles.dropdowns} mx-auto`}>
-        {/* Season Dropdown */}
         <Col xs={6} className="m-0 p-0">
           <SeasonDropdown />
         </Col>
-        {/* FB Dropdown */}
         <Col xs={6} className="m-0 p-0">
-          <FBDropdown />
+          <FriendsDropdown />
         </Col>
       </Row>
       {/* Render list of courses */}
@@ -250,4 +248,4 @@ function WorksheetAccordion() {
   );
 }
 
-export default React.memo(WorksheetAccordion);
+export default WorksheetAccordion;
