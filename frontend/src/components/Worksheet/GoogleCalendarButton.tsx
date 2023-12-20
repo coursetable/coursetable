@@ -1,56 +1,20 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import * as Sentry from '@sentry/react';
 import { Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
-import { StyledBtn } from './WorksheetCalendarList';
 import { academicCalendars } from '../../config';
+import { useGapi } from '../../contexts/gapiContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { getCalendarEvents } from '../../utilities/calendar';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import GCalIcon from '../../images/gcal.svg';
 
-const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
-const GAPI_CLIENT_NAME = 'client:auth2';
-
 function GoogleCalendarButton(): JSX.Element {
-  const [gapi, setGapi] = useState<typeof globalThis.gapi | null>(null);
-  const [authInstance, setAuthInstance] =
-    useState<gapi.auth2.GoogleAuthBase | null>(null);
-  const [user, setUser] = useState<gapi.auth2.GoogleUser | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [exporting, setExporting] = useState(false);
+  const { gapi, authInstance, user, setUser } = useGapi();
   const { curSeason, hiddenCourses, courses } = useWorksheet();
-
-  // Load gapi client after gapi script loaded
-  const loadGapiClient = (gapiInstance: typeof globalThis.gapi) => {
-    gapiInstance.load(GAPI_CLIENT_NAME, () => {
-      gapiInstance.client.init({
-        apiKey: import.meta.env.VITE_DEV_GCAL_API_KEY,
-        clientId: import.meta.env.VITE_DEV_GCAL_CLIENT_ID,
-        scope: SCOPES,
-      });
-      gapiInstance.client.load('calendar', 'v3');
-    });
-  };
-
-  // Load gapi script and client
-  useEffect(() => {
-    async function loadGapi() {
-      const newGapi = await loadGapiInsideDOM();
-      loadGapiClient(newGapi);
-      const newAuth2 = await loadAuth2(
-        newGapi,
-        import.meta.env.VITE_DEV_GCAL_CLIENT_ID,
-        SCOPES,
-      );
-      setGapi(newGapi);
-      setAuthInstance(newAuth2);
-      setLoading(false);
-    }
-    loadGapi();
-  }, []);
-
-  const syncEvents = useCallback(async () => {
+  const exportButtonRef = useRef<HTMLDivElement>(null);
+  const exportEvents = useCallback(async () => {
     if (!gapi) {
       Sentry.captureException(new Error('gapi not loaded'));
       return;
@@ -63,7 +27,7 @@ function GoogleCalendarButton(): JSX.Element {
       );
       return;
     }
-    setLoading(true);
+    setExporting(true);
 
     try {
       // get all previously added classes
@@ -126,56 +90,46 @@ function GoogleCalendarButton(): JSX.Element {
       );
       toast.error('Error exporting Google Calendar Events');
     } finally {
-      setLoading(false);
+      setExporting(false);
     }
   }, [courses, gapi, curSeason, hiddenCourses]);
 
   useEffect(() => {
-    if (!authInstance) {
+    if (!authInstance || user || !exportButtonRef.current) {
       return;
     }
-    if (authInstance.isSignedIn.get()) {
-      setUser(authInstance.currentUser.get());
-    } else {
-      const signInButton = document.getElementById('auth');
-      authInstance.attachClickHandler(
-        signInButton,
-        {},
-        (googleUser) => {
-          if (signInButton && signInButton.id == 'auth') {
-            setUser(googleUser);
-            syncEvents();
-            signInButton.id = 'sync';
-          }
-        },
-        (error) => {
-          Sentry.captureException(
-            new Error('[GCAL]: Error signing in to Google Calendar: ', {
-              cause: error,
-            }),
-          );
-          toast.error('Error signing in to Google Calendar');
-        },
-      );
-    }
-  }, [authInstance, user, syncEvents]);
-
-  if (loading) {
-    return (
-      <StyledBtn>
-        <Spinner animation="border" role="status" size="sm" />
-      </StyledBtn>
+    authInstance.attachClickHandler(
+      exportButtonRef.current,
+      {},
+      (googleUser) => {
+        if (!user) {
+          setUser(googleUser);
+          exportEvents();
+        }
+      },
+      (error) => {
+        Sentry.captureException(
+          new Error('[GCAL]: Error signing in to Google Calendar: ', {
+            cause: error,
+          }),
+        );
+        toast.error('Error signing in to Google Calendar');
+      },
     );
-  }
+  }, [authInstance, user, setUser, exportEvents]);
 
   return (
-    <StyledBtn
-      id={user ? 'sync' : 'auth'}
-      onClick={user ? syncEvents : undefined}
+    <div
+      ref={exportButtonRef}
+      onClick={user && !exporting ? exportEvents : undefined}
     >
-      <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
+      {authInstance && !exporting ? (
+        <img style={{ height: '2rem' }} src={GCalIcon} alt="" />
+      ) : (
+        <Spinner animation="border" role="status" size="sm" />
+      )}
       &nbsp;&nbsp;Export to Google Calendar
-    </StyledBtn>
+    </div>
   );
 }
 
