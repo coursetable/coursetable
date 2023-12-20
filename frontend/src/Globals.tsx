@@ -1,7 +1,3 @@
-import 'react-app-polyfill/stable';
-import 'core-js/features/promise/all-settled';
-import 'core-js/es/promise/all-settled';
-
 import React, { useEffect } from 'react';
 import {
   BrowserRouter,

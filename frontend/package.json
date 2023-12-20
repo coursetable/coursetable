@@ -2,7 +2,6 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
-    "analyze": "source-map-explorer 'build/static/js/*.js'",
     "build": "tsc && vite build",
     "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml",
     "checks": "bun run depcheck && bun run lint",
@@ -13,21 +12,6 @@
     "start": "vite --https",
     "test": "vite test",
     "postinstall": "patch-package && cd node_modules/sharp && bun install"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "eslintConfig": {
-    "extends": "react-app"
   },
   "resolutions": {
     "graphql-language-service-interface": "2.4.2-alpha.2"
@@ -55,7 +39,6 @@
     "rc-slider": "9.7.1",
     "rc-tooltip": "^5.1.0",
     "react": "^18.2.0",
-    "react-app-polyfill": "^2.0.0",
     "react-big-calendar": "^0.30.0",
     "react-bootstrap": "^1.4.3",
     "react-dom": "^18.2.0",
@@ -118,7 +101,6 @@
     "patch-package": "^8.0.0",
     "prettier": "^3.0.3",
     "sharp": "^0.32.6",
-    "source-map-explorer": "^2.5.3",
     "ts-node": "^10.9.1",
     "typescript": "^5.2.2",
     "typescript-plugin-css-modules": "^5.0.1",
