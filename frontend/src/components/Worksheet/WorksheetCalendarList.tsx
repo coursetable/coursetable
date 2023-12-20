@@ -18,7 +18,6 @@ import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { TbFileExport } from 'react-icons/tb';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
-import styles from './WorksheetCalendarList.module.css';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -91,6 +90,20 @@ const StyledBtn = styled(Button)`
 
   &.form-control:focus {
     color: ${({ theme }) => theme.text[0]};
+  }
+
+  & .dropdown-menu {
+    min-width: 20rem !important;
+  }
+
+  & .dropdown-menu,
+  & .dropdown-item {
+    color: ${({ theme }) => theme.text[0]};
+    background-color: ${({ theme }) => theme.surface[1]};
+  }
+
+  & .dropdown-item:hover {
+    background-color: ${({ theme }) => theme.buttonActive};
   }
 `;
 
@@ -185,7 +198,7 @@ function WorksheetCalendarList() {
                   menuAlign="right"
                   title={<StyledTbFileExport size={22} />}
                   variant="none"
-                  className={`${styles.exportDropdown} w-100`}
+                  className="w-100"
                 >
                   <Dropdown.Item eventKey="1">
                     <GoogleCalendarButton />
