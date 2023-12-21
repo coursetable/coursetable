@@ -20,9 +20,7 @@ export const toggleBookmark = async (
 ): Promise<express.Response> => {
   winston.info('Toggling course bookmark');
 
-  if (!req.user) 
-    return res.status(401).json();
-  
+  if (!req.user) return res.status(401).json();
 
   const { netId } = req.user;
 
@@ -72,9 +70,7 @@ export const getUserWorksheet = async (
 ): Promise<express.Response> => {
   winston.info(`Fetching user's worksheets`);
 
-  if (!req.user) 
-    return res.status(401).json();
-  
+  if (!req.user) return res.status(401).json();
 
   const { netId } = req.user;
 

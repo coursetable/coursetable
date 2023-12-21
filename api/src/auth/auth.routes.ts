@@ -18,11 +18,8 @@ export default async (app: express.Express): Promise<void> => {
 
   // Endpoint to print out user access
   app.get('/api/auth/check', (req, res) => {
-    if (req.user) 
-      res.json({ auth: true, id: req.user.netId, user: req.user });
-     else 
-      res.json({ auth: false, id: null });
-    
+    if (req.user) res.json({ auth: true, id: req.user.netId, user: req.user });
+    else res.json({ auth: false, id: null });
   });
 
   // CAS portal redirects
@@ -33,9 +30,7 @@ export default async (app: express.Express): Promise<void> => {
     winston.info(`Logging out ${req.user?.netId}`);
 
     req.logOut((err) => {
-      if (err) 
-         next(err);  
-      
+      if (err) next(err);
     });
     return res.json({ success: true });
   });

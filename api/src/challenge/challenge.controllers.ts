@@ -43,9 +43,8 @@ const constructChallenge = (
     ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
       const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
-      if (!Number.isInteger(evaluationRating.rating[ratingIndex])) 
+      if (!Number.isInteger(evaluationRating.rating[ratingIndex]))
         throw new Error(`Invalid rating index: ${ratingIndex}`);
-      
 
       return ratingIndex;
     });
@@ -120,9 +119,7 @@ export const requestChallenge = async (
 ): Promise<express.Response> => {
   winston.info(`Requesting challenge`);
 
-  if (!req.user) 
-    return res.status(401).json({ error: 'USER_NOT_FOUND' });
-  
+  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
 
   const { netId } = req.user;
 
@@ -133,9 +130,8 @@ export const requestChallenge = async (
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled) 
+  if (evaluationsEnabled)
     return res.status(403).json({ error: 'ALREADY_ENABLED' });
-  
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
     return res.status(429).json({
@@ -217,9 +213,7 @@ export const verifyChallenge = async (
 ): Promise<express.Response> => {
   winston.info(`Verifying challenge`);
 
-  if (!req.user) 
-    return res.status(401).json({ error: 'USER_NOT_FOUND' });
-  
+  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
 
   const { netId } = req.user;
 
@@ -230,9 +224,8 @@ export const verifyChallenge = async (
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled) 
+  if (evaluationsEnabled)
     return res.status(403).json({ error: 'ALREADY_ENABLED' });
-  
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
     return res.status(429).json({
