@@ -32,7 +32,7 @@ import {
   friendsAlsoTaking,
   getEnrolled,
   toSeasonString,
-} from '../../utilities/courseUtilities';
+} from '../../utilities/course';
 import { useSameCourseOrProfOfferingsQuery } from '../../generated/graphql';
 import { weekdays } from '../../utilities/common';
 

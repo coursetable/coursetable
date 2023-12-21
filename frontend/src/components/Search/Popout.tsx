@@ -4,7 +4,10 @@ import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
 import chroma from 'chroma-js';
 
-import { breakpoints, useComponentVisibleDropdown } from '../../utilities';
+import {
+  breakpoints,
+  useComponentVisibleDropdown,
+} from '../../utilities/display';
 import { isOption } from '../../contexts/searchContext';
 
 // Entire popout component

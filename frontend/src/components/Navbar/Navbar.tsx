@@ -14,7 +14,7 @@ import {
   logout,
   scrollToTop,
   useComponentVisible,
-} from '../../utilities';
+} from '../../utilities/display';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';

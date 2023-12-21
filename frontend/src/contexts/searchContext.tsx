@@ -35,7 +35,7 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
-} from '../utilities/courseUtilities';
+} from '../utilities/course';
 import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
 

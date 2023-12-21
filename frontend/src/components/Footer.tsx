@@ -6,7 +6,7 @@ import styled from 'styled-components';
 import styles from './Footer.module.css';
 import Logo from './Navbar/Logo';
 import { StyledHr, TextComponent } from './StyledComponents';
-import { scrollToTop } from '../utilities';
+import { scrollToTop } from '../utilities/display';
 import VercelBanner from '../images/powered-by-vercel.svg';
 
 // Header

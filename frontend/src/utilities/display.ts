@@ -2,7 +2,7 @@ import { type MouseEventHandler, useEffect, useRef, useState } from 'react';
 import { css } from 'styled-components';
 import axios from 'axios';
 
-import { API_ENDPOINT } from './config';
+import { API_ENDPOINT } from '../config';
 
 // Detect clicks outside of a component
 // Via https://stackoverflow.com/a/54570068/5004662

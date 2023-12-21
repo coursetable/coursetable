@@ -13,7 +13,7 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './CourseModal.module.css';
 import { TextComponent, StyledLink } from '../StyledComponents';
 import SkillBadge from '../SkillBadge';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
 
 // Course Modal

@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-import { sortCourses } from '../../utilities/courseUtilities';
+import { sortCourses } from '../../utilities/course';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { useSearch } from '../../contexts/searchContext';
 import Results from '../Search/Results';

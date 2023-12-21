@@ -35,7 +35,7 @@ import {
   type Option,
   defaultFilters,
 } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities';
+import { breakpoints } from '../../utilities/display';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
 import {
   toRangeTime,
@@ -43,7 +43,7 @@ import {
   to12HourTime,
   toLinear,
   toExponential,
-} from '../../utilities/courseUtilities';
+} from '../../utilities/course';
 
 // Row in navbar search
 const StyledRow = styled(Row)`

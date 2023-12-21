@@ -8,7 +8,7 @@ import {
   checkConflict,
   checkCrossListed,
   isInWorksheet,
-} from '../../utilities/courseUtilities';
+} from '../../utilities/course';
 import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
 
 /**

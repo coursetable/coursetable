@@ -20,9 +20,9 @@ import { SurfaceComponent } from '../StyledComponents';
 import ResultsColumnSort from './ResultsColumnSort';
 import { sortbyOptions } from '../../queries/Constants';
 import { useSearch } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities';
+import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';

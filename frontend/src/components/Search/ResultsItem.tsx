@@ -29,8 +29,8 @@ import {
   getWorkloadRatings,
   toSeasonString,
   truncatedText,
-} from '../../utilities/courseUtilities';
-import { breakpoints } from '../../utilities';
+} from '../../utilities/course';
+import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
 
 // Row for results item

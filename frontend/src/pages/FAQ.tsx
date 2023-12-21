@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { StyledHoverText, TextComponent } from '../components/StyledComponents';
 import styles from './FAQ.module.css';
-import { scrollToTop } from '../utilities';
+import { scrollToTop } from '../utilities/display';
 
 // Card used in FAQ accordion
 const StyledCard = styled(Card)`

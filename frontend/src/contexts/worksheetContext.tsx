@@ -12,7 +12,7 @@ import {
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { useFerry } from './ferryContext';
-import { toSeasonString } from '../utilities/courseUtilities';
+import { toSeasonString } from '../utilities/course';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { useUser, type Worksheet } from './userContext';
 import type { Season, Listing } from '../utilities/common';

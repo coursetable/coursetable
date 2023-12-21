@@ -8,9 +8,9 @@ import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
 import { isOption } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities';
+import { breakpoints } from '../../utilities/display';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 

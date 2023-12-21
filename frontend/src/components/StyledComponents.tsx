@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FormControl, Card, Popover } from 'react-bootstrap';
 import type chroma from 'chroma-js';
-import { breakpoints } from '../utilities';
+import { breakpoints } from '../utilities/display';
 
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`

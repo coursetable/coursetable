@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from 'uuid';
 import { toast } from 'react-toastify';
 import { weekdays, type Listing, type Season } from './common';
-import { toSeasonString } from './courseUtilities';
+import { toSeasonString } from './course';
 import {
   academicCalendars,
   type SimpleDate,

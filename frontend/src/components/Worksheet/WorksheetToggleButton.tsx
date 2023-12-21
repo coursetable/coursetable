@@ -10,7 +10,7 @@ import * as Sentry from '@sentry/react';
 import './WorksheetToggleButton.css';
 import { useUser } from '../../contexts/userContext';
 import { setLSObject } from '../../utilities/browserStorage';
-import { isInWorksheet } from '../../utilities/courseUtilities';
+import { isInWorksheet } from '../../utilities/course';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';

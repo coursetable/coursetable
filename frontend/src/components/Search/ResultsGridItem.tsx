@@ -24,7 +24,7 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   toSeasonString,
-} from '../../utilities/courseUtilities';
+} from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
 // Grid Item wrapper

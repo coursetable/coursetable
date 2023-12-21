@@ -6,7 +6,7 @@ import { academicCalendars } from '../../config';
 import { useGapi } from '../../contexts/gapiContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { getCalendarEvents } from '../../utilities/calendar';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import GCalIcon from '../../images/gcal.svg';
 
 function GoogleCalendarButton(): JSX.Element {
