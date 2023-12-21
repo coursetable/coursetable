@@ -37,7 +37,7 @@ const constructChallenge = (
   netid: string,
 ): express.Response => {
   // Array of course enrollment counts
-  let ratingIndices: number[];
+  let ratingIndices: number[] = [];
 
   try {
     ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
@@ -239,12 +239,12 @@ export const verifyChallenge = async (
   let secrets: {
     netid: string;
     ratingSecrets: { courseRatingId: string; courseRatingIndex: number }[];
-  }; // The decrypted token
-  let secretRatingIds; // For retrieving the correct ones from the database
+  } = { netid: '', ratingSecrets: [] }; // The decrypted token
+  let secretRatingIds: string[] = []; // For retrieving the correct ones from the database
   // list in the format "<question_id>_<rating_index>" to verify
   // the submitted answers match those encoded in the token
-  let secretRatings;
-  let answerRatings;
+  let secretRatings: string[] = [];
+  let answerRatings: string[] = [];
   // Catch malformed token decryption errors
   try {
     secrets = JSON.parse(decrypt(token, salt));

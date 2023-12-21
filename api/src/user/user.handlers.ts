@@ -24,33 +24,38 @@ export const toggleBookmark = async (
 
   const { netId } = req.user;
 
-  const { action, season, ociId, worksheet_number } = req.body;
+  const {
+    action,
+    season,
+    oci_id: ociId,
+    worksheet_number: worksheetNumber,
+  } = req.body;
 
   // Add a bookmarked course
   if (action === 'add') {
     winston.info(
-      `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`,
+      `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
     await prisma.worksheetCourses.create({
       data: {
         net_id: netId,
         oci_id: parseInt(ociId, 10),
         season: parseInt(season, 10),
-        worksheet_number,
+        worksheet_number: worksheetNumber,
       },
     });
   }
   // Remove a bookmarked course
   else if (action === 'remove') {
     winston.info(
-      `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheet_number}`,
+      `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
     await prisma.worksheetCourses.deleteMany({
       where: {
         net_id: netId,
         oci_id: parseInt(ociId, 10),
         season: parseInt(season, 10),
-        worksheet_number,
+        worksheet_number: worksheetNumber,
       },
     });
   }

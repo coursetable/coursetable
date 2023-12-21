@@ -60,7 +60,7 @@ export const cannyIdentify = async (
     if (data === null || data.length === 0)
       return res.status(401).json({ success: false });
 
-    const user = data[0];
+    const [user] = data;
 
     winston.info(`Updating profile for ${netId}`);
     await prisma.studentBluebookSettings.update({

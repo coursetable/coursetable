@@ -69,7 +69,7 @@ export type Catalog = {
 export async function fetchCatalog(
   overwrite: boolean,
 ): Promise<PromiseSettledResult<void>[]> {
-  let seasons: Seasons;
+  let seasons: Seasons = { seasons: [] };
   // Get a list of all seasons
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
@@ -95,7 +95,7 @@ export async function fetchCatalog(
       return;
     }
 
-    let catalog: Catalog;
+    let catalog: Catalog = { computed_listing_info: [] };
 
     try {
       catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {

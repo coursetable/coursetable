@@ -31,7 +31,7 @@ const ALLOWED_ORG_CODES = [
 ];
 
 const extractHostname = (url: string): string => {
-  let hostname;
+  let hostname = '';
   // Find & remove protocol (http, ftp, etc.) and get hostname
 
   if (url.includes('//')) [, , hostname] = url.split('/');
@@ -98,7 +98,7 @@ export const passportConfig = (
             return;
           }
 
-          const user = data[0];
+          const [user] = data;
 
           // Enable evaluations if user has a school code
           // or is a member of an approved organization (for faculty).
@@ -160,7 +160,7 @@ export const passportConfig = (
    * @param netId: netId of user to get info for.
    * @param done: callback function to be executed after deserialization.
    */
-  passport.deserializeUser(async (netId: string, done): Promise<void> => {
+  passport.deserializeUser(async (netId: string, done) => {
     winston.info(`Deserializing user ${netId}`);
     const student = await prisma.studentBluebookSettings.findUnique({
       where: {
