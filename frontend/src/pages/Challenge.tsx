@@ -198,7 +198,6 @@ function Challenge() {
       });
   }, []);
 
-  // Handle form submit
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
     event,
   ) => {
