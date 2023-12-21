@@ -2,6 +2,7 @@ import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
 import { components } from 'react-select';
+import { toast } from 'react-toastify';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
@@ -261,6 +262,8 @@ export function NavbarWorksheetSearch() {
               <Searchbar
                 components={{
                   Control: (props) => (
+                    // TODO
+                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
                     <div
                       onClick={() => {
                         setRemoving(1 - removing);
@@ -291,7 +294,7 @@ export function NavbarWorksheetSearch() {
                       removeFriend(selectedOption.value, user.netId),
                       removeFriend(user.netId, selectedOption.value),
                     ]);
-                    alert(`Removed friend: ${selectedOption.value}`);
+                    toast.info(`Removed friend: ${selectedOption.value}`);
                     window.location.reload();
                   }
                 }}
@@ -310,6 +313,8 @@ export function NavbarWorksheetSearch() {
               <Searchbar
                 components={{
                   Control: (props) => (
+                    // TODO
+                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
                     <div
                       onClick={() => {
                         setDeleting(1 - deleting);
@@ -336,9 +341,11 @@ export function NavbarWorksheetSearch() {
                         addFriend(selectedOption.value, user.netId),
                         addFriend(user.netId, selectedOption.value),
                       ]);
-                      alert(`Added friend: ${selectedOption.value}`);
+                      toast.info(`Added friend: ${selectedOption.value}`);
                     } else if (deleting === 1) {
-                      alert(`Declined friend request: ${selectedOption.value}`);
+                      toast.info(
+                        `Declined friend request: ${selectedOption.value}`,
+                      );
                     }
                     window.location.reload();
                   }
@@ -359,7 +366,7 @@ export function NavbarWorksheetSearch() {
                 onKeyDown={async (e) => {
                   if (e.key === 'Enter') {
                     await friendRequest(currentFriendNetID);
-                    alert(`Sent friend request: ${currentFriendNetID}`);
+                    toast.info(`Sent friend request: ${currentFriendNetID}`);
                   }
                 }}
                 onInputChange={(e) => {

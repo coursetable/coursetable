@@ -9,6 +9,7 @@ module.exports = {
   },
   rules: {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'react/jsx-child-element-spacing': 'off',
     'react/jsx-no-bind': 'off',
     // TODO:
     'jsx-a11y/click-events-have-key-events': 'off',

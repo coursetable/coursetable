@@ -244,6 +244,8 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                   style={{ width: '100%' }}
                 >
                   {/* DarkMode Button */}
+                  {/* TODO */}
+                  {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <div
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
                       !isMobile ? 'ml-auto' : ''

@@ -125,6 +125,8 @@ function Search() {
               <Form className="px-0" onSubmit={scrollToResults}>
                 <Row className="mx-auto pt-4 px-4">
                   {/* Reset Filters Button */}
+                  {/* TODO */}
+                  {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <small
                     className={`${styles.reset_filters_btn} mr-auto`}
                     onClick={handleResetFilters}

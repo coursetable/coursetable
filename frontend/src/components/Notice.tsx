@@ -21,6 +21,8 @@ function Notice({ children }: { readonly children?: React.ReactNode }) {
       <div className={styles.content}>
         <div>{children}</div>
       </div>
+      {/* TODO */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <span className={styles.closeButton} onClick={() => setVisible(false)}>
         <FaTimes style={{ display: 'block' }} />
       </span>

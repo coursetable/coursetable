@@ -265,6 +265,8 @@ function Challenge() {
         <div>
           You've completed the challenge already - no need to do it again.
           <br />
+          {/* TODO */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
           <div onClick={() => navigate(-1)} className="btn btn-primary mt-3">
             Go back
           </div>

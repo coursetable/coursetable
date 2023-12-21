@@ -80,7 +80,11 @@ export default function WorksheetStats() {
       className={`${shown ? 'dropdown' : 'dropup'} ${styles.statsContainer}`}
     >
       <div className={styles.toggleButton}>
-        <button className="dropdown-toggle" onClick={() => setShown(!shown)}>
+        <button
+          type="button"
+          className="dropdown-toggle"
+          onClick={() => setShown(!shown)}
+        >
           Summary
         </button>
       </div>
