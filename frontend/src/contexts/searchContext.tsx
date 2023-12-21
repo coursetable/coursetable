@@ -13,7 +13,7 @@ import {
   useLocalStorageState,
   useSessionStorageState,
 } from '../utilities/browserStorage';
-import { useCourseData, useFerry } from './ferryContext';
+import { useCourseData, useFerry, useWorksheetInfo } from './ferryContext';
 import {
   areas,
   type AreasType,
@@ -23,8 +23,7 @@ import {
   type SortByOption,
   sortbyOptions,
   type SortKeys,
-} from '../queries/Constants';
-import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+} from '../utilities/constants';
 import {
   checkConflict,
   getDayTimes,

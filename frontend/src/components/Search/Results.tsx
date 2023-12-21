@@ -18,7 +18,7 @@ import Authentication from '../../images/authentication.svg';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { sortbyOptions } from '../../queries/Constants';
+import { sortbyOptions } from '../../utilities/constants';
 import { useSearch } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';

@@ -1,7 +1,7 @@
 import React from 'react';
 import chroma from 'chroma-js';
 import { Badge } from 'react-bootstrap';
-import { skillsAreasColors } from '../queries/Constants';
+import { skillsAreasColors } from '../utilities/constants';
 import styles from './SkillBadge.module.css';
 
 export default function SkillBadge({

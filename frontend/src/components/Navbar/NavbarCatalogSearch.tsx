@@ -28,7 +28,7 @@ import {
   subjectOptions,
   sortbyOptions,
   dayOptions,
-} from '../../queries/Constants';
+} from '../../utilities/constants';
 import CustomSelect from '../CustomSelect';
 import {
   useSearch,

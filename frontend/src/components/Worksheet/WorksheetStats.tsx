@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { ratingColormap } from '../../queries/Constants';
+import { ratingColormap } from '../../utilities/constants';
 import styles from './WorksheetStats.module.css';
 
 const StyledStatPill = styled.span<

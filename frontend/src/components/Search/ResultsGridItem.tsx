@@ -13,7 +13,7 @@ import {
   ratingColormap,
   workloadColormap,
   subjectOptions,
-} from '../../queries/Constants';
+} from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';

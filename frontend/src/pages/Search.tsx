@@ -12,7 +12,7 @@ import {
   skillsAreasOptions,
   schoolOptions,
   subjectOptions,
-} from '../queries/Constants';
+} from '../utilities/constants';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/Search/SortByReactSelect';

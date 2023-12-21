@@ -7,7 +7,7 @@ import {
   graphLabels,
   graphTitles,
   questionText,
-} from '../../queries/Constants';
+} from '../../utilities/constants';
 import { TextComponent } from '../StyledComponents';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 

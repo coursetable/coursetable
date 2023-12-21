@@ -7,7 +7,7 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
-import type { SortByOption } from '../../queries/Constants';
+import type { SortByOption } from '../../utilities/constants';
 import {
   useSearch,
   defaultFilters,

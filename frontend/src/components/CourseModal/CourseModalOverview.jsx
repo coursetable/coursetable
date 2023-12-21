@@ -25,7 +25,7 @@ import {
   StyledRating,
   StyledLink,
 } from '../StyledComponents';
-import { ratingColormap, workloadColormap } from '../../queries/Constants';
+import { ratingColormap, workloadColormap } from '../../utilities/constants';
 import styles from './CourseModalOverview.module.css';
 import CourseModalLoading from './CourseModalLoading';
 import {

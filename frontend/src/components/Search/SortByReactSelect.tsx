@@ -6,7 +6,7 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
-import { sortbyOptions } from '../../queries/Constants';
+import { sortbyOptions } from '../../utilities/constants';
 import styles from './SortbyReactSelect.module.css';
 import CustomSelect from '../CustomSelect';
 import { useSearch } from '../../contexts/searchContext';

@@ -12,7 +12,7 @@ import {
   workloadColormap,
   skillsAreasColors,
   subjectOptions,
-} from '../../queries/Constants';
+} from '../../utilities/constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';

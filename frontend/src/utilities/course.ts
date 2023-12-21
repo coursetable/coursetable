@@ -16,7 +16,7 @@ import type {
   Worksheet,
 } from '../contexts/userContext';
 import type { OrderingType } from '../contexts/searchContext';
-import type { SortKeys } from '../queries/Constants';
+import type { SortKeys } from './constants';
 
 export function truncatedText(
   text: string | null | undefined,
