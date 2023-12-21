@@ -2,11 +2,9 @@
  * @file Catalog fetch scripts.
  */
 
-import { FERRY_SECRET } from '../config';
 import type express from 'express';
-
+import { FERRY_SECRET } from '../config';
 import winston from '../logging/winston';
-
 import { fetchCatalog } from './catalog.utils';
 
 /**

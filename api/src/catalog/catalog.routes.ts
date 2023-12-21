@@ -2,10 +2,9 @@
  * @file Routes for catalog
  */
 
-import { verifyHeaders, refreshCatalog } from './catalog.controllers';
 import type express from 'express';
+import { verifyHeaders, refreshCatalog } from './catalog.controllers';
 import { fetchCatalog } from './catalog.utils';
-
 import winston from '../logging/winston';
 
 /**

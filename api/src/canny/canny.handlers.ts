@@ -1,20 +1,18 @@
 /**
  * @file Handlers for generating JWT tokens for Canny.
  */
-import type express from 'express';
 
+import type express from 'express';
+import axios from 'axios';
+import jwt from 'jsonwebtoken';
 import {
   YALIES_API_KEY,
   CANNY_KEY,
   FRONTEND_ENDPOINT,
   prisma,
 } from '../config';
-
 import type { User } from '../models/student';
-
 import winston from '../logging/winston';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
 
 // Create a JWT-signed Canny token with user info
 const createCannyToken = (user: User) => {
@@ -31,9 +29,10 @@ export const cannyIdentify = async (
   req: express.Request,
   res: express.Response,
 ): Promise<void | express.Response<unknown, { [key: string]: unknown }>> => {
-  if (!req.user) 
-    { res.redirect(FRONTEND_ENDPOINT); return; }
-  
+  if (!req.user) {
+    res.redirect(FRONTEND_ENDPOINT);
+    return;
+  }
 
   const { netId } = req.user;
 
@@ -56,9 +55,8 @@ export const cannyIdentify = async (
       },
     );
     // If no user found, do not grant access
-    if (data === null || data.length === 0) 
+    if (data === null || data.length === 0)
       return res.status(401).json({ success: false });
-    
 
     const user = data[0];
 
@@ -90,9 +88,9 @@ export const cannyIdentify = async (
       lastName: user.last_name,
     });
 
-    res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`); 
+    res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
   } catch (err) {
     winston.error(`Yalies connection error: ${err}`);
-    res.redirect(FRONTEND_ENDPOINT); 
+    res.redirect(FRONTEND_ENDPOINT);
   }
 };

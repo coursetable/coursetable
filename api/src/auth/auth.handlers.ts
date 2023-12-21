@@ -5,11 +5,9 @@
 import type express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
-
-import winston from '../logging/winston';
-
 import axios from 'axios';
 
+import winston from '../logging/winston';
 import { YALIES_API_KEY, prisma } from '../config';
 
 // Codes for allowed organizations (to give faculty access to the site)

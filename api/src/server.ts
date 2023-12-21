@@ -1,12 +1,11 @@
 import express from 'express';
-
-import morgan from './logging/morgan';
-import winston from './logging/winston';
-
 import cookieSession from 'cookie-session';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import passport from 'passport';
+import * as Sentry from '@sentry/node';
 
 import {
   SECURE_PORT,
@@ -15,8 +14,8 @@ import {
   CORS_OPTIONS,
   STATIC_FILE_DIR,
 } from './config';
-
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import morgan from './logging/morgan';
+import winston from './logging/winston';
 
 // Import routes
 import catalog from './catalog/catalog.routes';
@@ -26,10 +25,6 @@ import friends from './friends/friends.routes';
 import canny from './canny/canny.routes';
 import user from './user/user.routes';
 import challenge from './challenge/challenge.routes';
-
-import passport from 'passport';
-
-import * as Sentry from '@sentry/node';
 
 Sentry.init({
   dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
