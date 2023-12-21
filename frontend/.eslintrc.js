@@ -1,46 +1,25 @@
+// Encountered any problem? Read https://jc-verse.github.io/js-style-guide
+// for more information.
+
 module.exports = {
   root: true,
-  extends: [
-    'airbnb-typescript',
-    'airbnb/hooks',
-    'plugin:@typescript-eslint/recommended',
-    'plugin:jest/recommended',
-    'prettier',
-  ],
-  plugins: ['react', '@typescript-eslint', 'jest', 'jsx-a11y', 'import'],
-  parser: '@typescript-eslint/parser',
+  extends: ['jc', 'jc/typescript-typecheck'],
   parserOptions: {
     project: './tsconfig.json',
   },
   rules: {
-    'linebreak-style': 'off',
-    // suppress errors for missing 'import React' in files
-    'react/react-in-jsx-scope': 'off',
-    // TODO: Eventually we want to remove these rules (and default to error).
-    '@typescript-eslint/ban-ts-comment': 'off',
-    '@typescript-eslint/naming-convention': 'off',
-    '@typescript-eslint/no-explicit-any': 'warn',
-    '@typescript-eslint/no-shadow': 'warn',
-    '@typescript-eslint/no-use-before-define': 'warn',
-    'import/order': 'off',
-    'import/prefer-default-export': 'off',
-    'no-plusplus': 'off',
-    'no-nested-ternary': 'warn',
-    'no-restricted-syntax': 'warn',
-    'no-continue': 'off',
-    'no-underscore-dangle': 'warn',
-    'no-lonely-if': 'warn',
-    'no-param-reassign': 'warn',
-    'no-return-await': 'warn',
-    'guard-for-in': 'warn',
-    'prefer-destructuring': 'warn',
-    'react/prop-types': 'off',
-    'react/require-default-props': 'off',
-    'react/no-unescaped-entities': 'off',
-    'react/jsx-filename-extension': 'off', // TODO: rename all .js to .jsx
-    'react/jsx-props-no-spreading': 'off',
-    'react/no-array-index-key': 'warn',
-    'jsx-a11y/no-static-element-interactions': 'warn',
-    'jsx-a11y/click-events-have-key-events': 'warn',
+    '@typescript-eslint/explicit-module-boundary-types': 'off',
+    'react/jsx-no-bind': 'off',
+    // TODO:
+    'jsx-a11y/click-events-have-key-events': 'off',
+    'jsx-a11y/interactive-supports-focus': 'off',
+    'jsx-a11y/prefer-tag-over-role': 'off',
+    '@typescript-eslint/no-unsafe-argument': 'off',
+    '@typescript-eslint/no-unsafe-assignment': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
+    '@typescript-eslint/no-unsafe-member-access': 'off',
+    '@typescript-eslint/no-unsafe-return': 'off',
+    '@typescript-eslint/no-unnecessary-condition': 'off',
+    '@typescript-eslint/restrict-template-expressions': 'off',
   },
 };
