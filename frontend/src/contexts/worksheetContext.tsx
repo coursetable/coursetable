@@ -17,8 +17,13 @@ import { useUser, type Worksheet } from './userContext';
 import type { Season, Listing } from '../utilities/common';
 import type { OptType } from './searchContext';
 
-export type HiddenCourses = { [key: Season]: { [key: number]: boolean } };
-export type WorksheetView = { [key: string]: string };
+export type HiddenCourses = {
+  [seasonCode: Season]: { [crn: number]: boolean };
+};
+export type WorksheetView =
+  | { view: 'calendar'; mode: 'expanded' }
+  | { view: 'calendar'; mode: '' }
+  | { view: 'list'; mode: '' };
 
 type Store = {
   seasonCodes: string[];
@@ -32,7 +37,6 @@ type Store = {
   hoverCourse: number | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
-
   worksheetError: {} | null;
   worksheetData: Listing[];
   changeSeason: (seasonCode: Season | null) => void;

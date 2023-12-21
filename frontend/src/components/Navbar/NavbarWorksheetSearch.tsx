@@ -196,12 +196,8 @@ export function NavbarWorksheetSearch() {
             <StyledToggleButtonGroup
               name="worksheet-view-toggle"
               type="radio"
-              value={
-                worksheetView.view === 'expanded calendar'
-                  ? 'calendar'
-                  : worksheetView.view
-              }
-              onChange={(val: string) =>
+              value={worksheetView.view}
+              onChange={(val: 'calendar' | 'list') =>
                 handleWorksheetView({ view: val, mode: '' })
               }
               className="ml-2 mr-3"

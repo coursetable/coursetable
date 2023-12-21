@@ -533,7 +533,6 @@ policy#additional_requirements_for_specific_api_scopes"
             </em>
           </strong>
         </p>
-        <p />
         <p>
           If you are located in the EEA or UK and you believe we are unlawfully
           processing your personal information, you also have the right to

@@ -93,7 +93,7 @@ export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
 export type AreasType = (typeof areas)[number];
 export type SkillsType = (typeof skills)[number];
 
-export const skillsAreasColors: { [key: string]: string } = {
+export const skillsAreasColors: { [skillArea: string]: string } = {
   Hu: '#9970AB',
   So: '#4393C3',
   Sc: '#5AAE61',

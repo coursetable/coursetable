@@ -1,6 +1,6 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
-import { isEmpty, orderBy } from 'lodash';
+import { orderBy } from 'lodash';
 import { DateTime } from 'luxon';
 
 import {
@@ -131,7 +131,7 @@ export function friendsAlsoTaking(
  * Key is season code + crn;
  * Value is the list of friends taking the class
  */
-type NumFriendsReturn = { [key: string]: string[] };
+type NumFriendsReturn = { [seasonCodeCrn: string]: string[] };
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
 export function getNumFriends(friendWorksheets: FriendInfo): NumFriendsReturn {
@@ -168,14 +168,14 @@ export function getOverallRatings(
     return course.average_rating_same_professors
       ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
       : course.average_rating
-      ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
+        ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
+        : 'N/A'; // No ratings at all
   }
   return course.average_rating_same_professors
     ? course.average_rating_same_professors // Use same professor if possible
     : course.average_rating
-    ? course.average_rating // Use all professors otherwise
-    : null; // No ratings at all
+      ? course.average_rating // Use all professors otherwise
+      : null; // No ratings at all
 }
 
 // Get the workload rating for a course
@@ -193,24 +193,22 @@ export function getWorkloadRatings(
     return course.average_workload_same_professors
       ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
       : course.average_workload
-      ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
+        ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
+        : 'N/A'; // No ratings at all
   }
   return course.average_workload_same_professors
     ? course.average_workload_same_professors // Use same professor if possible
     : course.average_workload
-    ? course.average_workload // Use all professors otherwise
-    : null; // No ratings at all
+      ? course.average_workload // Use all professors otherwise
+      : null; // No ratings at all
 }
 
 // Get start and end times
 export function getDayTimes(
   course: Listing,
-): { [key: string]: string }[] | null {
-  // If no times then return null
-  if (isEmpty(course.times_by_day)) return null;
+): { day: Weekdays; start: string; end: string }[] {
   return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
-    day,
+    day: day as Weekdays,
     start: dayTimes[0][0],
     end: dayTimes[0][1],
   }));
@@ -221,7 +219,7 @@ function calculateDayTime(course: Listing): number | null {
   // Get all days' times
   const times = getDayTimes(course);
 
-  if (times) {
+  if (times.length) {
     // Calculate the time score
     const startTime = Number(
       times[0].start.split(':').reduce((final, num) => {
@@ -304,20 +302,20 @@ export function getEnrolled(
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment && course.last_enrollment_same_professors
-      ? course.last_enrollment // Use last enrollment if course hasn't happened
-      : course.last_enrollment
-      ? `~${course.last_enrollment}${
-          onModal ? ' (different professor was teaching)' : ''
-        }` // Indicate diff prof
-      : onModal
-      ? 'N/A'
-      : ''; // No enrollment data
+        ? course.last_enrollment // Use last enrollment if course hasn't happened
+        : course.last_enrollment
+          ? `~${course.last_enrollment}${
+              onModal ? ' (different professor was teaching)' : ''
+            }` // Indicate diff prof
+          : onModal
+            ? 'N/A'
+            : ''; // No enrollment data
   } else {
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment
-      ? course.last_enrollment // Use last enrollment if course hasn't happened
-      : null; // No enrollment data
+        ? course.last_enrollment // Use last enrollment if course hasn't happened
+        : null; // No enrollment data
   }
 
   // Return enrolled

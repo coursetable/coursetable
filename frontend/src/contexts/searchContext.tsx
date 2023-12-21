@@ -577,7 +577,10 @@ export function SearchProvider({
       )
         return false;
 
-      const days = new Set(getDayTimes(listing)?.map((daytime) => daytime.day));
+      // TODO: searchConfig.days should be a literal set too
+      const days = new Set<string>(
+        getDayTimes(listing)?.map((daytime) => daytime.day),
+      );
       if (searchConfig.days.size !== 0) {
         let include = true;
         if (days && days !== null) {

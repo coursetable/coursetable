@@ -6,9 +6,9 @@ import { API_ENDPOINT } from '../config';
 
 // Detect clicks outside of a component
 // Via https://stackoverflow.com/a/54570068/5004662
-export const useComponentVisible = <T extends HTMLElement>(
+export function useComponentVisible<T extends HTMLElement>(
   initialIsVisible: boolean,
-) => {
+) {
   // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
     useState(initialIsVisible);
@@ -30,13 +30,13 @@ export const useComponentVisible = <T extends HTMLElement>(
   });
 
   return { elemRef, isComponentVisible, setIsComponentVisible };
-};
+}
 
 // Detect clicks outside of a toggle and dropdown component
-export const useComponentVisibleDropdown = <T extends HTMLElement>(
+export function useComponentVisibleDropdown<T extends HTMLElement>(
   initialIsVisible: boolean,
   callback?: (visible: boolean) => void,
-) => {
+) {
   // Is the component visible?
   const [isComponentVisible, setIsComponentVisible] =
     useState(initialIsVisible);
@@ -76,7 +76,7 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
     isComponentVisible,
     setIsComponentVisible,
   };
-};
+}
 
 export const scrollToTop: MouseEventHandler = (event) => {
   const newPage =
@@ -100,12 +100,12 @@ export async function logout() {
 }
 
 // Helper function for setting breakpoint styles in styled-components
-export const breakpoints = (
+export function breakpoints(
   cssProp = 'padding', // The CSS property to apply to the breakpoints
   cssPropUnits = 'px', // The units of the CSS property (can set equal to "" and apply units to values directly)
-  values: { [key: number]: number }[] = [], // Array of objects, e.g. [{ 800: 60 }, ...] <-- 800 (key) = screen breakpoint, 60 (value) = CSS prop breakpoint
-  mediaQueryType = 'max-width', // Media query breakpoint type, i.e.: max-width, min-width, max-height, min-height
-) => {
+  values: { [screenWidth: number]: number }[] = [], // Array of objects, e.g. [{ 800: 60 }, ...] <-- 800 (key) = screen breakpoint, 60 (value) = CSS prop breakpoint
+  mediaQueryType = 'max-width',
+) {
   const breakpointProps = values.reduce((mediaQueries, value) => {
     const [screenBreakpoint, cssPropBreakpoint] = [
       Object.keys(value)[0],
@@ -119,4 +119,4 @@ export const breakpoints = (
     return mediaQueries;
   }, '');
   return css([breakpointProps] as unknown as TemplateStringsArray);
-};
+}
