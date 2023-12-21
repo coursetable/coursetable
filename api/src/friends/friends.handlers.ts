@@ -194,7 +194,7 @@ export const getRequestsForFriend = async (
       success: true,
       friends: friendNames,
     });
-  } catch (err) {
+  } catch {
     return res.status(500).json({
       success: false,
       message: 'Error fetching friend requests',

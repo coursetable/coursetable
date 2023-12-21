@@ -12,7 +12,7 @@ import winston from '../logging/winston';
  * Set up authentication routes.
  * @param app: express app instance.
  */
-export default async (app: express.Express): Promise<void> => {
+export default (app: express.Express): void => {
   app.use(passport.initialize());
   app.use(passport.session());
 

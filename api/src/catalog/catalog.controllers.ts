@@ -18,7 +18,7 @@ export const verifyHeaders = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
-): void | express.Response => {
+): undefined | express.Response => {
   winston.info('Verifying headers');
   // Get authentication headers
   const authd = req.header('x-ferry-secret'); // If user is logged in
@@ -31,6 +31,7 @@ export const verifyHeaders = (
   }
 
   next();
+  return undefined;
 };
 
 /**

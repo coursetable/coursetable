@@ -49,9 +49,9 @@ const extractHostname = (url: string): string => {
  * Passport configuration for authentication
  * @param passportInstance: passport instance.
  */
-export const passportConfig = async (
+export const passportConfig = (
   passportInstance: passport.PassportStatic,
-): Promise<void> => {
+): void => {
   // Strategy for integrating with CAS
   passportInstance.use(
     new CasStrategy(
@@ -151,7 +151,7 @@ export const passportConfig = async (
    * @param done: callback function to be executed after serialization.
    */
   passport.serializeUser((user, done) => {
-    winston.info(`Serializing user ${user}`);
+    winston.info(`Serializing user ${user.netId}`);
     done(null, user.netId);
   });
 
@@ -237,7 +237,7 @@ export const casLogin = (
     }
 
     // Log in the user
-    winston.info(`"Logging in ${user}`);
+    winston.info(`"Logging in ${user.netId}`);
     req.logIn(user, (loginError) => {
       if (loginError) {
         next(loginError);

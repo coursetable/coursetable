@@ -28,10 +28,12 @@ const createCannyToken = (user: User) => {
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response,
-): Promise<void | express.Response<unknown, { [key: string]: unknown }>> => {
+): Promise<
+  undefined | express.Response<unknown, { [key: string]: unknown }>
+> => {
   if (!req.user) {
     res.redirect(FRONTEND_ENDPOINT);
-    return;
+    return undefined;
   }
 
   const { netId } = req.user;
@@ -89,8 +91,10 @@ export const cannyIdentify = async (
     });
 
     res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
+    return undefined;
   } catch (err) {
     winston.error(`Yalies connection error: ${err}`);
     res.redirect(FRONTEND_ENDPOINT);
+    return undefined;
   }
 };

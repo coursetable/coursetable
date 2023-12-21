@@ -95,7 +95,7 @@ https
   });
 
 // We use the IIFE pattern so that we can use await.
-(async () => {
+void (async () => {
   // Configuring passport
   passportConfig(passport);
   app.use(passport.initialize());
@@ -126,12 +126,12 @@ https
   app.use(express.json());
 
   // Activate catalog and CAS authentication
-  await challenge(app);
+  challenge(app);
   await catalog(app);
-  await casAuth(app);
-  await friends(app);
-  await canny(app);
-  await user(app);
+  casAuth(app);
+  friends(app);
+  canny(app);
+  user(app);
 
   // Mount static files route and require NetID authentication
   app.use(

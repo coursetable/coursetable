@@ -19,7 +19,7 @@ import {
  * Set up friend routes.
  * @param app: express app instance.
  */
-export default async (app: express.Express): Promise<void> => {
+export default (app: express.Express): void => {
   app.use(cookieParser());
   app.get('/api/friends/add', addFriend);
   app.get('/api/friends/remove', removeFriend);
