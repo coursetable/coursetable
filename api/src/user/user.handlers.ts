@@ -2,7 +2,7 @@
  * @file Handlers for working with user accounts.
  */
 
-import express from 'express';
+import type express from 'express';
 
 import winston from '../logging/winston';
 
@@ -20,9 +20,9 @@ export const toggleBookmark = async (
 ): Promise<express.Response> => {
   winston.info('Toggling course bookmark');
 
-  if (!req.user) {
+  if (!req.user) 
     return res.status(401).json();
-  }
+  
 
   const { netId } = req.user;
 
@@ -72,9 +72,9 @@ export const getUserWorksheet = async (
 ): Promise<express.Response> => {
   winston.info(`Fetching user's worksheets`);
 
-  if (!req.user) {
+  if (!req.user) 
     return res.status(401).json();
-  }
+  
 
   const { netId } = req.user;
 

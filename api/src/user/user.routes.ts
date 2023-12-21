@@ -2,7 +2,7 @@
  * @file Routes for working with user accounts.
  */
 
-import express from 'express';
+import type express from 'express';
 
 import cookieParser from 'cookie-parser';
 

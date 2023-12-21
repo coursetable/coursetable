@@ -1,4 +1,4 @@
-import express from 'express';
+import type express from 'express';
 import { request } from 'graphql-request';
 import crypto from 'crypto';
 
@@ -13,9 +13,9 @@ import winston from '../logging/winston';
 
 import {
   requestEvalsQuery,
-  requestEvalsQueryResponse,
+  type requestEvalsQueryResponse,
   verifyEvalsQuery,
-  verifyEvalsQueryResponse,
+  type verifyEvalsQueryResponse,
 } from './challenge.queries';
 
 import { encrypt, decrypt, getRandomInt } from './challenge.utils';
@@ -36,16 +36,16 @@ const constructChallenge = (
   challengeTries: number,
   netid: string,
 ): express.Response => {
-  // array of course enrollment counts
+  // Array of course enrollment counts
   let ratingIndices: number[];
 
   try {
     ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
       const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
-      if (!Number.isInteger(evaluationRating.rating[ratingIndex])) {
+      if (!Number.isInteger(evaluationRating.rating[ratingIndex])) 
         throw new Error(`Invalid rating index: ${ratingIndex}`);
-      }
+      
 
       return ratingIndex;
     });
@@ -55,10 +55,10 @@ const constructChallenge = (
     });
   }
 
-  // array of CourseTable question IDs
+  // Array of CourseTable question IDs
   const ratingIds = evals.evaluation_ratings.map((x) => x.id);
 
-  // construct token object
+  // Construct token object
   const ratingSecrets = ratingIds.map((x, index) => ({
     courseRatingId: ratingIds[index],
     courseRatingIndex: ratingIndices[index],
@@ -69,11 +69,11 @@ const constructChallenge = (
     ratingSecrets,
   };
 
-  // encrypt token
+  // Encrypt token
   const salt = crypto.randomBytes(16).toString('hex');
   const token = encrypt(JSON.stringify(secrets), salt);
 
-  // course ids, titles and questions for user
+  // Course ids, titles and questions for user
   const courseIds = evals.evaluation_ratings.map((x) => x.id);
   const courseTitles = evals.evaluation_ratings.map((x) => x.course.title);
   const courseQuestionTexts = evals.evaluation_ratings.map(
@@ -82,14 +82,14 @@ const constructChallenge = (
 
   // Yale OCE urls for user to retrieve answers
   const oceUrls = evals.evaluation_ratings.map((x) => {
-    // courses have multiple CRNs, and any one should be fine
+    // Courses have multiple CRNs, and any one should be fine
     const { crn } = x.course.listings[0];
     const season = x.course.season_code;
 
     return `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=${crn}&termCode=${season}`;
   });
 
-  // merged course information object
+  // Merged course information object
   const courseInfo = courseTitles.map((title, index) => ({
     courseId: courseIds[index],
     courseTitle: title,
@@ -120,22 +120,22 @@ export const requestChallenge = async (
 ): Promise<express.Response> => {
   winston.info(`Requesting challenge`);
 
-  if (!req.user) {
+  if (!req.user) 
     return res.status(401).json({ error: 'USER_NOT_FOUND' });
-  }
+  
 
   const { netId } = req.user;
 
-  // increment challenge tries
+  // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =
     await prisma.studentBluebookSettings.update({
       where: { netId },
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled) {
+  if (evaluationsEnabled) 
     return res.status(403).json({ error: 'ALREADY_ENABLED' });
-  }
+  
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
     return res.status(429).json({
@@ -145,11 +145,11 @@ export const requestChallenge = async (
     });
   }
 
-  // randomize the selected challenge courses by
+  // Randomize the selected challenge courses by
   // randomly choosing a minimum rating
   const minRating = 1 + Math.random() * 4;
 
-  // get a list of all seasons
+  // Get a list of all seasons
   try {
     const evals: requestEvalsQueryResponse = await request(
       GRAPHQL_ENDPOINT,
@@ -185,10 +185,10 @@ const checkChallenge = (
     courseRatingIndex: string;
   }[],
 ): boolean => {
-  // the true values in CourseTable to compare against
+  // The true values in CourseTable to compare against
   const truth = trueEvals.evaluation_ratings;
 
-  // mapping from question ID to ratings
+  // Mapping from question ID to ratings
   const truthById: { [key: string]: number[] } = {};
 
   truth.forEach((x) => {
@@ -217,22 +217,22 @@ export const verifyChallenge = async (
 ): Promise<express.Response> => {
   winston.info(`Verifying challenge`);
 
-  if (!req.user) {
+  if (!req.user) 
     return res.status(401).json({ error: 'USER_NOT_FOUND' });
-  }
+  
 
   const { netId } = req.user;
 
-  // increment challenge tries
+  // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =
     await prisma.studentBluebookSettings.update({
       where: { netId },
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled) {
+  if (evaluationsEnabled) 
     return res.status(403).json({ error: 'ALREADY_ENABLED' });
-  }
+  
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
     return res.status(429).json({
@@ -246,13 +246,13 @@ export const verifyChallenge = async (
   let secrets: {
     netid: string;
     ratingSecrets: { courseRatingId: string; courseRatingIndex: number }[];
-  }; // the decrypted token
-  let secretRatingIds; // for retrieving the correct ones from the database
+  }; // The decrypted token
+  let secretRatingIds; // For retrieving the correct ones from the database
   // list in the format "<question_id>_<rating_index>" to verify
   // the submitted answers match those encoded in the token
   let secretRatings;
   let answerRatings;
-  // catch malformed token decryption errors
+  // Catch malformed token decryption errors
   try {
     secrets = JSON.parse(decrypt(token, salt));
     secretRatingIds = secrets.ratingSecrets.map((x) => x.courseRatingId);
@@ -266,7 +266,7 @@ export const verifyChallenge = async (
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
-  // ensure that netid in token is same as in headers
+  // Ensure that netid in token is same as in headers
   if (secrets.netid !== netId) {
     return res.status(406).json({
       error: 'INVALID_TOKEN',
@@ -274,7 +274,7 @@ export const verifyChallenge = async (
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
-  // catch malformed answer JSON errors
+  // Catch malformed answer JSON errors
   try {
     answerRatings = answers.map(
       (x: { courseRatingId: string; courseRatingIndex: number }) =>
@@ -287,7 +287,7 @@ export const verifyChallenge = async (
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
   }
-  // make sure the provided ratings IDs and indices match those we have
+  // Make sure the provided ratings IDs and indices match those we have
   if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
     return res.status(406).json({
       error: 'INVALID_TOKEN',
@@ -296,7 +296,7 @@ export const verifyChallenge = async (
     });
   }
 
-  // get a list of all seasons
+  // Get a list of all seasons
   try {
     const trueEvals: verifyEvalsQueryResponse = await request(
       GRAPHQL_ENDPOINT,
@@ -315,7 +315,7 @@ export const verifyChallenge = async (
         },
       });
     }
-    // otherwise, enable evaluations and respond with success
+    // Otherwise, enable evaluations and respond with success
     await prisma.studentBluebookSettings.update({
       where: { netId },
       data: { evaluationsEnabled: true },

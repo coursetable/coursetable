@@ -3,7 +3,7 @@
  */
 
 import { FERRY_SECRET } from '../config';
-import express from 'express';
+import type express from 'express';
 
 import winston from '../logging/winston';
 
@@ -22,8 +22,8 @@ export const verifyHeaders = (
   next: express.NextFunction,
 ): void | express.Response => {
   winston.info('Verifying headers');
-  // get authentication headers
-  const authd = req.header('x-ferry-secret'); // if user is logged in
+  // Get authentication headers
+  const authd = req.header('x-ferry-secret'); // If user is logged in
 
   // require NetID authentication
   if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
@@ -32,7 +32,7 @@ export const verifyHeaders = (
     });
   }
 
-  return next();
+  next();
 };
 
 /**
@@ -45,12 +45,12 @@ export const verifyHeaders = (
 export async function refreshCatalog(
   req: express.Request,
   res: express.Response,
-): Promise<express.Response<unknown, Record<string, unknown>>> {
+): Promise<express.Response<unknown, { [key: string]: unknown }>> {
   winston.info('Refreshing catalog');
-  // always overwrite when called
+  // Always overwrite when called
   const overwrite = true;
 
-  // fetch the catalog files and confirm success
+  // Fetch the catalog files and confirm success
   try {
     await fetchCatalog(overwrite);
     return res.status(200).json({

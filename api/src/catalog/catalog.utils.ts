@@ -70,7 +70,7 @@ export async function fetchCatalog(
   overwrite: boolean,
 ): Promise<PromiseSettledResult<void>[]> {
   let seasons: Seasons;
-  // get a list of all seasons
+  // Get a list of all seasons
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
   } catch (err) {
@@ -84,7 +84,7 @@ export async function fetchCatalog(
     JSON.stringify(seasons.seasons),
   );
 
-  // for each season, fetch all courses inside it and save
+  // For each season, fetch all courses inside it and save
   // (if overwrite = true or if file does not exist)
   const processSeasons = seasons.seasons.map(async (season) => {
     const seasonCode = season.season_code;

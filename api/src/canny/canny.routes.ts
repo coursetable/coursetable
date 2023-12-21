@@ -2,7 +2,7 @@
  * @file Routes for getting Canny authentication info.
  */
 
-import express from 'express';
+import type express from 'express';
 
 import { cannyIdentify } from './canny.handlers';
 

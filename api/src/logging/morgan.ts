@@ -1,4 +1,4 @@
-import morgan, { StreamOptions } from 'morgan';
+import morgan, { type StreamOptions } from 'morgan';
 
 import winston from './winston';
 

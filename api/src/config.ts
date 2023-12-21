@@ -23,9 +23,9 @@ export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 export const CHALLENGE_PASSWORD =
   process.env.CHALLENGE_PASSWORD || die('challenge password');
 
-export const NUM_CHALLENGE_COURSES = 3; // number of courses to select for the challenge
-export const CHALLENGE_SEASON = '202101'; // season to select the challenge from
-export const MAX_CHALLENGE_REQUESTS = 100; // maximum number of allowed challenge tries
+export const NUM_CHALLENGE_COURSES = 3; // Number of courses to select for the challenge
+export const CHALLENGE_SEASON = '202101'; // Season to select the challenge from
+export const MAX_CHALLENGE_REQUESTS = 100; // Maximum number of allowed challenge tries
 
 // Secret for Canny SSO
 export const CANNY_KEY = getEnv('CANNY_KEY');
@@ -46,12 +46,12 @@ export const CORS_OPTIONS = {
     `https://localhost:${port}`,
     'https://coursetable.com',
     'https://www.coursetable.com',
-    /\.coursetable\.com$/,
-    /\.yaleapps\.com$/,
-    /\.vercel\.app$/,
+    /\.coursetable\.com$/u,
+    /\.yaleapps\.com$/u,
+    /\.vercel\.app$/u,
   ],
   credentials: true,
-  optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+  optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
 
 // Secret for session cookie signing.

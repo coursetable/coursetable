@@ -18,7 +18,7 @@ import {
 
 import { createProxyMiddleware } from 'http-proxy-middleware';
 
-// import routes
+// Import routes
 import catalog from './catalog/catalog.routes';
 import { authWithEvals, passportConfig } from './auth/auth.handlers';
 import casAuth from './auth/auth.routes';
@@ -54,9 +54,9 @@ app.use(cors(CORS_OPTIONS));
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
   Object.keys(req.headers).forEach((header) => {
-    if (header.startsWith('x-coursetable-')) {
+    if (header.startsWith('x-coursetable-')) 
       delete req.headers[header];
-    }
+    
   });
 
   next();
@@ -113,14 +113,14 @@ https
   app.use('/ferry', (req, res, next) => {
     // Use read-only student role for all Hasura queries
     req.headers['X-Hasura-Role'] = 'student';
-    return next();
+    next();
   });
   app.use(
     '/ferry',
     createProxyMiddleware({
       target: 'http://graphql-engine:8080',
       pathRewrite: {
-        '^/ferry/': '/', // remove base path
+        '^/ferry/': '/', // Remove base path
       },
       ws: true,
     }),
@@ -128,7 +128,7 @@ https
   // Enable request logging.
   app.use(morgan);
 
-  // figure out how to make this work with Ferry (has to go after Ferry currently)
+  // Figure out how to make this work with Ferry (has to go after Ferry currently)
   app.use(express.json());
 
   // Activate catalog and CAS authentication

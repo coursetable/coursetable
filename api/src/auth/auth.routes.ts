@@ -2,7 +2,7 @@
  * @file Routes for passport-CAS authentication with Yale.
  */
 
-import express from 'express';
+import type express from 'express';
 import passport from 'passport';
 
 import { casLogin } from './auth.handlers';
@@ -18,11 +18,11 @@ export default async (app: express.Express): Promise<void> => {
 
   // Endpoint to print out user access
   app.get('/api/auth/check', (req, res) => {
-    if (req.user) {
+    if (req.user) 
       res.json({ auth: true, id: req.user.netId, user: req.user });
-    } else {
+     else 
       res.json({ auth: false, id: null });
-    }
+    
   });
 
   // CAS portal redirects
@@ -33,9 +33,9 @@ export default async (app: express.Express): Promise<void> => {
     winston.info(`Logging out ${req.user?.netId}`);
 
     req.logOut((err) => {
-      if (err) {
-        return next(err);
-      }
+      if (err) 
+         next(err);  
+      
     });
     return res.json({ success: true });
   });

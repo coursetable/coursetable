@@ -2,7 +2,7 @@
  * @file Handlers for passport-CAS authentication with Yale.
  */
 
-import express from 'express';
+import type express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
 
@@ -12,39 +12,39 @@ import axios from 'axios';
 
 import { YALIES_API_KEY, prisma } from '../config';
 
-// codes for allowed organizations (to give faculty access to the site)
+// Codes for allowed organizations (to give faculty access to the site)
 const ALLOWED_ORG_CODES = [
-  'MED', // medical school
-  'FAS', // faculty of arts and sciences
-  'SOM', // school of medicine
-  'LAW', // law school
-  'NUR', // nursing school
-  'ENV', // school of the environment
-  'SPH', // public health
-  'DIV', // divinity school
-  'DRA', // drama
-  'ARC', // architecture
-  'ART', // art
+  'MED', // Medical school
+  'FAS', // Faculty of arts and sciences
+  'SOM', // School of medicine
+  'LAW', // Law school
+  'NUR', // Nursing school
+  'ENV', // School of the environment
+  'SPH', // Public health
+  'DIV', // Divinity school
+  'DRA', // Drama
+  'ARC', // Architecture
+  'ART', // Art
   'MAC', // MacMillan center
-  'SCM', // music
-  'ISM', // sacred music
+  'SCM', // Music
+  'ISM', // Sacred music
   'JAC', // Jackson institute
-  'GRA', // graduate school
+  'GRA', // Graduate school
 ];
 
 const extractHostname = (url: string): string => {
   let hostname;
-  // find & remove protocol (http, ftp, etc.) and get hostname
+  // Find & remove protocol (http, ftp, etc.) and get hostname
 
-  if (url.indexOf('//') > -1) {
+  if (url.includes('//')) 
     [, , hostname] = url.split('/');
-  } else {
+   else 
     [hostname] = url.split('/');
-  }
+  
 
-  // find & remove port number
+  // Find & remove port number
   [hostname] = hostname.split(':');
-  // find & remove "?"
+  // Find & remove "?"
   [hostname] = hostname.split('?');
 
   return hostname;
@@ -57,7 +57,7 @@ const extractHostname = (url: string): string => {
 export const passportConfig = async (
   passportInstance: passport.PassportStatic,
 ): Promise<void> => {
-  // strategy for integrating with CAS
+  // Strategy for integrating with CAS
   passportInstance.use(
     new CasStrategy(
       {
@@ -94,22 +94,22 @@ export const passportConfig = async (
               },
             },
           );
-          // if no user found, do not grant access
+          // If no user found, do not grant access
           if (data === null || data.length === 0) {
-            return done(null, {
+            done(null, {
               netId: profile.user,
               evals: false,
-            });
+            }); return;
           }
 
           const user = data[0];
 
-          // enable evaluations if user has a school code
+          // Enable evaluations if user has a school code
           // or is a member of an approved organization (for faculty).
           // also leave evaluations enabled if the user already has access.
           const enableEvals =
             existingUser.evaluationsEnabled ||
-            !!user.school_code ||
+            Boolean(user.school_code) ||
             ALLOWED_ORG_CODES.includes(user.organization_code);
 
           winston.info(`Updating evaluations for ${profile.user}`);
@@ -131,19 +131,19 @@ export const passportConfig = async (
             },
           });
 
-          return done(null, {
+          done(null, {
             netId: profile.user,
             evals: enableEvals,
             email: user.email,
             firstName: user.first_name,
             lastName: user.last_name,
-          });
+          }); 
         } catch (err) {
           winston.error(`Yalies connection error: ${err}`);
-          return done(null, {
+          done(null, {
             netId: profile.user,
             evals: false,
-          });
+          }); 
         }
       },
     ),
@@ -156,7 +156,7 @@ export const passportConfig = async (
    */
   passport.serializeUser((user, done) => {
     winston.info(`Serializing user ${user}`);
-    return done(null, user.netId);
+    done(null, user.netId);
   });
 
   /**
@@ -173,8 +173,8 @@ export const passportConfig = async (
     });
     done(null, {
       netId,
-      evals: !!student?.evaluationsEnabled,
-      // convert nulls to undefined
+      evals: Boolean(student?.evaluationsEnabled),
+      // Convert nulls to undefined
       email: student?.email || undefined,
       firstName: student?.first_name || undefined,
       lastName: student?.last_name || undefined,
@@ -196,20 +196,20 @@ const postAuth = (req: express.Request, res: express.Response): void => {
 
   if (redirect && !redirect.startsWith('//')) {
     winston.info(`Redirecting to ${redirect}`);
-    // prefix the redirect with a slash to avoid an open redirect vulnerability.
+    // Prefix the redirect with a slash to avoid an open redirect vulnerability.
     if (
       ALLOWED_ORIGINS.includes(hostName) ||
       hostName.endsWith('.coursetable.com') ||
       (hostName.endsWith('-coursetable.vercel.app') &&
         hostName.startsWith('coursetable-'))
-    ) {
-      return res.redirect(redirect);
-    }
+    ) 
+      { res.redirect(redirect); return; }
+    
     winston.error('Redirect not in allowed origins');
-    return res.redirect('https://coursetable.com');
+    res.redirect('https://coursetable.com'); return;
   }
   winston.error(`No redirect provided`);
-  return res.redirect('https://coursetable.com');
+  res.redirect('https://coursetable.com');
 };
 
 /**
@@ -226,23 +226,23 @@ export const casLogin = (
   winston.info('Logging in with CAS');
   // Authenticate with passport
   passport.authenticate('cas', (casError: Error, user: Express.User) => {
-    // handle auth errors or missing users
-    if (casError) {
-      return next(casError);
-    }
-    if (!user) {
-      return next(new Error('CAS auth but no user'));
-    }
+    // Handle auth errors or missing users
+    if (casError) 
+      { next(casError); return; }
+    
+    if (!user) 
+      { next(new Error('CAS auth but no user')); return; }
+    
 
-    // log in the user
+    // Log in the user
     winston.info(`"Logging in ${user}`);
-    return req.logIn(user, (loginError) => {
-      if (loginError) {
-        return next(loginError);
-      }
+    req.logIn(user, (loginError) => {
+      if (loginError) 
+        { next(loginError); return; }
+      
 
-      // redirect if authentication successful
-      return postAuth(req, res);
+      // Redirect if authentication successful
+      postAuth(req, res);
     });
   })(req, res, next);
 };
@@ -260,13 +260,13 @@ export const authBasic = (
 ): void => {
   winston.info('Intercepting basic authentication');
   if (req.user) {
-    // add headers for legacy API compatibility
+    // Add headers for legacy API compatibility
     req.headers['x-coursetable-authd'] = 'true';
     req.headers['x-coursetable-netid'] = req.user.netId;
 
-    return next();
+    next(); return;
   }
-  return next(new Error('CAS auth but no user'));
+  next(new Error('CAS auth but no user'));
 };
 
 /**
@@ -282,11 +282,11 @@ export const authWithEvals = (
 ): void => {
   winston.info('Intercepting with-evals authentication');
   if (req.user && req.user.evals) {
-    // add headers for legacy API compatibility
+    // Add headers for legacy API compatibility
     req.headers['x-coursetable-authd'] = 'true';
     req.headers['x-coursetable-netid'] = req.user.netId;
 
-    return next();
+    next(); return;
   }
-  return next(new Error('CAS auth but no user / no evals access'));
+  next(new Error('CAS auth but no user / no evals access'));
 };

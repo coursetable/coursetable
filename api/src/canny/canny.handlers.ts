@@ -1,7 +1,7 @@
 /**
  * @file Handlers for generating JWT tokens for Canny.
  */
-import express from 'express';
+import type express from 'express';
 
 import {
   YALIES_API_KEY,
@@ -10,7 +10,7 @@ import {
   prisma,
 } from '../config';
 
-import { User } from '../models/student';
+import type { User } from '../models/student';
 
 import winston from '../logging/winston';
 import axios from 'axios';
@@ -30,10 +30,10 @@ const createCannyToken = (user: User) => {
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response,
-): Promise<void | express.Response<unknown, Record<string, unknown>>> => {
-  if (!req.user) {
-    return res.redirect(FRONTEND_ENDPOINT);
-  }
+): Promise<void | express.Response<unknown, { [key: string]: unknown }>> => {
+  if (!req.user) 
+    { res.redirect(FRONTEND_ENDPOINT); return; }
+  
 
   const { netId } = req.user;
 
@@ -55,10 +55,10 @@ export const cannyIdentify = async (
         },
       },
     );
-    // if no user found, do not grant access
-    if (data === null || data.length === 0) {
+    // If no user found, do not grant access
+    if (data === null || data.length === 0) 
       return res.status(401).json({ success: false });
-    }
+    
 
     const user = data[0];
 
@@ -68,8 +68,8 @@ export const cannyIdentify = async (
         netId,
       },
       data: {
-        // enable evaluations if user has a school code
-        evaluationsEnabled: !!user.school_code,
+        // Enable evaluations if user has a school code
+        evaluationsEnabled: Boolean(user.school_code),
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
@@ -84,15 +84,15 @@ export const cannyIdentify = async (
 
     const token = createCannyToken({
       netId,
-      evals: !!user.school_code,
+      evals: Boolean(user.school_code),
       email: user.email,
       firstName: user.first_name,
       lastName: user.last_name,
     });
 
-    return res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
+    res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`); 
   } catch (err) {
     winston.error(`Yalies connection error: ${err}`);
-    return res.redirect(FRONTEND_ENDPOINT);
+    res.redirect(FRONTEND_ENDPOINT); 
   }
 };
