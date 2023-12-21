@@ -9,14 +9,14 @@ const levels = {
   debug: 4,
 };
 
-// get logging level from env variables
+// Get logging level from env variables
 const level = () => {
   const env = process.env.NODE_ENV || 'development';
   const isDevelopment = env === 'development';
   return isDevelopment ? 'debug' : 'info';
 };
 
-// define logging colors
+// Define logging colors
 const colors = {
   error: 'red',
   warn: 'yellow',
@@ -32,32 +32,32 @@ const format = winston.format.combine(
   winston.format.printf(
     (info) => `${info.timestamp} ${info.level}: ${info.message}`,
   ),
-  // support object logging
+  // Support object logging
   winston.format.splat(),
   winston.format.json(),
 );
 
 const transports = [
   new winston.transports.Console({
-    // only colorize console logs
+    // Only colorize console logs
     format: winston.format.colorize({ all: true }),
   }),
 
-  // error-only file logs
+  // Error-only file logs
   new winston.transports.File({
     filename: `${appRoot}/src/logs/error.log`,
     level: 'error',
     maxsize: 5242880, // 5MB
     maxFiles: 10,
-    handleExceptions: true, // log unhandled exceptions
+    handleExceptions: true, // Log unhandled exceptions
   }),
 
-  // all logs
+  // All logs
   new winston.transports.File({
     filename: `${appRoot}/src/logs/all.log`,
     maxsize: 5242880, // 5MB
     maxFiles: 10,
-    handleExceptions: true, // log unhandled exceptions
+    handleExceptions: true, // Log unhandled exceptions
   }),
 ];
 

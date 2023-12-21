@@ -2,11 +2,11 @@
  * @file utilities used for fetching catalog files.
  */
 
-import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
-import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import fs from 'fs';
 import { request } from 'graphql-request';
 
+import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
+import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import winston from '../logging/winston';
 
 export type Seasons = {
@@ -69,8 +69,8 @@ export type Catalog = {
 export async function fetchCatalog(
   overwrite: boolean,
 ): Promise<PromiseSettledResult<void>[]> {
-  let seasons: Seasons;
-  // get a list of all seasons
+  let seasons: Seasons = { seasons: [] };
+  // Get a list of all seasons
   try {
     seasons = await request(GRAPHQL_ENDPOINT, listSeasonsQuery);
   } catch (err) {
@@ -84,7 +84,7 @@ export async function fetchCatalog(
     JSON.stringify(seasons.seasons),
   );
 
-  // for each season, fetch all courses inside it and save
+  // For each season, fetch all courses inside it and save
   // (if overwrite = true or if file does not exist)
   const processSeasons = seasons.seasons.map(async (season) => {
     const seasonCode = season.season_code;
@@ -95,7 +95,7 @@ export async function fetchCatalog(
       return;
     }
 
-    let catalog: Catalog;
+    let catalog: Catalog = { computed_listing_info: [] };
 
     try {
       catalog = await request(GRAPHQL_ENDPOINT, catalogBySeasonQuery, {

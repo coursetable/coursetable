@@ -2,7 +2,7 @@
  * @file Handlers for managing users' friends.
  */
 
-import express from 'express';
+import type express from 'express';
 import { prisma } from '../config';
 
 import winston from '../logging/winston';
@@ -13,17 +13,14 @@ export const addFriend = async (
 ): Promise<express.Response> => {
   winston.info('Adding new friend');
 
-  if (!req.user) {
-    return res.status(401).json({ success: false });
-  }
+  if (!req.user) return res.status(401).json({ success: false });
 
   if (
     !req.query ||
     typeof req.query.id !== 'string' ||
     typeof req.query.id2 !== 'string'
-  ) {
+  )
     return res.status(401).json({ success: false });
-  }
 
   const netId = req.query.id2;
 
@@ -32,16 +29,17 @@ export const addFriend = async (
   try {
     await prisma.$transaction([
       prisma.studentFriends.upsert({
-        // update (do not create a new friend) when one already matches the netId
+        // Update (do not create a new friend) when one already matches the
+        // netId
         where: {
           netId_friendNetId: { netId, friendNetId },
         },
-        // basic info for creation
+        // Basic info for creation
         create: {
           netId,
           friendNetId,
         },
-        // update people's names if they've changed
+        // Update people's names if they've changed
         update: {},
       }),
     ]);
@@ -59,17 +57,14 @@ export const removeFriend = async (
 ): Promise<express.Response> => {
   winston.info('Removing friend');
 
-  if (!req.user) {
-    return res.status(401).json({ success: false });
-  }
+  if (!req.user) return res.status(401).json({ success: false });
 
   if (
     !req.query ||
     typeof req.query.id !== 'string' ||
     typeof req.query.id2 !== 'string'
-  ) {
+  )
     return res.status(401).json({ success: false });
-  }
 
   const netId = req.query.id2;
 
@@ -97,35 +92,31 @@ export const friendRequest = async (
 ): Promise<express.Response> => {
   winston.info(`Sending friend request`);
 
-  if (!req.user) {
-    return res.status(401).json();
-  }
+  if (!req.user) return res.status(401).json();
 
   const { netId } = req.user;
 
-  if (!req.query || typeof req.query.id !== 'string') {
+  if (!req.query || typeof req.query.id !== 'string')
     return res.status(401).json({ success: false });
-  }
 
   const friendNetId = req.query.id;
 
-  if (netId == friendNetId) {
-    return res.status(400).json({ success: false });
-  }
+  if (netId === friendNetId) return res.status(400).json({ success: false });
 
   try {
     await prisma.$transaction([
       prisma.studentFriendRequests.upsert({
-        // update (do not create a new request) when one already matches the netId and friend ID
+        // Update (do not create a new request) when one already matches the
+        // netId and friend ID
         where: {
           netId_friendNetId: { netId, friendNetId },
         },
-        // basic info for creation
+        // Basic info for creation
         create: {
           netId,
           friendNetId,
         },
-        // update people's names if they've changed
+        // Update people's names if they've changed
         update: {},
       }),
     ]);
@@ -143,15 +134,12 @@ export const resolveFriendRequest = async (
 ): Promise<express.Response> => {
   winston.info(`Sending friend request`);
 
-  if (!req.user) {
-    return res.status(401).json();
-  }
+  if (!req.user) return res.status(401).json();
 
   const { netId } = req.user;
 
-  if (!req.query || typeof req.query.id !== 'string') {
+  if (!req.query || typeof req.query.id !== 'string')
     return res.status(401).json({ success: false });
-  }
 
   const friendNetId = req.query.id;
 
@@ -176,9 +164,7 @@ export const getRequestsForFriend = async (
 ): Promise<express.Response> => {
   winston.info(`Sending friend request`);
 
-  if (!req.user) {
-    return res.status(401).json();
-  }
+  if (!req.user) return res.status(401).json();
 
   const { netId } = req.user;
 
@@ -201,14 +187,14 @@ export const getRequestsForFriend = async (
 
     const friendNames = friendInfos.map((friendInfo) => ({
       netId: friendInfo.netId,
-      name: friendInfo.first_name + ' ' + friendInfo.last_name,
+      name: `${friendInfo.first_name} ${friendInfo.last_name}`,
     }));
 
     return res.status(200).json({
       success: true,
       friends: friendNames,
     });
-  } catch (err) {
+  } catch {
     return res.status(500).json({
       success: false,
       message: 'Error fetching friend requests',
@@ -228,17 +214,13 @@ export const getFriendsWorksheets = async (
 ): Promise<express.Response> => {
   winston.info(`Fetching friends' worksheets`);
 
-  if (!req.user) {
-    return res.status(401).json();
-  }
-
-  const { netId } = req.user;
+  if (!req.user) return res.status(401).json();
 
   // Get NetIDs of friends
   winston.info('Getting NetIDs of friends');
   const friendRecords = await prisma.studentFriends.findMany({
     where: {
-      netId,
+      netId: req.user.netId,
     },
   });
 
@@ -269,30 +251,36 @@ export const getFriendsWorksheets = async (
 
   const friendNames = friendInfos.map((friendInfo) => ({
     netId: friendInfo.netId,
-    name: friendInfo.first_name + ' ' + friendInfo.last_name,
+    name: `${friendInfo.first_name} ${friendInfo.last_name}`,
   }));
 
   const friendNameMap: { [key: string]: { name: string } } = {};
 
-  for (const nameRecord of friendNames) {
+  for (const nameRecord of friendNames)
     friendNameMap[nameRecord.netId] = { name: nameRecord.name };
-  }
 
-  // map netId to worksheets (list of [season, oci_id, worksheet_number])
+  // Map netId to worksheets (list of [season, oci_id, worksheet_number])
   const worksheetsByFriend: {
     [key: string]: [string, number, number | null][];
   } = {};
-  friendWorksheets.forEach(({ net_id, oci_id, season, worksheet_number }) => {
-    if (net_id in worksheetsByFriend) {
-      worksheetsByFriend[net_id].push([
-        String(season),
-        oci_id,
-        worksheet_number,
-      ]);
-    } else {
-      worksheetsByFriend[net_id] = [[String(season), oci_id, worksheet_number]];
-    }
-  });
+  friendWorksheets.forEach(
+    ({
+      net_id: netId,
+      oci_id: ociId,
+      season,
+      worksheet_number: worksheetNumber,
+    }) => {
+      if (netId in worksheetsByFriend) {
+        worksheetsByFriend[netId].push([
+          String(season),
+          ociId,
+          worksheetNumber,
+        ]);
+      } else {
+        worksheetsByFriend[netId] = [[String(season), ociId, worksheetNumber]];
+      }
+    },
+  );
 
   return res.status(200).json({
     success: true,

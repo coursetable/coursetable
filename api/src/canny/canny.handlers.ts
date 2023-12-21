@@ -1,20 +1,18 @@
 /**
  * @file Handlers for generating JWT tokens for Canny.
  */
-import express from 'express';
 
+import type express from 'express';
+import axios from 'axios';
+import jwt from 'jsonwebtoken';
 import {
   YALIES_API_KEY,
   CANNY_KEY,
   FRONTEND_ENDPOINT,
   prisma,
 } from '../config';
-
-import { User } from '../models/student';
-
+import type { User } from '../models/student';
 import winston from '../logging/winston';
-import axios from 'axios';
-import jwt from 'jsonwebtoken';
 
 // Create a JWT-signed Canny token with user info
 const createCannyToken = (user: User) => {
@@ -30,9 +28,12 @@ const createCannyToken = (user: User) => {
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response,
-): Promise<void | express.Response<unknown, Record<string, unknown>>> => {
+): Promise<
+  undefined | express.Response<unknown, { [key: string]: unknown }>
+> => {
   if (!req.user) {
-    return res.redirect(FRONTEND_ENDPOINT);
+    res.redirect(FRONTEND_ENDPOINT);
+    return undefined;
   }
 
   const { netId } = req.user;
@@ -55,12 +56,11 @@ export const cannyIdentify = async (
         },
       },
     );
-    // if no user found, do not grant access
-    if (data === null || data.length === 0) {
+    // If no user found, do not grant access
+    if (data === null || data.length === 0)
       return res.status(401).json({ success: false });
-    }
 
-    const user = data[0];
+    const [user] = data;
 
     winston.info(`Updating profile for ${netId}`);
     await prisma.studentBluebookSettings.update({
@@ -68,8 +68,8 @@ export const cannyIdentify = async (
         netId,
       },
       data: {
-        // enable evaluations if user has a school code
-        evaluationsEnabled: !!user.school_code,
+        // Enable evaluations if user has a school code
+        evaluationsEnabled: Boolean(user.school_code),
         first_name: user.first_name,
         last_name: user.last_name,
         email: user.email,
@@ -84,15 +84,17 @@ export const cannyIdentify = async (
 
     const token = createCannyToken({
       netId,
-      evals: !!user.school_code,
+      evals: Boolean(user.school_code),
       email: user.email,
       firstName: user.first_name,
       lastName: user.last_name,
     });
 
-    return res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
+    res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
+    return undefined;
   } catch (err) {
     winston.error(`Yalies connection error: ${err}`);
-    return res.redirect(FRONTEND_ENDPOINT);
+    res.redirect(FRONTEND_ENDPOINT);
+    return undefined;
   }
 };
