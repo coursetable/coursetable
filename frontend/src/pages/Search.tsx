@@ -37,7 +37,10 @@ function Search() {
   const { isMobile } = useWindowDimensions();
 
   // Way to display results
-  const [isList, setView] = useSessionStorageState('isList', !isMobile);
+  const [isListView, setIsListView] = useSessionStorageState(
+    'isListView',
+    !isMobile,
+  );
 
   // Get search context data
   const {
@@ -104,8 +107,8 @@ function Search() {
 
   // Switch to grid view if mobile
   useEffect(() => {
-    if (isMobile && isList) setView(false);
-  }, [isMobile, isList, setView]);
+    if (isMobile && isListView) setIsListView(false);
+  }, [isMobile, isListView, setIsListView]);
 
   // TODO: add state if courseLoadError is present
   return (
@@ -469,10 +472,8 @@ function Search() {
           <Element name="catalog" className="d-flex justify-content-center">
             <Results
               data={searchData}
-              isListView={isList}
-              setIsListView={(isList: boolean) => {
-                setView(isList);
-              }}
+              isListView={isListView}
+              setIsListView={setIsListView}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
               isLoggedIn={isLoggedIn}

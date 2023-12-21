@@ -48,19 +48,20 @@ function GoogleCalendarButton(): JSX.Element {
       // Delete all previously added classes
       if (eventList.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        const promises = eventList.result.items.map((event) => {
-          if (event.id.startsWith('coursetable') && event.recurringEventId) {
-            if (!deletedIds.has(event.recurringEventId)) {
-              deletedIds.add(event.recurringEventId);
-              return gapi.client.calendar.events.delete({
-                calendarId: 'primary',
-                eventId: event.recurringEventId,
-              });
+        await Promise.all(
+          eventList.result.items.map((event) => {
+            if (event.id.startsWith('coursetable') && event.recurringEventId) {
+              if (!deletedIds.has(event.recurringEventId)) {
+                deletedIds.add(event.recurringEventId);
+                return gapi.client.calendar.events.delete({
+                  calendarId: 'primary',
+                  eventId: event.recurringEventId,
+                });
+              }
             }
-          }
-          return undefined;
-        });
-        await Promise.all(promises);
+            return undefined;
+          }),
+        );
       }
       const events = getCalendarEvents(
         'gcal',
@@ -68,21 +69,22 @@ function GoogleCalendarButton(): JSX.Element {
         curSeason,
         hiddenCourses,
       );
-      const promises = events.map(async (event) => {
-        try {
-          await gapi.client.calendar.events.insert({
-            calendarId: 'primary',
-            resource: event,
-          });
-        } catch (e) {
-          Sentry.captureException(
-            new Error('[GCAL]: Error adding events to user calendar: ', {
-              cause: e,
-            }),
-          );
-        }
-      });
-      await Promise.all(promises);
+      await Promise.all(
+        events.map(async (event) => {
+          try {
+            await gapi.client.calendar.events.insert({
+              calendarId: 'primary',
+              resource: event,
+            });
+          } catch (e) {
+            Sentry.captureException(
+              new Error('[GCAL]: Error adding events to user calendar: ', {
+                cause: e,
+              }),
+            );
+          }
+        }),
+      );
       toast.success('Exported to Google Calendar!');
     } catch (e) {
       Sentry.captureException(

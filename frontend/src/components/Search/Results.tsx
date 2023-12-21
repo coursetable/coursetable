@@ -82,8 +82,8 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
 /**
  * Renders the infinite list of search results for both catalog and worksheet
  * @prop data - array | that holds the search results
- * @prop isList - boolean | determines display format (list or grid)
- * @prop setView - function | changes display format
+ * @prop isListView - boolean | determines display format (list or grid)
+ * @prop setIsListView - function | changes display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
@@ -111,8 +111,13 @@ function Results({
   readonly page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
-  const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
-    useWindowDimensions();
+  const {
+    width: windowWidth,
+    isMobile,
+    isTablet,
+    isSmDesktop,
+    isLgDesktop,
+  } = useWindowDimensions();
 
   // State that holds width of the row for list view
   const [rowWidth, setRowWidth] = useState(0);
@@ -129,7 +134,7 @@ function Results({
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, width]);
+  }, [setRowWidth, windowWidth]);
 
   // Spacing for each column in list view
   const COL_SPACING = useMemo(() => {
@@ -295,7 +300,12 @@ function Results({
                 scrollTop={scrollTop}
                 rowCount={data.length}
                 rowHeight={isLgDesktop ? 32 : 28}
-                rowRenderer={({ index, key, style, isScrolling }) => {
+                rowRenderer={({
+                  index,
+                  key,
+                  style,
+                  isScrolling: rowIsScrolling,
+                }) => {
                   const friends = numFriends[
                     data[index].season_code + data[index].crn
                   ]
@@ -319,7 +329,7 @@ function Results({
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
-                        isScrolling={isScrolling}
+                        isScrolling={rowIsScrolling}
                         friends={friends}
                       />
                     </ResultsItemWrapper>
@@ -405,7 +415,10 @@ function Results({
               <div
                 className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
-                <ListGridToggle isList={isListView} setView={setIsListView} />
+                <ListGridToggle
+                  isListView={isListView}
+                  setIsListView={setIsListView}
+                />
               </div>
               {isListView ? (
                 <>

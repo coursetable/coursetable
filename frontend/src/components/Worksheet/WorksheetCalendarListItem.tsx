@@ -90,9 +90,8 @@ function WorksheetCalendarListItem({
         {/* Hide Button */}
         <div className={`mr-1 my-auto ${hidden ? 'visible' : 'hidden'}`}>
           <WorksheetHideButton
-            toggleCourse={toggleCourse}
+            toggleCourse={() => toggleCourse(course.crn)}
             hidden={hidden}
-            crn={course.crn}
           />
         </div>
         {/* Add/remove from worksheet button */}

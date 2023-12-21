@@ -33,20 +33,15 @@ const StyledContainer = styled.div`
 // Custom accordion component
 function ContextAwareToggle({
   eventKey,
-  callback,
   question,
 }: {
   readonly eventKey: string;
-  readonly callback?: (eventKey: string) => void;
   readonly question: string;
 }) {
   // Current active item
   const currentEventKey = useContext(AccordionContext);
 
-  const decoratedOnClick = useAccordionToggle(
-    eventKey,
-    () => callback && callback(eventKey),
-  );
+  const decoratedOnClick = useAccordionToggle(eventKey, () => {});
 
   // Is this one currently active?
   const isCurrentEventKey = currentEventKey === eventKey;

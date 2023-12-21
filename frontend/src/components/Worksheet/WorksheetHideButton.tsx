@@ -14,12 +14,10 @@ import './WorksheetToggleButton.css';
 function WorksheetHideButton({
   hidden,
   toggleCourse,
-  crn,
   theme,
 }: {
   readonly hidden: boolean;
-  readonly toggleCourse: (crn: number) => void;
-  readonly crn: number;
+  readonly toggleCourse: () => void;
   readonly theme: DefaultTheme;
 }) {
   // Size of toggle button
@@ -37,7 +35,7 @@ function WorksheetHideButton({
     >
       <Button
         variant="toggle"
-        onClick={() => toggleCourse(crn)}
+        onClick={toggleCourse}
         className="p-1 d-flex align-items-center"
       >
         {hidden ? (

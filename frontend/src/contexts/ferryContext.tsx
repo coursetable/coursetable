@@ -21,7 +21,7 @@ import { API_ENDPOINT } from '../config';
 // to maintain compatibility with the previous graphql version.
 // TODO: once typescript is fully added, we can easily find all
 // the usages and remove the enclosing object.
-const seasons = {
+const seasonsData = {
   seasons: [..._seasons].reverse(),
 };
 
@@ -85,7 +85,7 @@ type Store = {
   loading: boolean;
 
   error: {} | null;
-  seasons: typeof seasons;
+  seasons: typeof seasonsData;
   courses: typeof courseData;
   requestSeasons: (seasons: Season[]) => void;
 };
@@ -136,7 +136,7 @@ export function FerryProvider({
       requests,
       loading,
       error,
-      seasons,
+      seasons: seasonsData,
       courses: courseData,
       requestSeasons,
     }),

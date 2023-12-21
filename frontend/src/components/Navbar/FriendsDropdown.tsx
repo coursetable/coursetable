@@ -57,8 +57,8 @@ function FriendsDropdown() {
       <DropdownButton
         variant="primary"
         title={person === 'me' ? 'Me' : friendInfo[person].name}
-        onSelect={(person) => {
-          if (person) handlePersonChange(person);
+        onSelect={(p) => {
+          if (p) handlePersonChange(p);
         }}
       >
         {friends.map((p) => (
