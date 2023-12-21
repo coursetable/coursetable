@@ -9,6 +9,7 @@ import {
   type Weekdays,
   weekdays,
   type Listing,
+  type NetId,
 } from './common';
 import type {
   FriendRecord,
@@ -31,7 +32,7 @@ export function truncatedText(
 // Check if a listing is in the user's worksheet
 export function isInWorksheet(
   seasonCode: Season,
-  crn: Crn | string,
+  crn: Crn,
   worksheetNumber: string,
   worksheet?: Worksheet,
 ): boolean {
@@ -40,7 +41,7 @@ export function isInWorksheet(
     (course) =>
       course[0] === seasonCode &&
       course[1] === String(crn) &&
-      course[2] === String(worksheetNumber),
+      course[2] === worksheetNumber,
   );
 }
 
@@ -114,11 +115,11 @@ export function checkCrossListed(
 export function friendsAlsoTaking(
   seasonCode: Season,
   crn: Crn,
-  worksheets: { [key: string]: Worksheet } | undefined,
+  worksheets: { [netId: NetId]: Worksheet } | undefined,
   names: FriendRecord,
 ): string[] {
   if (!worksheets) return [];
-  return Object.keys(worksheets)
+  return (Object.keys(worksheets) as NetId[])
     .filter((friend) =>
       worksheets[friend].some(
         (value) => value[0] === seasonCode && parseInt(value[1], 10) === crn,
@@ -142,7 +143,7 @@ export function getNumFriends(friendWorksheets: FriendInfo): NumFriendsReturn {
   // Object to return
   const friends: NumFriendsReturn = {};
   // Iterate over each friend's worksheet
-  for (const friend of Object.keys(worksheets)) {
+  for (const friend of Object.keys(worksheets) as NetId[]) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn

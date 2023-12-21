@@ -3,6 +3,7 @@ import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
+import type { Crn } from '../../utilities/common';
 import { StyledInput, TextComponent } from '../StyledComponents';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
@@ -57,7 +58,7 @@ function EvaluationResponses({
   crn,
   info,
 }: {
-  readonly crn: number;
+  readonly crn: Crn;
   readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }) {
   // Sort by original order or length?
@@ -65,7 +66,7 @@ function EvaluationResponses({
 
   // Dictionary that holds the comments for each question
   const [responses, sortedResponses] = useMemo(() => {
-    const tempResponses: { [key: string]: string[] } = {};
+    const tempResponses: { [questionText: string]: string[] } = {};
     // Loop through each section for this course code
     (info || []).forEach((section) => {
       const crnCode = section.crn;

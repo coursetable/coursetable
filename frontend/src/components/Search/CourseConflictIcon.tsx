@@ -20,7 +20,7 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
 
   const inWorksheet = isInWorksheet(
     course.season_code,
-    course.crn.toString(),
+    course.crn,
     '0',
     user.worksheet,
   );
@@ -57,8 +57,7 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>
                   Conflicts with: <br />
-                  {conflicts.map((x) => String(x.course_code)).join(', ')}{' '}
-                  <br />
+                  {conflicts.map((x) => x.course_code).join(', ')} <br />
                 </small>
                 {crossListed !== false ? (
                   // Show only if the class is cross-listed with another class

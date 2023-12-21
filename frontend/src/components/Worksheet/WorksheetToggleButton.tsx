@@ -9,6 +9,7 @@ import * as Sentry from '@sentry/react';
 
 import './WorksheetToggleButton.css';
 import { useUser } from '../../contexts/userContext';
+import type { Crn, Season } from '../../utilities/common';
 import { setLSObject } from '../../utilities/browserStorage';
 import { isInWorksheet } from '../../utilities/course';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
@@ -48,8 +49,8 @@ function WorksheetToggleButton({
   setCourseInWorksheet,
   selectedWorksheet: initialSelectedWorksheet,
 }: {
-  readonly crn: number;
-  readonly seasonCode: string;
+  readonly crn: Crn;
+  readonly seasonCode: Season;
   readonly modal: boolean;
   readonly setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
   readonly selectedWorksheet?: string;
@@ -70,13 +71,7 @@ function WorksheetToggleButton({
   const { curSeason, hiddenCourses, toggleCourse } = useWorksheet();
 
   const worksheetCheck = useMemo(
-    () =>
-      isInWorksheet(
-        seasonCode,
-        crn.toString(),
-        selectedWorksheet,
-        user.worksheet,
-      ),
+    () => isInWorksheet(seasonCode, crn, selectedWorksheet, user.worksheet),
     [user.worksheet, seasonCode, crn, selectedWorksheet],
   );
   // Is the current course in the worksheet?

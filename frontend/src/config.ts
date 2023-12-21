@@ -1,3 +1,5 @@
+import type { Season } from './utilities/common';
+
 export const isDev = import.meta.env.DEV;
 
 export const API_ENDPOINT = isDev
@@ -9,10 +11,10 @@ export const GRAPHQL_API_ENDPOINT = isDev
   : `${import.meta.env.VITE_API_ENDPOINT}/ferry`;
 
 // Used for which season to show by default in catalog and worksheet
-export const CUR_SEASON = '202401';
+export const CUR_SEASON = '202401' as Season;
 
 // Courses in the current year have no evaluations yet
-export const CUR_YEAR = ['202303', '202401'];
+export const CUR_YEAR = ['202303', '202401'] as Season[];
 
 // We use this format to avoid dealing with time zones.
 // TODO: this should be a Temporal.ZonedDateTime
@@ -43,8 +45,8 @@ export type SeasonCalendar = {
 
 // TODO: instead of hardcoding every year, we should compute this, because
 // each time point is always the same day of the week.
-export const academicCalendars: { [season: string]: SeasonCalendar } = {
-  202203: {
+export const academicCalendars: { [season: Season]: SeasonCalendar } = {
+  ['202203' as Season]: {
     start: [2022, 8, 31],
     end: [2022, 12, 9],
     breaks: [
@@ -66,7 +68,7 @@ export const academicCalendars: { [season: string]: SeasonCalendar } = {
     ],
     transfers: [{ date: [2022, 9, 2], day: 1 }],
   },
-  202301: {
+  ['202301' as Season]: {
     start: [2023, 1, 16],
     end: [2023, 4, 28],
     breaks: [
@@ -83,7 +85,7 @@ export const academicCalendars: { [season: string]: SeasonCalendar } = {
     ],
     transfers: [{ date: [2023, 1, 20], day: 1 }],
   },
-  202303: {
+  ['202303' as Season]: {
     start: [2023, 8, 30],
     end: [2023, 12, 8],
     breaks: [
@@ -105,7 +107,7 @@ export const academicCalendars: { [season: string]: SeasonCalendar } = {
     ],
     transfers: [{ date: [2023, 9, 1], day: 1 }],
   },
-  202401: {
+  ['202401' as Season]: {
     start: [2024, 1, 15],
     end: [2024, 4, 26],
     breaks: [

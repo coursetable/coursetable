@@ -13,6 +13,7 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/course';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import type { NetId, Season } from '../../utilities/common';
 
 // Row in navbar search
 const StyledRow = styled(Row)`
@@ -134,7 +135,7 @@ export function NavbarWorksheetSearch() {
     const friendOptionsTemp = [];
     // Add friend to dropdown if they have worksheet courses in the current
     // season
-    for (const friend of Object.keys(friendInfo)) {
+    for (const friend of Object.keys(friendInfo) as NetId[]) {
       friendOptionsTemp.push({
         value: friend,
         label: friendInfo[friend].name,
@@ -222,7 +223,7 @@ export function NavbarWorksheetSearch() {
                 placeholder="Last 5 Years"
                 onChange={(selectedOption) => {
                   if (isOption(selectedOption))
-                    changeSeason(selectedOption.value);
+                    changeSeason(selectedOption.value as Season | null);
                 }}
               />
             </Popout>
@@ -283,7 +284,7 @@ export function NavbarWorksheetSearch() {
                     if (!selectedOption) handlePersonChange('me');
                     // Selected friend
                     else if (isOption(selectedOption))
-                      handlePersonChange(selectedOption.value);
+                      handlePersonChange(selectedOption.value as NetId);
                   } else if (selectedOption && isOption(selectedOption)) {
                     await Promise.all([
                       removeFriend(selectedOption.value, user.netId),

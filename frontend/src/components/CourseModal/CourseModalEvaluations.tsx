@@ -5,6 +5,7 @@ import EvaluationRatings from './EvaluationRatings';
 
 import CourseModalLoading from './CourseModalLoading';
 import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import type { Crn, Season } from '../../utilities/common';
 
 /**
  * Displays course modal when clicking on a course
@@ -17,8 +18,8 @@ function CourseModalEvaluations({
   crn,
   courseCode,
 }: {
-  readonly seasonCode: string;
-  readonly crn: number;
+  readonly seasonCode: Season;
+  readonly crn: Crn;
   readonly courseCode: string;
 }) {
   // Fetch eval data for this listing

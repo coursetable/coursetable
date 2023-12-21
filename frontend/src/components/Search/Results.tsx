@@ -107,7 +107,7 @@ function Results({
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
   readonly isLoggedIn: boolean;
-  readonly numFriends: { [key: string]: string[] };
+  readonly numFriends: { [seasonCodeCrn: string]: string[] };
   readonly page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
@@ -615,7 +615,7 @@ function Results({
       )}
 
       <SearchResults
-        className={String(!isListView ? 'px-1 pt-3 ' : '')}
+        className={!isListView ? 'px-1 pt-3 ' : ''}
         numCourses={data.length}
         isMobile={isMobile}
       >

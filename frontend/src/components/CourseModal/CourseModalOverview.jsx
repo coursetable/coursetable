@@ -118,7 +118,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   const { loading, error, data } = useSameCourseOrProfOfferingsQuery({
     variables: {
       same_course_id: listing.same_course_id,
-      professor_ids: listing.professor_ids.map((x) => String(x)),
+      professor_ids: listing.professor_ids,
     },
   });
   // Hold HTML code that displays the list of evaluations
@@ -279,8 +279,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   {filter === 'professor'
                     ? offering.course_code[0]
                     : filter === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
+                      ? `Section ${offering.section}`
+                      : offering.professor[0]}
                 </div>
               </StyledCol>
             ) : (
@@ -294,8 +294,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   {filter === 'professor'
                     ? offering.course_code[0]
                     : filter === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
+                      ? `Section ${offering.section}`
+                      : offering.professor[0]}
                 </div>
               </StyledColUnclickable>
             )}
@@ -473,7 +473,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               text={
                 listing.description ? listing.description : 'no description'
               }
-              maxLine={String(lines)}
+              maxLine={lines}
               basedOn="words"
               onReflow={(rleState) => setClamped(rleState.clamped)}
             />
@@ -778,8 +778,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   (e.key === 'ArrowLeft'
                     ? 2
                     : e.key === 'ArrowRight'
-                    ? 1
-                    : 0)) %
+                      ? 1
+                      : 0)) %
                 3;
               setFilter(options[newIndx].value);
             }}

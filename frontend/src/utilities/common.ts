@@ -3,9 +3,11 @@ import type { CatalogBySeasonQuery } from '../generated/graphql';
 
 // A couple common types.
 
-export type Season = string;
-export type NetId = string;
-export type Crn = number;
+// These types are branded so you never pass the wrong thing
+declare const type: unique symbol;
+export type Season = string & { [type]: 'season' };
+export type NetId = string & { [type]: 'netid' };
+export type Crn = number & { [type]: 'crn' };
 
 export const weekdays = [
   'Monday',
@@ -20,6 +22,7 @@ export type Weekdays = (typeof weekdays)[number];
 
 type RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
 type ListingOverrides = {
+  crn: Crn;
   season_code: Season;
 
   // Narrow some of the JSON types.

@@ -2,6 +2,7 @@ import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
+import type { NetId } from '../../utilities/common';
 
 import './DropdownShared.css';
 
@@ -44,28 +45,27 @@ function FriendsDropdown() {
 
   // Generate friend netId list, sorted by name.
   const friendInfo = user.friendWorksheets?.friendInfo || {};
-  let friends = Object.keys(friendInfo);
+  const friends = Object.keys(friendInfo) as NetId[];
   friends.sort((a, b) =>
     friendInfo[a].name.localeCompare(friendInfo[b].name, 'en-US', {
       sensitivity: 'base',
     }),
   );
-  friends = ['me', ...friends];
-
   return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
         title={person === 'me' ? 'Me' : friendInfo[person].name}
         onSelect={(p) => {
-          if (p) handlePersonChange(p);
+          if (p) handlePersonChange(p as NetId | 'me');
         }}
       >
+        <DropdownItem person="me" text="Me" viewedPerson={person} />
         {friends.map((p) => (
           <DropdownItem
             key={p}
             person={p}
-            text={p === 'me' ? 'Me' : String(friendInfo[p].name)}
+            text={friendInfo[p].name}
             viewedPerson={person}
           />
         ))}

@@ -28,8 +28,8 @@ const seasonsData = {
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted: { [key: Season]: boolean } = {};
-let courseData: { [key: Season]: Map<Crn, Listing> } = {};
+let courseLoadAttempted: { [seasonCode: Season]: boolean } = {};
+let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
 const addToCache = (season: Season): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     if (season in courseData || season in courseLoadAttempted) {
@@ -178,7 +178,7 @@ export function useWorksheetInfo(
         seasonCode in courses &&
         worksheetNumberCourse === worksheetNumber
       ) {
-        const course = courses[seasonCode].get(parseInt(crn, 10));
+        const course = courses[seasonCode].get(parseInt(crn, 10) as Crn);
         if (!course) {
           Sentry.captureException(
             new Error(

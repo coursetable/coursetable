@@ -8,7 +8,7 @@ import React, {
   useState,
 } from 'react';
 import type { GroupedOptionsType, OptionsType } from 'react-select/src/types';
-import type { Listing } from '../utilities/common';
+import type { Listing, Season } from '../utilities/common';
 import {
   useLocalStorageState,
   useSessionStorageState,
@@ -96,7 +96,7 @@ type Store = {
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
-  numFriends: { [key: string]: string[] };
+  numFriends: { [seasonCodeCrn: string]: string[] };
   resetKey: number;
   duration: number;
   speed: string;
@@ -339,7 +339,7 @@ export function SearchProvider({
     });
   }
 
-  const requiredSeasons = useMemo(() => {
+  const requiredSeasons = useMemo((): Season[] => {
     if (!isLoggedIn) {
       // If we're not logged in, don't attempt to request any seasons.
       return [];
@@ -348,9 +348,11 @@ export function SearchProvider({
     if (!selectSeasons) return [];
     if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
-      return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
+      return seasonsData.seasons
+        .map((x) => x.season_code as Season)
+        .slice(0, 15);
     }
-    return selectSeasons.map((x) => x.value);
+    return selectSeasons.map((x) => x.value as Season);
   }, [isLoggedIn, selectSeasons, seasonsData]);
 
   const {

@@ -14,11 +14,11 @@ import { CUR_SEASON } from '../config';
 import { useFerry, useWorksheetInfo } from './ferryContext';
 import { toSeasonString } from '../utilities/course';
 import { useUser, type Worksheet } from './userContext';
-import type { Season, Listing } from '../utilities/common';
+import type { Season, Listing, Crn, NetId } from '../utilities/common';
 import type { OptType } from './searchContext';
 
 export type HiddenCourses = {
-  [seasonCode: Season]: { [crn: number]: boolean };
+  [seasonCode: Season]: { [crn: Crn]: boolean };
 };
 export type WorksheetView =
   | { view: 'calendar'; mode: 'expanded' }
@@ -26,12 +26,12 @@ export type WorksheetView =
   | { view: 'list'; mode: '' };
 
 type Store = {
-  seasonCodes: string[];
+  seasonCodes: Season[];
   seasonOptions: OptType;
   curWorksheet: Worksheet;
   curSeason: Season;
   worksheetNumber: string;
-  person: string;
+  person: 'me' | NetId;
   courses: Listing[];
   hiddenCourses: HiddenCourses;
   hoverCourse: number | null;
@@ -41,10 +41,10 @@ type Store = {
   worksheetData: Listing[];
   changeSeason: (seasonCode: Season | null) => void;
   changeWorksheet: (worksheetNumber: string) => void;
-  handlePersonChange: (newPerson: string) => void;
+  handlePersonChange: (newPerson: 'me' | NetId) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
-  toggleCourse: (crn: number) => void;
+  toggleCourse: (crn: Crn | -1 | -2) => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
@@ -71,7 +71,7 @@ export function WorksheetProvider({
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  const [viewedPerson, setViewedPerson] = useSessionStorageState(
+  const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'person',
     'me',
   );
@@ -105,10 +105,10 @@ export function WorksheetProvider({
 
   const { seasons: seasonsData } = useFerry();
   const seasonCodes = useMemo(() => {
-    const tempSeasonCodes: string[] = [];
+    const tempSeasonCodes: Season[] = [];
     if (seasonsData && seasonsData.seasons) {
       seasonsData.seasons.forEach((season) => {
-        tempSeasonCodes.push(season.season_code);
+        tempSeasonCodes.push(season.season_code as Season);
       });
     }
     tempSeasonCodes.sort();
@@ -128,7 +128,7 @@ export function WorksheetProvider({
   }, [seasonCodes]);
 
   // Current season
-  const [curSeason, setCurSeason] = useSessionStorageState<Season>(
+  const [curSeason, setCurSeason] = useSessionStorageState(
     'curSeason',
     CUR_SEASON,
   );
@@ -148,7 +148,7 @@ export function WorksheetProvider({
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
   // Cache calendar colors. Reset whenever the season changes.
   const [colorMap, setColorMap] = useState<{
-    [crn: number]: [number, number, number];
+    [crn: Crn]: [number, number, number];
   }>({});
   useEffect(() => {
     setColorMap({});
@@ -188,7 +188,7 @@ export function WorksheetProvider({
 
   // Hide/Show this course
   const toggleCourse = useCallback(
-    (crn: number) => {
+    (crn: Crn | -1 | -2) => {
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
@@ -232,7 +232,7 @@ export function WorksheetProvider({
   );
 
   const handlePersonChange = useCallback(
-    (newPerson: string) => {
+    (newPerson: 'me' | NetId) => {
       setViewedPerson(newPerson);
     },
     [setViewedPerson],

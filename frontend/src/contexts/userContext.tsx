@@ -11,9 +11,13 @@ import { toast } from 'react-toastify';
 import type { NetId, Season } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
-export type Worksheet = [Season, string, string][];
+export type Worksheet = [
+  season: Season,
+  crn: string,
+  worksheetNumber: string,
+][];
 export type FriendRecord = {
-  [key: NetId]: {
+  [netId: NetId]: {
     name: string;
   };
 };
@@ -22,11 +26,11 @@ export type FriendRequest = {
   name: string;
 };
 export type FriendInfo = {
-  worksheets: { [key: NetId]: Worksheet };
+  worksheets: { [netId: NetId]: Worksheet };
   friendInfo: FriendRecord;
 };
 export type FriendName = {
-  netId: string;
+  netId: NetId;
   first: string;
   last: string;
   college: string;
@@ -64,7 +68,7 @@ export function UserProvider({
   readonly children: React.ReactNode;
 }) {
   // User's netId
-  const [netId, setNetId] = useState<string | undefined>(undefined);
+  const [netId, setNetId] = useState<NetId | undefined>(undefined);
   // User's worksheet
   const [worksheet, setWorksheet] = useState<Worksheet | undefined>(undefined);
   // User's evals enabled status

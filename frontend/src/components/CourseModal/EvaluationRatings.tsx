@@ -2,6 +2,7 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
+import type { Crn } from '../../utilities/common';
 import {
   questions,
   graphLabels,
@@ -21,7 +22,7 @@ function EvaluationRatings({
   crn,
   info,
 }: {
-  readonly crn: number;
+  readonly crn: Crn;
   readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }) {
   // List of dictionaries that holds the ratings for each question as well as
