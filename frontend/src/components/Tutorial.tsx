@@ -274,7 +274,6 @@ function Tutorial({
   // Handle prev button styling
   const prevButton = useMemo(() => {
     if (currentStep === 0) return <div style={{ display: 'none' }} />;
-
     if (!shownTutorial) {
       return (
         <PrevButton
@@ -294,7 +293,6 @@ function Tutorial({
   const nextButton = useMemo(() => {
     if (location.pathname === '/catalog' && currentStep === 7)
       return <NextButton disabled>Next</NextButton>;
-
     return <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>;
   }, [currentStep, location]);
 

@@ -346,7 +346,6 @@ export function SearchProvider({
     }
     // TODO: can it be null?
     if (!selectSeasons) return [];
-
     if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
       return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);

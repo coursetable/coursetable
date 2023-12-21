@@ -149,7 +149,6 @@ export function NavbarWorksheetSearch() {
 
   const selectedPerson = useMemo(() => {
     if (person === 'me' || !friendInfo[person]) return null;
-
     return {
       value: person,
       label: friendInfo[person].name,

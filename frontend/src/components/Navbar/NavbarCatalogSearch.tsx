@@ -294,7 +294,6 @@ export function NavbarCatalogSearch() {
   const activeStyle = useCallback(
     (active: boolean) => {
       if (active) return { color: globalTheme.primaryHover };
-
       return undefined;
     },
     [globalTheme],
@@ -303,13 +302,11 @@ export function NavbarCatalogSearch() {
   // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
     if (isLgDesktop) return undefined;
-
     const styles: React.CSSProperties = { height: '12px', width: '12px' };
     return [styles, styles];
   }, [isLgDesktop]);
   const rangeRailStyle = useMemo((): React.CSSProperties => {
     if (isLgDesktop) return {};
-
     const styles = { marginTop: '-1px' };
     return styles;
   }, [isLgDesktop]);

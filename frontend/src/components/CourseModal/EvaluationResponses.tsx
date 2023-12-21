@@ -109,7 +109,6 @@ function EvaluationResponses({
     // Populate the lists above
     const genTemp = (resps: string[]) => {
       if (resps.length === 0) return [];
-
       const filteredResps = resps
         .filter((response) =>
           response.toLowerCase().includes(filter.toLowerCase()),

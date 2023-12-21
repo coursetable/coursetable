@@ -181,7 +181,6 @@ export function Popout({
           );
           if (topOptions.length > 1 && index < maxOptions - 1)
             return <React.Fragment key={index}>{span}, </React.Fragment>;
-
           if (selectOptions.length > maxOptions) {
             return (
               <React.Fragment key={index}>

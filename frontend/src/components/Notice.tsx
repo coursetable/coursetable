@@ -15,7 +15,6 @@ function Notice({ children }: { readonly children?: React.ReactNode }) {
   );
 
   if (!visible || !children) return null;
-
   return (
     <StyledBanner className={styles.banner}>
       <div className={styles.content}>

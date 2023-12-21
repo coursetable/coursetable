@@ -383,12 +383,10 @@ function Results({
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
       if (isSmDesktop || isTablet) return 88;
-
       if (isLgDesktop) return 100;
     }
     if (page === 'worksheet') {
       if (isSmDesktop || isTablet) return 58;
-
       if (isLgDesktop) return 61;
     }
     return 0;

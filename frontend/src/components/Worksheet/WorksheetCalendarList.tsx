@@ -155,7 +155,6 @@ function WorksheetCalendarList() {
 
   const areHidden = useMemo(() => {
     if (!(curSeason in hiddenCourses)) return false;
-
     return Object.keys(hiddenCourses[curSeason]).length === courses.length;
   }, [hiddenCourses, courses, curSeason]);
 

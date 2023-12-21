@@ -85,7 +85,6 @@ function CustomErrorBoundary({
   readonly children: React.ReactNode;
 }) {
   if (isDev) return <>{children}</>;
-
   return (
     <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
       {children}

@@ -209,7 +209,6 @@ export const getDayTimes = (
 ): { [key: string]: string }[] | null => {
   // If no times then return null
   if (isEmpty(course.times_by_day)) return null;
-
   const initialFiltered: { [key: string]: string }[] = [];
 
   const times = Object.entries(course.times_by_day).reduce(
@@ -279,7 +278,6 @@ const helperSort = (
   }
   // If value is 0, return null
   if (listing[key] === 0) return null;
-
   return listing[key] ?? null;
 };
 
