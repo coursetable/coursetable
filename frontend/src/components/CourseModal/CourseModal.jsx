@@ -51,6 +51,30 @@ const extraInfoMap = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
+// Share button
+function ShareButton({ courseCode, urlToShare }) {
+  const copyToClipboard = () => {
+    const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
+    navigator.clipboard.writeText(textToCopy).then(
+      () => {
+        toast.success('Course and URL copied to clipboard!');
+      },
+      (err) => {
+        console.error('Error copying to clipboard: ', err);
+      },
+    );
+  };
+
+  return (
+    <FaRegShareFromSquare
+      onClick={copyToClipboard}
+      size={25}
+      color="#007bff"
+      style={{ cursor: 'pointer' }}
+    />
+  );
+}
+
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const url = window.location.href;
@@ -61,29 +85,6 @@ function CourseModal() {
 
   const listing = courses[seasonCode]?.get(Number(crn));
 
-  // Share button
-  function ShareButton({ courseCode, urlToShare }) {
-    const copyToClipboard = () => {
-      const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
-      navigator.clipboard.writeText(textToCopy).then(
-        () => {
-          toast.success('Course and URL copied to clipboard!');
-        },
-        (err) => {
-          console.error('Error copying to clipboard: ', err);
-        },
-      );
-    };
-
-    return (
-      <FaRegShareFromSquare
-        onClick={copyToClipboard}
-        size={25}
-        color="#007bff"
-        style={{ cursor: 'pointer' }}
-      />
-    );
-  }
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains

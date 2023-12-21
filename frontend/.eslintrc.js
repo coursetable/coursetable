@@ -24,7 +24,6 @@ module.exports = {
     '@typescript-eslint/no-unnecessary-condition': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
 
-    'react/no-unstable-nested-components': 'off',
     'prefer-destructuring': 'off',
     '@typescript-eslint/prefer-nullish-coalescing': 'off',
     'no-restricted-syntax': 'off',

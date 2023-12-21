@@ -1,12 +1,33 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import type { NetId } from '../../utilities/common';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 
 import './DropdownShared.css';
 
-type Person = (NetId & {}) | 'me';
+function DropdownItem({
+  person,
+  text,
+  viewedPerson,
+}: {
+  readonly person: string;
+  readonly viewedPerson: string;
+  readonly text: string;
+}) {
+  return (
+    <Dropdown.Item
+      eventKey={person}
+      className="d-flex"
+      // Styling if this is the current person
+      style={{
+        backgroundColor: person === viewedPerson ? '#007bff' : '',
+        color: person === viewedPerson ? 'white' : 'black',
+      }}
+    >
+      <div className="mx-auto">{text}</div>
+    </Dropdown.Item>
+  );
+}
 
 /**
  * Render friends dropdown in mobile view.
@@ -31,30 +52,6 @@ function FriendsDropdown() {
   );
   friends = ['me', ...friends];
 
-  function DropdownItem({ person: currPerson }: { readonly person: Person }) {
-    let text: string;
-    if (currPerson === 'me') {
-      text = 'Me';
-    } else {
-      const { name } = friendInfo[currPerson];
-      text = String(name);
-    }
-    return (
-      <Dropdown.Item
-        key={currPerson}
-        eventKey={currPerson}
-        className="d-flex"
-        // Styling if this is the current person
-        style={{
-          backgroundColor: person === currPerson ? '#007bff' : '',
-          color: person === currPerson ? 'white' : 'black',
-        }}
-      >
-        <div className="mx-auto">{text}</div>
-      </Dropdown.Item>
-    );
-  }
-
   return (
     <div className="container p-0 m-0">
       <DropdownButton
@@ -65,7 +62,12 @@ function FriendsDropdown() {
         }}
       >
         {friends.map((p) => (
-          <DropdownItem key={p} person={p} />
+          <DropdownItem
+            key={p}
+            person={p}
+            text={p === 'me' ? 'Me' : String(friendInfo[p].name)}
+            viewedPerson={person}
+          />
         ))}
       </DropdownButton>
     </div>

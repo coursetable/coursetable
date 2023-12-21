@@ -147,17 +147,17 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
         backgroundColor: isDisabled
           ? null
           : isSelected
-            ? data.color
-            : isFocused
-              ? color.alpha(0.1).css()
-              : null,
+          ? data.color
+          : isFocused
+          ? color.alpha(0.1).css()
+          : null,
         color: isDisabled
           ? '#ccc'
           : isSelected
-            ? chroma.contrast(color, 'white') > 2
-              ? 'white'
-              : 'black'
-            : data.color,
+          ? chroma.contrast(color, 'white') > 2
+            ? 'white'
+            : 'black'
+          : data.color,
 
         ':active': {
           ...(base as any)[':active'],
@@ -205,7 +205,7 @@ function CustomSelect<
       neutral10: globalTheme.multivalue, // SelectedOptionBackground & disabledBorder
       neutral30: 'hsl(0, 0%, 70%)', // Border :hover
       neutral60: globalTheme.text[0], // DropdownIconFocus & clearIconFocus
-      neutral80: globalTheme.text[0], // SelectedOtionText & dropdownIconFocus :hover & clearIconFocus :hover
+      neutral80: globalTheme.text[0], // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover
     },
   });
 
