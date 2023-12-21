@@ -148,7 +148,7 @@ export function NavbarWorksheetSearch() {
   }, [friendInfo]);
 
   const selectedPerson = useMemo(() => {
-    if (person === 'me' || friendInfo[person] == undefined) return null;
+    if (person === 'me' || !friendInfo[person]) return null;
 
     return {
       value: person,

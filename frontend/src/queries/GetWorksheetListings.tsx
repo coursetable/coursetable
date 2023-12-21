@@ -35,12 +35,12 @@ export const useWorksheetInfo = (
 
     // Resolve the worksheet items.
     for (const [seasonCode, crn, worksheetNumberCourse] of worksheet) {
-      if (season !== null && season != seasonCode) continue;
+      if (season !== null && season !== seasonCode) continue;
 
       if (
         courses &&
         seasonCode in courses &&
-        worksheetNumberCourse == worksheetNumber
+        worksheetNumberCourse === worksheetNumber
       ) {
         const course = courses[seasonCode].get(parseInt(crn, 10));
         if (!course) {

@@ -147,7 +147,7 @@ function WorksheetToggleButton({
   );
 
   // Disabled worksheet add/remove button if not logged in
-  if (user.worksheet == null) {
+  if (!user.worksheet) {
     return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
         <BsBookmark size={25} className="disabled-button-icon" />

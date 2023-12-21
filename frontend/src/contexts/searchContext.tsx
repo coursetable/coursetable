@@ -317,7 +317,7 @@ export function SearchProvider({
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
-  const isLoggedIn = user.worksheet != null;
+  const isLoggedIn = Boolean(user.worksheet);
 
   // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
@@ -344,7 +344,8 @@ export function SearchProvider({
       // If we're not logged in, don't attempt to request any seasons.
       return [];
     }
-    if (selectSeasons == null) return [];
+    // TODO: can it be null?
+    if (!selectSeasons) return [];
 
     if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
@@ -369,7 +370,8 @@ export function SearchProvider({
     let processedSkillsAreas;
     let processedSkills;
     let processedAreas;
-    if (selectSkillsAreas != null) {
+    // TODO: can it be null?
+    if (selectSkillsAreas) {
       processedSkillsAreas = selectSkillsAreas.map((x) => x.value);
 
       // Match all languages
@@ -399,7 +401,8 @@ export function SearchProvider({
 
     // Credits to filter
     let processedCredits;
-    if (selectCredits != null) {
+    // TODO: can it be null?
+    if (selectCredits) {
       processedCredits = selectCredits.map((x) => x.label);
       // Set null defaults
       if (processedCredits.length === 0) processedCredits = null;
@@ -407,7 +410,8 @@ export function SearchProvider({
 
     // Schools to filter
     let processedSchools;
-    if (selectSchools != null) {
+    // TODO: can it be null?
+    if (selectSchools) {
       processedSchools = selectSchools.map((x) => x.value);
 
       // Set null defaults
@@ -416,7 +420,8 @@ export function SearchProvider({
 
     // Subjects to filter
     let processedSubjects;
-    if (selectSubjects != null) {
+    // TODO: can it be null?
+    if (selectSubjects) {
       processedSubjects = selectSubjects.map((x) => x.value);
 
       // Set null defaults
@@ -425,7 +430,8 @@ export function SearchProvider({
 
     // Days to filter
     let processedDays;
-    if (selectDays != null) {
+    // TODO: can it be null?
+    if (selectDays) {
       processedDays = selectDays.map((x) => x.value);
 
       // Set null defaults

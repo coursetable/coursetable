@@ -48,7 +48,7 @@ function Worksheet() {
   } = useWorksheet();
 
   // If user somehow isn't logged in and worksheet is null
-  if (curWorksheet == null) return <div>Error fetching worksheet</div>;
+  if (!curWorksheet) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
   // eslint-disable-next-line no-constant-condition
   if (curWorksheet.length === 0 && !isMobile && false) {

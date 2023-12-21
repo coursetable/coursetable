@@ -55,7 +55,7 @@ function App() {
   }, [userRefresh, friendRefresh, friendReqRefresh, getAllNames]);
 
   // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheet != null);
+  const isLoggedIn = Boolean(user.worksheet);
 
   // Tutorial state
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);

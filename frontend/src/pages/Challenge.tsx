@@ -106,7 +106,7 @@ function Challenge() {
       event.stopPropagation();
     }
     // Form is valid
-    else if (resBody != null) {
+    else if (resBody) {
       // Body data to be passed in post request
       const postBody = {
         token: resBody.token,

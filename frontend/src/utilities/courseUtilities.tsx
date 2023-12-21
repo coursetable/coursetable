@@ -257,7 +257,7 @@ const helperSort = (
   listing: Listing,
   key: SortKeys,
   numFriends: NumFriendsReturn,
-) => {
+): number | string | null => {
   // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key
@@ -280,7 +280,7 @@ const helperSort = (
   // If value is 0, return null
   if (listing[key] === 0) return null;
 
-  return listing[key];
+  return listing[key] ?? null;
 };
 
 // Sort courses in catalog or expanded worksheet
@@ -299,7 +299,7 @@ export const sortCourses = (
   const sorted = orderBy(
     courses,
     [
-      (listing) => helperSort(listing, key, numFriends) == null,
+      (listing) => helperSort(listing, key, numFriends) === null,
       (listing) => helperSort(listing, key, numFriends),
       (listing) => listing.course_code,
     ],
