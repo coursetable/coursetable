@@ -16,7 +16,7 @@ import { toSeasonString } from '../utilities/courseUtilities';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
 import { useUser, type Worksheet } from './userContext';
 import type { Season, Listing } from '../utilities/common';
-import type { OptType, Option } from './searchContext';
+import type { OptType } from './searchContext';
 
 export type HiddenCourses = { [key: Season]: { [key: number]: boolean } };
 export type WorksheetView = { [key: string]: string };
@@ -115,18 +115,13 @@ export function WorksheetProvider({
 
   // List to hold season dropdown options
   const seasonOptions = useMemo(() => {
-    const tempSeasonOptions: Option[] = [];
     // Sort season codes from most to least recent
     seasonCodes.sort();
     seasonCodes.reverse();
-    // Iterate over seasons and populate seasonOptions list
-    seasonCodes.forEach((seasonCode) => {
-      tempSeasonOptions.push({
-        value: seasonCode,
-        label: toSeasonString(seasonCode),
-      });
-    });
-    return tempSeasonOptions;
+    return seasonCodes.map((seasonCode) => ({
+      value: seasonCode,
+      label: toSeasonString(seasonCode),
+    }));
   }, [seasonCodes]);
 
   // Current season

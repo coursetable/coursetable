@@ -495,21 +495,19 @@ export function SearchProvider({
         return false;
 
       if (searchConfig.minTime !== null && searchConfig.maxTime !== null) {
-        let include = false;
         const times = getDayTimes(listing);
-        if (times) {
-          times.forEach((time) => {
-            if (
+        if (
+          times &&
+          !times.some(
+            (time) =>
               searchConfig.minTime !== null &&
               searchConfig.maxTime !== null &&
               time !== null &&
               toRangeTime(time.start) >= toRangeTime(searchConfig.minTime) &&
-              toRangeTime(time.end) <= toRangeTime(searchConfig.maxTime)
-            )
-              include = true;
-          });
-        }
-        if (!include) return false;
+              toRangeTime(time.end) <= toRangeTime(searchConfig.maxTime),
+          )
+        )
+          return false;
       }
 
       let enrollment = getEnrolled(listing);

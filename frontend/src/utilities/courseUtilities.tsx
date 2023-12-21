@@ -119,20 +119,14 @@ export function friendsAlsoTaking(
   worksheets: { [key: string]: Worksheet } | undefined,
   names: FriendRecord,
 ): string[] {
-  // Return if worksheets are null
   if (!worksheets) return [];
-  // List of friends also shopping
-  const alsoTaking: string[] = [];
-  for (const friend of Object.keys(worksheets)) {
-    if (
+  return Object.keys(worksheets)
+    .filter((friend) =>
       worksheets[friend].some(
         (value) => value[0] === seasonCode && parseInt(value[1], 10) === crn,
-      )
+      ),
     )
-      // Found one
-      alsoTaking.push(names[friend].name);
-  }
-  return alsoTaking;
+    .map((friend) => names[friend].name);
 }
 
 /**
@@ -219,19 +213,11 @@ export const getDayTimes = (
 ): { [key: string]: string }[] | null => {
   // If no times then return null
   if (isEmpty(course.times_by_day)) return null;
-  const initialFiltered: { [key: string]: string }[] = [];
-
-  const times = Object.entries(course.times_by_day).reduce(
-    (filtered, [day, dayTimes]) => {
-      if (dayTimes)
-        filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
-
-      return filtered;
-    },
-    initialFiltered,
-  );
-
-  return times;
+  return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
+    day,
+    start: dayTimes[0][0],
+    end: dayTimes[0][1],
+  }));
 };
 
 // Calculate day and time score
