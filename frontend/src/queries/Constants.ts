@@ -68,8 +68,23 @@ export const sortbyOptions = [
   { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
-// Make sure we can only sort by keys in the listing, or by friends.
-export type SortKeys = keyof Listing | 'friend';
+// We can only sort by primitive keys by default, unless we have special support
+export type SortKeys =
+  | NonNullable<
+      {
+        [K in keyof Listing]: Listing[K] extends
+          | string
+          | number
+          | boolean
+          | null
+          | undefined
+          ? K
+          : never;
+      }[keyof Listing]
+    >
+  | 'times_by_day'
+  | 'average_rating'
+  | 'friend';
 expectType<TypeOf<SortKeys, (typeof sortbyOptions)[0]['value']>>(true);
 export type SortByOption = (typeof sortbyOptions)[number];
 

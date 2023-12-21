@@ -51,10 +51,11 @@ export const isOption = (x: unknown): x is Option =>
   // eslint-disable-next-line no-implicit-coercion
   !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
-export type SortOrderType = 'desc' | 'asc' | undefined;
+export type SortOrderType = 'desc' | 'asc';
 
 export type OrderingType = {
-  [key in SortKeys]?: SortOrderType;
+  key: SortKeys;
+  type: 'desc' | 'asc';
 };
 
 // This is a type for weird TS errors
@@ -150,7 +151,7 @@ const defaultTimeBounds = ['7:00', '22:00'];
 const defaultEnrollBounds = [1, 528];
 const defaultNumBounds = [0, 1000];
 const defaultSortOrder: SortOrderType = 'asc';
-const defaultOrdering: OrderingType = { course_code: 'asc' };
+const defaultOrdering: OrderingType = { key: 'course_code', type: 'asc' };
 
 export const defaultFilters = {
   defaultOption,
@@ -731,10 +732,9 @@ export function SearchProvider({
   // Set ordering in parent element whenever sortby or order changes
   useEffect(() => {
     const sortParams = selectSortby.value;
-    const newOrdering: {
-      [key in SortKeys]?: SortOrderType;
-    } = {
-      [sortParams]: sortOrder,
+    const newOrdering: OrderingType = {
+      key: sortParams,
+      type: sortOrder,
     };
     setOrdering(newOrdering);
   }, [selectSortby, sortOrder, setOrdering]);

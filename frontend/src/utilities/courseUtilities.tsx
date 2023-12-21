@@ -15,6 +15,7 @@ import type {
   FriendInfo,
   Worksheet,
 } from '../contexts/userContext';
+import type { OrderingType } from '../contexts/searchContext';
 import type { SortKeys } from '../queries/Constants';
 
 export function truncatedText(
@@ -28,12 +29,12 @@ export function truncatedText(
 }
 
 // Check if a listing is in the user's worksheet
-export const isInWorksheet = (
+export function isInWorksheet(
   seasonCode: Season,
   crn: Crn | string,
   worksheetNumber: string,
   worksheet?: Worksheet,
-): boolean => {
+): boolean {
   if (!worksheet) return false;
   return worksheet.some(
     (course) =>
@@ -41,20 +42,17 @@ export const isInWorksheet = (
       course[1] === String(crn) &&
       course[2] === String(worksheetNumber),
   );
-};
+}
 
 // Convert season code to legible string
-export const toSeasonString = (seasonCode: Season): string => {
+export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
   const season = ['', 'Spring', 'Summer', 'Fall'][parseInt(seasonCode[5], 10)];
   return `${season} ${year}`;
-};
+}
 
 // Checks if the a new course conflicts with the user's worksheet
-export const checkConflict = (
-  listings: Listing[],
-  course: Listing,
-): Listing[] => {
+export function checkConflict(listings: Listing[], course: Listing): Listing[] {
   const conflicts: Listing[] = [];
   const daysToCheck = Object.keys(
     course.times_by_day,
@@ -91,12 +89,12 @@ export const checkConflict = (
     }
   }
   return conflicts;
-};
+}
 // Checks if a course is cross-listed in the user's worksheet
-export const checkCrossListed = (
+export function checkCrossListed(
   listings: Listing[],
   course: Listing,
-): false | string => {
+): false | string {
   const classes: string[] = [];
   // Iterate over worksheet listings
   for (const l of listings) {
@@ -109,7 +107,7 @@ export const checkCrossListed = (
     if (classes.includes(course.course_code)) return l.course_code;
   }
   return false;
-};
+}
 
 // Fetch the friends that are also shopping a specific course. Used in course
 // modal overview
@@ -136,9 +134,7 @@ export function friendsAlsoTaking(
 type NumFriendsReturn = { [key: string]: string[] };
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
-export const getNumFriends = (
-  friendWorksheets: FriendInfo,
-): NumFriendsReturn => {
+export function getNumFriends(friendWorksheets: FriendInfo): NumFriendsReturn {
   // List of each friends' worksheets
   const { worksheets } = friendWorksheets;
   // List of each friends' names/net id
@@ -155,7 +151,7 @@ export const getNumFriends = (
     });
   }
   return friends;
-};
+}
 
 // Get the overall rating for a course
 export function getOverallRatings(
@@ -208,9 +204,9 @@ export function getWorkloadRatings(
 }
 
 // Get start and end times
-export const getDayTimes = (
+export function getDayTimes(
   course: Listing,
-): { [key: string]: string }[] | null => {
+): { [key: string]: string }[] | null {
   // If no times then return null
   if (isEmpty(course.times_by_day)) return null;
   return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
@@ -218,10 +214,10 @@ export const getDayTimes = (
     start: dayTimes[0][0],
     end: dayTimes[0][1],
   }));
-};
+}
 
 // Calculate day and time score
-const calculateDayTime = (course: Listing): number | null => {
+function calculateDayTime(course: Listing): number | null {
   // Get all days' times
   const times = getDayTimes(course);
 
@@ -245,14 +241,14 @@ const calculateDayTime = (course: Listing): number | null => {
 
   // If no times then return null
   return null;
-};
+}
 
 // Helper function that returns the correct value to sort by
-const helperSort = (
+function helperSort(
   listing: Listing,
   key: SortKeys,
   numFriends: NumFriendsReturn,
-): number | string | null => {
+): number | string | boolean | null {
   // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key
@@ -275,39 +271,33 @@ const helperSort = (
   // If value is 0, return null
   if (listing[key] === 0) return null;
   return listing[key] ?? null;
-};
+}
 
 // Sort courses in catalog or expanded worksheet
-export const sortCourses = (
+export function sortCourses(
   courses: Listing[],
-  // TODO: we should be much more strict with this type. Specifically,
-  // we should prevent there from being multiple keys.
-  ordering: { [key in SortKeys]?: 'asc' | 'desc' },
+  ordering: OrderingType,
   numFriends: NumFriendsReturn,
-): Listing[] => {
-  // Key to sort the courses by
-  const key = Object.keys(ordering)[0] as SortKeys;
-  // Boolean | in ascending order?
-  const orderAsc = ordering[key]!.startsWith('asc');
+): Listing[] {
   // Sort classes
   const sorted = orderBy(
     courses,
     [
-      (listing) => helperSort(listing, key, numFriends) === null,
-      (listing) => helperSort(listing, key, numFriends),
+      (listing) => helperSort(listing, ordering.key, numFriends) === null,
+      (listing) => helperSort(listing, ordering.key, numFriends),
       (listing) => listing.course_code,
     ],
-    ['asc', orderAsc ? 'asc' : 'desc', 'asc'],
+    ['asc', ordering.type, 'asc'],
   );
   return sorted;
-};
+}
 
 // Get the enrollment for a course
-export const getEnrolled = (
+export function getEnrolled(
   course: Listing,
   display = false,
   onModal = false,
-): string | number | null => {
+): string | number | null {
   let courseEnrolled: string | number | null = null;
   // Determine which enrolled to use
   if (display) {
@@ -332,10 +322,10 @@ export const getEnrolled = (
 
   // Return enrolled
   return courseEnrolled;
-};
+}
 
 // Convert real time (24 hour) to range time
-export const toRangeTime = (time: string): number => {
+export function toRangeTime(time: string): number {
   // Get hour and minute
   const splitTime = time.split(':');
   const hour = Number(splitTime[0]);
@@ -344,10 +334,10 @@ export const toRangeTime = (time: string): number => {
   // Calculate range time
   const rangeTime = hour * 12 + minute / 5;
   return rangeTime;
-};
+}
 
 // Convert range time to real time (24 hour)
-export const toRealTime = (time: number): string => {
+export function toRealTime(time: number): string {
   // Get hour and minute
   const hour = Math.floor(time / 12);
   const minute = (time % 12) * 5;
@@ -355,7 +345,7 @@ export const toRealTime = (time: number): string => {
   // Format real time
   const realTime = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
   return realTime;
-};
+}
 
 // Convert 24 hour time to 12 hour time
 export const to12HourTime = (time: string): string =>
