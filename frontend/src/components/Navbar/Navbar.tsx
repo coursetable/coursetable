@@ -157,14 +157,11 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   // Calculate time since last updated
   useEffect(() => {
     const dt = DateTime.now().setZone('America/New_York');
-    let dtUpdate: DateTime;
-    if (dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)) {
-      dtUpdate = dt
-        .plus(Duration.fromObject({ days: -1 }))
-        .set({ hour: 3, minute: 30, second: 0 });
-    } else {
-      dtUpdate = dt.set({ hour: 3, minute: 30, second: 0 });
-    }
+    const dtUpdate = (
+      dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)
+        ? dt.plus(Duration.fromObject({ days: -1 }))
+        : dt
+    ).set({ hour: 3, minute: 30, second: 0 });
     const diffInSecs = dt.diff(dtUpdate).as('seconds');
     if (diffInSecs < 60) {
       setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);

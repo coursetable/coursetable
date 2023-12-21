@@ -241,6 +241,7 @@ function CourseModal() {
                                 // Go to overview page of this eval course
                                 setView(['overview', null]);
                                 const newListing = { ...view[1].listing };
+                                // eslint-disable-next-line prefer-destructuring
                                 newListing.eval = view[1];
                                 setListings([...listings, newListing]);
                               }}

@@ -178,12 +178,10 @@ function Results({
     return TEMP_COL_SPACING;
   }, [rowWidth, multiSeasons, isLgDesktop]);
 
-  // Holds HTML for the search results
-  let resultsListing;
-
   // Number of columns to use in grid view
   const numCols = isMobile ? 1 : isTablet ? 2 : 3;
 
+  let resultsListing: JSX.Element | undefined = undefined;
   if (!isLoggedIn) {
     // Render an auth wall
     resultsListing = (

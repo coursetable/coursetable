@@ -268,6 +268,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 onClick={() => {
                   // Temp dictionary that stores listing info
                   const temp = { ...offering };
+                  // eslint-disable-next-line prefer-destructuring
                   temp.course_code = temp.course_code[0];
                   setSeason(temp);
                 }}

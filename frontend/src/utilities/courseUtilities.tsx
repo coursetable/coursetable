@@ -314,7 +314,7 @@ export const getEnrolled = (
   display = false,
   onModal = false,
 ): string | number | null => {
-  let courseEnrolled: string | number | null;
+  let courseEnrolled: string | number | null = null;
   // Determine which enrolled to use
   if (display) {
     courseEnrolled = course.enrolled
@@ -325,7 +325,9 @@ export const getEnrolled = (
       ? `~${course.last_enrollment}${
           onModal ? ' (different professor was teaching)' : ''
         }` // Indicate diff prof
-      : String(onModal ? 'N/A' : ''); // No enrollment data
+      : onModal
+      ? 'N/A'
+      : ''; // No enrollment data
   } else {
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened

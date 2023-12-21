@@ -1,7 +1,7 @@
 import React, { useState, useEffect, type ReactElement } from 'react';
 import qs from 'qs';
 import axios, { AxiosError } from 'axios';
-import { useNavigate, NavLink } from 'react-router-dom';
+import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
@@ -38,6 +38,111 @@ type Answer = {
   answer: string;
 };
 
+function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
+  // If user is not logged in
+  if (requestError === 'NOT_AUTHENTICATED') {
+    return {
+      errorTitle: 'Please log in!',
+      errorMessage: (
+        <div>
+          You need to be logged in via CAS to enable your account.
+          <br />
+          <a
+            href="/api/auth/cas?redirect=catalog"
+            className="btn btn-primary mt-3"
+          >
+            Log in
+          </a>
+        </div>
+      ),
+    };
+  }
+  // If user is not in database
+  else if (requestError === 'USER_NOT_FOUND') {
+    return {
+      errorTitle: 'Account not found!',
+      errorMessage: (
+        <div>
+          Please make sure you are logged in via CAS.
+          <br />
+          <a
+            href="/api/auth/cas?redirect=catalog"
+            className="btn btn-primary mt-3"
+          >
+            Log in
+          </a>
+        </div>
+      ),
+    };
+  }
+  // Evaluations already enabled
+  else if (requestError === 'ALREADY_ENABLED') {
+    return {
+      errorTitle: "You've already passed!",
+      errorMessage: (
+        <div>
+          You've completed the challenge already - no need to do it again.
+          <br />
+          {/* TODO */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div onClick={() => navigate(-1)} className="btn btn-primary mt-3">
+            Go back
+          </div>
+        </div>
+      ),
+    };
+  }
+  // Maximum attempts
+  else if (requestError === 'MAX_TRIES_REACHED') {
+    return {
+      errorTitle: 'Max attempts reached!',
+      errorMessage: (
+        <div>
+          You've used up all your challenge attempts. Please{' '}
+          <NavLink to="/feedback">contact us</NavLink> if you would like to gain
+          access.
+        </div>
+      ),
+    };
+  }
+  // Cannot get properly formed ratings
+  else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
+    return {
+      errorTitle: 'Challenge generation error!',
+      errorMessage: (
+        <div>
+          We couldn't find a challenge. Please{' '}
+          <a
+            href="https://feedback.coursetable.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            let us know
+          </a>{' '}
+          what went wrong.
+        </div>
+      ),
+    };
+  }
+  // Other errors
+  return {
+    errorTitle: 'Internal error!',
+    errorMessage: (
+      <div>
+        Looks like we messed up. Please{' '}
+        <a
+          href="https://feedback.coursetable.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          let us know
+        </a>{' '}
+        what went wrong.
+      </div>
+    ),
+  };
+}
+
 /**
  * Renders the OCE Challenge page if the user hasn't completed yet
  */
@@ -60,7 +165,7 @@ function Challenge() {
   ]);
 
   // Error code from requesting challenge
-  const [requestError, setRequestError] = useState(null);
+  const [requestError, setRequestError] = useState<{} | null>(null);
   // Error code from verifying challenge
   const [verifyError, setVerifyError] = useState<string | null>(null);
   // Error message to render after verification (if applicable)
@@ -223,101 +328,11 @@ function Challenge() {
 
   // If error in requesting challenge, render error message
   if (requestError) {
-    let errorTitle;
-    let errorMessage;
+    const { errorTitle, errorMessage } = getErrorMessage(
+      requestError,
+      navigate,
+    );
 
-    // If user is not logged in
-    if (requestError === 'NOT_AUTHENTICATED') {
-      errorTitle = 'Please log in!';
-      errorMessage = (
-        <div>
-          You need to be logged in via CAS to enable your account.
-          <br />
-          <a
-            href="/api/auth/cas?redirect=catalog"
-            className="btn btn-primary mt-3"
-          >
-            Log in
-          </a>
-        </div>
-      );
-    }
-    // If user is not in database
-    else if (requestError === 'USER_NOT_FOUND') {
-      errorTitle = 'Account not found!';
-      errorMessage = (
-        <div>
-          Please make sure you are logged in via CAS.
-          <br />
-          <a
-            href="/api/auth/cas?redirect=catalog"
-            className="btn btn-primary mt-3"
-          >
-            Log in
-          </a>
-        </div>
-      );
-    }
-    // Evaluations already enabled
-    else if (requestError === 'ALREADY_ENABLED') {
-      errorTitle = "You've already passed!";
-      errorMessage = (
-        <div>
-          You've completed the challenge already - no need to do it again.
-          <br />
-          {/* TODO */}
-          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-          <div onClick={() => navigate(-1)} className="btn btn-primary mt-3">
-            Go back
-          </div>
-        </div>
-      );
-    }
-    // Maximum attempts
-    else if (requestError === 'MAX_TRIES_REACHED') {
-      errorTitle = 'Max attempts reached!';
-      errorMessage = (
-        <div>
-          You've used up all your challenge attempts. Please{' '}
-          <NavLink to="/feedback">contact us</NavLink> if you would like to gain
-          access.
-        </div>
-      );
-    }
-    // Cannot get properly formed ratings
-    else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
-      errorTitle = 'Challenge generation error!';
-      errorMessage = (
-        <div>
-          We couldn't find a challenge. Please{' '}
-          <a
-            href="https://feedback.coursetable.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            let us know
-          </a>{' '}
-          what went wrong.
-        </div>
-      );
-    }
-    // Other errors
-    else {
-      errorTitle = 'Internal error!';
-      errorMessage = (
-        <div>
-          Looks like we messed up. Please{' '}
-          <a
-            href="https://feedback.coursetable.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            let us know
-          </a>{' '}
-          what went wrong.
-        </div>
-      );
-    }
     return (
       <div
         className="py-5"

@@ -145,7 +145,7 @@ const defaultSeason: Option[] = [
 const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;
 const defaultFalse = false;
-const defaultSortOption: SortByOption = sortbyOptions[0];
+const [defaultSortOption] = sortbyOptions;
 const defaultTimeBounds = ['7:00', '22:00'];
 const defaultEnrollBounds = [1, 528];
 const defaultNumBounds = [0, 1000];
@@ -326,7 +326,7 @@ export function SearchProvider({
   }, [user.friendWorksheets]);
 
   // Populate seasons from database
-  let seasonsOptions: OptType;
+  let seasonsOptions: OptType | undefined = undefined;
   const { seasons: seasonsData } = useFerry();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map((x) => {
@@ -367,76 +367,27 @@ export function SearchProvider({
   // Search configuration of filters
   const searchConfig = useMemo(() => {
     // Skills and areas
-    let processedSkillsAreas;
-    let processedSkills;
-    let processedAreas;
-    // TODO: can it be null?
-    if (selectSkillsAreas) {
-      processedSkillsAreas = selectSkillsAreas.map((x) => x.value);
-
-      // Match all languages
-      if (processedSkillsAreas.includes('L')) {
-        processedSkillsAreas = processedSkillsAreas.concat([
-          'L1',
-          'L2',
-          'L3',
-          'L4',
-          'L5',
-        ]);
-      }
-
-      // Separate skills and areas
-      processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
-        skills.includes(x as SkillsType),
-      );
-      processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
-        areas.includes(x as AreasType),
-      );
-
-      // Set null defaults
-      if (processedSkills.length === 0) processedSkills = null;
-
-      if (processedAreas.length === 0) processedAreas = null;
-    }
+    const processedSkillsAreas = selectSkillsAreas.map((x) => x.value);
+    if (processedSkillsAreas.includes('L'))
+      processedSkillsAreas.push('L1', 'L2', 'L3', 'L4', 'L5');
+    const processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
+      skills.includes(x as SkillsType),
+    );
+    const processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
+      areas.includes(x as AreasType),
+    );
 
     // Credits to filter
-    let processedCredits;
-    // TODO: can it be null?
-    if (selectCredits) {
-      processedCredits = selectCredits.map((x) => x.label);
-      // Set null defaults
-      if (processedCredits.length === 0) processedCredits = null;
-    }
+    const processedCredits = selectCredits.map((x) => x.label);
 
     // Schools to filter
-    let processedSchools;
-    // TODO: can it be null?
-    if (selectSchools) {
-      processedSchools = selectSchools.map((x) => x.value);
-
-      // Set null defaults
-      if (processedSchools.length === 0) processedSchools = null;
-    }
+    const processedSchools = selectSchools.map((x) => x.value);
 
     // Subjects to filter
-    let processedSubjects;
-    // TODO: can it be null?
-    if (selectSubjects) {
-      processedSubjects = selectSubjects.map((x) => x.value);
-
-      // Set null defaults
-      if (processedSubjects.length === 0) processedSubjects = null;
-    }
+    const processedSubjects = selectSubjects.map((x) => x.value);
 
     // Days to filter
-    let processedDays;
-    // TODO: can it be null?
-    if (selectDays) {
-      processedDays = selectDays.map((x) => x.value);
-
-      // Set null defaults
-      if (processedDays.length === 0) processedDays = null;
-    }
+    const processedDays = selectDays.map((x) => x.value);
 
     // If the bounds are unaltered, we need to set them to null
     // to include unrated courses
