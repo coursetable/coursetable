@@ -8,22 +8,19 @@ import React, {
 import axios from 'axios';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
-import { NetId, Season } from '../utilities/common';
+import type { NetId, Season } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
 export type Worksheet = [Season, string, string][];
-export type FriendRecord = Record<
-  NetId,
-  {
+export type FriendRecord = { [key: NetId]: {
     name: string;
-  }
->;
+  } };
 export type FriendRequest = {
   netId: string;
   name: string;
 };
 export type FriendInfo = {
-  worksheets: Record<NetId, Worksheet>;
+  worksheets: { [key: NetId]: Worksheet };
   friendInfo: FriendRecord;
 };
 export type FriendName = {
@@ -43,14 +40,14 @@ type Store = {
     friendWorksheets?: FriendInfo;
     allNames?: FriendName[];
   };
-  userRefresh(suppressError?: boolean): Promise<void>;
-  friendRefresh(suppressError?: boolean): Promise<void>;
-  friendReqRefresh(suppressError?: boolean): Promise<void>;
-  addFriend(netId1?: string, netId2?: string): Promise<void>;
-  removeFriend(netId1?: string, netId2?: string): Promise<void>;
-  friendRequest(friendNetId?: string): Promise<void>;
-  resolveFriendRequest(friendNetId?: string): Promise<void>;
-  getAllNames(suppressError?: boolean): Promise<void>;
+  userRefresh: (suppressError?: boolean) => Promise<void>;
+  friendRefresh: (suppressError?: boolean) => Promise<void>;
+  friendReqRefresh: (suppressError?: boolean) => Promise<void>;
+  addFriend: (netId1?: string, netId2?: string) => Promise<void>;
+  removeFriend: (netId1?: string, netId2?: string) => Promise<void>;
+  friendRequest: (friendNetId?: string) => Promise<void>;
+  resolveFriendRequest: (friendNetId?: string) => Promise<void>;
+  getAllNames: (suppressError?: boolean) => Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -59,7 +56,7 @@ UserContext.displayName = 'UserContext';
 /**
  * Stores the user's worksheet and friends' worksheets
  */
-export function UserProvider({ children }: { children: React.ReactNode }) {
+export function UserProvider({ children }: { readonly children: React.ReactNode }) {
   // User's netId
   const [netId, setNetId] = useState<string | undefined>(undefined);
   // User's worksheet
@@ -88,9 +85,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         const res = await axios.get(`${API_ENDPOINT}/api/user/worksheets`, {
           withCredentials: true,
         });
-        if (!res.data.success) {
+        if (!res.data.success) 
           throw new Error(res.data.message);
-        }
+        
 
         // Successfully fetched worksheet
         setNetId(res.data.netId);
@@ -108,9 +105,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         setSchool(undefined);
         Sentry.configureScope((scope) => scope.clear());
         Sentry.captureException(err);
-        if (!suppressError) {
+        if (!suppressError) 
           toast.error('Error fetching worksheet');
-        }
+        
       }
     },
     [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
@@ -126,9 +123,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             withCredentials: true,
           },
         );
-        if (!friendsWorksheets.data.success) {
+        if (!friendsWorksheets.data.success) 
           throw new Error(friendsWorksheets.data.message);
-        }
+        
         // Successfully fetched friends' worksheets
         setFriendWorksheets(friendsWorksheets.data);
       } catch (err) {
@@ -143,7 +140,7 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     [setFriendWorksheets],
   );
 
-  // refresh friend requests
+  // Refresh friend requests
   const friendReqRefresh = useCallback(
     async (suppressError = false): Promise<void> => {
       try {
@@ -153,9 +150,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
             withCredentials: true,
           },
         );
-        if (!friendReqs.data.success) {
+        if (!friendReqs.data.success) 
           throw new Error(friendReqs.data.message);
-        }
+        
         // Successfully fetched friends' worksheets
         setFriendRequests(friendReqs.data.friends);
       } catch (err) {
@@ -176,9 +173,9 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
         const names = await axios.get(`${API_ENDPOINT}/api/friends/names`, {
           withCredentials: true,
         });
-        if (!names.data.success) {
+        if (!names.data.success) 
           throw new Error(names.data.message);
-        }
+        
         setAllNames(names.data.names);
       } catch (err) {
         if (!suppressError) {

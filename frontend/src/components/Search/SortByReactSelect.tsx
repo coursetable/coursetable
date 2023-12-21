@@ -31,9 +31,9 @@ function SortByReactSelect() {
           options={sortbyOptions}
           menuPortalTarget={document.body}
           onChange={(options) => {
-            if (options && 'value' in options) {
+            if (options && 'value' in options) 
               setSelectSortby(options);
-            }
+            
           }}
         />
       </div>

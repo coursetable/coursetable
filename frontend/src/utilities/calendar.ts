@@ -66,17 +66,17 @@ function getTimes(timesByDay: Listing['times_by_day']) {
       const time = times.find(
         (t) => t.startTime === startTime && t.endTime === endTime,
       );
-      if (time) {
+      if (time) 
         time.days.push(idx);
-      } else {
+       else 
         times.push({ days: [idx], startTime, endTime, location });
-      }
+      
     }
   }
   return times;
 }
 
-const dayToCode: Record<number, string> = {
+const dayToCode: { [key: number]: string } = {
   0: 'SU',
   1: 'MO',
   2: 'TU',
@@ -100,9 +100,9 @@ function datesInBreak(
       date.getTime() < end;
       date.setUTCDate(date.getUTCDate() + 1)
     ) {
-      if (days.includes(date.getUTCDay())) {
+      if (days.includes(date.getUTCDay())) 
         dates.push(isoString(date, time));
-      }
+      
     }
     return dates;
   });
@@ -128,7 +128,7 @@ function toGCalEvent({
   colorIndex,
 }: CalendarEvent) {
   return {
-    id: 'coursetable' + uuidv4().replace(/-/g, ''),
+    id: `coursetable${  uuidv4().replace(/-/gu, '')}`,
     summary,
     start: {
       dateTime: start,
@@ -155,8 +155,8 @@ function toICSEvent({
 }: CalendarEvent) {
   return `BEGIN:VEVENT
 DESCRIPTION:${description}
-DTEND;TZID=America/New_York:${end.replace(/[:-]/g, '')}
-DTSTART;TZID=America/New_York:${start.replace(/[:-]/g, '')}
+DTEND;TZID=America/New_York:${end.replace(/[:-]/gu, '')}
+DTSTART;TZID=America/New_York:${start.replace(/[:-]/gu, '')}
 LOCATION:${location}
 ${recurrence.join('\n')}
 SUMMARY:${summary}
@@ -201,14 +201,14 @@ export function getCalendarEvents(
   }
   const events = visibleCourses.flatMap((c, colorIndex) => {
     const semester = academicCalendars[c.season_code]!;
-    const endRepeat = isoString(semester.end, '23:59').replace(/[:-]/g, '');
+    const endRepeat = isoString(semester.end, '23:59').replace(/[:-]/gu, '');
     const toEvent = type === 'gcal' ? toGCalEvent : toICSEvent;
     const times = getTimes(c.times_by_day);
     return times.map(({ days, startTime, endTime, location }) => {
       const firstMeetingDay = firstDaySince(semester.start, days);
       const byDay = days.map((day) => dayToCode[day]).join(',');
       const exDate = datesInBreak(semester.breaks, days, startTime)
-        .map((s) => s.replace(/[:-]/g, ''))
+        .map((s) => s.replace(/[:-]/gu, ''))
         .join(',');
 
       // TODO: take care of transfer schedules (see semester.transfer)

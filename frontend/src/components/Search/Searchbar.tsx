@@ -1,11 +1,11 @@
 import React from 'react';
-import { OptionTypeBase, Props as SelectProps } from 'react-select';
+import type { OptionTypeBase, Props as SelectProps } from 'react-select';
 import CustomSelect from '../CustomSelect';
 
 type Props = {
-  popout?: boolean;
-  useColors?: boolean;
-  isMulti?: boolean;
+  readonly popout?: boolean;
+  readonly useColors?: boolean;
+  readonly isMulti?: boolean;
 };
 
 /**

@@ -16,10 +16,10 @@ function WorksheetHideButton({
   crn,
   theme,
 }: {
-  hidden: boolean;
-  toggleCourse: (crn: number) => void;
-  crn: number;
-  theme: DefaultTheme;
+  readonly hidden: boolean;
+  readonly toggleCourse: (crn: number) => void;
+  readonly crn: number;
+  readonly theme: DefaultTheme;
 }) {
   // Size of toggle button
   const buttonSize = 18;

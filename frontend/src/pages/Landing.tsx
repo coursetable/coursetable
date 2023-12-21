@@ -25,7 +25,7 @@ const StyledStat = styled.span`
 
 function Landing() {
   return (
-    <div /* className={styles.container} */>
+    <div /* ClassName={styles.container} */>
       <Container fluid>
         <Element name="splashpage">
           <div className={`${styles.splashpage} mx-auto`}>

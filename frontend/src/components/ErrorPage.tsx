@@ -3,7 +3,7 @@ import ServerError from '../images/server_error.svg';
 
 type Props = {
   /** Message to display in the error page */
-  message: string;
+  readonly message: string;
 };
 
 function ErrorPage({ message }: Props) {

@@ -7,11 +7,11 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
-import { SortByOption } from '../../queries/Constants';
+import type { SortByOption } from '../../queries/Constants';
 import {
   useSearch,
   defaultFilters,
-  SortOrderType,
+  type SortOrderType,
 } from '../../contexts/searchContext';
 
 const StyledSortBtn = styled.div`
@@ -25,7 +25,7 @@ const StyledSortBtn = styled.div`
 `;
 
 type Props = {
-  selectOption: SortByOption;
+  readonly selectOption: SortByOption;
 };
 
 /**
@@ -65,8 +65,7 @@ function ResultsColumnSort({ selectOption }: Props) {
   }, [firstTime, selectOption, selectSortby, sortOrder, active]);
 
   return (
-    <>
-      <StyledSortBtn
+    <StyledSortBtn
         style={{ backgroundColor: active ? globalTheme.selectHover : '' }}
         className="ml-1 my-auto"
         onClick={() => {
@@ -99,7 +98,6 @@ function ResultsColumnSort({ selectOption }: Props) {
           <FcNumericalSorting21 className="d-block" size={20} />
         )}
       </StyledSortBtn>
-    </>
   );
 }
 

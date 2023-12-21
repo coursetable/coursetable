@@ -19,7 +19,7 @@ type Store = {
 const ThemeContext = createContext<Store | undefined>(undefined);
 ThemeContext.displayName = 'ThemeContext';
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
+export function ThemeProvider({ children }: { readonly children: React.ReactNode }) {
   const [theme, setTheme] = useState<Theme>('light');
 
   const setMode = useCallback((mode: Theme) => {

@@ -27,25 +27,25 @@ const seasons = {
 
 // Preprocess course data.
 const preprocessCourses = (listing: Listing) => {
-  // trim decimal points in ratings floats
+  // Trim decimal points in ratings floats
   const RATINGS_PRECISION = 1;
 
   // Combine array of professors into one string
   if ('professor_names' in listing && listing.professor_names.length > 0) {
     listing.professors = listing.professor_names.join(', ');
-    // for the average professor rating, take the first professor
+    // For the average professor rating, take the first professor
     if ('average_professor' in listing && listing.average_professor !== null)
       // Trim professor ratings to one decimal point
-      listing.professor_avg_rating =
-        listing.average_professor.toFixed(RATINGS_PRECISION);
+      {listing.professor_avg_rating =
+        listing.average_professor.toFixed(RATINGS_PRECISION);}
   }
   return listing;
 };
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted: Record<Season, boolean> = {};
-let courseData: Record<Season, Map<Crn, Listing>> = {};
+let courseLoadAttempted: { [key: Season]: boolean } = {};
+let courseData: { [key: Season]: Map<Crn, Listing> } = {};
 const addToCache = (season: Season): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
     if (season in courseData || season in courseLoadAttempted) {
@@ -82,21 +82,21 @@ const addToCache = (season: Season): Promise<void> =>
 type Store = {
   requests: number;
   loading: boolean;
-  // eslint-disable-next-line @typescript-eslint/ban-types
+   
   error: {} | null;
   seasons: typeof seasons;
   courses: typeof courseData;
-  requestSeasons(seasons: Season[]): void;
+  requestSeasons: (seasons: Season[]) => void;
 };
 
 const FerryCtx = createContext<Store | undefined>(undefined);
 FerryCtx.displayName = 'FerryCtx';
 
-export function FerryProvider({ children }: { children: React.ReactNode }) {
+export function FerryProvider({ children }: { readonly children: React.ReactNode }) {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
-  // eslint-disable-next-line @typescript-eslint/ban-types
+   
   const [errors, setErrors] = useState<{}[]>([]);
 
   const requestSeasons = useCallback(async (seasons: Season[]) => {
@@ -104,14 +104,14 @@ export function FerryProvider({ children }: { children: React.ReactNode }) {
       // Racy preemptive check of cache.
       // We cannot check courseLoadAttempted here, since that is set prior
       // to the data actually being loaded.
-      if (season in courseData) {
+      if (season in courseData) 
         return;
-      }
+      
 
       // Add to cache.
       setRequests((r) => r + 1);
       try {
-        return await addToCache(season);
+        await addToCache(season); 
       } finally {
         setRequests((r) => r - 1);
       }

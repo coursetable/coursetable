@@ -30,7 +30,7 @@ const range = (num: number, min: number, max: number) =>
 export function WindowDimensionsProvider({
   children,
 }: {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }) {
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,

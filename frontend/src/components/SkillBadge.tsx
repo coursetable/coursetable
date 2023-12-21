@@ -8,8 +8,8 @@ export default function SkillBadge({
   skill,
   hidden,
 }: {
-  skill: string;
-  hidden?: boolean;
+  readonly skill: string;
+  readonly hidden?: boolean;
 }) {
   return (
     <Badge

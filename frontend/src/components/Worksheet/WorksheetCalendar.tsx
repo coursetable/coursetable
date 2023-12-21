@@ -1,4 +1,4 @@
-import React, { CSSProperties, useCallback, useMemo } from 'react';
+import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
 import './WorksheetCalendar.css';

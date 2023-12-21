@@ -1,15 +1,15 @@
 import React, { useMemo } from 'react';
-import { DefaultTheme, useTheme } from 'styled-components';
+import { type DefaultTheme, useTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
 import chroma from 'chroma-js';
 import Select, {
-  OptionTypeBase,
-  Props as SelectProps,
-  StylesConfig,
-  Theme,
+  type OptionTypeBase,
+  type Props as SelectProps,
+  type StylesConfig,
+  type Theme,
   mergeStyles,
 } from 'react-select';
-import { ThemeConfig } from 'react-select/src/theme';
+import type { ThemeConfig } from 'react-select/src/theme';
 
 // Styles for the select indicators
 function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
@@ -119,7 +119,7 @@ function popoutStyles(
 // Styles for skills/areas select
 function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
   return {
-    multiValue: (base, { data }) => {
+    multiValue(base, { data }) {
       const color = chroma(data.color);
       return {
         ...base,
@@ -139,7 +139,7 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
         color: 'white',
       },
     }),
-    option: (base, { data, isDisabled, isFocused, isSelected }) => {
+    option(base, { data, isDisabled, isFocused, isSelected }) {
       const color = chroma(data.color);
       return {
         ...base,
@@ -170,9 +170,9 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
 }
 
 type Props = {
-  popout?: boolean;
-  useColors?: boolean;
-  isMulti?: boolean;
+  readonly popout?: boolean;
+  readonly useColors?: boolean;
+  readonly isMulti?: boolean;
 };
 
 /**
@@ -199,13 +199,13 @@ function CustomSelect<
     borderRadius: 8,
     colors: {
       ...theme.colors,
-      primary50: '#85c2ff', // optionBackground :focus
-      primary25: globalTheme.selectHover, // optionBackground :hover
-      neutral0: globalTheme.select, // allBackground & optionText :selected
-      neutral10: globalTheme.multivalue, // selectedOptionBackground & disabledBorder
-      neutral30: 'hsl(0, 0%, 70%)', // border :hover
-      neutral60: globalTheme.text[0], // dropdownIconFocus & clearIconFocus
-      neutral80: globalTheme.text[0], // selectedOtionText & dropdownIconFocus :hover & clearIconFocus :hover
+      primary50: '#85c2ff', // OptionBackground :focus
+      primary25: globalTheme.selectHover, // OptionBackground :hover
+      neutral0: globalTheme.select, // AllBackground & optionText :selected
+      neutral10: globalTheme.multivalue, // SelectedOptionBackground & disabledBorder
+      neutral30: 'hsl(0, 0%, 70%)', // Border :hover
+      neutral60: globalTheme.text[0], // DropdownIconFocus & clearIconFocus
+      neutral80: globalTheme.text[0], // SelectedOtionText & dropdownIconFocus :hover & clearIconFocus :hover
     },
   });
 
@@ -220,9 +220,9 @@ function CustomSelect<
     indicatorStyles(globalTheme, isMulti),
     popout ? popoutStyles(globalTheme, 400) : defaultStyles(globalTheme),
   );
-  if (useColors) {
+  if (useColors) 
     styles = mergeStyles(styles, colorStyles());
-  }
+  
 
   return (
     <Select<T, IsMulti>

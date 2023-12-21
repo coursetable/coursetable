@@ -1,13 +1,12 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
-import { Crn, Season, Weekdays, weekdays } from './common';
+import { type Crn, type Season, type Weekdays, weekdays ,type  Listing } from './common';
 import type {
   FriendRecord,
   FriendInfo,
   Worksheet,
 } from '../contexts/userContext';
-import type { Listing } from '../utilities/common';
-import { SortKeys } from '../queries/Constants';
+import type { SortKeys } from '../queries/Constants';
 import { isEmpty, orderBy } from 'lodash';
 import { DateTime } from 'luxon';
 
@@ -19,9 +18,9 @@ export const isInWorksheet = (
   worksheet?: Worksheet,
 ): boolean => {
   if (worksheet == null) return false;
-  if (typeof crn !== 'string') {
+  if (typeof crn !== 'string') 
     crn = crn.toString();
-  }
+  
   for (let i = 0; i < worksheet.length; i++) {
     if (
       worksheet[i][0] === seasonCode &&
@@ -104,7 +103,7 @@ export const checkCrossListed = (
 export function friendsAlsoTaking(
   seasonCode: Season,
   crn: Crn,
-  worksheets: Record<string, Worksheet> | undefined,
+  worksheets: { [key: string]: Worksheet } | undefined,
   names: FriendRecord,
 ): string[] {
   // Return if worksheets are null
@@ -125,7 +124,7 @@ export function friendsAlsoTaking(
 type NumFriendsReturn =
   // Key is season code + crn
   // Value is the list of friends taking the class
-  Record<string, string[]>;
+  { [key: string]: string[] };
 // Fetch the friends that are also shopping any course. Used in search and worksheet expanded list
 export const getNumFriends = (
   friendWorksheets: FriendInfo,
@@ -141,7 +140,7 @@ export const getNumFriends = (
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
-      if (!friends[key]) friends[key] = []; // List doesn't exist for this course so create one
+      friends[key] ||= []; // List doesn't exist for this course so create one
       friends[key].push(names[friend].name); // Add friend's name to this list
     });
   }
@@ -251,9 +250,9 @@ const helperSort = (
     return calculateDayTime(listing);
   }
   // If value is 0, return null
-  if (listing[key] === 0) {
+  if (listing[key] === 0) 
     return null;
-  }
+  
   return listing[key];
 };
 
@@ -299,7 +298,7 @@ export const getEnrolled = (
       ? `~${course.last_enrollment}${
           onModal ? ' (different professor was teaching)' : ''
         }` // Indicate diff prof
-      : `${onModal ? 'N/A' : ''}`; // No enrollment data
+      : String(onModal ? 'N/A' : ''); // No enrollment data
   } else {
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
@@ -315,19 +314,19 @@ export const getEnrolled = (
 // Get start and end times
 export const getDayTimes = (
   course: Listing,
-): Record<string, string>[] | null => {
+): { [key: string]: string }[] | null => {
   // If no times then return null
-  if (isEmpty(course.times_by_day)) {
+  if (isEmpty(course.times_by_day)) 
     return null;
-  }
+  
 
-  const initialFiltered: Record<string, string>[] = [];
+  const initialFiltered: { [key: string]: string }[] = [];
 
   const times = Object.entries(course.times_by_day).reduce(
     (filtered, [day, dayTimes]) => {
-      if (dayTimes) {
+      if (dayTimes) 
         filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
-      }
+      
       return filtered;
     },
     initialFiltered,

@@ -23,7 +23,7 @@ export const useWorksheetInfo = (
       if (seasons.has(season)) return [season];
       return [];
     }
-    return Array.from(seasons); // idk just need to return something i think
+    return Array.from(seasons); // Idk just need to return something i think
   }, [season, worksheet]);
 
   const { loading, error, courses } = useCourseData(requiredSeasons);
@@ -37,9 +37,9 @@ export const useWorksheetInfo = (
       const seasonCode: string = worksheet[i][0];
       const crn = parseInt(worksheet[i][1], 10);
       const worksheetNumberCourse: string = worksheet[i][2];
-      if (season !== null && season != seasonCode) {
+      if (season !== null && season != seasonCode) 
         continue;
-      }
+      
 
       if (
         courses &&

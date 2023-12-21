@@ -26,15 +26,15 @@ function truncatedText(
   max: number,
   defaultStr: string,
 ) {
-  if (!text) {
+  if (!text) 
     return defaultStr;
-  } else if (text.length <= max) {
+   else if (text.length <= max) 
     return text;
-  }
+  
   return `${text.slice(0, max)}...`;
 }
 
-function CalendarEvent({ event }: { event: CourseEvent }) {
+function CalendarEvent({ event }: { readonly event: CourseEvent }) {
   const course = event.listing;
   return (
     <OverlayTrigger

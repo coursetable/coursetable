@@ -1,18 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
-import { ValueType } from 'react-select/src/types';
+import type { ValueType } from 'react-select/src/types';
 import { components } from 'react-select';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
-import { isOption, Option } from '../../contexts/searchContext';
+import { isOption, type Option } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+
 // Row in navbar search
 const StyledRow = styled(Row)`
   width: auto;
@@ -146,9 +147,9 @@ export function NavbarWorksheetSearch() {
   }, [friendInfo]);
 
   const selectedPerson = useMemo(() => {
-    if (person === 'me' || friendInfo[person] == undefined) {
+    if (person === 'me' || friendInfo[person] == undefined) 
       return null;
-    }
+    
     return {
       value: person,
       label: friendInfo[person].name,
@@ -161,7 +162,7 @@ export function NavbarWorksheetSearch() {
     [user.friendRequests],
   );
 
-  // friend requests variables
+  // Friend requests variables
   const friendRequestOptions = useMemo(() => {
     const friendRequestOptionsTemp = [];
     // Add friend to dropdown if they have worksheet courses in the current season
@@ -224,9 +225,9 @@ export function NavbarWorksheetSearch() {
                 options={seasonOptions}
                 placeholder="Last 5 Years"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if (isOption(selectedOption)) {
+                  if (isOption(selectedOption)) 
                     changeSeason(selectedOption.value);
-                  }
+                  
                 }}
               />
             </Popout>
@@ -244,9 +245,9 @@ export function NavbarWorksheetSearch() {
                 options={worksheetOptions}
                 placeholder="Main Worksheet"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if (isOption(selectedOption)) {
+                  if (isOption(selectedOption)) 
                     changeWorksheet(selectedOption.value);
-                  }
+                  
                 }}
               />
             </Popout>
@@ -290,7 +291,7 @@ export function NavbarWorksheetSearch() {
                   } else if (selectedOption && isOption(selectedOption)) {
                     removeFriend(selectedOption.value, user.netId);
                     removeFriend(user.netId, selectedOption.value);
-                    alert('Removed friend: ' + selectedOption.value);
+                    alert(`Removed friend: ${  selectedOption.value}`);
                     window.location.reload();
                   }
                 }}
@@ -333,9 +334,9 @@ export function NavbarWorksheetSearch() {
                     if (deleting === 0) {
                       addFriend(selectedOption.value, user.netId);
                       addFriend(user.netId, selectedOption.value);
-                      alert('Added friend: ' + selectedOption.value);
+                      alert(`Added friend: ${  selectedOption.value}`);
                     } else if (deleting === 1) {
-                      alert('Declined friend request: ' + selectedOption.value);
+                      alert(`Declined friend request: ${  selectedOption.value}`);
                     }
                     window.location.reload();
                   }
@@ -356,7 +357,7 @@ export function NavbarWorksheetSearch() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     friendRequest(currentFriendNetID);
-                    alert('Sent friend request: ' + currentFriendNetID);
+                    alert(`Sent friend request: ${  currentFriendNetID}`);
                   }
                 }}
                 onInputChange={(e) => {

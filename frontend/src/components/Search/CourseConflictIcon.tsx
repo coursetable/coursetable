@@ -15,7 +15,7 @@ import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-function CourseConflictIcon({ course }: { course: Listing }) {
+function CourseConflictIcon({ course }: { readonly course: Listing }) {
   const { user } = useUser();
 
   const inWorksheet = isInWorksheet(
@@ -55,7 +55,7 @@ function CourseConflictIcon({ course }: { course: Listing }) {
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>
                   Conflicts with: <br />
-                  {conflicts.map((x) => `${x.course_code}`).join(', ')} <br />
+                  {conflicts.map((x) => String(x.course_code)).join(', ')} <br />
                 </small>
                 {crossListed !== false ? (
                   // Show only if the class is cross-listed with another class in the worksheet

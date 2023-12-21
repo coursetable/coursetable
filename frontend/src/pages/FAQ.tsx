@@ -36,9 +36,9 @@ function ContextAwareToggle({
   callback,
   question,
 }: {
-  eventKey: string;
-  callback?: (eventKey: string) => void;
-  question: string;
+  readonly eventKey: string;
+  readonly callback?: (eventKey: string) => void;
+  readonly question: string;
 }) {
   // Current active item
   const currentEventKey = useContext(AccordionContext);
@@ -296,7 +296,7 @@ function FAQ() {
   ];
 
   return (
-    <StyledContainer className={'mx-auto'}>
+    <StyledContainer className="mx-auto">
       <h1 className={`${styles.faq_header} mt-5 mb-1`}>
         Frequently Asked Questions
       </h1>
@@ -308,9 +308,9 @@ function FAQ() {
         {faqs.map((faq, idx) => (
           <StyledCard key={idx}>
             <div>
-              <ContextAwareToggle eventKey={`${idx}`} question={faq.title} />
+              <ContextAwareToggle eventKey={String(idx)} question={faq.title} />
             </div>
-            <Accordion.Collapse eventKey={`${idx}`}>
+            <Accordion.Collapse eventKey={String(idx)}>
               <Card.Body className="py-3">
                 <TextComponent type={1}>{faq.contents}</TextComponent>
               </Card.Body>

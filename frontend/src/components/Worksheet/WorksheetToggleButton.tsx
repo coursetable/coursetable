@@ -48,11 +48,11 @@ function WorksheetToggleButton({
   setCourseInWorksheet,
   selectedWorksheet: initialSelectedWorksheet,
 }: {
-  crn: number;
-  seasonCode: string;
-  modal: boolean;
-  setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedWorksheet?: string;
+  readonly crn: number;
+  readonly seasonCode: string;
+  readonly modal: boolean;
+  readonly setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly selectedWorksheet?: string;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
@@ -102,12 +102,12 @@ function WorksheetToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWorksheet ? 'remove' : 'add';
 
-      // removes removed courses from worksheet hidden courses
+      // Removes removed courses from worksheet hidden courses
       if (inWorksheet) {
         setLSObject('hiddenCourses', {}, true);
-        if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn]) {
+        if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn]) 
           toggleCourse(crn);
-        }
+        
       }
 
       // Call the endpoint
@@ -149,11 +149,11 @@ function WorksheetToggleButton({
 
   // Disabled worksheet add/remove button if not logged in
   if (user.worksheet == null)
-    return (
+    {return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
         <BsBookmark size={25} className="disabled-button-icon" />
       </Button>
-    );
+    );}
 
   return (
     <OverlayTrigger
@@ -188,9 +188,9 @@ function WorksheetToggleButton({
               }}
               onClick={(e) => {
                 // Check if the clicked target is the select element
-                if ((e.target as HTMLSelectElement).tagName === 'SELECT') {
+                if ((e.target as HTMLSelectElement).tagName === 'SELECT') 
                   e.stopPropagation();
-                }
+                
               }}
               onMouseEnter={(e) => {
                 e.preventDefault();

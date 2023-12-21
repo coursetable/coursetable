@@ -135,9 +135,9 @@ function WorksheetCalendarList() {
     // List to hold HTML
     const listitems = courses.map((course, id) => {
       let hidden = false;
-      if (curSeason in hiddenCourses) {
+      if (curSeason in hiddenCourses) 
         hidden = hiddenCourses[curSeason][course.crn];
-      }
+      
       // Add listgroup item to listitems list
       return (
         <WorksheetCalendarListItem
@@ -153,9 +153,9 @@ function WorksheetCalendarList() {
   }, [courses, hiddenCourses, curSeason, worksheetNumber]);
 
   const areHidden = useMemo(() => {
-    if (!(curSeason in hiddenCourses)) {
+    if (!(curSeason in hiddenCourses)) 
       return false;
-    }
+    
     return Object.keys(hiddenCourses[curSeason]).length === courses.length;
   }, [hiddenCourses, courses, curSeason]);
 

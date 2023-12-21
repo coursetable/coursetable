@@ -90,21 +90,21 @@ type Option = {
 };
 
 type Props = {
-  children: React.ReactNode;
-  buttonText: string;
-  type: string;
-  isDisabled?: boolean;
-  onReset?: () => void;
-  arrowIcon?: boolean;
-  clearIcon?: boolean;
-  select_options?:
+  readonly children: React.ReactNode;
+  readonly buttonText: string;
+  readonly type: string;
+  readonly isDisabled?: boolean;
+  readonly onReset?: () => void;
+  readonly arrowIcon?: boolean;
+  readonly clearIcon?: boolean;
+  readonly select_options?:
     | Option[]
-    | Record<string, Record<string, Option[] | boolean>>
+    | { [key: string]: { [key: string]: Option[] | boolean } }
     | Option
     | null;
-  className?: string;
-  data_tutorial?: number;
-  disabledButtonText?: string;
+  readonly className?: string;
+  readonly data_tutorial?: number;
+  readonly disabledButtonText?: string;
 };
 
 /**
@@ -180,9 +180,9 @@ export function Popout({
               {optionLabel}
             </span>
           );
-          if (topOptions.length > 1 && index < maxOptions - 1) {
+          if (topOptions.length > 1 && index < maxOptions - 1) 
             return <>{span}, </>;
-          }
+          
           if (select_options.length > maxOptions) {
             return (
               <>
@@ -206,19 +206,19 @@ export function Popout({
               key === 'selects' &&
               Array.isArray(optionValue) &&
               optionValue.length > 0
-            ) {
+            ) 
               activeFilters++;
-            } else if (key === 'ranges' && optionValue) {
+             else if (key === 'ranges' && optionValue) 
               activeFilters++;
-            } else if (
+             else if (
               key === 'toggles' &&
               typeof optionValue === 'boolean' &&
               optionValue
-            ) {
+            ) 
               activeFilters++;
-            } else if (key === 'sorts' && optionValue) {
+             else if (key === 'sorts' && optionValue) 
               activeFilters++;
-            }
+            
           }
         }
         const text =

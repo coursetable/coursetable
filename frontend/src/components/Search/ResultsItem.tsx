@@ -93,12 +93,12 @@ function ResultsItem({
   isScrolling = false,
   friends,
 }: {
-  course: Listing;
-  multiSeasons: boolean;
-  isFirst: boolean;
-  COL_SPACING: any;
-  isScrolling: boolean;
-  friends: string[];
+  readonly course: Listing;
+  readonly multiSeasons: boolean;
+  readonly isFirst: boolean;
+  readonly COL_SPACING: any;
+  readonly isScrolling: boolean;
+  readonly friends: string[];
 }) {
   const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?

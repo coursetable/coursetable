@@ -3,7 +3,7 @@ import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
 import styles from './EvaluationResponses.module.css';
 import { StyledInput, TextComponent } from '../StyledComponents';
-import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 import Mark from 'mark.js';
 
 // Tabs of evaluation comments in modal
@@ -54,8 +54,8 @@ const StyledSortOption = styled.span<{ active: boolean }>`
  */
 
 const EvaluationResponses: React.FC<{
-  crn: number;
-  info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly crn: number;
+  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }> = ({ crn, info }) => {
   // Sort by original order or length?
   const [sortOrder, setSortOrder] = useState('original');
@@ -85,9 +85,9 @@ const EvaluationResponses: React.FC<{
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
     ) as typeof tempResponses;
-    for (const key of Object.keys(tempResponses)) {
+    for (const key of Object.keys(tempResponses)) 
       sortedResponses[key].sort((a, b) => b.length - a.length);
-    }
+    
     return [tempResponses, sortedResponses];
   }, [info, crn]);
 
@@ -106,9 +106,9 @@ const EvaluationResponses: React.FC<{
     const curResponses = sortOrder === 'length' ? sortedResponses : responses;
     // Populate the lists above
     const genTemp = (resps: string[]) => {
-      if (resps.length === 0) {
+      if (resps.length === 0) 
         return [];
-      }
+      
       const filteredResps = resps
         .filter((response) =>
           response.toLowerCase().includes(filter.toLowerCase()),
@@ -128,15 +128,15 @@ const EvaluationResponses: React.FC<{
       return filteredResps;
     };
     for (const key of Object.keys(curResponses)) {
-      if (key.includes('summarize')) {
+      if (key.includes('summarize')) 
         tempSummary = genTemp(curResponses[key]);
-      } else if (key.includes('recommend')) {
+       else if (key.includes('recommend')) 
         tempRecommend = genTemp(curResponses[key]);
-      } else if (key.includes('skills')) {
+       else if (key.includes('skills')) 
         tempSkills = genTemp(curResponses[key]);
-      } else if (key.includes('strengths')) {
+       else if (key.includes('strengths')) 
         tempStrengths = genTemp(curResponses[key]);
-      }
+      
     }
     return [tempRecommend, tempSkills, tempStrengths, tempSummary];
   }, [responses, sortOrder, sortedResponses, filter]);

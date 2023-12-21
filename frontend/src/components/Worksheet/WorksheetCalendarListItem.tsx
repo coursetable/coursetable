@@ -53,10 +53,10 @@ function WorksheetCalendarListItem({
   theme,
   worksheetNumber,
 }: {
-  course: Listing;
-  hidden: boolean;
-  theme: DefaultTheme;
-  worksheetNumber?: string;
+  readonly course: Listing;
+  readonly hidden: boolean;
+  readonly theme: DefaultTheme;
+  readonly worksheetNumber?: string;
 }) {
   const [, setSearchParams] = useSearchParams();
   const { curSeason, toggleCourse, setHoverCourse } = useWorksheet();

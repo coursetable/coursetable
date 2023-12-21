@@ -1,4 +1,4 @@
-import { expectType, TypeOf } from 'ts-expect';
+import { expectType, type TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
 import type { Listing } from '../utilities/common';
 
@@ -171,7 +171,7 @@ export const dayOptions = [
   { label: 'Friday', value: 'Friday' },
 ] as const;
 
-// to get a list of abbreviations, run
+// To get a list of abbreviations, run
 // a distinct_on:school query over computed_course_info
 
 // school labels were filled in manually

@@ -93,8 +93,8 @@ const NavLogo = styled(Nav)`
 `;
 
 type Props = {
-  isLoggedIn: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly isLoggedIn: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 //  Wrapper for nav collapse for # of results shown text
@@ -102,8 +102,8 @@ function NavCollapseWrapper({
   children,
   wrap,
 }: {
-  children: React.ReactNode;
-  wrap: boolean;
+  readonly children: React.ReactNode;
+  readonly wrap: boolean;
 }) {
   if (wrap) {
     return (
@@ -142,22 +142,22 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const [page, setPage] = useState('');
   // Handles page
   useEffect(() => {
-    if (location && location.pathname === '/catalog') {
+    if (location && location.pathname === '/catalog') 
       setPage('catalog');
-    } else if (location && location.pathname === '/worksheet') {
+     else if (location && location.pathname === '/worksheet') 
       setPage('worksheet');
-    } else {
+     else 
       setPage('');
-    }
+    
   }, [location]);
 
   // Decides whether to show search or not
   useEffect(() => {
-    if (!isMobile && isLoggedIn && page) {
+    if (!isMobile && isLoggedIn && page) 
       setShowSearch(true);
-    } else {
+     else 
       setShowSearch(false);
-    }
+    
   }, [isMobile, isLoggedIn, page]);
 
   // Calculate time since last updated
@@ -327,9 +327,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                         Sign In
                       </StyledDiv>
                     ) : (
-                      <>
-                        <StyledDiv onClick={logout}>Sign Out</StyledDiv>
-                      </>
+                      <StyledDiv onClick={logout}>Sign Out</StyledDiv>
                     )}
                   </div>
                 </Nav>

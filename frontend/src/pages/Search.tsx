@@ -28,8 +28,8 @@ import {
 } from '../components/StyledComponents';
 
 import { useSessionStorageState } from '../utilities/browserStorage';
-import { useSearch, Option, defaultFilters } from '../contexts/searchContext';
-import { ValueType } from 'react-select/src/types';
+import { useSearch, type Option, defaultFilters } from '../contexts/searchContext';
+import type { ValueType } from 'react-select/src/types';
 
 /**
  * Renders catalog page
@@ -38,7 +38,7 @@ function Search() {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
 
-  // way to display results
+  // Way to display results
   const [isList, setView] = useSessionStorageState('isList', !isMobile);
 
   // Get search context data
@@ -106,9 +106,9 @@ function Search() {
 
   // Switch to grid view if mobile
   useEffect(() => {
-    if (isMobile && isList === true) {
+    if (isMobile && isList) 
       setView(false);
-    }
+    
   }, [isMobile, isList, setView]);
 
   // TODO: add state if courseLoadError is present
@@ -173,7 +173,7 @@ function Search() {
                         value={selectSeasons}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
-                        // prevent overlap with tooltips
+                        // Prevent overlap with tooltips
                         menuPortalTarget={document.body}
                         onChange={(
                           selectedOption: ValueType<Option, boolean>,
@@ -193,7 +193,7 @@ function Search() {
                       options={skillsAreasOptions}
                       placeholder="All Skills/Areas"
                       useColors
-                      // prevent overlap with tooltips
+                      // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption: ValueType<Option, boolean>) =>
                         setSelectSkillsAreas((selectedOption as Option[]) || [])
@@ -222,7 +222,7 @@ function Search() {
                       options={subjectOptions}
                       placeholder="All Subjects"
                       isSearchable
-                      // prevent overlap with tooltips
+                      // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption: ValueType<Option, boolean>) =>
                         setSelectSubjects((selectedOption as Option[]) || [])
@@ -236,7 +236,7 @@ function Search() {
                       value={selectSchools}
                       options={schoolOptions}
                       placeholder="All Schools"
-                      // prevent overlap with tooltips
+                      // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(
                         selectedOption: ValueType<Option, boolean>,
@@ -376,7 +376,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideCancelled}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -390,7 +390,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideConflicting}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -405,7 +405,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideFirstYearSeminars}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -420,7 +420,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideGraduateCourses}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -435,7 +435,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideDiscussionSections}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {

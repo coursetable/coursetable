@@ -60,10 +60,10 @@ function ResultsGridItem({
   num_cols,
   multiSeasons,
 }: {
-  course: Listing;
-  isLoggedIn: boolean;
-  num_cols: number;
-  multiSeasons: boolean;
+  readonly course: Listing;
+  readonly isLoggedIn: boolean;
+  readonly num_cols: number;
+  readonly multiSeasons: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns

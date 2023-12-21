@@ -16,10 +16,10 @@ function WorksheetList() {
 
   const { ordering, numFriends, isLoggedIn } = useSearch();
 
-  const WorksheetData = useMemo(() => {
+  const WorksheetData = useMemo(() => 
     // Apply sorting order.
-    return sortCourses(courses, ordering, numFriends);
-  }, [ordering, courses, numFriends]);
+     sortCourses(courses, ordering, numFriends)
+  , [ordering, courses, numFriends]);
 
   return (
     <div>

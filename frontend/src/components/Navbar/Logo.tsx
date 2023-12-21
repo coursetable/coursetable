@@ -8,9 +8,9 @@ import styles from './Logo.module.css';
 
 type Props = {
   /** Should we show the icon */
-  icon?: boolean;
+  readonly icon?: boolean;
   /** Should be show the wordmark */
-  wordmark?: boolean;
+  readonly wordmark?: boolean;
 };
 
 /**

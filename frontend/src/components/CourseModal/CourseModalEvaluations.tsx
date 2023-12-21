@@ -17,9 +17,9 @@ function CourseModalEvaluations({
   crn,
   courseCode,
 }: {
-  seasonCode: string;
-  crn: number;
-  courseCode: string;
+  readonly seasonCode: string;
+  readonly crn: number;
+  readonly courseCode: string;
 }) {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({

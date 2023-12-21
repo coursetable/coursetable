@@ -24,8 +24,8 @@ function ListGridToggle({
   isList,
   setView,
 }: {
-  isList: boolean;
-  setView: (isList: boolean) => void;
+  readonly isList: boolean;
+  readonly setView: (isList: boolean) => void;
 }) {
   return (
     <StyledToggle

@@ -30,7 +30,7 @@ function GoogleCalendarButton(): JSX.Element {
     setExporting(true);
 
     try {
-      // get all previously added classes
+      // Get all previously added classes
       const eventList = await gapi.client.calendar.events.list({
         calendarId: 'primary',
         // TODO: this is UTC date, which shouldn't matter, but we want
@@ -45,7 +45,7 @@ function GoogleCalendarButton(): JSX.Element {
         orderBy: 'startTime',
       });
 
-      // delete all previously added classes
+      // Delete all previously added classes
       if (eventList.result.items.length > 0) {
         const deletedIds = new Set<string>();
         const promises = eventList.result.items.map((event) => {
@@ -95,9 +95,9 @@ function GoogleCalendarButton(): JSX.Element {
   }, [courses, gapi, curSeason, hiddenCourses]);
 
   useEffect(() => {
-    if (!authInstance || user || !exportButtonRef.current) {
+    if (!authInstance || user || !exportButtonRef.current) 
       return;
-    }
+    
     authInstance.attachClickHandler(
       exportButtonRef.current,
       {},

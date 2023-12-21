@@ -20,7 +20,7 @@ GapiContext.displayName = 'GapiContext';
 const SCOPES = 'https://www.googleapis.com/auth/calendar.events';
 const GAPI_CLIENT_NAME = 'client:auth2';
 
-export function GapiProvider({ children }: { children: React.ReactNode }) {
+export function GapiProvider({ children }: { readonly children: React.ReactNode }) {
   const [gapi, setGapi] = useState<typeof globalThis.gapi | null>(null);
   const [authInstance, setAuthInstance] =
     useState<gapi.auth2.GoogleAuthBase | null>(null);
@@ -42,9 +42,9 @@ export function GapiProvider({ children }: { children: React.ReactNode }) {
       ]);
       setGapi(newGapi);
       setAuthInstance(newAuth2);
-      if (newAuth2.isSignedIn.get()) {
+      if (newAuth2.isSignedIn.get()) 
         setUser(newAuth2.currentUser.get());
-      }
+      
     }
     loadGapi();
   }, []);

@@ -9,7 +9,7 @@ import {
   questionText,
 } from '../../queries/Constants';
 import { TextComponent } from '../StyledComponents';
-import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 /**
  * Displays Evaluation Graphs
@@ -21,8 +21,8 @@ function EvaluationRatings({
   crn,
   info,
 }: {
-  crn: number;
-  info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly crn: number;
+  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }) {
   // List of dictionaries that holds the ratings for each question as well as the question text
   const ratings: { question: string; values: number[] }[] = [];
@@ -39,9 +39,9 @@ function EvaluationRatings({
         values: [],
       });
       // Store the counts for each rating in the values list
-      for (let j = 0; j < temp[i].rating.length; j++) {
+      for (let j = 0; j < temp[i].rating.length; j++) 
         ratings[i].values.push(temp[i].rating[j]);
-      }
+      
     }
   });
 

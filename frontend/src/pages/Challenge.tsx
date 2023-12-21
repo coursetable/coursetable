@@ -1,4 +1,4 @@
-import React, { useState, useEffect, ReactElement } from 'react';
+import React, { useState, useEffect, type ReactElement } from 'react';
 import qs from 'qs';
 import axios, { AxiosError } from 'axios';
 import { useNavigate, NavLink } from 'react-router-dom';
@@ -59,17 +59,17 @@ function Challenge() {
     { answer: '', courseRatingId: undefined, courseRatingIndex: undefined },
   ]);
 
-  // error code from requesting challenge
+  // Error code from requesting challenge
   const [requestError, setRequestError] = useState(null);
-  // error code from verifying challenge
+  // Error code from verifying challenge
   const [verifyError, setVerifyError] = useState<string | null>(null);
-  // error message to render after verification (if applicable)
+  // Error message to render after verification (if applicable)
   const [verifyErrorMessage, setVerifyErrorMessage] =
     useState<ReactElement | null>(null);
 
-  // number of challenge attempts
+  // Number of challenge attempts
   const [numTries, setNumTries] = useState(null);
-  // max number of attempts allowed
+  // Max number of attempts allowed
   const [maxTries, setMaxTries] = useState(null);
 
   // Fetch questions on component mount
@@ -89,9 +89,9 @@ function Challenge() {
         }
       })
       .catch((err) => {
-        if (err.response.data) {
+        if (err.response.data) 
           setRequestError(err.response.data.error);
-        }
+        
       });
   }, []);
 
@@ -103,7 +103,7 @@ function Challenge() {
     // Prevent default page reload
     event.preventDefault();
     // Form is invalid
-    if (form.checkValidity() === false) {
+    if (!form.checkValidity()) {
       // Don't submit
       event.stopPropagation();
     }
@@ -204,7 +204,7 @@ function Challenge() {
             <div>
               Looks like we messed up. Please{' '}
               <a
-                href={`https://feedback.coursetable.com/`}
+                href="https://feedback.coursetable.com/"
                 target="_blank"
                 rel="noopener noreferrer"
               >
@@ -291,7 +291,7 @@ function Challenge() {
         <div>
           We couldn't find a challenge. Please{' '}
           <a
-            href={`https://feedback.coursetable.com/`}
+            href="https://feedback.coursetable.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -308,7 +308,7 @@ function Challenge() {
         <div>
           Looks like we messed up. Please{' '}
           <a
-            href={`https://feedback.coursetable.com/`}
+            href="https://feedback.coursetable.com/"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -360,7 +360,7 @@ function Challenge() {
             <br />
             If the challenge is not working for you, please{' '}
             <a
-              href={`https://feedback.coursetable.com/`}
+              href="https://feedback.coursetable.com/"
               target="_blank"
               rel="noopener noreferrer"
             >

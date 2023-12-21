@@ -9,6 +9,7 @@ import { StyledHr, TextComponent } from './StyledComponents';
 import { scrollToTop } from '../utilities';
 
 import VercelBanner from '../images/powered-by-vercel.svg';
+
 // Header
 const StyledH5 = styled.h5`
   transition: color ${({ theme }) => theme.transDur};
@@ -66,7 +67,7 @@ function Footer() {
               {/* Feedback */}
               <li>
                 <a
-                  href={`https://feedback.coursetable.com/`}
+                  href="https://feedback.coursetable.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={scrollToTop}

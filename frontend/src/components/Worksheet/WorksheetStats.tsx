@@ -8,7 +8,7 @@ import { ratingColormap } from '../../queries/Constants';
 import styles from './WorksheetStats.module.css';
 
 const StyledStatPill = styled.span<
-  | { colormap: chroma.Scale<chroma.Color>; stat: number }
+  | { colormap: chroma.Scale; stat: number }
   | { colormap?: never; stat?: never }
 >`
   background-color: ${({ theme, colormap, stat }) =>
@@ -42,15 +42,15 @@ export default function WorksheetStats() {
     skillsAreas,
   } = courses.reduce(
     (acc, c) => {
-      // see if any of the course's codes have already been counted or if it's hidden so we don't double count
+      // See if any of the course's codes have already been counted or if it's hidden so we don't double count
       const shouldNotCount =
         c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
         hiddenCourses[curSeason]?.[c.crn];
       const useCourseInfo = c.credits;
 
-      if (shouldNotCount || !useCourseInfo) {
+      if (shouldNotCount || !useCourseInfo) 
         return acc;
-      }
+      
 
       // Mark codes as counted, no double counting
       c.all_course_codes.forEach((code) => {

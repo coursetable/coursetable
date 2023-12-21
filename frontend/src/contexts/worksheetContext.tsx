@@ -14,12 +14,12 @@ import { CUR_SEASON } from '../config';
 import { useFerry } from './ferryContext';
 import { toSeasonString } from '../utilities/courseUtilities';
 import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { useUser, Worksheet } from './userContext';
+import { useUser, type Worksheet } from './userContext';
 import type { Season, Listing } from '../utilities/common';
 import type { OptType, Option } from './searchContext';
 
-export type HiddenCourses = Record<Season, Record<number, boolean>>;
-export type WorksheetView = Record<string, string>;
+export type HiddenCourses = { [key: Season]: { [key: number]: boolean } };
+export type WorksheetView = { [key: string]: string };
 
 type Store = {
   seasonCodes: string[];
@@ -33,7 +33,7 @@ type Store = {
   hoverCourse: number | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
-  // eslint-disable-next-line @typescript-eslint/ban-types
+   
   worksheetError: {} | null;
   worksheetData: Listing[];
   changeSeason: (seasonCode: Season | null) => void;
@@ -60,7 +60,7 @@ const colors = [
 /**
  * Stores the user's worksheet filters and sorts
  */
-export function WorksheetProvider({ children }: { children: React.ReactNode }) {
+export function WorksheetProvider({ children }: { readonly children: React.ReactNode }) {
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
@@ -88,9 +88,9 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Worksheet of the current person
   const curWorksheet = useMemo(() => {
     const whenNotDefined: Worksheet = []; // TODO: change this to undefined
-    if (viewedPerson === 'me') {
+    if (viewedPerson === 'me') 
       return user.worksheet ?? whenNotDefined;
-    }
+    
 
     const friendWorksheets = user.friendWorksheets?.worksheets;
     return friendWorksheets
@@ -146,7 +146,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     data: worksheetData,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
   // Cache calendar colors. Reset whenever the season changes.
-  const [colorMap, setColorMap] = useState<Record<number, number[]>>({});
+  const [colorMap, setColorMap] = useState<{ [key: number]: number[] }>({});
   useEffect(() => {
     setColorMap({});
   }, [curSeason]);
@@ -161,11 +161,11 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       // Assign color to each course
       for (let i = 0; i < worksheetData.length; i++) {
         let choice = colors[i % colors.length];
-        if (colorMap[temp[i].crn]) {
+        if (colorMap[temp[i].crn]) 
           choice = colorMap[temp[i].crn];
-        } else {
+         else 
           colorMap[temp[i].crn] = choice;
-        }
+        
         temp[i].color = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 0.85)`;
         temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
         temp[i].currentWorksheet = worksheetNumber;
@@ -192,9 +192,9 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses)) {
+          if (!(curSeason in newHiddenCourses)) 
             newHiddenCourses[curSeason] = {};
-          }
+          
           courses.forEach((listing) => {
             newHiddenCourses[curSeason][listing.crn] = true;
           });
@@ -209,9 +209,9 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses)) {
+          if (!(curSeason in newHiddenCourses)) 
             newHiddenCourses[curSeason] = {};
-          }
+          
           if (newHiddenCourses[curSeason][crn])
             delete newHiddenCourses[curSeason][crn];
           else newHiddenCourses[curSeason][crn] = true;
@@ -261,7 +261,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       // Context state.
       seasonCodes,
       seasonOptions,
-      curWorksheet: curWorksheet,
+      curWorksheet,
       curSeason,
       worksheetNumber,
       person: viewedPerson,

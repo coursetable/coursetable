@@ -104,14 +104,14 @@ function Results({
   numFriends,
   page = 'catalog',
 }: {
-  data: Listing[];
-  isList: boolean;
-  setView: (isList: boolean) => void;
-  loading?: boolean;
-  multiSeasons?: boolean;
-  isLoggedIn: boolean;
-  numFriends: Record<string, string[]>;
-  page?: 'catalog' | 'worksheet';
+  readonly data: Listing[];
+  readonly isList: boolean;
+  readonly setView: (isList: boolean) => void;
+  readonly loading?: boolean;
+  readonly multiSeasons?: boolean;
+  readonly isLoggedIn: boolean;
+  readonly numFriends: { [key: string]: string[] };
+  readonly page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
   const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
@@ -188,7 +188,7 @@ function Results({
   const numCols = isMobile ? 1 : isTablet ? 2 : 3;
 
   if (!isLoggedIn) {
-    // render an auth wall
+    // Render an auth wall
     resultsListing = (
       <div className="text-center py-5">
         <img
@@ -209,7 +209,7 @@ function Results({
       </div>
     );
   } else if (data.length === 0) {
-    // if no courses found, render the empty state
+    // If no courses found, render the empty state
     resultsListing = (
       <div className="text-center py-5">
         <img
@@ -234,7 +234,7 @@ function Results({
       </div>
     );
   } else if (!isList) {
-    // if not list view, prepare the grid
+    // If not list view, prepare the grid
     // Store HTML for grid view results
     resultsListing = (
       // Scroll the entire window
@@ -377,20 +377,20 @@ function Results({
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
-      if (isSmDesktop || isTablet) {
+      if (isSmDesktop || isTablet) 
         return 88;
-      }
-      if (isLgDesktop) {
+      
+      if (isLgDesktop) 
         return 100;
-      }
+      
     }
     if (page === 'worksheet') {
-      if (isSmDesktop || isTablet) {
+      if (isSmDesktop || isTablet) 
         return 58;
-      }
-      if (isLgDesktop) {
+      
+      if (isLgDesktop) 
         return 61;
-      }
+      
     }
     return 0;
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
@@ -615,7 +615,7 @@ function Results({
       )}
 
       <SearchResults
-        className={`${!isList ? 'px-1 pt-3 ' : ''}`}
+        className={String(!isList ? 'px-1 pt-3 ' : '')}
         numCourses={data.length}
         isMobile={isMobile}
       >

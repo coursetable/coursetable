@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import styles from './RatingsGraph.module.css';
 import { TextComponent } from '../StyledComponents';
 
-import { graphLabels } from '../../queries/Constants';
+import type { graphLabels } from '../../queries/Constants';
 
 const StyledLabel = styled.p`
   font-size: 10px !important;
@@ -25,9 +25,9 @@ function RatingsGraph({
   reverse,
   labels,
 }: {
-  ratings: number[];
-  reverse: boolean;
-  labels: (typeof graphLabels)[keyof typeof graphLabels];
+  readonly ratings: number[];
+  readonly reverse: boolean;
+  readonly labels: (typeof graphLabels)[keyof typeof graphLabels];
 }) {
   const maxVal = Math.max(...ratings);
 

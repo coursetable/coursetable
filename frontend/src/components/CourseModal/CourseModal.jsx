@@ -63,8 +63,8 @@ function CourseModal() {
 
   const listing = courses[seasonCode]?.get(Number(crn));
 
-  // share button
-  const ShareButton = ({ courseCode, urlToShare }) => {
+  // Share button
+  function ShareButton({ courseCode, urlToShare }) {
     const copyToClipboard = () => {
       const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
       navigator.clipboard.writeText(textToCopy).then(
@@ -85,7 +85,7 @@ function CourseModal() {
         style={{ cursor: 'pointer' }}
       />
     );
-  };
+  }
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations

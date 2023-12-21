@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Tour, { ReactourStep, ReactourStepPosition } from 'reactour';
+import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
@@ -62,10 +62,10 @@ const StepImage = styled.img`
 `;
 
 type Props = {
-  isTutorialOpen: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  shownTutorial: boolean;
-  setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly isTutorialOpen: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly shownTutorial: boolean;
+  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type Step = {
@@ -168,7 +168,7 @@ const stepsContent: Step[] = [
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`https://feedback.coursetable.com/`}
+          href="https://feedback.coursetable.com/"
         >
           <strong>Feedback page</strong>
         </a>
@@ -205,9 +205,9 @@ function Tutorial({
 
   // Whenever the tutorial is closed, reset the currentStep
   useEffect(() => {
-    if (!isTutorialOpen) {
+    if (!isTutorialOpen) 
       setCurrentStep(0);
-    }
+    
   }, [isTutorialOpen]);
 
   const globalTheme = useTheme();
@@ -264,13 +264,13 @@ function Tutorial({
       };
 
       // Add observe selector if observing
-      if (observe) {
+      if (observe) 
         step = { ...step, observe: `[data-tutorial="${selector}-observe"]` };
-      }
+      
 
-      if (position) {
+      if (position) 
         step = { ...step, position };
-      }
+      
 
       return step;
     },
@@ -278,9 +278,9 @@ function Tutorial({
 
   // Handle prev button styling
   const prevButton = useMemo(() => {
-    if (currentStep === 0) {
+    if (currentStep === 0) 
       return <div style={{ display: 'none' }} />;
-    }
+    
     if (!shownTutorial) {
       return (
         <PrevButton
@@ -298,9 +298,9 @@ function Tutorial({
 
   // Next button component
   const nextButton = useMemo(() => {
-    if (location.pathname === '/catalog' && currentStep === 7) {
+    if (location.pathname === '/catalog' && currentStep === 7) 
       return <NextButton disabled>Next</NextButton>;
-    }
+    
     return <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>;
   }, [currentStep, location]);
 
@@ -309,9 +309,9 @@ function Tutorial({
       steps={steps}
       isOpen={isTutorialOpen}
       onRequestClose={() => {
-        if (!shownTutorial) {
+        if (!shownTutorial) 
           navigate('/catalog');
-        }
+        
         setShownTutorial(true);
         setIsTutorialOpen(false);
       }}

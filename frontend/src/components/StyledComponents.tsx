@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { FormControl, Card, Popover } from 'react-bootstrap';
-import chroma from 'chroma-js';
+import type chroma from 'chroma-js';
 import { breakpoints } from '../utilities';
 
 // Div used to color the background of surface components
@@ -119,7 +119,7 @@ export const StyledPopover = styled(Popover)`
 // Rating bubbles in search results list item and modal
 export const StyledRating = styled.div<{
   rating: number | null;
-  colormap: chroma.Scale<chroma.Color>;
+  colormap: chroma.Scale;
 }>`
   font-weight: ${({ rating }) => (rating ? 600 : 400)};
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};

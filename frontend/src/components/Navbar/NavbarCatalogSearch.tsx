@@ -12,7 +12,7 @@ import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
 import { SmallTextComponent, StyledInput } from '../StyledComponents';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import { ValueType } from 'react-select/src/types';
+import type { ValueType } from 'react-select/src/types';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Range } from 'rc-slider';
@@ -29,7 +29,7 @@ import {
 import CustomSelect from '../CustomSelect';
 import {
   useSearch,
-  Option,
+  type Option,
   defaultFilters,
 } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
@@ -292,9 +292,9 @@ export function NavbarCatalogSearch() {
   // Active styles for range filters
   const activeStyle = useCallback(
     (active: boolean) => {
-      if (active) {
+      if (active) 
         return { color: globalTheme.primaryHover };
-      }
+      
       return undefined;
     },
     [globalTheme],
@@ -302,21 +302,21 @@ export function NavbarCatalogSearch() {
 
   // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
-    if (isLgDesktop) {
+    if (isLgDesktop) 
       return undefined;
-    }
+    
     const styles: React.CSSProperties = { height: '12px', width: '12px' };
     return [styles, styles];
   }, [isLgDesktop]);
   const rangeRailStyle = useMemo((): React.CSSProperties => {
-    if (isLgDesktop) {
+    if (isLgDesktop) 
       return {};
-    }
+    
     const styles = { marginTop: '-1px' };
     return styles;
   }, [isLgDesktop]);
 
-  // ctrl/cmd-f search hotkey
+  // Ctrl/cmd-f search hotkey
   const keyMap = {
     FOCUS_SEARCH: ['ctrl+f', 'command+f'],
   };
@@ -394,7 +394,7 @@ export function NavbarCatalogSearch() {
       <GlobalHotKeys
         keyMap={hasCourseModal ? {} : keyMap}
         handlers={hasCourseModal ? {} : handlers}
-        allowChanges // required for global
+        allowChanges // Required for global
         style={{ outline: 'none' }}
       />
       {/* Search Form */}
@@ -641,7 +641,7 @@ export function NavbarCatalogSearch() {
                         value={selectSubjects}
                         options={subjectOptions}
                         placeholder="All Subjects"
-                        // prevent overlap with tooltips
+                        // Prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
                         onChange={(
                           selectedOption: ValueType<Option, boolean>,
@@ -661,7 +661,7 @@ export function NavbarCatalogSearch() {
                         value={selectSkillsAreas}
                         options={skillsAreasOptions}
                         placeholder="All Areas/Skills"
-                        // prevent overlap with tooltips
+                        // Prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
                         onChange={(
                           selectedOption: ValueType<Option, boolean>,
@@ -682,7 +682,7 @@ export function NavbarCatalogSearch() {
                         value={selectSeasons}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
-                        // prevent overlap with tooltips
+                        // Prevent overlap with tooltips
                         menuPortalTarget={document.querySelector('#portal')}
                         onChange={(
                           selectedOption: ValueType<Option, boolean>,
@@ -703,7 +703,7 @@ export function NavbarCatalogSearch() {
                     value={selectDays}
                     options={dayOptions}
                     placeholder="All Days"
-                    // prevent overlap with tooltips
+                    // Prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectDays((selectedOption as Option[]) || []);
@@ -847,7 +847,7 @@ export function NavbarCatalogSearch() {
                     value={selectSchools}
                     options={schoolOptions}
                     placeholder="All Schools"
-                    // prevent overlap with tooltips
+                    // Prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectSchools((selectedOption as Option[]) || []);
@@ -864,7 +864,7 @@ export function NavbarCatalogSearch() {
                     value={selectCredits}
                     options={creditOptions}
                     placeholder="All Credits"
-                    // prevent overlap with tooltips
+                    // Prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectCredits((selectedOption as Option[]) || []);
@@ -885,7 +885,7 @@ export function NavbarCatalogSearch() {
                   <Toggle type="switch">
                     <ToggleInput
                       checked={searchDescription}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
@@ -900,7 +900,7 @@ export function NavbarCatalogSearch() {
                   <Toggle type="switch">
                     <ToggleInput
                       checked={hideCancelled}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
@@ -914,7 +914,7 @@ export function NavbarCatalogSearch() {
                   <Toggle type="switch">
                     <ToggleInput
                       checked={hideConflicting}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
@@ -929,7 +929,7 @@ export function NavbarCatalogSearch() {
                   <Toggle type="switch">
                     <ToggleInput
                       checked={hideFirstYearSeminars}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
@@ -944,7 +944,7 @@ export function NavbarCatalogSearch() {
                   <Toggle type="switch">
                     <ToggleInput
                       checked={hideGraduateCourses}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
@@ -959,7 +959,7 @@ export function NavbarCatalogSearch() {
                   <Toggle type="switch">
                     <ToggleInput
                       checked={hideDiscussionSections}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {

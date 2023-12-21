@@ -68,7 +68,7 @@ const link = createHttpLink({
 });
 
 const client = new ApolloClient({
-  // default cache for now
+  // Default cache for now
   cache: new InMemoryCache(),
   link,
 });
@@ -80,10 +80,10 @@ function ErrorFallback() {
     </Row>
   );
 }
-function CustomErrorBoundary({ children }: { children: React.ReactNode }) {
-  if (isDev) {
+function CustomErrorBoundary({ children }: { readonly children: React.ReactNode }) {
+  if (isDev) 
     return <>{children}</>;
-  }
+  
   return (
     <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
       {children}
@@ -105,7 +105,7 @@ const GlobalStyles = createGlobalStyle`
   }
   `;
 
-function Globals({ children }: { children: React.ReactNode }) {
+function Globals({ children }: { readonly children: React.ReactNode }) {
   return (
     <CustomErrorBoundary>
       {/* TODO: re-enable StrictMode later */}

@@ -3,7 +3,8 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-// import Notice from './components/Notice';
+
+// Import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
@@ -77,9 +78,9 @@ function App() {
       !shownTutorial &&
       location &&
       location.pathname === '/catalog'
-    ) {
+    ) 
       setIsTutorialOpen(true);
-    }
+    
   }, [
     isMobile,
     isTablet,
@@ -102,9 +103,9 @@ function App() {
 
   return (
     <>
-      {/* notice bar*/}
-      {/*<Notice >
-    </Notice>*/}
+      {/* Notice bar */}
+      {/* <Notice >
+    </Notice> */}
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
         {/* Home Page */}

@@ -16,10 +16,10 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 
 type Props = {
-  profile_expanded: boolean;
-  setIsComponentVisible(visible: boolean): void;
-  isLoggedIn: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly profile_expanded: boolean;
+  readonly setIsComponentVisible: (visible: boolean) => void;
+  readonly isLoggedIn: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
@@ -97,7 +97,7 @@ function MeDropdown({
               />
               <TextComponent type={1}>
                 <a
-                  href={`https://feedback.coursetable.com/`}
+                  href="https://feedback.coursetable.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.collapse_text}

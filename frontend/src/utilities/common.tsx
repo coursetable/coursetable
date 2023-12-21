@@ -1,5 +1,5 @@
-import { expectType, TypeOf } from 'ts-expect';
-import { CatalogBySeasonQuery } from '../generated/graphql';
+import { expectType, type TypeOf } from 'ts-expect';
+import type { CatalogBySeasonQuery } from '../generated/graphql';
 
 // A couple common types.
 
@@ -28,15 +28,12 @@ type ListingOverrides = {
   skills: string[];
   professor_names: string[];
   times_by_day: Partial<
-    Record<
-      Weekdays,
-      [
+    { [key: Weekdays]: [
         startTime: string,
         endTime: string,
         location: string,
         locationURL: string,
-      ][] // an array because there could by multiple times per day
-    >
+      ][] }
   >;
 };
 type ListingAugments = {

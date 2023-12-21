@@ -106,9 +106,9 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
       }
       locations.set(location, locationURL);
       const timespan = `${convert24To12(startTime)}-${convert24To12(endTime)}`;
-      if (!times.has(timespan)) {
+      if (!times.has(timespan)) 
         times.set(timespan, new Set());
-      }
+      
       // Note! Some classes have multiple places at the same time, particularly
       // if one is "online". Avoid duplicates.
       // See for example: CDE 567, Spring 2023
@@ -158,7 +158,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
             course.syllabus_url,
         )
         .filter(
-          // remove duplicates by syllabus URL
+          // Remove duplicates by syllabus URL
           (v, i, a) =>
             a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
         )
@@ -353,17 +353,17 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           listing.professor_names.length &&
           overlappingProfs(courseOfferings[i].professor) ===
             listing.professor_names.length
-        ) {
+        ) 
           overlapSections.both.push(evalBox);
-        }
+        
         // Course in course column
-        if (courseOfferings[i].course_code.includes(listing.course_code)) {
+        if (courseOfferings[i].course_code.includes(listing.course_code)) 
           overlapSections.course.push(evalBox);
-        }
+        
         // Course in prof column
-        if (overlappingProfs(courseOfferings[i].professor) > 0) {
+        if (overlappingProfs(courseOfferings[i].professor) > 0) 
           overlapSections.professor.push(evalBox);
-        }
+        
       }
       return overlapSections;
     }
@@ -477,7 +477,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               text={
                 listing.description ? listing.description : 'no description'
               }
-              maxLine={`${lines}`}
+              maxLine={String(lines)}
               basedOn="words"
               onReflow={(rleState) => setClamped(rleState.clamped)}
             />

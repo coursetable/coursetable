@@ -1,6 +1,6 @@
 import React from 'react';
 import { DropdownButton, Dropdown } from 'react-bootstrap';
-import { NetId } from '../../utilities/common';
+import type { NetId } from '../../utilities/common';
 import { useUser } from '../../contexts/userContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 
@@ -31,13 +31,13 @@ function FriendsDropdown() {
   );
   friends = ['me', ...friends];
 
-  const DropdownItem = ({ person: curr_person }: { person: Person }) => {
+  function DropdownItem({ person: curr_person }: { readonly person: Person }) {
     let text: string;
     if (curr_person === 'me') {
       text = 'Me';
     } else {
       const { name } = friendInfo[curr_person];
-      text = `${name}`;
+      text = String(name);
     }
     return (
       <Dropdown.Item
@@ -53,7 +53,7 @@ function FriendsDropdown() {
         <div className="mx-auto">{text}</div>
       </Dropdown.Item>
     );
-  };
+  }
 
   const friendOptions = friends.map((curr_person) => (
     <DropdownItem key={curr_person} person={curr_person} />
@@ -65,9 +65,9 @@ function FriendsDropdown() {
         variant="primary"
         title={person === 'me' ? 'Me' : friendInfo[person].name}
         onSelect={(person) => {
-          if (person) {
+          if (person) 
             handlePersonChange(person);
-          }
+          
         }}
       >
         {friendOptions}
