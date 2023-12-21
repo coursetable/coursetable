@@ -260,7 +260,7 @@ function Results({
                       <ResultsGridItem
                         course={data[j]}
                         isLoggedIn={isLoggedIn}
-                        num_cols={numCols}
+                        numCols={numCols}
                         multiSeasons={multiSeasons}
                         key={j}
                       />,

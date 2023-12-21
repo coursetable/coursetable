@@ -32,7 +32,6 @@ module.exports = {
     'no-restricted-syntax': 'off',
     'react/no-array-index-key': 'off',
     '@typescript-eslint/init-declarations': 'off',
-    camelcase: 'off',
     '@typescript-eslint/no-shadow': 'off',
     '@typescript-eslint/no-misused-promises': 'off',
   },

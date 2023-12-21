@@ -464,8 +464,8 @@ export function NavbarCatalogSearch() {
                     setSelectSubjects(defaultFilters.defaultOptions);
                     setStartTime(Date.now());
                   }}
-                  select_options={selectSubjects}
-                  data_tutorial={2}
+                  selectOptions={selectSubjects}
+                  dataTutorial={2}
                 >
                   <PopoutSelect
                     isMulti
@@ -486,7 +486,7 @@ export function NavbarCatalogSearch() {
                     setSelectSkillsAreas(defaultFilters.defaultOptions);
                     setStartTime(Date.now());
                   }}
-                  select_options={selectSkillsAreas}
+                  selectOptions={selectSkillsAreas}
                   className="mr-0"
                 >
                   <PopoutSelect
@@ -580,7 +580,7 @@ export function NavbarCatalogSearch() {
                   setSelectSeasons(defaultFilters.defaultOptions);
                   setStartTime(Date.now());
                 }}
-                select_options={selectSeasons}
+                selectOptions={selectSeasons}
               >
                 <PopoutSelect
                   isMulti
@@ -624,8 +624,8 @@ export function NavbarCatalogSearch() {
                 setStartTime(Date.now());
                 setResetKey(resetKey + 1);
               }}
-              select_options={advancedOptions}
-              data_tutorial={4}
+              selectOptions={advancedOptions}
+              dataTutorial={4}
             >
               <AdvancedWrapper>
                 {isTablet && (

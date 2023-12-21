@@ -15,7 +15,7 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 
 type Props = {
-  readonly profile_expanded: boolean;
+  readonly profileExpanded: boolean;
   readonly setIsComponentVisible: (visible: boolean) => void;
   readonly isLoggedIn: boolean;
   readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
@@ -23,13 +23,13 @@ type Props = {
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
- * @prop profile_expanded - is dropdown visible?
+ * @prop profileExpanded - is dropdown visible?
  * @prop setIsComponentVisible - function that changes dropdown visibility
  * @prop isLoggedIn - is user logged in?
  * @prop setIsTutorialOpen - opens tutorial
  */
 function MeDropdown({
-  profile_expanded,
+  profileExpanded,
   setIsComponentVisible,
   isLoggedIn,
   setIsTutorialOpen,
@@ -45,7 +45,7 @@ function MeDropdown({
         setIsComponentVisible(true);
       }}
     >
-      <Collapse in={profile_expanded}>
+      <Collapse in={profileExpanded}>
         {/* This wrapper div is important for making the collapse animation
           smooth */}
         <div>

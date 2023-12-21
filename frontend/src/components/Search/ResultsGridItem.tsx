@@ -33,8 +33,8 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
     inWorksheet
       ? theme.primaryLight
       : theme.theme === 'light'
-        ? 'rgb(245, 245, 245)'
-        : theme.surface[1]};
+      ? 'rgb(245, 245, 245)'
+      : theme.surface[1]};
   transition:
     border-color ${({ theme }) => theme.transDur},
     background-color ${({ theme }) => theme.transDur},
@@ -48,24 +48,24 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
  * Renders a grid item for a search result
  * @prop course data for the current course
  * @prop isLoggedIn is the user logged in?
- * @prop num_cols integer that holds how many columns in grid view
+ * @prop numCols integer that holds how many columns in grid view
  * @prop multiSeasons are we displaying courses across multiple seasons
  */
 
 function ResultsGridItem({
   course,
   isLoggedIn,
-  num_cols,
+  numCols,
   multiSeasons,
 }: {
   readonly course: Listing;
   readonly isLoggedIn: boolean;
-  readonly num_cols: number;
+  readonly numCols: number;
   readonly multiSeasons: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
-  const colWidth = 12 / num_cols;
+  const colWidth = 12 / numCols;
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;

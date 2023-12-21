@@ -343,7 +343,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
       {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
-          profile_expanded={isComponentVisible}
+          profileExpanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
           setIsTutorialOpen={setIsTutorialOpen}

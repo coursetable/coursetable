@@ -216,7 +216,7 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Season"
               type="season"
-              select_options={selectedSeason}
+              selectOptions={selectedSeason}
               clearIcon={false}
             >
               <PopoutSelect
@@ -235,7 +235,7 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Worksheet"
               type="worksheet"
-              select_options={selectedWorksheet}
+              selectOptions={selectedWorksheet}
               clearIcon={false}
             >
               <PopoutSelect
@@ -254,7 +254,7 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Friends' courses"
               type="friend"
-              select_options={selectedPerson}
+              selectOptions={selectedPerson}
               onReset={() => {
                 handlePersonChange('me');
               }}

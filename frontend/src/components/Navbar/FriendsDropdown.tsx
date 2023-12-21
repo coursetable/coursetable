@@ -31,33 +31,29 @@ function FriendsDropdown() {
   );
   friends = ['me', ...friends];
 
-  function DropdownItem({ person: curr_person }: { readonly person: Person }) {
+  function DropdownItem({ person: currPerson }: { readonly person: Person }) {
     let text: string;
-    if (curr_person === 'me') {
+    if (currPerson === 'me') {
       text = 'Me';
     } else {
-      const { name } = friendInfo[curr_person];
+      const { name } = friendInfo[currPerson];
       text = String(name);
     }
     return (
       <Dropdown.Item
-        key={curr_person}
-        eventKey={curr_person}
+        key={currPerson}
+        eventKey={currPerson}
         className="d-flex"
         // Styling if this is the current person
         style={{
-          backgroundColor: person === curr_person ? '#007bff' : '',
-          color: person === curr_person ? 'white' : 'black',
+          backgroundColor: person === currPerson ? '#007bff' : '',
+          color: person === currPerson ? 'white' : 'black',
         }}
       >
         <div className="mx-auto">{text}</div>
       </Dropdown.Item>
     );
   }
-
-  const friendOptions = friends.map((curr_person) => (
-    <DropdownItem key={curr_person} person={curr_person} />
-  ));
 
   return (
     <div className="container p-0 m-0">
@@ -68,7 +64,9 @@ function FriendsDropdown() {
           if (person) handlePersonChange(person);
         }}
       >
-        {friendOptions}
+        {friends.map((p) => (
+          <DropdownItem key={p} person={p} />
+        ))}
       </DropdownButton>
     </div>
   );
