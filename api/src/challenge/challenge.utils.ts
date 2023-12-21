@@ -8,6 +8,8 @@ import { CHALLENGE_ALGORITHM, CHALLENGE_PASSWORD } from '../config';
  * @prop salt - salt value to append to password
  */
 export function encrypt(text: string, salt: string): string {
+  // TODO
+  // eslint-disable-next-line n/no-deprecated-api
   const cipher = crypto.createCipher(
     CHALLENGE_ALGORITHM,
     CHALLENGE_PASSWORD + salt,
@@ -24,6 +26,8 @@ export function encrypt(text: string, salt: string): string {
  * @prop salt - salt value to append to password
  */
 export function decrypt(text: string, salt: string): string {
+  // TODO
+  // eslint-disable-next-line n/no-deprecated-api
   const decipher = crypto.createDecipher(
     CHALLENGE_ALGORITHM,
     CHALLENGE_PASSWORD + salt,

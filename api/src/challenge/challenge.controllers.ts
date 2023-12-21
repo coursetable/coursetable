@@ -82,6 +82,7 @@ const constructChallenge = (
   // Yale OCE urls for user to retrieve answers
   const oceUrls = evals.evaluation_ratings.map((x) => {
     // Courses have multiple CRNs, and any one should be fine
+    // eslint-disable-next-line prefer-destructuring
     const { crn } = x.course.listings[0];
     const season = x.course.season_code;
 
