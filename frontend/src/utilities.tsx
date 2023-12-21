@@ -17,9 +17,8 @@ export const useComponentVisible = <T extends HTMLElement>(
   // Handle clicks outside of the component
   const handleClickOutside = (event: Event) => {
     // Hide component if user clicked outside of it
-    if (elemRef.current && !elemRef.current.contains(event.target as Node)) 
+    if (elemRef.current && !elemRef.current.contains(event.target as Node))
       setIsComponentVisible(false);
-    
   };
 
   // Add event listener on mount and remove it on dismount
@@ -57,9 +56,8 @@ export const useComponentVisibleDropdown = <T extends HTMLElement>(
       portal &&
       !portal.contains(event.target as Node)
     ) {
-      if (callback) 
-        callback(isComponentVisible);
-      
+      if (callback) callback(isComponentVisible);
+
       setIsComponentVisible(false);
     }
   };
@@ -84,9 +82,7 @@ export const scrollToTop: MouseEventHandler = (event) => {
   const newPage =
     event.ctrlKey || event.shiftKey || event.altKey || event.metaKey;
 
-  if (!newPage) 
-    window.scrollTo({ top: 0, left: 0 });
-  
+  if (!newPage) window.scrollTo({ top: 0, left: 0 });
 };
 
 export async function logout() {

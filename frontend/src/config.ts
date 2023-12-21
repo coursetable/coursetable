@@ -6,7 +6,7 @@ export const API_ENDPOINT = isDev
 
 export const GRAPHQL_API_ENDPOINT = isDev
   ? 'https://localhost:8085'
-  : `${import.meta.env.VITE_API_ENDPOINT  }/ferry`;
+  : `${import.meta.env.VITE_API_ENDPOINT}/ferry`;
 
 // Used for which season to show by default in catalog and worksheet
 export const CUR_SEASON = '202401';

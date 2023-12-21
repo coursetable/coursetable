@@ -205,9 +205,7 @@ function Tutorial({
 
   // Whenever the tutorial is closed, reset the currentStep
   useEffect(() => {
-    if (!isTutorialOpen) 
-      setCurrentStep(0);
-    
+    if (!isTutorialOpen) setCurrentStep(0);
   }, [isTutorialOpen]);
 
   const globalTheme = useTheme();
@@ -264,13 +262,10 @@ function Tutorial({
       };
 
       // Add observe selector if observing
-      if (observe) 
+      if (observe)
         step = { ...step, observe: `[data-tutorial="${selector}-observe"]` };
-      
 
-      if (position) 
-        step = { ...step, position };
-      
+      if (position) step = { ...step, position };
 
       return step;
     },
@@ -278,9 +273,8 @@ function Tutorial({
 
   // Handle prev button styling
   const prevButton = useMemo(() => {
-    if (currentStep === 0) 
-      return <div style={{ display: 'none' }} />;
-    
+    if (currentStep === 0) return <div style={{ display: 'none' }} />;
+
     if (!shownTutorial) {
       return (
         <PrevButton
@@ -298,9 +292,9 @@ function Tutorial({
 
   // Next button component
   const nextButton = useMemo(() => {
-    if (location.pathname === '/catalog' && currentStep === 7) 
+    if (location.pathname === '/catalog' && currentStep === 7)
       return <NextButton disabled>Next</NextButton>;
-    
+
     return <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>;
   }, [currentStep, location]);
 
@@ -309,9 +303,8 @@ function Tutorial({
       steps={steps}
       isOpen={isTutorialOpen}
       onRequestClose={() => {
-        if (!shownTutorial) 
-          navigate('/catalog');
-        
+        if (!shownTutorial) navigate('/catalog');
+
         setShownTutorial(true);
         setIsTutorialOpen(false);
       }}

@@ -66,38 +66,38 @@ function ResultsColumnSort({ selectOption }: Props) {
 
   return (
     <StyledSortBtn
-        style={{ backgroundColor: active ? globalTheme.selectHover : '' }}
-        className="ml-1 my-auto"
-        onClick={() => {
-          // If not sorting by this option previously, start sorting this option
-          if (selectSortby.value !== selectOption.value) {
-            setSelectSortby(selectOption);
-            setSortOrder(localSortOrder);
-            return;
-          }
-          if (localSortOrder === 'asc') {
-            setSortOrder('desc');
-            setLocalSortOrder('desc');
-          } else {
-            setSortOrder('asc');
-            setLocalSortOrder('asc');
-          }
-        }}
-      >
-        {!selectOption.numeric ? (
-          // Sorting by letters
-          localSortOrder === 'asc' ? (
-            <FcAlphabeticalSortingAz className="d-block" size={20} />
-          ) : (
-            <FcAlphabeticalSortingZa className="d-block" size={20} />
-          )
-        ) : // Sorting by numbers
+      style={{ backgroundColor: active ? globalTheme.selectHover : '' }}
+      className="ml-1 my-auto"
+      onClick={() => {
+        // If not sorting by this option previously, start sorting this option
+        if (selectSortby.value !== selectOption.value) {
+          setSelectSortby(selectOption);
+          setSortOrder(localSortOrder);
+          return;
+        }
+        if (localSortOrder === 'asc') {
+          setSortOrder('desc');
+          setLocalSortOrder('desc');
+        } else {
+          setSortOrder('asc');
+          setLocalSortOrder('asc');
+        }
+      }}
+    >
+      {!selectOption.numeric ? (
+        // Sorting by letters
         localSortOrder === 'asc' ? (
-          <FcNumericalSorting12 className="d-block" size={20} />
+          <FcAlphabeticalSortingAz className="d-block" size={20} />
         ) : (
-          <FcNumericalSorting21 className="d-block" size={20} />
-        )}
-      </StyledSortBtn>
+          <FcAlphabeticalSortingZa className="d-block" size={20} />
+        )
+      ) : // Sorting by numbers
+      localSortOrder === 'asc' ? (
+        <FcNumericalSorting12 className="d-block" size={20} />
+      ) : (
+        <FcNumericalSorting21 className="d-block" size={20} />
+      )}
+    </StyledSortBtn>
   );
 }
 

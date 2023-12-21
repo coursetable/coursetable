@@ -280,8 +280,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   {filter === 'professor'
                     ? courseOfferings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${courseOfferings[i].section}`
-                    : courseOfferings[i].professor[0]}
+                      ? `Section ${courseOfferings[i].section}`
+                      : courseOfferings[i].professor[0]}
                 </div>
               </StyledCol>
             ) : (
@@ -297,8 +297,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   {filter === 'professor'
                     ? courseOfferings[i].course_code[0]
                     : filter === 'both'
-                    ? `Section ${courseOfferings[i].section}`
-                    : courseOfferings[i].professor[0]}
+                      ? `Section ${courseOfferings[i].section}`
+                      : courseOfferings[i].professor[0]}
                 </div>
               </StyledColUnclickable>
             )}
@@ -783,8 +783,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   (e.key === 'ArrowLeft'
                     ? 2
                     : e.key === 'ArrowRight'
-                    ? 1
-                    : 0)) %
+                      ? 1
+                      : 0)) %
                 3;
               setFilter(options[newIndx].value);
             }}

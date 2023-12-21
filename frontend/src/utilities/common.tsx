@@ -27,14 +27,14 @@ type ListingOverrides = {
   areas: string[];
   skills: string[];
   professor_names: string[];
-  times_by_day: Partial<
-    { [key: Weekdays]: [
-        startTime: string,
-        endTime: string,
-        location: string,
-        locationURL: string,
-      ][] }
-  >;
+  times_by_day: Partial<{
+    [key: Weekdays]: [
+      startTime: string,
+      endTime: string,
+      location: string,
+      locationURL: string,
+    ][];
+  }>;
 };
 type ListingAugments = {
   // Add a couple types created by the preprocessing step.

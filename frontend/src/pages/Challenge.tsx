@@ -89,9 +89,7 @@ function Challenge() {
         }
       })
       .catch((err) => {
-        if (err.response.data) 
-          setRequestError(err.response.data.error);
-        
+        if (err.response.data) setRequestError(err.response.data.error);
       });
   }, []);
 

@@ -95,9 +95,8 @@ function GoogleCalendarButton(): JSX.Element {
   }, [courses, gapi, curSeason, hiddenCourses]);
 
   useEffect(() => {
-    if (!authInstance || user || !exportButtonRef.current) 
-      return;
-    
+    if (!authInstance || user || !exportButtonRef.current) return;
+
     authInstance.attachClickHandler(
       exportButtonRef.current,
       {},

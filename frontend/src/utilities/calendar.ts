@@ -66,11 +66,8 @@ function getTimes(timesByDay: Listing['times_by_day']) {
       const time = times.find(
         (t) => t.startTime === startTime && t.endTime === endTime,
       );
-      if (time) 
-        time.days.push(idx);
-       else 
-        times.push({ days: [idx], startTime, endTime, location });
-      
+      if (time) time.days.push(idx);
+      else times.push({ days: [idx], startTime, endTime, location });
     }
   }
   return times;
@@ -100,9 +97,7 @@ function datesInBreak(
       date.getTime() < end;
       date.setUTCDate(date.getUTCDate() + 1)
     ) {
-      if (days.includes(date.getUTCDay())) 
-        dates.push(isoString(date, time));
-      
+      if (days.includes(date.getUTCDay())) dates.push(isoString(date, time));
     }
     return dates;
   });
@@ -128,7 +123,7 @@ function toGCalEvent({
   colorIndex,
 }: CalendarEvent) {
   return {
-    id: `coursetable${  uuidv4().replace(/-/gu, '')}`,
+    id: `coursetable${uuidv4().replace(/-/gu, '')}`,
     summary,
     start: {
       dateTime: start,

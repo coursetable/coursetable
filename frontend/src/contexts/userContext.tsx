@@ -12,9 +12,11 @@ import type { NetId, Season } from '../utilities/common';
 import { API_ENDPOINT } from '../config';
 
 export type Worksheet = [Season, string, string][];
-export type FriendRecord = { [key: NetId]: {
+export type FriendRecord = {
+  [key: NetId]: {
     name: string;
-  } };
+  };
+};
 export type FriendRequest = {
   netId: string;
   name: string;
@@ -56,7 +58,11 @@ UserContext.displayName = 'UserContext';
 /**
  * Stores the user's worksheet and friends' worksheets
  */
-export function UserProvider({ children }: { readonly children: React.ReactNode }) {
+export function UserProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   // User's netId
   const [netId, setNetId] = useState<string | undefined>(undefined);
   // User's worksheet
@@ -85,9 +91,7 @@ export function UserProvider({ children }: { readonly children: React.ReactNode 
         const res = await axios.get(`${API_ENDPOINT}/api/user/worksheets`, {
           withCredentials: true,
         });
-        if (!res.data.success) 
-          throw new Error(res.data.message);
-        
+        if (!res.data.success) throw new Error(res.data.message);
 
         // Successfully fetched worksheet
         setNetId(res.data.netId);
@@ -105,9 +109,7 @@ export function UserProvider({ children }: { readonly children: React.ReactNode 
         setSchool(undefined);
         Sentry.configureScope((scope) => scope.clear());
         Sentry.captureException(err);
-        if (!suppressError) 
-          toast.error('Error fetching worksheet');
-        
+        if (!suppressError) toast.error('Error fetching worksheet');
       }
     },
     [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
@@ -123,9 +125,9 @@ export function UserProvider({ children }: { readonly children: React.ReactNode 
             withCredentials: true,
           },
         );
-        if (!friendsWorksheets.data.success) 
+        if (!friendsWorksheets.data.success)
           throw new Error(friendsWorksheets.data.message);
-        
+
         // Successfully fetched friends' worksheets
         setFriendWorksheets(friendsWorksheets.data);
       } catch (err) {
@@ -150,9 +152,8 @@ export function UserProvider({ children }: { readonly children: React.ReactNode 
             withCredentials: true,
           },
         );
-        if (!friendReqs.data.success) 
-          throw new Error(friendReqs.data.message);
-        
+        if (!friendReqs.data.success) throw new Error(friendReqs.data.message);
+
         // Successfully fetched friends' worksheets
         setFriendRequests(friendReqs.data.friends);
       } catch (err) {
@@ -173,9 +174,8 @@ export function UserProvider({ children }: { readonly children: React.ReactNode 
         const names = await axios.get(`${API_ENDPOINT}/api/friends/names`, {
           withCredentials: true,
         });
-        if (!names.data.success) 
-          throw new Error(names.data.message);
-        
+        if (!names.data.success) throw new Error(names.data.message);
+
         setAllNames(names.data.names);
       } catch (err) {
         if (!suppressError) {
