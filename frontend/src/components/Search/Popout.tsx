@@ -1,11 +1,10 @@
 import React, { useEffect, useState } from 'react';
-
 import styled, { useTheme } from 'styled-components';
-
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
-import { breakpoints, useComponentVisibleDropdown } from '../../utilities';
 import chroma from 'chroma-js';
+
+import { breakpoints, useComponentVisibleDropdown } from '../../utilities';
 import { isOption } from '../../contexts/searchContext';
 
 // Entire popout component

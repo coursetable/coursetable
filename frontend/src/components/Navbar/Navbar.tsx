@@ -4,6 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
+import { DateTime, Duration } from 'luxon';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
@@ -17,7 +18,6 @@ import {
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
-import { DateTime, Duration } from 'luxon';
 
 import { API_ENDPOINT } from '../../config';
 import { useTheme } from '../../contexts/themeContext';

@@ -1,10 +1,10 @@
 import React, { useState, useMemo } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
+import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
 import { StyledInput, TextComponent } from '../StyledComponents';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
-import Mark from 'mark.js';
 
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
@@ -85,9 +85,9 @@ const EvaluationResponses: React.FC<{
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
     ) as typeof tempResponses;
-    for (const key of Object.keys(tempResponses)) 
+    for (const key of Object.keys(tempResponses))
       sortedResponses[key].sort((a, b) => b.length - a.length);
-    
+
     return [tempResponses, sortedResponses];
   }, [info, crn]);
 
@@ -106,9 +106,8 @@ const EvaluationResponses: React.FC<{
     const curResponses = sortOrder === 'length' ? sortedResponses : responses;
     // Populate the lists above
     const genTemp = (resps: string[]) => {
-      if (resps.length === 0) 
-        return [];
-      
+      if (resps.length === 0) return [];
+
       const filteredResps = resps
         .filter((response) =>
           response.toLowerCase().includes(filter.toLowerCase()),
@@ -128,15 +127,12 @@ const EvaluationResponses: React.FC<{
       return filteredResps;
     };
     for (const key of Object.keys(curResponses)) {
-      if (key.includes('summarize')) 
-        tempSummary = genTemp(curResponses[key]);
-       else if (key.includes('recommend')) 
+      if (key.includes('summarize')) tempSummary = genTemp(curResponses[key]);
+      else if (key.includes('recommend'))
         tempRecommend = genTemp(curResponses[key]);
-       else if (key.includes('skills')) 
-        tempSkills = genTemp(curResponses[key]);
-       else if (key.includes('strengths')) 
+      else if (key.includes('skills')) tempSkills = genTemp(curResponses[key]);
+      else if (key.includes('strengths'))
         tempStrengths = genTemp(curResponses[key]);
-      
     }
     return [tempRecommend, tempSkills, tempStrengths, tempSummary];
   }, [responses, sortOrder, sortedResponses, filter]);

@@ -1,4 +1,5 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FcInfo, FcQuestions, FcFeedback, FcPuzzle } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
@@ -10,9 +11,7 @@ import {
   TextComponent,
   StyledHoverText,
 } from '../StyledComponents';
-import { NavLink } from 'react-router-dom';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-
 import { API_ENDPOINT } from '../../config';
 
 type Props = {

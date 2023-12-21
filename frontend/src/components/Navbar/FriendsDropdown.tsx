@@ -6,7 +6,7 @@ import { useWorksheet } from '../../contexts/worksheetContext';
 
 import './DropdownShared.css';
 
-type Person = NetId | 'me';
+type Person = (NetId & {}) | 'me';
 
 /**
  * Render friends dropdown in mobile view.
@@ -65,9 +65,7 @@ function FriendsDropdown() {
         variant="primary"
         title={person === 'me' ? 'Me' : friendInfo[person].name}
         onSelect={(person) => {
-          if (person) 
-            handlePersonChange(person);
-          
+          if (person) handlePersonChange(person);
         }}
       >
         {friendOptions}

@@ -1,10 +1,11 @@
 import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
-import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
+
+import './WorksheetCalendar.css';
 import CalendarEvent, { type CourseEvent } from './CalendarEvent';
 import { weekdays, type Listing } from '../../utilities/common';
 import { useWorksheet } from '../../contexts/worksheetContext';

@@ -1,39 +1,33 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import { Element, scroller } from 'react-scroll';
+import 'rc-slider/assets/index.css';
+import 'rc-tooltip/assets/bootstrap.css';
+import type { ValueType } from 'react-select/src/types';
+
 import styles from './Search.module.css';
-
 import Results from '../components/Search/Results';
-
 import {
   skillsAreasOptions,
   schoolOptions,
   subjectOptions,
 } from '../queries/Constants';
-
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/Search/SortByReactSelect';
-
-import 'rc-slider/assets/index.css';
-import 'rc-tooltip/assets/bootstrap.css';
-
 import {
   SurfaceComponent,
   StyledInput,
   StyledHr,
   TextComponent,
 } from '../components/StyledComponents';
-
 import { useSessionStorageState } from '../utilities/browserStorage';
 import {
   useSearch,
   type Option,
   defaultFilters,
 } from '../contexts/searchContext';
-import type { ValueType } from 'react-select/src/types';
 
 /**
  * Renders catalog page

@@ -1,17 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
-
+import { AiOutlineStar } from 'react-icons/ai';
+import { IoPersonOutline } from 'react-icons/io5';
+import { BiBookOpen } from 'react-icons/bi';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import styled from 'styled-components';
+
 import {
   ratingColormap,
   workloadColormap,
   subjectOptions,
 } from '../../queries/Constants';
-
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
@@ -23,10 +25,6 @@ import {
   getWorkloadRatings,
   toSeasonString,
 } from '../../utilities/courseUtilities';
-
-import { AiOutlineStar } from 'react-icons/ai';
-import { IoPersonOutline } from 'react-icons/io5';
-import { BiBookOpen } from 'react-icons/bi';
 import SkillBadge from '../SkillBadge';
 
 // Grid Item wrapper

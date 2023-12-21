@@ -10,13 +10,16 @@ import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
-import { SmallTextComponent, StyledInput } from '../StyledComponents';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import type { ValueType } from 'react-select/src/types';
-import { Popout } from '../Search/Popout';
-import { PopoutSelect } from '../Search/PopoutSelect';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
+import chroma from 'chroma-js';
+import _ from 'lodash';
+
+import { SmallTextComponent, StyledInput } from '../StyledComponents';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import { Popout } from '../Search/Popout';
+import { PopoutSelect } from '../Search/PopoutSelect';
 
 import {
   skillsAreasOptions,
@@ -33,8 +36,6 @@ import {
   defaultFilters,
 } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
-import chroma from 'chroma-js';
-import _ from 'lodash';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
 import {
   toRangeTime,
@@ -292,9 +293,8 @@ export function NavbarCatalogSearch() {
   // Active styles for range filters
   const activeStyle = useCallback(
     (active: boolean) => {
-      if (active) 
-        return { color: globalTheme.primaryHover };
-      
+      if (active) return { color: globalTheme.primaryHover };
+
       return undefined;
     },
     [globalTheme],
@@ -302,16 +302,14 @@ export function NavbarCatalogSearch() {
 
   // Responsive styles for overall and workload range filters
   const rangeHandleStyle = useMemo(() => {
-    if (isLgDesktop) 
-      return undefined;
-    
+    if (isLgDesktop) return undefined;
+
     const styles: React.CSSProperties = { height: '12px', width: '12px' };
     return [styles, styles];
   }, [isLgDesktop]);
   const rangeRailStyle = useMemo((): React.CSSProperties => {
-    if (isLgDesktop) 
-      return {};
-    
+    if (isLgDesktop) return {};
+
     const styles = { marginTop: '-1px' };
     return styles;
   }, [isLgDesktop]);

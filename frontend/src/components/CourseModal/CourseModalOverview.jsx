@@ -8,7 +8,6 @@ import {
   Collapse,
 } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-import '../Search/MultiToggle.css';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { IoIosArrowDown } from 'react-icons/io';
@@ -16,6 +15,8 @@ import { HiExternalLink } from 'react-icons/hi';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
+
+import '../Search/MultiToggle.css';
 import { CUR_YEAR } from '../../config';
 import { useUser } from '../../contexts/userContext';
 import {
@@ -26,7 +27,6 @@ import {
 } from '../StyledComponents';
 import { ratingColormap, workloadColormap } from '../../queries/Constants';
 import styles from './CourseModalOverview.module.css';
-
 import CourseModalLoading from './CourseModalLoading';
 import {
   friendsAlsoTaking,

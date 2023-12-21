@@ -6,6 +6,7 @@ import {
   createRoutesFromChildren,
   matchRoutes,
 } from 'react-router-dom';
+import { Row } from 'react-bootstrap';
 import { createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import {
@@ -14,9 +15,7 @@ import {
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
-
 import * as Sentry from '@sentry/react';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -33,7 +32,6 @@ import { isDev, API_ENDPOINT } from './config';
 import './index.css';
 
 import ErrorPage from './components/ErrorPage';
-import { Row } from 'react-bootstrap';
 
 const release = isDev ? 'edge' : import.meta.env.VITE_SENTRY_RELEASE;
 

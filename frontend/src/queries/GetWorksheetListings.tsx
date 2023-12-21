@@ -1,8 +1,9 @@
 import { useMemo } from 'react';
+import * as Sentry from '@sentry/react';
+
 import type { Season, Listing } from '../utilities/common';
 import { useCourseData } from '../contexts/ferryContext';
 import type { Worksheet } from '../contexts/userContext';
-import * as Sentry from '@sentry/react';
 
 export const useWorksheetInfo = (
   worksheet: Worksheet | undefined,
@@ -37,9 +38,7 @@ export const useWorksheetInfo = (
       const seasonCode: string = worksheet[i][0];
       const crn = parseInt(worksheet[i][1], 10);
       const worksheetNumberCourse: string = worksheet[i][2];
-      if (season !== null && season != seasonCode) 
-        continue;
-      
+      if (season !== null && season != seasonCode) continue;
 
       if (
         courses &&

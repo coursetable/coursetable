@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { List, WindowScroller, AutoSizer } from 'react-virtualized';
+import styled, { useTheme } from 'styled-components';
 
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
@@ -9,14 +13,8 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import styles from './Results.module.css';
 
-import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
-
-import { List, WindowScroller, AutoSizer } from 'react-virtualized';
-
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import Authentication from '../../images/authentication.svg';
-
-import styled, { useTheme } from 'styled-components';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
@@ -28,7 +26,6 @@ import { toSeasonString } from '../../utilities/courseUtilities';
 
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Link } from 'react-router-dom';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`

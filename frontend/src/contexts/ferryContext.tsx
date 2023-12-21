@@ -6,13 +6,13 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-
 import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
+
 import _seasons from '../generated/seasons.json';
 import type { Crn, Season, Listing } from '../utilities/common';
-import * as Sentry from '@sentry/react';
 
 import { API_ENDPOINT } from '../config';
 

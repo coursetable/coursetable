@@ -1,8 +1,9 @@
 import React from 'react';
-import './WorksheetToggleButton.css';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { withTheme, type DefaultTheme } from 'styled-components';
+
+import './WorksheetToggleButton.css';
 
 /**
  * Render the course hide button in the Worksheet List

@@ -2,9 +2,6 @@ import React from 'react';
 import { Row, Col, Container } from 'react-bootstrap';
 import { Element } from 'react-scroll';
 import { Link } from 'react-router-dom';
-
-import { API_ENDPOINT } from '../config';
-
 import {
   FcConferenceCall,
   FcComboChart,
@@ -12,6 +9,8 @@ import {
   FcSearch,
 } from 'react-icons/fc';
 import styled from 'styled-components';
+
+import { API_ENDPOINT } from '../config';
 import styles from './Landing.module.css';
 import LandingImage from '../images/landing_page.svg';
 

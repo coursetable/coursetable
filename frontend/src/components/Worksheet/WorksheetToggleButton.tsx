@@ -1,17 +1,17 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import './WorksheetToggleButton.css';
 import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
+import * as Sentry from '@sentry/react';
+
+import './WorksheetToggleButton.css';
 import { useUser } from '../../contexts/userContext';
 import { setLSObject } from '../../utilities/browserStorage';
 import { isInWorksheet } from '../../utilities/courseUtilities';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-import * as Sentry from '@sentry/react';
-
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
 
@@ -105,9 +105,8 @@ function WorksheetToggleButton({
       // Removes removed courses from worksheet hidden courses
       if (inWorksheet) {
         setLSObject('hiddenCourses', {}, true);
-        if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn]) 
+        if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn])
           toggleCourse(crn);
-        
       }
 
       // Call the endpoint
@@ -148,12 +147,13 @@ function WorksheetToggleButton({
   );
 
   // Disabled worksheet add/remove button if not logged in
-  if (user.worksheet == null)
-    {return (
+  if (user.worksheet == null) {
+    return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
         <BsBookmark size={25} className="disabled-button-icon" />
       </Button>
-    );}
+    );
+  }
 
   return (
     <OverlayTrigger
@@ -188,9 +188,8 @@ function WorksheetToggleButton({
               }}
               onClick={(e) => {
                 // Check if the clicked target is the select element
-                if ((e.target as HTMLSelectElement).tagName === 'SELECT') 
+                if ((e.target as HTMLSelectElement).tagName === 'SELECT')
                   e.stopPropagation();
-                
               }}
               onMouseEnter={(e) => {
                 e.preventDefault();
