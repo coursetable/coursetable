@@ -1,13 +1,12 @@
 import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
-import type { ValueType } from 'react-select/src/types';
 import { components } from 'react-select';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
-import { isOption, type Option } from '../../contexts/searchContext';
+import { isOption } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/courseUtilities';
@@ -225,7 +224,7 @@ export function NavbarWorksheetSearch() {
                 value={selectedSeason}
                 options={seasonOptions}
                 placeholder="Last 5 Years"
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                onChange={(selectedOption) => {
                   if (isOption(selectedOption))
                     changeSeason(selectedOption.value);
                 }}
@@ -244,7 +243,7 @@ export function NavbarWorksheetSearch() {
                 value={selectedWorksheet}
                 options={worksheetOptions}
                 placeholder="Main Worksheet"
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                onChange={(selectedOption) => {
                   if (isOption(selectedOption))
                     changeWorksheet(selectedOption.value);
                 }}
@@ -280,7 +279,7 @@ export function NavbarWorksheetSearch() {
                     : 'Removing friends (click to switch to select mode)'
                 }
                 isSearchable={false}
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                onChange={async (selectedOption) => {
                   if (removing === 0) {
                     // Cleared friend
                     if (!selectedOption) handlePersonChange('me');
@@ -288,8 +287,10 @@ export function NavbarWorksheetSearch() {
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value);
                   } else if (selectedOption && isOption(selectedOption)) {
-                    removeFriend(selectedOption.value, user.netId);
-                    removeFriend(user.netId, selectedOption.value);
+                    await Promise.all([
+                      removeFriend(selectedOption.value, user.netId),
+                      removeFriend(user.netId, selectedOption.value),
+                    ]);
                     alert(`Removed friend: ${selectedOption.value}`);
                     window.location.reload();
                   }
@@ -327,12 +328,14 @@ export function NavbarWorksheetSearch() {
                     ? 'Accepting requests (click to switch to decline mode)'
                     : 'Declining requests (click to switch to accept mode)'
                 }
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                onChange={async (selectedOption) => {
                   if (selectedOption && isOption(selectedOption)) {
-                    resolveFriendRequest(selectedOption.value);
+                    await resolveFriendRequest(selectedOption.value);
                     if (deleting === 0) {
-                      addFriend(selectedOption.value, user.netId);
-                      addFriend(user.netId, selectedOption.value);
+                      await Promise.all([
+                        addFriend(selectedOption.value, user.netId),
+                        addFriend(user.netId, selectedOption.value),
+                      ]);
                       alert(`Added friend: ${selectedOption.value}`);
                     } else if (deleting === 1) {
                       alert(`Declined friend request: ${selectedOption.value}`);
@@ -350,12 +353,12 @@ export function NavbarWorksheetSearch() {
               <Searchbar
                 hideSelectedOptions={false}
                 components={{
-                  Menu: () => <></>,
+                  Menu: () => null,
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
-                onKeyDown={(e) => {
+                onKeyDown={async (e) => {
                   if (e.key === 'Enter') {
-                    friendRequest(currentFriendNetID);
+                    await friendRequest(currentFriendNetID);
                     alert(`Sent friend request: ${currentFriendNetID}`);
                   }
                 }}

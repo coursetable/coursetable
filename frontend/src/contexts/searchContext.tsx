@@ -48,7 +48,8 @@ export type Option = {
 };
 
 export const isOption = (x: unknown): x is Option =>
-  Boolean(x) && typeof x === 'object' && 'label' in x && 'value' in x;
+  // eslint-disable-next-line no-implicit-coercion
+  !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
 export type SortOrderType = 'desc' | 'asc' | undefined;
 
@@ -566,7 +567,7 @@ export function SearchProvider({
       )
         return false;
 
-      const number = Number(listing.number.replace(/\D/g, ''));
+      const number = Number(listing.number.replace(/\D/gu, ''));
       if (
         searchConfig.minNumber !== null &&
         searchConfig.maxNumber !== null &&

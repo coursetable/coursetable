@@ -7,14 +7,14 @@ import { StyledBanner } from './StyledComponents';
 /**
  * Notice banner at the top of the website
  */
-function Notice({ children }: { readonly children: React.ReactNode }) {
+function Notice({ children }: { readonly children?: React.ReactNode }) {
   // Save visibility in session storage
   const [visible, setVisible] = useSessionStorageState(
     'noticeVisibility',
     true,
   );
 
-  if (!visible) return <></>;
+  if (!visible || !children) return null;
 
   return (
     <StyledBanner className={styles.banner}>

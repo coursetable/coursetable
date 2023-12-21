@@ -50,7 +50,7 @@ export function GapiProvider({
       setAuthInstance(newAuth2);
       if (newAuth2.isSignedIn.get()) setUser(newAuth2.currentUser.get());
     }
-    loadGapi();
+    void loadGapi();
   }, []);
 
   const store: Store = useMemo(

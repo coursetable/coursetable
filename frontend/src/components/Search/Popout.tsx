@@ -268,9 +268,7 @@ export function Popout({
           ) : (
             <UpIcon className="ml-1" />
           )
-        ) : (
-          <></>
-        )}
+        ) : null}
       </StyledButton>
       {/* Dropdown */}
       {isComponentVisible ? (

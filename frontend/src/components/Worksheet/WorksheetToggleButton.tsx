@@ -117,7 +117,7 @@ function WorksheetToggleButton({
             action: addRemove,
             season: seasonCode,
             ociId: crn,
-            worksheet_number: parseInt(selectedWorksheet),
+            worksheet_number: parseInt(selectedWorksheet, 10),
           },
           {
             withCredentials: true,

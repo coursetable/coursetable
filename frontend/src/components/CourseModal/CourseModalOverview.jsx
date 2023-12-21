@@ -253,10 +253,10 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
       let id = 0;
 
       // Loop through each listing with evals
-      for (let i = 0; i < courseOfferings.length; i++) {
+      for (const offering of courseOfferings) {
         // Skip listings in the current and future seasons that have no evals
-        if (CUR_YEAR.includes(courseOfferings[i].season_code)) continue;
-        const hasEvals = courseOfferings[i].rating !== -1;
+        if (CUR_YEAR.includes(offering.season_code)) continue;
+        const hasEvals = offering.rating !== -1;
         const evalBox = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
             {/* The listing button, either clickable or greyed out based on
@@ -267,21 +267,19 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 className={`${styles.rating_bubble}  px-0 mr-3 text-center`}
                 onClick={() => {
                   // Temp dictionary that stores listing info
-                  const temp = { ...courseOfferings[i] };
+                  const temp = { ...offering };
                   temp.course_code = temp.course_code[0];
                   setSeason(temp);
                 }}
                 style={{ flex: 'none' }}
               >
-                <strong>
-                  {toSeasonString(courseOfferings[i].season_code)}
-                </strong>
+                <strong>{toSeasonString(offering.season_code)}</strong>
                 <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
-                    ? courseOfferings[i].course_code[0]
+                    ? offering.course_code[0]
                     : filter === 'both'
-                      ? `Section ${courseOfferings[i].section}`
-                      : courseOfferings[i].professor[0]}
+                    ? `Section ${offering.section}`
+                    : offering.professor[0]}
                 </div>
               </StyledCol>
             ) : (
@@ -290,15 +288,13 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 className={`${styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
                 style={{ flex: 'none', color: '#b5b5b5' }}
               >
-                <strong>
-                  {toSeasonString(courseOfferings[i].season_code)}
-                </strong>
+                <strong>{toSeasonString(offering.season_code)}</strong>
                 <div className={`${styles.details} mx-auto ${styles.shown}`}>
                   {filter === 'professor'
-                    ? courseOfferings[i].course_code[0]
+                    ? offering.course_code[0]
                     : filter === 'both'
-                      ? `Section ${courseOfferings[i].section}`
-                      : courseOfferings[i].professor[0]}
+                    ? `Section ${offering.section}`
+                    : offering.professor[0]}
                 </div>
               </StyledColUnclickable>
             )}
@@ -308,13 +304,11 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={courseOfferings[i].rating}
+                rating={offering.rating}
                 colormap={ratingColormap}
                 className={`${styles.rating_cell} ${styles.expanded_ratings}`}
               >
-                {courseOfferings[i].rating !== -1
-                  ? courseOfferings[i].rating.toFixed(1)
-                  : 'N/A'}
+                {offering.rating !== -1 ? offering.rating.toFixed(1) : 'N/A'}
               </StyledRating>
             </Col>
             {/* Professor Rating */}
@@ -323,12 +317,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={courseOfferings[i].professor_rating}
+                rating={offering.professor_rating}
                 colormap={ratingColormap}
                 className={styles.rating_cell}
               >
-                {courseOfferings[i].professor_rating !== -1
-                  ? courseOfferings[i].professor_rating.toFixed(1)
+                {offering.professor_rating !== -1
+                  ? offering.professor_rating.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -338,12 +332,12 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
               className="px-1 ml-0 d-flex justify-content-center text-center"
             >
               <StyledRating
-                rating={courseOfferings[i].workload}
+                rating={offering.workload}
                 colormap={workloadColormap}
                 className={styles.rating_cell}
               >
-                {courseOfferings[i].workload !== -1
-                  ? courseOfferings[i].workload.toFixed(1)
+                {offering.workload !== -1
+                  ? offering.workload.toFixed(1)
                   : 'N/A'}
               </StyledRating>
             </Col>
@@ -351,19 +345,19 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
         );
         // Course in both column
         if (
-          courseOfferings[i].course_code.includes(listing.course_code) &&
+          offering.course_code.includes(listing.course_code) &&
           listing.professor_names.length &&
-          overlappingProfs(courseOfferings[i].professor) ===
+          overlappingProfs(offering.professor) ===
             listing.professor_names.length
         )
           overlapSections.both.push(evalBox);
 
         // Course in course column
-        if (courseOfferings[i].course_code.includes(listing.course_code))
+        if (offering.course_code.includes(listing.course_code))
           overlapSections.course.push(evalBox);
 
         // Course in prof column
-        if (overlappingProfs(courseOfferings[i].professor) > 0)
+        if (overlappingProfs(offering.professor) > 0)
           overlapSections.professor.push(evalBox);
       }
       return overlapSections;
@@ -783,8 +777,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                   (e.key === 'ArrowLeft'
                     ? 2
                     : e.key === 'ArrowRight'
-                      ? 1
-                      : 0)) %
+                    ? 1
+                    : 0)) %
                 3;
               setFilter(options[newIndx].value);
             }}

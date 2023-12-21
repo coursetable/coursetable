@@ -24,18 +24,13 @@ export const isInWorksheet = (
   worksheetNumber: string,
   worksheet?: Worksheet,
 ): boolean => {
-  if (worksheet == null) return false;
-  if (typeof crn !== 'string') crn = crn.toString();
-
-  for (let i = 0; i < worksheet.length; i++) {
-    if (
-      worksheet[i][0] === seasonCode &&
-      worksheet[i][1] === crn &&
-      worksheet[i][2] === worksheetNumber.toString()
-    )
-      return true;
-  }
-  return false;
+  if (!worksheet) return false;
+  return worksheet.some(
+    (course) =>
+      course[0] === seasonCode &&
+      course[1] === String(crn) &&
+      course[2] === String(worksheetNumber),
+  );
 };
 
 // Convert season code to legible string
@@ -91,17 +86,17 @@ export const checkConflict = (
 export const checkCrossListed = (
   listings: Listing[],
   course: Listing,
-): boolean | string => {
+): false | string => {
   const classes: string[] = [];
   // Iterate over worksheet listings
-  for (let i = 0; i < listings.length; i++) {
+  for (const l of listings) {
     // Continue if they aren't in the same season
-    if (listings[i].season_code !== course.season_code) continue;
+    if (l.season_code !== course.season_code) continue;
     // Keep track of encountered classes and their aliases in the classes array
-    classes.push(...listings[i].all_course_codes);
+    classes.push(...l.all_course_codes);
     // Return the course code of the cross-listed class currently in the
     // worksheet if one exists
-    if (classes.includes(course.course_code)) return listings[i].course_code;
+    if (classes.includes(course.course_code)) return l.course_code;
   }
   return false;
 };
@@ -173,14 +168,14 @@ export function getOverallRatings(
     return course.average_rating_same_professors
       ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
       : course.average_rating
-        ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
-        : 'N/A'; // No ratings at all
+      ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
+      : 'N/A'; // No ratings at all
   }
   return course.average_rating_same_professors
     ? course.average_rating_same_professors // Use same professor if possible
     : course.average_rating
-      ? course.average_rating // Use all professors otherwise
-      : null; // No ratings at all
+    ? course.average_rating // Use all professors otherwise
+    : null; // No ratings at all
 }
 
 // Get the workload rating for a course
@@ -198,15 +193,37 @@ export function getWorkloadRatings(
     return course.average_workload_same_professors
       ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
       : course.average_workload
-        ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
-        : 'N/A'; // No ratings at all
+      ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
+      : 'N/A'; // No ratings at all
   }
   return course.average_workload_same_professors
     ? course.average_workload_same_professors // Use same professor if possible
     : course.average_workload
-      ? course.average_workload // Use all professors otherwise
-      : null; // No ratings at all
+    ? course.average_workload // Use all professors otherwise
+    : null; // No ratings at all
 }
+
+// Get start and end times
+export const getDayTimes = (
+  course: Listing,
+): { [key: string]: string }[] | null => {
+  // If no times then return null
+  if (isEmpty(course.times_by_day)) return null;
+
+  const initialFiltered: { [key: string]: string }[] = [];
+
+  const times = Object.entries(course.times_by_day).reduce(
+    (filtered, [day, dayTimes]) => {
+      if (dayTimes)
+        filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
+
+      return filtered;
+    },
+    initialFiltered,
+  );
+
+  return times;
+};
 
 // Calculate day and time score
 const calculateDayTime = (course: Listing): number | null => {
@@ -303,45 +320,24 @@ export const getEnrolled = (
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment && course.last_enrollment_same_professors
-        ? course.last_enrollment // Use last enrollment if course hasn't happened
-        : course.last_enrollment
-          ? `~${course.last_enrollment}${
-              onModal ? ' (different professor was teaching)' : ''
-            }` // Indicate diff prof
-          : String(onModal ? 'N/A' : ''); // No enrollment data
+      ? course.last_enrollment // Use last enrollment if course hasn't happened
+      : course.last_enrollment
+      ? `~${course.last_enrollment}${
+          onModal ? ' (different professor was teaching)' : ''
+        }` // Indicate diff prof
+      : String(onModal ? 'N/A' : ''); // No enrollment data
   } else {
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment
-        ? course.last_enrollment // Use last enrollment if course hasn't happened
-        : null; // No enrollment data
+      ? course.last_enrollment // Use last enrollment if course hasn't happened
+      : null; // No enrollment data
   }
 
   // Return enrolled
   return courseEnrolled;
 };
 
-// Get start and end times
-export const getDayTimes = (
-  course: Listing,
-): { [key: string]: string }[] | null => {
-  // If no times then return null
-  if (isEmpty(course.times_by_day)) return null;
-
-  const initialFiltered: { [key: string]: string }[] = [];
-
-  const times = Object.entries(course.times_by_day).reduce(
-    (filtered, [day, dayTimes]) => {
-      if (dayTimes)
-        filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
-
-      return filtered;
-    },
-    initialFiltered,
-  );
-
-  return times;
-};
 // Convert real time (24 hour) to range time
 export const toRangeTime = (time: string): number => {
   // Get hour and minute

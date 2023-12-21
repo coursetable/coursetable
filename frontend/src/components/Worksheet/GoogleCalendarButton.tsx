@@ -103,7 +103,7 @@ function GoogleCalendarButton(): JSX.Element {
       (googleUser) => {
         if (!user) {
           setUser(googleUser);
-          exportEvents();
+          void exportEvents();
         }
       },
       (error) => {

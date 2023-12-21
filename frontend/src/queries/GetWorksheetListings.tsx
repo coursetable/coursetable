@@ -34,10 +34,7 @@ export const useWorksheetInfo = (
     if (!worksheet) return dataReturn;
 
     // Resolve the worksheet items.
-    for (let i = 0; i < worksheet.length; i++) {
-      const seasonCode: string = worksheet[i][0];
-      const crn = parseInt(worksheet[i][1], 10);
-      const worksheetNumberCourse: string = worksheet[i][2];
+    for (const [seasonCode, crn, worksheetNumberCourse] of worksheet) {
       if (season !== null && season != seasonCode) continue;
 
       if (
@@ -45,7 +42,7 @@ export const useWorksheetInfo = (
         seasonCode in courses &&
         worksheetNumberCourse == worksheetNumber
       ) {
-        const course = courses[seasonCode].get(crn);
+        const course = courses[seasonCode].get(parseInt(crn, 10));
         if (!course) {
           Sentry.captureException(
             new Error(

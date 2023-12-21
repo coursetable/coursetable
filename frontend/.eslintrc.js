@@ -21,5 +21,17 @@ module.exports = {
     '@typescript-eslint/no-unsafe-return': 'off',
     '@typescript-eslint/no-unnecessary-condition': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
+
+    'no-eq-null': 'off',
+    eqeqeq: 'off',
+    'react/no-unstable-nested-components': 'off',
+    'prefer-destructuring': 'off',
+    '@typescript-eslint/prefer-nullish-coalescing': 'off',
+    'no-restricted-syntax': 'off',
+    'react/no-array-index-key': 'off',
+    '@typescript-eslint/init-declarations': 'off',
+    camelcase: 'off',
+    '@typescript-eslint/no-shadow': 'off',
+    '@typescript-eslint/no-misused-promises': 'off',
   },
 };

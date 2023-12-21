@@ -53,10 +53,13 @@ const StyledSortOption = styled.span<{ active: boolean }>`
  * @prop info - dictionary that holds the eval data for each question
  */
 
-const EvaluationResponses: React.FC<{
+function EvaluationResponses({
+  crn,
+  info,
+}: {
   readonly crn: number;
   readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
-}> = ({ crn, info }) => {
+}) {
   // Sort by original order or length?
   const [sortOrder, setSortOrder] = useState('original');
 
@@ -74,8 +77,7 @@ const EvaluationResponses: React.FC<{
       // Add comments to responses dictionary
       nodes.forEach((node) => {
         if (node.evaluation_question.question_text && node.comment) {
-          if (!tempResponses[node.evaluation_question.question_text])
-            tempResponses[node.evaluation_question.question_text] = [];
+          tempResponses[node.evaluation_question.question_text] ||= [];
           tempResponses[node.evaluation_question.question_text].push(
             node.comment,
           );
@@ -236,6 +238,6 @@ const EvaluationResponses: React.FC<{
       {!numQuestions && <strong>No comments for this course</strong>}
     </div>
   );
-};
+}
 
 export default EvaluationResponses;

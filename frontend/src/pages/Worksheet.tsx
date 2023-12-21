@@ -50,6 +50,7 @@ function Worksheet() {
   // If user somehow isn't logged in and worksheet is null
   if (curWorksheet == null) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
+  // eslint-disable-next-line no-constant-condition
   if (curWorksheet.length === 0 && !isMobile && false) {
     // TODO: remove this part and add an empty state later on.
     // We don't want to prevent a user from seeing their friend's

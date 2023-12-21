@@ -28,20 +28,17 @@ function EvaluationRatings({
   // the question text
   const ratings: { question: string; values: number[] }[] = [];
   // Loop through each section
+  // TODO refactor
   (info || []).forEach((section) => {
     const crnCode = section.crn;
     // Only fetch ratings data for this section
     if (crnCode !== crn) return;
-    const temp = section.course.evaluation_ratings;
     // Loop through each set of ratings
-    for (let i = 0; i < temp.length; i++) {
+    for (const x of section.course.evaluation_ratings) {
       ratings.push({
-        question: temp[i].evaluation_question.question_text || '',
-        values: [],
+        question: x.evaluation_question.question_text || '',
+        values: [...x.rating],
       });
-      // Store the counts for each rating in the values list
-      for (let j = 0; j < temp[i].rating.length; j++)
-        ratings[i].values.push(temp[i].rating[j]);
     }
   });
 

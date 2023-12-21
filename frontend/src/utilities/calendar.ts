@@ -20,8 +20,8 @@ function isoString(date: Date | SimpleDate, time?: string) {
       new Date(date);
   if (time) {
     const [hourString, minuteString] = time.split(':');
-    const hour = parseInt(hourString);
-    const minute = parseInt(minuteString);
+    const hour = parseInt(hourString, 10);
+    const minute = parseInt(minuteString, 10);
     d.setUTCHours(hour);
     d.setUTCMinutes(minute);
   }
@@ -96,9 +96,8 @@ function datesInBreak(
       const date = start;
       date.getTime() < end;
       date.setUTCDate(date.getUTCDate() + 1)
-    ) {
+    )
       if (days.includes(date.getUTCDay())) dates.push(isoString(date, time));
-    }
     return dates;
   });
 }

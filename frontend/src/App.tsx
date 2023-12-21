@@ -4,7 +4,7 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
-// Import Notice from './components/Notice';
+import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
@@ -48,7 +48,7 @@ function App() {
     const c = friendReqRefresh(true);
     const d = getAllNames(true);
 
-    Promise.allSettled([a, b, c, d]).finally(() => {
+    void Promise.allSettled([a, b, c, d]).finally(() => {
       // Set loading to false after user info is fetched
       setLoading(false);
     });
@@ -100,8 +100,7 @@ function App() {
   return (
     <>
       {/* Notice bar */}
-      {/* <Notice >
-    </Notice> */}
+      <Notice />
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
         {/* Home Page */}

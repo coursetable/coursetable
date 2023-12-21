@@ -93,7 +93,7 @@ export async function logout() {
   document.cookie.split(';').forEach((c) => {
     document.cookie = c
       .replace(/^ +/u, '')
-      .replace(/=.*/, `=;expires=${new Date().toUTCString()};path=/`);
+      .replace(/=.*/u, `=;expires=${new Date().toUTCString()};path=/`);
   });
   // Redirect to home page and refresh as well
   window.location.pathname = '/';
