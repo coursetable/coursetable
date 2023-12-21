@@ -18,7 +18,8 @@ export function encrypt(text: string, salt: string): string {
 }
 
 /**
- * Decrypt a salted string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
+ * Decrypt a salted string according to CHALLENGE_ALGORITHM and
+ * CHALLENGE_PASSWORD.
  * @prop text - string to decrypt
  * @prop salt - salt value to append to password
  */

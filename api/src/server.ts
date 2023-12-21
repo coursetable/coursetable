@@ -54,9 +54,7 @@ app.use(cors(CORS_OPTIONS));
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
   Object.keys(req.headers).forEach((header) => {
-    if (header.startsWith('x-coursetable-')) 
-      delete req.headers[header];
-    
+    if (header.startsWith('x-coursetable-')) delete req.headers[header];
   });
 
   next();
@@ -128,7 +126,8 @@ https
   // Enable request logging.
   app.use(morgan);
 
-  // Figure out how to make this work with Ferry (has to go after Ferry currently)
+  // Figure out how to make this work with Ferry (has to go after Ferry
+  // currently)
   app.use(express.json());
 
   // Activate catalog and CAS authentication

@@ -36,11 +36,8 @@ const extractHostname = (url: string): string => {
   let hostname;
   // Find & remove protocol (http, ftp, etc.) and get hostname
 
-  if (url.includes('//')) 
-    [, , hostname] = url.split('/');
-   else 
-    [hostname] = url.split('/');
-  
+  if (url.includes('//')) [, , hostname] = url.split('/');
+  else [hostname] = url.split('/');
 
   // Find & remove port number
   [hostname] = hostname.split(':');
@@ -99,7 +96,8 @@ export const passportConfig = async (
             done(null, {
               netId: profile.user,
               evals: false,
-            }); return;
+            });
+            return;
           }
 
           const user = data[0];
@@ -137,13 +135,13 @@ export const passportConfig = async (
             email: user.email,
             firstName: user.first_name,
             lastName: user.last_name,
-          }); 
+          });
         } catch (err) {
           winston.error(`Yalies connection error: ${err}`);
           done(null, {
             netId: profile.user,
             evals: false,
-          }); 
+          });
         }
       },
     ),
@@ -202,11 +200,14 @@ const postAuth = (req: express.Request, res: express.Response): void => {
       hostName.endsWith('.coursetable.com') ||
       (hostName.endsWith('-coursetable.vercel.app') &&
         hostName.startsWith('coursetable-'))
-    ) 
-      { res.redirect(redirect); return; }
-    
+    ) {
+      res.redirect(redirect);
+      return;
+    }
+
     winston.error('Redirect not in allowed origins');
-    res.redirect('https://coursetable.com'); return;
+    res.redirect('https://coursetable.com');
+    return;
   }
   winston.error(`No redirect provided`);
   res.redirect('https://coursetable.com');
@@ -227,19 +228,23 @@ export const casLogin = (
   // Authenticate with passport
   passport.authenticate('cas', (casError: Error, user: Express.User) => {
     // Handle auth errors or missing users
-    if (casError) 
-      { next(casError); return; }
-    
-    if (!user) 
-      { next(new Error('CAS auth but no user')); return; }
-    
+    if (casError) {
+      next(casError);
+      return;
+    }
+
+    if (!user) {
+      next(new Error('CAS auth but no user'));
+      return;
+    }
 
     // Log in the user
     winston.info(`"Logging in ${user}`);
     req.logIn(user, (loginError) => {
-      if (loginError) 
-        { next(loginError); return; }
-      
+      if (loginError) {
+        next(loginError);
+        return;
+      }
 
       // Redirect if authentication successful
       postAuth(req, res);
@@ -264,13 +269,14 @@ export const authBasic = (
     req.headers['x-coursetable-authd'] = 'true';
     req.headers['x-coursetable-netid'] = req.user.netId;
 
-    next(); return;
+    next();
+    return;
   }
   next(new Error('CAS auth but no user'));
 };
 
 /**
- * Middleware for requiring user account to be present as well as evaluations access.
+ * Middleware for requiring user account to be present as well as evals access.
  * @param req: express request.
  * @param res: express response.
  * @param next: express next function.
@@ -286,7 +292,8 @@ export const authWithEvals = (
     req.headers['x-coursetable-authd'] = 'true';
     req.headers['x-coursetable-netid'] = req.user.netId;
 
-    next(); return;
+    next();
+    return;
   }
   next(new Error('CAS auth but no user / no evals access'));
 };
