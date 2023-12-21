@@ -7,22 +7,21 @@ import { StyledBanner } from './StyledComponents';
 /**
  * Notice banner at the top of the website
  */
-function Notice({ children }: { children: React.ReactNode }) {
+function Notice({ children }: { readonly children?: React.ReactNode }) {
   // Save visibility in session storage
   const [visible, setVisible] = useSessionStorageState(
     'noticeVisibility',
     true,
   );
 
-  if (!visible) {
-    return <></>;
-  }
-
+  if (!visible || !children) return null;
   return (
     <StyledBanner className={styles.banner}>
       <div className={styles.content}>
         <div>{children}</div>
       </div>
+      {/* TODO */}
+      {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
       <span className={styles.closeButton} onClick={() => setVisible(false)}>
         <FaTimes style={{ display: 'block' }} />
       </span>

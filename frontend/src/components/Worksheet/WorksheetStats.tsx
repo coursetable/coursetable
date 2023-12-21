@@ -4,12 +4,11 @@ import styled from 'styled-components';
 import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { ratingColormap } from '../../queries/Constants';
+import { ratingColormap } from '../../utilities/constants';
 import styles from './WorksheetStats.module.css';
 
 const StyledStatPill = styled.span<
-  | { colormap: chroma.Scale<chroma.Color>; stat: number }
-  | { colormap?: never; stat?: never }
+  { colormap: chroma.Scale; stat: number } | { colormap?: never; stat?: never }
 >`
   background-color: ${({ theme, colormap, stat }) =>
     colormap
@@ -42,15 +41,14 @@ export default function WorksheetStats() {
     skillsAreas,
   } = courses.reduce(
     (acc, c) => {
-      // see if any of the course's codes have already been counted or if it's hidden so we don't double count
+      // See if any of the course's codes have already been counted or if it's
+      // hidden so we don't double count
       const shouldNotCount =
         c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
         hiddenCourses[curSeason]?.[c.crn];
       const useCourseInfo = c.credits;
 
-      if (shouldNotCount || !useCourseInfo) {
-        return acc;
-      }
+      if (shouldNotCount || !useCourseInfo) return acc;
 
       // Mark codes as counted, no double counting
       c.all_course_codes.forEach((code) => {
@@ -82,7 +80,11 @@ export default function WorksheetStats() {
       className={`${shown ? 'dropdown' : 'dropup'} ${styles.statsContainer}`}
     >
       <div className={styles.toggleButton}>
-        <button className="dropdown-toggle" onClick={() => setShown(!shown)}>
+        <button
+          type="button"
+          className="dropdown-toggle"
+          onClick={() => setShown(!shown)}
+        >
           Summary
         </button>
       </div>

@@ -1,8 +1,9 @@
 import React from 'react';
-import './WorksheetToggleButton.css';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import { Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { withTheme, type DefaultTheme } from 'styled-components';
+
+import './WorksheetToggleButton.css';
 
 /**
  * Render the course hide button in the Worksheet List
@@ -13,13 +14,11 @@ import { withTheme, type DefaultTheme } from 'styled-components';
 function WorksheetHideButton({
   hidden,
   toggleCourse,
-  crn,
   theme,
 }: {
-  hidden: boolean;
-  toggleCourse: (crn: number) => void;
-  crn: number;
-  theme: DefaultTheme;
+  readonly hidden: boolean;
+  readonly toggleCourse: () => void;
+  readonly theme: DefaultTheme;
 }) {
   // Size of toggle button
   const buttonSize = 18;
@@ -36,7 +35,7 @@ function WorksheetHideButton({
     >
       <Button
         variant="toggle"
-        onClick={() => toggleCourse(crn)}
+        onClick={toggleCourse}
         className="p-1 d-flex align-items-center"
       >
         {hidden ? (

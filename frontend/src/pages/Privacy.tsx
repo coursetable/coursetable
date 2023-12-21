@@ -22,7 +22,7 @@ const Underline = styled.span`
 function Privacy() {
   return (
     <div className={`${styles.container} mx-auto`}>
-      <StyledH1 className={'mt-5 mb-1'}>Privacy Policy</StyledH1>
+      <StyledH1 className="mt-5 mb-1">Privacy Policy</StyledH1>
       <TextComponent type={1}>
         <p>
           <strong>PRIVACY NOTICE</strong>
@@ -533,7 +533,6 @@ policy#additional_requirements_for_specific_api_scopes"
             </em>
           </strong>
         </p>
-        <p></p>
         <p>
           If you are located in the EEA or UK and you believe we are unlawfully
           processing your personal information, you also have the right to

@@ -2,14 +2,15 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
+import type { Crn } from '../../utilities/common';
 import {
   questions,
   graphLabels,
   graphTitles,
   questionText,
-} from '../../queries/Constants';
+} from '../../utilities/constants';
 import { TextComponent } from '../StyledComponents';
-import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 /**
  * Displays Evaluation Graphs
@@ -21,28 +22,20 @@ function EvaluationRatings({
   crn,
   info,
 }: {
-  crn: number;
-  info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly crn: Crn;
+  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }) {
-  // List of dictionaries that holds the ratings for each question as well as the question text
-  const ratings: { question: string; values: number[] }[] = [];
-  // Loop through each section
-  (info || []).forEach((section) => {
+  // List of dictionaries that holds the ratings for each question as well as
+  // the question text
+  const ratings = (info || []).flatMap((section) => {
     const crnCode = section.crn;
     // Only fetch ratings data for this section
-    if (crnCode !== crn) return;
-    const temp = section.course.evaluation_ratings;
+    if (crnCode !== crn) return [];
     // Loop through each set of ratings
-    for (let i = 0; i < temp.length; i++) {
-      ratings.push({
-        question: temp[i].evaluation_question.question_text || '',
-        values: [],
-      });
-      // Store the counts for each rating in the values list
-      for (let j = 0; j < temp[i].rating.length; j++) {
-        ratings[i].values.push(temp[i].rating[j]);
-      }
-    }
+    return section.course.evaluation_ratings.map((x) => ({
+      question: x.evaluation_question.question_text || '',
+      values: [...x.rating],
+    }));
   });
 
   // Dictionary with ratings for each question

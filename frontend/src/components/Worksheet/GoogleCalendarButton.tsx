@@ -6,7 +6,7 @@ import { academicCalendars } from '../../config';
 import { useGapi } from '../../contexts/gapiContext';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { getCalendarEvents } from '../../utilities/calendar';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import GCalIcon from '../../images/gcal.svg';
 
 function GoogleCalendarButton(): JSX.Element {
@@ -30,7 +30,7 @@ function GoogleCalendarButton(): JSX.Element {
     setExporting(true);
 
     try {
-      // get all previously added classes
+      // Get all previously added classes
       const eventList = await gapi.client.calendar.events.list({
         calendarId: 'primary',
         // TODO: this is UTC date, which shouldn't matter, but we want
@@ -45,22 +45,23 @@ function GoogleCalendarButton(): JSX.Element {
         orderBy: 'startTime',
       });
 
-      // delete all previously added classes
+      // Delete all previously added classes
       if (eventList.result.items.length > 0) {
         const deletedIds = new Set<string>();
-        const promises = eventList.result.items.map((event) => {
-          if (event.id.startsWith('coursetable') && event.recurringEventId) {
-            if (!deletedIds.has(event.recurringEventId)) {
-              deletedIds.add(event.recurringEventId);
-              return gapi.client.calendar.events.delete({
-                calendarId: 'primary',
-                eventId: event.recurringEventId,
-              });
+        await Promise.all(
+          eventList.result.items.map((event) => {
+            if (event.id.startsWith('coursetable') && event.recurringEventId) {
+              if (!deletedIds.has(event.recurringEventId)) {
+                deletedIds.add(event.recurringEventId);
+                return gapi.client.calendar.events.delete({
+                  calendarId: 'primary',
+                  eventId: event.recurringEventId,
+                });
+              }
             }
-          }
-          return undefined;
-        });
-        await Promise.all(promises);
+            return undefined;
+          }),
+        );
       }
       const events = getCalendarEvents(
         'gcal',
@@ -68,21 +69,22 @@ function GoogleCalendarButton(): JSX.Element {
         curSeason,
         hiddenCourses,
       );
-      const promises = events.map(async (event) => {
-        try {
-          await gapi.client.calendar.events.insert({
-            calendarId: 'primary',
-            resource: event,
-          });
-        } catch (e) {
-          Sentry.captureException(
-            new Error('[GCAL]: Error adding events to user calendar: ', {
-              cause: e,
-            }),
-          );
-        }
-      });
-      await Promise.all(promises);
+      await Promise.all(
+        events.map(async (event) => {
+          try {
+            await gapi.client.calendar.events.insert({
+              calendarId: 'primary',
+              resource: event,
+            });
+          } catch (e) {
+            Sentry.captureException(
+              new Error('[GCAL]: Error adding events to user calendar: ', {
+                cause: e,
+              }),
+            );
+          }
+        }),
+      );
       toast.success('Exported to Google Calendar!');
     } catch (e) {
       Sentry.captureException(
@@ -95,16 +97,15 @@ function GoogleCalendarButton(): JSX.Element {
   }, [courses, gapi, curSeason, hiddenCourses]);
 
   useEffect(() => {
-    if (!authInstance || user || !exportButtonRef.current) {
-      return;
-    }
+    if (!authInstance || user || !exportButtonRef.current) return;
+
     authInstance.attachClickHandler(
       exportButtonRef.current,
       {},
       (googleUser) => {
         if (!user) {
           setUser(googleUser);
-          exportEvents();
+          void exportEvents();
         }
       },
       (error) => {

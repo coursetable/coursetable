@@ -3,24 +3,24 @@ import { OverlayTrigger, Tooltip, Fade } from 'react-bootstrap';
 
 import { MdErrorOutline } from 'react-icons/md';
 import { useUser } from '../../contexts/userContext';
+import { useWorksheetInfo } from '../../contexts/ferryContext';
 import type { Listing } from '../../utilities/common';
 import {
   checkConflict,
   checkCrossListed,
   isInWorksheet,
-} from '../../utilities/courseUtilities';
-import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
+} from '../../utilities/course';
 
 /**
  * Displays icon when there is a course conflict with worksheet
  * @prop course - holds listing info
  */
-function CourseConflictIcon({ course }: { course: Listing }) {
+function CourseConflictIcon({ course }: { readonly course: Listing }) {
   const { user } = useUser();
 
   const inWorksheet = isInWorksheet(
     course.season_code,
-    course.crn.toString(),
+    course.crn,
     '0',
     user.worksheet,
   );
@@ -38,7 +38,8 @@ function CourseConflictIcon({ course }: { course: Listing }) {
 
   // Update conflict status whenever the user's worksheet changes
   const crossListed = useMemo(() => {
-    // Return if worksheet hasn't been loaded, otherwise return the cross-listed class
+    // Return if worksheet hasn't been loaded, otherwise return the cross-listed
+    // class
     if (!data) return false;
     return checkCrossListed(data, course);
   }, [course, data]);
@@ -50,15 +51,17 @@ function CourseConflictIcon({ course }: { course: Listing }) {
         <OverlayTrigger
           placement="top"
           overlay={(props) =>
-            // Render if this course isn't in the worksheet and there is a conflict
+            // Render if this course isn't in the worksheet and there is a
+            // conflict
             !inWorksheet && conflicts.length > 0 ? (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>
                   Conflicts with: <br />
-                  {conflicts.map((x) => `${x.course_code}`).join(', ')} <br />
+                  {conflicts.map((x) => x.course_code).join(', ')} <br />
                 </small>
                 {crossListed !== false ? (
-                  // Show only if the class is cross-listed with another class in the worksheet
+                  // Show only if the class is cross-listed with another class
+                  // in the worksheet
                   <small>(cross-listed with {crossListed})</small>
                 ) : (
                   ''

@@ -1,50 +1,59 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
-import { Crn, Season, Weekdays, weekdays } from './common';
+import { orderBy } from 'lodash';
+import { DateTime } from 'luxon';
+
+import {
+  type Crn,
+  type Season,
+  type Weekdays,
+  weekdays,
+  type Listing,
+  type NetId,
+} from './common';
 import type {
   FriendRecord,
   FriendInfo,
   Worksheet,
 } from '../contexts/userContext';
-import type { Listing } from '../utilities/common';
-import { SortKeys } from '../queries/Constants';
-import { isEmpty, orderBy } from 'lodash';
-import { DateTime } from 'luxon';
+import type { OrderingType } from '../contexts/searchContext';
+import type { SortKeys } from './constants';
+
+export function truncatedText(
+  text: string | null | undefined,
+  max: number,
+  defaultStr: string,
+) {
+  if (!text) return defaultStr;
+  else if (text.length <= max) return text;
+  return `${text.slice(0, max)}...`;
+}
 
 // Check if a listing is in the user's worksheet
-export const isInWorksheet = (
+export function isInWorksheet(
   seasonCode: Season,
-  crn: Crn | string,
+  crn: Crn,
   worksheetNumber: string,
   worksheet?: Worksheet,
-): boolean => {
-  if (worksheet == null) return false;
-  if (typeof crn !== 'string') {
-    crn = crn.toString();
-  }
-  for (let i = 0; i < worksheet.length; i++) {
-    if (
-      worksheet[i][0] === seasonCode &&
-      worksheet[i][1] === crn &&
-      worksheet[i][2] === worksheetNumber.toString()
-    )
-      return true;
-  }
-  return false;
-};
+): boolean {
+  if (!worksheet) return false;
+  return worksheet.some(
+    (course) =>
+      course[0] === seasonCode &&
+      course[1] === String(crn) &&
+      course[2] === worksheetNumber,
+  );
+}
 
 // Convert season code to legible string
-export const toSeasonString = (seasonCode: Season): string => {
+export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
   const season = ['', 'Spring', 'Summer', 'Fall'][parseInt(seasonCode[5], 10)];
   return `${season} ${year}`;
-};
+}
 
 // Checks if the a new course conflicts with the user's worksheet
-export const checkConflict = (
-  listings: Listing[],
-  course: Listing,
-): Listing[] => {
+export function checkConflict(listings: Listing[], course: Listing): Listing[] {
   const conflicts: Listing[] = [];
   const daysToCheck = Object.keys(
     course.times_by_day,
@@ -81,55 +90,52 @@ export const checkConflict = (
     }
   }
   return conflicts;
-};
+}
 // Checks if a course is cross-listed in the user's worksheet
-export const checkCrossListed = (
+export function checkCrossListed(
   listings: Listing[],
   course: Listing,
-): boolean | string => {
+): false | string {
   const classes: string[] = [];
   // Iterate over worksheet listings
-  for (let i = 0; i < listings.length; i++) {
+  for (const l of listings) {
     // Continue if they aren't in the same season
-    if (listings[i].season_code !== course.season_code) continue;
+    if (l.season_code !== course.season_code) continue;
     // Keep track of encountered classes and their aliases in the classes array
-    classes.push(...listings[i].all_course_codes);
-    // Return the course code of the cross-listed class currently in the worksheet if one exists
-    if (classes.includes(course.course_code)) return listings[i].course_code;
+    classes.push(...l.all_course_codes);
+    // Return the course code of the cross-listed class currently in the
+    // worksheet if one exists
+    if (classes.includes(course.course_code)) return l.course_code;
   }
   return false;
-};
+}
 
-// Fetch the friends that are also shopping a specific course. Used in course modal overview
+// Fetch the friends that are also shopping a specific course. Used in course
+// modal overview
 export function friendsAlsoTaking(
   seasonCode: Season,
   crn: Crn,
-  worksheets: Record<string, Worksheet> | undefined,
+  worksheets: { [netId: NetId]: Worksheet } | undefined,
   names: FriendRecord,
 ): string[] {
-  // Return if worksheets are null
   if (!worksheets) return [];
-  // List of friends also shopping
-  const alsoTaking: string[] = [];
-  for (const friend of Object.keys(worksheets)) {
-    if (
+  return (Object.keys(worksheets) as NetId[])
+    .filter((friend) =>
       worksheets[friend].some(
         (value) => value[0] === seasonCode && parseInt(value[1], 10) === crn,
-      )
+      ),
     )
-      // Found one
-      alsoTaking.push(names[friend].name);
-  }
-  return alsoTaking;
+    .map((friend) => names[friend].name);
 }
-type NumFriendsReturn =
-  // Key is season code + crn
-  // Value is the list of friends taking the class
-  Record<string, string[]>;
-// Fetch the friends that are also shopping any course. Used in search and worksheet expanded list
-export const getNumFriends = (
-  friendWorksheets: FriendInfo,
-): NumFriendsReturn => {
+
+/**
+ * Key is season code + crn;
+ * Value is the list of friends taking the class
+ */
+type NumFriendsReturn = { [seasonCodeCrn: string]: string[] };
+// Fetch the friends that are also shopping any course. Used in search and
+// worksheet expanded list
+export function getNumFriends(friendWorksheets: FriendInfo): NumFriendsReturn {
   // List of each friends' worksheets
   const { worksheets } = friendWorksheets;
   // List of each friends' names/net id
@@ -137,16 +143,16 @@ export const getNumFriends = (
   // Object to return
   const friends: NumFriendsReturn = {};
   // Iterate over each friend's worksheet
-  for (const friend of Object.keys(worksheets)) {
+  for (const friend of Object.keys(worksheets) as NetId[]) {
     // Iterate over each course in this friend's worksheet
     worksheets[friend].forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
-      if (!friends[key]) friends[key] = []; // List doesn't exist for this course so create one
+      friends[key] ||= []; // List doesn't exist for this course so create one
       friends[key].push(names[friend].name); // Add friend's name to this list
     });
   }
   return friends;
-};
+}
 
 // Get the overall rating for a course
 export function getOverallRatings(
@@ -163,14 +169,14 @@ export function getOverallRatings(
     return course.average_rating_same_professors
       ? course.average_rating_same_professors.toFixed(1) // Use same professor if possible
       : course.average_rating
-      ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
+        ? `~${course.average_rating.toFixed(1)}` // Use all professors otherwise and add tilde ~
+        : 'N/A'; // No ratings at all
   }
   return course.average_rating_same_professors
     ? course.average_rating_same_professors // Use same professor if possible
     : course.average_rating
-    ? course.average_rating // Use all professors otherwise
-    : null; // No ratings at all
+      ? course.average_rating // Use all professors otherwise
+      : null; // No ratings at all
 }
 
 // Get the workload rating for a course
@@ -188,22 +194,33 @@ export function getWorkloadRatings(
     return course.average_workload_same_professors
       ? course.average_workload_same_professors.toFixed(1) // Use same professor if possible
       : course.average_workload
-      ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
-      : 'N/A'; // No ratings at all
+        ? `~${course.average_workload.toFixed(1)}` // Use all professors otherwise and add tilde ~
+        : 'N/A'; // No ratings at all
   }
   return course.average_workload_same_professors
     ? course.average_workload_same_professors // Use same professor if possible
     : course.average_workload
-    ? course.average_workload // Use all professors otherwise
-    : null; // No ratings at all
+      ? course.average_workload // Use all professors otherwise
+      : null; // No ratings at all
+}
+
+// Get start and end times
+export function getDayTimes(
+  course: Listing,
+): { day: Weekdays; start: string; end: string }[] {
+  return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
+    day: day as Weekdays,
+    start: dayTimes[0][0],
+    end: dayTimes[0][1],
+  }));
 }
 
 // Calculate day and time score
-const calculateDayTime = (course: Listing): number | null => {
+function calculateDayTime(course: Listing): number | null {
   // Get all days' times
   const times = getDayTimes(course);
 
-  if (times) {
+  if (times.length) {
     // Calculate the time score
     const startTime = Number(
       times[0].start.split(':').reduce((final, num) => {
@@ -223,14 +240,14 @@ const calculateDayTime = (course: Listing): number | null => {
 
   // If no times then return null
   return null;
-};
+}
 
 // Helper function that returns the correct value to sort by
-const helperSort = (
+function helperSort(
   listing: Listing,
   key: SortKeys,
   numFriends: NumFriendsReturn,
-) => {
+): number | string | boolean | null {
   // Sorting by friends
   if (key === 'friend') {
     // Concatenate season code and crn to form key
@@ -251,92 +268,63 @@ const helperSort = (
     return calculateDayTime(listing);
   }
   // If value is 0, return null
-  if (listing[key] === 0) {
-    return null;
-  }
-  return listing[key];
-};
+  if (listing[key] === 0) return null;
+  return listing[key] ?? null;
+}
 
 // Sort courses in catalog or expanded worksheet
-export const sortCourses = (
+export function sortCourses(
   courses: Listing[],
-  // TODO: we should be much more strict with this type. Specifically,
-  // we should prevent there from being multiple keys.
-  ordering: { [key in SortKeys]?: 'asc' | 'desc' },
+  ordering: OrderingType,
   numFriends: NumFriendsReturn,
-): Listing[] => {
-  // Key to sort the courses by
-  const key = Object.keys(ordering)[0] as SortKeys;
-  // Boolean | in ascending order?
-  const orderAsc = ordering[key]!.startsWith('asc');
+): Listing[] {
   // Sort classes
   const sorted = orderBy(
     courses,
     [
-      (listing) => helperSort(listing, key, numFriends) == null,
-      (listing) => helperSort(listing, key, numFriends),
+      (listing) => helperSort(listing, ordering.key, numFriends) === null,
+      (listing) => helperSort(listing, ordering.key, numFriends),
       (listing) => listing.course_code,
     ],
-    ['asc', orderAsc ? 'asc' : 'desc', 'asc'],
+    ['asc', ordering.type, 'asc'],
   );
   return sorted;
-};
+}
 
 // Get the enrollment for a course
-export const getEnrolled = (
+export function getEnrolled(
   course: Listing,
   display = false,
   onModal = false,
-): string | number | null => {
-  let courseEnrolled: string | number | null;
+): string | number | null {
+  let courseEnrolled: string | number | null = null;
   // Determine which enrolled to use
   if (display) {
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment && course.last_enrollment_same_professors
-      ? course.last_enrollment // Use last enrollment if course hasn't happened
-      : course.last_enrollment
-      ? `~${course.last_enrollment}${
-          onModal ? ' (different professor was teaching)' : ''
-        }` // Indicate diff prof
-      : `${onModal ? 'N/A' : ''}`; // No enrollment data
+        ? course.last_enrollment // Use last enrollment if course hasn't happened
+        : course.last_enrollment
+          ? `~${course.last_enrollment}${
+              onModal ? ' (different professor was teaching)' : ''
+            }` // Indicate diff prof
+          : onModal
+            ? 'N/A'
+            : ''; // No enrollment data
   } else {
     courseEnrolled = course.enrolled
       ? course.enrolled // Use enrollment for that season if course has happened
       : course.last_enrollment
-      ? course.last_enrollment // Use last enrollment if course hasn't happened
-      : null; // No enrollment data
+        ? course.last_enrollment // Use last enrollment if course hasn't happened
+        : null; // No enrollment data
   }
 
   // Return enrolled
   return courseEnrolled;
-};
+}
 
-// Get start and end times
-export const getDayTimes = (
-  course: Listing,
-): Record<string, string>[] | null => {
-  // If no times then return null
-  if (isEmpty(course.times_by_day)) {
-    return null;
-  }
-
-  const initialFiltered: Record<string, string>[] = [];
-
-  const times = Object.entries(course.times_by_day).reduce(
-    (filtered, [day, dayTimes]) => {
-      if (dayTimes) {
-        filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
-      }
-      return filtered;
-    },
-    initialFiltered,
-  );
-
-  return times;
-};
 // Convert real time (24 hour) to range time
-export const toRangeTime = (time: string): number => {
+export function toRangeTime(time: string): number {
   // Get hour and minute
   const splitTime = time.split(':');
   const hour = Number(splitTime[0]);
@@ -345,10 +333,10 @@ export const toRangeTime = (time: string): number => {
   // Calculate range time
   const rangeTime = hour * 12 + minute / 5;
   return rangeTime;
-};
+}
 
 // Convert range time to real time (24 hour)
-export const toRealTime = (time: number): string => {
+export function toRealTime(time: number): string {
   // Get hour and minute
   const hour = Math.floor(time / 12);
   const minute = (time % 12) * 5;
@@ -356,7 +344,7 @@ export const toRealTime = (time: number): string => {
   // Format real time
   const realTime = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
   return realTime;
-};
+}
 
 // Convert 24 hour time to 12 hour time
 export const to12HourTime = (time: string): string =>

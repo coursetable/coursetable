@@ -1,10 +1,11 @@
-import React, { CSSProperties, useCallback, useMemo } from 'react';
+import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
-import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
+
+import './WorksheetCalendar.css';
 import CalendarEvent, { type CourseEvent } from './CalendarEvent';
 import { weekdays, type Listing } from '../../utilities/common';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -118,9 +119,11 @@ function WorksheetCalendar() {
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event: CourseEvent) => {
+      // Shouldn't happen
+      if (!event.listing.color) return { style: {} };
       const style: CSSProperties = {
-        backgroundColor: event.listing.color,
-        borderColor: event.listing.border,
+        backgroundColor: `rgb(${event.listing.color.join(' ')} / 0.85)`,
+        borderColor: `rgb(${event.listing.color.join(' ')})`,
         borderWidth: '2px',
       };
       if (hoverCourse && hoverCourse === event.listing.crn) {

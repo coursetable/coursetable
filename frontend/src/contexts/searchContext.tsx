@@ -7,24 +7,23 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
-import type { Listing } from '../utilities/common';
+import type { GroupedOptionsType, OptionsType } from 'react-select/src/types';
+import type { Listing, Season } from '../utilities/common';
 import {
   useLocalStorageState,
   useSessionStorageState,
 } from '../utilities/browserStorage';
-import { useCourseData, useFerry } from './ferryContext';
+import { useCourseData, useFerry, useWorksheetInfo } from './ferryContext';
 import {
   areas,
-  AreasType,
+  type AreasType,
   searchSpeed,
   skills,
-  SkillsType,
-  SortByOption,
+  type SkillsType,
+  type SortByOption,
   sortbyOptions,
-  SortKeys,
-} from '../queries/Constants';
-import { useWorksheetInfo } from '../queries/GetWorksheetListings';
+  type SortKeys,
+} from '../utilities/constants';
 import {
   checkConflict,
   getDayTimes,
@@ -35,7 +34,7 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
-} from '../utilities/courseUtilities';
+} from '../utilities/course';
 import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
 
@@ -48,12 +47,14 @@ export type Option = {
 };
 
 export const isOption = (x: unknown): x is Option =>
+  // eslint-disable-next-line no-implicit-coercion
   !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
-export type SortOrderType = 'desc' | 'asc' | undefined;
+export type SortOrderType = 'desc' | 'asc';
 
 export type OrderingType = {
-  [key in SortKeys]?: SortOrderType;
+  key: SortKeys;
+  type: 'desc' | 'asc';
 };
 
 // This is a type for weird TS errors
@@ -95,7 +96,7 @@ type Store = {
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
-  numFriends: Record<string, string[]>;
+  numFriends: { [seasonCodeCrn: string]: string[] };
   resetKey: number;
   duration: number;
   speed: string;
@@ -144,12 +145,12 @@ const defaultSeason: Option[] = [
 const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;
 const defaultFalse = false;
-const defaultSortOption: SortByOption = sortbyOptions[0];
+const [defaultSortOption] = sortbyOptions;
 const defaultTimeBounds = ['7:00', '22:00'];
 const defaultEnrollBounds = [1, 528];
 const defaultNumBounds = [0, 1000];
 const defaultSortOrder: SortOrderType = 'asc';
-const defaultOrdering: OrderingType = { course_code: 'asc' };
+const defaultOrdering: OrderingType = { key: 'course_code', type: 'asc' };
 
 export const defaultFilters = {
   defaultOption,
@@ -170,7 +171,11 @@ export const defaultFilters = {
 /**
  * Stores the user's search, filters, and sorts
  */
-export function SearchProvider({ children }: { children: React.ReactNode }) {
+export function SearchProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
 
@@ -312,7 +317,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
-  const isLoggedIn = user.worksheet != null;
+  const isLoggedIn = Boolean(user.worksheet);
 
   // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
@@ -320,33 +325,34 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     return getNumFriends(user.friendWorksheets);
   }, [user.friendWorksheets]);
 
-  // populate seasons from database
-  let seasonsOptions: OptType;
+  // Populate seasons from database
+  let seasonsOptions: OptType | undefined = undefined;
   const { seasons: seasonsData } = useFerry();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map((x) => {
       const seasonOption: Option = {
         value: x.season_code,
-        // capitalize term and add year
+        // Capitalize term and add year
         label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
       };
       return seasonOption;
     });
   }
 
-  const requiredSeasons = useMemo(() => {
+  const requiredSeasons = useMemo((): Season[] => {
     if (!isLoggedIn) {
       // If we're not logged in, don't attempt to request any seasons.
       return [];
     }
-    if (selectSeasons == null) {
-      return [];
-    }
+    // TODO: can it be null?
+    if (!selectSeasons) return [];
     if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
-      return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
+      return seasonsData.seasons
+        .map((x) => x.season_code as Season)
+        .slice(0, 15);
     }
-    return selectSeasons.map((x) => x.value);
+    return selectSeasons.map((x) => x.value as Season);
   }, [isLoggedIn, selectSeasons, seasonsData]);
 
   const {
@@ -361,85 +367,30 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
   // Search configuration of filters
   const searchConfig = useMemo(() => {
-    // skills and areas
-    let processedSkillsAreas;
-    let processedSkills;
-    let processedAreas;
-    if (selectSkillsAreas != null) {
-      processedSkillsAreas = selectSkillsAreas.map((x) => x.value);
+    // Skills and areas
+    const processedSkillsAreas = selectSkillsAreas.map((x) => x.value);
+    if (processedSkillsAreas.includes('L'))
+      processedSkillsAreas.push('L1', 'L2', 'L3', 'L4', 'L5');
+    const processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
+      skills.includes(x as SkillsType),
+    );
+    const processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
+      areas.includes(x as AreasType),
+    );
 
-      // match all languages
-      if (processedSkillsAreas.includes('L')) {
-        processedSkillsAreas = processedSkillsAreas.concat([
-          'L1',
-          'L2',
-          'L3',
-          'L4',
-          'L5',
-        ]);
-      }
+    // Credits to filter
+    const processedCredits = selectCredits.map((x) => x.label);
 
-      // separate skills and areas
-      processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
-        skills.includes(x as SkillsType),
-      );
-      processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
-        areas.includes(x as AreasType),
-      );
+    // Schools to filter
+    const processedSchools = selectSchools.map((x) => x.value);
 
-      // set null defaults
-      if (processedSkills.length === 0) {
-        processedSkills = null;
-      }
-      if (processedAreas.length === 0) {
-        processedAreas = null;
-      }
-    }
+    // Subjects to filter
+    const processedSubjects = selectSubjects.map((x) => x.value);
 
-    // credits to filter
-    let processedCredits;
-    if (selectCredits != null) {
-      processedCredits = selectCredits.map((x) => x.label);
-      // set null defaults
-      if (processedCredits.length === 0) {
-        processedCredits = null;
-      }
-    }
+    // Days to filter
+    const processedDays = selectDays.map((x) => x.value);
 
-    // schools to filter
-    let processedSchools;
-    if (selectSchools != null) {
-      processedSchools = selectSchools.map((x) => x.value);
-
-      // set null defaults
-      if (processedSchools.length === 0) {
-        processedSchools = null;
-      }
-    }
-
-    // subjects to filter
-    let processedSubjects;
-    if (selectSubjects != null) {
-      processedSubjects = selectSubjects.map((x) => x.value);
-
-      // set null defaults
-      if (processedSubjects.length === 0) {
-        processedSubjects = null;
-      }
-    }
-
-    // days to filter
-    let processedDays;
-    if (selectDays != null) {
-      processedDays = selectDays.map((x) => x.value);
-
-      // set null defaults
-      if (processedDays.length === 0) {
-        processedDays = null;
-      }
-    }
-
-    // if the bounds are unaltered, we need to set them to null
+    // If the bounds are unaltered, we need to set them to null
     // to include unrated courses
     const includeAllOveralls = _.isEqual(overallBounds, defaultRatingBounds);
 
@@ -457,7 +408,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     // Variables to use in search query
     const searchVariables = {
       searchText,
-      // seasons: not included because it is handled by required_seasons
+      // Seasons: not included because it is handled by required_seasons
       areas: new Set(processedAreas),
       skills: new Set(processedSkills),
       credits: new Set(processedCredits),
@@ -512,8 +463,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
     // Pre-processing for the search text.
     const tokens = (searchConfig.searchText || '')
-      .split(/\s+/)
-      .filter((x) => !!x)
+      .split(/\s+/u)
+      .filter((x) => Boolean(x))
       .map((token) => token.toLowerCase());
 
     const listings = requiredSeasons
@@ -532,9 +483,8 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         (averageOverall === null ||
           _.round(averageOverall, 1) < searchConfig.minOverall ||
           _.round(averageOverall, 1) > searchConfig.maxOverall)
-      ) {
+      )
         return false;
-      }
 
       const averageWorkload = Number(getWorkloadRatings(listing));
       if (
@@ -543,29 +493,23 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         (averageWorkload === null ||
           _.round(averageWorkload, 1) < searchConfig.minWorkload ||
           _.round(averageWorkload, 1) > searchConfig.maxWorkload)
-      ) {
+      )
         return false;
-      }
 
       if (searchConfig.minTime !== null && searchConfig.maxTime !== null) {
-        let include = false;
         const times = getDayTimes(listing);
-        if (times) {
-          times.forEach((time) => {
-            if (
+        if (
+          times &&
+          !times.some(
+            (time) =>
               searchConfig.minTime !== null &&
               searchConfig.maxTime !== null &&
               time !== null &&
               toRangeTime(time.start) >= toRangeTime(searchConfig.minTime) &&
-              toRangeTime(time.end) <= toRangeTime(searchConfig.maxTime)
-            ) {
-              include = true;
-            }
-          });
-        }
-        if (!include) {
+              toRangeTime(time.end) <= toRangeTime(searchConfig.maxTime),
+          )
+        )
           return false;
-        }
       }
 
       let enrollment = getEnrolled(listing);
@@ -576,91 +520,82 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         (enrollment === null ||
           enrollment < Math.round(searchConfig.minEnrollment) ||
           enrollment > Math.round(searchConfig.maxEnrollment))
-      ) {
+      )
         return false;
-      }
 
-      const number = Number(listing.number.replace(/\D/g, ''));
+      const number = Number(listing.number.replace(/\D/gu, ''));
       if (
         searchConfig.minNumber !== null &&
         searchConfig.maxNumber !== null &&
         (number === null ||
           number < searchConfig.minNumber ||
           (searchConfig.maxNumber < 1000 && number > searchConfig.maxNumber))
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.extraInfo !== null &&
         searchConfig.extraInfo !== listing.extra_info
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.conflicting !== null &&
         worksheetInfo &&
         listing.times_summary !== 'TBA' &&
         checkConflict(worksheetInfo, listing).length > 0
-      ) {
+      )
         return false;
-      }
 
-      // Checks whether the section field consists only of letters -- if so, the class is a discussion section.
+      // Checks whether the section field consists only of letters -- if so, the
+      // class is a discussion section.
       if (
         searchConfig.discussionSection !== null &&
-        /^[A-Z]*$/.test(listing.section)
-      ) {
+        /^[A-Z]*$/u.test(listing.section)
+      )
         return false;
-      }
 
-      if (searchConfig.fySem !== null && searchConfig.fySem !== listing.fysem) {
+      if (searchConfig.fySem !== null && searchConfig.fySem !== listing.fysem)
         return false;
-      }
 
       if (
         searchConfig.gradLevel !== null &&
         (listing.number === null ||
-          // tests if first character is between 5-9
+          // Tests if first character is between 5-9
           (listing.number.charAt(0) >= '5' &&
             listing.number.charAt(0) <= '9') ||
-          // otherwise if first character is not a number (i.e. summer classes), tests whether second character between 5-9
+          // Otherwise if first character is not a number (i.e. summer classes),
+          // tests whether second character between 5-9
           ((listing.number.charAt(0) < '0' || listing.number.charAt(0) > '9') &&
             (listing.number.length <= 1 ||
               (listing.number.charAt(1) >= '5' &&
                 listing.number.charAt(1) <= '9'))))
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.subjects.size !== 0 &&
         !searchConfig.subjects.has(listing.subject)
-      ) {
+      )
         return false;
-      }
 
-      const days = new Set(getDayTimes(listing)?.map((daytime) => daytime.day));
+      // TODO: searchConfig.days should be a literal set too
+      const days = new Set<string>(
+        getDayTimes(listing)?.map((daytime) => daytime.day),
+      );
       if (searchConfig.days.size !== 0) {
         let include = true;
         if (days && days !== null) {
           days.forEach((day) => {
-            if (!searchConfig.days.has(day)) {
-              include = false;
-            }
+            if (!searchConfig.days.has(day)) include = false;
           });
           searchConfig.days.forEach((day) => {
-            if (!days.has(day)) {
-              include = false;
-            }
+            if (!days.has(day)) include = false;
           });
         } else {
           include = false;
         }
-        if (!include) {
-          return false;
-        }
+        if (!include) return false;
       }
 
       if (
@@ -671,35 +606,33 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         !listing.skills.some((v): v is SkillsType =>
           searchConfig.skills.has(v as SkillsType),
         )
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.credits.size !== 0 &&
         listing.credits !== null &&
         !searchConfig.credits.has(String(listing.credits))
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.schools.size !== 0 &&
         listing.school !== null &&
         !searchConfig.schools.has(listing.school)
-      ) {
+      )
         return false;
-      }
 
       // Handle search text. Each token must match something.
       for (const token of tokens) {
-        // first character of the course number
+        // First character of the course number
         const numberFirstChar = listing.number.charAt(0);
         if (
           listing.subject.toLowerCase().startsWith(token) ||
           listing.number.toLowerCase().startsWith(token) ||
-          // for course numbers that start with a letter
-          // (checked by if .toLowerCase() is not equal to .toUpperCase(), see https://stackoverflow.com/a/32567789/5540324),
+          // For course numbers that start with a letter (checked by if
+          // .toLowerCase() is not equal to .toUpperCase(), see
+          // https://stackoverflow.com/a/32567789/5540324),
           // exclude this letter when comparing with the search token
           (numberFirstChar.toLowerCase() !== numberFirstChar.toUpperCase() &&
             listing.number
@@ -794,21 +727,18 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setCanReset,
   ]);
 
-  // perform default search on load
+  // Perform default search on load
   useEffect(() => {
-    // only execute after seasons have been loaded
-    if (defaultSearch && seasonsOptions) {
-      setDefaultSearch(false);
-    }
+    // Only execute after seasons have been loaded
+    if (defaultSearch && seasonsOptions) setDefaultSearch(false);
   }, [seasonsOptions, defaultSearch]);
 
   // Set ordering in parent element whenever sortby or order changes
   useEffect(() => {
     const sortParams = selectSortby.value;
-    const newOrdering: {
-      [key in SortKeys]?: SortOrderType;
-    } = {
-      [sortParams]: sortOrder,
+    const newOrdering: OrderingType = {
+      key: sortParams,
+      type: sortOrder,
     };
     setOrdering(newOrdering);
   }, [selectSortby, sortOrder, setOrdering]);
@@ -835,11 +765,10 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       !_.isEqual(hideGraduateCourses, defaultFalse) ||
       !_.isEqual(hideDiscussionSections, defaultTrue) ||
       !_.isEqual(ordering, defaultOrdering)
-    ) {
+    )
       setCanReset(true);
-    } else {
-      setCanReset(false);
-    }
+    else setCanReset(false);
+
     // Calculate & determine search speed
     if (!coursesLoading && searchData) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
@@ -849,9 +778,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
           durInSecs > 1 ? 'fast' : durInSecs > 0.5 ? 'faster' : 'fastest'
         ],
       );
-      if (sp) {
-        setSpeed(sp);
-      }
+      if (sp) setSpeed(sp);
     }
   }, [
     searchText,

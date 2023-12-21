@@ -1,17 +1,19 @@
 import React, { useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
-
+import { AiOutlineStar } from 'react-icons/ai';
+import { IoPersonOutline } from 'react-icons/io5';
+import { BiBookOpen } from 'react-icons/bi';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import styled from 'styled-components';
+
 import {
   ratingColormap,
   workloadColormap,
   subjectOptions,
-} from '../../queries/Constants';
-
+} from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
@@ -22,11 +24,7 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   toSeasonString,
-} from '../../utilities/courseUtilities';
-
-import { AiOutlineStar } from 'react-icons/ai';
-import { IoPersonOutline } from 'react-icons/io5';
-import { BiBookOpen } from 'react-icons/bi';
+} from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
 // Grid Item wrapper
@@ -35,8 +33,8 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
     inWorksheet
       ? theme.primaryLight
       : theme.theme === 'light'
-      ? 'rgb(245, 245, 245)'
-      : theme.surface[1]};
+        ? 'rgb(245, 245, 245)'
+        : theme.surface[1]};
   transition:
     border-color ${({ theme }) => theme.transDur},
     background-color ${({ theme }) => theme.transDur},
@@ -50,24 +48,24 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
  * Renders a grid item for a search result
  * @prop course data for the current course
  * @prop isLoggedIn is the user logged in?
- * @prop num_cols integer that holds how many columns in grid view
+ * @prop numCols integer that holds how many columns in grid view
  * @prop multiSeasons are we displaying courses across multiple seasons
  */
 
 function ResultsGridItem({
   course,
   isLoggedIn,
-  num_cols,
+  numCols,
   multiSeasons,
 }: {
-  course: Listing;
-  isLoggedIn: boolean;
-  num_cols: number;
-  multiSeasons: boolean;
+  readonly course: Listing;
+  readonly isLoggedIn: boolean;
+  readonly numCols: number;
+  readonly multiSeasons: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
-  const colWidth = 12 / num_cols;
+  const colWidth = 12 / numCols;
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
@@ -283,16 +281,16 @@ function ResultsGridItem({
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        course.professor_avg_rating && isLoggedIn
-                          ? ratingColormap(Number(course.professor_avg_rating))
+                        course.average_professor && isLoggedIn
+                          ? ratingColormap(course.average_professor)
                               .darken()
                               .saturate()
                               .css()
                           : '#cccccc',
                     }}
                   >
-                    {course.professor_avg_rating && isLoggedIn
-                      ? course.professor_avg_rating
+                    {course.average_professor && isLoggedIn
+                      ? course.average_professor.toFixed(1)
                       : 'N/A'}
                   </div>
                   <StyledIcon>

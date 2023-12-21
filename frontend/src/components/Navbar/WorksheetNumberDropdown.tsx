@@ -28,9 +28,7 @@ function WorksheetNumDropdown() {
             : `Worksheet ${worksheetNumber}`
         }
         onSelect={(v) => {
-          if (v) {
-            changeWorksheet(v);
-          }
+          if (v) changeWorksheet(v);
         }}
       >
         {worksheetOptions.map((worksheet) => (

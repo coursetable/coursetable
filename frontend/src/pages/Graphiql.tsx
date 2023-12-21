@@ -1,14 +1,13 @@
 import React from 'react';
-import { GRAPHQL_API_ENDPOINT } from '../config';
-
 import GraphiQL from 'graphiql';
 import { createGraphiQLFetcher } from '@graphiql/toolkit';
 
+import { GRAPHQL_API_ENDPOINT } from '../config';
 import './Graphiql.css';
 
 const fetcher = createGraphiQLFetcher({
   url: `${GRAPHQL_API_ENDPOINT}/v1/graphql`,
-  fetch: (url, args) => {
+  fetch(url, args) {
     // TODO @types/node and lib.dom are conflicting; we should try to exclude Node types
     return fetch(url as never, { ...args, credentials: 'include' });
   },

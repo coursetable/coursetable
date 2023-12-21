@@ -1,8 +1,9 @@
 import React from 'react';
-import NoCoursesFound from '../../images/no_courses_found.svg';
-import { toSeasonString } from '../../utilities/courseUtilities';
-import { useWorksheet } from '../../contexts/worksheetContext';
 import { Link } from 'react-router-dom';
+
+import NoCoursesFound from '../../images/no_courses_found.svg';
+import { toSeasonString } from '../../utilities/course';
+import { useWorksheet } from '../../contexts/worksheetContext';
 
 function NoCourses() {
   const { curSeason } = useWorksheet();

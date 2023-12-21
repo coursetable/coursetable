@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { FormControl, Card, Popover } from 'react-bootstrap';
-import chroma from 'chroma-js';
-import { breakpoints } from '../utilities';
+import type chroma from 'chroma-js';
+import { breakpoints } from '../utilities/display';
 
 // Div used to color the background of surface components
 export const SurfaceComponent = styled.div<{ layer: number }>`
@@ -9,7 +9,8 @@ export const SurfaceComponent = styled.div<{ layer: number }>`
   transition: background-color ${({ theme }) => theme.transDur};
 `;
 
-// Span used to color text. Type is an int that represents primary (0) or secondary (1) color
+// Span used to color text. Type is an int that represents primary (0) or
+// secondary (1) color
 export const TextComponent = styled.span<{ type: number }>`
   color: ${({ theme, type }) => theme.text[type]};
   transition: color ${({ theme }) => theme.transDur};
@@ -81,7 +82,8 @@ export const StyledExpandBtn = styled.div`
     color ${({ theme }) => theme.transDur};
 `;
 
-// Popovers in search results item, prof popover in modal, and worksheet calendar
+// Popovers in search results item, prof popover in modal, and worksheet
+// calendar
 export const StyledPopover = styled(Popover)`
   background-color: ${({ theme }) => theme.surface[0]};
   transition:
@@ -119,7 +121,7 @@ export const StyledPopover = styled(Popover)`
 // Rating bubbles in search results list item and modal
 export const StyledRating = styled.div<{
   rating: number | null;
-  colormap: chroma.Scale<chroma.Color>;
+  colormap: chroma.Scale;
 }>`
   font-weight: ${({ rating }) => (rating ? 600 : 400)};
   font-size: ${({ rating }) => (rating ? 'inherit' : '12px')};

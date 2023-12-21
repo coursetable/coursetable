@@ -1,36 +1,35 @@
 import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Row, Col, Collapse } from 'react-bootstrap';
 import { FcInfo, FcQuestions, FcFeedback, FcPuzzle } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
 
 import styles from './MeDropdown.module.css';
-import { logout, scrollToTop } from '../../utilities';
+import { logout, scrollToTop } from '../../utilities/display';
 import {
   SurfaceComponent,
   TextComponent,
   StyledHoverText,
 } from '../StyledComponents';
-import { NavLink } from 'react-router-dom';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-
 import { API_ENDPOINT } from '../../config';
 
 type Props = {
-  profile_expanded: boolean;
-  setIsComponentVisible(visible: boolean): void;
-  isLoggedIn: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly profileExpanded: boolean;
+  readonly setIsComponentVisible: (visible: boolean) => void;
+  readonly isLoggedIn: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
- * @prop profile_expanded - is dropdown visible?
+ * @prop profileExpanded - is dropdown visible?
  * @prop setIsComponentVisible - function that changes dropdown visibility
  * @prop isLoggedIn - is user logged in?
  * @prop setIsTutorialOpen - opens tutorial
  */
 function MeDropdown({
-  profile_expanded,
+  profileExpanded,
   setIsComponentVisible,
   isLoggedIn,
   setIsTutorialOpen,
@@ -46,8 +45,9 @@ function MeDropdown({
         setIsComponentVisible(true);
       }}
     >
-      <Collapse in={profile_expanded}>
-        {/* This wrapper div is important for making the collapse animation smooth */}
+      <Collapse in={profileExpanded}>
+        {/* This wrapper div is important for making the collapse animation
+          smooth */}
         <div>
           <Col className="px-3 pt-3">
             {isLoggedIn && (
@@ -97,7 +97,7 @@ function MeDropdown({
               />
               <TextComponent type={1}>
                 <a
-                  href={`https://feedback.coursetable.com/`}
+                  href="https://feedback.coursetable.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.collapse_text}

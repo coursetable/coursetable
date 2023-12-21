@@ -53,10 +53,10 @@ function WorksheetCalendarListItem({
   theme,
   worksheetNumber,
 }: {
-  course: Listing;
-  hidden: boolean;
-  theme: DefaultTheme;
-  worksheetNumber?: string;
+  readonly course: Listing;
+  readonly hidden: boolean;
+  readonly theme: DefaultTheme;
+  readonly worksheetNumber?: string;
 }) {
   const [, setSearchParams] = useSearchParams();
   const { curSeason, toggleCourse, setHoverCourse } = useWorksheet();
@@ -90,9 +90,8 @@ function WorksheetCalendarListItem({
         {/* Hide Button */}
         <div className={`mr-1 my-auto ${hidden ? 'visible' : 'hidden'}`}>
           <WorksheetHideButton
-            toggleCourse={toggleCourse}
+            toggleCourse={() => toggleCourse(course.crn)}
             hidden={hidden}
-            crn={course.crn}
           />
         </div>
         {/* Add/remove from worksheet button */}

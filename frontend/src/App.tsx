@@ -3,7 +3,8 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
-// import Notice from './components/Notice';
+
+import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
@@ -30,9 +31,6 @@ import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
-/**
- * Render navbar and the corresponding page component for the route the user is on
- */
 function App() {
   const location = useLocation();
   // Fetch current device
@@ -50,14 +48,14 @@ function App() {
     const c = friendReqRefresh(true);
     const d = getAllNames(true);
 
-    Promise.allSettled([a, b, c, d]).finally(() => {
+    void Promise.allSettled([a, b, c, d]).finally(() => {
       // Set loading to false after user info is fetched
       setLoading(false);
     });
   }, [userRefresh, friendRefresh, friendReqRefresh, getAllNames]);
 
   // Determine if user is logged in
-  const isLoggedIn = Boolean(user.worksheet != null);
+  const isLoggedIn = Boolean(user.worksheet);
 
   // Tutorial state
   const [isTutorialOpen, setIsTutorialOpen] = useState(false);
@@ -77,9 +75,8 @@ function App() {
       !shownTutorial &&
       location &&
       location.pathname === '/catalog'
-    ) {
+    )
       setIsTutorialOpen(true);
-    }
   }, [
     isMobile,
     isTablet,
@@ -102,9 +99,8 @@ function App() {
 
   return (
     <>
-      {/* notice bar*/}
-      {/*<Notice >
-    </Notice>*/}
+      {/* Notice bar */}
+      <Notice />
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
         {/* Home Page */}

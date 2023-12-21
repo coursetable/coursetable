@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { List, WindowScroller, AutoSizer } from 'react-virtualized';
+import styled, { useTheme } from 'styled-components';
 
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
@@ -9,26 +13,19 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import styles from './Results.module.css';
 
-import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
-
-import { List, WindowScroller, AutoSizer } from 'react-virtualized';
-
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import Authentication from '../../images/authentication.svg';
-
-import styled, { useTheme } from 'styled-components';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { sortbyOptions } from '../../queries/Constants';
+import { sortbyOptions } from '../../utilities/constants';
 import { useSearch } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities';
+import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Link } from 'react-router-dom';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -85,8 +82,8 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
 /**
  * Renders the infinite list of search results for both catalog and worksheet
  * @prop data - array | that holds the search results
- * @prop isList - boolean | determines display format (list or grid)
- * @prop setView - function | changes display format
+ * @prop isListView - boolean | determines display format (list or grid)
+ * @prop setIsListView - function | changes display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
@@ -96,29 +93,34 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
 
 function Results({
   data,
-  isList,
-  setView,
+  isListView,
+  setIsListView,
   loading = false,
   multiSeasons = false,
   isLoggedIn,
   numFriends,
   page = 'catalog',
 }: {
-  data: Listing[];
-  isList: boolean;
-  setView: (isList: boolean) => void;
-  loading?: boolean;
-  multiSeasons?: boolean;
-  isLoggedIn: boolean;
-  numFriends: Record<string, string[]>;
-  page?: 'catalog' | 'worksheet';
+  readonly data: Listing[];
+  readonly isListView: boolean;
+  readonly setIsListView: (isList: boolean) => void;
+  readonly loading?: boolean;
+  readonly multiSeasons?: boolean;
+  readonly isLoggedIn: boolean;
+  readonly numFriends: { [seasonCodeCrn: string]: string[] };
+  readonly page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
-  const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
-    useWindowDimensions();
+  const {
+    width: windowWidth,
+    isMobile,
+    isTablet,
+    isSmDesktop,
+    isLgDesktop,
+  } = useWindowDimensions();
 
   // State that holds width of the row for list view
-  const [ROW_WIDTH, setRowWidth] = useState(0);
+  const [rowWidth, setRowWidth] = useState(0);
 
   // Fetch resetKey from search context
   const { resetKey } = useSearch();
@@ -132,7 +134,7 @@ function Results({
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, width]);
+  }, [setRowWidth, windowWidth]);
 
   // Spacing for each column in list view
   const COL_SPACING = useMemo(() => {
@@ -154,7 +156,7 @@ function Results({
     };
 
     const EXTRA =
-      ROW_WIDTH -
+      rowWidth -
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
       TEMP_COL_SPACING.ENROLL_WIDTH -
@@ -179,16 +181,14 @@ function Results({
       10;
 
     return TEMP_COL_SPACING;
-  }, [ROW_WIDTH, multiSeasons, isLgDesktop]);
-
-  // Holds HTML for the search results
-  let resultsListing;
+  }, [rowWidth, multiSeasons, isLgDesktop]);
 
   // Number of columns to use in grid view
   const numCols = isMobile ? 1 : isTablet ? 2 : 3;
 
+  let resultsListing: JSX.Element | undefined = undefined;
   if (!isLoggedIn) {
-    // render an auth wall
+    // Render an auth wall
     resultsListing = (
       <div className="text-center py-5">
         <img
@@ -209,7 +209,7 @@ function Results({
       </div>
     );
   } else if (data.length === 0) {
-    // if no courses found, render the empty state
+    // If no courses found, render the empty state
     resultsListing = (
       <div className="text-center py-5">
         <img
@@ -233,8 +233,8 @@ function Results({
         )}
       </div>
     );
-  } else if (!isList) {
-    // if not list view, prepare the grid
+  } else if (!isListView) {
+    // If not list view, prepare the grid
     // Store HTML for grid view results
     resultsListing = (
       // Scroll the entire window
@@ -263,7 +263,7 @@ function Results({
                       <ResultsGridItem
                         course={data[j]}
                         isLoggedIn={isLoggedIn}
-                        num_cols={numCols}
+                        numCols={numCols}
                         multiSeasons={multiSeasons}
                         key={j}
                       />,
@@ -300,7 +300,12 @@ function Results({
                 scrollTop={scrollTop}
                 rowCount={data.length}
                 rowHeight={isLgDesktop ? 32 : 28}
-                rowRenderer={({ index, key, style, isScrolling }) => {
+                rowRenderer={({
+                  index,
+                  key,
+                  style,
+                  isScrolling: rowIsScrolling,
+                }) => {
                   const friends = numFriends[
                     data[index].season_code + data[index].crn
                   ]
@@ -324,7 +329,7 @@ function Results({
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
-                        isScrolling={isScrolling}
+                        isScrolling={rowIsScrolling}
                         friends={friends}
                       />
                     </ResultsItemWrapper>
@@ -377,20 +382,12 @@ function Results({
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
-      if (isSmDesktop || isTablet) {
-        return 88;
-      }
-      if (isLgDesktop) {
-        return 100;
-      }
+      if (isSmDesktop || isTablet) return 88;
+      if (isLgDesktop) return 100;
     }
     if (page === 'worksheet') {
-      if (isSmDesktop || isTablet) {
-        return 58;
-      }
-      if (isLgDesktop) {
-        return 61;
-      }
+      if (isSmDesktop || isTablet) return 58;
+      if (isLgDesktop) return 61;
     }
     return 0;
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
@@ -416,9 +413,12 @@ function Results({
               <div
                 className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
-                <ListGridToggle isList={isList} setView={setView} />
+                <ListGridToggle
+                  isListView={isListView}
+                  setIsListView={setIsListView}
+                />
               </div>
-              {isList ? (
+              {isListView ? (
                 <>
                   {multiSeasons && (
                     <ResultsHeader style={sznStyle}>Season</ResultsHeader>
@@ -615,13 +615,14 @@ function Results({
       )}
 
       <SearchResults
-        className={`${!isList ? 'px-1 pt-3 ' : ''}`}
+        className={!isListView ? 'px-1 pt-3 ' : ''}
         numCourses={data.length}
         isMobile={isMobile}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
-        {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
+        {/* If there are no search results, we are not logged in, and not
+          loading, then render the empty state */}
         {data.length === 0 && !loading && resultsListing}
         {/* Render a loading row while performing next query */}
         {loading && (

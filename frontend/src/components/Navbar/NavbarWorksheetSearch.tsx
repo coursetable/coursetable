@@ -1,18 +1,20 @@
 import React, { useMemo, useState } from 'react';
 import { Form, Row, ToggleButton, ToggleButtonGroup } from 'react-bootstrap';
 import styled from 'styled-components';
-import { ValueType } from 'react-select/src/types';
 import { components } from 'react-select';
+import { toast } from 'react-toastify';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
-import { isOption, Option } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities';
+import { isOption } from '../../contexts/searchContext';
+import { breakpoints } from '../../utilities/display';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import { useUser } from '../../contexts/userContext';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
+import type { NetId, Season } from '../../utilities/common';
+
 // Row in navbar search
 const StyledRow = styled(Row)`
   width: auto;
@@ -131,8 +133,9 @@ export function NavbarWorksheetSearch() {
   // List of friend options. Initialize with me option
   const friendOptions = useMemo(() => {
     const friendOptionsTemp = [];
-    // Add friend to dropdown if they have worksheet courses in the current season
-    for (const friend of Object.keys(friendInfo)) {
+    // Add friend to dropdown if they have worksheet courses in the current
+    // season
+    for (const friend of Object.keys(friendInfo) as NetId[]) {
       friendOptionsTemp.push({
         value: friend,
         label: friendInfo[friend].name,
@@ -146,9 +149,7 @@ export function NavbarWorksheetSearch() {
   }, [friendInfo]);
 
   const selectedPerson = useMemo(() => {
-    if (person === 'me' || friendInfo[person] == undefined) {
-      return null;
-    }
+    if (person === 'me' || !friendInfo[person]) return null;
     return {
       value: person,
       label: friendInfo[person].name,
@@ -161,10 +162,11 @@ export function NavbarWorksheetSearch() {
     [user.friendRequests],
   );
 
-  // friend requests variables
+  // Friend requests variables
   const friendRequestOptions = useMemo(() => {
     const friendRequestOptionsTemp = [];
-    // Add friend to dropdown if they have worksheet courses in the current season
+    // Add friend to dropdown if they have worksheet courses in the current
+    // season
     for (const friend of friendRequestInfo) {
       friendRequestOptionsTemp.push({
         value: friend.netId,
@@ -195,12 +197,8 @@ export function NavbarWorksheetSearch() {
             <StyledToggleButtonGroup
               name="worksheet-view-toggle"
               type="radio"
-              value={
-                worksheetView.view === 'expanded calendar'
-                  ? 'calendar'
-                  : worksheetView.view
-              }
-              onChange={(val: string) =>
+              value={worksheetView.view}
+              onChange={(val: 'calendar' | 'list') =>
                 handleWorksheetView({ view: val, mode: '' })
               }
               className="ml-2 mr-3"
@@ -214,7 +212,7 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Season"
               type="season"
-              select_options={selectedSeason}
+              selectOptions={selectedSeason}
               clearIcon={false}
             >
               <PopoutSelect
@@ -223,10 +221,9 @@ export function NavbarWorksheetSearch() {
                 value={selectedSeason}
                 options={seasonOptions}
                 placeholder="Last 5 Years"
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if (isOption(selectedOption)) {
-                    changeSeason(selectedOption.value);
-                  }
+                onChange={(selectedOption) => {
+                  if (isOption(selectedOption))
+                    changeSeason(selectedOption.value as Season | null);
                 }}
               />
             </Popout>
@@ -234,7 +231,7 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Worksheet"
               type="worksheet"
-              select_options={selectedWorksheet}
+              selectOptions={selectedWorksheet}
               clearIcon={false}
             >
               <PopoutSelect
@@ -243,10 +240,9 @@ export function NavbarWorksheetSearch() {
                 value={selectedWorksheet}
                 options={worksheetOptions}
                 placeholder="Main Worksheet"
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if (isOption(selectedOption)) {
+                onChange={(selectedOption) => {
+                  if (isOption(selectedOption))
                     changeWorksheet(selectedOption.value);
-                  }
                 }}
               />
             </Popout>
@@ -254,7 +250,7 @@ export function NavbarWorksheetSearch() {
             <Popout
               buttonText="Friends' courses"
               type="friend"
-              select_options={selectedPerson}
+              selectOptions={selectedPerson}
               onReset={() => {
                 handlePersonChange('me');
               }}
@@ -262,6 +258,8 @@ export function NavbarWorksheetSearch() {
               <Searchbar
                 components={{
                   Control: (props) => (
+                    // TODO
+                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
                     <div
                       onClick={() => {
                         setRemoving(1 - removing);
@@ -280,17 +278,19 @@ export function NavbarWorksheetSearch() {
                     : 'Removing friends (click to switch to select mode)'
                 }
                 isSearchable={false}
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                onChange={async (selectedOption) => {
                   if (removing === 0) {
                     // Cleared friend
                     if (!selectedOption) handlePersonChange('me');
                     // Selected friend
                     else if (isOption(selectedOption))
-                      handlePersonChange(selectedOption.value);
+                      handlePersonChange(selectedOption.value as NetId);
                   } else if (selectedOption && isOption(selectedOption)) {
-                    removeFriend(selectedOption.value, user.netId);
-                    removeFriend(user.netId, selectedOption.value);
-                    alert('Removed friend: ' + selectedOption.value);
+                    await Promise.all([
+                      removeFriend(selectedOption.value, user.netId),
+                      removeFriend(user.netId, selectedOption.value),
+                    ]);
+                    toast.info(`Removed friend: ${selectedOption.value}`);
                     window.location.reload();
                   }
                 }}
@@ -309,6 +309,8 @@ export function NavbarWorksheetSearch() {
               <Searchbar
                 components={{
                   Control: (props) => (
+                    // TODO
+                    // eslint-disable-next-line jsx-a11y/no-static-element-interactions
                     <div
                       onClick={() => {
                         setDeleting(1 - deleting);
@@ -327,15 +329,19 @@ export function NavbarWorksheetSearch() {
                     ? 'Accepting requests (click to switch to decline mode)'
                     : 'Declining requests (click to switch to accept mode)'
                 }
-                onChange={(selectedOption: ValueType<Option, boolean>) => {
+                onChange={async (selectedOption) => {
                   if (selectedOption && isOption(selectedOption)) {
-                    resolveFriendRequest(selectedOption.value);
+                    await resolveFriendRequest(selectedOption.value);
                     if (deleting === 0) {
-                      addFriend(selectedOption.value, user.netId);
-                      addFriend(user.netId, selectedOption.value);
-                      alert('Added friend: ' + selectedOption.value);
+                      await Promise.all([
+                        addFriend(selectedOption.value, user.netId),
+                        addFriend(user.netId, selectedOption.value),
+                      ]);
+                      toast.info(`Added friend: ${selectedOption.value}`);
                     } else if (deleting === 1) {
-                      alert('Declined friend request: ' + selectedOption.value);
+                      toast.info(
+                        `Declined friend request: ${selectedOption.value}`,
+                      );
                     }
                     window.location.reload();
                   }
@@ -350,13 +356,13 @@ export function NavbarWorksheetSearch() {
               <Searchbar
                 hideSelectedOptions={false}
                 components={{
-                  Menu: () => <></>,
+                  Menu: () => null,
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
-                onKeyDown={(e) => {
+                onKeyDown={async (e) => {
                   if (e.key === 'Enter') {
-                    friendRequest(currentFriendNetID);
-                    alert('Sent friend request: ' + currentFriendNetID);
+                    await friendRequest(currentFriendNetID);
+                    toast.info(`Sent friend request: ${currentFriendNetID}`);
                   }
                 }}
                 onInputChange={(e) => {

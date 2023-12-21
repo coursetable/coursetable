@@ -1,11 +1,13 @@
-import { expectType, TypeOf } from 'ts-expect';
-import { CatalogBySeasonQuery } from '../generated/graphql';
+import { expectType, type TypeOf } from 'ts-expect';
+import type { CatalogBySeasonQuery } from '../generated/graphql';
 
 // A couple common types.
 
-export type Season = string;
-export type NetId = string;
-export type Crn = number;
+// These types are branded so you never pass the wrong thing
+declare const type: unique symbol;
+export type Season = string & { [type]: 'season' };
+export type NetId = string & { [type]: 'netid' };
+export type Crn = number & { [type]: 'crn' };
 
 export const weekdays = [
   'Monday',
@@ -20,33 +22,28 @@ export type Weekdays = (typeof weekdays)[number];
 
 type RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
 type ListingOverrides = {
+  crn: Crn;
   season_code: Season;
 
   // Narrow some of the JSON types.
   all_course_codes: string[];
   areas: string[];
+  flag_info: string[];
   skills: string[];
+  professor_ids: string[];
   professor_names: string[];
-  times_by_day: Partial<
-    Record<
-      Weekdays,
-      [
-        startTime: string,
-        endTime: string,
-        location: string,
-        locationURL: string,
-      ][] // an array because there could by multiple times per day
-    >
-  >;
+  times_by_day: Partial<{
+    [day in Weekdays]: [
+      startTime: string,
+      endTime: string,
+      location: string,
+      locationURL: string,
+    ][];
+  }>;
 };
 type ListingAugments = {
-  // Add a couple types created by the preprocessing step.
-  professors?: string;
-  professor_avg_rating?: string;
-  color?: string;
-  border?: string;
-  start_time?: moment.Moment;
-  location_url?: string;
+  // TODO: this should be in the worksheet data structure
+  color?: [number, number, number];
   currentWorksheet?: string;
 };
 expectType<

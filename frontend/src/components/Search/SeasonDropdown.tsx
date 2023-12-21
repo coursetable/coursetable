@@ -2,14 +2,9 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import '../Navbar/DropdownShared.css';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import { useWorksheet } from '../../contexts/worksheetContext';
-
-/**
- * Render Season Dropdown in mobile view
- * @prop onSeasonChange - function to switch seasons
- * @prop curSeason - string that holds the current season code
- */
+import type { Season } from '../../utilities/common';
 
 function SeasonDropdown() {
   const { seasonCodes, curSeason, changeSeason } = useWorksheet();
@@ -19,7 +14,7 @@ function SeasonDropdown() {
       <DropdownButton
         variant="dark"
         title={toSeasonString(curSeason)}
-        onSelect={changeSeason}
+        onSelect={(s) => changeSeason(s as Season | null)}
       >
         {seasonCodes.map((season) => (
           <Dropdown.Item

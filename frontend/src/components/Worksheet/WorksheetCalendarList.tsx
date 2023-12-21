@@ -9,13 +9,14 @@ import {
   Tooltip,
 } from 'react-bootstrap';
 import styled from 'styled-components';
+import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import { TbFileExport } from 'react-icons/tb';
+
 import { SurfaceComponent } from '../StyledComponents';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import WorksheetStats from './WorksheetStats';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { BsEyeSlash, BsEye } from 'react-icons/bs';
-import { TbFileExport } from 'react-icons/tb';
 import GoogleCalendarButton from './GoogleCalendarButton';
 import ICSExportButton from './ICSExportButton';
 
@@ -135,9 +136,9 @@ function WorksheetCalendarList() {
     // List to hold HTML
     const listitems = courses.map((course, id) => {
       let hidden = false;
-      if (curSeason in hiddenCourses) {
+      if (curSeason in hiddenCourses)
         hidden = hiddenCourses[curSeason][course.crn];
-      }
+
       // Add listgroup item to listitems list
       return (
         <WorksheetCalendarListItem
@@ -153,9 +154,7 @@ function WorksheetCalendarList() {
   }, [courses, hiddenCourses, curSeason, worksheetNumber]);
 
   const areHidden = useMemo(() => {
-    if (!(curSeason in hiddenCourses)) {
-      return false;
-    }
+    if (!(curSeason in hiddenCourses)) return false;
     return Object.keys(hiddenCourses[curSeason]).length === courses.length;
   }, [hiddenCourses, courses, curSeason]);
 

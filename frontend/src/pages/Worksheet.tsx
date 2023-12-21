@@ -1,7 +1,9 @@
 import React from 'react';
-
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import * as Sentry from '@sentry/react';
+import styled from 'styled-components';
+
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
 import WorksheetList from '../components/Worksheet/WorksheetList';
@@ -20,9 +22,6 @@ import ErrorPage from '../components/ErrorPage';
 
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
-import * as Sentry from '@sentry/react';
-
-import styled from 'styled-components';
 
 const StyledCalendarContainer = styled(SurfaceComponent)`
   transition:
@@ -49,8 +48,9 @@ function Worksheet() {
   } = useWorksheet();
 
   // If user somehow isn't logged in and worksheet is null
-  if (curWorksheet == null) return <div>Error fetching worksheet</div>;
+  if (!curWorksheet) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
+  // eslint-disable-next-line no-constant-condition
   if (curWorksheet.length === 0 && !isMobile && false) {
     // TODO: remove this part and add an empty state later on.
     // We don't want to prevent a user from seeing their friend's

@@ -16,16 +16,16 @@ const setObject = <T>(
 // Retrieves object from storage
 const getObject = <T>(key: string, storage: Storage) => {
   const strVal = storage.getItem(key);
-  if (strVal == null || strVal === 'undefined') return null;
+  if (strVal === null || strVal === 'undefined') return null;
   return JSON.parse(strVal) as T;
 };
-// session storage functions
+// Session storage functions
 export const setSSObject = <T>(key: string, obj: T, ifEmpty = false): void => {
   setObject<T>(key, obj, window.sessionStorage, ifEmpty);
 };
 export const getSSObject = <T>(key: string): T | null =>
   getObject<T>(key, window.sessionStorage);
-// local storage functions
+// Local storage functions
 export const setLSObject = <T>(key: string, obj: T, ifEmpty = false): void =>
   setObject<T>(key, obj, window.localStorage, ifEmpty);
 export const getLSObject = <T>(key: string): T | null =>

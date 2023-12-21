@@ -1,8 +1,9 @@
-import { DefaultTheme } from 'styled-components';
+import type { DefaultTheme } from 'styled-components';
 
 /**
- * CAUTION: Some unrelated elements/components may depend on certain colors below.
- * When altering the values below, ensure that it is only for the element you want and search for all of that color's uses throughout the codebase.
+ * CAUTION: Some unrelated elements/components may depend on certain colors
+ * below. When altering the values below, ensure that it is only for the element
+ * you want and search for all of that color's uses throughout the codebase.
  */
 
 export const lightTheme: DefaultTheme = {
@@ -31,7 +32,7 @@ export const lightTheme: DefaultTheme = {
 export const darkTheme: DefaultTheme = {
   theme: 'dark',
   text: ['#FAFAFA', '#dbdbdb', '#bababa'], // [Primary, Secondary, darker secondary]
-  background: '#121212', // darkest color used in background
+  background: '#121212', // Darkest color used in background
   surface: ['#242424', '#363636'], // [Primary, Secondary] secondary is lighter and goes on top
   banner: '#363636', // Used when light mode needs to be greyish. Otherwise, same as secondary surface
   border: '#303030', // Used in borders (calendar, and between list items)

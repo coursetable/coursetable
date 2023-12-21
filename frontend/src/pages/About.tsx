@@ -319,7 +319,7 @@ function About() {
 
   return (
     <div className={`${styles.container} mx-auto`}>
-      <StyledH1 className={'mt-5 mb-1'}>About Us</StyledH1>
+      <StyledH1 className="mt-5 mb-1">About Us</StyledH1>
       <TextComponent type={1}>
         <p className={`${styles.about_description} mb-3 mx-auto`}>
           CourseTable offers a clean and effective way for Yale students to find

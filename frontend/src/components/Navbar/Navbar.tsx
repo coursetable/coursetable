@@ -4,6 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
+import { DateTime, Duration } from 'luxon';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
@@ -13,11 +14,10 @@ import {
   logout,
   scrollToTop,
   useComponentVisible,
-} from '../../utilities';
+} from '../../utilities/display';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
-import { DateTime, Duration } from 'luxon';
 
 import { API_ENDPOINT } from '../../config';
 import { useTheme } from '../../contexts/themeContext';
@@ -93,8 +93,8 @@ const NavLogo = styled(Nav)`
 `;
 
 type Props = {
-  isLoggedIn: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly isLoggedIn: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 //  Wrapper for nav collapse for # of results shown text
@@ -102,8 +102,8 @@ function NavCollapseWrapper({
   children,
   wrap,
 }: {
-  children: React.ReactNode;
-  wrap: boolean;
+  readonly children: React.ReactNode;
+  readonly wrap: boolean;
 }) {
   if (wrap) {
     return (
@@ -142,35 +142,26 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const [page, setPage] = useState('');
   // Handles page
   useEffect(() => {
-    if (location && location.pathname === '/catalog') {
-      setPage('catalog');
-    } else if (location && location.pathname === '/worksheet') {
+    if (location && location.pathname === '/catalog') setPage('catalog');
+    else if (location && location.pathname === '/worksheet')
       setPage('worksheet');
-    } else {
-      setPage('');
-    }
+    else setPage('');
   }, [location]);
 
   // Decides whether to show search or not
   useEffect(() => {
-    if (!isMobile && isLoggedIn && page) {
-      setShowSearch(true);
-    } else {
-      setShowSearch(false);
-    }
+    if (!isMobile && isLoggedIn && page) setShowSearch(true);
+    else setShowSearch(false);
   }, [isMobile, isLoggedIn, page]);
 
   // Calculate time since last updated
   useEffect(() => {
     const dt = DateTime.now().setZone('America/New_York');
-    let dtUpdate: DateTime;
-    if (dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)) {
-      dtUpdate = dt
-        .plus(Duration.fromObject({ days: -1 }))
-        .set({ hour: 3, minute: 30, second: 0 });
-    } else {
-      dtUpdate = dt.set({ hour: 3, minute: 30, second: 0 });
-    }
+    const dtUpdate = (
+      dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)
+        ? dt.plus(Duration.fromObject({ days: -1 }))
+        : dt
+    ).set({ hour: 3, minute: 30, second: 0 });
     const diffInSecs = dt.diff(dtUpdate).as('seconds');
     if (diffInSecs < 60) {
       setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
@@ -236,7 +227,8 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
               {/* Navbar collapse */}
               <Navbar.Collapse
                 id="basic-navbar-nav"
-                // Make navbar display: flex when not mobile. If mobile, normal formatting
+                // Make navbar display: flex when not mobile. If mobile, normal
+                // formatting
                 className={!isMobile ? 'd-flex' : 'justify-content-end'}
                 style={!isMobile && showSearch ? { flexGrow: 0 } : undefined}
               >
@@ -249,6 +241,8 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                   style={{ width: '100%' }}
                 >
                   {/* DarkMode Button */}
+                  {/* TODO */}
+                  {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <div
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
                       !isMobile ? 'ml-auto' : ''
@@ -327,9 +321,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                         Sign In
                       </StyledDiv>
                     ) : (
-                      <>
-                        <StyledDiv onClick={logout}>Sign Out</StyledDiv>
-                      </>
+                      <StyledDiv onClick={logout}>Sign Out</StyledDiv>
                     )}
                   </div>
                 </Nav>
@@ -348,7 +340,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
       {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
-          profile_expanded={isComponentVisible}
+          profileExpanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
           setIsTutorialOpen={setIsTutorialOpen}

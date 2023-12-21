@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 import { StyledHoverText, TextComponent } from '../components/StyledComponents';
 import styles from './FAQ.module.css';
-import { scrollToTop } from '../utilities';
+import { scrollToTop } from '../utilities/display';
 
 // Card used in FAQ accordion
 const StyledCard = styled(Card)`
@@ -33,20 +33,15 @@ const StyledContainer = styled.div`
 // Custom accordion component
 function ContextAwareToggle({
   eventKey,
-  callback,
   question,
 }: {
-  eventKey: string;
-  callback?: (eventKey: string) => void;
-  question: string;
+  readonly eventKey: string;
+  readonly question: string;
 }) {
   // Current active item
   const currentEventKey = useContext(AccordionContext);
 
-  const decoratedOnClick = useAccordionToggle(
-    eventKey,
-    () => callback && callback(eventKey),
-  );
+  const decoratedOnClick = useAccordionToggle(eventKey, () => {});
 
   // Is this one currently active?
   const isCurrentEventKey = currentEventKey === eventKey;
@@ -296,7 +291,7 @@ function FAQ() {
   ];
 
   return (
-    <StyledContainer className={'mx-auto'}>
+    <StyledContainer className="mx-auto">
       <h1 className={`${styles.faq_header} mt-5 mb-1`}>
         Frequently Asked Questions
       </h1>
@@ -308,9 +303,9 @@ function FAQ() {
         {faqs.map((faq, idx) => (
           <StyledCard key={idx}>
             <div>
-              <ContextAwareToggle eventKey={`${idx}`} question={faq.title} />
+              <ContextAwareToggle eventKey={String(idx)} question={faq.title} />
             </div>
-            <Accordion.Collapse eventKey={`${idx}`}>
+            <Accordion.Collapse eventKey={String(idx)}>
               <Card.Body className="py-3">
                 <TextComponent type={1}>{faq.contents}</TextComponent>
               </Card.Body>

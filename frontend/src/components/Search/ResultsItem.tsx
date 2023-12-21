@@ -12,7 +12,7 @@ import {
   workloadColormap,
   skillsAreasColors,
   subjectOptions,
-} from '../../queries/Constants';
+} from '../../utilities/constants';
 
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
@@ -28,8 +28,9 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   toSeasonString,
-} from '../../utilities/courseUtilities';
-import { breakpoints } from '../../utilities';
+  truncatedText,
+} from '../../utilities/course';
+import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
 
 // Row for results item
@@ -93,12 +94,12 @@ function ResultsItem({
   isScrolling = false,
   friends,
 }: {
-  course: Listing;
-  multiSeasons: boolean;
-  isFirst: boolean;
-  COL_SPACING: any;
-  isScrolling: boolean;
-  friends: string[];
+  readonly course: Listing;
+  readonly multiSeasons: boolean;
+  readonly isFirst: boolean;
+  readonly COL_SPACING: any;
+  readonly isScrolling: boolean;
+  readonly friends: string[];
 }) {
   const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?
@@ -273,17 +274,10 @@ function ResultsItem({
                 </strong>
               </Popover.Title>
               <Popover.Content>
-                {course.description
-                  ? course.description.length <= 500
-                    ? course.description
-                    : `${course.description.slice(0, 500)}...`
-                  : 'no description'}
+                {truncatedText(course.description, 500, 'no description')}
                 <br />
                 <div className="text-danger">
-                  {course.requirements &&
-                    (course.requirements.length <= 250
-                      ? course.requirements
-                      : `${course.requirements.slice(0, 250)}...`)}
+                  {truncatedText(course.requirements, 250, '')}
                 </div>
               </Popover.Content>
             </StyledPopover>

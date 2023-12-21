@@ -1,6 +1,6 @@
-import { expectType, TypeOf } from 'ts-expect';
+import { expectType, type TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
-import type { Listing } from '../utilities/common';
+import type { Listing } from './common';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -68,8 +68,23 @@ export const sortbyOptions = [
   { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
-// Make sure we can only sort by keys in the listing, or by friends.
-export type SortKeys = keyof Listing | 'friend';
+// We can only sort by primitive keys by default, unless we have special support
+export type SortKeys =
+  | NonNullable<
+      {
+        [K in keyof Listing]: Listing[K] extends
+          | string
+          | number
+          | boolean
+          | null
+          | undefined
+          ? K
+          : never;
+      }[keyof Listing]
+    >
+  | 'times_by_day'
+  | 'average_rating'
+  | 'friend';
 expectType<TypeOf<SortKeys, (typeof sortbyOptions)[0]['value']>>(true);
 export type SortByOption = (typeof sortbyOptions)[number];
 
@@ -78,7 +93,7 @@ export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
 export type AreasType = (typeof areas)[number];
 export type SkillsType = (typeof skills)[number];
 
-export const skillsAreasColors: { [key: string]: string } = {
+export const skillsAreasColors: { [skillArea: string]: string } = {
   Hu: '#9970AB',
   So: '#4393C3',
   Sc: '#5AAE61',
@@ -155,7 +170,8 @@ export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
 
-// Maybe the number type is causing the error? (but it works fine on navbar search hmmm)
+// Maybe the number type is causing the error? (but it works fine on navbar
+// search hmmm)
 export const creditOptions = [
   { label: '0.5', value: 0.5 },
   { label: '1', value: 1 },
@@ -171,7 +187,7 @@ export const dayOptions = [
   { label: 'Friday', value: 'Friday' },
 ] as const;
 
-// to get a list of abbreviations, run
+// To get a list of abbreviations, run
 // a distinct_on:school query over computed_course_info
 
 // school labels were filled in manually

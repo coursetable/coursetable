@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
-import styles from './EvaluationResponses.module.css';
-import { StyledInput, TextComponent } from '../StyledComponents';
-import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 import Mark from 'mark.js';
+import styles from './EvaluationResponses.module.css';
+import type { Crn } from '../../utilities/common';
+import { StyledInput, TextComponent } from '../StyledComponents';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 // Tabs of evaluation comments in modal
 const StyledTabs = styled(Tabs)`
@@ -53,16 +54,19 @@ const StyledSortOption = styled.span<{ active: boolean }>`
  * @prop info - dictionary that holds the eval data for each question
  */
 
-const EvaluationResponses: React.FC<{
-  crn: number;
-  info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
-}> = ({ crn, info }) => {
+function EvaluationResponses({
+  crn,
+  info,
+}: {
+  readonly crn: Crn;
+  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+}) {
   // Sort by original order or length?
   const [sortOrder, setSortOrder] = useState('original');
 
   // Dictionary that holds the comments for each question
   const [responses, sortedResponses] = useMemo(() => {
-    const tempResponses: { [key: string]: string[] } = {};
+    const tempResponses: { [questionText: string]: string[] } = {};
     // Loop through each section for this course code
     (info || []).forEach((section) => {
       const crnCode = section.crn;
@@ -74,8 +78,7 @@ const EvaluationResponses: React.FC<{
       // Add comments to responses dictionary
       nodes.forEach((node) => {
         if (node.evaluation_question.question_text && node.comment) {
-          if (!tempResponses[node.evaluation_question.question_text])
-            tempResponses[node.evaluation_question.question_text] = [];
+          tempResponses[node.evaluation_question.question_text] ||= [];
           tempResponses[node.evaluation_question.question_text].push(
             node.comment,
           );
@@ -85,9 +88,9 @@ const EvaluationResponses: React.FC<{
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
     ) as typeof tempResponses;
-    for (const key of Object.keys(tempResponses)) {
+    for (const key of Object.keys(tempResponses))
       sortedResponses[key].sort((a, b) => b.length - a.length);
-    }
+
     return [tempResponses, sortedResponses];
   }, [info, crn]);
 
@@ -106,9 +109,7 @@ const EvaluationResponses: React.FC<{
     const curResponses = sortOrder === 'length' ? sortedResponses : responses;
     // Populate the lists above
     const genTemp = (resps: string[]) => {
-      if (resps.length === 0) {
-        return [];
-      }
+      if (resps.length === 0) return [];
       const filteredResps = resps
         .filter((response) =>
           response.toLowerCase().includes(filter.toLowerCase()),
@@ -128,15 +129,12 @@ const EvaluationResponses: React.FC<{
       return filteredResps;
     };
     for (const key of Object.keys(curResponses)) {
-      if (key.includes('summarize')) {
-        tempSummary = genTemp(curResponses[key]);
-      } else if (key.includes('recommend')) {
+      if (key.includes('summarize')) tempSummary = genTemp(curResponses[key]);
+      else if (key.includes('recommend'))
         tempRecommend = genTemp(curResponses[key]);
-      } else if (key.includes('skills')) {
-        tempSkills = genTemp(curResponses[key]);
-      } else if (key.includes('strengths')) {
+      else if (key.includes('skills')) tempSkills = genTemp(curResponses[key]);
+      else if (key.includes('strengths'))
         tempStrengths = genTemp(curResponses[key]);
-      }
     }
     return [tempRecommend, tempSkills, tempStrengths, tempSummary];
   }, [responses, sortOrder, sortedResponses, filter]);
@@ -240,6 +238,6 @@ const EvaluationResponses: React.FC<{
       {!numQuestions && <strong>No comments for this course</strong>}
     </div>
   );
-};
+}
 
 export default EvaluationResponses;

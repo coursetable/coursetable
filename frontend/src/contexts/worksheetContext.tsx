@@ -11,44 +11,47 @@ import {
   useSessionStorageState,
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
-import { useFerry } from './ferryContext';
-import { toSeasonString } from '../utilities/courseUtilities';
-import { useWorksheetInfo } from '../queries/GetWorksheetListings';
-import { useUser, Worksheet } from './userContext';
-import type { Season, Listing } from '../utilities/common';
-import type { OptType, Option } from './searchContext';
+import { useFerry, useWorksheetInfo } from './ferryContext';
+import { toSeasonString } from '../utilities/course';
+import { useUser, type Worksheet } from './userContext';
+import type { Season, Listing, Crn, NetId } from '../utilities/common';
+import type { OptType } from './searchContext';
 
-export type HiddenCourses = Record<Season, Record<number, boolean>>;
-export type WorksheetView = Record<string, string>;
+export type HiddenCourses = {
+  [seasonCode: Season]: { [crn: Crn]: boolean };
+};
+export type WorksheetView =
+  | { view: 'calendar'; mode: 'expanded' }
+  | { view: 'calendar'; mode: '' }
+  | { view: 'list'; mode: '' };
 
 type Store = {
-  seasonCodes: string[];
+  seasonCodes: Season[];
   seasonOptions: OptType;
   curWorksheet: Worksheet;
   curSeason: Season;
   worksheetNumber: string;
-  person: string;
+  person: 'me' | NetId;
   courses: Listing[];
   hiddenCourses: HiddenCourses;
   hoverCourse: number | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
-  // eslint-disable-next-line @typescript-eslint/ban-types
   worksheetError: {} | null;
   worksheetData: Listing[];
   changeSeason: (seasonCode: Season | null) => void;
   changeWorksheet: (worksheetNumber: string) => void;
-  handlePersonChange: (newPerson: string) => void;
+  handlePersonChange: (newPerson: 'me' | NetId) => void;
   setHoverCourse: React.Dispatch<React.SetStateAction<number | null>>;
   handleWorksheetView: (view: WorksheetView) => void;
-  toggleCourse: (crn: number) => void;
+  toggleCourse: (crn: Crn | -1 | -2) => void;
 };
 
 const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
 
 // List of colors for the calendar events
-const colors = [
+const colors: [number, number, number][] = [
   [108, 194, 111],
   [202, 95, 83],
   [49, 164, 212],
@@ -60,11 +63,15 @@ const colors = [
 /**
  * Stores the user's worksheet filters and sorts
  */
-export function WorksheetProvider({ children }: { children: React.ReactNode }) {
+export function WorksheetProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
-  const [viewedPerson, setViewedPerson] = useSessionStorageState(
+  const [viewedPerson, setViewedPerson] = useSessionStorageState<'me' | NetId>(
     'person',
     'me',
   );
@@ -88,9 +95,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   // Worksheet of the current person
   const curWorksheet = useMemo(() => {
     const whenNotDefined: Worksheet = []; // TODO: change this to undefined
-    if (viewedPerson === 'me') {
-      return user.worksheet ?? whenNotDefined;
-    }
+    if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
 
     const friendWorksheets = user.friendWorksheets?.worksheets;
     return friendWorksheets
@@ -100,10 +105,10 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   const { seasons: seasonsData } = useFerry();
   const seasonCodes = useMemo(() => {
-    const tempSeasonCodes: string[] = [];
+    const tempSeasonCodes: Season[] = [];
     if (seasonsData && seasonsData.seasons) {
       seasonsData.seasons.forEach((season) => {
-        tempSeasonCodes.push(season.season_code);
+        tempSeasonCodes.push(season.season_code as Season);
       });
     }
     tempSeasonCodes.sort();
@@ -113,22 +118,17 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // List to hold season dropdown options
   const seasonOptions = useMemo(() => {
-    const tempSeasonOptions: Option[] = [];
     // Sort season codes from most to least recent
     seasonCodes.sort();
     seasonCodes.reverse();
-    // Iterate over seasons and populate seasonOptions list
-    seasonCodes.forEach((seasonCode) => {
-      tempSeasonOptions.push({
-        value: seasonCode,
-        label: toSeasonString(seasonCode),
-      });
-    });
-    return tempSeasonOptions;
+    return seasonCodes.map((seasonCode) => ({
+      value: seasonCode,
+      label: toSeasonString(seasonCode),
+    }));
   }, [seasonCodes]);
 
   // Current season
-  const [curSeason, setCurSeason] = useSessionStorageState<Season>(
+  const [curSeason, setCurSeason] = useSessionStorageState(
     'curSeason',
     CUR_SEASON,
   );
@@ -139,14 +139,17 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
     '0',
   );
 
-  // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
+  // Fetch the worksheet info. This is eventually copied into the 'courses'
+  // variable.
   const {
     loading: worksheetLoading,
     error: worksheetError,
     data: worksheetData,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
   // Cache calendar colors. Reset whenever the season changes.
-  const [colorMap, setColorMap] = useState<Record<number, number[]>>({});
+  const [colorMap, setColorMap] = useState<{
+    [crn: Crn]: [number, number, number];
+  }>({});
   useEffect(() => {
     setColorMap({});
   }, [curSeason]);
@@ -161,13 +164,10 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       // Assign color to each course
       for (let i = 0; i < worksheetData.length; i++) {
         let choice = colors[i % colors.length];
-        if (colorMap[temp[i].crn]) {
-          choice = colorMap[temp[i].crn];
-        } else {
-          colorMap[temp[i].crn] = choice;
-        }
-        temp[i].color = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 0.85)`;
-        temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
+        if (colorMap[temp[i].crn]) choice = colorMap[temp[i].crn];
+        else colorMap[temp[i].crn] = choice;
+
+        temp[i].color = choice;
         temp[i].currentWorksheet = worksheetNumber;
       }
       // Sort list by course code
@@ -188,13 +188,13 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
 
   // Hide/Show this course
   const toggleCourse = useCallback(
-    (crn: number) => {
+    (crn: Crn | -1 | -2) => {
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses)) {
+          if (!(curSeason in newHiddenCourses))
             newHiddenCourses[curSeason] = {};
-          }
+
           courses.forEach((listing) => {
             newHiddenCourses[curSeason][listing.crn] = true;
           });
@@ -209,9 +209,9 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses)) {
+          if (!(curSeason in newHiddenCourses))
             newHiddenCourses[curSeason] = {};
-          }
+
           if (newHiddenCourses[curSeason][crn])
             delete newHiddenCourses[curSeason][crn];
           else newHiddenCourses[curSeason][crn] = true;
@@ -232,7 +232,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
   );
 
   const handlePersonChange = useCallback(
-    (newPerson: string) => {
+    (newPerson: 'me' | NetId) => {
       setViewedPerson(newPerson);
     },
     [setViewedPerson],
@@ -261,7 +261,7 @@ export function WorksheetProvider({ children }: { children: React.ReactNode }) {
       // Context state.
       seasonCodes,
       seasonOptions,
-      curWorksheet: curWorksheet,
+      curWorksheet,
       curSeason,
       worksheetNumber,
       person: viewedPerson,

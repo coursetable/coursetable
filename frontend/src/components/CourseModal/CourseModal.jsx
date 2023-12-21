@@ -1,22 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Col, Container, Row, Modal } from 'react-bootstrap';
-
+import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import styled from 'styled-components';
+
 import CourseModalOverview from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
-
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-
 import styles from './CourseModal.module.css';
 import { TextComponent, StyledLink } from '../StyledComponents';
 import SkillBadge from '../SkillBadge';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
-import { toast } from 'react-toastify';
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -53,6 +51,30 @@ const extraInfoMap = {
   NUMBER_CHANGED: 'NUMBER CHANGED',
 };
 
+// Share button
+function ShareButton({ courseCode, urlToShare }) {
+  const copyToClipboard = () => {
+    const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
+    navigator.clipboard.writeText(textToCopy).then(
+      () => {
+        toast.success('Course and URL copied to clipboard!');
+      },
+      (err) => {
+        console.error('Error copying to clipboard: ', err);
+      },
+    );
+  };
+
+  return (
+    <FaRegShareFromSquare
+      onClick={copyToClipboard}
+      size={25}
+      color="#007bff"
+      style={{ cursor: 'pointer' }}
+    />
+  );
+}
+
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();
   const url = window.location.href;
@@ -63,32 +85,10 @@ function CourseModal() {
 
   const listing = courses[seasonCode]?.get(Number(crn));
 
-  // share button
-  const ShareButton = ({ courseCode, urlToShare }) => {
-    const copyToClipboard = () => {
-      const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
-      navigator.clipboard.writeText(textToCopy).then(
-        () => {
-          toast.success('Course and URL copied to clipboard!');
-        },
-        (err) => {
-          console.error('Error copying to clipboard: ', err);
-        },
-      );
-    };
-
-    return (
-      <FaRegShareFromSquare
-        onClick={copyToClipboard}
-        size={25}
-        color="#007bff"
-        style={{ cursor: 'pointer' }}
-      />
-    );
-  };
   // Fetch current device
   const { isMobile } = useWindowDimensions();
-  // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
+  // Viewing overview or an evaluation? List contains
+  // [season code, listing info] for evaluations
   const [view, setView] = useState(['overview', null]);
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState('both');
@@ -129,7 +129,8 @@ function CourseModal() {
                       {/* Show worksheet add/remove button */}
                       {curListing &&
                         (listings.length === 1 ? (
-                          // If this is the initial listing, show worksheet toggle button
+                          // If this is the initial listing, show worksheet
+                          // toggle button
                           <WorksheetToggleButton
                             crn={curListing.crn}
                             seasonCode={curListing.season_code}
@@ -137,7 +138,8 @@ function CourseModal() {
                             selectedWorksheet={curListing.currentWorksheet}
                           />
                         ) : (
-                          // If this is the overview of some other eval course, show back button
+                          // If this is the overview of some other eval course,
+                          // show back button
                           <StyledLink
                             onClick={() => {
                               // Go back to the evaluations of this course
@@ -239,6 +241,7 @@ function CourseModal() {
                                 // Go to overview page of this eval course
                                 setView(['overview', null]);
                                 const newListing = { ...view[1].listing };
+                                // eslint-disable-next-line prefer-destructuring
                                 newListing.eval = view[1];
                                 setListings([...listings, newListing]);
                               }}
