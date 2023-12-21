@@ -31,9 +31,6 @@ import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
-/**
- * Render navbar and the corresponding page component for the route the user is on
- */
 function App() {
   const location = useLocation();
   // Fetch current device
@@ -78,9 +75,8 @@ function App() {
       !shownTutorial &&
       location &&
       location.pathname === '/catalog'
-    ) 
+    )
       setIsTutorialOpen(true);
-    
   }, [
     isMobile,
     isTablet,

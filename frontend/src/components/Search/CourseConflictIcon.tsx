@@ -38,7 +38,8 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
 
   // Update conflict status whenever the user's worksheet changes
   const crossListed = useMemo(() => {
-    // Return if worksheet hasn't been loaded, otherwise return the cross-listed class
+    // Return if worksheet hasn't been loaded, otherwise return the cross-listed
+    // class
     if (!data) return false;
     return checkCrossListed(data, course);
   }, [course, data]);
@@ -50,15 +51,18 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
         <OverlayTrigger
           placement="top"
           overlay={(props) =>
-            // Render if this course isn't in the worksheet and there is a conflict
+            // Render if this course isn't in the worksheet and there is a
+            // conflict
             !inWorksheet && conflicts.length > 0 ? (
               <Tooltip {...props} id="conflict-icon-button-tooltip">
                 <small style={{ fontWeight: 500 }}>
                   Conflicts with: <br />
-                  {conflicts.map((x) => String(x.course_code)).join(', ')} <br />
+                  {conflicts.map((x) => String(x.course_code)).join(', ')}{' '}
+                  <br />
                 </small>
                 {crossListed !== false ? (
-                  // Show only if the class is cross-listed with another class in the worksheet
+                  // Show only if the class is cross-listed with another class
+                  // in the worksheet
                   <small>(cross-listed with {crossListed})</small>
                 ) : (
                   ''

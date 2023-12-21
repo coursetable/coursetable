@@ -377,20 +377,14 @@ function Results({
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
-      if (isSmDesktop || isTablet) 
-        return 88;
-      
-      if (isLgDesktop) 
-        return 100;
-      
+      if (isSmDesktop || isTablet) return 88;
+
+      if (isLgDesktop) return 100;
     }
     if (page === 'worksheet') {
-      if (isSmDesktop || isTablet) 
-        return 58;
-      
-      if (isLgDesktop) 
-        return 61;
-      
+      if (isSmDesktop || isTablet) return 58;
+
+      if (isLgDesktop) return 61;
     }
     return 0;
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
@@ -621,7 +615,8 @@ function Results({
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
-        {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
+        {/* If there are no search results, we are not logged in, and not
+          loading, then render the empty state */}
         {data.length === 0 && !loading && resultsListing}
         {/* Render a loading row while performing next query */}
         {loading && (

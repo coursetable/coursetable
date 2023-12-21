@@ -1,6 +1,12 @@
 // Performing various actions on the listing dictionary
 import moment from 'moment';
-import { type Crn, type Season, type Weekdays, weekdays ,type  Listing } from './common';
+import {
+  type Crn,
+  type Season,
+  type Weekdays,
+  weekdays,
+  type Listing,
+} from './common';
 import type {
   FriendRecord,
   FriendInfo,
@@ -18,9 +24,8 @@ export const isInWorksheet = (
   worksheet?: Worksheet,
 ): boolean => {
   if (worksheet == null) return false;
-  if (typeof crn !== 'string') 
-    crn = crn.toString();
-  
+  if (typeof crn !== 'string') crn = crn.toString();
+
   for (let i = 0; i < worksheet.length; i++) {
     if (
       worksheet[i][0] === seasonCode &&
@@ -93,13 +98,15 @@ export const checkCrossListed = (
     if (listings[i].season_code !== course.season_code) continue;
     // Keep track of encountered classes and their aliases in the classes array
     classes.push(...listings[i].all_course_codes);
-    // Return the course code of the cross-listed class currently in the worksheet if one exists
+    // Return the course code of the cross-listed class currently in the
+    // worksheet if one exists
     if (classes.includes(course.course_code)) return listings[i].course_code;
   }
   return false;
 };
 
-// Fetch the friends that are also shopping a specific course. Used in course modal overview
+// Fetch the friends that are also shopping a specific course. Used in course
+// modal overview
 export function friendsAlsoTaking(
   seasonCode: Season,
   crn: Crn,
@@ -121,11 +128,14 @@ export function friendsAlsoTaking(
   }
   return alsoTaking;
 }
-type NumFriendsReturn =
-  // Key is season code + crn
-  // Value is the list of friends taking the class
-  { [key: string]: string[] };
-// Fetch the friends that are also shopping any course. Used in search and worksheet expanded list
+
+/**
+ * Key is season code + crn;
+ * Value is the list of friends taking the class
+ */
+type NumFriendsReturn = { [key: string]: string[] };
+// Fetch the friends that are also shopping any course. Used in search and
+// worksheet expanded list
 export const getNumFriends = (
   friendWorksheets: FriendInfo,
 ): NumFriendsReturn => {
@@ -250,9 +260,8 @@ const helperSort = (
     return calculateDayTime(listing);
   }
   // If value is 0, return null
-  if (listing[key] === 0) 
-    return null;
-  
+  if (listing[key] === 0) return null;
+
   return listing[key];
 };
 
@@ -316,17 +325,15 @@ export const getDayTimes = (
   course: Listing,
 ): { [key: string]: string }[] | null => {
   // If no times then return null
-  if (isEmpty(course.times_by_day)) 
-    return null;
-  
+  if (isEmpty(course.times_by_day)) return null;
 
   const initialFiltered: { [key: string]: string }[] = [];
 
   const times = Object.entries(course.times_by_day).reduce(
     (filtered, [day, dayTimes]) => {
-      if (dayTimes) 
+      if (dayTimes)
         filtered.push({ day, start: dayTimes[0][0], end: dayTimes[0][1] });
-      
+
       return filtered;
     },
     initialFiltered,

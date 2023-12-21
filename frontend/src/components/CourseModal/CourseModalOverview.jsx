@@ -106,9 +106,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
       }
       locations.set(location, locationURL);
       const timespan = `${convert24To12(startTime)}-${convert24To12(endTime)}`;
-      if (!times.has(timespan)) 
-        times.set(timespan, new Set());
-      
+      if (!times.has(timespan)) times.set(timespan, new Set());
+
       // Note! Some classes have multiple places at the same time, particularly
       // if one is "online". Avoid duplicates.
       // See for example: CDE 567, Spring 2023
@@ -182,7 +181,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
       const courseOfferings = [];
       // Loop by season code
       data.computed_listing_info.forEach((season) => {
-        // Stores the average rating for all profs teaching this course and populates prof_info
+        // Stores the average rating for all profs teaching this course and
+        // populates prof_info
         let averageProfessorRating = 0;
         if (season.professor_info) {
           const numProfs = season.professor_info.length;
@@ -196,7 +196,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                 const dict = profInfo[prof.name];
                 // Total number of courses this professor teaches
                 dict.numCourses++;
-                // Total rating. Will divide by number of courses later to get average
+                // Total rating. Will divide by number of courses later to
+                // get average
                 dict.totalRating += prof.average_rating;
                 // Prof email
                 dict.email = prof.email;
@@ -258,7 +259,8 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
         const hasEvals = courseOfferings[i].rating !== -1;
         const evalBox = (
           <Row key={id++} className="m-auto py-1 justify-content-center">
-            {/* The listing button, either clickable or greyed out based on whether evaluations exist */}
+            {/* The listing button, either clickable or greyed out based on
+                whether evaluations exist */}
             {hasEvals ? (
               <StyledCol
                 xs={5}
@@ -353,17 +355,16 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           listing.professor_names.length &&
           overlappingProfs(courseOfferings[i].professor) ===
             listing.professor_names.length
-        ) 
+        )
           overlapSections.both.push(evalBox);
-        
+
         // Course in course column
-        if (courseOfferings[i].course_code.includes(listing.course_code)) 
+        if (courseOfferings[i].course_code.includes(listing.course_code))
           overlapSections.course.push(evalBox);
-        
+
         // Course in prof column
-        if (overlappingProfs(courseOfferings[i].professor) > 0) 
+        if (overlappingProfs(courseOfferings[i].professor) > 0)
           overlapSections.professor.push(evalBox);
-        
       }
       return overlapSections;
     }

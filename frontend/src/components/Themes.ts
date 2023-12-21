@@ -1,8 +1,9 @@
 import type { DefaultTheme } from 'styled-components';
 
 /**
- * CAUTION: Some unrelated elements/components may depend on certain colors below.
- * When altering the values below, ensure that it is only for the element you want and search for all of that color's uses throughout the codebase.
+ * CAUTION: Some unrelated elements/components may depend on certain colors
+ * below. When altering the values below, ensure that it is only for the element
+ * you want and search for all of that color's uses throughout the codebase.
  */
 
 export const lightTheme: DefaultTheme = {

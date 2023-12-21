@@ -142,22 +142,16 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const [page, setPage] = useState('');
   // Handles page
   useEffect(() => {
-    if (location && location.pathname === '/catalog') 
-      setPage('catalog');
-     else if (location && location.pathname === '/worksheet') 
+    if (location && location.pathname === '/catalog') setPage('catalog');
+    else if (location && location.pathname === '/worksheet')
       setPage('worksheet');
-     else 
-      setPage('');
-    
+    else setPage('');
   }, [location]);
 
   // Decides whether to show search or not
   useEffect(() => {
-    if (!isMobile && isLoggedIn && page) 
-      setShowSearch(true);
-     else 
-      setShowSearch(false);
-    
+    if (!isMobile && isLoggedIn && page) setShowSearch(true);
+    else setShowSearch(false);
   }, [isMobile, isLoggedIn, page]);
 
   // Calculate time since last updated
@@ -236,7 +230,8 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
               {/* Navbar collapse */}
               <Navbar.Collapse
                 id="basic-navbar-nav"
-                // Make navbar display: flex when not mobile. If mobile, normal formatting
+                // Make navbar display: flex when not mobile. If mobile, normal
+                // formatting
                 className={!isMobile ? 'd-flex' : 'justify-content-end'}
                 style={!isMobile && showSearch ? { flexGrow: 0 } : undefined}
               >

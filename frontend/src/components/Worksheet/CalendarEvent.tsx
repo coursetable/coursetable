@@ -26,11 +26,9 @@ function truncatedText(
   max: number,
   defaultStr: string,
 ) {
-  if (!text) 
-    return defaultStr;
-   else if (text.length <= max) 
-    return text;
-  
+  if (!text) return defaultStr;
+  else if (text.length <= max) return text;
+
   return `${text.slice(0, max)}...`;
 }
 
@@ -55,7 +53,8 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
           </Popover.Content>
         </StyledPopover>
       )}
-      // Have a 1000ms delay before showing popover so it only pops up when user wants it to
+      // Have a 1000ms delay before showing popover so it only pops up when user
+      // wants it to
       delay={{ show: 1000, hide: 0 }}
     >
       <div style={eventStyle}>

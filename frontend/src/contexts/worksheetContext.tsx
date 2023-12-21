@@ -33,7 +33,7 @@ type Store = {
   hoverCourse: number | null;
   worksheetView: WorksheetView;
   worksheetLoading: boolean;
-   
+
   worksheetError: {} | null;
   worksheetData: Listing[];
   changeSeason: (seasonCode: Season | null) => void;
@@ -60,7 +60,11 @@ const colors = [
 /**
  * Stores the user's worksheet filters and sorts
  */
-export function WorksheetProvider({ children }: { readonly children: React.ReactNode }) {
+export function WorksheetProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   // Fetch user context data
   const { user } = useUser();
   // Current user who's worksheet we are viewing
@@ -88,9 +92,7 @@ export function WorksheetProvider({ children }: { readonly children: React.React
   // Worksheet of the current person
   const curWorksheet = useMemo(() => {
     const whenNotDefined: Worksheet = []; // TODO: change this to undefined
-    if (viewedPerson === 'me') 
-      return user.worksheet ?? whenNotDefined;
-    
+    if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
 
     const friendWorksheets = user.friendWorksheets?.worksheets;
     return friendWorksheets
@@ -139,7 +141,8 @@ export function WorksheetProvider({ children }: { readonly children: React.React
     '0',
   );
 
-  // Fetch the worksheet info. This is eventually copied into the 'courses' variable.
+  // Fetch the worksheet info. This is eventually copied into the 'courses'
+  // variable.
   const {
     loading: worksheetLoading,
     error: worksheetError,
@@ -161,11 +164,9 @@ export function WorksheetProvider({ children }: { readonly children: React.React
       // Assign color to each course
       for (let i = 0; i < worksheetData.length; i++) {
         let choice = colors[i % colors.length];
-        if (colorMap[temp[i].crn]) 
-          choice = colorMap[temp[i].crn];
-         else 
-          colorMap[temp[i].crn] = choice;
-        
+        if (colorMap[temp[i].crn]) choice = colorMap[temp[i].crn];
+        else colorMap[temp[i].crn] = choice;
+
         temp[i].color = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 0.85)`;
         temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
         temp[i].currentWorksheet = worksheetNumber;
@@ -192,9 +193,9 @@ export function WorksheetProvider({ children }: { readonly children: React.React
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses)) 
+          if (!(curSeason in newHiddenCourses))
             newHiddenCourses[curSeason] = {};
-          
+
           courses.forEach((listing) => {
             newHiddenCourses[curSeason][listing.crn] = true;
           });
@@ -209,9 +210,9 @@ export function WorksheetProvider({ children }: { readonly children: React.React
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses)) 
+          if (!(curSeason in newHiddenCourses))
             newHiddenCourses[curSeason] = {};
-          
+
           if (newHiddenCourses[curSeason][crn])
             delete newHiddenCourses[curSeason][crn];
           else newHiddenCourses[curSeason][crn] = true;

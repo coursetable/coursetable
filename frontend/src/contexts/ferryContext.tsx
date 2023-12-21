@@ -34,10 +34,11 @@ const preprocessCourses = (listing: Listing) => {
   if ('professor_names' in listing && listing.professor_names.length > 0) {
     listing.professors = listing.professor_names.join(', ');
     // For the average professor rating, take the first professor
-    if ('average_professor' in listing && listing.average_professor !== null)
+    if ('average_professor' in listing && listing.average_professor !== null) {
       // Trim professor ratings to one decimal point
-      {listing.professor_avg_rating =
-        listing.average_professor.toFixed(RATINGS_PRECISION);}
+      listing.professor_avg_rating =
+        listing.average_professor.toFixed(RATINGS_PRECISION);
+    }
   }
   return listing;
 };
@@ -82,7 +83,7 @@ const addToCache = (season: Season): Promise<void> =>
 type Store = {
   requests: number;
   loading: boolean;
-   
+
   error: {} | null;
   seasons: typeof seasons;
   courses: typeof courseData;
@@ -92,11 +93,15 @@ type Store = {
 const FerryCtx = createContext<Store | undefined>(undefined);
 FerryCtx.displayName = 'FerryCtx';
 
-export function FerryProvider({ children }: { readonly children: React.ReactNode }) {
+export function FerryProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   // Note that we track requests for force a re-render when
   // courseData changes.
   const [requests, setRequests] = useState(0);
-   
+
   const [errors, setErrors] = useState<{}[]>([]);
 
   const requestSeasons = useCallback(async (seasons: Season[]) => {
@@ -104,14 +109,12 @@ export function FerryProvider({ children }: { readonly children: React.ReactNode
       // Racy preemptive check of cache.
       // We cannot check courseLoadAttempted here, since that is set prior
       // to the data actually being loaded.
-      if (season in courseData) 
-        return;
-      
+      if (season in courseData) return;
 
       // Add to cache.
       setRequests((r) => r + 1);
       try {
-        await addToCache(season); 
+        await addToCache(season);
       } finally {
         setRequests((r) => r - 1);
       }
@@ -123,7 +126,8 @@ export function FerryProvider({ children }: { readonly children: React.ReactNode
     });
   }, []);
 
-  // If there's any error, we want to immediately stop "loading" and start "erroring".
+  // If there's any error, we want to immediately stop "loading" and start
+  // "erroring".
   const error = errors[0] ?? null;
   const loading = requests !== 0 && !error;
 

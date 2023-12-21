@@ -88,7 +88,8 @@ function CourseModal() {
   }
   // Fetch current device
   const { isMobile } = useWindowDimensions();
-  // Viewing overview or an evaluation? List contains [season code, listing info] for evaluations
+  // Viewing overview or an evaluation? List contains
+  // [season code, listing info] for evaluations
   const [view, setView] = useState(['overview', null]);
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState('both');
@@ -129,7 +130,8 @@ function CourseModal() {
                       {/* Show worksheet add/remove button */}
                       {curListing &&
                         (listings.length === 1 ? (
-                          // If this is the initial listing, show worksheet toggle button
+                          // If this is the initial listing, show worksheet
+                          // toggle button
                           <WorksheetToggleButton
                             crn={curListing.crn}
                             seasonCode={curListing.season_code}
@@ -137,7 +139,8 @@ function CourseModal() {
                             selectedWorksheet={curListing.currentWorksheet}
                           />
                         ) : (
-                          // If this is the overview of some other eval course, show back button
+                          // If this is the overview of some other eval course,
+                          // show back button
                           <StyledLink
                             onClick={() => {
                               // Go back to the evaluations of this course

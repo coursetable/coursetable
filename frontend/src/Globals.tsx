@@ -57,8 +57,9 @@ Sentry.init({
   release,
   autoSessionTracking: true,
 
-  // Note: this is fully enabled in development. We can revisit this if it becomes annoying.
-  // We can also adjust the production sample rate depending on our quotas.
+  // Note: this is fully enabled in development. We can revisit this if it
+  // becomes annoying. We can also adjust the production sample rate depending
+  // on our quotas.
   tracesSampleRate: isDev ? 1.0 : 0.08,
 });
 
@@ -80,10 +81,13 @@ function ErrorFallback() {
     </Row>
   );
 }
-function CustomErrorBoundary({ children }: { readonly children: React.ReactNode }) {
-  if (isDev) 
-    return <>{children}</>;
-  
+function CustomErrorBoundary({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
+  if (isDev) return <>{children}</>;
+
   return (
     <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
       {children}

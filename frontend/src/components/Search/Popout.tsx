@@ -180,9 +180,9 @@ export function Popout({
               {optionLabel}
             </span>
           );
-          if (topOptions.length > 1 && index < maxOptions - 1) 
+          if (topOptions.length > 1 && index < maxOptions - 1)
             return <>{span}, </>;
-          
+
           if (select_options.length > maxOptions) {
             return (
               <>
@@ -206,19 +206,16 @@ export function Popout({
               key === 'selects' &&
               Array.isArray(optionValue) &&
               optionValue.length > 0
-            ) 
+            )
               activeFilters++;
-             else if (key === 'ranges' && optionValue) 
-              activeFilters++;
-             else if (
+            else if (key === 'ranges' && optionValue) activeFilters++;
+            else if (
               key === 'toggles' &&
               typeof optionValue === 'boolean' &&
               optionValue
-            ) 
+            )
               activeFilters++;
-             else if (key === 'sorts' && optionValue) 
-              activeFilters++;
-            
+            else if (key === 'sorts' && optionValue) activeFilters++;
           }
         }
         const text =
@@ -260,7 +257,8 @@ export function Popout({
           <ClearIcon
             className="ml-1"
             onClick={(e) => {
-              // Prevent parent popout button onClick from firing and opening dropdown
+              // Prevent parent popout button onClick from firing and opening
+              // dropdown
               e.stopPropagation();
               onReset?.();
             }}

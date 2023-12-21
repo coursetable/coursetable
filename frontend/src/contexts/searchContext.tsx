@@ -170,7 +170,11 @@ export const defaultFilters = {
 /**
  * Stores the user's search, filters, and sorts
  */
-export function SearchProvider({ children }: { readonly children: React.ReactNode }) {
+export function SearchProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
 
@@ -339,9 +343,8 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
       // If we're not logged in, don't attempt to request any seasons.
       return [];
     }
-    if (selectSeasons == null) 
-      return [];
-    
+    if (selectSeasons == null) return [];
+
     if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
       return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
@@ -388,12 +391,9 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
       );
 
       // Set null defaults
-      if (processedSkills.length === 0) 
-        processedSkills = null;
-      
-      if (processedAreas.length === 0) 
-        processedAreas = null;
-      
+      if (processedSkills.length === 0) processedSkills = null;
+
+      if (processedAreas.length === 0) processedAreas = null;
     }
 
     // Credits to filter
@@ -401,9 +401,7 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
     if (selectCredits != null) {
       processedCredits = selectCredits.map((x) => x.label);
       // Set null defaults
-      if (processedCredits.length === 0) 
-        processedCredits = null;
-      
+      if (processedCredits.length === 0) processedCredits = null;
     }
 
     // Schools to filter
@@ -412,9 +410,7 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
       processedSchools = selectSchools.map((x) => x.value);
 
       // Set null defaults
-      if (processedSchools.length === 0) 
-        processedSchools = null;
-      
+      if (processedSchools.length === 0) processedSchools = null;
     }
 
     // Subjects to filter
@@ -423,9 +419,7 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
       processedSubjects = selectSubjects.map((x) => x.value);
 
       // Set null defaults
-      if (processedSubjects.length === 0) 
-        processedSubjects = null;
-      
+      if (processedSubjects.length === 0) processedSubjects = null;
     }
 
     // Days to filter
@@ -434,9 +428,7 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
       processedDays = selectDays.map((x) => x.value);
 
       // Set null defaults
-      if (processedDays.length === 0) 
-        processedDays = null;
-      
+      if (processedDays.length === 0) processedDays = null;
     }
 
     // If the bounds are unaltered, we need to set them to null
@@ -532,9 +524,8 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
         (averageOverall === null ||
           _.round(averageOverall, 1) < searchConfig.minOverall ||
           _.round(averageOverall, 1) > searchConfig.maxOverall)
-      ) 
+      )
         return false;
-      
 
       const averageWorkload = Number(getWorkloadRatings(listing));
       if (
@@ -543,9 +534,8 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
         (averageWorkload === null ||
           _.round(averageWorkload, 1) < searchConfig.minWorkload ||
           _.round(averageWorkload, 1) > searchConfig.maxWorkload)
-      ) 
+      )
         return false;
-      
 
       if (searchConfig.minTime !== null && searchConfig.maxTime !== null) {
         let include = false;
@@ -558,14 +548,11 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
               time !== null &&
               toRangeTime(time.start) >= toRangeTime(searchConfig.minTime) &&
               toRangeTime(time.end) <= toRangeTime(searchConfig.maxTime)
-            ) 
+            )
               include = true;
-            
           });
         }
-        if (!include) 
-          return false;
-        
+        if (!include) return false;
       }
 
       let enrollment = getEnrolled(listing);
@@ -576,9 +563,8 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
         (enrollment === null ||
           enrollment < Math.round(searchConfig.minEnrollment) ||
           enrollment > Math.round(searchConfig.maxEnrollment))
-      ) 
+      )
         return false;
-      
 
       const number = Number(listing.number.replace(/\D/g, ''));
       if (
@@ -587,37 +573,33 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
         (number === null ||
           number < searchConfig.minNumber ||
           (searchConfig.maxNumber < 1000 && number > searchConfig.maxNumber))
-      ) 
+      )
         return false;
-      
 
       if (
         searchConfig.extraInfo !== null &&
         searchConfig.extraInfo !== listing.extra_info
-      ) 
+      )
         return false;
-      
 
       if (
         searchConfig.conflicting !== null &&
         worksheetInfo &&
         listing.times_summary !== 'TBA' &&
         checkConflict(worksheetInfo, listing).length > 0
-      ) 
+      )
         return false;
-      
 
-      // Checks whether the section field consists only of letters -- if so, the class is a discussion section.
+      // Checks whether the section field consists only of letters -- if so, the
+      // class is a discussion section.
       if (
         searchConfig.discussionSection !== null &&
         /^[A-Z]*$/u.test(listing.section)
-      ) 
+      )
         return false;
-      
 
-      if (searchConfig.fySem !== null && searchConfig.fySem !== listing.fysem) 
+      if (searchConfig.fySem !== null && searchConfig.fySem !== listing.fysem)
         return false;
-      
 
       if (
         searchConfig.gradLevel !== null &&
@@ -625,42 +607,35 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
           // Tests if first character is between 5-9
           (listing.number.charAt(0) >= '5' &&
             listing.number.charAt(0) <= '9') ||
-          // Otherwise if first character is not a number (i.e. summer classes), tests whether second character between 5-9
+          // Otherwise if first character is not a number (i.e. summer classes),
+          // tests whether second character between 5-9
           ((listing.number.charAt(0) < '0' || listing.number.charAt(0) > '9') &&
             (listing.number.length <= 1 ||
               (listing.number.charAt(1) >= '5' &&
                 listing.number.charAt(1) <= '9'))))
-      ) 
+      )
         return false;
-      
 
       if (
         searchConfig.subjects.size !== 0 &&
         !searchConfig.subjects.has(listing.subject)
-      ) 
+      )
         return false;
-      
 
       const days = new Set(getDayTimes(listing)?.map((daytime) => daytime.day));
       if (searchConfig.days.size !== 0) {
         let include = true;
         if (days && days !== null) {
           days.forEach((day) => {
-            if (!searchConfig.days.has(day)) 
-              include = false;
-            
+            if (!searchConfig.days.has(day)) include = false;
           });
           searchConfig.days.forEach((day) => {
-            if (!days.has(day)) 
-              include = false;
-            
+            if (!days.has(day)) include = false;
           });
         } else {
           include = false;
         }
-        if (!include) 
-          return false;
-        
+        if (!include) return false;
       }
 
       if (
@@ -671,25 +646,22 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
         !listing.skills.some((v): v is SkillsType =>
           searchConfig.skills.has(v as SkillsType),
         )
-      ) 
+      )
         return false;
-      
 
       if (
         searchConfig.credits.size !== 0 &&
         listing.credits !== null &&
         !searchConfig.credits.has(String(listing.credits))
-      ) 
+      )
         return false;
-      
 
       if (
         searchConfig.schools.size !== 0 &&
         listing.school !== null &&
         !searchConfig.schools.has(listing.school)
-      ) 
+      )
         return false;
-      
 
       // Handle search text. Each token must match something.
       for (const token of tokens) {
@@ -698,8 +670,9 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
         if (
           listing.subject.toLowerCase().startsWith(token) ||
           listing.number.toLowerCase().startsWith(token) ||
-          // For course numbers that start with a letter
-          // (checked by if .toLowerCase() is not equal to .toUpperCase(), see https://stackoverflow.com/a/32567789/5540324),
+          // For course numbers that start with a letter (checked by if
+          // .toLowerCase() is not equal to .toUpperCase(), see
+          // https://stackoverflow.com/a/32567789/5540324),
           // exclude this letter when comparing with the search token
           (numberFirstChar.toLowerCase() !== numberFirstChar.toUpperCase() &&
             listing.number
@@ -797,9 +770,7 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
   // Perform default search on load
   useEffect(() => {
     // Only execute after seasons have been loaded
-    if (defaultSearch && seasonsOptions) 
-      setDefaultSearch(false);
-    
+    if (defaultSearch && seasonsOptions) setDefaultSearch(false);
   }, [seasonsOptions, defaultSearch]);
 
   // Set ordering in parent element whenever sortby or order changes
@@ -835,11 +806,10 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
       !_.isEqual(hideGraduateCourses, defaultFalse) ||
       !_.isEqual(hideDiscussionSections, defaultTrue) ||
       !_.isEqual(ordering, defaultOrdering)
-    ) 
+    )
       setCanReset(true);
-     else 
-      setCanReset(false);
-    
+    else setCanReset(false);
+
     // Calculate & determine search speed
     if (!coursesLoading && searchData) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
@@ -849,9 +819,7 @@ export function SearchProvider({ children }: { readonly children: React.ReactNod
           durInSecs > 1 ? 'fast' : durInSecs > 0.5 ? 'faster' : 'fastest'
         ],
       );
-      if (sp) 
-        setSpeed(sp);
-      
+      if (sp) setSpeed(sp);
     }
   }, [
     searchText,

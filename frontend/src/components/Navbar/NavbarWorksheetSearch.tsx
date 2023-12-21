@@ -132,7 +132,8 @@ export function NavbarWorksheetSearch() {
   // List of friend options. Initialize with me option
   const friendOptions = useMemo(() => {
     const friendOptionsTemp = [];
-    // Add friend to dropdown if they have worksheet courses in the current season
+    // Add friend to dropdown if they have worksheet courses in the current
+    // season
     for (const friend of Object.keys(friendInfo)) {
       friendOptionsTemp.push({
         value: friend,
@@ -147,9 +148,8 @@ export function NavbarWorksheetSearch() {
   }, [friendInfo]);
 
   const selectedPerson = useMemo(() => {
-    if (person === 'me' || friendInfo[person] == undefined) 
-      return null;
-    
+    if (person === 'me' || friendInfo[person] == undefined) return null;
+
     return {
       value: person,
       label: friendInfo[person].name,
@@ -165,7 +165,8 @@ export function NavbarWorksheetSearch() {
   // Friend requests variables
   const friendRequestOptions = useMemo(() => {
     const friendRequestOptionsTemp = [];
-    // Add friend to dropdown if they have worksheet courses in the current season
+    // Add friend to dropdown if they have worksheet courses in the current
+    // season
     for (const friend of friendRequestInfo) {
       friendRequestOptionsTemp.push({
         value: friend.netId,
@@ -225,9 +226,8 @@ export function NavbarWorksheetSearch() {
                 options={seasonOptions}
                 placeholder="Last 5 Years"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if (isOption(selectedOption)) 
+                  if (isOption(selectedOption))
                     changeSeason(selectedOption.value);
-                  
                 }}
               />
             </Popout>
@@ -245,9 +245,8 @@ export function NavbarWorksheetSearch() {
                 options={worksheetOptions}
                 placeholder="Main Worksheet"
                 onChange={(selectedOption: ValueType<Option, boolean>) => {
-                  if (isOption(selectedOption)) 
+                  if (isOption(selectedOption))
                     changeWorksheet(selectedOption.value);
-                  
                 }}
               />
             </Popout>
@@ -291,7 +290,7 @@ export function NavbarWorksheetSearch() {
                   } else if (selectedOption && isOption(selectedOption)) {
                     removeFriend(selectedOption.value, user.netId);
                     removeFriend(user.netId, selectedOption.value);
-                    alert(`Removed friend: ${  selectedOption.value}`);
+                    alert(`Removed friend: ${selectedOption.value}`);
                     window.location.reload();
                   }
                 }}
@@ -334,9 +333,9 @@ export function NavbarWorksheetSearch() {
                     if (deleting === 0) {
                       addFriend(selectedOption.value, user.netId);
                       addFriend(user.netId, selectedOption.value);
-                      alert(`Added friend: ${  selectedOption.value}`);
+                      alert(`Added friend: ${selectedOption.value}`);
                     } else if (deleting === 1) {
-                      alert(`Declined friend request: ${  selectedOption.value}`);
+                      alert(`Declined friend request: ${selectedOption.value}`);
                     }
                     window.location.reload();
                   }
@@ -357,7 +356,7 @@ export function NavbarWorksheetSearch() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     friendRequest(currentFriendNetID);
-                    alert(`Sent friend request: ${  currentFriendNetID}`);
+                    alert(`Sent friend request: ${currentFriendNetID}`);
                   }
                 }}
                 onInputChange={(e) => {

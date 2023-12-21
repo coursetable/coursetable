@@ -47,7 +47,8 @@ function MeDropdown({
       }}
     >
       <Collapse in={profile_expanded}>
-        {/* This wrapper div is important for making the collapse animation smooth */}
+        {/* This wrapper div is important for making the collapse animation
+          smooth */}
         <div>
           <Col className="px-3 pt-3">
             {isLoggedIn && (

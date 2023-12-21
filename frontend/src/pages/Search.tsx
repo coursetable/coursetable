@@ -28,7 +28,11 @@ import {
 } from '../components/StyledComponents';
 
 import { useSessionStorageState } from '../utilities/browserStorage';
-import { useSearch, type Option, defaultFilters } from '../contexts/searchContext';
+import {
+  useSearch,
+  type Option,
+  defaultFilters,
+} from '../contexts/searchContext';
 import type { ValueType } from 'react-select/src/types';
 
 /**
@@ -106,9 +110,7 @@ function Search() {
 
   // Switch to grid view if mobile
   useEffect(() => {
-    if (isMobile && isList) 
-      setView(false);
-    
+    if (isMobile && isList) setView(false);
   }, [isMobile, isList, setView]);
 
   // TODO: add state if courseLoadError is present
@@ -448,10 +450,10 @@ function Search() {
                 </Row>
 
                 <div className={styles.useless_btn}>
-                  {/* The form requires a button with type submit in order to process
-                    events when someone hits enter to submit. We want this functionality
-                    so we can scroll to the results on mobile when they hit enter,
-                    and hence have a hidden button here. */}
+                  {/* The form requires a button with type submit in order to
+                    process events when someone hits enter to submit. We want
+                    this functionality so we can scroll to the results on mobile
+                    when they hit enter, and hence have a hidden button here. */}
                   <Button type="submit" />
                 </div>
               </Form>
