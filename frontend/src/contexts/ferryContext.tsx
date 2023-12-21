@@ -25,24 +25,6 @@ const seasonsData = {
   seasons: [..._seasons].reverse(),
 };
 
-// Preprocess course data.
-const preprocessCourses = (listing: Listing) => {
-  // Trim decimal points in ratings floats
-  const RATINGS_PRECISION = 1;
-
-  // Combine array of professors into one string
-  if ('professor_names' in listing && listing.professor_names.length > 0) {
-    listing.professors = listing.professor_names.join(', ');
-    // For the average professor rating, take the first professor
-    if ('average_professor' in listing && listing.average_professor !== null) {
-      // Trim professor ratings to one decimal point
-      listing.professor_avg_rating =
-        listing.average_professor.toFixed(RATINGS_PRECISION);
-    }
-  }
-  return listing;
-};
-
 // Global course data cache.
 const courseDataLock = new AsyncLock();
 let courseLoadAttempted: { [key: Season]: boolean } = {};
@@ -69,10 +51,7 @@ const addToCache = (season: Season): Promise<void> =>
     // Convert season list into a crn lookup table.
     const data = res.data as Listing[];
     const info = new Map<Crn, Listing>();
-    for (const rawListing of data) {
-      const listing = preprocessCourses(rawListing);
-      info.set(listing.crn, listing);
-    }
+    for (const listing of data) info.set(listing.crn, listing);
     // Save in global cache. Here we force the creation of a new object.
     courseData = {
       ...courseData,

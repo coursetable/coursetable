@@ -25,7 +25,9 @@ type ListingOverrides = {
   // Narrow some of the JSON types.
   all_course_codes: string[];
   areas: string[];
+  flag_info: string[];
   skills: string[];
+  professor_ids: string[];
   professor_names: string[];
   times_by_day: Partial<{
     [day in Weekdays]: [
@@ -37,13 +39,8 @@ type ListingOverrides = {
   }>;
 };
 type ListingAugments = {
-  // Add a couple types created by the preprocessing step.
-  professors?: string;
-  professor_avg_rating?: string;
-  color?: string;
-  border?: string;
-  start_time?: moment.Moment;
-  location_url?: string;
+  // TODO: this should be in the worksheet data structure
+  color?: [number, number, number];
   currentWorksheet?: string;
 };
 expectType<

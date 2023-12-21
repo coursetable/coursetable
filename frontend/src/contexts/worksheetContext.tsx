@@ -48,7 +48,7 @@ const WorksheetContext = createContext<Store | undefined>(undefined);
 WorksheetContext.displayName = 'WorksheetContext';
 
 // List of colors for the calendar events
-const colors = [
+const colors: [number, number, number][] = [
   [108, 194, 111],
   [202, 95, 83],
   [49, 164, 212],
@@ -144,7 +144,9 @@ export function WorksheetProvider({
     data: worksheetData,
   } = useWorksheetInfo(curWorksheet, curSeason, worksheetNumber);
   // Cache calendar colors. Reset whenever the season changes.
-  const [colorMap, setColorMap] = useState<{ [key: number]: number[] }>({});
+  const [colorMap, setColorMap] = useState<{
+    [crn: number]: [number, number, number];
+  }>({});
   useEffect(() => {
     setColorMap({});
   }, [curSeason]);
@@ -162,8 +164,7 @@ export function WorksheetProvider({
         if (colorMap[temp[i].crn]) choice = colorMap[temp[i].crn];
         else colorMap[temp[i].crn] = choice;
 
-        temp[i].color = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 0.85)`;
-        temp[i].border = `rgba(${choice[0]}, ${choice[1]}, ${choice[2]}, 1)`;
+        temp[i].color = choice;
         temp[i].currentWorksheet = worksheetNumber;
       }
       // Sort list by course code

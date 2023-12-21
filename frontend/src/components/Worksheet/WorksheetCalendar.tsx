@@ -119,9 +119,11 @@ function WorksheetCalendar() {
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event: CourseEvent) => {
+      // Shouldn't happen
+      if (!event.listing.color) return { style: {} };
       const style: CSSProperties = {
-        backgroundColor: event.listing.color,
-        borderColor: event.listing.border,
+        backgroundColor: `rgb(${event.listing.color.join(' ')} / 0.85)`,
+        borderColor: `rgb(${event.listing.color.join(' ')})`,
         borderWidth: '2px',
       };
       if (hoverCourse && hoverCourse === event.listing.crn) {

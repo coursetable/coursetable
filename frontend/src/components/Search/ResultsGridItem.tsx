@@ -281,16 +281,16 @@ function ResultsGridItem({
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        course.professor_avg_rating && isLoggedIn
-                          ? ratingColormap(Number(course.professor_avg_rating))
+                        course.average_professor && isLoggedIn
+                          ? ratingColormap(course.average_professor)
                               .darken()
                               .saturate()
                               .css()
                           : '#cccccc',
                     }}
                   >
-                    {course.professor_avg_rating && isLoggedIn
-                      ? course.professor_avg_rating
+                    {course.average_professor && isLoggedIn
+                      ? course.average_professor.toFixed(1)
                       : 'N/A'}
                   </div>
                   <StyledIcon>
