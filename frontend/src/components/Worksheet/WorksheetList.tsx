@@ -11,7 +11,7 @@ import Results from '../Search/Results';
  */
 
 function WorksheetList() {
-  const [isList, setView] = useState(true);
+  const [isListView, setIsListView] = useState(true);
   const { courses, worksheetLoading } = useWorksheet();
 
   const { ordering, numFriends, isLoggedIn } = useSearch();
@@ -31,8 +31,8 @@ function WorksheetList() {
           <div className="d-flex justify-content-center">
             <Results
               data={WorksheetData}
-              isList={isList}
-              setView={setView}
+              isListView={isListView}
+              setIsListView={setIsListView}
               loading={worksheetLoading}
               multiSeasons={false}
               isLoggedIn={isLoggedIn}

@@ -469,8 +469,8 @@ function Search() {
           <Element name="catalog" className="d-flex justify-content-center">
             <Results
               data={searchData}
-              isList={isList}
-              setView={(isList: boolean) => {
+              isListView={isList}
+              setIsListView={(isList: boolean) => {
                 setView(isList);
               }}
               loading={coursesLoading}

@@ -28,7 +28,7 @@ type ListingOverrides = {
   skills: string[];
   professor_names: string[];
   times_by_day: Partial<{
-    [key: Weekdays]: [
+    [day in Weekdays]: [
       startTime: string,
       endTime: string,
       location: string,

@@ -25,6 +25,8 @@ export function PopoutSelect<
       popout
       {...props}
       isMulti={isMulti}
+      // TODO
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       backspaceRemovesValue={false}
       controlShouldRenderValue

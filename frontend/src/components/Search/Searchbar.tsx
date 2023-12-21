@@ -25,6 +25,8 @@ export function Searchbar<T extends OptionTypeBase, IsMulti extends boolean>({
       popout
       {...props}
       isMulti={isMulti}
+      // TODO
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       backspaceRemovesValue={false}
       components={components}

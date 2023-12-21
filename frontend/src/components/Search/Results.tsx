@@ -93,8 +93,8 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
 
 function Results({
   data,
-  isList,
-  setView,
+  isListView,
+  setIsListView,
   loading = false,
   multiSeasons = false,
   isLoggedIn,
@@ -102,8 +102,8 @@ function Results({
   page = 'catalog',
 }: {
   readonly data: Listing[];
-  readonly isList: boolean;
-  readonly setView: (isList: boolean) => void;
+  readonly isListView: boolean;
+  readonly setIsListView: (isList: boolean) => void;
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
   readonly isLoggedIn: boolean;
@@ -115,7 +115,7 @@ function Results({
     useWindowDimensions();
 
   // State that holds width of the row for list view
-  const [ROW_WIDTH, setRowWidth] = useState(0);
+  const [rowWidth, setRowWidth] = useState(0);
 
   // Fetch resetKey from search context
   const { resetKey } = useSearch();
@@ -151,7 +151,7 @@ function Results({
     };
 
     const EXTRA =
-      ROW_WIDTH -
+      rowWidth -
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
       TEMP_COL_SPACING.ENROLL_WIDTH -
@@ -176,7 +176,7 @@ function Results({
       10;
 
     return TEMP_COL_SPACING;
-  }, [ROW_WIDTH, multiSeasons, isLgDesktop]);
+  }, [rowWidth, multiSeasons, isLgDesktop]);
 
   // Holds HTML for the search results
   let resultsListing;
@@ -230,7 +230,7 @@ function Results({
         )}
       </div>
     );
-  } else if (!isList) {
+  } else if (!isListView) {
     // If not list view, prepare the grid
     // Store HTML for grid view results
     resultsListing = (
@@ -407,9 +407,9 @@ function Results({
               <div
                 className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
-                <ListGridToggle isList={isList} setView={setView} />
+                <ListGridToggle isList={isListView} setView={setIsListView} />
               </div>
-              {isList ? (
+              {isListView ? (
                 <>
                   {multiSeasons && (
                     <ResultsHeader style={sznStyle}>Season</ResultsHeader>
@@ -606,7 +606,7 @@ function Results({
       )}
 
       <SearchResults
-        className={String(!isList ? 'px-1 pt-3 ' : '')}
+        className={String(!isListView ? 'px-1 pt-3 ' : '')}
         numCourses={data.length}
         isMobile={isMobile}
       >

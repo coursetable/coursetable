@@ -12,6 +12,7 @@ module.exports = {
     'react/jsx-child-element-spacing': 'off',
     'react/jsx-no-bind': 'off',
     // TODO:
+    'jsx-a11y/anchor-ambiguous-text': 'off',
     'jsx-a11y/click-events-have-key-events': 'off',
     'jsx-a11y/interactive-supports-focus': 'off',
     'jsx-a11y/prefer-tag-over-role': 'off',
