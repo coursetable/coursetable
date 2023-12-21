@@ -28,6 +28,7 @@ import {
   getOverallRatings,
   getWorkloadRatings,
   toSeasonString,
+  truncatedText,
 } from '../../utilities/courseUtilities';
 import { breakpoints } from '../../utilities';
 import type { Listing } from '../../utilities/common';
@@ -273,17 +274,10 @@ function ResultsItem({
                 </strong>
               </Popover.Title>
               <Popover.Content>
-                {course.description
-                  ? course.description.length <= 500
-                    ? course.description
-                    : `${course.description.slice(0, 500)}...`
-                  : 'no description'}
+                {truncatedText(course.description, 500, 'no description')}
                 <br />
                 <div className="text-danger">
-                  {course.requirements &&
-                    (course.requirements.length <= 250
-                      ? course.requirements
-                      : `${course.requirements.slice(0, 250)}...`)}
+                  {truncatedText(course.requirements, 250, '')}
                 </div>
               </Popover.Content>
             </StyledPopover>

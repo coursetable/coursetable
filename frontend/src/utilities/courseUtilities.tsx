@@ -17,6 +17,16 @@ import type {
 } from '../contexts/userContext';
 import type { SortKeys } from '../queries/Constants';
 
+export function truncatedText(
+  text: string | null | undefined,
+  max: number,
+  defaultStr: string,
+) {
+  if (!text) return defaultStr;
+  else if (text.length <= max) return text;
+  return `${text.slice(0, max)}...`;
+}
+
 // Check if a listing is in the user's worksheet
 export const isInWorksheet = (
   seasonCode: Season,
