@@ -6,7 +6,11 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import styled from 'styled-components';
 
-import CourseModalOverview, { type Filter } from './CourseModalOverview';
+import CourseModalOverview, {
+  type Filter,
+  type CourseOffering,
+  type ComputedListingInfo,
+} from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
@@ -100,15 +104,20 @@ function CourseModal() {
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains
   // [season code, listing info] for evaluations
-  const [view, setView] = useState<['overview', null] | [Season, string]>([
+  const [view, setView] = useState<'overview' | [Season, CourseOffering]>(
     'overview',
-    null,
-  ]);
+  );
   // Current evaluation filter (both, course, professor)
   const [filter, setFilter] = useState<Filter>('both');
   // Stack for listings that the user has viewed
-  const [listings, setListings] = useState<Listing[]>([]);
+  const [listings, setListings] = useState<
+    (ComputedListingInfo & { eval: CourseOffering })[]
+  >([]);
   useEffect(() => {
+    // @ts-expect-error: `listing` is an actual Listing, not the weird type that
+    // SameCourseOrProfOfferingsQuery gives, and it doesn't have an `eval`
+    // field! Surprised that it has caused no errors so far
+    // TODO: is this actually okay?
     setListings(listing ? [listing] : []);
   }, [listing]);
   // Current listing that we are viewing overview info for
@@ -122,7 +131,7 @@ function CourseModal() {
           scrollable
           onHide={() => {
             // Reset views and filters
-            setView(['overview', null]);
+            setView('overview');
             setFilter('both');
             setSearchParams((prev) => {
               prev.delete('course-modal');
@@ -133,9 +142,10 @@ function CourseModal() {
           animation={false}
           centered
         >
+          {/* @ts-expect-error: why is `placeholder` required?? */}
           <Modal.Header closeButton className="d-flex justify-content-between">
             <Container className="p-0" fluid>
-              {view[0] === 'overview' ? (
+              {view === 'overview' ? (
                 // Viewing Course Overview
                 <div>
                   <Row className="m-auto modal-top">
@@ -149,7 +159,14 @@ function CourseModal() {
                             crn={curListing.crn}
                             seasonCode={curListing.season_code}
                             modal
-                            selectedWorksheet={curListing.currentWorksheet}
+                            selectedWorksheet={
+                              // TODO: we love global mutations <3 they are so
+                              // easy to trace & analyze and so bug-proof!
+                              // In all seriousness we need to get rid of
+                              // currentWorksheet and color in ListingArguments
+                              (curListing as unknown as Listing)
+                                .currentWorksheet
+                            }
                           />
                         ) : (
                           // If this is the overview of some other eval course,
@@ -179,7 +196,12 @@ function CourseModal() {
                           >
                             {curListing.extra_info !== 'ACTIVE' ? (
                               <span className={styles.cancelledText}>
-                                {extraInfoMap[curListing.extra_info]}{' '}
+                                {
+                                  extraInfoMap[
+                                    // TODO: properly narrow extra_info
+                                    curListing.extra_info as keyof typeof extraInfoMap
+                                  ]
+                                }{' '}
                               </span>
                             ) : (
                               ''
@@ -202,11 +224,13 @@ function CourseModal() {
                         </p>
                         {/* Course Skills and Areas */}
                         {curListing.skills &&
-                          curListing.skills.map((skill) => (
+                          // TODO: narrow skills type
+                          curListing.skills.map((skill: string) => (
                             <SkillBadge skill={skill} key={skill} />
                           ))}
                         {curListing.areas &&
-                          curListing.areas.map((area) => (
+                          // TODO: narrow areas type
+                          curListing.areas.map((area: string) => (
                             <SkillBadge skill={area} key={area} />
                           ))}
                       </Row>
@@ -227,9 +251,9 @@ function CourseModal() {
                             curListing.season_code === view[1].season_code
                           ) {
                             // Go to overview of previous listing
-                            setListings(listings.slice(0, listings.length - 1));
+                            setListings(listings.slice(0, -1));
                           }
-                          setView(['overview', null]);
+                          setView('overview');
                         }}
                         className={styles.backArrow}
                       >
@@ -253,10 +277,11 @@ function CourseModal() {
                               className="mt-auto ml-2"
                               onClick={() => {
                                 // Go to overview page of this eval course
-                                setView(['overview', null]);
-                                const newListing = { ...view[1].listing };
-                                // eslint-disable-next-line prefer-destructuring
-                                newListing.eval = view[1];
+                                setView('overview');
+                                const newListing = {
+                                  ...view[1]!.listing,
+                                  eval: view[1],
+                                };
                                 setListings([...listings, newListing]);
                               }}
                             >
@@ -313,7 +338,7 @@ function CourseModal() {
             </div>
           </Modal.Header>
           {listing &&
-            (view[0] === 'overview' ? (
+            (view === 'overview' ? (
               // Show overview data
               <CourseModalOverview
                 setFilter={setFilter}

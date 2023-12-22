@@ -293,7 +293,10 @@ export function sortCourses(
 
 // Get the enrollment for a course
 export function getEnrolled(
-  course: Listing,
+  course: Pick<
+    Listing,
+    'enrolled' | 'last_enrollment' | 'last_enrollment_same_professors'
+  >,
   display = false,
   onModal = false,
 ): string | number | null {

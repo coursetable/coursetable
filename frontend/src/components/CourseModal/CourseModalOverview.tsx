@@ -38,12 +38,7 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
-import {
-  weekdays,
-  type Listing,
-  type Season,
-  type Crn,
-} from '../../utilities/common';
+import { weekdays, type Season, type Crn } from '../../utilities/common';
 
 function convert24To12(time: string) {
   const [hour, minute] = time.split(':');
@@ -83,7 +78,8 @@ type ProfInfo = {
   numCourses: number;
 };
 
-type CourseOffering = {
+// TODO: merge it with one of the many types representing "a course"
+export type CourseOffering = {
   // Course rating
   rating: number;
   // Workload rating
@@ -107,24 +103,27 @@ type CourseOffering = {
   // Course Areas
   areas: string[];
   // Store course listing
-  listing: ComputedListingInfo[number];
+  listing: ComputedListingInfo;
 };
 
+// TODO: merge it with one of the many types representing "a course"
 type ComputedListingInfoOverride = {
   crn: Crn;
+  flag_info: string[];
   season_code: Season;
   professor_info: {
     average_rating: number;
     email: string;
     name: string;
   }[];
+  professor_names: string[];
 };
 
-type ComputedListingInfo = (Omit<
+export type ComputedListingInfo = Omit<
   SameCourseOrProfOfferingsQuery['computed_listing_info'][number],
   keyof ComputedListingInfoOverride
 > &
-  ComputedListingInfoOverride)[];
+  ComputedListingInfoOverride;
 
 /**
  * Displays course modal when clicking on a course
@@ -142,8 +141,8 @@ function CourseModalOverview({
 }: {
   readonly setFilter: (f: Filter) => void;
   readonly filter: Filter;
-  readonly setSeason: (x: unknown) => void;
-  readonly listing: Listing;
+  readonly setSeason: (x: CourseOffering) => void;
+  readonly listing: ComputedListingInfo;
 }) {
   // Fetch user context data
   const { user } = useUser();
@@ -221,7 +220,7 @@ function CourseModalOverview({
       .filter(
         (
           course,
-        ): course is ComputedListingInfo[number] & {
+        ): course is ComputedListingInfo & {
           syllabus_url: string;
         } =>
           course.same_course_id === listing.same_course_id &&
@@ -252,7 +251,7 @@ function CourseModalOverview({
     // Hold list of evaluation dictionaries
     const courseOfferings: CourseOffering[] = [];
     // Loop by season code
-    (data.computed_listing_info as ComputedListingInfo).forEach((season) => {
+    (data.computed_listing_info as ComputedListingInfo[]).forEach((season) => {
       // Stores the average rating for all profs teaching this course and
       // populates prof_info
       let averageProfessorRating = 0;
@@ -651,7 +650,8 @@ function CourseModalOverview({
                         rootClose
                         placement="right"
                         overlay={profInfoPopover}
-                        popperConfig={{ prof }}
+                        // TODO
+                        popperConfig={{ prof } as any}
                       >
                         <StyledLink>{prof}</StyledLink>
                       </OverlayTrigger>
