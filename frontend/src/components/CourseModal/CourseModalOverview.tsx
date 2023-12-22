@@ -7,6 +7,7 @@ import {
   Popover,
   Collapse,
 } from 'react-bootstrap';
+import type { OverlayChildren } from 'react-bootstrap/esm/Overlay';
 import * as Sentry from '@sentry/react';
 import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
@@ -33,10 +34,18 @@ import {
   getEnrolled,
   toSeasonString,
 } from '../../utilities/course';
-import { useSameCourseOrProfOfferingsQuery } from '../../generated/graphql';
-import { weekdays } from '../../utilities/common';
+import {
+  useSameCourseOrProfOfferingsQuery,
+  type SameCourseOrProfOfferingsQuery,
+} from '../../generated/graphql';
+import {
+  weekdays,
+  type Listing,
+  type Season,
+  type Crn,
+} from '../../utilities/common';
 
-function convert24To12(time) {
+function convert24To12(time: string) {
   const [hour, minute] = time.split(':');
   let hourInt = parseInt(hour, 10);
   const ampm = hourInt >= 12 ? 'pm' : 'am';
@@ -58,13 +67,48 @@ const StyledColUnclickable = styled(Col)`
 `;
 
 // Multitoggle in modal (course, both, prof)
-export const StyledMultiToggle = styled(MultiToggle)`
+export const StyledMultiToggle = styled(MultiToggle<Filter>)`
   background-color: ${({ theme }) => theme.surface[1]};
   border-color: ${({ theme }) => theme.border};
   .toggleOption {
     color: ${({ theme }) => theme.text[0]};
   }
 `;
+
+export type Filter = 'both' | 'course' | 'professor';
+
+type ProfInfo = {
+  email: string;
+  totalRating: number;
+  numCourses: number;
+};
+
+type CourseOffering = {
+  // Course rating
+  rating: number;
+  // Workload rating
+  workload: number;
+  // Professor rating
+  professor_rating: number;
+  // Season code
+  season_code: Season;
+  // Professors
+  professor: string[];
+  // Course code
+  course_code: string;
+  // Crn
+  crn: Crn;
+  // Section number
+  section: string;
+  // Course Title
+  title: string;
+  // Course Skills
+  skills: string[];
+  // Course Areas
+  areas: string[];
+  // Store course listing
+  listing: Listing;
+};
 
 /**
  * Displays course modal when clicking on a course
@@ -74,7 +118,16 @@ export const StyledMultiToggle = styled(MultiToggle)`
  * @prop listing - dictionary that holds all the info for this listing
  */
 
-function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
+function CourseModalOverview({
+  setFilter,
+  filter,
+  setSeason,
+  listing,
+}: {
+  readonly setFilter: (f: Filter) => void;
+  readonly filter: Filter;
+  readonly listing: Listing;
+}) {
   // Fetch user context data
   const { user } = useUser();
   // Component used for cutting off long descriptions
@@ -121,23 +174,20 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
       professor_ids: listing.professor_ids,
     },
   });
-  // Hold HTML code that displays the list of evaluations
-
   // Holds Prof information for popover
-  const profInfo = useMemo(() => {
-    const profInfoTemp = {};
-    listing.professor_names.forEach((prof) => {
-      profInfoTemp[prof] = {
+  const profInfo = Object.fromEntries(
+    listing.professor_names.map((prof): [string, ProfInfo] => [
+      prof,
+      {
         numCourses: 0,
         totalRating: 0,
         email: '',
-      };
-    });
-    return profInfoTemp;
-  }, [listing.professor_names]);
+      },
+    ]),
+  );
   // Count number of profs that overlap between this listing and an eval
   const overlappingProfs = useCallback(
-    (evalProfs) => {
+    (evalProfs: string[]) => {
       let cnt = 0;
       listing.professor_names.forEach((prof) => {
         // Eval course contains this prof
@@ -149,25 +199,27 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
   );
   // Get past syllabi links
   const pastSyllabi = useMemo(() => {
-    if (data) {
-      return data.computed_listing_info
-        .filter(
-          (course) =>
-            course.same_course_id === listing.same_course_id &&
-            course.syllabus_url,
-        )
-        .filter(
-          // Remove duplicates by syllabus URL
-          (v, i, a) =>
-            a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
-        )
-        .sort(
-          (a, b) =>
-            b.season_code.localeCompare(a.season_code, 'en-US') ||
-            parseInt(a.section, 10) - parseInt(b.section, 10),
-        );
-    }
-    return [];
+    if (!data) return [];
+    return data.computed_listing_info
+      .filter(
+        (
+          course,
+        ): course is SameCourseOrProfOfferingsQuery['computed_listing_info'][number] & {
+          syllabus_url: string;
+        } =>
+          course.same_course_id === listing.same_course_id &&
+          Boolean(course.syllabus_url),
+      )
+      .filter(
+        // Remove duplicates by syllabus URL
+        (v, i, a) =>
+          a.findIndex((t) => t.syllabus_url === v.syllabus_url) === i,
+      )
+      .sort(
+        (a, b) =>
+          b.season_code.localeCompare(a.season_code, 'en-US') ||
+          parseInt(a.section, 10) - parseInt(b.section, 10),
+      );
   }, [data, listing.same_course_id]);
 
   const [showPastSyllabi, setShowPastSyllabi] = useState(
@@ -176,201 +228,199 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
 
   // Make sure data is loaded
   const items = useMemo(() => {
-    if (data) {
-      // Hold list of evaluation dictionaries
-      const courseOfferings = [];
-      // Loop by season code
-      data.computed_listing_info.forEach((season) => {
-        // Stores the average rating for all profs teaching this course and
-        // populates prof_info
-        let averageProfessorRating = 0;
-        if (season.professor_info) {
-          const numProfs = season.professor_info.length;
-          season.professor_info.forEach((prof) => {
-            if (prof.average_rating) {
-              // Add up all prof ratings
-              averageProfessorRating += prof.average_rating;
-              // Update prof_info
-              if (prof.name in profInfo) {
-                // Store dict from prof_info for easy access
-                const dict = profInfo[prof.name];
-                // Total number of courses this professor teaches
-                dict.numCourses++;
-                // Total rating. Will divide by number of courses later to
-                // get average
-                dict.totalRating += prof.average_rating;
-                // Prof email
-                dict.email = prof.email;
-              }
+    const overlapSections: {
+      [filter in Filter]: JSX.Element[];
+    } = { both: [], course: [], professor: [] };
+    if (!data) return overlapSections;
+    // Hold list of evaluation dictionaries
+    const courseOfferings: CourseOffering[] = [];
+    // Loop by season code
+    data.computed_listing_info.forEach((season) => {
+      // Stores the average rating for all profs teaching this course and
+      // populates prof_info
+      let averageProfessorRating = 0;
+      if (season.professor_info) {
+        const numProfs = season.professor_info.length;
+        season.professor_info.forEach((prof) => {
+          if (prof.average_rating) {
+            // Add up all prof ratings
+            averageProfessorRating += prof.average_rating;
+            // Update prof_info
+            if (prof.name in profInfo) {
+              // Store dict from prof_info for easy access
+              const dict = profInfo[prof.name];
+              // Total number of courses this professor teaches
+              dict.numCourses++;
+              // Total rating. Will divide by number of courses later to
+              // get average
+              dict.totalRating += prof.average_rating;
+              // Prof email
+              dict.email = prof.email;
             }
-          });
-          // Divide by number of profs to get average
-          averageProfessorRating /= numProfs;
-        }
-        courseOfferings.push({
-          // Course rating
-          rating: season.course.evaluation_statistic
-            ? season.course.evaluation_statistic.avg_rating || -1
-            : -1,
-          // Workload rating
-          workload: season.course.evaluation_statistic
-            ? season.course.evaluation_statistic.avg_workload || -1
-            : -1,
-          // Professor rating
-          professor_rating: averageProfessorRating || -1,
-          // Season code
-          season_code: season.season_code,
-          // Professors
-          professor: season.professor_names.length
-            ? season.professor_names
-            : ['TBA'],
-          // Course code
-          course_code: season.course_code ? [season.course_code] : ['TBA'],
-          // Crn
-          crn: season.crn,
-          // Section number
-          section: season.section,
-          // Course Title
-          title: season.title,
-          // Course Skills
-          skills: season.skills,
-          // Course Areas
-          areas: season.areas,
-          // Store course listing
-          listing: season,
+          }
         });
-      });
-      // Sort by season code and section
-      courseOfferings.sort(
-        (a, b) =>
-          b.season_code.localeCompare(a.season_code, 'en-US') ||
-          parseInt(a.section, 10) - parseInt(b.section, 10),
-      );
-      // Hold eval html for each column
-      const overlapSections = { both: [], course: [], professor: [] };
-
-      // Variable used for list keys
-      let id = 0;
-
-      // Loop through each listing with evals
-      for (const offering of courseOfferings) {
-        // Skip listings in the current and future seasons that have no evals
-        if (CUR_YEAR.includes(offering.season_code)) continue;
-        const hasEvals = offering.rating !== -1;
-        const evalBox = (
-          <Row key={id++} className="m-auto py-1 justify-content-center">
-            {/* The listing button, either clickable or greyed out based on
-                whether evaluations exist */}
-            {hasEvals ? (
-              <StyledCol
-                xs={5}
-                className={`${styles.rating_bubble}  px-0 mr-3 text-center`}
-                onClick={() => {
-                  // Temp dictionary that stores listing info
-                  const temp = { ...offering };
-                  // eslint-disable-next-line prefer-destructuring
-                  temp.course_code = temp.course_code[0];
-                  setSeason(temp);
-                }}
-                style={{ flex: 'none' }}
-              >
-                <strong>{toSeasonString(offering.season_code)}</strong>
-                <div className={`${styles.details} mx-auto ${styles.shown}`}>
-                  {filter === 'professor'
-                    ? offering.course_code[0]
-                    : filter === 'both'
-                      ? `Section ${offering.section}`
-                      : offering.professor[0]}
-                </div>
-              </StyledCol>
-            ) : (
-              <StyledColUnclickable
-                xs={5}
-                className={`${styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
-                style={{ flex: 'none', color: '#b5b5b5' }}
-              >
-                <strong>{toSeasonString(offering.season_code)}</strong>
-                <div className={`${styles.details} mx-auto ${styles.shown}`}>
-                  {filter === 'professor'
-                    ? offering.course_code[0]
-                    : filter === 'both'
-                      ? `Section ${offering.section}`
-                      : offering.professor[0]}
-                </div>
-              </StyledColUnclickable>
-            )}
-            {/* Course Rating */}
-            <Col
-              xs={2}
-              className="px-1 ml-0 d-flex justify-content-center text-center"
-            >
-              <StyledRating
-                rating={offering.rating}
-                colormap={ratingColormap}
-                className={`${styles.rating_cell} ${styles.expanded_ratings}`}
-              >
-                {offering.rating !== -1 ? offering.rating.toFixed(1) : 'N/A'}
-              </StyledRating>
-            </Col>
-            {/* Professor Rating */}
-            <Col
-              xs={2}
-              className="px-1 ml-0 d-flex justify-content-center text-center"
-            >
-              <StyledRating
-                rating={offering.professor_rating}
-                colormap={ratingColormap}
-                className={styles.rating_cell}
-              >
-                {offering.professor_rating !== -1
-                  ? offering.professor_rating.toFixed(1)
-                  : 'N/A'}
-              </StyledRating>
-            </Col>
-            {/* Workload Rating */}
-            <Col
-              xs={2}
-              className="px-1 ml-0 d-flex justify-content-center text-center"
-            >
-              <StyledRating
-                rating={offering.workload}
-                colormap={workloadColormap}
-                className={styles.rating_cell}
-              >
-                {offering.workload !== -1
-                  ? offering.workload.toFixed(1)
-                  : 'N/A'}
-              </StyledRating>
-            </Col>
-          </Row>
-        );
-        // Course in both column
-        if (
-          offering.course_code.includes(listing.course_code) &&
-          listing.professor_names.length &&
-          overlappingProfs(offering.professor) ===
-            listing.professor_names.length
-        )
-          overlapSections.both.push(evalBox);
-
-        // Course in course column
-        if (offering.course_code.includes(listing.course_code))
-          overlapSections.course.push(evalBox);
-
-        // Course in prof column
-        if (overlappingProfs(offering.professor) > 0)
-          overlapSections.professor.push(evalBox);
+        // Divide by number of profs to get average
+        averageProfessorRating /= numProfs;
       }
-      return overlapSections;
+      courseOfferings.push({
+        // Course rating
+        rating: season.course.evaluation_statistic
+          ? season.course.evaluation_statistic.avg_rating || -1
+          : -1,
+        // Workload rating
+        workload: season.course.evaluation_statistic
+          ? season.course.evaluation_statistic.avg_workload || -1
+          : -1,
+        // Professor rating
+        professor_rating: averageProfessorRating || -1,
+        // Season code
+        season_code: season.season_code,
+        // Professors
+        professor: season.professor_names.length
+          ? season.professor_names
+          : ['TBA'],
+        // Course code
+        course_code: season.course_code || 'TBA',
+        // Crn
+        crn: season.crn,
+        // Section number
+        section: season.section,
+        // Course Title
+        title: season.title,
+        // Course Skills
+        skills: season.skills,
+        // Course Areas
+        areas: season.areas,
+        // Store course listing
+        listing: season,
+      });
+    });
+    // Sort by season code and section
+    courseOfferings.sort(
+      (a, b) =>
+        b.season_code.localeCompare(a.season_code, 'en-US') ||
+        parseInt(a.section, 10) - parseInt(b.section, 10),
+    );
+
+    // Variable used for list keys
+    let id = 0;
+
+    // Loop through each listing with evals
+    for (const offering of courseOfferings) {
+      // Skip listings in the current and future seasons that have no evals
+      if (CUR_YEAR.includes(offering.season_code)) continue;
+      const hasEvals = offering.rating !== -1;
+      const evalBox = (
+        <Row key={id++} className="m-auto py-1 justify-content-center">
+          {/* The listing button, either clickable or greyed out based on
+                whether evaluations exist */}
+          {hasEvals ? (
+            <StyledCol
+              xs={5}
+              className={`${styles.rating_bubble}  px-0 mr-3 text-center`}
+              onClick={() => {
+                // Temp dictionary that stores listing info
+                const temp = { ...offering };
+                setSeason(temp);
+              }}
+              style={{ flex: 'none' }}
+            >
+              <strong>{toSeasonString(offering.season_code)}</strong>
+              <div className={`${styles.details} mx-auto ${styles.shown}`}>
+                {filter === 'professor'
+                  ? offering.course_code
+                  : filter === 'both'
+                    ? `Section ${offering.section}`
+                    : offering.professor[0]}
+              </div>
+            </StyledCol>
+          ) : (
+            <StyledColUnclickable
+              xs={5}
+              className={`${styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
+              style={{ flex: 'none', color: '#b5b5b5' }}
+            >
+              <strong>{toSeasonString(offering.season_code)}</strong>
+              <div className={`${styles.details} mx-auto ${styles.shown}`}>
+                {filter === 'professor'
+                  ? offering.course_code
+                  : filter === 'both'
+                    ? `Section ${offering.section}`
+                    : offering.professor[0]}
+              </div>
+            </StyledColUnclickable>
+          )}
+          {/* Course Rating */}
+          <Col
+            xs={2}
+            className="px-1 ml-0 d-flex justify-content-center text-center"
+          >
+            <StyledRating
+              rating={offering.rating}
+              colormap={ratingColormap}
+              className={styles.rating_cell}
+            >
+              {offering.rating !== -1 ? offering.rating.toFixed(1) : 'N/A'}
+            </StyledRating>
+          </Col>
+          {/* Professor Rating */}
+          <Col
+            xs={2}
+            className="px-1 ml-0 d-flex justify-content-center text-center"
+          >
+            <StyledRating
+              rating={offering.professor_rating}
+              colormap={ratingColormap}
+              className={styles.rating_cell}
+            >
+              {offering.professor_rating !== -1
+                ? offering.professor_rating.toFixed(1)
+                : 'N/A'}
+            </StyledRating>
+          </Col>
+          {/* Workload Rating */}
+          <Col
+            xs={2}
+            className="px-1 ml-0 d-flex justify-content-center text-center"
+          >
+            <StyledRating
+              rating={offering.workload}
+              colormap={workloadColormap}
+              className={styles.rating_cell}
+            >
+              {offering.workload !== -1 ? offering.workload.toFixed(1) : 'N/A'}
+            </StyledRating>
+          </Col>
+        </Row>
+      );
+      // Course in both column
+      if (
+        offering.course_code === listing.course_code &&
+        listing.professor_names.length &&
+        overlappingProfs(offering.professor) === listing.professor_names.length
+      )
+        overlapSections.both.push(evalBox);
+
+      // Course in course column
+      if (offering.course_code === listing.course_code)
+        overlapSections.course.push(evalBox);
+
+      // Course in prof column
+      if (overlappingProfs(offering.professor) > 0)
+        overlapSections.professor.push(evalBox);
     }
-    return undefined;
+    return overlapSections;
   }, [data, filter, setSeason, listing, overlappingProfs, profInfo]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
-  const profInfoPopover = (props) => {
+  const profInfoPopover: OverlayChildren = (props) => {
     let profName = '';
-    let profDict = {};
+    let profDict: ProfInfo = {
+      email: '',
+      numCourses: 0,
+      totalRating: 0,
+    };
     // Store dict from prop_info for easy access
     if (props.popper.state) {
       profName = props.popper.state.options.prof;
@@ -412,6 +462,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
                         )
                           .darken()
                           .saturate()
+                          .css()
                       : '#b5b5b5',
                   }}
                 >
@@ -451,7 +502,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
     { displayName: `Course (${items.course.length})`, value: 'course' },
     { displayName: `Both (${items.both.length})`, value: 'both' },
     { displayName: `Prof (${items.professor.length})`, value: 'professor' },
-  ];
+  ] as const;
 
   // Hold index of each filter option
   const optionsIndx = {
@@ -771,7 +822,7 @@ function CourseModalOverview({ setFilter, filter, setSeason, listing }) {
           {/* Filter Select */}
           <Row
             className={`${styles.filter_container} m-auto justify-content-center`}
-            onKeyDown={(e) => {
+            onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
               // Left/right arrow key
               const newIndx =
                 (optionsIndx[filter] +
