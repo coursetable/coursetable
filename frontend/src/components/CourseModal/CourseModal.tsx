@@ -47,7 +47,7 @@ const StyledMoreInfo = styled.span`
   }
 `;
 
-const extraInfoMap = {
+const extraInfoMap: { [info in ComputedListingInfo['extra_info']]: string } = {
   ACTIVE: 'ACTIVE',
   MOVED_TO_SPRING_TERM: 'MOVED TO SPRING',
   CANCELLED: 'CANCELLED',
@@ -196,12 +196,7 @@ function CourseModal() {
                           >
                             {curListing.extra_info !== 'ACTIVE' ? (
                               <span className={styles.cancelledText}>
-                                {
-                                  extraInfoMap[
-                                    // TODO: properly narrow extra_info
-                                    curListing.extra_info as keyof typeof extraInfoMap
-                                  ]
-                                }{' '}
+                                {extraInfoMap[curListing.extra_info]}{' '}
                               </span>
                             ) : (
                               ''
@@ -224,13 +219,11 @@ function CourseModal() {
                         </p>
                         {/* Course Skills and Areas */}
                         {curListing.skills &&
-                          // TODO: narrow skills type
-                          curListing.skills.map((skill: string) => (
+                          curListing.skills.map((skill) => (
                             <SkillBadge skill={skill} key={skill} />
                           ))}
                         {curListing.areas &&
-                          // TODO: narrow areas type
-                          curListing.areas.map((area: string) => (
+                          curListing.areas.map((area) => (
                             <SkillBadge skill={area} key={area} />
                           ))}
                       </Row>

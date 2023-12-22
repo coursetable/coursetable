@@ -108,9 +108,18 @@ export type CourseOffering = {
 
 // TODO: merge it with one of the many types representing "a course"
 type ComputedListingInfoOverride = {
+  areas: string[];
   crn: Crn;
+  extra_info:
+    | 'ACTIVE'
+    | 'MOVED_TO_SPRING_TERM'
+    | 'CANCELLED'
+    | 'MOVED_TO_FALL_TERM'
+    | 'CLOSED'
+    | 'NUMBER_CHANGED';
   flag_info: string[];
   season_code: Season;
+  skills: string[];
   professor_info: {
     average_rating: number;
     email: string;
