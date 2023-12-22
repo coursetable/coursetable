@@ -107,8 +107,24 @@ type CourseOffering = {
   // Course Areas
   areas: string[];
   // Store course listing
-  listing: Listing;
+  listing: ComputedListingInfo[number];
 };
+
+type ComputedListingInfoOverride = {
+  crn: Crn;
+  season_code: Season;
+  professor_info: {
+    average_rating: number;
+    email: string;
+    name: string;
+  }[];
+};
+
+type ComputedListingInfo = (Omit<
+  SameCourseOrProfOfferingsQuery['computed_listing_info'][number],
+  keyof ComputedListingInfoOverride
+> &
+  ComputedListingInfoOverride)[];
 
 /**
  * Displays course modal when clicking on a course
@@ -126,6 +142,7 @@ function CourseModalOverview({
 }: {
   readonly setFilter: (f: Filter) => void;
   readonly filter: Filter;
+  readonly setSeason: (x: unknown) => void;
   readonly listing: Listing;
 }) {
   // Fetch user context data
@@ -204,7 +221,7 @@ function CourseModalOverview({
       .filter(
         (
           course,
-        ): course is SameCourseOrProfOfferingsQuery['computed_listing_info'][number] & {
+        ): course is ComputedListingInfo[number] & {
           syllabus_url: string;
         } =>
           course.same_course_id === listing.same_course_id &&
@@ -235,7 +252,7 @@ function CourseModalOverview({
     // Hold list of evaluation dictionaries
     const courseOfferings: CourseOffering[] = [];
     // Loop by season code
-    data.computed_listing_info.forEach((season) => {
+    (data.computed_listing_info as ComputedListingInfo).forEach((season) => {
       // Stores the average rating for all profs teaching this course and
       // populates prof_info
       let averageProfessorRating = 0;

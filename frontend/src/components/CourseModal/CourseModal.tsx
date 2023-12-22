@@ -6,7 +6,7 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import styled from 'styled-components';
 
-import CourseModalOverview from './CourseModalOverview';
+import CourseModalOverview, { type Filter } from './CourseModalOverview';
 import CourseModalEvaluations from './CourseModalEvaluations';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
@@ -15,6 +15,7 @@ import { TextComponent, StyledLink } from '../StyledComponents';
 import SkillBadge from '../SkillBadge';
 import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
+import type { Season, Crn, Listing } from '../../utilities/common';
 
 // Course Modal
 const StyledModal = styled(Modal)`
@@ -52,7 +53,13 @@ const extraInfoMap = {
 };
 
 // Share button
-function ShareButton({ courseCode, urlToShare }) {
+function ShareButton({
+  courseCode,
+  urlToShare,
+}: {
+  readonly courseCode: string;
+  readonly urlToShare: string;
+}) {
   const copyToClipboard = () => {
     const textToCopy = `${courseCode} -- CourseTable: ${urlToShare}`;
     navigator.clipboard.writeText(textToCopy).then(
@@ -80,22 +87,29 @@ function CourseModal() {
   const url = window.location.href;
 
   const courseModal = searchParams.get('course-modal');
-  const [seasonCode, crn] = courseModal ? courseModal.split('-') : [null, null];
+  const [seasonCode, crn] = courseModal
+    ? (courseModal.split('-') as [Season, string])
+    : [null, null];
   const { courses } = useCourseData(seasonCode ? [seasonCode] : []);
 
-  const listing = courses[seasonCode]?.get(Number(crn));
+  const listing = seasonCode
+    ? courses[seasonCode]?.get(Number(crn) as Crn)
+    : undefined;
 
   // Fetch current device
   const { isMobile } = useWindowDimensions();
   // Viewing overview or an evaluation? List contains
   // [season code, listing info] for evaluations
-  const [view, setView] = useState(['overview', null]);
+  const [view, setView] = useState<['overview', null] | [Season, string]>([
+    'overview',
+    null,
+  ]);
   // Current evaluation filter (both, course, professor)
-  const [filter, setFilter] = useState('both');
+  const [filter, setFilter] = useState<Filter>('both');
   // Stack for listings that the user has viewed
-  const [listings, setListings] = useState([]);
+  const [listings, setListings] = useState<Listing[]>([]);
   useEffect(() => {
-    setListings([listing]);
+    setListings(listing ? [listing] : []);
   }, [listing]);
   // Current listing that we are viewing overview info for
   const curListing = listings.length > 0 ? listings[listings.length - 1] : null;
