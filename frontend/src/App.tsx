@@ -10,26 +10,44 @@ import Footer from './components/Footer';
 import Tutorial from './components/Tutorial';
 import CourseModal from './components/CourseModal/CourseModal';
 
-import Landing from './pages/Landing';
-
-import Search from './pages/Search';
-import About from './pages/About';
-import Worksheet from './pages/Worksheet';
-import FAQ from './pages/FAQ';
-import Privacy from './pages/Privacy';
-import NotFound from './pages/NotFound';
-import Thankyou from './pages/Thankyou';
-import Challenge from './pages/Challenge';
-import WorksheetLogin from './pages/WorksheetLogin';
-import Graphiql from './pages/Graphiql';
-import GraphiqlLogin from './pages/GraphiqlLogin';
-import Join from './pages/Join';
-
 import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './utilities/browserStorage';
 import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
+
+function suspended(
+  factory: () => Promise<{ default: React.ComponentType<unknown> }>,
+) {
+  const Comp = React.lazy(factory);
+  return () => (
+    <React.Suspense
+      fallback={
+        <Row className="m-auto" style={{ width: '100%', height: '100%' }}>
+          <Spinner className="m-auto" animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </Row>
+      }
+    >
+      <Comp />
+    </React.Suspense>
+  );
+}
+
+const Landing = suspended(() => import('./pages/Landing'));
+const Search = suspended(() => import('./pages/Search'));
+const About = suspended(() => import('./pages/About'));
+const Worksheet = suspended(() => import('./pages/Worksheet'));
+const FAQ = suspended(() => import('./pages/FAQ'));
+const Privacy = suspended(() => import('./pages/Privacy'));
+const NotFound = suspended(() => import('./pages/NotFound'));
+const Thankyou = suspended(() => import('./pages/Thankyou'));
+const Challenge = suspended(() => import('./pages/Challenge'));
+const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
+const Graphiql = suspended(() => import('./pages/Graphiql'));
+const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
+const Join = suspended(() => import('./pages/Join'));
 
 function App() {
   const location = useLocation();
