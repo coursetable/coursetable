@@ -763,7 +763,7 @@ function CourseModalOverview({
               xs={11 - COL_LEN_LEFT}
               className={styles.metadata}
             >
-              {getEnrolled(listing, true, true)}
+              {getEnrolled(listing, 'modal')}
             </Col>
           </Row>
           {/* Credits */}

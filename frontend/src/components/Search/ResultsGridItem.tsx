@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { AiOutlineStar } from 'react-icons/ai';
@@ -82,24 +82,6 @@ function ResultsGridItem({
     ) : (
       <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
     );
-
-  // Fetch overall & workload rating values and string representations
-  const courseRating = useMemo(
-    () =>
-      [
-        getOverallRatings(course, false),
-        getOverallRatings(course, true),
-      ] as const,
-    [course],
-  );
-  const workloadRating = useMemo(
-    () =>
-      [
-        getWorkloadRatings(course, false),
-        getWorkloadRatings(course, true),
-      ] as const,
-    [course],
-  );
 
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
@@ -251,15 +233,15 @@ function ResultsGridItem({
                     // Only show eval data when user is signed in
                     className={`${styles.rating} mr-1`}
                     style={{
-                      color: courseRating[0]
-                        ? ratingColormap(courseRating[0])
+                      color: getOverallRatings(course, 'stat')
+                        ? ratingColormap(getOverallRatings(course, 'stat'))
                             .darken()
                             .saturate()
                             .css()
                         : '#cccccc',
                     }}
                   >
-                    {courseRating[1]}
+                    {getOverallRatings(course, 'display')}
                   </div>
                   <StyledIcon>
                     <AiOutlineStar className={styles.icon} />
@@ -313,15 +295,15 @@ function ResultsGridItem({
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        isLoggedIn && workloadRating[0]
-                          ? workloadColormap(workloadRating[0])
+                        isLoggedIn && getWorkloadRatings(course, 'stat')
+                          ? workloadColormap(getWorkloadRatings(course, 'stat'))
                               .darken()
                               .saturate()
                               .css()
                           : '#cccccc',
                     }}
                   >
-                    {isLoggedIn && workloadRating[1]}
+                    {isLoggedIn && getWorkloadRatings(course, 'display')}
                   </div>
                   <StyledIcon>
                     <BiBookOpen className={styles.icon} />

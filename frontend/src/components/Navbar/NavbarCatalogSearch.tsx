@@ -14,7 +14,6 @@ import type { ValueType } from 'react-select/src/types';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
 import chroma from 'chroma-js';
-import _ from 'lodash';
 
 import { SmallTextComponent, StyledInput } from '../StyledComponents';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
@@ -29,6 +28,7 @@ import {
   sortbyOptions,
   dayOptions,
 } from '../../utilities/constants';
+import { isEqual } from '../../utilities/common';
 import CustomSelect from '../CustomSelect';
 import {
   useSearch,
@@ -262,24 +262,23 @@ export function NavbarCatalogSearch() {
   // Handle active state for range filters
   useEffect(() => {
     setActiveOverall(
-      canReset && !_.isEqual(overallBounds, defaultFilters.defaultRatingBounds),
+      canReset && !isEqual(overallBounds, defaultFilters.defaultRatingBounds),
     );
     setActiveWorkload(
-      canReset &&
-        !_.isEqual(workloadBounds, defaultFilters.defaultRatingBounds),
+      canReset && !isEqual(workloadBounds, defaultFilters.defaultRatingBounds),
     );
     setActiveTime(
-      canReset && !_.isEqual(timeBounds, defaultFilters.defaultTimeBounds),
+      canReset && !isEqual(timeBounds, defaultFilters.defaultTimeBounds),
     );
     setActiveEnrollment(
       canReset &&
-        !_.isEqual(
+        !isEqual(
           enrollBounds.map(Math.round),
           defaultFilters.defaultEnrollBounds,
         ),
     );
     setActiveNumber(
-      canReset && !_.isEqual(numBounds, defaultFilters.defaultNumBounds),
+      canReset && !isEqual(numBounds, defaultFilters.defaultNumBounds),
     );
   }, [
     canReset,
