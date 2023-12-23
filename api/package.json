@@ -2,8 +2,8 @@
   "scripts": {
     "generate": "prisma generate",
     "prestart": "prisma generate",
-    "start": "ts-node-dev --transpileOnly --debug --files --exit-child src/server.ts",
-    "start:prod": "ts-node --transpileOnly --files src/server.ts"
+    "start": "ts-node-dev --transpile-only --debug --files --exit-child src/server.ts",
+    "start:prod": "ts-node --transpile-only --files src/server.ts"
   },
   "nodemonConfig": {
     "ignore": [
@@ -41,7 +41,7 @@
     "passport": "0.5.0",
     "passport-cas": "git+https://github.com/coursetable/passport-cas",
     "prisma": "^5.5.2",
-    "ts-node": "^10.9.1",
+    "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
     "tsconfig-jc": "^2.3.1",
     "typescript": "~5.3.2",

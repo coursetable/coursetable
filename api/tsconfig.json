@@ -1,5 +1,5 @@
 {
-  "extends": ["tsconfig-jc"],
+  "extends": "tsconfig-jc",
   "compilerOptions": {
     // TODO: this config is copied from the root config, because the api is
     // copied to its own docker. We need to copy the file dependencies in the
@@ -7,7 +7,6 @@
     "noEmit": true,
     "target": "es2020",
     "lib": ["es2020"],
-    "module": "node16",
     "exactOptionalPropertyTypes": false,
     "noUncheckedIndexedAccess": false
   },
