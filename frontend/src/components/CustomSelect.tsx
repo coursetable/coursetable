@@ -27,7 +27,7 @@ function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
       ...base,
       color: state.isFocused ? iconFocus.css() : icon.css(),
       ':hover': {
-        ...(base as any)[':hover'],
+        ...(base )[':hover'],
         color: state.isFocused ? newIconFocus.css() : newIcon.css(),
       },
     }),
@@ -36,7 +36,7 @@ function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
       display: isMulti && state.hasValue ? 'none' : 'flex',
       color: state.isFocused ? iconFocus.css() : icon.css(),
       ':hover': {
-        ...(base as any)[':hover'],
+        ...(base )[':hover'],
         color: state.isFocused ? newIconFocus.css() : newIcon.css(),
       },
     }),
@@ -160,7 +160,7 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
             : data.color,
 
         ':active': {
-          ...(base as any)[':active'],
+          ...(base )[':active'],
           backgroundColor:
             !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
         },
