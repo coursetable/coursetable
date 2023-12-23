@@ -9,7 +9,7 @@ on:
 
 jobs:
   frontend-build-and-deploy:
-    environment: 
+    environment:
       name: Production
       url: https://coursetable.com
     runs-on: ubuntu-latest

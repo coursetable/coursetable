@@ -1,0 +1,39 @@
+{
+  "name": "coursetable-root",
+  "private": true,
+  "version": "0.0.0",
+  "license": "MIT",
+  "scripts": {
+    "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run resize-image:check && bun run typecheck",
+    "checks:fix": "bun run format && bun run lint:fix && bun run resize-image:check",
+    "typecheck": "tsc && tsc -p frontend && tsc -p api",
+    "depcheck": "bunx depcheck .",
+    "format": "prettier --write .",
+    "format:check": "prettier -l .",
+    "lint": "eslint --fix \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
+    "lint:check": "eslint \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
+    "resize-image": "bun scripts/resize-image.mts",
+    "resize-image:check": "bun scripts/resize-image.mts --test",
+    "postinstall": "cd node_modules/sharp && bun install"
+  },
+  "devDependencies": {
+    "@types/commander": "^2.12.2",
+    "@types/image-size": "^0.8.0",
+    "@types/sharp": "^0.32.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0",
+    "commander": "^11.1.0",
+    "eslint": "^8.56.0",
+    "eslint-config-jc": "^4.2.1",
+    "eslint-plugin-import": "^2.29.1",
+    "eslint-plugin-jsx-a11y": "^6.8.0",
+    "eslint-plugin-n": "^16.5.0",
+    "eslint-plugin-react": "^7.33.2",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "eslint-plugin-regexp": "^2.1.2",
+    "image-size": "^1.0.2",
+    "prettier": "^3.1.1",
+    "sharp": "^0.32.6",
+    "tsconfig-jc": "^2.3.1"
+  }
+}

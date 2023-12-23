@@ -2,13 +2,8 @@
   "scripts": {
     "generate": "prisma generate",
     "prestart": "prisma generate",
-    "start": "ts-node-dev --debug --files --exit-child src/server.ts",
-    "start:prod": "ts-node --files src/server.ts",
-    "checks": "bun run depcheck && bun run lint && bun run typecheck",
-    "depcheck": "bunx depcheck . --json",
-    "lint": "bunx prettier -l . && bunx eslint src",
-    "lint:fix": "bunx prettier -w . && bunx eslint src --fix",
-    "typecheck": "tsc --noEmit && (tsc --noEmit --checkJs || true)"
+    "start": "ts-node-dev --transpileOnly --debug --files --exit-child src/server.ts",
+    "start:prod": "ts-node --transpileOnly --files src/server.ts"
   },
   "nodemonConfig": {
     "ignore": [
@@ -48,17 +43,8 @@
     "prisma": "^5.5.2",
     "ts-node": "^10.9.1",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-jc": "^2.3.1",
     "typescript": "~5.3.2",
     "winston": "^3.10.0"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "^6.15.0",
-    "@typescript-eslint/parser": "^6.15.0",
-    "eslint": "^8.56.0",
-    "eslint-config-jc": "^4.2.1",
-    "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^16.5.0",
-    "eslint-plugin-regexp": "^2.1.2",
-    "prettier": "^3.1.1"
   }
 }

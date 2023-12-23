@@ -57,7 +57,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 1. Install Doppler
 
-   Make sure you've been added to the organization there – if not, contact one of the project leads. (We typically invite your *Yale email*, so make sure to login to Doppler with your Yale email (with Google) instead of with GitHub or some other personal email.
+   Make sure you've been added to the organization there – if not, contact one of the project leads. (We typically invite your _Yale email_, so make sure to login to Doppler with your Yale email (with Google) instead of with GitHub or some other personal email.
 
    Follow the instructions [here](https://docs.doppler.com/docs/enclave-installation).
 
@@ -91,8 +91,9 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 `docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
 
 Our setup is declared in the [docker-compose.yml](../api/docker-compose.yml) file.
- - The dev environment is defined in combination with the [dev-compose.yml](../api/dev-compose.yml) file.
- - The production environment is defined in combination with the [prod-compose.yml](../api/prod-compose.yml) file.
+
+- The dev environment is defined in combination with the [dev-compose.yml](../api/dev-compose.yml) file.
+- The production environment is defined in combination with the [prod-compose.yml](../api/prod-compose.yml) file.
 
 Some useful commands:
 
@@ -137,7 +138,6 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    - Generating some JSON data files
 
    You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
-
 
 1. Start the frontend (first `cd` to `frontend`)
 
@@ -191,6 +191,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 </details>
 
 &nbsp;
+
 # How to Run CourseTable Regularly
 
 After running all of the initial development environment setup, follow the commands below to set up preparation of the environment for regular CourseTable development:
