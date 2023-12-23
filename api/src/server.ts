@@ -55,14 +55,6 @@ app.use((req, _, next) => {
   next();
 });
 
-// Redirection routes for historical pages.
-app.get('/Blog', (_, res) => {
-  res.redirect('https://legacy.coursetable.com/Blog.html');
-});
-app.get('/recommendations.htm', (_, res) => {
-  res.redirect('https://legacy.coursetable.com/recommendations.htm');
-});
-
 // Setup sessions.
 app.use(
   cookieSession({
