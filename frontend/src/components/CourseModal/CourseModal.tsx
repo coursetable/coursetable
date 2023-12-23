@@ -142,7 +142,6 @@ function CourseModal() {
           animation={false}
           centered
         >
-          {/* @ts-expect-error: why is `placeholder` required?? */}
           <Modal.Header closeButton className="d-flex justify-content-between">
             <Container className="p-0" fluid>
               {view === 'overview' ? (

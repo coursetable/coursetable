@@ -36,9 +36,5 @@
     "toastify",
     "unstyled"
   ],
-  "eslint.workingDirectories": [
-    "api",
-    "frontend",
-    "proxy"
-  ]
+  "eslint.workingDirectories": ["api", "frontend", "proxy"]
 }

@@ -1,2 +1,0 @@
-ignores: ["@types/*", "@typescript-eslint/*", "eslint", "eslint-*"]
-specials: ["bin"]

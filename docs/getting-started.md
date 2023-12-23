@@ -57,7 +57,7 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 
 1. Install Doppler
 
-   Make sure you've been added to the organization there – if not, contact one of the project leads. (We typically invite your *Yale email*, so make sure to login to Doppler with your Yale email (with Google) instead of with GitHub or some other personal email.
+   Make sure you've been added to the organization there – if not, contact one of the project leads. (We typically invite your _Yale email_, so make sure to login to Doppler with your Yale email (with Google) instead of with GitHub or some other personal email.
 
    Follow the instructions [here](https://docs.doppler.com/docs/enclave-installation).
 
@@ -91,8 +91,9 @@ Cause Windows is a special little baby, there's some things we got to do to get 
 `docker-compose` is a tool we use to orchestrate a bunch of different things, all running in parallel. It also enables us to avoid most cross-platform compatibility issues.
 
 Our setup is declared in the [docker-compose.yml](../api/docker-compose.yml) file.
- - The dev environment is defined in combination with the [dev-compose.yml](../api/dev-compose.yml) file.
- - The production environment is defined in combination with the [prod-compose.yml](../api/prod-compose.yml) file.
+
+- The dev environment is defined in combination with the [dev-compose.yml](../api/dev-compose.yml) file.
+- The production environment is defined in combination with the [prod-compose.yml](../api/prod-compose.yml) file.
 
 Some useful commands:
 
@@ -106,13 +107,27 @@ Some useful commands:
 - `docker-compose logs -f <service>` gets the logs for a specific service. For example, `docker-compose logs -f api` gets the logs for the backend API.
 - `docker-compose build` builds all the services. This probably won't be necessary for our development environment, since we're building everything on the fly
 
-## Initial Setup for Running CourseTable
+## Running CourseTable
 
 Note: if you run into issues, check the troubleshooting section at the bottom.
 
-1. `cd` to the cloned coursetable root directory
+1. Open Docker Desktop.
+
+   Ensure that Docker Desktop is up and running.
+
+   > **Windows**: In Settings -> Resources -> WSL Integration, make sure "Enable integration with my default WSL distro" is checked.
+
+1. `cd` to the cloned coursetable root directory.
 
    > **For Windows**: Make sure you are in Ubuntu in Windows Terminal
+
+1. Install dependencies in the root directory.
+
+   ```sh
+   bun install
+   ```
+
+   This only installs [linting dependencies](#fixing-linting-errors). Actual dependencies for running the backend and frontend are installed when you start them respectively. You should install again whenever we had dependency upgrades (the `bun.lockb` file was changed); otherwise, as long as the `node_modules` directory exists, you don't need to run this command.
 
 1. Initialize Doppler.
 
@@ -123,11 +138,22 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    doppler login
    ```
 
+   This only needs to be run once, and doppler will remember you in the future.
+
 1. Start the backend:
 
    ```sh
    cd api
    ./start.sh -d
+   ```
+
+   Optionally, to overwrite your cached catalogs:
+
+   ```sh
+   cd api
+   ./start.sh -d -o
+   # Ctrl + C to exit after catalogs refresh
+   ./start.sh -d # start normally
    ```
 
 1. Wait ~2-3 minutes. If you’re curious, here's what's going on:
@@ -138,20 +164,24 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
    You should see something like `api_1 | {"message":"Insecure API listening on port 4096","level":"info","timestamp":"2021-10-09 21:24:01:241"}`. You can test that the API is working by going to http://localhost:4096/api/ping which should show you a page that says "pong".
 
-
-1. Start the frontend (first `cd` to `frontend`)
+1. Start the frontend:
 
    ```sh
+   cd ../frontend
    ./start.sh
    ```
 
 1. Navigate to https://localhost:3000.
 
-   You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally).
+   You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we need to deploy the site in HTTPS, so that all web APIs work).
 
 1. Make some changes!
 
    Most changes you make (i.e. to the API server or frontend) will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page.
+
+1. When you are done, make sure to safely exit both the **_frontend and backend_**.
+
+   > Use Ctrl+C in each terminal (frontend & backend) to safely exit.
 
 ## Troubleshooting
 
@@ -178,7 +208,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 
 1. Make sure you're in the correct subdirectory (e.g. `/frontend`)
 
-1. Add your package by running `bun add <package>`
+1. Add your package by running `bun install <package>`
 
 ## Updating packages
 
@@ -191,60 +221,31 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
 </details>
 
 &nbsp;
-# How to Run CourseTable Regularly
 
-After running all of the initial development environment setup, follow the commands below to set up preparation of the environment for regular CourseTable development:
+## Fixing linting errors
 
-1. Open Docker Desktop.
+We have a bunch of linting infrastructure to help you write clean and maintainable code. When you submit a PR, a GitHub action runs all checks and fails if there are any errors. All linting infrastructure is defined in the root `package.json`. You can run the following command:
 
-   Ensure that Docker Desktop is up and running.
+```sh
+bun checks
+```
 
-   > **Windows**: In Settings -> Resources -> WSL Integration, make sure "Enable integration with my default WSL distro" is checked.
+This runs the following checks:
 
-1. Start the backend:
+1. There are no unused dependencies declared in `package.json`
+2. The code is appropriately formatted using [Prettier](https://prettier.io/)
+3. The code follows our [ESLint](https://eslint.org/) rules
+4. Images in `frontend/src/images/headshots` are properly scaled
+5. The code type-checks
 
-   ```sh
-   cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
-   cd api
-   ./start.sh -d
-   ```
+If you get any errors, you can run the following command to fix them:
 
-1. Optionally, to overwrite your cached catalogs:
+```sh
+bun checks:fix
+```
 
-   ```sh
-   cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
-   cd api
-   ./start.sh -d -o
-   # Ctrl + C to exit after catalogs refresh
-   ./start.sh -d # start normally
-   ```
-
-1. Start the frontend (in separate terminal):
-
-   ```sh
-   cd PATH_TO_COURSETABLE_ROOT_DIRECTORY
-   cd frontend
-   ./start.sh
-   ```
-
-1. Navigate to https://localhost:3000.
-
-   You should have a working CourseTable site! You'll have to click ignore on a “self-signed certificate” error in your browser (we include this just to HTTPS works, which we need to test Facebook locally).
-
-1. Make some changes!
-
-   Most changes you make (i.e. to the API server or frontend) will automatically get picked up - all you'll need to do is save the changed file(s) and reload the page.
-
-1. **_Make sure_** to safely exit both the **_frontend and backend_**.
-
-   > Use Ctrl+C in each terminal (frontend & backend) to safely exit.
-
-## [stale] CourseTable Development Guide
-
-Our old development instructions can be found [here](https://docs.google.com/document/d/1M0Gp8Qtaik8roGYYknDDEzAAOwP3YBj0mX1pvCy-uOI/edit?usp=sharing).
-
-The document includes instructions on how to:
-
-1.  Set up the dev environment
-1.  Learn about the code
-1.  Make your first changes
+- Problems reported by `depcheck`: if the dependency is actually unused, remove it from `package.json` and run `bun install`. If the dependency is actually used but it's not imported by any code (for example, it's only used in command line), add it to the `ignores` list in `.depcheckrc`.
+- Problems reported by `prettier`: they will all be automatically fixed by `checks:fix`.
+- Problems reported by `eslint`: some will all be automatically fixed by `checks:fix`. For the rest, you can check the respective documentation for the rule if you are unsure what to do (your editor's error popup should display a link).
+- Problems reported by `resize-image`: they will all be automatically fixed by `checks:fix`.
+- Problems reported by `tsc`: you'll have to fix them manually. You can ask someone for help if you are unsure what to do.
