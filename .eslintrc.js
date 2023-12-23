@@ -43,9 +43,20 @@ module.exports = {
         'no-restricted-imports': [
           'error',
           {
-            name: 'lodash',
-            message:
-              'Lodash is too heavy to be allowed in frontend. Write your own utility, or import a standalone package like lodash.debounce instead.',
+            paths: [
+              {
+                name: 'lodash',
+                message:
+                  'Lodash is too heavy to be allowed in frontend. Write your own utility, or import a standalone package like lodash.debounce instead.',
+              },
+            ],
+            patterns: [
+              {
+                group: ['luxon', 'moment'],
+                message:
+                  "Do you really need a Date library? Consider hand-rolling your own utilities. Look around for examples. We don't need anything complex because we will only possibly deal with three time zones: Yale, UTC, and user device. Maybe be on the lookout for https://tc39.es/proposal-temporal/docs/",
+              },
+            ],
           },
         ],
       },

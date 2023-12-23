@@ -724,12 +724,12 @@ export function NavbarCatalogSearch() {
                       max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
                       step={1}
                       marks={{
-                        84: '7AM',
-                        120: '10AM',
-                        156: '1PM',
-                        192: '4PM',
-                        228: '7PM',
-                        264: '10PM',
+                        84: '7am',
+                        120: '10am',
+                        156: '1pm',
+                        192: '4pm',
+                        228: '7pm',
+                        264: '10pm',
                       }}
                       key={resetKey}
                       handleStyle={rangeHandleStyle}
