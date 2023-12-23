@@ -1,33 +1,37 @@
 // Adopted from https://github.com/facebook/docusaurus/blob/1a62b41e319845af33375d1bf7763cb83c73bb56/admin/scripts/resizeImage.js
+/* eslint-disable import/no-extraneous-dependencies */
 
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { program } from 'commander';
 import sharp from 'sharp';
-import imageSize from 'image-size';
+import imageSizeWrong from 'image-size';
+
+// https://arethetypeswrong.github.io/?p=image-size%401.0.2
+// It declared the wrong export shape
+const imageSize = imageSizeWrong.default;
 
 // You can use it as:
 //
 // # Resize all images in headshots (which is most likely)
-// node --loader=ts-node/esm scripts/resize-image.mts
+// bun scripts/resize-image.mts
 //
 // # Resize specified images / all images in a folder
 // # This does not read folders recursively as of now
-// node --loader=ts-node/esm scripts/resize-image.mts image1.png some-folder ...
+// bun scripts/resize-image.mts image1.png some-folder ...
 //
-// By default, images are resized to 400×400. You can explicitly give a width/height as arguments.
-// node --loader=ts-node/esm scripts/resize-image.mts --width 400 --height 400 image1.png
+// By default, images are resized to 400×400. You can explicitly give a
+// width/height as arguments.
+// bun scripts/resize-image.mts --width 400 --height 400 image1.png
 
 function maybeParseInt(n: string) {
   const res = Number.parseInt(n, 10);
-  if (Number.isNaN(res)) {
-    return undefined;
-  }
+  if (Number.isNaN(res)) return undefined;
   return res;
 }
 
-const headshotsPath = 'src/images/headshots';
+const headshotsPath = 'frontend/src/images/headshots';
 
 program
   .arguments('[imagePaths...]')
@@ -43,9 +47,7 @@ program
         test: boolean;
       },
     ) => {
-      if (imagePaths.length === 0) {
-        imagePaths.push(headshotsPath);
-      }
+      if (imagePaths.length === 0) imagePaths.push(headshotsPath);
       const rootDir = fileURLToPath(new URL('..', import.meta.url));
       const images = (
         await Promise.all(
@@ -99,7 +101,7 @@ program
               .jpeg()
               .toBuffer();
             await fs.unlink(imgPath);
-            await fs.writeFile(imgPath.replace(/jpeg|png/, 'jpg'), data);
+            await fs.writeFile(imgPath.replace(/jpeg|png/u, 'jpg'), data);
           }
           stats.resized += 1;
         }),

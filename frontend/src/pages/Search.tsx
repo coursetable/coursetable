@@ -1,43 +1,33 @@
 import React, { useState, useEffect, useCallback } from 'react';
-
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import { Element, scroller } from 'react-scroll';
+import 'rc-slider/assets/index.css';
+import 'rc-tooltip/assets/bootstrap.css';
+import type { ValueType } from 'react-select/src/types';
+
 import styles from './Search.module.css';
-
 import Results from '../components/Search/Results';
-
 import {
   skillsAreasOptions,
-  // creditOptions,
   schoolOptions,
   subjectOptions,
-} from '../queries/Constants';
-
+} from '../utilities/constants';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import CustomSelect from '../components/CustomSelect';
 import SortByReactSelect from '../components/Search/SortByReactSelect';
-
-import 'rc-slider/assets/index.css';
-import 'rc-tooltip/assets/bootstrap.css';
-
 import {
   SurfaceComponent,
   StyledInput,
   StyledHr,
   TextComponent,
 } from '../components/StyledComponents';
-
 import { useSessionStorageState } from '../utilities/browserStorage';
-import { useSearch, Option, defaultFilters } from '../contexts/searchContext';
-import { ValueType } from 'react-select/src/types';
-// import {
-//   to12HourTime,
-//   toExponential,
-//   toLinear,
-//   toRangeTime,
-//   toRealTime,
-// } from '../courseUtilities';
+import {
+  useSearch,
+  type Option,
+  defaultFilters,
+} from '../contexts/searchContext';
 
 /**
  * Renders catalog page
@@ -46,24 +36,21 @@ function Search() {
   // Fetch current device
   const { isMobile } = useWindowDimensions();
 
-  // number of search results to return
-  // const QUERY_SIZE = 30;
-
-  // way to display results
-  const [isList, setView] = useSessionStorageState('isList', !isMobile);
+  // Way to display results
+  const [isListView, setIsListView] = useSessionStorageState(
+    'isListView',
+    !isMobile,
+  );
 
   // Get search context data
   const {
     searchText,
-    select_subjects,
-    select_skillsareas,
+    selectSubjects,
+    selectSkillsAreas,
     overallBounds,
     workloadBounds,
-    select_seasons,
-    // timeBounds,
-    // enrollBounds,
-    select_schools,
-    // select_credits,
+    selectSeasons,
+    selectSchools,
     hideCancelled,
     hideConflicting,
     hideFirstYearSeminars,
@@ -73,9 +60,9 @@ function Search() {
     coursesLoading,
     searchData,
     multiSeasons,
-    reset_key,
+    resetKey,
     isLoggedIn,
-    num_friends,
+    numFriends,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -84,12 +71,7 @@ function Search() {
     setWorkloadBounds,
     setWorkloadValueLabels,
     setSelectSeasons,
-    // setTimeBounds,
-    // setTimeValueLabels,
-    // setEnrollBounds,
-    // setEnrollValueLabels,
     setSelectSchools,
-    // setSelectCredits,
     setHideCancelled,
     setHideConflicting,
     setHideFirstYearSeminars,
@@ -123,36 +105,10 @@ function Search() {
     }
   }, [coursesLoading, doneInitialScroll, scrollToResults]);
 
-  // const timeSliderHandle = useCallback(({ value, dragging, ...e }) => {
-  //   const key = e.className;
-  //   return (
-  //     <Handle {...e} key={key}>
-  //       <div
-  //         className={`shadow ${styles.time_tooltip}`}
-  //         style={{ width: '3.5rem' }}
-  //       >
-  //         {to12HourTime(toRealTime(value))}
-  //       </div>
-  //     </Handle>
-  //   );
-  // }, []);
-  // const enrollmentSliderHandle = useCallback(({ value, dragging, ...e }) => {
-  //   const key = e.className;
-  //   return (
-  //     <Handle {...e} key={key}>
-  //       <div className={`shadow ${styles.enrollment_tooltip}`}>
-  //         {Math.round(toExponential(value))}
-  //       </div>
-  //     </Handle>
-  //   );
-  // }, []);
-
   // Switch to grid view if mobile
   useEffect(() => {
-    if (isMobile && isList === true) {
-      setView(false);
-    }
-  }, [isMobile, isList, setView]);
+    if (isMobile && isListView) setIsListView(false);
+  }, [isMobile, isListView, setIsListView]);
 
   // TODO: add state if courseLoadError is present
   return (
@@ -172,6 +128,8 @@ function Search() {
               <Form className="px-0" onSubmit={scrollToResults}>
                 <Row className="mx-auto pt-4 px-4">
                   {/* Reset Filters Button */}
+                  {/* TODO */}
+                  {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <small
                     className={`${styles.reset_filters_btn} mr-auto`}
                     onClick={handleResetFilters}
@@ -204,7 +162,7 @@ function Search() {
                 </Row>
                 {/* Sort by option and order */}
                 <Row className="mx-auto py-0 px-4">
-                  <SortByReactSelect key={reset_key} />
+                  <SortByReactSelect key={resetKey} />
                 </Row>
                 <StyledHr />
                 <Row className={`mx-auto py-0 px-4 ${styles.multi_selects}`}>
@@ -213,10 +171,10 @@ function Search() {
                     {seasonsOptions && (
                       <CustomSelect
                         isMulti
-                        value={select_seasons}
+                        value={selectSeasons}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
-                        // prevent overlap with tooltips
+                        // Prevent overlap with tooltips
                         menuPortalTarget={document.body}
                         onChange={(
                           selectedOption: ValueType<Option, boolean>,
@@ -232,12 +190,11 @@ function Search() {
                   >
                     <CustomSelect
                       isMulti
-                      value={select_skillsareas}
+                      value={selectSkillsAreas}
                       options={skillsAreasOptions}
                       placeholder="All Skills/Areas"
-                      // colors
                       useColors
-                      // prevent overlap with tooltips
+                      // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption: ValueType<Option, boolean>) =>
                         setSelectSkillsAreas((selectedOption as Option[]) || [])
@@ -248,7 +205,7 @@ function Search() {
                   {/* <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                   <CustomSelect
                     isMulti
-                    value={select_credits}
+                    value={selectCredits}
                     options={creditOptions}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
@@ -262,11 +219,11 @@ function Search() {
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect
                       isMulti
-                      value={select_subjects}
+                      value={selectSubjects}
                       options={subjectOptions}
                       placeholder="All Subjects"
                       isSearchable
-                      // prevent overlap with tooltips
+                      // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption: ValueType<Option, boolean>) =>
                         setSelectSubjects((selectedOption as Option[]) || [])
@@ -277,10 +234,10 @@ function Search() {
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect
                       isMulti
-                      value={select_schools}
+                      value={selectSchools}
                       options={schoolOptions}
                       placeholder="All Schools"
-                      // prevent overlap with tooltips
+                      // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(
                         selectedOption: ValueType<Option, boolean>,
@@ -299,7 +256,7 @@ function Search() {
                         min={defaultFilters.defaultRatingBounds[0]}
                         max={defaultFilters.defaultRatingBounds[1]}
                         step={0.1}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={overallBounds}
                         onChange={(value) => {
                           setOverallValueLabels(value);
@@ -329,7 +286,7 @@ function Search() {
                         min={defaultFilters.defaultRatingBounds[0]}
                         max={defaultFilters.defaultRatingBounds[1]}
                         step={0.1}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={workloadBounds}
                         onChange={(value) => {
                           setWorkloadValueLabels(value);
@@ -364,7 +321,7 @@ function Search() {
                         min={toRangeTime(defaultFilters.defaultTimeBounds[0])}
                         max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
                         step={1}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={timeBounds.map(toRangeTime)}
                         onChange={(value) => {
                           setTimeValueLabels(value.map(toRealTime));
@@ -393,7 +350,7 @@ function Search() {
                           toLinear(defaultFilters.defaultEnrollBounds[1])
                         )}
                         step={10}
-                        key={reset_key}
+                        key={resetKey}
                         defaultValue={enrollBounds.map(toLinear)}
                         onChange={(value) => {
                           setEnrollValueLabels(
@@ -420,7 +377,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideCancelled}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -434,7 +391,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideConflicting}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -449,7 +406,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideFirstYearSeminars}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -464,7 +421,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideGraduateCourses}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -479,7 +436,7 @@ function Search() {
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
                       checked={hideDiscussionSections}
-                      onChange={() => {}} // dummy handler to remove warning
+                      onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
@@ -492,10 +449,10 @@ function Search() {
                 </Row>
 
                 <div className={styles.useless_btn}>
-                  {/* The form requires a button with type submit in order to process
-                    events when someone hits enter to submit. We want this functionality
-                    so we can scroll to the results on mobile when they hit enter,
-                    and hence have a hidden button here. */}
+                  {/* The form requires a button with type submit in order to
+                    process events when someone hits enter to submit. We want
+                    this functionality so we can scroll to the results on mobile
+                    when they hit enter, and hence have a hidden button here. */}
                   <Button type="submit" />
                 </div>
               </Form>
@@ -515,14 +472,12 @@ function Search() {
           <Element name="catalog" className="d-flex justify-content-center">
             <Results
               data={searchData}
-              isList={isList}
-              setView={(isList: boolean) => {
-                setView(isList);
-              }}
+              isListView={isListView}
+              setIsListView={setIsListView}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
               isLoggedIn={isLoggedIn}
-              num_friends={num_friends}
+              numFriends={numFriends}
             />
           </Element>
         </Col>

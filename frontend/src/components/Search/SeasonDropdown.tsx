@@ -2,42 +2,34 @@ import React from 'react';
 import { Dropdown, DropdownButton } from 'react-bootstrap';
 
 import '../Navbar/DropdownShared.css';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 import { useWorksheet } from '../../contexts/worksheetContext';
-
-/**
- * Render Season Dropdown in mobile view
- * @prop onSeasonChange - function to switch seasons
- * @prop cur_season - string that holds the current season code
- */
+import type { Season } from '../../utilities/common';
 
 function SeasonDropdown() {
-  const { season_codes, cur_season, changeSeason } = useWorksheet();
-
-  // Populate list of HTML options
-  const seasons_html = season_codes.map((season) => (
-    <Dropdown.Item
-      key={season}
-      eventKey={season}
-      className="d-flex"
-      // Styling if this is the current season
-      style={{
-        backgroundColor: season === cur_season ? '#007bff' : '',
-        color: season === cur_season ? 'white' : 'black',
-      }}
-    >
-      <div className="mx-auto">{toSeasonString(season)[0]}</div>
-    </Dropdown.Item>
-  ));
+  const { seasonCodes, curSeason, changeSeason } = useWorksheet();
 
   return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="dark"
-        title={toSeasonString(cur_season)[0]}
-        onSelect={changeSeason}
+        title={toSeasonString(curSeason)}
+        onSelect={(s) => changeSeason(s as Season | null)}
       >
-        {seasons_html}
+        {seasonCodes.map((season) => (
+          <Dropdown.Item
+            key={season}
+            eventKey={season}
+            className="d-flex"
+            // Styling if this is the current season
+            style={{
+              backgroundColor: season === curSeason ? '#007bff' : '',
+              color: season === curSeason ? 'white' : 'black',
+            }}
+          >
+            <div className="mx-auto">{toSeasonString(season)}</div>
+          </Dropdown.Item>
+        ))}
       </DropdownButton>
     </div>
   );

@@ -1,47 +1,46 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
-
+import { AiOutlineStar } from 'react-icons/ai';
+import { IoPersonOutline } from 'react-icons/io5';
+import { BiBookOpen } from 'react-icons/bi';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import styled from 'styled-components';
+
 import {
   ratingColormap,
   workloadColormap,
   subjectOptions,
-} from '../../queries/Constants';
-
+} from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
 import styles from './ResultsGridItem.module.css';
-import tag_styles from './ResultsItem.module.css';
+import tagStyles from './ResultsItem.module.css';
 import { TextComponent, StyledIcon } from '../StyledComponents';
 import type { Listing } from '../../utilities/common';
 import {
   getOverallRatings,
   getWorkloadRatings,
-} from '../../utilities/courseUtilities';
-
-import { AiOutlineStar } from 'react-icons/ai';
-import { IoPersonOutline } from 'react-icons/io5';
-import { BiBookOpen } from 'react-icons/bi';
+  toSeasonString,
+} from '../../utilities/course';
 import SkillBadge from '../SkillBadge';
 
 // Grid Item wrapper
 const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
   background-color: ${({ theme, inWorksheet }) =>
     inWorksheet
-      ? theme.primary_light
+      ? theme.primaryLight
       : theme.theme === 'light'
-      ? 'rgb(245, 245, 245)'
-      : theme.surface[1]};
+        ? 'rgb(245, 245, 245)'
+        : theme.surface[1]};
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
   &:hover {
-    background-color: ${({ theme }) => theme.select_hover};
+    background-color: ${({ theme }) => theme.selectHover};
   }
 `;
 
@@ -49,68 +48,49 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
  * Renders a grid item for a search result
  * @prop course data for the current course
  * @prop isLoggedIn is the user logged in?
- * @prop num_cols integer that holds how many columns in grid view
+ * @prop numCols integer that holds how many columns in grid view
  * @prop multiSeasons are we displaying courses across multiple seasons
  */
 
 function ResultsGridItem({
   course,
   isLoggedIn,
-  num_cols,
+  numCols,
   multiSeasons,
 }: {
-  course: Listing;
-  isLoggedIn: boolean;
-  num_cols: number;
-  multiSeasons: boolean;
+  readonly course: Listing;
+  readonly isLoggedIn: boolean;
+  readonly numCols: number;
+  readonly multiSeasons: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Bootstrap column width depending on the number of columns
-  const col_width = 12 / num_cols;
+  const colWidth = 12 / numCols;
 
   // Season code for this listing
-  const { season_code } = course;
-  const season = Number(season_code[5]);
-  const year = season_code.substring(2, 4);
-  // Size of season icons
-  const icon_size = 13;
   const seasons = ['spring', 'summer', 'fall'] as const;
+  const season = Number(course.season_code[5]);
+  const year = course.season_code.substring(2, 4);
+  // Size of season icons
+  const iconSize = 13;
   // Determine the icon for this season
   const icon =
     season === 1 ? (
-      <FcCloseUpMode className="my-auto" size={icon_size} />
+      <FcCloseUpMode className="my-auto" size={iconSize} />
     ) : season === 2 ? (
-      <IoMdSunny color="#ffaa00" className="my-auto" size={icon_size} />
+      <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
     ) : (
-      <FaCanadianMapleLeaf className="my-auto" size={icon_size} />
+      <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
     );
-
-  // Fetch overall & workload rating values and string representations
-  const course_rating = useMemo(
-    () =>
-      [
-        getOverallRatings(course, false),
-        getOverallRatings(course, true),
-      ] as const,
-    [course],
-  );
-  const workload_rating = useMemo(
-    () =>
-      [
-        getWorkloadRatings(course, false),
-        getWorkloadRatings(course, true),
-      ] as const,
-    [course],
-  );
 
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
-  const [subject_code, course_code] = course.course_code.split(' ');
+  const [subjectCode, courseCode] = course.course_code.split(' ');
 
   return (
     <Col
-      md={col_width}
+      md={colWidth}
       className={`${styles.container} px-2 pt-0 pb-3`}
       style={{ overflow: 'hidden' }}
     >
@@ -138,17 +118,15 @@ function ResultsGridItem({
                         <Tooltip id="button-tooltip" {...props}>
                           <small>
                             {subjectOptions
-                              .find(
-                                (subject) => subject.value === subject_code,
-                              )!
-                              .label.substring(subject_code.length + 2)}
+                              .find((subject) => subject.value === subjectCode)!
+                              .label.substring(subjectCode.length + 2)}
                           </small>
                         </Tooltip>
                       )}
                     >
-                      <span>{subject_code}</span>
+                      <span>{subjectCode}</span>
                     </OverlayTrigger>{' '}
-                    {course_code}
+                    {courseCode}
                   </>
                 )}
                 {course.section
@@ -165,18 +143,13 @@ function ResultsGridItem({
                   placement="top"
                   overlay={(props) => (
                     <Tooltip id="button-tooltip" {...props}>
-                      <small>
-                        {`${
-                          seasons[season - 1].charAt(0).toUpperCase() +
-                          seasons[season - 1].slice(1)
-                        } ${season_code.substr(0, 4)}`}
-                      </small>
+                      <small>{toSeasonString(course.season_code)}</small>
                     </Tooltip>
                   )}
                 >
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
-                      tag_styles[seasons[season - 1]]
+                      tagStyles[seasons[season - 1]]
                     }`}
                   >
                     <Row className="m-auto">
@@ -230,7 +203,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Skills and Areas */}
             <Row className="m-auto">
-              <div className={tag_styles.skills_areas}>
+              <div className={tagStyles.skills_areas}>
                 {course.skills.map((skill) => (
                   <SkillBadge skill={skill} key={skill} />
                 ))}
@@ -260,15 +233,15 @@ function ResultsGridItem({
                     // Only show eval data when user is signed in
                     className={`${styles.rating} mr-1`}
                     style={{
-                      color: course_rating[0]
-                        ? ratingColormap(course_rating[0])
+                      color: getOverallRatings(course, 'stat')
+                        ? ratingColormap(getOverallRatings(course, 'stat'))
                             .darken()
                             .saturate()
                             .css()
                         : '#cccccc',
                     }}
                   >
-                    {course_rating[1]}
+                    {getOverallRatings(course, 'display')}
                   </div>
                   <StyledIcon>
                     <AiOutlineStar className={styles.icon} />
@@ -290,16 +263,16 @@ function ResultsGridItem({
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        course.professor_avg_rating && isLoggedIn
-                          ? ratingColormap(Number(course.professor_avg_rating))
+                        course.average_professor && isLoggedIn
+                          ? ratingColormap(course.average_professor)
                               .darken()
                               .saturate()
                               .css()
                           : '#cccccc',
                     }}
                   >
-                    {course.professor_avg_rating && isLoggedIn
-                      ? course.professor_avg_rating
+                    {course.average_professor && isLoggedIn
+                      ? course.average_professor.toFixed(1)
                       : 'N/A'}
                   </div>
                   <StyledIcon>
@@ -322,15 +295,15 @@ function ResultsGridItem({
                     className={`${styles.rating} mr-1`}
                     style={{
                       color:
-                        isLoggedIn && workload_rating[0]
-                          ? workloadColormap(workload_rating[0])
+                        isLoggedIn && getWorkloadRatings(course, 'stat')
+                          ? workloadColormap(getWorkloadRatings(course, 'stat'))
                               .darken()
                               .saturate()
                               .css()
                           : '#cccccc',
                     }}
                   >
-                    {isLoggedIn && workload_rating[1]}
+                    {isLoggedIn && getWorkloadRatings(course, 'display')}
                   </div>
                   <StyledIcon>
                     <BiBookOpen className={styles.icon} />
@@ -345,7 +318,7 @@ function ResultsGridItem({
       <div className={styles.worksheet_btn}>
         <WorksheetToggleButton
           crn={course.crn}
-          season_code={course.season_code}
+          seasonCode={course.season_code}
           modal={false}
           setCourseInWorksheet={setCourseInWorksheet}
         />

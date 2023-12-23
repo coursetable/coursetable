@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import styles from './RatingsGraph.module.css';
 import { TextComponent } from '../StyledComponents';
 
-import { graph_labels } from '../../queries/Constants';
+import type { graphLabels } from '../../utilities/constants';
 
 const StyledLabel = styled.p`
   font-size: 10px !important;
@@ -25,19 +25,17 @@ function RatingsGraph({
   reverse,
   labels,
 }: {
-  ratings: number[];
-  reverse: boolean;
-  labels: (typeof graph_labels)[keyof typeof graph_labels];
+  readonly ratings: number[];
+  readonly reverse: boolean;
+  readonly labels: (typeof graphLabels)[keyof typeof graphLabels];
 }) {
-  const max_val = Math.max(...ratings);
+  const maxVal = Math.max(...ratings);
 
   // Bar chart colors
   const colors = ['#f54242', '#f5a142', '#f5f542', '#aeed1a', '#00e800'];
   // Reverse colors if needed
   if (reverse) colors.reverse();
 
-  // Variables used for list keys
-  // let indx = 0;
   // Set minimum bar height
   const MIN_HEIGHT = 15;
   // Loop through each rating to build the bar
@@ -45,7 +43,7 @@ function RatingsGraph({
   // Holds the bars
   const columns = ratings.map((rating, indx) => {
     // Calculate height of the bar
-    const height = rating ? MIN_HEIGHT + (rating / max_val) * 100 : 0;
+    const height = rating ? MIN_HEIGHT + (rating / maxVal) * 100 : 0;
     // Skip to last color if this is the yes/no question
     if (indx === 1 && ratings.length === 2) indx = 4;
     // Build bar

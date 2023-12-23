@@ -19,11 +19,11 @@
   text-align: center;
 }
 
-.banner .close_button {
+.banner .closeButton {
   width: 30px;
   transition: 0.33s ease-out;
 }
-.banner .close_button:hover {
+.banner .closeButton:hover {
   cursor: pointer;
   color: rgb(51, 162, 255);
 }

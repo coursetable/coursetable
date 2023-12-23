@@ -4,6 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
+import { DateTime, Duration } from 'luxon';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
@@ -13,12 +14,10 @@ import {
   logout,
   scrollToTop,
   useComponentVisible,
-} from '../../utilities';
+} from '../../utilities/display';
 import styles from './Navbar.module.css';
 import { SurfaceComponent, SmallTextComponent } from '../StyledComponents';
 import { NavbarCatalogSearch } from './NavbarCatalogSearch';
-// import { useSearch } from '../searchContext';
-import { DateTime, Duration } from 'luxon';
 
 import { API_ENDPOINT } from '../../config';
 import { useTheme } from '../../contexts/themeContext';
@@ -34,16 +33,16 @@ const StyledMeIcon = styled.div`
   border-radius: 15px;
   display: flex;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
   &:hover {
     cursor: pointer;
     color: ${({ theme }) => theme.primary};
   }
 `;
 
-// Sign in/out & FB btns
+// Sign in/out buttons
 const StyledDiv = styled.div`
   padding: 0.5rem 1rem 0.5rem 0rem;
   color: ${({ theme }) => theme.text[1]};
@@ -64,7 +63,7 @@ const StyledNavLink = styled(NavLink)`
   font-weight: 500;
   font-size: 1rem;
   ${breakpoints('font-size', 'rem', [{ 1320: 0.9 }])};
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
   &:hover {
     text-decoration: none !important;
     color: ${({ theme }) => theme.primary};
@@ -94,8 +93,8 @@ const NavLogo = styled(Nav)`
 `;
 
 type Props = {
-  isLoggedIn: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly isLoggedIn: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 //  Wrapper for nav collapse for # of results shown text
@@ -103,8 +102,8 @@ function NavCollapseWrapper({
   children,
   wrap,
 }: {
-  children: React.ReactNode;
-  wrap: boolean;
+  readonly children: React.ReactNode;
+  readonly wrap: boolean;
 }) {
   if (wrap) {
     return (
@@ -124,13 +123,10 @@ function NavCollapseWrapper({
 function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const location = useLocation();
   // Is navbar expanded in mobile view?
-  const [nav_expanded, setExpand] = useState<boolean>(false);
+  const [navExpanded, setNavExpanded] = useState<boolean>(false);
   // Ref to detect outside clicks for profile dropdown
-  const { ref_visible, isComponentVisible, setIsComponentVisible } =
+  const { elemRef, isComponentVisible, setIsComponentVisible } =
     useComponentVisible<HTMLDivElement>(false);
-
-  // Fetch from search
-  // const { searchData, coursesLoading, speed } = useSearch();
 
   // Last updated state
   const [lastUpdated, setLastUpdated] = useState('0 hrs');
@@ -141,41 +137,32 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const { isMobile, isLgDesktop } = useWindowDimensions();
 
   // Show navbar search state
-  const [show_search, setShowSearch] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
   // Page state
   const [page, setPage] = useState('');
   // Handles page
   useEffect(() => {
-    if (location && location.pathname === '/catalog') {
-      setPage('catalog');
-    } else if (location && location.pathname === '/worksheet') {
+    if (location && location.pathname === '/catalog') setPage('catalog');
+    else if (location && location.pathname === '/worksheet')
       setPage('worksheet');
-    } else {
-      setPage('');
-    }
+    else setPage('');
   }, [location]);
 
   // Decides whether to show search or not
   useEffect(() => {
-    if (!isMobile && isLoggedIn && page) {
-      setShowSearch(true);
-    } else {
-      setShowSearch(false);
-    }
+    if (!isMobile && isLoggedIn && page) setShowSearch(true);
+    else setShowSearch(false);
   }, [isMobile, isLoggedIn, page]);
 
   // Calculate time since last updated
   useEffect(() => {
     const dt = DateTime.now().setZone('America/New_York');
-    let dt_update;
-    if (dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)) {
-      dt_update = dt
-        .plus(Duration.fromObject({ days: -1 }))
-        .set({ hour: 3, minute: 30, second: 0 });
-    } else {
-      dt_update = dt.set({ hour: 3, minute: 30, second: 0 });
-    }
-    const diffInSecs = dt.diff(dt_update).as('seconds');
+    const dtUpdate = (
+      dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)
+        ? dt.plus(Duration.fromObject({ days: -1 }))
+        : dt
+    ).set({ hour: 3, minute: 30, second: 0 });
+    const diffInSecs = dt.diff(dtUpdate).as('seconds');
     if (diffInSecs < 60) {
       setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
     } else if (diffInSecs < 3600) {
@@ -192,13 +179,12 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
       <SurfaceComponent layer={0}>
         <Container fluid className="p-0">
           <Navbar
-            expanded={nav_expanded}
-            onToggle={(expanded: boolean) => setExpand(expanded)}
-            // sticky="top"
+            expanded={navExpanded}
+            onToggle={(expanded: boolean) => setNavExpanded(expanded)}
             expand="md"
             className="shadow-sm px-3 align-items-start"
             style={
-              show_search && page === 'catalog'
+              showSearch && page === 'catalog'
                 ? {
                     height: isLgDesktop ? '100px' : '88px',
                     paddingBottom: '0px',
@@ -231,29 +217,32 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
             <StyledNavToggle aria-controls="basic-navbar-nav" />
 
             {/* Desktop navbar search */}
-            {show_search && page === 'catalog' ? (
+            {showSearch && page === 'catalog' ? (
               <NavbarCatalogSearch />
             ) : (
-              show_search && page === 'worksheet' && <NavbarWorksheetSearch />
+              showSearch && page === 'worksheet' && <NavbarWorksheetSearch />
             )}
 
-            <NavCollapseWrapper wrap={!isMobile && show_search}>
+            <NavCollapseWrapper wrap={!isMobile && showSearch}>
               {/* Navbar collapse */}
               <Navbar.Collapse
                 id="basic-navbar-nav"
-                // Make navbar display: flex when not mobile. If mobile, normal formatting
+                // Make navbar display: flex when not mobile. If mobile, normal
+                // formatting
                 className={!isMobile ? 'd-flex' : 'justify-content-end'}
-                style={!isMobile && show_search ? { flexGrow: 0 } : undefined}
+                style={!isMobile && showSearch ? { flexGrow: 0 } : undefined}
               >
                 {/* Close navbar on click in mobile view */}
                 <Nav
-                  onClick={() => setExpand(false)}
+                  onClick={() => setNavExpanded(false)}
                   className={`${
                     isMobile && 'align-items-start pt-2'
                   } position-relative`}
                   style={{ width: '100%' }}
                 >
                   {/* DarkMode Button */}
+                  {/* TODO */}
+                  {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <div
                     className={`${styles.navbar_dark_mode_btn} d-flex ${
                       !isMobile ? 'ml-auto' : ''
@@ -299,7 +288,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                   >
                     <div className={styles.navbar_me}>
                       <StyledMeIcon
-                        ref={ref_visible}
+                        ref={elemRef}
                         className={`${styles.icon_circle} m-auto`}
                         onClick={() =>
                           setIsComponentVisible(!isComponentVisible)
@@ -313,7 +302,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                       </StyledMeIcon>
                     </div>
                   </div>
-                  {/* Sign in/out and Facebook buttons. Show if mobile */}
+                  {/* Sign in/out buttons. Show if mobile */}
                   <div className="d-md-none">
                     <StyledDiv>
                       <a
@@ -332,15 +321,13 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                         Sign In
                       </StyledDiv>
                     ) : (
-                      <>
-                        <StyledDiv onClick={logout}>Sign Out</StyledDiv>
-                      </>
+                      <StyledDiv onClick={logout}>Sign Out</StyledDiv>
                     )}
                   </div>
                 </Nav>
               </Navbar.Collapse>
               {/* Last updated ago text for desktop */}
-              {show_search && page === 'catalog' && (
+              {showSearch && page === 'catalog' && (
                 <SmallTextComponent type={2} className="mb-2 text-right">
                   <MdUpdate className="mr-1" />
                   Updated {lastUpdated} ago
@@ -353,7 +340,7 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
       {/* Nav link dropdown that has position: absolute */}
       <div>
         <MeDropdown
-          profile_expanded={isComponentVisible}
+          profileExpanded={isComponentVisible}
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
           setIsTutorialOpen={setIsTutorialOpen}

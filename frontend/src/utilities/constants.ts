@@ -1,6 +1,4 @@
-import { expectType, TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
-import type { Listing } from '../utilities/common';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -68,11 +66,8 @@ export const sortbyOptions = [
   { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
 ] as const;
 
-// Make sure we can only sort by keys in the listing, or by facebook.
-export type SortKeys = keyof Listing | 'friend';
-const _number = 0;
-const _sortKeys = sortbyOptions[_number].value;
-expectType<TypeOf<SortKeys, typeof _sortKeys>>(true);
+// We can only sort by primitive keys by default, unless we have special support
+export type SortKeys = (typeof sortbyOptions)[number]['value'];
 export type SortByOption = (typeof sortbyOptions)[number];
 
 export const areas = ['Hu', 'So', 'Sc'] as const;
@@ -80,7 +75,7 @@ export const skills = ['QR', 'WR', 'L1', 'L2', 'L3', 'L4', 'L5'] as const;
 export type AreasType = (typeof areas)[number];
 export type SkillsType = (typeof skills)[number];
 
-export const skillsAreasColors: { [key: string]: string } = {
+export const skillsAreasColors: { [skillArea: string]: string } = {
   Hu: '#9970AB',
   So: '#4393C3',
   Sc: '#5AAE61',
@@ -157,7 +152,8 @@ export const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([1, 5]);
 
-// Maybe the number type is causing the error? (but it works fine on navbar search hmmm)
+// Maybe the number type is causing the error? (but it works fine on navbar
+// search hmmm)
 export const creditOptions = [
   { label: '0.5', value: 0.5 },
   { label: '1', value: 1 },
@@ -943,7 +939,7 @@ export const dayOptions = [
   { label: 'Friday', value: 'Friday' },
 ] as const;
 
-// to get a list of abbreviations, run
+// To get a list of abbreviations, run
 // a distinct_on:school query over computed_course_info
 
 // school labels were filled in manually
@@ -974,7 +970,7 @@ export const questions = [
   'feedback',
   'challenge',
 ] as const;
-export const question_text = {
+export const questionText = {
   assessment: 'What is your overall assessment of this course?',
   workload:
     'Relative to other courses you have taken at Yale, the workload of this course was:',
@@ -986,7 +982,7 @@ export const question_text = {
   challenge:
     'Relative to other courses you have taken at Yale, the level of intellectual challenge of this course was:',
 } as const;
-export const graph_labels = {
+export const graphLabels = {
   assessment: ['poor', 'fair', 'good', 'very good', 'excellent'],
   workload: ['much less', 'less', 'same', 'greater', 'much greater'],
   engagement: ['very low', 'low', 'medium', 'high', 'very high'],
@@ -1007,7 +1003,7 @@ export const graph_labels = {
   challenge: ['much less', 'less', 'same', 'greater', 'much greater'],
   major: [],
 } as const;
-export const graph_titles = {
+export const graphTitles = {
   assessment: 'Overall',
   workload: 'Workload',
   engagement: 'Engagement',

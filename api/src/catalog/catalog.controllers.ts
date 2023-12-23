@@ -2,11 +2,9 @@
  * @file Catalog fetch scripts.
  */
 
+import type express from 'express';
 import { FERRY_SECRET } from '../config';
-import express from 'express';
-
 import winston from '../logging/winston';
-
 import { fetchCatalog } from './catalog.utils';
 
 /**
@@ -20,10 +18,10 @@ export const verifyHeaders = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
-): void | express.Response => {
+): undefined | express.Response => {
   winston.info('Verifying headers');
-  // get authentication headers
-  const authd = req.header('x-ferry-secret'); // if user is logged in
+  // Get authentication headers
+  const authd = req.header('x-ferry-secret'); // If user is logged in
 
   // require NetID authentication
   if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
@@ -32,7 +30,8 @@ export const verifyHeaders = (
     });
   }
 
-  return next();
+  next();
+  return undefined;
 };
 
 /**
@@ -42,23 +41,22 @@ export const verifyHeaders = (
  * @param res - express response object
  * @param next - express next object
  */
-export const refreshCatalog = (
+export async function refreshCatalog(
   req: express.Request,
   res: express.Response,
-): void => {
+): Promise<express.Response<unknown, { [key: string]: unknown }>> {
   winston.info('Refreshing catalog');
-  // always overwrite when called
+  // Always overwrite when called
   const overwrite = true;
 
-  // fetch the catalog files and confirm success
-  fetchCatalog(overwrite)
-    .then(() =>
-      res.status(200).json({
-        status: 'OK',
-      }),
-    )
-    .catch((err) => {
-      winston.error(err);
-      return res.status(500).json(err);
+  // Fetch the catalog files and confirm success
+  try {
+    await fetchCatalog(overwrite);
+    return res.status(200).json({
+      status: 'OK',
     });
-};
+  } catch (err) {
+    winston.error(err);
+    return res.status(500).json(err);
+  }
+}

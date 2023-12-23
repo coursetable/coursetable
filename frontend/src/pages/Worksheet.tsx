@@ -1,15 +1,19 @@
 import React from 'react';
-
 import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
+import * as Sentry from '@sentry/react';
+import styled from 'styled-components';
+
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
-import WorksheetMobileCalendar from '../components/Worksheet/WorksheetMobileCalendar';
 import WorksheetList from '../components/Worksheet/WorksheetList';
 import {
   SurfaceComponent,
   StyledExpandBtn,
 } from '../components/StyledComponents';
+import WorksheetNumDropdown from '../components/Navbar/WorksheetNumberDropdown';
+import SeasonDropdown from '../components/Search/SeasonDropdown';
+import FriendsDropdown from '../components/Navbar/FriendsDropdown';
 
 import styles from './Worksheet.module.css';
 
@@ -18,15 +22,12 @@ import ErrorPage from '../components/ErrorPage';
 
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import { useWorksheet } from '../contexts/worksheetContext';
-import * as Sentry from '@sentry/react';
-
-import styled from 'styled-components';
 
 const StyledCalendarContainer = styled(SurfaceComponent)`
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 /**
@@ -38,8 +39,8 @@ function Worksheet() {
   const { isMobile } = useWindowDimensions();
 
   const {
-    cur_worksheet,
-    worksheet_view,
+    curWorksheet,
+    worksheetView,
     worksheetLoading,
     worksheetError,
     worksheetData,
@@ -47,9 +48,10 @@ function Worksheet() {
   } = useWorksheet();
 
   // If user somehow isn't logged in and worksheet is null
-  if (cur_worksheet == null) return <div>Error fetching worksheet</div>;
+  if (!curWorksheet) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
-  if (cur_worksheet.length === 0 && !isMobile && false) {
+  // eslint-disable-next-line no-constant-condition
+  if (curWorksheet.length === 0 && !isMobile && false) {
     // TODO: remove this part and add an empty state later on.
     // We don't want to prevent a user from seeing their friend's
     // worksheets if they haven't added anything to their own worksheet.
@@ -103,31 +105,29 @@ function Worksheet() {
   // TODO: add something for when data.length === 0
 
   // Button size for expand icons
-  const expand_btn_size = 12;
+  const expandBtnSize = 12;
 
   return (
     <div className={styles.container}>
       {!isMobile ? (
         /* Desktop View */
         <div className={styles.desktop_container}>
-          <Row
-            className={worksheet_view.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}
-          >
+          <Row className={worksheetView.view === 'list' ? 'mx-0' : 'mx-3 mb-3'}>
             {/* Calendar Component */}
             <Col
               // Width of component depends on if it is expanded or not
               md={
-                worksheet_view.view === 'calendar' &&
-                worksheet_view.mode === 'expanded'
+                worksheetView.view === 'calendar' &&
+                worksheetView.mode === 'expanded'
                   ? 12
                   : 9
               }
               className={`mt-3 pl-0 ${
-                worksheet_view.view === 'calendar' &&
-                worksheet_view.mode === 'expanded'
+                worksheetView.view === 'calendar' &&
+                worksheetView.mode === 'expanded'
                   ? 'pr-0 '
                   : 'pr-3 '
-              }${worksheet_view.view === 'list' ? styles.hidden : ''}`}
+              }${worksheetView.view === 'list' ? styles.hidden : ''}`}
             >
               <StyledCalendarContainer
                 layer={0}
@@ -138,11 +138,11 @@ function Worksheet() {
                 <StyledExpandBtn
                   className={`${styles.expand_btn} ${styles.top_right}`}
                 >
-                  {worksheet_view.view === 'calendar' &&
-                  worksheet_view.mode !== 'expanded' ? (
+                  {worksheetView.view === 'calendar' &&
+                  worksheetView.mode !== 'expanded' ? (
                     <FaExpandAlt
                       className={styles.expand_icon}
-                      size={expand_btn_size}
+                      size={expandBtnSize}
                       style={{ display: 'block' }}
                       onClick={() => {
                         // Expand calendar
@@ -155,7 +155,7 @@ function Worksheet() {
                   ) : (
                     <FaCompressAlt
                       className={styles.expand_icon}
-                      size={expand_btn_size}
+                      size={expandBtnSize}
                       onClick={() => {
                         // Compress calendar
                         handleWorksheetView({ view: 'calendar', mode: '' });
@@ -168,29 +168,29 @@ function Worksheet() {
             {/* List Component */}
             <Col
               // Width depends on if it is expanded or not
-              md={worksheet_view.view === 'list' ? 12 : 3}
+              md={worksheetView.view === 'list' ? 12 : 3}
               className={`ml-auto px-0 ${
-                worksheet_view.view === 'calendar' &&
-                worksheet_view.mode === 'expanded'
+                worksheetView.view === 'calendar' &&
+                worksheetView.mode === 'expanded'
                   ? styles.hidden
                   : ''
               }`}
             >
               {/* List Component */}
-              <Fade in={worksheet_view.view === 'list'}>
+              <Fade in={worksheetView.view === 'list'}>
                 <div
                   style={{
-                    display: worksheet_view.view === 'list' ? '' : 'none',
+                    display: worksheetView.view === 'list' ? '' : 'none',
                   }}
                 >
-                  {worksheet_view.view === 'list' && <WorksheetList />}
+                  {worksheetView.view === 'list' && <WorksheetList />}
                 </div>
               </Fade>
               {/* Calendar List Component */}
-              <Fade in={worksheet_view.view !== 'list'}>
+              <Fade in={worksheetView.view !== 'list'}>
                 <div
                   style={{
-                    display: worksheet_view.view !== 'list' ? '' : 'none',
+                    display: worksheetView.view !== 'list' ? '' : 'none',
                   }}
                 >
                   <WorksheetCalendarList />
@@ -204,7 +204,25 @@ function Worksheet() {
         <div>
           <Row className={`${styles.accordion} m-0 p-3`}>
             <Col className="p-0">
-              <WorksheetMobileCalendar />
+              <div className="mobile-calendar-container">
+                <div className="mobile-dropdowns">
+                  <WorksheetNumDropdown />
+                  <Row className={`${styles.dropdowns} mx-auto`}>
+                    <Col xs={6} className="m-0 p-0">
+                      <SeasonDropdown />
+                    </Col>
+                    <Col xs={6} className="m-0 p-0">
+                      <FriendsDropdown />
+                    </Col>
+                  </Row>
+                </div>
+                <div className="mobile-calendar">
+                  <WorksheetCalendar />
+                </div>
+                <div className="mobile-list">
+                  <WorksheetCalendarList />
+                </div>
+              </div>
             </Col>
           </Row>
         </div>

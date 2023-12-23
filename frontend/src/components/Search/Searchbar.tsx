@@ -1,11 +1,11 @@
 import React from 'react';
-import { OptionTypeBase, Props as SelectProps } from 'react-select';
+import type { OptionTypeBase, Props as SelectProps } from 'react-select';
 import CustomSelect from '../CustomSelect';
 
 type Props = {
-  popout?: boolean;
-  useColors?: boolean;
-  isMulti?: boolean;
+  readonly popout?: boolean;
+  readonly useColors?: boolean;
+  readonly isMulti?: boolean;
 };
 
 /**
@@ -25,6 +25,8 @@ export function Searchbar<T extends OptionTypeBase, IsMulti extends boolean>({
       popout
       {...props}
       isMulti={isMulti}
+      // TODO
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       backspaceRemovesValue={false}
       components={components}

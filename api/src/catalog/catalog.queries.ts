@@ -4,7 +4,7 @@
 
 import gql from 'graphql-tag';
 
-// query for getting catalog data by season
+// Query for getting catalog data by season
 export const listSeasonsQuery = gql`
   query listSeasons($season: [String!]) {
     seasons {
@@ -15,7 +15,7 @@ export const listSeasonsQuery = gql`
   }
 `;
 
-// query for getting catalog data by season
+// Query for getting catalog data by season
 export const catalogBySeasonQuery = gql`
   query catalogBySeason($season: String!) {
     computed_listing_info(where: { season_code: { _eq: $season } }) {

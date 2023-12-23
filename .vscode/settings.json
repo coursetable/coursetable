@@ -13,23 +13,14 @@
   "[typescriptreact]": {
     "editor.formatOnSave": true
   },
-  "[scss]": {
-    "editor.formatOnSave": true
-  },
-  "[php]": {
-    "editor.tabSize": 4
-  },
   "files.exclude": {
-    "dist": true,
-    "web/gen/**": true
+    "dist": true
   },
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
   "typescript.tsdk": "frontend/node_modules/typescript/lib",
   "search.exclude": {
     "dist/**": true,
-    "web/gen/**": true,
-    "web/lib/**": true,
     "api/static": true,
     "**/node_modules": true,
     "**/.eslintcache": true,
@@ -45,9 +36,5 @@
     "toastify",
     "unstyled"
   ],
-  "eslint.workingDirectories": [
-    "api",
-    "frontend",
-    "proxy"
-  ]
+  "eslint.workingDirectories": ["api", "frontend", "proxy"]
 }

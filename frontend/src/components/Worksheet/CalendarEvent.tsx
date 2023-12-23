@@ -4,6 +4,7 @@ import LinesEllipsis from 'react-lines-ellipsis';
 import responsiveHOC from 'react-lines-ellipsis/lib/responsiveHOC';
 import { StyledPopover } from '../StyledComponents';
 import type { Listing } from '../../utilities/common';
+import { truncatedText } from '../../utilities/course';
 
 const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
@@ -16,25 +17,12 @@ export interface CourseEvent {
   location: string;
 }
 
-const event_style = {
+const eventStyle = {
   width: '100%',
   height: '100%',
 };
 
-function truncatedText(
-  text: string | null | undefined,
-  max: number,
-  defaultStr: string,
-) {
-  if (!text) {
-    return defaultStr;
-  } else if (text.length <= max) {
-    return text;
-  }
-  return `${text.slice(0, max)}...`;
-}
-
-function CalendarEvent({ event }: { event: CourseEvent }) {
+function CalendarEvent({ event }: { readonly event: CourseEvent }) {
   const course = event.listing;
   return (
     <OverlayTrigger
@@ -55,14 +43,11 @@ function CalendarEvent({ event }: { event: CourseEvent }) {
           </Popover.Content>
         </StyledPopover>
       )}
-      // Have a 1000ms delay before showing popover so it only pops up when user wants it to
+      // Have a 1000ms delay before showing popover so it only pops up when user
+      // wants it to
       delay={{ show: 1000, hide: 0 }}
     >
-      <div
-        style={event_style}
-        // onMouseEnter={() => setHoverCourse(event.listing)}
-        // onMouseLeave={() => setHoverCourse(null)}
-      >
+      <div style={eventStyle}>
         <strong>{event.title}</strong>
         <br />
         <span style={{ fontSize: '12px' }}>
@@ -79,5 +64,4 @@ function CalendarEvent({ event }: { event: CourseEvent }) {
   );
 }
 
-// CalendarEvent.whyDidYouRender = true;
-export default React.memo(CalendarEvent);
+export default CalendarEvent;

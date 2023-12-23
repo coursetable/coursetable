@@ -2,7 +2,7 @@ import gql from 'graphql-tag';
 
 import { NUM_CHALLENGE_COURSES } from '../config';
 
-// query for selecting courses to test
+// Query for selecting courses to test
 export const requestEvalsQuery = gql`
   query($season: String, $minRating: float8) {
     evaluation_ratings(
@@ -49,7 +49,7 @@ export interface requestEvalsQueryResponse {
   }[];
 }
 
-// query for retrieving course enrollment data again
+// Query for retrieving course enrollment data again
 export const verifyEvalsQuery = gql`
   query ($questionIds: [Int!]) {
     evaluation_ratings(where: { id: { _in: $questionIds } }) {

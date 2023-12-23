@@ -1,17 +1,18 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
-import './WorksheetToggleButton.css';
 import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import axios from 'axios';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
-import { useUser } from '../../contexts/userContext';
-import { setLSObject } from '../../utilities/browserStorage';
-import { isInWorksheet } from '../../utilities/courseUtilities';
-import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import * as Sentry from '@sentry/react';
 
+import './WorksheetToggleButton.css';
+import { useUser } from '../../contexts/userContext';
+import type { Crn, Season } from '../../utilities/common';
+import { setLSObject } from '../../utilities/browserStorage';
+import { isInWorksheet } from '../../utilities/course';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
 
@@ -37,22 +38,22 @@ const StyledSelect = styled.select`
 /**
  * Toggle button to add course to or remove from worksheet
  * @prop crn - number | integer that holds the crn of the current course
- * @prop season_code - string | holds the current season code
+ * @prop seasonCode - string | holds the current season code
  * @prop modal - boolean | are we rendering in the course modal
  * @prop setCourseInWorksheet - function | to set if current course is in user's worksheet for parent component
  */
 function WorksheetToggleButton({
   crn,
-  season_code,
+  seasonCode,
   modal,
   setCourseInWorksheet,
   selectedWorksheet: initialSelectedWorksheet,
 }: {
-  crn: number;
-  season_code: string;
-  modal: boolean;
-  setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedWorksheet?: string;
+  readonly crn: Crn;
+  readonly seasonCode: Season;
+  readonly modal: boolean;
+  readonly setCourseInWorksheet?: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly selectedWorksheet?: string;
 }) {
   // Fetch user context data and refresh function
   const { user, userRefresh } = useUser();
@@ -67,16 +68,12 @@ function WorksheetToggleButton({
     setSelectedWorksheet(initialSelectedWorksheet || '0');
   }, [initialSelectedWorksheet]);
 
-  const { cur_season, hidden_courses, toggleCourse } = useWorksheet();
+  const { curSeason, hiddenCourses, toggleCourse } = useWorksheet();
 
-  const worksheet_check = useMemo(() => {
-    return isInWorksheet(
-      season_code,
-      crn.toString(),
-      selectedWorksheet,
-      user.worksheet,
-    );
-  }, [user.worksheet, season_code, crn, selectedWorksheet]);
+  const worksheetCheck = useMemo(
+    () => isInWorksheet(seasonCode, crn, selectedWorksheet, user.worksheet),
+    [user.worksheet, seasonCode, crn, selectedWorksheet],
+  );
   // Is the current course in the worksheet?
   const [inWorksheet, setInWorksheet] = useState(false);
 
@@ -85,41 +82,37 @@ function WorksheetToggleButton({
 
   // Reset inWorksheet state on every rerender
   useEffect(() => {
-    if (inWorksheet !== worksheet_check) {
-      setInWorksheet(worksheet_check);
-      if (setCourseInWorksheet) setCourseInWorksheet(worksheet_check);
+    if (inWorksheet !== worksheetCheck) {
+      setInWorksheet(worksheetCheck);
+      if (setCourseInWorksheet) setCourseInWorksheet(worksheetCheck);
     }
-  }, [worksheet_check, inWorksheet, setCourseInWorksheet]);
+  }, [worksheetCheck, inWorksheet, setCourseInWorksheet]);
 
   // Handle button click
   const toggleWorkSheet = useCallback(
-    (e: React.MouseEvent<HTMLButtonElement>) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
       // Determine if we are adding or removing the course
-      const add_remove = inWorksheet ? 'remove' : 'add';
+      const addRemove = inWorksheet ? 'remove' : 'add';
 
-      // removes removed courses from worksheet hidden courses
+      // Removes removed courses from worksheet hidden courses
       if (inWorksheet) {
-        setLSObject('hidden_courses', {}, true);
-        if (
-          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
-          hidden_courses[cur_season][crn]
-        ) {
+        setLSObject('hiddenCourses', {}, true);
+        if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn])
           toggleCourse(crn);
-        }
       }
 
       // Call the endpoint
-      return axios
-        .post(
+      try {
+        await axios.post(
           `${API_ENDPOINT}/api/user/toggleBookmark`,
           {
-            action: add_remove,
-            season: season_code,
-            ociId: crn,
-            worksheet_number: parseInt(selectedWorksheet),
+            action: addRemove,
+            season: seasonCode,
+            oci_id: crn,
+            worksheet_number: parseInt(selectedWorksheet, 10),
           },
           {
             withCredentials: true,
@@ -127,26 +120,21 @@ function WorksheetToggleButton({
               'Content-Type': 'application/json',
             },
           },
-        )
-        .then(() => {
-          // Refresh user's worksheet
-          return userRefresh();
-        })
-        .then(() => {
-          // If not in worksheet view, update inWorksheet state
-          setInWorksheet(!inWorksheet);
-        })
-        .catch((err) => {
-          toast.error('Failed to update worksheet');
-          Sentry.captureException(err);
-        });
+        );
+        await userRefresh();
+        // If not in worksheet view, update inWorksheet state
+        setInWorksheet(!inWorksheet);
+      } catch (err) {
+        toast.error('Failed to update worksheet');
+        Sentry.captureException(err);
+      }
     },
     [
       crn,
-      cur_season,
-      hidden_courses,
+      curSeason,
+      hiddenCourses,
       inWorksheet,
-      season_code,
+      seasonCode,
       toggleCourse,
       userRefresh,
       selectedWorksheet,
@@ -154,12 +142,13 @@ function WorksheetToggleButton({
   );
 
   // Disabled worksheet add/remove button if not logged in
-  if (user.worksheet == null)
+  if (!user.worksheet) {
     return (
       <Button onClick={toggleWorkSheet} className="p-0 disabled-button">
         <BsBookmark size={25} className="disabled-button-icon" />
       </Button>
     );
+  }
 
   return (
     <OverlayTrigger
@@ -194,9 +183,8 @@ function WorksheetToggleButton({
               }}
               onClick={(e) => {
                 // Check if the clicked target is the select element
-                if ((e.target as HTMLSelectElement).tagName === 'SELECT') {
+                if ((e.target as HTMLSelectElement).tagName === 'SELECT')
                   e.stopPropagation();
-                }
               }}
               onMouseEnter={(e) => {
                 e.preventDefault();
@@ -224,5 +212,4 @@ function WorksheetToggleButton({
   );
 }
 
-// WorksheetToggleButton.whyDidYouRender = true;
-export default React.memo(WorksheetToggleButton);
+export default WorksheetToggleButton;

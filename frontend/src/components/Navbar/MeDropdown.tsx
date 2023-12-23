@@ -1,84 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
+import { NavLink } from 'react-router-dom';
 import { Row, Col, Collapse } from 'react-bootstrap';
-import {
-  FcCalendar,
-  FcInfo,
-  FcQuestions,
-  FcFeedback,
-  FcPuzzle,
-} from 'react-icons/fc';
+import { FcInfo, FcQuestions, FcFeedback, FcPuzzle } from 'react-icons/fc';
 import { FaSignOutAlt, FaSignInAlt } from 'react-icons/fa';
-import { toast } from 'react-toastify';
-import * as Sentry from '@sentry/react';
-import FileSaver from 'file-saver';
 
 import styles from './MeDropdown.module.css';
-import { useUser } from '../../contexts/userContext';
-import { useWorksheetInfo } from '../../queries/GetWorksheetListings';
-import { logout, scrollToTop } from '../../utilities';
-import { generateICS } from '../../utilities/calendar';
+import { logout, scrollToTop } from '../../utilities/display';
 import {
   SurfaceComponent,
   TextComponent,
   StyledHoverText,
 } from '../StyledComponents';
-import { NavLink } from 'react-router-dom';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
-
-import { API_ENDPOINT, CUR_SEASON } from '../../config';
+import { API_ENDPOINT } from '../../config';
 
 type Props = {
-  profile_expanded: boolean;
-  setIsComponentVisible(visible: boolean): void;
-  isLoggedIn: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly profileExpanded: boolean;
+  readonly setIsComponentVisible: (visible: boolean) => void;
+  readonly isLoggedIn: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 /**
  * Renders the dropdown when clicking on the profile dropdown in the navbar
- * @prop profile_expanded - is dropdown visible?
+ * @prop profileExpanded - is dropdown visible?
  * @prop setIsComponentVisible - function that changes dropdown visibility
  * @prop isLoggedIn - is user logged in?
  * @prop setIsTutorialOpen - opens tutorial
  */
 function MeDropdown({
-  profile_expanded,
+  profileExpanded,
   setIsComponentVisible,
   isLoggedIn,
   setIsTutorialOpen,
 }: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
-
-  // Get user context data
-  const { user } = useUser();
-
-  // Are we exporting the user's worksheet?
-  const [export_ics, setExport] = useState(false);
-  const { data } = useWorksheetInfo(user.worksheet, CUR_SEASON);
-
-  // Called when worksheet updates or export_ics changes
-  useEffect(() => {
-    // return if worksheet isn't loaded or it isn't time to export
-    if (!data || data.length === 0 || !export_ics) return;
-    // Generate and download ICS file
-    generateICS(data, CUR_SEASON)
-      .then((value) => {
-        // Download to user's computer
-        const blob = new Blob([value], { type: 'text/calendar;charset=utf-8' });
-        FileSaver.saveAs(blob, `${CUR_SEASON}_worksheet.ics`);
-      })
-      .catch((err) => {
-        toast.error(
-          'Error exporting worksheet: ' + (err.message ?? '<unknown>'),
-        );
-        Sentry.captureException(err);
-      })
-      .finally(() => {
-        // Reset export_ics state on completion
-        setExport(false);
-      });
-  }, [data, export_ics]);
 
   return (
     <SurfaceComponent
@@ -88,8 +45,9 @@ function MeDropdown({
         setIsComponentVisible(true);
       }}
     >
-      <Collapse in={profile_expanded}>
-        {/* This wrapper div is important for making the collapse animation smooth */}
+      <Collapse in={profileExpanded}>
+        {/* This wrapper div is important for making the collapse animation
+          smooth */}
         <div>
           <Col className="px-3 pt-3">
             {isLoggedIn && (
@@ -139,7 +97,7 @@ function MeDropdown({
               />
               <TextComponent type={1}>
                 <a
-                  href={`https://feedback.coursetable.com/`}
+                  href="https://feedback.coursetable.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   className={styles.collapse_text}
@@ -169,22 +127,6 @@ function MeDropdown({
                   >
                     <StyledHoverText>Tutorial</StyledHoverText>
                   </NavLink>
-                </TextComponent>
-              </Row>
-            )}
-            {/* Export Worksheet button */}
-            {isLoggedIn && (
-              <Row className="pb-3 m-auto">
-                <FcCalendar className="mr-2 my-auto" size={20} />
-                <TextComponent
-                  type={1}
-                  onClick={() => {
-                    // Start export process
-                    setExport(true);
-                  }}
-                  className={styles.collapse_text}
-                >
-                  <StyledHoverText>Export Worksheet</StyledHoverText>
                 </TextComponent>
               </Row>
             )}

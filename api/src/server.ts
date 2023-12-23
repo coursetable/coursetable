@@ -1,12 +1,11 @@
 import express from 'express';
-
-import morgan from './logging/morgan';
-import winston from './logging/winston';
-
 import cookieSession from 'cookie-session';
 import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
+import { createProxyMiddleware } from 'http-proxy-middleware';
+import passport from 'passport';
+import * as Sentry from '@sentry/node';
 
 import {
   SECURE_PORT,
@@ -15,22 +14,17 @@ import {
   CORS_OPTIONS,
   STATIC_FILE_DIR,
 } from './config';
+import morgan from './logging/morgan';
+import winston from './logging/winston';
 
-import { createProxyMiddleware } from 'http-proxy-middleware';
-
-// import routes
+// Import routes
 import catalog from './catalog/catalog.routes';
 import { authWithEvals, passportConfig } from './auth/auth.handlers';
-import cas_auth from './auth/auth.routes';
-// import facebook from './facebook/facebook.routes';
-import friends from './facebook/friends.routes';
+import casAuth from './auth/auth.routes';
+import friends from './friends/friends.routes';
 import canny from './canny/canny.routes';
 import user from './user/user.routes';
 import challenge from './challenge/challenge.routes';
-
-import passport from 'passport';
-
-import * as Sentry from '@sentry/node';
 
 Sentry.init({
   dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
@@ -55,20 +49,10 @@ app.use(cors(CORS_OPTIONS));
 // Strip all headers matching X-COURSETABLE-* from incoming requests.
 app.use((req, _, next) => {
   Object.keys(req.headers).forEach((header) => {
-    if (header.startsWith('x-coursetable-')) {
-      delete req.headers[header];
-    }
+    if (header.startsWith('x-coursetable-')) delete req.headers[header];
   });
 
   next();
-});
-
-// Redirection routes for historical pages.
-app.get('/Blog', (_, res) => {
-  res.redirect('https://legacy.coursetable.com/Blog.html');
-});
-app.get('/recommendations.htm', (_, res) => {
-  res.redirect('https://legacy.coursetable.com/recommendations.htm');
 });
 
 // Setup sessions.
@@ -103,7 +87,7 @@ https
   });
 
 // We use the IIFE pattern so that we can use await.
-(async () => {
+void (async () => {
   // Configuring passport
   passportConfig(passport);
   app.use(passport.initialize());
@@ -114,14 +98,14 @@ https
   app.use('/ferry', (req, res, next) => {
     // Use read-only student role for all Hasura queries
     req.headers['X-Hasura-Role'] = 'student';
-    return next();
+    next();
   });
   app.use(
     '/ferry',
     createProxyMiddleware({
       target: 'http://graphql-engine:8080',
       pathRewrite: {
-        '^/ferry/': '/', // remove base path
+        '^/ferry/': '/', // Remove base path
       },
       ws: true,
     }),
@@ -129,17 +113,17 @@ https
   // Enable request logging.
   app.use(morgan);
 
-  // figure out how to make this work with Ferry (has to go after Ferry currently)
+  // Figure out how to make this work with Ferry (has to go after Ferry
+  // currently)
   app.use(express.json());
 
   // Activate catalog and CAS authentication
-  await challenge(app);
+  challenge(app);
   await catalog(app);
-  await cas_auth(app);
-  // await facebook(app);
-  await friends(app);
-  await canny(app);
-  await user(app);
+  casAuth(app);
+  friends(app);
+  canny(app);
+  user(app);
 
   // Mount static files route and require NetID authentication
   app.use(

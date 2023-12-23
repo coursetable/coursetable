@@ -1,7 +1,3 @@
-import 'react-app-polyfill/stable';
-import 'core-js/features/promise/all-settled';
-import 'core-js/es/promise/all-settled';
-
 import React, { useEffect } from 'react';
 import {
   BrowserRouter,
@@ -10,6 +6,7 @@ import {
   createRoutesFromChildren,
   matchRoutes,
 } from 'react-router-dom';
+import { Row } from 'react-bootstrap';
 import { createGlobalStyle } from 'styled-components';
 import { ToastContainer } from 'react-toastify';
 import {
@@ -18,9 +15,7 @@ import {
   ApolloProvider,
   createHttpLink,
 } from '@apollo/client';
-
 import * as Sentry from '@sentry/react';
-
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -30,13 +25,13 @@ import { UserProvider } from './contexts/userContext';
 import { SearchProvider } from './contexts/searchContext';
 import { WorksheetProvider } from './contexts/worksheetContext';
 import { ThemeProvider } from './contexts/themeContext';
+import { GapiProvider } from './contexts/gapiContext';
 
 import { isDev, API_ENDPOINT } from './config';
 
 import './index.css';
 
 import ErrorPage from './components/ErrorPage';
-import { Row } from 'react-bootstrap';
 
 const release = isDev ? 'edge' : import.meta.env.VITE_SENTRY_RELEASE;
 
@@ -60,8 +55,9 @@ Sentry.init({
   release,
   autoSessionTracking: true,
 
-  // Note: this is fully enabled in development. We can revisit this if it becomes annoying.
-  // We can also adjust the production sample rate depending on our quotas.
+  // Note: this is fully enabled in development. We can revisit this if it
+  // becomes annoying. We can also adjust the production sample rate depending
+  // on our quotas.
   tracesSampleRate: isDev ? 1.0 : 0.08,
 });
 
@@ -71,8 +67,7 @@ const link = createHttpLink({
 });
 
 const client = new ApolloClient({
-  // uri: `${API_ENDPOINT}/ferry/v1/graphql`,
-  // default cache for now
+  // Default cache for now
   cache: new InMemoryCache(),
   link,
 });
@@ -84,11 +79,12 @@ function ErrorFallback() {
     </Row>
   );
 }
-function CustomErrorBoundary({ children }: { children: React.ReactNode }) {
-  if (isDev) {
-    // return <ErrorFallback />;
-    return <>{children}</>;
-  }
+function CustomErrorBoundary({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
+  if (isDev) return <>{children}</>;
   return (
     <Sentry.ErrorBoundary fallback={ErrorFallback} showDialog>
       {children}
@@ -100,44 +96,46 @@ const GlobalStyles = createGlobalStyle`
   body {
     background: ${({ theme }) => theme.background};
     color: ${({ theme }) => theme.text[0]};
-    transition: background-color ${({ theme }) => theme.trans_dur};
+    transition: background-color ${({ theme }) => theme.transDur};
   }
   a {
     color: ${({ theme }) => theme.primary};  
     &:hover {
-      color: ${({ theme }) => theme.primary_hover};  
+      color: ${({ theme }) => theme.primaryHover};  
     }
   }
   `;
 
-function Globals({ children }: { children: React.ReactNode }) {
+function Globals({ children }: { readonly children: React.ReactNode }) {
   return (
     <CustomErrorBoundary>
       {/* TODO: re-enable StrictMode later */}
       {/* <React.StrictMode> */}
-      <ApolloProvider client={client}>
-        <FerryProvider>
-          {/* UserProvider must be inside the FerryProvider */}
-          <UserProvider>
-            <WindowDimensionsProvider>
-              <SearchProvider>
-                <WorksheetProvider>
-                  <ThemeProvider>
-                    <BrowserRouter>
-                      <GlobalStyles />
-                      <div id="base" style={{ height: 'auto' }}>
-                        {children}
-                      </div>
-                    </BrowserRouter>
-                  </ThemeProvider>
-                </WorksheetProvider>
-              </SearchProvider>
-              {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
-              <ToastContainer toastClassName="rounded" />
-            </WindowDimensionsProvider>
-          </UserProvider>
-        </FerryProvider>
-      </ApolloProvider>
+      <GapiProvider>
+        <ApolloProvider client={client}>
+          <FerryProvider>
+            {/* UserProvider must be inside the FerryProvider */}
+            <UserProvider>
+              <WindowDimensionsProvider>
+                <SearchProvider>
+                  <WorksheetProvider>
+                    <ThemeProvider>
+                      <BrowserRouter>
+                        <GlobalStyles />
+                        <div id="base" style={{ height: 'auto' }}>
+                          {children}
+                        </div>
+                      </BrowserRouter>
+                    </ThemeProvider>
+                  </WorksheetProvider>
+                </SearchProvider>
+                {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
+                <ToastContainer toastClassName="rounded" />
+              </WindowDimensionsProvider>
+            </UserProvider>
+          </FerryProvider>
+        </ApolloProvider>
+      </GapiProvider>
       {/* </React.StrictMode> */}
     </CustomErrorBoundary>
   );

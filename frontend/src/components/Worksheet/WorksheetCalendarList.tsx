@@ -1,13 +1,24 @@
 import React, { useMemo } from 'react';
-import { ListGroup, Row, Col } from 'react-bootstrap';
+import {
+  ListGroup,
+  Button,
+  Dropdown,
+  DropdownButton,
+  ButtonGroup,
+  OverlayTrigger,
+  Tooltip,
+} from 'react-bootstrap';
 import styled from 'styled-components';
+import { BsEyeSlash, BsEye } from 'react-icons/bs';
+import { TbFileExport } from 'react-icons/tb';
+
 import { SurfaceComponent } from '../StyledComponents';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
 import WorksheetStats from './WorksheetStats';
 import NoCourses from '../Search/NoCourses';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { BsEyeSlash, BsEye } from 'react-icons/bs';
 import GoogleCalendarButton from './GoogleCalendarButton';
+import ICSExportButton from './ICSExportButton';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
@@ -17,9 +28,9 @@ const StyledSpacer = styled.div`
   top: 56px;
   z-index: 2;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Hide icon
@@ -32,8 +43,13 @@ const StyledBsEye = styled(BsEye)`
   transition: transform 0.3s !important;
 `;
 
+const StyledTbFileExport = styled(TbFileExport)`
+  transition: transform 0.3s !important;
+  color: ${({ theme }) => theme.text[0]};
+`;
+
 // Show/hide all button
-export const StyledBtn = styled.div`
+const StyledBtn = styled(Button)`
   background-color: ${({ theme }) => theme.select};
   color: ${({ theme }) => theme.text[0]};
   padding: 5px;
@@ -47,16 +63,24 @@ export const StyledBtn = styled.div`
   user-select: none;
   margin-bottom: 5px;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
+
+  &:active {
+    background-color: ${({ theme }) => theme.buttonActive} !important;
+  }
+
+  &:disabled {
+    background-color: transparent;
+    color: ${({ theme }) => theme.text[2]} !important;
+  }
 
   &:hover {
     border: 2px solid hsl(0, 0%, 70%);
-    ${StyledBsEyeSlash} {
-      transform: scale(1.15);
-    }
-    ${StyledBsEye} {
+    background-color: ${({ theme }) => theme.buttonActive};
+    color: ${({ theme }) => theme.text[0]} !important;
+    ${StyledBsEyeSlash}, ${StyledBsEye}, ${StyledTbFileExport} {
       transform: scale(1.15);
     }
   }
@@ -67,6 +91,20 @@ export const StyledBtn = styled.div`
 
   &.form-control:focus {
     color: ${({ theme }) => theme.text[0]};
+  }
+
+  & .dropdown-menu {
+    min-width: 20rem !important;
+  }
+
+  & .dropdown-menu,
+  & .dropdown-item {
+    color: ${({ theme }) => theme.text[0]};
+    background-color: ${({ theme }) => theme.surface[1]};
+  }
+
+  & .dropdown-item:hover {
+    background-color: ${({ theme }) => theme.selectHover};
   }
 `;
 
@@ -90,82 +128,86 @@ const CourseList = styled(SurfaceComponent)`
  */
 
 function WorksheetCalendarList() {
-  const {
-    courses,
-    cur_season,
-    hidden_courses,
-    worksheet_number,
-    toggleCourse,
-  } = useWorksheet();
+  const { courses, curSeason, hiddenCourses, worksheetNumber, toggleCourse } =
+    useWorksheet();
 
   // Build the HTML for the list of courses of a given season
   const items = useMemo(() => {
     // List to hold HTML
     const listitems = courses.map((course, id) => {
       let hidden = false;
-      if (Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
-        hidden = hidden_courses[cur_season][course.crn];
-      }
+      if (curSeason in hiddenCourses)
+        hidden = hiddenCourses[curSeason][course.crn];
+
       // Add listgroup item to listitems list
       return (
         <WorksheetCalendarListItem
           key={id}
           course={course}
           hidden={hidden}
-          worksheet_number={worksheet_number}
+          worksheetNumber={worksheetNumber}
         />
       );
     });
 
     return listitems;
-  }, [courses, hidden_courses, cur_season, worksheet_number]);
+  }, [courses, hiddenCourses, curSeason, worksheetNumber]);
 
   const areHidden = useMemo(() => {
-    if (!Object.prototype.hasOwnProperty.call(hidden_courses, cur_season)) {
-      return false;
-    }
-    return Object.keys(hidden_courses[cur_season]).length === courses.length;
-  }, [hidden_courses, courses, cur_season]);
+    if (!(curSeason in hiddenCourses)) return false;
+    return Object.keys(hiddenCourses[curSeason]).length === courses.length;
+  }, [hiddenCourses, courses, curSeason]);
+
+  const HideShowIcon = areHidden ? StyledBsEyeSlash : StyledBsEye;
 
   return (
     <>
       <WorksheetStats />
-      {/* Hide/show toggle */}
       <StyledSpacer className="pt-3">
         <StyledContainer layer={1} className="mx-1">
           <div className="shadow-sm p-2">
-            {/* Gcal Button */}
-            <Row className="mx-auto">
-              <Col className="px-0 w-100">
-                <GoogleCalendarButton
-                  courses={courses.filter(
-                    (course) =>
-                      !hidden_courses[cur_season] ||
-                      !(course.crn in hidden_courses[cur_season]) ||
-                      !hidden_courses[cur_season][course.crn],
-                  )}
-                  season_code={cur_season}
-                />
-              </Col>
-            </Row>
-            {/* Hide/Show All Button */}
-            <Row className="mx-auto">
-              <Col className="px-0 w-100">
-                <StyledBtn onClick={() => toggleCourse(areHidden ? -2 : -1)}>
-                  {areHidden ? (
-                    <>
-                      <StyledBsEyeSlash className="my-auto pr-2" size={26} />{' '}
-                      Show
-                    </>
-                  ) : (
-                    <>
-                      <StyledBsEye className="my-auto pr-2" size={26} /> Hide
-                    </>
-                  )}{' '}
-                  All
+            <ButtonGroup className="w-100">
+              <OverlayTrigger
+                placement="top"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>{areHidden ? 'Show' : 'Hide'} all</span>
+                  </Tooltip>
+                )}
+              >
+                <StyledBtn
+                  onClick={() => toggleCourse(areHidden ? -2 : -1)}
+                  variant="none"
+                  className="px-3 w-100"
+                >
+                  <HideShowIcon className="my-auto pr-2" size={32} />
                 </StyledBtn>
-              </Col>
-            </Row>
+              </OverlayTrigger>
+              <OverlayTrigger
+                placement="top"
+                overlay={(props) => (
+                  <Tooltip id="button-tooltip" {...props}>
+                    <span>Export worksheet calendar</span>
+                  </Tooltip>
+                )}
+              >
+                <DropdownButton
+                  as={StyledBtn}
+                  drop="down"
+                  menuAlign="right"
+                  title={<StyledTbFileExport size={22} />}
+                  variant="none"
+                  className="w-100"
+                >
+                  <Dropdown.Item eventKey="1">
+                    <GoogleCalendarButton />
+                  </Dropdown.Item>
+                  <Dropdown.Item eventKey="2">
+                    <ICSExportButton />
+                  </Dropdown.Item>
+                </DropdownButton>
+              </OverlayTrigger>
+            </ButtonGroup>
           </div>
         </StyledContainer>
       </StyledSpacer>
@@ -183,5 +225,4 @@ function WorksheetCalendarList() {
   );
 }
 
-// WorksheetCalendarList.whyDidYouRender = true;
-export default React.memo(WorksheetCalendarList);
+export default WorksheetCalendarList;

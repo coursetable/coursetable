@@ -1,4 +1,4 @@
-.back_arrow {
+.backArrow {
   height: 30px;
 }
 
@@ -6,13 +6,13 @@
   height: auto;
 }
 
-.course_codes {
+.courseCodes {
   height: auto;
   font-size: 16px;
   line-height: 20px;
 }
 
-.cancelled_text {
+.cancelledText {
   color: rgb(255, 98, 98);
 }
 

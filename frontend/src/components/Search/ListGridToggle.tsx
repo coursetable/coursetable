@@ -6,7 +6,7 @@ const StyledToggle = styled.div`
   color: ${({ theme }) => theme.text[1]};
   padding: 7.5px;
   border-radius: 15px;
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
   &:hover {
     cursor: pointer;
     background-color: ${({ theme }) => theme.select};
@@ -16,23 +16,23 @@ const StyledToggle = styled.div`
 
 /**
  * Toggle button between List and Grid view
- * @prop isList - boolean that holds current view
- * @prop setView - function to switch views
+ * @prop isListView - boolean that holds current view
+ * @prop setIsListView - function to switch views
  */
 
 function ListGridToggle({
-  isList,
-  setView,
+  isListView,
+  setIsListView,
 }: {
-  isList: boolean;
-  setView: (isList: boolean) => void;
+  readonly isListView: boolean;
+  readonly setIsListView: (isList: boolean) => void;
 }) {
   return (
     <StyledToggle
       className="d-flex ml-auto my-auto"
-      onClick={() => setView(!isList)}
+      onClick={() => setIsListView(!isListView)}
     >
-      {!isList ? (
+      {!isListView ? (
         <FaBars className="m-auto" size={15} />
       ) : (
         <FaTh className="m-auto" size={15} />

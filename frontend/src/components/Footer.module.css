@@ -1,13 +1,13 @@
-.footer_logo {
+.footerLogo {
   font-size: 2rem;
 }
 
-.footer :global a {
+.footer a {
   /* color: rgba(1, 1, 1, 0.7) !important; */
   color: inherit;
 }
 
-.footer :global a:hover {
+.footer a:hover {
   /* color: rgba(1, 1, 1, 0.7) !important; */
   color: inherit;
 }
