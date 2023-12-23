@@ -9,7 +9,7 @@ on:
 
 jobs:
   frontend-build-and-deploy:
-    environment: 
+    environment:
       name: Staging
       url: https://staging.coursetable.com
     runs-on: ubuntu-latest

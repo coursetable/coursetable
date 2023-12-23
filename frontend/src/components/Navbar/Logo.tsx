@@ -2,15 +2,15 @@ import React from 'react';
 
 import { useTheme } from 'styled-components';
 import logo from '../../images/brand/bluebook.svg';
-import wordmark_outlines from '../../images/brand/wordmark_outlines.svg';
-import wordmark_outlines_dark from '../../images/brand/ct_white.svg';
+import wordmarkOutlines from '../../images/brand/wordmark_outlines.svg';
+import wordmarkOutlinesDark from '../../images/brand/ct_white.svg';
 import styles from './Logo.module.css';
 
 type Props = {
   /** Should we show the icon */
-  icon?: boolean;
+  readonly icon?: boolean;
   /** Should be show the wordmark */
-  wordmark?: boolean;
+  readonly wordmark?: boolean;
 };
 
 /**
@@ -31,9 +31,7 @@ function Logo({ icon = true, wordmark = true }: Props) {
       )}{' '}
       {wordmark && (
         <img
-          src={
-            theme.theme === 'dark' ? wordmark_outlines_dark : wordmark_outlines
-          }
+          src={theme.theme === 'dark' ? wordmarkOutlinesDark : wordmarkOutlines}
           alt="CourseTable"
           className={styles.coursetable_logo_wordmark}
         />

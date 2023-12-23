@@ -6,7 +6,7 @@ import React, {
   useMemo,
 } from 'react';
 
-import debounce from 'lodash/debounce';
+import debounce from 'lodash.debounce';
 
 type Store = {
   width: number;
@@ -30,7 +30,7 @@ const range = (num: number, min: number, max: number) =>
 export function WindowDimensionsProvider({
   children,
 }: {
-  children: React.ReactNode;
+  readonly children: React.ReactNode;
 }) {
   const [dimensions, setDimensions] = useState({
     width: window.innerWidth,

@@ -8,10 +8,10 @@ import { TextComponent, StyledCard } from '../components/StyledComponents';
 
 // Link Logos
 import github from '../images/link-logos/github.png';
-import github_dark from '../images/link-logos/github-light.png';
+import githubDark from '../images/link-logos/github-light.png';
 import linkedin from '../images/link-logos/linkedin.png';
 import web from '../images/link-logos/web.png';
-import web_dark from '../images/link-logos/web-light.png';
+import webDark from '../images/link-logos/web-light.png';
 
 // Current Member Headshots
 import lz from '../images/headshots/lily-zhou.jpg';
@@ -51,7 +51,7 @@ const StyledH1 = styled.h1`
   font-weight: 600;
   font-size: 25px;
   text-align: center;
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 type Person = {
@@ -283,13 +283,13 @@ function About() {
   const logoLink = (
     link: string | undefined,
     image: string,
-    image_dark: string,
+    imageDark: string,
     text: string,
   ) =>
     link && (
       <a href={link}>
         <img
-          src={theme.theme === 'dark' ? image_dark : image}
+          src={theme.theme === 'dark' ? imageDark : image}
           alt={text}
           style={{
             width: '24px',
@@ -308,9 +308,9 @@ function About() {
           <Card.Text>
             <TextComponent type={1}>{person.role}</TextComponent>
             <br />
-            {logoLink(person.links?.github, github, github_dark, 'github')}
+            {logoLink(person.links?.github, github, githubDark, 'github')}
             {logoLink(person.links?.linkedin, linkedin, linkedin, 'linkedin')}
-            {logoLink(person.links?.website, web, web_dark, 'website')}
+            {logoLink(person.links?.website, web, webDark, 'website')}
           </Card.Text>
         </Card.Body>
       </StyledCard>
@@ -319,7 +319,7 @@ function About() {
 
   return (
     <div className={`${styles.container} mx-auto`}>
-      <StyledH1 className={'mt-5 mb-1'}>About Us</StyledH1>
+      <StyledH1 className="mt-5 mb-1">About Us</StyledH1>
       <TextComponent type={1}>
         <p className={`${styles.about_description} mb-3 mx-auto`}>
           CourseTable offers a clean and effective way for Yale students to find

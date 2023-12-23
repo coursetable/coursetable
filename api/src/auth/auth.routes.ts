@@ -2,7 +2,7 @@
  * @file Routes for passport-CAS authentication with Yale.
  */
 
-import express from 'express';
+import type express from 'express';
 import passport from 'passport';
 
 import { casLogin } from './auth.handlers';
@@ -12,17 +12,14 @@ import winston from '../logging/winston';
  * Set up authentication routes.
  * @param app: express app instance.
  */
-export default async (app: express.Express): Promise<void> => {
+export default (app: express.Express): void => {
   app.use(passport.initialize());
   app.use(passport.session());
 
   // Endpoint to print out user access
   app.get('/api/auth/check', (req, res) => {
-    if (req.user) {
-      res.json({ auth: true, id: req.user.netId, user: req.user });
-    } else {
-      res.json({ auth: false, id: null });
-    }
+    if (req.user) res.json({ auth: true, id: req.user.netId, user: req.user });
+    else res.json({ auth: false, id: null });
   });
 
   // CAS portal redirects
@@ -33,9 +30,7 @@ export default async (app: express.Express): Promise<void> => {
     winston.info(`Logging out ${req.user?.netId}`);
 
     req.logOut((err) => {
-      if (err) {
-        return next(err);
-      }
+      if (err) next(err);
     });
     return res.json({ success: true });
   });

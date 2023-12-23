@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import { defineConfig } from 'vite';
 import reactPlugin from '@vitejs/plugin-react';
 import basicSsl from '@vitejs/plugin-basic-ssl';

@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, {
   createContext,
   useCallback,
@@ -7,24 +6,25 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { GroupedOptionsType, OptionsType } from 'react-select/src/types';
-import type { Listing } from '../utilities/common';
+import type { GroupedOptionsType, OptionsType } from 'react-select/src/types';
+import { isEqual, type Listing, type Season } from '../utilities/common';
 import {
   useLocalStorageState,
   useSessionStorageState,
 } from '../utilities/browserStorage';
-import { useCourseData, useFerry } from './ferryContext';
+import { useCourseData, useFerry, useWorksheetInfo } from './ferryContext';
 import {
   areas,
-  AreasType,
+  type AreasType,
   searchSpeed,
   skills,
-  SkillsType,
-  SortByOption,
+  type SkillsType,
+  type SortByOption,
   sortbyOptions,
-  SortKeys,
-} from '../queries/Constants';
+  type SortKeys,
+} from '../utilities/constants';
 import {
+  checkConflict,
   getDayTimes,
   getEnrolled,
   getNumFriends,
@@ -33,7 +33,8 @@ import {
   sortCourses,
   toRangeTime,
   toSeasonString,
-} from '../utilities/courseUtilities';
+} from '../utilities/course';
+import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
 
 // Option type for all the filter options
@@ -45,12 +46,14 @@ export type Option = {
 };
 
 export const isOption = (x: unknown): x is Option =>
+  // eslint-disable-next-line no-implicit-coercion
   !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
-export type SortOrderType = 'desc' | 'asc' | undefined;
+export type SortOrderType = 'desc' | 'asc';
 
 export type OrderingType = {
-  [key in SortKeys]?: SortOrderType;
+  key: SortKeys;
+  type: 'desc' | 'asc';
 };
 
 // This is a type for weird TS errors
@@ -62,37 +65,38 @@ export type OptType =
 type Store = {
   canReset: boolean;
   searchText: string;
-  select_subjects: Option[];
-  select_skillsareas: Option[];
+  selectSubjects: Option[];
+  selectSkillsAreas: Option[];
   overallBounds: number[];
   overallValueLabels: number[];
   workloadBounds: number[];
   workloadValueLabels: number[];
-  select_seasons: Option[];
-  select_days: Option[];
+  selectSeasons: Option[];
+  selectDays: Option[];
   timeBounds: string[];
   timeValueLabels: string[];
   enrollBounds: number[];
   enrollValueLabels: number[];
   numBounds: number[];
   numValueLabels: number[];
-  select_schools: Option[];
-  select_credits: Option[];
+  selectSchools: Option[];
+  selectCredits: Option[];
   searchDescription: boolean;
   hideCancelled: boolean;
+  hideConflicting: boolean;
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
   hideDiscussionSections: boolean;
-  select_sortby: SortByOption;
-  sort_order: SortOrderType;
+  selectSortby: SortByOption;
+  sortOrder: SortOrderType;
   ordering: OrderingType;
   seasonsOptions: OptType;
   coursesLoading: boolean;
   searchData: Listing[];
   multiSeasons: boolean;
   isLoggedIn: boolean;
-  num_friends: Record<string, string[]>;
-  reset_key: number;
+  numFriends: { [seasonCodeCrn: string]: string[] };
+  resetKey: number;
   duration: number;
   speed: string;
   setCanReset: React.Dispatch<React.SetStateAction<boolean>>;
@@ -115,6 +119,7 @@ type Store = {
   setSelectCredits: React.Dispatch<React.SetStateAction<Option[]>>;
   setSearchDescription: React.Dispatch<React.SetStateAction<boolean>>;
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
+  setHideConflicting: React.Dispatch<React.SetStateAction<boolean>>;
   setHideFirstYearSeminars: React.Dispatch<React.SetStateAction<boolean>>;
   setHideGraduateCourses: React.Dispatch<React.SetStateAction<boolean>>;
   setHideDiscussionSections: React.Dispatch<React.SetStateAction<boolean>>;
@@ -129,39 +134,22 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
-// // Calculate upcoming season
-// const dt = DateTime.now().setZone('America/New_York');
-// let { year } = dt;
-// let season: number;
-// // Starting in October look at next year spring
-// if (dt.month >= 10) {
-//   season = 1;
-//   year += 1;
-//   // Starting in March look at this year fall
-// } else if (dt.month >= 3) {
-//   season = 3;
-// } else {
-//   season = 1;
-// }
-// UPDATE THIS MANUALLY
-const def_season_code = '202401';
-
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
-const defaultOptions: Option[] = [];
+const defaultOptions: [] = [];
 const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
-  { value: def_season_code, label: toSeasonString(def_season_code)[0] },
+  { value: CUR_SEASON, label: toSeasonString(CUR_SEASON) },
 ];
 const defaultWorksheet: Option[] = [{ value: '0', label: 'Main Worksheet' }];
 const defaultTrue = true;
 const defaultFalse = false;
-const defaultSortOption: SortByOption = sortbyOptions[0];
+const [defaultSortOption] = sortbyOptions;
 const defaultTimeBounds = ['7:00', '22:00'];
 const defaultEnrollBounds = [1, 528];
 const defaultNumBounds = [0, 1000];
 const defaultSortOrder: SortOrderType = 'asc';
-const defaultOrdering: OrderingType = { course_code: 'asc' };
+const defaultOrdering: OrderingType = { key: 'course_code', type: 'asc' };
 
 export const defaultFilters = {
   defaultOption,
@@ -182,7 +170,11 @@ export const defaultFilters = {
 /**
  * Stores the user's search, filters, and sorts
  */
-export function SearchProvider({ children }: { children: React.ReactNode }) {
+export function SearchProvider({
+  children,
+}: {
+  readonly children: React.ReactNode;
+}) {
   // Search on page render?
   const [defaultSearch, setDefaultSearch] = useState(true);
 
@@ -190,15 +182,14 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
 
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
-  const [select_subjects, setSelectSubjects] = useSessionStorageState(
-    'select_subjects',
+  const [selectSubjects, setSelectSubjects] = useSessionStorageState<Option[]>(
+    'selectSubjects',
     defaultOptions,
   );
 
-  const [select_skillsareas, setSelectSkillsAreas] = useSessionStorageState(
-    'select_skillsareas',
-    defaultOptions,
-  );
+  const [selectSkillsAreas, setSelectSkillsAreas] = useSessionStorageState<
+    Option[]
+  >('selectSkillsAreas', defaultOptions);
 
   const [overallBounds, setOverallBounds] = useSessionStorageState(
     'overallBounds',
@@ -218,13 +209,13 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       : defaultRatingBounds,
   );
 
-  const [select_seasons, setSelectSeasons] = useSessionStorageState(
-    'select_seasons',
+  const [selectSeasons, setSelectSeasons] = useSessionStorageState(
+    'selectSeasons',
     defaultSeason,
   );
 
-  const [select_days, setSelectDays] = useSessionStorageState(
-    'select_days',
+  const [selectDays, setSelectDays] = useSessionStorageState<Option[]>(
+    'selectDays',
     defaultOptions,
   );
 
@@ -252,13 +243,13 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     numBounds !== defaultNumBounds ? numBounds : defaultNumBounds,
   );
 
-  const [select_schools, setSelectSchools] = useSessionStorageState(
-    'select_schools',
+  const [selectSchools, setSelectSchools] = useSessionStorageState<Option[]>(
+    'selectSchools',
     defaultOptions,
   );
 
-  const [select_credits, setSelectCredits] = useSessionStorageState(
-    'select_credits',
+  const [selectCredits, setSelectCredits] = useSessionStorageState<Option[]>(
+    'selectCredits',
     defaultOptions,
   );
 
@@ -270,6 +261,11 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   const [hideCancelled, setHideCancelled] = useLocalStorageState(
     'hideCancelled',
     defaultTrue,
+  );
+
+  const [hideConflicting, setHideConflicting] = useLocalStorageState(
+    'hideConflicting',
+    defaultFalse,
   );
 
   const [hideFirstYearSeminars, setHideFirstYearSeminars] =
@@ -286,14 +282,14 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   /* Sorting */
 
   // Sort option state
-  const [select_sortby, setSelectSortby] = useSessionStorageState<SortByOption>(
-    'select_sortby',
+  const [selectSortby, setSelectSortby] = useSessionStorageState<SortByOption>(
+    'selectSortby',
     defaultSortOption,
   );
 
   // Sort order state
-  const [sort_order, setSortOrder] = useSessionStorageState<SortOrderType>(
-    'sort_order',
+  const [sortOrder, setSortOrder] = useSessionStorageState<SortOrderType>(
+    'sortOrder',
     defaultSortOrder,
   );
 
@@ -308,202 +304,137 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
   // State to determine if user can reset or not
   const [canReset, setCanReset] = useSessionStorageState('canReset', false);
   // State to cause components to reload when filters are reset
-  const [reset_key, setResetKey] = useState(0);
+  const [resetKey, setResetKey] = useState(0);
 
   /* Search speed */
 
-  const [start_time, setStartTime] = useState(Date.now());
+  const [startTime, setStartTime] = useState(Date.now());
   const [duration, setDuration] = useState(0);
   const [speed, setSpeed] = useState('fast');
 
   // Fetch user context data
   const { user } = useUser();
   // Is the user logged in?
-  const isLoggedIn = user.worksheet != null;
+  const isLoggedIn = Boolean(user.worksheet);
 
   // Object that holds a list of each friend taking a specific course
-  const num_friends = useMemo(() => {
+  const numFriends = useMemo(() => {
     if (!user.friendWorksheets) return {};
     return getNumFriends(user.friendWorksheets);
   }, [user.friendWorksheets]);
 
-  // populate seasons from database
-  let seasonsOptions: OptType;
+  // Populate seasons from database
+  let seasonsOptions: OptType | undefined = undefined;
   const { seasons: seasonsData } = useFerry();
   if (seasonsData && seasonsData.seasons) {
     seasonsOptions = seasonsData.seasons.map((x) => {
       const seasonOption: Option = {
         value: x.season_code,
-        // capitalize term and add year
+        // Capitalize term and add year
         label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
       };
       return seasonOption;
     });
   }
 
-  const required_seasons = useMemo(() => {
+  const requiredSeasons = useMemo((): Season[] => {
     if (!isLoggedIn) {
       // If we're not logged in, don't attempt to request any seasons.
       return [];
     }
-    if (select_seasons == null) {
-      return [];
-    }
-    if (select_seasons.length === 0) {
+    // TODO: can it be null?
+    if (!selectSeasons) return [];
+    if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
-      return seasonsData.seasons.map((x) => x.season_code).slice(0, 15);
+      return seasonsData.seasons
+        .map((x) => x.season_code as Season)
+        .slice(0, 15);
     }
-    return select_seasons.map((x) => x.value);
-  }, [isLoggedIn, select_seasons, seasonsData]);
+    return selectSeasons.map((x) => x.value as Season);
+  }, [isLoggedIn, selectSeasons, seasonsData]);
 
   const {
     loading: coursesLoading,
     courses: courseData,
     error: courseLoadError,
-  } = useCourseData(required_seasons);
+  } = useCourseData(requiredSeasons);
 
   // State used to determine whether or not to show season tags
   // (if multiple seasons are queried, the season is indicated)
-  const multiSeasons = required_seasons.length !== 1;
+  const multiSeasons = requiredSeasons.length !== 1;
 
   // Search configuration of filters
   const searchConfig = useMemo(() => {
-    // skills and areas
-    let processedSkillsAreas;
-    let processedSkills;
-    let processedAreas;
-    if (select_skillsareas != null) {
-      processedSkillsAreas = select_skillsareas.map((x) => {
-        return x.value;
-      });
-
-      // match all languages
-      if (processedSkillsAreas.includes('L')) {
-        processedSkillsAreas = processedSkillsAreas.concat([
-          'L1',
-          'L2',
-          'L3',
-          'L4',
-          'L5',
-        ]);
-      }
-
-      // separate skills and areas
-      processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
-        skills.includes(x as SkillsType),
-      );
-      processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
-        areas.includes(x as AreasType),
-      );
-
-      // set null defaults
-      if (processedSkills.length === 0) {
-        processedSkills = null;
-      }
-      if (processedAreas.length === 0) {
-        processedAreas = null;
-      }
-    }
-
-    // credits to filter
-    let processedCredits;
-    if (select_credits != null) {
-      processedCredits = select_credits.map((x) => {
-        return x.label;
-      });
-      // set null defaults
-      if (processedCredits.length === 0) {
-        processedCredits = null;
-      }
-    }
-
-    // schools to filter
-    let processedSchools;
-    if (select_schools != null) {
-      processedSchools = select_schools.map((x) => {
-        return x.value;
-      });
-
-      // set null defaults
-      if (processedSchools.length === 0) {
-        processedSchools = null;
-      }
-    }
-
-    // subjects to filter
-    let processedSubjects;
-    if (select_subjects != null) {
-      processedSubjects = select_subjects.map((x) => {
-        return x.value;
-      });
-
-      // set null defaults
-      if (processedSubjects.length === 0) {
-        processedSubjects = null;
-      }
-    }
-
-    // days to filter
-    let processedDays;
-    if (select_days != null) {
-      processedDays = select_days.map((x) => {
-        return x.value;
-      });
-
-      // set null defaults
-      if (processedDays.length === 0) {
-        processedDays = null;
-      }
-    }
-
-    // if the bounds are unaltered, we need to set them to null
-    // to include unrated courses
-    const include_all_overalls = _.isEqual(overallBounds, defaultRatingBounds);
-
-    const include_all_workloads = _.isEqual(
-      workloadBounds,
-      defaultRatingBounds,
+    // Skills and areas
+    const processedSkillsAreas = selectSkillsAreas.map((x) => x.value);
+    if (processedSkillsAreas.includes('L'))
+      processedSkillsAreas.push('L1', 'L2', 'L3', 'L4', 'L5');
+    const processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
+      skills.includes(x as SkillsType),
+    );
+    const processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
+      areas.includes(x as AreasType),
     );
 
-    const include_all_times = _.isEqual(timeBounds, defaultTimeBounds);
+    // Credits to filter
+    const processedCredits = selectCredits.map((x) => x.label);
 
-    const include_all_enrollments = _.isEqual(
+    // Schools to filter
+    const processedSchools = selectSchools.map((x) => x.value);
+
+    // Subjects to filter
+    const processedSubjects = selectSubjects.map((x) => x.value);
+
+    // Days to filter
+    const processedDays = selectDays.map((x) => x.value);
+
+    // If the bounds are unaltered, we need to set them to null
+    // to include unrated courses
+    const includeAllOveralls = isEqual(overallBounds, defaultRatingBounds);
+
+    const includeAllWorkloads = isEqual(workloadBounds, defaultRatingBounds);
+
+    const includeAllTimes = isEqual(timeBounds, defaultTimeBounds);
+
+    const includeAllEnrollments = isEqual(
       enrollBounds.map(Math.round),
       defaultEnrollBounds,
     );
 
-    const include_all_numbers = _.isEqual(numBounds, defaultNumBounds);
+    const includeAllNumbers = isEqual(numBounds, defaultNumBounds);
 
     // Variables to use in search query
-    const search_variables = {
-      search_text: searchText,
-      // seasons: not included because it is handled by required_seasons
+    const searchVariables = {
+      searchText,
+      // Seasons: not included because it is handled by required_seasons
       areas: new Set(processedAreas),
       skills: new Set(processedSkills),
       credits: new Set(processedCredits),
       schools: new Set(processedSchools),
       subjects: new Set(processedSubjects),
       days: new Set(processedDays),
-      min_overall: include_all_overalls ? null : overallBounds[0],
-      max_overall: include_all_overalls ? null : overallBounds[1],
-      min_workload: include_all_workloads ? null : workloadBounds[0],
-      max_workload: include_all_workloads ? null : workloadBounds[1],
-      min_time: include_all_times ? null : timeBounds[0],
-      max_time: include_all_times ? null : timeBounds[1],
-      min_enrollment: include_all_enrollments ? null : enrollBounds[0],
-      max_enrollment: include_all_enrollments ? null : enrollBounds[1],
-      min_number: include_all_numbers ? null : numBounds[0],
-      max_number: include_all_numbers ? null : numBounds[1],
+      minOverall: includeAllOveralls ? null : overallBounds[0],
+      maxOverall: includeAllOveralls ? null : overallBounds[1],
+      minWorkload: includeAllWorkloads ? null : workloadBounds[0],
+      maxWorkload: includeAllWorkloads ? null : workloadBounds[1],
+      minTime: includeAllTimes ? null : timeBounds[0],
+      maxTime: includeAllTimes ? null : timeBounds[1],
+      minEnrollment: includeAllEnrollments ? null : enrollBounds[0],
+      maxEnrollment: includeAllEnrollments ? null : enrollBounds[1],
+      minNumber: includeAllNumbers ? null : numBounds[0],
+      maxNumber: includeAllNumbers ? null : numBounds[1],
       description: searchDescription ? 'ACTIVE' : null,
-      extra_info: hideCancelled ? 'ACTIVE' : null,
-      discussion_section: hideDiscussionSections ? 'ACTIVE' : null,
-      fy_sem: hideFirstYearSeminars ? false : null,
-      grad_level: hideGraduateCourses ? false : null,
+      extraInfo: hideCancelled ? 'ACTIVE' : null,
+      conflicting: hideConflicting ? 'ACTIVE' : null,
+      discussionSection: hideDiscussionSections ? 'ACTIVE' : null,
+      fySem: hideFirstYearSeminars ? false : null,
+      gradLevel: hideGraduateCourses ? false : null,
     };
-    return search_variables;
+    return searchVariables;
   }, [
     searchDescription,
     hideCancelled,
+    hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
@@ -512,13 +443,15 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     timeBounds,
     enrollBounds,
     numBounds,
-    select_credits,
-    select_schools,
-    select_skillsareas,
-    select_subjects,
-    select_days,
+    selectCredits,
+    selectSchools,
+    selectSkillsAreas,
+    selectSubjects,
+    selectDays,
     searchText,
   ]);
+
+  const { data: worksheetInfo } = useWorksheetInfo(user.worksheet);
 
   // Filtered and sorted courses
   const searchData = useMemo(() => {
@@ -527,150 +460,143 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     if (Object.keys(searchConfig).length === 0) return [];
 
     // Pre-processing for the search text.
-    const tokens = (searchConfig.search_text || '')
-      .split(/\s+/)
-      .filter((x) => !!x)
+    const tokens = (searchConfig.searchText || '')
+      .split(/\s+/u)
+      .filter((x) => Boolean(x))
       .map((token) => token.toLowerCase());
 
-    const listings = required_seasons
-      .map((season_code) => {
-        if (!courseData[season_code]) return [];
-        return [...courseData[season_code].values()];
+    const listings = requiredSeasons
+      .map((seasonCode) => {
+        if (!courseData[seasonCode]) return [];
+        return [...courseData[seasonCode].values()];
       })
       .reduce((acc, cur) => acc.concat(cur), []);
 
     const filtered = listings.filter((listing) => {
       // Apply filters.
-      const average_overall = Number(getOverallRatings(listing));
+      const averageOverall = getOverallRatings(listing, 'stat');
+      const overall =
+        averageOverall === null ? null : Math.round(averageOverall * 10) / 10;
       if (
-        searchConfig.min_overall !== null &&
-        searchConfig.max_overall !== null &&
-        (average_overall === null ||
-          _.round(average_overall, 1) < searchConfig.min_overall ||
-          _.round(average_overall, 1) > searchConfig.max_overall)
-      ) {
+        searchConfig.minOverall !== null &&
+        searchConfig.maxOverall !== null &&
+        (overall === null ||
+          overall < searchConfig.minOverall ||
+          overall > searchConfig.maxOverall)
+      )
         return false;
-      }
 
-      const average_workload = Number(getWorkloadRatings(listing));
+      const averageWorkload = getWorkloadRatings(listing, 'stat');
+      const workload =
+        averageWorkload === null ? null : Math.round(averageWorkload * 10) / 10;
       if (
-        searchConfig.min_workload !== null &&
-        searchConfig.max_workload !== null &&
-        (average_workload === null ||
-          _.round(average_workload, 1) < searchConfig.min_workload ||
-          _.round(average_workload, 1) > searchConfig.max_workload)
-      ) {
+        searchConfig.minWorkload !== null &&
+        searchConfig.maxWorkload !== null &&
+        (workload === null ||
+          workload < searchConfig.minWorkload ||
+          workload > searchConfig.maxWorkload)
+      )
         return false;
-      }
 
-      if (searchConfig.min_time !== null && searchConfig.max_time !== null) {
-        let include = false;
+      if (searchConfig.minTime !== null && searchConfig.maxTime !== null) {
         const times = getDayTimes(listing);
-        if (times) {
-          times.forEach((time) => {
-            if (
-              searchConfig.min_time !== null &&
-              searchConfig.max_time !== null &&
+        if (
+          times &&
+          !times.some(
+            (time) =>
+              searchConfig.minTime !== null &&
+              searchConfig.maxTime !== null &&
               time !== null &&
-              toRangeTime(time.start) >= toRangeTime(searchConfig.min_time) &&
-              toRangeTime(time.end) <= toRangeTime(searchConfig.max_time)
-            ) {
-              include = true;
-            }
-          });
-        }
-        if (!include) {
+              toRangeTime(time.start) >= toRangeTime(searchConfig.minTime) &&
+              toRangeTime(time.end) <= toRangeTime(searchConfig.maxTime),
+          )
+        )
           return false;
-        }
       }
 
-      let enrollment = getEnrolled(listing);
-      if (enrollment !== null) enrollment = Number(enrollment);
+      const enrollment = getEnrolled(listing, 'stat');
       if (
-        searchConfig.min_enrollment !== null &&
-        searchConfig.max_enrollment !== null &&
+        searchConfig.minEnrollment !== null &&
+        searchConfig.maxEnrollment !== null &&
         (enrollment === null ||
-          enrollment < Math.round(searchConfig.min_enrollment) ||
-          enrollment > Math.round(searchConfig.max_enrollment))
-      ) {
+          enrollment < Math.round(searchConfig.minEnrollment) ||
+          enrollment > Math.round(searchConfig.maxEnrollment))
+      )
         return false;
-      }
 
-      const number = Number(listing.number.replace(/\D/g, ''));
+      const number = Number(listing.number.replace(/\D/gu, ''));
       if (
-        searchConfig.min_number !== null &&
-        searchConfig.max_number !== null &&
+        searchConfig.minNumber !== null &&
+        searchConfig.maxNumber !== null &&
         (number === null ||
-          number < searchConfig.min_number ||
-          (searchConfig.max_number < 1000 && number > searchConfig.max_number))
-      ) {
+          number < searchConfig.minNumber ||
+          (searchConfig.maxNumber < 1000 && number > searchConfig.maxNumber))
+      )
         return false;
-      }
 
       if (
-        searchConfig.extra_info !== null &&
-        searchConfig.extra_info !== listing.extra_info
-      ) {
+        searchConfig.extraInfo !== null &&
+        searchConfig.extraInfo !== listing.extra_info
+      )
         return false;
-      }
-
-      // Checks whether the section field consists only of letters -- if so, the class is a discussion section.
-      if (
-        searchConfig.discussion_section !== null &&
-        /^[A-Z]*$/.test(listing.section)
-      ) {
-        return false;
-      }
 
       if (
-        searchConfig.fy_sem !== null &&
-        searchConfig.fy_sem !== listing.fysem
-      ) {
+        searchConfig.conflicting !== null &&
+        worksheetInfo &&
+        listing.times_summary !== 'TBA' &&
+        checkConflict(worksheetInfo, listing).length > 0
+      )
         return false;
-      }
+
+      // Checks whether the section field consists only of letters -- if so, the
+      // class is a discussion section.
+      if (
+        searchConfig.discussionSection !== null &&
+        /^[A-Z]*$/u.test(listing.section)
+      )
+        return false;
+
+      if (searchConfig.fySem !== null && searchConfig.fySem !== listing.fysem)
+        return false;
 
       if (
-        searchConfig.grad_level !== null &&
+        searchConfig.gradLevel !== null &&
         (listing.number === null ||
-          // tests if first character is between 5-9
+          // Tests if first character is between 5-9
           (listing.number.charAt(0) >= '5' &&
             listing.number.charAt(0) <= '9') ||
-          // otherwise if first character is not a number (i.e. summer classes), tests whether second character between 5-9
+          // Otherwise if first character is not a number (i.e. summer classes),
+          // tests whether second character between 5-9
           ((listing.number.charAt(0) < '0' || listing.number.charAt(0) > '9') &&
             (listing.number.length <= 1 ||
               (listing.number.charAt(1) >= '5' &&
                 listing.number.charAt(1) <= '9'))))
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.subjects.size !== 0 &&
         !searchConfig.subjects.has(listing.subject)
-      ) {
+      )
         return false;
-      }
 
-      const days = new Set(getDayTimes(listing)?.map((daytime) => daytime.day));
+      // TODO: searchConfig.days should be a literal set too
+      const days = new Set<string>(
+        getDayTimes(listing)?.map((daytime) => daytime.day),
+      );
       if (searchConfig.days.size !== 0) {
         let include = true;
         if (days && days !== null) {
           days.forEach((day) => {
-            if (!searchConfig.days.has(day)) {
-              include = false;
-            }
+            if (!searchConfig.days.has(day)) include = false;
           });
           searchConfig.days.forEach((day) => {
-            if (!days.has(day)) {
-              include = false;
-            }
+            if (!days.has(day)) include = false;
           });
         } else {
           include = false;
         }
-        if (!include) {
-          return false;
-        }
+        if (!include) return false;
       }
 
       if (
@@ -681,35 +607,33 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
         !listing.skills.some((v): v is SkillsType =>
           searchConfig.skills.has(v as SkillsType),
         )
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.credits.size !== 0 &&
         listing.credits !== null &&
         !searchConfig.credits.has(String(listing.credits))
-      ) {
+      )
         return false;
-      }
 
       if (
         searchConfig.schools.size !== 0 &&
         listing.school !== null &&
         !searchConfig.schools.has(listing.school)
-      ) {
+      )
         return false;
-      }
 
       // Handle search text. Each token must match something.
       for (const token of tokens) {
-        // first character of the course number
+        // First character of the course number
         const numberFirstChar = listing.number.charAt(0);
         if (
           listing.subject.toLowerCase().startsWith(token) ||
           listing.number.toLowerCase().startsWith(token) ||
-          // for course numbers that start with a letter
-          // (checked by if .toLowerCase() is not equal to .toUpperCase(), see https://stackoverflow.com/a/32567789/5540324),
+          // For course numbers that start with a letter (checked by if
+          // .toLowerCase() is not equal to .toUpperCase(), see
+          // https://stackoverflow.com/a/32567789/5540324),
           // exclude this letter when comparing with the search token
           (numberFirstChar.toLowerCase() !== numberFirstChar.toUpperCase() &&
             listing.number
@@ -731,16 +655,17 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     });
 
     // Apply sorting order.
-    return sortCourses(filtered, ordering, num_friends);
+    return sortCourses(filtered, ordering, numFriends);
   }, [
+    worksheetInfo,
     searchDescription,
-    required_seasons,
+    requiredSeasons,
     coursesLoading,
     courseLoadError,
     courseData,
     searchConfig,
     ordering,
-    num_friends,
+    numFriends,
   ]);
 
   // For resetting all filters and sorts
@@ -748,6 +673,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSearchText('');
     setSearchDescription(false);
     setHideCancelled(true);
+    setHideConflicting(false);
     setHideFirstYearSeminars(false);
     setHideGraduateCourses(false);
     setHideDiscussionSections(true);
@@ -772,12 +698,12 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSortOrder(defaultSortOrder);
     setOrdering(defaultOrdering);
 
-    setResetKey(reset_key + 1);
+    setResetKey(resetKey + 1);
 
     setCanReset(false);
     setStartTime(Date.now());
   }, [
-    reset_key,
+    resetKey,
     setSearchText,
     setSelectSubjects,
     setSelectSkillsAreas,
@@ -792,6 +718,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setSelectCredits,
     setSearchDescription,
     setHideCancelled,
+    setHideConflicting,
     setHideFirstYearSeminars,
     setHideGraduateCourses,
     setHideDiscussionSections,
@@ -801,86 +728,84 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     setCanReset,
   ]);
 
-  // perform default search on load
+  // Perform default search on load
   useEffect(() => {
-    // only execute after seasons have been loaded
-    if (defaultSearch && seasonsOptions) {
-      setDefaultSearch(false);
-    }
+    // Only execute after seasons have been loaded
+    if (defaultSearch && seasonsOptions) setDefaultSearch(false);
   }, [seasonsOptions, defaultSearch]);
 
   // Set ordering in parent element whenever sortby or order changes
   useEffect(() => {
-    const sortParams = select_sortby.value;
-    const newOrdering: {
-      [key in SortKeys]?: SortOrderType;
-    } = {
-      [sortParams]: sort_order,
+    const sortParams = selectSortby.value;
+    const newOrdering: OrderingType = {
+      key: sortParams,
+      type: sortOrder,
     };
     setOrdering(newOrdering);
-  }, [select_sortby, sort_order, setOrdering]);
+  }, [selectSortby, sortOrder, setOrdering]);
 
   // Check if can or can't reset
   useEffect(() => {
     if (
-      !_.isEqual(searchText, '') ||
-      !_.isEqual(select_subjects, defaultOptions) ||
-      !_.isEqual(select_skillsareas, defaultOptions) ||
-      !_.isEqual(overallBounds, defaultRatingBounds) ||
-      !_.isEqual(workloadBounds, defaultRatingBounds) ||
-      !_.isEqual(select_seasons, defaultSeason) ||
-      !_.isEqual(select_days, defaultOptions) ||
-      !_.isEqual(timeBounds, defaultTimeBounds) ||
-      !_.isEqual(enrollBounds, defaultEnrollBounds) ||
-      !_.isEqual(numBounds, defaultNumBounds) ||
-      !_.isEqual(select_schools, defaultOptions) ||
-      !_.isEqual(select_credits, defaultOptions) ||
-      !_.isEqual(searchDescription, defaultFalse) ||
-      !_.isEqual(hideCancelled, defaultTrue) ||
-      !_.isEqual(hideFirstYearSeminars, defaultFalse) ||
-      !_.isEqual(hideGraduateCourses, defaultFalse) ||
-      !_.isEqual(hideDiscussionSections, defaultTrue) ||
-      !_.isEqual(ordering, defaultOrdering)
-    ) {
+      searchText !== '' ||
+      !isEqual(selectSubjects, defaultOptions) ||
+      !isEqual(selectSkillsAreas, defaultOptions) ||
+      !isEqual(overallBounds, defaultRatingBounds) ||
+      !isEqual(workloadBounds, defaultRatingBounds) ||
+      !(selectSeasons.length === 1 && selectSeasons[0].value === CUR_SEASON) ||
+      !isEqual(selectDays, defaultOptions) ||
+      !isEqual(timeBounds, defaultTimeBounds) ||
+      !isEqual(enrollBounds, defaultEnrollBounds) ||
+      !isEqual(numBounds, defaultNumBounds) ||
+      !isEqual(selectSchools, defaultOptions) ||
+      !isEqual(selectCredits, defaultOptions) ||
+      searchDescription !== defaultFalse ||
+      hideCancelled !== defaultTrue ||
+      hideConflicting !== defaultFalse ||
+      hideFirstYearSeminars !== defaultFalse ||
+      hideGraduateCourses !== defaultFalse ||
+      hideDiscussionSections !== defaultTrue ||
+      !(
+        ordering.type === defaultOrdering.type &&
+        ordering.key === defaultOrdering.key
+      )
+    )
       setCanReset(true);
-    } else {
-      setCanReset(false);
-    }
+    else setCanReset(false);
+
     // Calculate & determine search speed
     if (!coursesLoading && searchData) {
-      const durInSecs = Math.abs(Date.now() - start_time) / 1000;
+      const durInSecs = Math.abs(Date.now() - startTime) / 1000;
       setDuration(durInSecs);
-      const sp = _.sample(
+      const pool =
         searchSpeed[
           durInSecs > 1 ? 'fast' : durInSecs > 0.5 ? 'faster' : 'fastest'
-        ],
-      );
-      if (sp) {
-        setSpeed(sp);
-      }
+        ];
+      setSpeed(pool[Math.floor(Math.random() * pool.length)]);
     }
   }, [
     searchText,
-    select_subjects,
-    select_skillsareas,
+    selectSubjects,
+    selectSkillsAreas,
     overallBounds,
     workloadBounds,
     timeBounds,
     enrollBounds,
     numBounds,
-    select_seasons,
-    select_days,
-    select_schools,
-    select_credits,
+    selectSeasons,
+    selectDays,
+    selectSchools,
+    selectCredits,
     searchDescription,
     hideCancelled,
+    hideConflicting,
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
     ordering,
     coursesLoading,
     searchData,
-    start_time,
+    startTime,
     setCanReset,
   ]);
 
@@ -890,37 +815,38 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       // Context state.
       canReset,
       searchText,
-      select_subjects,
-      select_skillsareas,
+      selectSubjects,
+      selectSkillsAreas,
       overallBounds,
       overallValueLabels,
       workloadBounds,
       workloadValueLabels,
-      select_seasons,
-      select_days,
+      selectSeasons,
+      selectDays,
       timeBounds,
       timeValueLabels,
       enrollBounds,
       enrollValueLabels,
       numBounds,
       numValueLabels,
-      select_schools,
-      select_credits,
+      selectSchools,
+      selectCredits,
       searchDescription,
       hideCancelled,
+      hideConflicting,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      select_sortby,
-      sort_order,
+      selectSortby,
+      sortOrder,
       ordering,
       seasonsOptions,
       coursesLoading,
       searchData,
       multiSeasons,
       isLoggedIn,
-      num_friends,
-      reset_key,
+      numFriends,
+      resetKey,
       duration,
       speed,
 
@@ -945,6 +871,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       setSelectCredits,
       setSearchDescription,
       setHideCancelled,
+      setHideConflicting,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
       setHideDiscussionSections,
@@ -958,37 +885,38 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
     [
       canReset,
       searchText,
-      select_subjects,
-      select_skillsareas,
+      selectSubjects,
+      selectSkillsAreas,
       overallBounds,
       overallValueLabels,
       workloadBounds,
       workloadValueLabels,
-      select_seasons,
-      select_days,
+      selectSeasons,
+      selectDays,
       timeBounds,
       timeValueLabels,
       enrollBounds,
       enrollValueLabels,
       numBounds,
       numValueLabels,
-      select_schools,
-      select_credits,
+      selectSchools,
+      selectCredits,
       searchDescription,
       hideCancelled,
+      hideConflicting,
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      select_sortby,
-      sort_order,
+      selectSortby,
+      sortOrder,
       ordering,
       seasonsOptions,
       coursesLoading,
       searchData,
       multiSeasons,
       isLoggedIn,
-      num_friends,
-      reset_key,
+      numFriends,
+      resetKey,
       duration,
       speed,
       setCanReset,
@@ -1011,6 +939,7 @@ export function SearchProvider({ children }: { children: React.ReactNode }) {
       setSelectCredits,
       setSearchDescription,
       setHideCancelled,
+      setHideConflicting,
       setHideFirstYearSeminars,
       setHideGraduateCourses,
       setHideDiscussionSections,

@@ -1,10 +1,11 @@
-import React, { CSSProperties, useCallback, useMemo } from 'react';
+import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import moment from 'moment';
-import './WorksheetCalendar.css';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';
 import styled from 'styled-components';
+
+import './WorksheetCalendar.css';
 import CalendarEvent, { type CourseEvent } from './CalendarEvent';
 import { weekdays, type Listing } from '../../utilities/common';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -18,35 +19,35 @@ const StyledCalendar = styled(Calendar<CourseEvent>)`
       .rbc-time-header {
         .rbc-time-header-content {
           border-color: ${({ theme }) => theme.border};
-          transition: border-color ${({ theme }) => theme.trans_dur};
+          transition: border-color ${({ theme }) => theme.transDur};
           .rbc-time-header-cell {
             .rbc-header {
               user-select: none;
               cursor: default;
               border-color: ${({ theme }) => theme.border};
-              transition: border-color ${({ theme }) => theme.trans_dur};
+              transition: border-color ${({ theme }) => theme.transDur};
             }
           }
         }
       }
       .rbc-time-content {
         border-color: ${({ theme }) => theme.border};
-        transition: border-color ${({ theme }) => theme.trans_dur};
+        transition: border-color ${({ theme }) => theme.transDur};
         .rbc-time-gutter {
           .rbc-timeslot-group {
             user-select: none;
             cursor: default;
             border-color: ${({ theme }) => theme.border};
-            transition: border-color ${({ theme }) => theme.trans_dur};
+            transition: border-color ${({ theme }) => theme.transDur};
           }
         }
         .rbc-day-slot {
           .rbc-timeslot-group {
             border-color: ${({ theme }) => theme.border};
-            transition: border-color ${({ theme }) => theme.trans_dur};
+            transition: border-color ${({ theme }) => theme.transDur};
             .rbc-time-slot {
               border-color: ${({ theme }) => theme.border};
-              transition: border-color ${({ theme }) => theme.trans_dur};
+              transition: border-color ${({ theme }) => theme.transDur};
           }
         }
       }
@@ -61,7 +62,7 @@ const StyledCalendar = styled(Calendar<CourseEvent>)`
 
 function WorksheetCalendar() {
   const [, setSearchParams] = useSearchParams();
-  const { courses, hover_course, hidden_courses, cur_season } = useWorksheet();
+  const { courses, hoverCourse, hiddenCourses, curSeason } = useWorksheet();
 
   // Parse listings dictionaries to generate event dictionaries
   const parseListings = useCallback(
@@ -73,10 +74,7 @@ function WorksheetCalendar() {
       const parsedCourses: CourseEvent[] = [];
       // Iterate over each listing dictionary
       listings.forEach((course, index) => {
-        if (
-          Object.prototype.hasOwnProperty.call(hidden_courses, cur_season) &&
-          hidden_courses[cur_season][course.crn]
-        )
+        if (curSeason in hiddenCourses && hiddenCourses[curSeason][course.crn])
           return;
         for (let indx = 0; indx < 5; indx++) {
           const info = course.times_by_day[weekdays[indx]];
@@ -115,52 +113,59 @@ function WorksheetCalendar() {
         parsedCourses,
       };
     },
-    [hidden_courses, cur_season],
+    [hiddenCourses, curSeason],
   );
 
   // Custom styling for the calendar events
   const eventStyleGetter = useCallback(
     (event: CourseEvent) => {
+      // Shouldn't happen
+      if (!event.listing.color) return { style: {} };
       const style: CSSProperties = {
-        backgroundColor: event.listing.color,
-        borderColor: event.listing.border,
+        backgroundColor: `rgb(${event.listing.color.join(' ')} / 0.85)`,
+        borderColor: `rgb(${event.listing.color.join(' ')})`,
         borderWidth: '2px',
       };
-      if (hover_course && hover_course === event.listing.crn) {
+      if (hoverCourse && hoverCourse === event.listing.crn) {
         style.zIndex = 2;
         style.filter = 'saturate(130%)';
-      } else if (hover_course) {
+      } else if (hoverCourse) {
         style.opacity = '30%';
       }
       return {
         style,
       };
     },
-    [hover_course],
+    [hoverCourse],
   );
 
-  const ret_values = useMemo(() => {
-    return parseListings(courses);
-  }, [courses, parseListings]);
+  const retValues = useMemo(
+    () => parseListings(courses),
+    [courses, parseListings],
+  );
 
-  const minTime = useMemo(() => {
-    return ret_values.earliest.get('hours') !== 20
-      ? ret_values.earliest.toDate()
-      : moment().hour(8).minute(0).toDate();
-  }, [ret_values]);
+  const minTime = useMemo(
+    () =>
+      retValues.earliest.get('hours') !== 20
+        ? retValues.earliest.toDate()
+        : moment().hour(8).minute(0).toDate(),
+    [retValues],
+  );
 
-  const maxTime = useMemo(() => {
-    return ret_values.latest.get('hours') !== 0
-      ? ret_values.latest.toDate()
-      : moment().hour(18).minute(0).toDate();
-  }, [ret_values]);
+  const maxTime = useMemo(
+    () =>
+      retValues.latest.get('hours') !== 0
+        ? retValues.latest.toDate()
+        : moment().hour(18).minute(0).toDate(),
+    [retValues],
+  );
 
   return (
     <StyledCalendar
       // Show Mon-Fri
       defaultView="work_week"
       views={['work_week']}
-      events={ret_values.parsedCourses}
+      events={retValues.parsedCourses}
       // Earliest course time or 8am if no courses
       min={minTime}
       // Latest course time or 6pm if no courses

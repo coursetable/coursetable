@@ -1,4 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
+import { Link } from 'react-router-dom';
+import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
+import { List, WindowScroller, AutoSizer } from 'react-virtualized';
+import styled, { useTheme } from 'styled-components';
 
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
@@ -9,31 +13,24 @@ import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 import styles from './Results.module.css';
 
-import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
-
-import { List, WindowScroller, AutoSizer } from 'react-virtualized';
-
 import NoCoursesFound from '../../images/no_courses_found.svg';
 import Authentication from '../../images/authentication.svg';
-
-import styled, { useTheme } from 'styled-components';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { sortbyOptions } from '../../queries/Constants';
+import { sortbyOptions } from '../../utilities/constants';
 import { useSearch } from '../../contexts/searchContext';
-import { breakpoints } from '../../utilities';
+import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
-import { toSeasonString } from '../../utilities/courseUtilities';
+import { toSeasonString } from '../../utilities/course';
 
 import { API_ENDPOINT } from '../../config';
 import { useWorksheet } from '../../contexts/worksheetContext';
-import { Link } from 'react-router-dom';
 
 // Space above row dropdown to hide scrolled courses
 const StyledSpacer = styled.div`
   background-color: ${({ theme }) => theme.background};
-  transition: background-color ${({ theme }) => theme.trans_dur};
+  transition: background-color ${({ theme }) => theme.transDur};
   position: -webkit-sticky; /* Safari */
   position: sticky;
   z-index: 2;
@@ -44,9 +41,9 @@ const StyledContainer = styled(SurfaceComponent)`
   border-top: 2px solid ${({ theme }) => theme.border};
   border-bottom: 2px solid ${({ theme }) => theme.border};
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Restrict the row width
@@ -74,8 +71,8 @@ const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
 // Results item wrapper
 const ResultsItemWrapper = styled.div`
   transition:
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Function to calculate column width within a max and min
@@ -85,48 +82,50 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
 /**
  * Renders the infinite list of search results for both catalog and worksheet
  * @prop data - array | that holds the search results
- * @prop isList - boolean | determines display format (list or grid)
- * @prop setView - function | changes display format
+ * @prop isListView - boolean | determines display format (list or grid)
+ * @prop setIsListView - function | changes display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop isLoggedIn - boolean | is the user logged in?
- * @prop num_friends = object | holds a list of each friend taking a specific course
+ * @prop numFriends = object | holds a list of each friend taking a specific course
  * @prop page = string | page search results are on
  */
 
 function Results({
   data,
-  isList,
-  setView,
+  isListView,
+  setIsListView,
   loading = false,
   multiSeasons = false,
   isLoggedIn,
-  num_friends,
+  numFriends,
   page = 'catalog',
 }: {
-  data: Listing[];
-  isList: boolean;
-  setView: (isList: boolean) => void;
-  loading?: boolean;
-  multiSeasons?: boolean;
-  isLoggedIn: boolean;
-  num_friends: Record<string, string[]>;
-  page?: 'catalog' | 'worksheet';
+  readonly data: Listing[];
+  readonly isListView: boolean;
+  readonly setIsListView: (isList: boolean) => void;
+  readonly loading?: boolean;
+  readonly multiSeasons?: boolean;
+  readonly isLoggedIn: boolean;
+  readonly numFriends: { [seasonCodeCrn: string]: string[] };
+  readonly page?: 'catalog' | 'worksheet';
 }) {
   // Fetch current device
-  const { width, isMobile, isTablet, isSmDesktop, isLgDesktop } =
-    useWindowDimensions();
-
-  // Show tooltip for the list/grid view toggle. NOT USING RN
-  // const [show_tooltip, setShowTooltip] = useState(false);
+  const {
+    width: windowWidth,
+    isMobile,
+    isTablet,
+    isSmDesktop,
+    isLgDesktop,
+  } = useWindowDimensions();
 
   // State that holds width of the row for list view
-  const [ROW_WIDTH, setRowWidth] = useState(0);
+  const [rowWidth, setRowWidth] = useState(0);
 
-  // Fetch reset_key from search context
-  const { reset_key } = useSearch();
+  // Fetch resetKey from search context
+  const { resetKey } = useSearch();
 
-  const { cur_season } = useWorksheet();
+  const { curSeason } = useWorksheet();
 
   const globalTheme = useTheme();
 
@@ -135,7 +134,7 @@ function Results({
   useEffect(() => {
     // Set row width
     if (ref.current) setRowWidth(ref.current.offsetWidth);
-  }, [setRowWidth, width]);
+  }, [setRowWidth, windowWidth]);
 
   // Spacing for each column in list view
   const COL_SPACING = useMemo(() => {
@@ -146,7 +145,7 @@ function Results({
       RATE_WORKLOAD_WIDTH: isLgDesktop ? 92 : 82,
       RATE_PROF_WIDTH: isLgDesktop ? 40 : 36,
       ENROLL_WIDTH: 40,
-      FB_WIDTH: 60,
+      FRIENDS_WIDTH: 60,
       PADDING: 43,
 
       PROF_WIDTH: 0,
@@ -157,11 +156,11 @@ function Results({
     };
 
     const EXTRA =
-      ROW_WIDTH -
+      rowWidth -
       (multiSeasons ? TEMP_COL_SPACING.SZN_WIDTH : 0) -
       TEMP_COL_SPACING.CODE_WIDTH -
       TEMP_COL_SPACING.ENROLL_WIDTH -
-      TEMP_COL_SPACING.FB_WIDTH -
+      TEMP_COL_SPACING.FRIENDS_WIDTH -
       TEMP_COL_SPACING.RATE_OVERALL_WIDTH -
       TEMP_COL_SPACING.RATE_WORKLOAD_WIDTH -
       TEMP_COL_SPACING.RATE_PROF_WIDTH -
@@ -182,16 +181,14 @@ function Results({
       10;
 
     return TEMP_COL_SPACING;
-  }, [ROW_WIDTH, multiSeasons, isLgDesktop]);
-
-  // Holds HTML for the search results
-  let resultsListing;
+  }, [rowWidth, multiSeasons, isLgDesktop]);
 
   // Number of columns to use in grid view
-  const num_cols = isMobile ? 1 : isTablet ? 2 : 3;
+  const numCols = isMobile ? 1 : isTablet ? 2 : 3;
 
+  let resultsListing: JSX.Element | undefined = undefined;
   if (!isLoggedIn) {
-    // render an auth wall
+    // Render an auth wall
     resultsListing = (
       <div className="text-center py-5">
         <img
@@ -212,7 +209,7 @@ function Results({
       </div>
     );
   } else if (data.length === 0) {
-    // if no courses found, render the empty state
+    // If no courses found, render the empty state
     resultsListing = (
       <div className="text-center py-5">
         <img
@@ -228,10 +225,7 @@ function Results({
           </>
         ) : (
           <>
-            <h3>
-              No courses found for{' '}
-              {toSeasonString(cur_season).slice(1, 3).reverse().join(' ')}
-            </h3>
+            <h3>No courses found for {toSeasonString(curSeason)}</h3>
             <div>
               Add some courses on the <Link to="/catalog">Catalog</Link>.
             </div>
@@ -239,8 +233,8 @@ function Results({
         )}
       </div>
     );
-  } else if (!isList) {
-    // if not list view, prepare the grid
+  } else if (!isListView) {
+    // If not list view, prepare the grid
     // Store HTML for grid view results
     resultsListing = (
       // Scroll the entire window
@@ -256,20 +250,20 @@ function Results({
                 isScrolling={isScrolling}
                 onScroll={onChildScroll}
                 scrollTop={scrollTop}
-                rowCount={Math.ceil(data.length / num_cols)}
+                rowCount={Math.ceil(data.length / numCols)}
                 rowHeight={178}
                 rowRenderer={({ index, key, style }) => {
-                  const row_elements = [];
+                  const rowElements = [];
                   for (
-                    let j = index * num_cols;
-                    j < data.length && j < (index + 1) * num_cols;
+                    let j = index * numCols;
+                    j < data.length && j < (index + 1) * numCols;
                     j++
                   ) {
-                    row_elements.push(
+                    rowElements.push(
                       <ResultsGridItem
                         course={data[j]}
                         isLoggedIn={isLoggedIn}
-                        num_cols={num_cols}
+                        numCols={numCols}
                         multiSeasons={multiSeasons}
                         key={j}
                       />,
@@ -278,7 +272,7 @@ function Results({
 
                   return (
                     <div key={key} style={style}>
-                      <StyledRow className="mx-auto">{row_elements}</StyledRow>
+                      <StyledRow className="mx-auto">{rowElements}</StyledRow>
                     </div>
                   );
                 }}
@@ -306,17 +300,22 @@ function Results({
                 scrollTop={scrollTop}
                 rowCount={data.length}
                 rowHeight={isLgDesktop ? 32 : 28}
-                rowRenderer={({ index, key, style, isScrolling }) => {
-                  const friends = num_friends[
+                rowRenderer={({
+                  index,
+                  key,
+                  style,
+                  isScrolling: rowIsScrolling,
+                }) => {
+                  const friends = numFriends[
                     data[index].season_code + data[index].crn
                   ]
-                    ? num_friends[data[index].season_code + data[index].crn]
+                    ? numFriends[data[index].season_code + data[index].crn]
                     : [];
                   // Alternating row item background colors
                   const colorStyles =
                     index % 2 === 0
                       ? { backgroundColor: globalTheme.surface[0] }
-                      : { backgroundColor: globalTheme.row_odd };
+                      : { backgroundColor: globalTheme.rowOdd };
                   return (
                     <ResultsItemWrapper
                       style={{
@@ -330,7 +329,7 @@ function Results({
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
-                        isScrolling={isScrolling}
+                        isScrolling={rowIsScrolling}
                         friends={friends}
                       />
                     </ResultsItemWrapper>
@@ -345,56 +344,50 @@ function Results({
   }
 
   // Column width styles
-  const szn_style: React.CSSProperties = {
+  const sznStyle: React.CSSProperties = {
     width: `${COL_SPACING.SZN_WIDTH}px`,
     paddingLeft: '15px',
   };
-  const code_style: React.CSSProperties = {
+  const codeStyle: React.CSSProperties = {
     width: `${COL_SPACING.CODE_WIDTH}px`,
     paddingLeft: !multiSeasons ? '15px' : '0px',
   };
-  const title_style: React.CSSProperties = {
+  const titleStyle: React.CSSProperties = {
     width: `${COL_SPACING.TITLE_WIDTH}px`,
   };
-  const rate_overall_style: React.CSSProperties = {
+  const rateOverallStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_OVERALL_WIDTH}px`,
   };
-  const rate_workload_style: React.CSSProperties = {
+  const rateWorkloadStyle: React.CSSProperties = {
     whiteSpace: 'nowrap',
     width: `${COL_SPACING.RATE_WORKLOAD_WIDTH}px`,
   };
-  const prof_style: React.CSSProperties = {
+  const profStyle: React.CSSProperties = {
     width: `${COL_SPACING.PROF_WIDTH}px`,
   };
-  const meet_style: React.CSSProperties = {
+  const meetStyle: React.CSSProperties = {
     width: `${COL_SPACING.MEET_WIDTH}px`,
   };
-  const loc_style: React.CSSProperties = {
+  const locStyle: React.CSSProperties = {
     width: `${COL_SPACING.LOC_WIDTH}px`,
   };
-  const enroll_style: React.CSSProperties = {
+  const enrollStyle: React.CSSProperties = {
     width: `${COL_SPACING.ENROLL_WIDTH}px`,
   };
-  const fb_style: React.CSSProperties = { width: `${COL_SPACING.FB_WIDTH}px` };
-  const sa_style: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
+  const friendsStyle: React.CSSProperties = {
+    width: `${COL_SPACING.FRIENDS_WIDTH}px`,
+  };
+  const saStyle: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
   const navbarHeight = useMemo(() => {
     if (page === 'catalog') {
-      if (isSmDesktop || isTablet) {
-        return 88;
-      }
-      if (isLgDesktop) {
-        return 100;
-      }
+      if (isSmDesktop || isTablet) return 88;
+      if (isLgDesktop) return 100;
     }
     if (page === 'worksheet') {
-      if (isSmDesktop || isTablet) {
-        return 58;
-      }
-      if (isLgDesktop) {
-        return 61;
-      }
+      if (isSmDesktop || isTablet) return 58;
+      if (isLgDesktop) return 61;
     }
     return 0;
   }, [page, isTablet, isSmDesktop, isLgDesktop]);
@@ -420,15 +413,18 @@ function Results({
               <div
                 className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
               >
-                <ListGridToggle isList={isList} setView={setView} />
+                <ListGridToggle
+                  isListView={isListView}
+                  setIsListView={setIsListView}
+                />
               </div>
-              {isList ? (
+              {isListView ? (
                 <>
                   {multiSeasons && (
-                    <ResultsHeader style={szn_style}>Season</ResultsHeader>
+                    <ResultsHeader style={sznStyle}>Season</ResultsHeader>
                   )}
                   {/* Course Code */}
-                  <ResultsHeader style={code_style}>
+                  <ResultsHeader style={codeStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -444,20 +440,20 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[0]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Course Name */}
-                  <ResultsHeader style={title_style}>
+                  <ResultsHeader style={titleStyle}>
                     <span className={styles.one_line}>Title</span>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[2]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   <div className="d-flex">
                     {/* Overall Rating */}
-                    <ResultsHeader style={rate_overall_style}>
+                    <ResultsHeader style={rateOverallStyle}>
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -476,11 +472,11 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[4]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                     {/* Workload Rating */}
-                    <ResultsHeader style={rate_workload_style}>
+                    <ResultsHeader style={rateWorkloadStyle}>
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -498,11 +494,11 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[6]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                     {/* Professor Rating & Course Professors */}
-                    <ResultsHeader style={prof_style}>
+                    <ResultsHeader style={profStyle}>
                       <OverlayTrigger
                         placement="bottom"
                         overlay={(props) => (
@@ -520,12 +516,12 @@ function Results({
                       </OverlayTrigger>
                       <ResultsColumnSort
                         selectOption={sortbyOptions[5]}
-                        key={reset_key}
+                        key={resetKey}
                       />
                     </ResultsHeader>
                   </div>
                   {/* Previous Enrollment Number */}
-                  <ResultsHeader style={enroll_style}>
+                  <ResultsHeader style={enrollStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -554,15 +550,15 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[8]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Skills/Areas */}
-                  <ResultsHeader style={sa_style}>
+                  <ResultsHeader style={saStyle}>
                     <span className={styles.one_line}>Skills/Areas</span>
                   </ResultsHeader>
                   {/* Course Meeting Days & Times */}
-                  <ResultsHeader style={meet_style}>
+                  <ResultsHeader style={meetStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -579,15 +575,14 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[9]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                   {/* Location */}
-                  <ResultsHeader style={loc_style}>
+                  <ResultsHeader style={locStyle}>
                     <span className={styles.one_line}>Location</span>
                   </ResultsHeader>
-                  {/* FB */}
-                  <ResultsHeader style={fb_style}>
+                  <ResultsHeader style={friendsStyle}>
                     <OverlayTrigger
                       placement="bottom"
                       overlay={(props) => (
@@ -600,7 +595,7 @@ function Results({
                     </OverlayTrigger>
                     <ResultsColumnSort
                       selectOption={sortbyOptions[3]}
-                      key={reset_key}
+                      key={resetKey}
                     />
                   </ResultsHeader>
                 </>
@@ -620,13 +615,14 @@ function Results({
       )}
 
       <SearchResults
-        className={`${!isList ? 'px-1 pt-3 ' : ''}`}
+        className={!isListView ? 'px-1 pt-3 ' : ''}
         numCourses={data.length}
         isMobile={isMobile}
       >
         {/* If there are search results, render them */}
         {data.length !== 0 && resultsListing}
-        {/* If there are no search results, we are not logged in, and not loading, then render the empty state */}
+        {/* If there are no search results, we are not logged in, and not
+          loading, then render the empty state */}
         {data.length === 0 && !loading && resultsListing}
         {/* Render a loading row while performing next query */}
         {loading && (
@@ -641,5 +637,4 @@ function Results({
   );
 }
 
-// Search.whyDidYouRender = true;
 export default Results;

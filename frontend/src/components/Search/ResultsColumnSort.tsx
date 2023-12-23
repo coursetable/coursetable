@@ -7,25 +7,25 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
-import { SortByOption } from '../../queries/Constants';
+import type { SortByOption } from '../../utilities/constants';
 import {
   useSearch,
   defaultFilters,
-  SortOrderType,
+  type SortOrderType,
 } from '../../contexts/searchContext';
 
 const StyledSortBtn = styled.div`
   cursor: pointer;
   border-radius: 4px;
   padding: 2px;
-  transition: background-color ${({ theme }) => theme.trans_dur};
+  transition: background-color ${({ theme }) => theme.transDur};
   &:hover {
-    background-color: ${({ theme }) => theme.button_active};
+    background-color: ${({ theme }) => theme.buttonActive};
   }
 `;
 
 type Props = {
-  selectOption: SortByOption;
+  readonly selectOption: SortByOption;
 };
 
 /**
@@ -44,7 +44,7 @@ function ResultsColumnSort({ selectOption }: Props) {
   const [active, setActive] = useState(false);
 
   // Get search context data
-  const { select_sortby, sort_order, setSelectSortby, setSortOrder } =
+  const { selectSortby, sortOrder, setSelectSortby, setSortOrder } =
     useSearch();
 
   const globalTheme = useTheme();
@@ -52,54 +52,52 @@ function ResultsColumnSort({ selectOption }: Props) {
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
-      if (select_sortby.value === selectOption.value) {
-        setLocalSortOrder(sort_order);
+      if (selectSortby.value === selectOption.value) {
+        setLocalSortOrder(sortOrder);
         setActive(true);
       }
       setFirstTime(false);
-    } else if (!active && select_sortby.value === selectOption.value) {
+    } else if (!active && selectSortby.value === selectOption.value) {
       setActive(true);
-    } else if (active && select_sortby.value !== selectOption.value) {
+    } else if (active && selectSortby.value !== selectOption.value) {
       setActive(false);
     }
-  }, [firstTime, selectOption, select_sortby, sort_order, active]);
+  }, [firstTime, selectOption, selectSortby, sortOrder, active]);
 
   return (
-    <>
-      <StyledSortBtn
-        style={{ backgroundColor: active ? globalTheme.select_hover : '' }}
-        className="ml-1 my-auto"
-        onClick={() => {
-          // If not sorting by this option previously, start sorting this option
-          if (select_sortby.value !== selectOption.value) {
-            setSelectSortby(selectOption);
-            setSortOrder(localSortOrder);
-            return;
-          }
-          if (localSortOrder === 'asc') {
-            setSortOrder('desc');
-            setLocalSortOrder('desc');
-          } else {
-            setSortOrder('asc');
-            setLocalSortOrder('asc');
-          }
-        }}
-      >
-        {!selectOption.numeric ? (
-          // Sorting by letters
-          localSortOrder === 'asc' ? (
-            <FcAlphabeticalSortingAz className="d-block" size={20} />
-          ) : (
-            <FcAlphabeticalSortingZa className="d-block" size={20} />
-          )
-        ) : // Sorting by numbers
+    <StyledSortBtn
+      style={{ backgroundColor: active ? globalTheme.selectHover : '' }}
+      className="ml-1 my-auto"
+      onClick={() => {
+        // If not sorting by this option previously, start sorting this option
+        if (selectSortby.value !== selectOption.value) {
+          setSelectSortby(selectOption);
+          setSortOrder(localSortOrder);
+          return;
+        }
+        if (localSortOrder === 'asc') {
+          setSortOrder('desc');
+          setLocalSortOrder('desc');
+        } else {
+          setSortOrder('asc');
+          setLocalSortOrder('asc');
+        }
+      }}
+    >
+      {!selectOption.numeric ? (
+        // Sorting by letters
         localSortOrder === 'asc' ? (
-          <FcNumericalSorting12 className="d-block" size={20} />
+          <FcAlphabeticalSortingAz className="d-block" size={20} />
         ) : (
-          <FcNumericalSorting21 className="d-block" size={20} />
-        )}
-      </StyledSortBtn>
-    </>
+          <FcAlphabeticalSortingZa className="d-block" size={20} />
+        )
+      ) : // Sorting by numbers
+      localSortOrder === 'asc' ? (
+        <FcNumericalSorting12 className="d-block" size={20} />
+      ) : (
+        <FcNumericalSorting21 className="d-block" size={20} />
+      )}
+    </StyledSortBtn>
   );
 }
 

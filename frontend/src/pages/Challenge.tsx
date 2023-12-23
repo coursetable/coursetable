@@ -1,7 +1,7 @@
-import React, { useState, useEffect, ReactElement } from 'react';
+import React, { useState, useEffect, type ReactElement } from 'react';
 import qs from 'qs';
-import axios from 'axios';
-import { useNavigate, NavLink } from 'react-router-dom';
+import axios, { AxiosError } from 'axios';
+import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import { useApolloClient } from '@apollo/client';
@@ -38,6 +38,111 @@ type Answer = {
   answer: string;
 };
 
+function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
+  // If user is not logged in
+  if (requestError === 'NOT_AUTHENTICATED') {
+    return {
+      errorTitle: 'Please log in!',
+      errorMessage: (
+        <div>
+          You need to be logged in via CAS to enable your account.
+          <br />
+          <a
+            href="/api/auth/cas?redirect=catalog"
+            className="btn btn-primary mt-3"
+          >
+            Log in
+          </a>
+        </div>
+      ),
+    };
+  }
+  // If user is not in database
+  else if (requestError === 'USER_NOT_FOUND') {
+    return {
+      errorTitle: 'Account not found!',
+      errorMessage: (
+        <div>
+          Please make sure you are logged in via CAS.
+          <br />
+          <a
+            href="/api/auth/cas?redirect=catalog"
+            className="btn btn-primary mt-3"
+          >
+            Log in
+          </a>
+        </div>
+      ),
+    };
+  }
+  // Evaluations already enabled
+  else if (requestError === 'ALREADY_ENABLED') {
+    return {
+      errorTitle: "You've already passed!",
+      errorMessage: (
+        <div>
+          You've completed the challenge already - no need to do it again.
+          <br />
+          {/* TODO */}
+          {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
+          <div onClick={() => navigate(-1)} className="btn btn-primary mt-3">
+            Go back
+          </div>
+        </div>
+      ),
+    };
+  }
+  // Maximum attempts
+  else if (requestError === 'MAX_TRIES_REACHED') {
+    return {
+      errorTitle: 'Max attempts reached!',
+      errorMessage: (
+        <div>
+          You've used up all your challenge attempts. Please{' '}
+          <NavLink to="/feedback">contact us</NavLink> if you would like to gain
+          access.
+        </div>
+      ),
+    };
+  }
+  // Cannot get properly formed ratings
+  else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
+    return {
+      errorTitle: 'Challenge generation error!',
+      errorMessage: (
+        <div>
+          We couldn't find a challenge. Please{' '}
+          <a
+            href="https://feedback.coursetable.com/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            let us know
+          </a>{' '}
+          what went wrong.
+        </div>
+      ),
+    };
+  }
+  // Other errors
+  return {
+    errorTitle: 'Internal error!',
+    errorMessage: (
+      <div>
+        Looks like we messed up. Please{' '}
+        <a
+          href="https://feedback.coursetable.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          let us know
+        </a>{' '}
+        what went wrong.
+      </div>
+    ),
+  };
+}
+
 /**
  * Renders the OCE Challenge page if the user hasn't completed yet
  */
@@ -51,7 +156,7 @@ function Challenge() {
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
   // Stores body of response for the /api/challenge/request API call
-  const [res_body, setResBody] = useState<ResBody | null>(null);
+  const [resBody, setResBody] = useState<ResBody | null>(null);
   // Stores user's answers
   const [answers, setAnswers] = useState<Answer[]>([
     { answer: '', courseRatingId: undefined, courseRatingIndex: undefined },
@@ -59,17 +164,17 @@ function Challenge() {
     { answer: '', courseRatingId: undefined, courseRatingIndex: undefined },
   ]);
 
-  // error code from requesting challenge
-  const [requestError, setRequestError] = useState(null);
-  // error code from verifying challenge
+  // Error code from requesting challenge
+  const [requestError, setRequestError] = useState<{} | null>(null);
+  // Error code from verifying challenge
   const [verifyError, setVerifyError] = useState<string | null>(null);
-  // error message to render after verification (if applicable)
+  // Error message to render after verification (if applicable)
   const [verifyErrorMessage, setVerifyErrorMessage] =
     useState<ReactElement | null>(null);
 
-  // number of challenge attempts
+  // Number of challenge attempts
   const [numTries, setNumTries] = useState(null);
-  // max number of attempts allowed
+  // Max number of attempts allowed
   const [maxTries, setMaxTries] = useState(null);
 
   // Fetch questions on component mount
@@ -89,28 +194,27 @@ function Challenge() {
         }
       })
       .catch((err) => {
-        if (err.response.data) {
-          setRequestError(err.response.data.error);
-        }
+        if (err.response.data) setRequestError(err.response.data.error);
       });
   }, []);
 
-  // Handle form submit
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = (event) => {
+  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
+    event,
+  ) => {
     const form = event.currentTarget;
     // Prevent default page reload
     event.preventDefault();
     // Form is invalid
-    if (form.checkValidity() === false) {
+    if (!form.checkValidity()) {
       // Don't submit
       event.stopPropagation();
     }
     // Form is valid
-    else if (res_body != null) {
+    else if (resBody) {
       // Body data to be passed in post request
-      const post_body = {
-        token: res_body.token,
-        salt: res_body.salt,
+      const postBody = {
+        token: resBody.token,
+        salt: resBody.salt,
         answers,
       };
       // Config header for urlencoded
@@ -121,261 +225,113 @@ function Challenge() {
         withCredentials: true,
       };
       // Verify answers
-      axios
-        .post(
+      try {
+        const res = await axios.post(
           `${API_ENDPOINT}/api/challenge/verify`,
-          qs.stringify(post_body),
+          qs.stringify(postBody),
           config,
-        )
-        .then((res) => {
-          // Answers not properly verified
-          if (!res.data || !res.data.body) {
-            toast.error('Error with /api/challenge/verify API call');
-          }
-          // Correct responses
-          else if (res.data.body.message === 'CORRECT') {
-            userRefresh()
-              .then(() => {
-                return client.resetStore();
-              })
-              .then(() => {
-                toast.success(
-                  "All of your responses were correct! Refresh the page if the courses aren't showing.",
-                );
-                navigate(-1);
-              })
-              .catch(() => {
-                toast.error('Failed to update evaluation status');
-                // console.error(err);
-              });
-          }
-          // Incorrect responses
-          else {
-            toast.error('Incorrect responses. Please try again.');
-
-            setVerifyError('INCORRECT');
-
-            setVerifyErrorMessage(
-              <div>Incorrect responses. Please try again.</div>,
+        );
+        // Answers not properly verified
+        if (!res.data || !res.data.body) {
+          toast.error('Error with /api/challenge/verify API call');
+        }
+        // Correct responses
+        else if (res.data.body.message === 'CORRECT') {
+          try {
+            await userRefresh();
+            await client.resetStore();
+            toast.success(
+              "All of your responses were correct! Refresh the page if the courses aren't showing.",
             );
-
-            setValidated(false);
-            setNumTries(res.data.body.challengeTries);
-            setMaxTries(res.data.body.maxChallengeTries);
+            navigate(-1);
+          } catch {
+            toast.error('Failed to update evaluation status');
           }
-        })
-        .catch((err) => {
-          if (err.response.data) {
-            const { error } = err.response.data;
+        }
+        // Incorrect responses
+        else {
+          toast.error('Incorrect responses. Please try again.');
 
-            setVerifyError(error);
+          setVerifyError('INCORRECT');
 
-            // Max attempts reached
-            if (error === 'MAX_TRIES_REACHED') {
-              setVerifyErrorMessage(
-                <div>
-                  You've used up all your challenge attempts. Please{' '}
-                  <NavLink to="/feedback">contact us</NavLink> if you would like
-                  to gain access.
-                </div>,
-              );
-            }
-            // Bad token
-            else if (error === 'INVALID_TOKEN') {
-              setVerifyErrorMessage(
-                <div>
-                  Your answers aren't formatted correctly. Please{' '}
-                  <NavLink to="/feedback">contact us</NavLink> if you think this
-                  is an error.
-                </div>,
-              );
-            }
-            // Bad answers
-            else if (error === 'MALFORMED_ANSWERS') {
-              setVerifyErrorMessage(
-                <div>
-                  Your answers aren't formatted correctly. Please{' '}
-                  <NavLink to="/feedback">contact us</NavLink> if you think this
-                  is an error.
-                </div>,
-              );
-            }
-            // Other errors
-            else {
-              setVerifyErrorMessage(
-                <div>
-                  Looks like we messed up. Please{' '}
-                  <a
-                    href={`https://feedback.coursetable.com/`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    let us know
-                  </a>{' '}
-                  what went wrong.
-                </div>,
-              );
-            }
-          }
-        });
+          setVerifyErrorMessage(
+            <div>Incorrect responses. Please try again.</div>,
+          );
+
+          setValidated(false);
+          setNumTries(res.data.body.challengeTries);
+          setMaxTries(res.data.body.maxChallengeTries);
+        }
+      } catch (err) {
+        const error =
+          err instanceof AxiosError
+            ? (err.response!.data as { error: string }).error
+            : 'UNKNOWN';
+
+        setVerifyError(error);
+
+        // Max attempts reached
+        if (error === 'MAX_TRIES_REACHED') {
+          setVerifyErrorMessage(
+            <div>
+              You've used up all your challenge attempts. Please{' '}
+              <NavLink to="/feedback">contact us</NavLink> if you would like to
+              gain access.
+            </div>,
+          );
+        }
+        // Bad token
+        else if (error === 'INVALID_TOKEN') {
+          setVerifyErrorMessage(
+            <div>
+              Your answers aren't formatted correctly. Please{' '}
+              <NavLink to="/feedback">contact us</NavLink> if you think this is
+              an error.
+            </div>,
+          );
+        }
+        // Bad answers
+        else if (error === 'MALFORMED_ANSWERS') {
+          setVerifyErrorMessage(
+            <div>
+              Your answers aren't formatted correctly. Please{' '}
+              <NavLink to="/feedback">contact us</NavLink> if you think this is
+              an error.
+            </div>,
+          );
+        }
+        // Other errors
+        else {
+          setVerifyErrorMessage(
+            <div>
+              Looks like we messed up. Please{' '}
+              <a
+                href="https://feedback.coursetable.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                let us know
+              </a>{' '}
+              what went wrong.
+            </div>,
+          );
+        }
+      }
     }
     // Form has been validated
     setValidated(true);
   };
 
   // Student response buckets
-  const rating_options = ['poor', 'fair', 'good', 'very good', 'excellent'];
-  // Holds the html for each form question
-  const question_html: ReactElement[] = [];
-  if (res_body && res_body.course_info) {
-    // Loop over each question
-    res_body.course_info.forEach((course, index) => {
-      // Add question html to list
-      question_html.push(
-        <Form.Group controlId={`question#${index + 1}`} key={index}>
-          {/* Course Title */}
-          <Row className="mx-auto">
-            <strong>
-              <a
-                href={course.courseOceUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                {course.courseTitle}{' '}
-                <FiExternalLink
-                  // Better spacing for the link icon
-                  className="mb-1"
-                />
-              </a>
-            </strong>
-          </Row>
-          {/* Question with link to OCE Page */}
-          <Row className="mx-auto mb-1">
-            How many students responded to the&nbsp;
-            <span className="font-weight-bold">"overall assessment"</span>
-            &nbsp;question with&nbsp;
-            <span className="font-weight-bold">
-              "{rating_options[course.courseRatingIndex]}"
-            </span>
-            ?
-          </Row>
-          {/* Number Input Box */}
-          <Form.Control
-            type="number"
-            required
-            placeholder="Number of students"
-            value={answers[index].answer}
-            onChange={(event) => {
-              // Copy answers state into a new variable
-              const new_answers = [...answers];
-              // Update new answers
-              new_answers[index].courseRatingId = course.courseId;
-              new_answers[index].courseRatingIndex = course.courseRatingIndex;
-              new_answers[index].answer = event.target.value;
-              // Update old answers state with new answers
-              setAnswers(new_answers);
-            }}
-          />
-        </Form.Group>,
-      );
-    });
-  }
+  const ratingOptions = ['poor', 'fair', 'good', 'very good', 'excellent'];
 
   // If error in requesting challenge, render error message
   if (requestError) {
-    let errorTitle;
-    let errorMessage;
+    const { errorTitle, errorMessage } = getErrorMessage(
+      requestError,
+      navigate,
+    );
 
-    // If user is not logged in
-    if (requestError === 'NOT_AUTHENTICATED') {
-      errorTitle = 'Please log in!';
-      errorMessage = (
-        <div>
-          You need to be logged in via CAS to enable your account.
-          <br />
-          <a
-            href="/api/auth/cas?redirect=catalog"
-            className="btn btn-primary mt-3"
-          >
-            Log in
-          </a>
-        </div>
-      );
-    }
-    // If user is not in database
-    else if (requestError === 'USER_NOT_FOUND') {
-      errorTitle = 'Account not found!';
-      errorMessage = (
-        <div>
-          Please make sure you are logged in via CAS.
-          <br />
-          <a
-            href="/api/auth/cas?redirect=catalog"
-            className="btn btn-primary mt-3"
-          >
-            Log in
-          </a>
-        </div>
-      );
-    }
-    // Evaluations already enabled
-    else if (requestError === 'ALREADY_ENABLED') {
-      errorTitle = "You've already passed!";
-      errorMessage = (
-        <div>
-          You've completed the challenge already - no need to do it again.
-          <br />
-          <div onClick={() => navigate(-1)} className="btn btn-primary mt-3">
-            Go back
-          </div>
-        </div>
-      );
-    }
-    // Maximum attempts
-    else if (requestError === 'MAX_TRIES_REACHED') {
-      errorTitle = 'Max attempts reached!';
-      errorMessage = (
-        <div>
-          You've used up all your challenge attempts. Please{' '}
-          <NavLink to="/feedback">contact us</NavLink> if you would like to gain
-          access.
-        </div>
-      );
-    }
-    // Cannot get properly formed ratings
-    else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
-      errorTitle = 'Challenge generation error!';
-      errorMessage = (
-        <div>
-          We couldn't find a challenge. Please{' '}
-          <a
-            href={`https://feedback.coursetable.com/`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            let us know
-          </a>{' '}
-          what went wrong.
-        </div>
-      );
-    }
-    // Other errors
-    else {
-      errorTitle = 'Internal error!';
-      errorMessage = (
-        <div>
-          Looks like we messed up. Please{' '}
-          <a
-            href={`https://feedback.coursetable.com/`}
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            let us know
-          </a>{' '}
-          what went wrong.
-        </div>
-      );
-    }
     return (
       <div
         className="py-5"
@@ -418,7 +374,7 @@ function Challenge() {
             <br />
             If the challenge is not working for you, please{' '}
             <a
-              href={`https://feedback.coursetable.com/`}
+              href="https://feedback.coursetable.com/"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -440,10 +396,57 @@ function Challenge() {
         {verifyError && (
           <div className="text-danger mb-2">{verifyErrorMessage}</div>
         )}
-        {res_body ? (
+        {resBody ? (
           // Show form when questions have been fetched
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            {question_html}
+            {resBody.course_info.map((course, index) => (
+              <Form.Group controlId={`question#${index + 1}`} key={index}>
+                {/* Course Title */}
+                <Row className="mx-auto">
+                  <strong>
+                    <a
+                      href={course.courseOceUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {course.courseTitle}{' '}
+                      <FiExternalLink
+                        // Better spacing for the link icon
+                        className="mb-1"
+                      />
+                    </a>
+                  </strong>
+                </Row>
+                {/* Question with link to OCE Page */}
+                <Row className="mx-auto mb-1">
+                  How many students responded to the&nbsp;
+                  <span className="font-weight-bold">"overall assessment"</span>
+                  &nbsp;question with&nbsp;
+                  <span className="font-weight-bold">
+                    "{ratingOptions[course.courseRatingIndex]}"
+                  </span>
+                  ?
+                </Row>
+                {/* Number Input Box */}
+                <Form.Control
+                  type="number"
+                  required
+                  placeholder="Number of students"
+                  value={answers[index].answer}
+                  onChange={(event) => {
+                    // Copy answers state into a new variable
+                    const newAnswers = [...answers];
+                    // Update new answers
+                    newAnswers[index].courseRatingId = course.courseId;
+                    newAnswers[index].courseRatingIndex =
+                      course.courseRatingIndex;
+                    newAnswers[index].answer = event.target.value;
+                    // Update old answers state with new answers
+                    setAnswers(newAnswers);
+                  }}
+                />
+              </Form.Group>
+            ))}
             <Button variant="primary" type="submit" className="w-100">
               Submit
             </Button>

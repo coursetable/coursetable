@@ -1,17 +1,17 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
+import styled from 'styled-components';
+
 import styles from './Footer.module.css';
 import Logo from './Navbar/Logo';
-import styled from 'styled-components';
 import { StyledHr, TextComponent } from './StyledComponents';
-
-import { scrollToTop } from '../utilities';
-
+import { scrollToTop } from '../utilities/display';
 import VercelBanner from '../images/powered-by-vercel.svg';
+
 // Header
 const StyledH5 = styled.h5`
-  transition: color ${({ theme }) => theme.trans_dur};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 function Footer() {
@@ -22,7 +22,7 @@ function Footer() {
         <div className="row">
           {/* Copyright */}
           <div className="col-12 col-md">
-            <span className={styles.footer_logo}>
+            <span className={styles.footerLogo}>
               <Logo icon={false} />
             </span>
             <small className="d-block mb-3">
@@ -66,7 +66,7 @@ function Footer() {
               {/* Feedback */}
               <li>
                 <a
-                  href={`https://feedback.coursetable.com/`}
+                  href="https://feedback.coursetable.com/"
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={scrollToTop}

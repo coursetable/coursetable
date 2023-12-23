@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
-import { sortCourses } from '../../utilities/courseUtilities';
+import { sortCourses } from '../../utilities/course';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { useSearch } from '../../contexts/searchContext';
 import Results from '../Search/Results';
@@ -11,15 +11,17 @@ import Results from '../Search/Results';
  */
 
 function WorksheetList() {
-  const [isList, setView] = useState(true);
+  const [isListView, setIsListView] = useState(true);
   const { courses, worksheetLoading } = useWorksheet();
 
-  const { ordering, num_friends, isLoggedIn } = useSearch();
+  const { ordering, numFriends, isLoggedIn } = useSearch();
 
-  const WorksheetData = useMemo(() => {
-    // Apply sorting order.
-    return sortCourses(courses, ordering, num_friends);
-  }, [ordering, courses, num_friends]);
+  const WorksheetData = useMemo(
+    () =>
+      // Apply sorting order.
+      sortCourses(courses, ordering, numFriends),
+    [ordering, courses, numFriends],
+  );
 
   return (
     <div>
@@ -29,12 +31,12 @@ function WorksheetList() {
           <div className="d-flex justify-content-center">
             <Results
               data={WorksheetData}
-              isList={isList}
-              setView={setView}
+              isListView={isListView}
+              setIsListView={setIsListView}
               loading={worksheetLoading}
               multiSeasons={false}
               isLoggedIn={isLoggedIn}
-              num_friends={num_friends}
+              numFriends={numFriends}
               page="worksheet"
             />
           </div>
@@ -44,4 +46,4 @@ function WorksheetList() {
   );
 }
 
-export default React.memo(WorksheetList);
+export default WorksheetList;

@@ -1,0 +1,13 @@
+{
+  "extends": ["tsconfig-jc"],
+  "compilerOptions": {
+    "noEmit": true,
+    "module": "node16",
+    // TODO: enable these
+    "exactOptionalPropertyTypes": false,
+    "noUncheckedIndexedAccess": false
+  },
+  "include": ["./**/*", "./.eslintrc.js"],
+  // These have their own tsconfig
+  "exclude": ["./api", "./frontend"]
+}

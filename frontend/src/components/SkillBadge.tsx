@@ -1,15 +1,15 @@
 import React from 'react';
 import chroma from 'chroma-js';
 import { Badge } from 'react-bootstrap';
-import { skillsAreasColors } from '../queries/Constants';
+import { skillsAreasColors } from '../utilities/constants';
 import styles from './SkillBadge.module.css';
 
 export default function SkillBadge({
   skill,
   hidden,
 }: {
-  skill: string;
-  hidden?: boolean;
+  readonly skill: string;
+  readonly hidden?: boolean;
 }) {
   return (
     <Badge

@@ -218,5 +218,10 @@
     "season_code": "202401",
     "term": "spring",
     "year": 2024
+  },
+  {
+    "season_code": "202402",
+    "term": "summer",
+    "year": 2024
   }
 ]

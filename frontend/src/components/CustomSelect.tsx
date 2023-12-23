@@ -1,49 +1,45 @@
 import React, { useMemo } from 'react';
-import { DefaultTheme, useTheme } from 'styled-components';
+import { type DefaultTheme, useTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
 import chroma from 'chroma-js';
 import Select, {
-  OptionTypeBase,
-  Props as SelectProps,
-  StylesConfig,
-  Theme,
+  type OptionTypeBase,
+  type Props as SelectProps,
+  type StylesConfig,
+  type Theme,
   mergeStyles,
 } from 'react-select';
-import { ThemeConfig } from 'react-select/src/theme';
+import type { ThemeConfig } from 'react-select/src/theme';
 
 // Styles for the select indicators
 function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
   theme: DefaultTheme,
   isMulti: IsMulti,
 ): StylesConfig<T, IsMulti> {
-  const icon_focus = chroma(theme.icon_focus);
+  const iconFocus = chroma(theme.iconFocus);
   const icon = chroma(theme.icon);
-  const new_icon_focus =
-    theme.theme === 'light' ? icon_focus.darken() : icon_focus.brighten();
-  const new_icon = theme.theme === 'light' ? icon.darken() : icon.brighten();
+  const newIconFocus =
+    theme.theme === 'light' ? iconFocus.darken() : iconFocus.brighten();
+  const newIcon = theme.theme === 'light' ? icon.darken() : icon.brighten();
 
   return {
-    clearIndicator: (base, state) => {
-      return {
-        ...base,
-        color: state.isFocused ? icon_focus.css() : icon.css(),
-        ':hover': {
-          ...(base as any)[':hover'],
-          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
-        },
-      };
-    },
-    dropdownIndicator: (base, state) => {
-      return {
-        ...base,
-        display: isMulti && state.hasValue ? 'none' : 'flex',
-        color: state.isFocused ? icon_focus.css() : icon.css(),
-        ':hover': {
-          ...(base as any)[':hover'],
-          color: state.isFocused ? new_icon_focus.css() : new_icon.css(),
-        },
-      };
-    },
+    clearIndicator: (base, state) => ({
+      ...base,
+      color: state.isFocused ? iconFocus.css() : icon.css(),
+      ':hover': {
+        ...(base as any)[':hover'],
+        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
+      },
+    }),
+    dropdownIndicator: (base, state) => ({
+      ...base,
+      display: isMulti && state.hasValue ? 'none' : 'flex',
+      color: state.isFocused ? iconFocus.css() : icon.css(),
+      ':hover': {
+        ...(base as any)[':hover'],
+        color: state.isFocused ? newIconFocus.css() : newIcon.css(),
+      },
+    }),
     indicatorSeparator: (base) => ({
       ...base,
       display: 'none',
@@ -80,16 +76,8 @@ function defaultStyles<T extends OptionTypeBase>(
       borderRadius: '8px',
     }),
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-    multiValue: (base) => {
-      return {
-        ...base,
-      };
-    },
-    multiValueLabel: (base) => {
-      return {
-        ...base,
-      };
-    },
+    multiValue: (base) => ({ ...base }),
+    multiValueLabel: (base) => ({ ...base }),
     option: (base, { isSelected }) => ({
       ...base,
       cursor: 'pointer',
@@ -116,12 +104,10 @@ function popoutStyles(
       minWidth: width,
       margin: 8,
     }),
-    dropdownIndicator: (base) => {
-      return {
-        ...base,
-        display: 'none',
-      };
-    },
+    dropdownIndicator: (base) => ({
+      ...base,
+      display: 'none',
+    }),
     menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
     option: (base) => ({
       ...base,
@@ -133,7 +119,7 @@ function popoutStyles(
 // Styles for skills/areas select
 function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
   return {
-    multiValue: (base, { data }) => {
+    multiValue(base, { data }) {
       const color = chroma(data.color);
       return {
         ...base,
@@ -153,7 +139,7 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
         color: 'white',
       },
     }),
-    option: (base, { data, isDisabled, isFocused, isSelected }) => {
+    option(base, { data, isDisabled, isFocused, isSelected }) {
       const color = chroma(data.color);
       return {
         ...base,
@@ -161,17 +147,17 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
         backgroundColor: isDisabled
           ? null
           : isSelected
-          ? data.color
-          : isFocused
-          ? color.alpha(0.1).css()
-          : null,
+            ? data.color
+            : isFocused
+              ? color.alpha(0.1).css()
+              : null,
         color: isDisabled
           ? '#ccc'
           : isSelected
-          ? chroma.contrast(color, 'white') > 2
-            ? 'white'
-            : 'black'
-          : data.color,
+            ? chroma.contrast(color, 'white') > 2
+              ? 'white'
+              : 'black'
+            : data.color,
 
         ':active': {
           ...(base as any)[':active'],
@@ -184,9 +170,9 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
 }
 
 type Props = {
-  popout?: boolean;
-  useColors?: boolean;
-  isMulti?: boolean;
+  readonly popout?: boolean;
+  readonly useColors?: boolean;
+  readonly isMulti?: boolean;
 };
 
 /**
@@ -213,22 +199,13 @@ function CustomSelect<
     borderRadius: 8,
     colors: {
       ...theme.colors,
-      // primary: '', // border :focus & optionBackground :selected
-      // primary75: '', //
-      primary50: '#85c2ff', // optionBackground :focus
-      primary25: globalTheme.select_hover, // optionBackground :hover
-      // danger: '', // selectedOptionClear :hover
-      // dangerLight: '', // selectedOptionClearBackground :hover
-      neutral0: globalTheme.select, // allBackground & optionText :selected
-      neutral10: globalTheme.multivalue, // selectedOptionBackground & disabledBorder
-      // neutral20: 'rgba(0, 0, 0, 0.1)', // border & dropdownIcon & clearIcon
-      neutral30: 'hsl(0, 0%, 70%)', // border :hover
-      // neutral40: '', // dropdownIcon :hover & clearIcon :hover & noOptionsText
-      // neutral50: '', // placeholder
-      neutral60: globalTheme.text[0], // dropdownIconFocus & clearIconFocus
-      // neutral70: '', //
-      neutral80: globalTheme.text[0], // selectedOtionText & dropdownIconFocus :hover & clearIconFocus :hover
-      // neutral90: '', //
+      primary50: '#85c2ff', // OptionBackground :focus
+      primary25: globalTheme.selectHover, // OptionBackground :hover
+      neutral0: globalTheme.select, // AllBackground & optionText :selected
+      neutral10: globalTheme.multivalue, // SelectedOptionBackground & disabledBorder
+      neutral30: 'hsl(0, 0%, 70%)', // Border :hover
+      neutral60: globalTheme.text[0], // DropdownIconFocus & clearIconFocus
+      neutral80: globalTheme.text[0], // SelectedOptionText & dropdownIconFocus :hover & clearIconFocus :hover
     },
   });
 
@@ -243,9 +220,7 @@ function CustomSelect<
     indicatorStyles(globalTheme, isMulti),
     popout ? popoutStyles(globalTheme, 400) : defaultStyles(globalTheme),
   );
-  if (useColors) {
-    styles = mergeStyles(styles, colorStyles());
-  }
+  if (useColors) styles = mergeStyles(styles, colorStyles());
 
   return (
     <Select<T, IsMulti>

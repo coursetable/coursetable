@@ -1,17 +1,17 @@
 import React from 'react';
-import { OptionTypeBase, Props as SelectProps } from 'react-select';
+import type { OptionTypeBase, Props as SelectProps } from 'react-select';
 import CustomSelect from '../CustomSelect';
 
 type Props = {
-  hideSelectedOptions?: boolean;
-  isClearable?: boolean;
-  isMulti?: boolean;
+  readonly hideSelectedOptions?: boolean;
+  readonly isClearable?: boolean;
+  readonly isMulti?: boolean;
 };
 
 /**
  * Popout select component for select filters in popout dropdowns
  */
-export const PopoutSelect = <
+export function PopoutSelect<
   T extends OptionTypeBase,
   IsMulti extends boolean,
 >({
@@ -19,12 +19,14 @@ export const PopoutSelect = <
   isClearable = true,
   hideSelectedOptions = true,
   ...props
-}: SelectProps<T, IsMulti> & Props) => {
+}: SelectProps<T, IsMulti> & Props) {
   return (
     <CustomSelect<T, IsMulti>
       popout
       {...props}
       isMulti={isMulti}
+      // TODO
+      // eslint-disable-next-line jsx-a11y/no-autofocus
       autoFocus
       backspaceRemovesValue={false}
       controlShouldRenderValue
@@ -35,4 +37,4 @@ export const PopoutSelect = <
       closeMenuOnSelect={!isMulti}
     />
   );
-};
+}

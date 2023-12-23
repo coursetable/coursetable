@@ -1,19 +1,19 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import Tour, { ReactourStep, ReactourStepPosition } from 'reactour';
+import Tour, { type ReactourStep, type ReactourStepPosition } from 'reactour';
 import styled, { useTheme } from 'styled-components';
 import { Button } from 'react-bootstrap';
 import { disableBodyScroll, enableBodyScroll } from 'body-scroll-lock';
 
 // Next button for tutorial
 const NextButton = styled(Button)`
-  background-color: ${({ theme }) => theme.primary_hover};
+  background-color: ${({ theme }) => theme.primaryHover};
   border-color: transparent !important;
   box-shadow: none !important;
   font-size: 14px;
 
   &:focus {
-    background-color: ${({ theme }) => theme.primary_hover};
+    background-color: ${({ theme }) => theme.primaryHover};
   }
 `;
 
@@ -26,10 +26,10 @@ const PrevButton = styled(Button)`
   font-size: 14px;
 
   &:hover {
-    background-color: ${({ theme }) => theme.button_active};
+    background-color: ${({ theme }) => theme.buttonActive};
   }
   &:active {
-    background-color: ${({ theme }) => theme.button_active} !important;
+    background-color: ${({ theme }) => theme.buttonActive} !important;
   }
   &:focus {
     background-color: transparent;
@@ -62,10 +62,10 @@ const StepImage = styled.img`
 `;
 
 type Props = {
-  isTutorialOpen: boolean;
-  setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  shownTutorial: boolean;
-  setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly isTutorialOpen: boolean;
+  readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly shownTutorial: boolean;
+  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 type Step = {
@@ -168,7 +168,7 @@ const stepsContent: Step[] = [
         <a
           target="_blank"
           rel="noopener noreferrer"
-          href={`https://feedback.coursetable.com/`}
+          href="https://feedback.coursetable.com/"
         >
           <strong>Feedback page</strong>
         </a>
@@ -205,9 +205,7 @@ function Tutorial({
 
   // Whenever the tutorial is closed, reset the currentStep
   useEffect(() => {
-    if (!isTutorialOpen) {
-      setCurrentStep(0);
-    }
+    if (!isTutorialOpen) setCurrentStep(0);
   }, [isTutorialOpen]);
 
   const globalTheme = useTheme();
@@ -215,7 +213,7 @@ function Tutorial({
   const navigate = useNavigate();
 
   // Change react tour helper styling based on theme
-  const helper_style: React.CSSProperties = useMemo(() => {
+  const helperStyle: React.CSSProperties = useMemo(() => {
     let styles: React.CSSProperties = {
       maxWidth: '432px',
       backgroundColor: globalTheme.background,
@@ -260,18 +258,14 @@ function Tutorial({
       let step: ReactourStep = {
         selector: selector && `[data-tutorial="${selector}"]`,
         content,
-        style: helper_style,
+        style: helperStyle,
       };
 
       // Add observe selector if observing
-      if (observe) {
-        const observe_selector = `[data-tutorial="${selector}-observe"]`;
-        step = { ...step, observe: observe_selector };
-      }
+      if (observe)
+        step = { ...step, observe: `[data-tutorial="${selector}-observe"]` };
 
-      if (position) {
-        step = { ...step, position };
-      }
+      if (position) step = { ...step, position };
 
       return step;
     },
@@ -279,9 +273,7 @@ function Tutorial({
 
   // Handle prev button styling
   const prevButton = useMemo(() => {
-    if (currentStep === 0) {
-      return <div style={{ display: 'none' }} />;
-    }
+    if (currentStep === 0) return <div style={{ display: 'none' }} />;
     if (!shownTutorial) {
       return (
         <PrevButton
@@ -299,9 +291,8 @@ function Tutorial({
 
   // Next button component
   const nextButton = useMemo(() => {
-    if (location.pathname === '/catalog' && currentStep === 7) {
+    if (location.pathname === '/catalog' && currentStep === 7)
       return <NextButton disabled>Next</NextButton>;
-    }
     return <NextButton>{currentStep === 0 ? 'Start' : 'Next'}</NextButton>;
   }, [currentStep, location]);
 
@@ -310,14 +301,13 @@ function Tutorial({
       steps={steps}
       isOpen={isTutorialOpen}
       onRequestClose={() => {
-        if (!shownTutorial) {
-          navigate('/catalog');
-        }
+        if (!shownTutorial) navigate('/catalog');
+
         setShownTutorial(true);
         setIsTutorialOpen(false);
       }}
       startAt={0}
-      accentColor={globalTheme.primary_hover}
+      accentColor={globalTheme.primaryHover}
       rounded={6}
       showCloseButton={currentStep === 0}
       disableDotsNavigation

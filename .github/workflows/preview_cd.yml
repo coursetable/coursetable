@@ -9,7 +9,7 @@ on:
 
 jobs:
   frontend-build-and-deploy:
-    environment: 
+    environment:
       name: Preview
       url: https://${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
     runs-on: ubuntu-latest
@@ -21,7 +21,7 @@ jobs:
       - name: Shorten SHA
         shell: bash
         run: |
-           echo "sha_short=`echo ${{ github.event.pull_request.head.sha }} | cut -c1-8`" >> $GITHUB_ENV
+          echo "sha_short=`echo ${{ github.event.pull_request.head.sha }} | cut -c1-8`" >> $GITHUB_ENV
       - name: Encode URL Branch
         id: encode_url_branch
         uses: actions/github-script@v7

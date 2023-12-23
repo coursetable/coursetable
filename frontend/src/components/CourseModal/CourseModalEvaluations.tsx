@@ -5,27 +5,28 @@ import EvaluationRatings from './EvaluationRatings';
 
 import CourseModalLoading from './CourseModalLoading';
 import { useSearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import type { Crn, Season } from '../../utilities/common';
 
 /**
  * Displays course modal when clicking on a course
- * @prop season_code - string that holds current listing's season code
+ * @prop seasonCode - string that holds current listing's season code
  * @prop crn - integer that holds current listing's crn
- * @prop course_code - string that holds current listing's course code
+ * @prop courseCode - string that holds current listing's course code
  */
 function CourseModalEvaluations({
-  season_code,
+  seasonCode,
   crn,
-  course_code,
+  courseCode,
 }: {
-  season_code: string;
-  crn: number;
-  course_code: string;
+  readonly seasonCode: Season;
+  readonly crn: Crn;
+  readonly courseCode: string;
 }) {
   // Fetch eval data for this listing
   const { loading, error, data } = useSearchEvaluationNarrativesQuery({
     variables: {
-      season_code,
-      course_code: course_code || 'bruh',
+      season_code: seasonCode,
+      course_code: courseCode || 'bruh',
     },
   });
   // Wait until fetched

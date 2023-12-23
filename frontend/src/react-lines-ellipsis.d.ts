@@ -1,4 +1,3 @@
-/* eslint-disable */
 declare module 'react-lines-ellipsis' {
   import * as React from 'react';
 
@@ -24,7 +23,7 @@ declare module 'react-lines-ellipsis' {
 }
 
 declare module 'react-lines-ellipsis/lib/responsiveHOC' {
-  import * as React from 'react';
+  import type * as React from 'react';
 
   export default function responsiveHOC(): <P extends object>(
     WrappedComponent: React.ComponentType<P>,

@@ -1,11 +1,13 @@
 import React, { useEffect, useState } from 'react';
-
 import styled, { useTheme } from 'styled-components';
-
 import { IoMdArrowDropdown, IoMdArrowDropup } from 'react-icons/io';
 import { IoClose } from 'react-icons/io5';
-import { breakpoints, useComponentVisibleDropdown } from '../../utilities';
 import chroma from 'chroma-js';
+
+import {
+  breakpoints,
+  useComponentVisibleDropdown,
+} from '../../utilities/display';
 import { isOption } from '../../contexts/searchContext';
 
 // Entire popout component
@@ -42,18 +44,18 @@ const StyledButton = styled.div`
   user-select: none;
   cursor: pointer;
   transition:
-    border-color ${({ theme }) => theme.trans_dur},
-    background-color ${({ theme }) => theme.trans_dur},
-    color ${({ theme }) => theme.trans_dur};
+    border-color ${({ theme }) => theme.transDur},
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 
   &:hover {
-    background-color: ${({ theme }) => theme.button_hover};
-    color: ${({ theme }) => theme.primary_hover};
+    background-color: ${({ theme }) => theme.buttonHover};
+    color: ${({ theme }) => theme.primaryHover};
   }
 
   &:active {
-    background-color: ${({ theme }) => theme.button_active};
-    color: ${({ theme }) => theme.primary_hover};
+    background-color: ${({ theme }) => theme.buttonActive};
+    color: ${({ theme }) => theme.primaryHover};
   }
 `;
 
@@ -61,26 +63,26 @@ const StyledButton = styled.div`
 const ClearIcon = styled(IoClose)`
   z-index: 1000;
   cursor: pointer;
-  color: ${({ theme }) => theme.icon_focus};
-  transition: color ${({ theme }) => theme.trans_dur};
+  color: ${({ theme }) => theme.iconFocus};
+  transition: color ${({ theme }) => theme.transDur};
   &:hover {
     color: ${({ theme }) =>
       theme.theme === 'light'
-        ? chroma(theme.icon_focus).darken().css()
-        : chroma(theme.icon_focus).brighten().css()};
+        ? chroma(theme.iconFocus).darken().css()
+        : chroma(theme.iconFocus).brighten().css()};
   }
 `;
 
 // Down icon
 const DownIcon = styled(IoMdArrowDropdown)`
-  color: ${({ theme }) => theme.icon_focus};
-  transition: color ${({ theme }) => theme.trans_dur};
+  color: ${({ theme }) => theme.iconFocus};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 // Up icon
 const UpIcon = styled(IoMdArrowDropup)`
-  color: ${({ theme }) => theme.icon_focus};
-  transition: color ${({ theme }) => theme.trans_dur};
+  color: ${({ theme }) => theme.iconFocus};
+  transition: color ${({ theme }) => theme.transDur};
 `;
 
 type Option = {
@@ -90,21 +92,21 @@ type Option = {
 };
 
 type Props = {
-  children: React.ReactNode;
-  buttonText: string;
-  type: string;
-  isDisabled?: boolean;
-  onReset?: () => void;
-  arrowIcon?: boolean;
-  clearIcon?: boolean;
-  select_options?:
+  readonly children: React.ReactNode;
+  readonly buttonText: string;
+  readonly type: string;
+  readonly isDisabled?: boolean;
+  readonly onReset?: () => void;
+  readonly arrowIcon?: boolean;
+  readonly clearIcon?: boolean;
+  readonly selectOptions?:
     | Option[]
-    | Record<string, Record<string, Option[] | boolean>>
+    | { [key: string]: { [key: string]: Option[] | boolean } }
     | Option
     | null;
-  className?: string;
-  data_tutorial?: number;
-  disabledButtonText?: string;
+  readonly className?: string;
+  readonly dataTutorial?: number;
+  readonly disabledButtonText?: string;
 };
 
 /**
@@ -116,9 +118,9 @@ type Props = {
  * @prop onReset - reset filter function
  * @prop arrowIcon - whether there is an arrow icon in the popout button
  * @prop clearIcon - whether there is an clear icon in the popout button
- * @prop select_options - selected option(s) for filter
+ * @prop selectOptions - selected option(s) for filter
  * @prop className - additional styles for popout button
- * @prop data_tutorial - tutorial step number
+ * @prop dataTutorial - tutorial step number
  * @prop disabledButtonText - default placeholder for disabled popout button
  */
 export function Popout({
@@ -129,18 +131,14 @@ export function Popout({
   onReset,
   arrowIcon = true,
   clearIcon = true,
-  select_options,
+  selectOptions,
   className,
-  data_tutorial,
+  dataTutorial,
   disabledButtonText,
 }: Props) {
   // Ref to detect outside clicks for popout button and dropdown
-  const {
-    ref_toggle,
-    ref_dropdown,
-    isComponentVisible,
-    setIsComponentVisible,
-  } = useComponentVisibleDropdown<HTMLDivElement>(false);
+  const { toggleRef, dropdownRef, isComponentVisible, setIsComponentVisible } =
+    useComponentVisibleDropdown<HTMLDivElement>(false);
   const theme = useTheme();
 
   // Dynamic text state for active popout button
@@ -154,13 +152,13 @@ export function Popout({
   const buttonStyles = (open: boolean) => {
     if (open) {
       return {
-        backgroundColor: theme.button_active,
-        color: theme.primary_hover,
+        backgroundColor: theme.buttonActive,
+        color: theme.primaryHover,
       };
     }
     if (active) {
       return {
-        color: theme.primary_hover,
+        color: theme.primaryHover,
       };
     }
     return undefined;
@@ -171,11 +169,11 @@ export function Popout({
     if (isDisabled && disabledButtonText) {
       setToggleText(disabledButtonText);
       setActive(false);
-    } else if (select_options) {
-      if (Array.isArray(select_options) && select_options.length > 0) {
+    } else if (selectOptions) {
+      if (Array.isArray(selectOptions) && selectOptions.length > 0) {
         const maxOptions = type === 'season' ? 1 : 3;
-        const top_options = select_options.slice(0, maxOptions);
-        const text = top_options.map((option, index) => {
+        const topOptions = selectOptions.slice(0, maxOptions);
+        const text = topOptions.map((option, index) => {
           const optionLabel = type === 'season' ? option.label : option.value;
           const colorStyle =
             type === 'skills/areas' ? { color: option.color } : undefined;
@@ -184,14 +182,13 @@ export function Popout({
               {optionLabel}
             </span>
           );
-          if (top_options.length > 1 && index < maxOptions - 1) {
-            return <>{span}, </>;
-          }
-          if (select_options.length > maxOptions) {
+          if (topOptions.length > 1 && index < maxOptions - 1)
+            return <React.Fragment key={index}>{span}, </React.Fragment>;
+          if (selectOptions.length > maxOptions) {
             return (
-              <>
-                {span} + {select_options.length - maxOptions}
-              </>
+              <React.Fragment key={index}>
+                {span} + {selectOptions.length - maxOptions}
+              </React.Fragment>
             );
           }
           return span;
@@ -199,30 +196,27 @@ export function Popout({
         setToggleText(text);
         setActive(true);
       } else if (
-        select_options !== null &&
-        typeof select_options === 'object' &&
+        selectOptions !== null &&
+        typeof selectOptions === 'object' &&
         type === 'advanced'
       ) {
         let activeFilters = 0;
-        for (const [key, value] of Object.entries(select_options)) {
+        for (const [key, value] of Object.entries(selectOptions)) {
           for (const optionValue of Object.values(value)) {
             if (
               key === 'selects' &&
               Array.isArray(optionValue) &&
               optionValue.length > 0
-            ) {
+            )
               activeFilters++;
-            } else if (key === 'ranges' && optionValue) {
-              activeFilters++;
-            } else if (
+            else if (key === 'ranges' && optionValue) activeFilters++;
+            else if (
               key === 'toggles' &&
               typeof optionValue === 'boolean' &&
               optionValue
-            ) {
+            )
               activeFilters++;
-            } else if (key === 'sorts' && optionValue) {
-              activeFilters++;
-            }
+            else if (key === 'sorts' && optionValue) activeFilters++;
           }
         }
         const text =
@@ -230,12 +224,12 @@ export function Popout({
         setToggleText(text);
         setActive(activeFilters > 0);
       } else if (
-        select_options !== null &&
-        typeof select_options === 'object' &&
-        !Array.isArray(select_options) &&
-        isOption(select_options)
+        selectOptions !== null &&
+        typeof selectOptions === 'object' &&
+        !Array.isArray(selectOptions) &&
+        isOption(selectOptions)
       ) {
-        setToggleText(select_options.label);
+        setToggleText(selectOptions.label);
         setActive(true);
       } else {
         setToggleText(buttonText);
@@ -245,26 +239,28 @@ export function Popout({
       setToggleText(buttonText);
       setActive(false);
     }
-  }, [select_options, buttonText, type, disabledButtonText, isDisabled]);
+  }, [selectOptions, buttonText, type, disabledButtonText, isDisabled]);
 
   return (
     <PopoutWrapper
-      data-tutorial={data_tutorial ? `catalog-${data_tutorial}-observe` : ''}
+      data-tutorial={dataTutorial ? `catalog-${dataTutorial}-observe` : ''}
     >
       {/* Popout Button */}
       <StyledButton
         onClick={() => setIsComponentVisible(!isComponentVisible)}
         style={buttonStyles(isComponentVisible)}
-        ref={ref_toggle}
+        ref={toggleRef}
         className={className}
-        data-tutorial={data_tutorial ? `catalog-${data_tutorial}` : ''}
+        data-tutorial={dataTutorial ? `catalog-${dataTutorial}` : ''}
       >
         {toggleText}
         {active && clearIcon ? (
           <ClearIcon
             className="ml-1"
+            // @ts-expect-error: probably a module resolution failure
             onClick={(e) => {
-              // Prevent parent popout button onClick from firing and opening dropdown
+              // Prevent parent popout button onClick from firing and opening
+              // dropdown
               e.stopPropagation();
               onReset?.();
             }}
@@ -275,13 +271,11 @@ export function Popout({
           ) : (
             <UpIcon className="ml-1" />
           )
-        ) : (
-          <></>
-        )}
+        ) : null}
       </StyledButton>
       {/* Dropdown */}
       {isComponentVisible ? (
-        <Dropdown ref={ref_dropdown}>{children}</Dropdown>
+        <Dropdown ref={dropdownRef}>{children}</Dropdown>
       ) : null}
     </PopoutWrapper>
   );

@@ -2,14 +2,15 @@ import React from 'react';
 import { Row } from 'react-bootstrap';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
+import type { Crn } from '../../utilities/common';
 import {
   questions,
-  graph_labels,
-  graph_titles,
-  question_text,
-} from '../../queries/Constants';
+  graphLabels,
+  graphTitles,
+  questionText,
+} from '../../utilities/constants';
 import { TextComponent } from '../StyledComponents';
-import { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
 
 /**
  * Displays Evaluation Graphs
@@ -21,32 +22,24 @@ function EvaluationRatings({
   crn,
   info,
 }: {
-  crn: number;
-  info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
+  readonly crn: Crn;
+  readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }) {
-  // List of dictionaries that holds the ratings for each question as well as the question text
-  const ratings: { question: string; values: number[] }[] = [];
-  // Loop through each section
-  (info || []).forEach((section) => {
-    const crn_code = section.crn;
+  // List of dictionaries that holds the ratings for each question as well as
+  // the question text
+  const ratings = (info || []).flatMap((section) => {
+    const crnCode = section.crn;
     // Only fetch ratings data for this section
-    if (crn_code !== crn) return;
-    const temp = section.course.evaluation_ratings;
+    if (crnCode !== crn) return [];
     // Loop through each set of ratings
-    for (let i = 0; i < temp.length; i++) {
-      ratings.push({
-        question: temp[i].evaluation_question.question_text || '',
-        values: [],
-      });
-      // Store the counts for each rating in the values list
-      for (let j = 0; j < temp[i].rating.length; j++) {
-        ratings[i].values.push(temp[i].rating[j]);
-      }
-    }
+    return section.course.evaluation_ratings.map((x) => ({
+      question: x.evaluation_question.question_text || '',
+      values: [...x.rating],
+    }));
   });
 
   // Dictionary with ratings for each question
-  const filtered_ratings: {
+  const filteredRatings: {
     assessment: number[];
     workload: number[];
     engagement: number[];
@@ -67,24 +60,24 @@ function EvaluationRatings({
   ratings.forEach((rating) => {
     questions.forEach((question) => {
       if (rating.question.includes(question))
-        filtered_ratings[question] = rating.values;
+        filteredRatings[question] = rating.values;
     });
   });
 
   const items = questions
-    .filter((question) => filtered_ratings[question].length)
+    .filter((question) => filteredRatings[question].length)
     .map((question) => (
       <div key={question}>
         <Row className="mx-auto mb-1 pl-1 justify-content-center">
-          <strong>{graph_titles[question]}</strong>
-          <small className={`${styles.question_text} text-center`}>
-            <TextComponent type={1}>{question_text[question]}</TextComponent>
+          <strong>{graphTitles[question]}</strong>
+          <small className={`${styles.questionText} text-center`}>
+            <TextComponent type={1}>{questionText[question]}</TextComponent>
           </small>
         </Row>
         <RatingsGraph
-          ratings={filtered_ratings[question]}
+          ratings={filteredRatings[question]}
           reverse={question === 'major' || question === 'workload'}
-          labels={graph_labels[question]}
+          labels={graphLabels[question]}
         />
       </div>
     ));

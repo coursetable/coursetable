@@ -1,0 +1,24 @@
+{
+  "ignores": [
+    "ts-node",
+    "jest",
+    "@sentry/tracing",
+    "graphql",
+    "@graphql-codegen/*",
+    "graphql-tag",
+    "typescript",
+    "typescript-plugin-css-modules",
+    "@types/*",
+    "@typescript-eslint/*",
+    "eslint-*",
+    "core-js",
+    "tsconfig-*"
+  ],
+  "skip-missing": true,
+  "specials": [
+    "bin"
+  ],
+  "parsers": {
+    "**/*.mts": "typescript"
+  }
+}
