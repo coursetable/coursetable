@@ -881,7 +881,7 @@ export function NavbarCatalogSearch() {
                     value={selectCourseInfoAttributes}
                     options={courseInfoAttributesOptions}
                     placeholder="Course Information Attributes"
-                    // prevent overlap with tooltips
+                    // Prevent overlap with tooltips
                     menuPortalTarget={document.querySelector('#portal')}
                     onChange={(selectedOption: ValueType<Option, boolean>) => {
                       setSelectCourseInfoAttributes(

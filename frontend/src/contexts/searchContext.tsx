@@ -256,7 +256,10 @@ export function SearchProvider({
   );
 
   const [selectCourseInfoAttributes, setSelectCourseInfoAttributes] =
-    useSessionStorageState('select_courseInfoAttributes', defaultOptions);
+    useSessionStorageState<Option[]>(
+      'select_courseInfoAttributes',
+      defaultOptions,
+    );
 
   const [searchDescription, setSearchDescription] = useLocalStorageState(
     'searchDescription',
