@@ -5,6 +5,7 @@ import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { ratingColormap } from '../../utilities/constants';
+import { getOverallRatings, getWorkloadRatings } from '../../utilities/course';
 import styles from './WorksheetStats.module.css';
 
 const StyledStatPill = styled.span<
@@ -31,48 +32,38 @@ export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hiddenCourses, curSeason } = useWorksheet();
   const countedCourseCodes = new Set();
+  let courseCnt = 0;
+  // Used to compute average
+  let coursesWithRating = 0;
+  let credits = 0;
+  let workload = 0;
+  let rating = 0;
+  const skillsAreas: string[] = [];
 
-  const {
-    courseCnt,
-    coursesWithRating,
-    credits,
-    workload,
-    rating,
-    skillsAreas,
-  } = courses.reduce(
-    (acc, c) => {
-      // See if any of the course's codes have already been counted or if it's
-      // hidden so we don't double count
-      const shouldNotCount =
-        c.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
-        hiddenCourses[curSeason]?.[c.crn];
-      const useCourseInfo = c.credits;
+  for (const course of courses) {
+    // See if any of the course's codes have already been counted or if it's
+    // hidden so we don't double count
+    const shouldNotCount =
+      course.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
+      hiddenCourses[curSeason]?.[course.crn];
+    const useCourseInfo = course.credits;
 
-      if (shouldNotCount || !useCourseInfo) return acc;
+    if (shouldNotCount || !useCourseInfo) continue;
 
-      // Mark codes as counted, no double counting
-      c.all_course_codes.forEach((code) => {
-        countedCourseCodes.add(code);
-      });
+    // Mark codes as counted, no double counting
+    course.all_course_codes.forEach((code) => {
+      countedCourseCodes.add(code);
+    });
+    const courseRating = getOverallRatings(course, 'stat');
+    const courseWorkload = getWorkloadRatings(course, 'stat');
 
-      return {
-        courseCnt: acc.courseCnt + 1,
-        coursesWithRating: acc.coursesWithRating + (c.average_rating ? 1 : 0),
-        credits: acc.credits + (c.credits ?? 0),
-        workload: acc.workload + (c.average_workload ?? 0),
-        rating: acc.rating + (c.average_rating ?? 0),
-        skillsAreas: [...acc.skillsAreas, ...c.skills, ...c.areas],
-      };
-    },
-    {
-      courseCnt: 0,
-      coursesWithRating: 0,
-      credits: 0,
-      workload: 0,
-      rating: 0,
-      skillsAreas: [] as string[],
-    },
-  );
+    courseCnt++;
+    coursesWithRating += courseRating ? 1 : 0;
+    credits += course.credits ?? 0;
+    workload += courseWorkload ?? 0;
+    rating += courseRating ?? 0;
+    skillsAreas.push(...course.skills, ...course.areas);
+  }
 
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (

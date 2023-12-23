@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React, {
   createContext,
   useCallback,
@@ -8,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 import type { GroupedOptionsType, OptionsType } from 'react-select/src/types';
-import type { Listing, Season } from '../utilities/common';
+import { isEqual, type Listing, type Season } from '../utilities/common';
 import {
   useLocalStorageState,
   useSessionStorageState,
@@ -137,7 +136,7 @@ SearchContext.displayName = 'SearchContext';
 
 // Default filter and sorting values
 const defaultOption: Option = { label: '', value: '' };
-const defaultOptions: Option[] = [];
+const defaultOptions: [] = [];
 const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
   { value: CUR_SEASON, label: toSeasonString(CUR_SEASON) },
@@ -183,15 +182,14 @@ export function SearchProvider({
 
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
 
-  const [selectSubjects, setSelectSubjects] = useSessionStorageState(
+  const [selectSubjects, setSelectSubjects] = useSessionStorageState<Option[]>(
     'selectSubjects',
     defaultOptions,
   );
 
-  const [selectSkillsAreas, setSelectSkillsAreas] = useSessionStorageState(
-    'selectSkillsAreas',
-    defaultOptions,
-  );
+  const [selectSkillsAreas, setSelectSkillsAreas] = useSessionStorageState<
+    Option[]
+  >('selectSkillsAreas', defaultOptions);
 
   const [overallBounds, setOverallBounds] = useSessionStorageState(
     'overallBounds',
@@ -216,7 +214,7 @@ export function SearchProvider({
     defaultSeason,
   );
 
-  const [selectDays, setSelectDays] = useSessionStorageState(
+  const [selectDays, setSelectDays] = useSessionStorageState<Option[]>(
     'selectDays',
     defaultOptions,
   );
@@ -245,12 +243,12 @@ export function SearchProvider({
     numBounds !== defaultNumBounds ? numBounds : defaultNumBounds,
   );
 
-  const [selectSchools, setSelectSchools] = useSessionStorageState(
+  const [selectSchools, setSelectSchools] = useSessionStorageState<Option[]>(
     'selectSchools',
     defaultOptions,
   );
 
-  const [selectCredits, setSelectCredits] = useSessionStorageState(
+  const [selectCredits, setSelectCredits] = useSessionStorageState<Option[]>(
     'selectCredits',
     defaultOptions,
   );
@@ -392,18 +390,18 @@ export function SearchProvider({
 
     // If the bounds are unaltered, we need to set them to null
     // to include unrated courses
-    const includeAllOveralls = _.isEqual(overallBounds, defaultRatingBounds);
+    const includeAllOveralls = isEqual(overallBounds, defaultRatingBounds);
 
-    const includeAllWorkloads = _.isEqual(workloadBounds, defaultRatingBounds);
+    const includeAllWorkloads = isEqual(workloadBounds, defaultRatingBounds);
 
-    const includeAllTimes = _.isEqual(timeBounds, defaultTimeBounds);
+    const includeAllTimes = isEqual(timeBounds, defaultTimeBounds);
 
-    const includeAllEnrollments = _.isEqual(
+    const includeAllEnrollments = isEqual(
       enrollBounds.map(Math.round),
       defaultEnrollBounds,
     );
 
-    const includeAllNumbers = _.isEqual(numBounds, defaultNumBounds);
+    const includeAllNumbers = isEqual(numBounds, defaultNumBounds);
 
     // Variables to use in search query
     const searchVariables = {
@@ -476,23 +474,27 @@ export function SearchProvider({
 
     const filtered = listings.filter((listing) => {
       // Apply filters.
-      const averageOverall = Number(getOverallRatings(listing));
+      const averageOverall = getOverallRatings(listing, 'stat');
+      const overall =
+        averageOverall === null ? null : Math.round(averageOverall * 10) / 10;
       if (
         searchConfig.minOverall !== null &&
         searchConfig.maxOverall !== null &&
-        (averageOverall === null ||
-          _.round(averageOverall, 1) < searchConfig.minOverall ||
-          _.round(averageOverall, 1) > searchConfig.maxOverall)
+        (overall === null ||
+          overall < searchConfig.minOverall ||
+          overall > searchConfig.maxOverall)
       )
         return false;
 
-      const averageWorkload = Number(getWorkloadRatings(listing));
+      const averageWorkload = getWorkloadRatings(listing, 'stat');
+      const workload =
+        averageWorkload === null ? null : Math.round(averageWorkload * 10) / 10;
       if (
         searchConfig.minWorkload !== null &&
         searchConfig.maxWorkload !== null &&
-        (averageWorkload === null ||
-          _.round(averageWorkload, 1) < searchConfig.minWorkload ||
-          _.round(averageWorkload, 1) > searchConfig.maxWorkload)
+        (workload === null ||
+          workload < searchConfig.minWorkload ||
+          workload > searchConfig.maxWorkload)
       )
         return false;
 
@@ -512,8 +514,7 @@ export function SearchProvider({
           return false;
       }
 
-      let enrollment = getEnrolled(listing);
-      if (enrollment !== null) enrollment = Number(enrollment);
+      const enrollment = getEnrolled(listing, 'stat');
       if (
         searchConfig.minEnrollment !== null &&
         searchConfig.maxEnrollment !== null &&
@@ -746,25 +747,28 @@ export function SearchProvider({
   // Check if can or can't reset
   useEffect(() => {
     if (
-      !_.isEqual(searchText, '') ||
-      !_.isEqual(selectSubjects, defaultOptions) ||
-      !_.isEqual(selectSkillsAreas, defaultOptions) ||
-      !_.isEqual(overallBounds, defaultRatingBounds) ||
-      !_.isEqual(workloadBounds, defaultRatingBounds) ||
-      !_.isEqual(selectSeasons, defaultSeason) ||
-      !_.isEqual(selectDays, defaultOptions) ||
-      !_.isEqual(timeBounds, defaultTimeBounds) ||
-      !_.isEqual(enrollBounds, defaultEnrollBounds) ||
-      !_.isEqual(numBounds, defaultNumBounds) ||
-      !_.isEqual(selectSchools, defaultOptions) ||
-      !_.isEqual(selectCredits, defaultOptions) ||
-      !_.isEqual(searchDescription, defaultFalse) ||
-      !_.isEqual(hideCancelled, defaultTrue) ||
-      !_.isEqual(hideConflicting, defaultFalse) ||
-      !_.isEqual(hideFirstYearSeminars, defaultFalse) ||
-      !_.isEqual(hideGraduateCourses, defaultFalse) ||
-      !_.isEqual(hideDiscussionSections, defaultTrue) ||
-      !_.isEqual(ordering, defaultOrdering)
+      searchText !== '' ||
+      !isEqual(selectSubjects, defaultOptions) ||
+      !isEqual(selectSkillsAreas, defaultOptions) ||
+      !isEqual(overallBounds, defaultRatingBounds) ||
+      !isEqual(workloadBounds, defaultRatingBounds) ||
+      !(selectSeasons.length === 1 && selectSeasons[0].value === CUR_SEASON) ||
+      !isEqual(selectDays, defaultOptions) ||
+      !isEqual(timeBounds, defaultTimeBounds) ||
+      !isEqual(enrollBounds, defaultEnrollBounds) ||
+      !isEqual(numBounds, defaultNumBounds) ||
+      !isEqual(selectSchools, defaultOptions) ||
+      !isEqual(selectCredits, defaultOptions) ||
+      searchDescription !== defaultFalse ||
+      hideCancelled !== defaultTrue ||
+      hideConflicting !== defaultFalse ||
+      hideFirstYearSeminars !== defaultFalse ||
+      hideGraduateCourses !== defaultFalse ||
+      hideDiscussionSections !== defaultTrue ||
+      !(
+        ordering.type === defaultOrdering.type &&
+        ordering.key === defaultOrdering.key
+      )
     )
       setCanReset(true);
     else setCanReset(false);
@@ -773,12 +777,11 @@ export function SearchProvider({
     if (!coursesLoading && searchData) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
       setDuration(durInSecs);
-      const sp = _.sample(
+      const pool =
         searchSpeed[
           durInSecs > 1 ? 'fast' : durInSecs > 0.5 ? 'faster' : 'fastest'
-        ],
-      );
-      if (sp) setSpeed(sp);
+        ];
+      setSpeed(pool[Math.floor(Math.random() * pool.length)]);
     }
   }, [
     searchText,

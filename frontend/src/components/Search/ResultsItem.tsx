@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
 
@@ -117,35 +117,14 @@ function ResultsItem({
   // Size of season icons
   const iconSize = 10;
   // Determine the icon for this season
-  const icon = useMemo(
-    () =>
-      season === 1 ? (
-        <FcCloseUpMode className="my-auto" size={iconSize} />
-      ) : season === 2 ? (
-        <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
-      ) : (
-        <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
-      ),
-    [season],
-  );
-
-  // Fetch overall & workload rating values and string representations
-  const courseRating = useMemo(
-    () =>
-      [
-        getOverallRatings(course, false),
-        getOverallRatings(course, true),
-      ] as const,
-    [course],
-  );
-  const workloadRating = useMemo(
-    () =>
-      [
-        getWorkloadRatings(course, false),
-        getWorkloadRatings(course, true),
-      ] as const,
-    [course],
-  );
+  const icon =
+    season === 1 ? (
+      <FcCloseUpMode className="my-auto" size={iconSize} />
+    ) : season === 2 ? (
+      <IoMdSunny color="#ffaa00" className="my-auto" size={iconSize} />
+    ) : (
+      <FaCanadianMapleLeaf className="my-auto" size={iconSize} />
+    );
 
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
@@ -291,19 +270,19 @@ function ResultsItem({
         <div className="d-flex">
           {/* Overall Rating */}
           <RatingCell
-            rating={courseRating[0]}
+            rating={getOverallRatings(course, 'stat')}
             colormap={ratingColormap}
             style={rateOverallStyle}
           >
-            {courseRating[1]}
+            {getOverallRatings(course, 'display')}
           </RatingCell>
           {/* Workload Rating */}
           <RatingCell
-            rating={workloadRating[0]}
+            rating={getWorkloadRatings(course, 'stat')}
             colormap={workloadColormap}
             style={rateWorkloadStyle}
           >
-            {workloadRating[1]}
+            {getWorkloadRatings(course, 'display')}
           </RatingCell>
           {/* Professor Rating & Course Professors */}
           <div style={profStyle} className="d-flex align-items-center">
@@ -326,7 +305,7 @@ function ResultsItem({
         </div>
         {/* Previous Enrollment */}
         <div style={enrollStyle} className="d-flex">
-          <span className="my-auto">{getEnrolled(course, true)}</span>
+          <span className="my-auto">{getEnrolled(course, 'display')}</span>
         </div>
         {/* Skills and Areas */}
         <div style={saStyle} className="d-flex">

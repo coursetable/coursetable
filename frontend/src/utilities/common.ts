@@ -53,3 +53,14 @@ expectType<
 export type Listing = Omit<RawListingResponse, keyof ListingOverrides> &
   ListingOverrides &
   ListingAugments;
+
+export function isEqual(a: unknown[], b: []): boolean;
+export function isEqual(a: [], b: unknown[]): boolean;
+export function isEqual<T extends string | number | boolean>(
+  a: T[],
+  b: T[],
+): boolean;
+export function isEqual<T extends string | number | boolean>(a: T[], b: T[]) {
+  if (a.length !== b.length) return false;
+  return a.every((x, i) => b[i] === x);
+}

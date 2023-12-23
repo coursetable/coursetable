@@ -1,6 +1,4 @@
-import { expectType, type TypeOf } from 'ts-expect';
 import chroma from 'chroma-js';
-import type { Listing } from './common';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -69,23 +67,7 @@ export const sortbyOptions = [
 ] as const;
 
 // We can only sort by primitive keys by default, unless we have special support
-export type SortKeys =
-  | NonNullable<
-      {
-        [K in keyof Listing]: Listing[K] extends
-          | string
-          | number
-          | boolean
-          | null
-          | undefined
-          ? K
-          : never;
-      }[keyof Listing]
-    >
-  | 'times_by_day'
-  | 'average_rating'
-  | 'friend';
-expectType<TypeOf<SortKeys, (typeof sortbyOptions)[0]['value']>>(true);
+export type SortKeys = (typeof sortbyOptions)[number]['value'];
 export type SortByOption = (typeof sortbyOptions)[number];
 
 export const areas = ['Hu', 'So', 'Sc'] as const;

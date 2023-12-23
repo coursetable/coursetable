@@ -36,4 +36,19 @@ module.exports = {
     // TODO: we should eventually get rid of `in` operator
     'no-restricted-syntax': 'off',
   },
+  overrides: [
+    {
+      files: ['frontend/**/*'],
+      rules: {
+        'no-restricted-imports': [
+          'error',
+          {
+            name: 'lodash',
+            message:
+              'Lodash is too heavy to be allowed in frontend. Write your own utility, or import a standalone package like lodash.debounce instead.',
+          },
+        ],
+      },
+    },
+  ],
 };
