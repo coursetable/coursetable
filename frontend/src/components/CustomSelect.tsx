@@ -23,23 +23,27 @@ function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
   const newIcon = theme.theme === 'light' ? icon.darken() : icon.brighten();
 
   return {
+    // @ts-expect-error: probably wrong react-select type def
+    // Will be fixed after migrating to react-select v5
     clearIndicator: (base, state) => ({
       ...base,
       color: state.isFocused ? iconFocus.css() : icon.css(),
       ':hover': {
-        ...(base as any)[':hover'],
+        ...base[':hover'],
         color: state.isFocused ? newIconFocus.css() : newIcon.css(),
       },
     }),
+    // @ts-expect-error: probably wrong react-select type def
     dropdownIndicator: (base, state) => ({
       ...base,
       display: isMulti && state.hasValue ? 'none' : 'flex',
       color: state.isFocused ? iconFocus.css() : icon.css(),
       ':hover': {
-        ...(base as any)[':hover'],
+        ...base[':hover'],
         color: state.isFocused ? newIconFocus.css() : newIcon.css(),
       },
     }),
+    // @ts-expect-error: probably wrong react-select type def
     indicatorSeparator: (base) => ({
       ...base,
       display: 'none',
@@ -52,6 +56,7 @@ function defaultStyles<T extends OptionTypeBase>(
   theme: DefaultTheme,
 ): StylesConfig<T, boolean> {
   return {
+    // @ts-expect-error: probably wrong react-select type def
     control: (base, { isDisabled }) => ({
       ...base,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
@@ -61,6 +66,7 @@ function defaultStyles<T extends OptionTypeBase>(
       transition: 'none',
       userSelect: 'none',
     }),
+    // @ts-expect-error: probably wrong react-select type def
     menu: (base) => ({
       ...base,
       paddingTop: 0,
@@ -69,20 +75,24 @@ function defaultStyles<T extends OptionTypeBase>(
       boxShadow:
         '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
     }),
+    // @ts-expect-error: probably wrong react-select type def
     menuList: (base) => ({
       ...base,
       paddingTop: 0,
       paddingBottom: 0,
       borderRadius: '8px',
     }),
+    // @ts-expect-error: probably wrong react-select type def
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
     multiValue: (base) => ({ ...base }),
     multiValueLabel: (base) => ({ ...base }),
+    // @ts-expect-error: probably wrong react-select type def
     option: (base, { isSelected }) => ({
       ...base,
       cursor: 'pointer',
       color: isSelected ? 'white' : undefined,
     }),
+    // @ts-expect-error: probably wrong react-select type def
     singleValue: (base, { isDisabled }) => ({
       ...base,
       color: isDisabled ? theme.text[2] : undefined,
@@ -96,6 +106,7 @@ function popoutStyles(
   width: number,
 ): StylesConfig<OptionTypeBase, boolean> {
   return {
+    // @ts-expect-error: probably wrong react-select type def
     control: (base, { isDisabled }) => ({
       ...base,
       cursor: isDisabled ? 'not-allowed' : 'pointer',
@@ -104,11 +115,13 @@ function popoutStyles(
       minWidth: width,
       margin: 8,
     }),
+    // @ts-expect-error: probably wrong react-select type def
     dropdownIndicator: (base) => ({
       ...base,
       display: 'none',
     }),
     menu: () => ({ boxShadow: 'inset 0 1px 0 rgba(0, 0, 0, 0.1)' }),
+    // @ts-expect-error: probably wrong react-select type def
     option: (base) => ({
       ...base,
       cursor: 'pointer',
@@ -119,6 +132,7 @@ function popoutStyles(
 // Styles for skills/areas select
 function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
   return {
+    // @ts-expect-error: probably wrong react-select type def
     multiValue(base, { data }) {
       const color = chroma(data.color);
       return {
@@ -126,11 +140,13 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
         backgroundColor: color.alpha(0.16).css(),
       };
     },
+    // @ts-expect-error: probably wrong react-select type def
     multiValueLabel: (base, { data }) => ({
       ...base,
       color: data.color,
       fontWeight: 'bold',
     }),
+    // @ts-expect-error: probably wrong react-select type def
     multiValueRemove: (base, { data }) => ({
       ...base,
       color: data.color,
@@ -139,6 +155,7 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
         color: 'white',
       },
     }),
+    // @ts-expect-error: probably wrong react-select type def
     option(base, { data, isDisabled, isFocused, isSelected }) {
       const color = chroma(data.color);
       return {
@@ -160,7 +177,7 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
             : data.color,
 
         ':active': {
-          ...(base as any)[':active'],
+          ...base[':active'],
           backgroundColor:
             !isDisabled && (isSelected ? data.color : color.alpha(0.5).css()),
         },
