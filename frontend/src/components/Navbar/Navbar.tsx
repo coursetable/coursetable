@@ -4,7 +4,6 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
-import { DateTime, Duration } from 'luxon';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
@@ -156,13 +155,22 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
 
   // Calculate time since last updated
   useEffect(() => {
-    const dt = DateTime.now().setZone('America/New_York');
-    const dtUpdate = (
-      dt.hour < 3 || (dt.hour === 3 && dt.minute < 30)
-        ? dt.plus(Duration.fromObject({ days: -1 }))
-        : dt
-    ).set({ hour: 3, minute: 30, second: 0 });
-    const diffInSecs = dt.diff(dtUpdate).as('seconds');
+    const now = new Date();
+    // We always update at around 8:25am UTC, regardless of DST
+    // TODO: maybe the DB should tell us when it was last updated
+    const lastUpdate = new Date(
+      Date.UTC(
+        now.getUTCFullYear(),
+        now.getUTCMonth(),
+        now.getUTCDate(),
+        8,
+        25,
+      ),
+    );
+    const nowTime = now.getTime() / 1000;
+    let lastUpdateTime = lastUpdate.getTime() / 1000;
+    if (lastUpdateTime > nowTime) lastUpdateTime -= 24 * 60 * 60;
+    const diffInSecs = nowTime - lastUpdateTime;
     if (diffInSecs < 60) {
       setLastUpdated(`${diffInSecs} sec${diffInSecs > 1 ? 's' : ''}`);
     } else if (diffInSecs < 3600) {
