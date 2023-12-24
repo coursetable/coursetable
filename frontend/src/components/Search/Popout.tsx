@@ -8,7 +8,7 @@ import {
   breakpoints,
   useComponentVisibleDropdown,
 } from '../../utilities/display';
-import { isOption } from '../../contexts/searchContext';
+import { isOption, type Option } from '../../contexts/searchContext';
 
 // Entire popout component
 const PopoutWrapper = styled.div`
@@ -85,12 +85,6 @@ const UpIcon = styled(IoMdArrowDropup)`
   transition: color ${({ theme }) => theme.transDur};
 `;
 
-type Option = {
-  label: string;
-  value: string;
-  color?: string;
-};
-
 type Props = {
   readonly children: React.ReactNode;
   readonly buttonText: string;
@@ -100,9 +94,9 @@ type Props = {
   readonly arrowIcon?: boolean;
   readonly clearIcon?: boolean;
   readonly selectOptions?:
-    | Option[]
-    | { [key: string]: { [key: string]: Option[] | boolean } }
-    | Option
+    | Option<string | number>[]
+    | { [key: string]: { [key: string]: Option<string | number>[] | boolean } }
+    | Option<string | number>
     | null;
   readonly className?: string;
   readonly dataTutorial?: number;

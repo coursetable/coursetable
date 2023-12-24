@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import type { GroupedOptionsType, OptionsType } from 'react-select/src/types';
 import { isEqual, type Listing, type Season } from '../utilities/common';
 import {
   useLocalStorageState,
@@ -38,9 +37,9 @@ import { CUR_SEASON } from '../config';
 import { useUser } from './userContext';
 
 // Option type for all the filter options
-export type Option = {
+export type Option<T extends string | number = string> = {
   label: string;
-  value: string;
+  value: T;
   color?: string;
   numeric?: boolean;
 };
@@ -55,12 +54,6 @@ export type OrderingType = {
   key: SortKeys;
   type: 'desc' | 'asc';
 };
-
-// This is a type for weird TS errors
-export type OptType =
-  | OptionsType<Option>
-  | GroupedOptionsType<Option>
-  | undefined;
 
 type Store = {
   canReset: boolean;
@@ -80,7 +73,7 @@ type Store = {
   numBounds: number[];
   numValueLabels: number[];
   selectSchools: Option[];
-  selectCredits: Option[];
+  selectCredits: Option<number>[];
   searchDescription: boolean;
   hideCancelled: boolean;
   hideConflicting: boolean;
@@ -90,7 +83,7 @@ type Store = {
   selectSortby: SortByOption;
   sortOrder: SortOrderType;
   ordering: OrderingType;
-  seasonsOptions: OptType;
+  seasonsOptions: Option[];
   coursesLoading: boolean;
   searchData: Listing[];
   multiSeasons: boolean;
@@ -116,7 +109,7 @@ type Store = {
   setNumBounds: React.Dispatch<React.SetStateAction<number[]>>;
   setNumValueLabels: React.Dispatch<React.SetStateAction<number[]>>;
   setSelectSchools: React.Dispatch<React.SetStateAction<Option[]>>;
-  setSelectCredits: React.Dispatch<React.SetStateAction<Option[]>>;
+  setSelectCredits: React.Dispatch<React.SetStateAction<Option<number>[]>>;
   setSearchDescription: React.Dispatch<React.SetStateAction<boolean>>;
   setHideCancelled: React.Dispatch<React.SetStateAction<boolean>>;
   setHideConflicting: React.Dispatch<React.SetStateAction<boolean>>;
@@ -135,7 +128,6 @@ const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
 // Default filter and sorting values
-const defaultOption: Option = { label: '', value: '' };
 const defaultOptions: [] = [];
 const defaultRatingBounds = [1, 5];
 const defaultSeason: Option[] = [
@@ -152,7 +144,6 @@ const defaultSortOrder: SortOrderType = 'asc';
 const defaultOrdering: OrderingType = { key: 'course_code', type: 'asc' };
 
 export const defaultFilters = {
-  defaultOption,
   defaultOptions,
   defaultRatingBounds,
   defaultTimeBounds,
@@ -248,10 +239,9 @@ export function SearchProvider({
     defaultOptions,
   );
 
-  const [selectCredits, setSelectCredits] = useSessionStorageState<Option[]>(
-    'selectCredits',
-    defaultOptions,
-  );
+  const [selectCredits, setSelectCredits] = useSessionStorageState<
+    Option<number>[]
+  >('selectCredits', defaultOptions);
 
   const [searchDescription, setSearchDescription] = useLocalStorageState(
     'searchDescription',
@@ -324,18 +314,14 @@ export function SearchProvider({
   }, [user.friendWorksheets]);
 
   // Populate seasons from database
-  let seasonsOptions: OptType | undefined = undefined;
   const { seasons: seasonsData } = useFerry();
-  if (seasonsData && seasonsData.seasons) {
-    seasonsOptions = seasonsData.seasons.map((x) => {
-      const seasonOption: Option = {
-        value: x.season_code,
-        // Capitalize term and add year
-        label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
-      };
-      return seasonOption;
-    });
-  }
+  const seasonsOptions = seasonsData.seasons.map(
+    (x): Option => ({
+      value: x.season_code,
+      // Capitalize term and add year
+      label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
+    }),
+  );
 
   const requiredSeasons = useMemo((): Season[] => {
     if (!isLoggedIn) {

@@ -1,6 +1,7 @@
 import React from 'react';
-import type { OptionTypeBase, Props as SelectProps } from 'react-select';
+import type { Props as SelectProps } from 'react-select';
 import CustomSelect from '../CustomSelect';
+import type { Option } from '../../contexts/searchContext';
 
 type Props = {
   readonly popout?: boolean;
@@ -11,12 +12,14 @@ type Props = {
 /**
  * Popout select component for select filters in popout dropdowns
  */
-export function Searchbar<T extends OptionTypeBase, IsMulti extends boolean>({
+export function Searchbar<
+  T extends Option<number | string>,
+  IsMulti extends boolean,
+>({
   isMulti = false as IsMulti,
   isClearable = true,
   hideSelectedOptions = true,
   components,
-  handleInputChange,
   onKeyDown,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
@@ -31,7 +34,6 @@ export function Searchbar<T extends OptionTypeBase, IsMulti extends boolean>({
       backspaceRemovesValue={false}
       components={components}
       controlShouldRenderValue
-      handleInputChange={handleInputChange}
       hideSelectedOptions={hideSelectedOptions}
       isClearable={isClearable}
       menuIsOpen
