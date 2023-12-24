@@ -5,8 +5,8 @@ services:
         - HOT_RELOAD=false
     restart: always
     ports:
-      - '8039:8039'
-      - '8038:8080'
+      - '${INSECURE_PORT:-8039}:${INSECURE_PORT:-8039}'
+      - '${SECURE_PORT:-8038}:${SECURE_PORT:-8038}'
     expose:
       - '8039'
     volumes:

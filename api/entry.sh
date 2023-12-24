@@ -6,5 +6,5 @@ if [ "$HOT_RELOAD" = "true" ]; then
   npm run start
 else
   # Run the server in production mode
-  npm run start
+  npm run start:prod
 fi

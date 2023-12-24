@@ -3,7 +3,7 @@
     "generate": "prisma generate",
     "prestart": "prisma generate",
     "start": "ts-node-dev --transpile-only --debug --files --exit-child src/server.ts",
-    "start:prod": "ts-node --transpile-only --files src/server.ts"
+    "start:prod": "prisma generate && ts-node --transpile-only --files src/server.ts"
   },
   "nodemonConfig": {
     "ignore": [
