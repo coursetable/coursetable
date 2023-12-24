@@ -3,19 +3,19 @@ import { type DefaultTheme, useTheme } from 'styled-components';
 import makeAnimated from 'react-select/animated';
 import chroma from 'chroma-js';
 import Select, {
-  type OptionTypeBase,
+  mergeStyles,
   type Props as SelectProps,
   type StylesConfig,
   type Theme,
-  mergeStyles,
+  type ThemeConfig,
 } from 'react-select';
-import type { ThemeConfig } from 'react-select/src/theme';
+import type { Option } from '../contexts/searchContext';
 
 // Styles for the select indicators
-function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
-  theme: DefaultTheme,
-  isMulti: IsMulti,
-): StylesConfig<T, IsMulti> {
+function indicatorStyles<
+  T extends Option<number | string>,
+  IsMulti extends boolean,
+>(theme: DefaultTheme, isMulti: IsMulti): StylesConfig<T, IsMulti> {
   const iconFocus = chroma(theme.iconFocus);
   const icon = chroma(theme.icon);
   const newIconFocus =
@@ -52,9 +52,9 @@ function indicatorStyles<T extends OptionTypeBase, IsMulti extends boolean>(
 }
 
 // Styles for default select
-function defaultStyles<T extends OptionTypeBase>(
+function defaultStyles<T extends Option<number | string>>(
   theme: DefaultTheme,
-): StylesConfig<T, boolean> {
+): StylesConfig<T> {
   return {
     // @ts-expect-error: probably wrong react-select type def
     control: (base, { isDisabled }) => ({
@@ -84,8 +84,8 @@ function defaultStyles<T extends OptionTypeBase>(
     }),
     // @ts-expect-error: probably wrong react-select type def
     menuPortal: (base) => ({ ...base, zIndex: 9999 }),
-    multiValue: (base) => ({ ...base }),
-    multiValueLabel: (base) => ({ ...base }),
+    multiValue: (base) => base,
+    multiValueLabel: (base) => base,
     // @ts-expect-error: probably wrong react-select type def
     option: (base, { isSelected }) => ({
       ...base,
@@ -104,7 +104,7 @@ function defaultStyles<T extends OptionTypeBase>(
 function popoutStyles(
   theme: DefaultTheme,
   width: number,
-): StylesConfig<OptionTypeBase, boolean> {
+): StylesConfig<Option<number | string>> {
   return {
     // @ts-expect-error: probably wrong react-select type def
     control: (base, { isDisabled }) => ({
@@ -130,14 +130,14 @@ function popoutStyles(
 }
 
 // Styles for skills/areas select
-function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
+function colorStyles(): StylesConfig<Option<number | string>> {
   return {
     // @ts-expect-error: probably wrong react-select type def
     multiValue(base, { data }) {
-      const color = chroma(data.color);
+      const backgroundColor = chroma(data.color!).alpha(0.16).css();
       return {
         ...base,
-        backgroundColor: color.alpha(0.16).css(),
+        backgroundColor,
       };
     },
     // @ts-expect-error: probably wrong react-select type def
@@ -157,7 +157,7 @@ function colorStyles(): StylesConfig<OptionTypeBase, boolean> {
     }),
     // @ts-expect-error: probably wrong react-select type def
     option(base, { data, isDisabled, isFocused, isSelected }) {
-      const color = chroma(data.color);
+      const color = chroma(data.color!);
       return {
         ...base,
         fontWeight: 'bold',
@@ -199,7 +199,7 @@ type Props = {
  * @prop isMulti - multi select?
  */
 function CustomSelect<
-  T extends OptionTypeBase,
+  T extends Option<string | number>,
   IsMulti extends boolean = false,
 >({
   popout = false,
@@ -228,7 +228,7 @@ function CustomSelect<
 
   // Makes Select forms animated
   const animatedComponents = useMemo(
-    () => components ?? makeAnimated<T, IsMulti>(),
+    () => components ?? makeAnimated(),
     [components],
   );
 

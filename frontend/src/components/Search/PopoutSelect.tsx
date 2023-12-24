@@ -1,6 +1,7 @@
 import React from 'react';
-import type { OptionTypeBase, Props as SelectProps } from 'react-select';
+import type { Props as SelectProps } from 'react-select';
 import CustomSelect from '../CustomSelect';
+import type { Option } from '../../contexts/searchContext';
 
 type Props = {
   readonly hideSelectedOptions?: boolean;
@@ -12,7 +13,7 @@ type Props = {
  * Popout select component for select filters in popout dropdowns
  */
 export function PopoutSelect<
-  T extends OptionTypeBase,
+  T extends Option<number | string>,
   IsMulti extends boolean,
 >({
   isMulti = false as IsMulti,

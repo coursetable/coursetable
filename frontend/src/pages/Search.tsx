@@ -4,7 +4,6 @@ import { Handle, Range } from 'rc-slider';
 import { Element, scroller } from 'react-scroll';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
-import type { ValueType } from 'react-select/src/types';
 
 import styles from './Search.module.css';
 import Results from '../components/Search/Results';
@@ -28,6 +27,11 @@ import {
   type Option,
   defaultFilters,
 } from '../contexts/searchContext';
+
+/**
+ * Identity function that casts a readonly array to a writable array
+ */
+const asWritable = <T,>(value: readonly T[]) => value as T[];
 
 /**
  * Renders catalog page
@@ -169,17 +173,15 @@ function Search() {
                   {/* Seasons Multi-Select */}
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     {seasonsOptions && (
-                      <CustomSelect
+                      <CustomSelect<Option, true>
                         isMulti
                         value={selectSeasons}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
                         // Prevent overlap with tooltips
                         menuPortalTarget={document.body}
-                        onChange={(
-                          selectedOption: ValueType<Option, boolean>,
-                        ) =>
-                          setSelectSeasons((selectedOption as Option[]) || [])
+                        onChange={(selectedOption) =>
+                          setSelectSeasons(asWritable(selectedOption))
                         }
                       />
                     )}
@@ -188,7 +190,7 @@ function Search() {
                   <div
                     className={`col-md-12 p-0  ${styles.selector_container}`}
                   >
-                    <CustomSelect
+                    <CustomSelect<Option, true>
                       isMulti
                       value={selectSkillsAreas}
                       options={skillsAreasOptions}
@@ -196,8 +198,8 @@ function Search() {
                       useColors
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
-                      onChange={(selectedOption: ValueType<Option, boolean>) =>
-                        setSelectSkillsAreas((selectedOption as Option[]) || [])
+                      onChange={(selectedOption) =>
+                        setSelectSkillsAreas(asWritable(selectedOption))
                       }
                     />
                   </div>
@@ -210,14 +212,14 @@ function Search() {
                     placeholder="All Credits"
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      setSelectCredits((selectedOption as Option[]) || []);
+                    onChange={(selectedOption) => {
+                      setSelectCredits(selectedOption);
                     }}
                   />
                 </div> */}
                   {/* Yale Subjects Multi-Select */}
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
-                    <CustomSelect
+                    <CustomSelect<Option, true>
                       isMulti
                       value={selectSubjects}
                       options={subjectOptions}
@@ -225,24 +227,22 @@ function Search() {
                       isSearchable
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
-                      onChange={(selectedOption: ValueType<Option, boolean>) =>
-                        setSelectSubjects((selectedOption as Option[]) || [])
+                      onChange={(selectedOption) =>
+                        setSelectSubjects(asWritable(selectedOption))
                       }
                     />
                   </div>
                   {/* Yale Schools Multi-Select */}
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
-                    <CustomSelect
+                    <CustomSelect<Option, true>
                       isMulti
                       value={selectSchools}
                       options={schoolOptions}
                       placeholder="All Schools"
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
-                      onChange={(
-                        selectedOption: ValueType<Option, boolean>,
-                      ) => {
-                        setSelectSchools((selectedOption as Option[]) || []);
+                      onChange={(selectedOption) => {
+                        setSelectSchools(asWritable(selectedOption));
                       }}
                     />
                   </div>

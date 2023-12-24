@@ -14,8 +14,8 @@ import { CUR_SEASON } from '../config';
 import { useFerry, useWorksheetInfo } from './ferryContext';
 import { toSeasonString } from '../utilities/course';
 import { useUser, type Worksheet } from './userContext';
+import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
-import type { OptType } from './searchContext';
 
 export type HiddenCourses = {
   [seasonCode: Season]: { [crn: Crn]: boolean };
@@ -27,7 +27,7 @@ export type WorksheetView =
 
 type Store = {
   seasonCodes: Season[];
-  seasonOptions: OptType;
+  seasonOptions: Option[];
   curWorksheet: Worksheet;
   curSeason: Season;
   worksheetNumber: string;

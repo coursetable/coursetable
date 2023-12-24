@@ -10,7 +10,6 @@ import { useSearchParams } from 'react-router-dom';
 import { GlobalHotKeys } from 'react-hotkeys';
 import { scroller } from 'react-scroll';
 import styled, { useTheme } from 'styled-components';
-import type { ValueType } from 'react-select/src/types';
 import { Range } from 'rc-slider';
 import { IoClose } from 'react-icons/io5';
 import chroma from 'chroma-js';
@@ -113,7 +112,7 @@ const AdvancedLabel = styled.div`
 `;
 
 // Advanced select in dropdown
-const AdvancedSelect = styled(CustomSelect)`
+const AdvancedSelect = styled(CustomSelect<Option<string | number>, true>)`
   width: 80%;
 `;
 
@@ -177,6 +176,11 @@ const CloseIcon = styled(IoClose)`
         : chroma(theme.iconFocus).brighten().css()};
   }
 `;
+
+/**
+ * Identity function that casts a readonly array to a writable array
+ */
+const asWritable = <T,>(value: readonly T[]) => value as T[];
 
 /**
  * Catalog search form for the desktop in the navbar
@@ -325,7 +329,9 @@ export function NavbarCatalogSearch() {
 
   // Consolidate all advanced filters' selected options
   const advancedOptions = useMemo(
-    () => ({
+    (): {
+      [key: string]: { [key: string]: Option<string | number>[] | boolean };
+    } => ({
       selects: {
         selectDays,
         selectSchools,
@@ -382,6 +388,9 @@ export function NavbarCatalogSearch() {
     }
     return undefined;
   }, [searchText, globalTheme]);
+
+  // Prevent overlap with tooltips
+  const menuPortalTarget = document.querySelector<HTMLElement>('#portal');
 
   return (
     <>
@@ -463,13 +472,13 @@ export function NavbarCatalogSearch() {
                   selectOptions={selectSubjects}
                   dataTutorial={2}
                 >
-                  <PopoutSelect
+                  <PopoutSelect<Option, true>
                     isMulti
                     value={selectSubjects}
                     options={subjectOptions}
                     placeholder="All Subjects"
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      setSelectSubjects((selectedOption as Option[]) || []);
+                    onChange={(selectedOption) => {
+                      setSelectSubjects(asWritable(selectedOption));
                       setStartTime(Date.now());
                     }}
                   />
@@ -485,14 +494,13 @@ export function NavbarCatalogSearch() {
                   selectOptions={selectSkillsAreas}
                   className="mr-0"
                 >
-                  <PopoutSelect
-                    useColors
+                  <PopoutSelect<Option, true>
                     isMulti
                     value={selectSkillsAreas}
                     options={skillsAreasOptions}
                     placeholder="All Areas/Skills"
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      setSelectSkillsAreas((selectedOption as Option[]) || []);
+                    onChange={(selectedOption) => {
+                      setSelectSkillsAreas(asWritable(selectedOption));
                       setStartTime(Date.now());
                     }}
                   />
@@ -526,10 +534,10 @@ export function NavbarCatalogSearch() {
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
                   defaultValue={overallBounds}
-                  onChange={(value: React.SetStateAction<number[]>) => {
+                  onChange={(value) => {
                     setOverallValueLabels(value);
                   }}
-                  onAfterChange={(value: React.SetStateAction<number[]>) => {
+                  onAfterChange={(value) => {
                     setOverallBounds(value);
                     setStartTime(Date.now());
                   }}
@@ -557,10 +565,10 @@ export function NavbarCatalogSearch() {
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
                   defaultValue={workloadBounds}
-                  onChange={(value: React.SetStateAction<number[]>) => {
+                  onChange={(value) => {
                     setWorkloadValueLabels(value);
                   }}
-                  onAfterChange={(value: React.SetStateAction<number[]>) => {
+                  onAfterChange={(value) => {
                     setWorkloadBounds(value);
                     setStartTime(Date.now());
                   }}
@@ -578,14 +586,14 @@ export function NavbarCatalogSearch() {
                 }}
                 selectOptions={selectSeasons}
               >
-                <PopoutSelect
+                <PopoutSelect<Option, true>
                   isMulti
                   value={selectSeasons}
                   options={seasonsOptions}
                   placeholder="Last 5 Years"
                   hideSelectedOptions={false}
-                  onChange={(selectedOption: ValueType<Option, boolean>) => {
-                    setSelectSeasons((selectedOption as Option[]) || []);
+                  onChange={(selectedOption) => {
+                    setSelectSeasons(asWritable(selectedOption));
                     setStartTime(Date.now());
                   }}
                 />
@@ -635,12 +643,9 @@ export function NavbarCatalogSearch() {
                         value={selectSubjects}
                         options={subjectOptions}
                         placeholder="All Subjects"
-                        // Prevent overlap with tooltips
-                        menuPortalTarget={document.querySelector('#portal')}
-                        onChange={(
-                          selectedOption: ValueType<Option, boolean>,
-                        ) => {
-                          setSelectSubjects((selectedOption as Option[]) || []);
+                        menuPortalTarget={menuPortalTarget}
+                        onChange={(selectedOption) => {
+                          setSelectSubjects(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -655,14 +660,9 @@ export function NavbarCatalogSearch() {
                         value={selectSkillsAreas}
                         options={skillsAreasOptions}
                         placeholder="All Areas/Skills"
-                        // Prevent overlap with tooltips
-                        menuPortalTarget={document.querySelector('#portal')}
-                        onChange={(
-                          selectedOption: ValueType<Option, boolean>,
-                        ) => {
-                          setSelectSkillsAreas(
-                            (selectedOption as Option[]) || [],
-                          );
+                        menuPortalTarget={menuPortalTarget}
+                        onChange={(selectedOption) => {
+                          setSelectSkillsAreas(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -676,12 +676,9 @@ export function NavbarCatalogSearch() {
                         value={selectSeasons}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
-                        // Prevent overlap with tooltips
-                        menuPortalTarget={document.querySelector('#portal')}
-                        onChange={(
-                          selectedOption: ValueType<Option, boolean>,
-                        ) => {
-                          setSelectSeasons((selectedOption as Option[]) || []);
+                        menuPortalTarget={menuPortalTarget}
+                        onChange={(selectedOption) => {
+                          setSelectSeasons(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -697,10 +694,9 @@ export function NavbarCatalogSearch() {
                     value={selectDays}
                     options={dayOptions}
                     placeholder="All Days"
-                    // Prevent overlap with tooltips
-                    menuPortalTarget={document.querySelector('#portal')}
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      setSelectDays((selectedOption as Option[]) || []);
+                    menuPortalTarget={menuPortalTarget}
+                    onChange={(selectedOption) => {
+                      setSelectDays(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -736,10 +732,10 @@ export function NavbarCatalogSearch() {
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
                       defaultValue={timeBounds.map(toRangeTime)}
-                      onChange={(value: number[]) => {
+                      onChange={(value) => {
                         setTimeValueLabels(value.map(toRealTime));
                       }}
-                      onAfterChange={(value: number[]) => {
+                      onAfterChange={(value) => {
                         setTimeBounds(value.map(toRealTime));
                         setStartTime(Date.now());
                       }}
@@ -770,12 +766,12 @@ export function NavbarCatalogSearch() {
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
                       defaultValue={enrollBounds.map(toLinear)}
-                      onChange={(value: number[]) => {
+                      onChange={(value) => {
                         setEnrollValueLabels(
                           value.map(toExponential).map(Math.round),
                         );
                       }}
-                      onAfterChange={(value: number[]) => {
+                      onAfterChange={(value) => {
                         setEnrollBounds(value.map(toExponential));
                         setStartTime(Date.now());
                       }}
@@ -820,12 +816,10 @@ export function NavbarCatalogSearch() {
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
                       defaultValue={numBounds}
-                      onChange={(value: React.SetStateAction<number[]>) => {
+                      onChange={(value) => {
                         setNumValueLabels(value);
                       }}
-                      onAfterChange={(
-                        value: React.SetStateAction<number[]>,
-                      ) => {
+                      onAfterChange={(value) => {
                         setNumBounds(value);
                         setStartTime(Date.now());
                       }}
@@ -841,10 +835,9 @@ export function NavbarCatalogSearch() {
                     value={selectSchools}
                     options={schoolOptions}
                     placeholder="All Schools"
-                    // Prevent overlap with tooltips
-                    menuPortalTarget={document.querySelector('#portal')}
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      setSelectSchools((selectedOption as Option[]) || []);
+                    menuPortalTarget={menuPortalTarget}
+                    onChange={(selectedOption) => {
+                      setSelectSchools(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -858,10 +851,12 @@ export function NavbarCatalogSearch() {
                     value={selectCredits}
                     options={creditOptions}
                     placeholder="All Credits"
-                    // Prevent overlap with tooltips
-                    menuPortalTarget={document.querySelector('#portal')}
-                    onChange={(selectedOption: ValueType<Option, boolean>) => {
-                      setSelectCredits((selectedOption as Option[]) || []);
+                    menuPortalTarget={menuPortalTarget}
+                    onChange={(selectedOption) => {
+                      // If you want to get rid of these `as` casts:
+                      // Don't think about these generics too much. It poisons
+                      // your brain.
+                      setSelectCredits(selectedOption as Option<number>[]);
                       setStartTime(Date.now());
                     }}
                   />
