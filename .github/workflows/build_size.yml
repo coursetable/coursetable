@@ -31,7 +31,7 @@ jobs:
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           build-script: build
-          pattern: 'frontend/build/assets/*.{js,css}'
+          pattern: 'build/assets/*.{js,css}'
           strip-hash: '-\w+(?=\.js|css)'
           minimum-change-threshold: 30
           compression: none
