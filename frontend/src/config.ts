@@ -2,9 +2,7 @@ import type { Season } from './utilities/common';
 
 export const isDev = import.meta.env.DEV;
 
-export const API_ENDPOINT = isDev
-  ? 'https://localhost:3001'
-  : import.meta.env.VITE_API_ENDPOINT;
+export const API_ENDPOINT = import.meta.env.VITE_API_ENDPOINT;
 
 export const GRAPHQL_API_ENDPOINT = isDev
   ? 'https://localhost:8085'
