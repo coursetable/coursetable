@@ -12,28 +12,10 @@ import CourseModal from './components/CourseModal/CourseModal';
 
 import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './utilities/browserStorage';
+import { suspended } from './utilities/display';
 import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
-
-function suspended(
-  factory: () => Promise<{ default: React.ComponentType<unknown> }>,
-) {
-  const Comp = React.lazy(factory);
-  return () => (
-    <React.Suspense
-      fallback={
-        <Row className="m-auto" style={{ width: '100%', height: '100%' }}>
-          <Spinner className="m-auto" animation="border" role="status">
-            <span className="sr-only">Loading...</span>
-          </Spinner>
-        </Row>
-      }
-    >
-      <Comp />
-    </React.Suspense>
-  );
-}
 
 const Landing = suspended(() => import('./pages/Landing'));
 const Search = suspended(() => import('./pages/Search'));
