@@ -192,7 +192,6 @@ function CustomSelect<
   components,
   ...props
 }: SelectProps<T, IsMulti> & Props) {
-  console.log({ props, useColors });
   const globalTheme = useTheme();
 
   // All the default theme colors
