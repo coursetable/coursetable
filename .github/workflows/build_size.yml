@@ -1,0 +1,38 @@
+name: Build Performance
+
+on:
+  pull_request:
+    branches:
+      - master
+    paths:
+      - frontend/**
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  build-size:
+    name: Build size report
+    timeout-minutes: 30
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Use Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+      - name: Install
+        run: bun install --frozen-lockfile
+        working-directory: ./frontend
+      - name: Track build size changes
+        uses: preactjs/compressed-size-action@v2
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          build-script: build
+          pattern: 'frontend/build/assets/*.{js,css}'
+          strip-hash: '-\w+(?=\.js|css)'
+          minimum-change-threshold: 30
+          compression: none
+          cwd: ./frontend
