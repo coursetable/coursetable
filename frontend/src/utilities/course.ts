@@ -1,8 +1,4 @@
 // Performing various actions on the listing dictionary
-// TODO
-// eslint-disable-next-line no-restricted-imports
-import moment from 'moment';
-
 import {
   type Crn,
   type Season,
@@ -67,16 +63,11 @@ export function checkConflict(listings: Listing[], course: Listing): Listing[] {
       if (info === undefined) continue;
       const courseInfo = course.times_by_day[day]!;
       for (const [startTime, endTime] of info) {
-        const listingStart = moment(startTime, 'HH:mm');
-        const listingEnd = moment(endTime, 'HH:mm');
+        const listingStart = toRangeTime(startTime);
+        const listingEnd = toRangeTime(endTime);
         for (const [courseStartTime, courseEndTime] of courseInfo) {
-          const curStart = moment(courseStartTime, 'HH:mm');
-          const curEnd = moment(courseEndTime, 'HH:mm');
-          // Fix invalid times
-          if (listingStart.hour() < 7) listingStart.add(12, 'h');
-          if (listingEnd.hour() < 7) listingEnd.add(12, 'h');
-          if (curStart.hour() < 7) curStart.add(12, 'h');
-          if (curEnd.hour() < 7) curEnd.add(12, 'h');
+          const curStart = toRangeTime(courseStartTime);
+          const curEnd = toRangeTime(courseEndTime);
           // Conflict exists
           if (
             !(listingStart > curEnd || curStart > listingEnd) &&
