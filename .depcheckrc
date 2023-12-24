@@ -1,8 +1,6 @@
 {
   "ignores": [
     "ts-node",
-    "jest",
-    "@sentry/tracing",
     "graphql",
     "@graphql-codegen/*",
     "graphql-tag",

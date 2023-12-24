@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run resize-image:check && bun run typecheck",
-    "checks:fix": "bun run format && bun run lint:fix && bun run resize-image:check",
+    "checks:fix": "bun run format && bun run lint && bun run resize-image",
     "typecheck": "tsc && tsc -p frontend && tsc -p api",
     "depcheck": "bunx depcheck .",
     "format": "prettier --write .",

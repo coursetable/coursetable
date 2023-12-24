@@ -1,8 +1,7 @@
 services:
   api:
     ports:
-      - '4096:4096'
-      - '3001:3001'
+      - '${SECURE_PORT:-3001}:${SECURE_PORT:-3001}'
     volumes:
       - ../api/static:/usr/src/app/static
       - ../api/src:/usr/src/app/src

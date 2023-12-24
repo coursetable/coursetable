@@ -1,6 +1,7 @@
 // Performing various actions on the listing dictionary
+// TODO
+// eslint-disable-next-line no-restricted-imports
 import moment from 'moment';
-import { DateTime } from 'luxon';
 
 import {
   type Crn,
@@ -345,7 +346,10 @@ export function getEnrolled(
   return usage === 'modal' ? 'N/A' : '';
 }
 
-// Convert real time (24 hour) to range time
+/**
+ * @param time A time in the format `hh:mm` (24 hour)
+ * @returns Number of 5 minutes past midnight
+ */
 export function toRangeTime(time: string): number {
   // Get hour and minute
   const splitTime = time.split(':');
@@ -357,24 +361,33 @@ export function toRangeTime(time: string): number {
   return rangeTime;
 }
 
-// Convert range time to real time (24 hour)
+/**
+ * @param time Number of 5 minutes past midnight
+ * @returns A time in the format `hh:mm` (24 hour)
+ */
 export function toRealTime(time: number): string {
   // Get hour and minute
   const hour = Math.floor(time / 12);
   const minute = (time % 12) * 5;
 
   // Format real time
-  const realTime = `${hour}:${minute < 10 ? `0${minute}` : minute}`;
+  const realTime = `${hour}:${minute.toString().padStart(2, '0')}`;
   return realTime;
 }
 
-// Convert 24 hour time to 12 hour time
-export const to12HourTime = (time: string): string =>
-  DateTime.fromFormat(time, 'H:mm').toFormat('h:mma');
-
-// Convert 12 hour time to 24 hour time
-export const to24HourTime = (time: string): string =>
-  DateTime.fromFormat(time, 'h:mm').toFormat('H:mm');
+/**
+ * @param time A time in the format `hh:mm` (24 hour)
+ * @returns The same time in 12 hour, with `pm`/`am` suffix
+ */
+export function to12HourTime(time: string) {
+  const [hour, minute] = time.split(':');
+  let hourInt = parseInt(hour, 10);
+  const ampm = hourInt >= 12 ? 'pm' : 'am';
+  hourInt %= 12;
+  if (hourInt === 0) hourInt = 12;
+  const minuteInt = parseInt(minute, 10);
+  return `${hourInt}:${minuteInt.toString().padStart(2, '0')}${ampm}`;
+}
 
 // Base log
 const getBaseLog = (x: number, y: number) => Math.log(y) / Math.log(x);

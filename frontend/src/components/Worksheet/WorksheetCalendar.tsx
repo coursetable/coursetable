@@ -1,5 +1,8 @@
 import React, { type CSSProperties, useCallback, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+
+// TODO
+// eslint-disable-next-line no-restricted-imports
 import moment from 'moment';
 import { Calendar, momentLocalizer } from 'react-big-calendar';
 import 'react-big-calendar/lib/css/react-big-calendar.css';

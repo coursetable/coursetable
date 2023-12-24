@@ -33,22 +33,13 @@ import {
   friendsAlsoTaking,
   getEnrolled,
   toSeasonString,
+  to12HourTime,
 } from '../../utilities/course';
 import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
 import { weekdays, type Season, type Crn } from '../../utilities/common';
-
-function convert24To12(time: string) {
-  const [hour, minute] = time.split(':');
-  let hourInt = parseInt(hour, 10);
-  const ampm = hourInt >= 12 ? 'pm' : 'am';
-  hourInt %= 12;
-  if (hourInt === 0) hourInt = 12;
-  const minuteInt = parseInt(minute, 10);
-  return `${hourInt}:${minuteInt.toString().padStart(2, '0')}${ampm}`;
-}
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
@@ -183,7 +174,7 @@ function CourseModalOverview({
         );
       }
       locations.set(location, locationURL);
-      const timespan = `${convert24To12(startTime)}-${convert24To12(endTime)}`;
+      const timespan = `${to12HourTime(startTime)}-${to12HourTime(endTime)}`;
       if (!times.has(timespan)) times.set(timespan, new Set());
 
       // Note! Some classes have multiple places at the same time, particularly
