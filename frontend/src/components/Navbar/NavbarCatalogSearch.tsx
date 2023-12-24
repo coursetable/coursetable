@@ -495,6 +495,7 @@ export function NavbarCatalogSearch() {
                   className="mr-0"
                 >
                   <PopoutSelect<Option, true>
+                    useColors
                     isMulti
                     value={selectSkillsAreas}
                     options={skillsAreasOptions}

@@ -7,6 +7,7 @@ type Props = {
   readonly hideSelectedOptions?: boolean;
   readonly isClearable?: boolean;
   readonly isMulti?: boolean;
+  readonly useColors?: boolean;
 };
 
 /**
