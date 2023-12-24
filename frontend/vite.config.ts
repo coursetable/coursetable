@@ -21,6 +21,12 @@ export default defineConfig({
   ],
   build: {
     outDir: './build',
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name]-[hash:10][extname]',
+        chunkFileNames: 'assets/[name]-[hash:10].js',
+      },
+    },
   },
   server: {
     port: Number(process.env.PORT) || 3000,
