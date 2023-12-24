@@ -5,7 +5,7 @@
     "build": "vite build",
     "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml",
     "serve": "vite preview",
-    "start": "vite --https",
+    "start": "vite",
     "test": "vite test",
     "postinstall": "patch-package"
   },
@@ -82,7 +82,7 @@
     "tsconfig-jc": "^2.3.1",
     "typescript": "~5.3.3",
     "typescript-plugin-css-modules": "^5.0.2",
-    "vite": "^4.5.1",
+    "vite": "^5.0.10",
     "vite-plugin-html": "^3.2.0"
   }
 }
