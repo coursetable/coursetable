@@ -27,6 +27,7 @@
     "graphiql": "^3.0.10",
     "graphql": "^16.8.1",
     "graphql-tag": "^2.12.6",
+    "lodash": "^4.17.21",
     "lodash.debounce": "^4.0.8",
     "mark.js": "^8.11.1",
     "moment": "^2.29.4",
