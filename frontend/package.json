@@ -29,7 +29,6 @@
     "graphql-tag": "^2.12.6",
     "lodash.debounce": "^4.0.8",
     "mark.js": "^8.11.1",
-    "moment": "^2.29.4",
     "qs": "^6.11.2",
     "rc-slider": "9.7.1",
     "rc-tooltip": "^5.1.0",
