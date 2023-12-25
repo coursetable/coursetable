@@ -13,7 +13,7 @@ export const addFriend = async (
 ): Promise<express.Response> => {
   winston.info('Adding new friend');
 
-  if (!req.user) return res.status(400).json({ success: false });
+  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
 
   const { netId } = req.user;
 
