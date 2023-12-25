@@ -331,7 +331,6 @@ export function NavbarWorksheetSearch() {
                 }
                 onChange={async (selectedOption) => {
                   if (selectedOption && isOption(selectedOption)) {
-                    await resolveFriendRequest(selectedOption.value);
                     if (deleting === 0) {
                       await Promise.all([
                         addFriend(selectedOption.value, user.netId),
@@ -343,6 +342,8 @@ export function NavbarWorksheetSearch() {
                         `Declined friend request: ${selectedOption.value}`,
                       );
                     }
+                    await resolveFriendRequest(selectedOption.value);
+
                     window.location.reload();
                   }
                 }}

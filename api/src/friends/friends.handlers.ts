@@ -13,18 +13,33 @@ export const addFriend = async (
 ): Promise<express.Response> => {
   winston.info('Adding new friend');
 
-  if (!req.user) return res.status(401).json({ success: false });
+  if (!req.user) return res.status(400).json({ success: false });
+
+  const { netId } = req.user;
 
   if (
     !req.query ||
-    typeof req.query.id !== 'string' ||
+    typeof netId !== 'string' ||
     typeof req.query.id2 !== 'string'
   )
-    return res.status(401).json({ success: false });
-
-  const netId = req.query.id2;
+    return res.status(400).json({ success: false });
 
   const friendNetId = req.query.id;
+
+  // make sure user has a friend request to accept
+  try {
+    const friendRequest = await prisma.studentFriendRequests.findFirst({
+      where: {
+        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
+      },
+    });
+
+    if (!friendRequest) return res.status(400).json({ success: false });
+  } catch (err) {
+    winston.error(`Error with finding friend request: ${err}`);
+    return res.status(500).json({ success: false });
+  }
+
 
   try {
     await prisma.$transaction([
@@ -57,16 +72,17 @@ export const removeFriend = async (
 ): Promise<express.Response> => {
   winston.info('Removing friend');
 
-  if (!req.user) return res.status(401).json({ success: false });
+  if (!req.user) return res.status(400).json({ success: false });
+
+  const { netId } = req.user;
 
   if (
     !req.query ||
-    typeof req.query.id !== 'string' ||
+    typeof netId !== 'string' ||
     typeof req.query.id2 !== 'string'
   )
     return res.status(401).json({ success: false });
 
-  const netId = req.query.id2;
 
   const friendNetId = req.query.id;
 
