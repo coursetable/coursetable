@@ -11,6 +11,7 @@ import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
 import { worksheetColors } from '../utilities/constants';
+import { toSeasonString } from '../utilities/course';
 import { fetchCatalog } from '../utilities/api';
 import { useUser, type UserWorksheets } from './userContext';
 import seasonsData from '../generated/seasons.json';
@@ -152,13 +153,44 @@ export function useWorksheetInfo(
       worksheet.forEach(({ crn }, i) => {
         const listing = courses[seasonCode]!.get(crn);
         if (!listing) {
-          // This error is unactionable.
-          // https://github.com/coursetable/coursetable/pull/1508
-          // Sentry.captureException(
-          //   new Error(
-          //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
-          //   ),
-          // );
+          toast.error(
+            <div>
+              We recorded a course with CRN {crn} in your worksheet for{' '}
+              {toSeasonString(seasonCode)}, but we can't find its information
+              now. Usually, this is non-critical. Try reloading the page. If the
+              issue persists, you can choose to remove this course. If you think
+              this is an error, please{' '}
+              <a
+                href="https://feedback.coursetable.com/"
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                report the problem
+              </a>
+              , including the name of the course that disappeared.
+              <button
+                type="button"
+                onClick={async () => {
+                  await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
+                    body: JSON.stringify({
+                      action: 'remove',
+                      season: seasonCode,
+                      crn,
+                      worksheetNumber,
+                    }),
+                    credentials: 'include',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                  });
+                  toast.dismiss();
+                }}
+              >
+                Remove this course
+              </button>
+            </div>,
+            { autoClose: false },
+          );
         } else {
           dataReturn.push({
             crn,
