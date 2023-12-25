@@ -33,8 +33,8 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
     inWorksheet
       ? theme.primaryLight
       : theme.theme === 'light'
-      ? 'rgb(245, 245, 245)'
-      : theme.surface[1]};
+        ? 'rgb(245, 245, 245)'
+        : theme.surface[1]};
   transition:
     border-color ${({ theme }) => theme.transDur},
     background-color ${({ theme }) => theme.transDur},
