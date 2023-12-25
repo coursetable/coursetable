@@ -37,22 +37,14 @@ const constructChallenge = (
   netid: string,
 ): express.Response => {
   // Array of course enrollment counts
-  let ratingIndices: number[] = [];
+  const ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
+    const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
-  try {
-    ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
-      const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
+    if (!Number.isInteger(evaluationRating.rating[ratingIndex]))
+      throw new Error(`Invalid rating index: ${ratingIndex}`);
 
-      if (!Number.isInteger(evaluationRating.rating[ratingIndex]))
-        throw new Error(`Invalid rating index: ${ratingIndex}`);
-
-      return ratingIndex;
-    });
-  } catch {
-    return res.status(500).json({
-      error: 'RATINGS_RETRIEVAL_ERROR',
-    });
-  }
+    return ratingIndex;
+  });
 
   // Array of CourseTable question IDs
   const ratingIds = evals.evaluation_ratings.map((x) => x.id);
@@ -254,7 +246,7 @@ export const verifyChallenge = async (
       (x) => `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
   } catch {
-    return res.status(406).json({
+    return res.status(400).json({
       error: 'INVALID_TOKEN',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
@@ -262,7 +254,7 @@ export const verifyChallenge = async (
   }
   // Ensure that netid in token is same as in headers
   if (secrets.netid !== netId) {
-    return res.status(406).json({
+    return res.status(400).json({
       error: 'INVALID_TOKEN',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
@@ -275,7 +267,7 @@ export const verifyChallenge = async (
         `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
   } catch {
-    return res.status(406).json({
+    return res.status(400).json({
       error: 'MALFORMED_ANSWERS',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
@@ -283,7 +275,7 @@ export const verifyChallenge = async (
   }
   // Make sure the provided ratings IDs and indices match those we have
   if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
-    return res.status(406).json({
+    return res.status(400).json({
       error: 'INVALID_TOKEN',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,

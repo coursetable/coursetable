@@ -175,19 +175,13 @@ function toRBCEvent({
   days,
 }: CalendarEvent): RBCEvent[] {
   // These are already LOCAL times because the time strings have no timezone!
-  const firstMeetStart = new Date(start);
-  const firstMeetEnd = new Date(end);
+  const firstStart = new Date(start);
+  const firstEnd = new Date(end);
   // RBC requires all events to be within *the current* week
   const startTime = new Date();
-  startTime.setHours(firstMeetStart.getHours());
-  startTime.setMinutes(firstMeetStart.getMinutes());
-  startTime.setSeconds(0);
-  startTime.setMilliseconds(0);
+  startTime.setHours(firstStart.getHours(), firstStart.getMinutes(), 0, 0);
   const endTime = new Date();
-  endTime.setHours(firstMeetEnd.getHours());
-  endTime.setMinutes(firstMeetEnd.getMinutes());
-  endTime.setSeconds(0);
-  endTime.setMilliseconds(0);
+  endTime.setHours(firstEnd.getHours(), firstEnd.getMinutes(), 0, 0);
   return days.map((day) => {
     const startTimeCpy = new Date(startTime);
     startTimeCpy.setDate(startTimeCpy.getDate() - startTimeCpy.getDay() + day);

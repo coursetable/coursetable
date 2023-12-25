@@ -19,7 +19,7 @@ export default (app: express.Express): void => {
   // Endpoint to print out user access
   app.get('/api/auth/check', (req, res) => {
     if (req.user) res.json({ auth: true, id: req.user.netId, user: req.user });
-    else res.json({ auth: false, id: null });
+    else res.json({ auth: false, id: null, user: null });
   });
 
   // CAS portal redirects

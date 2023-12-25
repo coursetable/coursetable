@@ -180,7 +180,7 @@ function Challenge() {
   // Fetch questions on component mount
   useEffect(() => {
     axios
-      .get(`${API_ENDPOINT}/api/challenge/request`, { withCredentials: true })
+      .post(`${API_ENDPOINT}/api/challenge/request`, { withCredentials: true })
       .then((res) => {
         // Questions not properly fetched
         if (!res.data || !res.data.body) {
