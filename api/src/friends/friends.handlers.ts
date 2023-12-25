@@ -261,7 +261,7 @@ export const getFriendsWorksheets = async (
 
     // Map netId to worksheets (list of [season, oci_id, worksheet_number])
     const worksheetsByFriend: {
-      [netId: string]: [string, number, number | null][];
+      [netId: string]: [string, string, string][];
     } = {};
     friendWorksheets.forEach(
       ({
@@ -273,12 +273,12 @@ export const getFriendsWorksheets = async (
         if (netId in worksheetsByFriend) {
           worksheetsByFriend[netId].push([
             String(season),
-            ociId,
-            worksheetNumber,
+            String(ociId),
+            String(worksheetNumber),
           ]);
         } else {
           worksheetsByFriend[netId] = [
-            [String(season), ociId, worksheetNumber],
+            [String(season), String(ociId), String(worksheetNumber)],
           ];
         }
       },
