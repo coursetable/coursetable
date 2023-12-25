@@ -26,7 +26,7 @@ export const addFriend = async (
 
   const friendNetId = req.query.id;
 
-  // make sure user has a friend request to accept
+  // Make sure user has a friend request to accept
   try {
     const friendRequest = await prisma.studentFriendRequests.findFirst({
       where: {
