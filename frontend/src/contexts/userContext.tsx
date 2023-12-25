@@ -124,9 +124,7 @@ export function UserProvider({
       try {
         const friendsWorksheets = await axios.get(
           `${API_ENDPOINT}/api/friends/worksheets`,
-          {
-            withCredentials: true,
-          },
+          { withCredentials: true },
         );
         if (!friendsWorksheets.data.success)
           throw new Error(friendsWorksheets.data.message);
@@ -151,9 +149,7 @@ export function UserProvider({
       try {
         const friendReqs = await axios.get(
           `${API_ENDPOINT}/api/friends/getRequests`,
-          {
-            withCredentials: true,
-          },
+          { withCredentials: true },
         );
         if (!friendReqs.data.success) throw new Error(friendReqs.data.message);
 
@@ -194,26 +190,32 @@ export function UserProvider({
   // Add Friend
   const addFriend = useCallback(
     (friendNetId: string): Promise<void> =>
-      axios.get(`${API_ENDPOINT}/api/friends/add/?id=${friendNetId}`, {
-        withCredentials: true,
-      }),
+      axios.post(
+        `${API_ENDPOINT}/api/friends/add`,
+        { friendNetId },
+        { withCredentials: true },
+      ),
     [],
   );
 
   // Remove Friend
   const removeFriend = useCallback(
     (friendNetId: string): Promise<void> =>
-      axios.get(`${API_ENDPOINT}/api/friends/remove/?id=${friendNetId}`, {
-        withCredentials: true,
-      }),
+      axios.post(
+        `${API_ENDPOINT}/api/friends/remove`,
+        { friendNetId },
+        { withCredentials: true },
+      ),
     [],
   );
 
   const friendRequest = useCallback(
     (friendNetId: string): Promise<void> =>
-      axios.get(`${API_ENDPOINT}/api/friends/request/?id=${friendNetId}`, {
-        withCredentials: true,
-      }),
+      axios.post(
+        `${API_ENDPOINT}/api/friends/request`,
+        { friendNetId },
+        { withCredentials: true },
+      ),
     [],
   );
 

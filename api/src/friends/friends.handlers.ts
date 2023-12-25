@@ -16,11 +16,12 @@ export const addFriend = async (
   if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
 
   const { netId } = req.user;
+  const { friendNetId } = req.body;
 
-  if (!req.query || typeof req.query.id !== 'string')
+  if (typeof friendNetId !== 'string')
     return res.status(400).json({ success: false });
 
-  const friendNetId = req.query.id;
+  if (netId === friendNetId) return res.status(400).json({ success: false });
 
   // Make sure user has a friend request to accept
   try {
@@ -86,11 +87,12 @@ export const removeFriend = async (
   if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
 
   const { netId } = req.user;
+  const { friendNetId } = req.body;
 
-  if (!req.query || typeof req.query.id !== 'string')
-    return res.status(401).json({ success: false });
+  if (typeof friendNetId !== 'string')
+    return res.status(400).json({ success: false });
 
-  const friendNetId = req.query.id;
+  if (netId === friendNetId) return res.status(400).json({ success: false });
 
   try {
     await prisma.$transaction([
@@ -123,11 +125,10 @@ export const friendRequest = async (
   if (!req.user) return res.status(401).json();
 
   const { netId } = req.user;
+  const { friendNetId } = req.body;
 
-  if (!req.query || typeof req.query.id !== 'string')
-    return res.status(401).json({ success: false });
-
-  const friendNetId = req.query.id;
+  if (typeof friendNetId !== 'string')
+    return res.status(400).json({ success: false });
 
   if (netId === friendNetId) return res.status(400).json({ success: false });
 
