@@ -51,7 +51,7 @@ type Store = {
   friendReqRefresh: (suppressError?: boolean) => Promise<void>;
   addFriend: (friendNetId: string) => Promise<void>;
   removeFriend: (friendNetId: string) => Promise<void>;
-  friendRequest: (friendNetId: string) => Promise<void>;
+  requestAddFriend: (friendNetId: string) => Promise<void>;
   getAllNames: (suppressError?: boolean) => Promise<void>;
 };
 
@@ -209,7 +209,7 @@ export function UserProvider({
     [],
   );
 
-  const friendRequest = useCallback(
+  const requestAddFriend = useCallback(
     (friendNetId: string): Promise<void> =>
       axios.post(
         `${API_ENDPOINT}/api/friends/request`,
@@ -253,7 +253,7 @@ export function UserProvider({
       friendReqRefresh,
       addFriend,
       removeFriend,
-      friendRequest,
+      requestAddFriend,
       getAllNames,
     }),
     [
@@ -263,7 +263,7 @@ export function UserProvider({
       friendReqRefresh,
       addFriend,
       removeFriend,
-      friendRequest,
+      requestAddFriend,
       getAllNames,
     ],
   );

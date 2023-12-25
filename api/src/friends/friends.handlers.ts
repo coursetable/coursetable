@@ -116,7 +116,7 @@ export const removeFriend = async (
   }
 };
 
-export const friendRequest = async (
+export const requestAddFriend = async (
   req: express.Request,
   res: express.Response,
 ): Promise<express.Response> => {

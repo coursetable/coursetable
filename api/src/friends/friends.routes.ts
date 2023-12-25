@@ -9,7 +9,7 @@ import {
   addFriend,
   removeFriend,
   getFriendsWorksheets,
-  friendRequest,
+  requestAddFriend,
   getRequestsForFriend,
   getNames,
 } from './friends.handlers';
@@ -22,7 +22,7 @@ export default (app: express.Express): void => {
   app.use(cookieParser());
   app.post('/api/friends/add', addFriend);
   app.post('/api/friends/remove', removeFriend);
-  app.post('/api/friends/request', friendRequest);
+  app.post('/api/friends/request', requestAddFriend);
   app.get('/api/friends/getRequests', getRequestsForFriend);
   app.get('/api/friends/worksheets', getFriendsWorksheets);
   app.get('/api/friends/names', getNames);

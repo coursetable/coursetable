@@ -121,7 +121,7 @@ export function NavbarWorksheetSearch() {
   }, [worksheetNumber]);
 
   // Fetch user context data
-  const { user, addFriend, removeFriend, friendRequest } = useUser();
+  const { user, addFriend, removeFriend, requestAddFriend } = useUser();
 
   // Friends names
   const friendInfo = useMemo(
@@ -353,7 +353,7 @@ export function NavbarWorksheetSearch() {
                 placeholder="Enter your friend's NetID (hit enter to add): "
                 onKeyDown={async (e) => {
                   if (e.key === 'Enter') {
-                    await friendRequest(currentFriendNetID);
+                    await requestAddFriend(currentFriendNetID);
                     toast.info(`Sent friend request: ${currentFriendNetID}`);
                   }
                 }}
