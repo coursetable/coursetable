@@ -71,7 +71,7 @@ export const removeFriend = async (
 ): Promise<express.Response> => {
   winston.info('Removing friend');
 
-  if (!req.user) return res.status(400).json({ success: false });
+  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
 
   const { netId } = req.user;
 
