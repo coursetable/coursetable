@@ -148,17 +148,17 @@ function colorStyles(): StylesConfig<Option<number | string>> {
         backgroundColor: isDisabled
           ? null
           : isSelected
-            ? data.color
-            : isFocused
-              ? color.alpha(0.1).css()
-              : null,
+          ? data.color
+          : isFocused
+          ? color.alpha(0.1).css()
+          : null,
         color: isDisabled
           ? '#ccc'
           : isSelected
-            ? chroma.contrast(color, 'white') > 2
-              ? 'white'
-              : 'black'
-            : data.color,
+          ? chroma.contrast(color, 'white') > 2
+            ? 'white'
+            : 'black'
+          : data.color,
 
         ':active': {
           ...base[':active'],

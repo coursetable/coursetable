@@ -346,8 +346,8 @@ function CourseModalOverview({
                 {filter === 'professor'
                   ? offering.course_code
                   : filter === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
+                  ? `Section ${offering.section}`
+                  : offering.professor[0]}
               </div>
             </StyledCol>
           ) : (
@@ -361,8 +361,8 @@ function CourseModalOverview({
                 {filter === 'professor'
                   ? offering.course_code
                   : filter === 'both'
-                    ? `Section ${offering.section}`
-                    : offering.professor[0]}
+                  ? `Section ${offering.section}`
+                  : offering.professor[0]}
               </div>
             </StyledColUnclickable>
           )}
@@ -846,8 +846,8 @@ function CourseModalOverview({
                   (e.key === 'ArrowLeft'
                     ? 2
                     : e.key === 'ArrowRight'
-                      ? 1
-                      : 0)) %
+                    ? 1
+                    : 0)) %
                 3;
               setFilter(options[newIndx].value);
             }}

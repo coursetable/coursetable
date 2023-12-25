@@ -40,7 +40,6 @@ export const addFriend = async (
     return res.status(500).json({ success: false });
   }
 
-
   try {
     await prisma.$transaction([
       prisma.studentFriends.upsert({
@@ -82,7 +81,6 @@ export const removeFriend = async (
     typeof req.query.id2 !== 'string'
   )
     return res.status(401).json({ success: false });
-
 
   const friendNetId = req.query.id;
 
