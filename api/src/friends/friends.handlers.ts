@@ -52,6 +52,22 @@ export const addFriend = async (
         // Update people's names if they've changed
         update: {},
       }),
+      // Bidirectional addition
+      prisma.studentFriends.upsert({
+        where: {
+          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
+        },
+        create: {
+          netId: friendNetId,
+          friendNetId: netId,
+        },
+        update: {},
+      }),
+      prisma.studentFriendRequests.delete({
+        where: {
+          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
+        },
+      }),
     ]);
 
     return res.json({ success: true });
@@ -81,6 +97,12 @@ export const removeFriend = async (
       prisma.studentFriends.delete({
         where: {
           netId_friendNetId: { netId, friendNetId },
+        },
+      }),
+      // Bidirectional deletion
+      prisma.studentFriends.delete({
+        where: {
+          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
         },
       }),
     ]);
@@ -130,36 +152,6 @@ export const friendRequest = async (
     return res.json({ success: true });
   } catch (err) {
     winston.error(`Error with upserting friend request: ${err}`);
-    return res.status(500).json({ success: false });
-  }
-};
-
-export const resolveFriendRequest = async (
-  req: express.Request,
-  res: express.Response,
-): Promise<express.Response> => {
-  winston.info(`Sending friend request`);
-
-  if (!req.user) return res.status(401).json();
-
-  const { netId } = req.user;
-
-  if (!req.query || typeof req.query.id !== 'string')
-    return res.status(401).json({ success: false });
-
-  const friendNetId = req.query.id;
-
-  try {
-    await prisma.$transaction([
-      prisma.studentFriendRequests.delete({
-        where: {
-          netId_friendNetId: { netId: friendNetId, friendNetId: netId },
-        },
-      }),
-    ]);
-    return res.json({ success: true });
-  } catch (err) {
-    winston.error(`Error with resolving friend request: ${err}`);
     return res.status(500).json({ success: false });
   }
 };

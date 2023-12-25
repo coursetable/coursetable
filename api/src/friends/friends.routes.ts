@@ -10,7 +10,6 @@ import {
   removeFriend,
   getFriendsWorksheets,
   friendRequest,
-  resolveFriendRequest,
   getRequestsForFriend,
   getNames,
 } from './friends.handlers';
@@ -24,7 +23,6 @@ export default (app: express.Express): void => {
   app.get('/api/friends/add', addFriend);
   app.get('/api/friends/remove', removeFriend);
   app.get('/api/friends/request', friendRequest);
-  app.get('/api/friends/resolveRequest', resolveFriendRequest);
   app.get('/api/friends/getRequests', getRequestsForFriend);
   app.get('/api/friends/worksheets', getFriendsWorksheets);
   app.get('/api/friends/names', getNames);

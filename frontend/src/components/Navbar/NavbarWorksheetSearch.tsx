@@ -121,8 +121,7 @@ export function NavbarWorksheetSearch() {
   }, [worksheetNumber]);
 
   // Fetch user context data
-  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest } =
-    useUser();
+  const { user, addFriend, removeFriend, friendRequest } = useUser();
 
   // Friends names
   const friendInfo = useMemo(
@@ -286,10 +285,7 @@ export function NavbarWorksheetSearch() {
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value as NetId);
                   } else if (selectedOption && isOption(selectedOption)) {
-                    await Promise.all([
-                      removeFriend(selectedOption.value, user.netId),
-                      removeFriend(user.netId, selectedOption.value),
-                    ]);
+                    await removeFriend(selectedOption.value);
                     toast.info(`Removed friend: ${selectedOption.value}`);
                     window.location.reload();
                   }
@@ -332,19 +328,13 @@ export function NavbarWorksheetSearch() {
                 onChange={async (selectedOption) => {
                   if (selectedOption && isOption(selectedOption)) {
                     if (deleting === 0) {
-                      await Promise.all([
-                        addFriend(selectedOption.value, user.netId),
-                        addFriend(user.netId, selectedOption.value),
-                      ]);
+                      await addFriend(selectedOption.value);
                       toast.info(`Added friend: ${selectedOption.value}`);
                     } else if (deleting === 1) {
                       toast.info(
                         `Declined friend request: ${selectedOption.value}`,
                       );
                     }
-                    // Resolve after add, so that when adding we can verify that request exists in DB
-                    await resolveFriendRequest(selectedOption.value);
-
                     window.location.reload();
                   }
                 }}

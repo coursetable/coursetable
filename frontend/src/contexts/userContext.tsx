@@ -49,10 +49,9 @@ type Store = {
   userRefresh: (suppressError?: boolean) => Promise<void>;
   friendRefresh: (suppressError?: boolean) => Promise<void>;
   friendReqRefresh: (suppressError?: boolean) => Promise<void>;
-  addFriend: (netId1?: string, netId2?: string) => Promise<void>;
-  removeFriend: (netId1?: string, netId2?: string) => Promise<void>;
-  friendRequest: (friendNetId?: string) => Promise<void>;
-  resolveFriendRequest: (friendNetId?: string) => Promise<void>;
+  addFriend: (friendNetId: string) => Promise<void>;
+  removeFriend: (friendNetId: string) => Promise<void>;
+  friendRequest: (friendNetId: string) => Promise<void>;
   getAllNames: (suppressError?: boolean) => Promise<void>;
 };
 
@@ -194,8 +193,8 @@ export function UserProvider({
 
   // Add Friend
   const addFriend = useCallback(
-    (netId1 = ''): Promise<void> =>
-      axios.get(`${API_ENDPOINT}/api/friends/add/?id=${netId1}`, {
+    (friendNetId: string): Promise<void> =>
+      axios.get(`${API_ENDPOINT}/api/friends/add/?id=${friendNetId}`, {
         withCredentials: true,
       }),
     [],
@@ -203,29 +202,18 @@ export function UserProvider({
 
   // Remove Friend
   const removeFriend = useCallback(
-    (netId1 = ''): Promise<void> =>
-      axios.get(`${API_ENDPOINT}/api/friends/remove/?id=${netId1}`, {
+    (friendNetId: string): Promise<void> =>
+      axios.get(`${API_ENDPOINT}/api/friends/remove/?id=${friendNetId}`, {
         withCredentials: true,
       }),
     [],
   );
 
   const friendRequest = useCallback(
-    (friendNetId = ''): Promise<void> =>
+    (friendNetId: string): Promise<void> =>
       axios.get(`${API_ENDPOINT}/api/friends/request/?id=${friendNetId}`, {
         withCredentials: true,
       }),
-    [],
-  );
-
-  const resolveFriendRequest = useCallback(
-    (friendNetId = ''): Promise<void> =>
-      axios.get(
-        `${API_ENDPOINT}/api/friends/resolveRequest/?id=${friendNetId}`,
-        {
-          withCredentials: true,
-        },
-      ),
     [],
   );
 
@@ -264,7 +252,6 @@ export function UserProvider({
       addFriend,
       removeFriend,
       friendRequest,
-      resolveFriendRequest,
       getAllNames,
     }),
     [
@@ -275,7 +262,6 @@ export function UserProvider({
       addFriend,
       removeFriend,
       friendRequest,
-      resolveFriendRequest,
       getAllNames,
     ],
   );
