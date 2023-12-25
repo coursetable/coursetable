@@ -194,8 +194,8 @@ export function UserProvider({
 
   // Add Friend
   const addFriend = useCallback(
-    (netId1 = '', netId2 = ''): Promise<void> =>
-      axios.get(`${API_ENDPOINT}/api/friends/add/?id=${netId1}&id2=${netId2}`, {
+    (netId1 = ''): Promise<void> =>
+      axios.get(`${API_ENDPOINT}/api/friends/add/?id=${netId1}`, {
         withCredentials: true,
       }),
     [],
@@ -203,11 +203,10 @@ export function UserProvider({
 
   // Remove Friend
   const removeFriend = useCallback(
-    (netId1 = '', netId2 = ''): Promise<void> =>
-      axios.get(
-        `${API_ENDPOINT}/api/friends/remove/?id=${netId1}&id2=${netId2}`,
-        { withCredentials: true },
-      ),
+    (netId1 = ''): Promise<void> =>
+      axios.get(`${API_ENDPOINT}/api/friends/remove/?id=${netId1}`, {
+        withCredentials: true,
+      }),
     [],
   );
 

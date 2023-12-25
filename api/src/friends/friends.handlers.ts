@@ -17,24 +17,20 @@ export const addFriend = async (
 
   const { netId } = req.user;
 
-  if (
-    !req.query ||
-    typeof netId !== 'string' ||
-    typeof req.query.id2 !== 'string'
-  )
+  if (!req.query || typeof req.query.id !== 'string')
     return res.status(400).json({ success: false });
 
   const friendNetId = req.query.id;
 
   // Make sure user has a friend request to accept
   try {
-    const friendRequest = await prisma.studentFriendRequests.findFirst({
+    const existingRequest = await prisma.studentFriendRequests.findFirst({
       where: {
         netId_friendNetId: { netId: friendNetId, friendNetId: netId },
       },
     });
 
-    if (!friendRequest) return res.status(400).json({ success: false });
+    if (!existingRequest) return res.status(400).json({ success: false });
   } catch (err) {
     winston.error(`Error with finding friend request: ${err}`);
     return res.status(500).json({ success: false });
@@ -75,11 +71,7 @@ export const removeFriend = async (
 
   const { netId } = req.user;
 
-  if (
-    !req.query ||
-    typeof netId !== 'string' ||
-    typeof req.query.id2 !== 'string'
-  )
+  if (!req.query || typeof req.query.id !== 'string')
     return res.status(401).json({ success: false });
 
   const friendNetId = req.query.id;
