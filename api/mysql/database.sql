@@ -71,18 +71,6 @@ CREATE TABLE `StudentFriendRequests` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Students`
---
-
-CREATE TABLE `Students` (
-  `netId` char(8) NOT NULL DEFAULT '',
-  `facebookId` bigint(20) UNSIGNED NOT NULL,
-  `facebookDataJson` text NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb3;
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `WorksheetCourses`
 --
 
@@ -92,16 +80,6 @@ CREATE TABLE `WorksheetCourses` (
   `oci_id` mediumint(8) UNSIGNED NOT NULL,
   `season` mediumint(8) UNSIGNED NOT NULL,
   `worksheet_number` mediumint(8) UNSIGNED DEFAULT 0
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
-
--- Table structure for table `SavedCourses`
-
-CREATE TABLE `SavedCourses` (
-  `id` mediumint(8) UNSIGNED NOT NULL,
-  `net_id` char(8) NOT NULL,
-  `oci_id` mediumint(8) UNSIGNED NOT NULL,
-  `season` mediumint(8) UNSIGNED NOT NULL,
-  `course_code` char(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
@@ -145,15 +123,6 @@ ALTER TABLE `WorksheetCourses`
   ADD UNIQUE KEY `net_id_oci_id_season_worksheet_number` (`net_id`,`oci_id`,`season`, `worksheet_number`),
   ADD KEY `net_id` (`net_id`);
 
-  --
--- Indexes for table `SavedCourses`
---
-ALTER TABLE `SavedCourses`
-  ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `net_id_oci_id_season_course_code` (`net_id`, `course_code`),
-  ADD KEY `net_id` (`net_id`);
-
-
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -175,13 +144,6 @@ ALTER TABLE `StudentFriendRequests`
 --
 ALTER TABLE `WorksheetCourses`
   MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1213985;
-
---
--- AUTO_INCREMENT for table `SavedCourses`
---
-ALTER TABLE `SavedCourses`
-  MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=1213985;
-COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
