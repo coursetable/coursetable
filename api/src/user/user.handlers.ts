@@ -17,10 +17,13 @@ import { prisma } from '../config';
 export const toggleBookmark = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info('Toggling course bookmark');
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
 
   const { netId } = req.user;
 
@@ -60,7 +63,7 @@ export const toggleBookmark = async (
     });
   }
 
-  return res.json({ success: true });
+  res.json({ success: true });
 };
 
 /**
@@ -72,10 +75,13 @@ export const toggleBookmark = async (
 export const getUserWorksheet = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info(`Fetching user's worksheets`);
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
 
   const { netId } = req.user;
 
@@ -95,7 +101,7 @@ export const getUserWorksheet = async (
     },
   });
 
-  return res.json({
+  res.json({
     success: true,
     netId,
     evaluationsEnabled: studentProfile?.evaluationsEnabled,

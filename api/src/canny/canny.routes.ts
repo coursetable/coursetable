@@ -1,8 +1,5 @@
-/**
- * @file Routes for getting Canny authentication info.
- */
-
 import type express from 'express';
+import asyncHandler from 'express-async-handler';
 
 import { cannyIdentify } from './canny.handlers';
 
@@ -11,5 +8,5 @@ import { cannyIdentify } from './canny.handlers';
  * @param app: express app instance.
  */
 export default (app: express.Express): void => {
-  app.get('/api/canny/board', cannyIdentify);
+  app.get('/api/canny/board', asyncHandler(cannyIdentify));
 };

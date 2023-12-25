@@ -11,11 +11,10 @@ import {
   FRONTEND_ENDPOINT,
   prisma,
 } from '../config';
-import type { User } from '../models/student';
 import winston from '../logging/winston';
 
 // Create a JWT-signed Canny token with user info
-const createCannyToken = (user: User) => {
+const createCannyToken = (user: Express.User) => {
   const userData = {
     email: user.email,
     id: user.netId,
@@ -28,12 +27,10 @@ const createCannyToken = (user: User) => {
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response,
-): Promise<
-  undefined | express.Response<unknown, { [key: string]: unknown }>
-> => {
+): Promise<void> => {
   if (!req.user) {
     res.redirect(FRONTEND_ENDPOINT);
-    return undefined;
+    return;
   }
 
   const { netId } = req.user;
@@ -57,8 +54,10 @@ export const cannyIdentify = async (
       },
     );
     // If no user found, do not grant access
-    if (data === null || data.length === 0)
-      return res.status(401).json({ success: false });
+    if (data === null || data.length === 0) {
+      res.status(401).json({ success: false });
+      return;
+    }
 
     const [user] = data;
 
@@ -91,10 +90,8 @@ export const cannyIdentify = async (
     });
 
     res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
-    return undefined;
   } catch (err) {
     winston.error(`Yalies connection error: ${err}`);
     res.redirect(FRONTEND_ENDPOINT);
-    return undefined;
   }
 };

@@ -30,12 +30,10 @@ import { encrypt, decrypt, getRandomInt } from './challenge.utils';
  * @prop challengeTries - number of user attempts
  */
 const constructChallenge = (
-  req: express.Request,
-  res: express.Response,
   evals: requestEvalsQueryResponse,
   challengeTries: number,
   netid: string,
-): express.Response => {
+) => {
   // Array of course enrollment counts
   const ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
@@ -90,7 +88,7 @@ const constructChallenge = (
     courseOceUrl: oceUrls[index],
   }));
 
-  return res.json({
+  return {
     body: {
       token,
       salt,
@@ -98,7 +96,7 @@ const constructChallenge = (
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     },
-  });
+  };
 };
 
 /**
@@ -109,10 +107,13 @@ const constructChallenge = (
 export const requestChallenge = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info(`Requesting challenge`);
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
 
   const { netId } = req.user;
 
@@ -123,15 +124,18 @@ export const requestChallenge = async (
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled)
-    return res.status(403).json({ error: 'ALREADY_ENABLED' });
+  if (evaluationsEnabled) {
+    res.status(403).json({ error: 'ALREADY_ENABLED' });
+    return;
+  }
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
-    return res.status(429).json({
+    res.status(429).json({
       error: 'MAX_TRIES_REACHED',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
 
   // Randomize the selected challenge courses by
@@ -139,23 +143,15 @@ export const requestChallenge = async (
   const minRating = 1 + Math.random() * 4;
 
   // Get a list of all seasons
-  try {
-    const evals: requestEvalsQueryResponse = await request(
-      GRAPHQL_ENDPOINT,
-      requestEvalsQuery,
-      {
-        season: CHALLENGE_SEASON,
-        minRating,
-      },
-    );
-    return constructChallenge(req, res, evals, challengeTries, netId);
-  } catch (err) {
-    return res.status(500).json({
-      error: err,
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-  }
+  const evals: requestEvalsQueryResponse = await request(
+    GRAPHQL_ENDPOINT,
+    requestEvalsQuery,
+    {
+      season: CHALLENGE_SEASON,
+      minRating,
+    },
+  );
+  res.json(constructChallenge(evals, challengeTries, netId));
 };
 
 /**
@@ -203,10 +199,13 @@ const checkChallenge = (
 export const verifyChallenge = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info(`Verifying challenge`);
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
+    return;
+  }
 
   const { netId } = req.user;
 
@@ -217,15 +216,18 @@ export const verifyChallenge = async (
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled)
-    return res.status(403).json({ error: 'ALREADY_ENABLED' });
+  if (evaluationsEnabled) {
+    res.status(403).json({ error: 'ALREADY_ENABLED' });
+    return;
+  }
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
-    return res.status(429).json({
+    res.status(429).json({
       error: 'MAX_TRIES_REACHED',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
 
   const { token, salt, answers } = req.body;
@@ -246,19 +248,21 @@ export const verifyChallenge = async (
       (x) => `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
   } catch {
-    return res.status(400).json({
+    res.status(400).json({
       error: 'INVALID_TOKEN',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
   // Ensure that netid in token is same as in headers
   if (secrets.netid !== netId) {
-    return res.status(400).json({
+    res.status(400).json({
       error: 'INVALID_TOKEN',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
   // Catch malformed answer JSON errors
   try {
@@ -267,57 +271,52 @@ export const verifyChallenge = async (
         `${x.courseRatingId}_${x.courseRatingIndex}`,
     );
   } catch {
-    return res.status(400).json({
+    res.status(400).json({
       error: 'MALFORMED_ANSWERS',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
   // Make sure the provided ratings IDs and indices match those we have
   if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
-    return res.status(400).json({
+    res.status(400).json({
       error: 'INVALID_TOKEN',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
 
   // Get a list of all seasons
-  try {
-    const trueEvals: verifyEvalsQueryResponse = await request(
-      GRAPHQL_ENDPOINT,
-      verifyEvalsQuery,
-      {
-        questionIds: secretRatingIds,
-      },
-    );
+  const trueEvals: verifyEvalsQueryResponse = await request(
+    GRAPHQL_ENDPOINT,
+    verifyEvalsQuery,
+    {
+      questionIds: secretRatingIds,
+    },
+  );
 
-    if (!checkChallenge(trueEvals, answers)) {
-      return res.status(200).json({
-        body: {
-          message: 'INCORRECT',
-          challengeTries,
-          maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-        },
-      });
-    }
-    // Otherwise, enable evaluations and respond with success
-    await prisma.studentBluebookSettings.update({
-      where: { netId },
-      data: { evaluationsEnabled: true },
-    });
-    return res.json({
+  if (!checkChallenge(trueEvals, answers)) {
+    res.status(200).json({
       body: {
-        message: 'CORRECT',
+        message: 'INCORRECT',
         challengeTries,
         maxChallengeTries: MAX_CHALLENGE_REQUESTS,
       },
     });
-  } catch (err) {
-    return res.status(500).json({
-      error: err,
+    return;
+  }
+  // Otherwise, enable evaluations and respond with success
+  await prisma.studentBluebookSettings.update({
+    where: { netId },
+    data: { evaluationsEnabled: true },
+  });
+  res.json({
+    body: {
+      message: 'CORRECT',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-  }
+    },
+  });
 };

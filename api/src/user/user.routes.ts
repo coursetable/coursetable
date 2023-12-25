@@ -3,8 +3,7 @@
  */
 
 import type express from 'express';
-
-import cookieParser from 'cookie-parser';
+import asyncHandler from 'express-async-handler';
 
 import { toggleBookmark, getUserWorksheet } from './user.handlers';
 
@@ -13,7 +12,6 @@ import { toggleBookmark, getUserWorksheet } from './user.handlers';
  * @param app: express app instance.
  */
 export default (app: express.Express): void => {
-  app.use(cookieParser());
-  app.post('/api/user/toggleBookmark', toggleBookmark);
-  app.get('/api/user/worksheets', getUserWorksheet);
+  app.post('/api/user/toggleBookmark', asyncHandler(toggleBookmark));
+  app.get('/api/user/worksheets', asyncHandler(getUserWorksheet));
 };
