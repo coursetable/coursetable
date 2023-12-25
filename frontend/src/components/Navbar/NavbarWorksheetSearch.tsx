@@ -342,6 +342,7 @@ export function NavbarWorksheetSearch() {
                         `Declined friend request: ${selectedOption.value}`,
                       );
                     }
+                    // Resolve after add, so that when adding we can verify that request exists in DB
                     await resolveFriendRequest(selectedOption.value);
 
                     window.location.reload();
