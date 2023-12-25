@@ -1,4 +1,6 @@
-# Bootstrapping a new server
+# How to deploy
+
+## Bootstrapping a new server
 
 ### Server Setup
 
@@ -75,7 +77,7 @@ EOF
 read -p "Add those to crontab. Press [enter] when done..."
 ```
 
-# Deploying to the server
+## Deploying to the server
 
 **coursetable**
 
@@ -100,13 +102,4 @@ chmod -R 755 ../api
 cd ~/ferry
 git pull # Get changes onto server
 doppler run --command "./refresh_courses.sh" # Rerun the pipeline
-```
-
-**beta**
-
-```sh
-cd ~/beta
-git pull
-cd docker
-docker-compose -f beta-frontend.yml up -d --build
 ```

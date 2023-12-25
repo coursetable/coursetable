@@ -52,9 +52,7 @@ export async function refreshCatalog(
   // Fetch the catalog files and confirm success
   try {
     await fetchCatalog(overwrite);
-    return res.status(200).json({
-      status: 'OK',
-    });
+    return res.status(200);
   } catch (err) {
     winston.error(err);
     return res.status(500).json(err);

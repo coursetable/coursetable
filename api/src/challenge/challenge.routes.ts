@@ -7,6 +7,6 @@ import { requestChallenge, verifyChallenge } from './challenge.controllers';
  * @param app: express app instance.
  */
 export default (app: express.Express): void => {
-  app.get('/api/challenge/request', requestChallenge);
+  app.post('/api/challenge/request', requestChallenge);
   app.post('/api/challenge/verify', verifyChallenge);
 };
