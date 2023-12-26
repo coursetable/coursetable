@@ -285,8 +285,8 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 - Body:
   - `action`: `"add" | "remove"`
   - `season`: `string`
-  - `oci_id`: `number`
-  - `worksheet_number`: `number`
+  - `ociId`: `number`
+  - `worksheetNumber`: `number`
 
 #### Response
 

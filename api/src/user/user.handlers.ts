@@ -12,8 +12,8 @@ import { prisma } from '../config';
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove')]),
   season: z.string(),
-  oci_id: z.number(),
-  worksheet_number: z.number(),
+  ociId: z.number(),
+  worksheetNumber: z.number(),
 });
 
 /**
@@ -36,12 +36,7 @@ export const toggleBookmark = async (
     return;
   }
 
-  const {
-    action,
-    season,
-    oci_id: ociId,
-    worksheet_number: worksheetNumber,
-  } = bodyParseRes.data;
+  const { action, season, ociId, worksheetNumber } = bodyParseRes.data;
 
   if (action === 'add') {
     // Add a bookmarked course
@@ -50,10 +45,10 @@ export const toggleBookmark = async (
     );
     await prisma.worksheetCourses.create({
       data: {
-        net_id: netId,
-        oci_id: ociId,
+        netId,
+        ociId,
         season: parseInt(season, 10),
-        worksheet_number: worksheetNumber,
+        worksheetNumber,
       },
     });
   } else {
@@ -63,10 +58,10 @@ export const toggleBookmark = async (
     );
     await prisma.worksheetCourses.deleteMany({
       where: {
-        net_id: netId,
-        oci_id: ociId,
+        netId,
+        ociId,
         season: parseInt(season, 10),
-        worksheet_number: worksheetNumber,
+        worksheetNumber,
       },
     });
   }
@@ -100,7 +95,7 @@ export const getUserWorksheet = async (
   winston.info(`Getting worksheets for user ${netId}`);
   const worksheets = await prisma.worksheetCourses.findMany({
     where: {
-      net_id: netId,
+      netId,
     },
   });
 
@@ -112,8 +107,8 @@ export const getUserWorksheet = async (
     school: studentProfile?.school,
     data: worksheets.map((course) => [
       String(course.season),
-      String(course.oci_id),
-      String(course.worksheet_number),
+      String(course.ociId),
+      String(course.worksheetNumber),
     ]),
   });
 };
