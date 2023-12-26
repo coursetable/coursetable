@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import qs from 'qs';
 import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
@@ -186,14 +185,14 @@ function Challenge() {
     }
     try {
       const res = await fetch(`${API_ENDPOINT}/api/challenge/verify`, {
-        body: qs.stringify({
+        body: JSON.stringify({
           token: resBody.token,
           salt: resBody.salt,
           answers,
         }),
         method: 'POST',
         headers: {
-          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'Content-Type': 'application/json',
         },
         credentials: 'include',
       });
