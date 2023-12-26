@@ -189,8 +189,10 @@ export function UserProvider({
           'Content-Type': 'application/json',
         },
       });
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) {
+        const data = await res.json();
+        throw new Error(data.error);
+      }
       toast.info(`Added friend: ${friendNetId}`);
       window.location.reload();
     } catch (err) {
@@ -210,8 +212,10 @@ export function UserProvider({
             'Content-Type': 'application/json',
           },
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error);
+        }
         toast.info(`Removed friend: ${friendNetId}`);
         window.location.reload();
       } catch (err) {
@@ -233,8 +237,10 @@ export function UserProvider({
             'Content-Type': 'application/json',
           },
         });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error);
+        }
         toast.info(`Sent friend request: ${friendNetId}`);
       } catch (err) {
         toast.error(`Failed to request friend. ${String(err)}`);
