@@ -24,7 +24,6 @@ type ResBody = {
     courseId: number;
     courseTitle: string;
     courseRatingIndex: number;
-    courseQuestionTexts: string;
     courseOceUrl: string;
   }[];
   challengeTries: number;
@@ -34,7 +33,7 @@ type ResBody = {
 type Answer = {
   courseRatingId: number;
   courseRatingIndex: number;
-  answer: number;
+  answer: string;
 };
 
 function renderRequestError(requestError: {}, navigate: NavigateFunction) {
@@ -130,15 +129,20 @@ function Challenge() {
   const [resBody, setResBody] = useState<ResBody | null>(null);
   // Stores user's answers
   const [answers, setAnswers] = useState<Answer[]>([
-    { answer: -1, courseRatingId: -1, courseRatingIndex: -1 },
-    { answer: -1, courseRatingId: -1, courseRatingIndex: -1 },
-    { answer: -1, courseRatingId: -1, courseRatingIndex: -1 },
+    { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
+    { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
+    { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
   ]);
 
   // Error code from requesting challenge
   const [requestError, setRequestError] = useState<{} | null>(null);
   // Error code from verifying challenge
   const [verifyError, setVerifyError] = useState<{} | null>(null);
+  const [verificationResults, setVerificationResults] = useState<boolean[]>([
+    false,
+    false,
+    false,
+  ]);
 
   // Number of challenge attempts
   const [numTries, setNumTries] = useState<number | null>(null);
@@ -150,7 +154,6 @@ function Challenge() {
     async function requestChallenge() {
       try {
         const res = await fetch(`${API_ENDPOINT}/api/challenge/request`, {
-          method: 'POST',
           credentials: 'include',
         });
         const data = await res.json();
@@ -169,26 +172,30 @@ function Challenge() {
     void requestChallenge();
   }, []);
 
-  const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
-    event,
-  ) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     const form = event.currentTarget;
     // Prevent default page reload
     event.preventDefault();
     if (!form.checkValidity()) {
       // Form is invalid; don't submit
       event.stopPropagation();
+      setValidated(true);
       return;
     } else if (!resBody) {
       // No challenge yet
       return;
     }
+    // In all other cases: do not show validation results. Currently we can only
+    // validate that number fields are filled, but we can't show which answers
+    // are correct, and showing checkmarks for everything is confusing.
+    // TODO: fix this
+    setValidated(false);
     try {
       const res = await fetch(`${API_ENDPOINT}/api/challenge/verify`, {
         body: JSON.stringify({
           token: resBody.token,
           salt: resBody.salt,
-          answers,
+          answers: answers.map((x) => ({ ...x, answer: Number(x.answer) })),
         }),
         method: 'POST',
         headers: {
@@ -199,7 +206,7 @@ function Challenge() {
       const data = await res.json();
       if (!res.ok) {
         setVerifyError(data.error);
-      } else if (data.message === 'CORRECT') {
+      } else if (data.results.every((x: boolean) => x)) {
         try {
           await userRefresh();
           await client.resetStore();
@@ -212,7 +219,7 @@ function Challenge() {
         }
       } else {
         setVerifyError('INCORRECT');
-        setValidated(false);
+        setVerificationResults(data.results);
         setNumTries(data.challengeTries);
         setMaxTries(data.maxChallengeTries);
       }
@@ -220,8 +227,6 @@ function Challenge() {
       toast.error(`Failed to verify challenge. ${String(err)}`);
       Sentry.captureException(err);
     }
-    // Form has been validated
-    setValidated(true);
   };
 
   // Student response buckets
@@ -337,6 +342,7 @@ function Challenge() {
                   required
                   placeholder="Number of students"
                   value={answers[index].answer}
+                  isValid={verificationResults[index]}
                   onChange={(event) => {
                     // Copy answers state into a new variable
                     const newAnswers = [...answers];
@@ -344,7 +350,7 @@ function Challenge() {
                     newAnswers[index].courseRatingId = course.courseId;
                     newAnswers[index].courseRatingIndex =
                       course.courseRatingIndex;
-                    newAnswers[index].answer = parseInt(event.target.value, 10);
+                    newAnswers[index].answer = event.target.value;
                     // Update old answers state with new answers
                     setAnswers(newAnswers);
                   }}

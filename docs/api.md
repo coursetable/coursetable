@@ -11,7 +11,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 ## Challenge
 
-### `POST` `/api/challenge/request`
+### `GET` `/api/challenge/request`
 
 #### Request
 
@@ -28,7 +28,6 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
     - `courseId`: `number`
     - `courseTitle`: `string`
     - `courseRatingIndex`: `number`
-    - `courseQuestionTexts`: `string`
     - `courseOceUrl`: `string`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
@@ -63,7 +62,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 **Status: 200**
 
 - Body:
-  - `message`: `"CORRECT" | "INCORRECT"`
+  - `results`: `boolean[]`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 

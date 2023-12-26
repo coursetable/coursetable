@@ -106,9 +106,6 @@ const constructChallenge = (
   // Course ids, titles and questions for user
   const courseIds = evals.evaluation_ratings.map((x) => x.id);
   const courseTitles = evals.evaluation_ratings.map((x) => x.course.title);
-  const courseQuestionTexts = evals.evaluation_ratings.map(
-    (x) => x.evaluation_question.question_text,
-  );
 
   // Yale OCE urls for user to retrieve answers
   const oceUrls = evals.evaluation_ratings.map((x) => {
@@ -125,7 +122,6 @@ const constructChallenge = (
     courseId: courseIds[index],
     courseTitle: title,
     courseRatingIndex: ratingIndices[index],
-    courseQuestionTexts: courseQuestionTexts[index],
     courseOceUrl: oceUrls[index],
   }));
 
@@ -182,18 +178,10 @@ export const requestChallenge = async (
   res.json(constructChallenge(evals, challengeTries, netId));
 };
 
-/**
- * Compare a response from the database and user-provided answers
- * to verify that a challenge is solved or not. Used by the
- * verifyChallenge controller.
- *
- * @prop trueEvals - response from the GraphQL query over the evaluations
- * @prop answers - user-provided answers
- */
 const checkChallenge = (
   trueEvals: VerifyEvalsQueryResponse,
   answers: VerifyEvalsReqBody['answers'],
-): boolean => {
+): boolean[] => {
   // The true values in CourseTable to compare against
   const truth = trueEvals.evaluation_ratings;
 
@@ -204,12 +192,10 @@ const checkChallenge = (
     truthById[x.id] = x.rating;
   });
 
-  const allCorrect = answers.every(
+  return answers.map(
     ({ answer, courseRatingId, courseRatingIndex }) =>
       truthById[courseRatingId][courseRatingIndex] === answer,
   );
-
-  return allCorrect;
 };
 
 const SecretsSchema = z.object({
@@ -308,21 +294,17 @@ export const verifyChallenge = async (
     data: { challengeTries: { increment: 1 } },
   });
 
-  if (!checkChallenge(trueEvals, answers)) {
-    res.status(200).json({
-      message: 'INCORRECT',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+  const results = checkChallenge(trueEvals, answers);
+
+  if (results.every((x) => x)) {
+    // Enable evaluations and respond with success
+    await prisma.studentBluebookSettings.update({
+      where: { netId },
+      data: { evaluationsEnabled: true },
     });
-    return;
   }
-  // Otherwise, enable evaluations and respond with success
-  await prisma.studentBluebookSettings.update({
-    where: { netId },
-    data: { evaluationsEnabled: true },
-  });
-  res.json({
-    message: 'CORRECT',
+  res.status(200).json({
+    results,
     challengeTries,
     maxChallengeTries: MAX_CHALLENGE_REQUESTS,
   });

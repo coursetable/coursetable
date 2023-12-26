@@ -10,6 +10,6 @@ import { authBasic } from '../auth/auth.handlers';
  */
 export default (app: express.Express): void => {
   app.use('/api/challenge/*', authBasic);
-  app.post('/api/challenge/request', asyncHandler(requestChallenge));
+  app.get('/api/challenge/request', asyncHandler(requestChallenge));
   app.post('/api/challenge/verify', asyncHandler(verifyChallenge));
 };
