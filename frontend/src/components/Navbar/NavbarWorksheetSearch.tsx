@@ -7,7 +7,7 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
-import { isOption } from '../../contexts/searchContext';
+import { isOption, type Option } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/course';
@@ -123,21 +123,16 @@ export function NavbarWorksheetSearch() {
   // Fetch user context data
   const { user, addFriend, removeFriend, requestAddFriend } = useUser();
 
-  // Friends names
-  const friendInfo = useMemo(
-    () => (user.friendWorksheets ? user.friendWorksheets.friendInfo : {}),
-    [user.friendWorksheets],
-  );
-
   // List of friend options. Initialize with me option
   const friendOptions = useMemo(() => {
-    const friendOptionsTemp = [];
+    const friendOptionsTemp: Option[] = [];
+    if (!user.friends) return friendOptionsTemp;
     // Add friend to dropdown if they have worksheet courses in the current
     // season
-    for (const friend of Object.keys(friendInfo) as NetId[]) {
+    for (const friendNetId of Object.keys(user.friends) as NetId[]) {
       friendOptionsTemp.push({
-        value: friend,
-        label: friendInfo[friend].name,
+        value: friendNetId,
+        label: user.friends[friendNetId].name,
       });
     }
     // Sort friends in alphabetical order
@@ -145,15 +140,15 @@ export function NavbarWorksheetSearch() {
       a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
     );
     return friendOptionsTemp;
-  }, [friendInfo]);
+  }, [user.friends]);
 
   const selectedPerson = useMemo(() => {
-    if (person === 'me' || !friendInfo[person]) return null;
+    if (person === 'me' || !user.friends?.[person]) return null;
     return {
       value: person,
-      label: friendInfo[person].name,
+      label: user.friends[person].name,
     };
-  }, [person, friendInfo]);
+  }, [person, user.friends]);
 
   // Friends names
   const friendRequestInfo = useMemo(
@@ -277,7 +272,7 @@ export function NavbarWorksheetSearch() {
                     : 'Removing friends (click to switch to select mode)'
                 }
                 isSearchable={false}
-                onChange={async (selectedOption) => {
+                onChange={(selectedOption) => {
                   if (removing === 0) {
                     // Cleared friend
                     if (!selectedOption) handlePersonChange('me');
@@ -285,9 +280,7 @@ export function NavbarWorksheetSearch() {
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value as NetId);
                   } else if (selectedOption && isOption(selectedOption)) {
-                    await removeFriend(selectedOption.value);
-                    toast.info(`Removed friend: ${selectedOption.value}`);
-                    window.location.reload();
+                    void removeFriend(selectedOption.value);
                   }
                 }}
                 isDisabled={false}
@@ -325,17 +318,16 @@ export function NavbarWorksheetSearch() {
                     ? 'Accepting requests (click to switch to decline mode)'
                     : 'Declining requests (click to switch to accept mode)'
                 }
-                onChange={async (selectedOption) => {
+                onChange={(selectedOption) => {
                   if (selectedOption && isOption(selectedOption)) {
                     if (deleting === 0) {
-                      await addFriend(selectedOption.value);
-                      toast.info(`Added friend: ${selectedOption.value}`);
+                      void addFriend(selectedOption.value);
                     } else if (deleting === 1) {
+                      // TODO actually decline it (remove from database)
                       toast.info(
                         `Declined friend request: ${selectedOption.value}`,
                       );
                     }
-                    window.location.reload();
                   }
                 }}
                 isDisabled={false}
@@ -351,11 +343,9 @@ export function NavbarWorksheetSearch() {
                   Menu: () => null,
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
-                onKeyDown={async (e) => {
-                  if (e.key === 'Enter') {
-                    await requestAddFriend(currentFriendNetID);
-                    toast.info(`Sent friend request: ${currentFriendNetID}`);
-                  }
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter')
+                    void requestAddFriend(currentFriendNetID);
                 }}
                 onInputChange={(e) => {
                   setCurrentFriendNetID(e);

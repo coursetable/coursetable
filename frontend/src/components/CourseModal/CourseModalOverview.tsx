@@ -153,14 +153,11 @@ function CourseModalOverview({
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
-  const alsoTaking = user.friendWorksheets
-    ? friendsAlsoTaking(
-        listing.season_code,
-        listing.crn,
-        user.friendWorksheets.worksheets,
-        user.friendWorksheets.friendInfo,
-      )
-    : [];
+  const alsoTaking = friendsAlsoTaking(
+    listing.season_code,
+    listing.crn,
+    user.friends,
+  );
 
   const locations = new Map();
   const times = new Map();

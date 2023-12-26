@@ -43,11 +43,18 @@ function FriendsDropdown() {
 
   const { person, handlePersonChange } = useWorksheet();
 
+  if (!user.friends) {
+    return (
+      <div className="container p-0 m-0">
+        <DropdownButton variant="primary" title="Me" />
+      </div>
+    );
+  }
+
   // Generate friend netId list, sorted by name.
-  const friendInfo = user.friendWorksheets?.friendInfo || {};
-  const friends = Object.keys(friendInfo) as NetId[];
+  const friends = Object.keys(user.friends) as NetId[];
   friends.sort((a, b) =>
-    friendInfo[a].name.localeCompare(friendInfo[b].name, 'en-US', {
+    user.friends![a].name.localeCompare(user.friends![b].name, 'en-US', {
       sensitivity: 'base',
     }),
   );
@@ -55,7 +62,7 @@ function FriendsDropdown() {
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={person === 'me' ? 'Me' : friendInfo[person].name}
+        title={person === 'me' ? 'Me' : user.friends[person].name}
         onSelect={(p) => {
           if (p) handlePersonChange(p as NetId | 'me');
         }}
@@ -65,7 +72,7 @@ function FriendsDropdown() {
           <DropdownItem
             key={p}
             person={p}
-            text={friendInfo[p].name}
+            text={user.friends![p].name}
             viewedPerson={person}
           />
         ))}

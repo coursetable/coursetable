@@ -100,11 +100,10 @@ export const getUserWorksheet = async (
   });
 
   res.json({
-    success: true,
     netId,
-    evaluationsEnabled: studentProfile?.evaluationsEnabled,
-    year: studentProfile?.year,
-    school: studentProfile?.school,
+    evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
+    year: studentProfile?.year ?? null,
+    school: studentProfile?.school ?? null,
     data: worksheets.map((course) => [
       String(course.season),
       String(course.ociId),
