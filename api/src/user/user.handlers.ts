@@ -66,7 +66,7 @@ export const toggleBookmark = async (
     });
   }
 
-  res.json({ success: true });
+  res.sendStatus(200);
 };
 
 /**

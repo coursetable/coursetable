@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/react';
@@ -106,26 +105,27 @@ function WorksheetToggleButton({
 
       // Call the endpoint
       try {
-        await axios.post(
-          `${API_ENDPOINT}/api/user/toggleBookmark`,
-          {
+        const res = await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
             action: addRemove,
             season: seasonCode,
             ociId: crn,
             worksheetNumber: parseInt(selectedWorksheet, 10),
-          },
-          {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        );
+          }),
+        });
+        if (!res.ok) {
+          const data = await res.json();
+          throw new Error(data.error);
+        }
         await userRefresh();
         // If not in worksheet view, update inWorksheet state
         setInWorksheet(!inWorksheet);
       } catch (err) {
-        toast.error('Failed to update worksheet');
+        toast.error(`Failed to update worksheet. ${String(err)}`);
         Sentry.captureException(err);
       }
     },

@@ -286,9 +286,6 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 200**
 
-- Body:
-  - `success`: `true`
-
 **Status: 400**
 
 - When the request body is invalid
