@@ -344,8 +344,10 @@ export function NavbarWorksheetSearch() {
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter')
+                  if (e.key === 'Enter') {
+                    e.preventDefault();
                     void requestAddFriend(currentFriendNetID);
+                  }
                 }}
                 onInputChange={(e) => {
                   setCurrentFriendNetID(e);
