@@ -20,12 +20,7 @@ export const toggleBookmark = async (
 ): Promise<void> => {
   winston.info('Toggling course bookmark');
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   const {
     action,
@@ -78,12 +73,7 @@ export const getUserWorksheet = async (
 ): Promise<void> => {
   winston.info(`Fetching user's worksheets`);
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   // Get user info
   winston.info(`Getting profile for user ${netId}`);

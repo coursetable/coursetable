@@ -25,9 +25,7 @@ export const verifyHeaders = (
 
   // require NetID authentication
   if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
-    res.status(401).json({
-      error: 'NOT_AUTHENTICATED',
-    });
+    res.status(401).json({ error: 'NOT_FERRY' });
     return;
   }
 

@@ -262,15 +262,14 @@ export const authBasic = (
   next: express.NextFunction,
 ): void => {
   winston.info('Intercepting basic authentication');
-  if (req.user) {
-    // Add headers for legacy API compatibility
-    req.headers['x-coursetable-authd'] = 'true';
-    req.headers['x-coursetable-netid'] = req.user.netId;
-
-    next();
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
     return;
   }
-  next(new Error('CAS auth but no user'));
+  // Add headers for legacy API compatibility
+  req.headers['x-coursetable-authd'] = 'true';
+  req.headers['x-coursetable-netid'] = req.user.netId;
+  next();
 };
 
 /**
@@ -285,13 +284,15 @@ export const authWithEvals = (
   next: express.NextFunction,
 ): void => {
   winston.info('Intercepting with-evals authentication');
-  if (req.user && req.user.evals) {
-    // Add headers for legacy API compatibility
-    req.headers['x-coursetable-authd'] = 'true';
-    req.headers['x-coursetable-netid'] = req.user.netId;
-
-    next();
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
+    return;
+  } else if (!req.user.evals) {
+    res.status(401).json({ error: 'USER_NO_EVALS' });
     return;
   }
-  next(new Error('CAS auth but no user / no evals access'));
+  // Add headers for legacy API compatibility
+  req.headers['x-coursetable-authd'] = 'true';
+  req.headers['x-coursetable-netid'] = req.user.netId;
+  next();
 };

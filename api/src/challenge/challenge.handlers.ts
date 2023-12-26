@@ -6,6 +6,8 @@ import {
   GRAPHQL_ENDPOINT,
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
+  CHALLENGE_ALGORITHM,
+  CHALLENGE_PASSWORD,
   prisma,
 } from '../config';
 
@@ -18,7 +20,48 @@ import {
   type verifyEvalsQueryResponse,
 } from './challenge.queries';
 
-import { encrypt, decrypt, getRandomInt } from './challenge.utils';
+/**
+ * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
+ * @prop text - string to encrypt
+ * @prop salt - salt value to append to password
+ */
+function encrypt(text: string, salt: string): string {
+  // TODO
+  // eslint-disable-next-line n/no-deprecated-api
+  const cipher = crypto.createCipher(
+    CHALLENGE_ALGORITHM,
+    CHALLENGE_PASSWORD + salt,
+  );
+  let crypted = cipher.update(text, 'utf8', 'hex');
+  crypted += cipher.final('hex');
+  return crypted;
+}
+
+/**
+ * Decrypt a salted string according to CHALLENGE_ALGORITHM and
+ * CHALLENGE_PASSWORD.
+ * @prop text - string to decrypt
+ * @prop salt - salt value to append to password
+ */
+function decrypt(text: string, salt: string): string {
+  // TODO
+  // eslint-disable-next-line n/no-deprecated-api
+  const decipher = crypto.createDecipher(
+    CHALLENGE_ALGORITHM,
+    CHALLENGE_PASSWORD + salt,
+  );
+  let dec = decipher.update(text, 'hex', 'utf8');
+  dec += decipher.final('utf8');
+  return dec;
+}
+
+/**
+ * Randomly-generate an integer between 0 and max-1
+ * @prop max - max integer to return (not inclusive)
+ */
+function getRandomInt(max: number): number {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
 /**
  * Generate a challenge object given a query response.
@@ -110,12 +153,7 @@ export const requestChallenge = async (
 ): Promise<void> => {
   winston.info(`Requesting challenge`);
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =
@@ -202,12 +240,7 @@ export const verifyChallenge = async (
 ): Promise<void> => {
   winston.info(`Verifying challenge`);
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =

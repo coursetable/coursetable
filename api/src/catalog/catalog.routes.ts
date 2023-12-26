@@ -1,6 +1,6 @@
 import type express from 'express';
 import asyncHandler from 'express-async-handler';
-import { verifyHeaders, refreshCatalog } from './catalog.controllers';
+import { verifyHeaders, refreshCatalog } from './catalog.handlers';
 
 /**
  * Set up catalog routes.
