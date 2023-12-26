@@ -310,11 +310,9 @@ export const verifyChallenge = async (
 
   if (!checkChallenge(trueEvals, answers)) {
     res.status(200).json({
-      body: {
-        message: 'INCORRECT',
-        challengeTries,
-        maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-      },
+      message: 'INCORRECT',
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
     return;
   }
@@ -324,10 +322,8 @@ export const verifyChallenge = async (
     data: { evaluationsEnabled: true },
   });
   res.json({
-    body: {
-      message: 'CORRECT',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    },
+    message: 'CORRECT',
+    challengeTries,
+    maxChallengeTries: MAX_CHALLENGE_REQUESTS,
   });
 };
