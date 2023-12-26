@@ -12,7 +12,7 @@ import { prisma } from '../config';
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove')]),
   season: z.string(),
-  oci_id: z.string(),
+  oci_id: z.number(),
   worksheet_number: z.number(),
 });
 
@@ -51,7 +51,7 @@ export const toggleBookmark = async (
     await prisma.worksheetCourses.create({
       data: {
         net_id: netId,
-        oci_id: parseInt(ociId, 10),
+        oci_id: ociId,
         season: parseInt(season, 10),
         worksheet_number: worksheetNumber,
       },

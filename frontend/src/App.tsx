@@ -73,7 +73,6 @@ function App() {
       !isTablet &&
       isLoggedIn &&
       !shownTutorial &&
-      location &&
       location.pathname === '/catalog'
     )
       setIsTutorialOpen(true);
