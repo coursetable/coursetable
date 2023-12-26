@@ -3,7 +3,11 @@
 - TODO: remove all `success: true` (and use HTTP status code instead)
 - TODO: standardize error response format
 
-All methods are capable of returning 500. In this case the body contains an `error: string`.
+All endpoints are capable of returning 500. In this case the body contains an `error: string`.
+
+Endpoints marked as "needs credentials" returns 401 with `error: "USER_NOT_FOUND"` when the user is not found.
+
+Endpoints marked as "needs eval access" additionally returns 401 with `error: "USER_NO_EVALS"` when the user exists but has no evals access. Evals access can be granted after completing the challenge, or manually granted.
 
 ## Challenge
 
@@ -28,12 +32,6 @@ All methods are capable of returning 500. In this case the body contains an `err
     - `courseOceUrl`: `string`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
 
 **Status: 403**
 
@@ -79,12 +77,6 @@ All methods are capable of returning 500. In this case the body contains an `err
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
 **Status: 403**
 
 - When the user has already verified challenge
@@ -115,7 +107,23 @@ All methods are capable of returning 500. In this case the body contains an `err
 
 - When there is no secret header with request
 - Body:
-  - `error`: `"NOT_AUTHENTICATED"`
+  - `error`: `"NOT_FERRY"`
+
+### `GET` `/api/static/{season}.json`
+
+TODO: rename this to `/api/catalog` and remove `.json`?
+
+#### Request
+
+- Needs eval access
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `Listing[]` (see `static` folder for examples)
+  - TODO: provide typing SDK
 
 ## Auth
 
@@ -183,12 +191,6 @@ All methods are capable of returning 500. In this case the body contains an `err
 - Body:
   - `success`: `false`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
 ### `POST` `/api/friends/remove`
 
 #### Request
@@ -209,12 +211,6 @@ All methods are capable of returning 500. In this case the body contains an `err
 - When `friendNetId` is not provided or is the same as the user's
 - Body:
   - `success`: `false`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
 
 ### `POST` `/api/friends/request`
 
@@ -237,12 +233,6 @@ All methods are capable of returning 500. In this case the body contains an `err
 - Body:
   - `success`: `false`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
 ### `GET` `/api/friends/getRequests`
 
 #### Request
@@ -258,12 +248,6 @@ All methods are capable of returning 500. In this case the body contains an `err
   - `friends`: `array`
     - `netId`: `NetId`
     - `name`: `string`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
 
 ### `GET` `/api/friends/worksheets`
 
@@ -281,12 +265,6 @@ All methods are capable of returning 500. In this case the body contains an `err
   - `friendInfo`: `{ [netId: string]: { name: string } }`
   - TODO: merge `worksheets` and `friendInfo`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
 ### `GET` `/api/friends/names`
 
 - DEPRECATED: not in use
@@ -295,7 +273,7 @@ All methods are capable of returning 500. In this case the body contains an `err
 
 ### `GET` `/api/canny/board`
 
-- DEPRECATED: not in use
+- For internal use by Canny
 
 ## Worksheet
 
@@ -317,12 +295,6 @@ All methods are capable of returning 500. In this case the body contains an `err
 - Body:
   - `success`: `true`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
 ### `GET` `/api/user/worksheets`
 
 #### Request
@@ -340,12 +312,6 @@ All methods are capable of returning 500. In this case the body contains an `err
   - `year`: `number | null | undefined`
   - `school`: `string | null | undefined`
   - `data`: `[season: string, ociId: string, worksheetNumber: string][]`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
 
 ## Health check
 

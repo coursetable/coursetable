@@ -13,12 +13,7 @@ export const addFriend = async (
 ): Promise<void> => {
   winston.info('Adding new friend');
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
   const { friendNetId } = req.body;
 
   if (typeof friendNetId !== 'string') {
@@ -85,12 +80,7 @@ export const removeFriend = async (
 ): Promise<void> => {
   winston.info('Removing friend');
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
   const { friendNetId } = req.body;
 
   if (typeof friendNetId !== 'string') {
@@ -126,12 +116,7 @@ export const requestAddFriend = async (
 ): Promise<void> => {
   winston.info(`Sending friend request`);
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
   const { friendNetId } = req.body;
 
   if (typeof friendNetId !== 'string') {
@@ -170,12 +155,7 @@ export const getRequestsForFriend = async (
 ): Promise<void> => {
   winston.info(`Sending friend request`);
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   const friendReqs = await prisma.studentFriendRequests.findMany({
     where: {
@@ -216,16 +196,13 @@ export const getFriendsWorksheets = async (
 ): Promise<void> => {
   winston.info(`Fetching friends' worksheets`);
 
-  if (!req.user) {
-    res.status(401).json({ error: 'USER_NOT_FOUND' });
-    return;
-  }
+  const { netId } = req.user!;
 
   // Get NetIDs of friends
   winston.info('Getting NetIDs of friends');
   const friendRecords = await prisma.studentFriends.findMany({
     where: {
-      netId: req.user.netId,
+      netId,
     },
   });
 
@@ -270,19 +247,19 @@ export const getFriendsWorksheets = async (
   } = {};
   friendWorksheets.forEach(
     ({
-      net_id: netId,
+      net_id: friendNetId,
       oci_id: ociId,
       season,
       worksheet_number: worksheetNumber,
     }) => {
-      if (netId in worksheetsByFriend) {
-        worksheetsByFriend[netId].push([
+      if (friendNetId in worksheetsByFriend) {
+        worksheetsByFriend[friendNetId].push([
           String(season),
           String(ociId),
           String(worksheetNumber),
         ]);
       } else {
-        worksheetsByFriend[netId] = [
+        worksheetsByFriend[friendNetId] = [
           [String(season), String(ociId), String(worksheetNumber)],
         ];
       }
