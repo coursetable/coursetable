@@ -64,7 +64,7 @@ export const toggleBookmark = async (
     await prisma.worksheetCourses.deleteMany({
       where: {
         net_id: netId,
-        oci_id: parseInt(ociId, 10),
+        oci_id: ociId,
         season: parseInt(season, 10),
         worksheet_number: worksheetNumber,
       },
