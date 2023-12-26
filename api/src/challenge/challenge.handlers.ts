@@ -212,13 +212,10 @@ const checkChallenge = (
     truthById[x.id] = x.rating;
   });
 
-  const allCorrect = answers.every((answer) => {
-    const trueRating =
-      truthById[answer.courseRatingId][answer.courseRatingIndex];
-    const providedRating = parseInt(answer.answer, 10);
-
-    return trueRating === providedRating;
-  });
+  const allCorrect = answers.every(
+    ({ answer, courseRatingId, courseRatingIndex }) =>
+      truthById[courseRatingId][courseRatingIndex] === answer,
+  );
 
   return allCorrect;
 };
@@ -242,7 +239,7 @@ const VerifyEvalsReqBodySchema = z.object({
     z.object({
       courseRatingId: z.number(),
       courseRatingIndex: z.number(),
-      answer: z.string(),
+      answer: z.number(),
     }),
   ),
 });
