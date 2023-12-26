@@ -180,11 +180,13 @@ export function useWorksheetInfo(
       ) {
         const course = courses[seasonCode].get(parseInt(crn, 10) as Crn);
         if (!course) {
-          Sentry.captureException(
-            new Error(
-              `failed to resolve worksheet course ${seasonCode} ${crn}`,
-            ),
-          );
+          // This error is unactionable.
+          // https://github.com/coursetable/coursetable/pull/1508
+          // Sentry.captureException(
+          //   new Error(
+          //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
+          //   ),
+          // );
         } else {
           dataReturn.push(course);
         }
