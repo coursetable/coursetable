@@ -32,8 +32,8 @@ USE `yaleplus`;
 CREATE TABLE `StudentBluebookSettings` (
   `netId` char(8) NOT NULL,
   `evaluationsEnabled` tinyint(1) UNSIGNED NOT NULL,
-  `first_name` varchar(256) DEFAULT NULL COMMENT 'User''s first name',
-  `last_name` varchar(256) DEFAULT NULL COMMENT 'User''s last name',
+  `firstName` varchar(256) DEFAULT NULL COMMENT 'User''s first name',
+  `lastName` varchar(256) DEFAULT NULL COMMENT 'User''s last name',
   `email` varchar(256) DEFAULT NULL COMMENT 'User''s email address',
   `upi` int(11) DEFAULT NULL COMMENT 'Universal Personal Identifier used by Yale Directory',
   `school` varchar(256) DEFAULT NULL COMMENT 'User''s school',
@@ -76,10 +76,10 @@ CREATE TABLE `StudentFriendRequests` (
 
 CREATE TABLE `WorksheetCourses` (
   `id` mediumint(8) UNSIGNED NOT NULL,
-  `net_id` char(8) NOT NULL,
-  `oci_id` mediumint(8) UNSIGNED NOT NULL,
+  `netId` char(8) NOT NULL,
+  `ociId` mediumint(8) UNSIGNED NOT NULL,
   `season` mediumint(8) UNSIGNED NOT NULL,
-  `worksheet_number` mediumint(8) UNSIGNED DEFAULT 0
+  `worksheetNumber` mediumint(8) UNSIGNED DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
@@ -109,19 +109,12 @@ ALTER TABLE `StudentFriends`
   ADD KEY `netId` (`netId`);
 
 --
--- Indexes for table `Students`
---
-ALTER TABLE `Students`
-  ADD PRIMARY KEY (`netId`),
-  ADD KEY `facebookId` (`facebookId`);
-
---
 -- Indexes for table `WorksheetCourses`
 --
 ALTER TABLE `WorksheetCourses`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `net_id_oci_id_season_worksheet_number` (`net_id`,`oci_id`,`season`, `worksheet_number`),
-  ADD KEY `net_id` (`net_id`);
+  ADD UNIQUE KEY `netId_ociId_season_worksheetNumber` (`netId`,`ociId`,`season`, `worksheetNumber`),
+  ADD KEY `netId` (`netId`);
 
 --
 -- AUTO_INCREMENT for dumped tables

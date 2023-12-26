@@ -70,8 +70,8 @@ export const cannyIdentify = async (
       data: {
         // Enable evaluations if user has a school code
         evaluationsEnabled: Boolean(user.school_code),
-        first_name: user.first_name,
-        last_name: user.last_name,
+        firstName: user.first_name,
+        lastName: user.last_name,
         email: user.email,
         upi: user.upi,
         school: user.school,

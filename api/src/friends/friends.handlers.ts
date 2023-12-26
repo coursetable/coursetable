@@ -190,8 +190,8 @@ export const getRequestsForFriend = async (
 
   const friendNames = friendInfos.map((friendInfo) => ({
     netId: friendInfo.netId,
-    name: `${friendInfo.first_name ?? '[unknown]'} ${
-      friendInfo.last_name ?? '[unknown]'
+    name: `${friendInfo.firstName ?? '[unknown]'} ${
+      friendInfo.lastName ?? '[unknown]'
     }`,
   }));
 
@@ -231,7 +231,7 @@ export const getFriendsWorksheets = async (
   winston.info('Getting worksheets of friends');
   const friendWorksheets = await prisma.worksheetCourses.findMany({
     where: {
-      net_id: {
+      netId: {
         in: friendNetIds,
       },
     },
@@ -250,8 +250,8 @@ export const getFriendsWorksheets = async (
 
   const friendNames = friendInfos.map((friendInfo) => ({
     netId: friendInfo.netId,
-    name: `${friendInfo.first_name ?? '[unknown]'} ${
-      friendInfo.last_name ?? '[unknown]'
+    name: `${friendInfo.firstName ?? '[unknown]'} ${
+      friendInfo.lastName ?? '[unknown]'
     }`,
   }));
 
@@ -260,17 +260,12 @@ export const getFriendsWorksheets = async (
   for (const nameRecord of friendNames)
     friendNameMap[nameRecord.netId] = { name: nameRecord.name };
 
-  // Map netId to worksheets (list of [season, oci_id, worksheet_number])
+  // Map netId to worksheets (list of [season, ociId, worksheetNumber])
   const worksheetsByFriend: {
     [netId: string]: [string, string, string][];
   } = {};
   friendWorksheets.forEach(
-    ({
-      net_id: friendNetId,
-      oci_id: ociId,
-      season,
-      worksheet_number: worksheetNumber,
-    }) => {
+    ({ netId: friendNetId, ociId, season, worksheetNumber }) => {
       if (friendNetId in worksheetsByFriend) {
         worksheetsByFriend[friendNetId].push([
           String(season),
@@ -301,8 +296,8 @@ export const getNames = async (
 
   const allNames = allNameRecords.map((nameRecord) => ({
     netId: nameRecord.netId,
-    first: nameRecord.first_name,
-    last: nameRecord.last_name,
+    first: nameRecord.firstName,
+    last: nameRecord.lastName,
     college: nameRecord.college,
   }));
   res.status(200).json(allNames);

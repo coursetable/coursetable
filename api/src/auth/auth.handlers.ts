@@ -132,8 +132,8 @@ export const passportConfig = (
             },
             data: {
               evaluationsEnabled: enableEvals,
-              first_name: user.first_name,
-              last_name: user.last_name,
+              firstName: user.first_name,
+              lastName: user.last_name,
               email: user.email,
               upi: user.upi,
               school: user.school,
@@ -189,8 +189,8 @@ export const passportConfig = (
       evals: Boolean(student?.evaluationsEnabled),
       // Convert nulls to undefined
       email: student?.email ?? undefined,
-      firstName: student?.first_name ?? undefined,
-      lastName: student?.last_name ?? undefined,
+      firstName: student?.firstName ?? undefined,
+      lastName: student?.lastName ?? undefined,
     });
   });
 };
