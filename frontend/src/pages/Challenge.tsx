@@ -1,9 +1,9 @@
-import React, { useState, useEffect, type ReactElement } from 'react';
+import React, { useState, useEffect } from 'react';
 import qs from 'qs';
-import axios, { AxiosError } from 'axios';
 import { useNavigate, NavLink, type NavigateFunction } from 'react-router-dom';
 import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
 import { useApolloClient } from '@apollo/client';
 
 import { FiExternalLink } from 'react-icons/fi';
@@ -21,7 +21,7 @@ import { API_ENDPOINT } from '../config';
 type ResBody = {
   token: string;
   salt: string;
-  course_info: {
+  courseInfo: {
     courseId: number;
     courseTitle: string;
     courseRatingIndex: number;
@@ -38,9 +38,8 @@ type Answer = {
   answer: number;
 };
 
-function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
-  // If user is not logged in
-  if (requestError === 'NOT_AUTHENTICATED') {
+function renderRequestError(requestError: {}, navigate: NavigateFunction) {
+  if (requestError === 'USER_NOT_FOUND') {
     return {
       errorTitle: 'Please log in!',
       errorMessage: (
@@ -56,27 +55,7 @@ function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
         </div>
       ),
     };
-  }
-  // If user is not in database
-  else if (requestError === 'USER_NOT_FOUND') {
-    return {
-      errorTitle: 'Account not found!',
-      errorMessage: (
-        <div>
-          Please make sure you are logged in via CAS.
-          <br />
-          <a
-            href="/api/auth/cas?redirect=catalog"
-            className="btn btn-primary mt-3"
-          >
-            Log in
-          </a>
-        </div>
-      ),
-    };
-  }
-  // Evaluations already enabled
-  else if (requestError === 'ALREADY_ENABLED') {
+  } else if (requestError === 'ALREADY_ENABLED') {
     return {
       errorTitle: "You've already passed!",
       errorMessage: (
@@ -91,9 +70,7 @@ function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
         </div>
       ),
     };
-  }
-  // Maximum attempts
-  else if (requestError === 'MAX_TRIES_REACHED') {
+  } else if (requestError === 'MAX_TRIES_REACHED') {
     return {
       errorTitle: 'Max attempts reached!',
       errorMessage: (
@@ -105,26 +82,6 @@ function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
       ),
     };
   }
-  // Cannot get properly formed ratings
-  else if (requestError === 'RATINGS_RETRIEVAL_ERROR') {
-    return {
-      errorTitle: 'Challenge generation error!',
-      errorMessage: (
-        <div>
-          We couldn't find a challenge. Please{' '}
-          <a
-            href="https://feedback.coursetable.com/"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            let us know
-          </a>{' '}
-          what went wrong.
-        </div>
-      ),
-    };
-  }
-  // Other errors
   return {
     errorTitle: 'Internal error!',
     errorMessage: (
@@ -137,10 +94,25 @@ function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
         >
           let us know
         </a>{' '}
-        what went wrong.
+        what went wrong. Error: {String(requestError)}
       </div>
     ),
   };
+}
+
+function renderVerifyError(verifyError: {}, navigate: NavigateFunction) {
+  if (verifyError === 'INCORRECT') {
+    return <div>Incorrect responses. Please try again.</div>;
+  } else if (verifyError === 'INVALID_REQUEST') {
+    return (
+      <div>
+        Your answers aren't formatted correctly. Please{' '}
+        <NavLink to="/feedback">contact us</NavLink> if you think this is an
+        error.
+      </div>
+    );
+  }
+  return renderRequestError(verifyError, navigate).errorMessage;
 }
 
 /**
@@ -167,35 +139,35 @@ function Challenge() {
   // Error code from requesting challenge
   const [requestError, setRequestError] = useState<{} | null>(null);
   // Error code from verifying challenge
-  const [verifyError, setVerifyError] = useState<string | null>(null);
-  // Error message to render after verification (if applicable)
-  const [verifyErrorMessage, setVerifyErrorMessage] =
-    useState<ReactElement | null>(null);
+  const [verifyError, setVerifyError] = useState<{} | null>(null);
 
   // Number of challenge attempts
-  const [numTries, setNumTries] = useState(null);
+  const [numTries, setNumTries] = useState<number | null>(null);
   // Max number of attempts allowed
-  const [maxTries, setMaxTries] = useState(null);
+  const [maxTries, setMaxTries] = useState<number | null>(null);
 
   // Fetch questions on component mount
   useEffect(() => {
-    axios
-      .post(`${API_ENDPOINT}/api/challenge/request`, { withCredentials: true })
-      .then((res) => {
-        // Questions not properly fetched
-        if (!res.data || !res.data.body) {
-          toast.error('Error with /api/challenge/request API call');
+    async function requestChallenge() {
+      try {
+        const res = await fetch(`${API_ENDPOINT}/api/challenge/request`, {
+          method: 'POST',
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          setRequestError(data.error);
+        } else {
+          setResBody(data);
+          setNumTries(data.challengeTries);
+          setMaxTries(data.maxChallengeTries);
         }
-        // Successfully fetched questions so update body and set max tries
-        else {
-          setResBody(res.data.body);
-          setNumTries(res.data.body.challengeTries);
-          setMaxTries(res.data.body.maxChallengeTries);
-        }
-      })
-      .catch((err) => {
-        if (err.response.data) setRequestError(err.response.data.error);
-      });
+      } catch (err) {
+        toast.error(`Failed to request challenge. ${String(err)}`);
+        Sentry.captureException(err);
+      }
+    }
+    void requestChallenge();
   }, []);
 
   const handleSubmit: React.FormEventHandler<HTMLFormElement> = async (
@@ -204,109 +176,50 @@ function Challenge() {
     const form = event.currentTarget;
     // Prevent default page reload
     event.preventDefault();
-    // Form is invalid
     if (!form.checkValidity()) {
-      // Don't submit
+      // Form is invalid; don't submit
       event.stopPropagation();
+      return;
+    } else if (!resBody) {
+      // No challenge yet
+      return;
     }
-    // Form is valid
-    else if (resBody) {
-      // Body data to be passed in post request
-      const postBody = {
-        token: resBody.token,
-        salt: resBody.salt,
-        answers,
-      };
-      // Config header for urlencoded
-      const config = {
+    try {
+      const res = await fetch(`${API_ENDPOINT}/api/challenge/verify`, {
+        body: qs.stringify({
+          token: resBody.token,
+          salt: resBody.salt,
+          answers,
+        }),
+        method: 'POST',
         headers: {
-          'content-type': 'application/x-www-form-urlencoded;charset=utf-8',
+          'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         },
-        withCredentials: true,
-      };
-      // Verify answers
-      try {
-        const res = await axios.post(
-          `${API_ENDPOINT}/api/challenge/verify`,
-          qs.stringify(postBody),
-          config,
-        );
-        // Answers not properly verified
-        if (!res.data || !res.data.body) {
-          toast.error('Error with /api/challenge/verify API call');
-        }
-        // Correct responses
-        else if (res.data.body.message === 'CORRECT') {
-          try {
-            await userRefresh();
-            await client.resetStore();
-            toast.success(
-              "All of your responses were correct! Refresh the page if the courses aren't showing.",
-            );
-            navigate(-1);
-          } catch {
-            toast.error('Failed to update evaluation status');
-          }
-        }
-        // Incorrect responses
-        else {
-          toast.error('Incorrect responses. Please try again.');
-
-          setVerifyError('INCORRECT');
-
-          setVerifyErrorMessage(
-            <div>Incorrect responses. Please try again.</div>,
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        setVerifyError(data.error);
+      } else if (data.message === 'CORRECT') {
+        try {
+          await userRefresh();
+          await client.resetStore();
+          toast.success(
+            "All of your responses were correct! Refresh the page if the courses aren't showing.",
           );
-
-          setValidated(false);
-          setNumTries(res.data.body.challengeTries);
-          setMaxTries(res.data.body.maxChallengeTries);
+          navigate(-1);
+        } catch {
+          toast.error('Failed to update evaluation status');
         }
-      } catch (err) {
-        const error =
-          err instanceof AxiosError
-            ? (err.response!.data as { error: string }).error
-            : 'UNKNOWN';
-
-        setVerifyError(error);
-
-        // Max attempts reached
-        if (error === 'MAX_TRIES_REACHED') {
-          setVerifyErrorMessage(
-            <div>
-              You've used up all your challenge attempts. Please{' '}
-              <NavLink to="/feedback">contact us</NavLink> if you would like to
-              gain access.
-            </div>,
-          );
-        }
-        // Bad token
-        else if (error === 'INVALID_TOKEN' || error === 'INVALID_REQUEST') {
-          setVerifyErrorMessage(
-            <div>
-              Your answers aren't formatted correctly. Please{' '}
-              <NavLink to="/feedback">contact us</NavLink> if you think this is
-              an error.
-            </div>,
-          );
-        }
-        // Other errors
-        else {
-          setVerifyErrorMessage(
-            <div>
-              Looks like we messed up. Please{' '}
-              <a
-                href="https://feedback.coursetable.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                let us know
-              </a>{' '}
-              what went wrong.
-            </div>,
-          );
-        }
+      } else {
+        setVerifyError('INCORRECT');
+        setValidated(false);
+        setNumTries(data.challengeTries);
+        setMaxTries(data.maxChallengeTries);
       }
+    } catch (err) {
+      toast.error(`Failed to verify challenge. ${String(err)}`);
+      Sentry.captureException(err);
     }
     // Form has been validated
     setValidated(true);
@@ -317,7 +230,7 @@ function Challenge() {
 
   // If error in requesting challenge, render error message
   if (requestError) {
-    const { errorTitle, errorMessage } = getErrorMessage(
+    const { errorTitle, errorMessage } = renderRequestError(
       requestError,
       navigate,
     );
@@ -384,12 +297,14 @@ function Challenge() {
         )}
         {/* Error messages from verification */}
         {verifyError && (
-          <div className="text-danger mb-2">{verifyErrorMessage}</div>
+          <div className="text-danger mb-2">
+            {renderVerifyError(verifyError, navigate)}
+          </div>
         )}
         {resBody ? (
           // Show form when questions have been fetched
           <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            {resBody.course_info.map((course, index) => (
+            {resBody.courseInfo.map((course, index) => (
               <Form.Group controlId={`question#${index + 1}`} key={index}>
                 {/* Course Title */}
                 <Row className="mx-auto">
