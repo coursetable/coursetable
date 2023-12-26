@@ -3,10 +3,18 @@
  */
 
 import type express from 'express';
+import z from 'zod';
 
 import winston from '../logging/winston';
 
 import { prisma } from '../config';
+
+const ToggleBookmarkReqBodySchema = z.object({
+  action: z.union([z.literal('add'), z.literal('remove')]),
+  season: z.string(),
+  oci_id: z.string(),
+  worksheet_number: z.number(),
+});
 
 /**
  * Toggle a bookmarked course in a worksheet.
@@ -22,12 +30,18 @@ export const toggleBookmark = async (
 
   const { netId } = req.user!;
 
+  const bodyParseRes = ToggleBookmarkReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
+
   const {
     action,
     season,
     oci_id: ociId,
     worksheet_number: worksheetNumber,
-  } = req.body;
+  } = bodyParseRes.data;
 
   // Add a bookmarked course
   if (action === 'add') {

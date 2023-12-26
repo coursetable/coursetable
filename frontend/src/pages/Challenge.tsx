@@ -33,9 +33,9 @@ type ResBody = {
 };
 
 type Answer = {
-  courseRatingId: number | undefined;
-  courseRatingIndex: number | undefined;
-  answer: string;
+  courseRatingId: number;
+  courseRatingIndex: number;
+  answer: number;
 };
 
 function getErrorMessage(requestError: {}, navigate: NavigateFunction) {
@@ -159,9 +159,9 @@ function Challenge() {
   const [resBody, setResBody] = useState<ResBody | null>(null);
   // Stores user's answers
   const [answers, setAnswers] = useState<Answer[]>([
-    { answer: '', courseRatingId: undefined, courseRatingIndex: undefined },
-    { answer: '', courseRatingId: undefined, courseRatingIndex: undefined },
-    { answer: '', courseRatingId: undefined, courseRatingIndex: undefined },
+    { answer: -1, courseRatingId: -1, courseRatingIndex: -1 },
+    { answer: -1, courseRatingId: -1, courseRatingIndex: -1 },
+    { answer: -1, courseRatingId: -1, courseRatingIndex: -1 },
   ]);
 
   // Error code from requesting challenge
@@ -281,17 +281,7 @@ function Challenge() {
           );
         }
         // Bad token
-        else if (error === 'INVALID_TOKEN') {
-          setVerifyErrorMessage(
-            <div>
-              Your answers aren't formatted correctly. Please{' '}
-              <NavLink to="/feedback">contact us</NavLink> if you think this is
-              an error.
-            </div>,
-          );
-        }
-        // Bad answers
-        else if (error === 'MALFORMED_ANSWERS') {
+        else if (error === 'INVALID_TOKEN' || error === 'INVALID_REQUEST') {
           setVerifyErrorMessage(
             <div>
               Your answers aren't formatted correctly. Please{' '}
@@ -440,7 +430,7 @@ function Challenge() {
                     newAnswers[index].courseRatingId = course.courseId;
                     newAnswers[index].courseRatingIndex =
                       course.courseRatingIndex;
-                    newAnswers[index].answer = event.target.value;
+                    newAnswers[index].answer = parseInt(event.target.value, 10);
                     // Update old answers state with new answers
                     setAnswers(newAnswers);
                   }}
