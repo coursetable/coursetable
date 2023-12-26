@@ -4,7 +4,7 @@ const die = (err: string) => {
   throw new Error(`env config missing: ${err}`);
 };
 
-const getEnv = (name: string) => process.env[name] || die(name);
+const getEnv = (name: string) => process.env[name] ?? die(name);
 
 // If running in dev mode
 export const isDev = process.env.NODE_ENV !== 'production';
@@ -21,7 +21,7 @@ export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
 
 export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
 export const CHALLENGE_PASSWORD =
-  process.env.CHALLENGE_PASSWORD || die('challenge password');
+  process.env.CHALLENGE_PASSWORD ?? die('challenge password');
 
 export const NUM_CHALLENGE_COURSES = 3; // Number of courses to select for the challenge
 export const CHALLENGE_SEASON = '202101'; // Season to select the challenge from
@@ -32,12 +32,12 @@ export const CANNY_KEY = getEnv('CANNY_KEY');
 
 // TODO make sure the frontend port is synchronized with this;
 // we should use the same script to start both frontend and backend
-const port = process.env.FRONT_END_PORT || 3000;
+const port = process.env.FRONT_END_PORT ?? 3000;
 
 // Frontend server endpoint (used for redirects)
 export const FRONTEND_ENDPOINT = isDev
   ? `https://localhost:${port}`
-  : process.env.FRONTEND_ENDPOINT || 'https://coursetable.com';
+  : process.env.FRONTEND_ENDPOINT ?? 'https://coursetable.com';
 
 // CORS options so frontend can interface with server
 export const CORS_OPTIONS = {

@@ -1,11 +1,14 @@
 import type express from 'express';
 import { request } from 'graphql-request';
 import crypto from 'crypto';
+import z from 'zod';
 
 import {
   GRAPHQL_ENDPOINT,
   CHALLENGE_SEASON,
   MAX_CHALLENGE_REQUESTS,
+  CHALLENGE_ALGORITHM,
+  CHALLENGE_PASSWORD,
   prisma,
 } from '../config';
 
@@ -13,12 +16,53 @@ import winston from '../logging/winston';
 
 import {
   requestEvalsQuery,
-  type requestEvalsQueryResponse,
+  type RequestEvalsQueryResponse,
   verifyEvalsQuery,
-  type verifyEvalsQueryResponse,
+  type VerifyEvalsQueryResponse,
 } from './challenge.queries';
 
-import { encrypt, decrypt, getRandomInt } from './challenge.utils';
+/**
+ * Encrypt a string according to CHALLENGE_ALGORITHM and CHALLENGE_PASSWORD.
+ * @prop text - string to encrypt
+ * @prop salt - salt value to append to password
+ */
+function encrypt(text: string, salt: string): string {
+  // TODO
+  // eslint-disable-next-line n/no-deprecated-api
+  const cipher = crypto.createCipher(
+    CHALLENGE_ALGORITHM,
+    CHALLENGE_PASSWORD + salt,
+  );
+  let crypted = cipher.update(text, 'utf8', 'hex');
+  crypted += cipher.final('hex');
+  return crypted;
+}
+
+/**
+ * Decrypt a salted string according to CHALLENGE_ALGORITHM and
+ * CHALLENGE_PASSWORD.
+ * @prop text - string to decrypt
+ * @prop salt - salt value to append to password
+ */
+function decrypt(text: string, salt: string): string {
+  // TODO
+  // eslint-disable-next-line n/no-deprecated-api
+  const decipher = crypto.createDecipher(
+    CHALLENGE_ALGORITHM,
+    CHALLENGE_PASSWORD + salt,
+  );
+  let dec = decipher.update(text, 'hex', 'utf8');
+  dec += decipher.final('utf8');
+  return dec;
+}
+
+/**
+ * Randomly-generate an integer between 0 and max-1
+ * @prop max - max integer to return (not inclusive)
+ */
+function getRandomInt(max: number): number {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
 /**
  * Generate a challenge object given a query response.
@@ -30,12 +74,10 @@ import { encrypt, decrypt, getRandomInt } from './challenge.utils';
  * @prop challengeTries - number of user attempts
  */
 const constructChallenge = (
-  req: express.Request,
-  res: express.Response,
-  evals: requestEvalsQueryResponse,
+  evals: RequestEvalsQueryResponse,
   challengeTries: number,
-  netid: string,
-): express.Response => {
+  netId: string,
+) => {
   // Array of course enrollment counts
   const ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
@@ -55,10 +97,7 @@ const constructChallenge = (
     courseRatingIndex: ratingIndices[index],
   }));
 
-  const secrets = {
-    netid,
-    ratingSecrets,
-  };
+  const secrets: Secrets = { netId, ratingSecrets };
 
   // Encrypt token
   const salt = crypto.randomBytes(16).toString('hex');
@@ -90,7 +129,7 @@ const constructChallenge = (
     courseOceUrl: oceUrls[index],
   }));
 
-  return res.json({
+  return {
     body: {
       token,
       salt,
@@ -98,7 +137,7 @@ const constructChallenge = (
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     },
-  });
+  };
 };
 
 /**
@@ -109,12 +148,10 @@ const constructChallenge = (
 export const requestChallenge = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info(`Requesting challenge`);
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =
@@ -123,15 +160,18 @@ export const requestChallenge = async (
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled)
-    return res.status(403).json({ error: 'ALREADY_ENABLED' });
+  if (evaluationsEnabled) {
+    res.status(403).json({ error: 'ALREADY_ENABLED' });
+    return;
+  }
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
-    return res.status(429).json({
+    res.status(429).json({
       error: 'MAX_TRIES_REACHED',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
 
   // Randomize the selected challenge courses by
@@ -139,23 +179,15 @@ export const requestChallenge = async (
   const minRating = 1 + Math.random() * 4;
 
   // Get a list of all seasons
-  try {
-    const evals: requestEvalsQueryResponse = await request(
-      GRAPHQL_ENDPOINT,
-      requestEvalsQuery,
-      {
-        season: CHALLENGE_SEASON,
-        minRating,
-      },
-    );
-    return constructChallenge(req, res, evals, challengeTries, netId);
-  } catch (err) {
-    return res.status(500).json({
-      error: err,
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-  }
+  const evals: RequestEvalsQueryResponse = await request(
+    GRAPHQL_ENDPOINT,
+    requestEvalsQuery,
+    {
+      season: CHALLENGE_SEASON,
+      minRating,
+    },
+  );
+  res.json(constructChallenge(evals, challengeTries, netId));
 };
 
 /**
@@ -167,12 +199,8 @@ export const requestChallenge = async (
  * @prop answers - user-provided answers
  */
 const checkChallenge = (
-  trueEvals: verifyEvalsQueryResponse,
-  answers: {
-    answer: string;
-    courseRatingId: string;
-    courseRatingIndex: string;
-  }[],
+  trueEvals: VerifyEvalsQueryResponse,
+  answers: VerifyEvalsReqBody['answers'],
 ): boolean => {
   // The true values in CourseTable to compare against
   const truth = trueEvals.evaluation_ratings;
@@ -184,16 +212,39 @@ const checkChallenge = (
     truthById[x.id] = x.rating;
   });
 
-  const allCorrect = answers.every((answer) => {
-    const trueRating =
-      truthById[answer.courseRatingId][parseInt(answer.courseRatingIndex, 10)];
-    const providedRating = parseInt(answer.answer, 10);
-
-    return trueRating === providedRating;
-  });
+  const allCorrect = answers.every(
+    ({ answer, courseRatingId, courseRatingIndex }) =>
+      truthById[courseRatingId][courseRatingIndex] === answer,
+  );
 
   return allCorrect;
 };
+
+const SecretsSchema = z.object({
+  netId: z.string(),
+  ratingSecrets: z.array(
+    z.object({
+      courseRatingId: z.number(),
+      courseRatingIndex: z.number(),
+    }),
+  ),
+});
+
+type Secrets = z.infer<typeof SecretsSchema>;
+
+const VerifyEvalsReqBodySchema = z.object({
+  token: z.string(),
+  salt: z.string(),
+  answers: z.array(
+    z.object({
+      courseRatingId: z.number(),
+      courseRatingIndex: z.number(),
+      answer: z.number(),
+    }),
+  ),
+});
+
+type VerifyEvalsReqBody = z.infer<typeof VerifyEvalsReqBodySchema>;
 
 /**
  * Verifies answers to a challenge.
@@ -203,12 +254,10 @@ const checkChallenge = (
 export const verifyChallenge = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info(`Verifying challenge`);
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =
@@ -217,107 +266,86 @@ export const verifyChallenge = async (
       data: { challengeTries: { increment: 1 } },
     });
 
-  if (evaluationsEnabled)
-    return res.status(403).json({ error: 'ALREADY_ENABLED' });
+  if (evaluationsEnabled) {
+    res.status(403).json({ error: 'ALREADY_ENABLED' });
+    return;
+  }
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
-    return res.status(429).json({
+    res.status(429).json({
       error: 'MAX_TRIES_REACHED',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
+    return;
   }
 
-  const { token, salt, answers } = req.body;
-  let secrets: {
-    netid: string;
-    ratingSecrets: { courseRatingId: string; courseRatingIndex: number }[];
-  } = { netid: '', ratingSecrets: [] }; // The decrypted token
-  let secretRatingIds: string[] = []; // For retrieving the correct ones from the database
-  // list in the format "<question_id>_<rating_index>" to verify
-  // the submitted answers match those encoded in the token
-  let secretRatings: string[] = [];
-  let answerRatings: string[] = [];
+  const bodyParseRes = VerifyEvalsReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({
+      error: 'INVALID_REQUEST',
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+    return;
+  }
+
+  const { token, salt, answers } = bodyParseRes.data;
+  // eslint-disable-next-line @typescript-eslint/init-declarations
+  let trueEvals: VerifyEvalsQueryResponse;
   // Catch malformed token decryption errors
   try {
-    secrets = JSON.parse(decrypt(token, salt));
-    secretRatingIds = secrets.ratingSecrets.map((x) => x.courseRatingId);
-    secretRatings = secrets.ratingSecrets.map(
-      (x) => `${x.courseRatingId}_${x.courseRatingIndex}`,
-    );
+    const secrets: unknown = JSON.parse(decrypt(token, salt));
+    const secretsParseRes = SecretsSchema.safeParse(secrets);
+    if (!secretsParseRes.success) throw new Error('Malformed token');
+    const { netId: secretNetId, ratingSecrets } = secretsParseRes.data;
+    if (secretNetId !== netId)
+      throw new Error('netId in token not the same as in headers');
+    // List in the format "<question_id>_<rating_index>" to verify
+    // the submitted answers match those encoded in the token
+    if (
+      ratingSecrets
+        .map((x) => `${x.courseRatingId}_${x.courseRatingIndex}`)
+        .sort()
+        .join(',') !==
+      answers
+        .map((x) => `${x.courseRatingId}_${x.courseRatingIndex}`)
+        .sort()
+        .join(',')
+    )
+      throw new Error('Answer ratings IDs and indices do not match questions');
+    trueEvals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+      questionIds: ratingSecrets.map((x) => x.courseRatingId),
+    });
   } catch {
-    return res.status(400).json({
+    res.status(400).json({
       error: 'INVALID_TOKEN',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
-  }
-  // Ensure that netid in token is same as in headers
-  if (secrets.netid !== netId) {
-    return res.status(400).json({
-      error: 'INVALID_TOKEN',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-  }
-  // Catch malformed answer JSON errors
-  try {
-    answerRatings = answers.map(
-      (x: { courseRatingId: string; courseRatingIndex: number }) =>
-        `${x.courseRatingId}_${x.courseRatingIndex}`,
-    );
-  } catch {
-    return res.status(400).json({
-      error: 'MALFORMED_ANSWERS',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-  }
-  // Make sure the provided ratings IDs and indices match those we have
-  if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
-    return res.status(400).json({
-      error: 'INVALID_TOKEN',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
+    return;
   }
 
-  // Get a list of all seasons
-  try {
-    const trueEvals: verifyEvalsQueryResponse = await request(
-      GRAPHQL_ENDPOINT,
-      verifyEvalsQuery,
-      {
-        questionIds: secretRatingIds,
-      },
-    );
-
-    if (!checkChallenge(trueEvals, answers)) {
-      return res.status(200).json({
-        body: {
-          message: 'INCORRECT',
-          challengeTries,
-          maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-        },
-      });
-    }
-    // Otherwise, enable evaluations and respond with success
-    await prisma.studentBluebookSettings.update({
-      where: { netId },
-      data: { evaluationsEnabled: true },
-    });
-    return res.json({
+  if (!checkChallenge(trueEvals, answers)) {
+    res.status(200).json({
       body: {
-        message: 'CORRECT',
+        message: 'INCORRECT',
         challengeTries,
         maxChallengeTries: MAX_CHALLENGE_REQUESTS,
       },
     });
-  } catch (err) {
-    return res.status(500).json({
-      error: err,
+    return;
+  }
+  // Otherwise, enable evaluations and respond with success
+  await prisma.studentBluebookSettings.update({
+    where: { netId },
+    data: { evaluationsEnabled: true },
+  });
+  res.json({
+    body: {
+      message: 'CORRECT',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-  }
+    },
+  });
 };

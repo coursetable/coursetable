@@ -11,15 +11,15 @@ import {
   FRONTEND_ENDPOINT,
   prisma,
 } from '../config';
-import type { User } from '../models/student';
+import type { YaliesResponse } from '../auth/auth.handlers';
 import winston from '../logging/winston';
 
 // Create a JWT-signed Canny token with user info
-const createCannyToken = (user: User) => {
+const createCannyToken = (user: Express.User) => {
   const userData = {
     email: user.email,
     id: user.netId,
-    name: `${user.firstName} ${user.lastName}`,
+    name: `${user.firstName ?? '[unknown]'} ${user.lastName ?? '[unknown]'}`,
   };
   return jwt.sign(userData, CANNY_KEY, { algorithm: 'HS256' });
 };
@@ -28,12 +28,10 @@ const createCannyToken = (user: User) => {
 export const cannyIdentify = async (
   req: express.Request,
   res: express.Response,
-): Promise<
-  undefined | express.Response<unknown, { [key: string]: unknown }>
-> => {
+): Promise<void> => {
   if (!req.user) {
     res.redirect(FRONTEND_ENDPOINT);
-    return undefined;
+    return;
   }
 
   const { netId } = req.user;
@@ -42,7 +40,7 @@ export const cannyIdentify = async (
   // (also done upon login, but our cookies last a while)
   winston.info("Getting user's enrollment status from Yalies.io");
   try {
-    const { data } = await axios.post(
+    const { data } = await axios.post<YaliesResponse>(
       'https://yalies.io/api/people',
       {
         filters: {
@@ -57,8 +55,10 @@ export const cannyIdentify = async (
       },
     );
     // If no user found, do not grant access
-    if (data === null || data.length === 0)
-      return res.status(401).json({ success: false });
+    if (data === null || data.length === 0) {
+      res.status(401).json({ success: false });
+      return;
+    }
 
     const [user] = data;
 
@@ -91,10 +91,8 @@ export const cannyIdentify = async (
     });
 
     res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
-    return undefined;
   } catch (err) {
-    winston.error(`Yalies connection error: ${err}`);
+    winston.error(`Yalies connection error: ${String(err)}`);
     res.redirect(FRONTEND_ENDPOINT);
-    return undefined;
   }
 };

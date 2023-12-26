@@ -3,6 +3,12 @@
 - TODO: remove all `success: true` (and use HTTP status code instead)
 - TODO: standardize error response format
 
+All endpoints are capable of returning 500. In this case the body contains an `error: string`.
+
+Endpoints marked as "needs credentials" returns 401 with `error: "USER_NOT_FOUND"` when the user is not found.
+
+Endpoints marked as "needs eval access" additionally returns 401 with `error: "USER_NO_EVALS"` when the user exists but has no evals access. Evals access can be granted after completing the challenge, or manually granted.
+
 ## Challenge
 
 ### `POST` `/api/challenge/request`
@@ -27,12 +33,6 @@
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
 **Status: 403**
 
 - When the user has already verified challenge
@@ -44,14 +44,6 @@
 - When the user has reached the max tries
 - Body:
   - `error`: `"MAX_TRIES_REACHED"`
-  - `challengeTries`: `number`
-  - `maxChallengeTries`: `number`
-
-**Status: 500**
-
-- Internal error with requesting the challenge
-- Body:
-  - `error`: `unknown`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 
@@ -79,17 +71,11 @@
 
 **Status: 400**
 
-- When the token/salt is invalid (does not decrypt to valid information), or when the answer is of invalid shape
+- When the token/salt is invalid (does not decrypt to valid information), or when the request is of invalid shape
 - Body:
-  - `error`: `"INVALID_TOKEN" | "MALFORMED_ANSWERS"`
+  - `error`: `"INVALID_TOKEN" | "INVALID_REQUEST"`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
 
 **Status: 403**
 
@@ -102,14 +88,6 @@
 - When the user has reached the max tries
 - Body:
   - `error`: `"MAX_TRIES_REACHED"`
-  - `challengeTries`: `number`
-  - `maxChallengeTries`: `number`
-
-**Status: 500**
-
-- Internal error with verifying the challenge
-- Body:
-  - `error`: `unknown`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 
@@ -129,12 +107,23 @@
 
 - When there is no secret header with request
 - Body:
-  - `error`: `"NOT_AUTHENTICATED"`
+  - `error`: `"NOT_FERRY"`
 
-**Status: 500**
+### `GET` `/api/static/{season}.json`
 
-- Internal error with refreshing the catalog
-- Body: `unknown`
+TODO: rename this to `/api/catalog` and remove `.json`?
+
+#### Request
+
+- Needs eval access
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `Listing[]` (see `static` folder for examples)
+  - TODO: provide typing SDK
 
 ## Auth
 
@@ -202,18 +191,6 @@
 - Body:
   - `success`: `false`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
-**Status: 500**
-
-- Internal error with removing friend
-- Body:
-  - `success`: `false`
-
 ### `POST` `/api/friends/remove`
 
 #### Request
@@ -232,18 +209,6 @@
 **Status: 400**
 
 - When `friendNetId` is not provided or is the same as the user's
-- Body:
-  - `success`: `false`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
-**Status: 500**
-
-- Internal error with removing friend
 - Body:
   - `success`: `false`
 
@@ -268,18 +233,6 @@
 - Body:
   - `success`: `false`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
-**Status: 500**
-
-- Internal error with sending friend request
-- Body:
-  - `success`: `false`
-
 ### `GET` `/api/friends/getRequests`
 
 #### Request
@@ -295,19 +248,6 @@
   - `friends`: `array`
     - `netId`: `NetId`
     - `name`: `string`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
-**Status: 500**
-
-- Internal error with querying friend requests
-- Body:
-  - `success`: `false`
-  - `message`: `string`
 
 ### `GET` `/api/friends/worksheets`
 
@@ -325,12 +265,6 @@
   - `friendInfo`: `{ [netId: string]: { name: string } }`
   - TODO: merge `worksheets` and `friendInfo`
 
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
-
 ### `GET` `/api/friends/names`
 
 - DEPRECATED: not in use
@@ -339,7 +273,7 @@
 
 ### `GET` `/api/canny/board`
 
-- DEPRECATED: not in use
+- For internal use by Canny
 
 ## Worksheet
 
@@ -352,7 +286,7 @@
   - `action`: `"add" | "remove"`
   - `season`: `string`
   - `oci_id`: `string`
-  - `worksheet_number`: `string`
+  - `worksheet_number`: `number`
 
 #### Response
 
@@ -360,12 +294,6 @@
 
 - Body:
   - `success`: `true`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
 
 ### `GET` `/api/user/worksheets`
 
@@ -384,12 +312,6 @@
   - `year`: `number | null | undefined`
   - `school`: `string | null | undefined`
   - `data`: `[season: string, ociId: string, worksheetNumber: string][]`
-
-**Status: 401**
-
-- When there is no credentials with request
-- Body:
-  - `error`: `"USER_NOT_FOUND"`
 
 ## Health check
 

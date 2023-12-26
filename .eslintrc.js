@@ -24,15 +24,6 @@ module.exports = {
     'jsx-a11y/interactive-supports-focus': 'off',
     'jsx-a11y/prefer-tag-over-role': 'off',
     'react/no-array-index-key': 'off',
-    // TODO: until we have better types
-    '@typescript-eslint/no-unsafe-argument': 'off',
-    '@typescript-eslint/no-unsafe-assignment': 'off',
-    '@typescript-eslint/no-unsafe-call': 'off',
-    '@typescript-eslint/no-unsafe-member-access': 'off',
-    '@typescript-eslint/no-unsafe-return': 'off',
-    '@typescript-eslint/no-unnecessary-condition': 'off',
-    '@typescript-eslint/prefer-nullish-coalescing': 'off',
-    '@typescript-eslint/restrict-template-expressions': 'off',
     // TODO: we should eventually get rid of `in` operator
     'no-restricted-syntax': 'off',
   },
@@ -40,6 +31,15 @@ module.exports = {
     {
       files: ['frontend/**/*'],
       rules: {
+        // TODO: until we have better types
+        '@typescript-eslint/no-unsafe-argument': 'off',
+        '@typescript-eslint/no-unsafe-assignment': 'off',
+        '@typescript-eslint/no-unsafe-call': 'off',
+        '@typescript-eslint/no-unsafe-member-access': 'off',
+        '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unnecessary-condition': 'off',
+        '@typescript-eslint/prefer-nullish-coalescing': 'off',
+        '@typescript-eslint/restrict-template-expressions': 'off',
         'no-restricted-imports': [
           'error',
           {

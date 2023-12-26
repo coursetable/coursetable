@@ -3,10 +3,18 @@
  */
 
 import type express from 'express';
+import z from 'zod';
 
 import winston from '../logging/winston';
 
 import { prisma } from '../config';
+
+const ToggleBookmarkReqBodySchema = z.object({
+  action: z.union([z.literal('add'), z.literal('remove')]),
+  season: z.string(),
+  oci_id: z.string(),
+  worksheet_number: z.number(),
+});
 
 /**
  * Toggle a bookmarked course in a worksheet.
@@ -17,22 +25,26 @@ import { prisma } from '../config';
 export const toggleBookmark = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info('Toggling course bookmark');
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
+  const { netId } = req.user!;
 
-  const { netId } = req.user;
+  const bodyParseRes = ToggleBookmarkReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
 
   const {
     action,
     season,
     oci_id: ociId,
     worksheet_number: worksheetNumber,
-  } = req.body;
+  } = bodyParseRes.data;
 
-  // Add a bookmarked course
   if (action === 'add') {
+    // Add a bookmarked course
     winston.info(
       `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
@@ -44,9 +56,8 @@ export const toggleBookmark = async (
         worksheet_number: worksheetNumber,
       },
     });
-  }
-  // Remove a bookmarked course
-  else if (action === 'remove') {
+  } else {
+    // Remove a bookmarked course
     winston.info(
       `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
@@ -60,7 +71,7 @@ export const toggleBookmark = async (
     });
   }
 
-  return res.json({ success: true });
+  res.json({ success: true });
 };
 
 /**
@@ -72,12 +83,10 @@ export const toggleBookmark = async (
 export const getUserWorksheet = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info(`Fetching user's worksheets`);
 
-  if (!req.user) return res.status(401).json({ error: 'USER_NOT_FOUND' });
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   // Get user info
   winston.info(`Getting profile for user ${netId}`);
@@ -95,7 +104,7 @@ export const getUserWorksheet = async (
     },
   });
 
-  return res.json({
+  res.json({
     success: true,
     netId,
     evaluationsEnabled: studentProfile?.evaluationsEnabled,
