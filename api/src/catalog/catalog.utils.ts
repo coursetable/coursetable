@@ -106,16 +106,11 @@ export async function fetchCatalog(
       throw err;
     }
 
-    if (catalog.computed_listing_info) {
-      fs.writeFileSync(
-        outputPath,
-        JSON.stringify(catalog.computed_listing_info),
-      );
+    fs.writeFileSync(outputPath, JSON.stringify(catalog.computed_listing_info));
 
-      winston.info(
-        `Fetched season ${seasonCode}: n=${catalog.computed_listing_info.length}`,
-      );
-    }
+    winston.info(
+      `Fetched season ${seasonCode}: n=${catalog.computed_listing_info.length}`,
+    );
   });
 
   return Promise.allSettled(processSeasons);

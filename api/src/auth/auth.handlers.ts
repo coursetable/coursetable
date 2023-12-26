@@ -10,8 +10,25 @@ import axios from 'axios';
 import winston from '../logging/winston';
 import { YALIES_API_KEY, prisma } from '../config';
 
+// TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
+export type YaliesResponse =
+  | {
+      organization_code?: string;
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      upi?: number;
+      school?: string;
+      year?: number;
+      college?: string;
+      major?: string;
+      curriculum?: string;
+      school_code?: string;
+    }[]
+  | null;
+
 // Codes for allowed organizations (to give faculty access to the site)
-const ALLOWED_ORG_CODES = [
+const ALLOWED_ORG_CODES: unknown[] = [
   'MED', // Medical school
   'FAS', // Faculty of arts and sciences
   'SOM', // School of medicine
@@ -75,7 +92,7 @@ export const passportConfig = (
 
         winston.info("Getting user's enrollment status from Yalies.io");
         try {
-          const { data } = await axios.post(
+          const { data } = await axios.post<YaliesResponse>(
             'https://yalies.io/api/people',
             {
               filters: {
@@ -135,7 +152,7 @@ export const passportConfig = (
             lastName: user.last_name,
           });
         } catch (err) {
-          winston.error(`Yalies connection error: ${err}`);
+          winston.error(`Yalies connection error: ${String(err)}`);
           done(null, {
             netId: profile.user,
             evals: false,
@@ -171,9 +188,9 @@ export const passportConfig = (
       netId,
       evals: Boolean(student?.evaluationsEnabled),
       // Convert nulls to undefined
-      email: student?.email || undefined,
-      firstName: student?.first_name || undefined,
-      lastName: student?.last_name || undefined,
+      email: student?.email ?? undefined,
+      firstName: student?.first_name ?? undefined,
+      lastName: student?.last_name ?? undefined,
     });
   });
 };
@@ -188,7 +205,7 @@ const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
   const redirect = req.query.redirect as string | undefined;
 
-  const hostName = extractHostname(redirect || 'coursetable.com/catalog');
+  const hostName = extractHostname(redirect ?? 'coursetable.com/catalog');
 
   if (redirect && !redirect.startsWith('//')) {
     winston.info(`Redirecting to ${redirect}`);
@@ -224,30 +241,35 @@ export const casLogin = (
 ): void => {
   winston.info('Logging in with CAS');
   // Authenticate with passport
-  passport.authenticate('cas', (casError: Error, user: Express.User) => {
-    // Handle auth errors or missing users
-    if (casError) {
-      next(casError);
-      return;
-    }
+  (
+    passport.authenticate(
+      'cas',
+      (casError: Error | undefined, user: Express.User | undefined) => {
+        // Handle auth errors or missing users
+        if (casError) {
+          next(casError);
+          return;
+        }
 
-    if (!user) {
-      next(new Error('CAS auth but no user'));
-      return;
-    }
+        if (!user) {
+          next(new Error('CAS auth but no user'));
+          return;
+        }
 
-    // Log in the user
-    winston.info(`"Logging in ${user.netId}`);
-    req.logIn(user, (loginError) => {
-      if (loginError) {
-        next(loginError);
-        return;
-      }
+        // Log in the user
+        winston.info(`"Logging in ${user.netId}`);
+        req.logIn(user, (loginError) => {
+          if (loginError) {
+            next(loginError);
+            return;
+          }
 
-      // Redirect if authentication successful
-      postAuth(req, res);
-    });
-  })(req, res, next);
+          // Redirect if authentication successful
+          postAuth(req, res);
+        });
+      },
+    ) as express.Handler
+  )(req, res, next);
 };
 
 /**

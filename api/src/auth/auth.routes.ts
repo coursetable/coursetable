@@ -19,7 +19,8 @@ export default (app: express.Express): void => {
 
   // Logouts
   app.get('/api/auth/logout', (req, res, next) => {
-    winston.info(`Logging out ${req.user?.netId}`);
+    if (!req.user) return res.status(400).json({ success: false });
+    winston.info(`Logging out ${req.user.netId}`);
 
     req.logOut((err) => {
       if (err) next(err);

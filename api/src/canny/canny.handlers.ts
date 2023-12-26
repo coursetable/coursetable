@@ -11,6 +11,7 @@ import {
   FRONTEND_ENDPOINT,
   prisma,
 } from '../config';
+import type { YaliesResponse } from '../auth/auth.handlers';
 import winston from '../logging/winston';
 
 // Create a JWT-signed Canny token with user info
@@ -18,7 +19,7 @@ const createCannyToken = (user: Express.User) => {
   const userData = {
     email: user.email,
     id: user.netId,
-    name: `${user.firstName} ${user.lastName}`,
+    name: `${user.firstName ?? '[unknown]'} ${user.lastName ?? '[unknown]'}`,
   };
   return jwt.sign(userData, CANNY_KEY, { algorithm: 'HS256' });
 };
@@ -39,7 +40,7 @@ export const cannyIdentify = async (
   // (also done upon login, but our cookies last a while)
   winston.info("Getting user's enrollment status from Yalies.io");
   try {
-    const { data } = await axios.post(
+    const { data } = await axios.post<YaliesResponse>(
       'https://yalies.io/api/people',
       {
         filters: {
@@ -91,7 +92,7 @@ export const cannyIdentify = async (
 
     res.redirect(`https://feedback.coursetable.com/?ssoToken=${token}`);
   } catch (err) {
-    winston.error(`Yalies connection error: ${err}`);
+    winston.error(`Yalies connection error: ${String(err)}`);
     res.redirect(FRONTEND_ENDPOINT);
   }
 };
