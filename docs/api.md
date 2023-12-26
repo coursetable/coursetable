@@ -24,7 +24,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - Body:
   - `token`: `string`
   - `salt`: `string`
-  - `course_info`: `array`
+  - `courseInfo`: `array`
     - `courseId`: `number`
     - `courseTitle`: `string`
     - `courseRatingIndex`: `number`
@@ -44,8 +44,6 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - When the user has reached the max tries
 - Body:
   - `error`: `"MAX_TRIES_REACHED"`
-  - `challengeTries`: `number`
-  - `maxChallengeTries`: `number`
 
 ### `POST` `/api/challenge/verify`
 
@@ -73,9 +71,7 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 - When the token/salt is invalid (does not decrypt to valid information), or when the request is of invalid shape
 - Body:
-  - `error`: `"INVALID_TOKEN" | "INVALID_REQUEST"`
-  - `challengeTries`: `number`
-  - `maxChallengeTries`: `number`
+  - `error`: `"INVALID_REQUEST"`
 
 **Status: 403**
 
@@ -88,8 +84,6 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 - When the user has reached the max tries
 - Body:
   - `error`: `"MAX_TRIES_REACHED"`
-  - `challengeTries`: `number`
-  - `maxChallengeTries`: `number`
 
 ## Catalog
 
@@ -294,6 +288,12 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - Body:
   - `success`: `true`
+
+**Status: 400**
+
+- When the request body is invalid
+- Body:
+  - `error`: `"INVALID_REQUEST"`
 
 ### `GET` `/api/user/worksheets`
 

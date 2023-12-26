@@ -133,7 +133,7 @@ const constructChallenge = (
     body: {
       token,
       salt,
-      course_info: courseInfo,
+      courseInfo,
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     },
@@ -153,12 +153,10 @@ export const requestChallenge = async (
 
   const { netId } = req.user!;
 
-  // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =
-    await prisma.studentBluebookSettings.update({
+    (await prisma.studentBluebookSettings.findUnique({
       where: { netId },
-      data: { challengeTries: { increment: 1 } },
-    });
+    }))!;
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -166,11 +164,7 @@ export const requestChallenge = async (
   }
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
-    res.status(429).json({
-      error: 'MAX_TRIES_REACHED',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
+    res.status(429).json({ error: 'MAX_TRIES_REACHED' });
     return;
   }
 
@@ -259,12 +253,10 @@ export const verifyChallenge = async (
 
   const { netId } = req.user!;
 
-  // Increment challenge tries
   const { challengeTries, evaluationsEnabled } =
-    await prisma.studentBluebookSettings.update({
+    (await prisma.studentBluebookSettings.findUnique({
       where: { netId },
-      data: { challengeTries: { increment: 1 } },
-    });
+    }))!;
 
   if (evaluationsEnabled) {
     res.status(403).json({ error: 'ALREADY_ENABLED' });
@@ -272,21 +264,13 @@ export const verifyChallenge = async (
   }
 
   if (challengeTries > MAX_CHALLENGE_REQUESTS) {
-    res.status(429).json({
-      error: 'MAX_TRIES_REACHED',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
+    res.status(429).json({ error: 'MAX_TRIES_REACHED' });
     return;
   }
 
   const bodyParseRes = VerifyEvalsReqBodySchema.safeParse(req.body);
   if (!bodyParseRes.success) {
-    res.status(400).json({
-      error: 'INVALID_REQUEST',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
+    res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
 
@@ -318,13 +302,13 @@ export const verifyChallenge = async (
       questionIds: ratingSecrets.map((x) => x.courseRatingId),
     });
   } catch {
-    res.status(400).json({
-      error: 'INVALID_TOKEN',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
+    res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
+  await prisma.studentBluebookSettings.update({
+    where: { netId },
+    data: { challengeTries: { increment: 1 } },
+  });
 
   if (!checkChallenge(trueEvals, answers)) {
     res.status(200).json({

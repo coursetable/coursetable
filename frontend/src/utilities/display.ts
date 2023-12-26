@@ -1,6 +1,7 @@
 import { type MouseEventHandler, useEffect, useRef, useState } from 'react';
+import { toast } from 'react-toastify';
+import * as Sentry from '@sentry/react';
 import { css } from 'styled-components';
-import axios from 'axios';
 
 import { API_ENDPOINT } from '../config';
 
@@ -86,17 +87,23 @@ export const scrollToTop: MouseEventHandler = (event) => {
 };
 
 export async function logout() {
-  await axios.get(`${API_ENDPOINT}/api/auth/logout`, {
-    withCredentials: true,
-  });
-  // Clear cookies
-  document.cookie.split(';').forEach((c) => {
-    document.cookie = c
-      .replace(/^ +/u, '')
-      .replace(/=.*/u, `=;expires=${new Date().toUTCString()};path=/`);
-  });
-  // Redirect to home page and refresh as well
-  window.location.pathname = '/';
+  try {
+    const res = await fetch(`${API_ENDPOINT}/api/auth/logout`, {
+      credentials: 'include',
+    });
+    if (!res.ok) throw new Error((await res.json()).error);
+    // Clear cookies
+    document.cookie.split(';').forEach((c) => {
+      document.cookie = c
+        .replace(/^ +/u, '')
+        .replace(/=.*/u, `=;expires=${new Date().toUTCString()};path=/`);
+    });
+    // Redirect to home page and refresh as well
+    window.location.pathname = '/';
+  } catch (err) {
+    toast.error(`Failed to sign out. ${String(err)}`);
+    Sentry.captureException(err);
+  }
 }
 
 // Helper function for setting breakpoint styles in styled-components

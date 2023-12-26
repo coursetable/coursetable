@@ -19,12 +19,12 @@ export default (app: express.Express): void => {
 
   // Logouts
   app.get('/api/auth/logout', (req, res, next) => {
-    if (!req.user) return res.status(400).json({ success: false });
+    if (!req.user) return res.status(400).json({ error: 'USER_NOT_FOUND' });
     winston.info(`Logging out ${req.user.netId}`);
 
     req.logOut((err) => {
       if (err) next(err);
     });
-    return res.json({ success: true });
+    return res.sendStatus(200);
   });
 };
