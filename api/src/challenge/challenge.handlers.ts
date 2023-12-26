@@ -130,13 +130,11 @@ const constructChallenge = (
   }));
 
   return {
-    body: {
-      token,
-      salt,
-      courseInfo,
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    },
+    token,
+    salt,
+    courseInfo,
+    challengeTries,
+    maxChallengeTries: MAX_CHALLENGE_REQUESTS,
   };
 };
 
