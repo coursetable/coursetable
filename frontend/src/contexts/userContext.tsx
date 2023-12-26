@@ -5,7 +5,6 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import axios from 'axios';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
 import type { NetId, Season } from '../utilities/common';
@@ -19,15 +18,12 @@ export type Worksheet = [
 export type FriendRecord = {
   [netId: NetId]: {
     name: string;
+    worksheets: Worksheet;
   };
 };
 export type FriendRequest = {
   netId: string;
   name: string;
-};
-export type FriendInfo = {
-  worksheets: { [netId: NetId]: Worksheet };
-  friendInfo: FriendRecord;
 };
 export type FriendName = {
   netId: NetId;
@@ -43,7 +39,7 @@ type Store = {
     year?: number;
     school?: string;
     friendRequests?: FriendRequest[];
-    friendWorksheets?: FriendInfo;
+    friends?: FriendRecord;
     allNames?: FriendName[];
   };
   userRefresh: (suppressError?: boolean) => Promise<void>;
@@ -76,10 +72,8 @@ export function UserProvider({
   const [year, setYear] = useState<number | undefined>(undefined);
   // User's school
   const [school, setSchool] = useState<string | undefined>(undefined);
-  // User's friends' worksheets
-  const [friendWorksheets, setFriendWorksheets] = useState<
-    FriendInfo | undefined
-  >(undefined);
+  // User's friends
+  const [friends, setFriends] = useState<FriendRecord | undefined>(undefined);
   // User's friend requests
   const [friendRequests, setFriendRequests] = useState<
     FriendRequest[] | undefined
@@ -91,28 +85,29 @@ export function UserProvider({
   const userRefresh = useCallback(
     async (suppressError = false): Promise<void> => {
       try {
-        const res = await axios.get(`${API_ENDPOINT}/api/user/worksheets`, {
-          withCredentials: true,
+        const res = await fetch(`${API_ENDPOINT}/api/user/worksheets`, {
+          credentials: 'include',
         });
-        if (!res.data.success) throw new Error(res.data.message);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
-        // Successfully fetched worksheet
-        setNetId(res.data.netId);
-        setHasEvals(res.data.evaluationsEnabled);
-        setYear(res.data.year);
-        setSchool(res.data.school);
-        setWorksheet(res.data.data);
-        Sentry.setUser({ username: res.data.netId });
+        setNetId(data.netId);
+        setHasEvals(data.evaluationsEnabled);
+        setYear(data.year);
+        setSchool(data.school);
+        setWorksheet(data.data);
+        Sentry.setUser({ username: data.netId });
       } catch (err) {
-        // Error with fetching user's worksheet
         setNetId(undefined);
         setWorksheet(undefined);
         setHasEvals(undefined);
         setYear(undefined);
         setSchool(undefined);
-        Sentry.configureScope((scope) => scope.clear());
-        Sentry.captureException(err);
-        if (!suppressError) toast.error('Error fetching worksheet');
+        Sentry.getCurrentScope().clear();
+        if (!suppressError) {
+          toast.error(`Failed to fetch user data. ${String(err)}`);
+          Sentry.captureException(err);
+        }
       }
     },
     [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
@@ -122,44 +117,40 @@ export function UserProvider({
   const friendRefresh = useCallback(
     async (suppressError = false): Promise<void> => {
       try {
-        const friendsWorksheets = await axios.get(
-          `${API_ENDPOINT}/api/friends/worksheets`,
-          { withCredentials: true },
-        );
-        if (!friendsWorksheets.data.success)
-          throw new Error(friendsWorksheets.data.message);
+        const res = await fetch(`${API_ENDPOINT}/api/friends/worksheets`, {
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
-        // Successfully fetched friends' worksheets
-        setFriendWorksheets(friendsWorksheets.data);
+        setFriends(data.friends);
       } catch (err) {
-        // Error with fetching friends' worksheets
         if (!suppressError) {
+          toast.error(`Failed to fetch friends data. ${String(err)}`);
           Sentry.captureException(err);
-          toast.error('Error updating friends');
         }
-        setFriendWorksheets(undefined);
+        setFriends(undefined);
       }
     },
-    [setFriendWorksheets],
+    [setFriends],
   );
 
   // Refresh friend requests
   const friendReqRefresh = useCallback(
     async (suppressError = false): Promise<void> => {
       try {
-        const friendReqs = await axios.get(
-          `${API_ENDPOINT}/api/friends/getRequests`,
-          { withCredentials: true },
-        );
-        if (!friendReqs.data.success) throw new Error(friendReqs.data.message);
+        const res = await fetch(`${API_ENDPOINT}/api/friends/getRequests`, {
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
         // Successfully fetched friends' worksheets
-        setFriendRequests(friendReqs.data.friends);
+        setFriendRequests(data.requests);
       } catch (err) {
-        // Error with fetching friends' worksheets
         if (!suppressError) {
+          toast.error(`Failed to get friend requests. ${String(err)}`);
           Sentry.captureException(err);
-          toast.error('Error getting friend requests');
         }
         setFriendRequests(undefined);
       }
@@ -170,16 +161,17 @@ export function UserProvider({
   const getAllNames = useCallback(
     async (suppressError = false): Promise<void> => {
       try {
-        const names = await axios.get(`${API_ENDPOINT}/api/friends/names`, {
-          withCredentials: true,
+        const res = await fetch(`${API_ENDPOINT}/api/friends/names`, {
+          credentials: 'include',
         });
-        if (!names.data.success) throw new Error(names.data.message);
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
 
-        setAllNames(names.data.names);
+        setAllNames(data.names);
       } catch (err) {
         if (!suppressError) {
+          toast.error(`Failed to get user names. ${String(err)}`);
           Sentry.captureException(err);
-          toast.error('Error getting friend requests');
         }
         setAllNames(undefined);
       }
@@ -187,35 +179,59 @@ export function UserProvider({
     [],
   );
 
-  // Add Friend
-  const addFriend = useCallback(
-    (friendNetId: string): Promise<void> =>
-      axios.post(
-        `${API_ENDPOINT}/api/friends/add`,
-        { friendNetId },
-        { withCredentials: true },
-      ),
-    [],
-  );
+  const addFriend = useCallback(async (friendNetId: string): Promise<void> => {
+    try {
+      const res = await fetch(`${API_ENDPOINT}/api/friends/add`, {
+        method: 'POST',
+        credentials: 'include',
+        body: JSON.stringify({ friendNetId }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      toast.info(`Added friend: ${friendNetId}`);
+      window.location.reload();
+    } catch (err) {
+      toast.error(`Failed to add friend. ${String(err)}`);
+      Sentry.captureException(err);
+    }
+  }, []);
 
-  // Remove Friend
   const removeFriend = useCallback(
-    (friendNetId: string): Promise<void> =>
-      axios.post(
-        `${API_ENDPOINT}/api/friends/remove`,
-        { friendNetId },
-        { withCredentials: true },
-      ),
+    async (friendNetId: string): Promise<void> => {
+      try {
+        const res = await fetch(`${API_ENDPOINT}/api/friends/remove`, {
+          method: 'POST',
+          credentials: 'include',
+          body: JSON.stringify({ friendNetId }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        toast.info(`Removed friend: ${friendNetId}`);
+        window.location.reload();
+      } catch (err) {
+        toast.error(`Failed to remove friend. ${String(err)}`);
+        Sentry.captureException(err);
+      }
+    },
     [],
   );
 
   const requestAddFriend = useCallback(
-    (friendNetId: string): Promise<void> =>
-      axios.post(
-        `${API_ENDPOINT}/api/friends/request`,
-        { friendNetId },
-        { withCredentials: true },
-      ),
+    async (friendNetId: string): Promise<void> => {
+      try {
+        const res = await fetch(`${API_ENDPOINT}/api/friends/request`, {
+          method: 'POST',
+          credentials: 'include',
+          body: JSON.stringify({ friendNetId }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error);
+        toast.info(`Sent friend request: ${friendNetId}`);
+      } catch (err) {
+        toast.error(`Failed to request friend. ${String(err)}`);
+        Sentry.captureException(err);
+      }
+    },
     [],
   );
 
@@ -227,7 +243,7 @@ export function UserProvider({
       year,
       school,
       friendRequests,
-      friendWorksheets,
+      friends,
       allNames,
     }),
     [
@@ -237,17 +253,14 @@ export function UserProvider({
       year,
       school,
       friendRequests,
-      friendWorksheets,
+      friends,
       allNames,
     ],
   );
 
   const store = useMemo(
     () => ({
-      // Context state.
       user,
-
-      // Update methods.
       userRefresh,
       friendRefresh,
       friendReqRefresh,

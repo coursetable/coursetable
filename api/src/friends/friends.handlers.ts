@@ -21,13 +21,13 @@ export const addFriend = async (
   const { netId } = req.user!;
   const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
   if (!bodyParseRes.success) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
   const { friendNetId } = bodyParseRes.data;
 
   if (netId === friendNetId) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ error: 'SAME_USER' });
     return;
   }
 
@@ -39,7 +39,7 @@ export const addFriend = async (
   });
 
   if (!existingRequest) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ error: 'NO_FRIEND_REQUEST' });
     return;
   }
 
@@ -76,7 +76,7 @@ export const addFriend = async (
     }),
   ]);
 
-  res.json({ success: true });
+  res.sendStatus(200);
 };
 
 export const removeFriend = async (
@@ -88,18 +88,13 @@ export const removeFriend = async (
   const { netId } = req.user!;
   const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
   if (!bodyParseRes.success) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
   const { friendNetId } = bodyParseRes.data;
 
-  if (typeof friendNetId !== 'string') {
-    res.status(400).json({ success: false });
-    return;
-  }
-
   if (netId === friendNetId) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ error: 'SAME_USER' });
     return;
   }
 
@@ -117,7 +112,7 @@ export const removeFriend = async (
     }),
   ]);
 
-  res.json({ success: true });
+  res.sendStatus(200);
 };
 
 export const requestAddFriend = async (
@@ -129,18 +124,13 @@ export const requestAddFriend = async (
   const { netId } = req.user!;
   const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
   if (!bodyParseRes.success) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ error: 'INVALID_REQUEST' });
     return;
   }
   const { friendNetId } = bodyParseRes.data;
 
-  if (typeof friendNetId !== 'string') {
-    res.status(400).json({ success: false });
-    return;
-  }
-
   if (netId === friendNetId) {
-    res.status(400).json({ success: false });
+    res.status(400).json({ error: 'SAME_USER' });
     return;
   }
 
@@ -161,7 +151,7 @@ export const requestAddFriend = async (
     }),
   ]);
 
-  res.json({ success: true });
+  res.sendStatus(200);
 };
 
 export const getRequestsForFriend = async (
@@ -195,10 +185,7 @@ export const getRequestsForFriend = async (
     }`,
   }));
 
-  res.status(200).json({
-    success: true,
-    friends: friendNames,
-  });
+  res.status(200).json({ requests: friendNames });
 };
 
 /**
@@ -248,43 +235,41 @@ export const getFriendsWorksheets = async (
     },
   });
 
-  const friendNames = friendInfos.map((friendInfo) => ({
-    netId: friendInfo.netId,
-    name: `${friendInfo.firstName ?? '[unknown]'} ${
-      friendInfo.lastName ?? '[unknown]'
-    }`,
-  }));
+  const friendInfoMap: {
+    [netId: string]: {
+      name: string;
+      worksheets: [season: string, ociId: string, worksheetNumber: string][];
+    };
+  } = Object.fromEntries(
+    friendInfos.map((f) => [
+      f.netId,
+      {
+        name: `${f.firstName ?? '[unknown]'} ${f.lastName ?? '[unknown]'}`,
+        worksheets: [],
+      },
+    ]),
+  );
 
-  const friendNameMap: { [netId: string]: { name: string } } = {};
-
-  for (const nameRecord of friendNames)
-    friendNameMap[nameRecord.netId] = { name: nameRecord.name };
-
-  // Map netId to worksheets (list of [season, ociId, worksheetNumber])
-  const worksheetsByFriend: {
-    [netId: string]: [string, string, string][];
-  } = {};
   friendWorksheets.forEach(
     ({ netId: friendNetId, ociId, season, worksheetNumber }) => {
-      if (friendNetId in worksheetsByFriend) {
-        worksheetsByFriend[friendNetId].push([
+      if (friendNetId in friendInfoMap) {
+        friendInfoMap[friendNetId].worksheets.push([
           String(season),
           String(ociId),
           String(worksheetNumber),
         ]);
       } else {
-        worksheetsByFriend[friendNetId] = [
-          [String(season), String(ociId), String(worksheetNumber)],
-        ];
+        friendInfoMap[friendNetId] = {
+          name: '[unknown]',
+          worksheets: [
+            [String(season), String(ociId), String(worksheetNumber)],
+          ],
+        };
       }
     },
   );
 
-  res.status(200).json({
-    success: true,
-    worksheets: worksheetsByFriend,
-    friendInfo: friendNameMap,
-  });
+  res.status(200).json({ friends: friendInfoMap });
 };
 
 export const getNames = async (
@@ -294,11 +279,11 @@ export const getNames = async (
   winston.info(`Fetching friends' names`);
   const allNameRecords = await prisma.studentBluebookSettings.findMany();
 
-  const allNames = allNameRecords.map((nameRecord) => ({
+  const names = allNameRecords.map((nameRecord) => ({
     netId: nameRecord.netId,
     first: nameRecord.firstName,
     last: nameRecord.lastName,
     college: nameRecord.college,
   }));
-  res.status(200).json(allNames);
+  res.status(200).json({ names });
 };

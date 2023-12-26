@@ -176,14 +176,11 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 200**
 
-- Body:
-  - `success`: `true`
-
 **Status: 400**
 
-- When `friendNetId` is not provided or is the same as the user's
+- When `friendNetId` is not provided or is the same as the user's, or when there's no existing friend request
 - Body:
-  - `success`: `false`
+  - `error`: `"INVALID_REQUEST" | "SAME_USER" | "NO_FRIEND_REQUEST"`
 
 ### `POST` `/api/friends/remove`
 
@@ -197,14 +194,11 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 200**
 
-- Body:
-  - `success`: `true`
-
 **Status: 400**
 
 - When `friendNetId` is not provided or is the same as the user's
 - Body:
-  - `success`: `false`
+  - `error`: `"INVALID_REQUEST" | "SAME_USER"`
 
 ### `POST` `/api/friends/request`
 
@@ -218,14 +212,11 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 200**
 
-- Body:
-  - `success`: `true`
-
 **Status: 400**
 
 - When `friendNetId` is not provided or is the same as the user's
 - Body:
-  - `success`: `false`
+  - `error`: `"INVALID_REQUEST" | "SAME_USER"`
 
 ### `GET` `/api/friends/getRequests`
 
@@ -238,8 +229,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
-  - `success`: `true`
-  - `friends`: `array`
+  - `requests`: `array`
     - `netId`: `NetId`
     - `name`: `string`
 
@@ -254,14 +244,25 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
-  - `success`: `true`
-  - `worksheets`: `{ [netId: string]: Worksheet[] }`
-  - `friendInfo`: `{ [netId: string]: { name: string } }`
-  - TODO: merge `worksheets` and `friendInfo`
+  - `friends`: `{ [netId: string]: { name: string; worksheets: [season: string, ociId: string, worksheetNumber: string][] } }`
 
 ### `GET` `/api/friends/names`
 
-- DEPRECATED: not in use
+#### Request
+
+- Needs credentials
+
+#### Response
+
+**Status: 200**
+
+- Body:
+  - `names`: `array`
+    - `netId`: `string`
+    - `first`: `string | null`
+    - `last`: `string | null`
+    - `college`: `string | null`
+  - TODO: do we really need to return literally every user's name to client side?
 
 ## Canny
 
@@ -306,11 +307,10 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 **Status: 200**
 
 - Body:
-  - `success`: `true`
   - `netId`: `NetId`
-  - `evaluationsEnabled`: `boolean | null | undefined`
-  - `year`: `number | null | undefined`
-  - `school`: `string | null | undefined`
+  - `evaluationsEnabled`: `boolean | null`
+  - `year`: `number | null`
+  - `school`: `string | null`
   - `data`: `[season: string, ociId: string, worksheetNumber: string][]`
 
 ## Health check

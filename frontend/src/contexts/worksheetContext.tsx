@@ -97,11 +97,10 @@ export function WorksheetProvider({
     const whenNotDefined: Worksheet = []; // TODO: change this to undefined
     if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
 
-    const friendWorksheets = user.friendWorksheets?.worksheets;
-    return friendWorksheets
-      ? friendWorksheets[viewedPerson] ?? whenNotDefined
+    return user.friends
+      ? user.friends[viewedPerson].worksheets ?? whenNotDefined
       : whenNotDefined;
-  }, [user.worksheet, user.friendWorksheets, viewedPerson]);
+  }, [user.worksheet, user.friends, viewedPerson]);
 
   const { seasons: seasonsData } = useFerry();
   const seasonCodes = useMemo(() => {

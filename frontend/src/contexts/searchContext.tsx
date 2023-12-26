@@ -309,9 +309,9 @@ export function SearchProvider({
 
   // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
-    if (!user.friendWorksheets) return {};
-    return getNumFriends(user.friendWorksheets);
-  }, [user.friendWorksheets]);
+    if (!user.friends) return {};
+    return getNumFriends(user.friends);
+  }, [user.friends]);
 
   // Populate seasons from database
   const { seasons: seasonsData } = useFerry();
