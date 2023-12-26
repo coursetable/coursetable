@@ -3,9 +3,14 @@
  */
 
 import type express from 'express';
+import z from 'zod';
 import { prisma } from '../config';
 
 import winston from '../logging/winston';
+
+const FriendsOpRequestSchema = z.object({
+  friendNetId: z.string(),
+});
 
 export const addFriend = async (
   req: express.Request,
@@ -14,12 +19,12 @@ export const addFriend = async (
   winston.info('Adding new friend');
 
   const { netId } = req.user!;
-  const { friendNetId } = req.body;
-
-  if (typeof friendNetId !== 'string') {
+  const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
     res.status(400).json({ success: false });
     return;
   }
+  const { friendNetId } = bodyParseRes.data;
 
   if (netId === friendNetId) {
     res.status(400).json({ success: false });
@@ -81,7 +86,12 @@ export const removeFriend = async (
   winston.info('Removing friend');
 
   const { netId } = req.user!;
-  const { friendNetId } = req.body;
+  const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ success: false });
+    return;
+  }
+  const { friendNetId } = bodyParseRes.data;
 
   if (typeof friendNetId !== 'string') {
     res.status(400).json({ success: false });
@@ -117,7 +127,12 @@ export const requestAddFriend = async (
   winston.info(`Sending friend request`);
 
   const { netId } = req.user!;
-  const { friendNetId } = req.body;
+  const bodyParseRes = FriendsOpRequestSchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ success: false });
+    return;
+  }
+  const { friendNetId } = bodyParseRes.data;
 
   if (typeof friendNetId !== 'string') {
     res.status(400).json({ success: false });
@@ -175,7 +190,9 @@ export const getRequestsForFriend = async (
 
   const friendNames = friendInfos.map((friendInfo) => ({
     netId: friendInfo.netId,
-    name: `${friendInfo.first_name} ${friendInfo.last_name}`,
+    name: `${friendInfo.first_name ?? '[unknown]'} ${
+      friendInfo.last_name ?? '[unknown]'
+    }`,
   }));
 
   res.status(200).json({
@@ -233,7 +250,9 @@ export const getFriendsWorksheets = async (
 
   const friendNames = friendInfos.map((friendInfo) => ({
     netId: friendInfo.netId,
-    name: `${friendInfo.first_name} ${friendInfo.last_name}`,
+    name: `${friendInfo.first_name ?? '[unknown]'} ${
+      friendInfo.last_name ?? '[unknown]'
+    }`,
   }));
 
   const friendNameMap: { [netId: string]: { name: string } } = {};

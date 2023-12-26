@@ -295,7 +295,7 @@ export const verifyChallenge = async (
   let trueEvals: VerifyEvalsQueryResponse;
   // Catch malformed token decryption errors
   try {
-    const secrets = JSON.parse(decrypt(token, salt));
+    const secrets: unknown = JSON.parse(decrypt(token, salt));
     const secretsParseRes = SecretsSchema.safeParse(secrets);
     if (!secretsParseRes.success) throw new Error('Malformed token');
     const { netId: secretNetId, ratingSecrets } = secretsParseRes.data;

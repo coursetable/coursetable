@@ -43,8 +43,8 @@ export const toggleBookmark = async (
     worksheet_number: worksheetNumber,
   } = bodyParseRes.data;
 
-  // Add a bookmarked course
   if (action === 'add') {
+    // Add a bookmarked course
     winston.info(
       `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
@@ -56,9 +56,8 @@ export const toggleBookmark = async (
         worksheet_number: worksheetNumber,
       },
     });
-  }
-  // Remove a bookmarked course
-  else if (action === 'remove') {
+  } else {
+    // Remove a bookmarked course
     winston.info(
       `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
