@@ -71,9 +71,9 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 **Status: 400**
 
-- When the token/salt is invalid (does not decrypt to valid information), or when the answer is of invalid shape
+- When the token/salt is invalid (does not decrypt to valid information), or when the request is of invalid shape
 - Body:
-  - `error`: `"INVALID_TOKEN" | "MALFORMED_ANSWERS"`
+  - `error`: `"INVALID_TOKEN" | "INVALID_REQUEST"`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 
@@ -286,7 +286,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
   - `action`: `"add" | "remove"`
   - `season`: `string`
   - `oci_id`: `string`
-  - `worksheet_number`: `string`
+  - `worksheet_number`: `number`
 
 #### Response
 

@@ -1,6 +1,7 @@
 import type express from 'express';
 import { request } from 'graphql-request';
 import crypto from 'crypto';
+import z from 'zod';
 
 import {
   GRAPHQL_ENDPOINT,
@@ -15,9 +16,9 @@ import winston from '../logging/winston';
 
 import {
   requestEvalsQuery,
-  type requestEvalsQueryResponse,
+  type RequestEvalsQueryResponse,
   verifyEvalsQuery,
-  type verifyEvalsQueryResponse,
+  type VerifyEvalsQueryResponse,
 } from './challenge.queries';
 
 /**
@@ -73,9 +74,9 @@ function getRandomInt(max: number): number {
  * @prop challengeTries - number of user attempts
  */
 const constructChallenge = (
-  evals: requestEvalsQueryResponse,
+  evals: RequestEvalsQueryResponse,
   challengeTries: number,
-  netid: string,
+  netId: string,
 ) => {
   // Array of course enrollment counts
   const ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
@@ -96,10 +97,7 @@ const constructChallenge = (
     courseRatingIndex: ratingIndices[index],
   }));
 
-  const secrets = {
-    netid,
-    ratingSecrets,
-  };
+  const secrets: Secrets = { netId, ratingSecrets };
 
   // Encrypt token
   const salt = crypto.randomBytes(16).toString('hex');
@@ -181,7 +179,7 @@ export const requestChallenge = async (
   const minRating = 1 + Math.random() * 4;
 
   // Get a list of all seasons
-  const evals: requestEvalsQueryResponse = await request(
+  const evals: RequestEvalsQueryResponse = await request(
     GRAPHQL_ENDPOINT,
     requestEvalsQuery,
     {
@@ -201,12 +199,8 @@ export const requestChallenge = async (
  * @prop answers - user-provided answers
  */
 const checkChallenge = (
-  trueEvals: verifyEvalsQueryResponse,
-  answers: {
-    answer: string;
-    courseRatingId: string;
-    courseRatingIndex: string;
-  }[],
+  trueEvals: VerifyEvalsQueryResponse,
+  answers: VerifyEvalsReqBody['answers'],
 ): boolean => {
   // The true values in CourseTable to compare against
   const truth = trueEvals.evaluation_ratings;
@@ -220,7 +214,7 @@ const checkChallenge = (
 
   const allCorrect = answers.every((answer) => {
     const trueRating =
-      truthById[answer.courseRatingId][parseInt(answer.courseRatingIndex, 10)];
+      truthById[answer.courseRatingId][answer.courseRatingIndex];
     const providedRating = parseInt(answer.answer, 10);
 
     return trueRating === providedRating;
@@ -228,6 +222,32 @@ const checkChallenge = (
 
   return allCorrect;
 };
+
+const SecretsSchema = z.object({
+  netId: z.string(),
+  ratingSecrets: z.array(
+    z.object({
+      courseRatingId: z.number(),
+      courseRatingIndex: z.number(),
+    }),
+  ),
+});
+
+type Secrets = z.infer<typeof SecretsSchema>;
+
+const VerifyEvalsReqBodySchema = z.object({
+  token: z.string(),
+  salt: z.string(),
+  answers: z.array(
+    z.object({
+      courseRatingId: z.number(),
+      courseRatingIndex: z.number(),
+      answer: z.string(),
+    }),
+  ),
+});
+
+type VerifyEvalsReqBody = z.infer<typeof VerifyEvalsReqBodySchema>;
 
 /**
  * Verifies answers to a challenge.
@@ -263,72 +283,51 @@ export const verifyChallenge = async (
     return;
   }
 
-  const { token, salt, answers } = req.body;
-  let secrets: {
-    netid: string;
-    ratingSecrets: { courseRatingId: string; courseRatingIndex: number }[];
-  } = { netid: '', ratingSecrets: [] }; // The decrypted token
-  let secretRatingIds: string[] = []; // For retrieving the correct ones from the database
-  // list in the format "<question_id>_<rating_index>" to verify
-  // the submitted answers match those encoded in the token
-  let secretRatings: string[] = [];
-  let answerRatings: string[] = [];
-  // Catch malformed token decryption errors
-  try {
-    secrets = JSON.parse(decrypt(token, salt));
-    secretRatingIds = secrets.ratingSecrets.map((x) => x.courseRatingId);
-    secretRatings = secrets.ratingSecrets.map(
-      (x) => `${x.courseRatingId}_${x.courseRatingIndex}`,
-    );
-  } catch {
+  const bodyParseRes = VerifyEvalsReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
     res.status(400).json({
-      error: 'INVALID_TOKEN',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-    return;
-  }
-  // Ensure that netid in token is same as in headers
-  if (secrets.netid !== netId) {
-    res.status(400).json({
-      error: 'INVALID_TOKEN',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-    return;
-  }
-  // Catch malformed answer JSON errors
-  try {
-    answerRatings = answers.map(
-      (x: { courseRatingId: string; courseRatingIndex: number }) =>
-        `${x.courseRatingId}_${x.courseRatingIndex}`,
-    );
-  } catch {
-    res.status(400).json({
-      error: 'MALFORMED_ANSWERS',
-      challengeTries,
-      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
-    });
-    return;
-  }
-  // Make sure the provided ratings IDs and indices match those we have
-  if (secretRatings.sort().join(',') !== answerRatings.sort().join(',')) {
-    res.status(400).json({
-      error: 'INVALID_TOKEN',
+      error: 'INVALID_REQUEST',
       challengeTries,
       maxChallengeTries: MAX_CHALLENGE_REQUESTS,
     });
     return;
   }
 
-  // Get a list of all seasons
-  const trueEvals: verifyEvalsQueryResponse = await request(
-    GRAPHQL_ENDPOINT,
-    verifyEvalsQuery,
-    {
-      questionIds: secretRatingIds,
-    },
-  );
+  const { token, salt, answers } = bodyParseRes.data;
+  // eslint-disable-next-line @typescript-eslint/init-declarations
+  let trueEvals: VerifyEvalsQueryResponse;
+  // Catch malformed token decryption errors
+  try {
+    const secrets = JSON.parse(decrypt(token, salt));
+    const secretsParseRes = SecretsSchema.safeParse(secrets);
+    if (!secretsParseRes.success) throw new Error('Malformed token');
+    const { netId: secretNetId, ratingSecrets } = secretsParseRes.data;
+    if (secretNetId !== netId)
+      throw new Error('netId in token not the same as in headers');
+    // List in the format "<question_id>_<rating_index>" to verify
+    // the submitted answers match those encoded in the token
+    if (
+      ratingSecrets
+        .map((x) => `${x.courseRatingId}_${x.courseRatingIndex}`)
+        .sort()
+        .join(',') !==
+      answers
+        .map((x) => `${x.courseRatingId}_${x.courseRatingIndex}`)
+        .sort()
+        .join(',')
+    )
+      throw new Error('Answer ratings IDs and indices do not match questions');
+    trueEvals = await request(GRAPHQL_ENDPOINT, verifyEvalsQuery, {
+      questionIds: ratingSecrets.map((x) => x.courseRatingId),
+    });
+  } catch {
+    res.status(400).json({
+      error: 'INVALID_TOKEN',
+      challengeTries,
+      maxChallengeTries: MAX_CHALLENGE_REQUESTS,
+    });
+    return;
+  }
 
   if (!checkChallenge(trueEvals, answers)) {
     res.status(200).json({

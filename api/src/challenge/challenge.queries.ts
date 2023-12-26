@@ -31,7 +31,7 @@ export const requestEvalsQuery = gql`
   }
 `;
 
-export interface requestEvalsQueryResponse {
+export interface RequestEvalsQueryResponse {
   evaluation_ratings: {
     rating: number[];
     course: {
@@ -59,7 +59,7 @@ export const verifyEvalsQuery = gql`
   }
 `;
 
-export interface verifyEvalsQueryResponse {
+export interface VerifyEvalsQueryResponse {
   evaluation_ratings: {
     id: number;
     rating: number[];
