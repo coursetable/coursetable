@@ -185,6 +185,9 @@ export function UserProvider({
         method: 'POST',
         credentials: 'include',
         body: JSON.stringify({ friendNetId }),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
       const data = await res.json();
       if (!res.ok) throw new Error(data.error);
@@ -203,6 +206,9 @@ export function UserProvider({
           method: 'POST',
           credentials: 'include',
           body: JSON.stringify({ friendNetId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
@@ -223,6 +229,9 @@ export function UserProvider({
           method: 'POST',
           credentials: 'include',
           body: JSON.stringify({ friendNetId }),
+          headers: {
+            'Content-Type': 'application/json',
+          },
         });
         const data = await res.json();
         if (!res.ok) throw new Error(data.error);
