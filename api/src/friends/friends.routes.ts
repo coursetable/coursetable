@@ -3,7 +3,7 @@
  */
 
 import type express from 'express';
-import cookieParser from 'cookie-parser';
+import asyncHandler from 'express-async-handler';
 
 import {
   addFriend,
@@ -19,11 +19,10 @@ import {
  * @param app: express app instance.
  */
 export default (app: express.Express): void => {
-  app.use(cookieParser());
-  app.post('/api/friends/add', addFriend);
-  app.post('/api/friends/remove', removeFriend);
-  app.post('/api/friends/request', requestAddFriend);
-  app.get('/api/friends/getRequests', getRequestsForFriend);
-  app.get('/api/friends/worksheets', getFriendsWorksheets);
-  app.get('/api/friends/names', getNames);
+  app.post('/api/friends/add', asyncHandler(addFriend));
+  app.post('/api/friends/remove', asyncHandler(removeFriend));
+  app.post('/api/friends/request', asyncHandler(requestAddFriend));
+  app.get('/api/friends/getRequests', asyncHandler(getRequestsForFriend));
+  app.get('/api/friends/worksheets', asyncHandler(getFriendsWorksheets));
+  app.get('/api/friends/names', asyncHandler(getNames));
 };

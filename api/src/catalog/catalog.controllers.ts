@@ -18,20 +18,20 @@ export const verifyHeaders = (
   req: express.Request,
   res: express.Response,
   next: express.NextFunction,
-): undefined | express.Response => {
+): void => {
   winston.info('Verifying headers');
   // Get authentication headers
   const authd = req.header('x-ferry-secret'); // If user is logged in
 
   // require NetID authentication
   if (FERRY_SECRET !== '' && authd !== FERRY_SECRET) {
-    return res.status(401).json({
+    res.status(401).json({
       error: 'NOT_AUTHENTICATED',
     });
+    return;
   }
 
   next();
-  return undefined;
 };
 
 /**
@@ -44,17 +44,12 @@ export const verifyHeaders = (
 export async function refreshCatalog(
   req: express.Request,
   res: express.Response,
-): Promise<express.Response<unknown, { [key: string]: unknown }>> {
+): Promise<void> {
   winston.info('Refreshing catalog');
   // Always overwrite when called
   const overwrite = true;
 
   // Fetch the catalog files and confirm success
-  try {
-    await fetchCatalog(overwrite);
-    return res.status(200);
-  } catch (err) {
-    winston.error(err);
-    return res.status(500).json(err);
-  }
+  await fetchCatalog(overwrite);
+  res.sendStatus(200);
 }

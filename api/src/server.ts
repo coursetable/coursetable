@@ -4,6 +4,7 @@ import fs from 'fs';
 import https from 'https';
 import cors from 'cors';
 import { createProxyMiddleware } from 'http-proxy-middleware';
+import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import * as Sentry from '@sentry/node';
 
@@ -25,6 +26,8 @@ import friends from './friends/friends.routes';
 import canny from './canny/canny.routes';
 import user from './user/user.routes';
 import challenge from './challenge/challenge.routes';
+
+import { fetchCatalog } from './catalog/catalog.utils';
 
 Sentry.init({
   dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
@@ -86,64 +89,82 @@ https
     winston.info(`Secure dev proxy listening on port ${SECURE_PORT}`);
   });
 
-// We use the IIFE pattern so that we can use await.
-void (async () => {
-  // Configuring passport
-  passportConfig(passport);
-  app.use(passport.initialize());
-  app.use(passport.session());
+app.use(cookieParser());
 
+// Configuring passport
+passportConfig(passport);
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.use(
+  '/ferry',
   // Restrict GraphQL access for authenticated Yale students only
-  app.use('/ferry', authWithEvals);
-  app.use('/ferry', (req, res, next) => {
+  authWithEvals,
+  (req, res, next) => {
     // Use read-only student role for all Hasura queries
     req.headers['X-Hasura-Role'] = 'student';
     next();
-  });
-  app.use(
-    '/ferry',
-    createProxyMiddleware({
-      target: 'http://graphql-engine:8080',
-      pathRewrite: {
-        '^/ferry/': '/', // Remove base path
-      },
-      ws: true,
-    }),
-  );
-  // Enable request logging.
-  app.use(morgan);
+  },
+  createProxyMiddleware({
+    target: 'http://graphql-engine:8080',
+    pathRewrite: {
+      '^/ferry/': '/', // Remove base path
+    },
+    ws: true,
+  }),
+);
+// Enable request logging.
+app.use(morgan);
 
-  // Figure out how to make this work with Ferry (has to go after Ferry
-  // currently)
-  app.use(express.json());
+// Figure out how to make this work with Ferry (has to go after Ferry
+// currently)
+app.use(express.json());
 
-  // Activate catalog and CAS authentication
-  challenge(app);
-  await catalog(app);
-  casAuth(app);
-  friends(app);
-  canny(app);
-  user(app);
+// Activate catalog and CAS authentication
+challenge(app);
+catalog(app);
+casAuth(app);
+friends(app);
+canny(app);
+user(app);
 
-  // Mount static files route and require NetID authentication
-  app.use(
-    '/api/static',
-    authWithEvals,
-    express.static(STATIC_FILE_DIR, {
-      cacheControl: true,
-      maxAge: '1h',
-      lastModified: true,
-      etag: true,
-    }),
-  );
+// Mount static files route and require NetID authentication
+app.use(
+  '/api/static',
+  authWithEvals,
+  express.static(STATIC_FILE_DIR, {
+    cacheControl: true,
+    maxAge: '1h',
+    lastModified: true,
+    etag: true,
+  }),
+);
 
-  // Setup routes.
-  app.get('/api/ping', (req, res) => {
-    res.json('pong');
-  });
+// Setup routes.
+app.get('/api/ping', (req, res) => {
+  res.json('pong');
+});
 
-  // Once routes have been created, start listening.
-  app.listen(INSECURE_PORT, () => {
-    winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
-  });
-})();
+app.use(
+  (
+    err: unknown,
+    req: express.Request,
+    res: express.Response,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    next: express.NextFunction,
+  ) => {
+    winston.error(err);
+    Sentry.captureException(err);
+    res.status(500).json({ error: String(err) });
+  },
+);
+
+// Once routes have been created, start listening.
+app.listen(INSECURE_PORT, () => {
+  winston.info(`Insecure API listening on port ${INSECURE_PORT}`);
+});
+
+// Generate the static catalog on start.
+winston.info('Updating static catalog');
+const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
+void fetchCatalog(overwriteCatalog);

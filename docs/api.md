@@ -3,6 +3,8 @@
 - TODO: remove all `success: true` (and use HTTP status code instead)
 - TODO: standardize error response format
 
+All methods are capable of returning 500. In this case the body contains an `error: string`.
+
 ## Challenge
 
 ### `POST` `/api/challenge/request`
@@ -44,14 +46,6 @@
 - When the user has reached the max tries
 - Body:
   - `error`: `"MAX_TRIES_REACHED"`
-  - `challengeTries`: `number`
-  - `maxChallengeTries`: `number`
-
-**Status: 500**
-
-- Internal error with requesting the challenge
-- Body:
-  - `error`: `unknown`
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 
@@ -105,14 +99,6 @@
   - `challengeTries`: `number`
   - `maxChallengeTries`: `number`
 
-**Status: 500**
-
-- Internal error with verifying the challenge
-- Body:
-  - `error`: `unknown`
-  - `challengeTries`: `number`
-  - `maxChallengeTries`: `number`
-
 ## Catalog
 
 ### `GET` `/api/catalog/refresh`
@@ -130,11 +116,6 @@
 - When there is no secret header with request
 - Body:
   - `error`: `"NOT_AUTHENTICATED"`
-
-**Status: 500**
-
-- Internal error with refreshing the catalog
-- Body: `unknown`
 
 ## Auth
 
@@ -208,12 +189,6 @@
 - Body:
   - `error`: `"USER_NOT_FOUND"`
 
-**Status: 500**
-
-- Internal error with removing friend
-- Body:
-  - `success`: `false`
-
 ### `POST` `/api/friends/remove`
 
 #### Request
@@ -240,12 +215,6 @@
 - When there is no credentials with request
 - Body:
   - `error`: `"USER_NOT_FOUND"`
-
-**Status: 500**
-
-- Internal error with removing friend
-- Body:
-  - `success`: `false`
 
 ### `POST` `/api/friends/request`
 
@@ -274,12 +243,6 @@
 - Body:
   - `error`: `"USER_NOT_FOUND"`
 
-**Status: 500**
-
-- Internal error with sending friend request
-- Body:
-  - `success`: `false`
-
 ### `GET` `/api/friends/getRequests`
 
 #### Request
@@ -301,13 +264,6 @@
 - When there is no credentials with request
 - Body:
   - `error`: `"USER_NOT_FOUND"`
-
-**Status: 500**
-
-- Internal error with querying friend requests
-- Body:
-  - `success`: `false`
-  - `message`: `string`
 
 ### `GET` `/api/friends/worksheets`
 

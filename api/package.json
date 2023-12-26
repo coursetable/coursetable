@@ -31,6 +31,7 @@
     "cookie-session": "^2.0.0",
     "cors": "^2.8.5",
     "express": "^4.18.2",
+    "express-async-handler": "^1.2.0",
     "graphql": "^16.8.1",
     "graphql-request": "^6.1.0",
     "graphql-tag": "^2.12.6",

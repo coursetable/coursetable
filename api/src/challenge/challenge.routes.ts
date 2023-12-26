@@ -1,4 +1,5 @@
 import type express from 'express';
+import asyncHandler from 'express-async-handler';
 
 import { requestChallenge, verifyChallenge } from './challenge.controllers';
 
@@ -7,6 +8,6 @@ import { requestChallenge, verifyChallenge } from './challenge.controllers';
  * @param app: express app instance.
  */
 export default (app: express.Express): void => {
-  app.post('/api/challenge/request', requestChallenge);
-  app.post('/api/challenge/verify', verifyChallenge);
+  app.post('/api/challenge/request', asyncHandler(requestChallenge));
+  app.post('/api/challenge/verify', asyncHandler(verifyChallenge));
 };
