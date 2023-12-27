@@ -32,6 +32,8 @@ import { fetchCatalog } from './catalog/catalog.utils';
 Sentry.init({
   dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',
 
+  environment: process.env.NODE_ENV,
+
   // We recommend adjusting this value in production, or using tracesSampler
   // for finer control
   tracesSampleRate: 1.0,
