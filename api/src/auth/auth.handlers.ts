@@ -5,7 +5,6 @@
 import type express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
-import axios from 'axios';
 
 import winston from '../logging/winston';
 import { YALIES_API_KEY, prisma } from '../config';
@@ -92,20 +91,20 @@ export const passportConfig = (
 
         winston.info("Getting user's enrollment status from Yalies.io");
         try {
-          const { data } = await axios.post<YaliesResponse>(
-            'https://yalies.io/api/people',
-            {
+          const data = (await fetch('https://yalies.io/api/people', {
+            headers: {
+              Authorization: `Bearer ${YALIES_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
               filters: {
                 netid: profile.user,
               },
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${YALIES_API_KEY}`,
-                'Content-Type': 'application/json',
-              },
-            },
-          );
+            }),
+          }).then((res) => {
+            if (!res.ok) throw new Error(res.statusText);
+            return res.json();
+          })) as YaliesResponse;
           // If no user found, do not grant access
           if (data === null || data.length === 0) {
             done(null, {

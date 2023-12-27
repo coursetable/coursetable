@@ -3,7 +3,6 @@
  */
 
 import type express from 'express';
-import axios from 'axios';
 import jwt from 'jsonwebtoken';
 import {
   YALIES_API_KEY,
@@ -40,20 +39,20 @@ export const cannyIdentify = async (
   // (also done upon login, but our cookies last a while)
   winston.info("Getting user's enrollment status from Yalies.io");
   try {
-    const { data } = await axios.post<YaliesResponse>(
-      'https://yalies.io/api/people',
-      {
+    const data = (await fetch('https://yalies.io/api/people', {
+      headers: {
+        Authorization: `Bearer ${YALIES_API_KEY}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
         filters: {
           netid: netId,
         },
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${YALIES_API_KEY}`,
-          'Content-Type': 'application/json',
-        },
-      },
-    );
+      }),
+    }).then((res) => {
+      if (!res.ok) throw new Error(res.statusText);
+      return res.json();
+    })) as YaliesResponse;
     // If no user found, do not grant access
     if (data === null || data.length === 0) {
       res.status(401).json({ success: false });
