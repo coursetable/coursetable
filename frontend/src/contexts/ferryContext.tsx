@@ -6,7 +6,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
@@ -28,29 +27,30 @@ const seasonsData = {
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted: { [seasonCode: Season]: boolean } = {};
+const courseLoadAttempted = new Set<Season>();
 let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
 const addToCache = (season: Season): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
-    if (season in courseData || season in courseLoadAttempted) {
+    if (season in courseData || courseLoadAttempted.has(season)) {
       // Skip if already loaded, or if we previously tried to load it.
       return;
     }
 
     // Log that we attempted to load this.
-    courseLoadAttempted = {
-      ...courseLoadAttempted,
-      [season]: true,
-    };
+    courseLoadAttempted.add(season);
 
-    const res = await axios.get(
+    const res = await fetch(
       `${API_ENDPOINT}/api/static/catalogs/${season}.json`,
-      {
-        withCredentials: true,
-      },
+      { credentials: 'include' },
     );
-    // Convert season list into a crn lookup table.
-    const data = res.data as Listing[];
+    if (!res.ok) {
+      // TODO: better error handling here; we may want to get rid of async-lock
+      // first
+      throw new Error(
+        `failed to fetch course data for ${season}. ${res.statusText}`,
+      );
+    }
+    const data = (await res.json()) as Listing[];
     const info = new Map<Crn, Listing>();
     for (const listing of data) info.set(listing.crn, listing);
     // Save in global cache. Here we force the creation of a new object.
