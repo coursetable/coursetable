@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import * as Sentry from '@sentry/react';
 import { AiOutlineStar } from 'react-icons/ai';
 import { IoPersonOutline } from 'react-icons/io5';
 import { BiBookOpen } from 'react-icons/bi';
@@ -114,15 +115,21 @@ function ResultsGridItem({
                   <>
                     <OverlayTrigger
                       placement="top"
-                      overlay={(props) => (
-                        <Tooltip id="button-tooltip" {...props}>
-                          <small>
-                            {subjectOptions
-                              .find((subject) => subject.value === subjectCode)!
-                              .label.substring(subjectCode.length + 2)}
-                          </small>
-                        </Tooltip>
-                      )}
+                      overlay={(props) => {
+                        const subjectName = subjectOptions
+                          .find((subject) => subject.value === subjectCode)
+                          ?.label.substring(subjectCode.length + 2);
+                        if (!subjectName) {
+                          Sentry.captureException(
+                            new Error(`Subject ${subjectCode} has no label`),
+                          );
+                        }
+                        return (
+                          <Tooltip id="button-tooltip" {...props}>
+                            <small>{subjectName ?? '[unknown]'}</small>
+                          </Tooltip>
+                        );
+                      }}
                     >
                       <span>{subjectCode}</span>
                     </OverlayTrigger>{' '}
