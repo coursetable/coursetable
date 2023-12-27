@@ -167,7 +167,9 @@ function CourseModalOverview({
     for (const [startTime, endTime, location, locationURL] of info) {
       if (locations.has(location) && locations.get(location) !== locationURL) {
         Sentry.captureException(
-          new Error(`Duplicate location ${location} with different URLs`),
+          new Error(
+            `${listing.course_code} has duplicate location ${location} with different URLs`,
+          ),
         );
       }
       locations.set(location, locationURL);

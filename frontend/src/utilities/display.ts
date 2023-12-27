@@ -101,8 +101,13 @@ export async function logout() {
     // Redirect to home page and refresh as well
     window.location.pathname = '/';
   } catch (err) {
-    toast.error(`Failed to sign out. ${String(err)}`);
+    Sentry.addBreadcrumb({
+      category: 'user',
+      message: 'Signing out',
+      level: 'info',
+    });
     Sentry.captureException(err);
+    toast.error(`Failed to sign out. ${String(err)}`);
   }
 }
 

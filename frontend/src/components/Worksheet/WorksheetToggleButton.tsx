@@ -102,6 +102,12 @@ function WorksheetToggleButton({
         if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn])
           toggleCourse(crn);
       }
+      const body = JSON.stringify({
+        action: addRemove,
+        season: seasonCode,
+        ociId: crn,
+        worksheetNumber: parseInt(selectedWorksheet, 10),
+      });
 
       // Call the endpoint
       try {
@@ -111,23 +117,23 @@ function WorksheetToggleButton({
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({
-            action: addRemove,
-            season: seasonCode,
-            ociId: crn,
-            worksheetNumber: parseInt(selectedWorksheet, 10),
-          }),
+          body,
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error);
+          throw new Error(data.error ?? res.statusText);
         }
         await userRefresh();
         // If not in worksheet view, update inWorksheet state
         setInWorksheet(!inWorksheet);
       } catch (err) {
-        toast.error(`Failed to update worksheet. ${String(err)}`);
+        Sentry.addBreadcrumb({
+          category: 'worksheet',
+          message: `Updating worksheet: ${body}`,
+          level: 'info',
+        });
         Sentry.captureException(err);
+        toast.error(`Failed to update worksheet. ${String(err)}`);
       }
     },
     [

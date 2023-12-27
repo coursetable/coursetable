@@ -158,15 +158,20 @@ function Challenge() {
         });
         const data = await res.json();
         if (!res.ok) {
-          setRequestError(data.error);
+          setRequestError(data.error ?? res.statusText);
         } else {
           setResBody(data);
           setNumTries(data.challengeTries);
           setMaxTries(data.maxChallengeTries);
         }
       } catch (err) {
-        toast.error(`Failed to request challenge. ${String(err)}`);
+        Sentry.addBreadcrumb({
+          category: 'challenge',
+          message: 'Requesting challenge',
+          level: 'info',
+        });
         Sentry.captureException(err);
+        toast.error(`Failed to request challenge. ${String(err)}`);
       }
     }
     void requestChallenge();
@@ -190,14 +195,15 @@ function Challenge() {
     // are correct, and showing checkmarks for everything is confusing.
     // TODO: fix this
     setValidated(false);
+    const body = JSON.stringify({
+      token: resBody.token,
+      salt: resBody.salt,
+      answers: answers.map((x) => ({ ...x, answer: Number(x.answer) })),
+    });
     try {
       const res = await fetch(`${API_ENDPOINT}/api/challenge/verify`, {
         method: 'POST',
-        body: JSON.stringify({
-          token: resBody.token,
-          salt: resBody.salt,
-          answers: answers.map((x) => ({ ...x, answer: Number(x.answer) })),
-        }),
+        body,
         headers: {
           'Content-Type': 'application/json',
         },
@@ -224,8 +230,13 @@ function Challenge() {
         setMaxTries(data.maxChallengeTries);
       }
     } catch (err) {
-      toast.error(`Failed to verify challenge. ${String(err)}`);
+      Sentry.addBreadcrumb({
+        category: 'challenge',
+        message: `Verifying challenge ${body}`,
+        level: 'info',
+      });
       Sentry.captureException(err);
+      toast.error(`Failed to verify challenge. ${String(err)}`);
     }
   };
 

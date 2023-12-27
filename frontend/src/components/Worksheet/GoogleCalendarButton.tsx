@@ -76,20 +76,25 @@ function GoogleCalendarButton(): JSX.Element {
               calendarId: 'primary',
               resource: event,
             });
-          } catch (e) {
-            Sentry.captureException(
-              new Error('[GCAL]: Error adding events to user calendar: ', {
-                cause: e,
-              }),
-            );
+          } catch (err) {
+            Sentry.addBreadcrumb({
+              category: 'gcal',
+              message: `Inserting GCal event ${JSON.stringify(event)}`,
+              level: 'info',
+            });
+            Sentry.captureException(err);
+            toast.error('Failed to add event to Google Calendar');
           }
         }),
       );
       toast.success('Exported to Google Calendar!');
-    } catch (e) {
-      Sentry.captureException(
-        new Error('[GCAL]: Error syncing user events', { cause: e }),
-      );
+    } catch (err) {
+      Sentry.addBreadcrumb({
+        category: 'gcal',
+        message: 'Exporting GCal events',
+        level: 'info',
+      });
+      Sentry.captureException(err);
       toast.error('Error exporting Google Calendar Events');
     } finally {
       setExporting(false);
@@ -108,12 +113,13 @@ function GoogleCalendarButton(): JSX.Element {
           void exportEvents();
         }
       },
-      (error) => {
-        Sentry.captureException(
-          new Error('[GCAL]: Error signing in to Google Calendar: ', {
-            cause: error,
-          }),
-        );
+      (err) => {
+        Sentry.addBreadcrumb({
+          category: 'gcal',
+          message: 'Signing into GCal',
+          level: 'info',
+        });
+        Sentry.captureException(err);
         toast.error('Error signing in to Google Calendar');
       },
     );

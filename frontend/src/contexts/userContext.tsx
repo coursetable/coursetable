@@ -89,7 +89,7 @@ export function UserProvider({
           credentials: 'include',
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        if (!res.ok) throw new Error(data.error ?? res.statusText);
 
         setNetId(data.netId);
         setHasEvals(data.evaluationsEnabled);
@@ -105,8 +105,13 @@ export function UserProvider({
         setSchool(undefined);
         Sentry.getCurrentScope().clear();
         if (!suppressError) {
-          toast.error(`Failed to fetch user data. ${String(err)}`);
+          Sentry.addBreadcrumb({
+            category: 'user',
+            message: 'Fetching user data',
+            level: 'info',
+          });
           Sentry.captureException(err);
+          toast.error(`Failed to fetch user data. ${String(err)}`);
         }
       }
     },
@@ -121,13 +126,18 @@ export function UserProvider({
           credentials: 'include',
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        if (!res.ok) throw new Error(data.error ?? res.statusText);
 
         setFriends(data.friends);
       } catch (err) {
         if (!suppressError) {
-          toast.error(`Failed to fetch friends data. ${String(err)}`);
+          Sentry.addBreadcrumb({
+            category: 'friends',
+            message: 'Fetching friends data',
+            level: 'info',
+          });
           Sentry.captureException(err);
+          toast.error(`Failed to fetch friends data. ${String(err)}`);
         }
         setFriends(undefined);
       }
@@ -143,14 +153,19 @@ export function UserProvider({
           credentials: 'include',
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        if (!res.ok) throw new Error(data.error ?? res.statusText);
 
         // Successfully fetched friends' worksheets
         setFriendRequests(data.requests);
       } catch (err) {
         if (!suppressError) {
-          toast.error(`Failed to get friend requests. ${String(err)}`);
+          Sentry.addBreadcrumb({
+            category: 'friends',
+            message: 'Fetching friend requests',
+            level: 'info',
+          });
           Sentry.captureException(err);
+          toast.error(`Failed to get friend requests. ${String(err)}`);
         }
         setFriendRequests(undefined);
       }
@@ -165,13 +180,18 @@ export function UserProvider({
           credentials: 'include',
         });
         const data = await res.json();
-        if (!res.ok) throw new Error(data.error);
+        if (!res.ok) throw new Error(data.error ?? res.statusText);
 
         setAllNames(data.names);
       } catch (err) {
         if (!suppressError) {
-          toast.error(`Failed to get user names. ${String(err)}`);
+          Sentry.addBreadcrumb({
+            category: 'friends',
+            message: 'Fetching friend names',
+            level: 'info',
+          });
           Sentry.captureException(err);
+          toast.error(`Failed to get user names. ${String(err)}`);
         }
         setAllNames(undefined);
       }
@@ -180,47 +200,59 @@ export function UserProvider({
   );
 
   const addFriend = useCallback(async (friendNetId: string): Promise<void> => {
+    const body = JSON.stringify({ friendNetId });
     try {
       const res = await fetch(`${API_ENDPOINT}/api/friends/add`, {
         method: 'POST',
         credentials: 'include',
-        body: JSON.stringify({ friendNetId }),
+        body,
         headers: {
           'Content-Type': 'application/json',
         },
       });
       if (!res.ok) {
         const data = await res.json();
-        throw new Error(data.error);
+        throw new Error(data.error ?? res.statusText);
       }
       toast.info(`Added friend: ${friendNetId}`);
       window.location.reload();
     } catch (err) {
-      toast.error(`Failed to add friend. ${String(err)}`);
+      Sentry.addBreadcrumb({
+        category: 'friends',
+        message: `Adding friend ${body}`,
+        level: 'info',
+      });
       Sentry.captureException(err);
+      toast.error(`Failed to add friend. ${String(err)}`);
     }
   }, []);
 
   const removeFriend = useCallback(
     async (friendNetId: string): Promise<void> => {
+      const body = JSON.stringify({ friendNetId });
       try {
         const res = await fetch(`${API_ENDPOINT}/api/friends/remove`, {
           method: 'POST',
           credentials: 'include',
-          body: JSON.stringify({ friendNetId }),
+          body,
           headers: {
             'Content-Type': 'application/json',
           },
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error);
+          throw new Error(data.error ?? res.statusText);
         }
         toast.info(`Removed friend: ${friendNetId}`);
         window.location.reload();
       } catch (err) {
-        toast.error(`Failed to remove friend. ${String(err)}`);
+        Sentry.addBreadcrumb({
+          category: 'friends',
+          message: `Removing friend ${body}`,
+          level: 'info',
+        });
         Sentry.captureException(err);
+        toast.error(`Failed to remove friend. ${String(err)}`);
       }
     },
     [],
@@ -228,23 +260,29 @@ export function UserProvider({
 
   const requestAddFriend = useCallback(
     async (friendNetId: string): Promise<void> => {
+      const body = JSON.stringify({ friendNetId });
       try {
         const res = await fetch(`${API_ENDPOINT}/api/friends/request`, {
           method: 'POST',
           credentials: 'include',
-          body: JSON.stringify({ friendNetId }),
+          body,
           headers: {
             'Content-Type': 'application/json',
           },
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error);
+          throw new Error(data.error ?? res.statusText);
         }
         toast.info(`Sent friend request: ${friendNetId}`);
       } catch (err) {
-        toast.error(`Failed to request friend. ${String(err)}`);
+        Sentry.addBreadcrumb({
+          category: 'friends',
+          message: `Requesting friend ${body}`,
+          level: 'info',
+        });
         Sentry.captureException(err);
+        toast.error(`Failed to request friend. ${String(err)}`);
       }
     },
     [],
