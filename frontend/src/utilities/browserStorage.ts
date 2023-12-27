@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react';
 
 // Checks if object is in storage
-const containsObject = (key: string, storage: Storage) =>
-  storage.getItem(key) !== null;
+const containsObject = (key: string, storage: Storage) => {
+  try {
+    return storage.getItem(key) !== null;
+  } catch {
+    // Storage access blocked. Should not be critical for us
+    return false;
+  }
+};
 // Saves object to storage
 const setObject = <T>(
   key: string,
@@ -11,13 +17,22 @@ const setObject = <T>(
   ifEmpty = false,
 ) => {
   if (ifEmpty && containsObject(key, storage)) return;
-  storage.setItem(key, JSON.stringify(obj));
+  try {
+    storage.setItem(key, JSON.stringify(obj));
+  } catch {
+    // Storage access blocked. Should not be critical for us
+  }
 };
 // Retrieves object from storage
 const getObject = <T>(key: string, storage: Storage) => {
-  const strVal = storage.getItem(key);
-  if (strVal === null || strVal === 'undefined') return null;
-  return JSON.parse(strVal) as T;
+  try {
+    const strVal = storage.getItem(key);
+    if (strVal === null || strVal === 'undefined') return null;
+    return JSON.parse(strVal) as T;
+  } catch {
+    // Storage access blocked. Should not be critical for us
+    return null;
+  }
 };
 const removeObject = (key: string, storage: Storage) => {
   storage.removeItem(key);
@@ -25,18 +40,18 @@ const removeObject = (key: string, storage: Storage) => {
 
 // TODO: refactor these to a single CRUD interface
 // Session storage functions
-export const setSSObject = <T>(key: string, obj: T, ifEmpty = false): void => {
+const setSSObject = <T>(key: string, obj: T, ifEmpty = false): void => {
   setObject<T>(key, obj, window.sessionStorage, ifEmpty);
 };
-export const getSSObject = <T>(key: string): T | null =>
+const getSSObject = <T>(key: string): T | null =>
   getObject<T>(key, window.sessionStorage);
 export const removeSSObject = (key: string): void =>
   removeObject(key, window.sessionStorage);
 
 // Local storage functions
-export const setLSObject = <T>(key: string, obj: T, ifEmpty = false): void =>
+const setLSObject = <T>(key: string, obj: T, ifEmpty = false): void =>
   setObject<T>(key, obj, window.localStorage, ifEmpty);
-export const getLSObject = <T>(key: string): T | null =>
+const getLSObject = <T>(key: string): T | null =>
   getObject<T>(key, window.localStorage);
 export const removeLSObject = (key: string): void =>
   removeObject(key, window.localStorage);
@@ -45,8 +60,11 @@ export const useSessionStorageState = <T>(
   key: string,
   defaultValue: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
-  setSSObject<T>(key, defaultValue, true);
-  const [value, setValue] = useState<T>(getSSObject<T>(key)!);
+  const [value, setValue] = useState<T>(defaultValue);
+  useEffect(() => {
+    const ssValue = getSSObject<T>(key);
+    if (ssValue !== null) setValue(ssValue);
+  }, [key]);
   useEffect(() => {
     setSSObject(key, value);
   }, [key, value]);
@@ -57,8 +75,11 @@ export const useLocalStorageState = <T>(
   key: string,
   defaultValue: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
-  setLSObject<T>(key, defaultValue, true);
-  const [value, setValue] = useState<T>(getLSObject<T>(key)!);
+  const [value, setValue] = useState<T>(defaultValue);
+  useEffect(() => {
+    const lsValue = getLSObject<T>(key);
+    if (lsValue !== null) setValue(lsValue);
+  }, [key]);
   useEffect(() => {
     setLSObject(key, value);
   }, [key, value]);
