@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "scripts": {
     "build": "vite build",
+    "clean": "rm -rf build node_modules package-lock.json # Needed for build-size report to work",
     "codegen": "cp ../api/static/seasons.json src/generated/seasons.json && graphql-codegen --config codegen.yml",
     "serve": "vite preview",
     "start": "vite",
