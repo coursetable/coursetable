@@ -290,7 +290,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - When the request body is invalid
 - Body:
-  - `error`: `"INVALID_REQUEST"`
+  - `error`: `"INVALID_REQUEST" | "ALREADY_BOOKMARKED" | "NOT_BOOKMARKED"`
 
 ### `GET` `/api/user/worksheets`
 

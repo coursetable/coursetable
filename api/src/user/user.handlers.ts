@@ -11,7 +11,7 @@ import { prisma } from '../config';
 
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove')]),
-  season: z.string(),
+  season: z.string().transform((val) => parseInt(val, 10)),
   ociId: z.number(),
   worksheetNumber: z.number(),
 });
@@ -38,30 +38,46 @@ export const toggleBookmark = async (
 
   const { action, season, ociId, worksheetNumber } = bodyParseRes.data;
 
+  const existing = await prisma.worksheetCourses.findUnique({
+    where: {
+      netId_ociId_season_worksheetNumber: {
+        netId,
+        ociId,
+        season,
+        worksheetNumber,
+      },
+    },
+  });
+
   if (action === 'add') {
     // Add a bookmarked course
     winston.info(
       `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
+    if (existing) {
+      res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
+      return;
+    }
     await prisma.worksheetCourses.create({
-      data: {
-        netId,
-        ociId,
-        season: parseInt(season, 10),
-        worksheetNumber,
-      },
+      data: { netId, ociId, season, worksheetNumber },
     });
   } else {
     // Remove a bookmarked course
     winston.info(
       `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
-    await prisma.worksheetCourses.deleteMany({
+    if (!existing) {
+      res.status(400).json({ error: 'NOT_BOOKMARKED' });
+      return;
+    }
+    await prisma.worksheetCourses.delete({
       where: {
-        netId,
-        ociId,
-        season: parseInt(season, 10),
-        worksheetNumber,
+        netId_ociId_season_worksheetNumber: {
+          netId,
+          ociId,
+          season,
+          worksheetNumber,
+        },
       },
     });
   }
