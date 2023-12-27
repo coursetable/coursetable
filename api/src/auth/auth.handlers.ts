@@ -177,12 +177,13 @@ export const passportConfig = (
    * @param netId: netId of user to get info for.
    * @param done: callback function to be executed after deserialization.
    */
-  passport.deserializeUser(async (netId: string | undefined, done) => {
-    if (!netId) {
+  passport.deserializeUser(async (sessionKey: unknown, done) => {
+    if (!sessionKey) {
       // Can this happen?
       done(null, undefined);
       return;
     }
+    const netId = String(sessionKey);
     winston.info(`Deserializing user ${netId}`);
     const student = await prisma.studentBluebookSettings.findUnique({
       where: {
