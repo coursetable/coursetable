@@ -1,8 +1,5 @@
 # API docs
 
-- TODO: remove all `success: true` (and use HTTP status code instead)
-- TODO: standardize error response format
-
 All endpoints are capable of returning 500. In this case the body contains an `error: string`.
 
 Endpoints marked as "needs credentials" returns 401 with `error: "USER_NOT_FOUND"` when the user is not found.
@@ -96,6 +93,8 @@ Endpoints marked as "needs eval access" additionally returns 401 with `error: "U
 
 **Status: 200**
 
+- No body
+
 **Status: 401**
 
 - When there is no secret header with request
@@ -158,8 +157,13 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 200**
 
-- Body:
-  - `success`: `true`
+- No body
+
+**Status: 400**
+
+- If there is no user
+- Body
+  - `error`: `"USER_NOT_FOUND"`
 
 ## Friends
 
@@ -174,6 +178,8 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 #### Response
 
 **Status: 200**
+
+- No body
 
 **Status: 400**
 
@@ -193,6 +199,8 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 200**
 
+- No body
+
 **Status: 400**
 
 - When `friendNetId` is not provided or is the same as the user's
@@ -210,6 +218,8 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 #### Response
 
 **Status: 200**
+
+- No body
 
 **Status: 400**
 
@@ -285,6 +295,8 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 #### Response
 
 **Status: 200**
+
+- No body
 
 **Status: 400**
 

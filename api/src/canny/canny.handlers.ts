@@ -55,7 +55,7 @@ export const cannyIdentify = async (
     })) as YaliesResponse;
     // If no user found, do not grant access
     if (data === null || data.length === 0) {
-      res.status(401).json({ success: false });
+      res.status(401).json({ error: 'USER_NO_YALIES_INFO' });
       return;
     }
 
