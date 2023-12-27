@@ -192,12 +192,12 @@ function Challenge() {
     setValidated(false);
     try {
       const res = await fetch(`${API_ENDPOINT}/api/challenge/verify`, {
+        method: 'POST',
         body: JSON.stringify({
           token: resBody.token,
           salt: resBody.salt,
           answers: answers.map((x) => ({ ...x, answer: Number(x.answer) })),
         }),
-        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },

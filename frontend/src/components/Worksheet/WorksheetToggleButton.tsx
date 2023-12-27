@@ -106,6 +106,7 @@ function WorksheetToggleButton({
       // Call the endpoint
       try {
         const res = await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
+          method: 'POST',
           credentials: 'include',
           headers: {
             'Content-Type': 'application/json',
