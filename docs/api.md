@@ -203,9 +203,9 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 400**
 
-- When `friendNetId` is not provided or is the same as the user's
+- When `friendNetId` is not provided, is the same as the user's, or does not exist
 - Body:
-  - `error`: `"INVALID_REQUEST" | "SAME_USER"`
+  - `error`: `"INVALID_REQUEST" | "SAME_USER" | "FRIEND_NOT_FOUND"`
 
 ### `POST` `/api/friends/request`
 
@@ -223,9 +223,9 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 **Status: 400**
 
-- When `friendNetId` is not provided or is the same as the user's
+- When `friendNetId` is not provided, is the same as the user's, or is not a friend
 - Body:
-  - `error`: `"INVALID_REQUEST" | "SAME_USER"`
+  - `error`: `"INVALID_REQUEST" | "SAME_USER" | "NO_FRIEND"`
 
 ### `GET` `/api/friends/getRequests`
 

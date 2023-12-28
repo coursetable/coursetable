@@ -98,6 +98,17 @@ export const removeFriend = async (
     return;
   }
 
+  const friend = await prisma.studentFriends.findUnique({
+    where: {
+      netId_friendNetId: { netId, friendNetId },
+    },
+  });
+
+  if (!friend) {
+    res.status(400).json({ error: 'NO_FRIEND' });
+    return;
+  }
+
   await prisma.$transaction([
     prisma.studentFriends.delete({
       where: {
@@ -131,6 +142,17 @@ export const requestAddFriend = async (
 
   if (netId === friendNetId) {
     res.status(400).json({ error: 'SAME_USER' });
+    return;
+  }
+
+  const friendUser = await prisma.studentBluebookSettings.findUnique({
+    where: {
+      netId: friendNetId,
+    },
+  });
+
+  if (!friendUser) {
+    res.status(400).json({ error: 'FRIEND_NOT_FOUND' });
     return;
   }
 
