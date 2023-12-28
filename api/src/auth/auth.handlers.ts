@@ -178,8 +178,9 @@ export const passportConfig = (
    */
   passport.deserializeUser(async (sessionKey: unknown, done) => {
     if (!sessionKey) {
-      // Can this happen?
-      done(null, undefined);
+      // Return `null`/`false` to denote no user; don't use `undefined`
+      // https://github.com/jaredhanson/passport/pull/975
+      done(null, null);
       return;
     }
     const netId = String(sessionKey);
@@ -190,7 +191,7 @@ export const passportConfig = (
       },
     });
     if (!student) {
-      done(null, undefined);
+      done(null, null);
       return;
     }
     done(null, {
