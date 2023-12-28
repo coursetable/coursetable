@@ -280,7 +280,7 @@ export function NavbarWorksheetSearch() {
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value as NetId);
                   } else if (selectedOption && isOption(selectedOption)) {
-                    void removeFriend(selectedOption.value);
+                    void removeFriend(selectedOption.value as NetId);
                   }
                 }}
                 isDisabled={false}
@@ -321,7 +321,7 @@ export function NavbarWorksheetSearch() {
                 onChange={(selectedOption) => {
                   if (selectedOption && isOption(selectedOption)) {
                     if (deleting === 0) {
-                      void addFriend(selectedOption.value);
+                      void addFriend(selectedOption.value as NetId);
                     } else if (deleting === 1) {
                       // TODO actually decline it (remove from database)
                       toast.info(
@@ -346,7 +346,7 @@ export function NavbarWorksheetSearch() {
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
                     e.preventDefault();
-                    void requestAddFriend(currentFriendNetID);
+                    void requestAddFriend(currentFriendNetID as NetId);
                   }
                 }}
                 onInputChange={(e) => {

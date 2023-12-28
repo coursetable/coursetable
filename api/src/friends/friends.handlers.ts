@@ -156,6 +156,17 @@ export const requestAddFriend = async (
     return;
   }
 
+  const existingFriend = await prisma.studentFriends.findUnique({
+    where: {
+      netId_friendNetId: { netId, friendNetId },
+    },
+  });
+
+  if (existingFriend) {
+    res.status(400).json({ error: 'ALREADY_FRIENDS' });
+    return;
+  }
+
   await prisma.$transaction([
     prisma.studentFriendRequests.upsert({
       // Update (do not create a new request) when one already matches the

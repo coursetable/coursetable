@@ -121,7 +121,24 @@ function WorksheetToggleButton({
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error ?? res.statusText);
+          switch (data.error) {
+            // These errors can be triggered if the user clicks the button twice
+            // in a row
+            // TODO: we should debounce the request instead
+            case 'ALREADY_BOOKMARKED':
+              toast.error(
+                'You have already added this class to your worksheet',
+              );
+              break;
+            case 'NOT_BOOKMARKED':
+              toast.error(
+                'You have already remove this class from your worksheet',
+              );
+              break;
+            default:
+              throw new Error(data.error ?? res.statusText);
+          }
+          return;
         }
         await userRefresh();
         // If not in worksheet view, update inWorksheet state

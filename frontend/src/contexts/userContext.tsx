@@ -47,9 +47,9 @@ type Store = {
   userRefresh: () => Promise<void>;
   friendRefresh: () => Promise<void>;
   friendReqRefresh: () => Promise<void>;
-  addFriend: (friendNetId: string) => Promise<void>;
-  removeFriend: (friendNetId: string) => Promise<void>;
-  requestAddFriend: (friendNetId: string) => Promise<void>;
+  addFriend: (friendNetId: NetId) => Promise<void>;
+  removeFriend: (friendNetId: NetId) => Promise<void>;
+  requestAddFriend: (friendNetId: NetId) => Promise<void>;
   getAllNames: () => Promise<void>;
 };
 
@@ -190,6 +190,9 @@ export function UserProvider({
       });
       if (!res.ok) {
         const data = await res.json();
+        // The only way for users to legally interact with this API is through
+        // the requests dropdown, so anything that doesn't seem right should be
+        // reported to us
         throw new Error(data.error ?? res.statusText);
       }
       toast.info(`Added friend: ${friendNetId}`);
@@ -237,7 +240,15 @@ export function UserProvider({
   );
 
   const requestAddFriend = useCallback(
-    async (friendNetId: string): Promise<void> => {
+    async (friendNetId: NetId): Promise<void> => {
+      // Prevent sending to server in common error cases
+      if (friendNetId === netId) {
+        toast.error('You cannot request yourself as friend!');
+        return;
+      } else if (friends?.[friendNetId]) {
+        toast.error(`You are already friends with ${friendNetId}.`);
+        return;
+      }
       const body = JSON.stringify({ friendNetId });
       try {
         const res = await fetch(`${API_ENDPOINT}/api/friends/request`, {
@@ -250,7 +261,16 @@ export function UserProvider({
         });
         if (!res.ok) {
           const data = await res.json();
-          throw new Error(data.error ?? res.statusText);
+          switch (data.error) {
+            case 'FRIEND_NOT_FOUND':
+              toast.error(`The net ID ${friendNetId} does not exist.`);
+              break;
+            // Other error codes should be already prevented client-side; if
+            // not, better figure out why
+            default:
+              throw new Error(data.error ?? res.statusText);
+          }
+          return;
         }
         toast.info(`Sent friend request: ${friendNetId}`);
       } catch (err) {
@@ -263,7 +283,7 @@ export function UserProvider({
         toast.error(`Failed to request friend. ${String(err)}`);
       }
     },
-    [],
+    [netId, friends],
   );
 
   // Refresh user worksheet and friends data on page load
