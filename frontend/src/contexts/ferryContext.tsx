@@ -10,7 +10,7 @@ import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
-import type { Worksheet } from './userContext';
+import { useUser, type Worksheet } from './userContext';
 import _seasons from '../generated/seasons.json';
 import type { Crn, Season, Listing } from '../utilities/common';
 
@@ -84,27 +84,33 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const requestSeasons = useCallback(async (seasons: Season[]) => {
-    const fetches = seasons.map(async (season) => {
-      // Racy preemptive check of cache.
-      // We cannot check courseLoadAttempted here, since that is set prior
-      // to the data actually being loaded.
-      if (season in courseData) return;
+  const { user } = useUser();
 
-      // Add to cache.
-      setRequests((r) => r + 1);
-      try {
-        await addToCache(season);
-      } finally {
-        setRequests((r) => r - 1);
-      }
-    });
-    await Promise.all(fetches).catch((err) => {
-      Sentry.captureException(err);
-      toast.error('Failed to fetch course information');
-      setErrors((e) => [...e, err]);
-    });
-  }, []);
+  const requestSeasons = useCallback(
+    async (seasons: Season[]) => {
+      if (!user.worksheet) return; // Not logged in
+      const fetches = seasons.map(async (season) => {
+        // Racy preemptive check of cache.
+        // We cannot check courseLoadAttempted here, since that is set prior
+        // to the data actually being loaded.
+        if (season in courseData) return;
+
+        // Add to cache.
+        setRequests((r) => r + 1);
+        try {
+          await addToCache(season);
+        } finally {
+          setRequests((r) => r - 1);
+        }
+      });
+      await Promise.all(fetches).catch((err) => {
+        Sentry.captureException(err);
+        toast.error('Failed to fetch course information');
+        setErrors((e) => [...e, err]);
+      });
+    },
+    [user.worksheet],
+  );
 
   // If there's any error, we want to immediately stop "loading" and start
   // "erroring".

@@ -35,24 +35,8 @@ function App() {
   const location = useLocation();
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
-  // Page initialized as loading
-  const [loading, setLoading] = useState(true);
   // User context data
-  const { user, userRefresh, friendRefresh, friendReqRefresh, getAllNames } =
-    useUser();
-
-  // Refresh user worksheet and friends data on page load
-  useEffect(() => {
-    const a = userRefresh(true);
-    const b = friendRefresh(true);
-    const c = friendReqRefresh(true);
-    const d = getAllNames(true);
-
-    void Promise.allSettled([a, b, c, d]).finally(() => {
-      // Set loading to false after user info is fetched
-      setLoading(false);
-    });
-  }, [userRefresh, friendRefresh, friendReqRefresh, getAllNames]);
+  const { loading, user } = useUser();
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet);
