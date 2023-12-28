@@ -19,17 +19,27 @@ const getObject = <T>(key: string, storage: Storage) => {
   if (strVal === null || strVal === 'undefined') return null;
   return JSON.parse(strVal) as T;
 };
+const removeObject = (key: string, storage: Storage) => {
+  storage.removeItem(key);
+};
+
+// TODO: refactor these to a single CRUD interface
 // Session storage functions
 export const setSSObject = <T>(key: string, obj: T, ifEmpty = false): void => {
   setObject<T>(key, obj, window.sessionStorage, ifEmpty);
 };
 export const getSSObject = <T>(key: string): T | null =>
   getObject<T>(key, window.sessionStorage);
+export const removeSSObject = (key: string): void =>
+  removeObject(key, window.sessionStorage);
+
 // Local storage functions
 export const setLSObject = <T>(key: string, obj: T, ifEmpty = false): void =>
   setObject<T>(key, obj, window.localStorage, ifEmpty);
 export const getLSObject = <T>(key: string): T | null =>
   getObject<T>(key, window.localStorage);
+export const removeLSObject = (key: string): void =>
+  removeObject(key, window.localStorage);
 // Saves State in Session Storage
 export const useSessionStorageState = <T>(
   key: string,
