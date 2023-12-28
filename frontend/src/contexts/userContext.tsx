@@ -4,6 +4,7 @@ import React, {
   useState,
   useCallback,
   useMemo,
+  useEffect,
 } from 'react';
 import * as Sentry from '@sentry/react';
 import { toast } from 'react-toastify';
@@ -32,6 +33,7 @@ export type FriendName = {
   college: string;
 };
 type Store = {
+  loading: boolean;
   user: {
     netId?: NetId;
     worksheet?: Worksheet;
@@ -42,13 +44,13 @@ type Store = {
     friends?: FriendRecord;
     allNames?: FriendName[];
   };
-  userRefresh: (suppressError?: boolean) => Promise<void>;
-  friendRefresh: (suppressError?: boolean) => Promise<void>;
-  friendReqRefresh: (suppressError?: boolean) => Promise<void>;
+  userRefresh: () => Promise<void>;
+  friendRefresh: () => Promise<void>;
+  friendReqRefresh: () => Promise<void>;
   addFriend: (friendNetId: string) => Promise<void>;
   removeFriend: (friendNetId: string) => Promise<void>;
   requestAddFriend: (friendNetId: string) => Promise<void>;
-  getAllNames: (suppressError?: boolean) => Promise<void>;
+  getAllNames: () => Promise<void>;
 };
 
 const UserContext = createContext<Store | undefined>(undefined);
@@ -62,6 +64,8 @@ export function UserProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
+  // Page initialized as loading
+  const [loading, setLoading] = useState(true);
   // User's netId
   const [netId, setNetId] = useState<NetId | undefined>(undefined);
   // User's worksheet
@@ -82,122 +86,96 @@ export function UserProvider({
   const [allNames, setAllNames] = useState<FriendName[] | undefined>(undefined);
 
   // Refresh user worksheet
-  const userRefresh = useCallback(
-    async (suppressError = false): Promise<void> => {
-      try {
-        const res = await fetch(`${API_ENDPOINT}/api/user/worksheets`, {
-          credentials: 'include',
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? res.statusText);
-
-        setNetId(data.netId);
-        setHasEvals(data.evaluationsEnabled);
-        setYear(data.year);
-        setSchool(data.school);
-        setWorksheet(data.data);
-        Sentry.setUser({ username: data.netId });
-      } catch (err) {
-        setNetId(undefined);
-        setWorksheet(undefined);
-        setHasEvals(undefined);
-        setYear(undefined);
-        setSchool(undefined);
-        Sentry.getCurrentScope().clear();
-        if (!suppressError) {
-          Sentry.addBreadcrumb({
-            category: 'user',
-            message: 'Fetching user data',
-            level: 'info',
-          });
-          Sentry.captureException(err);
-          toast.error(`Failed to fetch user data. ${String(err)}`);
-        }
-      }
-    },
-    [setWorksheet, setNetId, setHasEvals, setYear, setSchool],
-  );
+  const userRefresh = useCallback(async (): Promise<void> => {
+    try {
+      const res = await fetch(`${API_ENDPOINT}/api/user/worksheets`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? res.statusText);
+      setNetId(data.netId);
+      setHasEvals(data.evaluationsEnabled);
+      setYear(data.year);
+      setSchool(data.school);
+      setWorksheet(data.data);
+    } catch (err) {
+      Sentry.addBreadcrumb({
+        category: 'user',
+        message: 'Fetching user data',
+        level: 'info',
+      });
+      Sentry.captureException(err);
+      Sentry.getCurrentScope().clear();
+      toast.error(`Failed to fetch user data. ${String(err)}`);
+      setNetId(undefined);
+      setWorksheet(undefined);
+      setHasEvals(undefined);
+      setYear(undefined);
+      setSchool(undefined);
+    }
+  }, [setWorksheet, setNetId, setHasEvals, setYear, setSchool]);
 
   // Refresh user friends stuff
-  const friendRefresh = useCallback(
-    async (suppressError = false): Promise<void> => {
-      try {
-        const res = await fetch(`${API_ENDPOINT}/api/friends/worksheets`, {
-          credentials: 'include',
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? res.statusText);
-
-        setFriends(data.friends);
-      } catch (err) {
-        if (!suppressError) {
-          Sentry.addBreadcrumb({
-            category: 'friends',
-            message: 'Fetching friends data',
-            level: 'info',
-          });
-          Sentry.captureException(err);
-          toast.error(`Failed to fetch friends data. ${String(err)}`);
-        }
-        setFriends(undefined);
-      }
-    },
-    [setFriends],
-  );
+  const friendRefresh = useCallback(async (): Promise<void> => {
+    try {
+      const res = await fetch(`${API_ENDPOINT}/api/friends/worksheets`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? res.statusText);
+      setFriends(data.friends);
+    } catch (err) {
+      Sentry.addBreadcrumb({
+        category: 'friends',
+        message: 'Fetching friends data',
+        level: 'info',
+      });
+      Sentry.captureException(err);
+      toast.error(`Failed to fetch friends data. ${String(err)}`);
+      setFriends(undefined);
+    }
+  }, [setFriends]);
 
   // Refresh friend requests
-  const friendReqRefresh = useCallback(
-    async (suppressError = false): Promise<void> => {
-      try {
-        const res = await fetch(`${API_ENDPOINT}/api/friends/getRequests`, {
-          credentials: 'include',
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? res.statusText);
+  const friendReqRefresh = useCallback(async (): Promise<void> => {
+    try {
+      const res = await fetch(`${API_ENDPOINT}/api/friends/getRequests`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? res.statusText);
+      setFriendRequests(data.requests);
+    } catch (err) {
+      Sentry.addBreadcrumb({
+        category: 'friends',
+        message: 'Fetching friend requests',
+        level: 'info',
+      });
+      Sentry.captureException(err);
+      toast.error(`Failed to get friend requests. ${String(err)}`);
+      setFriendRequests(undefined);
+    }
+  }, [setFriendRequests]);
 
-        // Successfully fetched friends' worksheets
-        setFriendRequests(data.requests);
-      } catch (err) {
-        if (!suppressError) {
-          Sentry.addBreadcrumb({
-            category: 'friends',
-            message: 'Fetching friend requests',
-            level: 'info',
-          });
-          Sentry.captureException(err);
-          toast.error(`Failed to get friend requests. ${String(err)}`);
-        }
-        setFriendRequests(undefined);
-      }
-    },
-    [setFriendRequests],
-  );
-
-  const getAllNames = useCallback(
-    async (suppressError = false): Promise<void> => {
-      try {
-        const res = await fetch(`${API_ENDPOINT}/api/friends/names`, {
-          credentials: 'include',
-        });
-        const data = await res.json();
-        if (!res.ok) throw new Error(data.error ?? res.statusText);
-
-        setAllNames(data.names);
-      } catch (err) {
-        if (!suppressError) {
-          Sentry.addBreadcrumb({
-            category: 'friends',
-            message: 'Fetching friend names',
-            level: 'info',
-          });
-          Sentry.captureException(err);
-          toast.error(`Failed to get user names. ${String(err)}`);
-        }
-        setAllNames(undefined);
-      }
-    },
-    [],
-  );
+  const getAllNames = useCallback(async (): Promise<void> => {
+    try {
+      const res = await fetch(`${API_ENDPOINT}/api/friends/names`, {
+        credentials: 'include',
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error ?? res.statusText);
+      setAllNames(data.names);
+    } catch (err) {
+      Sentry.addBreadcrumb({
+        category: 'friends',
+        message: 'Fetching friend names',
+        level: 'info',
+      });
+      Sentry.captureException(err);
+      toast.error(`Failed to get user names. ${String(err)}`);
+      setAllNames(undefined);
+    }
+  }, []);
 
   const addFriend = useCallback(async (friendNetId: string): Promise<void> => {
     const body = JSON.stringify({ friendNetId });
@@ -288,6 +266,39 @@ export function UserProvider({
     [],
   );
 
+  // Refresh user worksheet and friends data on page load
+  useEffect(() => {
+    async function init() {
+      try {
+        const res = await fetch(`${API_ENDPOINT}/api/auth/check`, {
+          credentials: 'include',
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error ?? res.statusText);
+        if (!data.auth) return;
+        Sentry.setUser({ username: data.netId });
+      } catch (err) {
+        Sentry.addBreadcrumb({
+          category: 'user',
+          message: 'Fetching user login status',
+          level: 'info',
+        });
+        Sentry.captureException(err);
+        Sentry.getCurrentScope().clear();
+        toast.error(`Failed to fetch login status. ${String(err)}`);
+        return;
+      }
+      // This shouldn't fail, because they all handle their own errors
+      await Promise.all([
+        userRefresh(),
+        friendRefresh(),
+        friendReqRefresh(),
+        getAllNames(),
+      ]);
+    }
+    void init().finally(() => setLoading(false));
+  }, [userRefresh, friendRefresh, friendReqRefresh, getAllNames]);
+
   const user = useMemo(
     () => ({
       netId,
@@ -313,6 +324,7 @@ export function UserProvider({
 
   const store = useMemo(
     () => ({
+      loading,
       user,
       userRefresh,
       friendRefresh,
@@ -323,6 +335,7 @@ export function UserProvider({
       getAllNames,
     }),
     [
+      loading,
       user,
       userRefresh,
       friendRefresh,

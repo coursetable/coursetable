@@ -113,9 +113,10 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
       {/* <React.StrictMode> */}
       <GapiProvider>
         <ApolloProvider client={client}>
-          <FerryProvider>
-            {/* UserProvider must be inside the FerryProvider */}
-            <UserProvider>
+          {/* FerryProvider must be inside UserProvider because the former
+            depends on login status */}
+          <UserProvider>
+            <FerryProvider>
               <WindowDimensionsProvider>
                 <SearchProvider>
                   <WorksheetProvider>
@@ -132,8 +133,8 @@ function Globals({ children }: { readonly children: React.ReactNode }) {
                 {/* TODO: style toasts with bootstrap using https://fkhadra.github.io/react-toastify/how-to-style/ */}
                 <ToastContainer toastClassName="rounded" />
               </WindowDimensionsProvider>
-            </UserProvider>
-          </FerryProvider>
+            </FerryProvider>
+          </UserProvider>
         </ApolloProvider>
       </GapiProvider>
       {/* </React.StrictMode> */}
