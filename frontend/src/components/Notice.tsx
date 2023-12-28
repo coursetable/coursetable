@@ -1,10 +1,7 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
-import {
-  useLocalStorageState,
-  removeLSObject,
-} from '../utilities/browserStorage';
+import { getLSObject, setLSObject } from '../utilities/browserStorage';
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
 
@@ -16,14 +13,10 @@ const key = 1;
  * Notice banner at the top of the website
  */
 function Notice({ children }: { readonly children?: React.ReactNode }) {
-  // Save visibility in local storage so it doesn't come back every time user
-  // opens the page. Important if you want to collect analytics
-  const [visible, setVisible] = useLocalStorageState(
-    `noticeVisibility-${key}`,
-    true,
-  );
+  const [visible, setVisible] = useState(true);
   useEffect(() => {
-    removeLSObject(`noticeVisibility-${key - 1}`);
+    const lastDismissed = getLSObject<number>('lastDismissedBanner');
+    if (lastDismissed === key) setVisible(false);
   }, []);
 
   if (!visible || !children) return null;
@@ -38,6 +31,7 @@ function Notice({ children }: { readonly children?: React.ReactNode }) {
         className={styles.closeButton}
         onClick={() => {
           setVisible(false);
+          setLSObject('lastDismissedBanner', key);
           Sentry.captureMessage('Course evals banner dismissed');
         }}
       >
