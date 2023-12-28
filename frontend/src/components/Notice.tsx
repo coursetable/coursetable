@@ -8,25 +8,28 @@ import {
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
 
-// Increment for each new notice, or users who previously dismissed the banner
+// IMPORTANT: Increment for each new notice, or users who previously dismissed the banner
 // won't see it
 const key = 1;
+
+// Get the most recently dismissed banner key from local storage
+const lastDismissed = parseInt(
+  localStorage.getItem('lastDismissed') || '0',
+  10,
+);
 
 /**
  * Notice banner at the top of the website
  */
 function Notice({ children }: { readonly children?: React.ReactNode }) {
-  // Save visibility in local storage so it doesn't come back every time user
-  // opens the page. Important if you want to collect analytics
-  const [visible, setVisible] = useLocalStorageState(
-    `noticeVisibility-${key}`,
-    true,
-  );
-  useEffect(() => {
-    removeLSObject(`noticeVisibility-${key - 1}`);
-  }, []);
+  // Determine if the banner should be visible, if the last dismissed banner is less than the current banner key
+  const shouldDisplay = lastDismissed < key;
 
-  if (!visible || !children) return null;
+  const dismissBanner = () => {
+    localStorage.setItem('lastDismissed', key.toString());
+  };
+
+  if (!shouldDisplay || !children) return null;
   return (
     <StyledBanner className={styles.banner}>
       <div className={styles.content}>
@@ -37,7 +40,7 @@ function Notice({ children }: { readonly children?: React.ReactNode }) {
       <span
         className={styles.closeButton}
         onClick={() => {
-          setVisible(false);
+          dismissBanner();
           Sentry.captureMessage('Course evals banner dismissed');
         }}
       >
