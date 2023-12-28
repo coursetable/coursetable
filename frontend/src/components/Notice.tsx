@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaTimes } from 'react-icons/fa';
+import * as Sentry from '@sentry/react';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
@@ -22,7 +23,13 @@ function Notice({ children }: { readonly children?: React.ReactNode }) {
       </div>
       {/* TODO */}
       {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
-      <span className={styles.closeButton} onClick={() => setVisible(false)}>
+      <span
+        className={styles.closeButton}
+        onClick={() => {
+          setVisible(false);
+          Sentry.captureMessage('Course evals banner dismissed');
+        }}
+      >
         <FaTimes style={{ display: 'block' }} />
       </span>
     </StyledBanner>

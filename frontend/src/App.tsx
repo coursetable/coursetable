@@ -96,7 +96,7 @@ function App() {
         >
           fill out your course evals
         </a>{' '}
-        -- it's what powers this site!
+        — it's what powers this site! Help your peers make informed decisions 🤗
       </Notice>
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
