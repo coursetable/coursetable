@@ -99,7 +99,18 @@ function App() {
   return (
     <>
       {/* Notice bar */}
-      <Notice />
+      <Notice>
+        Please{' '}
+        <a
+          href="https://students.yale.edu/oce-submissions/studentSubmission/index"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+        >
+          fill out your course evals
+        </a>{' '}
+        -- it's what powers this site!
+      </Notice>
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
         {/* Home Page */}
