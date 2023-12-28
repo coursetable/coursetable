@@ -110,7 +110,7 @@ function App() {
           target="_blank"
           rel="noreferrer"
           style={{ color: 'white', textDecoration: 'underline' }}
-          onClick = {handleEvalLinkClick}
+          onClick={handleEvalLinkClick}
         >
           fill out your course evals
         </a>{' '}
