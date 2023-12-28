@@ -96,6 +96,10 @@ function App() {
     );
   }
 
+  const handleEvalLinkClick = () => {
+    Sentry.captureMessage('Course evals link clicked');
+  };
+
   return (
     <>
       {/* Notice bar */}
@@ -106,6 +110,7 @@ function App() {
           target="_blank"
           rel="noreferrer"
           style={{ color: 'white', textDecoration: 'underline' }}
+          onClick = {handleEvalLinkClick}
         >
           fill out your course evals
         </a>{' '}
