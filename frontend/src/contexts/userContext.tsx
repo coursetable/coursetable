@@ -23,7 +23,7 @@ export type FriendRecord = {
   };
 };
 export type FriendRequest = {
-  netId: string;
+  netId: NetId;
   name: string;
 };
 export type FriendName = {
@@ -248,6 +248,11 @@ export function UserProvider({
       } else if (friends?.[friendNetId]) {
         toast.error(`You are already friends with ${friendNetId}.`);
         return;
+      } else if (friendRequests?.find((x) => x.netId === friendNetId)) {
+        toast.error(
+          `You already received a friend request from ${friendNetId}. Go approve the request instead!`,
+        );
+        return;
       }
       const body = JSON.stringify({ friendNetId });
       try {
@@ -264,6 +269,11 @@ export function UserProvider({
           switch (data.error) {
             case 'FRIEND_NOT_FOUND':
               toast.error(`The net ID ${friendNetId} does not exist.`);
+              break;
+            case 'ALREADY_SENT_REQUEST':
+              toast.error(
+                `You already sent a friend request to ${friendNetId}. Wait for them to accept it!`,
+              );
               break;
             // Other error codes should be already prevented client-side; if
             // not, better figure out why
@@ -283,7 +293,7 @@ export function UserProvider({
         toast.error(`Failed to request friend. ${String(err)}`);
       }
     },
-    [netId, friends],
+    [netId, friends, friendRequests],
   );
 
   // Refresh user worksheet and friends data on page load

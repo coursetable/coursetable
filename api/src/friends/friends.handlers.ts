@@ -167,22 +167,36 @@ export const requestAddFriend = async (
     return;
   }
 
-  await prisma.$transaction([
-    prisma.studentFriendRequests.upsert({
-      // Update (do not create a new request) when one already matches the
-      // netId and friend ID
+  const existingOppositeRequest = await prisma.studentFriendRequests.findUnique(
+    {
       where: {
-        netId_friendNetId: { netId, friendNetId },
+        netId_friendNetId: { netId: friendNetId, friendNetId: netId },
       },
-      // Basic info for creation
-      create: {
-        netId,
-        friendNetId,
-      },
-      // Update people's names if they've changed
-      update: {},
-    }),
-  ]);
+    },
+  );
+
+  if (existingOppositeRequest) {
+    res.status(400).json({ error: 'ALREADY_RECEIVED_REQUEST' });
+    return;
+  }
+
+  const existingSameRequest = await prisma.studentFriendRequests.findUnique({
+    where: {
+      netId_friendNetId: { netId, friendNetId },
+    },
+  });
+
+  if (existingSameRequest) {
+    res.status(400).json({ error: 'ALREADY_SENT_REQUEST' });
+    return;
+  }
+
+  await prisma.studentFriendRequests.create({
+    data: {
+      netId,
+      friendNetId,
+    },
+  });
 
   res.sendStatus(200);
 };

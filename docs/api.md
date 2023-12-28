@@ -225,7 +225,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - When `friendNetId` is not provided, is the same as the user's, or is not a friend
 - Body:
-  - `error`: `"INVALID_REQUEST" | "SAME_USER" | "FRIEND_NOT_FOUND" | "ALREADY_FRIENDS"`
+  - `error`: `"INVALID_REQUEST" | "SAME_USER" | "FRIEND_NOT_FOUND" | "ALREADY_FRIENDS" | "ALREADY_RECEIVED_REQUEST" | "ALREADY_SENT_REQUEST"`
 
 ### `GET` `/api/friends/getRequests`
 
