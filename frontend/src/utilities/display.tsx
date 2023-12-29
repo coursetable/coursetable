@@ -16,7 +16,32 @@ import { API_ENDPOINT } from '../config';
 export function suspended<T extends React.ComponentType<any>>(
   factory: () => Promise<{ default: T }>,
 ) {
-  const Comp = React.lazy(factory);
+  const Comp = React.lazy(async () => {
+    try {
+      return await factory();
+    } catch {
+      return {
+        default: (() => (
+          <div style={{ width: '100%', height: '100%' }}>
+            <p style={{ fontWeight: 'bold ' }}>
+              There was a problem loading this view.
+            </p>
+            <p>
+              It's possible that there was an update to our code. Please{' '}
+              <a href="#!" onClick={() => window.location.reload()}>
+                reload the page
+              </a>
+              . If the error persists, you can file a{' '}
+              <a target="_blank" href="/feedback">
+                report
+              </a>{' '}
+              to let us know.
+            </p>
+          </div>
+        )) as unknown as T,
+      };
+    }
+  });
   return (props: ComponentProps<T>) => (
     <React.Suspense
       fallback={
