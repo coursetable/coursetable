@@ -1,87 +1,103 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
-// Checks if object is in storage
-const containsObject = (key: string, storage: Storage) => {
-  try {
-    return storage.getItem(key) !== null;
-  } catch {
-    // Storage access blocked. Should not be critical for us
-    return false;
-  }
-};
-// Saves object to storage
-const setObject = <T>(
-  key: string,
-  obj: T,
-  storage: Storage,
-  ifEmpty = false,
-) => {
-  if (ifEmpty && containsObject(key, storage)) return;
-  try {
-    storage.setItem(key, JSON.stringify(obj));
-  } catch {
-    // Storage access blocked. Should not be critical for us
-  }
-};
-// Retrieves object from storage
-const getObject = <T>(key: string, storage: Storage) => {
-  try {
-    const strVal = storage.getItem(key);
-    if (strVal === null || strVal === 'undefined') return null;
-    return JSON.parse(strVal) as T;
-  } catch {
-    // Storage access blocked. Should not be critical for us
-    return null;
-  }
-};
-const removeObject = (key: string, storage: Storage) => {
-  storage.removeItem(key);
+function safeStorageAccess<A extends (...args: never[]) => unknown>(
+  action: A,
+  defaultValue?: ReturnType<A>,
+): A {
+  return ((...args) => {
+    // Access storage on the server is a huge anti-pattern. Fail early and
+    // please change your code so it can't happen
+    if (typeof window === 'undefined')
+      throw new Error('Cannot access storage on server');
+    try {
+      return action(...args);
+    } catch {
+      // Storage access blocked. Should not be critical for us
+      return defaultValue;
+    }
+  }) as A;
+}
+
+type StorageSlot<T> = {
+  get: () => T | null;
+  set: (obj: T) => void;
+  remove: () => void;
+  has: () => boolean;
 };
 
-// TODO: refactor these to a single CRUD interface
-// Session storage functions
-const setSSObject = <T>(key: string, obj: T, ifEmpty = false): void => {
-  setObject<T>(key, obj, window.sessionStorage, ifEmpty);
-};
-const getSSObject = <T>(key: string): T | null =>
-  getObject<T>(key, window.sessionStorage);
-export const removeSSObject = (key: string): void =>
-  removeObject(key, window.sessionStorage);
+export function createSessionStorageSlot<T>(key: string): StorageSlot<T> {
+  return {
+    get: safeStorageAccess(() => {
+      const strVal = sessionStorage.getItem(key);
+      if (strVal === null || strVal === 'undefined') return null;
+      return JSON.parse(strVal) as T;
+    }, null),
+    set: safeStorageAccess((obj: T) => {
+      sessionStorage.setItem(key, JSON.stringify(obj));
+    }),
+    remove: safeStorageAccess(() => {
+      sessionStorage.removeItem(key);
+    }),
+    has: safeStorageAccess(() => sessionStorage.getItem(key) !== null, false),
+  };
+}
 
-// Local storage functions
-const setLSObject = <T>(key: string, obj: T, ifEmpty = false): void =>
-  setObject<T>(key, obj, window.localStorage, ifEmpty);
-const getLSObject = <T>(key: string): T | null =>
-  getObject<T>(key, window.localStorage);
-export const removeLSObject = (key: string): void =>
-  removeObject(key, window.localStorage);
-// Saves State in Session Storage
+export function createLocalStorageSlot<T>(key: string): StorageSlot<T> {
+  return {
+    get: safeStorageAccess(() => {
+      const strVal = localStorage.getItem(key);
+      if (strVal === null || strVal === 'undefined') return null;
+      return JSON.parse(strVal) as T;
+    }, null),
+    set: safeStorageAccess((obj: T) => {
+      localStorage.setItem(key, JSON.stringify(obj));
+    }),
+    remove: safeStorageAccess(() => {
+      localStorage.removeItem(key);
+    }),
+    has: safeStorageAccess(() => localStorage.getItem(key) !== null, false),
+  };
+}
+
+/**
+ * Syncs state with sessionStorage. Do not call setValue in SSR because there is
+ * no storage to access. (i.e. only call it in useEffect or event handlers)
+ * @param key **Must be a literal** — changes to the key do not cause re-renders
+ * @param defaultValue Initial value for SSR and when the key is not present
+ */
 export const useSessionStorageState = <T>(
   key: string,
   defaultValue: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(defaultValue);
+  const storage = useRef(createSessionStorageSlot<T>(key));
   useEffect(() => {
-    const ssValue = getSSObject<T>(key);
+    const ssValue = storage.current.get();
     if (ssValue !== null) setValue(ssValue);
-  }, [key]);
+  }, []);
   useEffect(() => {
-    setSSObject(key, value);
-  }, [key, value]);
+    storage.current.set(value);
+  }, [value]);
   return [value, setValue] as const;
 };
-// Saves State in Local Storage
+/**
+ * Syncs state with localStorage. Do not call setValue in SSR because there is
+ * no storage to access. (i.e. only call it in useEffect or event handlers)
+ * @param key **Must be a literal** — changes to the key do not cause re-renders
+ * @param defaultValue Initial value for SSR and when the key is not present
+ */
 export const useLocalStorageState = <T>(
   key: string,
   defaultValue: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(defaultValue);
+  const storage = useRef(createSessionStorageSlot<T>(key));
   useEffect(() => {
-    const lsValue = getLSObject<T>(key);
+    const lsValue = storage.current.get();
     if (lsValue !== null) setValue(lsValue);
-  }, [key]);
+  }, []);
   useEffect(() => {
-    setLSObject(key, value);
-  }, [key, value]);
+    storage.current.set(value);
+  }, [value]);
   return [value, setValue] as const;
 };
