@@ -330,7 +330,26 @@ function CourseModalOverview({
     for (const offering of courseOfferings) {
       // Skip listings in the current and future seasons that have no evals
       if (CUR_YEAR.includes(offering.season_code)) continue;
+      const isCourseOverlap = offering.course_code === listing.course_code;
+      const isProfOverlap = overlappingProfs(offering.professor) > 0;
+      // We require ALL professors to be the same
+      const isBothOverlap =
+        isCourseOverlap &&
+        overlappingProfs(offering.professor) === listing.professor_names.length;
       const hasEvals = offering.rating !== -1;
+      const type = isBothOverlap
+        ? 'both'
+        : isCourseOverlap
+          ? 'course'
+          : isProfOverlap
+            ? 'professor'
+            : undefined;
+      if (!type) {
+        Sentry.captureException(
+          `SameCourseOrProfOfferingsQuery returned ${offering.crn} which doesn't seem to overlap with ${listing.crn}`,
+        );
+        continue;
+      }
       const evalBox = (
         <Row key={offering.crn} className="m-auto py-1 justify-content-center">
           {/* The listing button, either clickable or greyed out based on
@@ -348,9 +367,9 @@ function CourseModalOverview({
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
               <div className={`${styles.details} mx-auto ${styles.shown}`}>
-                {filter === 'professor'
+                {type === 'professor'
                   ? offering.course_code
-                  : filter === 'both'
+                  : type === 'both'
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
@@ -363,9 +382,9 @@ function CourseModalOverview({
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
               <div className={`${styles.details} mx-auto ${styles.shown}`}>
-                {filter === 'professor'
+                {type === 'professor'
                   ? offering.course_code
-                  : filter === 'both'
+                  : type === 'both'
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
@@ -414,24 +433,10 @@ function CourseModalOverview({
           </Col>
         </Row>
       );
-      // Course in both column
-      if (
-        offering.course_code === listing.course_code &&
-        listing.professor_names.length &&
-        overlappingProfs(offering.professor) === listing.professor_names.length
-      )
-        overlapSections.both.push(evalBox);
-
-      // Course in course column
-      if (offering.course_code === listing.course_code)
-        overlapSections.course.push(evalBox);
-
-      // Course in prof column
-      if (overlappingProfs(offering.professor) > 0)
-        overlapSections.professor.push(evalBox);
+      overlapSections[type].push(evalBox);
     }
     return overlapSections;
-  }, [data, filter, setSeason, listing, overlappingProfs]);
+  }, [data, setSeason, listing, overlappingProfs]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
@@ -462,7 +467,7 @@ function CourseModalOverview({
             {/* Professor Email */}
             <small>
               {profDict.email !== '' ? (
-                <a href={`mailto: ${profDict.email}`}>{profDict.email}</a>
+                <a href={`mailto:${profDict.email}`}>{profDict.email}</a>
               ) : (
                 <TextComponent type={1}>N/A</TextComponent>
               )}
