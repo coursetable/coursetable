@@ -6,17 +6,17 @@ import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import styled from 'styled-components';
 
-import CourseModalOverview, {
-  type Filter,
-  type CourseOffering,
-  type ComputedListingInfo,
+import type {
+  Filter,
+  CourseOffering,
+  ComputedListingInfo,
 } from './CourseModalOverview';
-import CourseModalEvaluations from './CourseModalEvaluations';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import styles from './CourseModal.module.css';
 import { TextComponent, StyledLink } from '../StyledComponents';
 import SkillBadge from '../SkillBadge';
+import { suspended } from '../../utilities/display';
 import { toSeasonString } from '../../utilities/course';
 import { useCourseData } from '../../contexts/ferryContext';
 import type { Season, Crn, Listing } from '../../utilities/common';
@@ -85,6 +85,14 @@ function ShareButton({
     />
   );
 }
+
+// We can only split subviews of CourseModal because CourseModal contains core
+// logic that determines whether itself is visible.
+// Maybe we should split more code into the subviews?
+const CourseModalOverview = suspended(() => import('./CourseModalOverview'));
+const CourseModalEvaluations = suspended(
+  () => import('./CourseModalEvaluations'),
+);
 
 function CourseModal() {
   const [searchParams, setSearchParams] = useSearchParams();

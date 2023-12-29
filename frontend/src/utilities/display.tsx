@@ -1,9 +1,36 @@
-import { type MouseEventHandler, useEffect, useRef, useState } from 'react';
+import React, {
+  type MouseEventHandler,
+  type ComponentProps,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
+import { Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 import { css } from 'styled-components';
 
 import { API_ENDPOINT } from '../config';
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export function suspended<T extends React.ComponentType<any>>(
+  factory: () => Promise<{ default: T }>,
+) {
+  const Comp = React.lazy(factory);
+  return (props: ComponentProps<T>) => (
+    <React.Suspense
+      fallback={
+        <Row className="m-auto" style={{ width: '100%', height: '100%' }}>
+          <Spinner className="m-auto" animation="border" role="status">
+            <span className="sr-only">Loading...</span>
+          </Spinner>
+        </Row>
+      }
+    >
+      <Comp {...props} />
+    </React.Suspense>
+  );
+}
 
 // Detect clicks outside of a component
 // Via https://stackoverflow.com/a/54570068/5004662
