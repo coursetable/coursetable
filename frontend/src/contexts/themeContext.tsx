@@ -7,6 +7,7 @@ import React, {
   useState,
 } from 'react';
 import { ThemeProvider as SCThemeProvider } from 'styled-components';
+import { createLocalStorageSlot } from '../utilities/browserStorage';
 import { lightTheme, darkTheme } from '../components/Themes';
 
 type Theme = 'light' | 'dark';
@@ -19,6 +20,8 @@ type Store = {
 const ThemeContext = createContext<Store | undefined>(undefined);
 ThemeContext.displayName = 'ThemeContext';
 
+const storage = createLocalStorageSlot<Theme>('theme');
+
 export function ThemeProvider({
   children,
 }: {
@@ -27,7 +30,7 @@ export function ThemeProvider({
   const [theme, setTheme] = useState<Theme>('light');
 
   const setMode = useCallback((mode: Theme) => {
-    window.localStorage.setItem('theme', mode);
+    storage.set(mode);
     setTheme(mode);
   }, []);
 
@@ -37,7 +40,7 @@ export function ThemeProvider({
   }, [theme, setMode]);
 
   useEffect(() => {
-    const localTheme = window.localStorage.getItem('theme') as Theme;
+    const localTheme = storage.get();
     if (localTheme) setTheme(localTheme);
   }, []);
 
