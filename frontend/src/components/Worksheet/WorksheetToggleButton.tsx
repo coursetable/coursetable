@@ -120,7 +120,7 @@ function WorksheetToggleButton({
           body,
         });
         if (!res.ok) {
-          const data = await res.json();
+          const data = (await res.json()) as { error?: string };
           switch (data.error) {
             // These errors can be triggered if the user clicks the button twice
             // in a row

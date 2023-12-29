@@ -39,7 +39,13 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
-import { weekdays, type Season, type Crn } from '../../utilities/common';
+import {
+  weekdays,
+  type Season,
+  type Crn,
+  type Listing,
+  type Weekdays,
+} from '../../utilities/common';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
@@ -98,25 +104,24 @@ export type CourseOffering = {
 };
 
 // TODO: merge it with one of the many types representing "a course"
-type ComputedListingInfoOverride = {
-  areas: string[];
-  crn: Crn;
-  extra_info:
-    | 'ACTIVE'
-    | 'MOVED_TO_SPRING_TERM'
-    | 'CANCELLED'
-    | 'MOVED_TO_FALL_TERM'
-    | 'CLOSED'
-    | 'NUMBER_CHANGED';
-  flag_info: string[];
-  season_code: Season;
-  skills: string[];
+type ComputedListingInfoOverride = Pick<
+  Listing,
+  | 'all_course_codes'
+  | 'areas'
+  | 'crn'
+  | 'flag_info'
+  | 'season_code'
+  | 'skills'
+  | 'professor_ids'
+  | 'professor_names'
+  | 'times_by_day'
+  | 'extra_info'
+> & {
   professor_info: {
     average_rating: number;
     email: string;
     name: string;
   }[];
-  professor_names: string[];
 };
 
 export type ComputedListingInfo = Omit<
@@ -159,8 +164,8 @@ function CourseModalOverview({
     user.friends,
   );
 
-  const locations = new Map();
-  const times = new Map();
+  const locations = new Map<string, string>();
+  const times = new Map<string, Set<Weekdays>>();
   for (const day of weekdays) {
     const info = listing.times_by_day[day];
     if (!info) continue;
@@ -179,7 +184,7 @@ function CourseModalOverview({
       // Note! Some classes have multiple places at the same time, particularly
       // if one is "online". Avoid duplicates.
       // See for example: CDE 567, Spring 2023
-      times.get(timespan).add(day);
+      times.get(timespan)!.add(day);
     }
   }
 
@@ -438,6 +443,7 @@ function CourseModalOverview({
     };
     // Store dict from prop_info for easy access
     if (props.popper.state) {
+      // TODO
       profName = props.popper.state.options.prof;
       profDict = profInfo[profName];
     }

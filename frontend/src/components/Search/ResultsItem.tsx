@@ -98,7 +98,8 @@ function ResultsItem({
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
-  readonly COL_SPACING: any;
+  // This can be more exact, but I'm too lazy to type everything out :)
+  readonly COL_SPACING: { [prop: string]: number };
   readonly isScrolling: boolean;
   readonly friends: string[];
 }) {

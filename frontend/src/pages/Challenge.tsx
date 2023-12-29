@@ -4,6 +4,7 @@ import { Form, Button, Row, Spinner } from 'react-bootstrap';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 import { useApolloClient } from '@apollo/client';
+import z from 'zod';
 
 import { FiExternalLink } from 'react-icons/fi';
 import { useUser } from '../contexts/userContext';
@@ -17,26 +18,36 @@ import {
 
 import { API_ENDPOINT } from '../config';
 
-type ResBody = {
-  token: string;
-  salt: string;
-  courseInfo: {
-    courseId: number;
-    courseTitle: string;
-    courseRatingIndex: number;
-    courseOceUrl: string;
-  }[];
-  challengeTries: number;
-  maxChallengeTries: number;
-};
-
 type Answer = {
   courseRatingId: number;
   courseRatingIndex: number;
   answer: string;
 };
 
-function renderRequestError(requestError: {}, navigate: NavigateFunction) {
+const requestResSchema = z.object({
+  token: z.string(),
+  salt: z.string(),
+  courseInfo: z.array(
+    z.object({
+      courseId: z.number(),
+      courseTitle: z.string(),
+      courseRatingIndex: z.number(),
+      courseOceUrl: z.string(),
+    }),
+  ),
+  challengeTries: z.number(),
+  maxChallengeTries: z.number(),
+});
+
+type RequestResBody = z.infer<typeof requestResSchema>;
+
+const verifyResSchema = z.object({
+  results: z.array(z.boolean()),
+  challengeTries: z.number(),
+  maxChallengeTries: z.number(),
+});
+
+function renderRequestError(requestError: string, navigate: NavigateFunction) {
   if (requestError === 'USER_NOT_FOUND') {
     return {
       errorTitle: 'Please log in!',
@@ -98,7 +109,7 @@ function renderRequestError(requestError: {}, navigate: NavigateFunction) {
   };
 }
 
-function renderVerifyError(verifyError: {}, navigate: NavigateFunction) {
+function renderVerifyError(verifyError: string, navigate: NavigateFunction) {
   if (verifyError === 'INCORRECT') {
     return <div>Incorrect responses. Please try again.</div>;
   } else if (verifyError === 'INVALID_REQUEST') {
@@ -126,7 +137,7 @@ function Challenge() {
   // Has the form been validated for submission?
   const [validated, setValidated] = useState(false);
   // Stores body of response for the /api/challenge/request API call
-  const [resBody, setResBody] = useState<ResBody | null>(null);
+  const [resBody, setResBody] = useState<RequestResBody | null>(null);
   // Stores user's answers
   const [answers, setAnswers] = useState<Answer[]>([
     { answer: '', courseRatingId: -1, courseRatingIndex: -1 },
@@ -135,9 +146,9 @@ function Challenge() {
   ]);
 
   // Error code from requesting challenge
-  const [requestError, setRequestError] = useState<{} | null>(null);
+  const [requestError, setRequestError] = useState<string | null>(null);
   // Error code from verifying challenge
-  const [verifyError, setVerifyError] = useState<{} | null>(null);
+  const [verifyError, setVerifyError] = useState<string | null>(null);
   const [verificationResults, setVerificationResults] = useState<boolean[]>([
     false,
     false,
@@ -156,14 +167,17 @@ function Challenge() {
         const res = await fetch(`${API_ENDPOINT}/api/challenge/request`, {
           credentials: 'include',
         });
-        const data = await res.json();
+        const rawData: unknown = await res.json();
         if (!res.ok) {
-          setRequestError(data.error ?? res.statusText);
-        } else {
-          setResBody(data);
-          setNumTries(data.challengeTries);
-          setMaxTries(data.maxChallengeTries);
+          setRequestError(
+            (rawData as { error?: string }).error ?? res.statusText,
+          );
+          return;
         }
+        const data = requestResSchema.parse(rawData);
+        setResBody(data);
+        setNumTries(data.challengeTries);
+        setMaxTries(data.maxChallengeTries);
       } catch (err) {
         Sentry.addBreadcrumb({
           category: 'challenge',
@@ -209,10 +223,13 @@ function Challenge() {
         },
         credentials: 'include',
       });
-      const data = await res.json();
+      const rawData: unknown = await res.json();
       if (!res.ok) {
-        setVerifyError(data.error);
-      } else if (data.results.every((x: boolean) => x)) {
+        setVerifyError((rawData as { error?: string }).error ?? res.statusText);
+        return;
+      }
+      const data = verifyResSchema.parse(rawData);
+      if (data.results.every((x) => x)) {
         try {
           await userRefresh();
           await client.resetStore();
