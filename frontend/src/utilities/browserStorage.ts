@@ -91,7 +91,7 @@ export const useLocalStorageState = <T>(
   defaultValue: T,
 ): readonly [T, React.Dispatch<React.SetStateAction<T>>] => {
   const [value, setValue] = useState<T>(defaultValue);
-  const storage = useRef(createSessionStorageSlot<T>(key));
+  const storage = useRef(createLocalStorageSlot<T>(key));
   useEffect(() => {
     const lsValue = storage.current.get();
     if (lsValue !== null) setValue(lsValue);
