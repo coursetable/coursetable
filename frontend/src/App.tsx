@@ -64,14 +64,11 @@ function App() {
 
   // Handle whether or not to open tutorial
   useEffect(() => {
-    if (
-      !isMobile &&
-      !isTablet &&
-      isLoggedIn &&
-      !shownTutorial &&
-      location.pathname === '/catalog'
-    )
-      setIsTutorialOpen(true);
+    if (!isMobile && !isTablet && isLoggedIn && !shownTutorial) {
+      if (location.pathname === '/catalog') setIsTutorialOpen(true);
+    } else {
+      setIsTutorialOpen(false);
+    }
   }, [
     isMobile,
     isTablet,
