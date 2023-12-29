@@ -1,5 +1,6 @@
 import React, {
   type MouseEventHandler,
+  type ComponentProps,
   useEffect,
   useRef,
   useState,
