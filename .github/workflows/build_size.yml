@@ -33,7 +33,7 @@ jobs:
           build-script: build
           clean-script: clean
           pattern: 'build/assets/*.{js,css}'
-          strip-hash: '-.{10}(?=\.\(js|css\))'
+          strip-hash: '-.{10}(?=\.(?:js|css))'
           minimum-change-threshold: 30
           compression: none
           cwd: ./frontend
