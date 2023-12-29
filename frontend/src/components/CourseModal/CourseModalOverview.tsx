@@ -99,6 +99,7 @@ export type CourseOffering = {
 
 // TODO: merge it with one of the many types representing "a course"
 type ComputedListingInfoOverride = {
+  all_course_codes: string[];
   areas: string[];
   crn: Crn;
   extra_info:
@@ -206,8 +207,12 @@ function CourseModalOverview({
         },
       ]),
     );
+    // Only count cross-listed courses once per season
+    const countedCourses = new Set<string>();
     if (!data) return profInfo;
     for (const season of data.computed_listing_info as ComputedListingInfo[]) {
+      if (countedCourses.has(`${season.season_code}-${season.course_code}`))
+        continue;
       if (season.professor_info) {
         season.professor_info.forEach((prof) => {
           if (profInfo.has(prof.name)) {
@@ -215,6 +220,9 @@ function CourseModalOverview({
             dict.numCourses++;
             dict.totalRating += prof.average_rating;
             dict.email = prof.email;
+            season.all_course_codes.forEach((c) => {
+              countedCourses.add(`${season.season_code}-${c}`);
+            });
           }
         });
       }
@@ -330,6 +338,9 @@ function CourseModalOverview({
     for (const offering of courseOfferings) {
       // Skip listings in the current and future seasons that have no evals
       if (CUR_YEAR.includes(offering.season_code)) continue;
+      // TODO: this whole logic is not ideal. We need to systematically
+      // reconsider what we mean by "same course" and "same professor".
+      // See: https://docs.google.com/document/d/1mIsanCz1U3M6SU2KbcBp9ONXRssDfeTzRtDIRzxdAOk
       const isCourseOverlap = offering.course_code === listing.course_code;
       const isProfOverlap = overlappingProfs(offering.professor) > 0;
       // We require ALL professors to be the same
@@ -345,11 +356,12 @@ function CourseModalOverview({
             ? 'professor'
             : undefined;
       if (!type) {
-        Sentry.captureException(
-          new Error(
-            `SameCourseOrProfOfferingsQuery returned ${offering.season_code}-${offering.crn} which doesn't seem to overlap with ${listing.season_code}-${listing.crn}`,
-          ),
-        );
+        // Consider a course cross-listed with course codes A and B.
+        // It was taught by prof X in year 1 and prof Y in year 2.
+        // Then GraphQL would return 2-B when viewing 1-A even when they appear
+        // to not overlap.
+        // TODO: maybe we should fix this in the GraphQL layer? Again,
+        // reconsideration of course relationships needed...
         continue;
       }
       const evalBox = (
