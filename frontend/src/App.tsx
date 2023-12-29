@@ -65,7 +65,12 @@ function App() {
   // Handle whether or not to open tutorial
   useEffect(() => {
     if (!isMobile && !isTablet && isLoggedIn && !shownTutorial) {
-      if (location.pathname === '/catalog') setIsTutorialOpen(true);
+      if (location.pathname === '/catalog') {
+        setIsTutorialOpen(true);
+      } else if (location.pathname !== '/worksheet') {
+        // This can happen if the user got redirected to /challenge
+        setIsTutorialOpen(false);
+      }
     } else {
       setIsTutorialOpen(false);
     }
