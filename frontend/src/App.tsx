@@ -11,7 +11,6 @@ import Worksheet from './pages/Worksheet';
 import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
-import Tutorial from './components/Tutorial';
 import CourseModal from './components/CourseModal/CourseModal';
 
 import { useUser } from './contexts/userContext';
@@ -42,6 +41,7 @@ const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
 const Join = suspended(() => import('./pages/Join'));
+const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
   const location = useLocation();
