@@ -4,6 +4,10 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
+// Popular pages are eagerly fetched
+import Search from './pages/Search';
+import Worksheet from './pages/Worksheet';
+
 import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
@@ -18,9 +22,7 @@ import { useWindowDimensions } from './contexts/windowDimensionsContext';
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
 const Landing = suspended(() => import('./pages/Landing'));
-const Search = suspended(() => import('./pages/Search'));
 const About = suspended(() => import('./pages/About'));
-const Worksheet = suspended(() => import('./pages/Worksheet'));
 const FAQ = suspended(() => import('./pages/FAQ'));
 const Privacy = suspended(() => import('./pages/Privacy'));
 const NotFound = suspended(() => import('./pages/NotFound'));
