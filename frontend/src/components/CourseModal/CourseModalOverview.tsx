@@ -347,7 +347,7 @@ function CourseModalOverview({
       if (!type) {
         Sentry.captureException(
           new Error(
-            `SameCourseOrProfOfferingsQuery returned ${offering.crn} which doesn't seem to overlap with ${listing.crn}`,
+            `SameCourseOrProfOfferingsQuery returned ${offering.season_code}-${offering.crn} which doesn't seem to overlap with ${listing.season_code}-${listing.crn}`,
           ),
         );
         continue;
