@@ -21,6 +21,16 @@ import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
 
+function showIfAuthorized(
+  hasEvals: boolean | undefined,
+  element: JSX.Element,
+  loginElem?: JSX.Element,
+) {
+  if (hasEvals === undefined) return loginElem ?? <Navigate to="/login" />;
+  if (!hasEvals) return <Navigate to="/challenge" />;
+  return element;
+}
+
 const Landing = suspended(() => import('./pages/Landing'));
 const About = suspended(() => import('./pages/About'));
 const FAQ = suspended(() => import('./pages/FAQ'));
@@ -114,21 +124,31 @@ function App() {
           }
         />
 
-        {/* About */}
-        <Route path="/about" element={<About />} />
-
+        {/* Authenticated routes */}
         {/* Catalog */}
         <Route
           path="/catalog"
-          element={
-            !isLoggedIn ? (
-              <Navigate to="/login" />
-            ) : !user.hasEvals ? (
-              <Navigate to="/challenge" />
-            ) : (
-              <Search />
-            )
-          }
+          element={showIfAuthorized(user.hasEvals, <Search />)}
+        />
+
+        {/* Worksheet */}
+        <Route
+          path="/worksheet"
+          element={showIfAuthorized(
+            user.hasEvals,
+            <Worksheet />,
+            <WorksheetLogin />,
+          )}
+        />
+
+        {/* Graphiql explorer */}
+        <Route
+          path="/graphiql"
+          element={showIfAuthorized(
+            user.hasEvals,
+            <Graphiql />,
+            <GraphiqlLogin />,
+          )}
         />
 
         {/* Auth */}
@@ -137,33 +157,13 @@ function App() {
           element={isLoggedIn ? <Navigate to="/" /> : <Landing />}
         />
 
-        <Route
-          path="/worksheetlogin"
-          element={
-            isLoggedIn ? <Navigate to="/worksheet" /> : <WorksheetLogin />
-          }
-        />
-
         {/* OCE Challenge */}
+        {/* Challenge handles its own auth */}
         <Route path="/challenge" element={<Challenge />} />
 
-        {/* Worksheet */}
-        <Route
-          path="/worksheet"
-          element={
-            isLoggedIn && user.hasEvals ? (
-              <Worksheet />
-            ) : (
-              <Navigate to="/worksheetlogin" />
-            )
-          }
-        />
-
-        {/* Graphiql explorer */}
-        <Route
-          path="/graphiql"
-          element={isLoggedIn ? <Graphiql /> : <GraphiqlLogin />}
-        />
+        {/* Static pages that don't need login */}
+        {/* About */}
+        <Route path="/about" element={<About />} />
 
         {/* Thank You */}
         <Route path="/thankyou" element={<Thankyou />} />
