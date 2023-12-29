@@ -114,6 +114,10 @@ function GoogleCalendarButton(): JSX.Element {
         }
       },
       (err) => {
+        if ((err as { error?: unknown }).error === 'popup_closed_by_user') {
+          toast.error('Google Calendar sign in popup closed');
+          return;
+        }
         Sentry.addBreadcrumb({
           category: 'gcal',
           message: 'Signing into GCal',
