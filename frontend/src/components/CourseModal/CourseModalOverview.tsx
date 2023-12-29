@@ -189,17 +189,6 @@ function CourseModalOverview({
       professor_ids: listing.professor_ids,
     },
   });
-  // Holds Prof information for popover
-  const profInfo = Object.fromEntries(
-    listing.professor_names.map((prof): [string, ProfInfo] => [
-      prof,
-      {
-        numCourses: 0,
-        totalRating: 0,
-        email: '',
-      },
-    ]),
-  );
   // Count number of profs that overlap between this listing and an eval
   const overlappingProfs = useCallback(
     (evalProfs: string[]) => {
@@ -241,12 +230,22 @@ function CourseModalOverview({
     pastSyllabi && pastSyllabi.length < 8,
   );
 
-  // Make sure data is loaded
-  const items = useMemo(() => {
+  const { overlapSections, profInfo } = useMemo(() => {
+    // Holds Prof information for popover
+    const profInfo = Object.fromEntries(
+      listing.professor_names.map((prof): [string, ProfInfo] => [
+        prof,
+        {
+          numCourses: 0,
+          totalRating: 0,
+          email: '',
+        },
+      ]),
+    );
     const overlapSections: {
       [filter in Filter]: JSX.Element[];
     } = { both: [], course: [], professor: [] };
-    if (!data) return overlapSections;
+    if (!data) return { overlapSections, profInfo };
     // Hold list of evaluation dictionaries
     const courseOfferings: CourseOffering[] = [];
     // Loop by season code
@@ -317,16 +316,13 @@ function CourseModalOverview({
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
 
-    // Variable used for list keys
-    let id = 0;
-
     // Loop through each listing with evals
     for (const offering of courseOfferings) {
       // Skip listings in the current and future seasons that have no evals
       if (CUR_YEAR.includes(offering.season_code)) continue;
       const hasEvals = offering.rating !== -1;
       const evalBox = (
-        <Row key={id++} className="m-auto py-1 justify-content-center">
+        <Row key={offering.crn} className="m-auto py-1 justify-content-center">
           {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
           {hasEvals ? (
@@ -424,8 +420,8 @@ function CourseModalOverview({
       if (overlappingProfs(offering.professor) > 0)
         overlapSections.professor.push(evalBox);
     }
-    return overlapSections;
-  }, [data, filter, setSeason, listing, overlappingProfs, profInfo]);
+    return { overlapSections, profInfo };
+  }, [data, filter, setSeason, listing, overlappingProfs]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
@@ -514,9 +510,15 @@ function CourseModalOverview({
 
   // Options for the evaluation filters
   const options = [
-    { displayName: `Course (${items.course.length})`, value: 'course' },
-    { displayName: `Both (${items.both.length})`, value: 'both' },
-    { displayName: `Prof (${items.professor.length})`, value: 'professor' },
+    {
+      displayName: `Course (${overlapSections.course.length})`,
+      value: 'course',
+    },
+    { displayName: `Both (${overlapSections.both.length})`, value: 'both' },
+    {
+      displayName: `Prof (${overlapSections.professor.length})`,
+      value: 'professor',
+    },
   ] as const;
 
   // Hold index of each filter option
@@ -860,7 +862,7 @@ function CourseModalOverview({
             />
           </Row>
           {/* Course Evaluations Header */}
-          {items[filter].length !== 0 && (
+          {overlapSections[filter].length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
                 <span className={styles.evaluation_header}>Season</span>
@@ -877,9 +879,9 @@ function CourseModalOverview({
             </Row>
           )}
           {/* Course Evaluations */}
-          {items[filter].length !== 0 && items[filter]}
+          {overlapSections[filter].length !== 0 && overlapSections[filter]}
           {/* No Course Evaluations */}
-          {items[filter].length === 0 && (
+          {overlapSections[filter].length === 0 && (
             <Row className="m-auto justify-content-center">
               <strong>No Results</strong>
             </Row>
