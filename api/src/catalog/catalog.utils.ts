@@ -81,7 +81,11 @@ export async function fetchCatalog(
   winston.info(`Fetched ${seasons.seasons.length} seasons`);
   fs.writeFileSync(
     `${STATIC_FILE_DIR}/seasons.json`,
-    JSON.stringify(seasons.seasons),
+    JSON.stringify(
+      seasons.seasons
+        .map((x) => x.season_code)
+        .sort((a, b) => Number(b) - Number(a)),
+    ),
   );
 
   // For each season, fetch all courses inside it and save

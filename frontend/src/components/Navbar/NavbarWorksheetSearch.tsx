@@ -76,7 +76,7 @@ const StyledToggleButton = styled(ToggleButton)`
  */
 export function NavbarWorksheetSearch() {
   const {
-    seasonOptions,
+    seasonCodes,
     curSeason,
     changeSeason,
     changeWorksheet,
@@ -213,7 +213,10 @@ export function NavbarWorksheetSearch() {
                 isClearable={false}
                 hideSelectedOptions={false}
                 value={selectedSeason}
-                options={seasonOptions}
+                options={seasonCodes.map((seasonCode) => ({
+                  value: seasonCode,
+                  label: toSeasonString(seasonCode),
+                }))}
                 placeholder="Last 5 Years"
                 onChange={(selectedOption) => {
                   if (isOption(selectedOption))
