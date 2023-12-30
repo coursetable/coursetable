@@ -7,7 +7,7 @@
     "checks": "bun run depcheck && bun run format:check && bun run lint:check && bun run resize-image:check && bun run typecheck",
     "checks:fix": "bun run format && bun run lint && bun run resize-image",
     "typecheck": "tsc && tsc -p frontend && tsc -p api",
-    "depcheck": "bunx depcheck .",
+    "depcheck": "bunx depcheck . --ignore-patterns=api,frontend && bunx depcheck api && bunx depcheck frontend",
     "format": "prettier --write .",
     "format:check": "prettier -l .",
     "lint": "eslint --fix \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
