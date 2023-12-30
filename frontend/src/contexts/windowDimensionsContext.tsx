@@ -33,16 +33,13 @@ export function WindowDimensionsProvider({
   readonly children: React.ReactNode;
 }) {
   const [dimensions, setDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-    isMobile: range(window.innerWidth, 0, mobileBreakpoint),
-    isTablet: range(window.innerWidth, mobileBreakpoint, tabletBreakpoint),
-    isSmDesktop: range(
-      window.innerWidth,
-      tabletBreakpoint,
-      smDesktopBreakpoint,
-    ),
-    isLgDesktop: range(window.innerWidth, smDesktopBreakpoint, 100000),
+    width: 0,
+    height: 0,
+    isMobile: false,
+    isTablet: false,
+    isSmDesktop: false,
+    isLgDesktop: true,
+    // TODO: make a proper "SSR" dimension
   });
 
   // Fires whenever the window size changes.
@@ -73,6 +70,8 @@ export function WindowDimensionsProvider({
 
   // Update values on window resize
   useEffect(() => {
+    // Initial update after first render
+    handleResize();
     window.addEventListener('resize', handleResize);
     return () => {
       window.removeEventListener('resize', handleResize);

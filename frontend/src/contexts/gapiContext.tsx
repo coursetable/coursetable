@@ -5,7 +5,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { loadGapiInsideDOM, loadAuth2 } from 'gapi-script';
 
 type Store = {
   gapi: typeof globalThis.gapi | null;
@@ -33,6 +32,7 @@ export function GapiProvider({
   // Load gapi script and client
   useEffect(() => {
     async function loadGapi() {
+      const { loadGapiInsideDOM, loadAuth2 } = await import('gapi-script');
       const newGapi = await loadGapiInsideDOM();
       await new Promise((resolve) => {
         newGapi.load(GAPI_CLIENT_NAME, resolve);
