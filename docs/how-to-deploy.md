@@ -53,7 +53,6 @@ doppler setup -p coursetable -c prd
 (cd traefik && doppler run --command "docker-compose up -d")
 (cd under-maintenance && doppler run --command "docker-compose up -d")
 (cd mysql && doppler run --command "docker-compose up -d")
-(cd analytics && doppler run --command "docker-compose up -d")
 popd
 
 # Setup ferry.
@@ -64,9 +63,8 @@ doppler run --command "./refresh_courses.sh"
 popd
 
 # Setup coursetable.
-cd coursetable/docker
-./deploy.sh
-TODO migrate database over
+cd coursetable/api
+./start.sh -p
 
 # Setup cron.
 echo This should be the contents of the crontab:
@@ -88,11 +86,11 @@ git pull # Get changes onto server
 ./start.sh -p # Deploy the new version in prod
 ```
 
-If you get a prisma EACCES error run this from /coursetable/docker:
+If you get a prisma EACCES error run this from /coursetable/api:
 
 ```
-chown -R 1000:1000 ../api
-chmod -R 755 ../api
+chown -R 1000:1000 .
+chmod -R 755 .
 ```
 
 **ferry**
