@@ -86,7 +86,7 @@ function remarkPluginAddHeadingId(): Transformer {
 }
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ isSsrBuild }) => ({
   plugins: [
     {
       enforce: 'pre',
@@ -108,12 +108,15 @@ export default defineConfig({
       output: {
         assetFileNames: 'assets/[name]-[hash:10][extname]',
         chunkFileNames: 'assets/[name]-[hash:10].js',
-        // Prevent collision with chunk name and mess with build size calc
-        entryFileNames: 'assets/entry-[name]-[hash:10].js',
+        entryFileNames: isSsrBuild
+          ? // Need a stable file name in SSR to import for pre-render
+            undefined
+          : // Prevent collision with chunk name and mess with build size calc
+            'assets/entry-[name]-[hash:10].js',
       },
     },
   },
   server: {
     port: Number(process.env.PORT) || 3000,
   },
-});
+}));
