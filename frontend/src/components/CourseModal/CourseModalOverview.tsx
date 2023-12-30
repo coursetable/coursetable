@@ -335,9 +335,9 @@ function CourseModalOverview({
     );
 
     // Loop through each listing with evals
-    for (const offering of courseOfferings) {
+    courseOfferings.forEach((offering, i) => {
       // Skip listings in the current and future seasons that have no evals
-      if (CUR_YEAR.includes(offering.season_code)) continue;
+      if (CUR_YEAR.includes(offering.season_code)) return;
       // TODO: this whole logic is not ideal. We need to systematically
       // reconsider what we mean by "same course" and "same professor".
       // See: https://docs.google.com/document/d/1mIsanCz1U3M6SU2KbcBp9ONXRssDfeTzRtDIRzxdAOk
@@ -362,10 +362,10 @@ function CourseModalOverview({
         // to not overlap.
         // TODO: maybe we should fix this in the GraphQL layer? Again,
         // reconsideration of course relationships needed...
-        continue;
+        return;
       }
       const evalBox = (
-        <Row key={offering.crn} className="m-auto py-1 justify-content-center">
+        <Row key={i} className="m-auto py-1 justify-content-center">
           {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
           {hasEvals ? (
@@ -448,7 +448,7 @@ function CourseModalOverview({
         </Row>
       );
       overlapSections[type].push(evalBox);
-    }
+    });
     return overlapSections;
   }, [data, setSeason, listing, overlappingProfs]);
   // Wait until data is fetched
