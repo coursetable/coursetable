@@ -49,6 +49,13 @@ Sentry.init({
       ),
     }),
   ],
+  // Unfortunately this is also going to mask some legit errors like CORS, but
+  // the vast majority are network problems
+  ignoreErrors: [
+    'TypeError: Failed to fetch',
+    'TypeError: Load failed',
+    'TypeError: cancelled',
+  ],
   environment: import.meta.env.MODE,
 
   // See https://docs.sentry.io/platforms/javascript/configuration/releases/.

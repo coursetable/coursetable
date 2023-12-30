@@ -11,19 +11,10 @@ import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
 import { useUser, type Worksheet } from './userContext';
-import _seasons from '../generated/seasons.json';
+import seasonsData from '../generated/seasons.json';
 import type { Crn, Season, Listing } from '../utilities/common';
 
 import { API_ENDPOINT } from '../config';
-
-// Preprocess seasons data.
-// We need to wrap this inside the "seasons" key of an object
-// to maintain compatibility with the previous graphql version.
-// TODO: once typescript is fully added, we can easily find all
-// the usages and remove the enclosing object.
-const seasonsData = {
-  seasons: [..._seasons].reverse(),
-};
 
 // Global course data cache.
 const courseDataLock = new AsyncLock();
@@ -65,7 +56,7 @@ type Store = {
   loading: boolean;
 
   error: {} | null;
-  seasons: typeof seasonsData;
+  seasons: Season[];
   courses: typeof courseData;
   requestSeasons: (seasons: Season[]) => void;
 };
@@ -122,7 +113,7 @@ export function FerryProvider({
       requests,
       loading,
       error,
-      seasons: seasonsData,
+      seasons: seasonsData as Season[],
       courses: courseData,
       requestSeasons,
     }),

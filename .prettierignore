@@ -1,5 +1,4 @@
 api/static/*
 frontend/build
-frontend/src/generated/
 frontend/index.html
 .imgbotconfig

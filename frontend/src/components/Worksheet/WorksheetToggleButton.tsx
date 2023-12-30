@@ -9,7 +9,6 @@ import * as Sentry from '@sentry/react';
 import './WorksheetToggleButton.css';
 import { useUser } from '../../contexts/userContext';
 import type { Crn, Season } from '../../utilities/common';
-import { setLSObject } from '../../utilities/browserStorage';
 import { isInWorksheet } from '../../utilities/course';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
@@ -96,12 +95,13 @@ function WorksheetToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWorksheet ? 'remove' : 'add';
 
-      // Removes removed courses from worksheet hidden courses
-      if (inWorksheet) {
-        setLSObject('hiddenCourses', {}, true);
-        if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn])
-          toggleCourse(crn);
-      }
+      // Remove it from hidden courses before removing from worksheet
+      if (
+        inWorksheet &&
+        curSeason in hiddenCourses &&
+        hiddenCourses[curSeason][crn]
+      )
+        toggleCourse(crn);
       const body = JSON.stringify({
         action: addRemove,
         season: seasonCode,

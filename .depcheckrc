@@ -1,22 +1,28 @@
-{
-  "ignores": [
-    "ts-node",
-    "graphql",
-    "@graphql-codegen/*",
-    "graphql-tag",
-    "typescript",
-    "typescript-plugin-css-modules",
-    "@types/*",
-    "@typescript-eslint/*",
-    "eslint-*",
-    "core-js",
-    "tsconfig-*"
-  ],
-  "skip-missing": true,
-  "specials": [
-    "bin"
-  ],
-  "parsers": {
-    "**/*.mts": "typescript"
-  }
-}
+ignores:
+  # TypeScript
+  - '@types/*'
+  - ts-node
+  - typescript
+  - typescript-plugin-css-modules
+  - tsconfig-*
+
+  # GraphQL
+  - graphql
+  - '@graphql-codegen/*'
+  - graphql-tag
+
+  # ESLint & Prettier
+  - '@typescript-eslint/*'
+  - eslint-*
+  - prettier
+
+  # This is actually unused, but we keep it just in case you want to use it
+  - core-js
+
+  # TODO: these are used, but the files they use contain instantiation
+  # expressions which depcheck cannot parse. Remove this in ~6mo
+  - react-hotkeys
+  - react-multi-toggle
+skip-missing: true
+parsers:
+  '**/*.{mts,ts,tsx,mjs,js,jsx}': typescript
