@@ -77,6 +77,9 @@ read -p "Add those to crontab. Press [enter] when done..."
 
 ## Deploying to the server
 
+> [!IMPORTANT]
+> On the current CourseTable server, `~` refers to `/home/app`. If you logged in using any other user, you'll need to change the paths below.
+
 **coursetable**
 
 ```sh
@@ -86,7 +89,7 @@ git pull # Get changes onto server
 ./start.sh -p # Deploy the new version in prod
 ```
 
-If you get a prisma EACCES error run this from /coursetable/api:
+If you get a prisma EACCES error run this from `~/coursetable/api`:
 
 ```
 chown -R 1000:1000 .
