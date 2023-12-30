@@ -26,7 +26,6 @@
     "gapi-script": "^1.2.0",
     "graphiql": "^3.0.10",
     "graphql": "^16.8.1",
-    "graphql-tag": "^2.12.6",
     "lodash.debounce": "^4.0.8",
     "mark.js": "^8.11.1",
     "rc-slider": "9.7.1",

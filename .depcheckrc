@@ -9,7 +9,6 @@ ignores:
   # GraphQL
   - graphql
   - '@graphql-codegen/*'
-  - graphql-tag
 
   # ESLint & Prettier
   - '@typescript-eslint/*'
