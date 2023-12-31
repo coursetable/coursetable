@@ -3,29 +3,28 @@
  */
 
 import type express from 'express';
-import cookieParser from 'cookie-parser';
+import asyncHandler from 'express-async-handler';
 
 import {
   addFriend,
   removeFriend,
   getFriendsWorksheets,
-  friendRequest,
-  resolveFriendRequest,
+  requestAddFriend,
   getRequestsForFriend,
   getNames,
 } from './friends.handlers';
+import { authBasic } from '../auth/auth.handlers';
 
 /**
  * Set up friend routes.
  * @param app: express app instance.
  */
 export default (app: express.Express): void => {
-  app.use(cookieParser());
-  app.get('/api/friends/add', addFriend);
-  app.get('/api/friends/remove', removeFriend);
-  app.get('/api/friends/request', friendRequest);
-  app.get('/api/friends/resolveRequest', resolveFriendRequest);
-  app.get('/api/friends/getRequests', getRequestsForFriend);
-  app.get('/api/friends/worksheets', getFriendsWorksheets);
-  app.get('/api/friends/names', getNames);
+  app.use('/api/friends/*', authBasic);
+  app.post('/api/friends/add', asyncHandler(addFriend));
+  app.post('/api/friends/remove', asyncHandler(removeFriend));
+  app.post('/api/friends/request', asyncHandler(requestAddFriend));
+  app.get('/api/friends/getRequests', asyncHandler(getRequestsForFriend));
+  app.get('/api/friends/worksheets', asyncHandler(getFriendsWorksheets));
+  app.get('/api/friends/names', asyncHandler(getNames));
 };

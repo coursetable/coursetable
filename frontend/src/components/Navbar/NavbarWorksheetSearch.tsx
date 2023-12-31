@@ -7,7 +7,7 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 import { Searchbar } from '../Search/Searchbar';
 
-import { isOption } from '../../contexts/searchContext';
+import { isOption, type Option } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import { useWorksheet } from '../../contexts/worksheetContext';
 import { toSeasonString } from '../../utilities/course';
@@ -76,7 +76,7 @@ const StyledToggleButton = styled(ToggleButton)`
  */
 export function NavbarWorksheetSearch() {
   const {
-    seasonOptions,
+    seasonCodes,
     curSeason,
     changeSeason,
     changeWorksheet,
@@ -121,24 +121,18 @@ export function NavbarWorksheetSearch() {
   }, [worksheetNumber]);
 
   // Fetch user context data
-  const { user, addFriend, removeFriend, friendRequest, resolveFriendRequest } =
-    useUser();
-
-  // Friends names
-  const friendInfo = useMemo(
-    () => (user.friendWorksheets ? user.friendWorksheets.friendInfo : {}),
-    [user.friendWorksheets],
-  );
+  const { user, addFriend, removeFriend, requestAddFriend } = useUser();
 
   // List of friend options. Initialize with me option
   const friendOptions = useMemo(() => {
-    const friendOptionsTemp = [];
+    const friendOptionsTemp: Option[] = [];
+    if (!user.friends) return friendOptionsTemp;
     // Add friend to dropdown if they have worksheet courses in the current
     // season
-    for (const friend of Object.keys(friendInfo) as NetId[]) {
+    for (const friendNetId of Object.keys(user.friends) as NetId[]) {
       friendOptionsTemp.push({
-        value: friend,
-        label: friendInfo[friend].name,
+        value: friendNetId,
+        label: user.friends[friendNetId].name,
       });
     }
     // Sort friends in alphabetical order
@@ -146,15 +140,15 @@ export function NavbarWorksheetSearch() {
       a.label.localeCompare(b.label, 'en-US', { sensitivity: 'base' }),
     );
     return friendOptionsTemp;
-  }, [friendInfo]);
+  }, [user.friends]);
 
   const selectedPerson = useMemo(() => {
-    if (person === 'me' || !friendInfo[person]) return null;
+    if (person === 'me' || !user.friends?.[person]) return null;
     return {
       value: person,
-      label: friendInfo[person].name,
+      label: user.friends[person].name,
     };
-  }, [person, friendInfo]);
+  }, [person, user.friends]);
 
   // Friends names
   const friendRequestInfo = useMemo(
@@ -219,7 +213,10 @@ export function NavbarWorksheetSearch() {
                 isClearable={false}
                 hideSelectedOptions={false}
                 value={selectedSeason}
-                options={seasonOptions}
+                options={seasonCodes.map((seasonCode) => ({
+                  value: seasonCode,
+                  label: toSeasonString(seasonCode),
+                }))}
                 placeholder="Last 5 Years"
                 onChange={(selectedOption) => {
                   if (isOption(selectedOption))
@@ -278,7 +275,7 @@ export function NavbarWorksheetSearch() {
                     : 'Removing friends (click to switch to select mode)'
                 }
                 isSearchable={false}
-                onChange={async (selectedOption) => {
+                onChange={(selectedOption) => {
                   if (removing === 0) {
                     // Cleared friend
                     if (!selectedOption) handlePersonChange('me');
@@ -286,12 +283,7 @@ export function NavbarWorksheetSearch() {
                     else if (isOption(selectedOption))
                       handlePersonChange(selectedOption.value as NetId);
                   } else if (selectedOption && isOption(selectedOption)) {
-                    await Promise.all([
-                      removeFriend(selectedOption.value, user.netId),
-                      removeFriend(user.netId, selectedOption.value),
-                    ]);
-                    toast.info(`Removed friend: ${selectedOption.value}`);
-                    window.location.reload();
+                    void removeFriend(selectedOption.value as NetId);
                   }
                 }}
                 isDisabled={false}
@@ -329,21 +321,16 @@ export function NavbarWorksheetSearch() {
                     ? 'Accepting requests (click to switch to decline mode)'
                     : 'Declining requests (click to switch to accept mode)'
                 }
-                onChange={async (selectedOption) => {
+                onChange={(selectedOption) => {
                   if (selectedOption && isOption(selectedOption)) {
-                    await resolveFriendRequest(selectedOption.value);
                     if (deleting === 0) {
-                      await Promise.all([
-                        addFriend(selectedOption.value, user.netId),
-                        addFriend(user.netId, selectedOption.value),
-                      ]);
-                      toast.info(`Added friend: ${selectedOption.value}`);
+                      void addFriend(selectedOption.value as NetId);
                     } else if (deleting === 1) {
+                      // TODO actually decline it (remove from database)
                       toast.info(
                         `Declined friend request: ${selectedOption.value}`,
                       );
                     }
-                    window.location.reload();
                   }
                 }}
                 isDisabled={false}
@@ -359,10 +346,10 @@ export function NavbarWorksheetSearch() {
                   Menu: () => null,
                 }}
                 placeholder="Enter your friend's NetID (hit enter to add): "
-                onKeyDown={async (e) => {
+                onKeyDown={(e) => {
                   if (e.key === 'Enter') {
-                    await friendRequest(currentFriendNetID);
-                    toast.info(`Sent friend request: ${currentFriendNetID}`);
+                    e.preventDefault();
+                    void requestAddFriend(currentFriendNetID as NetId);
                   }
                 }}
                 onInputChange={(e) => {

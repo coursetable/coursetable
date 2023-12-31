@@ -4,55 +4,51 @@ import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
 
+// Popular pages are eagerly fetched
+import Search from './pages/Search';
+import Worksheet from './pages/Worksheet';
+
 import Notice from './components/Notice';
 import Navbar from './components/Navbar/Navbar';
 import Footer from './components/Footer';
-import Tutorial from './components/Tutorial';
 import CourseModal from './components/CourseModal/CourseModal';
-
-import Landing from './pages/Landing';
-
-import Search from './pages/Search';
-import About from './pages/About';
-import Worksheet from './pages/Worksheet';
-import FAQ from './pages/FAQ';
-import Privacy from './pages/Privacy';
-import NotFound from './pages/NotFound';
-import Thankyou from './pages/Thankyou';
-import Challenge from './pages/Challenge';
-import WorksheetLogin from './pages/WorksheetLogin';
-import Graphiql from './pages/Graphiql';
-import GraphiqlLogin from './pages/GraphiqlLogin';
-import Join from './pages/Join';
 
 import { useUser } from './contexts/userContext';
 import { useLocalStorageState } from './utilities/browserStorage';
+import { suspended } from './utilities/display';
 import { useWindowDimensions } from './contexts/windowDimensionsContext';
 
 const SentryRoutes = Sentry.withSentryReactRouterV6Routing(Routes);
+
+function showIfAuthorized(
+  hasEvals: boolean | undefined,
+  element: JSX.Element,
+  loginElem?: JSX.Element,
+) {
+  if (hasEvals === undefined) return loginElem ?? <Navigate to="/login" />;
+  if (!hasEvals) return <Navigate to="/challenge" />;
+  return element;
+}
+
+const Landing = suspended(() => import('./pages/Landing'));
+const About = suspended(() => import('./pages/About'));
+const FAQ = suspended(() => import('./pages/FAQ'));
+const Privacy = suspended(() => import('./pages/Privacy'));
+const NotFound = suspended(() => import('./pages/NotFound'));
+const Thankyou = suspended(() => import('./pages/Thankyou'));
+const Challenge = suspended(() => import('./pages/Challenge'));
+const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
+const Graphiql = suspended(() => import('./pages/Graphiql'));
+const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
+const Join = suspended(() => import('./pages/Join'));
+const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
   const location = useLocation();
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
-  // Page initialized as loading
-  const [loading, setLoading] = useState(true);
   // User context data
-  const { user, userRefresh, friendRefresh, friendReqRefresh, getAllNames } =
-    useUser();
-
-  // Refresh user worksheet and friends data on page load
-  useEffect(() => {
-    const a = userRefresh(true);
-    const b = friendRefresh(true);
-    const c = friendReqRefresh(true);
-    const d = getAllNames(true);
-
-    void Promise.allSettled([a, b, c, d]).finally(() => {
-      // Set loading to false after user info is fetched
-      setLoading(false);
-    });
-  }, [userRefresh, friendRefresh, friendReqRefresh, getAllNames]);
+  const { loading, user } = useUser();
 
   // Determine if user is logged in
   const isLoggedIn = Boolean(user.worksheet);
@@ -68,15 +64,16 @@ function App() {
 
   // Handle whether or not to open tutorial
   useEffect(() => {
-    if (
-      !isMobile &&
-      !isTablet &&
-      isLoggedIn &&
-      !shownTutorial &&
-      location &&
-      location.pathname === '/catalog'
-    )
-      setIsTutorialOpen(true);
+    if (!isMobile && !isTablet && isLoggedIn && !shownTutorial) {
+      if (location.pathname === '/catalog') {
+        setIsTutorialOpen(true);
+      } else if (location.pathname !== '/worksheet') {
+        // This can happen if the user got redirected to /challenge
+        setIsTutorialOpen(false);
+      }
+    } else {
+      setIsTutorialOpen(false);
+    }
   }, [
     isMobile,
     isTablet,
@@ -100,7 +97,21 @@ function App() {
   return (
     <>
       {/* Notice bar */}
-      <Notice />
+      <Notice>
+        Please{' '}
+        <a
+          href="https://students.yale.edu/oce-submissions/studentSubmission/index"
+          target="_blank"
+          rel="noreferrer"
+          style={{ color: 'white', textDecoration: 'underline' }}
+          onClick={() => {
+            Sentry.captureMessage('Course evals link clicked');
+          }}
+        >
+          fill out your course evals
+        </a>{' '}
+        — it's what powers this site! Help your peers make informed decisions 🤗
+      </Notice>
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
         {/* Home Page */}
@@ -115,21 +126,31 @@ function App() {
           }
         />
 
-        {/* About */}
-        <Route path="/about" element={<About />} />
-
+        {/* Authenticated routes */}
         {/* Catalog */}
         <Route
           path="/catalog"
-          element={
-            !isLoggedIn ? (
-              <Navigate to="/login" />
-            ) : !user.hasEvals ? (
-              <Navigate to="/challenge" />
-            ) : (
-              <Search />
-            )
-          }
+          element={showIfAuthorized(user.hasEvals, <Search />)}
+        />
+
+        {/* Worksheet */}
+        <Route
+          path="/worksheet"
+          element={showIfAuthorized(
+            user.hasEvals,
+            <Worksheet />,
+            <WorksheetLogin />,
+          )}
+        />
+
+        {/* Graphiql explorer */}
+        <Route
+          path="/graphiql"
+          element={showIfAuthorized(
+            user.hasEvals,
+            <Graphiql />,
+            <GraphiqlLogin />,
+          )}
         />
 
         {/* Auth */}
@@ -138,33 +159,13 @@ function App() {
           element={isLoggedIn ? <Navigate to="/" /> : <Landing />}
         />
 
-        <Route
-          path="/worksheetlogin"
-          element={
-            isLoggedIn ? <Navigate to="/worksheet" /> : <WorksheetLogin />
-          }
-        />
-
         {/* OCE Challenge */}
+        {/* Challenge handles its own auth */}
         <Route path="/challenge" element={<Challenge />} />
 
-        {/* Worksheet */}
-        <Route
-          path="/worksheet"
-          element={
-            isLoggedIn && user.hasEvals ? (
-              <Worksheet />
-            ) : (
-              <Navigate to="/worksheetlogin" />
-            )
-          }
-        />
-
-        {/* Graphiql explorer */}
-        <Route
-          path="/graphiql"
-          element={isLoggedIn ? <Graphiql /> : <GraphiqlLogin />}
-        />
+        {/* Static pages that don't need login */}
+        {/* About */}
+        <Route path="/about" element={<About />} />
 
         {/* Thank You */}
         <Route path="/thankyou" element={<Thankyou />} />

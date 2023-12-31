@@ -24,6 +24,13 @@ type RawListingResponse = CatalogBySeasonQuery['computed_listing_info'][number];
 type ListingOverrides = {
   crn: Crn;
   season_code: Season;
+  extra_info:
+    | 'ACTIVE'
+    | 'MOVED_TO_SPRING_TERM'
+    | 'CANCELLED'
+    | 'MOVED_TO_FALL_TERM'
+    | 'CLOSED'
+    | 'NUMBER_CHANGED';
 
   // Narrow some of the JSON types.
   all_course_codes: string[];

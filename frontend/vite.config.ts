@@ -24,10 +24,17 @@ export default defineConfig({
     rollupOptions: {
       output: {
         assetFileNames: 'assets/[name]-[hash:10][extname]',
-        chunkFileNames: 'assets/[name]-[hash:10].js',
+        chunkFileNames(chunkInfo) {
+          if (chunkInfo.facadeModuleId?.includes('gapi-script'))
+            // Prevent emitting two index-abcd.js files, which messes with build
+            // size calculation
+            return 'assets/gapi-script-[hash:10].js';
+          return 'assets/[name]-[hash:10].js';
+        },
         entryFileNames: 'assets/[name]-[hash:10].js',
       },
     },
+    cssCodeSplit: false,
   },
   server: {
     port: Number(process.env.PORT) || 3000,

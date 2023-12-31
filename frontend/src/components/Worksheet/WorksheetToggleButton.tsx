@@ -2,7 +2,6 @@ import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { BsBookmark } from 'react-icons/bs';
 import { FaPlus, FaMinus } from 'react-icons/fa';
 import { Button, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import axios from 'axios';
 import { toast } from 'react-toastify';
 import styled from 'styled-components';
 import * as Sentry from '@sentry/react';
@@ -10,7 +9,6 @@ import * as Sentry from '@sentry/react';
 import './WorksheetToggleButton.css';
 import { useUser } from '../../contexts/userContext';
 import type { Crn, Season } from '../../utilities/common';
-import { setLSObject } from '../../utilities/browserStorage';
 import { isInWorksheet } from '../../utilities/course';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { API_ENDPOINT } from '../../config';
@@ -97,36 +95,62 @@ function WorksheetToggleButton({
       // Determine if we are adding or removing the course
       const addRemove = inWorksheet ? 'remove' : 'add';
 
-      // Removes removed courses from worksheet hidden courses
-      if (inWorksheet) {
-        setLSObject('hiddenCourses', {}, true);
-        if (curSeason in hiddenCourses && hiddenCourses[curSeason][crn])
-          toggleCourse(crn);
-      }
+      // Remove it from hidden courses before removing from worksheet
+      if (
+        inWorksheet &&
+        curSeason in hiddenCourses &&
+        hiddenCourses[curSeason][crn]
+      )
+        toggleCourse(crn);
+      const body = JSON.stringify({
+        action: addRemove,
+        season: seasonCode,
+        ociId: crn,
+        worksheetNumber: parseInt(selectedWorksheet, 10),
+      });
 
       // Call the endpoint
       try {
-        await axios.post(
-          `${API_ENDPOINT}/api/user/toggleBookmark`,
-          {
-            action: addRemove,
-            season: seasonCode,
-            oci_id: crn,
-            worksheet_number: parseInt(selectedWorksheet, 10),
+        const res = await fetch(`${API_ENDPOINT}/api/user/toggleBookmark`, {
+          method: 'POST',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
           },
-          {
-            withCredentials: true,
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          },
-        );
+          body,
+        });
+        if (!res.ok) {
+          const data = (await res.json()) as { error?: string };
+          switch (data.error) {
+            // These errors can be triggered if the user clicks the button twice
+            // in a row
+            // TODO: we should debounce the request instead
+            case 'ALREADY_BOOKMARKED':
+              toast.error(
+                'You have already added this class to your worksheet',
+              );
+              break;
+            case 'NOT_BOOKMARKED':
+              toast.error(
+                'You have already remove this class from your worksheet',
+              );
+              break;
+            default:
+              throw new Error(data.error ?? res.statusText);
+          }
+          return;
+        }
         await userRefresh();
         // If not in worksheet view, update inWorksheet state
         setInWorksheet(!inWorksheet);
       } catch (err) {
-        toast.error('Failed to update worksheet');
+        Sentry.addBreadcrumb({
+          category: 'worksheet',
+          message: `Updating worksheet: ${body}`,
+          level: 'info',
+        });
         Sentry.captureException(err);
+        toast.error(`Failed to update worksheet. ${String(err)}`);
       }
     },
     [

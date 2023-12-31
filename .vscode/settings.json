@@ -23,9 +23,7 @@
     "dist/**": true,
     "api/static": true,
     "**/node_modules": true,
-    "**/.eslintcache": true,
-    "**/bower_components": true,
-    "**/api/mysql/database.sql": true
+    "**/.eslintcache": true
   },
   "cSpell.words": [
     "Unflatten",
@@ -36,5 +34,5 @@
     "toastify",
     "unstyled"
   ],
-  "eslint.workingDirectories": ["api", "frontend", "proxy"]
+  "eslint.workingDirectories": ["api", "frontend"]
 }

@@ -10,8 +10,8 @@ datasource db {
 model StudentBluebookSettings {
   netId              String  @id @db.Char(8)
   evaluationsEnabled Boolean
-  first_name         String? @db.VarChar(256)
-  last_name          String? @db.VarChar(256)
+  firstName          String? @db.VarChar(256)
+  lastName           String? @db.VarChar(256)
   email              String? @db.VarChar(256)
   upi                Int?
   school             String? @db.VarChar(256)
@@ -23,8 +23,8 @@ model StudentBluebookSettings {
 }
 
 model StudentFriends {
-  id         BigInt @id @default(autoincrement()) @db.UnsignedBigInt
-  netId      String @db.Char(8)
+  id          BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  netId       String @db.Char(8)
   friendNetId String @db.Char(8)
 
   @@unique([netId, friendNetId], name: "netId_friendNetId", map: "netId_friendNetId")
@@ -32,38 +32,21 @@ model StudentFriends {
 }
 
 model StudentFriendRequests {
-  id         BigInt @id @default(autoincrement()) @db.UnsignedBigInt
-  netId      String @db.Char(8)
+  id          BigInt @id @default(autoincrement()) @db.UnsignedBigInt
+  netId       String @db.Char(8)
   friendNetId String @db.Char(8)
 
   @@unique([netId, friendNetId], name: "netId_friendNetId", map: "netId_friendNetId")
   @@index([netId], map: "netId")
 }
 
-model Students {
-  netId String @id @default("") @db.Char(8)
-
-  @@index([netId], map: "netId")
-}
-
 model WorksheetCourses {
-  id               Int    @id @default(autoincrement()) @db.UnsignedMediumInt
-  net_id           String @db.Char(8)
-  oci_id           Int    @db.UnsignedMediumInt
-  season           Int    @db.UnsignedMediumInt
-  worksheet_number Int?   @default(0) @db.UnsignedMediumInt
+  id              Int    @id @default(autoincrement()) @db.UnsignedMediumInt
+  netId           String @db.Char(8)
+  ociId           Int    @db.UnsignedMediumInt
+  season          Int    @db.UnsignedMediumInt
+  worksheetNumber Int?   @default(0) @db.UnsignedMediumInt
 
-  @@unique([net_id, oci_id, season, worksheet_number], map: "net_id_oci_id_season_worksheet_number")
-  @@index([net_id], map: "net_id")
-}
-
-model SavedCourses {
-  id          Int    @id @default(autoincrement()) @db.UnsignedMediumInt
-  net_id      String @db.Char(8)
-  oci_id      Int    @db.UnsignedMediumInt
-  season      Int    @db.UnsignedMediumInt
-  course_code String @db.Char(10)
-
-  @@unique([net_id, course_code], map: "net_id_oci_id_season_course_code")
-  @@index([net_id], map: "net_id")
+  @@unique([netId, ociId, season, worksheetNumber], map: "netId_ociId_season_worksheetNumber")
+  @@index([netId], map: "netId")
 }

@@ -168,9 +168,6 @@ export function SearchProvider({
 }: {
   readonly children: React.ReactNode;
 }) {
-  // Search on page render?
-  const [defaultSearch, setDefaultSearch] = useState(true);
-
   /* Filtering */
 
   const [searchText, setSearchText] = useSessionStorageState('searchText', '');
@@ -317,17 +314,17 @@ export function SearchProvider({
 
   // Object that holds a list of each friend taking a specific course
   const numFriends = useMemo(() => {
-    if (!user.friendWorksheets) return {};
-    return getNumFriends(user.friendWorksheets);
-  }, [user.friendWorksheets]);
+    if (!user.friends) return {};
+    return getNumFriends(user.friends);
+  }, [user.friends]);
 
   // Populate seasons from database
-  const { seasons: seasonsData } = useFerry();
-  const seasonsOptions = seasonsData.seasons.map(
+  const { seasons } = useFerry();
+  const seasonsOptions = seasons.map(
     (x): Option => ({
-      value: x.season_code,
+      value: x,
       // Capitalize term and add year
-      label: `${x.term.charAt(0).toUpperCase() + x.term.slice(1)} ${x.year}`,
+      label: toSeasonString(x),
     }),
   );
 
@@ -340,12 +337,10 @@ export function SearchProvider({
     if (!selectSeasons) return [];
     if (selectSeasons.length === 0) {
       // Nothing selected, so default to all seasons.
-      return seasonsData.seasons
-        .map((x) => x.season_code as Season)
-        .slice(0, 15);
+      return seasons.slice(0, 15);
     }
     return selectSeasons.map((x) => x.value as Season);
-  }, [isLoggedIn, selectSeasons, seasonsData]);
+  }, [isLoggedIn, selectSeasons, seasons]);
 
   const {
     loading: coursesLoading,
@@ -739,12 +734,6 @@ export function SearchProvider({
     setOrdering,
     setCanReset,
   ]);
-
-  // Perform default search on load
-  useEffect(() => {
-    // Only execute after seasons have been loaded
-    if (defaultSearch && seasonsOptions) setDefaultSearch(false);
-  }, [seasonsOptions, defaultSearch]);
 
   // Set ordering in parent element whenever sortby or order changes
   useEffect(() => {

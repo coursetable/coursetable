@@ -5,13 +5,29 @@
 import type express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
-import axios from 'axios';
 
 import winston from '../logging/winston';
 import { YALIES_API_KEY, prisma } from '../config';
 
+// TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
+export type YaliesResponse =
+  | {
+      organization_code?: string;
+      first_name?: string;
+      last_name?: string;
+      email?: string;
+      upi?: number;
+      school?: string;
+      year?: number;
+      college?: string;
+      major?: string;
+      curriculum?: string;
+      school_code?: string;
+    }[]
+  | null;
+
 // Codes for allowed organizations (to give faculty access to the site)
-const ALLOWED_ORG_CODES = [
+const ALLOWED_ORG_CODES: unknown[] = [
   'MED', // Medical school
   'FAS', // Faculty of arts and sciences
   'SOM', // School of medicine
@@ -75,20 +91,21 @@ export const passportConfig = (
 
         winston.info("Getting user's enrollment status from Yalies.io");
         try {
-          const { data } = await axios.post(
-            'https://yalies.io/api/people',
-            {
+          const data = (await fetch('https://yalies.io/api/people', {
+            method: 'POST',
+            headers: {
+              Authorization: `Bearer ${YALIES_API_KEY}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
               filters: {
                 netid: profile.user,
               },
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${YALIES_API_KEY}`,
-                'Content-Type': 'application/json',
-              },
-            },
-          );
+            }),
+          }).then((res) => {
+            if (!res.ok) throw new Error(res.statusText);
+            return res.json();
+          })) as YaliesResponse;
           // If no user found, do not grant access
           if (data === null || data.length === 0) {
             done(null, {
@@ -115,8 +132,8 @@ export const passportConfig = (
             },
             data: {
               evaluationsEnabled: enableEvals,
-              first_name: user.first_name,
-              last_name: user.last_name,
+              firstName: user.first_name,
+              lastName: user.last_name,
               email: user.email,
               upi: user.upi,
               school: user.school,
@@ -135,7 +152,7 @@ export const passportConfig = (
             lastName: user.last_name,
           });
         } catch (err) {
-          winston.error(`Yalies connection error: ${err}`);
+          winston.error(`Yalies connection error: ${String(err)}`);
           done(null, {
             netId: profile.user,
             evals: false,
@@ -160,20 +177,31 @@ export const passportConfig = (
    * @param netId: netId of user to get info for.
    * @param done: callback function to be executed after deserialization.
    */
-  passport.deserializeUser(async (netId: string, done) => {
+  passport.deserializeUser(async (sessionKey: unknown, done) => {
+    if (!sessionKey) {
+      // Return `null`/`false` to denote no user; don't use `undefined`
+      // https://github.com/jaredhanson/passport/pull/975
+      done(null, null);
+      return;
+    }
+    const netId = String(sessionKey);
     winston.info(`Deserializing user ${netId}`);
     const student = await prisma.studentBluebookSettings.findUnique({
       where: {
         netId,
       },
     });
+    if (!student) {
+      done(null, null);
+      return;
+    }
     done(null, {
       netId,
-      evals: Boolean(student?.evaluationsEnabled),
+      evals: Boolean(student.evaluationsEnabled),
       // Convert nulls to undefined
-      email: student?.email || undefined,
-      firstName: student?.first_name || undefined,
-      lastName: student?.last_name || undefined,
+      email: student.email ?? undefined,
+      firstName: student.firstName ?? undefined,
+      lastName: student.lastName ?? undefined,
     });
   });
 };
@@ -188,7 +216,7 @@ const postAuth = (req: express.Request, res: express.Response): void => {
   winston.info('Executing post-authentication redirect');
   const redirect = req.query.redirect as string | undefined;
 
-  const hostName = extractHostname(redirect || 'coursetable.com/catalog');
+  const hostName = extractHostname(redirect ?? 'coursetable.com/catalog');
 
   if (redirect && !redirect.startsWith('//')) {
     winston.info(`Redirecting to ${redirect}`);
@@ -224,30 +252,35 @@ export const casLogin = (
 ): void => {
   winston.info('Logging in with CAS');
   // Authenticate with passport
-  passport.authenticate('cas', (casError: Error, user: Express.User) => {
-    // Handle auth errors or missing users
-    if (casError) {
-      next(casError);
-      return;
-    }
+  (
+    passport.authenticate(
+      'cas',
+      (casError: Error | undefined, user: Express.User | undefined) => {
+        // Handle auth errors or missing users
+        if (casError) {
+          next(casError);
+          return;
+        }
 
-    if (!user) {
-      next(new Error('CAS auth but no user'));
-      return;
-    }
+        if (!user) {
+          next(new Error('CAS auth but no user'));
+          return;
+        }
 
-    // Log in the user
-    winston.info(`"Logging in ${user.netId}`);
-    req.logIn(user, (loginError) => {
-      if (loginError) {
-        next(loginError);
-        return;
-      }
+        // Log in the user
+        winston.info(`"Logging in ${user.netId}`);
+        req.logIn(user, (loginError) => {
+          if (loginError) {
+            next(loginError);
+            return;
+          }
 
-      // Redirect if authentication successful
-      postAuth(req, res);
-    });
-  })(req, res, next);
+          // Redirect if authentication successful
+          postAuth(req, res);
+        });
+      },
+    ) as express.Handler
+  )(req, res, next);
 };
 
 /**
@@ -262,15 +295,14 @@ export const authBasic = (
   next: express.NextFunction,
 ): void => {
   winston.info('Intercepting basic authentication');
-  if (req.user) {
-    // Add headers for legacy API compatibility
-    req.headers['x-coursetable-authd'] = 'true';
-    req.headers['x-coursetable-netid'] = req.user.netId;
-
-    next();
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
     return;
   }
-  next(new Error('CAS auth but no user'));
+  // Add headers for legacy API compatibility
+  req.headers['x-coursetable-authd'] = 'true';
+  req.headers['x-coursetable-netid'] = req.user.netId;
+  next();
 };
 
 /**
@@ -285,13 +317,15 @@ export const authWithEvals = (
   next: express.NextFunction,
 ): void => {
   winston.info('Intercepting with-evals authentication');
-  if (req.user && req.user.evals) {
-    // Add headers for legacy API compatibility
-    req.headers['x-coursetable-authd'] = 'true';
-    req.headers['x-coursetable-netid'] = req.user.netId;
-
-    next();
+  if (!req.user) {
+    res.status(401).json({ error: 'USER_NOT_FOUND' });
+    return;
+  } else if (!req.user.evals) {
+    res.status(401).json({ error: 'USER_NO_EVALS' });
     return;
   }
-  next(new Error('CAS auth but no user / no evals access'));
+  // Add headers for legacy API compatibility
+  req.headers['x-coursetable-authd'] = 'true';
+  req.headers['x-coursetable-netid'] = req.user.netId;
+  next();
 };

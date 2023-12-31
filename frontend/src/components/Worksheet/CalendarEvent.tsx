@@ -10,6 +10,7 @@ const ResponsiveEllipsis = responsiveHOC()(LinesEllipsis);
 
 export interface CourseEvent {
   title: string;
+  description: string;
   start: Date;
   end: Date;
   listing: Listing;
@@ -53,7 +54,7 @@ function CalendarEvent({ event }: { readonly event: CourseEvent }) {
         <span style={{ fontSize: '12px' }}>
           <ResponsiveEllipsis
             style={{ whiteSpace: 'pre-wrap' }}
-            text={event.listing.title}
+            text={event.description}
             maxLine="2"
             basedOn="words"
           />

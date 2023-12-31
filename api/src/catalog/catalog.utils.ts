@@ -81,7 +81,11 @@ export async function fetchCatalog(
   winston.info(`Fetched ${seasons.seasons.length} seasons`);
   fs.writeFileSync(
     `${STATIC_FILE_DIR}/seasons.json`,
-    JSON.stringify(seasons.seasons),
+    JSON.stringify(
+      seasons.seasons
+        .map((x) => x.season_code)
+        .sort((a, b) => Number(b) - Number(a)),
+    ),
   );
 
   // For each season, fetch all courses inside it and save
@@ -106,16 +110,11 @@ export async function fetchCatalog(
       throw err;
     }
 
-    if (catalog.computed_listing_info) {
-      fs.writeFileSync(
-        outputPath,
-        JSON.stringify(catalog.computed_listing_info),
-      );
+    fs.writeFileSync(outputPath, JSON.stringify(catalog.computed_listing_info));
 
-      winston.info(
-        `Fetched season ${seasonCode}: n=${catalog.computed_listing_info.length}`,
-      );
-    }
+    winston.info(
+      `Fetched season ${seasonCode}: n=${catalog.computed_listing_info.length}`,
+    );
   });
 
   return Promise.allSettled(processSeasons);

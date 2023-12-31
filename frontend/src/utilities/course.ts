@@ -1,21 +1,12 @@
 // Performing various actions on the listing dictionary
-// TODO
-// eslint-disable-next-line no-restricted-imports
-import moment from 'moment';
-
 import {
   type Crn,
   type Season,
   type Weekdays,
   weekdays,
   type Listing,
-  type NetId,
 } from './common';
-import type {
-  FriendRecord,
-  FriendInfo,
-  Worksheet,
-} from '../contexts/userContext';
+import type { FriendRecord, Worksheet } from '../contexts/userContext';
 import type { OrderingType } from '../contexts/searchContext';
 import type { SortKeys } from './constants';
 
@@ -67,16 +58,11 @@ export function checkConflict(listings: Listing[], course: Listing): Listing[] {
       if (info === undefined) continue;
       const courseInfo = course.times_by_day[day]!;
       for (const [startTime, endTime] of info) {
-        const listingStart = moment(startTime, 'HH:mm');
-        const listingEnd = moment(endTime, 'HH:mm');
+        const listingStart = toRangeTime(startTime);
+        const listingEnd = toRangeTime(endTime);
         for (const [courseStartTime, courseEndTime] of courseInfo) {
-          const curStart = moment(courseStartTime, 'HH:mm');
-          const curEnd = moment(courseEndTime, 'HH:mm');
-          // Fix invalid times
-          if (listingStart.hour() < 7) listingStart.add(12, 'h');
-          if (listingEnd.hour() < 7) listingEnd.add(12, 'h');
-          if (curStart.hour() < 7) curStart.add(12, 'h');
-          if (curEnd.hour() < 7) curEnd.add(12, 'h');
+          const curStart = toRangeTime(courseStartTime);
+          const curEnd = toRangeTime(courseEndTime);
           // Conflict exists
           if (
             !(listingStart > curEnd || curStart > listingEnd) &&
@@ -115,17 +101,16 @@ export function checkCrossListed(
 export function friendsAlsoTaking(
   seasonCode: Season,
   crn: Crn,
-  worksheets: { [netId: NetId]: Worksheet } | undefined,
-  names: FriendRecord,
+  friends: FriendRecord | undefined,
 ): string[] {
-  if (!worksheets) return [];
-  return (Object.keys(worksheets) as NetId[])
+  if (!friends) return [];
+  return Object.values(friends)
     .filter((friend) =>
-      worksheets[friend].some(
+      friend.worksheets.some(
         (value) => value[0] === seasonCode && parseInt(value[1], 10) === crn,
       ),
     )
-    .map((friend) => names[friend].name);
+    .map((friend) => friend.name);
 }
 
 /**
@@ -135,23 +120,19 @@ export function friendsAlsoTaking(
 type NumFriendsReturn = { [seasonCodeCrn: string]: string[] };
 // Fetch the friends that are also shopping any course. Used in search and
 // worksheet expanded list
-export function getNumFriends(friendWorksheets: FriendInfo): NumFriendsReturn {
-  // List of each friends' worksheets
-  const { worksheets } = friendWorksheets;
-  // List of each friends' names/net id
-  const names = friendWorksheets.friendInfo;
+export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
   // Object to return
-  const friends: NumFriendsReturn = {};
+  const numFriends: NumFriendsReturn = {};
   // Iterate over each friend's worksheet
-  for (const friend of Object.keys(worksheets) as NetId[]) {
+  for (const friend of Object.values(friends)) {
     // Iterate over each course in this friend's worksheet
-    worksheets[friend].forEach((course) => {
+    friend.worksheets.forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
-      friends[key] ||= []; // List doesn't exist for this course so create one
-      friends[key].push(names[friend].name); // Add friend's name to this list
+      numFriends[key] ||= []; // List doesn't exist for this course so create one
+      numFriends[key].push(friend.name); // Add friend's name to this list
     });
   }
-  return friends;
+  return numFriends;
 }
 
 // Get the overall rating for a course

@@ -3,10 +3,18 @@
  */
 
 import type express from 'express';
+import z from 'zod';
 
 import winston from '../logging/winston';
 
 import { prisma } from '../config';
+
+const ToggleBookmarkReqBodySchema = z.object({
+  action: z.union([z.literal('add'), z.literal('remove')]),
+  season: z.string().transform((val) => parseInt(val, 10)),
+  ociId: z.number(),
+  worksheetNumber: z.number(),
+});
 
 /**
  * Toggle a bookmarked course in a worksheet.
@@ -17,50 +25,64 @@ import { prisma } from '../config';
 export const toggleBookmark = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info('Toggling course bookmark');
 
-  if (!req.user) return res.status(401).json();
+  const { netId } = req.user!;
 
-  const { netId } = req.user;
+  const bodyParseRes = ToggleBookmarkReqBodySchema.safeParse(req.body);
+  if (!bodyParseRes.success) {
+    res.status(400).json({ error: 'INVALID_REQUEST' });
+    return;
+  }
 
-  const {
-    action,
-    season,
-    oci_id: ociId,
-    worksheet_number: worksheetNumber,
-  } = req.body;
+  const { action, season, ociId, worksheetNumber } = bodyParseRes.data;
 
-  // Add a bookmarked course
+  const existing = await prisma.worksheetCourses.findUnique({
+    where: {
+      netId_ociId_season_worksheetNumber: {
+        netId,
+        ociId,
+        season,
+        worksheetNumber,
+      },
+    },
+  });
+
   if (action === 'add') {
+    // Add a bookmarked course
     winston.info(
       `Bookmarking course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
+    if (existing) {
+      res.status(400).json({ error: 'ALREADY_BOOKMARKED' });
+      return;
+    }
     await prisma.worksheetCourses.create({
-      data: {
-        net_id: netId,
-        oci_id: parseInt(ociId, 10),
-        season: parseInt(season, 10),
-        worksheet_number: worksheetNumber,
-      },
+      data: { netId, ociId, season, worksheetNumber },
     });
-  }
-  // Remove a bookmarked course
-  else if (action === 'remove') {
+  } else {
+    // Remove a bookmarked course
     winston.info(
       `Removing bookmark for course ${ociId} in season ${season} for user ${netId} in worksheet ${worksheetNumber}`,
     );
-    await prisma.worksheetCourses.deleteMany({
+    if (!existing) {
+      res.status(400).json({ error: 'NOT_BOOKMARKED' });
+      return;
+    }
+    await prisma.worksheetCourses.delete({
       where: {
-        net_id: netId,
-        oci_id: parseInt(ociId, 10),
-        season: parseInt(season, 10),
-        worksheet_number: worksheetNumber,
+        netId_ociId_season_worksheetNumber: {
+          netId,
+          ociId,
+          season,
+          worksheetNumber,
+        },
       },
     });
   }
 
-  return res.json({ success: true });
+  res.sendStatus(200);
 };
 
 /**
@@ -72,12 +94,10 @@ export const toggleBookmark = async (
 export const getUserWorksheet = async (
   req: express.Request,
   res: express.Response,
-): Promise<express.Response> => {
+): Promise<void> => {
   winston.info(`Fetching user's worksheets`);
 
-  if (!req.user) return res.status(401).json();
-
-  const { netId } = req.user;
+  const { netId } = req.user!;
 
   // Get user info
   winston.info(`Getting profile for user ${netId}`);
@@ -91,20 +111,19 @@ export const getUserWorksheet = async (
   winston.info(`Getting worksheets for user ${netId}`);
   const worksheets = await prisma.worksheetCourses.findMany({
     where: {
-      net_id: netId,
+      netId,
     },
   });
 
-  return res.json({
-    success: true,
+  res.json({
     netId,
-    evaluationsEnabled: studentProfile?.evaluationsEnabled,
-    year: studentProfile?.year,
-    school: studentProfile?.school,
+    evaluationsEnabled: studentProfile?.evaluationsEnabled ?? null,
+    year: studentProfile?.year ?? null,
+    school: studentProfile?.school ?? null,
     data: worksheets.map((course) => [
       String(course.season),
-      String(course.oci_id),
-      String(course.worksheet_number),
+      String(course.ociId),
+      String(course.worksheetNumber),
     ]),
   });
 };

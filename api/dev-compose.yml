@@ -14,6 +14,7 @@ services:
       mysql:
         condition: service_healthy
 
+  # This container is only for dev! The prod container is at coursetable/infra/mysql
   mysql:
     build: ./mysql
     image: coursetable/mysql:latest
@@ -36,8 +37,9 @@ services:
       timeout: 10s
       retries: 60
 
+  # This container is only for dev! The prod container is at coursetable/infra/mysql
   phpmyadmin:
-    image: phpmyadmin:fpm-alpine
+    image: phpmyadmin:latest
     container_name: phpmyadmin
     depends_on:
       - mysql

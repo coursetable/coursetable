@@ -39,7 +39,13 @@ import {
   useSameCourseOrProfOfferingsQuery,
   type SameCourseOrProfOfferingsQuery,
 } from '../../generated/graphql';
-import { weekdays, type Season, type Crn } from '../../utilities/common';
+import {
+  weekdays,
+  type Season,
+  type Crn,
+  type Listing,
+  type Weekdays,
+} from '../../utilities/common';
 
 // Button with season and other info that user selects to view evals
 const StyledCol = styled(Col)`
@@ -98,25 +104,24 @@ export type CourseOffering = {
 };
 
 // TODO: merge it with one of the many types representing "a course"
-type ComputedListingInfoOverride = {
-  areas: string[];
-  crn: Crn;
-  extra_info:
-    | 'ACTIVE'
-    | 'MOVED_TO_SPRING_TERM'
-    | 'CANCELLED'
-    | 'MOVED_TO_FALL_TERM'
-    | 'CLOSED'
-    | 'NUMBER_CHANGED';
-  flag_info: string[];
-  season_code: Season;
-  skills: string[];
+type ComputedListingInfoOverride = Pick<
+  Listing,
+  | 'all_course_codes'
+  | 'areas'
+  | 'crn'
+  | 'flag_info'
+  | 'season_code'
+  | 'skills'
+  | 'professor_ids'
+  | 'professor_names'
+  | 'times_by_day'
+  | 'extra_info'
+> & {
   professor_info: {
     average_rating: number;
     email: string;
     name: string;
   }[];
-  professor_names: string[];
 };
 
 export type ComputedListingInfo = Omit<
@@ -153,24 +158,23 @@ function CourseModalOverview({
   // Number of description lines to display
   const [lines, setLines] = useState(8);
   // List of other friends shopping this class
-  const alsoTaking = user.friendWorksheets
-    ? friendsAlsoTaking(
-        listing.season_code,
-        listing.crn,
-        user.friendWorksheets.worksheets,
-        user.friendWorksheets.friendInfo,
-      )
-    : [];
+  const alsoTaking = friendsAlsoTaking(
+    listing.season_code,
+    listing.crn,
+    user.friends,
+  );
 
-  const locations = new Map();
-  const times = new Map();
+  const locations = new Map<string, string>();
+  const times = new Map<string, Set<Weekdays>>();
   for (const day of weekdays) {
     const info = listing.times_by_day[day];
     if (!info) continue;
     for (const [startTime, endTime, location, locationURL] of info) {
       if (locations.has(location) && locations.get(location) !== locationURL) {
         Sentry.captureException(
-          new Error(`Duplicate location ${location} with different URLs`),
+          new Error(
+            `${listing.course_code} has duplicate location ${location} with different URLs`,
+          ),
         );
       }
       locations.set(location, locationURL);
@@ -180,7 +184,7 @@ function CourseModalOverview({
       // Note! Some classes have multiple places at the same time, particularly
       // if one is "online". Avoid duplicates.
       // See for example: CDE 567, Spring 2023
-      times.get(timespan).add(day);
+      times.get(timespan)!.add(day);
     }
   }
 
@@ -190,17 +194,46 @@ function CourseModalOverview({
       professor_ids: listing.professor_ids,
     },
   });
+
   // Holds Prof information for popover
-  const profInfo = Object.fromEntries(
-    listing.professor_names.map((prof): [string, ProfInfo] => [
-      prof,
-      {
-        numCourses: 0,
-        totalRating: 0,
-        email: '',
-      },
-    ]),
-  );
+  const profInfo = useMemo(() => {
+    const profInfo = new Map(
+      listing.professor_names.map((prof): [string, ProfInfo] => [
+        prof,
+        {
+          // Total number of courses this professor teaches
+          numCourses: 0,
+          // Total rating. Will divide by number of courses later to
+          // get average
+          totalRating: 0,
+          // Prof email
+          email: '',
+        },
+      ]),
+    );
+    // Only count cross-listed courses once per season
+    const countedCourses = new Set<string>();
+    if (!data) return profInfo;
+    for (const season of data.computed_listing_info as ComputedListingInfo[]) {
+      if (countedCourses.has(`${season.season_code}-${season.course_code}`))
+        continue;
+      if (season.professor_info) {
+        season.professor_info.forEach((prof) => {
+          if (profInfo.has(prof.name)) {
+            const dict = profInfo.get(prof.name)!;
+            dict.numCourses++;
+            dict.totalRating += prof.average_rating;
+            dict.email = prof.email;
+            season.all_course_codes.forEach((c) => {
+              countedCourses.add(`${season.season_code}-${c}`);
+            });
+          }
+        });
+      }
+    }
+    return profInfo;
+  }, [data, listing]);
+
   // Count number of profs that overlap between this listing and an eval
   const overlappingProfs = useCallback(
     (evalProfs: string[]) => {
@@ -242,8 +275,7 @@ function CourseModalOverview({
     pastSyllabi && pastSyllabi.length < 8,
   );
 
-  // Make sure data is loaded
-  const items = useMemo(() => {
+  const overlapSections = useMemo(() => {
     const overlapSections: {
       [filter in Filter]: JSX.Element[];
     } = { both: [], course: [], professor: [] };
@@ -251,7 +283,7 @@ function CourseModalOverview({
     // Hold list of evaluation dictionaries
     const courseOfferings: CourseOffering[] = [];
     // Loop by season code
-    (data.computed_listing_info as ComputedListingInfo[]).forEach((season) => {
+    for (const season of data.computed_listing_info as ComputedListingInfo[]) {
       // Stores the average rating for all profs teaching this course and
       // populates prof_info
       let averageProfessorRating = 0;
@@ -261,18 +293,6 @@ function CourseModalOverview({
           if (prof.average_rating) {
             // Add up all prof ratings
             averageProfessorRating += prof.average_rating;
-            // Update prof_info
-            if (prof.name in profInfo) {
-              // Store dict from prof_info for easy access
-              const dict = profInfo[prof.name];
-              // Total number of courses this professor teaches
-              dict.numCourses++;
-              // Total rating. Will divide by number of courses later to
-              // get average
-              dict.totalRating += prof.average_rating;
-              // Prof email
-              dict.email = prof.email;
-            }
           }
         });
         // Divide by number of profs to get average
@@ -310,7 +330,7 @@ function CourseModalOverview({
         // Store course listing
         listing: season,
       });
-    });
+    }
     // Sort by season code and section
     courseOfferings.sort(
       (a, b) =>
@@ -318,16 +338,38 @@ function CourseModalOverview({
         parseInt(a.section, 10) - parseInt(b.section, 10),
     );
 
-    // Variable used for list keys
-    let id = 0;
-
     // Loop through each listing with evals
-    for (const offering of courseOfferings) {
+    courseOfferings.forEach((offering, i) => {
       // Skip listings in the current and future seasons that have no evals
-      if (CUR_YEAR.includes(offering.season_code)) continue;
+      if (CUR_YEAR.includes(offering.season_code)) return;
+      // TODO: this whole logic is not ideal. We need to systematically
+      // reconsider what we mean by "same course" and "same professor".
+      // See: https://docs.google.com/document/d/1mIsanCz1U3M6SU2KbcBp9ONXRssDfeTzRtDIRzxdAOk
+      const isCourseOverlap = offering.course_code === listing.course_code;
+      const isProfOverlap = overlappingProfs(offering.professor) > 0;
+      // We require ALL professors to be the same
+      const isBothOverlap =
+        isCourseOverlap &&
+        overlappingProfs(offering.professor) === listing.professor_names.length;
       const hasEvals = offering.rating !== -1;
+      const type = isBothOverlap
+        ? 'both'
+        : isCourseOverlap
+          ? 'course'
+          : isProfOverlap
+            ? 'professor'
+            : undefined;
+      if (!type) {
+        // Consider a course cross-listed with course codes A and B.
+        // It was taught by prof X in year 1 and prof Y in year 2.
+        // Then GraphQL would return 2-B when viewing 1-A even when they appear
+        // to not overlap.
+        // TODO: maybe we should fix this in the GraphQL layer? Again,
+        // reconsideration of course relationships needed...
+        return;
+      }
       const evalBox = (
-        <Row key={id++} className="m-auto py-1 justify-content-center">
+        <Row key={i} className="m-auto py-1 justify-content-center">
           {/* The listing button, either clickable or greyed out based on
                 whether evaluations exist */}
           {hasEvals ? (
@@ -343,9 +385,9 @@ function CourseModalOverview({
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
               <div className={`${styles.details} mx-auto ${styles.shown}`}>
-                {filter === 'professor'
+                {type === 'professor'
                   ? offering.course_code
-                  : filter === 'both'
+                  : type === 'both'
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
@@ -358,9 +400,9 @@ function CourseModalOverview({
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
               <div className={`${styles.details} mx-auto ${styles.shown}`}>
-                {filter === 'professor'
+                {type === 'professor'
                   ? offering.course_code
-                  : filter === 'both'
+                  : type === 'both'
                     ? `Section ${offering.section}`
                     : offering.professor[0]}
               </div>
@@ -409,24 +451,10 @@ function CourseModalOverview({
           </Col>
         </Row>
       );
-      // Course in both column
-      if (
-        offering.course_code === listing.course_code &&
-        listing.professor_names.length &&
-        overlappingProfs(offering.professor) === listing.professor_names.length
-      )
-        overlapSections.both.push(evalBox);
-
-      // Course in course column
-      if (offering.course_code === listing.course_code)
-        overlapSections.course.push(evalBox);
-
-      // Course in prof column
-      if (overlappingProfs(offering.professor) > 0)
-        overlapSections.professor.push(evalBox);
-    }
+      overlapSections[type].push(evalBox);
+    });
     return overlapSections;
-  }, [data, filter, setSeason, listing, overlappingProfs, profInfo]);
+  }, [data, setSeason, listing, overlappingProfs]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
   // Render popover that contains prof info
@@ -439,8 +467,9 @@ function CourseModalOverview({
     };
     // Store dict from prop_info for easy access
     if (props.popper.state) {
+      // TODO
       profName = props.popper.state.options.prof;
-      profDict = profInfo[profName];
+      if (profInfo.has(profName)) profDict = profInfo.get(profName)!;
     }
     return (
       <StyledPopover
@@ -457,7 +486,7 @@ function CourseModalOverview({
             {/* Professor Email */}
             <small>
               {profDict.email !== '' ? (
-                <a href={`mailto: ${profDict.email}`}>{profDict.email}</a>
+                <a href={`mailto:${profDict.email}`}>{profDict.email}</a>
               ) : (
                 <TextComponent type={1}>N/A</TextComponent>
               )}
@@ -515,9 +544,15 @@ function CourseModalOverview({
 
   // Options for the evaluation filters
   const options = [
-    { displayName: `Course (${items.course.length})`, value: 'course' },
-    { displayName: `Both (${items.both.length})`, value: 'both' },
-    { displayName: `Prof (${items.professor.length})`, value: 'professor' },
+    {
+      displayName: `Course (${overlapSections.course.length})`,
+      value: 'course',
+    },
+    { displayName: `Both (${overlapSections.both.length})`, value: 'both' },
+    {
+      displayName: `Prof (${overlapSections.professor.length})`,
+      value: 'professor',
+    },
   ] as const;
 
   // Hold index of each filter option
@@ -861,7 +896,7 @@ function CourseModalOverview({
             />
           </Row>
           {/* Course Evaluations Header */}
-          {items[filter].length !== 0 && (
+          {overlapSections[filter].length !== 0 && (
             <Row className="m-auto pb-1 justify-content-center">
               <Col xs={5} className="d-flex justify-content-center px-0 mr-3">
                 <span className={styles.evaluation_header}>Season</span>
@@ -878,9 +913,9 @@ function CourseModalOverview({
             </Row>
           )}
           {/* Course Evaluations */}
-          {items[filter].length !== 0 && items[filter]}
+          {overlapSections[filter].length !== 0 && overlapSections[filter]}
           {/* No Course Evaluations */}
-          {items[filter].length === 0 && (
+          {overlapSections[filter].length === 0 && (
             <Row className="m-auto justify-content-center">
               <strong>No Results</strong>
             </Row>

@@ -6,51 +6,42 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import axios from 'axios';
 import AsyncLock from 'async-lock';
 import { toast } from 'react-toastify';
 import * as Sentry from '@sentry/react';
 
-import type { Worksheet } from './userContext';
-import _seasons from '../generated/seasons.json';
+import { useUser, type Worksheet } from './userContext';
+import seasonsData from '../generated/seasons.json';
 import type { Crn, Season, Listing } from '../utilities/common';
 
 import { API_ENDPOINT } from '../config';
 
-// Preprocess seasons data.
-// We need to wrap this inside the "seasons" key of an object
-// to maintain compatibility with the previous graphql version.
-// TODO: once typescript is fully added, we can easily find all
-// the usages and remove the enclosing object.
-const seasonsData = {
-  seasons: [..._seasons].reverse(),
-};
-
 // Global course data cache.
 const courseDataLock = new AsyncLock();
-let courseLoadAttempted: { [seasonCode: Season]: boolean } = {};
+const courseLoadAttempted = new Set<Season>();
 let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
 const addToCache = (season: Season): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
-    if (season in courseData || season in courseLoadAttempted) {
+    if (courseLoadAttempted.has(season)) {
       // Skip if already loaded, or if we previously tried to load it.
       return;
     }
 
     // Log that we attempted to load this.
-    courseLoadAttempted = {
-      ...courseLoadAttempted,
-      [season]: true,
-    };
+    courseLoadAttempted.add(season);
 
-    const res = await axios.get(
+    const res = await fetch(
       `${API_ENDPOINT}/api/static/catalogs/${season}.json`,
-      {
-        withCredentials: true,
-      },
+      { credentials: 'include' },
     );
-    // Convert season list into a crn lookup table.
-    const data = res.data as Listing[];
+    if (!res.ok) {
+      // TODO: better error handling here; we may want to get rid of async-lock
+      // first
+      throw new Error(
+        `failed to fetch course data for ${season}. ${res.statusText}`,
+      );
+    }
+    const data = (await res.json()) as Listing[];
     const info = new Map<Crn, Listing>();
     for (const listing of data) info.set(listing.crn, listing);
     // Save in global cache. Here we force the creation of a new object.
@@ -65,7 +56,7 @@ type Store = {
   loading: boolean;
 
   error: {} | null;
-  seasons: typeof seasonsData;
+  seasons: Season[];
   courses: typeof courseData;
   requestSeasons: (seasons: Season[]) => void;
 };
@@ -84,27 +75,31 @@ export function FerryProvider({
 
   const [errors, setErrors] = useState<{}[]>([]);
 
-  const requestSeasons = useCallback(async (seasons: Season[]) => {
-    const fetches = seasons.map(async (season) => {
-      // Racy preemptive check of cache.
-      // We cannot check courseLoadAttempted here, since that is set prior
-      // to the data actually being loaded.
-      if (season in courseData) return;
+  const { user } = useUser();
 
-      // Add to cache.
-      setRequests((r) => r + 1);
-      try {
-        await addToCache(season);
-      } finally {
-        setRequests((r) => r - 1);
-      }
-    });
-    await Promise.all(fetches).catch((err) => {
-      toast.error('Failed to fetch course information');
-      Sentry.captureException(err);
-      setErrors((e) => [...e, err]);
-    });
-  }, []);
+  const requestSeasons = useCallback(
+    async (seasons: Season[]) => {
+      if (!user.hasEvals) return; // Not logged in / doesn't have evals
+      const fetches = seasons.map(async (season) => {
+        // As long as there is one request in progress, don't fire another
+        if (courseLoadAttempted.has(season)) return;
+
+        // Add to cache.
+        setRequests((r) => r + 1);
+        try {
+          await addToCache(season);
+        } finally {
+          setRequests((r) => r - 1);
+        }
+      });
+      await Promise.all(fetches).catch((err) => {
+        Sentry.captureException(err);
+        toast.error('Failed to fetch course information');
+        setErrors((e) => [...e, err]);
+      });
+    },
+    [user.hasEvals],
+  );
 
   // If there's any error, we want to immediately stop "loading" and start
   // "erroring".
@@ -116,7 +111,7 @@ export function FerryProvider({
       requests,
       loading,
       error,
-      seasons: seasonsData,
+      seasons: seasonsData as Season[],
       courses: courseData,
       requestSeasons,
     }),
@@ -180,11 +175,13 @@ export function useWorksheetInfo(
       ) {
         const course = courses[seasonCode].get(parseInt(crn, 10) as Crn);
         if (!course) {
-          Sentry.captureException(
-            new Error(
-              `failed to resolve worksheet course ${seasonCode} ${crn}`,
-            ),
-          );
+          // This error is unactionable.
+          // https://github.com/coursetable/coursetable/pull/1508
+          // Sentry.captureException(
+          //   new Error(
+          //     `failed to resolve worksheet course ${seasonCode} ${crn}`,
+          //   ),
+          // );
         } else {
           dataReturn.push(course);
         }

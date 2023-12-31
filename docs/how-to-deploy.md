@@ -1,4 +1,6 @@
-# Bootstrapping a new server
+# How to deploy
+
+## Bootstrapping a new server
 
 ### Server Setup
 
@@ -51,7 +53,6 @@ doppler setup -p coursetable -c prd
 (cd traefik && doppler run --command "docker-compose up -d")
 (cd under-maintenance && doppler run --command "docker-compose up -d")
 (cd mysql && doppler run --command "docker-compose up -d")
-(cd analytics && doppler run --command "docker-compose up -d")
 popd
 
 # Setup ferry.
@@ -62,9 +63,8 @@ doppler run --command "./refresh_courses.sh"
 popd
 
 # Setup coursetable.
-cd coursetable/docker
-./deploy.sh
-TODO migrate database over
+cd coursetable/api
+./start.sh -p
 
 # Setup cron.
 echo This should be the contents of the crontab:
@@ -75,7 +75,10 @@ EOF
 read -p "Add those to crontab. Press [enter] when done..."
 ```
 
-# Deploying to the server
+## Deploying to the server
+
+> [!IMPORTANT]
+> On the current CourseTable server, `~` refers to `/home/app`. If you logged in using any other user, you'll need to change the paths below.
 
 **coursetable**
 
@@ -86,11 +89,11 @@ git pull # Get changes onto server
 ./start.sh -p # Deploy the new version in prod
 ```
 
-If you get a prisma EACCES error run this from /coursetable/docker:
+If you get a prisma EACCES error run this from `~/coursetable/api`:
 
 ```
-chown -R 1000:1000 ../api
-chmod -R 755 ../api
+chown -R 1000:1000 .
+chmod -R 755 .
 ```
 
 **ferry**
@@ -100,13 +103,4 @@ chmod -R 755 ../api
 cd ~/ferry
 git pull # Get changes onto server
 doppler run --command "./refresh_courses.sh" # Rerun the pipeline
-```
-
-**beta**
-
-```sh
-cd ~/beta
-git pull
-cd docker
-docker-compose -f beta-frontend.yml up -d --build
 ```

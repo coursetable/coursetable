@@ -12,9 +12,7 @@ import {
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
 import { useFerry, useWorksheetInfo } from './ferryContext';
-import { toSeasonString } from '../utilities/course';
 import { useUser, type Worksheet } from './userContext';
-import type { Option } from './searchContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
 export type HiddenCourses = {
@@ -27,7 +25,6 @@ export type WorksheetView =
 
 type Store = {
   seasonCodes: Season[];
-  seasonOptions: Option[];
   curWorksheet: Worksheet;
   curSeason: Season;
   worksheetNumber: string;
@@ -97,35 +94,14 @@ export function WorksheetProvider({
     const whenNotDefined: Worksheet = []; // TODO: change this to undefined
     if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
 
-    const friendWorksheets = user.friendWorksheets?.worksheets;
-    return friendWorksheets
-      ? friendWorksheets[viewedPerson] ?? whenNotDefined
+    return user.friends
+      ? user.friends[viewedPerson].worksheets ?? whenNotDefined
       : whenNotDefined;
-  }, [user.worksheet, user.friendWorksheets, viewedPerson]);
+  }, [user.worksheet, user.friends, viewedPerson]);
 
-  const { seasons: seasonsData } = useFerry();
-  const seasonCodes = useMemo(() => {
-    const tempSeasonCodes: Season[] = [];
-    if (seasonsData && seasonsData.seasons) {
-      seasonsData.seasons.forEach((season) => {
-        tempSeasonCodes.push(season.season_code as Season);
-      });
-    }
-    tempSeasonCodes.sort();
-    tempSeasonCodes.reverse();
-    return tempSeasonCodes;
-  }, [seasonsData]);
-
-  // List to hold season dropdown options
-  const seasonOptions = useMemo(() => {
-    // Sort season codes from most to least recent
-    seasonCodes.sort();
-    seasonCodes.reverse();
-    return seasonCodes.map((seasonCode) => ({
-      value: seasonCode,
-      label: toSeasonString(seasonCode),
-    }));
-  }, [seasonCodes]);
+  const { seasons } = useFerry();
+  // TODO: restrict to only the seasons with data
+  const seasonCodes = seasons;
 
   // Current season
   const [curSeason, setCurSeason] = useSessionStorageState(
@@ -260,7 +236,6 @@ export function WorksheetProvider({
     () => ({
       // Context state.
       seasonCodes,
-      seasonOptions,
       curWorksheet,
       curSeason,
       worksheetNumber,
@@ -283,7 +258,6 @@ export function WorksheetProvider({
     }),
     [
       seasonCodes,
-      seasonOptions,
       curWorksheet,
       curSeason,
       worksheetNumber,

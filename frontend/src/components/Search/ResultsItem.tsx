@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Badge, OverlayTrigger, Popover, Tooltip, Row } from 'react-bootstrap';
+import * as Sentry from '@sentry/react';
 
 import chroma from 'chroma-js';
 import { IoMdSunny } from 'react-icons/io';
@@ -97,7 +98,8 @@ function ResultsItem({
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
-  readonly COL_SPACING: any;
+  // This can be more exact, but I'm too lazy to type everything out :)
+  readonly COL_SPACING: { [prop: string]: number };
   readonly isScrolling: boolean;
   readonly friends: string[];
 }) {
@@ -219,15 +221,21 @@ function ResultsItem({
         >
           <OverlayTrigger
             placement="top"
-            overlay={(props) => (
-              <Tooltip id="button-tooltip" {...props}>
-                <small>
-                  {subjectOptions
-                    .find((subject) => subject.value === subjectCode)!
-                    .label.substring(subjectCode.length + 2)}
-                </small>
-              </Tooltip>
-            )}
+            overlay={(props) => {
+              const subjectName = subjectOptions
+                .find((subject) => subject.value === subjectCode)
+                ?.label.substring(subjectCode.length + 2);
+              if (!subjectName) {
+                Sentry.captureException(
+                  new Error(`Subject ${subjectCode} has no label`),
+                );
+              }
+              return (
+                <Tooltip id="button-tooltip" {...props}>
+                  <small>{subjectName ?? '[unknown]'}</small>
+                </Tooltip>
+              );
+            }}
           >
             <span>{subjectCode}</span>
           </OverlayTrigger>{' '}

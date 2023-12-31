@@ -1,23 +1,13 @@
-/**
- * @file Routes for catalog
- */
-
 import type express from 'express';
-import { verifyHeaders, refreshCatalog } from './catalog.controllers';
-import { fetchCatalog } from './catalog.utils';
-import winston from '../logging/winston';
+import asyncHandler from 'express-async-handler';
+import { verifyHeaders, refreshCatalog } from './catalog.handlers';
 
 /**
  * Set up catalog routes.
  * @param app: express app instance.
  */
-export default async (app: express.Express): Promise<void> => {
+export default (app: express.Express): void => {
   // Enable static catalog refresh on demand.
   // After the crawler runs, we hit this route to refresh the static files.
-  app.get('/api/catalog/refresh', verifyHeaders, refreshCatalog);
-
-  // Generate the static catalog on start.
-  winston.info('Updating static catalog');
-  const overwriteCatalog = process.env.OVERWRITE_CATALOG === 'true';
-  await fetchCatalog(overwriteCatalog);
+  app.get('/api/catalog/refresh', verifyHeaders, asyncHandler(refreshCatalog));
 };
