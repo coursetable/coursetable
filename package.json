@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "workspaces": [
+    "api",
     "frontend"
   ],
   "scripts": {
@@ -38,6 +39,7 @@
     "patch-package": "^8.0.0",
     "prettier": "^3.1.1",
     "sharp": "^0.32.6",
-    "tsconfig-jc": "^2.3.1"
+    "tsconfig-jc": "^2.3.1",
+    "typescript": "~5.3.2"
   }
 }
