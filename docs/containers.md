@@ -35,5 +35,5 @@ Therefore, there are a few points to watch out for:
    1. Updating `api/prisma/schema.prisma`
    2. Updating `api/mysql/database.sql`, which is used to create the DB in dev.
    3. Updating the prod DB, either by actually doing it in the prod docker, or through the PHPMyAdmin interface.
-   TODO: you can see how it's obviously non-ideal. We should use Prisma to automatically generate initial DB and also migrate the prod DB.
+      TODO: you can see how it's obviously non-ideal. We should use Prisma to automatically generate initial DB and also migrate the prod DB.
 2. If you shut down the local containers and start them again, the DB is now empty. On the dev frontend, you need to log in again. If you don't want to go through the challenge process, you can visit http://localhost:8081 and modify the database. (The login password is `MYSQL_ROOT_PASSWORD` which can be found on Doppler.)
