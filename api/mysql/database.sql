@@ -1,11 +1,5 @@
--- phpMyAdmin SQL Dump
--- version 5.1.1
--- https://www.phpmyadmin.net/
---
--- Host: mysql
--- Generation Time: Aug 28, 2021 at 12:38 AM
--- Server version: 10.6.4-MariaDB-1:10.6.4+maria~focal
--- PHP Version: 7.4.20
+-- This SQL file is only used in development. If you want to make changes to the
+-- production database, you have to do it manually through PMA at the moment.
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -83,10 +77,6 @@ CREATE TABLE `WorksheetCourses` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3;
 
 --
--- Indexes for dumped tables
---
-
---
 -- Indexes for table `StudentBluebookSettings`
 --
 ALTER TABLE `StudentBluebookSettings`
@@ -115,10 +105,6 @@ ALTER TABLE `WorksheetCourses`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `netId_ociId_season_worksheetNumber` (`netId`,`ociId`,`season`, `worksheetNumber`),
   ADD KEY `netId` (`netId`);
-
---
--- AUTO_INCREMENT for dumped tables
---
 
 --
 -- AUTO_INCREMENT for table `StudentFriends`
