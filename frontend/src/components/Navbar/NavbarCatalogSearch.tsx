@@ -20,14 +20,14 @@ import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
 
 import {
-  skillsAreasOptions,
-  creditOptions,
-  schoolOptions,
-  subjectOptions,
+  skillsAreas,
+  skillsAreasColors,
+  credits,
+  schools,
+  subjects,
   sortbyOptions,
-  dayOptions,
 } from '../../utilities/constants';
-import { isEqual } from '../../utilities/common';
+import { isEqual, weekdays } from '../../utilities/common';
 import CustomSelect from '../CustomSelect';
 import {
   useSearch,
@@ -475,7 +475,10 @@ export function NavbarCatalogSearch() {
                   <PopoutSelect<Option, true>
                     isMulti
                     value={selectSubjects}
-                    options={subjectOptions}
+                    options={Object.entries(subjects).map(([code, name]) => ({
+                      label: `${code} - ${name}`,
+                      value: code,
+                    }))}
                     placeholder="All Subjects"
                     onChange={(selectedOption) => {
                       setSelectSubjects(asWritable(selectedOption));
@@ -498,7 +501,16 @@ export function NavbarCatalogSearch() {
                     useColors
                     isMulti
                     value={selectSkillsAreas}
-                    options={skillsAreasOptions}
+                    options={['Areas', 'Skills'].map((type) => ({
+                      label: type,
+                      options: Object.entries(
+                        skillsAreas[type.toLowerCase() as 'areas' | 'skills'],
+                      ).map(([code, name]) => ({
+                        label: `${code} - ${name}`,
+                        value: code,
+                        color: skillsAreasColors[code],
+                      })),
+                    }))}
                     placeholder="All Areas/Skills"
                     onChange={(selectedOption) => {
                       setSelectSkillsAreas(asWritable(selectedOption));
@@ -642,7 +654,12 @@ export function NavbarCatalogSearch() {
                         closeMenuOnSelect
                         isMulti
                         value={selectSubjects}
-                        options={subjectOptions}
+                        options={Object.entries(subjects).map(
+                          ([code, name]) => ({
+                            label: `${code} - ${name}`,
+                            value: code,
+                          }),
+                        )}
                         placeholder="All Subjects"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
@@ -659,7 +676,18 @@ export function NavbarCatalogSearch() {
                         closeMenuOnSelect
                         isMulti
                         value={selectSkillsAreas}
-                        options={skillsAreasOptions}
+                        options={['Areas', 'Skills'].map((type) => ({
+                          label: type,
+                          options: Object.entries(
+                            skillsAreas[
+                              type.toLowerCase() as 'areas' | 'skills'
+                            ],
+                          ).map(([code, name]) => ({
+                            label: `${code} - ${name}`,
+                            value: code,
+                            color: skillsAreasColors[code],
+                          })),
+                        }))}
                         placeholder="All Areas/Skills"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
@@ -693,7 +721,10 @@ export function NavbarCatalogSearch() {
                     closeMenuOnSelect
                     isMulti
                     value={selectDays}
-                    options={dayOptions}
+                    options={weekdays.slice(0, 5).map((day) => ({
+                      label: day,
+                      value: day,
+                    }))}
                     placeholder="All Days"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
@@ -834,7 +865,10 @@ export function NavbarCatalogSearch() {
                     closeMenuOnSelect
                     isMulti
                     value={selectSchools}
-                    options={schoolOptions}
+                    options={Object.entries(schools).map(([code, name]) => ({
+                      label: name,
+                      value: code,
+                    }))}
                     placeholder="All Schools"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
@@ -850,7 +884,10 @@ export function NavbarCatalogSearch() {
                     closeMenuOnSelect
                     isMulti
                     value={selectCredits}
-                    options={creditOptions}
+                    options={credits.map((credit) => ({
+                      label: String(credit),
+                      value: credit,
+                    }))}
                     placeholder="All Credits"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {

@@ -13,7 +13,7 @@ import styled from 'styled-components';
 import {
   ratingColormap,
   workloadColormap,
-  subjectOptions,
+  subjects,
 } from '../../utilities/constants';
 import WorksheetToggleButton from '../Worksheet/WorksheetToggleButton';
 import CourseConflictIcon from './CourseConflictIcon';
@@ -116,9 +116,7 @@ function ResultsGridItem({
                     <OverlayTrigger
                       placement="top"
                       overlay={(props) => {
-                        const subjectName = subjectOptions
-                          .find((subject) => subject.value === subjectCode)
-                          ?.label.substring(subjectCode.length + 2);
+                        const subjectName = subjects[subjectCode];
                         if (!subjectName) {
                           Sentry.captureException(
                             new Error(`Subject ${subjectCode} has no label`),

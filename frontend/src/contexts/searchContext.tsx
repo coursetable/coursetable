@@ -13,11 +13,8 @@ import {
 } from '../utilities/browserStorage';
 import { useCourseData, useFerry, useWorksheetInfo } from './ferryContext';
 import {
-  areas,
-  type AreasType,
+  skillsAreas,
   searchSpeed,
-  skills,
-  type SkillsType,
   type SortByOption,
   sortbyOptions,
   type SortKeys,
@@ -350,15 +347,15 @@ export function SearchProvider({
     const processedSkillsAreas = selectSkillsAreas.map((x) => x.value);
     if (processedSkillsAreas.includes('L'))
       processedSkillsAreas.push('L1', 'L2', 'L3', 'L4', 'L5');
-    const processedSkills = processedSkillsAreas.filter((x): x is SkillsType =>
-      skills.includes(x as SkillsType),
+    const processedSkills = processedSkillsAreas.filter(
+      (x) => x in skillsAreas.skills,
     );
-    const processedAreas = processedSkillsAreas.filter((x): x is AreasType =>
-      areas.includes(x as AreasType),
+    const processedAreas = processedSkillsAreas.filter(
+      (x) => x in skillsAreas.areas,
     );
 
     // Credits to filter
-    const processedCredits = selectCredits.map((x) => x.label);
+    const processedCredits = selectCredits.map((x) => x.value);
 
     // Schools to filter
     const processedSchools = selectSchools.map((x) => x.value);
@@ -582,19 +579,15 @@ export function SearchProvider({
 
       if (
         (searchConfig.areas.size !== 0 || searchConfig.skills.size !== 0) &&
-        !listing.areas.some((v): v is AreasType =>
-          searchConfig.areas.has(v as AreasType),
-        ) &&
-        !listing.skills.some((v): v is SkillsType =>
-          searchConfig.skills.has(v as SkillsType),
-        )
+        !listing.areas.some((v) => searchConfig.areas.has(v)) &&
+        !listing.skills.some((v) => searchConfig.skills.has(v))
       )
         return false;
 
       if (
         searchConfig.credits.size !== 0 &&
         listing.credits !== null &&
-        !searchConfig.credits.has(String(listing.credits))
+        !searchConfig.credits.has(listing.credits)
       )
         return false;
 
