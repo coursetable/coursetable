@@ -9,7 +9,7 @@ CourseTable uses the following Docker containers for core functionality, so they
 
 Note that we have two databases: a MySQL database managed by API, which stores user data, and a Postgres database managed by Ferry, which stores course data. The latter is exposed as a GraphQL API by the Hasura engine. Therefore, you need to be connected to the Internet to even start CourseTable locally, because the GraphQL engine used in dev still communicates with the remote Postgres database.
 
-In `coursetable/api`, we only manage the `express` and `graphql-engine` containers. We do provide development versions of the `mysql` and `phpmyadmin` containers, which should mirror the setup used in prod, but the actual prod configuration is located at [`coursetable/infra/mysql`](https://github.com/coursetable/infra/blob/main/mysql/docker-compose.yml).
+In `coursetable/api`, we only manage the `express` and `graphql-engine` containers. We do provide development versions of the `mysql` and `phpmyadmin` containers, which should mirror the setup and table schema used in prod, but the actual prod configuration is located at [`coursetable/infra/mysql`](https://github.com/coursetable/infra/blob/main/mysql/docker-compose.yml).
 
 Here's the data flow for course data:
 
@@ -17,12 +17,12 @@ Here's the data flow for course data:
 2. Ferry then writes the data to a Postgres database on the prod server.
 3. The Postgres database exposes itself to the Internet.
 4. During development and prod, we spin up a Hasura engine that wraps the Postgres database and exposes a GraphQL API.
-5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder.
+5. The Express app queries the GraphQL API and generates static JSON again, located in the `api/static` folder. These are cached locally unless you run `./start.sh -d -o`.
 6. The frontend requests the Express endpoint, which serves these JSON files.
 
 And for user data:
 
-1. In dev, we always create a new MySQL database; in prod, we use the existing one.
+1. In dev, we always create a new MySQL database; in prod, we use the existing one. The table schema of both should be consistent with `api/mysql/database.sql`.
 2. The API directly connects to this database using Prisma.
 3. The frontend requests the Express endpoint, which then makes DB calls.
 4. If you want to make DB changes, you can do so directly from PHPMyAdmin.
