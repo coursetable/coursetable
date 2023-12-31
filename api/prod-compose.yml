@@ -1,8 +1,5 @@
 services:
   api:
-    build:
-      args:
-        - HOT_RELOAD=false
     restart: always
     ports:
       - '${INSECURE_PORT:-8039}:${INSECURE_PORT:-8039}'
