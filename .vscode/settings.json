@@ -18,7 +18,7 @@
   },
   "javascript.preferences.importModuleSpecifier": "relative",
   "typescript.preferences.importModuleSpecifier": "relative",
-  "typescript.tsdk": "frontend/node_modules/typescript/lib",
+  "typescript.tsdk": "node_modules/typescript/lib",
   "search.exclude": {
     "dist/**": true,
     "api/static": true,
