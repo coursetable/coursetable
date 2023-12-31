@@ -22,7 +22,7 @@ const courseLoadAttempted = new Set<Season>();
 let courseData: { [seasonCode: Season]: Map<Crn, Listing> } = {};
 const addToCache = (season: Season): Promise<void> =>
   courseDataLock.acquire(`load-${season}`, async () => {
-    if (season in courseData || courseLoadAttempted.has(season)) {
+    if (courseLoadAttempted.has(season)) {
       // Skip if already loaded, or if we previously tried to load it.
       return;
     }
@@ -79,12 +79,10 @@ export function FerryProvider({
 
   const requestSeasons = useCallback(
     async (seasons: Season[]) => {
-      if (!user.worksheet) return; // Not logged in
+      if (!user.hasEvals) return; // Not logged in / doesn't have evals
       const fetches = seasons.map(async (season) => {
-        // Racy preemptive check of cache.
-        // We cannot check courseLoadAttempted here, since that is set prior
-        // to the data actually being loaded.
-        if (season in courseData) return;
+        // As long as there is one request in progress, don't fire another
+        if (courseLoadAttempted.has(season)) return;
 
         // Add to cache.
         setRequests((r) => r + 1);
@@ -100,7 +98,7 @@ export function FerryProvider({
         setErrors((e) => [...e, err]);
       });
     },
-    [user.worksheet],
+    [user.hasEvals],
   );
 
   // If there's any error, we want to immediately stop "loading" and start
