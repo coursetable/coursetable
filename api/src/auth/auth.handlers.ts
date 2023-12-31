@@ -92,6 +92,7 @@ export const passportConfig = (
         winston.info("Getting user's enrollment status from Yalies.io");
         try {
           const data = (await fetch('https://yalies.io/api/people', {
+            method: 'POST',
             headers: {
               Authorization: `Bearer ${YALIES_API_KEY}`,
               'Content-Type': 'application/json',
