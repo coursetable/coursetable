@@ -8,9 +8,10 @@ import 'rc-tooltip/assets/bootstrap.css';
 import styles from './Search.module.css';
 import Results from '../components/Search/Results';
 import {
-  skillsAreasOptions,
-  schoolOptions,
-  subjectOptions,
+  skillsAreas,
+  skillsAreasColors,
+  schools,
+  subjects,
 } from '../utilities/constants';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import CustomSelect from '../components/CustomSelect';
@@ -193,7 +194,16 @@ function Search() {
                     <CustomSelect<Option, true>
                       isMulti
                       value={selectSkillsAreas}
-                      options={skillsAreasOptions}
+                      options={['Areas', 'Skills'].map((type) => ({
+                        label: type,
+                        options: Object.entries(
+                          skillsAreas[type.toLowerCase() as 'areas' | 'skills'],
+                        ).map(([code, name]) => ({
+                          label: `${code} - ${name}`,
+                          value: code,
+                          color: skillsAreasColors[code],
+                        })),
+                      }))}
                       placeholder="All Skills/Areas"
                       useColors
                       // Prevent overlap with tooltips
@@ -208,7 +218,10 @@ function Search() {
                   <CustomSelect
                     isMulti
                     value={selectCredits}
-                    options={creditOptions}
+                    options={credits.map((credit) => ({
+                      label: String(credit),
+                      value: credit,
+                    }))}
                     placeholder="All Credits"
                     // prevent overlap with tooltips
                     menuPortalTarget={document.body}
@@ -222,7 +235,10 @@ function Search() {
                     <CustomSelect<Option, true>
                       isMulti
                       value={selectSubjects}
-                      options={subjectOptions}
+                      options={Object.entries(subjects).map(([code, name]) => ({
+                        label: `${code} - ${name}`,
+                        value: code,
+                      }))}
                       placeholder="All Subjects"
                       isSearchable
                       // Prevent overlap with tooltips
@@ -237,7 +253,10 @@ function Search() {
                     <CustomSelect<Option, true>
                       isMulti
                       value={selectSchools}
-                      options={schoolOptions}
+                      options={Object.entries(schools).map(([code, name]) => ({
+                        label: name,
+                        value: code,
+                      }))}
                       placeholder="All Schools"
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
