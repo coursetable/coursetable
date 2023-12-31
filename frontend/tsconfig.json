@@ -1,16 +1,10 @@
 {
-  "extends": "tsconfig-jc",
+  "extends": "..",
   "compilerOptions": {
-    // TODO: this config is copied from the root config, because the api is
-    // copied to its own docker. We need to copy the file dependencies in the
-    // root too.
-    "noEmit": true,
     "target": "esnext",
     "lib": ["dom", "dom.iterable", "esnext"],
     "module": "esnext",
     "moduleResolution": "bundler",
-    "exactOptionalPropertyTypes": false,
-    "noUncheckedIndexedAccess": false,
     // We use ESLint for this
     "allowUnreachableCode": true,
     "jsx": "react",
