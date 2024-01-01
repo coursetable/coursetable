@@ -127,7 +127,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    bun install
    ```
 
-   This installs dependencies needed by all projects in this monorepo. You should not install dependencies in any subdirectory.
+   This installs dependencies needed by all projects in this monorepo. You should not need to install dependencies in any subdirectory. (But, new dependencies should generally be installed to subfolders instead of the root, unless it's a linting dependency.)
 
 1. Initialize Doppler.
 
