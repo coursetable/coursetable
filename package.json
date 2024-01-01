@@ -18,7 +18,7 @@
     "lint:check": "eslint \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
     "resize-image": "bun scripts/resize-image.mts",
     "resize-image:check": "bun scripts/resize-image.mts --test",
-    "postinstall": "cd node_modules/sharp && bun install && patch-package"
+    "postinstall": "patch-package && cd node_modules/sharp && bun install"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",

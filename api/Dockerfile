@@ -25,6 +25,9 @@ RUN cd /temp/dev && bun install --frozen-lockfile
 FROM runtime AS final
 RUN mkdir -p api/static/catalogs
 COPY --from=install /temp/dev/node_modules node_modules
-COPY api api
-COPY tsconfig.json .
+# Avoid copying static folder / anything else unneeded
+COPY api/src/ ./api/src/
+COPY api/prisma/ ./api/prisma/
+COPY api/entry.sh api/package.json api/tsconfig.json ./api/
+COPY tsconfig.json ./
 ENTRYPOINT ["./api/entry.sh"]

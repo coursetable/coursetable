@@ -127,7 +127,7 @@ Note: if you run into issues, check the troubleshooting section at the bottom.
    bun install
    ```
 
-   This only installs [linting dependencies](#fixing-linting-errors). Actual dependencies for running the backend and frontend are installed when you start them respectively. You should install again whenever we had dependency upgrades (the `bun.lockb` file was changed); otherwise, as long as the `node_modules` directory exists, you don't need to run this command.
+   This installs dependencies needed by all projects in this monorepo. You should not install dependencies in any subdirectory.
 
 1. Initialize Doppler.
 
