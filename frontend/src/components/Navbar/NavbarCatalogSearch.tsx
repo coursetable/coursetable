@@ -316,7 +316,7 @@ export function NavbarCatalogSearch() {
 
   // Ctrl/cmd-f search hotkey
   const keyMap = {
-    FOCUS_SEARCH: ['ctrl+f', 'command+f'],
+    FOCUS_SEARCH: ['ctrl+s', 'command+s'],
   };
   const handlers = {
     FOCUS_SEARCH(e: KeyboardEvent | undefined) {
