@@ -4,6 +4,7 @@
   "version": "0.0.0",
   "license": "MIT",
   "workspaces": [
+    "api",
     "frontend"
   ],
   "scripts": {
@@ -17,7 +18,7 @@
     "lint:check": "eslint \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
     "resize-image": "bun scripts/resize-image.mts",
     "resize-image:check": "bun scripts/resize-image.mts --test",
-    "postinstall": "cd node_modules/sharp && bun install && patch-package"
+    "postinstall": "patch-package && cd node_modules/sharp && bun install"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",
@@ -38,6 +39,7 @@
     "patch-package": "^8.0.0",
     "prettier": "^3.1.1",
     "sharp": "^0.32.6",
-    "tsconfig-jc": "^2.3.1"
+    "tsconfig-jc": "^2.3.1",
+    "typescript": "~5.3.2"
   }
 }

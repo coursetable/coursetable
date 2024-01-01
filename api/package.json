@@ -1,4 +1,6 @@
 {
+  "name": "api",
+  "version": "0.0.0",
   "scripts": {
     "generate": "prisma generate",
     "prestart": "prisma generate",
@@ -42,8 +44,6 @@
     "prisma": "^5.7.1",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
-    "tsconfig-jc": "^2.3.1",
-    "typescript": "~5.3.2",
     "winston": "^3.11.0",
     "zod": "^3.22.4"
   }
