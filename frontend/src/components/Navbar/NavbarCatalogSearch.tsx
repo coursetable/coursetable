@@ -314,9 +314,9 @@ export function NavbarCatalogSearch() {
     return styles;
   }, [isLgDesktop]);
 
-  // Ctrl/cmd-f search hotkey
+  // Ctrl/cmd-s search hotkey
   const keyMap = {
-    FOCUS_SEARCH: ['ctrl+f', 'command+f'],
+    FOCUS_SEARCH: ['ctrl+s', 'command+s'],
   };
   const handlers = {
     FOCUS_SEARCH(e: KeyboardEvent | undefined) {
