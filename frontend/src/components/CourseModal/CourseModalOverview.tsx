@@ -451,7 +451,22 @@ function CourseModalOverview({
           </Col>
         </Row>
       );
-      overlapSections[type].push(evalBox);
+
+      // Add evalBox to the relevant sections based on overlap conditions, add to all 3 if both
+      if (isBothOverlap) {
+        // If both course and professor overlap, add to all three categories
+        overlapSections.both.push(evalBox);
+        overlapSections.course.push(evalBox);
+        overlapSections.professor.push(evalBox);
+      } else {
+        // Otherwise, add to either course or professor categories as applicable
+        if (isCourseOverlap) {
+          overlapSections.course.push(evalBox);
+        }
+        if (isProfOverlap) {
+          overlapSections.professor.push(evalBox);
+        }
+      }
     });
     return overlapSections;
   }, [data, setSeason, listing, overlappingProfs]);
