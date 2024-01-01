@@ -1,4 +1,4 @@
-import appRoot from 'app-root-path';
+import path from 'path';
 import winston from 'winston';
 
 const levels = {
@@ -45,7 +45,7 @@ const transports = [
 
   // Error-only file logs
   new winston.transports.File({
-    filename: `${appRoot}/src/logs/error.log`,
+    filename: path.join(__dirname, '../../logs/error.log'),
     level: 'error',
     maxsize: 5242880, // 5MB
     maxFiles: 10,
@@ -54,7 +54,7 @@ const transports = [
 
   // All logs
   new winston.transports.File({
-    filename: `${appRoot}/src/logs/all.log`,
+    filename: path.join(__dirname, '../../logs/all.log'),
     maxsize: 5242880, // 5MB
     maxFiles: 10,
     handleExceptions: true, // Log unhandled exceptions

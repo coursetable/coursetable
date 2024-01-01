@@ -4,7 +4,7 @@ services:
     ports:
       - '${INSECURE_PORT:-8039}:${INSECURE_PORT:-8039}'
     volumes:
-      - ../api/src:/usr/src/app/src
+      - ./src:/usr/src/app/api/src
     environment:
       NODE_ENV: production
       HOT_RELOAD: 'false'
