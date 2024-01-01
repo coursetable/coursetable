@@ -15,7 +15,7 @@ Coursetable is made of two big parts:
 
 The various functions of the website are compartmentalized as follows:
 
-- `/api`: Source code for Express server with Docker Compose configuration for backend logic.
+- [`/api`](https://github.com/coursetable/coursetable/blob/master/docs/api.md): Source code for Express server with Docker Compose configuration for backend logic.
 - `/frontend`: The current face of the site, built with React.
 - `/sysadmin`: Administration scripts and bootstrapping tools.
 
