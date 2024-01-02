@@ -10,7 +10,7 @@ RUN apt-get update -y && apt-get install -y openssl
 # TODO: get rid of this
 RUN apt-get update -y && apt-get install -y curl
 RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-    && . /usr/local/nvm/nvm.sh \
+    && . ~/.nvm/nvm.sh \
     && nvm install node \
     && nvm use node
 
