@@ -20,9 +20,9 @@ jobs:
         id: diff_check
         run: |
           if MY_VAR=$(git diff --name-only HEAD~1 HEAD | grep "^frontend/"); then
-            echo "::set-output name=status::continue"
+            echo "status=continue" >> $GITHUB_OUTPUT
           else
-            echo "::set-output name=status::skip"
+            echo "status=skip" >> $GITHUB_OUTPUT
           fi
   frontend-build-and-deploy:
     environment:
