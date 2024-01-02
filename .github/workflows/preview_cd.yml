@@ -11,15 +11,19 @@ jobs:
   frontend_diff_check:
     runs-on: ubuntu-latest
     outputs:
-      status: ${{ steps.diff_check.conclusion }}
+      status: ${{ steps.diff_check.outputs.status}}
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: '2'
       - name: Check for Frontend Diff
         id: diff_check
-        run: git diff --name-only HEAD~1 HEAD | grep "^frontend/"
-
+        run: |
+          if MY_VAR=$(git diff --name-only HEAD~1 HEAD | grep "^frontend/"); then
+            echo "::set-output name=status::continue"
+          else
+            echo "::set-output name=status::skip"
+          fi
   frontend-build-and-deploy:
     environment:
       name: Preview
@@ -27,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: [frontend_diff_check]
-    if: needs.frontend_diff_check.outputs.status == 'success'
+    if: needs.frontend_diff_check.outputs.status == 'continue'
 
     steps:
       - uses: actions/checkout@v4
