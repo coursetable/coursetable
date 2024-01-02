@@ -67,7 +67,7 @@ jobs:
     name: Preview Comment
     runs-on: ubuntu-latest
 
-    needs: [frontend_build_and_deploy]
+    needs: [frontend-build-and-deploy]
     if: github.event.action == 'synchronize'
 
     permissions:
