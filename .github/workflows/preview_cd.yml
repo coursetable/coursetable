@@ -9,6 +9,7 @@ on:
 
 jobs:
   frontend_diff_check:
+    name: Frontend Diff Check
     runs-on: ubuntu-latest
     outputs:
       status: ${{ steps.diff_check.outputs.status}}
@@ -25,6 +26,7 @@ jobs:
             echo "status=skip" >> $GITHUB_OUTPUT
           fi
   frontend-build-and-deploy:
+    name: Frontend Build and Deploy
     environment:
       name: Preview
       url: https://${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com
@@ -60,3 +62,25 @@ jobs:
         run: vercel build --token ${{ secrets.VERCEL_TOKEN }}
       - name: Deploy to Vercel and Alias Deployment
         run: .github/workflows/deployDomain.sh -t ${{ secrets.VERCEL_TOKEN }} -a ${{ env.sha_short }}-${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -b ${{ steps.encode_url_branch.outputs.result }}.preview.coursetable.com -d
+
+  comment:
+    name: Preview Comment
+    runs-on: ubuntu-latest
+
+    needs: [frontend_build_and_deploy]
+    if: github.event.action == 'synchronize'
+
+    permissions:
+      pull-requests: write
+
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const url_encoded_branch = "${{ github.head_ref }}".replace(/[^0-9a-zA-Z\-]+/g, "-").slice(-25).match(/^[0-9a-zA-Z][a-zA-Z0-9 \-\.]+$/)
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `Thanks for your pull request! The preview of your changes is available at https://${url_encoded_branch}.preview.coursetable.com.`
+            })
