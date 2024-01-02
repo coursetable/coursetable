@@ -14,8 +14,6 @@ jobs:
       status: ${{ steps.diff_check.conclusion }}
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.head_ref }}
       - name: Check for Frontend Diff
         id: diff_check
         run: git diff --name-only HEAD~1 HEAD | grep "^frontend/"
