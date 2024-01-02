@@ -9,6 +9,7 @@ on:
 
 jobs:
   frontend_diff_check:
+    runs-on: ubuntu-latest
     outputs:
       status: ${{ steps.diff_check.conclusion }}
     steps:
