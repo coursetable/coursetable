@@ -31,7 +31,7 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: [frontend_diff_check]
-    if: env.check == 'continue'
+    if: github.env.check == 'continue'
 
     steps:
       - uses: actions/checkout@v4
