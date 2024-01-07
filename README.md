@@ -4,7 +4,8 @@
 [![GitHub commit activity](https://img.shields.io/github/commit-activity/m/coursetable/coursetable?style=flat-square)](https://github.com/coursetable/coursetable/pulls)
 [![GitHub contributors](https://img.shields.io/github/contributors/coursetable/coursetable?style=flat-square)](https://github.com/coursetable/coursetable/graphs/contributors)
 [![HitCount](http://hits.dwyl.com/coursetable/coursetable.svg)](http://hits.dwyl.com/coursetable/coursetable)
-![healthchecks](https://healthchecks.io/badge/abfa6868-dc8b-41b8-a225-877c73/2kvk7-26-2.svg)
+[![healthchecks](https://img.shields.io/endpoint?url=https%3A%2F%2Fhealthchecks.io%2Fbadge%2Fabfa6868-dc8b-41b8-a225-877c73%2F2kvk7-26-2.shields&label=health%20checks
+)](https://healthchecks.io/badge/abfa6868-dc8b-41b8-a225-877c73/2kvk7-26-2.shields)
 
 [![Production CD](https://github.com/coursetable/coursetable/actions/workflows/cd.yml/badge.svg?branch=master)](https://github.com/coursetable/coursetable/actions/workflows/cd.yml)
 [![Staging CD](https://github.com/coursetable/coursetable/actions/workflows/staging_cd.yml/badge.svg?branch=master)](https://github.com/coursetable/coursetable/actions/workflows/staging_cd.yml)
