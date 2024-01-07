@@ -2,7 +2,7 @@
 # not the api folder
 
 # We need Node to run prisma generate. See https://github.com/oven-sh/bun/issues/3827
-# TODO: switch to oven/bun-node:slim
+# TODO: switch to oven/bun:slim
 FROM imbios/bun-node:latest-current-slim as base
 WORKDIR /usr/src/app
 # Install openssl for prisma
