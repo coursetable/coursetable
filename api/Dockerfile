@@ -1,18 +1,12 @@
 # Remember: the context for this build is the root of the monorepo,
 # not the api folder
 
-FROM oven/bun:slim as base
+# We need Node to run prisma generate. See https://github.com/oven-sh/bun/issues/3827
+# TODO: switch to oven/bun-node:slim
+FROM imbios/bun-node:latest-current-slim as base
 WORKDIR /usr/src/app
 # Install openssl for prisma
 RUN apt-get update -y && apt-get install -y openssl
-
-# We need Node to run prisma generate. See https://github.com/oven-sh/bun/issues/3827
-# TODO: get rid of this
-RUN apt-get install -y curl
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash \
-  && . ~/.nvm/nvm.sh \
-  && nvm install node \
-  && nvm use node
 
 FROM base as install
 

@@ -2,9 +2,9 @@
   "name": "api",
   "version": "0.0.0",
   "scripts": {
-    "generate": "prisma generate",
-    "start": "bun generate && bun --hot src/server.ts",
-    "start:prod": "bun generate && bun src/server.ts"
+    "generate": "bunx prisma generate",
+    "start": "bun --hot src/server.ts",
+    "start:prod": "bun src/server.ts"
   },
   "nodemonConfig": {
     "ignore": [
