@@ -312,14 +312,6 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                   </div>
                   {/* Sign in/out buttons. Show if mobile */}
                   <div className="d-md-none">
-                    <StyledDiv>
-                      <a
-                        href="https://old.coursetable.com/"
-                        style={{ color: 'inherit' }}
-                      >
-                        Old CourseTable
-                      </a>
-                    </StyledDiv>
                     {!isLoggedIn ? (
                       <StyledDiv
                         onClick={() => {
