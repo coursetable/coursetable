@@ -97,20 +97,13 @@ function App() {
   return (
     <>
       {/* Notice bar */}
-      <Notice>
-        Please{' '}
-        <a
-          href="https://students.yale.edu/oce-submissions/studentSubmission/index"
-          target="_blank"
-          rel="noreferrer"
-          style={{ color: 'white', textDecoration: 'underline' }}
-          onClick={() => {
-            Sentry.captureMessage('Course evals link clicked');
-          }}
-        >
-          fill out your course evals
-        </a>{' '}
-        — it's what powers this site! Help your peers make informed decisions 🤗
+      <Notice
+        // Increment for each new notice (though you don't need to change it
+        // when removing a notice), or users who previously dismissed the banner
+        // won't see the updated content.
+        id={1}
+      >
+        {/* Content */}
       </Notice>
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
