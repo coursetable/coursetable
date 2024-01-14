@@ -7,9 +7,8 @@ WORKDIR /usr/src/app
 RUN apt-get update -y && apt-get install -y openssl
 
 FROM base as install
-
 RUN mkdir -p /temp/dev/api /temp/dev/frontend
-COPY package.json bun.lockb /temp/dev/
+COPY package.json bun.lockb patches /temp/dev/
 COPY api/package.json /temp/dev/api/package.json
 COPY frontend/package.json /temp/dev/frontend/package.json
 RUN cd /temp/dev && bun install --frozen-lockfile
@@ -22,7 +21,6 @@ COPY api/prisma/ /temp/dev/prisma/
 RUN cd /temp/dev && npx prisma generate
 
 FROM base as release
-
 RUN mkdir -p api/static/catalogs
 # TODO: copy from install image
 COPY --from=prisma /temp/dev/node_modules node_modules
