@@ -251,7 +251,6 @@ export function Popout({
         {active && clearIcon ? (
           <ClearIcon
             className="ml-1"
-            // @ts-expect-error: probably a module resolution failure
             onClick={(e) => {
               // Prevent parent popout button onClick from firing and opening
               // dropdown
