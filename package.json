@@ -16,10 +16,13 @@
     "format:check": "prettier -l .",
     "lint": "eslint --fix \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
     "lint:check": "eslint \"**/*.{js,ts,jsx,tsx,mts,cts,mjs,cjs}\"",
-    "resize-image": "bun scripts/resize-image.mts",
-    "resize-image:check": "bun scripts/resize-image.mts --test",
-    "postinstall": "patch-package && cd node_modules/sharp && bun install"
+    "resize-image": "bun tools/resize-image.mts",
+    "resize-image:check": "bun tools/resize-image.mts --test",
+    "postinstall": "patch-package"
   },
+  "trustedDependencies": [
+    "sharp"
+  ],
   "devDependencies": {
     "@types/image-size": "^0.8.0",
     "@types/sharp": "^0.32.0",

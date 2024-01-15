@@ -9,9 +9,6 @@
     "start": "vite",
     "test": "vite test"
   },
-  "resolutions": {
-    "graphql-language-service-interface": "2.4.2-alpha.2"
-  },
   "dependencies": {
     "@apollo/client": "^3.8.9",
     "@graphiql/toolkit": "^0.9.1",
