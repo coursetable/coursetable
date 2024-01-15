@@ -272,7 +272,7 @@ function CourseModal() {
                                 // Go to overview page of this eval course
                                 setView('overview');
                                 const newListing = {
-                                  ...view[1]!.listing,
+                                  ...view[1].listing,
                                   eval: view[1],
                                 };
                                 setListings([...listings, newListing]);
