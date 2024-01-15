@@ -18,6 +18,9 @@ ignores:
   # This is actually unused, but we keep it just in case you want to use it
   - core-js
 
+  # This import is produced by the MDX loader
+  - '@mdx-js/react'
+
   # TODO: these are used, but the files they use contain instantiation
   # expressions which depcheck cannot parse. Remove this in ~6mo
   - react-hotkeys

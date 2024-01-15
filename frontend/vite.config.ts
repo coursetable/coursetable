@@ -33,8 +33,8 @@ function parseMarkdownHeadingId(heading: string): {
   const matches = customHeadingIdRegex.exec(heading);
   if (matches) {
     return {
-      text: heading.replace(matches[0]!, ''),
-      id: matches.groups!.id!,
+      text: heading.replace(matches[0], ''),
+      id: matches.groups!.id,
     };
   }
   return { text: heading, id: undefined };
