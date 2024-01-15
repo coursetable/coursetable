@@ -139,7 +139,8 @@ function toGCalEvent({
       timeZone: 'America/New_York',
     },
     recurrence,
-    colorId: (colorIndex + 1).toString(),
+    // Cycle the ID because each calendar only has a fixed set of colors
+    colorId: ((colorIndex % 11) + 1).toString(),
     description,
     location,
   };
