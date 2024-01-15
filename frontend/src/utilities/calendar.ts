@@ -139,7 +139,7 @@ function toGCalEvent({
       timeZone: 'America/New_York',
     },
     recurrence,
-    colorId: (colorIndex + 1).toString(),
+    colorId: ((colorIndex % 11) + 1).toString(),
     description,
     location,
   };
