@@ -1,6 +1,7 @@
 {
   "name": "frontend",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "build": "vite build",
     "clean": "rm -rf build node_modules package-lock.json # Needed for build-size report to work",
@@ -12,6 +13,7 @@
   "dependencies": {
     "@apollo/client": "^3.8.9",
     "@graphiql/toolkit": "^0.9.1",
+    "@mdx-js/react": "^3.0.0",
     "@sentry/react": "^7.93.0",
     "async-lock": "^1.4.1",
     "body-scroll-lock": "^3.1.5",
@@ -51,6 +53,7 @@
     "@graphql-codegen/typescript": "^4.0.1",
     "@graphql-codegen/typescript-operations": "^4.0.1",
     "@graphql-codegen/typescript-react-apollo": "^4.1.0",
+    "@mdx-js/rollup": "^3.0.0",
     "@types/async-lock": "^1.4.2",
     "@types/body-scroll-lock": "^3.1.2",
     "@types/chroma-js": "^2.4.3",
@@ -70,8 +73,11 @@
     "@types/uuid": "^9.0.7",
     "@vitejs/plugin-basic-ssl": "^1.0.2",
     "@vitejs/plugin-react": "^4.2.1",
+    "mdast-util-to-string": "^4.0.0",
+    "remark-gfm": "^4.0.0",
     "rollup-plugin-visualizer": "^5.12.0",
     "typescript-plugin-css-modules": "^5.0.2",
+    "unist-util-visit": "^5.0.0",
     "vite": "^5.0.11",
     "vite-plugin-html": "^3.2.1"
   }
