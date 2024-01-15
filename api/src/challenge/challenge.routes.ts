@@ -1,8 +1,8 @@
 import type express from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { requestChallenge, verifyChallenge } from './challenge.handlers';
-import { authBasic } from '../auth/auth.handlers';
+import { requestChallenge, verifyChallenge } from './challenge.handlers.js';
+import { authBasic } from '../auth/auth.handlers.js';
 
 /**
  * Set up challenge routes.

@@ -1,6 +1,7 @@
 {
   "name": "api",
   "version": "0.0.0",
+  "type": "module",
   "scripts": {
     "generate": "prisma generate",
     "prestart": "prisma generate",

@@ -1,13 +1,9 @@
-/**
- * @file Handlers for working with user accounts.
- */
-
 import type express from 'express';
 import z from 'zod';
 
-import winston from '../logging/winston';
+import winston from '../logging/winston.js';
 
-import { prisma } from '../config';
+import { prisma } from '../config.js';
 
 const ToggleBookmarkReqBodySchema = z.object({
   action: z.union([z.literal('add'), z.literal('remove')]),

@@ -1,7 +1,3 @@
-/**
- * @file Routes for handling friends.
- */
-
 import type express from 'express';
 import asyncHandler from 'express-async-handler';
 
@@ -12,8 +8,8 @@ import {
   requestAddFriend,
   getRequestsForFriend,
   getNames,
-} from './friends.handlers';
-import { authBasic } from '../auth/auth.handlers';
+} from './friends.handlers.js';
+import { authBasic } from '../auth/auth.handlers.js';
 
 /**
  * Set up friend routes.

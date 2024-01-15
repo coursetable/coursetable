@@ -1,7 +1,7 @@
 import type express from 'express';
 import asyncHandler from 'express-async-handler';
 
-import { cannyIdentify } from './canny.handlers';
+import { cannyIdentify } from './canny.handlers.js';
 
 /**
  * Set up Canny routes.

@@ -14,20 +14,20 @@ import {
   SESSION_SECRET,
   CORS_OPTIONS,
   STATIC_FILE_DIR,
-} from './config';
-import morgan from './logging/morgan';
-import winston from './logging/winston';
+} from './config.js';
+import morgan from './logging/morgan.js';
+import winston from './logging/winston.js';
 
 // Import routes
-import catalog from './catalog/catalog.routes';
-import { authWithEvals, passportConfig } from './auth/auth.handlers';
-import casAuth from './auth/auth.routes';
-import friends from './friends/friends.routes';
-import canny from './canny/canny.routes';
-import user from './user/user.routes';
-import challenge from './challenge/challenge.routes';
+import catalog from './catalog/catalog.routes.js';
+import { authWithEvals, passportConfig } from './auth/auth.handlers.js';
+import casAuth from './auth/auth.routes.js';
+import friends from './friends/friends.routes.js';
+import canny from './canny/canny.routes.js';
+import user from './user/user.routes.js';
+import challenge from './challenge/challenge.routes.js';
 
-import { fetchCatalog } from './catalog/catalog.utils';
+import { fetchCatalog } from './catalog/catalog.utils.js';
 
 Sentry.init({
   dsn: 'https://9360fd2ff7f24865b74e92602d0a1a30@o476134.ingest.sentry.io/5665141',

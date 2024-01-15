@@ -1,6 +1,9 @@
-import gql from 'graphql-tag';
+import _gql from 'graphql-tag';
 
-import { NUM_CHALLENGE_COURSES } from '../config';
+import { NUM_CHALLENGE_COURSES } from '../config.js';
+
+// TODO: https://arethetypeswrong.github.io/?p=graphql-tag%402.12.6
+const gql = _gql as unknown as typeof import('graphql-tag').default;
 
 // Query for selecting courses to test
 export const requestEvalsQuery = gql`

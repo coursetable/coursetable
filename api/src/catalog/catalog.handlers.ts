@@ -1,11 +1,7 @@
-/**
- * @file Catalog fetch scripts.
- */
-
 import type express from 'express';
-import { FERRY_SECRET } from '../config';
-import winston from '../logging/winston';
-import { fetchCatalog } from './catalog.utils';
+import { FERRY_SECRET } from '../config.js';
+import winston from '../logging/winston.js';
+import { fetchCatalog } from './catalog.utils.js';
 
 /**
  * Middleware to verify request headers

@@ -1,6 +1,6 @@
 import morgan, { type StreamOptions } from 'morgan';
 
-import winston from './winston';
+import winston from './winston.js';
 
 // Override the stream method by telling Morgan to use our custom logger instead
 // of the console.log.

@@ -1,7 +1,7 @@
 import type express from 'express';
 
-import { casLogin } from './auth.handlers';
-import winston from '../logging/winston';
+import { casLogin } from './auth.handlers.js';
+import winston from '../logging/winston.js';
 
 /**
  * Set up authentication routes.

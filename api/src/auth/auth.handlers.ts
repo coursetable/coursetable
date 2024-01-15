@@ -6,8 +6,8 @@ import type express from 'express';
 import passport from 'passport';
 import { Strategy as CasStrategy } from 'passport-cas';
 
-import winston from '../logging/winston';
-import { YALIES_API_KEY, prisma } from '../config';
+import winston from '../logging/winston.js';
+import { YALIES_API_KEY, prisma } from '../config.js';
 
 // TODO: we should not be handwriting this. https://github.com/Yalies/api/issues/216
 export type YaliesResponse =

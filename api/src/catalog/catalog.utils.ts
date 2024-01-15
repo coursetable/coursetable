@@ -5,9 +5,9 @@
 import fs from 'fs';
 import { request } from 'graphql-request';
 
-import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
-import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
-import winston from '../logging/winston';
+import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries.js';
+import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config.js';
+import winston from '../logging/winston.js';
 
 export type Seasons = {
   seasons: {
