@@ -14,13 +14,20 @@ function WorksheetList() {
   const [isListView, setIsListView] = useState(true);
   const { courses, worksheetLoading } = useWorksheet();
 
-  const { ordering, numFriends, isLoggedIn } = useSearch();
+  const {
+    filters: { selectSortby, sortOrder },
+    numFriends,
+    isLoggedIn,
+  } = useSearch();
 
   const WorksheetData = useMemo(
     () =>
-      // Apply sorting order.
-      sortCourses(courses, ordering, numFriends),
-    [ordering, courses, numFriends],
+      sortCourses(
+        courses,
+        { key: selectSortby.value.value, type: sortOrder.value },
+        numFriends,
+      ),
+    [selectSortby, sortOrder, courses, numFriends],
   );
 
   return (

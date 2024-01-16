@@ -12,7 +12,7 @@ export const GRAPHQL_API_ENDPOINT = isDev
 export const CUR_SEASON = '202401' as Season;
 
 // Courses in the current year have no evaluations yet
-export const CUR_YEAR = ['202303', '202401'] as Season[];
+export const CUR_YEAR = ['202401', '202402'] as Season[];
 
 // We use this format to avoid dealing with time zones.
 // TODO: this should be a Temporal.ZonedDateTime

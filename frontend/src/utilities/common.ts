@@ -61,16 +61,15 @@ export type Listing = Omit<RawListingResponse, keyof ListingOverrides> &
   ListingOverrides &
   ListingAugments;
 
-export function isEqual(a: readonly unknown[], b: []): boolean;
-export function isEqual(a: [], b: readonly unknown[]): boolean;
-export function isEqual<T extends string | number | boolean>(
-  a: readonly T[],
-  b: readonly T[],
-): boolean;
-export function isEqual<T extends string | number | boolean>(
-  a: readonly T[],
-  b: readonly T[],
-) {
-  if (a.length !== b.length) return false;
-  return a.every((x, i) => b[i] === x);
+export function isEqual<T>(a: T, b: T): boolean {
+  if (Array.isArray(a) && Array.isArray(b)) {
+    if (a.length !== b.length) return false;
+    return a.every((x, i) => isEqual(b[i], x));
+  } else if (a && typeof a === 'object' && b && typeof b === 'object') {
+    const aKeys = Object.keys(a);
+    const bKeys = Object.keys(b);
+    if (aKeys.length !== bKeys.length) return false;
+    return aKeys.every((key) => isEqual(a[key as never], b[key as never]));
+  }
+  return a === b;
 }

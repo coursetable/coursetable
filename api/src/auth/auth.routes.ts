@@ -10,8 +10,9 @@ import winston from '../logging/winston';
 export default (app: express.Express): void => {
   // Endpoint to print out user access
   app.get('/api/auth/check', (req, res) => {
-    if (req.user) res.json({ auth: true, id: req.user.netId, user: req.user });
-    else res.json({ auth: false, id: null, user: null });
+    if (req.user)
+      res.json({ auth: true, netId: req.user.netId, user: req.user });
+    else res.json({ auth: false, netId: null, user: null });
   });
 
   // CAS portal redirects

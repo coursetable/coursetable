@@ -3,14 +3,11 @@ import { Row } from 'react-bootstrap';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
 import type { Crn } from '../../utilities/common';
-import {
-  questions,
-  graphLabels,
-  graphTitles,
-  questionText,
-} from '../../utilities/constants';
+import { evalQuestions } from '../../utilities/constants';
 import { TextComponent } from '../StyledComponents';
 import type { SearchEvaluationNarrativesQuery } from '../../generated/graphql';
+
+const questions = Object.keys(evalQuestions) as (keyof typeof evalQuestions)[];
 
 /**
  * Displays Evaluation Graphs
@@ -39,26 +36,20 @@ function EvaluationRatings({
   });
 
   // Dictionary with ratings for each question
-  const filteredRatings: {
-    assessment: number[];
-    workload: number[];
-    engagement: number[];
-    organized: number[];
-    feedback: number[];
-    challenge: number[];
-    major: number[];
-  } = {
+  const filteredRatings: { [code in keyof typeof evalQuestions]: number[] } = {
     assessment: [],
     workload: [],
     engagement: [],
     organized: [],
     feedback: [],
     challenge: [],
-    major: [],
   };
   // Populate the lists above
   ratings.forEach((rating) => {
     questions.forEach((question) => {
+      // TODO: this logic is too hacky. We shouldn't be comparing a question
+      // text to an abstract code. Instead, let GraphQL return the code directly
+      // (Which is going to save some network bandwidth too!)
       if (rating.question.includes(question))
         filteredRatings[question] = rating.values;
     });
@@ -69,15 +60,17 @@ function EvaluationRatings({
     .map((question) => (
       <div key={question}>
         <Row className="mx-auto mb-1 pl-1 justify-content-center">
-          <strong>{graphTitles[question]}</strong>
+          <strong>{evalQuestions[question].title}</strong>
           <small className={`${styles.questionText} text-center`}>
-            <TextComponent type={1}>{questionText[question]}</TextComponent>
+            <TextComponent type={1}>
+              {evalQuestions[question].question}
+            </TextComponent>
           </small>
         </Row>
         <RatingsGraph
           ratings={filteredRatings[question]}
-          reverse={question === 'major' || question === 'workload'}
-          labels={graphLabels[question]}
+          reverse={question === 'workload' || question === 'challenge'}
+          labels={evalQuestions[question].labels}
         />
       </div>
     ));

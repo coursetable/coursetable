@@ -1,11 +1,12 @@
+version: '3'
 services:
   api:
     ports:
       - '${SECURE_PORT:-3001}:${SECURE_PORT:-3001}'
     volumes:
-      - ../api/static:/usr/src/app/static
-      - ../api/src:/usr/src/app/src
-      - ../api/prisma:/usr/src/app/prisma
+      - ./static:/usr/src/app/api/static
+      - ./src:/usr/src/app/api/src
+      - ./prisma:/usr/src/app/api/prisma
     environment:
       OVERWRITE_CATALOG: ${OVERWRITE_CATALOG:-'false'}
       HOT_RELOAD: ${HOT_RELOAD:-'true'}

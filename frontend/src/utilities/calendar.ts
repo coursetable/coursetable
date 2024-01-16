@@ -125,7 +125,6 @@ function toGCalEvent({
   recurrence,
   description,
   location,
-  colorIndex,
 }: CalendarEvent) {
   return {
     id: `coursetable${uuidv4().replace(/-/gu, '')}`,
@@ -139,7 +138,6 @@ function toGCalEvent({
       timeZone: 'America/New_York',
     },
     recurrence,
-    colorId: (colorIndex + 1).toString(),
     description,
     location,
   };

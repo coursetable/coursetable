@@ -1,24 +1,26 @@
 import React, { useState, useEffect } from 'react';
 import { FaTimes } from 'react-icons/fa';
-import * as Sentry from '@sentry/react';
 import { createLocalStorageSlot } from '../utilities/browserStorage';
 import styles from './Notice.module.css';
 import { StyledBanner } from './StyledComponents';
 
-// Increment for each new notice, or users who previously dismissed the banner
-// won't see it
-const key = 1;
 const storage = createLocalStorageSlot<number>('lastDismissedBanner');
 
 /**
  * Notice banner at the top of the website
  */
-function Notice({ children }: { readonly children?: React.ReactNode }) {
+function Notice({
+  children,
+  id,
+}: {
+  readonly children?: React.ReactNode;
+  readonly id: number;
+}) {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
     const lastDismissed = storage.get();
-    if (lastDismissed === key) setVisible(false);
-  }, []);
+    if (lastDismissed === id) setVisible(false);
+  }, [id]);
 
   if (!visible || !children) return null;
   return (
@@ -32,8 +34,7 @@ function Notice({ children }: { readonly children?: React.ReactNode }) {
         className={styles.closeButton}
         onClick={() => {
           setVisible(false);
-          storage.set(key);
-          Sentry.captureMessage('Course evals banner dismissed');
+          storage.set(id);
         }}
       >
         <FaTimes style={{ display: 'block' }} />

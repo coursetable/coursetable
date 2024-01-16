@@ -8,9 +8,10 @@ import 'rc-tooltip/assets/bootstrap.css';
 import styles from './Search.module.css';
 import Results from '../components/Search/Results';
 import {
-  skillsAreasOptions,
-  schoolOptions,
-  subjectOptions,
+  skillsAreas,
+  skillsAreasColors,
+  schools,
+  subjects,
 } from '../utilities/constants';
 import { useWindowDimensions } from '../contexts/windowDimensionsContext';
 import CustomSelect from '../components/CustomSelect';
@@ -48,18 +49,20 @@ function Search() {
 
   // Get search context data
   const {
-    searchText,
-    selectSubjects,
-    selectSkillsAreas,
-    overallBounds,
-    workloadBounds,
-    selectSeasons,
-    selectSchools,
-    hideCancelled,
-    hideConflicting,
-    hideFirstYearSeminars,
-    hideGraduateCourses,
-    hideDiscussionSections,
+    filters: {
+      searchText,
+      selectSubjects,
+      selectSkillsAreas,
+      overallBounds,
+      workloadBounds,
+      selectSeasons,
+      selectSchools,
+      hideCancelled,
+      hideConflicting,
+      hideFirstYearSeminars,
+      hideGraduateCourses,
+      hideDiscussionSections,
+    },
     seasonsOptions,
     coursesLoading,
     searchData,
@@ -67,20 +70,6 @@ function Search() {
     resetKey,
     isLoggedIn,
     numFriends,
-    setSearchText,
-    setSelectSubjects,
-    setSelectSkillsAreas,
-    setOverallBounds,
-    setOverallValueLabels,
-    setWorkloadBounds,
-    setWorkloadValueLabels,
-    setSelectSeasons,
-    setSelectSchools,
-    setHideCancelled,
-    setHideConflicting,
-    setHideFirstYearSeminars,
-    setHideGraduateCourses,
-    setHideDiscussionSections,
     handleResetFilters,
   } = useSearch();
 
@@ -155,10 +144,10 @@ function Search() {
                     <InputGroup className={styles.search_input}>
                       <StyledInput
                         type="text"
-                        value={searchText}
+                        value={searchText.value}
                         onChange={(
                           event: React.ChangeEvent<HTMLInputElement>,
-                        ) => setSearchText(event.target.value)}
+                        ) => searchText.set(event.target.value)}
                         placeholder="Search by course code, title, or prof"
                       />
                     </InputGroup>
@@ -175,13 +164,13 @@ function Search() {
                     {seasonsOptions && (
                       <CustomSelect<Option, true>
                         isMulti
-                        value={selectSeasons}
+                        value={selectSeasons.value}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
                         // Prevent overlap with tooltips
                         menuPortalTarget={document.body}
                         onChange={(selectedOption) =>
-                          setSelectSeasons(asWritable(selectedOption))
+                          selectSeasons.set(asWritable(selectedOption))
                         }
                       />
                     )}
@@ -192,43 +181,41 @@ function Search() {
                   >
                     <CustomSelect<Option, true>
                       isMulti
-                      value={selectSkillsAreas}
-                      options={skillsAreasOptions}
+                      value={selectSkillsAreas.value}
+                      options={['Areas', 'Skills'].map((type) => ({
+                        label: type,
+                        options: Object.entries(
+                          skillsAreas[type.toLowerCase() as 'areas' | 'skills'],
+                        ).map(([code, name]) => ({
+                          label: `${code} - ${name}`,
+                          value: code,
+                          color: skillsAreasColors[code],
+                        })),
+                      }))}
                       placeholder="All Skills/Areas"
                       useColors
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption) =>
-                        setSelectSkillsAreas(asWritable(selectedOption))
+                        selectSkillsAreas.set(asWritable(selectedOption))
                       }
                     />
                   </div>
-                  {/* Course Credit Multi-Select */}
-                  {/* <div className={`col-md-12 p-0 ${styles.selector_container}`}>
-                  <CustomSelect
-                    isMulti
-                    value={selectCredits}
-                    options={creditOptions}
-                    placeholder="All Credits"
-                    // prevent overlap with tooltips
-                    menuPortalTarget={document.body}
-                    onChange={(selectedOption) => {
-                      setSelectCredits(selectedOption);
-                    }}
-                  />
-                </div> */}
                   {/* Yale Subjects Multi-Select */}
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect<Option, true>
                       isMulti
-                      value={selectSubjects}
-                      options={subjectOptions}
+                      value={selectSubjects.value}
+                      options={Object.entries(subjects).map(([code, name]) => ({
+                        label: `${code} - ${name}`,
+                        value: code,
+                      }))}
                       placeholder="All Subjects"
                       isSearchable
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption) =>
-                        setSelectSubjects(asWritable(selectedOption))
+                        selectSubjects.set(asWritable(selectedOption))
                       }
                     />
                   </div>
@@ -236,13 +223,16 @@ function Search() {
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
                     <CustomSelect<Option, true>
                       isMulti
-                      value={selectSchools}
-                      options={schoolOptions}
+                      value={selectSchools.value}
+                      options={Object.entries(schools).map(([code, name]) => ({
+                        label: name,
+                        value: code,
+                      }))}
                       placeholder="All Schools"
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption) => {
-                        setSelectSchools(asWritable(selectedOption));
+                        selectSchools.set(asWritable(selectedOption));
                       }}
                     />
                   </div>
@@ -253,16 +243,13 @@ function Search() {
                   <Col>
                     <Container style={{ paddingTop: '1px' }}>
                       <Range
-                        min={defaultFilters.defaultRatingBounds[0]}
-                        max={defaultFilters.defaultRatingBounds[1]}
+                        min={defaultFilters.overallBounds[0]}
+                        max={defaultFilters.overallBounds[1]}
                         step={0.1}
                         key={resetKey}
-                        defaultValue={overallBounds}
-                        onChange={(value) => {
-                          setOverallValueLabels(value);
-                        }}
+                        defaultValue={overallBounds.value}
                         onAfterChange={(value) => {
-                          setOverallBounds(value);
+                          overallBounds.set(value);
                         }}
                         handle={({ value, dragging, ...e }) => (
                           // @ts-expect-error: TODO upgrade rc-slider
@@ -283,16 +270,13 @@ function Search() {
                   <Col>
                     <Container>
                       <Range
-                        min={defaultFilters.defaultRatingBounds[0]}
-                        max={defaultFilters.defaultRatingBounds[1]}
+                        min={defaultFilters.workloadBounds[0]}
+                        max={defaultFilters.workloadBounds[1]}
                         step={0.1}
                         key={resetKey}
-                        defaultValue={workloadBounds}
-                        onChange={(value) => {
-                          setWorkloadValueLabels(value);
-                        }}
+                        defaultValue={workloadBounds.value}
                         onAfterChange={(value) => {
-                          setWorkloadBounds(value);
+                          workloadBounds.set(value);
                         }}
                         handle={({ value, dragging, ...e }) => (
                           // @ts-expect-error: TODO upgrade rc-slider
@@ -312,63 +296,6 @@ function Search() {
                     </div>
                   </Col>
                 </Row>
-                {/* Omitting advanced range filters for mobile */}
-                {/* // Time slider
-                <Row className={`mx-auto pt-0 pb-0 px-2 ${styles.sliders}`}>
-                  <Col>
-                    <Container>
-                      <Range
-                        min={toRangeTime(defaultFilters.defaultTimeBounds[0])}
-                        max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
-                        step={1}
-                        key={resetKey}
-                        defaultValue={timeBounds.map(toRangeTime)}
-                        onChange={(value) => {
-                          setTimeValueLabels(value.map(toRealTime));
-                        }}
-                        onAfterChange={(value) => {
-                          setTimeBounds(value.map(toRealTime));
-                        }}
-                        handle={timeSliderHandle}
-                        className={styles.slider}
-                      />
-                    </Container>
-                    <div className={`text-center ${styles.filter_title}`}>
-                      Time
-                    </div>
-                  </Col>
-                </Row>
-                // Enrollment slider
-                <Row className={`mx-auto pt-0 pb-0 px-2 ${styles.sliders}`}>
-                  <Col>
-                    <Container>
-                      <Range
-                        min={Math.round(
-                          toLinear(defaultFilters.defaultEnrollBounds[0])
-                        )}
-                        max={Math.round(
-                          toLinear(defaultFilters.defaultEnrollBounds[1])
-                        )}
-                        step={10}
-                        key={resetKey}
-                        defaultValue={enrollBounds.map(toLinear)}
-                        onChange={(value) => {
-                          setEnrollValueLabels(
-                            value.map(toExponential).map(Math.round)
-                          );
-                        }}
-                        onAfterChange={(value) => {
-                          setEnrollBounds(value.map(toExponential));
-                        }}
-                        handle={enrollmentSliderHandle}
-                        className={styles.slider}
-                      />
-                    </Container>
-                    <div className={`text-center ${styles.filter_title}`}>
-                      Enrollment
-                    </div>
-                  </Col>
-                </Row> */}
                 <StyledHr className="mb-0" />
                 <Row
                   className={`mx-auto pt-1 px-4 justify-content-left ${styles.light_bg}`}
@@ -376,12 +303,12 @@ function Search() {
                   {/* Hide Cancelled Courses Toggle */}
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
-                      checked={hideCancelled}
+                      checked={hideCancelled.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
-                        setHideCancelled(!hideCancelled);
+                        hideCancelled.set((x) => !x);
                       }}
                     >
                       Hide cancelled courses
@@ -390,12 +317,12 @@ function Search() {
 
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
-                      checked={hideConflicting}
+                      checked={hideConflicting.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
-                        setHideConflicting(!hideConflicting);
+                        hideConflicting.set((x) => !x);
                       }}
                     >
                       Hide courses with conflicting times
@@ -405,12 +332,12 @@ function Search() {
                   {/* Hide First-Year Seminar Courses Toggle */}
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
-                      checked={hideFirstYearSeminars}
+                      checked={hideFirstYearSeminars.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
-                        setHideFirstYearSeminars(!hideFirstYearSeminars);
+                        hideFirstYearSeminars.set((x) => !x);
                       }}
                     >
                       Hide first-year seminars
@@ -420,12 +347,12 @@ function Search() {
                   {/* Hide Graduate-Level Courses Toggle */}
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
-                      checked={hideGraduateCourses}
+                      checked={hideGraduateCourses.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
-                        setHideGraduateCourses(!hideGraduateCourses);
+                        hideGraduateCourses.set((x) => !x);
                       }}
                     >
                       Hide graduate courses
@@ -435,12 +362,12 @@ function Search() {
                   {/* Hide Discussion Sections Toggle */}
                   <Form.Check type="switch" className={styles.toggle_option}>
                     <Form.Check.Input
-                      checked={hideDiscussionSections}
+                      checked={hideDiscussionSections.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <Form.Check.Label
                       onClick={() => {
-                        setHideDiscussionSections(!hideDiscussionSections);
+                        hideDiscussionSections.set((x) => !x);
                       }}
                     >
                       Hide discussion sections
