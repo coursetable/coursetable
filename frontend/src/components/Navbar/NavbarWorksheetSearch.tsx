@@ -129,10 +129,10 @@ export function NavbarWorksheetSearch() {
     if (!user.friends) return friendOptionsTemp;
     // Add friend to dropdown if they have worksheet courses in the current
     // season
-    for (const friendNetId of Object.keys(user.friends) as NetId[]) {
+    for (const [friendNetId, { name }] of Object.entries(user.friends)) {
       friendOptionsTemp.push({
-        value: friendNetId,
-        label: user.friends[friendNetId].name,
+        value: friendNetId as NetId,
+        label: name,
       });
     }
     // Sort friends in alphabetical order
@@ -146,7 +146,7 @@ export function NavbarWorksheetSearch() {
     if (person === 'me' || !user.friends?.[person]) return null;
     return {
       value: person,
-      label: user.friends[person].name,
+      label: user.friends[person]!.name,
     };
   }, [person, user.friends]);
 

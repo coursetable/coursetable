@@ -169,7 +169,7 @@ export function useWorksheetInfo(
       if (season !== null && season !== seasonCode) continue;
 
       if (seasonCode in courses && worksheetNumberCourse === worksheetNumber) {
-        const course = courses[seasonCode].get(parseInt(crn, 10) as Crn);
+        const course = courses[seasonCode]!.get(parseInt(crn, 10) as Crn);
         if (!course) {
           // This error is unactionable.
           // https://github.com/coursetable/coursetable/pull/1508

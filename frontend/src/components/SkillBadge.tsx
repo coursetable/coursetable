@@ -17,7 +17,7 @@ export default function SkillBadge({
       className={styles.tag}
       style={{
         color: skillsAreasColors[skill],
-        backgroundColor: chroma(skillsAreasColors[skill]).alpha(0.16).css(),
+        backgroundColor: chroma(skillsAreasColors[skill]!).alpha(0.16).css(),
         opacity: hidden ? 0 : 1,
       }}
     >

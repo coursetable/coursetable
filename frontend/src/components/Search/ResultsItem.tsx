@@ -172,7 +172,10 @@ function ResultsItem({
   };
   const saStyle: React.CSSProperties = { width: `${COL_SPACING.SA_WIDTH}px` };
 
-  const [subjectCode, courseCode] = course.course_code.split(' ');
+  const [subjectCode, courseCode] = course.course_code.split(' ') as [
+    string,
+    string,
+  ];
 
   return (
     <StyledSpacer
@@ -204,7 +207,7 @@ function ResultsItem({
               <div className={`${styles.skills_areas} my-auto`}>
                 <Tag
                   variant="secondary"
-                  className={styles[seasons[season - 1]]}
+                  className={styles[seasons[(season - 1) as 0 | 1 | 2]]}
                   key={season}
                 >
                   <div style={{ display: 'inline-block' }}>{icon}</div>
@@ -323,7 +326,7 @@ function ResultsItem({
                 key={index}
                 style={{
                   color: skillsAreasColors[skill],
-                  backgroundColor: chroma(skillsAreasColors[skill])
+                  backgroundColor: chroma(skillsAreasColors[skill]!)
                     .alpha(0.16)
                     .css(),
                 }}
@@ -338,7 +341,7 @@ function ResultsItem({
                 key={index}
                 style={{
                   color: skillsAreasColors[area],
-                  backgroundColor: chroma(skillsAreasColors[area])
+                  backgroundColor: chroma(skillsAreasColors[area]!)
                     .alpha(0.16)
                     .css(),
                 }}

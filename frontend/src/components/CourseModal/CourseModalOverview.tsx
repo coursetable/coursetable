@@ -876,14 +876,9 @@ function CourseModalOverview({
             className={`${styles.filter_container} m-auto justify-content-center`}
             onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
               // Left/right arrow key
-              const newIndx =
-                (optionsIndx[filter] +
-                  (e.key === 'ArrowLeft'
-                    ? 2
-                    : e.key === 'ArrowRight'
-                      ? 1
-                      : 0)) %
-                3;
+              const newIndx = ((optionsIndx[filter] +
+                (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
+                3) as 0 | 1 | 2;
               setFilter(options[newIndx].value);
             }}
             tabIndex={0}

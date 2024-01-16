@@ -94,9 +94,7 @@ export function WorksheetProvider({
     const whenNotDefined: Worksheet = []; // TODO: change this to undefined
     if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
 
-    return user.friends
-      ? user.friends[viewedPerson].worksheets ?? whenNotDefined
-      : whenNotDefined;
+    return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
   }, [user.worksheet, user.friends, viewedPerson]);
 
   const { seasons } = useFerry();
@@ -139,12 +137,12 @@ export function WorksheetProvider({
       const temp = [...worksheetData];
       // Assign color to each course
       for (let i = 0; i < worksheetData.length; i++) {
-        let choice = colors[i % colors.length];
-        if (colorMap[temp[i].crn]) choice = colorMap[temp[i].crn];
-        else colorMap[temp[i].crn] = choice;
+        let choice = colors[i % colors.length]!;
+        if (colorMap[temp[i]!.crn]) choice = colorMap[temp[i]!.crn]!;
+        else colorMap[temp[i]!.crn] = choice;
 
-        temp[i].color = choice;
-        temp[i].currentWorksheet = worksheetNumber;
+        temp[i]!.color = choice;
+        temp[i]!.currentWorksheet = worksheetNumber;
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
@@ -168,11 +166,10 @@ export function WorksheetProvider({
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses))
-            newHiddenCourses[curSeason] = {};
+          newHiddenCourses[curSeason] ??= {};
 
           courses.forEach((listing) => {
-            newHiddenCourses[curSeason][listing.crn] = true;
+            newHiddenCourses[curSeason]![listing.crn] = true;
           });
           return newHiddenCourses;
         });
@@ -185,12 +182,11 @@ export function WorksheetProvider({
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses))
-            newHiddenCourses[curSeason] = {};
+          newHiddenCourses[curSeason] ??= {};
 
-          if (newHiddenCourses[curSeason][crn])
-            delete newHiddenCourses[curSeason][crn];
-          else newHiddenCourses[curSeason][crn] = true;
+          if (newHiddenCourses[curSeason]![crn])
+            delete newHiddenCourses[curSeason]![crn];
+          else newHiddenCourses[curSeason]![crn] = true;
           return newHiddenCourses;
         });
       }

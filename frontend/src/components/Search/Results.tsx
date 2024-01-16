@@ -261,7 +261,7 @@ function Results({
                   ) {
                     rowElements.push(
                       <ResultsGridItem
-                        course={data[j]}
+                        course={data[j]!}
                         isLoggedIn={isLoggedIn}
                         numCols={numCols}
                         multiSeasons={multiSeasons}
@@ -306,8 +306,9 @@ function Results({
                   style,
                   isScrolling: rowIsScrolling,
                 }) => {
+                  const course = data[index]!;
                   const friends =
-                    numFriends[data[index].season_code + data[index].crn] ?? [];
+                    numFriends[course.season_code + course.crn] ?? [];
                   // Alternating row item background colors
                   const colorStyles =
                     index % 2 === 0
@@ -322,7 +323,7 @@ function Results({
                       key={key}
                     >
                       <ResultsItemMemo
-                        course={data[index]}
+                        course={course}
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}

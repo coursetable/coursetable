@@ -284,12 +284,11 @@ export function SearchProvider({
     // Match search results with course data.
     if (coursesLoading || courseLoadError) return [];
 
-    const listings = processedSeasons
-      .map((seasonCode) => {
-        if (!courseData[seasonCode]) return [];
-        return [...courseData[seasonCode].values()];
-      })
-      .reduce((acc, cur) => acc.concat(cur), []);
+    const listings = processedSeasons.flatMap((seasonCode) => {
+      const data = courseData[seasonCode];
+      if (!data) return [];
+      return [...data.values()];
+    });
 
     const filtered = listings.filter((listing) => {
       // Apply filters.

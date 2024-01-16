@@ -374,7 +374,7 @@ export function NavbarCatalogSearch() {
       searchSpeed[
         duration > 1 ? 'fast' : duration > 0.5 ? 'faster' : 'fastest'
       ];
-    return pool[Math.floor(Math.random() * pool.length)];
+    return pool[Math.floor(Math.random() * pool.length)]!;
   }, [duration]);
 
   return (

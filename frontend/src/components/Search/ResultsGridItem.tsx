@@ -87,7 +87,10 @@ function ResultsGridItem({
   // Is the current course in the worksheet?
   const [courseInWorksheet, setCourseInWorksheet] = useState(false);
 
-  const [subjectCode, courseCode] = course.course_code.split(' ');
+  const [subjectCode, courseCode] = course.course_code.split(' ') as [
+    string,
+    string,
+  ];
 
   return (
     <Col
@@ -154,7 +157,7 @@ function ResultsGridItem({
                 >
                   <div
                     className={`${styles.season_tag} ml-auto px-1 pb-0 ${
-                      tagStyles[seasons[season - 1]]
+                      tagStyles[seasons[(season - 1) as 0 | 1 | 2]]
                     }`}
                   >
                     <Row className="m-auto">

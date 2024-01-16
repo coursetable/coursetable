@@ -78,8 +78,7 @@ function EvaluationResponses({
       // Add comments to responses dictionary
       nodes.forEach((node) => {
         if (node.evaluation_question.question_text && node.comment) {
-          tempResponses[node.evaluation_question.question_text] ||= [];
-          tempResponses[node.evaluation_question.question_text].push(
+          (tempResponses[node.evaluation_question.question_text] ??= []).push(
             node.comment,
           );
         }
@@ -88,8 +87,8 @@ function EvaluationResponses({
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
     ) as typeof tempResponses;
-    for (const key of Object.keys(tempResponses))
-      sortedResponses[key].sort((a, b) => b.length - a.length);
+    for (const r of Object.values(tempResponses))
+      r.sort((a, b) => b.length - a.length);
 
     return [tempResponses, sortedResponses];
   }, [info, crn]);
@@ -128,13 +127,13 @@ function EvaluationResponses({
       }
       return filteredResps;
     };
-    for (const key of Object.keys(curResponses)) {
-      if (key.includes('summarize')) tempSummary = genTemp(curResponses[key]);
-      else if (key.includes('recommend'))
-        tempRecommend = genTemp(curResponses[key]);
-      else if (key.includes('skills')) tempSkills = genTemp(curResponses[key]);
-      else if (key.includes('strengths'))
-        tempStrengths = genTemp(curResponses[key]);
+    for (const [question, qResponses] of Object.entries(curResponses)) {
+      if (question.includes('summarize')) tempSummary = genTemp(qResponses);
+      else if (question.includes('recommend'))
+        tempRecommend = genTemp(qResponses);
+      else if (question.includes('skills')) tempSkills = genTemp(qResponses);
+      else if (question.includes('strengths'))
+        tempStrengths = genTemp(qResponses);
     }
     return [tempRecommend, tempSkills, tempStrengths, tempSummary];
   }, [responses, sortOrder, sortedResponses, filter]);

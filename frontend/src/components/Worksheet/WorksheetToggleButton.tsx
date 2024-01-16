@@ -96,12 +96,7 @@ function WorksheetToggleButton({
       const addRemove = inWorksheet ? 'remove' : 'add';
 
       // Remove it from hidden courses before removing from worksheet
-      if (
-        inWorksheet &&
-        curSeason in hiddenCourses &&
-        hiddenCourses[curSeason][crn]
-      )
-        toggleCourse(crn);
+      if (inWorksheet && hiddenCourses[curSeason]?.[crn]) toggleCourse(crn);
       const body = JSON.stringify({
         action: addRemove,
         season: seasonCode,

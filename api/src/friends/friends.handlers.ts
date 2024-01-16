@@ -299,20 +299,14 @@ export const getFriendsWorksheets = async (
 
   friendWorksheets.forEach(
     ({ netId: friendNetId, ociId, season, worksheetNumber }) => {
-      if (friendNetId in friendInfoMap) {
-        friendInfoMap[friendNetId].worksheets.push([
-          String(season),
-          String(ociId),
-          String(worksheetNumber),
-        ]);
-      } else {
-        friendInfoMap[friendNetId] = {
-          name: '[unknown]',
-          worksheets: [
-            [String(season), String(ociId), String(worksheetNumber)],
-          ],
-        };
-      }
+      (friendInfoMap[friendNetId] ??= {
+        name: '[unknown]',
+        worksheets: [[String(season), String(ociId), String(worksheetNumber)]],
+      }).worksheets.push([
+        String(season),
+        String(ociId),
+        String(worksheetNumber),
+      ]);
     },
   );
 
