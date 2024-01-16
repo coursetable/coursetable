@@ -9,6 +9,7 @@ import {
   FcSearch,
 } from 'react-icons/fc';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import { API_ENDPOINT } from '../config';
 import styles from './Landing.module.css';
@@ -27,7 +28,7 @@ function Landing() {
     <div>
       <Container fluid>
         <Element name="splashpage">
-          <div className={`${styles.splashpage} mx-auto`}>
+          <div className={clsx(styles.splashpage, 'mx-auto')}>
             <Row className="mx-auto" style={{ minHeight: 'inherit' }}>
               <Col md={6} className="d-flex">
                 <div className="m-auto">
@@ -35,7 +36,7 @@ function Landing() {
                     The best place to shop for classes at Yale.
                   </h1>
                   <Row className="pb-2 m-auto">
-                    <span className={`${styles.feature_text} d-inline`}>
+                    <span className={clsx(styles.feature_text, 'd-inline')}>
                       <FcSearch className="mr-2 my-auto" size={20} />
                       Browse our catalog of <StyledStat>
                         80,000+
@@ -65,13 +66,13 @@ function Landing() {
                   <Row className="mx-auto mt-4 justify-content-md-start justify-content-center">
                     <a
                       href={`${API_ENDPOINT}/api/auth/cas?redirect=${window.location.origin}/catalog`}
-                      className={`${styles.btn} ${styles.login} mr-2`}
+                      className={clsx(styles.btn, styles.login, 'mr-2')}
                     >
                       Login with CAS
                     </a>
                     <Link
                       to="/about"
-                      className={`${styles.btn} ${styles.about}`}
+                      className={clsx(styles.btn, styles.about)}
                     >
                       About Us
                     </Link>

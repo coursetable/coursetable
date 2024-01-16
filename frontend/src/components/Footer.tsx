@@ -2,6 +2,7 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 import { Container } from 'react-bootstrap';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import styles from './Footer.module.css';
 import Logo from './Navbar/Logo';
@@ -18,7 +19,7 @@ function Footer() {
   return (
     <Container fluid>
       <StyledHr />
-      <footer className={`${styles.footer} py-5 px-5`}>
+      <footer className={clsx(styles.footer, 'py-5 px-5')}>
         <div className="row">
           {/* Copyright */}
           <div className="col-12 col-md">

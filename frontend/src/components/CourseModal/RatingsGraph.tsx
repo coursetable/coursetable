@@ -1,6 +1,7 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import styles from './RatingsGraph.module.css';
 import { TextComponent } from '../StyledComponents';
 
@@ -48,12 +49,12 @@ function RatingsGraph({
     return (
       <div key={labels[indx]} className={styles.bar}>
         {/* Number of votes for each rating */}
-        <p className={`${styles.value} m-0 `}>
+        <p className={clsx(styles.value, 'm-0')}>
           <TextComponent type={1}>{rating}</TextComponent>
         </p>
         {/* Bar */}
         <div
-          className={`${styles.column} px-1 mx-auto`}
+          className={clsx(styles.column, 'px-1 mx-auto')}
           style={{
             backgroundColor: colors[indx],
             height: `${height.toString()}px`,
@@ -61,12 +62,12 @@ function RatingsGraph({
         />
         {/* Rating labels */}
         {ratings.length === 2 && (
-          <StyledLabel className={`${styles.value} m-0`}>
+          <StyledLabel className={clsx(styles.value, 'm-0')}>
             {indx === 0 ? 'yes' : 'no'}
           </StyledLabel>
         )}
         {ratings.length === 5 && (
-          <StyledLabel className={`${styles.value} m-0`}>
+          <StyledLabel className={clsx(styles.value, 'm-0')}>
             <span className="d-none d-sm-block">{labels[indx]}</span>
             <span className="d-sm-none">{indx + 1}</span>
           </StyledLabel>
@@ -77,7 +78,10 @@ function RatingsGraph({
 
   return (
     <Row
-      className={`${styles.container} mx-auto px-3 mb-5 justify-content-center align-items-end`}
+      className={clsx(
+        styles.container,
+        'mx-auto px-3 mb-5 justify-content-center align-items-end',
+      )}
     >
       {columns}
     </Row>

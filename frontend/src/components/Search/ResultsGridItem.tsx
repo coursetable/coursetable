@@ -9,6 +9,7 @@ import { FcCloseUpMode } from 'react-icons/fc';
 import { IoMdSunny } from 'react-icons/io';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import {
   ratingColormap,
@@ -95,7 +96,7 @@ function ResultsGridItem({
   return (
     <Col
       md={colWidth}
-      className={`${styles.container} px-2 pt-0 pb-3`}
+      className={clsx(styles.container, 'px-2 pt-0 pb-3')}
       style={{ overflow: 'hidden' }}
     >
       <StyledGridItem
@@ -105,7 +106,7 @@ function ResultsGridItem({
             return prev;
           });
         }}
-        className={`${styles.one_line} ${styles.item_container} px-3 pb-3`}
+        className={clsx(styles.one_line, styles.item_container, 'px-3 pb-3')}
         tabIndex={0}
         inWorksheet={courseInWorksheet}
       >
@@ -156,9 +157,11 @@ function ResultsGridItem({
                   )}
                 >
                   <div
-                    className={`${styles.season_tag} ml-auto px-1 pb-0 ${
-                      tagStyles[seasons[(season - 1) as 0 | 1 | 2]]
-                    }`}
+                    className={clsx(
+                      styles.season_tag,
+                      'ml-auto px-1 pb-0',
+                      tagStyles[seasons[(season - 1) as 0 | 1 | 2]],
+                    )}
                   >
                     <Row className="m-auto">
                       {icon}
@@ -182,7 +185,7 @@ function ResultsGridItem({
             <Row className="m-auto">
               <TextComponent
                 type={1}
-                className={`${styles.one_line} ${styles.professors}`}
+                className={clsx(styles.one_line, styles.professors)}
               >
                 {course.professor_names.length > 0
                   ? course.professor_names.join(' • ')
@@ -191,7 +194,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Times */}
             <Row className="m-auto">
-              <small className={`${styles.one_line} ${styles.small_text}`}>
+              <small className={clsx(styles.one_line, styles.small_text)}>
                 <TextComponent type={1}>
                   {course.times_summary === 'TBA'
                     ? 'Times: TBA'
@@ -201,7 +204,7 @@ function ResultsGridItem({
             </Row>
             {/* Course Location */}
             <Row className="m-auto">
-              <small className={`${styles.one_line} ${styles.small_text}`}>
+              <small className={clsx(styles.one_line, styles.small_text)}>
                 <TextComponent type={1}>
                   {course.locations_summary === 'TBA'
                     ? 'Location: TBA'
@@ -239,7 +242,7 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
-                    className={`${styles.rating} mr-1`}
+                    className={clsx(styles.rating, 'mr-1')}
                     style={{
                       color: getOverallRatings(course, 'stat')
                         ? ratingColormap(getOverallRatings(course, 'stat'))
@@ -268,7 +271,7 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
-                    className={`${styles.rating} mr-1`}
+                    className={clsx(styles.rating, 'mr-1')}
                     style={{
                       color:
                         course.average_professor && isLoggedIn
@@ -300,7 +303,7 @@ function ResultsGridItem({
                 <Row className="m-auto justify-content-end">
                   <div
                     // Only show eval data when user is signed in
-                    className={`${styles.rating} mr-1`}
+                    className={clsx(styles.rating, 'mr-1')}
                     style={{
                       color:
                         isLoggedIn && getWorkloadRatings(course, 'stat')

@@ -4,6 +4,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { BsFillPersonFill } from 'react-icons/bs';
 import { MdUpdate } from 'react-icons/md';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import Logo from './Logo';
 import DarkModeButton from './DarkModeButton';
 import MeDropdown from './MeDropdown';
@@ -242,18 +243,21 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                 {/* Close navbar on click in mobile view */}
                 <Nav
                   onClick={() => setNavExpanded(false)}
-                  className={`${
-                    isMobile && 'align-items-start pt-2'
-                  } position-relative`}
+                  className={clsx(
+                    isMobile && 'align-items-start pt-2',
+                    'position-relative',
+                  )}
                   style={{ width: '100%' }}
                 >
                   {/* DarkMode Button */}
                   {/* TODO */}
                   {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <div
-                    className={`${styles.navbar_dark_mode_btn} d-flex ${
-                      !isMobile ? 'ml-auto' : ''
-                    }`}
+                    className={clsx(
+                      styles.navbar_dark_mode_btn,
+                      'd-flex',
+                      !isMobile && 'ml-auto',
+                    )}
                     onClick={toggleTheme}
                   >
                     <DarkModeButton />
@@ -289,14 +293,15 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
                   {/* Profile Icon. Show if not mobile */}
                   <div
                     // Right align profile icon if not mobile
-                    className={`d-none d-md-block ${
-                      !isMobile ? 'align-self-end' : ''
-                    }`}
+                    className={clsx(
+                      'd-none d-md-block',
+                      !isMobile && 'align-self-end',
+                    )}
                   >
                     <div className={styles.navbar_me}>
                       <StyledMeIcon
                         ref={elemRef}
-                        className={`${styles.icon_circle} m-auto`}
+                        className={clsx(styles.icon_circle, 'm-auto')}
                         onClick={() =>
                           setIsComponentVisible(!isComponentVisible)
                         }

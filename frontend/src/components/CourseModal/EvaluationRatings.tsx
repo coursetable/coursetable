@@ -1,5 +1,6 @@
 import React from 'react';
 import { Row } from 'react-bootstrap';
+import clsx from 'clsx';
 import styles from './EvaluationRatings.module.css';
 import RatingsGraph from './RatingsGraph';
 import type { Crn } from '../../utilities/common';
@@ -61,7 +62,7 @@ function EvaluationRatings({
       <div key={question}>
         <Row className="mx-auto mb-1 pl-1 justify-content-center">
           <strong>{evalQuestions[question].title}</strong>
-          <small className={`${styles.questionText} text-center`}>
+          <small className={clsx(styles.questionText, 'text-center')}>
             <TextComponent type={1}>
               {evalQuestions[question].question}
             </TextComponent>

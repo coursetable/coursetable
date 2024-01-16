@@ -5,6 +5,7 @@ import { toast } from 'react-toastify';
 import { IoMdArrowRoundBack } from 'react-icons/io';
 import { FaRegShareFromSquare } from 'react-icons/fa6';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import type {
   Filter,
@@ -204,9 +205,9 @@ function CourseModal() {
                         </Row>
                       </Modal.Title>
 
-                      <Row className={`${styles.badges} mx-auto mt-1 `}>
+                      <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
                         {/* Course Codes */}
-                        <p className={`${styles.courseCodes} my-0 pr-2`}>
+                        <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
                           <TextComponent type={2}>
                             {curListing.all_course_codes.join(' • ')}
                           </TextComponent>
@@ -276,9 +277,9 @@ function CourseModal() {
                         </Row>
                       </Modal.Title>
 
-                      <Row className={`${styles.badges} mx-auto mt-1 `}>
+                      <Row className={clsx(styles.badges, 'mx-auto mt-1')}>
                         {/* Course Code */}
-                        <p className={`${styles.courseCodes}  my-0 pr-2`}>
+                        <p className={clsx(styles.courseCodes, 'my-0 pr-2')}>
                           <TextComponent type={2}>
                             {view[1].course_code}
                           </TextComponent>
@@ -293,11 +294,12 @@ function CourseModal() {
                         {/* Course Professors and Section */}
                         {view[1].professor[0] !== 'TBA' && (
                           <p
-                            className={`${styles.courseCodes}  my-0 ${
-                              view[1].skills.length || view[1].areas.length
-                                ? ' pl-2 '
-                                : ''
-                            }`}
+                            className={clsx(
+                              styles.courseCodes,
+                              'my-0',
+                              (view[1].skills.length || view[1].areas.length) &&
+                                'pl-2',
+                            )}
                           >
                             <TextComponent type={2}>
                               {`| ${view[1].professor.join(', ')} | Section ${

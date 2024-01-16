@@ -3,6 +3,7 @@ import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
@@ -109,12 +110,14 @@ function Worksheet() {
                   ? 12
                   : 9
               }
-              className={`mt-3 pl-0 ${
+              className={clsx(
+                'mt-3 pl-0',
                 worksheetView.view === 'calendar' &&
-                worksheetView.mode === 'expanded'
-                  ? 'pr-0 '
-                  : 'pr-3 '
-              }${worksheetView.view === 'list' ? styles.hidden : ''}`}
+                  worksheetView.mode === 'expanded'
+                  ? 'pr-0'
+                  : 'pr-3',
+                worksheetView.view === 'list' && styles.hidden,
+              )}
             >
               <StyledCalendarContainer
                 layer={0}
@@ -123,7 +126,7 @@ function Worksheet() {
                 <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
-                  className={`${styles.expand_btn} ${styles.top_right}`}
+                  className={clsx(styles.expand_btn, styles.top_right)}
                 >
                   {worksheetView.view === 'calendar' &&
                   worksheetView.mode !== 'expanded' ? (
@@ -156,12 +159,12 @@ function Worksheet() {
             <Col
               // Width depends on if it is expanded or not
               md={worksheetView.view === 'list' ? 12 : 3}
-              className={`ml-auto px-0 ${
+              className={clsx(
+                'ml-auto px-0',
                 worksheetView.view === 'calendar' &&
-                worksheetView.mode === 'expanded'
-                  ? styles.hidden
-                  : ''
-              }`}
+                  worksheetView.mode === 'expanded' &&
+                  styles.hidden,
+              )}
             >
               {/* List Component */}
               <Fade in={worksheetView.view === 'list'}>
@@ -189,12 +192,12 @@ function Worksheet() {
       ) : (
         /* Mobile View */
         <div>
-          <Row className={`${styles.accordion} m-0 p-3`}>
+          <Row className={clsx(styles.accordion, 'm-0 p-3')}>
             <Col className="p-0">
               <div className="mobile-calendar-container">
                 <div className="mobile-dropdowns">
                   <WorksheetNumDropdown />
-                  <Row className={`${styles.dropdowns} mx-auto`}>
+                  <Row className={clsx(styles.dropdowns, 'mx-auto')}>
                     <Col xs={6} className="m-0 p-0">
                       <SeasonDropdown />
                     </Col>

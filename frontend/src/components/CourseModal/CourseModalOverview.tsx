@@ -16,6 +16,7 @@ import { HiExternalLink } from 'react-icons/hi';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import '../Search/MultiToggle.css';
 import { CUR_YEAR } from '../../config';
@@ -439,7 +440,7 @@ function CourseModalOverview({
           {hasEvals ? (
             <StyledCol
               xs={5}
-              className={`${styles.rating_bubble}  px-0 mr-3 text-center`}
+              className={clsx(styles.rating_bubble, 'px-0 mr-3 text-center')}
               onClick={() => {
                 // Temp dictionary that stores listing info
                 const temp = { ...offering };
@@ -448,7 +449,7 @@ function CourseModalOverview({
               style={{ flex: 'none' }}
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
-              <div className={`${styles.details} mx-auto ${styles.shown}`}>
+              <div className={clsx(styles.details, 'mx-auto', styles.shown)}>
                 {type === 'professor'
                   ? offering.course_code
                   : type === 'both'
@@ -459,11 +460,14 @@ function CourseModalOverview({
           ) : (
             <StyledColUnclickable
               xs={5}
-              className={`${styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
+              className={clsx(
+                styles.rating_bubble_unclickable,
+                'px-0 mr-3 text-center',
+              )}
               style={{ flex: 'none', color: '#b5b5b5' }}
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
-              <div className={`${styles.details} mx-auto ${styles.shown}`}>
+              <div className={clsx(styles.details, 'mx-auto', styles.shown)}>
                 {type === 'professor'
                   ? offering.course_code
                   : type === 'both'
@@ -576,7 +580,7 @@ function CourseModalOverview({
           {/* Course Requirements */}
           {listing.requirements && (
             <Row className="mx-auto">
-              <span className={`${styles.requirements} pt-1`}>
+              <span className={clsx(styles.requirements, 'pt-1')}>
                 {listing.requirements}
               </span>
             </Row>
@@ -850,7 +854,10 @@ function CourseModalOverview({
         <Col md={5} className="px-0 my-0">
           {/* Filter Select */}
           <Row
-            className={`${styles.filter_container} m-auto justify-content-center`}
+            className={clsx(
+              styles.filter_container,
+              'm-auto justify-content-center',
+            )}
             onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
               // Left/right arrow key
               const newIndx = ((optionsIndx[filter] +
@@ -864,7 +871,7 @@ function CourseModalOverview({
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}
-              className={`${styles.evaluations_filter} mb-2`}
+              className={clsx(styles.evaluations_filter, 'mb-2')}
             />
           </Row>
           {/* Course Evaluations Header */}

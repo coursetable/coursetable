@@ -8,6 +8,8 @@ import { IoMdSunny } from 'react-icons/io';
 import { FcCloseUpMode } from 'react-icons/fc';
 import { FaCanadianMapleLeaf } from 'react-icons/fa';
 import styled from 'styled-components';
+import clsx from 'clsx';
+
 import {
   ratingColormap,
   workloadColormap,
@@ -179,9 +181,10 @@ function ResultsItem({
 
   return (
     <StyledSpacer
-      className={`${isFirst ? styles.first_search_result_item : ''} ${
-        course.extra_info !== 'ACTIVE' ? ` ${styles.cancelled_class}` : ''
-      }`}
+      className={clsx(
+        isFirst && styles.first_search_result_item,
+        course.extra_info !== 'ACTIVE' && styles.cancelled_class,
+      )}
       onClick={() => {
         setSearchParams((prev) => {
           prev.set('course-modal', `${course.season_code}-${course.crn}`);
@@ -204,7 +207,7 @@ function ResultsItem({
                 </Tooltip>
               )}
             >
-              <div className={`${styles.skills_areas} my-auto`}>
+              <div className={clsx(styles.skills_areas, 'my-auto')}>
                 <Tag
                   variant="secondary"
                   className={styles[seasons[(season - 1) as 0 | 1 | 2]]}
@@ -220,7 +223,7 @@ function ResultsItem({
         {/* Course Code */}
         <div
           style={codeStyle}
-          className={`${styles.ellipsis_text} font-weight-bold`}
+          className={clsx(styles.ellipsis_text, 'font-weight-bold')}
         >
           <OverlayTrigger
             placement="top"
@@ -318,7 +321,7 @@ function ResultsItem({
         </div>
         {/* Skills and Areas */}
         <div style={saStyle} className="d-flex">
-          <span className={`${styles.skills_areas} `}>
+          <span className={styles.skills_areas}>
             {course.skills.map((skill, index) => (
               <Tag
                 variant="secondary"

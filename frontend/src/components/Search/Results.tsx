@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import styled, { useTheme } from 'styled-components';
+import clsx from 'clsx';
 
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
@@ -402,14 +403,20 @@ function Results({
             {/* Column Headers */}
             <StyledRow
               ref={ref}
-              className={`mx-auto pl-4 pr-2 ${isLgDesktop ? 'py-2' : 'py-1'} ${
-                styles.results_header_row
-              } justify-content-between`}
+              className={clsx(
+                'mx-auto pl-4 pr-2',
+                isLgDesktop ? 'py-2' : 'py-1',
+                styles.results_header_row,
+                'justify-content-between',
+              )}
               data-tutorial="catalog-5"
             >
               {/* View Toggle */}
               <div
-                className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+                className={clsx(
+                  styles.list_grid_toggle,
+                  'd-flex ml-auto my-auto p-0',
+                )}
               >
                 <ListGridToggle
                   isListView={isListView}
@@ -613,7 +620,7 @@ function Results({
       )}
 
       <SearchResults
-        className={!isListView ? 'px-1 pt-3 ' : ''}
+        className={!isListView ? 'px-1 pt-3' : ''}
         numCourses={data.length}
         isMobile={isMobile}
       >
@@ -624,7 +631,9 @@ function Results({
         {data.length === 0 && !loading && resultsListing}
         {/* Render a loading row while performing next query */}
         {loading && (
-          <Row className={`m-auto ${data.length === 0 ? 'py-5' : 'pt-0 pb-4'}`}>
+          <Row
+            className={clsx('m-auto', data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
+          >
             <Spinner className="m-auto" animation="border" role="status">
               <span className="sr-only">Loading...</span>
             </Spinner>

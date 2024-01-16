@@ -2,6 +2,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Col, Container, Row, Form, InputGroup, Button } from 'react-bootstrap';
 import { Handle, Range } from 'rc-slider';
 import { Element, scroller } from 'react-scroll';
+import clsx from 'clsx';
 import 'rc-slider/assets/index.css';
 import 'rc-tooltip/assets/bootstrap.css';
 
@@ -108,16 +109,17 @@ function Search() {
   return (
     <div className={styles.search_base}>
       <Row
-        className={`p-0 m-0 ${
-          !isMobile ? 'd-flex flex-row-reverse flex-nowrap' : ''
-        }`}
+        className={clsx(
+          'p-0 m-0',
+          !isMobile && 'd-flex flex-row-reverse flex-nowrap',
+        )}
       >
         {/* Search Form for mobile only */}
         {isMobile && (
-          <Col className={`p-3 ${styles.search_col_mobile}`}>
+          <Col className={clsx('p-3', styles.search_col_mobile)}>
             <SurfaceComponent
               layer={0}
-              className={`ml-1 ${styles.search_container}`}
+              className={clsx('ml-1', styles.search_container)}
             >
               <Form className="px-0" onSubmit={scrollToResults}>
                 <Row className="mx-auto pt-4 px-4">
@@ -125,13 +127,13 @@ function Search() {
                   {/* TODO */}
                   {/* eslint-disable-next-line jsx-a11y/no-static-element-interactions */}
                   <small
-                    className={`${styles.reset_filters_btn} mr-auto`}
+                    className={clsx(styles.reset_filters_btn, 'mr-auto')}
                     onClick={handleResetFilters}
                   >
                     Reset Filters
                   </small>
                   {/* Number of results shown text */}
-                  <small className={`${styles.num_results} ml-auto`}>
+                  <small className={clsx(styles.num_results, 'ml-auto')}>
                     <TextComponent type={2}>
                       {coursesLoading
                         ? 'Searching ...'
@@ -159,9 +161,13 @@ function Search() {
                   <SortByReactSelect key={resetKey} />
                 </Row>
                 <StyledHr />
-                <Row className={`mx-auto py-0 px-4 ${styles.multi_selects}`}>
+                <Row
+                  className={clsx('mx-auto py-0 px-4', styles.multi_selects)}
+                >
                   {/* Seasons Multi-Select */}
-                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                  <div
+                    className={clsx('col-md-12 p-0', styles.selector_container)}
+                  >
                     <CustomSelect<Option, true>
                       isMulti
                       value={selectSeasons.value}
@@ -176,7 +182,7 @@ function Search() {
                   </div>
                   {/* Skills/Areas Multi-Select */}
                   <div
-                    className={`col-md-12 p-0  ${styles.selector_container}`}
+                    className={clsx('col-md-12 p-0', styles.selector_container)}
                   >
                     <CustomSelect<Option, true>
                       isMulti
@@ -201,7 +207,9 @@ function Search() {
                     />
                   </div>
                   {/* Yale Subjects Multi-Select */}
-                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                  <div
+                    className={clsx('col-md-12 p-0', styles.selector_container)}
+                  >
                     <CustomSelect<Option, true>
                       isMulti
                       value={selectSubjects.value}
@@ -219,7 +227,9 @@ function Search() {
                     />
                   </div>
                   {/* Yale Schools Multi-Select */}
-                  <div className={`col-md-12 p-0 ${styles.selector_container}`}>
+                  <div
+                    className={clsx('col-md-12 p-0', styles.selector_container)}
+                  >
                     <CustomSelect<Option, true>
                       isMulti
                       value={selectSchools.value}
@@ -237,7 +247,7 @@ function Search() {
                   </div>
                 </Row>
                 <StyledHr />
-                <Row className={`mx-auto pt-0 pb-0 px-2 ${styles.sliders}`}>
+                <Row className={clsx('mx-auto pt-0 pb-0 px-2', styles.sliders)}>
                   {/* Class Rating Slider */}
                   <Col>
                     <Container style={{ paddingTop: '1px' }}>
@@ -253,7 +263,9 @@ function Search() {
                         handle={({ value, dragging, ...e }) => (
                           // @ts-expect-error: TODO upgrade rc-slider
                           <Handle {...e} key={e.className}>
-                            <div className={`shadow ${styles.overall_tooltip}`}>
+                            <div
+                              className={clsx('shadow', styles.overall_tooltip)}
+                            >
                               {value}
                             </div>
                           </Handle>
@@ -261,7 +273,7 @@ function Search() {
                         className={styles.slider}
                       />
                     </Container>
-                    <div className={`text-center ${styles.filter_title}`}>
+                    <div className={clsx('text-center', styles.filter_title)}>
                       Overall rating
                     </div>
                   </Col>
@@ -281,7 +293,10 @@ function Search() {
                           // @ts-expect-error: TODO upgrade rc-slider
                           <Handle {...e} key={e.className}>
                             <div
-                              className={`shadow ${styles.workload_tooltip}`}
+                              className={clsx(
+                                'shadow',
+                                styles.workload_tooltip,
+                              )}
                             >
                               {value}
                             </div>
@@ -290,14 +305,17 @@ function Search() {
                         className={styles.slider}
                       />
                     </Container>
-                    <div className={`text-center ${styles.filter_title}`}>
+                    <div className={clsx('text-center', styles.filter_title)}>
                       Workload
                     </div>
                   </Col>
                 </Row>
                 <StyledHr className="mb-0" />
                 <Row
-                  className={`mx-auto pt-1 px-4 justify-content-left ${styles.light_bg}`}
+                  className={clsx(
+                    'mx-auto pt-1 px-4 justify-content-left',
+                    styles.light_bg,
+                  )}
                 >
                   {/* Hide Cancelled Courses Toggle */}
                   <Form.Check type="switch" className={styles.toggle_option}>
@@ -389,11 +407,12 @@ function Search() {
         {/* Catalog Search Search */}
         <Col
           md={12}
-          className={`m-0 ${
+          className={clsx(
+            'm-0',
             isMobile
-              ? `p-3 ${styles.results_col_mobile}`
-              : `px-0 pb-3 ${styles.results_col}`
-          }`}
+              ? ['p-3', styles.results_col_mobile]
+              : ['px-0 pb-3', styles.results_col],
+          )}
         >
           <Element name="catalog" className="d-flex justify-content-center">
             <Results
