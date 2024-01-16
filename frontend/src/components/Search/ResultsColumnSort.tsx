@@ -8,11 +8,7 @@ import {
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
 import type { SortByOption } from '../../utilities/constants';
-import {
-  useSearch,
-  defaultFilters,
-  type SortOrderType,
-} from '../../contexts/searchContext';
+import { useSearch, defaultFilters } from '../../contexts/searchContext';
 
 const StyledSortBtn = styled.div`
   cursor: pointer;
@@ -35,8 +31,8 @@ type Props = {
 
 function ResultsColumnSort({ selectOption }: Props) {
   // Local sort order state
-  const [localSortOrder, setLocalSortOrder] = useState<SortOrderType>(
-    defaultFilters.defaultSortOrder,
+  const [localSortOrder, setLocalSortOrder] = useState(
+    defaultFilters.sortOrder,
   );
   // First time state
   const [firstTime, setFirstTime] = useState(true);
@@ -44,22 +40,23 @@ function ResultsColumnSort({ selectOption }: Props) {
   const [active, setActive] = useState(false);
 
   // Get search context data
-  const { selectSortby, sortOrder, setSelectSortby, setSortOrder } =
-    useSearch();
+  const {
+    filters: { selectSortby, sortOrder },
+  } = useSearch();
 
   const globalTheme = useTheme();
 
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
-      if (selectSortby.value === selectOption.value) {
-        setLocalSortOrder(sortOrder);
+      if (selectSortby.value.value === selectOption.value) {
+        setLocalSortOrder(sortOrder.value);
         setActive(true);
       }
       setFirstTime(false);
-    } else if (!active && selectSortby.value === selectOption.value) {
+    } else if (!active && selectSortby.value.value === selectOption.value) {
       setActive(true);
-    } else if (active && selectSortby.value !== selectOption.value) {
+    } else if (active && selectSortby.value.value !== selectOption.value) {
       setActive(false);
     }
   }, [firstTime, selectOption, selectSortby, sortOrder, active]);
@@ -70,16 +67,16 @@ function ResultsColumnSort({ selectOption }: Props) {
       className="ml-1 my-auto"
       onClick={() => {
         // If not sorting by this option previously, start sorting this option
-        if (selectSortby.value !== selectOption.value) {
-          setSelectSortby(selectOption);
-          setSortOrder(localSortOrder);
+        if (selectSortby.value.value !== selectOption.value) {
+          selectSortby.set(selectOption);
+          sortOrder.set(localSortOrder);
           return;
         }
         if (localSortOrder === 'asc') {
-          setSortOrder('desc');
+          sortOrder.set('desc');
           setLocalSortOrder('desc');
         } else {
-          setSortOrder('asc');
+          sortOrder.set('asc');
           setLocalSortOrder('asc');
         }
       }}

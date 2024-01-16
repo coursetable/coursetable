@@ -26,8 +26,9 @@ import {
   schools,
   subjects,
   sortbyOptions,
+  searchSpeed,
 } from '../../utilities/constants';
-import { isEqual, weekdays } from '../../utilities/common';
+import { weekdays } from '../../utilities/common';
 import CustomSelect from '../CustomSelect';
 import {
   useSearch,
@@ -197,21 +198,28 @@ export function NavbarCatalogSearch() {
   // Get search context data
   const {
     canReset,
+    filters,
+    duration,
+    resetKey,
+    searchData,
+    seasonsOptions,
+    coursesLoading,
+    handleResetFilters,
+    setResetKey,
+    setStartTime,
+  } = useSearch();
+
+  const {
     searchText,
     selectSubjects,
     selectSkillsAreas,
     overallBounds,
-    overallValueLabels,
     workloadBounds,
-    workloadValueLabels,
     selectSeasons,
     selectDays,
     timeBounds,
-    timeValueLabels,
     enrollBounds,
-    enrollValueLabels,
     numBounds,
-    numValueLabels,
     selectSchools,
     selectCredits,
     searchDescription,
@@ -221,38 +229,7 @@ export function NavbarCatalogSearch() {
     hideGraduateCourses,
     hideDiscussionSections,
     selectSortby,
-    resetKey,
-    searchData,
-    seasonsOptions,
-    coursesLoading,
-    speed,
-    setSearchText,
-    setSelectSubjects,
-    setSelectSkillsAreas,
-    setOverallBounds,
-    setOverallValueLabels,
-    setWorkloadBounds,
-    setWorkloadValueLabels,
-    setSelectSeasons,
-    setSelectDays,
-    setTimeBounds,
-    setTimeValueLabels,
-    setEnrollBounds,
-    setEnrollValueLabels,
-    setNumBounds,
-    setNumValueLabels,
-    setSelectSchools,
-    setSelectCredits,
-    setSearchDescription,
-    setHideCancelled,
-    setHideConflicting,
-    setHideFirstYearSeminars,
-    setHideGraduateCourses,
-    setHideDiscussionSections,
-    handleResetFilters,
-    setResetKey,
-    setStartTime,
-  } = useSearch();
+  } = filters;
 
   // Active state for range filters
   const [activeOverall, setActiveOverall] = useState(false);
@@ -261,29 +238,29 @@ export function NavbarCatalogSearch() {
   const [activeEnrollment, setActiveEnrollment] = useState(false);
   const [activeNumber, setActiveNumber] = useState(false);
 
+  // These are exactly the same as the filters, except they update responsively
+  // without triggering searching
+  const [overallValueLabels, setOverallValueLabels] = useState(
+    overallBounds.value,
+  );
+  const [workloadValueLabels, setWorkloadValueLabels] = useState(
+    workloadBounds.value,
+  );
+  const [timeValueLabels, setTimeValueLabels] = useState(timeBounds.value);
+  const [enrollValueLabels, setEnrollValueLabels] = useState(
+    enrollBounds.value,
+  );
+  const [numValueLabels, setNumValueLabels] = useState(numBounds.value);
+
   const globalTheme = useTheme();
 
   // Handle active state for range filters
   useEffect(() => {
-    setActiveOverall(
-      canReset && !isEqual(overallBounds, defaultFilters.defaultRatingBounds),
-    );
-    setActiveWorkload(
-      canReset && !isEqual(workloadBounds, defaultFilters.defaultRatingBounds),
-    );
-    setActiveTime(
-      canReset && !isEqual(timeBounds, defaultFilters.defaultTimeBounds),
-    );
-    setActiveEnrollment(
-      canReset &&
-        !isEqual(
-          enrollBounds.map(Math.round),
-          defaultFilters.defaultEnrollBounds,
-        ),
-    );
-    setActiveNumber(
-      canReset && !isEqual(numBounds, defaultFilters.defaultNumBounds),
-    );
+    setActiveOverall(canReset && overallBounds.hasChanged);
+    setActiveWorkload(canReset && workloadBounds.hasChanged);
+    setActiveTime(canReset && timeBounds.hasChanged);
+    setActiveEnrollment(canReset && enrollBounds.hasChanged);
+    setActiveNumber(canReset && numBounds.hasChanged);
   }, [
     canReset,
     overallBounds,
@@ -333,12 +310,12 @@ export function NavbarCatalogSearch() {
       [key: string]: { [key: string]: Option<string | number>[] | boolean };
     } => ({
       selects: {
-        selectDays,
-        selectSchools,
-        selectCredits,
-        selectSubjects: isTablet && selectSubjects,
-        selectSeasons: isTablet && selectSeasons,
-        selectSkillsAreas: isTablet && selectSkillsAreas,
+        selectDays: selectDays.value,
+        selectSchools: selectSchools.value,
+        selectCredits: selectCredits.value,
+        selectSubjects: isTablet && selectSubjects.value,
+        selectSeasons: isTablet && selectSeasons.value,
+        selectSkillsAreas: isTablet && selectSkillsAreas.value,
       },
       ranges: {
         activeTime,
@@ -346,15 +323,15 @@ export function NavbarCatalogSearch() {
         activeNumber,
       },
       toggles: {
-        searchDescription,
-        hideCancelled,
-        hideConflicting,
-        hideFirstYearSeminars,
-        hideGraduateCourses,
-        hideDiscussionSections,
+        searchDescription: searchDescription.value,
+        hideCancelled: hideCancelled.value,
+        hideConflicting: hideConflicting.value,
+        hideFirstYearSeminars: hideFirstYearSeminars.value,
+        hideGraduateCourses: hideGraduateCourses.value,
+        hideDiscussionSections: hideDiscussionSections.value,
       },
       sorts: {
-        average_gut_rating: selectSortby.value === sortbyOptions[7].value,
+        average_gut_rating: selectSortby.value.value === sortbyOptions[7].value,
       },
     }),
     [
@@ -380,7 +357,7 @@ export function NavbarCatalogSearch() {
 
   // Styles for active search bar
   const searchbarStyle = useMemo(() => {
-    if (searchText) {
+    if (searchText.value) {
       return {
         backgroundColor: globalTheme.selectHover,
         borderColor: globalTheme.primary,
@@ -391,6 +368,14 @@ export function NavbarCatalogSearch() {
 
   // Prevent overlap with tooltips
   const menuPortalTarget = document.querySelector<HTMLElement>('#portal');
+
+  const speed = useMemo(() => {
+    const pool =
+      searchSpeed[
+        duration > 1 ? 'fast' : duration > 0.5 ? 'faster' : 'fastest'
+      ];
+    return pool[Math.floor(Math.random() * pool.length)];
+  }, [duration]);
 
   return (
     <>
@@ -423,21 +408,21 @@ export function NavbarCatalogSearch() {
             <InputGroup className="h-100">
               <NavbarStyledSearchBar
                 type="text"
-                value={searchText}
+                value={searchText.value}
                 style={searchbarStyle}
                 onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
-                  setSearchText(event.target.value);
+                  searchText.set(event.target.value);
                   setStartTime(Date.now());
                 }}
                 placeholder="Search by course code, title, prof, or whatever we don't really care"
                 ref={searchTextInput}
               />
             </InputGroup>
-            {searchText && (
+            {searchText.value && (
               <CloseIcon
                 size={18}
                 onClick={() => {
-                  setSearchText('');
+                  searchText.reset();
                   setStartTime(Date.now());
                 }}
               />
@@ -466,22 +451,22 @@ export function NavbarCatalogSearch() {
                   buttonText="Subject"
                   type="subject"
                   onReset={() => {
-                    setSelectSubjects(defaultFilters.defaultOptions);
+                    selectSubjects.reset();
                     setStartTime(Date.now());
                   }}
-                  selectOptions={selectSubjects}
+                  selectOptions={selectSubjects.value}
                   dataTutorial={2}
                 >
                   <PopoutSelect<Option, true>
                     isMulti
-                    value={selectSubjects}
+                    value={selectSubjects.value}
                     options={Object.entries(subjects).map(([code, name]) => ({
                       label: `${code} - ${name}`,
                       value: code,
                     }))}
                     placeholder="All Subjects"
                     onChange={(selectedOption) => {
-                      setSelectSubjects(asWritable(selectedOption));
+                      selectSubjects.set(asWritable(selectedOption));
                       setStartTime(Date.now());
                     }}
                   />
@@ -491,16 +476,16 @@ export function NavbarCatalogSearch() {
                   buttonText="Areas/Skills"
                   type="skills/areas"
                   onReset={() => {
-                    setSelectSkillsAreas(defaultFilters.defaultOptions);
+                    selectSkillsAreas.reset();
                     setStartTime(Date.now());
                   }}
-                  selectOptions={selectSkillsAreas}
+                  selectOptions={selectSkillsAreas.value}
                   className="mr-0"
                 >
                   <PopoutSelect<Option, true>
                     useColors
                     isMulti
-                    value={selectSkillsAreas}
+                    value={selectSkillsAreas.value}
                     options={['Areas', 'Skills'].map((type) => ({
                       label: type,
                       options: Object.entries(
@@ -513,7 +498,7 @@ export function NavbarCatalogSearch() {
                     }))}
                     placeholder="All Areas/Skills"
                     onChange={(selectedOption) => {
-                      setSelectSkillsAreas(asWritable(selectedOption));
+                      selectSkillsAreas.set(asWritable(selectedOption));
                       setStartTime(Date.now());
                     }}
                   />
@@ -538,20 +523,20 @@ export function NavbarCatalogSearch() {
                   <RangeValueLabel>{overallValueLabels[1]}</RangeValueLabel>
                 </div>
                 <StyledRange
-                  min={defaultFilters.defaultRatingBounds[0]}
-                  max={defaultFilters.defaultRatingBounds[1]}
+                  min={defaultFilters.overallBounds[0]}
+                  max={defaultFilters.overallBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
                   key={resetKey}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
-                  defaultValue={overallBounds}
+                  defaultValue={overallBounds.value}
                   onChange={(value) => {
                     setOverallValueLabels(value);
                   }}
                   onAfterChange={(value) => {
-                    setOverallBounds(value);
+                    overallBounds.set(value);
                     setStartTime(Date.now());
                   }}
                 />
@@ -569,20 +554,20 @@ export function NavbarCatalogSearch() {
                   <RangeValueLabel>{workloadValueLabels[1]}</RangeValueLabel>
                 </div>
                 <StyledRange
-                  min={defaultFilters.defaultRatingBounds[0]}
-                  max={defaultFilters.defaultRatingBounds[1]}
+                  min={defaultFilters.workloadBounds[0]}
+                  max={defaultFilters.workloadBounds[1]}
                   step={0.1}
                   isTablet={isTablet}
                   key={resetKey}
                   handleStyle={rangeHandleStyle}
                   railStyle={rangeRailStyle}
                   trackStyle={[rangeRailStyle]}
-                  defaultValue={workloadBounds}
+                  defaultValue={workloadBounds.value}
                   onChange={(value) => {
                     setWorkloadValueLabels(value);
                   }}
                   onAfterChange={(value) => {
-                    setWorkloadBounds(value);
+                    workloadBounds.set(value);
                     setStartTime(Date.now());
                   }}
                 />
@@ -594,19 +579,19 @@ export function NavbarCatalogSearch() {
                 buttonText="Season"
                 type="season"
                 onReset={() => {
-                  setSelectSeasons(defaultFilters.defaultOptions);
+                  selectSeasons.reset();
                   setStartTime(Date.now());
                 }}
-                selectOptions={selectSeasons}
+                selectOptions={selectSeasons.value}
               >
                 <PopoutSelect<Option, true>
                   isMulti
-                  value={selectSeasons}
+                  value={selectSeasons.value}
                   options={seasonsOptions}
                   placeholder="Last 5 Years"
                   hideSelectedOptions={false}
                   onChange={(selectedOption) => {
-                    setSelectSeasons(asWritable(selectedOption));
+                    selectSeasons.set(asWritable(selectedOption));
                     setStartTime(Date.now());
                   }}
                 />
@@ -619,25 +604,33 @@ export function NavbarCatalogSearch() {
               type="advanced"
               onReset={() => {
                 if (isTablet) {
-                  setSelectSubjects(defaultFilters.defaultOptions);
-                  setSelectSeasons(defaultFilters.defaultOptions);
-                  setSelectSkillsAreas(defaultFilters.defaultOptions);
+                  (
+                    [
+                      'selectSubjects',
+                      'selectSeasons',
+                      'selectSkillsAreas',
+                    ] as const
+                  ).forEach((k) => filters[k].reset());
                 }
-                setSelectDays(defaultFilters.defaultOptions);
-                setSelectSchools(defaultFilters.defaultOptions);
-                setSelectCredits(defaultFilters.defaultOptions);
-                setSearchDescription(defaultFilters.defaultFalse);
-                setHideCancelled(defaultFilters.defaultTrue);
-                setHideConflicting(defaultFilters.defaultFalse);
-                setHideFirstYearSeminars(defaultFilters.defaultFalse);
-                setHideGraduateCourses(defaultFilters.defaultFalse);
-                setHideDiscussionSections(defaultFilters.defaultFalse);
-                setTimeBounds(defaultFilters.defaultTimeBounds);
-                setTimeValueLabels(defaultFilters.defaultTimeBounds);
-                setEnrollBounds(defaultFilters.defaultEnrollBounds);
-                setEnrollValueLabels(defaultFilters.defaultEnrollBounds);
-                setNumBounds(defaultFilters.defaultNumBounds);
-                setNumValueLabels(defaultFilters.defaultNumBounds);
+                (
+                  [
+                    'selectDays',
+                    'selectSchools',
+                    'selectCredits',
+                    'searchDescription',
+                    'hideCancelled',
+                    'hideConflicting',
+                    'hideFirstYearSeminars',
+                    'hideGraduateCourses',
+                    'hideDiscussionSections',
+                    'timeBounds',
+                    'enrollBounds',
+                    'numBounds',
+                  ] as const
+                ).forEach((k) => filters[k].reset());
+                setTimeValueLabels(defaultFilters.timeBounds);
+                setEnrollValueLabels(defaultFilters.enrollBounds);
+                setNumValueLabels(defaultFilters.numBounds);
                 setStartTime(Date.now());
                 setResetKey(resetKey + 1);
               }}
@@ -653,7 +646,7 @@ export function NavbarCatalogSearch() {
                       <AdvancedSelect
                         closeMenuOnSelect
                         isMulti
-                        value={selectSubjects}
+                        value={selectSubjects.value}
                         options={Object.entries(subjects).map(
                           ([code, name]) => ({
                             label: `${code} - ${name}`,
@@ -663,7 +656,7 @@ export function NavbarCatalogSearch() {
                         placeholder="All Subjects"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
-                          setSelectSubjects(selectedOption as Option[]);
+                          selectSubjects.set(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -675,7 +668,7 @@ export function NavbarCatalogSearch() {
                         useColors
                         closeMenuOnSelect
                         isMulti
-                        value={selectSkillsAreas}
+                        value={selectSkillsAreas.value}
                         options={['Areas', 'Skills'].map((type) => ({
                           label: type,
                           options: Object.entries(
@@ -691,7 +684,7 @@ export function NavbarCatalogSearch() {
                         placeholder="All Areas/Skills"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
-                          setSelectSkillsAreas(selectedOption as Option[]);
+                          selectSkillsAreas.set(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -702,12 +695,12 @@ export function NavbarCatalogSearch() {
                       <AdvancedSelect
                         closeMenuOnSelect
                         isMulti
-                        value={selectSeasons}
+                        value={selectSeasons.value}
                         options={seasonsOptions}
                         placeholder="Last 5 Years"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
-                          setSelectSeasons(selectedOption as Option[]);
+                          selectSeasons.set(selectedOption as Option[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -720,7 +713,7 @@ export function NavbarCatalogSearch() {
                   <AdvancedSelect
                     closeMenuOnSelect
                     isMulti
-                    value={selectDays}
+                    value={selectDays.value}
                     options={weekdays.slice(0, 5).map((day) => ({
                       label: day,
                       value: day,
@@ -728,7 +721,7 @@ export function NavbarCatalogSearch() {
                     placeholder="All Days"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
-                      setSelectDays(selectedOption as Option[]);
+                      selectDays.set(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -748,8 +741,8 @@ export function NavbarCatalogSearch() {
                       </RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={toRangeTime(defaultFilters.defaultTimeBounds[0])}
-                      max={toRangeTime(defaultFilters.defaultTimeBounds[1])}
+                      min={toRangeTime(defaultFilters.timeBounds[0])}
+                      max={toRangeTime(defaultFilters.timeBounds[1])}
                       step={1}
                       marks={{
                         84: '7am',
@@ -763,12 +756,12 @@ export function NavbarCatalogSearch() {
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={timeBounds.map(toRangeTime)}
+                      defaultValue={timeBounds.value.map(toRangeTime)}
                       onChange={(value) => {
                         setTimeValueLabels(value.map(toRealTime));
                       }}
                       onAfterChange={(value) => {
-                        setTimeBounds(value.map(toRealTime));
+                        timeBounds.set(value.map(toRealTime));
                         setStartTime(Date.now());
                       }}
                     />
@@ -785,26 +778,24 @@ export function NavbarCatalogSearch() {
                       <RangeValueLabel>{enrollValueLabels[1]}</RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={Math.round(
-                        toLinear(defaultFilters.defaultEnrollBounds[0]),
-                      )}
-                      max={Math.round(
-                        toLinear(defaultFilters.defaultEnrollBounds[1]),
-                      )}
+                      min={Math.round(toLinear(defaultFilters.enrollBounds[0]))}
+                      max={Math.round(toLinear(defaultFilters.enrollBounds[1]))}
                       step={10}
                       marks={{ 0: 1, 290: 18, 510: 160, 630: 528 }}
                       key={resetKey}
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={enrollBounds.map(toLinear)}
+                      defaultValue={enrollBounds.value.map(toLinear)}
                       onChange={(value) => {
                         setEnrollValueLabels(
                           value.map(toExponential).map(Math.round),
                         );
                       }}
                       onAfterChange={(value) => {
-                        setEnrollBounds(value.map(toExponential));
+                        enrollBounds.set(
+                          value.map(toExponential).map(Math.round),
+                        );
                         setStartTime(Date.now());
                       }}
                     />
@@ -827,8 +818,8 @@ export function NavbarCatalogSearch() {
                       </RangeValueLabel>
                     </div>
                     <AdvancedRange
-                      min={defaultFilters.defaultNumBounds[0]}
-                      max={defaultFilters.defaultNumBounds[1]}
+                      min={defaultFilters.numBounds[0]}
+                      max={defaultFilters.numBounds[1]}
                       step={10}
                       marks={{
                         0: '000',
@@ -847,12 +838,12 @@ export function NavbarCatalogSearch() {
                       handleStyle={rangeHandleStyle}
                       railStyle={rangeRailStyle}
                       trackStyle={[rangeRailStyle]}
-                      defaultValue={numBounds}
+                      defaultValue={numBounds.value}
                       onChange={(value) => {
                         setNumValueLabels(value);
                       }}
                       onAfterChange={(value) => {
-                        setNumBounds(value);
+                        numBounds.set(value);
                         setStartTime(Date.now());
                       }}
                     />
@@ -864,7 +855,7 @@ export function NavbarCatalogSearch() {
                   <AdvancedSelect
                     closeMenuOnSelect
                     isMulti
-                    value={selectSchools}
+                    value={selectSchools.value}
                     options={Object.entries(schools).map(([code, name]) => ({
                       label: name,
                       value: code,
@@ -872,7 +863,7 @@ export function NavbarCatalogSearch() {
                     placeholder="All Schools"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
-                      setSelectSchools(selectedOption as Option[]);
+                      selectSchools.set(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -883,7 +874,7 @@ export function NavbarCatalogSearch() {
                   <AdvancedSelect
                     closeMenuOnSelect
                     isMulti
-                    value={selectCredits}
+                    value={selectCredits.value}
                     options={credits.map((credit) => ({
                       label: String(credit),
                       value: credit,
@@ -894,7 +885,7 @@ export function NavbarCatalogSearch() {
                       // If you want to get rid of these `as` casts:
                       // Don't think about these generics too much. It poisons
                       // your brain.
-                      setSelectCredits(selectedOption as Option<number>[]);
+                      selectCredits.set(selectedOption as Option<number>[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -911,12 +902,12 @@ export function NavbarCatalogSearch() {
                   {/* Search By Description Toggle */}
                   <Toggle type="switch">
                     <ToggleInput
-                      checked={searchDescription}
+                      checked={searchDescription.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
-                        setSearchDescription(!searchDescription);
+                        searchDescription.set((x) => !x);
                         setStartTime(Date.now());
                       }}
                     >
@@ -926,12 +917,12 @@ export function NavbarCatalogSearch() {
                   {/* Hide Cancelled Courses Toggle */}
                   <Toggle type="switch">
                     <ToggleInput
-                      checked={hideCancelled}
+                      checked={hideCancelled.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
-                        setHideCancelled(!hideCancelled);
+                        hideCancelled.set((x) => !x);
                         setStartTime(Date.now());
                       }}
                     >
@@ -940,12 +931,12 @@ export function NavbarCatalogSearch() {
                   </Toggle>
                   <Toggle type="switch">
                     <ToggleInput
-                      checked={hideConflicting}
+                      checked={hideConflicting.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
-                        setHideConflicting(!hideConflicting);
+                        hideConflicting.set((x) => !x);
                         setStartTime(Date.now());
                       }}
                     >
@@ -955,12 +946,12 @@ export function NavbarCatalogSearch() {
                   {/* Hide First-Year Seminar Courses Toggle */}
                   <Toggle type="switch">
                     <ToggleInput
-                      checked={hideFirstYearSeminars}
+                      checked={hideFirstYearSeminars.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
-                        setHideFirstYearSeminars(!hideFirstYearSeminars);
+                        hideFirstYearSeminars.set((x) => !x);
                         setStartTime(Date.now());
                       }}
                     >
@@ -970,12 +961,12 @@ export function NavbarCatalogSearch() {
                   {/* Hide Graduate-Level Courses Toggle */}
                   <Toggle type="switch">
                     <ToggleInput
-                      checked={hideGraduateCourses}
+                      checked={hideGraduateCourses.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
-                        setHideGraduateCourses(!hideGraduateCourses);
+                        hideGraduateCourses.set((x) => !x);
                         setStartTime(Date.now());
                       }}
                     >
@@ -985,12 +976,12 @@ export function NavbarCatalogSearch() {
                   {/* Hide Discussion Sections Toggle */}
                   <Toggle type="switch">
                     <ToggleInput
-                      checked={hideDiscussionSections}
+                      checked={hideDiscussionSections.value}
                       onChange={() => {}} // Dummy handler to remove warning
                     />
                     <ToggleLabel
                       onClick={() => {
-                        setHideDiscussionSections(!hideDiscussionSections);
+                        hideDiscussionSections.set((x) => !x);
                         setStartTime(Date.now());
                       }}
                     >
