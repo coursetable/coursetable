@@ -234,12 +234,12 @@ export function SearchProvider({
       maxEnrollment: enrollBounds.hasChanged ? enrollBounds.value[1] : null,
       minNumber: numBounds.hasChanged ? numBounds.value[0] : null,
       maxNumber: numBounds.hasChanged ? numBounds.value[1] : null,
-      description: searchDescription ? 'ACTIVE' : null,
-      extraInfo: hideCancelled ? 'ACTIVE' : null,
-      conflicting: hideConflicting ? 'ACTIVE' : null,
-      discussionSection: hideDiscussionSections ? 'ACTIVE' : null,
-      fySem: hideFirstYearSeminars ? false : null,
-      gradLevel: hideGraduateCourses ? false : null,
+      description: searchDescription.value ? 'ACTIVE' : null,
+      extraInfo: hideCancelled.value ? 'ACTIVE' : null,
+      conflicting: hideConflicting.value ? 'ACTIVE' : null,
+      discussionSection: hideDiscussionSections.value ? 'ACTIVE' : null,
+      fySem: hideFirstYearSeminars.value ? false : null,
+      gradLevel: hideGraduateCourses.value ? false : null,
     };
     return searchVariables;
   }, [
@@ -445,7 +445,7 @@ export function SearchProvider({
             listing.number
               .toLowerCase()
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
-          (searchDescription &&
+          (searchDescription.value &&
             listing.description?.toLowerCase()?.includes(token)) ||
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
