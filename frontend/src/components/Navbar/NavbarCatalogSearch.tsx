@@ -393,7 +393,7 @@ export function NavbarCatalogSearch() {
       <Form
         className="px-0 h-100"
         onSubmit={(event) => {
-          if (event) event.preventDefault();
+          event.preventDefault();
 
           if (isMobile) {
             scroller.scrollTo('catalog', {

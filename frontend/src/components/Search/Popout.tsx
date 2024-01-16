@@ -189,11 +189,7 @@ export function Popout({
         });
         setToggleText(text);
         setActive(true);
-      } else if (
-        selectOptions !== null &&
-        typeof selectOptions === 'object' &&
-        type === 'advanced'
-      ) {
+      } else if (typeof selectOptions === 'object' && type === 'advanced') {
         let activeFilters = 0;
         for (const [key, value] of Object.entries(selectOptions)) {
           for (const optionValue of Object.values(value)) {
@@ -218,7 +214,6 @@ export function Popout({
         setToggleText(text);
         setActive(activeFilters > 0);
       } else if (
-        selectOptions !== null &&
         typeof selectOptions === 'object' &&
         !Array.isArray(selectOptions) &&
         isOption(selectOptions)

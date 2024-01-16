@@ -241,12 +241,12 @@ export function SearchProvider({
       maxEnrollment: enrollBounds.hasChanged ? enrollBounds.value[1] : null,
       minNumber: numBounds.hasChanged ? numBounds.value[0] : null,
       maxNumber: numBounds.hasChanged ? numBounds.value[1] : null,
-      description: searchDescription ? 'ACTIVE' : null,
-      extraInfo: hideCancelled ? 'ACTIVE' : null,
-      conflicting: hideConflicting ? 'ACTIVE' : null,
-      discussionSection: hideDiscussionSections ? 'ACTIVE' : null,
-      fySem: hideFirstYearSeminars ? false : null,
-      gradLevel: hideGraduateCourses ? false : null,
+      description: searchDescription.value ? 'ACTIVE' : null,
+      extraInfo: hideCancelled.value ? 'ACTIVE' : null,
+      conflicting: hideConflicting.value ? 'ACTIVE' : null,
+      discussionSection: hideDiscussionSections.value ? 'ACTIVE' : null,
+      fySem: hideFirstYearSeminars.value ? false : null,
+      gradLevel: hideGraduateCourses.value ? false : null,
     };
     return searchVariables;
   }, [
@@ -319,12 +319,10 @@ export function SearchProvider({
       if (searchConfig.minTime !== null && searchConfig.maxTime !== null) {
         const times = getDayTimes(listing);
         if (
-          times &&
           !times.some(
             (time) =>
               searchConfig.minTime !== null &&
               searchConfig.maxTime !== null &&
-              time !== null &&
               toRangeTime(time.start) >= toRangeTime(searchConfig.minTime) &&
               toRangeTime(time.end) <= toRangeTime(searchConfig.maxTime),
           )
@@ -346,8 +344,7 @@ export function SearchProvider({
       if (
         searchConfig.minNumber !== null &&
         searchConfig.maxNumber !== null &&
-        (number === null ||
-          number < searchConfig.minNumber ||
+        (number < searchConfig.minNumber ||
           (searchConfig.maxNumber < 1000 && number > searchConfig.maxNumber))
       )
         return false;
@@ -360,7 +357,6 @@ export function SearchProvider({
 
       if (
         searchConfig.conflicting !== null &&
-        worksheetInfo &&
         listing.times_summary !== 'TBA' &&
         checkConflict(worksheetInfo, listing).length > 0
       )
@@ -379,10 +375,8 @@ export function SearchProvider({
 
       if (
         searchConfig.gradLevel !== null &&
-        (listing.number === null ||
-          // Tests if first character is between 5-9
-          (listing.number.charAt(0) >= '5' &&
-            listing.number.charAt(0) <= '9') ||
+        // Tests if first character is between 5-9
+        ((listing.number.charAt(0) >= '5' && listing.number.charAt(0) <= '9') ||
           // Otherwise if first character is not a number (i.e. summer classes),
           // tests whether second character between 5-9
           ((listing.number.charAt(0) < '0' || listing.number.charAt(0) > '9') &&
@@ -400,20 +394,16 @@ export function SearchProvider({
 
       // TODO: searchConfig.days should be a literal set too
       const days = new Set<string>(
-        getDayTimes(listing)?.map((daytime) => daytime.day),
+        getDayTimes(listing).map((daytime) => daytime.day),
       );
       if (searchConfig.days.size !== 0) {
-        let include = true;
-        if (days && days !== null) {
-          days.forEach((day) => {
-            if (!searchConfig.days.has(day)) include = false;
-          });
-          searchConfig.days.forEach((day) => {
-            if (!days.has(day)) include = false;
-          });
-        } else {
-          include = false;
-        }
+        let include = true as boolean;
+        days.forEach((day) => {
+          if (!searchConfig.days.has(day)) include = false;
+        });
+        searchConfig.days.forEach((day) => {
+          if (!days.has(day)) include = false;
+        });
         if (!include) return false;
       }
 
@@ -463,8 +453,8 @@ export function SearchProvider({
             listing.number
               .toLowerCase()
               .startsWith(numberFirstChar.toLowerCase() + token)) ||
-          (searchDescription &&
-            listing.description?.toLowerCase()?.includes(token)) ||
+          (searchDescription.value &&
+            listing.description?.toLowerCase().includes(token)) ||
           listing.title.toLowerCase().includes(token) ||
           listing.professor_names.some((professor) =>
             professor.toLowerCase().includes(token),
@@ -564,7 +554,7 @@ export function SearchProvider({
     )
       setCanReset(true);
     else setCanReset(false);
-    if (!coursesLoading && searchData) {
+    if (!coursesLoading) {
       const durInSecs = Math.abs(Date.now() - startTime) / 1000;
       setDuration(durInSecs);
     }

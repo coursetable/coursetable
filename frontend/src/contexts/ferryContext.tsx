@@ -168,11 +168,7 @@ export function useWorksheetInfo(
     for (const [seasonCode, crn, worksheetNumberCourse] of worksheet) {
       if (season !== null && season !== seasonCode) continue;
 
-      if (
-        courses &&
-        seasonCode in courses &&
-        worksheetNumberCourse === worksheetNumber
-      ) {
+      if (seasonCode in courses && worksheetNumberCourse === worksheetNumber) {
         const course = courses[seasonCode].get(parseInt(crn, 10) as Crn);
         if (!course) {
           // This error is unactionable.

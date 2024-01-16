@@ -30,19 +30,15 @@ function CourseConflictIcon({ course }: { readonly course: Listing }) {
 
   // Update conflict status whenever the user's worksheet changes
   const conflicts = useMemo(() => {
-    // Return if worksheet hasn't been loaded or this listing has no times
-    if (!data) return [];
     if (course.times_summary === 'TBA') return [];
     return checkConflict(data, course);
   }, [course, data]);
 
   // Update conflict status whenever the user's worksheet changes
-  const crossListed = useMemo(() => {
-    // Return if worksheet hasn't been loaded, otherwise return the cross-listed
-    // class
-    if (!data) return false;
-    return checkCrossListed(data, course);
-  }, [course, data]);
+  const crossListed = useMemo(
+    () => checkCrossListed(data, course),
+    [course, data],
+  );
 
   return (
     // Smooth fade in and out transition
