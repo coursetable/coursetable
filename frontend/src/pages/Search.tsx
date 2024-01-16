@@ -161,19 +161,17 @@ function Search() {
                 <Row className={`mx-auto py-0 px-4 ${styles.multi_selects}`}>
                   {/* Seasons Multi-Select */}
                   <div className={`col-md-12 p-0 ${styles.selector_container}`}>
-                    {seasonsOptions && (
-                      <CustomSelect<Option, true>
-                        isMulti
-                        value={selectSeasons.value}
-                        options={seasonsOptions}
-                        placeholder="Last 5 Years"
-                        // Prevent overlap with tooltips
-                        menuPortalTarget={document.body}
-                        onChange={(selectedOption) =>
-                          selectSeasons.set(asWritable(selectedOption))
-                        }
-                      />
-                    )}
+                    <CustomSelect<Option, true>
+                      isMulti
+                      value={selectSeasons.value}
+                      options={seasonsOptions}
+                      placeholder="Last 5 Years"
+                      // Prevent overlap with tooltips
+                      menuPortalTarget={document.body}
+                      onChange={(selectedOption) =>
+                        selectSeasons.set(asWritable(selectedOption))
+                      }
+                    />
                   </div>
                   {/* Skills/Areas Multi-Select */}
                   <div
