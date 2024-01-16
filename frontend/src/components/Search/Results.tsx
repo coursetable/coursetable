@@ -306,11 +306,8 @@ function Results({
                   style,
                   isScrolling: rowIsScrolling,
                 }) => {
-                  const friends = numFriends[
-                    data[index].season_code + data[index].crn
-                  ]
-                    ? numFriends[data[index].season_code + data[index].crn]
-                    : [];
+                  const friends =
+                    numFriends[data[index].season_code + data[index].crn] ?? [];
                   // Alternating row item background colors
                   const colorStyles =
                     index % 2 === 0

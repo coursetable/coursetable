@@ -141,9 +141,8 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
   const [page, setPage] = useState('');
   // Handles page
   useEffect(() => {
-    if (location && location.pathname === '/catalog') setPage('catalog');
-    else if (location && location.pathname === '/worksheet')
-      setPage('worksheet');
+    if (location.pathname === '/catalog') setPage('catalog');
+    else if (location.pathname === '/worksheet') setPage('worksheet');
     else setPage('');
   }, [location]);
 
