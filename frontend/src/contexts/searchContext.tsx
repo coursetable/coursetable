@@ -442,16 +442,6 @@ export function SearchProvider({
         return false;
 
       if (
-        searchConfig.courseInfoAttributes.size !== 0 &&
-        listing.flag_info !== null &&
-        // !searchConfig.courseInfoAttributes.has(String(listing.flag_info))
-        Array.from(searchConfig.courseInfoAttributes).filter((value) =>
-          listing.flag_info.includes(value),
-        ).length === 0
-      )
-        return false;
-
-      if (
         searchConfig.schools.size !== 0 &&
         listing.school !== null &&
         !searchConfig.schools.has(listing.school)
