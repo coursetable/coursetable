@@ -26,6 +26,8 @@ import {
   getNumFriends,
   getOverallRatings,
   getWorkloadRatings,
+  isGraduate,
+  isDiscussionSection,
   sortCourses,
   toRangeTime,
   toSeasonString,
@@ -292,27 +294,23 @@ export function SearchProvider({
     const filtered = listings.filter((listing) => {
       // Apply filters.
       if (processedOverallBounds !== null) {
-        const averageOverall = getOverallRatings(listing, 'stat');
-        const overall =
-          averageOverall === null ? null : Math.round(averageOverall * 10) / 10;
+        const overall = getOverallRatings(listing, 'stat');
+        if (overall === null) return false;
+        const rounded = Math.round(overall * 10) / 10;
         if (
-          overall === null ||
-          overall < processedOverallBounds[0] ||
-          overall > processedOverallBounds[1]
+          rounded < processedOverallBounds[0] ||
+          rounded > processedOverallBounds[1]
         )
           return false;
       }
 
       if (processedWorkloadBounds !== null) {
-        const averageWorkload = getWorkloadRatings(listing, 'stat');
-        const workload =
-          averageWorkload === null
-            ? null
-            : Math.round(averageWorkload * 10) / 10;
+        const workload = getWorkloadRatings(listing, 'stat');
+        if (workload === null) return false;
+        const rounded = Math.round(workload * 10) / 10;
         if (
-          workload === null ||
-          workload < processedWorkloadBounds[0] ||
-          workload > processedWorkloadBounds[1]
+          rounded < processedWorkloadBounds[0] ||
+          rounded > processedWorkloadBounds[1]
         )
           return false;
       }
@@ -357,25 +355,12 @@ export function SearchProvider({
       )
         return false;
 
-      // Checks whether the section field consists only of letters -- if so, the
-      // class is a discussion section.
-      if (hideDiscussionSections.value && /^[A-Z]*$/u.test(listing.section))
+      if (hideDiscussionSections.value && isDiscussionSection(listing))
         return false;
 
       if (hideFirstYearSeminars.value && listing.fysem !== false) return false;
 
-      if (
-        hideGraduateCourses.value &&
-        // Tests if first character is between 5-9
-        ((listing.number.charAt(0) >= '5' && listing.number.charAt(0) <= '9') ||
-          // Otherwise if first character is not a number (i.e. summer classes),
-          // tests whether second character between 5-9
-          ((listing.number.charAt(0) < '0' || listing.number.charAt(0) > '9') &&
-            (listing.number.length <= 1 ||
-              (listing.number.charAt(1) >= '5' &&
-                listing.number.charAt(1) <= '9'))))
-      )
-        return false;
+      if (hideGraduateCourses.value && isGraduate(listing)) return false;
 
       if (
         processedSubjects.length !== 0 &&

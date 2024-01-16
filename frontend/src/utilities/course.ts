@@ -327,6 +327,24 @@ export function getEnrolled(
   return usage === 'modal' ? 'N/A' : '';
 }
 
+export function isGraduate(listing: Listing): boolean {
+  if (listing.number[0] >= '5' && listing.number[0] <= '9') return true;
+  // Otherwise if first character is not a number (i.e. summer classes),
+  // tests whether second character between 5-9
+  if (
+    (listing.number[0] < '0' || listing.number[0] > '9') &&
+    listing.number.length > 1
+  )
+    return listing.number[1] >= '5' && listing.number[1] <= '9';
+  return false;
+}
+
+export function isDiscussionSection(listing: Listing): boolean {
+  // Checks whether the section field consists only of letters -- if so, the
+  // class is a discussion section.
+  return /^[A-Z]*$/u.test(listing.section);
+}
+
 /**
  * @param time A time in the format `hh:mm` (24 hour)
  * @returns Number of 5 minutes past midnight
