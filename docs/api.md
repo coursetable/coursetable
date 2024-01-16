@@ -131,7 +131,7 @@ TODO: rename this to `/api/catalog` and remove `.json`?
 
 - Body:
   - `auth`: `boolean`
-  - `id`: `NetId | null`
+  - `netId`: `NetId | null`
   - `user`: `User | null`
 
 ### `GET` `/api/auth/cas`
