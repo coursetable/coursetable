@@ -7,6 +7,7 @@ import 'rc-tooltip/assets/bootstrap.css';
 
 import styles from './Search.module.css';
 import Results from '../components/Search/Results';
+import type { Season } from '../utilities/common';
 import {
   skillsAreas,
   skillsAreasColors,
@@ -169,7 +170,7 @@ function Search() {
                       // Prevent overlap with tooltips
                       menuPortalTarget={document.body}
                       onChange={(selectedOption) =>
-                        selectSeasons.set(asWritable(selectedOption))
+                        selectSeasons.set(selectedOption as Option<Season>[])
                       }
                     />
                   </div>
@@ -247,7 +248,7 @@ function Search() {
                         key={resetKey}
                         defaultValue={overallBounds.value}
                         onAfterChange={(value) => {
-                          overallBounds.set(value);
+                          overallBounds.set(value as [number, number]);
                         }}
                         handle={({ value, dragging, ...e }) => (
                           // @ts-expect-error: TODO upgrade rc-slider
@@ -274,7 +275,7 @@ function Search() {
                         key={resetKey}
                         defaultValue={workloadBounds.value}
                         onAfterChange={(value) => {
-                          workloadBounds.set(value);
+                          workloadBounds.set(value as [number, number]);
                         }}
                         handle={({ value, dragging, ...e }) => (
                           // @ts-expect-error: TODO upgrade rc-slider

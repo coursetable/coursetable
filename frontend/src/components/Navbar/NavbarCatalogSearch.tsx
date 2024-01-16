@@ -29,7 +29,7 @@ import {
   sortbyOptions,
   searchSpeed,
 } from '../../utilities/constants';
-import { weekdays } from '../../utilities/common';
+import { weekdays, type Season, type Weekdays } from '../../utilities/common';
 import CustomSelect from '../CustomSelect';
 import {
   useSearch,
@@ -537,10 +537,10 @@ export function NavbarCatalogSearch() {
                   trackStyle={[rangeRailStyle]}
                   defaultValue={overallBounds.value}
                   onChange={(value) => {
-                    setOverallValueLabels(value);
+                    setOverallValueLabels(value as [number, number]);
                   }}
                   onAfterChange={(value) => {
-                    overallBounds.set(value);
+                    overallBounds.set(value as [number, number]);
                     setStartTime(Date.now());
                   }}
                 />
@@ -568,10 +568,10 @@ export function NavbarCatalogSearch() {
                   trackStyle={[rangeRailStyle]}
                   defaultValue={workloadBounds.value}
                   onChange={(value) => {
-                    setWorkloadValueLabels(value);
+                    setWorkloadValueLabels(value as [number, number]);
                   }}
                   onAfterChange={(value) => {
-                    workloadBounds.set(value);
+                    workloadBounds.set(value as [number, number]);
                     setStartTime(Date.now());
                   }}
                 />
@@ -595,7 +595,7 @@ export function NavbarCatalogSearch() {
                   placeholder="Last 5 Years"
                   hideSelectedOptions={false}
                   onChange={(selectedOption) => {
-                    selectSeasons.set(asWritable(selectedOption));
+                    selectSeasons.set(selectedOption as Option<Season>[]);
                     setStartTime(Date.now());
                   }}
                 />
@@ -705,7 +705,7 @@ export function NavbarCatalogSearch() {
                         placeholder="Last 5 Years"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
-                          selectSeasons.set(selectedOption as Option[]);
+                          selectSeasons.set(selectedOption as Option<Season>[]);
                           setStartTime(Date.now());
                         }}
                       />
@@ -726,7 +726,7 @@ export function NavbarCatalogSearch() {
                     placeholder="All Days"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
-                      selectDays.set(selectedOption as Option[]);
+                      selectDays.set(selectedOption as Option<Weekdays>[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -763,10 +763,14 @@ export function NavbarCatalogSearch() {
                       trackStyle={[rangeRailStyle]}
                       defaultValue={timeBounds.value.map(toRangeTime)}
                       onChange={(value) => {
-                        setTimeValueLabels(value.map(toRealTime));
+                        setTimeValueLabels(
+                          value.map(toRealTime) as [string, string],
+                        );
                       }}
                       onAfterChange={(value) => {
-                        timeBounds.set(value.map(toRealTime));
+                        timeBounds.set(
+                          value.map(toRealTime) as [string, string],
+                        );
                         setStartTime(Date.now());
                       }}
                     />
@@ -794,12 +798,18 @@ export function NavbarCatalogSearch() {
                       defaultValue={enrollBounds.value.map(toLinear)}
                       onChange={(value) => {
                         setEnrollValueLabels(
-                          value.map(toExponential).map(Math.round),
+                          value.map(toExponential).map(Math.round) as [
+                            number,
+                            number,
+                          ],
                         );
                       }}
                       onAfterChange={(value) => {
                         enrollBounds.set(
-                          value.map(toExponential).map(Math.round),
+                          value.map(toExponential).map(Math.round) as [
+                            number,
+                            number,
+                          ],
                         );
                         setStartTime(Date.now());
                       }}
@@ -845,10 +855,10 @@ export function NavbarCatalogSearch() {
                       trackStyle={[rangeRailStyle]}
                       defaultValue={numBounds.value}
                       onChange={(value) => {
-                        setNumValueLabels(value);
+                        setNumValueLabels(value as [number, number]);
                       }}
                       onAfterChange={(value) => {
-                        numBounds.set(value);
+                        numBounds.set(value as [number, number]);
                         setStartTime(Date.now());
                       }}
                     />
