@@ -163,67 +163,61 @@ export function Popout({
     if (isDisabled && disabledButtonText) {
       setToggleText(disabledButtonText);
       setActive(false);
-    } else if (selectOptions) {
-      if (Array.isArray(selectOptions) && selectOptions.length > 0) {
-        const maxOptions = type === 'season' ? 1 : 3;
-        const topOptions = selectOptions.slice(0, maxOptions);
-        const text = topOptions.map((option, index) => {
-          const optionLabel = type === 'season' ? option.label : option.value;
-          const colorStyle =
-            type === 'skills/areas' ? { color: option.color } : undefined;
-          const span = (
-            <span style={colorStyle} key={optionLabel}>
-              {optionLabel}
-            </span>
+    } else if (!selectOptions) {
+      setToggleText(buttonText);
+      setActive(false);
+    } else if (Array.isArray(selectOptions)) {
+      const maxOptions = type === 'season' ? 1 : 3;
+      const topOptions = selectOptions.slice(0, maxOptions);
+      const text = topOptions.map((option, index) => {
+        const optionLabel = type === 'season' ? option.label : option.value;
+        const colorStyle =
+          type === 'skills/areas' ? { color: option.color } : undefined;
+        const span = (
+          <span style={colorStyle} key={optionLabel}>
+            {optionLabel}
+          </span>
+        );
+        if (topOptions.length > 1 && index < maxOptions - 1)
+          return <React.Fragment key={index}>{span}, </React.Fragment>;
+        if (selectOptions.length > maxOptions) {
+          return (
+            <React.Fragment key={index}>
+              {span} + {selectOptions.length - maxOptions}
+            </React.Fragment>
           );
-          if (topOptions.length > 1 && index < maxOptions - 1)
-            return <React.Fragment key={index}>{span}, </React.Fragment>;
-          if (selectOptions.length > maxOptions) {
-            return (
-              <React.Fragment key={index}>
-                {span} + {selectOptions.length - maxOptions}
-              </React.Fragment>
-            );
-          }
-          return span;
-        });
-        setToggleText(text);
-        setActive(true);
-      } else if (typeof selectOptions === 'object' && type === 'advanced') {
-        let activeFilters = 0;
-        for (const [key, value] of Object.entries(selectOptions)) {
-          for (const optionValue of Object.values(value)) {
-            if (
-              key === 'selects' &&
-              Array.isArray(optionValue) &&
-              optionValue.length > 0
-            )
-              activeFilters++;
-            else if (key === 'ranges' && optionValue) activeFilters++;
-            else if (
-              key === 'toggles' &&
-              typeof optionValue === 'boolean' &&
-              optionValue
-            )
-              activeFilters++;
-            else if (key === 'sorts' && optionValue) activeFilters++;
-          }
         }
-        const text =
-          activeFilters > 0 ? `Advanced: ${activeFilters}` : buttonText;
-        setToggleText(text);
-        setActive(activeFilters > 0);
-      } else if (
-        typeof selectOptions === 'object' &&
-        !Array.isArray(selectOptions) &&
-        isOption(selectOptions)
-      ) {
-        setToggleText(selectOptions.label);
-        setActive(true);
-      } else {
-        setToggleText(buttonText);
-        setActive(false);
+        return span;
+      });
+      setToggleText(text);
+      setActive(true);
+    } else if (isOption(selectOptions)) {
+      setToggleText(selectOptions.label);
+      setActive(true);
+    } else if (type === 'advanced') {
+      let activeFilters = 0;
+      for (const [key, value] of Object.entries(selectOptions)) {
+        for (const optionValue of Object.values(value)) {
+          if (
+            key === 'selects' &&
+            Array.isArray(optionValue) &&
+            optionValue.length > 0
+          )
+            activeFilters++;
+          else if (key === 'ranges' && optionValue) activeFilters++;
+          else if (
+            key === 'toggles' &&
+            typeof optionValue === 'boolean' &&
+            optionValue
+          )
+            activeFilters++;
+          else if (key === 'sorts' && optionValue) activeFilters++;
+        }
       }
+      const text =
+        activeFilters > 0 ? `Advanced: ${activeFilters}` : buttonText;
+      setToggleText(text);
+      setActive(activeFilters > 0);
     } else {
       setToggleText(buttonText);
       setActive(false);

@@ -32,11 +32,6 @@ module.exports = {
       files: ['frontend/**/*'],
       rules: {
         // TODO: until we have better types
-        '@typescript-eslint/no-unsafe-argument': 'off',
-        '@typescript-eslint/no-unsafe-assignment': 'off',
-        '@typescript-eslint/no-unsafe-call': 'off',
-        '@typescript-eslint/no-unsafe-member-access': 'off',
-        '@typescript-eslint/no-unsafe-return': 'off',
         '@typescript-eslint/prefer-nullish-coalescing': 'off',
         '@typescript-eslint/restrict-template-expressions': 'off',
         'no-restricted-imports': [

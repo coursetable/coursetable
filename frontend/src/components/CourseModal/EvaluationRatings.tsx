@@ -31,7 +31,7 @@ function EvaluationRatings({
     // Loop through each set of ratings
     return section.course.evaluation_ratings.map((x) => ({
       question: x.evaluation_question.question_text || '',
-      values: [...x.rating],
+      values: [...((x.rating as number[] | null) ?? [])],
     }));
   });
 

@@ -43,7 +43,7 @@ export type Option<T extends string | number = string> = {
   numeric?: boolean;
 };
 
-export const isOption = (x: unknown): x is Option =>
+export const isOption = (x: unknown): x is Option<string | number> =>
   // eslint-disable-next-line no-implicit-coercion
   !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 

@@ -130,6 +130,74 @@ export type ComputedListingInfo = Omit<
 > &
   ComputedListingInfoOverride;
 
+const profInfoPopover =
+  (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
+  (props) => (
+    <StyledPopover {...props} id="title_popover" className="d-none d-md-block">
+      <Popover.Title>
+        <Row className="mx-auto">
+          {/* Professor Name */}
+          <strong>{profName}</strong>
+        </Row>
+        <Row className="mx-auto">
+          {/* Professor Email */}
+          <small>
+            {profInfo?.email ? (
+              <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
+            ) : (
+              <TextComponent type={1}>N/A</TextComponent>
+            )}
+          </small>
+        </Row>
+      </Popover.Title>
+      <Popover.Content style={{ width: '274px' }}>
+        <Row className="mx-auto my-1">
+          <Col md={6}>
+            {/* Professor Rating */}
+            <Row className="mx-auto mb-1">
+              <strong
+                className="mx-auto"
+                style={{
+                  color: profInfo?.numCourses
+                    ? ratingColormap(profInfo.totalRating / profInfo.numCourses)
+                        .darken()
+                        .saturate()
+                        .css()
+                    : '#b5b5b5',
+                }}
+              >
+                {
+                  // Get average rating
+                  profInfo?.numCourses
+                    ? (profInfo.totalRating / profInfo.numCourses).toFixed(1)
+                    : 'N/A'
+                }
+              </strong>
+            </Row>
+            <Row className="mx-auto">
+              <small className="mx-auto text-center  font-weight-bold">
+                Avg. Rating
+              </small>
+            </Row>
+          </Col>
+          <Col md={6}>
+            {/* Number of courses taught by this professor */}
+            <Row className="mx-auto mb-1">
+              <strong className="mx-auto">
+                {profInfo?.numCourses ?? '[unknown]'}
+              </strong>
+            </Row>
+            <Row className="mx-auto">
+              <small className="mx-auto text-center  font-weight-bold">
+                Classes Taught
+              </small>
+            </Row>
+          </Col>
+        </Row>
+      </Popover.Content>
+    </StyledPopover>
+  );
+
 /**
  * Displays course modal when clicking on a course
  * @prop setFilter - function that switches evaluation filter
@@ -453,91 +521,6 @@ function CourseModalOverview({
   }, [data, setSeason, listing, overlappingProfs]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
-  // Render popover that contains prof info
-  const profInfoPopover: OverlayChildren = (props) => {
-    let profName = '';
-    let profDict: ProfInfo = {
-      email: '',
-      numCourses: 0,
-      totalRating: 0,
-    };
-    // Store dict from prop_info for easy access
-    if (props.popper.state) {
-      // TODO
-      profName = props.popper.state.options.prof;
-      if (profInfo.has(profName)) profDict = profInfo.get(profName)!;
-    }
-    return (
-      <StyledPopover
-        {...props}
-        id="title_popover"
-        className="d-none d-md-block"
-      >
-        <Popover.Title>
-          <Row className="mx-auto">
-            {/* Professor Name */}
-            <strong>{profName}</strong>
-          </Row>
-          <Row className="mx-auto">
-            {/* Professor Email */}
-            <small>
-              {profDict.email !== '' ? (
-                <a href={`mailto:${profDict.email}`}>{profDict.email}</a>
-              ) : (
-                <TextComponent type={1}>N/A</TextComponent>
-              )}
-            </small>
-          </Row>
-        </Popover.Title>
-        <Popover.Content style={{ width: '274px' }}>
-          <Row className="mx-auto my-1">
-            <Col md={6}>
-              {/* Professor Rating */}
-              <Row className="mx-auto mb-1">
-                <strong
-                  className="mx-auto"
-                  style={{
-                    color: profDict.numCourses
-                      ? ratingColormap(
-                          profDict.totalRating / profDict.numCourses,
-                        )
-                          .darken()
-                          .saturate()
-                          .css()
-                      : '#b5b5b5',
-                  }}
-                >
-                  {
-                    // Get average rating
-                    profDict.numCourses
-                      ? (profDict.totalRating / profDict.numCourses).toFixed(1)
-                      : 'N/A'
-                  }
-                </strong>
-              </Row>
-              <Row className="mx-auto">
-                <small className="mx-auto text-center  font-weight-bold">
-                  Avg. Rating
-                </small>
-              </Row>
-            </Col>
-            <Col md={6}>
-              {/* Number of courses taught by this professor */}
-              <Row className="mx-auto mb-1">
-                <strong className="mx-auto">{profDict.numCourses}</strong>
-              </Row>
-              <Row className="mx-auto">
-                <small className="mx-auto text-center  font-weight-bold">
-                  Classes Taught
-                </small>
-              </Row>
-            </Col>
-          </Row>
-        </Popover.Content>
-      </StyledPopover>
-    );
-  };
-
   // Options for the evaluation filters
   const options = [
     {
@@ -680,9 +663,7 @@ function CourseModalOverview({
                         trigger="click"
                         rootClose
                         placement="right"
-                        overlay={profInfoPopover}
-                        // TODO
-                        popperConfig={{ prof } as any}
+                        overlay={profInfoPopover(prof, profInfo.get(prof))}
                       >
                         <StyledLink>{prof}</StyledLink>
                       </OverlayTrigger>

@@ -142,7 +142,8 @@ export async function logout() {
     const res = await fetch(`${API_ENDPOINT}/api/auth/logout`, {
       credentials: 'include',
     });
-    if (!res.ok) throw new Error((await res.json()).error);
+    if (!res.ok)
+      throw new Error(((await res.json()) as { error?: string }).error);
     // Clear cookies
     document.cookie.split(';').forEach((c) => {
       document.cookie = c

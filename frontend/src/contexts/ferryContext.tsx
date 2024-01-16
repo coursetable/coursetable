@@ -95,7 +95,7 @@ export function FerryProvider({
       await Promise.all(fetches).catch((err) => {
         Sentry.captureException(err);
         toast.error('Failed to fetch course information');
-        setErrors((e) => [...e, err]);
+        setErrors((e) => [...e, err as {}]);
       });
     },
     [user.hasEvals],

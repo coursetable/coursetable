@@ -1,3 +1,7 @@
+// TODO: runtime response validation
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, {
   createContext,
   useContext,
