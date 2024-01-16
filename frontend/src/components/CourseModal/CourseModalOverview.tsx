@@ -217,19 +217,17 @@ function CourseModalOverview({
     for (const season of data.computed_listing_info as ComputedListingInfo[]) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
-      if (season.professor_info) {
-        season.professor_info.forEach((prof) => {
-          if (profInfo.has(prof.name)) {
-            const dict = profInfo.get(prof.name)!;
-            dict.numCourses++;
-            dict.totalRating += prof.average_rating;
-            dict.email = prof.email;
-            season.all_course_codes.forEach((c) => {
-              countedCourses.add(`${season.season_code}-${c}`);
-            });
-          }
-        });
-      }
+      season.professor_info.forEach((prof) => {
+        if (profInfo.has(prof.name)) {
+          const dict = profInfo.get(prof.name)!;
+          dict.numCourses++;
+          dict.totalRating += prof.average_rating;
+          dict.email = prof.email;
+          season.all_course_codes.forEach((c) => {
+            countedCourses.add(`${season.season_code}-${c}`);
+          });
+        }
+      });
     }
     return profInfo;
   }, [data, listing]);
@@ -272,7 +270,7 @@ function CourseModalOverview({
   }, [data, listing.same_course_id]);
 
   const [showPastSyllabi, setShowPastSyllabi] = useState(
-    pastSyllabi && pastSyllabi.length < 8,
+    pastSyllabi.length < 8,
   );
 
   const overlapSections = useMemo(() => {
@@ -287,17 +285,15 @@ function CourseModalOverview({
       // Stores the average rating for all profs teaching this course and
       // populates prof_info
       let averageProfessorRating = 0;
-      if (season.professor_info) {
-        const numProfs = season.professor_info.length;
-        season.professor_info.forEach((prof) => {
-          if (prof.average_rating) {
-            // Add up all prof ratings
-            averageProfessorRating += prof.average_rating;
-          }
-        });
-        // Divide by number of profs to get average
-        averageProfessorRating /= numProfs;
-      }
+      const numProfs = season.professor_info.length;
+      season.professor_info.forEach((prof) => {
+        if (prof.average_rating) {
+          // Add up all prof ratings
+          averageProfessorRating += prof.average_rating;
+        }
+      });
+      // Divide by number of profs to get average
+      averageProfessorRating /= numProfs;
       courseOfferings.push({
         // Course rating
         rating: season.course.evaluation_statistic

@@ -133,7 +133,7 @@ export function WorksheetProvider({
 
   // Initialize courses state and color map.
   useEffect(() => {
-    if (!worksheetLoading && !worksheetError && curWorksheet && worksheetData) {
+    if (!worksheetLoading && !worksheetError) {
       const temp = [...worksheetData];
       // Assign color to each course
       for (let i = 0; i < worksheetData.length; i++) {
@@ -166,6 +166,9 @@ export function WorksheetProvider({
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
+          // There are a lot of ESLint bugs with index signatures and
+          // no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           newHiddenCourses[curSeason] ??= {};
 
           courses.forEach((listing) => {
@@ -182,6 +185,9 @@ export function WorksheetProvider({
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
+          // There are a lot of ESLint bugs with index signatures and
+          // no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
           newHiddenCourses[curSeason] ??= {};
 
           if (newHiddenCourses[curSeason]![crn])

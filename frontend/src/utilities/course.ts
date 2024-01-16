@@ -128,6 +128,9 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
     // Iterate over each course in this friend's worksheet
     friend.worksheets.forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
+      // There are a lot of ESLint bugs with index signatures and
+      // no-unnecessary-condition
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       (numFriends[key] ??= []).push(friend.name); // Add friend's name to this list
     });
   }

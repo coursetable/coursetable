@@ -108,6 +108,8 @@ function GoogleCalendarButton(): JSX.Element {
       exportButtonRef.current,
       {},
       (googleUser) => {
+        // TODO: is this needed?
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (!user) {
           setUser(googleUser);
           void exportEvents();

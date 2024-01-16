@@ -43,14 +43,11 @@ function Worksheet() {
     worksheetView,
     worksheetLoading,
     worksheetError,
-    worksheetData,
     handleWorksheetView,
   } = useWorksheet();
 
-  // If user somehow isn't logged in and worksheet is null
-  if (!curWorksheet) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
-  // eslint-disable-next-line no-constant-condition
+  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
   if (curWorksheet.length === 0 && !isMobile && false) {
     // TODO: remove this part and add an empty state later on.
     // We don't want to prevent a user from seeing their friend's
@@ -89,16 +86,6 @@ function Worksheet() {
         >
           <span className="sr-only">Loading...</span>
         </Spinner>
-      </div>
-    );
-  }
-  if (worksheetData === undefined) {
-    Sentry.captureException(
-      new Error('data is undefined but worksheet is not'),
-    );
-    return (
-      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <ErrorPage message="Internal error with course data" />
       </div>
     );
   }

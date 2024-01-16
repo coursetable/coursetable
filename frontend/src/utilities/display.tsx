@@ -102,7 +102,6 @@ export function useComponentVisibleDropdown<T extends HTMLElement>(
     const portal = document.querySelector('#portal');
     if (
       toggleRef.current &&
-      dropdownRef &&
       dropdownRef.current &&
       !toggleRef.current.contains(event.target as Node) &&
       !dropdownRef.current.contains(event.target as Node) &&

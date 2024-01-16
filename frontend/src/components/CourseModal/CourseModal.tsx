@@ -122,7 +122,7 @@ function CourseModal() {
     setListings(listing ? [listing] : []);
   }, [listing]);
   // Current listing that we are viewing overview info for
-  const curListing = listings.length > 0 ? listings[listings.length - 1] : null;
+  const curListing = listings[listings.length - 1] ?? null;
 
   return (
     <div className="d-flex justify-content-center">
@@ -151,39 +151,34 @@ function CourseModal() {
                   <Row className="m-auto modal-top">
                     <Col xs="auto" className="my-auto p-0">
                       {/* Show worksheet add/remove button */}
-                      {curListing &&
-                        (listings.length === 1 ? (
-                          // If this is the initial listing, show worksheet
-                          // toggle button
-                          <WorksheetToggleButton
-                            crn={curListing.crn}
-                            seasonCode={curListing.season_code}
-                            modal
-                            selectedWorksheet={
-                              // TODO: we love global mutations <3 they are so
-                              // easy to trace & analyze and so bug-proof!
-                              // In all seriousness we need to get rid of
-                              // currentWorksheet and color in ListingArguments
-                              (curListing as unknown as Listing)
-                                .currentWorksheet
-                            }
-                          />
-                        ) : (
-                          // If this is the overview of some other eval course,
-                          // show back button
-                          <StyledLink
-                            onClick={() => {
-                              // Go back to the evaluations of this course
-                              setView([
-                                curListing.season_code,
-                                curListing.eval,
-                              ]);
-                            }}
-                            className={styles.backArrow}
-                          >
-                            <IoMdArrowRoundBack size={30} />
-                          </StyledLink>
-                        ))}
+                      {listings.length === 1 ? (
+                        // If this is the initial listing, show worksheet
+                        // toggle button
+                        <WorksheetToggleButton
+                          crn={curListing.crn}
+                          seasonCode={curListing.season_code}
+                          modal
+                          selectedWorksheet={
+                            // TODO: we love global mutations <3 they are so
+                            // easy to trace & analyze and so bug-proof!
+                            // In all seriousness we need to get rid of
+                            // currentWorksheet and color in ListingArguments
+                            (curListing as unknown as Listing).currentWorksheet
+                          }
+                        />
+                      ) : (
+                        // If this is the overview of some other eval course,
+                        // show back button
+                        <StyledLink
+                          onClick={() => {
+                            // Go back to the evaluations of this course
+                            setView([curListing.season_code, curListing.eval]);
+                          }}
+                          className={styles.backArrow}
+                        >
+                          <IoMdArrowRoundBack size={30} />
+                        </StyledLink>
+                      )}
                     </Col>
                     <Col className="p-0 ml-3">
                       {/* Course Title */}
@@ -213,19 +208,16 @@ function CourseModal() {
                         {/* Course Codes */}
                         <p className={`${styles.courseCodes} my-0 pr-2`}>
                           <TextComponent type={2}>
-                            {curListing.all_course_codes &&
-                              curListing.all_course_codes.join(' • ')}
+                            {curListing.all_course_codes.join(' • ')}
                           </TextComponent>
                         </p>
                         {/* Course Skills and Areas */}
-                        {curListing.skills &&
-                          curListing.skills.map((skill) => (
-                            <SkillBadge skill={skill} key={skill} />
-                          ))}
-                        {curListing.areas &&
-                          curListing.areas.map((area) => (
-                            <SkillBadge skill={area} key={area} />
-                          ))}
+                        {curListing.skills.map((skill) => (
+                          <SkillBadge skill={skill} key={skill} />
+                        ))}
+                        {curListing.areas.map((area) => (
+                          <SkillBadge skill={area} key={area} />
+                        ))}
                       </Row>
                     </Col>
                   </Row>
@@ -292,14 +284,12 @@ function CourseModal() {
                           </TextComponent>
                         </p>
                         {/* Course Skills and Areas */}
-                        {view[1].skills &&
-                          view[1].skills.map((skill) => (
-                            <SkillBadge skill={skill} key={skill} />
-                          ))}
-                        {view[1].areas &&
-                          view[1].areas.map((area) => (
-                            <SkillBadge skill={area} key={area} />
-                          ))}
+                        {view[1].skills.map((skill) => (
+                          <SkillBadge skill={skill} key={skill} />
+                        ))}
+                        {view[1].areas.map((area) => (
+                          <SkillBadge skill={area} key={area} />
+                        ))}
                         {/* Course Professors and Section */}
                         {view[1].professor[0] !== 'TBA' && (
                           <p

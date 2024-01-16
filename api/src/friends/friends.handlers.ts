@@ -299,6 +299,9 @@ export const getFriendsWorksheets = async (
 
   friendWorksheets.forEach(
     ({ netId: friendNetId, ociId, season, worksheetNumber }) => {
+      // There are a lot of ESLint bugs with index signatures and
+      // no-unnecessary-condition
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       (friendInfoMap[friendNetId] ??= {
         name: '[unknown]',
         worksheets: [[String(season), String(ociId), String(worksheetNumber)]],
