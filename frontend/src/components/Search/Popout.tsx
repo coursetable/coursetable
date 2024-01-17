@@ -167,30 +167,35 @@ export function Popout({
       setToggleText(buttonText);
       setActive(false);
     } else if (Array.isArray(selectOptions)) {
-      const maxOptions = type === 'season' ? 1 : 3;
-      const topOptions = selectOptions.slice(0, maxOptions);
-      const text = topOptions.map((option, index) => {
-        const optionLabel = type === 'season' ? option.label : option.value;
-        const colorStyle =
-          type === 'skills/areas' ? { color: option.color } : undefined;
-        const span = (
-          <span style={colorStyle} key={optionLabel}>
-            {optionLabel}
-          </span>
-        );
-        if (topOptions.length > 1 && index < maxOptions - 1)
-          return <React.Fragment key={index}>{span}, </React.Fragment>;
-        if (selectOptions.length > maxOptions) {
-          return (
-            <React.Fragment key={index}>
-              {span} + {selectOptions.length - maxOptions}
-            </React.Fragment>
+      if (selectOptions.length === 0) {
+        setToggleText(buttonText);
+        setActive(false);
+      } else {
+        const maxOptions = type === 'season' ? 1 : 3;
+        const topOptions = selectOptions.slice(0, maxOptions);
+        const text = topOptions.map((option, index) => {
+          const optionLabel = type === 'season' ? option.label : option.value;
+          const colorStyle =
+            type === 'skills/areas' ? { color: option.color } : undefined;
+          const span = (
+            <span style={colorStyle} key={optionLabel}>
+              {optionLabel}
+            </span>
           );
-        }
-        return span;
-      });
-      setToggleText(text);
-      setActive(true);
+          if (topOptions.length > 1 && index < maxOptions - 1)
+            return <React.Fragment key={index}>{span}, </React.Fragment>;
+          if (selectOptions.length > maxOptions) {
+            return (
+              <React.Fragment key={index}>
+                {span} + {selectOptions.length - maxOptions}
+              </React.Fragment>
+            );
+          }
+          return span;
+        });
+        setToggleText(text);
+        setActive(true);
+      }
     } else if (isOption(selectOptions)) {
       setToggleText(selectOptions.label);
       setActive(true);
