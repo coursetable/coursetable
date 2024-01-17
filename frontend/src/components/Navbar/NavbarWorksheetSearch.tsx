@@ -239,7 +239,7 @@ export function NavbarWorksheetSearch() {
                 placeholder="Main Worksheet"
                 onChange={(selectedOption) => {
                   if (isOption(selectedOption))
-                    changeWorksheet(selectedOption.value);
+                    changeWorksheet(selectedOption.value as string);
                 }}
               />
             </Popout>

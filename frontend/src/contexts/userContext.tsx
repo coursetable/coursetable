@@ -26,11 +26,11 @@ export type FriendRecord = {
     worksheets: Worksheet;
   };
 };
-export type FriendRequest = {
+type FriendRequest = {
   netId: NetId;
   name: string;
 };
-export type FriendName = {
+type FriendName = {
   netId: NetId;
   first: string;
   last: string;

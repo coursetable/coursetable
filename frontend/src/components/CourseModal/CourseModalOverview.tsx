@@ -60,7 +60,7 @@ const StyledColUnclickable = styled(Col)`
 `;
 
 // Multitoggle in modal (course, both, prof)
-export const StyledMultiToggle = styled(MultiToggle<Filter>)`
+const StyledMultiToggle = styled(MultiToggle<Filter>)`
   background-color: ${({ theme }) => theme.surface[1]};
   border-color: ${({ theme }) => theme.border};
   .toggleOption {

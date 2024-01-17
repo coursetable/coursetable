@@ -14,11 +14,7 @@ import {
 } from '../utilities/common';
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { useCourseData, useFerry, useWorksheetInfo } from './ferryContext';
-import {
-  type SortByOption,
-  sortbyOptions,
-  type SortKeys,
-} from '../utilities/constants';
+import { type SortByOption, sortbyOptions } from '../utilities/constants';
 import {
   checkConflict,
   getDayTimes,
@@ -47,12 +43,7 @@ export const isOption = (x: unknown): x is Option<string | number> =>
   // eslint-disable-next-line no-implicit-coercion
   !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
-export type SortOrderType = 'desc' | 'asc';
-
-export type OrderingType = {
-  key: SortKeys;
-  type: 'desc' | 'asc';
-};
+type SortOrderType = 'desc' | 'asc';
 
 type Store = {
   filters: {
@@ -75,11 +66,6 @@ type Store = {
 
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
-
-// Default filter and sorting values
-export const defaultWorksheet: Option[] = [
-  { value: '0', label: 'Main Worksheet' },
-];
 
 type Filters = {
   searchText: string;

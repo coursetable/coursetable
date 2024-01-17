@@ -18,7 +18,7 @@ import type { Season, Listing, Crn, NetId } from '../utilities/common';
 export type HiddenCourses = {
   [seasonCode: Season]: { [crn: Crn]: boolean };
 };
-export type WorksheetView =
+type WorksheetView =
   | { view: 'calendar'; mode: 'expanded' }
   | { view: 'calendar'; mode: '' }
   | { view: 'list'; mode: '' };

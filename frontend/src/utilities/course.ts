@@ -7,7 +7,6 @@ import {
   type Listing,
 } from './common';
 import type { FriendRecord, Worksheet } from '../contexts/userContext';
-import type { OrderingType } from '../contexts/searchContext';
 import type { SortKeys } from './constants';
 
 export function truncatedText(
@@ -282,7 +281,10 @@ function compare(
 // Sort courses in catalog or expanded worksheet
 export function sortCourses(
   courses: Listing[],
-  ordering: OrderingType,
+  ordering: {
+    key: SortKeys;
+    type: 'desc' | 'asc';
+  },
   numFriends: NumFriendsReturn,
 ): Listing[] {
   return [...courses].sort((a, b) =>

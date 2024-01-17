@@ -10,7 +10,7 @@ import clsx from 'clsx';
 import { sortbyOptions } from '../../utilities/constants';
 import styles from './SortbyReactSelect.module.css';
 import CustomSelect from '../CustomSelect';
-import { useSearch } from '../../contexts/searchContext';
+import { isOption, useSearch } from '../../contexts/searchContext';
 
 // Toggle sort order button
 const StyledSortBtn = styled.div`
@@ -32,8 +32,8 @@ function SortByReactSelect() {
           value={selectSortby.value}
           options={sortbyOptions}
           menuPortalTarget={document.body}
-          onChange={(options) => {
-            if (options && 'value' in options) selectSortby.set(options);
+          onChange={(options): void => {
+            if (isOption(options)) selectSortby.set(options);
           }}
         />
       </div>
