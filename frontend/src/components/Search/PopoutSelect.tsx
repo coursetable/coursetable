@@ -1,6 +1,6 @@
 import React from 'react';
 import type { Props as SelectProps } from 'react-select';
-import CustomSelect from '../CustomSelect';
+import CustomSelect from './CustomSelect';
 import type { Option } from '../../contexts/searchContext';
 
 type Props = {

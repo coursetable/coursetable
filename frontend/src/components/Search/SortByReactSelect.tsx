@@ -7,10 +7,13 @@ import {
 } from 'react-icons/fc';
 import styled from 'styled-components';
 import clsx from 'clsx';
-import { sortbyOptions } from '../../utilities/constants';
 import styles from './SortbyReactSelect.module.css';
-import CustomSelect from '../CustomSelect';
-import { isOption, useSearch } from '../../contexts/searchContext';
+import CustomSelect from './CustomSelect';
+import {
+  isOption,
+  useSearch,
+  sortbyOptions,
+} from '../../contexts/searchContext';
 
 // Toggle sort order button
 const StyledSortBtn = styled.div`

@@ -19,8 +19,7 @@ import Authentication from '../../images/authentication.svg';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { sortbyOptions } from '../../utilities/constants';
-import { useSearch } from '../../contexts/searchContext';
+import { useSearch, sortbyOptions } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';

@@ -16,6 +16,8 @@ import type { Crn, Season, Listing } from '../utilities/common';
 
 import { API_ENDPOINT } from '../config';
 
+export const seasons = seasonsData as Season[];
+
 // Global course data cache.
 const courseDataLock = new AsyncLock();
 const courseLoadAttempted = new Set<Season>();
@@ -56,7 +58,6 @@ type Store = {
   loading: boolean;
 
   error: {} | null;
-  seasons: Season[];
   courses: typeof courseData;
   requestSeasons: (seasons: Season[]) => void;
 };
@@ -111,7 +112,6 @@ export function FerryProvider({
       requests,
       loading,
       error,
-      seasons: seasonsData as Season[],
       courses: courseData,
       requestSeasons,
     }),

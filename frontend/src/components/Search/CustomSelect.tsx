@@ -9,7 +9,7 @@ import Select, {
   type Theme,
   type ThemeConfig,
 } from 'react-select';
-import type { Option } from '../contexts/searchContext';
+import type { Option } from '../../contexts/searchContext';
 
 // Styles for the select indicators
 function indicatorStyles<
