@@ -132,30 +132,22 @@ function WorksheetCalendarList() {
     useWorksheet();
 
   // Build the HTML for the list of courses of a given season
-  const items = useMemo(() => {
-    // List to hold HTML
-    const listitems = courses.map((course, id) => {
-      let hidden = false;
-      if (curSeason in hiddenCourses)
-        hidden = hiddenCourses[curSeason][course.crn];
-
-      // Add listgroup item to listitems list
-      return (
+  const items = useMemo(
+    () =>
+      courses.map((course, i) => (
         <WorksheetCalendarListItem
-          key={id}
+          key={i}
           course={course}
-          hidden={hidden}
+          hidden={hiddenCourses[curSeason]?.[course.crn] ?? false}
           worksheetNumber={worksheetNumber}
         />
-      );
-    });
-
-    return listitems;
-  }, [courses, hiddenCourses, curSeason, worksheetNumber]);
+      )),
+    [courses, hiddenCourses, curSeason, worksheetNumber],
+  );
 
   const areHidden = useMemo(() => {
     if (!(curSeason in hiddenCourses)) return false;
-    return Object.keys(hiddenCourses[curSeason]).length === courses.length;
+    return Object.keys(hiddenCourses[curSeason]!).length === courses.length;
   }, [hiddenCourses, courses, curSeason]);
 
   const HideShowIcon = areHidden ? StyledBsEyeSlash : StyledBsEye;

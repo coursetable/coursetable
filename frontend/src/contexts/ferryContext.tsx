@@ -16,6 +16,8 @@ import type { Crn, Season, Listing } from '../utilities/common';
 
 import { API_ENDPOINT } from '../config';
 
+export const seasons = seasonsData as Season[];
+
 // Global course data cache.
 const courseDataLock = new AsyncLock();
 const courseLoadAttempted = new Set<Season>();
@@ -56,7 +58,6 @@ type Store = {
   loading: boolean;
 
   error: {} | null;
-  seasons: Season[];
   courses: typeof courseData;
   requestSeasons: (seasons: Season[]) => void;
 };
@@ -95,7 +96,7 @@ export function FerryProvider({
       await Promise.all(fetches).catch((err) => {
         Sentry.captureException(err);
         toast.error('Failed to fetch course information');
-        setErrors((e) => [...e, err]);
+        setErrors((e) => [...e, err as {}]);
       });
     },
     [user.hasEvals],
@@ -111,7 +112,6 @@ export function FerryProvider({
       requests,
       loading,
       error,
-      seasons: seasonsData as Season[],
       courses: courseData,
       requestSeasons,
     }),
@@ -169,7 +169,7 @@ export function useWorksheetInfo(
       if (season !== null && season !== seasonCode) continue;
 
       if (seasonCode in courses && worksheetNumberCourse === worksheetNumber) {
-        const course = courses[seasonCode].get(parseInt(crn, 10) as Crn);
+        const course = courses[seasonCode]!.get(parseInt(crn, 10) as Crn);
         if (!course) {
           // This error is unactionable.
           // https://github.com/coursetable/coursetable/pull/1508

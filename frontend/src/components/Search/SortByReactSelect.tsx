@@ -6,10 +6,14 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled from 'styled-components';
-import { sortbyOptions } from '../../utilities/constants';
+import clsx from 'clsx';
 import styles from './SortbyReactSelect.module.css';
-import CustomSelect from '../CustomSelect';
-import { useSearch } from '../../contexts/searchContext';
+import CustomSelect from './CustomSelect';
+import {
+  isOption,
+  useSearch,
+  sortbyOptions,
+} from '../../contexts/searchContext';
 
 // Toggle sort order button
 const StyledSortBtn = styled.div`
@@ -31,14 +35,14 @@ function SortByReactSelect() {
           value={selectSortby.value}
           options={sortbyOptions}
           menuPortalTarget={document.body}
-          onChange={(options) => {
-            if (options && 'value' in options) selectSortby.set(options);
+          onChange={(options): void => {
+            if (isOption(options)) selectSortby.set(options);
           }}
         />
       </div>
       {/* Toggle sort order button */}
       <StyledSortBtn
-        className={`${styles.sort_btn} my-auto`}
+        className={clsx(styles.sort_btn, 'my-auto')}
         onClick={() => sortOrder.set((o) => (o === 'asc' ? 'desc' : 'asc'))}
       >
         {!selectSortby.value.numeric ? (

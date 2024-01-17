@@ -11,8 +11,8 @@ function DropdownItem({
   text,
   viewedPerson,
 }: {
-  readonly person: string;
-  readonly viewedPerson: string;
+  readonly person: NetId | 'me';
+  readonly viewedPerson: NetId | 'me';
   readonly text: string;
 }) {
   return (
@@ -52,17 +52,18 @@ function FriendsDropdown() {
   }
 
   // Generate friend netId list, sorted by name.
-  const friends = Object.keys(user.friends) as NetId[];
+  const friends = Object.entries(user.friends).map(([netId, { name }]) => ({
+    netId: netId as NetId,
+    name,
+  }));
   friends.sort((a, b) =>
-    user.friends![a].name.localeCompare(user.friends![b].name, 'en-US', {
-      sensitivity: 'base',
-    }),
+    a.name.localeCompare(b.name, 'en-US', { sensitivity: 'base' }),
   );
   return (
     <div className="container p-0 m-0">
       <DropdownButton
         variant="primary"
-        title={person === 'me' ? 'Me' : user.friends[person].name}
+        title={person === 'me' ? 'Me' : user.friends[person]!.name}
         onSelect={(p) => {
           if (p) handlePersonChange(p as NetId | 'me');
         }}
@@ -70,9 +71,9 @@ function FriendsDropdown() {
         <DropdownItem person="me" text="Me" viewedPerson={person} />
         {friends.map((p) => (
           <DropdownItem
-            key={p}
-            person={p}
-            text={user.friends![p].name}
+            key={p.netId}
+            person={p.netId}
+            text={p.name}
             viewedPerson={person}
           />
         ))}

@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { List, WindowScroller, AutoSizer } from 'react-virtualized';
 import styled, { useTheme } from 'styled-components';
+import clsx from 'clsx';
 
 import ResultsItemMemo from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
@@ -18,8 +19,7 @@ import Authentication from '../../images/authentication.svg';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { sortbyOptions } from '../../utilities/constants';
-import { useSearch } from '../../contexts/searchContext';
+import { useSearch, sortbyOptions } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
@@ -261,7 +261,7 @@ function Results({
                   ) {
                     rowElements.push(
                       <ResultsGridItem
-                        course={data[j]}
+                        course={data[j]!}
                         isLoggedIn={isLoggedIn}
                         numCols={numCols}
                         multiSeasons={multiSeasons}
@@ -306,8 +306,9 @@ function Results({
                   style,
                   isScrolling: rowIsScrolling,
                 }) => {
+                  const course = data[index]!;
                   const friends =
-                    numFriends[data[index].season_code + data[index].crn] ?? [];
+                    numFriends[course.season_code + course.crn] ?? [];
                   // Alternating row item background colors
                   const colorStyles =
                     index % 2 === 0
@@ -322,7 +323,7 @@ function Results({
                       key={key}
                     >
                       <ResultsItemMemo
-                        course={data[index]}
+                        course={course}
                         multiSeasons={multiSeasons}
                         isFirst={index === 0}
                         COL_SPACING={COL_SPACING}
@@ -401,14 +402,20 @@ function Results({
             {/* Column Headers */}
             <StyledRow
               ref={ref}
-              className={`mx-auto pl-4 pr-2 ${isLgDesktop ? 'py-2' : 'py-1'} ${
-                styles.results_header_row
-              } justify-content-between`}
+              className={clsx(
+                'mx-auto pl-4 pr-2',
+                isLgDesktop ? 'py-2' : 'py-1',
+                styles.results_header_row,
+                'justify-content-between',
+              )}
               data-tutorial="catalog-5"
             >
               {/* View Toggle */}
               <div
-                className={`${styles.list_grid_toggle} d-flex ml-auto my-auto p-0`}
+                className={clsx(
+                  styles.list_grid_toggle,
+                  'd-flex ml-auto my-auto p-0',
+                )}
               >
                 <ListGridToggle
                   isListView={isListView}
@@ -612,7 +619,7 @@ function Results({
       )}
 
       <SearchResults
-        className={!isListView ? 'px-1 pt-3 ' : ''}
+        className={!isListView ? 'px-1 pt-3' : ''}
         numCourses={data.length}
         isMobile={isMobile}
       >
@@ -623,7 +630,9 @@ function Results({
         {data.length === 0 && !loading && resultsListing}
         {/* Render a loading row while performing next query */}
         {loading && (
-          <Row className={`m-auto ${data.length === 0 ? 'py-5' : 'pt-0 pb-4'}`}>
+          <Row
+            className={clsx('m-auto', data.length === 0 ? 'py-5' : 'pt-0 pb-4')}
+          >
             <Spinner className="m-auto" animation="border" role="status">
               <span className="sr-only">Loading...</span>
             </Spinner>

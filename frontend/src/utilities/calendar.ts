@@ -21,7 +21,7 @@ function isoString(date: Date | SimpleDate, time?: string) {
     : // Avoid mutations
       new Date(date);
   if (time) {
-    const [hourString, minuteString] = time.split(':');
+    const [hourString, minuteString] = time.split(':') as [string, string];
     const hour = parseInt(hourString, 10);
     const minute = parseInt(minuteString, 10);
     d.setUTCHours(hour);
@@ -64,7 +64,7 @@ function getTimes(timesByDay: Listing['times_by_day']) {
   }[] = [];
 
   for (let idx = 1; idx <= 5; idx++) {
-    const info = timesByDay[weekdays[idx - 1]];
+    const info = timesByDay[weekdays[(idx - 1) as 0 | 1 | 2 | 3 | 4]];
     if (!info) continue;
     for (const [startTime, endTime, location] of info) {
       const time = times.find(
@@ -234,10 +234,7 @@ export function getCalendarEvents(
     return [];
   }
   const visibleCourses = courses.filter(
-    (course) =>
-      !hiddenCourses[curSeason] ||
-      !(course.crn in hiddenCourses[curSeason]) ||
-      !hiddenCourses[curSeason][course.crn],
+    (course) => !hiddenCourses[curSeason]?.[course.crn],
   );
   if (visibleCourses.length === 0) {
     if (type !== 'rbc') toast.error(`No courses in ${seasonString} to export!`);

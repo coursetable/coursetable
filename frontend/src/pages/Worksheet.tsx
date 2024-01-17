@@ -3,6 +3,7 @@ import { Row, Col, Fade, Spinner } from 'react-bootstrap';
 import { FaCompressAlt, FaExpandAlt } from 'react-icons/fa';
 import * as Sentry from '@sentry/react';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import WorksheetCalendar from '../components/Worksheet/WorksheetCalendar';
 import WorksheetCalendarList from '../components/Worksheet/WorksheetCalendarList';
@@ -43,14 +44,11 @@ function Worksheet() {
     worksheetView,
     worksheetLoading,
     worksheetError,
-    worksheetData,
     handleWorksheetView,
   } = useWorksheet();
 
-  // If user somehow isn't logged in and worksheet is null
-  if (!curWorksheet) return <div>Error fetching worksheet</div>;
   // Display no courses page if no courses in worksheet
-  // eslint-disable-next-line no-constant-condition
+  // eslint-disable-next-line no-constant-condition, @typescript-eslint/no-unnecessary-condition
   if (curWorksheet.length === 0 && !isMobile && false) {
     // TODO: remove this part and add an empty state later on.
     // We don't want to prevent a user from seeing their friend's
@@ -92,16 +90,6 @@ function Worksheet() {
       </div>
     );
   }
-  if (worksheetData === undefined) {
-    Sentry.captureException(
-      new Error('data is undefined but worksheet is not'),
-    );
-    return (
-      <div style={{ height: '93vh', width: '100vw' }} className="d-flex">
-        <ErrorPage message="Internal error with course data" />
-      </div>
-    );
-  }
   // TODO: add something for when data.length === 0
 
   // Button size for expand icons
@@ -122,12 +110,14 @@ function Worksheet() {
                   ? 12
                   : 9
               }
-              className={`mt-3 pl-0 ${
+              className={clsx(
+                'mt-3 pl-0',
                 worksheetView.view === 'calendar' &&
-                worksheetView.mode === 'expanded'
-                  ? 'pr-0 '
-                  : 'pr-3 '
-              }${worksheetView.view === 'list' ? styles.hidden : ''}`}
+                  worksheetView.mode === 'expanded'
+                  ? 'pr-0'
+                  : 'pr-3',
+                worksheetView.view === 'list' && styles.hidden,
+              )}
             >
               <StyledCalendarContainer
                 layer={0}
@@ -136,7 +126,7 @@ function Worksheet() {
                 <WorksheetCalendar />
                 {/* Expand/Compress icons for calendar */}
                 <StyledExpandBtn
-                  className={`${styles.expand_btn} ${styles.top_right}`}
+                  className={clsx(styles.expand_btn, styles.top_right)}
                 >
                   {worksheetView.view === 'calendar' &&
                   worksheetView.mode !== 'expanded' ? (
@@ -169,12 +159,12 @@ function Worksheet() {
             <Col
               // Width depends on if it is expanded or not
               md={worksheetView.view === 'list' ? 12 : 3}
-              className={`ml-auto px-0 ${
+              className={clsx(
+                'ml-auto px-0',
                 worksheetView.view === 'calendar' &&
-                worksheetView.mode === 'expanded'
-                  ? styles.hidden
-                  : ''
-              }`}
+                  worksheetView.mode === 'expanded' &&
+                  styles.hidden,
+              )}
             >
               {/* List Component */}
               <Fade in={worksheetView.view === 'list'}>
@@ -202,12 +192,12 @@ function Worksheet() {
       ) : (
         /* Mobile View */
         <div>
-          <Row className={`${styles.accordion} m-0 p-3`}>
+          <Row className={clsx(styles.accordion, 'm-0 p-3')}>
             <Col className="p-0">
               <div className="mobile-calendar-container">
                 <div className="mobile-dropdowns">
                   <WorksheetNumDropdown />
-                  <Row className={`${styles.dropdowns} mx-auto`}>
+                  <Row className={clsx(styles.dropdowns, 'mx-auto')}>
                     <Col xs={6} className="m-0 p-0">
                       <SeasonDropdown />
                     </Col>

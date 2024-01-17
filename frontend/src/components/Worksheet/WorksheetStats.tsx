@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Collapse } from 'react-bootstrap';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import chroma from 'chroma-js';
 import SkillBadge from '../SkillBadge';
 import { useWorksheet } from '../../contexts/worksheetContext';
@@ -67,9 +68,7 @@ export default function WorksheetStats() {
 
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
-    <div
-      className={`${shown ? 'dropdown' : 'dropup'} ${styles.statsContainer}`}
-    >
+    <div className={clsx(shown ? 'dropdown' : 'dropup', styles.statsContainer)}>
       <div className={styles.toggleButton}>
         <button
           type="button"

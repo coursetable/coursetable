@@ -7,7 +7,6 @@ import {
   type Listing,
 } from './common';
 import type { FriendRecord, Worksheet } from '../contexts/userContext';
-import type { OrderingType } from '../contexts/searchContext';
 import type { SortKeys } from './constants';
 
 export function truncatedText(
@@ -39,7 +38,7 @@ export function isInWorksheet(
 // Convert season code to legible string
 export function toSeasonString(seasonCode: Season): string {
   const year = seasonCode.substring(0, 4);
-  const season = ['', 'Spring', 'Summer', 'Fall'][parseInt(seasonCode[5], 10)];
+  const season = ['', 'Spring', 'Summer', 'Fall'][Number(seasonCode[5])];
   return `${season} ${year}`;
 }
 
@@ -128,8 +127,10 @@ export function getNumFriends(friends: FriendRecord): NumFriendsReturn {
     // Iterate over each course in this friend's worksheet
     friend.worksheets.forEach((course) => {
       const key = course[0] + course[1]; // Key of object is season code + crn
-      numFriends[key] ||= []; // List doesn't exist for this course so create one
-      numFriends[key].push(friend.name); // Add friend's name to this list
+      // There are a lot of ESLint bugs with index signatures and
+      // no-unnecessary-condition
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+      (numFriends[key] ??= []).push(friend.name); // Add friend's name to this list
     });
   }
   return numFriends;
@@ -190,8 +191,8 @@ export function getDayTimes(
 ): { day: Weekdays; start: string; end: string }[] {
   return Object.entries(course.times_by_day).map(([day, dayTimes]) => ({
     day: day as Weekdays,
-    start: dayTimes[0][0],
-    end: dayTimes[0][1],
+    start: dayTimes[0]![0],
+    end: dayTimes[0]![1],
   }));
 }
 
@@ -203,7 +204,7 @@ function calculateDayTime(course: Listing): number | null {
   if (times.length) {
     // Calculate the time score
     const startTime = Number(
-      times[0].start.split(':').reduce((final, num) => {
+      times[0]!.start.split(':').reduce((final, num) => {
         final += num;
         return final;
       }, ''),
@@ -280,7 +281,10 @@ function compare(
 // Sort courses in catalog or expanded worksheet
 export function sortCourses(
   courses: Listing[],
-  ordering: OrderingType,
+  ordering: {
+    key: SortKeys;
+    type: 'desc' | 'asc';
+  },
   numFriends: NumFriendsReturn,
 ): Listing[] {
   return [...courses].sort((a, b) =>
@@ -328,14 +332,14 @@ export function getEnrolled(
 }
 
 export function isGraduate(listing: Listing): boolean {
-  if (listing.number[0] >= '5' && listing.number[0] <= '9') return true;
+  if (listing.number[0]! >= '5' && listing.number[0]! <= '9') return true;
   // Otherwise if first character is not a number (i.e. summer classes),
   // tests whether second character between 5-9
   if (
-    (listing.number[0] < '0' || listing.number[0] > '9') &&
+    (listing.number[0]! < '0' || listing.number[0]! > '9') &&
     listing.number.length > 1
   )
-    return listing.number[1] >= '5' && listing.number[1] <= '9';
+    return listing.number[1]! >= '5' && listing.number[1]! <= '9';
   return false;
 }
 
@@ -379,7 +383,7 @@ export function toRealTime(time: number): string {
  * @returns The same time in 12 hour, with `pm`/`am` suffix
  */
 export function to12HourTime(time: string) {
-  const [hour, minute] = time.split(':');
+  const [hour, minute] = time.split(':') as [string, string];
   let hourInt = parseInt(hour, 10);
   const ampm = hourInt >= 12 ? 'pm' : 'am';
   hourInt %= 12;

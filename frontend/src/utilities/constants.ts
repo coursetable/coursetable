@@ -1,4 +1,5 @@
 import chroma from 'chroma-js';
+import type { sortbyOptions } from '../contexts/searchContext';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -44,27 +45,6 @@ export const searchSpeed = {
     'faster than the naked run',
   ],
 };
-
-export const sortbyOptions = [
-  { label: 'Sort by Course Code', value: 'course_code', numeric: false },
-  { label: 'Sort by Course Number', value: 'number', numeric: true },
-  { label: 'Sort by Course Title', value: 'title', numeric: false },
-  { label: 'Sort by Friends', value: 'friend', numeric: true },
-  { label: 'Sort by Course Rating', value: 'average_rating', numeric: true },
-  {
-    label: 'Sort by Professor Rating',
-    value: 'average_professor',
-    numeric: true,
-  },
-  { label: 'Sort by Workload', value: 'average_workload', numeric: true },
-  {
-    label: 'Sort by Guts (Overall - Workload)',
-    value: 'average_gut_rating',
-    numeric: true,
-  },
-  { label: 'Sort by Last Enrollment', value: 'last_enrollment', numeric: true },
-  { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
-] as const;
 
 // We can only sort by primitive keys by default, unless we have special support
 export type SortKeys = (typeof sortbyOptions)[number]['value'];

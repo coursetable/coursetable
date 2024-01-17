@@ -102,7 +102,6 @@ export function useComponentVisibleDropdown<T extends HTMLElement>(
     const portal = document.querySelector('#portal');
     if (
       toggleRef.current &&
-      dropdownRef &&
       dropdownRef.current &&
       !toggleRef.current.contains(event.target as Node) &&
       !dropdownRef.current.contains(event.target as Node) &&
@@ -143,7 +142,8 @@ export async function logout() {
     const res = await fetch(`${API_ENDPOINT}/api/auth/logout`, {
       credentials: 'include',
     });
-    if (!res.ok) throw new Error((await res.json()).error);
+    if (!res.ok)
+      throw new Error(((await res.json()) as { error?: string }).error);
     // Clear cookies
     document.cookie.split(';').forEach((c) => {
       document.cookie = c

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import styled, { useTheme } from 'styled-components';
+import clsx from 'clsx';
 import { Card, Button, Row } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
 import styles from './About.module.css';
@@ -318,10 +319,10 @@ function About() {
   );
 
   return (
-    <div className={`${styles.container} mx-auto`}>
+    <div className={clsx(styles.container, 'mx-auto')}>
       <StyledH1 className="mt-5 mb-1">About Us</StyledH1>
       <TextComponent type={1}>
-        <p className={`${styles.about_description} mb-3 mx-auto`}>
+        <p className={clsx(styles.about_description, 'mb-3 mx-auto')}>
           CourseTable offers a clean and effective way for Yale students to find
           the courses they want, bringing together course information, student
           evaluations, and course demand statistics in an intuitive interface.

@@ -20,8 +20,7 @@ export const YALIES_API_KEY = getEnv('YALIES_API_KEY');
 export const GRAPHQL_ENDPOINT = getEnv('GRAPHQL_ENDPOINT');
 
 export const CHALLENGE_ALGORITHM = 'aes-256-ctr';
-export const CHALLENGE_PASSWORD =
-  process.env.CHALLENGE_PASSWORD ?? die('challenge password');
+export const CHALLENGE_PASSWORD = getEnv('CHALLENGE_PASSWORD');
 
 export const NUM_CHALLENGE_COURSES = 3; // Number of courses to select for the challenge
 export const CHALLENGE_SEASON = '202101'; // Season to select the challenge from

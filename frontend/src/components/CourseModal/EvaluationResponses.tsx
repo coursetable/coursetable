@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { Tab, Row, Tabs } from 'react-bootstrap';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import Mark from 'mark.js';
 import styles from './EvaluationResponses.module.css';
 import type { Crn } from '../../utilities/common';
@@ -78,8 +79,10 @@ function EvaluationResponses({
       // Add comments to responses dictionary
       nodes.forEach((node) => {
         if (node.evaluation_question.question_text && node.comment) {
-          tempResponses[node.evaluation_question.question_text] ||= [];
-          tempResponses[node.evaluation_question.question_text].push(
+          // There are a lot of ESLint bugs with index signatures and
+          // no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          (tempResponses[node.evaluation_question.question_text] ??= []).push(
             node.comment,
           );
         }
@@ -88,8 +91,8 @@ function EvaluationResponses({
     const sortedResponses = JSON.parse(
       JSON.stringify(tempResponses),
     ) as typeof tempResponses;
-    for (const key of Object.keys(tempResponses))
-      sortedResponses[key].sort((a, b) => b.length - a.length);
+    for (const r of Object.values(tempResponses))
+      r.sort((a, b) => b.length - a.length);
 
     return [tempResponses, sortedResponses];
   }, [info, crn]);
@@ -128,13 +131,13 @@ function EvaluationResponses({
       }
       return filteredResps;
     };
-    for (const key of Object.keys(curResponses)) {
-      if (key.includes('summarize')) tempSummary = genTemp(curResponses[key]);
-      else if (key.includes('recommend'))
-        tempRecommend = genTemp(curResponses[key]);
-      else if (key.includes('skills')) tempSkills = genTemp(curResponses[key]);
-      else if (key.includes('strengths'))
-        tempStrengths = genTemp(curResponses[key]);
+    for (const [question, qResponses] of Object.entries(curResponses)) {
+      if (question.includes('summarize')) tempSummary = genTemp(qResponses);
+      else if (question.includes('recommend'))
+        tempRecommend = genTemp(qResponses);
+      else if (question.includes('skills')) tempSkills = genTemp(qResponses);
+      else if (question.includes('strengths'))
+        tempStrengths = genTemp(qResponses);
     }
     return [tempRecommend, tempSkills, tempStrengths, tempSummary];
   }, [responses, sortOrder, sortedResponses, filter]);
@@ -159,7 +162,9 @@ function EvaluationResponses({
           });
         }}
       />
-      <Row className={`${styles.sort_by} mx-auto mb-2 justify-content-center`}>
+      <Row
+        className={clsx(styles.sort_by, 'mx-auto mb-2 justify-content-center')}
+      >
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
           <StyledSortOption
@@ -189,7 +194,7 @@ function EvaluationResponses({
         {/* Recommend Question */}
         {recommend.length !== 0 && (
           <Tab eventKey="recommended" title="Recommend?">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
+            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 Would you recommend this course to another student? Please
                 explain.
@@ -201,7 +206,7 @@ function EvaluationResponses({
         {/* Knowledge/Skills Question */}
         {skills.length !== 0 && (
           <Tab eventKey="knowledge/skills" title="Skills">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
+            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 What knowledge, skills, and insights did you develop by taking
                 this course?
@@ -213,7 +218,7 @@ function EvaluationResponses({
         {/* Strengths/Weaknesses Question */}
         {strengths.length !== 0 && (
           <Tab eventKey="strengths/weaknesses" title="Strengths/Weaknesses">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
+            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 What are the strengths and weaknesses of this course and how
                 could it be improved?
@@ -225,7 +230,7 @@ function EvaluationResponses({
         {/* Summarize Question */}
         {summary.length !== 0 && (
           <Tab eventKey="summary" title="Summary">
-            <Row className={`${styles.question_header} m-auto pt-2`}>
+            <Row className={clsx(styles.question_header, 'm-auto pt-2')}>
               <TextComponent type={0}>
                 How would you summarize this course? Would you recommend it to
                 another student? Why or why not?

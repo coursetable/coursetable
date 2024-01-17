@@ -18,23 +18,21 @@ import { SmallTextComponent, StyledInput } from '../StyledComponents';
 import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 import { Popout } from '../Search/Popout';
 import { PopoutSelect } from '../Search/PopoutSelect';
+import Toggle from '../Search/Toggle';
 
-import {
-  skillsAreas,
-  skillsAreasColors,
-  credits,
-  courseInfoAttributes,
-  schools,
-  subjects,
-  sortbyOptions,
-  searchSpeed,
-} from '../../utilities/constants';
+import { credits, searchSpeed } from '../../utilities/constants';
 import { weekdays, type Season, type Weekdays } from '../../utilities/common';
-import CustomSelect from '../CustomSelect';
+import CustomSelect from '../Search/CustomSelect';
 import {
   useSearch,
   type Option,
   defaultFilters,
+  sortbyOptions,
+  skillsAreasOptions,
+  subjectsOptions,
+  schoolsOptions,
+  seasonsOptions,
+  courseInfoAttributesOptions,
 } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import ResultsColumnSort from '../Search/ResultsColumnSort';
@@ -138,22 +136,6 @@ const AdvancedToggleRow = styled(Row)`
   background-color: ${({ theme }) => theme.buttonActive};
 `;
 
-// Advanced filter toggle
-const Toggle = styled(Form.Check)`
-  margin: 0.25rem 0;
-  user-select: none;
-`;
-
-// Advanced filter toggle input
-const ToggleInput = styled(Form.Check.Input)`
-  cursor: pointer !important;
-`;
-
-// Advanced filter toggle label
-const ToggleLabel = styled(Form.Check.Label)`
-  cursor: pointer !important;
-`;
-
 // Filter group wrapper
 const FilterGroup = styled.div``;
 
@@ -180,11 +162,6 @@ const CloseIcon = styled(IoClose)`
 `;
 
 /**
- * Identity function that casts a readonly array to a writable array
- */
-const asWritable = <T,>(value: readonly T[]) => value as T[];
-
-/**
  * Catalog search form for the desktop in the navbar
  */
 export function NavbarCatalogSearch() {
@@ -203,7 +180,6 @@ export function NavbarCatalogSearch() {
     duration,
     resetKey,
     searchData,
-    seasonsOptions,
     coursesLoading,
     handleResetFilters,
     setResetKey,
@@ -378,7 +354,7 @@ export function NavbarCatalogSearch() {
       searchSpeed[
         duration > 1 ? 'fast' : duration > 0.5 ? 'faster' : 'fastest'
       ];
-    return pool[Math.floor(Math.random() * pool.length)];
+    return pool[Math.floor(Math.random() * pool.length)]!;
   }, [duration]);
 
   return (
@@ -464,13 +440,10 @@ export function NavbarCatalogSearch() {
                   <PopoutSelect<Option, true>
                     isMulti
                     value={selectSubjects.value}
-                    options={Object.entries(subjects).map(([code, name]) => ({
-                      label: `${code} - ${name}`,
-                      value: code,
-                    }))}
+                    options={subjectsOptions}
                     placeholder="All Subjects"
                     onChange={(selectedOption) => {
-                      selectSubjects.set(asWritable(selectedOption));
+                      selectSubjects.set(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -490,19 +463,10 @@ export function NavbarCatalogSearch() {
                     useColors
                     isMulti
                     value={selectSkillsAreas.value}
-                    options={['Areas', 'Skills'].map((type) => ({
-                      label: type,
-                      options: Object.entries(
-                        skillsAreas[type.toLowerCase() as 'areas' | 'skills'],
-                      ).map(([code, name]) => ({
-                        label: `${code} - ${name}`,
-                        value: code,
-                        color: skillsAreasColors[code],
-                      })),
-                    }))}
+                    options={skillsAreasOptions}
                     placeholder="All Areas/Skills"
                     onChange={(selectedOption) => {
-                      selectSkillsAreas.set(asWritable(selectedOption));
+                      selectSkillsAreas.set(selectedOption as Option[]);
                       setStartTime(Date.now());
                     }}
                   />
@@ -652,12 +616,7 @@ export function NavbarCatalogSearch() {
                         closeMenuOnSelect
                         isMulti
                         value={selectSubjects.value}
-                        options={Object.entries(subjects).map(
-                          ([code, name]) => ({
-                            label: `${code} - ${name}`,
-                            value: code,
-                          }),
-                        )}
+                        options={subjectsOptions}
                         placeholder="All Subjects"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
@@ -674,18 +633,7 @@ export function NavbarCatalogSearch() {
                         closeMenuOnSelect
                         isMulti
                         value={selectSkillsAreas.value}
-                        options={['Areas', 'Skills'].map((type) => ({
-                          label: type,
-                          options: Object.entries(
-                            skillsAreas[
-                              type.toLowerCase() as 'areas' | 'skills'
-                            ],
-                          ).map(([code, name]) => ({
-                            label: `${code} - ${name}`,
-                            value: code,
-                            color: skillsAreasColors[code],
-                          })),
-                        }))}
+                        options={skillsAreasOptions}
                         placeholder="All Areas/Skills"
                         menuPortalTarget={menuPortalTarget}
                         onChange={(selectedOption) => {
@@ -871,10 +819,7 @@ export function NavbarCatalogSearch() {
                     closeMenuOnSelect
                     isMulti
                     value={selectSchools.value}
-                    options={Object.entries(schools).map(([code, name]) => ({
-                      label: name,
-                      value: code,
-                    }))}
+                    options={schoolsOptions}
                     placeholder="All Schools"
                     menuPortalTarget={menuPortalTarget}
                     onChange={(selectedOption) => {
@@ -912,10 +857,7 @@ export function NavbarCatalogSearch() {
                     closeMenuOnSelect
                     isMulti
                     value={selectCourseInfoAttributes.value}
-                    options={courseInfoAttributes.map((attr) => ({
-                      label: attr,
-                      value: attr,
-                    }))}
+                    options={courseInfoAttributesOptions}
                     placeholder="Course Information Attributes"
                     // Prevent overlap with tooltips
                     menuPortalTarget={menuPortalTarget}
@@ -936,95 +878,12 @@ export function NavbarCatalogSearch() {
                   />
                 </Row>
                 <AdvancedToggleRow className="align-items-center justify-content-between mx-auto mt-3 py-2 px-4">
-                  {/* Search By Description Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={searchDescription.value}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        searchDescription.set((x) => !x);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Include descriptions in search
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide Cancelled Courses Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideCancelled.value}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        hideCancelled.set((x) => !x);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide cancelled courses
-                    </ToggleLabel>
-                  </Toggle>
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideConflicting.value}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        hideConflicting.set((x) => !x);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide courses with conflicting times
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide First-Year Seminar Courses Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideFirstYearSeminars.value}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        hideFirstYearSeminars.set((x) => !x);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide first-year seminars
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide Graduate-Level Courses Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideGraduateCourses.value}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        hideGraduateCourses.set((x) => !x);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide graduate courses
-                    </ToggleLabel>
-                  </Toggle>
-                  {/* Hide Discussion Sections Toggle */}
-                  <Toggle type="switch">
-                    <ToggleInput
-                      checked={hideDiscussionSections.value}
-                      onChange={() => {}} // Dummy handler to remove warning
-                    />
-                    <ToggleLabel
-                      onClick={() => {
-                        hideDiscussionSections.set((x) => !x);
-                        setStartTime(Date.now());
-                      }}
-                    >
-                      Hide discussion sections
-                    </ToggleLabel>
-                  </Toggle>
+                  <Toggle handle="searchDescription" />
+                  <Toggle handle="hideCancelled" />
+                  <Toggle handle="hideConflicting" />
+                  <Toggle handle="hideFirstYearSeminars" />
+                  <Toggle handle="hideGraduateCourses" />
+                  <Toggle handle="hideDiscussionSections" />
                 </AdvancedToggleRow>
               </AdvancedWrapper>
             </Popout>

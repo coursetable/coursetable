@@ -99,8 +99,8 @@ function WorksheetCalendar() {
         parsedCourses,
       };
     }
-    const earliest = new Date(parsedCourses[0].start);
-    const latest = new Date(parsedCourses[0].end);
+    const earliest = new Date(parsedCourses[0]!.start);
+    const latest = new Date(parsedCourses[0]!.end);
     earliest.setMinutes(0);
     latest.setMinutes(59);
     for (const c of parsedCourses) {

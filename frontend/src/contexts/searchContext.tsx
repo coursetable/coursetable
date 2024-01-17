@@ -13,11 +13,14 @@ import {
   type Weekdays,
 } from '../utilities/common';
 import { useSessionStorageState } from '../utilities/browserStorage';
-import { useCourseData, useFerry, useWorksheetInfo } from './ferryContext';
+import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import {
   type SortByOption,
-  sortbyOptions,
-  type SortKeys,
+  skillsAreasColors,
+  skillsAreas,
+  subjects,
+  schools,
+  courseInfoAttributes,
 } from '../utilities/constants';
 import {
   checkConflict,
@@ -43,23 +46,79 @@ export type Option<T extends string | number = string> = {
   numeric?: boolean;
 };
 
-export const isOption = (x: unknown): x is Option =>
+export const isOption = (x: unknown): x is Option<string | number> =>
   // eslint-disable-next-line no-implicit-coercion
   !!x && typeof x === 'object' && 'label' in x && 'value' in x;
 
-export type SortOrderType = 'desc' | 'asc';
+export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
+  label: type,
+  options: Object.entries(
+    skillsAreas[type.toLowerCase() as 'areas' | 'skills'],
+  ).map(
+    ([code, name]): Option => ({
+      label: `${code} - ${name}`,
+      value: code,
+      color: skillsAreasColors[code],
+    }),
+  ),
+}));
 
-export type OrderingType = {
-  key: SortKeys;
-  type: 'desc' | 'asc';
-};
+export const sortbyOptions = [
+  { label: 'Sort by Course Code', value: 'course_code', numeric: false },
+  { label: 'Sort by Course Number', value: 'number', numeric: true },
+  { label: 'Sort by Course Title', value: 'title', numeric: false },
+  { label: 'Sort by Friends', value: 'friend', numeric: true },
+  { label: 'Sort by Course Rating', value: 'average_rating', numeric: true },
+  {
+    label: 'Sort by Professor Rating',
+    value: 'average_professor',
+    numeric: true,
+  },
+  { label: 'Sort by Workload', value: 'average_workload', numeric: true },
+  {
+    label: 'Sort by Guts (Overall - Workload)',
+    value: 'average_gut_rating',
+    numeric: true,
+  },
+  { label: 'Sort by Last Enrollment', value: 'last_enrollment', numeric: true },
+  { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
+] as const;
+
+export const subjectsOptions = Object.entries(subjects).map(
+  ([code, name]): Option => ({
+    label: `${code} - ${name}`,
+    value: code,
+  }),
+);
+
+export const schoolsOptions = Object.entries(schools).map(
+  ([code, name]): Option => ({
+    label: name,
+    value: code,
+  }),
+);
+
+export const seasonsOptions = seasons.map(
+  (x): Option<Season> => ({
+    value: x,
+    label: toSeasonString(x),
+  }),
+);
+
+export const courseInfoAttributesOptions = courseInfoAttributes.map(
+  (attr): Option => ({
+    label: attr,
+    value: attr,
+  }),
+);
+
+type SortOrderType = 'desc' | 'asc';
 
 type Store = {
   filters: {
-    [K in keyof Filters]: ReturnType<typeof useFilterState<K>>;
+    [K in keyof Filters]: FilterHandle<K>;
   };
   canReset: boolean;
-  seasonsOptions: Option[];
   coursesLoading: boolean;
   searchData: Listing[];
   multiSeasons: boolean;
@@ -76,12 +135,7 @@ type Store = {
 const SearchContext = createContext<Store | undefined>(undefined);
 SearchContext.displayName = 'SearchContext';
 
-// Default filter and sorting values
-export const defaultWorksheet: Option[] = [
-  { value: '0', label: 'Main Worksheet' },
-];
-
-type Filters = {
+export type Filters = {
   searchText: string;
   selectSubjects: Option[];
   selectSkillsAreas: Option[];
@@ -128,6 +182,10 @@ export const defaultFilters: Filters = {
   selectSortby: sortbyOptions[0],
   sortOrder: 'asc',
 };
+
+export type FilterHandle<K extends keyof Filters> = ReturnType<
+  typeof useFilterState<K>
+>;
 
 function useFilterState<K extends keyof Filters>(key: K) {
   const [value, setValue] = useSessionStorageState(key, defaultFilters[key]);
@@ -199,16 +257,6 @@ export function SearchProvider({
     return getNumFriends(user.friends);
   }, [user.friends]);
 
-  // Populate seasons from database
-  const { seasons } = useFerry();
-  const seasonsOptions = seasons.map(
-    (x): Option => ({
-      value: x,
-      // Capitalize term and add year
-      label: toSeasonString(x),
-    }),
-  );
-
   // Pre-process queries
   const processedSearchText = useMemo(
     () =>
@@ -233,7 +281,7 @@ export function SearchProvider({
       return seasons.slice(0, 15);
     }
     return selectSeasons.value.map((x) => x.value);
-  }, [seasons, selectSeasons.value]);
+  }, [selectSeasons.value]);
   const processedDays = useMemo(
     () => selectDays.value.map((x) => x.value),
     [selectDays.value],
@@ -293,12 +341,11 @@ export function SearchProvider({
     // Match search results with course data.
     if (coursesLoading || courseLoadError) return [];
 
-    const listings = processedSeasons
-      .map((seasonCode) => {
-        if (!courseData[seasonCode]) return [];
-        return [...courseData[seasonCode].values()];
-      })
-      .reduce((acc, cur) => acc.concat(cur), []);
+    const listings = processedSeasons.flatMap((seasonCode) => {
+      const data = courseData[seasonCode];
+      if (!data) return [];
+      return [...data.values()];
+    });
 
     const filtered = listings.filter((listing) => {
       // Apply filters.
@@ -405,7 +452,6 @@ export function SearchProvider({
 
       if (
         processedCourseInfoAttributes.length !== 0 &&
-        listing.flag_info !== null &&
         !processedCourseInfoAttributes.some((attr) =>
           listing.flag_info.includes(attr),
         )
@@ -561,7 +607,6 @@ export function SearchProvider({
       // Context state.
       canReset,
       filters,
-      seasonsOptions,
       coursesLoading,
       searchData,
       multiSeasons,
@@ -579,7 +624,6 @@ export function SearchProvider({
     [
       canReset,
       filters,
-      seasonsOptions,
       coursesLoading,
       searchData,
       multiSeasons,

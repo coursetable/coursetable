@@ -11,14 +11,14 @@ import {
   useSessionStorageState,
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
-import { useFerry, useWorksheetInfo } from './ferryContext';
+import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type Worksheet } from './userContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
 export type HiddenCourses = {
   [seasonCode: Season]: { [crn: Crn]: boolean };
 };
-export type WorksheetView =
+type WorksheetView =
   | { view: 'calendar'; mode: 'expanded' }
   | { view: 'calendar'; mode: '' }
   | { view: 'list'; mode: '' };
@@ -94,12 +94,9 @@ export function WorksheetProvider({
     const whenNotDefined: Worksheet = []; // TODO: change this to undefined
     if (viewedPerson === 'me') return user.worksheet ?? whenNotDefined;
 
-    return user.friends
-      ? user.friends[viewedPerson].worksheets ?? whenNotDefined
-      : whenNotDefined;
+    return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
   }, [user.worksheet, user.friends, viewedPerson]);
 
-  const { seasons } = useFerry();
   // TODO: restrict to only the seasons with data
   const seasonCodes = seasons;
 
@@ -135,16 +132,16 @@ export function WorksheetProvider({
 
   // Initialize courses state and color map.
   useEffect(() => {
-    if (!worksheetLoading && !worksheetError && curWorksheet && worksheetData) {
+    if (!worksheetLoading && !worksheetError) {
       const temp = [...worksheetData];
       // Assign color to each course
       for (let i = 0; i < worksheetData.length; i++) {
-        let choice = colors[i % colors.length];
-        if (colorMap[temp[i].crn]) choice = colorMap[temp[i].crn];
-        else colorMap[temp[i].crn] = choice;
+        let choice = colors[i % colors.length]!;
+        if (colorMap[temp[i]!.crn]) choice = colorMap[temp[i]!.crn]!;
+        else colorMap[temp[i]!.crn] = choice;
 
-        temp[i].color = choice;
-        temp[i].currentWorksheet = worksheetNumber;
+        temp[i]!.color = choice;
+        temp[i]!.currentWorksheet = worksheetNumber;
       }
       // Sort list by course code
       temp.sort((a, b) => a.course_code.localeCompare(b.course_code, 'en-US'));
@@ -168,11 +165,13 @@ export function WorksheetProvider({
       if (crn === -1) {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses))
-            newHiddenCourses[curSeason] = {};
+          // There are a lot of ESLint bugs with index signatures and
+          // no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          newHiddenCourses[curSeason] ??= {};
 
           courses.forEach((listing) => {
-            newHiddenCourses[curSeason][listing.crn] = true;
+            newHiddenCourses[curSeason]![listing.crn] = true;
           });
           return newHiddenCourses;
         });
@@ -185,12 +184,14 @@ export function WorksheetProvider({
       } else {
         setHiddenCourses((oldHiddenCourses) => {
           const newHiddenCourses = { ...oldHiddenCourses };
-          if (!(curSeason in newHiddenCourses))
-            newHiddenCourses[curSeason] = {};
+          // There are a lot of ESLint bugs with index signatures and
+          // no-unnecessary-condition
+          // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+          newHiddenCourses[curSeason] ??= {};
 
-          if (newHiddenCourses[curSeason][crn])
-            delete newHiddenCourses[curSeason][crn];
-          else newHiddenCourses[curSeason][crn] = true;
+          if (newHiddenCourses[curSeason]![crn])
+            delete newHiddenCourses[curSeason]![crn];
+          else newHiddenCourses[curSeason]![crn] = true;
           return newHiddenCourses;
         });
       }

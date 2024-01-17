@@ -5,6 +5,7 @@ import { useAccordionToggle } from 'react-bootstrap/AccordionToggle';
 import { FaChevronRight } from 'react-icons/fa';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
+import clsx from 'clsx';
 import { StyledHoverText, TextComponent } from '../components/StyledComponents';
 import styles from './FAQ.module.css';
 import { scrollToTop } from '../utilities/display';
@@ -48,19 +49,21 @@ function ContextAwareToggle({
 
   return (
     <StyledHoverText
-      className={`${
-        !isCurrentEventKey ? '' : 'active'
-      }  d-flex justify-content-between py-3 px-3 ${
-        styles.accordion_hover_header
-      }`}
+      className={clsx(
+        isCurrentEventKey && 'active',
+        'd-flex justify-content-between py-3 px-3',
+        styles.accordion_hover_header,
+      )}
       onClick={decoratedOnClick}
     >
       {question}
       <FaChevronRight
         // Rotate arrow when active
-        className={`${
-          !isCurrentEventKey ? '' : styles.accordion_arrow_active
-        } my-auto ${styles.accordion_arrow}`}
+        className={clsx(
+          isCurrentEventKey && styles.accordion_arrow_active,
+          'my-auto',
+          styles.accordion_arrow,
+        )}
       />
     </StyledHoverText>
   );
@@ -292,10 +295,10 @@ function FAQ() {
 
   return (
     <StyledContainer className="mx-auto">
-      <h1 className={`${styles.faq_header} mt-5 mb-1`}>
+      <h1 className={clsx(styles.faq_header, 'mt-5 mb-1')}>
         Frequently Asked Questions
       </h1>
-      <p className={`${styles.faq_description} mb-3`}>
+      <p className={clsx(styles.faq_description, 'mb-3')}>
         <TextComponent type={1}>Have another question?</TextComponent>{' '}
         <a href="https://feedback.coursetable.com">Contact us</a>.
       </p>

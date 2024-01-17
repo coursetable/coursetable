@@ -9,7 +9,7 @@ import { catalogBySeasonQuery, listSeasonsQuery } from './catalog.queries';
 import { GRAPHQL_ENDPOINT, STATIC_FILE_DIR } from '../config';
 import winston from '../logging/winston';
 
-export type Seasons = {
+type Seasons = {
   seasons: {
     season_code: string;
     term: string;
@@ -17,7 +17,7 @@ export type Seasons = {
   }[];
 };
 
-export type Catalog = {
+type Catalog = {
   computed_listing_info: {
     all_course_codes: string[];
     areas: string[];

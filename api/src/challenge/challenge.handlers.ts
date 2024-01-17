@@ -78,23 +78,24 @@ const constructChallenge = (
   challengeTries: number,
   netId: string,
 ) => {
-  // Array of course enrollment counts
-  const ratingIndices = evals.evaluation_ratings.map((evaluationRating) => {
+  const courseInfo = evals.evaluation_ratings.map((x) => {
     const ratingIndex = getRandomInt(5); // 5 is the number of rating categories
 
-    if (!Number.isInteger(evaluationRating.rating[ratingIndex]))
+    if (!Number.isInteger(x.rating[ratingIndex]))
       throw new Error(`Invalid rating index: ${ratingIndex}`);
 
-    return ratingIndex;
+    return {
+      courseId: x.id,
+      courseTitle: x.course.title,
+      courseRatingIndex: ratingIndex,
+      // Courses have multiple CRNs, and any one should be fine
+      courseOceUrl: `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=${x.course.listings[0]!.crn}&termCode=${x.course.season_code}`,
+    };
   });
 
-  // Array of CourseTable question IDs
-  const ratingIds = evals.evaluation_ratings.map((x) => x.id);
-
-  // Construct token object
-  const ratingSecrets = ratingIds.map((x, index) => ({
-    courseRatingId: ratingIds[index],
-    courseRatingIndex: ratingIndices[index],
+  const ratingSecrets = courseInfo.map((x) => ({
+    courseRatingId: x.courseId,
+    courseRatingIndex: x.courseRatingIndex,
   }));
 
   const secrets: Secrets = { netId, ratingSecrets };
@@ -102,28 +103,6 @@ const constructChallenge = (
   // Encrypt token
   const salt = crypto.randomBytes(16).toString('hex');
   const token = encrypt(JSON.stringify(secrets), salt);
-
-  // Course ids, titles and questions for user
-  const courseIds = evals.evaluation_ratings.map((x) => x.id);
-  const courseTitles = evals.evaluation_ratings.map((x) => x.course.title);
-
-  // Yale OCE urls for user to retrieve answers
-  const oceUrls = evals.evaluation_ratings.map((x) => {
-    // Courses have multiple CRNs, and any one should be fine
-    // eslint-disable-next-line prefer-destructuring
-    const { crn } = x.course.listings[0];
-    const season = x.course.season_code;
-
-    return `https://oce.app.yale.edu/ocedashboard/studentViewer/courseSummary?crn=${crn}&termCode=${season}`;
-  });
-
-  // Merged course information object
-  const courseInfo = courseTitles.map((title, index) => ({
-    courseId: courseIds[index],
-    courseTitle: title,
-    courseRatingIndex: ratingIndices[index],
-    courseOceUrl: oceUrls[index],
-  }));
 
   return {
     token,
@@ -182,19 +161,14 @@ const checkChallenge = (
   trueEvals: VerifyEvalsQueryResponse,
   answers: VerifyEvalsReqBody['answers'],
 ): boolean[] => {
-  // The true values in CourseTable to compare against
-  const truth = trueEvals.evaluation_ratings;
-
   // Mapping from question ID to ratings
-  const truthById: { [key: string]: number[] } = {};
-
-  truth.forEach((x) => {
-    truthById[x.id] = x.rating;
-  });
+  const truthById = Object.fromEntries(
+    trueEvals.evaluation_ratings.map((x) => [x.id, x.rating]),
+  );
 
   return answers.map(
     ({ answer, courseRatingId, courseRatingIndex }) =>
-      truthById[courseRatingId][courseRatingIndex] === answer,
+      truthById[courseRatingId]?.[courseRatingIndex] === answer,
   );
 };
 

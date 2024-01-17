@@ -1,3 +1,7 @@
+// TODO: runtime response validation
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, {
   createContext,
   useContext,
@@ -22,11 +26,11 @@ export type FriendRecord = {
     worksheets: Worksheet;
   };
 };
-export type FriendRequest = {
+type FriendRequest = {
   netId: NetId;
   name: string;
 };
-export type FriendName = {
+type FriendName = {
   netId: NetId;
   first: string;
   last: string;

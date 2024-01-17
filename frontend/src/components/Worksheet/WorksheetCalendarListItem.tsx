@@ -2,6 +2,7 @@ import React from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Row, Col, ListGroup } from 'react-bootstrap';
 import styled, { withTheme, type DefaultTheme } from 'styled-components';
+import clsx from 'clsx';
 import styles from './WorksheetCalendarListItem.module.css';
 import WorksheetToggleButton from './WorksheetToggleButton';
 import WorksheetHideButton from './WorksheetHideButton';
@@ -88,7 +89,7 @@ function WorksheetCalendarListItem({
           <span className={styles.course_title}>{course.title}</span>
         </StyledCol>
         {/* Hide Button */}
-        <div className={`mr-1 my-auto ${hidden ? 'visible' : 'hidden'}`}>
+        <div className={clsx('mr-1 my-auto', hidden ? 'visible' : 'hidden')}>
           <WorksheetHideButton
             toggleCourse={() => toggleCourse(course.crn)}
             hidden={hidden}

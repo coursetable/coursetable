@@ -16,6 +16,7 @@ import { HiExternalLink } from 'react-icons/hi';
 import { MdExpandMore, MdExpandLess } from 'react-icons/md';
 import MultiToggle from 'react-multi-toggle';
 import styled from 'styled-components';
+import clsx from 'clsx';
 
 import '../Search/MultiToggle.css';
 import { CUR_YEAR } from '../../config';
@@ -59,7 +60,7 @@ const StyledColUnclickable = styled(Col)`
 `;
 
 // Multitoggle in modal (course, both, prof)
-export const StyledMultiToggle = styled(MultiToggle<Filter>)`
+const StyledMultiToggle = styled(MultiToggle<Filter>)`
   background-color: ${({ theme }) => theme.surface[1]};
   border-color: ${({ theme }) => theme.border};
   .toggleOption {
@@ -129,6 +130,74 @@ export type ComputedListingInfo = Omit<
   keyof ComputedListingInfoOverride
 > &
   ComputedListingInfoOverride;
+
+const profInfoPopover =
+  (profName: string, profInfo: ProfInfo | undefined): OverlayChildren =>
+  (props) => (
+    <StyledPopover {...props} id="title_popover" className="d-none d-md-block">
+      <Popover.Title>
+        <Row className="mx-auto">
+          {/* Professor Name */}
+          <strong>{profName}</strong>
+        </Row>
+        <Row className="mx-auto">
+          {/* Professor Email */}
+          <small>
+            {profInfo?.email ? (
+              <a href={`mailto:${profInfo.email}`}>{profInfo.email}</a>
+            ) : (
+              <TextComponent type={1}>N/A</TextComponent>
+            )}
+          </small>
+        </Row>
+      </Popover.Title>
+      <Popover.Content style={{ width: '274px' }}>
+        <Row className="mx-auto my-1">
+          <Col md={6}>
+            {/* Professor Rating */}
+            <Row className="mx-auto mb-1">
+              <strong
+                className="mx-auto"
+                style={{
+                  color: profInfo?.numCourses
+                    ? ratingColormap(profInfo.totalRating / profInfo.numCourses)
+                        .darken()
+                        .saturate()
+                        .css()
+                    : '#b5b5b5',
+                }}
+              >
+                {
+                  // Get average rating
+                  profInfo?.numCourses
+                    ? (profInfo.totalRating / profInfo.numCourses).toFixed(1)
+                    : 'N/A'
+                }
+              </strong>
+            </Row>
+            <Row className="mx-auto">
+              <small className="mx-auto text-center  font-weight-bold">
+                Avg. Rating
+              </small>
+            </Row>
+          </Col>
+          <Col md={6}>
+            {/* Number of courses taught by this professor */}
+            <Row className="mx-auto mb-1">
+              <strong className="mx-auto">
+                {profInfo?.numCourses ?? '[unknown]'}
+              </strong>
+            </Row>
+            <Row className="mx-auto">
+              <small className="mx-auto text-center  font-weight-bold">
+                Classes Taught
+              </small>
+            </Row>
+          </Col>
+        </Row>
+      </Popover.Content>
+    </StyledPopover>
+  );
 
 /**
  * Displays course modal when clicking on a course
@@ -217,19 +286,17 @@ function CourseModalOverview({
     for (const season of data.computed_listing_info as ComputedListingInfo[]) {
       if (countedCourses.has(`${season.season_code}-${season.course_code}`))
         continue;
-      if (season.professor_info) {
-        season.professor_info.forEach((prof) => {
-          if (profInfo.has(prof.name)) {
-            const dict = profInfo.get(prof.name)!;
-            dict.numCourses++;
-            dict.totalRating += prof.average_rating;
-            dict.email = prof.email;
-            season.all_course_codes.forEach((c) => {
-              countedCourses.add(`${season.season_code}-${c}`);
-            });
-          }
-        });
-      }
+      season.professor_info.forEach((prof) => {
+        if (profInfo.has(prof.name)) {
+          const dict = profInfo.get(prof.name)!;
+          dict.numCourses++;
+          dict.totalRating += prof.average_rating;
+          dict.email = prof.email;
+          season.all_course_codes.forEach((c) => {
+            countedCourses.add(`${season.season_code}-${c}`);
+          });
+        }
+      });
     }
     return profInfo;
   }, [data, listing]);
@@ -272,7 +339,7 @@ function CourseModalOverview({
   }, [data, listing.same_course_id]);
 
   const [showPastSyllabi, setShowPastSyllabi] = useState(
-    pastSyllabi && pastSyllabi.length < 8,
+    pastSyllabi.length < 8,
   );
 
   const overlapSections = useMemo(() => {
@@ -287,17 +354,15 @@ function CourseModalOverview({
       // Stores the average rating for all profs teaching this course and
       // populates prof_info
       let averageProfessorRating = 0;
-      if (season.professor_info) {
-        const numProfs = season.professor_info.length;
-        season.professor_info.forEach((prof) => {
-          if (prof.average_rating) {
-            // Add up all prof ratings
-            averageProfessorRating += prof.average_rating;
-          }
-        });
-        // Divide by number of profs to get average
-        averageProfessorRating /= numProfs;
-      }
+      const numProfs = season.professor_info.length;
+      season.professor_info.forEach((prof) => {
+        if (prof.average_rating) {
+          // Add up all prof ratings
+          averageProfessorRating += prof.average_rating;
+        }
+      });
+      // Divide by number of profs to get average
+      averageProfessorRating /= numProfs;
       courseOfferings.push({
         // Course rating
         rating: season.course.evaluation_statistic
@@ -375,7 +440,7 @@ function CourseModalOverview({
           {hasEvals ? (
             <StyledCol
               xs={5}
-              className={`${styles.rating_bubble}  px-0 mr-3 text-center`}
+              className={clsx(styles.rating_bubble, 'px-0 mr-3 text-center')}
               onClick={() => {
                 // Temp dictionary that stores listing info
                 const temp = { ...offering };
@@ -384,7 +449,7 @@ function CourseModalOverview({
               style={{ flex: 'none' }}
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
-              <div className={`${styles.details} mx-auto ${styles.shown}`}>
+              <div className={clsx(styles.details, 'mx-auto', styles.shown)}>
                 {type === 'professor'
                   ? offering.course_code
                   : type === 'both'
@@ -395,11 +460,14 @@ function CourseModalOverview({
           ) : (
             <StyledColUnclickable
               xs={5}
-              className={`${styles.rating_bubble_unclickable}  px-0 mr-3 text-center`}
+              className={clsx(
+                styles.rating_bubble_unclickable,
+                'px-0 mr-3 text-center',
+              )}
               style={{ flex: 'none', color: '#b5b5b5' }}
             >
               <strong>{toSeasonString(offering.season_code)}</strong>
-              <div className={`${styles.details} mx-auto ${styles.shown}`}>
+              <div className={clsx(styles.details, 'mx-auto', styles.shown)}>
                 {type === 'professor'
                   ? offering.course_code
                   : type === 'both'
@@ -457,91 +525,6 @@ function CourseModalOverview({
   }, [data, setSeason, listing, overlappingProfs]);
   // Wait until data is fetched
   if (loading || error) return <CourseModalLoading />;
-  // Render popover that contains prof info
-  const profInfoPopover: OverlayChildren = (props) => {
-    let profName = '';
-    let profDict: ProfInfo = {
-      email: '',
-      numCourses: 0,
-      totalRating: 0,
-    };
-    // Store dict from prop_info for easy access
-    if (props.popper.state) {
-      // TODO
-      profName = props.popper.state.options.prof;
-      if (profInfo.has(profName)) profDict = profInfo.get(profName)!;
-    }
-    return (
-      <StyledPopover
-        {...props}
-        id="title_popover"
-        className="d-none d-md-block"
-      >
-        <Popover.Title>
-          <Row className="mx-auto">
-            {/* Professor Name */}
-            <strong>{profName}</strong>
-          </Row>
-          <Row className="mx-auto">
-            {/* Professor Email */}
-            <small>
-              {profDict.email !== '' ? (
-                <a href={`mailto:${profDict.email}`}>{profDict.email}</a>
-              ) : (
-                <TextComponent type={1}>N/A</TextComponent>
-              )}
-            </small>
-          </Row>
-        </Popover.Title>
-        <Popover.Content style={{ width: '274px' }}>
-          <Row className="mx-auto my-1">
-            <Col md={6}>
-              {/* Professor Rating */}
-              <Row className="mx-auto mb-1">
-                <strong
-                  className="mx-auto"
-                  style={{
-                    color: profDict.numCourses
-                      ? ratingColormap(
-                          profDict.totalRating / profDict.numCourses,
-                        )
-                          .darken()
-                          .saturate()
-                          .css()
-                      : '#b5b5b5',
-                  }}
-                >
-                  {
-                    // Get average rating
-                    profDict.numCourses
-                      ? (profDict.totalRating / profDict.numCourses).toFixed(1)
-                      : 'N/A'
-                  }
-                </strong>
-              </Row>
-              <Row className="mx-auto">
-                <small className="mx-auto text-center  font-weight-bold">
-                  Avg. Rating
-                </small>
-              </Row>
-            </Col>
-            <Col md={6}>
-              {/* Number of courses taught by this professor */}
-              <Row className="mx-auto mb-1">
-                <strong className="mx-auto">{profDict.numCourses}</strong>
-              </Row>
-              <Row className="mx-auto">
-                <small className="mx-auto text-center  font-weight-bold">
-                  Classes Taught
-                </small>
-              </Row>
-            </Col>
-          </Row>
-        </Popover.Content>
-      </StyledPopover>
-    );
-  };
-
   // Options for the evaluation filters
   const options = [
     {
@@ -597,7 +580,7 @@ function CourseModalOverview({
           {/* Course Requirements */}
           {listing.requirements && (
             <Row className="mx-auto">
-              <span className={`${styles.requirements} pt-1`}>
+              <span className={clsx(styles.requirements, 'pt-1')}>
                 {listing.requirements}
               </span>
             </Row>
@@ -684,9 +667,7 @@ function CourseModalOverview({
                         trigger="click"
                         rootClose
                         placement="right"
-                        overlay={profInfoPopover}
-                        // TODO
-                        popperConfig={{ prof } as any}
+                        overlay={profInfoPopover(prof, profInfo.get(prof))}
                       >
                         <StyledLink>{prof}</StyledLink>
                       </OverlayTrigger>
@@ -873,17 +854,15 @@ function CourseModalOverview({
         <Col md={5} className="px-0 my-0">
           {/* Filter Select */}
           <Row
-            className={`${styles.filter_container} m-auto justify-content-center`}
+            className={clsx(
+              styles.filter_container,
+              'm-auto justify-content-center',
+            )}
             onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
               // Left/right arrow key
-              const newIndx =
-                (optionsIndx[filter] +
-                  (e.key === 'ArrowLeft'
-                    ? 2
-                    : e.key === 'ArrowRight'
-                      ? 1
-                      : 0)) %
-                3;
+              const newIndx = ((optionsIndx[filter] +
+                (e.key === 'ArrowLeft' ? 2 : e.key === 'ArrowRight' ? 1 : 0)) %
+                3) as 0 | 1 | 2;
               setFilter(options[newIndx].value);
             }}
             tabIndex={0}
@@ -892,7 +871,7 @@ function CourseModalOverview({
               options={options}
               selectedOption={filter}
               onSelectOption={(val) => setFilter(val)}
-              className={`${styles.evaluations_filter} mb-2`}
+              className={clsx(styles.evaluations_filter, 'mb-2')}
             />
           </Row>
           {/* Course Evaluations Header */}

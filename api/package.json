@@ -15,7 +15,6 @@
   "dependencies": {
     "@prisma/client": "^5.8.0",
     "@sentry/node": "^7.93.0",
-    "@types/app-root-path": "^1.2.8",
     "@types/body-parser": "^1.19.5",
     "@types/cookie-parser": "^1.4.6",
     "@types/cookie-session": "^2.0.48",

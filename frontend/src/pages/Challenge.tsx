@@ -369,16 +369,16 @@ function Challenge() {
                   type="number"
                   required
                   placeholder="Number of students"
-                  value={answers[index].answer}
+                  value={answers[index]!.answer}
                   isValid={verificationResults[index]}
                   onChange={(event) => {
                     // Copy answers state into a new variable
                     const newAnswers = [...answers];
                     // Update new answers
-                    newAnswers[index].courseRatingId = course.courseId;
-                    newAnswers[index].courseRatingIndex =
+                    newAnswers[index]!.courseRatingId = course.courseId;
+                    newAnswers[index]!.courseRatingIndex =
                       course.courseRatingIndex;
-                    newAnswers[index].answer = event.target.value;
+                    newAnswers[index]!.answer = event.target.value;
                     // Update old answers state with new answers
                     setAnswers(newAnswers);
                   }}
