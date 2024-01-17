@@ -11,7 +11,7 @@ import {
   useSessionStorageState,
 } from '../utilities/browserStorage';
 import { CUR_SEASON } from '../config';
-import { useFerry, useWorksheetInfo } from './ferryContext';
+import { seasons, useWorksheetInfo } from './ferryContext';
 import { useUser, type Worksheet } from './userContext';
 import type { Season, Listing, Crn, NetId } from '../utilities/common';
 
@@ -97,7 +97,6 @@ export function WorksheetProvider({
     return user.friends?.[viewedPerson]?.worksheets ?? whenNotDefined;
   }, [user.worksheet, user.friends, viewedPerson]);
 
-  const { seasons } = useFerry();
   // TODO: restrict to only the seasons with data
   const seasonCodes = seasons;
 
