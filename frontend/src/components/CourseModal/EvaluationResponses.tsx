@@ -169,13 +169,13 @@ function EvaluationResponses({
         <div className={styles.sort_options}>
           <StyledSortOption
             active={sortOrder === 'original'}
-            onClick={() => setSortOrder('original')}
+            onClick={() => setSortOrder('length')}
           >
             original order
           </StyledSortOption>
           <StyledSortOption
             active={sortOrder === 'length'}
-            onClick={() => setSortOrder('length')}
+            onClick={() => setSortOrder('original')}
           >
             length
           </StyledSortOption>
