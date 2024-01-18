@@ -63,7 +63,7 @@ function EvaluationResponses({
   readonly info?: SearchEvaluationNarrativesQuery['computed_listing_info'];
 }) {
   // Sort by original order or length?
-  const [sortOrder, setSortOrder] = useState('original');
+  const [sortOrder, setSortOrder] = useState('length');
 
   // Dictionary that holds the comments for each question
   const [responses, sortedResponses] = useMemo(() => {
@@ -168,13 +168,13 @@ function EvaluationResponses({
         <span className="font-weight-bold my-auto mr-2">Sort comments by:</span>
         <div className={styles.sort_options}>
           <StyledSortOption
-            active={sortOrder === 'original'}
+            active={sortOrder === 'length'}
             onClick={() => setSortOrder('length')}
           >
             original order
           </StyledSortOption>
           <StyledSortOption
-            active={sortOrder === 'length'}
+            active={sortOrder === 'original'}
             onClick={() => setSortOrder('original')}
           >
             length
