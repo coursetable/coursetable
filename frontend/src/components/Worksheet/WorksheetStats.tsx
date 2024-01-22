@@ -113,8 +113,11 @@ export default function WorksheetStats() {
                       overlay={(props) => (
                         <Tooltip {...props} id="conflict-icon-button-tooltip">
                           <small style={{ fontWeight: 500 }}>
-                            Computed with {coursesWithWorkload} courses.{' '}
-                            {coursesWithoutWorkload.join(', ')} have no ratings.
+                            Computed with {coursesWithWorkload} course
+                            {coursesWithWorkload === 1 ? '' : 's'}.{' '}
+                            {coursesWithoutWorkload.join(', ')} ha
+                            {coursesWithoutWorkload.length > 1 ? 've' : 's'} no
+                            ratings.
                           </small>
                         </Tooltip>
                       )}
