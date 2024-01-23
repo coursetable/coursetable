@@ -75,6 +75,7 @@ const sortCriteria = {
   },
   last_enrollment: { label: 'Sort by Last Enrollment', numeric: true },
   times_by_day: { label: 'Sort by Days & Times', numeric: true },
+  locations_summary: { label: 'Sort by Locations', numeric: false },
 };
 
 export const sortByOptions = Object.fromEntries(

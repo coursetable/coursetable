@@ -585,6 +585,10 @@ function Results({
                   {/* Location */}
                   <ResultsHeader style={locStyle}>
                     <span className={styles.one_line}>Location</span>
+                    <ResultsColumnSort
+                      selectOption={sortByOptions.locations_summary}
+                      key={resetKey}
+                    />
                   </ResultsHeader>
                   <ResultsHeader style={friendsStyle}>
                     <OverlayTrigger
