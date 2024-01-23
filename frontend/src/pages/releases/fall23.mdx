@@ -1,3 +1,10 @@
+import clsx from 'clsx';
+import styles from './fall23.module.css';
+import { TextComponent } from '../../components/StyledComponents';
+
+<div className={clsx(styles.container, 'mx-auto')}>
+<TextComponent type={1}>
+
 # CourseTable 23Fall/Winter Release Notes
 
 _2024-01-21_
@@ -66,3 +73,6 @@ This semester, you may have encountered multiple outages of CourseTable when we 
 We also did a lot of internal code refactors. This enabled us to streamline our code and tighten code styles. In the process, we removed some unused dependencies. This should result in generally faster performance and fewer crashes in the future. The refactors are contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
 
 If you enjoyed this blog post and/or is a regular user of CourseTable, consider supporting our work through [buymeacoffee](https://www.buymeacoffee.com/coursetable)!
+
+</TextComponent>
+</div>
