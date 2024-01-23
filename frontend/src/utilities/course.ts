@@ -7,7 +7,7 @@ import {
   type Listing,
 } from './common';
 import type { FriendRecord, Worksheet } from '../contexts/userContext';
-import type { SortKeys } from './constants';
+import type { SortKeys } from '../contexts/searchContext';
 
 export function truncatedText(
   text: string | null | undefined,
