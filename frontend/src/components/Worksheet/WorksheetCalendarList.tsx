@@ -10,7 +10,7 @@ import {
 } from 'react-bootstrap';
 import styled from 'styled-components';
 import { BsEyeSlash, BsEye } from 'react-icons/bs';
-import { TbFileExport } from 'react-icons/tb';
+import { TbCalendarDown } from 'react-icons/tb';
 
 import { SurfaceComponent } from '../StyledComponents';
 import WorksheetCalendarListItem from './WorksheetCalendarListItem';
@@ -43,7 +43,7 @@ const StyledBsEye = styled(BsEye)`
   transition: transform 0.3s !important;
 `;
 
-const StyledTbFileExport = styled(TbFileExport)`
+const StyledTbCalendarDown = styled(TbCalendarDown)`
   transition: transform 0.3s !important;
   color: ${({ theme }) => theme.text[0]};
 `;
@@ -80,7 +80,7 @@ const StyledBtn = styled(Button)`
     border: 2px solid hsl(0, 0%, 70%);
     background-color: ${({ theme }) => theme.buttonActive};
     color: ${({ theme }) => theme.text[0]} !important;
-    ${StyledBsEyeSlash}, ${StyledBsEye}, ${StyledTbFileExport} {
+    ${StyledBsEyeSlash}, ${StyledBsEye}, ${StyledTbCalendarDown} {
       transform: scale(1.15);
     }
   }
@@ -187,7 +187,7 @@ function WorksheetCalendarList() {
                   as={StyledBtn}
                   drop="down"
                   menuAlign="right"
-                  title={<StyledTbFileExport size={22} />}
+                  title={<StyledTbCalendarDown size={22} />}
                   variant="none"
                   className="w-100"
                 >
