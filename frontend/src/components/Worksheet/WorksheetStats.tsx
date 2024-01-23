@@ -34,6 +34,14 @@ const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([12, 20]);
 
+const formatList = (list: string[], locale: string = 'en-US'): string => {
+  const formatter = new Intl.ListFormat(locale, {
+    style: 'long',
+    type: 'conjunction',
+  });
+  return formatter.format(list);
+};
+
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hiddenCourses, curSeason } = useWorksheet();
@@ -110,15 +118,12 @@ export default function WorksheetStats() {
                   {coursesWithoutWorkload.length > 0 && (
                     <OverlayTrigger
                       placement="top"
-                      overlay={(props) => (
+                      overlay={(props: TooltipProps) => (
                         <Tooltip {...props} id="conflict-icon-button-tooltip">
                           <small style={{ fontWeight: 500 }}>
                             Computed with {coursesWithWorkload} course
                             {coursesWithWorkload === 1 ? '' : 's'}.{' '}
-                            {coursesWithoutWorkload.length === 1
-                              ? coursesWithoutWorkload[0]
-                              : `${coursesWithoutWorkload.slice(0, -1).join(', ')} and ${coursesWithoutWorkload[coursesWithoutWorkload.length - 1]}`}{' '}
-                            ha
+                            {formatList(coursesWithoutWorkload)} ha
                             {coursesWithoutWorkload.length > 1 ? 've' : 's'} no
                             ratings.
                           </small>
@@ -139,15 +144,12 @@ export default function WorksheetStats() {
                   {coursesWithoutRating.length > 0 && (
                     <OverlayTrigger
                       placement="top"
-                      overlay={(props) => (
+                      overlay={(props: TooltipProps) => (
                         <Tooltip {...props} id="conflict-icon-button-tooltip">
                           <small style={{ fontWeight: 500 }}>
                             Computed with {coursesWithRating} course
                             {coursesWithRating === 1 ? '' : 's'}.{' '}
-                            {coursesWithoutRating.length === 1
-                              ? coursesWithoutRating[0]
-                              : `${coursesWithoutRating.slice(0, -1).join(', ')} and ${coursesWithoutRating[coursesWithoutRating.length - 1]}`}{' '}
-                            ha
+                            {formatList(coursesWithoutRating)} ha
                             {coursesWithoutRating.length > 1 ? 've' : 's'} no
                             ratings.
                           </small>
