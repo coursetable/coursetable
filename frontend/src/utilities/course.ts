@@ -265,6 +265,12 @@ function compare(
       getOverallRatings(b, 'stat'),
     );
   }
+  if (key === 'average_workload') {
+    return comparatorReturn(
+      getWorkloadRatings(a, 'stat'),
+      getWorkloadRatings(b, 'stat'),
+    );
+  }
   // Sorting by days & times
   if (key === 'times_by_day') {
     // Calculate day and time score for sorting
