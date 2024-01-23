@@ -19,7 +19,7 @@ import Authentication from '../../images/authentication.svg';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
-import { useSearch, sortbyOptions } from '../../contexts/searchContext';
+import { useSearch, sortByOptions } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
@@ -443,7 +443,7 @@ function Results({
                       <span className={styles.one_line}>Code</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
-                      selectOption={sortbyOptions[0]}
+                      selectOption={sortByOptions.course_code}
                       key={resetKey}
                     />
                   </ResultsHeader>
@@ -451,7 +451,7 @@ function Results({
                   <ResultsHeader style={titleStyle}>
                     <span className={styles.one_line}>Title</span>
                     <ResultsColumnSort
-                      selectOption={sortbyOptions[2]}
+                      selectOption={sortByOptions.title}
                       key={resetKey}
                     />
                   </ResultsHeader>
@@ -475,7 +475,7 @@ function Results({
                         <span className={styles.one_line}>Overall</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
-                        selectOption={sortbyOptions[4]}
+                        selectOption={sortByOptions.average_rating}
                         key={resetKey}
                       />
                     </ResultsHeader>
@@ -497,7 +497,7 @@ function Results({
                         <span className={styles.one_line}>Work</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
-                        selectOption={sortbyOptions[6]}
+                        selectOption={sortByOptions.average_workload}
                         key={resetKey}
                       />
                     </ResultsHeader>
@@ -519,7 +519,7 @@ function Results({
                         <span className={styles.one_line}>Professors</span>
                       </OverlayTrigger>
                       <ResultsColumnSort
-                        selectOption={sortbyOptions[5]}
+                        selectOption={sortByOptions.average_professor}
                         key={resetKey}
                       />
                     </ResultsHeader>
@@ -553,7 +553,7 @@ function Results({
                       <span className={styles.one_line}>#</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
-                      selectOption={sortbyOptions[8]}
+                      selectOption={sortByOptions.last_enrollment}
                       key={resetKey}
                     />
                   </ResultsHeader>
@@ -578,7 +578,7 @@ function Results({
                       <span className={styles.one_line}>Meets</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
-                      selectOption={sortbyOptions[9]}
+                      selectOption={sortByOptions.times_by_day}
                       key={resetKey}
                     />
                   </ResultsHeader>
@@ -598,7 +598,7 @@ function Results({
                       <span className={styles.one_line}>#F</span>
                     </OverlayTrigger>
                     <ResultsColumnSort
-                      selectOption={sortbyOptions[3]}
+                      selectOption={sortByOptions.friend}
                       key={resetKey}
                     />
                   </ResultsHeader>
