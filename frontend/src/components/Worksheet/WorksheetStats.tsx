@@ -34,14 +34,10 @@ const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([12, 20]);
 
-const formatList = (list: string[], locale: string = 'en-US'): string => {
-  const formatter = new Intl.ListFormat(locale, {
-    style: 'long',
-    type: 'conjunction',
-  });
-  return formatter.format(list);
-};
-
+const formatter = new Intl.ListFormat('en-US', {
+  style: 'long',
+  type: 'conjunction',
+});
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hiddenCourses, curSeason } = useWorksheet();
@@ -123,7 +119,7 @@ export default function WorksheetStats() {
                           <small style={{ fontWeight: 500 }}>
                             Computed with {coursesWithWorkload} course
                             {coursesWithWorkload === 1 ? '' : 's'}.{' '}
-                            {formatList(coursesWithoutWorkload)} ha
+                            {formatter.format(coursesWithoutWorkload)} ha
                             {coursesWithoutWorkload.length > 1 ? 've' : 's'} no
                             ratings.
                           </small>
@@ -149,7 +145,7 @@ export default function WorksheetStats() {
                           <small style={{ fontWeight: 500 }}>
                             Computed with {coursesWithRating} course
                             {coursesWithRating === 1 ? '' : 's'}.{' '}
-                            {formatList(coursesWithoutRating)} ha
+                            {formatter.format(coursesWithoutRating)} ha
                             {coursesWithoutRating.length > 1 ? 've' : 's'} no
                             ratings.
                           </small>
