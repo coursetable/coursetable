@@ -15,7 +15,7 @@ function WorksheetList() {
   const { courses, worksheetLoading } = useWorksheet();
 
   const {
-    filters: { selectSortby, sortOrder },
+    filters: { selectSortBy, sortOrder },
     numFriends,
     isLoggedIn,
   } = useSearch();
@@ -24,10 +24,10 @@ function WorksheetList() {
     () =>
       sortCourses(
         courses,
-        { key: selectSortby.value.value, type: sortOrder.value },
+        { key: selectSortBy.value.value, type: sortOrder.value },
         numFriends,
       ),
-    [selectSortby, sortOrder, courses, numFriends],
+    [selectSortBy, sortOrder, courses, numFriends],
   );
 
   return (

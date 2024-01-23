@@ -7,7 +7,7 @@ import {
   type Listing,
 } from './common';
 import type { FriendRecord, Worksheet } from '../contexts/userContext';
-import type { SortKeys } from './constants';
+import type { SortKeys } from '../contexts/searchContext';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -265,6 +265,12 @@ function compare(
       getOverallRatings(b, 'stat'),
     );
   }
+  if (key === 'average_workload') {
+    return comparatorReturn(
+      getWorkloadRatings(a, 'stat'),
+      getWorkloadRatings(b, 'stat'),
+    );
+  }
   // Sorting by days & times
   if (key === 'times_by_day') {
     // Calculate day and time score for sorting
@@ -332,15 +338,7 @@ export function getEnrolled(
 }
 
 export function isGraduate(listing: Listing): boolean {
-  if (listing.number[0]! >= '5' && listing.number[0]! <= '9') return true;
-  // Otherwise if first character is not a number (i.e. summer classes),
-  // tests whether second character between 5-9
-  if (
-    (listing.number[0]! < '0' || listing.number[0]! > '9') &&
-    listing.number.length > 1
-  )
-    return listing.number[1]! >= '5' && listing.number[1]! <= '9';
-  return false;
+  return Number(listing.number.replace(/\D/gu, '')) >= 500;
 }
 
 export function isDiscussionSection(listing: Listing): boolean {

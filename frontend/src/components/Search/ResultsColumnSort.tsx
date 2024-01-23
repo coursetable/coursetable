@@ -7,8 +7,11 @@ import {
   FcNumericalSorting21,
 } from 'react-icons/fc';
 import styled, { useTheme } from 'styled-components';
-import type { SortByOption } from '../../utilities/constants';
-import { useSearch, defaultFilters } from '../../contexts/searchContext';
+import {
+  useSearch,
+  defaultFilters,
+  type SortByOption,
+} from '../../contexts/searchContext';
 
 const StyledSortBtn = styled.div`
   cursor: pointer;
@@ -41,7 +44,7 @@ function ResultsColumnSort({ selectOption }: Props) {
 
   // Get search context data
   const {
-    filters: { selectSortby, sortOrder },
+    filters: { selectSortBy, sortOrder },
   } = useSearch();
 
   const globalTheme = useTheme();
@@ -49,17 +52,17 @@ function ResultsColumnSort({ selectOption }: Props) {
   // Handle active state and initial sort order
   useEffect(() => {
     if (firstTime) {
-      if (selectSortby.value.value === selectOption.value) {
+      if (selectSortBy.value.value === selectOption.value) {
         setLocalSortOrder(sortOrder.value);
         setActive(true);
       }
       setFirstTime(false);
-    } else if (!active && selectSortby.value.value === selectOption.value) {
+    } else if (!active && selectSortBy.value.value === selectOption.value) {
       setActive(true);
-    } else if (active && selectSortby.value.value !== selectOption.value) {
+    } else if (active && selectSortBy.value.value !== selectOption.value) {
       setActive(false);
     }
-  }, [firstTime, selectOption, selectSortby, sortOrder, active]);
+  }, [firstTime, selectOption, selectSortBy, sortOrder, active]);
 
   return (
     <StyledSortBtn
@@ -67,8 +70,8 @@ function ResultsColumnSort({ selectOption }: Props) {
       className="ml-1 my-auto"
       onClick={() => {
         // If not sorting by this option previously, start sorting this option
-        if (selectSortby.value.value !== selectOption.value) {
-          selectSortby.set(selectOption);
+        if (selectSortBy.value.value !== selectOption.value) {
+          selectSortBy.set(selectOption);
           sortOrder.set(localSortOrder);
           return;
         }

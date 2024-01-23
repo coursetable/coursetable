@@ -348,7 +348,7 @@ function About() {
 
       <Row className="mx-auto">
         <div className="mx-auto">
-          <Link to="faq">
+          <Link to="/faq">
             <Button variant="outline-secondary">FAQ</Button>
           </Link>
           <span style={{ width: '1em', display: 'inline-block' }} />
