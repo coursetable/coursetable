@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Routes, Route, Navigate, useLocation, Link } from 'react-router-dom';
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 import { Row, Spinner } from 'react-bootstrap';
 import * as Sentry from '@sentry/react';
@@ -105,8 +105,8 @@ function App() {
         id={2}
       >
         Read about{' '}
-        <Link
-          to="/releases/fall23"
+        <a
+          href="/releases/fall23"
           style={{
             color: 'white',
             fontWeight: 'bold',
@@ -114,7 +114,7 @@ function App() {
           }}
         >
           what we've done in Fall/Winter 2023
-        </Link>
+        </a>
         !
       </Notice>
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
