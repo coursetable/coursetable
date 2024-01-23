@@ -113,7 +113,7 @@ export default function WorksheetStats() {
                       overlay={(props) => (
                         <Tooltip {...props} id="conflict-icon-button-tooltip">
                           <small style={{ fontWeight: 500 }}>
-                            Computed with {coursesWithoutWorkload} course
+                            Computed with {coursesWithWorkload} course
                             {coursesWithWorkload === 1 ? '' : 's'}.{' '}
                             {coursesWithoutWorkload.length === 1
                               ? coursesWithoutWorkload[0]
