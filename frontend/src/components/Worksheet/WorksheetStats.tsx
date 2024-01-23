@@ -107,16 +107,19 @@ export default function WorksheetStats() {
               <li>
                 <StyledStatPill>
                   Total workload
-                  {coursesWithoutWorkload.length > 0 && (
+                  {coursesWithoutRating.length > 0 && (
                     <OverlayTrigger
                       placement="top"
                       overlay={(props) => (
                         <Tooltip {...props} id="conflict-icon-button-tooltip">
                           <small style={{ fontWeight: 500 }}>
-                            Computed with {coursesWithWorkload} course
-                            {coursesWithWorkload === 1 ? '' : 's'}.{' '}
-                            {coursesWithoutWorkload.join(', ')} ha
-                            {coursesWithoutWorkload.length > 1 ? 've' : 's'} no
+                            Computed with {coursesWithRating} course
+                            {coursesWithRating === 1 ? '' : 's'}.{' '}
+                            {coursesWithoutRating.length === 1
+                              ? coursesWithoutRating[0]
+                              : `${coursesWithoutRating.slice(0, -1).join(', ')} and ${coursesWithoutRating[coursesWithoutRating.length - 1]}`}{' '}
+                            ha
+                            {coursesWithoutRating.length > 1 ? 've' : 's'} no
                             ratings.
                           </small>
                         </Tooltip>
@@ -141,7 +144,10 @@ export default function WorksheetStats() {
                           <small style={{ fontWeight: 500 }}>
                             Computed with {coursesWithRating} course
                             {coursesWithRating === 1 ? '' : 's'}.{' '}
-                            {coursesWithoutRating.join(', ')} ha
+                            {coursesWithoutRating.length === 1
+                              ? coursesWithoutRating[0]
+                              : `${coursesWithoutRating.slice(0, -1).join(', ')} and ${coursesWithoutRating[coursesWithoutRating.length - 1]}`}{' '}
+                            ha
                             {coursesWithoutRating.length > 1 ? 've' : 's'} no
                             ratings.
                           </small>
