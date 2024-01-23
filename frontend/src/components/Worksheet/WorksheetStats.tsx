@@ -114,7 +114,7 @@ export default function WorksheetStats() {
                   {coursesWithoutWorkload.length > 0 && (
                     <OverlayTrigger
                       placement="top"
-                      overlay={(props: TooltipProps) => (
+                      overlay={(props) => (
                         <Tooltip {...props} id="conflict-icon-button-tooltip">
                           <small style={{ fontWeight: 500 }}>
                             Computed with {coursesWithWorkload} course
@@ -140,7 +140,7 @@ export default function WorksheetStats() {
                   {coursesWithoutRating.length > 0 && (
                     <OverlayTrigger
                       placement="top"
-                      overlay={(props: TooltipProps) => (
+                      overlay={(props) => (
                         <Tooltip {...props} id="conflict-icon-button-tooltip">
                           <small style={{ fontWeight: 500 }}>
                             Computed with {coursesWithRating} course
