@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Collapse } from 'react-bootstrap';
+import { Collapse, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { MdInfoOutline } from 'react-icons/md';
 import styled from 'styled-components';
 import clsx from 'clsx';
 import chroma from 'chroma-js';
@@ -19,6 +20,10 @@ const StyledStatPill = styled.span<
   color: ${({ theme, stat }) => (stat ? '#141414' : theme.text[0])};
 `;
 
+const StyledInfo = styled(MdInfoOutline)`
+  color: ${({ theme }) => theme.primary};
+`;
+
 const courseNumberColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([4, 6]);
@@ -29,27 +34,31 @@ const workloadColormap = chroma
   .scale(['#63b37b', '#ffeb84', '#f8696b'])
   .domain([12, 20]);
 
+const formatter = new Intl.ListFormat('en-US', {
+  style: 'long',
+  type: 'conjunction',
+});
 export default function WorksheetStats() {
   const [shown, setShown] = useState(true);
   const { courses, hiddenCourses, curSeason } = useWorksheet();
   const countedCourseCodes = new Set();
   let courseCnt = 0;
-  // Used to compute average
-  let coursesWithRating = 0;
   let credits = 0;
   let workload = 0;
   let rating = 0;
   const skillsAreas: string[] = [];
+  const coursesWithoutRating: string[] = [];
+  const coursesWithoutWorkload: string[] = [];
 
   for (const course of courses) {
     // See if any of the course's codes have already been counted or if it's
     // hidden so we don't double count
-    const shouldNotCount =
-      course.all_course_codes.some((code) => countedCourseCodes.has(code)) ||
-      hiddenCourses[curSeason]?.[course.crn];
-    const useCourseInfo = course.credits;
+    const alreadyCounted = course.all_course_codes.some((code) =>
+      countedCourseCodes.has(code),
+    );
+    const isHidden = Boolean(hiddenCourses[curSeason]?.[course.crn]);
 
-    if (shouldNotCount || !useCourseInfo) continue;
+    if (alreadyCounted || isHidden || !course.credits) continue;
 
     // Mark codes as counted, no double counting
     course.all_course_codes.forEach((code) => {
@@ -57,14 +66,16 @@ export default function WorksheetStats() {
     });
     const courseRating = getOverallRatings(course, 'stat');
     const courseWorkload = getWorkloadRatings(course, 'stat');
-
+    if (!courseRating) coursesWithoutRating.push(course.course_code);
+    if (!courseWorkload) coursesWithoutWorkload.push(course.course_code);
     courseCnt++;
-    coursesWithRating += courseRating ? 1 : 0;
-    credits += course.credits ?? 0;
+    credits += course.credits;
     workload += courseWorkload ?? 0;
     rating += courseRating ?? 0;
     skillsAreas.push(...course.skills, ...course.areas);
   }
+  const coursesWithWorkload = courseCnt - coursesWithoutWorkload.length;
+  const coursesWithRating = courseCnt - coursesWithoutRating.length;
 
   const avgRating = coursesWithRating === 0 ? 0 : rating / coursesWithRating;
   return (
@@ -98,13 +109,53 @@ export default function WorksheetStats() {
                 </StyledStatPill>
               </li>
               <li>
-                <StyledStatPill>Total workload</StyledStatPill>
+                <StyledStatPill>
+                  Total workload
+                  {coursesWithoutWorkload.length > 0 && (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={(props) => (
+                        <Tooltip {...props} id="conflict-icon-button-tooltip">
+                          <small style={{ fontWeight: 500 }}>
+                            Computed with {coursesWithWorkload} course
+                            {coursesWithWorkload === 1 ? '' : 's'}.{' '}
+                            {formatter.format(coursesWithoutWorkload)} ha
+                            {coursesWithoutWorkload.length > 1 ? 've' : 's'} no
+                            ratings.
+                          </small>
+                        </Tooltip>
+                      )}
+                    >
+                      <StyledInfo />
+                    </OverlayTrigger>
+                  )}
+                </StyledStatPill>
                 <StyledStatPill colormap={workloadColormap} stat={workload}>
                   {workload.toFixed(2)}
                 </StyledStatPill>
               </li>
               <li>
-                <StyledStatPill>Average rating</StyledStatPill>
+                <StyledStatPill>
+                  Average rating
+                  {coursesWithoutRating.length > 0 && (
+                    <OverlayTrigger
+                      placement="top"
+                      overlay={(props) => (
+                        <Tooltip {...props} id="conflict-icon-button-tooltip">
+                          <small style={{ fontWeight: 500 }}>
+                            Computed with {coursesWithRating} course
+                            {coursesWithRating === 1 ? '' : 's'}.{' '}
+                            {formatter.format(coursesWithoutRating)} ha
+                            {coursesWithoutRating.length > 1 ? 've' : 's'} no
+                            ratings.
+                          </small>
+                        </Tooltip>
+                      )}
+                    >
+                      <StyledInfo />
+                    </OverlayTrigger>
+                  )}
+                </StyledStatPill>
                 <StyledStatPill colormap={ratingColormap} stat={avgRating}>
                   {avgRating.toFixed(2)}
                 </StyledStatPill>

@@ -35,6 +35,13 @@ Sentry.init({
     'TypeError: Failed to fetch',
     'TypeError: Load failed',
     'TypeError: cancelled',
+    'TypeError: NetworkError when attempting to fetch resource.',
+    'TypeError: The network connection was lost.',
+
+    // These occur with incomplete data
+    'SyntaxError: The string did not match the expected pattern.',
+    /SyntaxError: .*JSON.*/u,
+    'Syntax Error: Unexpected <EOF>.',
   ],
   environment: import.meta.env.MODE,
 

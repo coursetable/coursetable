@@ -1,5 +1,4 @@
 import chroma from 'chroma-js';
-import type { sortbyOptions } from '../contexts/searchContext';
 
 // Phrases for search speed [50 character limit]
 export const searchSpeed = {
@@ -45,10 +44,6 @@ export const searchSpeed = {
     'faster than the naked run',
   ],
 };
-
-// We can only sort by primitive keys by default, unless we have special support
-export type SortKeys = (typeof sortbyOptions)[number]['value'];
-export type SortByOption = (typeof sortbyOptions)[number];
 
 export const skillsAreas: {
   [type in 'areas' | 'skills']: { [code: string]: string };

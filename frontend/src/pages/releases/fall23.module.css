@@ -1,0 +1,38 @@
+/* TODO: this is duplicated from Privacy.module.css.
+   We should have a shared MDX layout. */
+
+.container {
+  width: 900px;
+  margin-bottom: 3rem;
+  line-height: 1.5;
+}
+
+.container h1 {
+  font-weight: bold;
+  font-size: x-large;
+  text-align: center;
+  margin-top: 3em;
+  margin-bottom: 0.5em;
+}
+
+.container h2 {
+  font-weight: bold;
+  font-size: larger;
+}
+
+.container h3 {
+  font-weight: bold;
+  font-size: large;
+}
+
+@media (max-width: 950px) {
+  .container {
+    width: 80vw;
+  }
+}
+
+@media (max-width: 425px) {
+  .container {
+    width: 90vw;
+  }
+}

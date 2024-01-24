@@ -7,7 +7,7 @@ import {
   type Listing,
 } from './common';
 import type { FriendRecord, Worksheet } from '../contexts/userContext';
-import type { SortKeys } from './constants';
+import type { SortKeys } from '../contexts/searchContext';
 
 export function truncatedText(
   text: string | null | undefined,
@@ -263,6 +263,12 @@ function compare(
     return comparatorReturn(
       getOverallRatings(a, 'stat'),
       getOverallRatings(b, 'stat'),
+    );
+  }
+  if (key === 'average_workload') {
+    return comparatorReturn(
+      getWorkloadRatings(a, 'stat'),
+      getWorkloadRatings(b, 'stat'),
     );
   }
   // Sorting by days & times

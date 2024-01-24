@@ -1,0 +1,98 @@
+import clsx from 'clsx';
+import styles from './fall23.module.css';
+import { TextComponent } from '../../components/StyledComponents';
+
+<div className={clsx(styles.container, 'mx-auto')}>
+<TextComponent type={1}>
+
+# CourseTable 23Fall/Winter Release Notes
+
+_2024-01-21_
+
+Hi everyone!
+
+Thank you so much for all of your support and feedback this year. We had an amazingly productive semester working on changes for you all. We have had over **300** commits to our codebase since the end of school year — in past years this number has only been around 50! We have been used by almost all members of the Yale undergraduate community, and in the past month have processed over **5 million** requests.
+
+<div style={{ textAlign: 'center' }}>
+  <img
+    src="/images/release_notes/fall_23/fall23requests.png"
+    alt="Graph of CourseTable requests over time. The Total Requests is 5.26M."
+    width="600"
+  />
+</div>
+
+Our team has created invaluable new features, and reworked old systems to be even better. We are so excited to continue serving the Yale community, and as always, [let us know](https://feedback.coursetable.com/) what you want to see next!
+
+If you enjoy this blog post and/or are a regular user of CourseTable, consider supporting our work through [Buy me a coffee](https://www.buymeacoffee.com/coursetable)! We are Yale students who work on this for you all for free :)
+
+CourseTable Team Lead<br />
+Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees))
+
+## Mobile calendar view
+
+We have started our effort to bring features that were previously exclusive to large screens (e.g. laptops) to smaller screens (e.g. phones). This time, we ported the calendar view for course worksheets to mobile devices and removed the list format. We also enhanced the calendar user interface to be more user-friendly.
+
+This feature is contributed by Kenny Tung ([@kentng01](https://github.com/kentng01)).
+
+## Friends
+
+We used to have a friends feature built on Facebook. However, it remained underused and was probably broken for many users. We have now built the feature from scratch, independent of Facebook. Currently, the friends feature allows you to:
+
+- Request, add, and remove friends
+- View your friends' worksheets
+- See how many friends added a given class to their worksheet.
+
+To use this feature, navigate to your worksheet and use the buttons in the toolbar. We plan to streamline the user interface and enable more interaction with friends in the future.
+
+This feature is contributed by Humphrey Xu ([@Etherite1](https://github.com/Etherite1)) and Ro Malik ([@CilantroMalik](https://github.com/CilantroMalik)).
+
+## GCal integration
+
+You can now instantaneously export your course worksheet to Google Calendar. To try it out, navigate to your [worksheet](https://coursetable.com/worksheet), click "Export to Google Calendar", and make sure to **check off the Google Calendar selection** when prompted. After the first authorization, you can **re-export at any time** without deleting the old events in your GCal if you make changes in CourseTable. (Note: Only non-hidden classes will be exported.)
+
+This feature is contributed by Ben Xu ([@benzuzu](https://github.com/benzuzu)) and Bradley Lewis ([@BradleyLewis08](https://github.com/BradleyLewis08)).
+
+On top of that, we already have had the function of exporting the worksheet as [ICS](https://en.wikipedia.org/wiki/ICalendar) for a long time, but it was very undiscoverable. We took this chance to move the ICS export button next to the GCal button and made its behavior more consistent and intuitive.
+
+This change is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Worksheet summary
+
+The worksheet view now shows a summary of statistics such as total credits, total workload, and more. This should help you gauge your semester’s stress level.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Links to courses
+
+Each course now has its own link. Whenever you open the modal (pop-up) for a course, you are now able to copy the address, which looks like: https://coursetable.com/catalog?course-modal=202401-28082. This link can be shared with others, which makes it easier to discuss course selection with your friends.
+
+We plan to further enhance the user experience with course sharing by showing a tailored link preview for each course.
+
+This feature is contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)) and Alex Schapiro ([@bearsyankees](https://github.com/bearsyankees)).
+
+## More search options
+
+You can now search courses by description in addition to titles and other texts. You can enable this feature by turning on the "Include descriptions in search" option.
+
+We also added a "Hide courses with conflicting times" option to hide classes that conflict with existing classes in your worksheet.
+
+These features are contributed by Ro Malik ([@CilantroMalik](https://github.com/CilantroMalik)) and Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Bug fixes
+
+- Previously, the past syllabi of a course were not listed in chronological order. They are now properly sorted.
+- Some classes have multiple meeting times. They are now all displayed in the calendar and course modal view.
+- Some classes happen before 8am. These classes are no longer incorrectly considered as evening classes.
+
+These fixes are contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+## Infrastructure changes
+
+This semester, you may have encountered multiple outages of CourseTable when we were deploying new features. We’ve begun the first steps towards a continuous development workflow. Look forward to significantly shorter "Maintenance" periods. Eventually, we are aiming for **< 1 min long upgrades**. We are also integrating better tools for our team to **squash all bugs before release**. This upgrade is contributed by Neil Song ([@neilsong](https://github.com/neilsong)).
+
+We also did a lot of internal code refactors. This enabled us to streamline our code and tighten code styles. In the process, we removed some unused dependencies. This should result in generally faster performance and fewer crashes in the future. The refactors are contributed by Sida Chen ([@Josh-Cena](https://github.com/Josh-Cena)).
+
+---
+
+</TextComponent>
+</div>

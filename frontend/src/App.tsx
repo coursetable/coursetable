@@ -41,6 +41,7 @@ const WorksheetLogin = suspended(() => import('./pages/WorksheetLogin'));
 const Graphiql = suspended(() => import('./pages/Graphiql'));
 const GraphiqlLogin = suspended(() => import('./pages/GraphiqlLogin'));
 const Join = suspended(() => import('./pages/Join'));
+const Fall23Release = suspended(() => import('./pages/releases/fall23.mdx'));
 const Tutorial = suspended(() => import('./components/Tutorial'));
 
 function App() {
@@ -101,9 +102,20 @@ function App() {
         // Increment for each new notice (though you don't need to change it
         // when removing a notice), or users who previously dismissed the banner
         // won't see the updated content.
-        id={1}
+        id={2}
       >
-        {/* Content */}
+        Read about{' '}
+        <a
+          href="/releases/fall23"
+          style={{
+            color: 'white',
+            fontWeight: 'bold',
+            textDecoration: 'underline',
+          }}
+        >
+          what we've done in Fall/Winter 2023
+        </a>
+        !
       </Notice>
       <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
       <SentryRoutes>
@@ -173,6 +185,8 @@ function App() {
         <Route path="/privacypolicy" element={<Privacy />} />
 
         <Route path="/Table" element={<Navigate to="/catalog" />} />
+
+        <Route path="/releases/fall23" element={<Fall23Release />} />
 
         {/* Catch-all Route to NotFound Page */}
         <Route path="/*" element={<NotFound />} />
