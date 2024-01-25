@@ -27,7 +27,7 @@ import {
   useSearch,
   type Option,
   defaultFilters,
-  sortbyOptions,
+  sortByOptions,
   skillsAreasOptions,
   subjectsOptions,
   schoolsOptions,
@@ -206,7 +206,7 @@ export function NavbarCatalogSearch() {
     hideFirstYearSeminars,
     hideGraduateCourses,
     hideDiscussionSections,
-    selectSortby,
+    selectSortBy,
   } = filters;
 
   // Active state for range filters
@@ -310,7 +310,7 @@ export function NavbarCatalogSearch() {
         hideDiscussionSections: hideDiscussionSections.value,
       },
       sorts: {
-        average_gut_rating: selectSortby.value.value === sortbyOptions[7].value,
+        average_gut_rating: selectSortBy.value.value === 'average_gut_rating',
       },
     }),
     [
@@ -330,7 +330,7 @@ export function NavbarCatalogSearch() {
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      selectSortby,
+      selectSortBy,
       isTablet,
     ],
   );
@@ -871,9 +871,11 @@ export function NavbarCatalogSearch() {
                 </Row>
                 <Row className="align-items-center justify-content-between mx-3 mt-3">
                   {/* Sort by Guts */}
-                  <AdvancedLabel>{sortbyOptions[7].label}:</AdvancedLabel>
+                  <AdvancedLabel>
+                    {sortByOptions.average_gut_rating.label}:
+                  </AdvancedLabel>
                   <ResultsColumnSort
-                    selectOption={sortbyOptions[7]}
+                    selectOption={sortByOptions.average_gut_rating}
                     key={resetKey}
                   />
                 </Row>

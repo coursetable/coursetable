@@ -15,7 +15,6 @@ import {
 import { useSessionStorageState } from '../utilities/browserStorage';
 import { useCourseData, useWorksheetInfo, seasons } from './ferryContext';
 import {
-  type SortByOption,
   skillsAreasColors,
   skillsAreas,
   subjects,
@@ -63,26 +62,34 @@ export const skillsAreasOptions = ['Areas', 'Skills'].map((type) => ({
   ),
 }));
 
-export const sortbyOptions = [
-  { label: 'Sort by Course Code', value: 'course_code', numeric: false },
-  { label: 'Sort by Course Number', value: 'number', numeric: true },
-  { label: 'Sort by Course Title', value: 'title', numeric: false },
-  { label: 'Sort by Friends', value: 'friend', numeric: true },
-  { label: 'Sort by Course Rating', value: 'average_rating', numeric: true },
-  {
-    label: 'Sort by Professor Rating',
-    value: 'average_professor',
-    numeric: true,
-  },
-  { label: 'Sort by Workload', value: 'average_workload', numeric: true },
-  {
+const sortCriteria = {
+  course_code: { label: 'Sort by Course Code', numeric: false },
+  number: { label: 'Sort by Course Number', numeric: true },
+  title: { label: 'Sort by Course Title', numeric: false },
+  friend: { label: 'Sort by Friends', numeric: true },
+  average_rating: { label: 'Sort by Course Rating', numeric: true },
+  average_professor: { label: 'Sort by Professor Rating', numeric: true },
+  average_workload: { label: 'Sort by Workload', numeric: true },
+  average_gut_rating: {
     label: 'Sort by Guts (Overall - Workload)',
-    value: 'average_gut_rating',
     numeric: true,
   },
-  { label: 'Sort by Last Enrollment', value: 'last_enrollment', numeric: true },
-  { label: 'Sort by Days & Times', value: 'times_by_day', numeric: true },
-] as const;
+  last_enrollment: { label: 'Sort by Last Enrollment', numeric: true },
+  times_by_day: { label: 'Sort by Days & Times', numeric: true },
+  locations_summary: { label: 'Sort by Locations', numeric: false },
+};
+
+export const sortByOptions = Object.fromEntries(
+  Object.entries(sortCriteria).map(([k, v]) => [k, { value: k, ...v }]),
+) as { [k in SortKeys]: SortByOption };
+
+// We can only sort by primitive keys by default, unless we have special support
+export type SortKeys = keyof typeof sortCriteria;
+
+export type SortByOption = Option & {
+  value: SortKeys;
+  numeric: boolean;
+};
 
 export const subjectsOptions = Object.entries(subjects).map(
   ([code, name]): Option => ({
@@ -155,7 +162,7 @@ export type Filters = {
   hideFirstYearSeminars: boolean;
   hideGraduateCourses: boolean;
   hideDiscussionSections: boolean;
-  selectSortby: SortByOption;
+  selectSortBy: SortByOption;
   sortOrder: SortOrderType;
 };
 
@@ -179,7 +186,7 @@ export const defaultFilters: Filters = {
   hideFirstYearSeminars: false,
   hideGraduateCourses: false,
   hideDiscussionSections: true,
-  selectSortby: sortbyOptions[0],
+  selectSortBy: sortByOptions.course_code,
   sortOrder: 'asc',
 };
 
@@ -232,7 +239,7 @@ export function SearchProvider({
   const hideDiscussionSections = useFilterState('hideDiscussionSections');
 
   /* Sorting */
-  const selectSortby = useFilterState('selectSortby');
+  const selectSortBy = useFilterState('selectSortBy');
   const sortOrder = useFilterState('sortOrder');
 
   /* Resetting */
@@ -495,14 +502,14 @@ export function SearchProvider({
     // Apply sorting order.
     return sortCourses(
       filtered,
-      { key: selectSortby.value.value, type: sortOrder.value },
+      { key: selectSortBy.value.value, type: sortOrder.value },
       numFriends,
     );
   }, [
     coursesLoading,
     courseLoadError,
     processedSeasons,
-    selectSortby.value.value,
+    selectSortBy.value.value,
     sortOrder.value,
     numFriends,
     courseData,
@@ -548,7 +555,7 @@ export function SearchProvider({
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      selectSortby,
+      selectSortBy,
       sortOrder,
     }),
     [
@@ -571,7 +578,7 @@ export function SearchProvider({
       hideFirstYearSeminars,
       hideGraduateCourses,
       hideDiscussionSections,
-      selectSortby,
+      selectSortBy,
       sortOrder,
     ],
   );
@@ -590,7 +597,7 @@ export function SearchProvider({
   useEffect(() => {
     if (
       Object.entries(filters)
-        .filter(([k]) => !['sortOrder', 'selectSortby'].includes(k))
+        .filter(([k]) => !['sortOrder', 'selectSortBy'].includes(k))
         .some(([, filter]) => filter.hasChanged)
     )
       setCanReset(true);

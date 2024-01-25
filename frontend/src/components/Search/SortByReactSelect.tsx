@@ -12,7 +12,7 @@ import CustomSelect from './CustomSelect';
 import {
   isOption,
   useSearch,
-  sortbyOptions,
+  sortByOptions,
 } from '../../contexts/searchContext';
 
 // Toggle sort order button
@@ -24,7 +24,7 @@ const StyledSortBtn = styled.div`
 
 function SortByReactSelect() {
   const {
-    filters: { selectSortby, sortOrder },
+    filters: { selectSortBy, sortOrder },
   } = useSearch();
 
   return (
@@ -32,11 +32,11 @@ function SortByReactSelect() {
       {/* Sort By Select */}
       <div className={styles.sortby_container}>
         <CustomSelect
-          value={selectSortby.value}
-          options={sortbyOptions}
+          value={selectSortBy.value}
+          options={Object.values(sortByOptions)}
           menuPortalTarget={document.body}
           onChange={(options): void => {
-            if (isOption(options)) selectSortby.set(options);
+            if (isOption(options)) selectSortBy.set(options);
           }}
         />
       </div>
@@ -45,7 +45,7 @@ function SortByReactSelect() {
         className={clsx(styles.sort_btn, 'my-auto')}
         onClick={() => sortOrder.set((o) => (o === 'asc' ? 'desc' : 'asc'))}
       >
-        {!selectSortby.value.numeric ? (
+        {!selectSortBy.value.numeric ? (
           // Sorting by letters
           sortOrder.value === 'asc' ? (
             <FcAlphabeticalSortingAz className={styles.sort_icon} size={20} />
