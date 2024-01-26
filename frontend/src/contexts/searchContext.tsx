@@ -27,6 +27,7 @@ import {
   getNumFriends,
   getOverallRatings,
   getWorkloadRatings,
+  getProfessorRatings,
   isGraduate,
   isDiscussionSection,
   sortCourses,
@@ -140,6 +141,7 @@ export type Filters = {
   selectSkillsAreas: Option[];
   overallBounds: [number, number];
   workloadBounds: [number, number];
+  professorBounds: [number, number];
   selectSeasons: Option<Season>[];
   selectDays: Option<Weekdays>[];
   timeBounds: [string, string];
@@ -163,6 +165,7 @@ export const defaultFilters: Filters = {
   selectSkillsAreas: [],
   overallBounds: [1, 5],
   workloadBounds: [1, 5],
+  professorBounds: [1, 5],
   selectSeasons: [{ value: CUR_SEASON, label: toSeasonString(CUR_SEASON) }],
   selectDays: [],
   timeBounds: ['7:00', '22:00'],
@@ -211,6 +214,7 @@ export function SearchProvider({
   const selectSkillsAreas = useFilterState('selectSkillsAreas');
   const overallBounds = useFilterState('overallBounds');
   const workloadBounds = useFilterState('workloadBounds');
+  const professorBounds = useFilterState('professorBounds');
   const selectSeasons = useFilterState('selectSeasons');
   const selectDays = useFilterState('selectDays');
   const timeBounds = useFilterState('timeBounds');
@@ -298,6 +302,10 @@ export function SearchProvider({
     () => (workloadBounds.hasChanged ? workloadBounds.value : null),
     [workloadBounds],
   );
+  const processedProfessorBounds = useMemo(
+    () => (professorBounds.hasChanged ? professorBounds.value : null),
+    [professorBounds],
+  );
   const processedTimeBounds = useMemo(
     () =>
       timeBounds.hasChanged
@@ -357,6 +365,17 @@ export function SearchProvider({
         if (
           rounded < processedWorkloadBounds[0] ||
           rounded > processedWorkloadBounds[1]
+        )
+          return false;
+      }
+
+      if (processedProfessorBounds !== null) {
+        const professorRate = getProfessorRatings(listing, 'stat');
+        if (professorRate === null) return false;
+        const rounded = Math.round(professorRate * 10) / 10;
+        if (
+          rounded < processedProfessorBounds[0] ||
+          rounded > processedProfessorBounds[1]
         )
           return false;
       }
@@ -490,6 +509,7 @@ export function SearchProvider({
     courseData,
     processedOverallBounds,
     processedWorkloadBounds,
+    processedProfessorBounds,
     processedTimeBounds,
     processedEnrollBounds,
     processedNumBounds,
@@ -515,6 +535,7 @@ export function SearchProvider({
       selectSkillsAreas,
       overallBounds,
       workloadBounds,
+      professorBounds,
       selectSeasons,
       selectDays,
       timeBounds,
@@ -537,6 +558,7 @@ export function SearchProvider({
       selectSkillsAreas,
       overallBounds,
       workloadBounds,
+      professorBounds,
       selectSeasons,
       selectDays,
       timeBounds,

@@ -191,6 +191,7 @@ export function NavbarCatalogSearch() {
     selectSkillsAreas,
     overallBounds,
     workloadBounds,
+    professorBounds,
     selectSeasons,
     selectDays,
     timeBounds,
@@ -210,6 +211,7 @@ export function NavbarCatalogSearch() {
   // Active state for range filters
   const [activeOverall, setActiveOverall] = useState(false);
   const [activeWorkload, setActiveWorkload] = useState(false);
+  const [activeProfessor, setActiveProfessor] = useState(false);
   const [activeTime, setActiveTime] = useState(false);
   const [activeEnrollment, setActiveEnrollment] = useState(false);
   const [activeNumber, setActiveNumber] = useState(false);
@@ -221,6 +223,9 @@ export function NavbarCatalogSearch() {
   );
   const [workloadValueLabels, setWorkloadValueLabels] = useState(
     workloadBounds.value,
+  );
+  const [professorValueLabels, setProfessorValueLabels] = useState(
+    professorBounds.value,
   );
   const [timeValueLabels, setTimeValueLabels] = useState(timeBounds.value);
   const [enrollValueLabels, setEnrollValueLabels] = useState(
@@ -234,6 +239,7 @@ export function NavbarCatalogSearch() {
   useEffect(() => {
     setActiveOverall(canReset && overallBounds.hasChanged);
     setActiveWorkload(canReset && workloadBounds.hasChanged);
+    setActiveProfessor(canReset && professorBounds.hasChanged);
     setActiveTime(canReset && timeBounds.hasChanged);
     setActiveEnrollment(canReset && enrollBounds.hasChanged);
     setActiveNumber(canReset && numBounds.hasChanged);
@@ -241,6 +247,7 @@ export function NavbarCatalogSearch() {
     canReset,
     overallBounds,
     workloadBounds,
+    professorBounds,
     timeBounds,
     enrollBounds,
     numBounds,
@@ -532,6 +539,37 @@ export function NavbarCatalogSearch() {
                   }}
                   onAfterChange={(value) => {
                     workloadBounds.set(value as [number, number]);
+                    setStartTime(Date.now());
+                  }}
+                />
+              </Col>
+              <Col className="w-auto flex-grow-0 d-flex flex-column align-items-center">
+                {/* Professor Rating Range */}
+                <div className="d-flex align-items-center justify-content-center mt-n1 w-100">
+                  <RangeValueLabel>{professorValueLabels[0]}</RangeValueLabel>
+                  <RangeLabel
+                    className="flex-grow-1 text-center"
+                    style={activeStyle(activeProfessor)}
+                  >
+                    Professor
+                  </RangeLabel>
+                  <RangeValueLabel>{professorValueLabels[1]}</RangeValueLabel>
+                </div>
+                <StyledRange
+                  min={defaultFilters.professorBounds[0]}
+                  max={defaultFilters.professorBounds[1]}
+                  step={0.1}
+                  isTablet={isTablet}
+                  key={resetKey}
+                  handleStyle={rangeHandleStyle}
+                  railStyle={rangeRailStyle}
+                  trackStyle={[rangeRailStyle]}
+                  defaultValue={professorBounds.value}
+                  onChange={(value) => {
+                    setProfessorValueLabels(value as [number, number]);
+                  }}
+                  onAfterChange={(value) => {
+                    professorBounds.set(value as [number, number]);
                     setStartTime(Date.now());
                   }}
                 />

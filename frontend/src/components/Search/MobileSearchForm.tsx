@@ -37,6 +37,7 @@ export default function MobileSearchForm({
       selectSkillsAreas,
       overallBounds,
       workloadBounds,
+      professorBounds,
       selectSeasons,
       selectSchools,
     },
@@ -205,6 +206,33 @@ export default function MobileSearchForm({
               </Container>
               <div className={clsx('text-center', styles.filter_title)}>
                 Workload
+              </div>
+            </Col>
+            {/* Professor Rating Slider */}
+            <Col>
+              <Container>
+                <Range
+                  min={defaultFilters.professorBounds[0]}
+                  max={defaultFilters.professorBounds[1]}
+                  step={0.1}
+                  key={resetKey}
+                  defaultValue={professorBounds.value}
+                  onAfterChange={(value) => {
+                    professorBounds.set(value as [number, number]);
+                  }}
+                  handle={({ value, dragging, ...e }) => (
+                    // @ts-expect-error: TODO upgrade rc-slider
+                    <Handle {...e} key={e.className}>
+                      <div className={clsx('shadow', styles.workload_tooltip)}>
+                        {value}
+                      </div>
+                    </Handle>
+                  )}
+                  className={styles.slider}
+                />
+              </Container>
+              <div className={clsx('text-center', styles.filter_title)}>
+                Professor
               </div>
             </Col>
           </Row>
