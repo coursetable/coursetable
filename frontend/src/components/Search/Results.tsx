@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import { FixedSizeList } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
 import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
 
@@ -20,6 +19,7 @@ import Authentication from '../../images/authentication.svg';
 import { SurfaceComponent } from '../StyledComponents';
 
 import ResultsColumnSort from './ResultsColumnSort';
+import WindowScroller from './WindowScroller';
 import { useSearch, sortByOptions } from '../../contexts/searchContext';
 import { breakpoints } from '../../utilities/display';
 import type { Listing } from '../../utilities/common';
@@ -230,14 +230,17 @@ function Results({
   } else if (!isListView) {
     // Not list -> use grid view
     resultsListing = (
-      <AutoSizer disableHeight>
-        {({ width }) => (
+      <WindowScroller>
+        {({ ref, outerRef, style }) => (
           // We use a list even for grid, because we only virtualize the rows
           <FixedSizeList
+            outerRef={outerRef}
+            ref={ref}
             height={window.innerHeight}
             itemCount={Math.ceil(data.length / numCols)}
             itemSize={178}
-            width={width}
+            width={window.innerWidth}
+            style={style}
           >
             {({ index, style }) => (
               <div style={style}>
@@ -258,20 +261,23 @@ function Results({
             )}
           </FixedSizeList>
         )}
-      </AutoSizer>
+      </WindowScroller>
     );
   } else {
     resultsListing = (
-      <AutoSizer disableHeight>
-        {({ width }) => (
+      <WindowScroller>
+        {({ ref, outerRef, style }) => (
           <FixedSizeList
+            outerRef={outerRef}
+            ref={ref}
             height={window.innerHeight}
             itemCount={data.length}
             itemSize={isLgDesktop ? 32 : 28}
-            width={width}
+            width={window.innerWidth}
+            style={style}
             useIsScrolling
           >
-            {({ index, style, isScrolling: rowIsScrolling }) => {
+            {({ index, style }) => {
               const course = data[index]!;
               const friends = numFriends[course.season_code + course.crn] ?? [];
               return (
@@ -287,14 +293,13 @@ function Results({
                   multiSeasons={multiSeasons}
                   isFirst={index === 0}
                   COL_SPACING={COL_SPACING}
-                  isScrolling={rowIsScrolling!}
                   friends={friends}
                 />
               );
             }}
           </FixedSizeList>
         )}
-      </AutoSizer>
+      </WindowScroller>
     );
   }
 

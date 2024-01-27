@@ -98,7 +98,6 @@ function ResultsItem({
   multiSeasons,
   isFirst,
   COL_SPACING,
-  isScrolling = false,
   friends,
   style,
 }: {
@@ -107,7 +106,6 @@ function ResultsItem({
   readonly isFirst: boolean;
   // This can be more exact, but I'm too lazy to type everything out :)
   readonly COL_SPACING: { [prop: string]: number };
-  readonly isScrolling: boolean;
   readonly friends: string[];
   readonly style?: React.CSSProperties;
 }) {
@@ -401,7 +399,7 @@ function ResultsItem({
           />
         </div>
         {/* Render conflict icon only when component has been mounted */}
-        {mounted && !isScrolling && (
+        {mounted && (
           <div className={styles.conflict_error}>
             <CourseConflictIcon course={course} />
           </div>
