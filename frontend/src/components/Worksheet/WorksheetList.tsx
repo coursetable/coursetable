@@ -17,7 +17,6 @@ function WorksheetList() {
   const {
     filters: { selectSortBy, sortOrder },
     numFriends,
-    isLoggedIn,
   } = useSearch();
 
   const WorksheetData = useMemo(
@@ -42,7 +41,6 @@ function WorksheetList() {
               setIsListView={setIsListView}
               loading={worksheetLoading}
               multiSeasons={false}
-              isLoggedIn={isLoggedIn}
               numFriends={numFriends}
               page="worksheet"
             />
