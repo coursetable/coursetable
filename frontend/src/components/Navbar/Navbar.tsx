@@ -95,6 +95,7 @@ const NavLogo = styled(Nav)`
 type Props = {
   readonly isLoggedIn: boolean;
   readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 //  Wrapper for nav collapse for # of results shown text
@@ -115,12 +116,11 @@ function NavCollapseWrapper({
   return <>{children}</>;
 }
 
-/**
- * Renders the navbar
- * @prop isLoggedIn - is user logged in?
- * @prop setIsTutorialOpen - opens tutorial
- */
-function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
+export default function CourseTableNavbar({
+  isLoggedIn,
+  setIsTutorialOpen,
+  setShownTutorial,
+}: Props) {
   const location = useLocation();
   // Is navbar expanded in mobile view?
   const [navExpanded, setNavExpanded] = useState<boolean>(false);
@@ -348,10 +348,9 @@ function CourseTableNavbar({ isLoggedIn, setIsTutorialOpen }: Props) {
           setIsComponentVisible={setIsComponentVisible}
           isLoggedIn={isLoggedIn}
           setIsTutorialOpen={setIsTutorialOpen}
+          setShownTutorial={setShownTutorial}
         />
       </div>
     </div>
   );
 }
-
-export default CourseTableNavbar;

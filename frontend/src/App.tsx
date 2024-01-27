@@ -117,7 +117,11 @@ function App() {
         </a>
         !
       </Notice>
-      <Navbar isLoggedIn={isLoggedIn} setIsTutorialOpen={setIsTutorialOpen} />
+      <Navbar
+        isLoggedIn={isLoggedIn}
+        setIsTutorialOpen={setIsTutorialOpen}
+        setShownTutorial={setShownTutorial}
+      />
       <SentryRoutes>
         {/* Home Page */}
         <Route
