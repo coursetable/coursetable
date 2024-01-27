@@ -19,20 +19,15 @@ type Props = {
   readonly setIsComponentVisible: (visible: boolean) => void;
   readonly isLoggedIn: boolean;
   readonly setIsTutorialOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  readonly setShownTutorial: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-/**
- * Renders the dropdown when clicking on the profile dropdown in the navbar
- * @prop profileExpanded - is dropdown visible?
- * @prop setIsComponentVisible - function that changes dropdown visibility
- * @prop isLoggedIn - is user logged in?
- * @prop setIsTutorialOpen - opens tutorial
- */
 function MeDropdown({
   profileExpanded,
   setIsComponentVisible,
   isLoggedIn,
   setIsTutorialOpen,
+  setShownTutorial,
 }: Props) {
   // Fetch current device
   const { isMobile, isTablet } = useWindowDimensions();
@@ -123,6 +118,7 @@ function MeDropdown({
                       e.stopPropagation();
                       scrollToTop(e);
                       setIsTutorialOpen(true);
+                      setShownTutorial(false);
                     }}
                   >
                     <StyledHoverText>Tutorial</StyledHoverText>
