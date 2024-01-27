@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { List, WindowScroller, AutoSizer } from 'react-virtualized';
+import { FixedSizeList, FixedSizeGrid } from 'react-window';
+import AutoSizer from 'react-virtualized-auto-sizer';
 import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
 
@@ -234,110 +235,69 @@ function Results({
       </div>
     );
   } else if (!isListView) {
-    // If not list view, prepare the grid
-    // Store HTML for grid view results
+    // Not list -> use grid view
     resultsListing = (
-      // Scroll the entire window
-      <WindowScroller>
-        {({ height, isScrolling, onChildScroll, scrollTop }) => (
-          // Make infinite list take up 100% of its container
-          <AutoSizer disableHeight>
-            {({ width }) => (
-              <List
-                autoHeight
-                width={width}
-                height={height}
-                isScrolling={isScrolling}
-                onScroll={onChildScroll}
-                scrollTop={scrollTop}
-                rowCount={Math.ceil(data.length / numCols)}
-                rowHeight={178}
-                rowRenderer={({ index, key, style }) => {
-                  const rowElements = [];
-                  for (
-                    let j = index * numCols;
-                    j < data.length && j < (index + 1) * numCols;
-                    j++
-                  ) {
-                    rowElements.push(
-                      <ResultsGridItem
-                        course={data[j]!}
-                        isLoggedIn={isLoggedIn}
-                        numCols={numCols}
-                        multiSeasons={multiSeasons}
-                        key={j}
-                      />,
-                    );
-                  }
-
-                  return (
-                    <div key={key} style={style}>
-                      <StyledRow className="mx-auto">{rowElements}</StyledRow>
-                    </div>
-                  );
-                }}
-              />
+      <AutoSizer disableHeight>
+        {({ width }) => (
+          <FixedSizeGrid
+            columnCount={numCols}
+            columnWidth={width / numCols}
+            height={800}
+            rowCount={Math.ceil(data.length / numCols)}
+            rowHeight={178}
+            width={width}
+          >
+            {({ columnIndex, rowIndex, style }) => (
+              <div style={style}>
+                <ResultsGridItem
+                  course={data[rowIndex * numCols + columnIndex]!}
+                  isLoggedIn={isLoggedIn}
+                  multiSeasons={multiSeasons}
+                />
+              </div>
             )}
-          </AutoSizer>
+          </FixedSizeGrid>
         )}
-      </WindowScroller>
+      </AutoSizer>
     );
   } else {
-    // Store HTML for list view results
     resultsListing = (
-      // Scroll the entire window
-      <WindowScroller>
-        {({ height, isScrolling, onChildScroll, scrollTop }) => (
-          // Make infinite list take up 100% of its container
-          <AutoSizer disableHeight>
-            {({ width }) => (
-              <List
-                autoHeight
-                width={width}
-                height={height}
-                isScrolling={isScrolling}
-                onScroll={onChildScroll}
-                scrollTop={scrollTop}
-                rowCount={data.length}
-                rowHeight={isLgDesktop ? 32 : 28}
-                rowRenderer={({
-                  index,
-                  key,
-                  style,
-                  isScrolling: rowIsScrolling,
-                }) => {
-                  const course = data[index]!;
-                  const friends =
-                    numFriends[course.season_code + course.crn] ?? [];
-                  // Alternating row item background colors
-                  const colorStyles =
-                    index % 2 === 0
-                      ? { backgroundColor: globalTheme.surface[0] }
-                      : { backgroundColor: globalTheme.rowOdd };
-                  return (
-                    <ResultsItemWrapper
-                      style={{
-                        ...style,
-                        ...colorStyles,
-                      }}
-                      key={key}
-                    >
-                      <ResultsItemMemo
-                        course={course}
-                        multiSeasons={multiSeasons}
-                        isFirst={index === 0}
-                        COL_SPACING={COL_SPACING}
-                        isScrolling={rowIsScrolling}
-                        friends={friends}
-                      />
-                    </ResultsItemWrapper>
-                  );
-                }}
-              />
-            )}
-          </AutoSizer>
+      <AutoSizer disableHeight>
+        {({ width }) => (
+          <FixedSizeList
+            height={800}
+            itemCount={data.length}
+            itemSize={isLgDesktop ? 32 : 28}
+            width={width}
+            useIsScrolling
+          >
+            {({ index, style, isScrolling: rowIsScrolling }) => {
+              const course = data[index]!;
+              const friends = numFriends[course.season_code + course.crn] ?? [];
+              return (
+                <ResultsItemWrapper
+                  style={{
+                    ...style,
+                    backgroundColor:
+                      index % 2 === 0
+                        ? globalTheme.surface[0]
+                        : globalTheme.rowOdd,
+                  }}
+                >
+                  <ResultsItemMemo
+                    course={course}
+                    multiSeasons={multiSeasons}
+                    isFirst={index === 0}
+                    COL_SPACING={COL_SPACING}
+                    isScrolling={rowIsScrolling!}
+                    friends={friends}
+                  />
+                </ResultsItemWrapper>
+              );
+            }}
+          </FixedSizeList>
         )}
-      </WindowScroller>
+      </AutoSizer>
     );
   }
 
