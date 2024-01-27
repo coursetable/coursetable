@@ -56,8 +56,12 @@ const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
 
   &:hover {
     cursor: pointer;
-    background-color: ${({ theme }) => theme.selectHover};
+    background-color: ${({ theme }) => theme.selectHover} !important;
   }
+
+  transition:
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Rating cell within the row
@@ -96,6 +100,7 @@ function ResultsItem({
   COL_SPACING,
   isScrolling = false,
   friends,
+  style,
 }: {
   readonly course: Listing;
   readonly multiSeasons: boolean;
@@ -104,6 +109,7 @@ function ResultsItem({
   readonly COL_SPACING: { [prop: string]: number };
   readonly isScrolling: boolean;
   readonly friends: string[];
+  readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?
@@ -193,6 +199,7 @@ function ResultsItem({
       }}
       tabIndex={0}
       inWorksheet={courseInWorksheet}
+      style={style}
     >
       {/* Search Row Item */}
       <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">

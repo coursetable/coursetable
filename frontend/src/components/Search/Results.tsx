@@ -6,7 +6,7 @@ import AutoSizer from 'react-virtualized-auto-sizer';
 import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
 
-import ResultsItemMemo from './ResultsItem';
+import ResultsItem from './ResultsItem';
 import ResultsGridItem from './ResultsGridItem';
 
 import ListGridToggle from './ListGridToggle';
@@ -67,13 +67,6 @@ const SearchResults = styled.div<{ numCourses: number; isMobile: boolean }>`
   overflow: hidden;
   ${({ numCourses, isMobile }) =>
     numCourses > 0 && numCourses < 20 && !isMobile ? 'height: 80vh;' : ''}
-`;
-
-// Results item wrapper
-const ResultsItemWrapper = styled.div`
-  transition:
-    background-color ${({ theme }) => theme.transDur},
-    color ${({ theme }) => theme.transDur};
 `;
 
 // Function to calculate column width within a max and min
@@ -242,7 +235,7 @@ function Results({
           <FixedSizeGrid
             columnCount={numCols}
             columnWidth={width / numCols}
-            height={800}
+            height={window.innerHeight}
             rowCount={Math.ceil(data.length / numCols)}
             rowHeight={178}
             width={width}
@@ -265,7 +258,7 @@ function Results({
       <AutoSizer disableHeight>
         {({ width }) => (
           <FixedSizeList
-            height={800}
+            height={window.innerHeight}
             itemCount={data.length}
             itemSize={isLgDesktop ? 32 : 28}
             width={width}
@@ -275,7 +268,7 @@ function Results({
               const course = data[index]!;
               const friends = numFriends[course.season_code + course.crn] ?? [];
               return (
-                <ResultsItemWrapper
+                <ResultsItem
                   style={{
                     ...style,
                     backgroundColor:
@@ -283,16 +276,13 @@ function Results({
                         ? globalTheme.surface[0]
                         : globalTheme.rowOdd,
                   }}
-                >
-                  <ResultsItemMemo
-                    course={course}
-                    multiSeasons={multiSeasons}
-                    isFirst={index === 0}
-                    COL_SPACING={COL_SPACING}
-                    isScrolling={rowIsScrolling!}
-                    friends={friends}
-                  />
-                </ResultsItemWrapper>
+                  course={course}
+                  multiSeasons={multiSeasons}
+                  isFirst={index === 0}
+                  COL_SPACING={COL_SPACING}
+                  isScrolling={rowIsScrolling!}
+                  friends={friends}
+                />
               );
             }}
           </FixedSizeList>
