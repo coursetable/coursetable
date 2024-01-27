@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from 'react';
 import throttle from 'lodash.throttle';
+import { useWindowDimensions } from '../../contexts/windowDimensionsContext';
 
 export default function WindowScroller({
   children,
@@ -16,6 +17,7 @@ export default function WindowScroller({
 }) {
   const ref = useRef<HTMLElement>();
   const outerRef = useRef<HTMLElement>();
+  const { isMobile } = useWindowDimensions();
 
   useEffect(() => {
     const handleWindowScroll = throttle(() => {
@@ -24,7 +26,10 @@ export default function WindowScroller({
         (window.scrollY ||
           document.documentElement.scrollTop ||
           document.body.scrollTop ||
-          0) - offsetTop;
+          0) -
+        offsetTop -
+        // TODO: This is a hack to account for the search form height
+        (isMobile ? 400 : 0);
       ref.current?.scrollTo(scrollTop, 0);
     }, throttleTime);
 
@@ -33,7 +38,7 @@ export default function WindowScroller({
       handleWindowScroll.cancel();
       window.removeEventListener('scroll', handleWindowScroll);
     };
-  }, [throttleTime]);
+  }, [throttleTime, isMobile]);
 
   return children({
     ref,
