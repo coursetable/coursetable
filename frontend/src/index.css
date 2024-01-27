@@ -24,3 +24,8 @@ code {
 #base {
   height: 100vh;
 }
+
+.reactour__close {
+  width: 15px !important;
+  height: 15px !important;
+}
