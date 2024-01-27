@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo } from 'react';
 import { Col, Row } from 'react-bootstrap';
 
 import { sortCourses } from '../../utilities/course';
@@ -11,7 +11,6 @@ import Results from '../Search/Results';
  */
 
 function WorksheetList() {
-  const [isListView, setIsListView] = useState(true);
   const { courses, worksheetLoading } = useWorksheet();
 
   const {
@@ -37,8 +36,6 @@ function WorksheetList() {
           <div className="d-flex justify-content-center">
             <Results
               data={WorksheetData}
-              isListView={isListView}
-              setIsListView={setIsListView}
               loading={worksheetLoading}
               multiSeasons={false}
               numFriends={numFriends}
