@@ -72,7 +72,6 @@ function RatingCell({
 /**
  * Renders a grid item for a search result
  * @prop course data for the current course
- * @prop isLoggedIn is the user logged in?
  * @prop numCols integer that holds how many columns in grid view
  * @prop multiSeasons are we displaying courses across multiple seasons
  */

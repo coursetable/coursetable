@@ -57,8 +57,12 @@ const StyledSpacer = styled.div<{ inWorksheet: boolean }>`
 
   &:hover {
     cursor: pointer;
-    background-color: ${({ theme }) => theme.selectHover};
+    background-color: ${({ theme }) => theme.selectHover} !important;
   }
+
+  transition:
+    background-color ${({ theme }) => theme.transDur},
+    color ${({ theme }) => theme.transDur};
 `;
 
 // Rating cell within the row
@@ -95,16 +99,16 @@ function ResultsItem({
   multiSeasons,
   isFirst,
   COL_SPACING,
-  isScrolling = false,
   friends,
+  style,
 }: {
   readonly course: Listing;
   readonly multiSeasons: boolean;
   readonly isFirst: boolean;
   // This can be more exact, but I'm too lazy to type everything out :)
   readonly COL_SPACING: { [prop: string]: number };
-  readonly isScrolling: boolean;
   readonly friends: string[];
+  readonly style?: React.CSSProperties;
 }) {
   const [, setSearchParams] = useSearchParams();
   // Has the component been mounted?
@@ -194,6 +198,7 @@ function ResultsItem({
       }}
       tabIndex={0}
       inWorksheet={courseInWorksheet}
+      style={style}
     >
       {/* Search Row Item */}
       <StyledResultsItem className="mx-auto pl-4 pr-2 py-0 justify-content-between">
@@ -393,7 +398,7 @@ function ResultsItem({
           />
         </div>
         {/* Render conflict icon only when component has been mounted */}
-        {mounted && !isScrolling && (
+        {mounted && (
           <div className={styles.conflict_error}>
             <CourseConflictIcon course={course} />
           </div>

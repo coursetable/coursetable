@@ -23,8 +23,7 @@ function Search() {
   );
 
   // Get search context data
-  const { coursesLoading, searchData, multiSeasons, isLoggedIn, numFriends } =
-    useSearch();
+  const { coursesLoading, searchData, multiSeasons, numFriends } = useSearch();
 
   const scrollToResults = useCallback(
     (event?: React.FormEvent) => {
@@ -84,7 +83,6 @@ function Search() {
               setIsListView={setIsListView}
               loading={coursesLoading}
               multiSeasons={multiSeasons}
-              isLoggedIn={isLoggedIn}
               numFriends={numFriends}
             />
           </Element>
