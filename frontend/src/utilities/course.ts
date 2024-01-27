@@ -185,7 +185,7 @@ export function getWorkloadRatings(
   return usage === 'stat' ? null : 'N/A';
 }
 
-// get average professor rating for a course
+// Get average professor rating for a course
 export function getProfessorRatings(
   course: Listing,
   usage: 'stat',
@@ -195,10 +195,11 @@ export function getProfessorRatings(
   course: Listing,
   usage: 'stat' | 'display',
 ): string | number | null {
-  if (course.average_professor)
+  if (course.average_professor) {
     return usage === 'stat'
       ? course.average_professor
       : course.average_professor.toFixed(1);
+  }
   return usage === 'stat' ? null : 'N/A';
 }
 

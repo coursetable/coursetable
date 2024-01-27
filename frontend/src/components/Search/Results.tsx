@@ -262,7 +262,6 @@ function Results({
                     rowElements.push(
                       <ResultsGridItem
                         course={data[j]!}
-                        isLoggedIn={isLoggedIn}
                         numCols={numCols}
                         multiSeasons={multiSeasons}
                         key={j}
