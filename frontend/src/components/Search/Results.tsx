@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import { Col, Row, Spinner, Tooltip, OverlayTrigger } from 'react-bootstrap';
-import { FixedSizeList, FixedSizeGrid } from 'react-window';
+import { FixedSizeList } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
 import styled, { useTheme } from 'styled-components';
 import clsx from 'clsx';
@@ -232,24 +232,31 @@ function Results({
     resultsListing = (
       <AutoSizer disableHeight>
         {({ width }) => (
-          <FixedSizeGrid
-            columnCount={numCols}
-            columnWidth={width / numCols}
+          // We use a list even for grid, because we only virtualize the rows
+          <FixedSizeList
             height={window.innerHeight}
-            rowCount={Math.ceil(data.length / numCols)}
-            rowHeight={178}
+            itemCount={Math.ceil(data.length / numCols)}
+            itemSize={178}
             width={width}
           >
-            {({ columnIndex, rowIndex, style }) => (
+            {({ index, style }) => (
               <div style={style}>
-                <ResultsGridItem
-                  course={data[rowIndex * numCols + columnIndex]!}
-                  isLoggedIn={isLoggedIn}
-                  multiSeasons={multiSeasons}
-                />
+                <StyledRow className="mx-auto">
+                  {data
+                    .slice(index * numCols, (index + 1) * numCols)
+                    .map((course) => (
+                      <ResultsGridItem
+                        course={course}
+                        isLoggedIn={isLoggedIn}
+                        numCols={numCols}
+                        multiSeasons={multiSeasons}
+                        key={course.season_code + course.crn}
+                      />
+                    ))}
+                </StyledRow>
               </div>
             )}
-          </FixedSizeGrid>
+          </FixedSizeList>
         )}
       </AutoSizer>
     );

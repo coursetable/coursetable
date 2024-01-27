@@ -57,13 +57,17 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
 function ResultsGridItem({
   course,
   isLoggedIn,
+  numCols,
   multiSeasons,
 }: {
   readonly course: Listing;
   readonly isLoggedIn: boolean;
+  readonly numCols: number;
   readonly multiSeasons: boolean;
 }) {
   const [, setSearchParams] = useSearchParams();
+  // Bootstrap column width depending on the number of columns
+  const colWidth = 12 / numCols;
 
   // Season code for this listing
   const seasons = ['spring', 'summer', 'fall'] as const;
@@ -91,6 +95,7 @@ function ResultsGridItem({
 
   return (
     <Col
+      md={colWidth}
       className={clsx(styles.container, 'px-2 pt-0 pb-3')}
       style={{ overflow: 'hidden' }}
     >
