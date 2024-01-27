@@ -16,6 +16,7 @@ import styles from './Results.module.css';
 import NoCoursesFound from '../../images/no_courses_found.svg';
 
 import WindowScroller from './WindowScroller';
+import { useSessionStorageState } from '../../utilities/browserStorage';
 import type { Listing } from '../../utilities/common';
 import { toSeasonString } from '../../utilities/course';
 
@@ -40,8 +41,6 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
 /**
  * Renders the infinite list of search results for both catalog and worksheet
  * @prop data - array | that holds the search results
- * @prop isListView - boolean | determines display format (list or grid)
- * @prop setIsListView - function | changes display format
  * @prop loading - boolean | Is the search query finished?
  * @prop multiSeasons - boolean | are we displaying courses across multiple seasons
  * @prop numFriends = object | holds a list of each friend taking a specific course
@@ -50,16 +49,12 @@ const getColWidth = (calculated: number, min = 0, max = 1000000) =>
 
 function Results({
   data,
-  isListView,
-  setIsListView,
   loading = false,
   multiSeasons = false,
   numFriends,
   page = 'catalog',
 }: {
   readonly data: Listing[];
-  readonly isListView: boolean;
-  readonly setIsListView: (isList: boolean) => void;
   readonly loading?: boolean;
   readonly multiSeasons?: boolean;
   readonly numFriends: { [seasonCodeCrn: string]: string[] };
@@ -72,6 +67,10 @@ function Results({
     isTablet,
     isLgDesktop,
   } = useWindowDimensions();
+  const [isListView, setIsListView] = useSessionStorageState(
+    'isListView',
+    true,
+  );
 
   // State that holds width of the row for list view
   const [rowWidth, setRowWidth] = useState(0);
@@ -171,8 +170,10 @@ function Results({
         )}
       </div>
     );
-  } else if (!isListView) {
-    // Not list -> use grid view
+  } else if (!isListView || isMobile) {
+    // Not list or on mobile -> use grid view
+    // Do not force entering grid mode on mobile, so that when resizing the
+    // window, the view can still be restored to list view
     resultsListing = (
       <WindowScroller>
         {({ ref, outerRef, style }) => (

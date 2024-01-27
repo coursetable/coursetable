@@ -309,7 +309,7 @@ function Tutorial({
       startAt={0}
       accentColor={globalTheme.primaryHover}
       rounded={6}
-      showCloseButton={currentStep === 0}
+      showCloseButton
       disableDotsNavigation
       showNavigation={shownTutorial && currentStep !== 10}
       closeWithMask={shownTutorial}
