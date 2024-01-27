@@ -49,19 +49,16 @@ const StyledGridItem = styled.div<{ inWorksheet: boolean }>`
 /**
  * Renders a grid item for a search result
  * @prop course data for the current course
- * @prop isLoggedIn is the user logged in?
  * @prop numCols integer that holds how many columns in grid view
  * @prop multiSeasons are we displaying courses across multiple seasons
  */
 
 function ResultsGridItem({
   course,
-  isLoggedIn,
   numCols,
   multiSeasons,
 }: {
   readonly course: Listing;
-  readonly isLoggedIn: boolean;
   readonly numCols: number;
   readonly multiSeasons: boolean;
 }) {
@@ -273,16 +270,15 @@ function ResultsGridItem({
                     // Only show eval data when user is signed in
                     className={clsx(styles.rating, 'mr-1')}
                     style={{
-                      color:
-                        course.average_professor && isLoggedIn
-                          ? ratingColormap(course.average_professor)
-                              .darken()
-                              .saturate()
-                              .css()
-                          : '#cccccc',
+                      color: course.average_professor
+                        ? ratingColormap(course.average_professor)
+                            .darken()
+                            .saturate()
+                            .css()
+                        : '#cccccc',
                     }}
                   >
-                    {course.average_professor && isLoggedIn
+                    {course.average_professor
                       ? course.average_professor.toFixed(1)
                       : 'N/A'}
                   </div>
@@ -305,16 +301,15 @@ function ResultsGridItem({
                     // Only show eval data when user is signed in
                     className={clsx(styles.rating, 'mr-1')}
                     style={{
-                      color:
-                        isLoggedIn && getWorkloadRatings(course, 'stat')
-                          ? workloadColormap(getWorkloadRatings(course, 'stat'))
-                              .darken()
-                              .saturate()
-                              .css()
-                          : '#cccccc',
+                      color: getWorkloadRatings(course, 'stat')
+                        ? workloadColormap(getWorkloadRatings(course, 'stat'))
+                            .darken()
+                            .saturate()
+                            .css()
+                        : '#cccccc',
                     }}
                   >
-                    {isLoggedIn && getWorkloadRatings(course, 'display')}
+                    {getWorkloadRatings(course, 'display')}
                   </div>
                   <StyledIcon>
                     <BiBookOpen className={styles.icon} />
